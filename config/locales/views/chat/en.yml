@@ -1,0 +1,69 @@
+---
+en:
+  views:
+    chat:
+      meta:
+        title: "%{name} Connect"
+        description: "%{name} Connect"
+      create:
+        success: chat channel created!
+        failure: not allowed!
+        channel:
+          chat: channel is created by %{user}
+          success: Channel is created%{maybe_info}
+          info: " & %{message}"
+      join:
+        heading: Would you like to join the %{name} channel
+        accept: Accept
+        decline: Decline
+        expired: This Invitation link is expired. Please contact the channel mod for new Invitation link
+        pending:
+          heading: Pending Invitations
+          desc: You may leave a group channel at any point in the future.
+          empty: You have no pending invitations.
+          chat: "@%{user} joined %{channel}"
+          notice: Invitation to %{channel} accepted. It may take a moment to show up in your list.
+          remove: Invitation removed.
+        request:
+          success: Request Sent
+          failure: Unable to join channel
+        response:
+          chat: "@%{user} added @%{target}"
+          notice: Accepted request of %{user} to join %{channel}.
+          reject: Invitation rejected.
+        chat: "@%{user} join the channel"
+        error:
+          unauthorized: User not authorized
+          not_found: not found
+      leave:
+        chat: "@#{user} left #{channel}"
+        success: You have left the channel %{channel}. It may take a moment to be removed from your list.
+        failure: Failed to update membership
+      kick:
+        chat: "@%{user} removed @%{target} from %{channel}"
+        success: Removed %{user}
+      moderate:
+        ban:
+          success: "%{user} was suspended."
+          failure: Suspend failed. user with username '%{user}' not found in this channel.
+        unban:
+          success: "%{user} was unsuspended."
+          failure: Unsuspend failed. User with username '%{user}' not found in this channel.
+        clear:
+          success: cleared!
+          failure: invalid command
+      update:
+        success: Personal settings updated.
+        failure: Failed to update settings.
+        notice: Channel settings updated.
+        channel:
+          success: Channel settings updated.
+          failure: Channel settings updation failed. Try again later.
+        role:
+          chat: "@%{user} role is updated as %{role}"
+          success: User Membership is updated
+          failure: Failed to update membership
+      block:
+        success: chat channel blocked
+      channel_info:
+        failure: not found

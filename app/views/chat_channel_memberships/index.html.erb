@@ -5,25 +5,25 @@
 <% end %>
 <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
   <% if @pending_invites.any? %>
-    <h1>Pending Invitations</h1>
-    <h3>You may leave a group channel at any point in the future.</h3>
+    <h1><%= t("views.chat.join.pending.heading") %></h1>
+    <h3><%= t("views.chat.join.pending.desc") %></h3>
     <% @pending_invites.each do |membership| %>
       <div class="crayons-field">
         <h2><%= membership.chat_channel.channel_name %></h2>
         <p><%= membership.chat_channel.description %></p>
         <%= form_for(membership, html: { class: "grid grid-cols-5" }) do |f| %>
           <%= f.hidden_field :user_action, value: "accept" %>
-          <%= f.submit "Accept", class: "crayons-btn" %>
+          <%= f.submit t("views.chat.join.accept"), class: "crayons-btn" %>
         <% end %>
         <%= form_for(membership, html: { class: "grid grid-cols-5" }) do |f| %>
           <%= f.hidden_field :user_action, value: "decline" %>
-          <%= f.submit "Decline", class: "crayons-btn crayons-btn--danger" %>
+          <%= f.submit t("views.chat.join.decline"), class: "crayons-btn crayons-btn--danger" %>
         <% end %>
       </div>
     <% end %>
   <% else %>
     <p>
-      <em>You have no pending invitations</em>
+      <em><%= t("views.chat.join.pending.empty") %></em>
     </p>
   <% end %>
 </div>

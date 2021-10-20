@@ -1,0 +1,69 @@
+---
+ja:
+  views:
+    chat:
+      meta:
+        title: "%{name} Connect"
+        description: "%{name} Connect"
+      create:
+        success: チャンネル作成完了！
+        failure: 作成できません！
+        channel:
+          chat: "%{user} がチャンネルを作成"
+          success: チャンネルが作成されました。%{maybe_info}
+          info: また、%{message}
+      join:
+        heading: "「%{name}」チャンネルに参加しますか？"
+        accept: 参加する
+        decline: 遠慮する
+        expired: この招待リンクは期限切れです。チャンネル管理者から新しいリンクを受け取ってください。
+        pending:
+          heading: 承認待ちの招待
+          desc: いつでもグループチャンネルから抜けられます。
+          empty: 承認待ちの招待はありません。
+          chat: "@%{user} が %{channel} に参加"
+          notice: "%{channel} への招待が承認されました。リストに反映されるまで時間がかかることがあります。"
+          remove: 招待を削除しました。
+        request:
+          success: 申請を送りました
+          failure: チャンネルに参加できません
+        response:
+          chat: "@%{user} が @%{target} を追加"
+          notice: "%{user} から %{channel} への参加申請を承認しました。"
+          reject: 招待は断られました。
+        chat: "@%{user} がチャンネルに参加"
+        error:
+          unauthorized: ユーザーは未認証です
+          not_found: 見つかりません
+      leave:
+        chat: "@#{user} left #{channel}"
+        success: You have left the channel %{channel}. It may take a moment to be removed from your list.
+        failure: Failed to update membership
+      kick:
+        chat: "@%{user} removed @%{target} from %{channel}"
+        success: Removed %{user}
+      moderate:
+        ban:
+          success: "%{user} was suspended."
+          failure: Suspend failed. user with username '%{user}' not found in this channel.
+        unban:
+          success: "%{user} was unsuspended."
+          failure: Unsuspend failed. User with username '%{user}' not found in this channel.
+        clear:
+          success: cleared!
+          failure: invalid command
+      update:
+        success: Personal settings updated.
+        failure: Failed to update settings.
+        notice: Channel settings updated.
+        channel:
+          success: Channel settings updated.
+          failure: Channel settings updation failed. Try again later.
+        role:
+          chat: "@%{user} role is updated as %{role}"
+          success: User Membership is updated
+          failure: Failed to update membership
+      block:
+        success: chat channel blocked
+      channel_info:
+        failure: 見つかりません

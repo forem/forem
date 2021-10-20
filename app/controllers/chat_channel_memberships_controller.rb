@@ -60,9 +60,9 @@ class ChatChannelMembershipsController < ApplicationController
       status = membership.save
     end
     if status
-      render json: { status: "success", message: "Request Sent" }, status: :ok
+      render json: { status: "success", message: I18n.t("views.chat.join.request.success") }, status: :ok
     else
-      render json: { status: 400, message: "Unable to join channel" }, status: :bad_request
+      render json: { status: 400, message: I18n.t("views.chat.join.request.failure") }, status: :bad_request
     end
   end
 
@@ -72,15 +72,16 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel_membership = @chat_channel.chat_channel_memberships.find(params[:membership_id])
     if params[:status] == "pending"
       @chat_channel_membership.destroy
-      message = "Invitation removed."
+      message = I18n.t("views.chat.join.pending.remove")
     else
       membership = @chat_channel_membership
-      message = "@#{current_user.username} removed @#{membership.user.username} from #{membership.channel_name}"
+      message = I18n.t("views.chat.kick.chat",
+                       user: current_user.username, target: membership.user.username, channel: membership.channel_name)
       send_chat_action_message(
         message, current_user, @chat_channel_membership.chat_channel_id, "removed_from_channel"
       )
       @chat_channel_membership.update(status: "removed_from_channel")
-      message = "Removed #{@chat_channel_membership.user.name}"
+      message = I18n.t("views.chat.kick.success", user: @chat_channel_membership.user.name)
     end
 
     render json: { status: "success", message: message, success: true }, status: :ok
@@ -108,9 +109,9 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel_membership.update(permitted_params)
     if @chat_channel_membership.errors.any?
       render json: { success: false, errors: @chat_channel_membership.errors.full_messages,
-                     message: "Failed to update settings." }, status: :bad_request
+                     message: I18n.t("views.chat.update.failure") }, status: :bad_request
     else
-      render json: { success: true, message: "Personal settings updated." }, status: :ok
+      render json: { success: true, message: I18n.t("views.chat.update.success") }, status: :ok
     end
   end
 
@@ -118,15 +119,17 @@ class ChatChannelMembershipsController < ApplicationController
     chat_channel_membership = ChatChannelMembership.find_by(id: params[:id])
     authorize chat_channel_membership
     channel_name = chat_channel_membership.chat_channel.channel_name
-    send_chat_action_message("@#{current_user.username} left #{chat_channel_membership.channel_name}", current_user,
-                             chat_channel_membership.chat_channel_id, "left_channel")
+    send_chat_action_message(
+      I18n.t("views.chat.leave.chat", user: current_user.username, channel: chat_channel_membership.channel_name),
+      current_user, chat_channel_membership.chat_channel_id, "left_channel"
+    )
     chat_channel_membership.update(status: "left_channel")
-    message = "You have left the channel #{channel_name}. It may take a moment to be removed from your list."
+    message = I18n.t("views.chat.leave.success", channel: channel_name)
     if chat_channel_membership.errors.any?
-      render json: { success: false, message: "Failed to update membership",
+      render json: { success: false, message: I18n.t("views.chat.leave.failure"),
                      errors: chat_channel_membership.errors.full_messages }, status: :bad_request
     else
-      render json: { success: true, message: message },  status: :ok
+      render json: { success: true, message: message }, status: :ok
     end
   end
 
@@ -153,18 +156,18 @@ class ChatChannelMembershipsController < ApplicationController
     if membership.errors.any?
       render json: {
         success: false,
-        message: "Failed to update membership",
+        message: I18n.t("views.chat.update.role.failure"),
         errors: chat_channel_membership.errors.full_messages
       }, status: :bad_request
     else
       role = membership.reload.role
       send_chat_action_message(
-        "@#{membership.user.username} role is updated as #{role}",
+        I18n.t("views.chat.update.role.chat", user: membership.user.username, role: role),
         current_user, @chat_channel.id,
         "updated"
       )
 
-      render json: { success: true, message: "User Membership is updated" }, status: :ok
+      render json: { success: true, message: I18n.t("views.chat.update.role.success") }, status: :ok
     end
   end
 
@@ -186,14 +189,14 @@ class ChatChannelMembershipsController < ApplicationController
       if !membership
         membership = ChatChannelMembership.create(user_id: current_user.id, chat_channel_id: chat_channel.id)
         unless membership&.errors&.any?
-          send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id,
-                                   "joined")
+          send_chat_action_message(I18n.t("views.chat.join.chat", user: membership.user.username), current_user,
+                                   chat_channel.id, "joined")
         end
       elsif membership.status != "active"
         # This check checks if the user already has the chatChannelMembership with the status pending, joining_request
         # Then update it to as active.
         membership.update(role: "member", status: "active")
-        send_chat_action_message("@#{membership.user.username} join the channel", current_user,
+        send_chat_action_message(I18n.t("views.chat.join.chat", user: membership.user.username), current_user,
                                  membership.chat_channel_id, "joined")
       end
 
@@ -225,16 +228,18 @@ class ChatChannelMembershipsController < ApplicationController
 
       if previous_status == "pending"
         send_chat_action_message(
-          "@#{current_user.username} joined #{@chat_channel_membership.channel_name}",
+          I18n.t("views.chat.join.pending.chat", user: current_user.username,
+                                                 channel: @chat_channel_membership.channel_name),
           current_user,
           @chat_channel_membership.chat_channel_id,
           "joined",
         )
 
-        notice = "Invitation to #{channel_name} accepted. It may take a moment to show up in your list."
+        notice = I18n.t("views.chat.join.pending.notice", channel: channel_name)
       else
         send_chat_action_message(
-          "@#{current_user.username} added @#{@chat_channel_membership.user.username}",
+          I18n.t("views.chat.join.response.chat", user: current_user.username,
+                                                  target: @chat_channel_membership.user.username),
           current_user,
           @chat_channel_membership.chat_channel_id,
           "joined",
@@ -245,11 +250,12 @@ class ChatChannelMembershipsController < ApplicationController
           .channel_invite_email
           .deliver_later
 
-        notice = "Accepted request of #{@chat_channel_membership.user.username} to join #{channel_name}."
+        notice = I18n.t("views.chat.join.response.notice", user: @chat_channel_membership.user.username,
+                                                           channel: channel_name)
       end
     else
       @chat_channel_membership.update(status: "rejected")
-      notice = "Invitation rejected."
+      notice = I18n.t("views.chat.join.response.reject")
     end
 
     membership_user = format_membership(@chat_channel_membership)
@@ -276,10 +282,10 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def user_not_authorized
-    render json: { success: false, message: "User not authorized" }, status: :unauthorized
+    render json: { success: false, message: I18n.t("views.chat.join.error.unauthorized") }, status: :unauthorized
   end
 
   def record_not_found
-    render json: { success: false, message: "not found" }, status: :not_found
+    render json: { success: false, message: I18n.t("views.chat.join.error.not_found") }, status: :not_found
   end
 end

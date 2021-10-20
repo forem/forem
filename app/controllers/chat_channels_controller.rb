@@ -62,7 +62,7 @@ class ChatChannelsController < ApplicationController
       else
         ChatChannelMembership.find_by(user_id: Settings::General.mascot_user_id)&.destroy
       end
-      flash[:settings_notice] = "Channel settings updated."
+      flash[:settings_notice] = I18n.t("views.chat.update.notice")
     end
     current_user_membership = @chat_channel.mod_memberships.find_by!(user: current_user)
 
@@ -73,7 +73,7 @@ class ChatChannelsController < ApplicationController
     @chat_channel.update(chat_channel_params)
     if @chat_channel.errors.any?
       render json: { success: false, errors: @chat_channel.errors.full_messages,
-                     message: "Channel settings updation failed. Try again later." }, success: :bad_request
+                     message: I18n.t("views.chat.update.channel.failure") }, success: :bad_request
     else
       if chat_channel_params[:discoverable]
         ChatChannelMembership.create(user_id: Settings::General.mascot_user_id, chat_channel_id: @chat_channel.id,
@@ -81,7 +81,7 @@ class ChatChannelsController < ApplicationController
       else
         ChatChannelMembership.find_by(user_id: Settings::General.mascot_user_id)&.destroy
       end
-      render json: { success: true, message: "Channel settings updated.", data: {} }, success: :ok
+      render json: { success: true, message: I18n.t("views.chat.update.channel.success"), data: {} }, success: :ok
     end
   end
 
@@ -105,30 +105,31 @@ class ChatChannelsController < ApplicationController
         user.messages.where(chat_channel: chat_channel).delete_all
         membership.update(status: "removed_from_channel")
         Pusher.trigger(chat_channel.pusher_channels, "user-banned", { userId: user.id }.to_json)
-        render json: { status: "moderation-success", message: "#{username} was suspended.", userId: user.id,
-                       chatChannelId: chat_channel.id }, status: :ok
+        render json: { status: "moderation-success", message: I18n.t("views.chat.moderate.ban.success", user: username),
+                       userId: user.id, chatChannelId: chat_channel.id }, status: :ok
       else
         render json: {
           status: "error",
-          message: "Suspend failed. user with username '#{username}' not found in this channel."
+          message: I18n.t("views.chat.moderate.ban.failure", user: username)
         }, status: :bad_request
       end
     when "/unban"
       user = User.find_by(username: username)
       if user
         user.remove_role(:suspended)
-        render json: { status: "moderation-success", message: "#{username} was unsuspended." }, status: :ok
+        render json: { status: "moderation-success",
+                       message: I18n.t("views.chat.moderate.unban.success", user: username) }, status: :ok
       else
         render json: {
           status: "error",
-          message: "Unsuspend failed. User with username '#{username}' not found in this channel."
+          message: I18n.t("views.chat.moderate.unban.failure", user: username)
         }, status: :bad_request
       end
     when "/clearchannel"
       @chat_channel.clear_channel
-      render json: { status: "success", message: "cleared!" }, status: :ok
+      render json: { status: "success", message: I18n.t("views.chat.moderate.clear.success") }, status: :ok
     else
-      render json: { status: "error", message: "invalid command" }, status: :bad_request
+      render json: { status: "error", message: I18n.t("views.chat.moderate.clear.failure") }, status: :bad_request
     end
   end
 
@@ -146,9 +147,9 @@ class ChatChannelsController < ApplicationController
         user: current_user,
       )
       chat.messages.append(message)
-      render json: { status: "success", message: "chat channel created!" }, status: :ok
+      render json: { status: "success", message: I18n.t("views.chat.create.success") }, status: :ok
     else
-      render json: { status: "error", message: "not allowed!" }, status: :bad_request
+      render json: { status: "error", message: I18n.t("views.chat.create.failure") }, status: :bad_request
     end
   rescue StandardError => e
     render json: { status: "error", message: e.message }, status: :bad_request
@@ -159,7 +160,7 @@ class ChatChannelsController < ApplicationController
     authorize chat_channel
     chat_channel.status = "blocked"
     chat_channel.save
-    render json: { status: "success", message: "chat channel blocked" }, status: :ok
+    render json: { status: "success", message: I18n.t("views.chat.block.success") }, status: :ok
   end
 
   # NOTE: this is part of an effort of moving some things from the external to
@@ -175,7 +176,7 @@ class ChatChannelsController < ApplicationController
 
     return if @chat_channel&.has_member?(current_user)
 
-    render json: { error: "not found", status: 404 }, status: :not_found
+    render json: { error: I18n.t("views.chat.channel_info.failure"), status: 404 }, status: :not_found
   end
 
   def create_channel
@@ -197,13 +198,14 @@ class ChatChannelsController < ApplicationController
       )
 
       send_chat_action_message(
-        "channel is created by #{current_user.username}",
+        I18n.t("views.chat.create.channel.chat", user: current_user.username),
         current_user, membership.chat_channel_id,
         "chat channel is created"
       )
       render json: {
         success: true,
-        message: "Channel is created #{message ? "& #{message}" : nil}"
+        message: I18n.t("views.chat.create.channel.success",
+                        maybe_info: message ? I18n.t("views.chat.create.channel.info", message: message) : "")
       }, status: :ok
     else
       render json: {

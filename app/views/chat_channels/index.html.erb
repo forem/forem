@@ -1,7 +1,7 @@
-<% title("#{community_name} Connect") %>
+<% title t("views.chat.meta.title", name: community_name) %>
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(connect_path) %>" />
-  <meta name="description" content="<%= community_name %> Connect">
+  <meta name="description" content="<%= t("views.chat.meta.description", name: community_name) %>">
 <% end %>
 <%= csrf_meta_tags %>
 
