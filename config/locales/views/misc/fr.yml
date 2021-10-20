@@ -58,6 +58,6 @@ fr:
         title: Videos
         og:
           description: All videos on %{community}
-      heading: "%{name} en Vidéo"
+      heading: "%{community} en Vidéo"
       beta_html: "<strong>Vidéo est en bêta:</strong> %{contact}"
       upload: "🎥 Télécharger un fichier vidéo 🙌"
