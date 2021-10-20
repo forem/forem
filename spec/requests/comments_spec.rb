@@ -152,9 +152,18 @@ RSpec.describe "Comments", type: :request do
         expect(response.body).to include(fourth_level_child.processed_html)
       end
 
-      it "shows child comments in its parent's permalink when parent is hidden and child is not" do
+      # When opening a non-hidden comment by a permalink we want to see only visible comments.
+      it "doesn't show hidden child comments in its parent's permalink when parent is not hidden" do
         get second_level_child.path
         expect(response.body).not_to include(third_level_child.processed_html)
+      end
+
+      # When opening a hidden comment by a permalink we want to see the full thread including hidden comments.
+      it "shows hidden child comments in its parent's permalink when parent is also hidden" do
+        third_level_child
+        child.update_column(:hidden_by_commentable_user, true)
+        get child.path
+        expect(response.body).to include(third_level_child.processed_html)
       end
 
       it "shows the hidden comment's child in its parent's permalink if the child is not hidden explicitly" do
