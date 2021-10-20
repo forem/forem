@@ -1,8 +1,8 @@
 <div class="crayons-field mt-6 align-left">
-  <%= label_tag :community_name, class: "crayons-field__label", aria: { label: "Community name" } do %>
+  <%= label_tag :community_name, class: "crayons-field__label" do %>
     Community name
-    <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the primary name for your Forem"></span>
-    <p class="crayons-field__description">Used as the primary name for your Forem.</p>
+    <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the primary name for your Forem" aria-describedby="community-name-subtitle"></span>
+    <p id="community-name-subtitle" class="crayons-field__description">Used as the primary name for your Forem.</p>
   <% end %>
   <%= text_field_tag :community_name, "", placeholder: "Climbing Life", class: "crayons-textfield fs-italic", required: true %>
 </div>
@@ -10,8 +10,8 @@
 <div class="crayons-field mt-6 align-left">
   <%= label_tag :logo_svg, class: "crayons-field__label", aria: { label: "Logo" } do %>
     Logo
-    <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the logo for your Forem"></span>
-    <p class="crayons-field__description">Ideally SVG, but PNG will work, too. Min size: 300x300px.</p>
+    <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the logo for your Forem" aria-describedby="logo-subtitle"></span>
+    <p id="logo-subtitle" class="crayons-field__description">Ideally SVG, but PNG will work, too. Min size: 300x300px.</p>
   <% end %>
   <span class="block border-none">
     <%= file_field_tag :logo_svg, class: "crayons-btn crayons-btn--secondary", role: "button", required: true %>
@@ -25,10 +25,10 @@
 </div>
 
 <div class="crayons-field mt-6 align-left">
-  <%= label_tag :primary_brand_color_hex, class: "crayons-field__label", aria: { label: "Brand color" } do %>
+  <%= label_tag :primary_brand_color_hex, class: "crayons-field__label" do %>
     Brand color
-    <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the accent color for buttons, links, etc. on your Forem"></span>
-    <p class="crayons-field__description">This will be the "accent" color used for buttons, links, etc.</p>
+    <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the accent color for buttons, links, etc. on your Forem" aria-describedby="color-selector-subtitle"></span>
+    <p id="color-selector-subtitle" class="crayons-field__description">This will be the "accent" color used for buttons, links, etc.</p>
   <% end %>
   <%= text_field_tag :primary_brand_color_hex,
                      ::Settings::UserExperience.primary_brand_color_hex,
