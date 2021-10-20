@@ -1,12 +1,18 @@
 ---
 en:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
+    if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
+    if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   core:
     add_comment: Add comment
     all: All
     analytics: Analytics
+    browse: Browse
     comment: Comment
-    copy_link: Copy link
+    comments: Comments
     community_name_is_great: "%{community_name} is great!"
+    copy_link: Copy link
     create_account: Create account
     create_post: Create Post
     dashboard: Dashboard
@@ -21,36 +27,45 @@ en:
     full: Full
     home: Home
     infinity: Infinity
+    joined: Joined
+    joined_on: Joined on
     latest: Latest
     like: Like
     listings: Listings
+    loading: loading...
+    location: Location
     log_in: Log in
+    moderator_center: Moderator Center
     month: Month
     more_from: More from
     my_tags: My Tags
+    podcasts: Podcasts
+    pinned: Pinned
     popular_tags: Popular Tags
     post: Post
     posts: Posts
     reaction: Reaction
+    reaction_pluralized:
+      one: reaction
+      other: reactions
     reactions:
       heart: Heart
       save: Save
       unicorn: Unicorn
     read_next: Read next
+    reading_list: Reading list
     reply: Reply
     report_abuse: Report abuse
     search: Search
     see_all: See all
     series: Series
+    settings: Settings
     share_to: Share to %{media}
+    sign_out: Sign Out
     trending_on: Trending on
     view: View
     week: Week
     year: Year
-  contact_prompts:
-    if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
-    if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
-    if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
   dashboard:
     empty_follower: You don't have any followers yet...
     empty_post: This is where you can manage your posts, but you haven't written anything yet.
@@ -95,19 +110,23 @@ en:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
   podcasts:
+    featured_shows: Featured shows
+    latest_episodes: Latest episodes
+    suggest_a_podcast: Suggest a podcast
+    view_all_podcasts: View all podcasts
     statuses:
       ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
       unparsable: Podcast's rss couldn't be parsed
       unplayable: This podcast may not be playable in the browser
       unreachable: Podcast's feed_url is not reachable
   settings_menu:
-    profile: "Profile"
-    customization: "Customization"
-    notifications: "Notifications"
-    account: "Account"
-    billing: "Billing"
-    organization: "Organization"
-    extensions: "Extensions"
+    account: Account
+    billing: Billing
+    customization: Customization
+    extensions: Extensions
+    notifications: Notifications
+    organization: Organization
+    profile: Profile
   time:
     formats:
       short: "%b %-e"
