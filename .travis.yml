@@ -95,7 +95,7 @@ jobs:
       env:
         - KNAPSACK_PRO_CI_NODE_TOTAL=2
         - KNAPSACK_PRO_CI_NODE_INDEX=0
-        - KNAPSACK_PRO_TEST_FILE_EXCLUDE_PATTERN="cypress/integration/creatorOnboardingFlows/*.spec.js"
+        - KNAPSACK_PRO_TEST_FILE_PATTERN="cypress/integration/seededFlows/**/*.spec.js"
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
@@ -105,7 +105,7 @@ jobs:
       env:
         - KNAPSACK_PRO_CI_NODE_TOTAL=2
         - KNAPSACK_PRO_CI_NODE_INDEX=1
-        - KNAPSACK_PRO_TEST_FILE_EXCLUDE_PATTERN="cypress/integration/creatorOnboardingFlows/*.spec.js"
+        - KNAPSACK_PRO_TEST_FILE_PATTERN="cypress/integration/seededFlows/**/*.spec.js"
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
