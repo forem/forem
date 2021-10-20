@@ -75,4 +75,17 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       expect(Notification.count).to eq(0)
     end
   end
+
+  context "when publishing an article under an organization" do
+    it "doesn't create a notification for the article author" do
+      user = create(:user)
+      organization = create(:organization)
+      user.follow(organization)
+      article = create(:article, user: user, organization: organization)
+
+      expect do
+        described_class.call(article, "Published")
+      end.not_to change(Notification, :count)
+    end
+  end
 end
