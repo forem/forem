@@ -17,7 +17,7 @@ RSpec.describe "Stories::ArticlesSearchController", type: :request do
     context "with empty query" do
       it "renders default page title" do
         get "/search?q="
-        expect(response.body).to include("Search results\s")
+        expect(response.body).to include("Search results")
       end
     end
   end
