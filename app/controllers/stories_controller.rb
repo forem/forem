@@ -155,7 +155,7 @@ class StoriesController < ApplicationController
     @podcast_index = true
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes
-      .reachable.order(published_at: :desc).limit(30).decorate
+      .reachable.order(published_at: :desc).page(params[:page]).per(30)
     set_surrogate_key_header "podcast_episodes"
     render template: "podcast_episodes/index"
   end

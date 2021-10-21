@@ -1,4 +1,4 @@
-<h2>Add a reaction</h2>
+<h2><% t("views.moderations.actions.add_reaction") %></h2>
 <button class="reaction-button <%= Reaction.cached_any_reactions_for?(moderatable, current_user, "like") ? "reacted" : "" %>" data-reactable-id="<%= moderatable.id %>" data-category="like" data-reactable-type="Article">
   <%= image_tag("favorite-heart-outline-button.svg", alt: "Thumbs down emoji") %>
 </button>
