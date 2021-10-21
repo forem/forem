@@ -1,4 +1,4 @@
-<% page_title = title("Videos") %>
+<% page_title = title(t("views.videos.meta.title")) %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(request.path) %>" />
@@ -9,12 +9,12 @@
   <meta property="og:url" content="<%= app_url(request.path) %>" />
   <meta property="og:title" content="<%= page_title %>" />
   <meta property="og:image" content="<%= Settings::General.main_social_image %>">
-  <meta property="og:description" content="All videos on <%= community_name %>" />
+  <meta property="og:description" content="<%= t("views.videos.meta.og.description", community: community_name) %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= page_title %>">
-  <meta name="twitter:description" content="All videos on <%= community_name %>">
+  <meta name="twitter:description" content="<%= t("views.videos.meta.og.description", community: community_name) %>">
   <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
@@ -23,7 +23,7 @@
 
   <main id="main-content">
     <header class="video-page-title">
-      <h1><%= t("core.on_video", name: community_name) %></h1>
+      <h1><%= t("views.videos.heading", community: community_name) %></h1>
     </header>
     <div class="video-collection" id="video-collection">
       <% @video_articles.each do |video_article| %>
