@@ -23,6 +23,6 @@ module NotificationsHelper
       )
     else
       I18n.t(action, user: key_to_link.call("user"))
-    end
+    end.html_safe
   end
 end
