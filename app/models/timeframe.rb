@@ -13,9 +13,13 @@ class Timeframe
   def self.datetimes
     {
       infinity: 5.years.ago,
+      top_infinity: 5.years.ago,
       year: 1.year.ago,
+      top_year: 1.year.ago,
       month: 1.month.ago,
+      top_month: 1.month.ago,
       week: 1.week.ago,
+      top_week: 1.week.ago,
       LATEST_TIMEFRAME: LATEST_TIMEFRAME
     }.with_indifferent_access
   end
