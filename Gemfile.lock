@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/maestromac/cypress-rails.git
-  revision: fbcb11686babc5645fd1c70eb2d484ba90ce144b
+  revision: c751933f16c34fd5d1b3e8e54457b062afaf83ec
   branch: enable-knapsack-pro-support
   specs:
     cypress-rails (0.5.3)

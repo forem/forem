@@ -24,12 +24,12 @@ module CypressRails
         port: config.port,
         transactional_server: config.transactional_server
       )
-      bin = @finds_bin.call(config.dir)
+      bin = @finds_bin.call(config.dir, config.knapsack)
 
       set_exit_hooks!(config)
 
       command = <<~EXEC
-        CYPRESS_BASE_URL="http://#{server.host}:#{server.port}#{config.base_path}" $(npm bin)/knapsack-pro-cypress --project "#{config.dir}" #{config.cypress_cli_opts}
+        CYPRESS_BASE_URL="http://#{server.host}:#{server.port}#{config.base_path}" "#{bin}" #{command} --project "#{config.dir}" #{config.cypress_cli_opts}
       EXEC
 
       puts "\nLaunching Cypress…\n$ #{command}\n"

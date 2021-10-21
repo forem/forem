@@ -14,4 +14,7 @@ when "open"
 when "run"
   passed = CypressRails::Run.new.call
   exit 1 unless passed
+when "run_knapsack"
+  passed = CypressRails::RunKnapsack.new.call
+  exit 1 unless passed
 end

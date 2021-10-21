@@ -18,6 +18,7 @@ module CypressRails
       @base_path = base_path
       @transactional_server = transactional_server
       @cypress_cli_opts = cypress_cli_opts
+      @knapsack = nil
     end
 
     def to_s

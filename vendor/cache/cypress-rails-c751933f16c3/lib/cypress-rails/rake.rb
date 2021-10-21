@@ -16,3 +16,8 @@ desc "Run Cypress tests headlessly"
 task :"cypress:run" do
   abort unless system "#{CLI} run"
 end
+
+desc "Run Cypress tests with knapsack"
+task :"cypress:run_knapsack" do
+  abort unless system "#{CLI} run_knapsack"
+end
