@@ -19,11 +19,9 @@ function handleImageSuccess(textAreaRef) {
     // Function is within the component to be able to access
     // textarea ref.
     const editableBodyElement = textAreaRef.current;
-    const { links, image } = response;
-    const altText = image[0]
-      ? image[0].name.replace(/\.[^.]+$/, '')
-      : 'alt text';
-    const markdownImageLink = `![${altText}](${links[0]})\n`;
+    const { links } = response;
+
+    const markdownImageLink = `![Image description](${links[0]})\n`;
     const { selectionStart, selectionEnd, value } = editableBodyElement;
     const before = value.substring(0, selectionStart);
     const after = value.substring(selectionEnd, value.length);

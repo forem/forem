@@ -122,7 +122,7 @@ function attachTwitterTimelineScript() {
 
 Preview.propTypes = {
   previewResponse: previewResponsePropTypes.isRequired,
-  errors: PropTypes.string.isRequired,
+  errors: PropTypes.object,
   markdownLintErrors: PropTypes.arrayOf(PropTypes.object),
   articleState: PropTypes.shape({
     id: PropTypes.number,

@@ -52,7 +52,8 @@
           document.getElementById('user-dashboard') ||
           document.getElementById('article-body') ||
           document.getElementById('listings-index-container')) &&
-        !document.body.classList.contains('modal-open')
+        !document.body.classList.contains('modal-open') &&
+        document.body.dataset.leftNavState !== 'open'
       );
     },
   };

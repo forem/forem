@@ -14,7 +14,7 @@ export const TagsField = ({
     <div className="crayons-article-form__tagsfield">
       <Tags
         defaultValue={defaultValue}
-        maxTags="4"
+        maxTags={4}
         onInput={onInput}
         onFocus={switchHelpContext}
         classPrefix="crayons-article-form"
