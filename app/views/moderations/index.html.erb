@@ -1,4 +1,4 @@
-<% title "Mod Center" %>
+<% title t("views.moderations.heading") %>
 
 <%= javascript_packs_with_chunks_tag "modCenter", defer: true %>
 
@@ -11,15 +11,15 @@
 
       <header class="mod-index-header hidden m:block">
         <h2 class="crayons-subtitle-1">
-          <%= @tag ? "##{@tag.name}" : "All topics" %>
+          <%= @tag ? "##{@tag.name}" : t("views.moderations.all") %>
         </h2>
       </header>
 
       <section class="mod-index-body">
         <div class="mod-index-list-header lh-tight hidden m:grid">
-          <h2 class="mod-index-list-header__label">Post</h2>
-          <h2 class="mod-index-list-header__label">Author</h2>
-          <h2 class="mod-index-list-header__label align-center">Date</h2>
+          <h2 class="mod-index-list-header__label"><%= t("views.moderations.post") %></h2>
+          <h2 class="mod-index-list-header__label"><%= t("views.moderations.author") %></h2>
+          <h2 class="mod-index-list-header__label align-center"><%= t("views.moderations.date") %></h2>
         </div>
 
         <div class="mod-index-list" id="mod-index-list" data-articles="<%= @articles %>">
@@ -31,13 +31,16 @@
   </main>
 <% else %>
   <div class="container" style="margin-top: 90px;">
-    <h1 class="pt-5" style="text-align: center"><%= community_name %> Mods</h1>
+    <h1 class="pt-5" style="text-align: center"><%= t("views.moderations.notice.subtitle", community: community_name) %></h1>
     <div class="body">
-      <p>We periodically award some <%= community_name %> members with heightened privileges to help moderate the community.</p>
-      <p>Check out our <%= link_to "Code of Conduct", code_of_conduct_path %> and read through our <%= link_to "Trusted User Guide", community_moderation_path %> and <%= link_to "Tag Moderation Guide", tag_moderation_path %>.</p>
-      <p>If you'd like to assist us as a trusted user or tag mod, please email us at <%= mail_to email_link, email_link %> and let us know which role you're interested in and why. If it's tag moderation, please tell us what tags you'd like to moderate for.</p>
+      <p><%= t("views.moderations.notice.desc1_html", community: community_name) %></p>
+      <p>
+        <%= t("views.moderations.notice.desc2_html", code: link_to(t("views.moderations.notice.code_of_conduct"), code_of_conduct_path), trusted: link_to(t("views.moderations.notice.trusted"), community_moderation_path),
+                                                     tag: link_to(t("views.moderations.notice.tag"), tag_moderation_path)) %>
+      </p>
+      <p><%= t("views.moderations.notice.desc3_html", email: mail_to(email_link, email_link)) %></p>
       <% unless user_signed_in? %>
-        <p><em>P.S. You are not currently signed in.</em></p>
+        <p><em><%= t("views.moderations.notice.desc4") %></em></p>
       <% end %>
     </div>
   </div>

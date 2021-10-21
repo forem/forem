@@ -1,28 +1,28 @@
-<% title t("core.tags") %>
+<% title t("views.tags.meta.title") %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/tags") %>" />
-  <meta name="description" content="<%= t("core.tags_to_follow", community_name: community_name) %>">
+  <meta name="description" content="<%= t("views.tags.meta.description", community: community_name) %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/tags") %>" />
-  <meta property="og:title" content="<%= t("core.tags_to_follow", community_name: community_name) %>" />
+  <meta property="og:title" content="<%= t("views.tags.meta.description", community: community_name) %>" />
   <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
-  <meta property="og:description" content="<%= t("core.community_name_is_great", community_name: community_name) %>" />
+  <meta property="og:description" content="<%= t("views.tags.meta.og.description", community: community_name) %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="About <%= community_name %>">
-  <meta name="twitter:description" content="<%= t("core.community_name_is_great", community_name: community_name) %>">
+  <meta name="twitter:title" content="<%= t("views.tags.meta.description", community: community_name) %>">
+  <meta name="twitter:description" content="<%= t("views.tags.meta.og.description", community: community_name) %>">
   <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
 <% end %>
 
 <main id="main-content" class="crayons-layout crayons-layout--1-col">
   <header class="px-2 m:px-0 flex items-center justify-between">
-    <h1><%= t("core.top_tags") %></h1>
-    <%= link_to t("core.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
+    <h1><%= t("views.tags.heading") %></h1>
+    <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
   </header>
 
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0" data-follow-button-container="true">
@@ -38,9 +38,9 @@
           <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
         <% end %>
         <p class="mb-3 fs-s color-base-60">
-          <%= pluralize tag.taggings_count, "post" %> published
+          <%= t("views.tags.published", count: tag.taggings_count) %>
           <% if tag.sponsorship && tag.sponsorship.status == "live" && tag.sponsorship.expires_at > Time.current %>
-          | Sponsored by <%= tag.sponsorship.organization.name %> ❤️
+          <%= t("views.tags.sponsor", org: tag.sponsorship.organization.name) %>
           <% end %>
         </p>
 
@@ -49,7 +49,7 @@
             <button
               class="crayons-btn crayons-btn--secondary follow-action-button"
               data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary", "name": "<%= tag.name %>"}'>
-              <%= t("core.follow") %>
+              <%= t("views.tags.follow") %>
             </button>
           </div>
         <% end %>

@@ -1,7 +1,11 @@
 describe('Creator Signup Page', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.visit('/enter?state=new-user');
+    // NOTE: The "New Forem Owner" field is displayed based on a rails env variable
+    // which is set on Travis already. It cannot be dynamically updated for the
+    // Cypress tests, hence we have chosen the route of passing the forem_owner_secret
+    // as a param. This sends us down the path with least resistance.
+    cy.visit('/enter?state=new-user&forem_owner_secret=secret');
   });
 
   it('should display a welcome message', () => {
@@ -75,7 +79,7 @@ describe('Creator Signup Page', () => {
     cy.findByTestId('mask-icon').should('not.be.visible');
   });
 
-  it.skip("should allow sign the user in when 'Create my account' is clicked", () => {
+  it("should sign the user in when 'Create my account' is clicked", () => {
     cy.findByTestId('creator-signup-form').as('creatorSignupForm');
     cy.get('@creatorSignupForm').findByText(/^Name/).type('Forem Creator');
 
