@@ -22,7 +22,7 @@ module Devise
     end
 
     def creator_confirmation_instructions
-      Devise::Mailer.confirmation_instructions((User.with_role :creator).first, "faketoken")
+      Devise::Mailer.confirmation_instructions(User.with_role(:creator).first, "faketoken")
     end
   end
 end
