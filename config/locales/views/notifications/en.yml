@@ -11,6 +11,7 @@ en:
         heading_html: You received the %{badge} badge
         awarded_html: "You also get %{credits} to use for %{listings} if you have anything you'd like to promote. 🎉"
         credits:
+          one: "%{count} new credits"
           other: "%{count} new credits"
         listings: community listings
         more: More information about listings
@@ -32,8 +33,10 @@ en:
       follow:
         and_html: "%{first} and %{second} followed you!"
         and_other_html:
+          one: "%{first} and %{others} followed you!"
           other: "%{first} and %{others} followed you!"
         others:
+          one: "%{count} others"
           other: "%{count} others"
         single_html: "%{name} followed you!"
       load: Load More
@@ -48,8 +51,10 @@ en:
         intro: "🎉🎉🎉🎉🎉🎉🎉🎉"
         type:
           View:
+            one: "%{count} views"
             other: "%{count} views"
           Reaction:
+            one: "%{count} reactions"
             other: "%{count} reactions"
       nav:
         aria_label: Notifications
