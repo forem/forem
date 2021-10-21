@@ -3,26 +3,26 @@ fr:
   views:
     editor:
       meta:
-        title: Edit Post
+        title: Éditer la publication
       heading:
-        new: New Post
-      create: Create Post
+        new: Nouvelle publication
+      create: Créer une publication
       close:
-        icon: Close
-        title: Close the editor
+        icon: Fermer
+        title: Fermer l'éditeur
       cover_image:
-        add: Add a cover image
-        change: Change
-      edit: Edit
-      modes: View post modes
-      new_title: New post title here...
-      preview: Preview
+        add: Ajouter une image de couverture
+        change: Changer
+      edit: Éditer
+      modes: Voir les modes de publication
+      new_title: Nouveau titre de publication ici...
+      preview: Aperçu
       video:
         progress:
-          heading: "⏳ Video Transcoding In Progress ⏳"
-          notice_1: You'll get an email when this process finishes.
-          notice_2: This is an ordinary unpublished post. Add title/tags/body/etc, and then mark as published after the video is done processing.
+          heading: "⏳ Transcodage Vidéo en Cours ⏳"
+          notice_1: Vous recevrez un e-mail lorsque ce processus sera terminé.
+          notice_2: Ceci est un article non publié ordinaire. Ajoutez le titre/les balises/le corps/etc, puis marquez comme publié une fois le traitement de la vidéo terminé.
         submit_image:
-          button: Submit Change
-          text: 'Preview Image URL: '
-          placeholder: New Thumbnail URL
+          button: Soumettre le changement
+          text: "Prévisualiser l'URL de l'image: "
+          placeholder: Nouvelle URL de miniature
