@@ -45,8 +45,7 @@ en:
         comment_html: "%{user} mentioned you in a comment"
         if_org_html: " under %{org}"
       milestone:
-        heading_html:
-          other: Your post %{title} passed %{type}!
+        heading_html: Your post %{title} passed %{type}!
         check: Check your dashboard
         intro: "🎉🎉🎉🎉🎉🎉🎉🎉"
         type:
