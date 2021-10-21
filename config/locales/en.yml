@@ -24,7 +24,6 @@ en:
     follower: Follower
     followers: Followers
     following: Following
-    following_tags: Following tags
     full: Full
     home: Home
     infinity: Infinity
@@ -63,9 +62,6 @@ en:
     settings: Settings
     share_to: Share to %{media}
     sign_out: Sign Out
-    tags: Tags
-    tags_to_follow: Tags to follow on %{community_name}
-    top_tags: Top tags
     trending_on: Trending on
     view: View
     week: Week
