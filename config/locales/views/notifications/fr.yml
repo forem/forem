@@ -5,8 +5,10 @@ fr:
       reacted:
         and_html: "%{first} and %{last}"
         and_other_html:
+          one: "%{first} and %{count} others"
           other: "%{first} and %{count} others"
         verb_html:
+          one: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
           other: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
         your:
           article: your article
