@@ -197,7 +197,7 @@ RSpec.describe "Comments", type: :request do
         article.destroy
 
         get comment.path
-        expect(response.body).to include("Comment from a deleted article or podcast")
+        expect(response.body).to include("Comment from a deleted post")
       end
     end
 
@@ -207,7 +207,7 @@ RSpec.describe "Comments", type: :request do
         podcast_episode.destroy
 
         get podcast_comment.path
-        expect(response.body).to include("Comment from a deleted article or podcast")
+        expect(response.body).to include("Comment from a deleted post")
       end
     end
   end
