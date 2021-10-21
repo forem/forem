@@ -75,9 +75,7 @@
   &[href]:hover,
   &[href]:focus,
   &:hover:enabled,
-  &:active:enabled,
-  &:focus:enabled,
-  &:focus-within {
+  &:active:enabled {
     background-color: var(--bg-hover);
     border-color: var(--border-hover);
     box-shadow: var(--shadow-hover);
@@ -131,6 +129,15 @@
       pointer-events: revert;
     }
   }
+}
+
+.js-focus-visible .crayons-btn.focus-visible:focus,
+.js-focus-visible .crayons-btn.focus-visible:focus-within {
+  background-color: var(--bg-hover);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-hover);
+  color: var(--color-hover);
+  z-index: var(--z-elevate);
 }
 
 .crayons-btn--secondary {

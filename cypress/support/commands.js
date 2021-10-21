@@ -117,7 +117,6 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   });
 });
 
-
 /**
  * Logs in a creator with the given name, username, email, and password.
  *
