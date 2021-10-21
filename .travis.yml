@@ -115,7 +115,7 @@ jobs:
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
-        - CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlow E2E=true bin/rails cypress:run
+        - CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
