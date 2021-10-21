@@ -4,8 +4,8 @@
 <%= meta_keywords_default %>
 
 <meta property="og:type" content="website" />
-<meta property="og:url" content="<%= t("views.search.meta.description", site: community_name) %>" />
-<meta property="og:title" content="<%= community_name %>" />
+<meta property="og:url" content="<%= app_url(request.path) %>" />
+<meta property="og:title" content="<%= t("views.search.meta.description", site: community_name) %>" />
 <meta property="og:image" content="<%= Settings::General.main_social_image %>">
 <meta property="og:description" content="<%= Settings::Community.community_description %>">
 <meta property="og:site_name" content="<%= community_name %>" />
