@@ -220,7 +220,7 @@ describe('Post Editor', () => {
 
     it('should show a maximum of 3 accessibility suggestions', () => {
       const postTextWithFourErrors =
-        '# Heading level 1\n![](http://imagewithoutalt.png)\n![alt text](http://imagewithdefaultalt.png)\n#### Heading level 4';
+        '# Heading level 1\n![](http://imagewithoutalt.png)\n![Image description](http://imagewithdefaultalt.png)\n#### Heading level 4';
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       cy.get('@articleForm')
@@ -239,7 +239,7 @@ describe('Post Editor', () => {
 
       // Check each expected description has appeared
       cy.findByText(
-        "Consider replacing the 'alt text' in square brackets at ![alt text](http://imagewithdefaultalt.png) with a description of the image",
+        "Consider replacing the 'Image description' in square brackets at ![Image description](http://imagewithdefaultalt.png) with a description of the image",
       );
       cy.findByText(
         'Consider adding an image description in the square brackets at ![](http://imagewithoutalt.png)',
@@ -259,7 +259,7 @@ describe('Post Editor', () => {
 
     it('should display image suggestions over heading suggestions', () => {
       const textWithThreeImageErrors =
-        '![](http://imageerror1.png)\n![Alt Text](http://imageerror2.png)\n![Alt Text](http://imageerror3.png)';
+        '![](http://imageerror1.png)\n![Image description](http://imageerror2.png)\n![Image description](http://imageerror3.png)';
       const textWithHeadingErrors = '# Heading level 1\n #### Heading level 4';
 
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
@@ -351,18 +351,20 @@ describe('Post Editor', () => {
       cy.get('@articleForm')
         .findByLabelText('Post Content')
         .clear()
-        .type('![alt text](http://image1.png)\n![Alt Text](http://image2.png)');
+        .type(
+          '![Image description](http://image1.png)\n![Image description](http://image2.png)',
+        );
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
         .click();
 
       cy.findByText(
-        "Consider replacing the 'alt text' in square brackets at ![alt text](http://image1.png) with a description of the image",
+        "Consider replacing the 'Image description' in square brackets at ![Image description](http://image1.png) with a description of the image",
       );
 
       cy.findByText(
-        "Consider replacing the 'alt text' in square brackets at ![Alt Text](http://image2.png) with a description of the image",
+        "Consider replacing the 'Image description' in square brackets at ![Image description](http://image2.png) with a description of the image",
       );
 
       cy.findAllByRole('link', {
@@ -381,14 +383,16 @@ describe('Post Editor', () => {
       cy.get('@articleForm')
         .findByLabelText('Post Content')
         .clear()
-        .type('Some text ![alt text](http://image1.png) Some more text');
+        .type(
+          'Some text ![Image description](http://image1.png) Some more text',
+        );
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
         .click();
 
       cy.findByText(
-        "Consider replacing the 'alt text' in square brackets at ![alt text](http://image1.png) with a description of the image",
+        "Consider replacing the 'Image description' in square brackets at ![Image description](http://image1.png) with a description of the image",
       );
     });
   });

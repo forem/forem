@@ -128,7 +128,8 @@ var instantClick
 
     if (newUrl) {
       const skipLink = document.querySelector('.skip-content-link');
-        if (skipLink) {
+      const noSkipLink = newUrl.includes('/search?') && ['iOS', 'Android'].includes(Runtime.currentOS());
+        if (skipLink && !noSkipLink) {
           skipLink.focus();
         }
       document.getElementById('page-route-change').textContent = title;

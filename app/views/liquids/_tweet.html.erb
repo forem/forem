@@ -43,7 +43,7 @@
       <%= tweet.processed_text.html_safe %>
     </div>
     <div class="ltag__twitter-tweet__date">
-      <%= tweet.tweeted_at.strftime("%H:%M %p - %d %b %Y") %>
+      <%= tweet.tweeted_at.strftime(t("time.formats.tweet")) %>
     </div>
 
     <% if tweet.is_quote_status && tweet.full_fetched_object_serialized[:quoted_status] %>

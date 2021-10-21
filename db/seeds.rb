@@ -231,7 +231,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
       android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "CodingBlocks",
@@ -244,7 +245,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
       android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "Talk Python",
@@ -257,7 +259,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
       android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "Developer on Fire",
@@ -271,7 +274,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
       android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
   ]
 
