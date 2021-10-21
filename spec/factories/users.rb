@@ -174,9 +174,5 @@ FactoryBot.define do
           .update_columns(email_newsletter: true, email_digest_periodic: true)
       end
     end
-
-    trait :creator do
-      after(:build) { |user| user.add_role(:creator) }
-    end
   end
 end
