@@ -100,16 +100,82 @@ export const getMentionWordData = (textArea) => {
   };
 };
 
-const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
+const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) =>
+  getLastIndexOfCharacter({
+    content,
+    selectionIndex,
+    character: '@',
+    breakOnCharacters: [' ', '', '\n'],
+  });
+
+/**
+ * Searches backwards through text content for the last occurence of the given character
+ *
+ * @param {Object} params
+ * @param {string} content The chunk of text to search within
+ * @param {number} selectionIndex The starting point to search from
+ * @param {string} character The character to search for
+ * @param {string[]} breakOnCharacters Any characters which should result in an immediate halt to the search
+ * @returns {number} Index of the last occurence of the character, or -1 if it isn't found
+ */
+export const getLastIndexOfCharacter = ({
+  content,
+  selectionIndex,
+  character,
+  breakOnCharacters = [],
+}) => {
   const currentCharacter = content.charAt(selectionIndex);
   const previousCharacter = content.charAt(selectionIndex - 1);
 
-  if (selectionIndex !== 0 && ![' ', '', '\n'].includes(previousCharacter)) {
-    return getIndexOfCurrentWordAutocompleteSymbol(content, selectionIndex - 1);
+  if (currentCharacter === character) {
+    return selectionIndex;
   }
 
-  if (currentCharacter === '@') {
+  if (selectionIndex !== 0 && !breakOnCharacters.includes(previousCharacter)) {
+    return getLastIndexOfCharacter({
+      content,
+      selectionIndex: selectionIndex - 1,
+      character,
+      breakOnCharacters,
+    });
+  }
+
+  return -1;
+};
+
+/**
+ * Searches forwards through text content for the next occurence of the given character
+ *
+ * @param {Object} params
+ * @param {string} content The chunk of text to search within
+ * @param {number} selectionIndex The starting point to search from
+ * @param {string} character The character to search for
+ * @param {string[]} breakOnCharacters Any characters which should result in an immediate halt to the search
+ * @returns {number} Index of the next occurence of the character, or -1 if it isn't found
+ */
+export const getNextIndexOfCharacter = ({
+  content,
+  selectionIndex,
+  character,
+  breakOnCharacters = [],
+}) => {
+  const currentCharacter = content.charAt(selectionIndex);
+  const nextCharacter = content.charAt(selectionIndex + 1);
+
+  if (currentCharacter === character) {
     return selectionIndex;
+  }
+
+  if (
+    selectionIndex <= content.length &&
+    !breakOnCharacters.includes(nextCharacter)
+  ) {
+    return getNextIndexOfCharacter({
+      content,
+      selectionIndex: selectionIndex + 1,
+      character,
+      breakOnCharacters,
+    });
   }
 
   return -1;
@@ -175,14 +241,33 @@ export const useTextAreaAutoResize = () => {
  * @returns
  */
 export const getIndexOfLineStart = (text, cursorStart) => {
+  const lastNewLine = getIndexOfLastInstanceOfCharacter({
+    text,
+    cursorStart,
+    character: '\n',
+  });
+
+  return lastNewLine === -1 ? 0 : lastNewLine;
+};
+
+export const getIndexOfLastInstanceOfCharacter = ({
+  text,
+  cursorStart,
+  character,
+}) => {
   const currentCharacter = text.charAt(cursorStart - 1);
-  if (currentCharacter === '\n') {
+
+  if (currentCharacter === character) {
     return cursorStart;
   }
 
   if (cursorStart !== 0) {
-    return getIndexOfLineStart(text, cursorStart - 1);
+    return getIndexOfLastInstanceOfCharacter({
+      text,
+      cursorStart: cursorStart - 1,
+      character,
+    });
   }
 
-  return 0;
+  return -1;
 };
