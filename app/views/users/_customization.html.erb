@@ -65,7 +65,8 @@
       <%= f.select(
             :config_homepage_feed,
             options_for_select(SettingsHelper::HOMEPAGE_FEED_OPTIONS, @users_setting.config_homepage_feed),
-            class: "custom-select mr-2",
+            {},
+            class: "crayons-select mr-2",
           ) %>
     </div>
   </div>
