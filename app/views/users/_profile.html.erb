@@ -79,7 +79,7 @@
 
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
     <div class="crayons-card crayons-card--content-rows">
-      <h2><%= t("views.settings.group.#{group.name}") %></h2>
+      <h2><%= t("views.settings.group.#{group.name}", default: group.name) %></h2>
       <% if group.description.present? %>
         <div class="color-base-60"><%= group.description %></div>
       <% end %>
