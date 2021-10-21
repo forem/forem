@@ -120,7 +120,7 @@
         <div><button class="crayons-btn crayons-btn--danger" id="delete__account__btn" type="submit"><%= t("views.settings.account.delete.submit") %></button></div>
       <% end %>
     <% else %>
-      <p><%= t("views.settings.account.delete.desc2_html", email: link_to(t("views.settings.account.delete.provide"), "/settings/profile")) %></p>
+      <p><%= t("views.settings.account.delete.desc2_html", provide: link_to(t("views.settings.account.delete.provide"), "/settings/profile")) %></p>
     <% end %>
   </div>
 
