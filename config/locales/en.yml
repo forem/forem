@@ -131,3 +131,5 @@ en:
     formats:
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"
+      stackexchange: "%b %e '%y"
+      tweet: "%H:%M %p - %d %b %Y"
