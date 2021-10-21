@@ -55,7 +55,7 @@
                                                        button: tag.button(
                                                          [tag.span(class: "js-creator-signup-username-hint"), inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: t("views.auth.creator.hint.icon"))],
                                                          class: "cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90",
-                                                         role: "button",
+                                                         role: "button", type: "button",
                                                          aria: { label: t("views.auth.creator.hint.aria_label") },
                                                        )) %>
           </div>
@@ -77,7 +77,7 @@
         <%= f.label :password, t("views.auth.register.field.password.label"), class: "crayons-field__label" %>
         <div class="relative">
           <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: t("views.auth.register.field.password.placeholder"), required: true, aria: { describedby: "password-helper-text" } %>
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="<%= t("views.auth.register.field.password.show") %>" aria-pressed="false">
+          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="<%= t("views.auth.register.field.password.show") %>" aria-pressed="false">
             <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.show")) %>
             <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.hide")) %>
           </button>
@@ -99,7 +99,6 @@
       <div class="flex flex-col pt-6">
         <%= f.submit t("views.auth.creator.submit"), class: "crayons-btn" %>
       </div>
-
     <% end %>
   </div>
   <%= inline_svg_tag("forem-background.svg", aria: true, title: t("views.auth.background"), class: "absolute bottom-0 right-0 hidden m:block") %>
