@@ -1,6 +1,7 @@
 ---
 en:
   helpers:
+    label:
       podcast:
         android_url: Android url
         description: Description
