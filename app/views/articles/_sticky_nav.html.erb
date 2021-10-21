@@ -9,7 +9,7 @@
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
-            <%= t("core.more_from") %> <a href="<%= @actor.path %>"><%= @actor.name %></a>
+            <%= t("views.sticky.more_from_html", actor: link_to(@actor.name, @actor.path)) %>
           </h3>
         </header>
         <div>
@@ -29,8 +29,8 @@
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
-            <%= t("core.trending_on") %> <a href="<%= app_url %>"><%= community_name %></a>
-            <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Hot") %>
+            <%= t("views.sticky.trending_html", app: link_to(community_name, app_url)) %>
+            <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: t("views.sticky.hot")) %>
           </h3>
         </header>
         <div>

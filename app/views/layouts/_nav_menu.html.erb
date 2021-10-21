@@ -12,16 +12,16 @@
     <li class="js-header-menu-admin-link hidden">
       <a href="<%= admin_path %>" class="crayons-link crayons-link--block" data-no-instant>Admin</a>
     </li>
-    <li><a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a></li>
-    <li><a href="<%= mod_path %>" class="crayons-link crayons-link--block trusted-visible-block">Moderator Center</a></li>
-    <li><a href="<%= new_path %>" class="crayons-link crayons-link--block">Create Post</a></li>
-    <li><a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a></li>
+    <li><a href="<%= dashboard_path %>" class="crayons-link crayons-link--block"><%= t("core.dashboard") %></a></li>
+    <li><a href="<%= mod_path %>" class="crayons-link crayons-link--block trusted-visible-block"><%= t("core.moderator_center") %></a></li>
+    <li><a href="<%= new_path %>" class="crayons-link crayons-link--block"><%= t("core.create_post") %></a></li>
+    <li><a href="<%= readinglist_path %>" class="crayons-link crayons-link--block"><%= t("core.reading_list") %></a></li>
     <li class="border-0 border-b-1 border-solid border-base-20 pb-2">
-      <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block" id="second-last-nav-link">Settings</a>
+      <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block" id="second-last-nav-link"><%= t("core.settings") %></a>
     </li>
 
     <li class="pt-2">
-      <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
+      <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link"><%= t("core.sign_out") %></a>
     </li>
   </ul>
 </div>
