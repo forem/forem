@@ -1,0 +1,73 @@
+---
+fr:
+  views:
+    badges:
+      meta:
+        title: Badges
+        name: "%{title} Badge"
+      all:
+        one: Show one badge
+        other: Show all %{count} badges
+      heading: Badges
+      desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
+      name: "🏅 %{title} Badge 🏅"
+    campaign:
+      subtitle: Stories (%{count})
+      view: See all posts
+    deep_links:
+      subtitle: Opening the mobile app...
+      alert:
+        subtitle: Whoops! Did you get stuck trying to open the mobile app?
+        desc_html: Make sure it's installed and try again. If the problem persists contact %{email}
+        back: Take me back
+        again: Try again
+        install: Install the app
+    onboardings:
+      meta:
+        title: Welcome to %{community}
+      heading: You're now a part of the community!
+      subtitle: SUGGESTED THINGS YOU CAN DO
+      close: Close Welcome Message
+      settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"
+      welcome_html: "<span class=\"emoji\">😊</span>Join the Welcome thread"
+      write_html: "<span class=\"emoji\">✍🏾</span>Write your first %{community} post"
+    pins:
+      article: Épinglé
+      pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
+      removed: "🗑 Pin removed"
+      error: You can only have five pins
+    reading_list:
+      meta:
+        title: Reading List
+        description: My saved posts.
+        og:
+          title: Reading List - %{community}
+    series:
+      meta:
+        description: View %{title} on %{site}
+      heading: "%{user}'s Series"
+      empty: This user doesn't have any series
+      list:
+        heading: "%{series} Series' Articles"
+        back: Back to %{user}'s Series
+        empty: This series doesn't have any articles
+    sponsor:
+      icon: Love
+      seek: Become a sponsor
+    sticky:
+      joined: Rejoint
+      default_cta: Learn more
+      email: Email
+      hot: Hot
+      location: Lieu
+      more_from_html: Plus de la part de %{actor}
+      no_summary: Posts in this tag
+      trending_html: Populaire sur %{app}
+    videos:
+      meta:
+        title: Videos
+        og:
+          description: All videos on %{community}
+      heading: "%{community} en Vidéo"
+      beta_html: "<strong>Vidéo est en bêta:</strong> %{contact}"
+      upload: "🎥 Télécharger un fichier vidéo 🙌"

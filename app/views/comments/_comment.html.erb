@@ -19,7 +19,7 @@
           <%= "comment--too-deep" if comment.depth > 3 %>
         "
         data-comment-id="<%= comment.id %>"
-        data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
+        data-path="<%= commentable&.path %>/comments/<%= comment.id_code_generated %>"
         data-comment-author-id="<%= comment_user_id_unless_deleted comment %>"
         data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
         <%= render("comments/comment_proper",

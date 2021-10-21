@@ -55,6 +55,8 @@ module PracticalDeveloper
 
     config.middleware.use Rack::Deflater
 
+    config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.yml")]
+
     config.i18n.fallbacks = [:en]
 
     # Globally handle Pundit::NotAuthorizedError by serving 404

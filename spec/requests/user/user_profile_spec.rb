@@ -25,7 +25,7 @@ RSpec.describe "UserProfiles", type: :request do
     end
 
     it "does not render pins if they don't exist" do
-      get "/#{user.username}"
+      get "/#{user.username}?i=i" # Pinned will still be present in layout file, but not the "internal" version
       expect(response.body).not_to include "Pinned"
     end
 

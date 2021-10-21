@@ -38,4 +38,22 @@ RSpec.describe ApplicationRecord, type: :model do
       expect(decorated_collection.first).to be_a(SponsorshipDecorator)
     end
   end
+
+  describe ".with_statement_timeout" do
+    it "sets the SQL statement timeout to the specified duration" do
+      original_timeout = described_class.statement_timeout
+
+      described_class.with_statement_timeout 1.second do
+        expect(described_class.statement_timeout).to eq 1.second
+
+        described_class.with_statement_timeout 10.seconds do
+          expect(described_class.statement_timeout).to eq 10.seconds
+        end
+
+        expect(described_class.statement_timeout).to eq 1.second
+      end
+
+      expect(described_class.statement_timeout).to eq original_timeout
+    end
+  end
 end
