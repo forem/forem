@@ -81,5 +81,6 @@ en:
       posted_html: Posted on %{date}
       read_next: Read next
       reading_time:
+        one: "1 min read"
         other: "%{count} min read"
       right_nav: Author details
