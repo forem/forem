@@ -18,9 +18,6 @@
               <% else %>
                 <%= t("views.notifications.comment.commented_html", params) %>
               <% end %>
-              <a href="<%= json_data["comment"]["commentable"]["path"] %>" class="crayons-link fw-bold">
-                <%= h(json_data["comment"]["commentable"]["title"]) %>
-              </a>
             </h2>
             <p class="lh-tight"><a href="<%= json_data["comment"]["path"] %>" class="crayons-link fs-s crayons-link--secondary"><%= time_ago_in_words json_data["comment"]["created_at"], scope: :"datetime.distance_in_words_ago" %></a></p>
           </header>
