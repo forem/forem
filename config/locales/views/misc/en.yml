@@ -1,6 +1,16 @@
 ---
 en:
   views:
+    badges:
+      meta:
+        title: Badges
+        name: "%{title} Badge"
+      all:
+        one: Show one badge
+        other: Show all %{count} badges
+      heading: Badges
+      desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
+      name: "🏅 %{title} Badge 🏅"
     campaign:
       subtitle: Stories (%{count})
       view: See all posts

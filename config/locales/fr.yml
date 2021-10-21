@@ -21,7 +21,6 @@ fr:
     follower: Suiveur
     followers: Suiveurs
     following: Abonné
-    following_tags: Sujets suivis
     full: Complet
     joined: Rejoint
     joined_on: Rejoint le
@@ -49,9 +48,6 @@ fr:
     series: Séries
     settings: Paramètres
     share_to: Partager sur %{media}
-    tags: Sujets
-    tags_to_follow: Sujets dans %{community_name}
-    top_tags: Sujets les plus utilisées
     trending_on: Populaire sur
     view: Vue
   dashboard:

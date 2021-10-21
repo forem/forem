@@ -1,0 +1,58 @@
+---
+fr:
+  views:
+    tags:
+      meta:
+        title: Sujets
+        description: Sujets dans %{community}
+        og:
+          description: "%{community} est super"
+      heading: Sujets les plus utilisées
+      edit:
+        meta:
+          title: Edit %{tag}
+        heading_html: " Editing: %{tag}"
+        admin: "%{tag}'s admin page"
+        form:
+          example: Click here to see an example of attributes.
+          pretty_name:
+            label: Pretty name
+            placeholder: This is the name at the top of the show page.
+          bg_color_hex:
+            label: Bg color hex
+          text_color_hex:
+            label: Text color hex
+          short_summary:
+            label: Short summary
+            placeholder: Brief overview of what this tag is all about.
+          wiki_body_markdown:
+            label: Wiki body markdown
+            placeholder: This is an 'about' section. Feel free to add an FAQ, additional resources, etc.
+          rules_markdown:
+            label: Rules markdown
+            placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
+          submit: SAVE CHANGES
+        markdown_html: "%{tag} is the name of the tag used in Markdown."
+      follow: Suivre
+      following_tags: Sujets suivis
+      moderator:
+        text_html: "comma separated, space is optional. Example: %{code}"
+        code: 123
+        placeholder: "comma separated, space is optional. Example: 1,2,3"
+      published:
+        one: 1 post published
+        other: "%{count} posts published"
+      sidebar:
+        about: 'about #%{tag}'
+        admin: Admin
+        edit: Edit
+        guidelines: submission guidelines
+        moderate: Moderate
+        mods: tag moderators
+        new: Create Post
+        older: 'Older #%{tag} posts'
+        published:
+          one: 1 Post Published
+          other: "%{count} Posts Published"
+        sponsor: "%{tag} is sponsored by"
+      sponsor: "| Sponsored by %{org} ❤️"
