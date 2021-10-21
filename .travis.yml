@@ -99,7 +99,7 @@ jobs:
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
-        - RAILS_ENV=test E2E=true bin/rails cypress:run_knapsack
+        - bin/knapsack_pro_cypress
     - stage: Test
       name: "E2E Seeded Node 1"
       env:
@@ -109,7 +109,7 @@ jobs:
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
-        - RAILS_ENV=test E2E=true bin/rails cypress:run_knapsack
+        - bin/knapsack_pro_cypress
     - stage: Test
       name: "E2E Non-seeded"
       script:
