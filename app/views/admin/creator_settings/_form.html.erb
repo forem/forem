@@ -30,11 +30,18 @@
     <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the accent color for buttons, links, etc. on your Forem" aria-describedby="color-selector-subtitle"></span>
     <p id="color-selector-subtitle" class="crayons-field__description">This will be the "accent" color used for buttons, links, etc.</p>
   <% end %>
-  <%= text_field_tag :primary_brand_color_hex,
-                     ::Settings::UserExperience.primary_brand_color_hex,
-                     pattern: "^#+([a-fA-F0-9]{6})$",
-                     required: true,
-                     class: "form-control" %>
+  <div class="flex items-center w-100 m:w-50">
+    <%= color_field_tag :primary_brand_color_hex,
+                        class: "crayons-color-selector",
+                        pattern: "^#+([a-fA-F0-9]{6})$",
+                        value: ::Settings::UserExperience.primary_brand_color_hex.presence,
+                        required: true %>
+    <%= text_field_tag :primary_brand_color_hex,
+                       ::Settings::UserExperience.primary_brand_color_hex,
+                       pattern: "^#+([a-fA-F0-9]{6})$",
+                       value: ::Settings::UserExperience.primary_brand_color_hex.presence,
+                       class: "crayons-textfield" %>
+  </div>
 </div>
 
 <div class="crayons-field mt-6 align-left">
