@@ -19,7 +19,7 @@
     </div>
 
     <div class="block s:flex items-center justify-between">
-      <h1 class="crayons-title hidden s:block pl-2"><%= t "views.search.heading", for: (params[:q].present? ? t("views.search.for", query: params[:q]) : "") %></h1>
+      <h1 class="crayons-title hidden s:block pl-2"><%= t("views.search.heading", for: (params[:q].present? ? t("views.search.for", query: params[:q]) : "")) %></h1>
 
       <nav id="sorting-option-tabs" aria-label="<%= t("views.search.sort.aria_label") %>" class="-mx-3 m:mx-0">
         <ul class="crayons-navigation crayons-navigation--horizontal">
