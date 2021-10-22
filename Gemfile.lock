@@ -869,7 +869,7 @@ GEM
       activerecord (>= 5.2)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.4.2)
+    zeitwerk (2.5.1)
     zonebie (0.6.1)
 
 PLATFORMS
