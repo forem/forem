@@ -7,7 +7,7 @@ GIT
       activerecord (>= 4.0)
 
 GIT
-  remote: https://github.com/maestromac/cypress-rails.git
+  remote: https://github.com/forem/cypress-rails.git
   revision: 3b89de0823ce2857a901f166647f508ad08f7463
   branch: enable-knapsack-pro-support
   specs:
