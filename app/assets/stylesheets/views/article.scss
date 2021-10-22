@@ -20,11 +20,10 @@
       left: 0;
       right: 0;
       bottom: 0;
-      border-radius: clamp(
-        0px,
-        calc(((100vw - 4px) - 100%) * 9999),
-        var(--radius)
-      );
+      border-radius: Max(
+          0px,
+          Min(var(--radius), calc((100vw - 4px - 100%) * 9999))
+        ) / var(--radius);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
       object-fit: cover;
