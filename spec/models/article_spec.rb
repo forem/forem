@@ -1001,15 +1001,15 @@ RSpec.describe Article, type: :model do
   context "when callbacks are triggered after create" do
     describe "detect animated images" do
       it "does not enqueue Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is disabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:enrich_image_attributes).and_return(false)
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
 
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           build(:article).save
         end
       end
 
-      it "enqueues Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is enabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:enrich_image_attributes).and_return(true)
+      it "enqueues Articles::EnrichImageAttributesWorker if the feature :detect_animated_images is enabled" do
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
         sidekiq_assert_enqueued_jobs(1, only: Articles::EnrichImageAttributesWorker) do
           build(:article).save
         end
@@ -1139,7 +1139,7 @@ RSpec.describe Article, type: :model do
 
     describe "detect animated images" do
       it "does not enqueue Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is disabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:enrich_image_attributes).and_return(false)
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
 
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(body_markdown: "a body")
@@ -1147,7 +1147,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "enqueues Articles::EnrichImageAttributesWorker if the HTML has changed" do
-        allow(FeatureFlag).to receive(:enabled?).with(:enrich_image_attributes).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
 
         sidekiq_assert_enqueued_with(job: Articles::EnrichImageAttributesWorker, args: [article.id]) do
           article.update(body_markdown: "a body")
@@ -1155,7 +1155,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "does not Articles::EnrichImageAttributesWorker if the HTML does not change" do
-        allow(FeatureFlag).to receive(:enabled?).with(:enrich_image_attributes).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
 
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(tag_list: %w[fsharp go])
