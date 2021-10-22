@@ -44,7 +44,7 @@ module Html
         next if allowed_image_host?(src)
 
         if synchronous_detail_detection && img
-          attribute_width, attribute_height = Articles::DetectImageInformation.image_width_height(img, TIMEOUT)
+          attribute_width, attribute_height = Articles::EnrichImageAttributes.image_width_height(img, TIMEOUT)
           img["width"] = attribute_width
           img["height"] = attribute_height
         end
