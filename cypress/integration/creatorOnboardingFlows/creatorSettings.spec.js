@@ -31,8 +31,8 @@ describe('Creator Setup Page', () => {
       '/images/admin-image.png',
     );
 
-    // should contain a brand color selector field
-    cy.findByRole('textbox', { name: /brand color/i }).should('be.visible');
+    // should contain a brand color field
+    cy.findByText(/^Brand color/).should('be.visible');
 
     // should contain a 'Who can join this community?' radio selector field and allow selection upon click
     cy.findByRole('group', { name: /^Who can join this community/i }).should(
@@ -60,10 +60,6 @@ describe('Creator Setup Page', () => {
       'required',
     );
     cy.findByRole('button', { name: /logo/i }).should('have.attr', 'required');
-    cy.findByRole('textbox', { name: /brand color/i }).should(
-      'have.attr',
-      'required',
-    );
     // should not redirect the creator to the home page when the form is not completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();
     cy.url().should(

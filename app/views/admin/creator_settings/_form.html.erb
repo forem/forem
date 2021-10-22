@@ -31,16 +31,17 @@
     <p id="color-selector-subtitle" class="crayons-field__description">This will be the "accent" color used for buttons, links, etc.</p>
   <% end %>
   <div class="flex items-center w-100 m:w-50">
-    <%= color_field_tag :primary_brand_color_hex,
-                        class: "crayons-color-selector",
-                        pattern: "^#+([a-fA-F0-9]{6})$",
-                        value: ::Settings::UserExperience.primary_brand_color_hex.presence,
-                        required: true %>
-    <%= text_field_tag :primary_brand_color_hex,
-                       ::Settings::UserExperience.primary_brand_color_hex,
-                       pattern: "^#+([a-fA-F0-9]{6})$",
-                       value: ::Settings::UserExperience.primary_brand_color_hex.presence,
-                       class: "crayons-textfield" %>
+  <%= color_field_tag :primary_brand_color_hex,
+                      ::Settings::UserExperience.primary_brand_color_hex,
+                      pattern: "^#+([a-fA-F0-9]{6})$",
+                      placeholder: ::Settings::UserExperience.primary_brand_color_hex,
+                      class: "crayons-color-selector",
+                      required: true %>
+  <%= text_field_tag :primary_brand_color_hex,
+                     ::Settings::UserExperience.primary_brand_color_hex,
+                     pattern: "^#+([a-fA-F0-9]{6})$",
+                     placeholder: ::Settings::UserExperience.primary_brand_color_hex,
+                     class: "crayons-textfield" %>
   </div>
 </div>
 
