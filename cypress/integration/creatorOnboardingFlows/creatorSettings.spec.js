@@ -33,6 +33,7 @@ describe('Creator Setup Page', () => {
 
     // should contain a brand color field
     cy.findByText(/^Brand color/).should('be.visible');
+    cy.findByText(/^Brand color/).invoke('attr', 'value', '#ff0000');
 
     // should contain a 'Who can join this community?' radio selector field and allow selection upon click
     cy.findByRole('group', { name: /^Who can join this community/i }).should(
