@@ -15,7 +15,7 @@ export const ItemListItem = ({ item, children }) => {
   // update readingTime to 1 min if the reading time is less than 1 min
   adaptedItem.readingTime = Math.max(1, adaptedItem.readingTime || null);
   return (
-    <article className="flex p-4 m:p-6 pb-0 pr-2 m:pr-6">
+    <article className="flex p-4 m:p-6 pb-0 m:pb-2 pr-2 m:pr-6">
       <a
         className="crayons-avatar crayons-avatar--l"
         href={`/${adaptedItem.user.username}`}
