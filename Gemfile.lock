@@ -6,6 +6,15 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
+GIT
+  remote: https://github.com/forem/cypress-rails.git
+  revision: 3b89de0823ce2857a901f166647f508ad08f7463
+  branch: enable-knapsack-pro-support
+  specs:
+    cypress-rails (0.5.3)
+      puma (>= 3.8.0)
+      railties (>= 5.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -175,9 +184,6 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    cypress-rails (0.5.3)
-      puma (>= 3.8.0)
-      railties (>= 5.2.0)
     dante (0.2.0)
     ddtrace (0.53.0)
       ffi (~> 1.0)
@@ -893,7 +899,7 @@ DEPENDENCIES
   carrierwave-bombshelter (~> 0.2)
   cloudinary (~> 1.21)
   counter_culture (~> 2.9)
-  cypress-rails (~> 0.5.3)
+  cypress-rails!
   ddtrace (~> 0.53.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
