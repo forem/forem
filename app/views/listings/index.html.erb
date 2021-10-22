@@ -1,5 +1,5 @@
 <%= content_for :page_meta do %>
-  <% title "#{t('core.listings')}" %>
+  <% title t("core.listings").to_s %>
 
   <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= Settings::Community.community_description %>">
@@ -29,16 +29,16 @@
 
 <main id="main-content">
 
-  <div class="crayons-layout flex items-center justify-between p-2 l:p-4 l:pb-0">
+  <header class="crayons-layout s:flex flex-col s:flex-row p-4 pb-0 items-center justify-between">
     <h1 class="crayons-title"><%= t("core.listings") %></h1>
 
     <nav class="flex items-center" aria-label="Listings">
       <ul class="list-none flex">
-        <li> <a href="<%= new_listing_path %>" class="crayons-btn crayons-btn--secondary">Create</a></li>
-        <li> <a href="<%= listings_dashboard_path %>" class="crayons-btn crayons-btn--secondary ml-2">Manage</a></li>
+        <li><a href="<%= new_listing_path %>" class="crayons-btn crayons-btn--secondary">Create</a></li>
+        <li><a href="<%= listings_dashboard_path %>" class="crayons-btn crayons-btn--secondary ml-2">Manage</a></li>
       </ul>
     </nav>
-  </div>
+  </header>
 
   <div class="listings-container" id="listings-index-container"
     data-category="<%= params[:category] %>" data-listings="<%= @listings_json %>"
