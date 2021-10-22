@@ -16,6 +16,14 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     expect(parsed_html.css("img[data-animated]").count).to eq(count)
   end
 
+  def assert_has_data_width_height_attributes(article, count = 1)
+    described_class.call(article)
+
+    parsed_html = Nokogiri::HTML.fragment(article.processed_html)
+    images_with_width_and_height_set = parsed_html.css("img").select{ |img| img[:width].present? && img[:height].present? }
+    expect(images_with_width_and_height_set.count).to eq(count)
+  end
+
   context "when the body has no images" do
     it "does not alter the processed HTML" do
       assert_unchanged(article)
@@ -125,7 +133,7 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
 
       article.update(body_markdown: "![image](#{uploader.url})")
 
-      assert_unchanged(article)
+      assert_has_data_animated_attribute(article, 0)
     end
 
     it "sets data-animated to true with an animated image" do
@@ -169,7 +177,7 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     it "does not set data-animated to true with a static image" do
       article.update(body_markdown: "![image](#{static_image_url})")
 
-      assert_unchanged(article)
+      assert_has_data_animated_attribute(article, 0)
     end
 
     it "sets data-animated to true with an animated image", vcr: { cassette_name: "download_animated_image" } do
@@ -178,16 +186,40 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
       assert_has_data_animated_attribute(article)
     end
 
-    it "works with multiple animated images", vcr: { cassette_name: "download_animated_images_twice" } do
+    it "sets width and height to true with an animated image", vcr: { cassette_name: "download_animated_image" } do
+      article.update(body_markdown: "![image](#{animated_image_url})")
+
+      assert_has_data_width_height_attributes(article)
+    end
+
+    it "sets data-animated with multiple animated images", vcr: { cassette_name: "download_animated_images_twice" } do
       article.update(body_markdown: "![image](#{animated_image_url}) ![image](#{animated_image_url})")
 
       assert_has_data_animated_attribute(article, 2)
     end
 
-    it "works with static images mixed with animated images", vcr: { cassette_name: "download_animated_image" } do
+    it "sets data-animated with static images mixed with animated images",
+       vcr: { cassette_name: "download_animated_image" } do
       article.update(body_markdown: "![image](#{static_image_url}) ![image](#{animated_image_url})")
 
       assert_has_data_animated_attribute(article, 1)
+    end
+
+    it "sets width and height with multiple animated images", vcr: { cassette_name: "download_animated_images_twice" } do
+      article.update(body_markdown: "![image](#{animated_image_url}) ![image](#{animated_image_url})")
+
+      assert_has_data_width_height_attributes(article, 2)
+    end
+
+    it "sets width and height with static images mixed with animated images",
+       vcr: { cassette_name: "download_mixed_images" } do
+      WebMock.disable!
+      article.update(body_markdown: "![image](https://via.placeholder.com/350x150) ![image](#{animated_image_url})")
+
+      assert_has_data_width_height_attributes(article, 2)
+      expect(article.processed_html).to include('width="350"')
+      expect(article.processed_html).to include('height="150"')
+      WebMock.enable!
     end
   end
 end
