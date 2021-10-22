@@ -17,7 +17,6 @@
     padding: 70px 0px;
     color: white;
     h1 {
-      font-size: calc(2vw + 28px);
       .follow-action-button {
         font-size: 25px;
         display: block;
@@ -31,28 +30,6 @@
           width: 280px;
           padding: 3px 0px;
         }
-      }
-      @media screen and (min-width: 1600px) {
-        font-size: 55px;
-        .follow-action-button {
-          font-size: 32px;
-        }
-      }
-    }
-    img.record {
-      height: 150px;
-      width: 150px;
-      border-radius: 100px;
-      border: 0px;
-      display: block;
-      margin: 0px auto 10px;
-    }
-    @media screen and (min-width: 950px) {
-      img.record {
-        height: calc(2.4vw + 50px);
-        width: calc(2.4vw + 50px);
-        display: inline-block;
-        vertical-align: calc(-1vw - 15px);
       }
     }
   }
