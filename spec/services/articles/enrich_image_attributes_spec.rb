@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::DetectAnimatedImages, type: :service do
+RSpec.describe Articles::EnrichImageAttributes, type: :service do
   let(:article) { create(:article) }
 
   def assert_unchanged(article)

@@ -1,5 +1,5 @@
 module Articles
-  module DetectAnimatedImages
+  module EnrichImageAttributes
     IMAGES_IN_LIQUID_TAGS_SELECTORS = [
       ".liquid-comment img", # CommentTag
       ".ltag-github-readme-tag img", # GithubReadmeTag
@@ -23,8 +23,8 @@ module Articles
 
       # we ignore images contained in liquid tags as they are not animated
       images = parsed_html.css("img") - parsed_html.css(IMAGES_IN_LIQUID_TAGS_SELECTORS)
+      return unless images.any?
 
-      found = false
       images.each do |img|
         src = img.attr("src")
         next unless src
@@ -36,13 +36,21 @@ module Articles
                 end
 
         next if image.blank?
-        next unless FastImage.animated?(image, timeout: TIMEOUT)
 
-        img["data-animated"] = true
-        found = true
+        attribute_width, attribute_height = image_width_height(img)
+        img["width"] = attribute_width
+        img["height"] = attribute_height
+        img["data-animated"] = true if FastImage.animated?(image, timeout: TIMEOUT)
       end
 
-      article.update_columns(processed_html: parsed_html.to_html) if found
+      article.update_columns(processed_html: parsed_html.to_html)
+    end
+
+    def self.image_width_height(img, timeout = TIMEOUT)
+      src = img.attr("src")
+      return unless src
+
+      FastImage.size(src, timeout: timeout)
     end
 
     def self.retrieve_image_from_uploader_store(src)

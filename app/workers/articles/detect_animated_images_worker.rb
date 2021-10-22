@@ -8,7 +8,7 @@ module Articles
       article = Article.find_by(id: article_id)
       return unless article
 
-      detected = Articles::DetectAnimatedImages.call(article)
+      detected = Articles::DetectImageInformation.call(article)
       return unless detected
 
       EdgeCache::BustArticle.call(article)
