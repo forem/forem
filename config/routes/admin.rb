@@ -25,6 +25,8 @@ namespace :admin do
     resources :user_experiences, only: [:create]
   end
 
+  get "/insights/ugly", to: "insights#ugly"
+
   namespace :users do
     resources :gdpr_delete_requests, only: %i[index destroy]
   end

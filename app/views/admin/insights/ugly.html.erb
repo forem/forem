@@ -1,0 +1,18 @@
+<div class="px-10 mt-4 ml-auto">
+  <h2 class="crayons-title mb-4 block">Insights between</h2>
+  <div class="mb-3">
+      <%= form_tag admin_insights_ugly_path, method: :get do %>
+      <div class="form-group">
+        <%= text_field_tag :start, @start_date.to_s, placeholder: @start_date.to_s %>
+        <%= text_field_tag :end, @end_date.to_s, placeholder: @end_date.to_s %>
+        <%= submit_tag("Let's see!") %>
+      </div>
+    <% end %>
+  </div>
+  <% @insights.each do |insight| %>
+    <div class="crayons-card p-6  nt-4 mb-6">
+      <%= insight[0] %>: <%= insight[1] %>
+    </div>
+  <% end %>
+
+</div>
