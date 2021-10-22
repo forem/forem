@@ -37,6 +37,7 @@
     @extend .crayons-tooltip__content;
     content: attr(data-tooltip);
     left: 0;
+    bottom: 100%;
     transform: translateY(var(--su-1));
   }
 

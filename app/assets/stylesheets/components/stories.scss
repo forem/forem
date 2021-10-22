@@ -14,7 +14,8 @@
   box-shadow: 0 0 0 1px var(--card-border);
   margin: 0 0 var(--su-2);
   position: relative;
-  border-radius: Max(0px, Min(6px, calc((100vw - 100%) * 9999)));
+  border-radius: Max(0px, Min(var(--radius), calc((100vw - 4px - 100%) * 9999))) /
+    var(--radius);
 
   &:focus-within {
     outline: none;

@@ -4,7 +4,8 @@
   padding: var(--su-4);
   background: var(--card-bg);
   color: var(--card-color);
-  border-radius: Max(0px, Min(6px, calc((100vw - 100%) * 9999)));
+  border-radius: Max(0px, Min(var(--radius), calc((100vw - 4px - 100%) * 9999))) /
+    var(--radius);
 
   &--danger {
     background: var(--accent-danger-a10);
