@@ -415,7 +415,6 @@ export const coreSyntaxFormatters = {
     label: 'Heading',
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       let currentLineSelectionStart = selectionStart;
-      // TODO: this is all broken 🎉
 
       // The 'heading' formatter can edit a previously inserted syntax,
       // so we check if we need adjust the selection to the start of the line
@@ -459,7 +458,7 @@ export const coreSyntaxFormatters = {
 
       const adjustingHeading = currentHeadingIndex > 0;
 
-      // TODO: selection is all off
+      // TODO: cursor selection all off 🙃
 
       return {
         newTextAreaValue: adjustingHeading
