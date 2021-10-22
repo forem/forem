@@ -196,7 +196,7 @@ export class ReadingList extends Component {
     );
     return (
       <main id="main-content">
-        <header className="crayons-layout s:flex flex-col s:flex-row p-4 pb-0 items-center justify-between">
+        <header className="crayons-layout s:flex flex-col s:flex-row p-3 m:px-4 m:pb-0 items-center justify-between">
           <h1 class="crayons-title mb-2 s:mb-0">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${itemsTotal})`}
@@ -250,7 +250,7 @@ export class ReadingList extends Component {
                     />
                   </div>
                 )}
-                <section className="crayons-layout__content crayons-card mb-4">
+                <section className="crayons-layout__content crayons-card pb-4">
                   {items.length > 0 ? (
                     <Fragment>
                       <ItemList

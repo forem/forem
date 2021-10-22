@@ -1,7 +1,9 @@
 @import '../config/import';
 
 .crayons-card {
-  border-radius: var(--radius);
+  // 1. this is a trick for conditional border-radius: https://css-tricks.com/conditional-border-radius-in-css/
+  // 2. intentionally using uppercase Max and Min because SCSS have issues otherwise...
+  border-radius: Max(0px, Min(6px, calc((100vw - 100%) * 9999)));
   background: var(--card-bg);
   color: var(--card-color);
   box-shadow: 0 0 0 1px var(--card-border);
@@ -23,13 +25,11 @@
     margin-bottom: var(--su-4);
     grid-gap: var(--su-4);
     display: grid;
-    border-radius: 0;
 
     @media (min-width: $breakpoint-m) {
       padding: var(--su-6);
       margin-bottom: var(--su-6);
       grid-gap: var(--su-6);
-      border-radius: var(--radius);
     }
   }
 
