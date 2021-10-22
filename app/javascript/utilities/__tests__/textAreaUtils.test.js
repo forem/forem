@@ -1,8 +1,8 @@
 import {
   getMentionWordData,
-  getIndexOfLineStart,
   getLastIndexOfCharacter,
   getNextIndexOfCharacter,
+  getSelectionData,
 } from '../textAreaUtils';
 
 describe('getMentionWordData', () => {
@@ -64,20 +64,6 @@ describe('getMentionWordData', () => {
       getMentionWordData(inputState);
     expect(isUserMention).toBe(true);
     expect(indexOfMentionStart).toEqual(10);
-  });
-});
-
-describe('getIndexOfLineStart', () => {
-  it('returns 0 for empty text', () => {
-    expect(getIndexOfLineStart('', 0)).toEqual(0);
-  });
-
-  it('returns start index of 0 for a single line of text', () => {
-    expect(getIndexOfLineStart('something', 5)).toEqual(0);
-  });
-
-  it('returns start index of line for a multi-line text', () => {
-    expect(getIndexOfLineStart('one\ntwo', 6)).toEqual(4);
   });
 });
 
@@ -184,5 +170,21 @@ describe('getNextIndexOfCharacter', () => {
         breakOnCharacters: [' '],
       }),
     ).toEqual(-1);
+  });
+});
+
+describe('getSelectionData', () => {
+  it('returns selection data for given inputs', () => {
+    expect(
+      getSelectionData({
+        selectionStart: 4,
+        selectionEnd: 7,
+        value: 'one two three four',
+      }),
+    ).toEqual({
+      textBeforeSelection: 'one ',
+      textAfterSelection: ' three four',
+      selectedText: 'two',
+    });
   });
 });

@@ -89,24 +89,18 @@ export const getMentionWordData = (textArea) => {
     };
   }
 
-  const indexOfAutocompleteStart = getIndexOfCurrentWordAutocompleteSymbol(
-    valueBeforeKeystroke,
-    selectionStart,
-  );
+  const indexOfAutocompleteStart = getLastIndexOfCharacter({
+    content: valueBeforeKeystroke,
+    selectionIndex: selectionStart,
+    character: '@',
+    breakOnCharacters: [' ', '', '\n'],
+  });
 
   return {
     isUserMention: indexOfAutocompleteStart !== -1,
     indexOfMentionStart: indexOfAutocompleteStart,
   };
 };
-
-const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) =>
-  getLastIndexOfCharacter({
-    content,
-    selectionIndex,
-    character: '@',
-    breakOnCharacters: [' ', '', '\n'],
-  });
 
 /**
  * Searches backwards through text content for the last occurence of the given character
@@ -182,6 +176,21 @@ export const getNextIndexOfCharacter = ({
 };
 
 /**
+ * Retrieve data about the user's current text selection
+ *
+ * @param {Object} params
+ * @param {number} selectionStart The start point of user's selection
+ * @param {number} selectionEnd The end point of user's selection
+ * @param {string} value The current value of the textarea
+ * @returns {Object} object containing the text chunks before and after insertion, and the currently selected text
+ */
+export const getSelectionData = ({ selectionStart, selectionEnd, value }) => ({
+  textBeforeSelection: value.substring(0, selectionStart),
+  textAfterSelection: value.substring(selectionEnd, value.length),
+  selectedText: value.substring(selectionStart, selectionEnd),
+});
+
+/**
  * This hook can be used to keep the height of a textarea in step with the current content height, avoiding a scrolling textarea.
  * An optional array of additional elements can be set. If provided, all elements will be set to the greatest content height.
  * Optionally, it can be specified to also constrain the max-height to the content height. Otherwise the max-height will continue to be managed only by the textarea's CSS
@@ -231,43 +240,4 @@ export const useTextAreaAutoResize = () => {
   }, [textArea, additionalElements, constrainToContentHeight]);
 
   return { setTextArea, setAdditionalElements, setConstrainToContentHeight };
-};
-
-/**
- * Helper function to return the index of the current line's starting point
- *
- * @param {string} text The text value of the textArea
- * @param {number} cursorStart The current position of the user's cursor
- * @returns
- */
-export const getIndexOfLineStart = (text, cursorStart) => {
-  const lastNewLine = getIndexOfLastInstanceOfCharacter({
-    text,
-    cursorStart,
-    character: '\n',
-  });
-
-  return lastNewLine === -1 ? 0 : lastNewLine;
-};
-
-export const getIndexOfLastInstanceOfCharacter = ({
-  text,
-  cursorStart,
-  character,
-}) => {
-  const currentCharacter = text.charAt(cursorStart - 1);
-
-  if (currentCharacter === character) {
-    return cursorStart;
-  }
-
-  if (cursorStart !== 0) {
-    return getIndexOfLastInstanceOfCharacter({
-      text,
-      cursorStart: cursorStart - 1,
-      character,
-    });
-  }
-
-  return -1;
 };
