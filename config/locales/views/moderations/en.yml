@@ -1,0 +1,122 @@
+---
+en:
+  views:
+    moderations:
+      heading: Mod Center
+      actions:
+        meta:
+          title: Moderating %{title}
+          title2: "[Moderate] %{title}"
+        heading: Moderate Post
+        subtitle: Rate the quality of this post
+        abusive:
+          subtitle_html: Flag %{user} as Abusive
+          desc_html: This is the equivalent of vomiting on <b>all</b> of this user's articles and will lower their article scores.
+        adjust:
+          heading: Adjust tags
+          subtitle: Add or remove tags
+          aria_label: Open adjust tags section
+          icon: Adjust tags
+          add: Add tag
+          add_placeholder: Add a tag
+          reason: Reason for tag adjustment
+          remove: Remove tag
+          submit: Submit
+        approve:
+          add: Mark as approved
+          remove: Remove approval
+        checkmark: Checkmark
+        close: Close moderator actions panel
+        delete:
+          subtitle: Delete This Comment
+          button: Delete Comment
+        edit:
+          post: Edit Post
+          article_admin: Admin:Article
+          comment_admin: Admin:Comment
+          user_admin: Admin:User
+          resource_admin: ResourceAdmin:Article
+        errors:
+          one: '1 error prohibited this block from being saved:'
+          other: "%{count} errors prohibited this block from being saved:"
+        experience:
+          heading: Set experience level
+          heading2: Experience Level of Post
+          subtitle: Curate the most appropriate audience for this post
+          aria_label: Open experience level section
+          icon: Book
+          desc_html: Who <em>might</em> find this post most valuable, based on overall experience level?
+          from: "%{lvl} - "
+          level:
+            Advanced: Advanced
+            Beginner: Beginner
+            Expert: Expert
+            Mid-level: Mid-level
+            Novice: Novice
+        flag: Flag user
+        how: How does this work?
+        hidden:
+          subtitle: Hidden Comments
+          by: Comment by %{user}
+        hint:
+          subtitle: All negative reactions are private.
+          desc_html: |-
+            Use <b>High Quality</b> to move this content "up" for any reason (quality, usefulness, etc.).
+            <br />
+            Use <b>Low Quality</b> to move this content "down" for any reason (quality, usefulness, etc.).
+            <br />
+            Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
+        other: Other things you can do
+        add_reaction: Add a reaction
+        suspicious: Suspicious
+        tag:
+          subtitle: Tag Adjustments
+          add: Add
+          added_html: "<b>Currently added tag:</b> %{tag}"
+          live_html: "<b>Current live tags:</b> %{tags}"
+          reason: Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.
+          remove: Remove
+          removed_html: "<b>Currently removed tag:</b> %{tag}"
+          select: Select Tag
+          submit: Submit Tag Adjustment
+          tag_name: Tag Name
+          undo:
+            button: "×"
+            confirm: Are you sure you want to undo the %{type} of the %{tag} tag?
+            type:
+              addition: addition
+              removal: removal
+        thumb_down: Thumb down
+        thumb_up: Thumb up
+        toggle: Toggle section
+        unpublish: Unpublish Article
+        vote_down: Low Quality
+        flag_to_admins: Flag to Admins
+        vote_up: High Quality
+      all: All topics
+      aside:
+        all: All topics
+        code_of_conduct: Code of Conduct
+        external: External link
+        feedback:
+          subtitle: Have feedback to improve your Mod experience?
+          description: Please email %{email}!
+        hello: "Hello! 👋"
+        thanks: Thank you for helping to keep %{community} safe! ❤️
+        inbox: Inbox
+        resources: Resources
+        tag: Tag Moderation Guide
+        terms_and_conditions: Terms & Conditions
+        trusted: Trusted User Guide
+      author: Author
+      date: Date
+      notice:
+        subtitle: "%{community} Mods"
+        desc1_html: We periodically award some %{community} members with heightened privileges to help moderate the community.
+        desc2_html: Check out our %{code} and read through our %{trusted} and %{tag}.
+        desc3_html: If you'd like to assist us as a trusted user or tag mod, please email us at %{email} and let us know which role you're interested in and why. If it's tag moderation, please tell us what tags you'd like to moderate for.
+        desc4: P.S. You are not currently signed in.
+        code_of_conduct: Code of Conduct
+        tag: Tag Moderation Guide
+        trusted: Trusted User Guide
+      post: Post

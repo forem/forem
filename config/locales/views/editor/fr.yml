@@ -1,0 +1,28 @@
+---
+fr:
+  views:
+    editor:
+      meta:
+        title: Edit Post
+      heading:
+        new: New Post
+      create: Create Post
+      close:
+        icon: Close
+        title: Close the editor
+      cover_image:
+        add: Add a cover image
+        change: Change
+      edit: Edit
+      modes: View post modes
+      new_title: New post title here...
+      preview: Preview
+      video:
+        progress:
+          heading: "⏳ Video Transcoding In Progress ⏳"
+          notice_1: You'll get an email when this process finishes.
+          notice_2: This is an ordinary unpublished post. Add title/tags/body/etc, and then mark as published after the video is done processing.
+        submit_image:
+          button: Submit Change
+          text: 'Preview Image URL: '
+          placeholder: New Thumbnail URL

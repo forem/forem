@@ -52,7 +52,7 @@
         <div class="js-creator-signup-username-hint-row hidden">
           <div class="fs-xs color-base-60 flex">
             <span>Your username will be&nbsp;</span>
-            <button aria-label="Edit username" class="cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90 " role="button">
+            <button type="button" aria-label="Edit username" class="cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90" role="button">
               <span class="js-creator-signup-username-hint"></span>
               <%= inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: "Edit username") %>
             </button>
@@ -76,7 +76,7 @@
         <%= f.label :password, "Password", class: "crayons-field__label" %>
         <div class="relative">
           <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true, aria: { describedby: "password-helper-text" } %>
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
+          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
             <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: "Show password") %>
             <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: "Hide password") %>
           </button>
@@ -98,7 +98,6 @@
       <div class="flex flex-col pt-6">
         <%= f.submit "Create my account", class: "crayons-btn" %>
       </div>
-
     <% end %>
   </div>
   <%= inline_svg_tag("forem-background.svg", aria: true, title: "forem background", class: "absolute bottom-0 right-0 hidden m:block") %>
