@@ -153,8 +153,10 @@
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: t("views.moderations.actions.checkmark")) %>
       </button>
       <% end %>
-      <a href="<%= URL.url %> community-moderation
-          <%= t("views.moderations.actions.how") %>>
+      <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
+        <span class="how-this-works-section">
+          <%= t("views.moderations.actions.how") %>
+        </span>
       </a>
     </div>
 
