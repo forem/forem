@@ -43,14 +43,6 @@
               Pin Post
             </button>
           </form>
-        <%# <%= link_to(
-              "Pin Post",
-              pin_admin_article_path(decorated_article.id),
-              method: :post,
-              remote: false,
-              class: "btn btn-sm btn-secondary",
-              data: { "article-target": "pinButton" },
-            ) %>
       <% end %>
 
       <a href="<%= admin_user_path(article.user_id) %>" class="badge badge-light">@<%= article.user&.username %></a>

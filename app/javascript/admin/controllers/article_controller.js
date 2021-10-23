@@ -32,26 +32,9 @@ export default class ArticleController extends Controller {
     }, 350);
   }
 
-  togglePin(event) {
-    alert('Hola');
-    const checkbox = event.target;
-
-    // we're only interested in intercepting a checkbox going from
-    // unchecked to checked
-    if (!checkbox.checked) {
-      return;
-    }
-
-    // by preventing the default, we avoid visually selecting the checkbox,
-    // it will be responsibility of `pinArticle()` to determine if and when
-    // the checkbox state has to change
-    event.preventDefault();
-
-    this.pinArticle(checkbox);
-  }
-
   async pinArticle(event) {
     const pinArticleForm = event.target;
+    // We dont want to submit the pin form here.
     event.preventDefault();
     const response = await fetch(this.pinPathValue, {
       method: 'GET',

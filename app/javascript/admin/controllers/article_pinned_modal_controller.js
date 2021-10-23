@@ -7,10 +7,12 @@ export default class ArticlePinnedModalController extends ModalController {
     okButtonId: String,
   };
 
+  pinArticleForm;
+
   openModal(event) {
     const { article, pinArticleForm } = event.detail;
 
-    // set the caller checkbox ID
+    // set the pinArticleForm
     this.pinArticleForm = pinArticleForm;
 
     // update the modal's HTML with the data coming from the server
@@ -30,22 +32,12 @@ export default class ArticlePinnedModalController extends ModalController {
     this.toggleModal();
   }
 
-  changePinnedCheckboxChecked(checked) {
-    // find the caller checkbox
-    const pinnedCheckbox = this.pinnedCheckboxTargets.find(
-      (cb) => cb.id === this.pinnedCheckboxIdValue,
-    );
-    pinnedCheckbox.checked = checked;
-  }
-
   unPinAndCloseModal() {
-    //this.changePinnedCheckboxChecked(false);
     this.closeModal();
   }
 
   pinAndCloseModal() {
     this.pinArticleForm.submit();
-    //    this.changePinnedCheckboxChecked(true);
     this.closeModal();
   }
 }
