@@ -31,7 +31,7 @@ en:
           rules_markdown:
             label: Rules markdown
             placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
-          submit: SAVE CHANGES
+          submit: Save
         markdown_html: "%{tag} is the name of the tag used in Markdown."
       follow: Follow
       following_tags: Following tags
