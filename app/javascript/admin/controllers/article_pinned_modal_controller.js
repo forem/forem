@@ -3,16 +3,15 @@ import ModalController from './modal_controller';
 export default class ArticlePinnedModalController extends ModalController {
   static targets = ['title', 'pinnedAt', 'pinnedCheckbox'];
   static values = {
-    pinnedCheckboxId: String,
     cancelButtonId: String,
     okButtonId: String,
   };
 
   openModal(event) {
-    const { article, checkboxId } = event.detail;
+    const { article, pinArticleForm } = event.detail;
 
     // set the caller checkbox ID
-    this.pinnedCheckboxIdValue = checkboxId;
+    this.pinArticleForm = pinArticleForm;
 
     // update the modal's HTML with the data coming from the server
     this.titleTarget.setAttribute('href', article.path);
@@ -40,12 +39,13 @@ export default class ArticlePinnedModalController extends ModalController {
   }
 
   unPinAndCloseModal() {
-    this.changePinnedCheckboxChecked(false);
+    //this.changePinnedCheckboxChecked(false);
     this.closeModal();
   }
 
   pinAndCloseModal() {
-    this.changePinnedCheckboxChecked(true);
+    this.pinArticleForm.submit();
+    //    this.changePinnedCheckboxChecked(true);
     this.closeModal();
   }
 }

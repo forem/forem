@@ -33,6 +33,7 @@ export default class ArticleController extends Controller {
   }
 
   togglePin(event) {
+    alert('Hola');
     const checkbox = event.target;
 
     // we're only interested in intercepting a checkbox going from
@@ -49,7 +50,9 @@ export default class ArticleController extends Controller {
     this.pinArticle(checkbox);
   }
 
-  async pinArticle(checkbox) {
+  async pinArticle(event) {
+    const pinArticleForm = event.target;
+    event.preventDefault();
     const response = await fetch(this.pinPathValue, {
       method: 'GET',
       headers: {
@@ -75,16 +78,16 @@ export default class ArticleController extends Controller {
           new CustomEvent('article-pinned-modal:open', {
             detail: {
               article: pinnedArticle,
-              checkboxId: this.pinnedCheckboxTarget.getAttribute('id'),
+              pinArticleForm,
             },
           }),
         );
       } else {
-        checkbox.checked = true;
+        pinArticleForm.submit();
       }
     } else if (response.status === 404) {
       // if there is no pinned article, it means we can go ahead and pin this one
-      checkbox.checked = true;
+      pinArticleForm.submit();
     }
   }
 

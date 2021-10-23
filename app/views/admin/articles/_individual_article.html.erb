@@ -36,7 +36,14 @@
               data: { "article-target": "unpinButton" },
             ) %>
       <% else %>
-        <%= link_to(
+          <form method="post" action="<%= pin_admin_article_path(decorated_article.id) %>" class="inline"
+            data-action="submit->article#pinArticle">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+            <button type="submit" class="btn btn-sm btn-secondary">
+              Pin Post
+            </button>
+          </form>
+        <%# <%= link_to(
               "Pin Post",
               pin_admin_article_path(decorated_article.id),
               method: :post,
