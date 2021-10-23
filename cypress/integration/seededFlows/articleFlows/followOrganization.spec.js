@@ -34,6 +34,12 @@ describe('Follow an organization from article sidebar', () => {
       '/admin_mcadmin/test-organization-article-slug',
     );
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
+
+    // Go to dashboard and check under 'Following Organizations'
+    cy.visitAndWaitForUserSideEffects('/dashboard/following_organizations');
+    cy.findByRole('main')
+      .findByRole('link', { name: 'Bachmanity' })
+      .should('exist');
   });
 
   it('Unfollows an organization from the sidebar', () => {
@@ -58,5 +64,11 @@ describe('Follow an organization from article sidebar', () => {
       '/admin_mcadmin/test-organization-article-slug',
     );
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
+
+    // Go to dashboard and check under 'Following Organizations'
+    cy.visitAndWaitForUserSideEffects('/dashboard/following_organizations');
+    cy.findByRole('main')
+      .findByRole('link', { name: 'Bachmanity' })
+      .should('not.exist');
   });
 });
