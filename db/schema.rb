@@ -97,7 +97,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.integer "comment_score", default: 0
     t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
-    t.boolean "completed", default: true
     t.datetime "created_at", null: false
     t.datetime "crossposted_at"
     t.string "description"
@@ -111,7 +110,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.integer "hotness_score", default: 0
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_experience_level_rating_at"
-    t.bigint "main_category_id"
     t.string "main_image"
     t.string "main_image_background_hex_color", default: "#dddddd"
     t.integer "nth_published_by_author", default: 0
@@ -131,7 +129,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.boolean "published", default: false
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
-    t.string "question_id"
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.tsvector "reading_list_document"
@@ -165,12 +162,10 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
-    t.index ["main_category_id"], name: "index_articles_on_main_category_id"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
-    t.index ["question_id"], name: "index_articles_on_question_id", unique: true
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
@@ -374,7 +369,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
 
   create_table "comments", force: :cascade do |t|
     t.string "ancestry"
-    t.string "answer_id"
     t.text "body_html"
     t.text "body_markdown"
     t.bigint "commentable_id"
@@ -383,7 +377,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.boolean "deleted", default: false
     t.boolean "edited", default: false
     t.datetime "edited_at"
-    t.boolean "featured", default: false, null: false
     t.boolean "hidden_by_commentable_user", default: false
     t.string "id_code"
     t.integer "markdown_character_count"
@@ -400,7 +393,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.index "to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text))", name: "index_comments_on_body_markdown_as_tsvector", using: :gin
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
-    t.index ["answer_id"], name: "index_comments_on_answer_id", unique: true
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
@@ -1306,8 +1298,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.inet "last_sign_in_ip"
     t.datetime "latest_article_updated_at"
     t.datetime "locked_at"
-    t.integer "max_articles_count", default: 0, null: false
-    t.integer "max_comments_count", default: 0, null: false
     t.integer "monthly_dues", default: 0
     t.string "name"
     t.string "old_old_username"
@@ -1319,7 +1309,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
-    t.integer "referenced_comments_count", default: 0, null: false
     t.boolean "registered", default: true
     t.datetime "registered_at"
     t.datetime "remember_created_at"
@@ -1340,7 +1329,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.string "unlock_token"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.string "user_id"
     t.string "username"
     t.datetime "workshop_expiration"
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
@@ -1360,7 +1348,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.index ["old_username"], name: "index_users_on_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
-    t.index ["user_id"], name: "index_users_on_user_id", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
     t.check_constraint "username IS NOT NULL", name: "users_username_not_null"
   end

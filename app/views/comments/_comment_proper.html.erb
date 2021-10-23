@@ -4,7 +4,7 @@
   <%= render partial: "comments/comment_avatar", locals: { comment: comment } %>
 
   <div class="inner-comment comment__details">
-    <div class="comment__content crayons-card<% if comment.featured == true %> featured-comment<% end %>">
+    <div class="comment__content crayons-card">
       <% if comment.deleted %>
         <div class="p-6 align-center opacity-50 fs-s">
           <span class="js-comment-username">Comment deleted</span>
