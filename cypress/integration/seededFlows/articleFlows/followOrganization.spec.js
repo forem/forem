@@ -1,4 +1,4 @@
-describe('Follow organization from article sidebar', () => {
+describe('Follow an organization from article sidebar', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.viewport('macbook-16');
@@ -15,7 +15,7 @@ describe('Follow organization from article sidebar', () => {
     });
   });
 
-  it('Follows and unfollows an organization from the sidebar', () => {
+  it('Follows an organization from the sidebar', () => {
     cy.intercept('/follows').as('followRequest');
 
     cy.findByRole('complementary', { name: 'Author details' }).within(() => {
@@ -34,6 +34,19 @@ describe('Follow organization from article sidebar', () => {
       '/admin_mcadmin/test-organization-article-slug',
     );
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
+  });
+
+  it('Unfollows an organization from the sidebar', () => {
+    cy.intercept('/follows').as('followRequest');
+
+    cy.findByRole('complementary', { name: 'Author details' }).within(() => {
+      cy.findByRole('button', { name: 'Follow organization: Bachmanity' }).as(
+        'followButton',
+      );
+    });
+
+    // Follow
+    cy.get('@followButton').click();
 
     // Unfollow
     cy.get('@followButton').click();
