@@ -273,6 +273,18 @@ module ApplicationHelper
     User.registered.estimated_count
   end
 
+  def estimated_article_count
+    Article.published.estimated_count
+  end
+
+  def estimated_comment_count
+    Comment.estimated_count
+  end
+
+  def estimated_reaction_count
+    Reaction.estimated_count
+  end
+
   def display_estimated_user_count?
     estimated_user_count > LARGE_USERBASE_THRESHOLD
   end

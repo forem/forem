@@ -52,6 +52,44 @@
           </p>
         </div>
       </section>
+
+      <section class="crayons-card">
+        <div class="crayons-card__body">
+          <h2 class="crayons-title"><%= number_with_delimiter(estimated_user_count) %></h2>
+          <p class="crayons-subtitle-4 color-base-70">
+            <a href=<%= admin_users_path %>>Users</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="crayons-card">
+        <div class="crayons-card__body">
+          <h2 class="crayons-title"><%= number_with_delimiter(estimated_article_count) %></h2>
+          <p class="crayons-subtitle-4 color-base-70">
+            <a href=<%= admin_articles_path %>>Posts published</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="crayons-card">
+        <div class="crayons-card__body">
+          <h2 class="crayons-title"><%= number_with_delimiter(estimated_comment_count) %></h2>
+          <p class="crayons-subtitle-4 color-base-70">
+            <a href=<%= admin_comments_path %>>
+              Comments published
+            </a>
+          </p>
+        </div>
+      </section>
+
+      <section class="crayons-card">
+        <div class="crayons-card__body">
+          <h2 class="crayons-title"><%= number_with_delimiter(estimated_reaction_count) %></h2>
+          <p class="crayons-subtitle-4 color-base-70">
+            Reactions
+          </p>
+        </div>
+      </section>
     </article>
     <h2 class="crayons-subtitle-1 mb-3">Resources</h2>
     <article class="grid s:grid-cols-2 gap-3" data-controller="ahoy">
