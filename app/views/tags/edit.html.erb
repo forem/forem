@@ -20,15 +20,17 @@
 
   <%= form_tag("/tag/#{@tag.id}", method: :patch, class: "crayons-card p-4 m:p-6 grid gap-4") do %>
     <% if flash[:success] %>
-      <p class="tag-edit-flash-success">
+      <div class="crayons-notice crayons-notice--success">
         <%= flash[:success] %>
-      </p>
+      </div>
     <% elsif flash[:error] %>
-      <ul class="tag-edit-flash-error">
-        <% flash[:error].each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+      <div class="crayons-notice crayons-notice--danger">
+        <ul>
+          <% flash[:error].each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
     <% label_i18n = ->(param) { label_tag param, t("views.tags.edit.form.#{param}.label") } %>
     <div class="crayons-field">
