@@ -4,3 +4,4 @@ FILES=$(git diff --cached --name-only)
 
 # Run lint-staged on all staged
 echo "$FILES" | yarn lint-staged
+npx lint-staged

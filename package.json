@@ -67,7 +67,9 @@
     ],
     "*.svg": [
       "svgo --pretty"
-    ]
+    ],
+    "*.js": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
   },
   "repository": {
     "type": "git",
@@ -120,13 +122,13 @@
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.26.1",
     "faker": "^5.5.3",
-    "husky": "^4.3.8",
+    "husky": "^7.0.4",
     "jest": "27.3.1",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^1.0.0",
     "jsdom": "^18.0.0",
-    "lint-staged": "^11.2.3",
+    "lint-staged": "^11.2.4",
     "markdown-loader": "^6.0.0",
     "prettier": "^2.4.1",
     "sass": "1.43.2",
