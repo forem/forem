@@ -1312,6 +1312,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
+	t.string "origin", null: true
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
     t.string "payment_pointer"
@@ -1358,6 +1359,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["old_username"], name: "index_users_on_old_username"
+    t.index ["origin"], name: "index_users_on_origin"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["user_id"], name: "index_users_on_user_id", unique: true
