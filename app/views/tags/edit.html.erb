@@ -1,6 +1,6 @@
 <% title t("views.tags.edit.meta.title", tag: @tag.name) %>
 
-<div class="crayons-layout crayons-layout--limited-m">
+<main id="main-content" class="crayons-layout crayons-layout--limited-m">
   <header class="crayons-card flex items-center justify-between branded-4 p-3 pr-1 m:pr-5 m:p-6 m:pt-5" style="border-top-color: <%= Color::CompareHex.new([@tag.bg_color_hex || "#000000", @tag.text_color_hex || "#ffffff"]).brightness(0.88) %>">
     <h1 class="crayons-title">
       <% if @tag_model && @tag_model.pretty_name.present? %>
@@ -63,4 +63,4 @@
       <%= submit_tag t("views.tags.edit.form.submit"), class: "crayons-btn" %>
     </div>
   <% end %>
-</div>
+</main>
