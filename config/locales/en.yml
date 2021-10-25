@@ -7,7 +7,6 @@ en:
   core:
     add_comment: Add comment
     analytics: Analytics
-    browse: Browse
     comment: Comment
     comments: Comments
     community_name_is_great: "%{community_name} is great!"
@@ -38,7 +37,6 @@ en:
     month: Month
     more_from: More from
     my_tags: My Tags
-    podcasts: Podcasts
     pinned: Pinned
     popular_tags: Popular Tags
     post: Post
@@ -147,16 +145,6 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
-  podcasts:
-    featured_shows: Featured shows
-    latest_episodes: Latest episodes
-    suggest_a_podcast: Suggest a podcast
-    view_all_podcasts: View all podcasts
-    statuses:
-      ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
-      unparsable: Podcast's rss couldn't be parsed
-      unplayable: This podcast may not be playable in the browser
-      unreachable: Podcast's feed_url is not reachable
   settings_menu:
     account: Account
     billing: Billing
