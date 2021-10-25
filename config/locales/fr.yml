@@ -6,7 +6,6 @@ fr:
     if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
   core:
     add_comment: Ajouter un commentaire
-    all: Tout
     analytics: Analytique
     browse: Parcourir
     comment: Commentaire
@@ -90,6 +89,45 @@ fr:
     - oct
     - nov
     - déc
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: il y a environ une heure
+        other: il y a environ %{count} heures
+      about_x_months:
+        one: il y a environ un mois
+        other: il y a environ %{count} mois
+      about_x_years:
+        one: il y a environ 1 an
+        other: il y a environ %{count} ans
+      almost_x_years:
+        one: il y a presque un an
+        other: il y a presque %{count} ans
+      half_a_minute: il y a une demi-minute
+      less_than_x_seconds:
+        one: il y a moins d’1 seconde
+        other: il y a moins de %{count} secondes
+      less_than_x_minutes:
+        one: il y a moins d’une minute
+        other: il y a moins de %{count} minutes
+      over_x_years:
+        one: il y a plus d’un an
+        other: il y a plus de %{count} ans
+      x_seconds:
+        one: il y a une seconde
+        other: il y a %{count} secondes
+      x_minutes:
+        one: il y a une minute
+        other: il y a %{count} minutes
+      x_days:
+        one: hier
+        other: il y a %{count} jours
+      x_months:
+        one: il y a un mois
+        other: il y a %{count} mois
+      x_years:
+        one: l’année dernière
+        other: il y a %{count} ans
   errors:
     messages:
       accepted: doit être accepté
