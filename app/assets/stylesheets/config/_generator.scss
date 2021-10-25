@@ -633,6 +633,20 @@
     true,
     null
   ),
+  (
+    'object',
+    'object-fit',
+    (
+      'contain': contain,
+      'cover': cover,
+      'fill': fill,
+      'none': none,
+      'scale-down': scale-down
+    ),
+    (),
+    false,
+    null
+  ),
   (null, 'all', ('reset': unset), (), false, null),
   (
     'break',
