@@ -41,14 +41,6 @@ fr:
     popular_tags: Sujets populaires
     post: Publication
     posts: Publications
-    reaction: Réaction
-    reaction_pluralized:
-      one: réaction
-      other: réactions
-    reactions:
-      heart: Coeur
-      save: Sauver
-      unicorn: Licorne
     read_next: Lire ensuite
     reading_list: Liste de lecture
     reply: Répondre
@@ -57,7 +49,6 @@ fr:
     see_all: Tout voir
     series: Séries
     settings: Paramètres
-    share_to: Partager sur %{media}
     sign_out: Se déconnecter
     trending_on: Populaire sur
     view: Vue

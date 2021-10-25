@@ -63,6 +63,17 @@ en:
       new_post:
         if_org_html: " under %{org}"
         verb_html: "%{user} made a new post%{if_org}"
+      reacted:
+        and_html: "%{first} and %{last}"
+        and_other_html:
+          one: "%{first} and %{count} others"
+          other: "%{first} and %{count} others"
+        verb_html:
+          one: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
+          other: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
+        your:
+          article: your article
+          comment: your comment
       settings: Settings
       tag:
         heading: "Hey there 👋"

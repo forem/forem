@@ -41,14 +41,6 @@ en:
     popular_tags: Popular Tags
     post: Post
     posts: Posts
-    reaction: Reaction
-    reaction_pluralized:
-      one: reaction
-      other: reactions
-    reactions:
-      heart: Heart
-      save: Save
-      unicorn: Unicorn
     read_next: Read next
     reading_list: Reading list
     reply: Reply
@@ -57,7 +49,6 @@ en:
     see_all: See all
     series: Series
     settings: Settings
-    share_to: Share to %{media}
     sign_out: Sign Out
     trending_on: Trending on
     view: View
