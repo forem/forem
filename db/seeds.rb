@@ -193,6 +193,13 @@ seeder.create_if_none(Article, num_articles) do
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
+
+    Reaction.create!(
+      category: "thumbsup",
+      reactable_id: Article.last.id,
+      reactable_type: "Article",
+      user_id: User.order(Arel.sql("RANDOM()")).first.id,
+    )
   end
 end
 
