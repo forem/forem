@@ -196,16 +196,16 @@ export class ReadingList extends Component {
     );
     return (
       <main id="main-content">
-        <header className="crayons-layout l:grid-cols-2 pb-0">
-          <h1 class="crayons-title">
+        <header className="crayons-layout s:flex flex-col s:flex-row p-4 pb-0 items-center justify-between">
+          <h1 class="crayons-title mb-2 s:mb-0">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${itemsTotal})`}
           </h1>
-          <fieldset className="grid gap-2 m:flex m:justify-end m:items-center l:mb-0 mb-2 px-2 m:px-0">
+          <fieldset className="m:flex justify-end">
             <legend className="hidden">Filter</legend>
             <Button
               onClick={(e) => this.toggleStatusView(e)}
-              className="whitespace-nowrap l:mr-2"
+              className="whitespace-nowrap mb-2 w-100 s:w-auto s:mb-0"
               variant="outlined"
               url={READING_LIST_ARCHIVE_PATH}
               tagName="a"
@@ -217,7 +217,7 @@ export class ReadingList extends Component {
               aria-label="Filter reading list by text"
               onKeyUp={this.onSearchBoxType}
               placeholder="Enter some text to filter on..."
-              className="crayons-textfield"
+              className="crayons-textfield mb-2 s:mb-0 min-w-100 ml-0 s:ml-2"
             />
             <MediaQuery
               query={`(max-width: ${BREAKPOINTS.Medium - 1}px)`}

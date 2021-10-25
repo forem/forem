@@ -1,0 +1,10 @@
+<h1>Compliments Time!</h1>
+<% if flash[:saved]  %>
+  <div>Yay, you saved a compliment!</div>
+<% end %>
+<% @compliments.each.with_index do |compliment, i| %>
+  <%= form_with model: compliment, local: true do |f| %>
+    <%= f.text_field :text %>
+    <%= f.submit "Save #{i + 1}" %>
+  <% end %>
+<% end %>
