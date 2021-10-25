@@ -45,14 +45,14 @@ function handleDeepLinkFallback() {
     window.location.href = targetLink;
   } else if (Runtime.currentOS() === 'Android') {
     const targetIntent =
-      'intent://scan/#Intent;scheme=com.forem.app;package=com.forem.app;end';
+      'intent://scan/#Intent;scheme=com.forem.app;package=com.forem.android;end';
     retryButton.href = targetIntent;
     installNowButton.href = FOREM_GOOGLE_PLAY_URL;
 
     // Android support isn't available yet. Android users visiting `/r/mobile`
     // will be redirected to the home page so they don't land on a unsupported
     // page until this feature is ready for them.
-    window.location.href = '/';
+    window.location.href = targetIntent;
   }
 }
 
