@@ -78,16 +78,21 @@ module Admin
     private
 
     def get_vomits
+      status, limit = case params[:status]
+                      when "Open", ->(s) { s.blank? }
+                        ["valid", nil]
+                      when "Resolved"
+                        ["confirmed", 10]
+                      else
+                        ["invalid", 10]
+                      end
       q = Reaction.includes(:user, :reactable)
+        .where(category: "vomit", status: status)
         .select(:id, :user_id, :reactable_type, :reactable_id)
         .order(updated_at: :desc)
-      if params[:status] == "Open" || params[:status].blank?
-        q.where(category: "vomit", status: "valid")
-      elsif params[:status] == "Resolved"
-        q.where(category: "vomit", status: "confirmed").limit(10)
-      else
-        q.where(category: "vomit", status: "invalid").limit(10)
-      end
+        .limit(limit)
+      # don't show reactions where the reactable was not found
+      q.select(&:reactable)
     end
 
     def send_slack_message(params)
