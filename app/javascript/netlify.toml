@@ -6,7 +6,7 @@
 [build.environment]
   NODE_VERSION = "14"
   NODE_ENV = "production"
-  YARN_VERSION = "1.22.5"
+  YARN_VERSION = "1.21"
 
 # See <https://docs.netlify.com/routing/redirects/redirect-options/> for more options
 [[redirects]]
