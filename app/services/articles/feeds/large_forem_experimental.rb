@@ -7,7 +7,7 @@ module Articles
         @page = page
         @tag = tag
         @tag_weight = 1 # default weight tags play in rankings
-        @comment_weight = 0 # default weight comments play in rankings
+        @comment_weight = 0.2 # default weight comments play in rankings
         @xp_level_weight = 1 # default weight for user experience level
       end
 
@@ -22,16 +22,15 @@ module Articles
         [featured_story, hot_stories]
       end
 
-      def more_comments_minimal_weight
-        @comment_weight = 0.2
+      def more_comments_minimal_weight_randomized
         _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
+        first_quarter(stories).shuffle + last_three_quarters(stories)
       end
 
-      def more_comments_minimal_weight_randomized_at_end
-        results = more_comments_minimal_weight
-        first_quarter(results).shuffle + last_three_quarters(results)
-      end
+      # Adding an alias to preserve public method signature.  However,
+      # in this code base there are no further references of
+      # :more_comments_minimal_weight_randomized_at_end
+      alias more_comments_minimal_weight_randomized_at_end more_comments_minimal_weight_randomized
 
       def rank_and_sort_articles(articles)
         ranked_articles = articles.each_with_object({}) do |article, result|

@@ -123,10 +123,10 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
   end
 
-  describe "more_comments_minimal_weight_randomized_at_end" do
+  describe "more_comments_minimal_weight_randomized" do
     it "returns articles" do
       new_story = create(:article, published_at: 10.minutes.ago, score: 10)
-      stories = feed.more_comments_minimal_weight_randomized_at_end
+      stories = feed.more_comments_minimal_weight_randomized
       expect(stories).to include(old_story)
       expect(stories).to include(new_story)
     end
@@ -298,12 +298,12 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
 
     context "when comment_weight is default of 0" do
       it "returns 0 for uncommented articles" do
-        expect(feed.score_comments(article)).to eq(0)
+        expect(feed.score_comments(article, comment_weight: 1)).to eq(0)
       end
 
-      it "returns 0 for articles with comments" do
+      it "returns a multiple of the parameterized weight for articles with comments" do
         expect(article_with_five_comments.comments_count).to eq(5)
-        expect(feed.score_comments(article_with_five_comments)).to eq(0)
+        expect(feed.score_comments(article_with_five_comments, comment_weight: 1)).to eq(5)
       end
     end
 
