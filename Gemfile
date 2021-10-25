@@ -136,7 +136,7 @@ end
 group :development, :test do
   gem "amazing_print", "~> 1.4" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.36.0" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", github: "forem/cypress-rails", branch: "enable-knapsack-pro-support" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
