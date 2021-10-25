@@ -20,8 +20,8 @@
 <% end %>
 
 <main id="main-content" class="crayons-layout crayons-layout--1-col">
-  <header class="px-2 m:px-0 flex items-center justify-between">
-    <h1><%= t("views.tags.heading") %></h1>
+  <header class="flex items-center justify-between p-3 m:p-0">
+    <h1 class="crayons-title"><%= t("views.tags.heading") %></h1>
     <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
   </header>
 

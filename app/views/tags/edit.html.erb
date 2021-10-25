@@ -1,73 +1,66 @@
 <% title t("views.tags.edit.meta.title", tag: @tag.name) %>
 
-<div style="background-color:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">
-  <div class="tag-or-query-header-container tag-edit-tag py-8 align-center">
-    <h1><% t("views.tags.edit.heading_html", tag: link_to(@tag.name, URL.tag(@tag), style: "color: #{@tag.text_color_hex};text-decoration: underline;")) %></h1>
-    <p>
-      <%= t("views.tags.edit.markdown_html", tag: tag.code("##{@tag.name}", style: "background-color: #D2D2D2; color: black; padding: 5px; border-radius: 5px;")) %>
-    </p>
-  </div>
-</div>
-<%= form_tag("/tag/#{@tag.id}", method: :patch, class: "tag-edit-form") do %>
-  <div class="tag-edit-container">
-    <% if flash[:success] %>
-      <p class="tag-edit-flash-success">
-        <%= flash[:success] %>
-      </p>
-    <% elsif flash[:error] %>
-      <ul class="tag-edit-flash-error">
-        <% flash[:error].each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    <% end %>
-    <h4>
-      <a target="_blank" rel="noopener" href="https://thepracticaldev.s3.amazonaws.com/i/cc8vz48djnhty6c31jog.png">
-        <%= t("views.tags.edit.form.example") %>
-      </a>
-    </h4>
-    <% label_i18n = ->(param) { label_tag param, t("views.tags.edit.form.#{param}.label") } %>
-    <div class="tag-form-field">
-      <%= label_tag :pretty_name %>
-      <br>
-      <%= text_field_tag "tag[pretty_name]", @tag.pretty_name, placeholder: t("views.tags.edit.form.pretty_name.placeholder"), class: "tag-form-text-field" %>
+<main id="main-content" class="crayons-layout crayons-layout--limited-m">
+  <header class="crayons-card flex items-center justify-between branded-4 p-3 pr-1 m:pr-5 m:p-6 m:pt-5" style="border-top-color: <%= Color::CompareHex.new([@tag.bg_color_hex || "#000000", @tag.text_color_hex || "#ffffff"]).brightness(0.88) %>">
+    <h1 class="crayons-title">
+      <% if @tag_model && @tag_model.pretty_name.present? %>
+        <%= @tag_model.pretty_name %>
+      <% else %>
+        <span class="opacity-50">#</span><%= @tag %>
+      <% end %>
+    </h1>
+    <div class="flex">
+      <% if current_user.has_role?(:super_admin) || current_user.has_role?(:admin) %>
+        <a href="<%= edit_admin_tag_path(@tag.id) %>" class="crayons-btn crayons-btn--ghost" data-no-instant><%= t("views.tags.edit.admin") %></a>
+      <% end %>
+      <a target="_blank" rel="noopener" href="https://admin.forem.com/docs/forem-basics/tags#editing-a-tag" class="crayons-btn crayons-btn--ghost"><%= t("views.tags.edit.help") %></a>
+      <a href="/t/<%= @tag %>" class="crayons-btn crayons-btn--ghost"><%= t("views.tags.edit.view") %></a>
     </div>
-    <div class="tag-form-field">
-      <%= label_tag :bg_color_hex %>
-      <br>
-      <%= color_field_tag "tag[bg_color_hex]", @tag.bg_color_hex.presence || "#000000", placeholder: "#000000", class: "tag-form-text-field" %>
-    </div>
-    <div class="tag-form-field">
-      <%= label_tag :text_color_hex %>
-      <br>
-      <%= color_field_tag "tag[text_color_hex]", @tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff", class: "tag-form-text-field" %>
-    </div>
-    <div class="tag-form-field">
-      <%= label_tag :short_summary %>
-      <br>
-      <%= text_area_tag "tag[short_summary]", @tag.short_summary, placeholder: t("views.tags.edit.form.short_summary.placeholder"), class: "tag-form-text-field tag-area-text" %>
-    </div>
-    <div class="tag-form-field">
-      <%= label_tag :wiki_body_markdown %>
-      <br>
-      <%= text_area_tag "tag[wiki_body_markdown]", @tag.wiki_body_markdown, placeholder: t("views.tags.edit.form.wiki_body_markdown.placeholder"), class: "tag-form-text-field tag-area-text" %>
-    </div>
-    <div class="tag-form-field">
-      <%= label_tag :rules_markdown %>
-      <br>
-      <%= text_area_tag "tag[rules_markdown]", @tag.rules_markdown, placeholder: t("views.tags.edit.form.rules_markdown.placeholder"), class: "tag-form-text-field tag-area-text" %>
-    </div>
-    <div class="tag-form-field">
-      <%= submit_tag t("views.tags.edit.form.submit"), class: "tag-edit-submit" %>
-    </div>
-  </div>
-<% end %>
+  </header>
 
-<% if current_user.has_role?(:super_admin) || current_user.has_role?(:admin) %>
-  <center>
-    <h1><a href="<%= edit_admin_tag_path(@tag.id) %>" data-no-instant><%= t("views.tags.edit.admin", tag: @tag.name) %></a></h1>
-    <br />
-    <br />
-    <br />
-  </center>
-<% end %>
+  <%= form_tag("/tag/#{@tag.id}", method: :patch, class: "crayons-card p-4 m:p-6 grid gap-4") do %>
+    <% if flash[:success] %>
+      <div class="crayons-notice crayons-notice--success">
+        <%= flash[:success] %>
+      </div>
+    <% elsif flash[:error] %>
+      <div class="crayons-notice crayons-notice--danger">
+        <ul>
+          <% flash[:error].each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <% label_i18n = ->(param) { label_tag param, t("views.tags.edit.form.#{param}.label") } %>
+    <div class="crayons-field">
+      <%= label_tag :pretty_name, nil, class: "crayons-field__label" %>
+      <%= text_field_tag "tag[pretty_name]", @tag.pretty_name, placeholder: t("views.tags.edit.form.pretty_name.placeholder"), class: "crayons-textfield" %>
+    </div>
+    <div class="flex gap-4">
+      <div class="crayons-field flex-1">
+        <%= label_tag :bg_color_hex, nil, class: "crayons-field__label" %>
+        <%= color_field_tag "tag[bg_color_hex]", @tag.bg_color_hex.presence || "#000000", placeholder: "#000000", class: "crayons-color-selector crayons-color-selector--full" %>
+      </div>
+      <div class="crayons-field flex-1">
+        <%= label_tag :text_color_hex, nil, class: "crayons-field__label" %>
+        <%= color_field_tag "tag[text_color_hex]", @tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff", class: "crayons-color-selector crayons-color-selector--full" %>
+      </div>
+    </div>
+    <div class="crayons-field">
+      <%= label_tag :short_summary, nil, class: "crayons-field__label" %>
+      <%= text_area_tag "tag[short_summary]", @tag.short_summary, placeholder: t("views.tags.edit.form.short_summary.placeholder"), class: "crayons-textfield" %>
+    </div>
+    <div class="crayons-field">
+      <%= label_tag :wiki_body_markdown, nil, class: "crayons-field__label" %>
+      <%= text_area_tag "tag[wiki_body_markdown]", @tag.wiki_body_markdown, placeholder: t("views.tags.edit.form.wiki_body_markdown.placeholder"), class: "crayons-textfield" %>
+    </div>
+    <div class="crayons-field">
+      <%= label_tag :rules_markdown, nil, class: "crayons-field__label" %>
+      <%= text_area_tag "tag[rules_markdown]", @tag.rules_markdown, placeholder: t("views.tags.edit.form.rules_markdown.placeholder"), class: "crayons-textfield" %>
+    </div>
+    <div>
+      <%= submit_tag t("views.tags.edit.form.submit"), class: "crayons-btn" %>
+    </div>
+  <% end %>
+</main>
