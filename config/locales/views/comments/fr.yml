@@ -24,6 +24,7 @@ fr:
         read: Read full post
         view: Voir la publication
         view_full:
+          one: Voir la discussion complète (%{count} commentaires)
           other: Voir la discussion complète (%{count} commentaires)
         reply_html: "%{start}Replies for:%{end} %{title}"
       delete:
