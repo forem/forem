@@ -200,7 +200,6 @@ function insertVideos(videoArticles) {
     document.documentElement.scrollHeight - document.body.scrollTop;
   var newNode = document.createElement('div');
   newNode.innerHTML = newVideosHTML;
-  newNode.className += 'video-collection';
   var singleArticles = document.querySelectorAll(
     '.single-article, .crayons-story',
   );
