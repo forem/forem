@@ -446,7 +446,7 @@ export const coreSyntaxFormatters = {
       }
 
       //   After h4, revert to no heading at all
-      if (currentHeadingIndex === 4) {
+      if (currentHeadingIndex >= 4) {
         return {
           newTextAreaValue: `${textBeforeSelection}${selectedText.substring(
             5,
@@ -460,13 +460,14 @@ export const coreSyntaxFormatters = {
 
       // TODO: cursor selection all off 🙃
 
+      const cursorOffset = adjustingHeading ? 1 : 4;
+
       return {
         newTextAreaValue: adjustingHeading
           ? `${textBeforeSelection}#${selectedText}${textAfterSelection}`
           : `${textBeforeSelection}\n## ${selectedText}\n${textAfterSelection}`,
-        newCursorStart:
-          selectionStart + currentHeadingIndex + (adjustingHeading ? 4 : 1),
-        newCursorEnd: selectionEnd + (adjustingHeading ? 1 : 4),
+        newCursorStart: selectionStart + cursorOffset,
+        newCursorEnd: selectionEnd + cursorOffset,
       };
     },
   },

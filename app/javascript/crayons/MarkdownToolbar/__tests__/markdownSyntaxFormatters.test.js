@@ -954,10 +954,22 @@ describe('markdownSyntaxFormatters', () => {
     });
 
     // TODO:
-    describe('heading', () => {
-      it.todo(
-        'inserts a level 2 heading when no selection given, and no text on the current line',
-      );
+    describe.only('heading', () => {
+      it('inserts a level 2 heading when no selection given, and no current heading on the same line', () => {
+        const textAreaValue = 'one two three';
+        const expectedNewTextAreaValue = 'one \n## \ntwo three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 4,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(8);
+        expect(newCursorEnd).toEqual(8);
+      });
 
       it.todo(
         'inserts a level 2 heading when text selected and line does not include a heading level',
@@ -984,6 +996,10 @@ describe('markdownSyntaxFormatters', () => {
       );
       it.todo(
         'removes a heading when  text selected and line begins with ####',
+      );
+
+      it.todo(
+        'removes a heading when a user has started the line with greater than a level 4 heading',
       );
     });
 
