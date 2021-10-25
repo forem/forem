@@ -6,25 +6,21 @@
   <div class="notification__content">
     <% data = notification.json_data %>
     <% removal = data["adjustment_type"] == "removal" %>
-      <h3 class="mb-2 color-base-90">Hey there 👋</h3>
+      <h3 class="mb-2 color-base-90"><%= t("views.notifications.tag.heading") %></h3>
       <p class="mb-4">
-        Moderators <%= removal ? "removed" : "added" %> the
-        <strong><a href="/t/<%= data["tag_name"] %>">#<%= data["tag_name"] %></a></strong> tag
-        <%= removal ? "from" : "to" %> your post
-        <a href="<%= data["article"]["path"] %>"><%= h(data["article"]["title"]) %></a>.
-        <%= removal ? "Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community." : "Mods felt this tag represented your article." %>
+        <%= t("views.notifications.tag.#{removal ? "remove" : "add"}_html", tag: link_to("##{data["tag_name"]}", "/t/#{data["tag_name"]}")), title: link_to(h(data["article"]["title"]), data["article"]["path"])) %>
       </p>
       <div class="crayons-card crayons-card--secondary p-4 mb-4">
         <p class="color-base-70">
-          <strong>Reason for action:</strong>
+          <strong><%= t("views.notifications.tag.reason") %></strong>
           <em><%= data["reason_for_adjustment"] %></em>
         </p>
       </div>
       <% if removal %>
-        <p class="mb-2">Check out <a href="/tags">other popular tags</a> which may be more appropriate</p>
+        <p class="mb-2"><%= t("views.notifications.tag.check_html", other: link_to(t("views.notifications.tag.other"), "/tags")) %></p>
       <% end %>
       <p>
-        Thanks for being part of <%= community_name %>! <%= t("contact_prompts.if_any_questions_html") %> 🤗
+        <%= t("views.notifications.tag.support_html", community: community_name, email: t("contact_prompts.if_any_questions_html")) %>
       </p>
   </div>
 </div>

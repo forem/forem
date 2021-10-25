@@ -44,7 +44,7 @@ gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard a
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 0.2.24" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.9" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 2.7.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.7.1" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -136,7 +136,7 @@ end
 group :development, :test do
   gem "amazing_print", "~> 1.4" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.36.0" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", github: "forem/cypress-rails", branch: "enable-knapsack-pro-support" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers

@@ -6,9 +6,7 @@ en:
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   core:
     add_comment: Add comment
-    all: All
     analytics: Analytics
-    browse: Browse
     comment: Comment
     comments: Comments
     community_name_is_great: "%{community_name} is great!"
@@ -39,19 +37,10 @@ en:
     month: Month
     more_from: More from
     my_tags: My Tags
-    podcasts: Podcasts
     pinned: Pinned
     popular_tags: Popular Tags
     post: Post
     posts: Posts
-    reaction: Reaction
-    reaction_pluralized:
-      one: reaction
-      other: reactions
-    reactions:
-      heart: Heart
-      save: Save
-      unicorn: Unicorn
     read_next: Read next
     reading_list: Reading list
     reply: Reply
@@ -60,7 +49,6 @@ en:
     see_all: See all
     series: Series
     settings: Settings
-    share_to: Share to %{media}
     sign_out: Sign Out
     trending_on: Trending on
     view: View
@@ -75,6 +63,45 @@ en:
     page_title: Dashboard
     upload_a_video: Upload a video
     write_new_post: Write your first post now
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: about 1 hour ago
+        other: about %{count} hours ago
+      about_x_months:
+        one: about 1 month ago
+        other: about %{count} months ago
+      about_x_years:
+        one: about 1 year ago
+        other: about %{count} years ago
+      almost_x_years:
+        one: almost 1 year ago
+        other: almost %{count} years ago
+      half_a_minute: half a minute ago
+      less_than_x_seconds:
+        one: less than 1 second ago
+        other: less than %{count} seconds ago
+      less_than_x_minutes:
+        one: less than a minute ago
+        other: less than %{count} minutes ago
+      over_x_years:
+        one: over 1 year ago
+        other: over %{count} years ago
+      x_seconds:
+        one: 1 second ago
+        other: "%{count} seconds ago"
+      x_minutes:
+        one: 1 minute ago
+        other: "%{count} minutes ago"
+      x_days:
+        one: 1 day ago
+        other: "%{count} days ago"
+      x_months:
+        one: 1 month ago
+        other: "%{count} months ago"
+      x_years:
+        one: 1 year ago
+        other: "%{count} years ago"
   errors:
     messages:
       accepted: must be accepted
@@ -109,16 +136,6 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
-  podcasts:
-    featured_shows: Featured shows
-    latest_episodes: Latest episodes
-    suggest_a_podcast: Suggest a podcast
-    view_all_podcasts: View all podcasts
-    statuses:
-      ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
-      unparsable: Podcast's rss couldn't be parsed
-      unplayable: This podcast may not be playable in the browser
-      unreachable: Podcast's feed_url is not reachable
   settings_menu:
     account: Account
     billing: Billing
