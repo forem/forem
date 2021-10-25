@@ -110,6 +110,9 @@ class Article < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
+  after_update_commit :update_notification_subscriptions, if: proc { |article|
+    article.saved_change_to_user_id?
+  }
 
   after_commit :async_score_calc, :touch_collection, :detect_animated_images, on: %i[create update]
 
@@ -572,6 +575,10 @@ class Article < ApplicationRecord
 
   def update_notifications
     Notification.update_notifications(self, "Published")
+  end
+
+  def update_notification_subscriptions
+    NotificationSubscription.update_notification_subscriptions(self)
   end
 
   def before_destroy_actions
