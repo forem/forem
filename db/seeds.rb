@@ -187,19 +187,21 @@ seeder.create_if_none(Article, num_articles) do
       #{Faker::Hipster.paragraph(sentence_count: 2)}
     MARKDOWN
 
-    Article.create!(
+    article = Article.create!(
       body_markdown: markdown,
       featured: true,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
 
-    Reaction.create!(
-      category: "thumbsup",
-      reactable_id: Article.last.id,
-      reactable_type: "Article",
-      user_id: User.order(Arel.sql("RANDOM()")).first.id,
-    )
+    Random.random_number(10).times do |t|
+      article.reactions.create(
+        user_id: User.order(Arel.sql("RANDOM()")).first.id,
+        category: "like",
+      )
+    end
+
+    article.sync_reactions_count
   end
 end
 
