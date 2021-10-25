@@ -172,7 +172,7 @@ en:
           start: Get Started
         web: Web monetization
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
-      for_html: Setting for %{name}
+      for_html: Settings for %{name}
       group:
         user: User
         Basic: Basic
