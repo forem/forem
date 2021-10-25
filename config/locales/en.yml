@@ -41,6 +41,14 @@ en:
     popular_tags: Popular Tags
     post: Post
     posts: Posts
+    reaction: Reaction
+    reaction_pluralized:
+      one: reaction
+      other: reactions
+    reactions:
+      heart: Heart
+      save: Save
+      unicorn: Unicorn
     read_next: Read next
     reading_list: Reading list
     reply: Reply
