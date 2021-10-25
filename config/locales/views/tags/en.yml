@@ -12,9 +12,10 @@ en:
         meta:
           title: Edit %{tag}
         heading_html: " Editing: %{tag}"
-        admin: "%{tag}'s admin page"
+        admin: "Admin"
+        help: "Help"
+        view: "View"
         form:
-          example: Click here to see an example of attributes.
           pretty_name:
             label: Pretty name
             placeholder: This is the name at the top of the show page.
@@ -32,7 +33,6 @@ en:
             label: Rules markdown
             placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
           submit: Save
-        markdown_html: "%{tag} is the name of the tag used in Markdown."
       follow: Follow
       following_tags: Following tags
       moderator:

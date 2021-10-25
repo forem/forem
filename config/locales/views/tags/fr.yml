@@ -12,9 +12,10 @@ fr:
         meta:
           title: Edit %{tag}
         heading_html: " Editing: %{tag}"
-        admin: "%{tag}'s admin page"
+        admin: "Admin"
+        help: "Help"
+        view: "View"
         form:
-          example: Click here to see an example of attributes.
           pretty_name:
             label: Pretty name
             placeholder: This is the name at the top of the show page.
