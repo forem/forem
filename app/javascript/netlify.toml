@@ -1,6 +1,6 @@
 [build]
   base = "app/javascript"
-  command = "yarn install && yarn run build-storybook"
+  command = "npm run build-storybook"
   publish = "storybook-static"
   ignore = "git diff --quiet HEAD^ HEAD ./ && git diff --quiet HEAD^ HEAD ../assets/stylesheets/config/"
   NETLIFY_USE_YARN = "true"
