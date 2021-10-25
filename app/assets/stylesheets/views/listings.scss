@@ -4,7 +4,7 @@
 .listings-columns {
   margin-bottom: var(--su-6);
   display: grid;
-  grid-gap: var(--su-2);
+  gap: var(--su-2);
 
   @media (min-width: $breakpoint-m) {
     grid-gap: var(--su-4);
