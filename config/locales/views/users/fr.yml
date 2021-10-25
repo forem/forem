@@ -7,12 +7,15 @@ fr:
           title: "%{user} — %{community} Profile"
       comments:
         all:
+          one: All %{count} comments
           other: All %{count} comments
         last:
+          one: Last %{count} comments
           other: Last %{count} comments
         recent: Recent comments
         view: View all activity
         view_all:
+          one: View all %{count} comments
           other: View all %{count} comments
         view_last:
           one: View last 1 Comment
