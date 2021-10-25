@@ -2,7 +2,7 @@
   <%= render "podcast_episodes/meta" %>
 <% end %>
 <% if @podcast %>
-  <div class="spec__podcast-header" style="background:#<%= @podcast.main_color_hex %>;" class="mb-4">
+  <div class="spec__podcast-header mb-3" style="background:#<%= @podcast.main_color_hex %>;" class="mb-4">
     <div class="crayons-layout relative">
       <nav class="s:absolute mt-2">
         <a href="/pod" class="crayons-btn crayons-btn--ghost crayons-btn--inverted"><%= t("views.podcasts.view_all_podcasts") %></a>
@@ -30,9 +30,9 @@
   </div>
 <% end %>
 
-<main id="main-content" class="crayons-layout podcast-index mb-8">
+<main id="main-content" class="crayons-layout <% unless @podcast %>crayons-layout--header-inside<% end %> podcast-index mb-8">
   <% unless @podcast %>
-    <header class="flex items-center justify-between p-3 pb-0 m:p-0">
+    <header class="crayons-page-header">
       <h1 class="crayons-title">
         <%= t("views.podcasts.heading") %>
       </h1>

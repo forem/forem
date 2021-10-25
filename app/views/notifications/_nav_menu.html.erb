@@ -46,7 +46,7 @@
   <% end %>
 </nav>
 
-<nav class="block m:hidden px-4" aria-label="<%= t("views.notifications.nav.aria_label") %>">
+<nav class="block m:hidden px-3" aria-label="<%= t("views.notifications.nav.aria_label") %>">
   <% if @organizations.present? %>
     <select id="notifications-filter__select" class="crayons-select mb-2">
       <option value="<%= notifications_path %>"><%= @user.name %></option>
