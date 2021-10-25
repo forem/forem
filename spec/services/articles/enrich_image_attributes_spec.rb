@@ -20,7 +20,7 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     described_class.call(article)
 
     parsed_html = Nokogiri::HTML.fragment(article.processed_html)
-    images_with_width_and_height_set = parsed_html.xpath("img[@width and @height]")
+    images_with_width_and_height_set = parsed_html.css("img").select { |img| img[:width].present? && img[:height].present? }
     expect(images_with_width_and_height_set.count).to eq(count)
   end
 
