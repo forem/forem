@@ -12,18 +12,22 @@ module Articles
       end
 
       def default_home_feed(user_signed_in: false)
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
+        _featured_story, stories = featured_story_and_default_home_feed(user_signed_in: user_signed_in, ranking: true)
         stories
       end
 
-      def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)
+      def featured_story_and_default_home_feed(user_signed_in: false, ranking: true)
         featured_story, hot_stories = globally_hot_articles(user_signed_in)
         hot_stories = rank_and_sort_articles(hot_stories) if @user && ranking
         [featured_story, hot_stories]
       end
 
+      # Adding an alias to preserve public method signature.
+      # Eventually, we should be able to remove the alias.
+      alias default_home_feed_and_featured_story featured_story_and_default_home_feed
+
       def more_comments_minimal_weight_randomized
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+        _featured_story, stories = featured_story_and_default_home_feed(user_signed_in: true)
         first_quarter(stories).shuffle + last_three_quarters(stories)
       end
 
