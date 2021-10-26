@@ -7,32 +7,36 @@ module Articles
         @page = page
         @tag = tag
         @tag_weight = 1 # default weight tags play in rankings
-        @comment_weight = 0 # default weight comments play in rankings
+        @comment_weight = 0.2 # default weight comments play in rankings
         @xp_level_weight = 1 # default weight for user experience level
       end
 
       def default_home_feed(user_signed_in: false)
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
+        _featured_story, stories = featured_story_and_default_home_feed(user_signed_in: user_signed_in, ranking: true)
         stories
       end
 
-      def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)
+      def featured_story_and_default_home_feed(user_signed_in: false, ranking: true)
         featured_story, hot_stories = globally_hot_articles(user_signed_in)
         hot_stories = rank_and_sort_articles(hot_stories) if @user && ranking
         [featured_story, hot_stories]
       end
 
-      def more_comments_minimal_weight
-        @comment_weight = 0.2
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
+      # Adding an alias to preserve public method signature.
+      # Eventually, we should be able to remove the alias.
+      alias default_home_feed_and_featured_story featured_story_and_default_home_feed
+
+      def more_comments_minimal_weight_randomized
+        _featured_story, stories = featured_story_and_default_home_feed(user_signed_in: true)
+        first_quarter(stories).shuffle + last_three_quarters(stories)
       end
 
-      def more_comments_minimal_weight_randomized_at_end
-        results = more_comments_minimal_weight
-        first_quarter(results).shuffle + last_three_quarters(results)
-      end
+      # Adding an alias to preserve public method signature.  However,
+      # in this code base there are no further references of
+      # :more_comments_minimal_weight_randomized_at_end
+      alias more_comments_minimal_weight_randomized_at_end more_comments_minimal_weight_randomized
 
+      # @api private
       def rank_and_sort_articles(articles)
         ranked_articles = articles.each_with_object({}) do |article, result|
           article_points = score_single_article(article)
@@ -42,6 +46,7 @@ module Articles
         ranked_articles.to(@number_of_articles - 1)
       end
 
+      # @api private
       def score_single_article(article, base_article_points: 0)
         article_points = base_article_points
         article_points += score_followed_user(article)
@@ -52,10 +57,12 @@ module Articles
         article_points
       end
 
+      # @api private
       def score_followed_user(article, follow_user_score: 1, not_followed_user_score: 0)
         user_following_users_ids.include?(article.user_id) ? follow_user_score : not_followed_user_score
       end
 
+      # @api private
       def score_followed_tags(article, nil_user_tag_score: 0, followed_tag_weight: @tag_weight, unfollowed_tag_score: 0)
         return nil_user_tag_score unless @user
 
@@ -65,19 +72,23 @@ module Articles
         end
       end
 
+      # @api private
       def score_followed_organization(article, followed_org_score: 1, not_followed_org_score: 0)
         user_following_org_ids.include?(article.organization_id) ? followed_org_score : not_followed_org_score
       end
 
+      # @api private
       def score_experience_level(article, xp_level_weight: @xp_level_weight, default_user_xp_level: 5)
         user_experience_level = @user&.setting&.experience_level || default_user_xp_level
         - (((article.experience_level_rating - user_experience_level).abs / 2) * xp_level_weight)
       end
 
+      # @api private
       def score_comments(article, comment_weight: @comment_weight)
         article.comments_count * comment_weight
       end
 
+      # @api private
       def globally_hot_articles(user_signed_in, article_score_threshold: -15, min_rand_limit: 15, max_rand_limit: 80)
         if user_signed_in
           hot_stories = experimental_hot_story_grab
