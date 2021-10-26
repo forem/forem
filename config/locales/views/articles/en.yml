@@ -41,6 +41,7 @@ en:
         submit: Lock discussion
       preview_discuss_html:
         zero: New Discussion!
+        one: '#discuss <img src="%{image}" />%{count}'
         other: '#discuss <img src="%{image}" />%{count}'
       save:
         title: Save to reading list
@@ -50,6 +51,7 @@ en:
       series:
         subtitle: "%{slug} (%{size})"
         size:
+          one: "%{count} Part Series"
           other: "%{count} Part Series"
         published: Published %{date}
         inbetween:
