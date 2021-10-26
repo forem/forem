@@ -1,6 +1,7 @@
 module Articles
   module Feeds
     class LargeForemExperimental
+      DEFAULT_USER_XP_LEVEL = 5
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
@@ -74,12 +75,13 @@ module Articles
 
       # @api private
       def score_followed_organization(article, followed_org_score: 1, not_followed_org_score: 0)
+        return not_followed_org_score unless article.organization_id?
+
         user_following_org_ids.include?(article.organization_id) ? followed_org_score : not_followed_org_score
       end
 
       # @api private
-      def score_experience_level(article, xp_level_weight: @xp_level_weight, default_user_xp_level: 5)
-        user_experience_level = @user&.setting&.experience_level || default_user_xp_level
+      def score_experience_level(article, xp_level_weight: @xp_level_weight)
         - (((article.experience_level_rating - user_experience_level).abs / 2) * xp_level_weight)
       end
 
@@ -110,6 +112,10 @@ module Articles
       end
 
       private
+
+      def user_experience_level
+        @user_experience_level ||= @user&.setting&.experience_level || DEFAULT_USER_XP_LEVEL
+      end
 
       def experimental_hot_story_grab
         start_time = [(@user.page_views.second_to_last&.created_at || 7.days.ago) - 18.hours, 7.days.ago].max
