@@ -19,14 +19,14 @@
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
-<div id="index-container" data-which="videos" data-params="<%= params.to_json(only: %i[tag username q]) %>">
+<div id="index-container" data-which="videos" data-params="<%= params.to_json(only: %i[tag username q]) %>" class="home video-page-title">
 
-  <main id="main-content" class="crayons-layout">
+  <main id="main-content" class="crayons-layout crayons-layout--header-inside">
     <header class="crayons-page-header">
       <h1 class="crayons-title"><%= t("views.videos.heading", community: community_name) %></h1>
       <a class="crayons-btn crayons-btn--ghost" href="<%= new_video_path %>" data-no-instant> <%= t("dashboard.upload_a_video") %></a>
     </header>
-    <div class="grid gap-2 m:gap-4 s:grid-cols-2 m:grid-cols-3 mb-6">
+    <div class="video-collection grid gap-2 m:gap-4 s:grid-cols-2 m:grid-cols-3 mb-6" id="video-collection">
       <% @video_articles.each do |video_article| %>
         <a href="<%= video_article.path %>" id="video-article-<%= video_article.id %>" class="crayons-card media-card">
           <div class="media-card__artwork">
