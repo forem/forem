@@ -38,7 +38,9 @@
     content: attr(data-tooltip);
     left: 0;
     bottom: 100%;
+    top: unset;
     transform: translateY(var(--su-1));
+    pointer-events: none;
   }
 
   &:hover {

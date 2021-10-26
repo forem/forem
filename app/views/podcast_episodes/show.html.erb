@@ -70,10 +70,10 @@
   <% unless @episode.https? %>
     <center>
       <h1 style="color: #e05252;">
-        <%= I18n.t "podcasts.statuses.unplayable" %>
+        <%= t("views.podcasts.statuses.unplayable") %>
       </h1>
       <p>
-        <a href="<%= @episode.media_url %>">Click here to download/listen</a>
+        <a href="<%= @episode.media_url %>"><%= t("views.podcasts.listen") %></a>
       </p>
     </center>
   <% end %>
@@ -89,7 +89,7 @@
                        attributes: %w[href strong em class ref rel src title alt colspan height width size rowspan span value start data-conversation data-lang id] %>
         <% end %>
 
-        <p><a href="<%= @episode.website_url %>">Episode source</a></p>
+        <p><a href="<%= @episode.website_url %>"><%= t("views.podcasts.source") %></a></p>
       </div>
 
       <section

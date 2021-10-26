@@ -32,7 +32,7 @@
   max-width: var(--site-width);
   margin: 0 auto;
   display: grid;
-  grid-gap: var(--layout-gap);
+  gap: var(--layout-gap);
   grid-template-columns: var(--layout);
   padding: var(--layout-padding);
 
@@ -283,4 +283,42 @@
 
 .text-padding {
   padding: var(--content-padding-y) var(--content-padding-x);
+}
+
+.crayons-page-header {
+  --layout-padding: var(--su-3);
+
+  @media (min-width: $breakpoint-l) {
+    --layout-padding: var(--su-4);
+  }
+
+  padding: var(--layout-padding);
+  max-width: var(--site-width);
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (min-width: $breakpoint-m) {
+    min-height: unset;
+  }
+}
+
+.crayons-layout--header-inside {
+  --header-span: 1 / span 1;
+  &.crayons-layout--2-cols {
+    --header-span: 1 / span 2;
+  }
+  grid-template-rows: min-content 1fr;
+  row-gap: 0;
+
+  @media (min-width: $breakpoint-m) {
+    row-gap: var(--layout-gap);
+
+    .crayons-page-header {
+      --layout-padding: 0;
+      grid-column: var(--header-span);
+    }
+  }
 }

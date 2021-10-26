@@ -20,28 +20,28 @@
     </div>
   <% end %>
 
-  <div class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
-    <% if @tab == "organization" && @organizations.present? %>
-      <h1 class="crayons-title">Settings for
-        <select class="crayons-select lh-tight w-25 align-text-top w-max" onchange="window.location.href=this.value">
-          <% options = @organizations.pluck(:slug, :id).each do |arr| %>
-            <% arr[0] = "@#{arr[0]}" %>
-            <% arr[1] = "/settings/organization/#{arr[1]}" %>
-          <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
-          <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
-          <%# For example: %>
-          <%# <option value="/settings/organization/1>@devteam</option> %>
-          <%# <option value="/settings/organization/new" selected>New Organization</option> %>
-        </select>
-      </h1>
-    <% else %>
-      <h1 class="crayons-title">
-        Settings for <a href="<%= user_url(@user) || "#" %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
-      </h1>
-    <% end %>
-  </div>
-
-  <div class="crayons-layout crayons-layout--2-cols crayons-layout--limited-l pt-0">
+  <div class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols crayons-layout--limited-l">
+    <div class="crayons-page-header">
+      <% if @tab == "organization" && @organizations.present? %>
+        <h1 class="crayons-title">Settings for
+          <select class="ml-1 crayons-select lh-tight w-25 align-text-top w-max" onchange="window.location.href=this.value">
+            <% options = @organizations.pluck(:slug, :id).each do |arr| %>
+              <% arr[0] = "@#{arr[0]}" %>
+              <% arr[1] = "/settings/organization/#{arr[1]}" %>
+            <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
+            <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
+            <%# For example: %>
+            <%# <option value="/settings/organization/1>@devteam</option> %>
+            <%# <option value="/settings/organization/new" selected>New Organization</option> %>
+          </select>
+        </h1>
+      <% else %>
+        <h1 class="crayons-title">
+          Settings for
+          <a class="ml-1" href="<%= user_url(@user) || "#" %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
+        </h1>
+      <% end %>
+    </div>
     <div class="crayons-layout__left-sidebar">
       <nav class="hidden m:block" aria-label="Settings">
         <% Settings.tab_list.each do |possible_tab| %>
