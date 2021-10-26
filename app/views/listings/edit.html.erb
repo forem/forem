@@ -30,20 +30,20 @@
             <%= f.label "expires_at", "Custom Expire Date", class: "crayons-field__label" %>
             <%= f.date_field "expires_at", min: Date.tomorrow, max: @listing.natural_expiration_date, class: "crayons-textfield m:max-w-50" %>
             <p class="crayons-field__description">
-                <%= t("views.listings.form.expiry.desc") %>
+                <%= t("views.listings.form.expiry.description") %>
               </p>
           </div>
           <div class="crayons-field crayons-field--checkbox">
             <%= f.check_box "contact_via_connect", class: "crayons-checkbox" %>
             <label class="crayons-field__label" for="contact_via_connect">
               <%= t("views.listings.form.connect.subtitle") %>
-              <p class="crayons-field__description"><%= t("views.listings.form.connect.desc") %></p>
+              <p class="crayons-field__description"><%= t("views.listings.form.connect.description") %></p>
             </label>
           </div>
           <div class="crayons-field">
             <%= f.label "location", class: "crayons-field__label" %>
             <%= f.text_field "location", maxlength: 32, placeholder: t("views.listings.form.location.placeholder"), class: "crayons-textfield m:max-w-50" %>
-            <p class="crayons-field__description"><%= t("views.listings.form.location.desc") %></p>
+            <p class="crayons-field__description"><%= t("views.listings.form.location.description") %></p>
           </div>
           <div>
             <% if @listing.published %>
@@ -71,7 +71,7 @@
       <%= form_for(@listing, html: { class: "crayons-card grid gap-6 p-6 mb-6" }) do |f| %>
         <header>
           <h2 class="mb-2"><%= t("views.listings.edit.bump.subtitle") %></h2>
-          <p><%= t("views.listings.edit.bump.desc") %></p>
+          <p><%= t("views.listings.edit.bump.description") %></p>
         </header>
         <div class="flex items-center">
           <%= f.submit t("views.listings.edit.bump.button"), class: "crayons-btn crayons-btn--secondary mr-4" %>
