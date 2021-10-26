@@ -53,6 +53,9 @@
     "*.rake": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct --enable-pending-cops"
     ],
+    "config/locales/*": [
+      "bundle exec i18n-tasks normalize"
+    ],
     "app/**/*.html.erb": [
       "bundle exec erblint --autocorrect"
     ],
