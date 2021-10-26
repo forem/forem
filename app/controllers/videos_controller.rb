@@ -10,7 +10,7 @@ class VideosController < ApplicationController
       .includes([:user])
       .select(:id, :video, :path, :title, :video_thumbnail_url, :user_id, :video_duration_in_seconds)
       .order(hotness_score: :desc)
-      .page(params[:page].to_i).per(10)
+      .page(params[:page].to_i).per(24)
 
     set_surrogate_key_header "videos", Article.table_key, @video_articles.map(&:record_key)
   end
