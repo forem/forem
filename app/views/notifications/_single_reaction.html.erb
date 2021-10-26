@@ -7,6 +7,7 @@
     <% if notification.json_data["reaction"]["reactable"]["title"].blank? %>
       <% title_link = link_to(
            t("views.notifications.reacted.your.#{notification.json_data['reaction']['reactable_type'].downcase}"),
+           notification.json_data["reaction"]["reactable"]["path"],
            class: "crayons-link fw-bold",
          ) %>
     <% else %>
@@ -15,15 +16,15 @@
            notification.json_data["reaction"]["reactable"]["path"],
            class: "crayons-link fw-bold",
          ) %>
-      <% end %>
-      <%= t("views.notifications.reacted.verb_html",
-            count: 1,
-            start: "",
-            actors: link_to(notification.json_data["user"]["name"], notification.json_data["user"]["path"], class: "crayons-link fw-bold"),
-            # title is blank when it's a comment with only an image, for example
-            title: title_link,
-            class: "crayons-link fw-bold",
-            end: "",
-            reactions: tag.span(inline_svg_tag(reaction_image(category), class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: t("views.reactions.category.#{category}")))) %>
+    <% end %>
+    <%= t("views.notifications.reacted.verb_html",
+          count: 1,
+          start: "",
+          actors: link_to(notification.json_data["user"]["name"], notification.json_data["user"]["path"], class: "crayons-link fw-bold"),
+          # title is blank when it's a comment with only an image, for example
+          title: title_link,
+          class: "crayons-link fw-bold",
+          end: "",
+          reactions: tag.span(inline_svg_tag(reaction_image(category), class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: t("views.reactions.category.#{category}")))) %>
   </div>
 </div>
