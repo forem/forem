@@ -55,7 +55,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     it "allows super admins" do
       sign_in super_admin
       get "/t/#{tag}/edit"
-      expect(response.body).to include("Click here to see an example of attributes.")
+      expect(response.body).to include(I18n.t("views.tags.edit.help"))
     end
 
     context "when user is a tag moderator" do
@@ -66,7 +66,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
       it "allows authorized tag moderators" do
         get "/t/#{tag}/edit"
-        expect(response.body).to include("Click here to see an example of attributes.")
+        expect(response.body).to include(I18n.t("views.tags.edit.help"))
       end
 
       it "does not allow moderators of one tag to edit another tag" do

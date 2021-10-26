@@ -65,7 +65,7 @@ export class ArticleForm extends Component {
   };
 
   static defaultProps = {
-    organizations: '',
+    organizations: '[]',
   };
 
   constructor(props) {

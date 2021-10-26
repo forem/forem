@@ -37,6 +37,7 @@ module Images
       height: nil,
       width: nil,
       max_bytes: 500_000, # Keep everything under half of one MB.
+      auto_rotate: true,
       resizing_type: nil
     }.freeze
 

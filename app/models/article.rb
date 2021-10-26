@@ -110,6 +110,9 @@ class Article < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
+  after_update_commit :update_notification_subscriptions, if: proc { |article|
+    article.saved_change_to_user_id?
+  }
 
   after_commit :async_score_calc, :touch_collection, :detect_animated_images, on: %i[create update]
 
@@ -574,6 +577,10 @@ class Article < ApplicationRecord
     Notification.update_notifications(self, "Published")
   end
 
+  def update_notification_subscriptions
+    NotificationSubscription.update_notification_subscriptions(self)
+  end
+
   def before_destroy_actions
     bust_cache
     touch_actor_latest_article_updated_at(destroying: true)
@@ -770,7 +777,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{title.to_s.downcase.parameterize.tr('_', '')}-#{rand(100_000).to_s(26)}"
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
   end
 
   def clean_data
