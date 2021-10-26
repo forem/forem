@@ -195,17 +195,19 @@ export class ReadingList extends Component {
       ''
     );
     return (
-      <main id="main-content">
-        <header className="crayons-layout s:flex flex-col s:flex-row p-4 pb-0 items-center justify-between">
-          <h1 class="crayons-title mb-2 s:mb-0">
-            {isStatusViewValid ? 'Reading list' : 'Archive'}
-            {` (${itemsTotal})`}
-          </h1>
-          <fieldset className="m:flex justify-end">
-            <legend className="hidden">Filter</legend>
+      <main
+        id="main-content"
+        className="crayons-layout crayons-layout--header-inside crayons-layout--2-cols"
+      >
+        <header className="crayons-page-header block s:flex">
+          <div className="flex justify-between items-center flex-1 mb-2 s:mb-0">
+            <h1 class="crayons-title flex-1">
+              {isStatusViewValid ? 'Reading list' : 'Archive'}
+              {` (${itemsTotal})`}
+            </h1>
             <Button
               onClick={(e) => this.toggleStatusView(e)}
-              className="whitespace-nowrap mb-2 w-100 s:w-auto s:mb-0"
+              className="whitespace-nowrap ml-auto s:w-auto"
               variant="outlined"
               url={READING_LIST_ARCHIVE_PATH}
               tagName="a"
@@ -213,11 +215,15 @@ export class ReadingList extends Component {
             >
               {isStatusViewValid ? 'View archive' : 'View reading list'}
             </Button>
+          </div>
+          <fieldset className="m:flex justify-end s:pl-2 w-100 s:w-auto">
+            <legend className="hidden">Filter</legend>
             <input
               aria-label="Filter reading list by text"
               onKeyUp={this.onSearchBoxType}
-              placeholder="Enter some text to filter on..."
-              className="crayons-textfield mb-2 s:mb-0 min-w-100 ml-0 s:ml-2"
+              type="text"
+              placeholder="Search..."
+              className="crayons-textfield mb-2 s:mb-0"
             />
             <MediaQuery
               query={`(max-width: ${BREAKPOINTS.Medium - 1}px)`}
@@ -240,7 +246,7 @@ export class ReadingList extends Component {
           query={`(min-width: ${BREAKPOINTS.Medium}px)`}
           render={(matches) => {
             return (
-              <div className="crayons-layout crayons-layout--2-cols">
+              <Fragment>
                 {matches && (
                   <div className="crayons-layout__sidebar-left">
                     <TagList
@@ -250,7 +256,7 @@ export class ReadingList extends Component {
                     />
                   </div>
                 )}
-                <section className="crayons-layout__content crayons-card mb-4">
+                <section className="crayons-layout__content crayons-card pb-4">
                   {items.length > 0 ? (
                     <Fragment>
                       <ItemList
@@ -274,7 +280,7 @@ export class ReadingList extends Component {
                     this.renderEmptyItems()
                   )}
                 </section>
-              </div>
+              </Fragment>
             );
           }}
         />

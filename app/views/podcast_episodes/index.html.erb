@@ -2,10 +2,10 @@
   <%= render "podcast_episodes/meta" %>
 <% end %>
 <% if @podcast %>
-  <div class="spec__podcast-header" style="background:#<%= @podcast.main_color_hex %>;" class="mb-4">
+  <div class="spec__podcast-header mb-3" style="background:#<%= @podcast.main_color_hex %>;" class="mb-4">
     <div class="crayons-layout relative">
       <nav class="s:absolute mt-2">
-        <a href="/pod" class="crayons-btn crayons-btn--ghost crayons-btn--inverted">&laquo; <%= t("podcasts.view_all_podcasts") %></a>
+        <a href="/pod" class="crayons-btn crayons-btn--ghost crayons-btn--inverted"><%= t("views.podcasts.view_all_podcasts") %></a>
       </nav>
       <div class="flex s:flex-col items-start s:items-center p-3 pt-0 s:pt-3">
         <span class="crayons-logo crayons-logo--2xl s:crayons-logo--3xl mr-4 s:mr-0 s:mb-2">
@@ -30,16 +30,16 @@
   </div>
 <% end %>
 
-<main id="main-content" class="crayons-layout podcast-index mb-8">
+<main id="main-content" class="crayons-layout <% unless @podcast %>crayons-layout--header-inside<% end %> podcast-index mb-8">
   <% unless @podcast %>
-    <header class="flex items-center justify-between p-3 pb-0 m:p-0">
+    <header class="crayons-page-header">
       <h1 class="crayons-title">
-        <%= t("core.podcasts") %>
+        <%= t("views.podcasts.heading") %>
       </h1>
-      <p><%= link_to t("podcasts.suggest_a_podcast"), new_podcast_path, class: "crayons-btn crayons-btn--ghost" %></p>
+      <p><%= link_to t("views.podcasts.suggest_a_podcast"), new_podcast_path, class: "crayons-btn crayons-btn--ghost" %></p>
     </header>
   <% end %>
-  <h2 class="crayons-subtitle-1 p-3 pt-0 m:p-0"><%= t("podcasts.latest_episodes") %></h2>
+  <h2 class="crayons-subtitle-1 p-3 pt-0 m:p-0"><%= t("views.podcasts.latest_episodes") %></h2>
   <div class="grid gap-2 m:gap-4 grid-cols-2 s:grid-cols-3 m:grid-cols-5 px-2 m:px-0 mb-6">
     <% @podcast_episodes.each do |episode| %>
       <% episode = episode.decorate %>
@@ -68,7 +68,7 @@
     <%= paginate @podcast_episodes, params: { i: nil } %>
   <% end %>
   <% if @featured_podcasts && @featured_podcasts.any? %>
-    <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("podcasts.featured_shows") %></h2>
+    <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("views.podcasts.featured_shows") %></h2>
     <div class="grid gap-2 m:gap-4 l:gap-6 grid-cols-2 m:grid-cols-<%= [@featured_podcasts.size, 3].max %> px-2 m:px-0 mb-6">
       <% @featured_podcasts.each do |podcast| %>
         <a href="/<%= podcast.slug %>">
@@ -81,7 +81,7 @@
         </a>
       <% end %>
     </div>
-    <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("core.browse") %></h2>
+    <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("views.podcasts.browse") %></h2>
     <div class="grid gap-2 s:grid-cols-2 m:grid-cols-4 px-2 m:px-0">
       <% @more_podcasts.each do |podcast| %>
         <a href="/<%= podcast.slug %>" class="crayons-link flex items-center m:fs-l  lh-tight">

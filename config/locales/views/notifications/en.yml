@@ -1,0 +1,85 @@
+---
+en:
+  views:
+    notifications:
+      meta:
+        description: Notifications inbox for %{community}
+        og:
+          title: Notifications - %{community}
+      heading: Notifications
+      badge:
+        heading_html: You received the %{badge} badge
+        awarded_html: "You also get %{credits} to use for %{listings} if you have anything you'd like to promote. 🎉"
+        credits:
+          one: "%{count} new credits"
+          other: "%{count} new credits"
+        listings: community listings
+        more: More information about listings
+        profile: Visit your profile
+      broadcast:
+        visit_html: Visit %{settings} to manage your notifications.
+        settings: Settings
+      comment:
+        commented_html: "%{user} commented on %{title}"
+        first_html: "%{user} wrote their first comment on %{title}"
+        first_reply: "Give them their first reply! 🎉"
+        left_html: "%{user} just left a comment on %{title}."
+        replied_html: "%{user} replied to a thread in %{title}"
+        report: All negative reactions are 100% private. If this comment violates the code of conduct, please downvote/report as inappropriate.
+        welcome_html: Since they are new to the community, could you leave a nice reply to help them feel welcome? <strong>Thank you!</strong>
+      error:
+        subtitle: An error occurred!
+        desc: This has been logged and we're tracking it.
+      follow:
+        and_html: "%{first} and %{second} followed you!"
+        and_other_html:
+          one: "%{first} and %{others} followed you!"
+          other: "%{first} and %{others} followed you!"
+        others:
+          one: "%{count} others"
+          other: "%{count} others"
+        single_html: "%{name} followed you!"
+      load: Load More
+      mention:
+        article_html: "%{user} mentioned you in a post%{if_org}"
+        comment_html: "%{user} mentioned you in a comment"
+        if_org_html: " under %{org}"
+      milestone:
+        heading_html: Your post %{title} passed %{type}!
+        check: Check your dashboard
+        intro: "🎉🎉🎉🎉🎉🎉🎉🎉"
+        type:
+          View:
+            one: "%{count} views"
+            other: "%{count} views"
+          Reaction:
+            one: "%{count} reactions"
+            other: "%{count} reactions"
+      nav:
+        aria_label: Notifications
+        all: All
+        comments: Comments
+        posts: Posts
+      new_post:
+        if_org_html: " under %{org}"
+        verb_html: "%{user} made a new post%{if_org}"
+      reacted:
+        and_html: "%{first} and %{last}"
+        and_other_html:
+          one: "%{first} and %{count} others"
+          other: "%{first} and %{count} others"
+        verb_html:
+          one: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
+          other: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
+        your:
+          article: your article
+          comment: your comment
+      settings: Settings
+      tag:
+        heading: "Hey there 👋"
+        add_html: Moderators added the <strong>%{tag}</strong> tag to your post %{title}. Mods felt this tag represented your article.
+        check_html: Check out %{other} which may be more appropriate
+        other: other popular tags
+        reason: 'Reason for action:'
+        remove_html: Moderators removed the <strong>%{tag}</strong> tag from your post %{title}. Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community.
+        support_html: "Thanks for being part of %{community}! %{email} 🤗"

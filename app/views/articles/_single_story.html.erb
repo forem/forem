@@ -118,9 +118,11 @@
         <div class="crayons-story__details">
           <% if story.public_reactions_count > 0 %>
             <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="Comments for post <%= story.title %> (<%= story.public_reactions_count %>)">
-              <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Reactions") %>
-              <%= story.public_reactions_count %>
-              <span class="hidden s:inline">&nbsp;<%= t("core.reaction_pluralized", count: story.public_reactions_count) %></span>
+              <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: t("views.reactions.summary.title")) %>
+              <%= t("views.reactions.summary.count_html",
+                    count: story.public_reactions_count,
+                    start: tag("span", { class: %w[hidden s:inline] }, true),
+                    end: "</span>".html_safe) %>
             </a>
           <% end %>
           <% if story.comments_count > 0 %>

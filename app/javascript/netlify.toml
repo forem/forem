@@ -1,11 +1,10 @@
 [build]
-  # environment variables NODE_VERSION and YARN_VERSION set in Netlify settings UI
   base = "app/javascript"
   command = "npm install yarn && yarn install && yarn run build-storybook"
   publish = "storybook-static"
   ignore = "git diff --quiet HEAD^ HEAD ./ && git diff --quiet HEAD^ HEAD ../assets/stylesheets/config/"
 [build.environment]
-  NODE_VERSION = "14.14"
+  NODE_VERSION = "14"
 
 # See <https://docs.netlify.com/routing/redirects/redirect-options/> for more options
 [[redirects]]

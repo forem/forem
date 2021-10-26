@@ -7,7 +7,7 @@
                                 image_options: { alt: episode.title, loading: "lazy"}) %>
       </div>
       <div class="content">
-        <h3><span class="tag-identifier">podcast</span><%= episode.title %></h3>
+        <h3><span class="tag-identifier"><%= t("views.podcasts.tag") %></span><%= episode.title %></h3>
       </div>
       <h4>
         <a href="/<%= episode.podcast.slug %>">
