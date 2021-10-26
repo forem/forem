@@ -77,12 +77,6 @@ module ApplicationHelper
     image_options[:width] ||= optimizer_options[:width]
     image_options[:height] ||= optimizer_options[:height]
     updated_image_url = Images::Optimizer.call(image_url, **optimizer_options)
-    puts updated_image_url
-    puts updated_image_url
-    puts updated_image_url
-    puts updated_image_url
-    puts updated_image_url
-    puts updated_image_url
 
     image_tag(updated_image_url, image_options)
   end
