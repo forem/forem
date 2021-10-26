@@ -198,7 +198,7 @@ seeder.create_if_none(Article, num_articles) do
     )
 
     Random.random_number(10).times do |t|
-      article.reactions.create!(
+      article.reactions.create(
         user_id: user_ids.sample,
         category: public_categories.sample,
       )
