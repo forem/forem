@@ -276,7 +276,7 @@ function buildArticleHTML(article) {
     } else if (article.class_name === 'User') {
       saveButton = `
         <button type="button"
-          class="crayons-btn crayons-btn crayons-btn--icon-left fs-s bookmark-button article-engagement-count engage-button follow-action-button follow-user"
+          class="crayons-btn crayons-btn--primary crayons-btn--icon-left fs-s bookmark-button article-engagement-count engage-button follow-action-button follow-user"
           data-info='{"id": ${article.id},"className":"User", "name": "${article.user.name}"}'
         data-follow-action-button>
           &nbsp;
