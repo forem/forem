@@ -16,7 +16,7 @@
         <div class="crayons-field">
           <%= form.label "body_markdown", class: "crayons-field__label" %>
           <%= form.text_area "body_markdown", placeholder: t("views.listings.form.body_markdown.placeholder"), class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("views.listings.form.body_markdown.desc") %></p>
+          <p class="crayons-field__description"><%= t("views.listings.form.body_markdown.description") %></p>
         </div>
 
         <div>
@@ -47,7 +47,7 @@
           <label class="crayons-field__label" for="expires_at_placeholder">
             <%= t("helpers.label.listing.expires_at") %>
             <p class="crayons-field__description">
-              <%= t("views.listings.form.expiry.desc") %>
+              <%= t("views.listings.form.expiry.description") %>
             </p>
           </label>
           <input
@@ -60,7 +60,7 @@
           <div class="crayons-field">
             <%= form.label "organization_id", class: "crayons-field__label" %>
             <%= form.select :organization_id, { t("views.listings.form.organization.none") => "None" }, {}, { class: "crayons-select m:max-w-50" } %>
-            <p class="crayons-field__description"><%= t("views.listings.form.organization.desc") %></p>
+            <p class="crayons-field__description"><%= t("views.listings.form.organization.description") %></p>
           </div>
         <% end %>
 
@@ -73,7 +73,7 @@
 
           <label class="crayons-field__label" for="contact_via_connect_placeholder">
             <%= t("views.listings.form.connect.subtitle") %>
-            <p class="crayons-field__description"><%= t("views.listings.form.connect.desc") %></p>
+            <p class="crayons-field__description"><%= t("views.listings.form.connect.description") %></p>
           </label>
         </div>
       </div>
@@ -86,7 +86,7 @@
     <div class="crayons-field">
       <%= form.label "location", t("views.listings.form.location.label"), class: "crayons-field__label" %>
       <%= form.text_field "location", placeholder: t("views.listings.form.location.placeholder"), class: "crayons-textfield m:max-w-50" %>
-      <p class="crayons-field__description"><%= t("views.listings.form.location.desc") %></p>
+      <p class="crayons-field__description"><%= t("views.listings.form.location.description") %></p>
     </div>
   </div>
 
