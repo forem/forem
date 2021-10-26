@@ -1,5 +1,7 @@
+<% smtp_enabled = ForemInstance.smtp_enabled? %>
+
 <div class="flex flex-col">
-  <% unless ForemInstance.smtp_enabled? %>
+  <% unless smtp_enabled %>
     <div class="crayons-card">
       <div class="crayons-card__body p-4 flex">
         <div>
@@ -13,18 +15,26 @@
   <% end %>
 
   <%= form_for(User.new, url: admin_invitations_path) do |f| %>
-  <div class="crayons-field mt-6 crayons-hover-tooltip" data-tooltip="Configure SMTP Settings first">
-    <div class="mt-6">
-      <%= f.label :email, class: "crayons-field__label" %>
-      <%= f.text_field :email, class: "crayons-textfield cursor-not-allowed", placeholder: "Email of invitee", required: true, disabled: true %>
+    <div class="crayons-field mt-6 <%= smtp_enabled ? "" : "crayons-hover-tooltip" %>" data-tooltip="Configure SMTP Settings first">
+      <div class="mt-6">
+        <%= f.label :email, class: "crayons-field__label" %>
+        <%= f.text_field :email,
+                         class: "crayons-textfield cursor-not-allowed",
+                         placeholder: "Email of invitee",
+                         required: true,
+                         disabled: !smtp_enabled %>
+      </div>
+      <div class="mt-6">
+        <%= f.label :name, class: "crayons-field__label" %>
+        <%= f.text_field :name,
+                         class: "crayons-textfield cursor-not-allowed",
+                         placeholder: "Name of invitee",
+                         required: true,
+                         disabled: !smtp_enabled %>
+      </div>
+      <div>
+        <%= f.submit "Invite User", class: "crayons-btn", disabled: !smtp_enabled %>
+      </div>
     </div>
-    <div class="mt-6">
-      <%= f.label :name, class: "crayons-field__label" %>
-      <%= f.text_field :name, class: "crayons-textfield cursor-not-allowed", placeholder: "Name of invitee", required: true, disabled: true %>
-    </div>
-    <div>
-      <%= f.submit "Invite User", class: "crayons-btn", disabled: true %>
-    </div>
-  </div>
   <% end %>
 </div>
