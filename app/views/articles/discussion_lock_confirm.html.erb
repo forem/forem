@@ -4,9 +4,9 @@
     <%= @article.title %>
   </div>
   <div class="crayons-card text-padding">
-    <h1 class="crayons-subtitle-1 mb-2"><% t("views.articles.lock.heading") %></h1>
+    <h1 class="crayons-subtitle-1 mb-2"><%= t("views.articles.lock.heading") %></h1>
     <p class="fs-l mb-4">
-      <% t("views.articles.lock.desc_html") %>
+      <%= t("views.articles.lock.desc_html") %>
     </p>
 
     <%= form_for @discussion_lock, method: :post do |f| %>
