@@ -3,13 +3,10 @@
 <div class="flex flex-col">
   <% unless smtp_enabled %>
     <div class="crayons-card">
-      <div class="crayons-card__body p-4 flex">
+      <div class="crayons-card__body p-4 grid gap-6 l:grid-flow-col align-items-center">
         <div>
-          SMTP settings are required for your Forem to send emails. If you wish to send invitates, email digests, activity notifications, you need to specify which email host will relay those messages for you.
-        </div>
-        <div>
-          <%= link_to "Configure SMTP Setting", admin_config_path(anchor: "smtp-section"), target: "_blank", rel: :noopener %>
-        </div>
+          SMTP settings are required for your Forem to send emails. If you wish to send invitates, email digests, activity notifications, you need to specify which email host will relay those messages for you. You can read more about it <a href="https://admin.forem.com/docs/advanced-customization/config/smtp-settings" target="_blank"
+          <%= link_to "Configure SMTP Setting", admin_config_path(anchor: "smtp-section"), target: "_blank", rel: :noopener %>>
       </div>
     </div>
   <% end %>
