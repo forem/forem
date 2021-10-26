@@ -28,12 +28,6 @@ fr:
           other: "%{count} stars"
       pin_icon: Pin
       pinned: Pinned
-      profile_descriptions:
-        currently_learning: What are you learning right now? What are the new tools and languages you're picking up right now?
-        currently_hacking_on: What projects are currently occupying most of your time?
-        available_for: What kinds of collaborations or discussions are you available for? What's a good reason to say Hey! to you these days?
-        skills_languages: What tools and languages are you most experienced with? Are you specialized or more of a generalist?
-        work: "What do you do? Example: CEO at ACME Inc."
       profile_fields:
         bio:
           label: Bio
