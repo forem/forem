@@ -2,43 +2,43 @@
 en:
   views:
     tags:
-      meta:
-        title: Tags
-        description: Tags to follow on %{community}
-        og:
-          description: "%{community} is great!"
-      heading: Top tags
       edit:
-        meta:
-          title: Edit %{tag}
-        heading_html: " Editing: %{tag}"
-        admin: "Admin"
-        help: "Help"
-        view: "View"
+        admin: Admin
         form:
+          bg_color_hex:
+            label: Bg color hex
           pretty_name:
             label: Pretty name
             placeholder: This is the name at the top of the show page.
-          bg_color_hex:
-            label: Bg color hex
-          text_color_hex:
-            label: Text color hex
-          short_summary:
-            label: Short summary
-            placeholder: Brief overview of what this tag is all about.
-          wiki_body_markdown:
-            label: Wiki body markdown
-            placeholder: This is an 'about' section. Feel free to add an FAQ, additional resources, etc.
           rules_markdown:
             label: Rules markdown
             placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
+          short_summary:
+            label: Short summary
+            placeholder: Brief overview of what this tag is all about.
           submit: Save
+          text_color_hex:
+            label: Text color hex
+          wiki_body_markdown:
+            label: Wiki body markdown
+            placeholder: This is an 'about' section. Feel free to add an FAQ, additional resources, etc.
+        heading_html: " Editing: %{tag}"
+        help: Help
+        meta:
+          title: Edit %{tag}
+        view: View
       follow: Follow
       following_tags: Following tags
+      heading: Top tags
+      meta:
+        description: Tags to follow on %{community}
+        og:
+          description: "%{community} is great!"
+        title: Tags
       moderator:
-        text_html: "comma separated, space is optional. Example: %{code}"
         code: 123
-        placeholder: "comma separated, space is optional. Example: 1,2,3"
+        placeholder: 'comma separated, space is optional. Example: 1,2,3'
+        text_html: 'comma separated, space is optional. Example: %{code}'
       published:
         one: 1 post published
         other: "%{count} posts published"
