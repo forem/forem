@@ -10,12 +10,14 @@ RSpec.describe "Videos", type: :request do
       expect(response.body).to include "#{community_name} on Video"
     end
 
-    it "shows articles with video" do
+    it "shows articles with video", focus: true do
       not_video_article = create(:article)
       video_article = create(:article)
-      allow(video_article).to receive(:video).and_return("video/mp4")
-
-      video_article.update_columns(video: "video", video_thumbnail_url: "video", title: "this video")
+      video_article.update_columns(
+        video: "video",
+        video_thumbnail_url: "https://dummyimage.com/240x180.jpg",
+        title: "this video"
+      )
       get "/videos"
       expect(response.body).to include video_article.title
       expect(response.body).not_to include not_video_article.title
