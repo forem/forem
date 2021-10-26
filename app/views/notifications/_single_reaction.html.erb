@@ -23,7 +23,6 @@
           actors: link_to(notification.json_data["user"]["name"], notification.json_data["user"]["path"], class: "crayons-link fw-bold"),
           # title is blank when it's a comment with only an image, for example
           title: title_link,
-          class: "crayons-link fw-bold",
           end: "",
           reactions: tag.span(inline_svg_tag(reaction_image(category), class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: t("views.reactions.category.#{category}")))) %>
   </div>
