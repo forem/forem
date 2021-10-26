@@ -13,7 +13,9 @@ RSpec.describe "Videos", type: :request do
     it "shows articles with video" do
       not_video_article = create(:article)
       video_article = create(:article)
-      video_article.update_columns(video: "video.mp4", video_thumbnail_url: "video.mp4", title: "this video")
+      allow(video_article).to receive(:video).and_return("video/mp4")
+
+      video_article.update_columns(video: "video", video_thumbnail_url: "video", title: "this video")
       get "/videos"
       expect(response.body).to include video_article.title
       expect(response.body).not_to include not_video_article.title
