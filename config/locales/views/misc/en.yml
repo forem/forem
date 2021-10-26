@@ -25,13 +25,13 @@ en:
     logo:
       color_1:
         label: Brand color 1
-        desc: Used for backgrounds, borders etc.
+        description: Used for backgrounds, borders etc.
         select:
           aria_label: Brand color 1 color selector
           label: Brand color 1 color select
       color_2:
         label: Brand color 2
-        desc_html: Used for texts (usually put on <em>Brand color 1</em>).
+        description_html: Used for texts (usually put on <em>Brand color 1</em>).
         select:
           aria_label: Brand color 2 color selector
           label: Brand color 2 color select
