@@ -1,0 +1,18 @@
+---
+fr:
+  helpers:
+    label:
+      podcast:
+        android_url: Android url
+        description: Description
+        feed_url: Feed url
+        image: Image
+        itunes_url: Itunes url
+        main_color_hex: Main color hex
+        overcast_url: Overcast url
+        pattern_image: Pattern image
+        slug: Slug
+        soundcloud_url: Soundcloud url
+        title: Title
+        twitter_username: Twitter username
+        website_url: Website url

@@ -27,6 +27,16 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
       expect(article.co_author_ids).to eq([2, 3])
     end
 
+    it "allows an Admin to update the author" do
+      allow(NotificationSubscriptions::UpdateWorker).to receive(:perform_async)
+      new_author = create(:user)
+      get request
+
+      patch admin_article_path(article.id), params: { article: { user_id: new_author.id } }
+      expect(article.reload.user_id).to eq(new_author.id)
+      expect(NotificationSubscriptions::UpdateWorker).to have_received(:perform_async)
+    end
+
     it "allows an Admin to mark an article as approved" do
       expect do
         patch admin_article_path(article.id), params: { article: { approved: true } }

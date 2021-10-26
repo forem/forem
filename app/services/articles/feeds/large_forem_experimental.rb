@@ -1,38 +1,43 @@
 module Articles
   module Feeds
     class LargeForemExperimental
+      DEFAULT_USER_XP_LEVEL = 5
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
         @page = page
         @tag = tag
         @tag_weight = 1 # default weight tags play in rankings
-        @comment_weight = 0 # default weight comments play in rankings
-        @experience_level_weight = 1 # default weight for user experience level
+        @comment_weight = 0.2 # default weight comments play in rankings
+        @xp_level_weight = 1 # default weight for user experience level
       end
 
       def default_home_feed(user_signed_in: false)
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
+        _featured_story, stories = featured_story_and_default_home_feed(user_signed_in: user_signed_in, ranking: true)
         stories
       end
 
-      def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)
+      def featured_story_and_default_home_feed(user_signed_in: false, ranking: true)
         featured_story, hot_stories = globally_hot_articles(user_signed_in)
         hot_stories = rank_and_sort_articles(hot_stories) if @user && ranking
         [featured_story, hot_stories]
       end
 
-      def more_comments_minimal_weight
-        @comment_weight = 0.2
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
+      # Adding an alias to preserve public method signature.
+      # Eventually, we should be able to remove the alias.
+      alias default_home_feed_and_featured_story featured_story_and_default_home_feed
+
+      def more_comments_minimal_weight_randomized
+        _featured_story, stories = featured_story_and_default_home_feed(user_signed_in: true)
+        first_quarter(stories).shuffle + last_three_quarters(stories)
       end
 
-      def more_comments_minimal_weight_randomized_at_end
-        results = more_comments_minimal_weight
-        first_quarter(results).shuffle + last_three_quarters(results)
-      end
+      # Adding an alias to preserve public method signature.  However,
+      # in this code base there are no further references of
+      # :more_comments_minimal_weight_randomized_at_end
+      alias more_comments_minimal_weight_randomized_at_end more_comments_minimal_weight_randomized
 
+      # @api private
       def rank_and_sort_articles(articles)
         ranked_articles = articles.each_with_object({}) do |article, result|
           article_points = score_single_article(article)
@@ -42,8 +47,9 @@ module Articles
         ranked_articles.to(@number_of_articles - 1)
       end
 
-      def score_single_article(article)
-        article_points = 0
+      # @api private
+      def score_single_article(article, base_article_points: 0)
+        article_points = base_article_points
         article_points += score_followed_user(article)
         article_points += score_followed_organization(article)
         article_points += score_followed_tags(article)
@@ -52,40 +58,48 @@ module Articles
         article_points
       end
 
-      def score_followed_user(article)
-        user_following_users_ids.include?(article.user_id) ? 1 : 0
+      # @api private
+      def score_followed_user(article, follow_user_score: 1, not_followed_user_score: 0)
+        user_following_users_ids.include?(article.user_id) ? follow_user_score : not_followed_user_score
       end
 
-      def score_followed_tags(article)
-        return 0 unless @user
+      # @api private
+      def score_followed_tags(article, nil_user_tag_score: 0, followed_tag_weight: @tag_weight, unfollowed_tag_score: 0)
+        return nil_user_tag_score unless @user
 
         article_tags = article.decorate.cached_tag_list_array
         user_followed_tags.sum do |tag|
-          article_tags.include?(tag.name) ? tag.points * @tag_weight : 0
+          article_tags.include?(tag.name) ? tag.points * followed_tag_weight : unfollowed_tag_score
         end
       end
 
-      def score_followed_organization(article)
-        user_following_org_ids.include?(article.organization_id) ? 1 : 0
+      # @api private
+      def score_followed_organization(article, followed_org_score: 1, not_followed_org_score: 0)
+        return not_followed_org_score unless article.organization_id?
+
+        user_following_org_ids.include?(article.organization_id) ? followed_org_score : not_followed_org_score
       end
 
-      def score_experience_level(article)
-        user_experience_level = @user&.setting&.experience_level || 5
-        - (((article.experience_level_rating - user_experience_level).abs / 2) * @experience_level_weight)
+      # @api private
+      def score_experience_level(article, xp_level_weight: @xp_level_weight)
+        - (((article.experience_level_rating - user_experience_level).abs / 2) * xp_level_weight)
       end
 
-      def score_comments(article)
-        article.comments_count * @comment_weight
+      # @api private
+      def score_comments(article, comment_weight: @comment_weight)
+        article.comments_count * comment_weight
       end
 
-      def globally_hot_articles(user_signed_in)
+      # @api private
+      def globally_hot_articles(user_signed_in, article_score_threshold: -15, min_rand_limit: 15, max_rand_limit: 80)
         if user_signed_in
           hot_stories = experimental_hot_story_grab
           hot_stories = hot_stories.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
           featured_story = hot_stories.where.not(main_image: nil).first
           new_stories = Article.published
-            .where("score > ?", -15)
-            .limited_column_select.includes(top_comments: :user).order(published_at: :desc).limit(rand(15..80))
+            .where("score > ?", article_score_threshold)
+            .limited_column_select.includes(top_comments: :user).order(published_at: :desc)
+            .limit(rand(min_rand_limit..max_rand_limit))
           hot_stories = hot_stories.to_a + new_stories.to_a
         else
           hot_stories = Article.published.limited_column_select
@@ -98,6 +112,10 @@ module Articles
       end
 
       private
+
+      def user_experience_level
+        @user_experience_level ||= @user&.setting&.experience_level || DEFAULT_USER_XP_LEVEL
+      end
 
       def experimental_hot_story_grab
         start_time = [(@user.page_views.second_to_last&.created_at || 7.days.ago) - 18.hours, 7.days.ago].max

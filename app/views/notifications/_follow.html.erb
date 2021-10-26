@@ -1,5 +1,6 @@
-<div class="crayons-card notification <% if notification.json_data["aggregated_siblings"].length == 1 %> notification--middle <% else %> flex-col items-center <% end %>">
-  <% if notification.json_data["aggregated_siblings"].length == 1 %>
+<% siblings = notification.json_data["aggregated_siblings"].length %>
+<div class="crayons-card notification <% if siblings == 1 %> notification--middle <% else %> flex-col items-center <% end %>">
+  <% if siblings == 1 %>
     <% first_notification = notification.json_data["aggregated_siblings"].first %>
     <% cache "activity-profile-pic-#{first_notification['id']}-#{first_notification['profile_image_90']}" do %>
       <a href="<%= first_notification["path"] %>" class="crayons-avatar crayons-avatar--l <% if notification.json_data["aggregated_siblings"].length == 1 %>m:crayons-avatar--xl<% end %> shrink-0" tabindex="-1" aria-hidden="true">
@@ -9,7 +10,7 @@
     <div class="notification__content">
       <% cache "activity-follow-button-#{first_notification['path']}-#{first_notification['name']}" do %>
         <div class="flex justify-between items-center">
-          <p><a href="<%= first_notification["path"] %>" class="crayons-link fw-bold"><%= first_notification["name"] %></a> followed you!</p>
+          <p><%= t("views.notifications.follow.single_html", name: link_to(first_notification["name"], first_notification["path"], class: "crayons-link fw-bold")) %></p>
           <%= follow_button(notification.decorate.mocked_object("user"), "follow-back") %>
         </div>
       <% end %>
@@ -24,12 +25,10 @@
       <% end %>
     </div>
     <p>
-      <% if notification.json_data["aggregated_siblings"].length == 2 %>
-        <a href="<%= json_data_array.first["path"] %>" class="crayons-link fw-bold"><%= json_data_array.first["name"] %></a> and
-        <a href="<%= json_data_array.second["path"] %>" class="crayons-link fw-bold"><%= json_data_array.second["name"] %></a> followed you!
+      <% if siblings == 2 %>
+        <%= t("views.notifications.follow.and_html", first: link_to(json_data_array.first["name"], json_data_array.first["path"], class: "crayons-link fw-bold"), second: link_to(json_data_array.second["name"], json_data_array.second["path"], class: "crayons-link fw-bold")) %>
       <% else %>
-        <a href="<%= json_data_array.first["path"] %>" class="crayons-link fw-bold"><%= json_data_array.first["name"] %></a>
-        and <%= notification.json_data["aggregated_siblings"].size - 1 %> others followed you!
+        <%= t("views.notifications.follow.and_other_html", first: link_to(json_data_array.first["name"], json_data_array.first["path"], class: "crayons-link fw-bold"), others: t("views.notifications.follow.others", count: siblings - 1), count: siblings) %>
       <% end %>
     </p>
   <% end %>

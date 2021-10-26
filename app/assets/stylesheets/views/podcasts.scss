@@ -1,0 +1,51 @@
+@import '../config/import';
+
+.podcast-episode-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  color: var(--card-color);
+  transition: all var(--transition-props);
+
+  &__logo {
+    img {
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+  }
+
+  &__content {
+    padding: var(--su-4);
+    line-height: var(--lh-tight);
+
+    h3 {
+      font-size: var(--fs-base);
+      margin-bottom: var(--su-2);
+      font-weight: var(--fw-medium);
+    }
+
+    p {
+      font-size: var(--fs-s);
+      opacity: 0.6;
+      transition: all var(--transition-props);
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px var(--base-a10);
+    color: var(--link-color-hover);
+
+    p {
+      opacity: 0.8;
+    }
+  }
+
+  &--all {
+    &:nth-child(6) {
+      @media (min-width: $breakpoint-m) {
+        display: none;
+      }
+    }
+  }
+}

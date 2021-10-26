@@ -3,16 +3,21 @@
     <%= render "notifications/shared/profile_pic", json_data: notification.json_data %>
   <% end %>
   <div class="notification__content">
-    <a href="<%= notification.json_data["user"]["path"] %>" class="crayons-link fw-bold"><%= notification.json_data["user"]["name"] %></a>
-    reacted to
-    <a href="<%= notification.json_data["reaction"]["reactable"]["path"] %>" class="crayons-link fw-bold">
-      <%# title is blank when it's a comment with only an image, for example %>
-      <%= notification.json_data["reaction"]["reactable"]["title"].blank? ? "your #{notification.json_data['reaction']['reactable_type'].downcase}" : sanitize(notification.json_data["reaction"]["reactable"]["title"]) %>
-    </a>
-    with
-    <span>
-      <% category = notification.json_data["reaction"]["category"] %>
-      <%= inline_svg_tag(reaction_image(category), class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: category.to_s.humanize) %>
-    </span>
+    <% category = notification.json_data["reaction"]["category"] %>
+    <%= t("views.notifications.reacted.verb_html",
+          count: 1,
+          start: "",
+          actors: link_to(notification.json_data["user"]["name"], notification.json_data["user"]["path"], class: "crayons-link fw-bold"),
+          # title is blank when it's a comment with only an image, for example
+          title: link_to(
+            if notification.json_data["reaction"]["reactable"]["title"].blank?
+              t("views.notifications.reacted.your.#{notification.json_data["reaction"]["reactable_type"].downcase}")
+            else
+              sanitize(notification.json_data["reaction"]["reactable"]["title"]), notification.json_data["reaction"]["reactable"]["path"]
+            end,
+            class: "crayons-link fw-bold",
+          ),
+          end: "",
+          reactions: tag.span(inline_svg_tag(reaction_image(category), class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: t("views.reactions.category.#{category.to_s}"))) %>
   </div>
 </div>
