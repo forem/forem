@@ -4,23 +4,28 @@
 <div id="query-wrapper"></div>
 
 <main id="main-content">
-  <div class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-3 pb-0 s:pb-3">
-    <div class="block m:hidden" id="mobile-search-container">
-      <form accept-charset="UTF-8" method="get" action="/search" role="search">
-        <div class="crayons-fields crayons-fields--horizontal">
-          <div class="crayons-field flex-1 relative">
-            <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
-            <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
-              <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: "Search") %>
-            </button>
+  <div id="index-container"
+      class="crayons-layout crayons-layout--header-inside crayons-layout--limited-l crayons-layout--2-cols"
+      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
+      data-tag=""
+      data-feed="<%= params[:timeframe] || "base-feed" %>"
+      data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
+    <div class="crayons-page-header block s:flex">
+      <div class="block m:hidden mb-2" id="mobile-search-container">
+        <form accept-charset="UTF-8" method="get" action="/search" role="search">
+          <div class="crayons-fields crayons-fields--horizontal">
+            <div class="crayons-field flex-1 relative">
+              <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
+              <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
+                <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: "Search") %>
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
 
-    <div class="block s:flex items-center justify-between">
-      <h1 class="crayons-title hidden s:block pl-2">
-        Search results <%= "for #{params[:q]}" unless params[:q].blank? %>
+      <h1 class="crayons-title hidden s:block">
+        Search results <%= "for #{params[:q]}" if params[:q].present? %>
       </h1>
 
       <nav id="sorting-option-tabs" aria-label="Search result sort options" class="-mx-3 m:mx-0">
@@ -36,16 +41,13 @@
           </li>
         </ul>
       </nav>
+
+      <nav class="block s:hidden -mx-3 m:mx-0">
+        <%= render "stories/articles_search/nav_menu" %>
+      </nav>
     </div>
-  </div>
 
-  <div class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols pt-0" id="index-container"
-      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-      data-tag=""
-      data-feed="<%= params[:timeframe] || "base-feed" %>"
-      data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
-
-    <div class="crayons-layout__sidebar-left search-nav">
+    <div class="crayons-layout__sidebar-left s:block hidden">
       <%= render "stories/articles_search/nav_menu" %>
     </div>
 

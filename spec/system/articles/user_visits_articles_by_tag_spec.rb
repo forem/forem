@@ -23,7 +23,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the follow button", js: true do
-        within("header.tag-header") { expect(page).to have_button(I18n.t("core.follow")) }
+        within("header.spec__tag-header") { expect(page).to have_button(I18n.t("core.follow")) }
       end
 
       # Regression test for https://github.com/forem/forem/pull/12724
@@ -65,7 +65,7 @@ RSpec.describe "User visits articles by tag", type: :system do
     it "shows the following button", js: true do
       wait_for_javascript
 
-      within("header.tag-header") { expect(page).to have_button(I18n.t("core.following")) }
+      within("header.spec__tag-header") { expect(page).to have_button(I18n.t("core.following")) }
     end
 
     it "shows time buttons" do

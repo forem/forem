@@ -1,7 +1,7 @@
 <div class="hidden-audio" id="hidden-audio-<%= episode.slug %>" style="display:none" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
   <audio id="audio" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
     <source src="<%= episode.media_url %>" type="audio/mpeg">
-    Your browser does not support the audio element.
+    <%= t("views.podcasts.unsupported") %>
   </audio>
   <div id="progressBar" class="audio-player-display">
     <a href="/<%= podcast.slug %>/<%= episode.slug %>">
@@ -26,13 +26,13 @@
       <span id="mutebutt" class="volume-icon-wrapper hidden">
         <%= image_tag("volume-mute.png", alt: "volume-mute", class: "icon-img", height: 16, width: 16) %>
       </span>
-      <span class="speed" id="speed" data-speed=1>1x</span>
+      <span class="speed" id="speed" data-speed=1><%= t("views.podcasts.speed") %></span>
     </span>
     <span class="buffer-wrapper" id="bufferwrapper">
       <span id="buffer"></span>
       <span id="progress"></span>
-      <span id="time">initializing...</span>
-      <span id="closebutt">×</span>
+      <span id="time"><%= t("views.podcasts.initializing") %></span>
+      <span id="closebutt"><%= t("views.podcasts.close") %></span>
     </span>
   </div>
 </div>
