@@ -51,7 +51,7 @@ export const UserMetadata = memo(
             {pronouns && (
               <li>
                 <div class="key">Pronouns</div>
-                <div class="value">{location}</div>
+                <div class="value">{pronouns}</div>
               </li>
             )}
             {education && (
