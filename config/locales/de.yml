@@ -1,0 +1,175 @@
+---
+de:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Kontakt us</a>, wenn Du Fragen hast.
+    if_continued_trouble_html: <a href="/contact">Kontaktiere uns</a>, wenn Du weiterhin Probleme hast.
+    if_we_can_help_html: <a href="/contact">Kontakt uns</a>, wenn wir Dir bei irgendetwas helfen können.
+  core:
+    add_comment: Kommentar hinzufügen
+    analytics: Analytik
+    comment: Kommentar
+    comments: Kommentare
+    community_name_is_great: "%{community_name} ist großartig!"
+    copy_link: Link kopieren
+    create_account: Konto erstellen
+    create_post: Beitrag erstellen
+    dashboard: Dashboard
+    discussion: Diskussion
+    edit_profile: Profil bearbeiten
+    feed: Feed
+    follow: Folgen
+    follow_back: auch Folgen
+    follower: Follower
+    followers: Followers
+    following: folgt
+    full: Voll
+    home: Zuhause
+    infinity: Unendlich
+    joined: Beigetreten
+    joined_on: Beigetreten am
+    latest: Letzte
+    like: Like
+    listings: Einträge
+    loading: lade...
+    location: Standort
+    log_in: Anmelden
+    moderator_center: Moderator Center
+    month: Monat
+    more_from: Mehr von
+    my_tags: meine Tags
+    pinned: Gepinnt
+    popular_tags: Populäre Tags
+    post: Beitrag
+    posts: Beiträge
+    reaction: Reaktion
+    reaction_pluralized:
+      one: Reaktion
+      other: Reaktionen
+    reactions:
+      heart: Herz
+      save: Speichern
+      unicorn: Einhorn
+    read_next: Nächstes lesen
+    reading_list: Leseliste
+    reply: Antworten
+    report_abuse: Missbrauch melden
+    search: Suche
+    see_all: Alles anzeigen
+    series: Serien
+    settings: Einstellungen
+    sign_out: Abmelden
+    trending_on: Im Trend
+    view: Ansicht
+    week: Woche
+    year: Jahr
+  dashboard:
+    empty_follower: Du hast noch keine Follower...
+    empty_post: Hier kannst Du deine Beiträge verwalten, aber Du hast noch nichts geschrieben.
+    following_users: Folgende Benutzer
+    loading: lade...
+    not_following_any_users: Du folgst keinem Benutzer...
+    page_title: Dashboard
+    upload_a_video: Video hochladen
+    write_new_post: Schreibe deinen ersten Beitrag
+  date:
+    abbr_month_names:
+    - 
+    - Jan
+    - Deb
+    - Mär
+    - Apr
+    - Mai
+    - Jun
+    - Jul
+    - Aug
+    - Sep
+    - Okt
+    - Now
+    - Dez
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: vor etwa 1 Stunde
+        other: vor etwa %{count} Stunden
+      about_x_months:
+        one: vor etwa 1 Monat
+        other: vor etwa %{count} Monaten
+      about_x_years:
+        one: vor etwa 1 Jahr
+        other: vor etwa %{count} Jahren
+      almost_x_years:
+        one: vor fast 1 Jahr
+        other: vor fast %{count} Jahren
+      half_a_minute: vor einer halben Minute
+      less_than_x_seconds:
+        one: vor weniger als 1 Sekunde
+        other: vor weniger als %{count} Sekunden
+      less_than_x_minutes:
+        one: vor weniger als einer Minute
+        other: vor weniger als %{count} Minuten
+      over_x_years:
+        one: mehr als 1 Jahr her
+        other: vor über %{count} Jahren
+      x_seconds:
+        one: vor 1 Sekunde
+        other: "vor %{count} Sekunden"
+      x_minutes:
+        one: vor 1 Minute
+        other: "vor %{count} Minuten"
+      x_days:
+        one: vor 1 Tag
+        other: "vor %{count} Tagen"
+      x_months:
+        one: vor 1 Monat
+        other: "vor %{count} Monaten"
+      x_years:
+        one: vor 1 Jahr
+        other: "vor %{count} Jahren"
+  errors:
+    messages:
+      accepted: muss akzeptiert werden
+      bad_protocol: muss mit %{protocols} beginnen
+      bad_uri: ist eine ungültige Url
+      blank: kann nicht leer sein
+      confirmation: stimmt nicht mit %{attribute} überein
+      empty:  kann nicht leer sein
+      equal_to: muss gleich %{count} sein
+      even: muss gerade sein
+      exclusion: ist reserviert
+      greater_than: muss größer sein als %{count}
+      greater_than_or_equal_to: muss größer als oder gleich %{count} sein
+      inclusion: nicht in der Liste enthalten ist
+      invalid: ist ungültig
+      less_than: muss kleiner sein als %{count}
+      less_than_or_equal_to: muss kleiner als oder gleich %{count} sein
+      model_invalid: 'Validierung fehlgeschlagen: %{errors}'
+      not_a_number: ist keine Nummer
+      not_an_integer: muss eine ganze Zahl sein
+      odd: muss ungerade sein
+      other_than: muss anders sein als %{count}
+      present: muss leer sein
+      required: muss existieren
+      taken: ist bereits vergeben
+      too_long:
+        one: zu lang ist (maximal 1 Zeichen)
+        other: zu lang ist (Maximum ist %{count} Zeichen)
+      too_short:
+        one: zu kurz ist (Minimum ist 1 Zeichen)
+        other: zu kurz ist (Minimum ist %{count} Zeichen)
+      wrong_length:
+        one: ist die falsche Länge (sollte 1 Zeichen sein)
+        other: ist die falsche Länge (sollte 1 Zeichen sein)
+  settings_menu:
+    account: Konto
+    billing: Rechnung
+    customization: Personalisierung
+    extensions: Erweiterungen
+    notifications: Benachrichtigungen
+    organization: Organisation
+    profile: Profil
+  time:
+    formats:
+      short: "%-e %b"
+      short_with_year: "%-e %b, %Y"
+      stackexchange: "%b %e '%y"
+      tweet: "%H:%M %p - %d %b %Y"
