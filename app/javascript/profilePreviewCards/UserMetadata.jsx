@@ -10,6 +10,7 @@ import { memo } from 'preact/compat';
  * @param {string} props.created_at The user's join date string
  * @param {string} props.education The user's education detail
  * @param {string} props.work The user's work details
+ * @param {string} props.pronouns The user's pronouns details
  */
 export const UserMetadata = memo(
   ({ email, location, summary, created_at, education, work }) => {
