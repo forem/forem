@@ -20,6 +20,7 @@ Settings::SMTP.password = "password"
 # Some of our Cypress tests assume specific DEV profile fields to exist
 ProfileField.create_with(display_area: :header).find_or_create_by(label: "Work")
 ProfileField.create_with(display_area: :header).find_or_create_by(label: "Education")
+ProfileField.create_with(display_area: :header).find_or_create_by(label: "Pronouns")
 Profile.refresh_attributes!
 
 ##############################################################################
@@ -48,6 +49,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     work: "Software developer at Company",
     location: "Edinburgh",
     education: "University of Life",
+    pronouns: "They/Them",
     website_url: Faker::Internet.url,
   )
 
