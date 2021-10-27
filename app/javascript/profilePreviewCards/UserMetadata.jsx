@@ -13,7 +13,7 @@ import { memo } from 'preact/compat';
  * @param {string} props.pronouns The user's pronouns details
  */
 export const UserMetadata = memo(
-  ({ email, location, summary, created_at, education, work }) => {
+  ({ email, location, summary, created_at, education, work, pronouns }) => {
     const joinedOnDate = new Date(created_at);
     const joinedOnDateString = new Intl.DateTimeFormat(
       navigator.language || 'default',
