@@ -9,6 +9,7 @@ class RemoveProfileColumnsFromUser < ActiveRecord::Migration[6.0]
       remove_column :users, :currently_learning
       remove_column :users, :dribbble_url
       remove_column :users, :education
+      remove_column :users, :pronouns
       remove_column :users, :email_public
       remove_column :users, :employer_name
       remove_column :users, :employer_url
