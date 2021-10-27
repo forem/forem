@@ -10,5 +10,6 @@ class AddDetailsToUsers < ActiveRecord::Migration[4.2]
     add_column :users, :location, :string
     add_column :users, :email_public, :boolean, default: false
     add_column :users, :education, :string
+    add_column :users, :pronouns, :string
   end
 end
