@@ -40,7 +40,7 @@ en:
       edit: Editing comment
       edited:
         text_html: "&bull; Edited %{on}"
-        'on': on %{date}
+        on_html: on %{date}
       expand: Expand
       hidden:
         text_html: Some comments have been hidden by the post's author - %{info}
