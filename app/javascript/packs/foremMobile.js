@@ -57,13 +57,18 @@ function loadForemMobileNamespace() {
         body: params,
         credentials: 'same-origin',
       })
+        .then((response) => response.json())
         .then((response) => {
-          if (response.status === 201) {
+          if (
+            !isNaN(parseInt(response.id, 10)) &&
+            response.error == undefined
+          ) {
             // Clear the interval if the registration succeeded
             clearInterval(window.ForemMobile.deviceRegistrationInterval);
             window.ForemMobile.retryDelayMs = 700;
           } else {
-            throw new Error('REQUEST FAILED');
+            // Registration failed - log error message
+            Honeybadger.notify(response.error);
           }
         })
         .catch(() => {
