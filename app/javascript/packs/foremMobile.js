@@ -1,5 +1,22 @@
 /* global Runtime, fetchBaseData */
-if (Runtime != null && Runtime.currentMedium() === 'ForemWebView') {
+
+function initializeNamespaceWhenPageIsReady() {
+  setTimeout(() => {
+    // Wait for data-loaded so we can ensure initializers have executed. This
+    // way we know the Runtime class will be available globally
+    if (document.body.getAttribute('data-loaded') === 'true') {
+      // We're ready to initialize
+      if (Runtime.currentMedium() === 'ForemWebView') {
+        loadForemMobileNamespace();
+      }
+    } else {
+      // Page hasn't initialized yet. We need to wait until the page is ready
+      initializeNamespaceWhenPageIsReady();
+    }
+  }, 100);
+}
+
+function loadForemMobileNamespace() {
   window.ForemMobile = {
     retryDelayMs: 700,
     getUserData() {
@@ -87,3 +104,6 @@ if (Runtime != null && Runtime.currentMedium() === 'ForemWebView') {
     },
   };
 }
+
+// Initialize (when ready)
+initializeNamespaceWhenPageIsReady();
