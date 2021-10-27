@@ -47,6 +47,7 @@ RSpec.describe "ProfilePreviewCards", type: :request do
     before do
       create(:profile_field, label: "Education", display_area: :header)
       create(:profile_field, label: "Work", display_area: :header)
+      create(:profile_field, label: "Pronouns", display_area: :header)
     end
 
     let(:profile) { user.profile }
@@ -70,6 +71,7 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         expect(preview_card["work"]).to eq(profile.work)
         expect(preview_card["location"]).to eq(profile.location)
         expect(preview_card["education"]).to eq(profile.education)
+        expect(preview_card["pronouns"]).to eq(profile.pronouns)
         expect(preview_card["created_at"]).to eq(user.created_at.utc.iso8601)
       end
 
