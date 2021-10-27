@@ -18,6 +18,7 @@
       <% end %>
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
+      <%= javascript_include_tag "base", defer: true %>
       <% if user_signed_in? %>
         <%= javascript_packs_with_chunks_tag "base", "foremMobile", "Search", "runtimeBanner", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% else %>
