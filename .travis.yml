@@ -88,7 +88,9 @@ jobs:
         - yarn lint:frontend
         - yarn test --colors
         - bundle exec bundle-audit check --update
-        - bundle exec i18n-tasks health -f keys
+        - bundle exec i18n-tasks missing
+        - bundle exec i18n-tasks unused
+        - bundle exec i18n-tasks check-consistent-interpolations
         - bin/test-console-check
         - yarn build-storybook
     - stage: Test
