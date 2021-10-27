@@ -48,6 +48,12 @@ export const UserMetadata = memo(
                 <div class="value">{location}</div>
               </li>
             )}
+            {pronouns && (
+              <li>
+                <div class="key">Pronouns</div>
+                <div class="value">{location}</div>
+              </li>
+            )}
             {education && (
               <li>
                 <div class="key">Education</div>
