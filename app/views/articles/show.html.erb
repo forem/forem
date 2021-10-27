@@ -124,7 +124,7 @@
                     <% end %>
 
                     <% if should_show_updated_on?(@article) %>
-                      &bull; <%= t("views.articles.edited", date: local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year)) %>
+                      &bull; <%= t("views.articles.edited_html", date: local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year)) %>
                     <% end %>
 
                     <% if should_show_crossposted_on?(@article) %>
