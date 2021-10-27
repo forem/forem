@@ -78,6 +78,7 @@ fr:
         text_html: Originally published at %{url}%{on}
         'on': " on %{date}"
       edited: Updated on %{date}
+      edited_html: Updated on %{date}
       for_org_html: "%{start} for %{end}%{org}"
       missing: Article No Longer Available
       posted_html: Posted on %{date}
