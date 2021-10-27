@@ -14,7 +14,6 @@ en:
     create_account: Create account
     create_post: Create Post
     dashboard: Dashboard
-    discussion: Discussion
     edit_profile: Edit profile
     feed: Feed
     follow: Follow
@@ -22,7 +21,6 @@ en:
     follower: Follower
     followers: Followers
     following: Following
-    full: Full
     home: Home
     infinity: Infinity
     joined: Joined
@@ -59,7 +57,6 @@ en:
     settings: Settings
     sign_out: Sign Out
     trending_on: Trending on
-    view: View
     week: Week
     year: Year
   dashboard:
@@ -230,6 +227,7 @@ en:
     profile: Profile
   time:
     formats:
+      comment: "%B %d, %Y"
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"
       stackexchange: "%b %e '%y"

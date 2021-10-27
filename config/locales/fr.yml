@@ -14,7 +14,6 @@ fr:
     create_account: Créer un profil
     create_post: Créer une publication
     dashboard: Tableau de bord
-    discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
     follow: Suivre
@@ -22,7 +21,6 @@ fr:
     follower: Suiveur
     followers: Suiveurs
     following: Abonné
-    full: Complet
     home: Page D'Accueil
     infinity: Infini
     joined: Rejoint
@@ -59,7 +57,6 @@ fr:
     settings: Paramètres
     sign_out: Se déconnecter
     trending_on: Populaire sur
-    view: Vue
     week: Semaine
     year: Année
   dashboard:
@@ -253,6 +250,7 @@ fr:
     profile: Profil
   time:
     formats:
+      comment: "%B %d, %Y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"
       stackexchange: "%b %e '%y"
