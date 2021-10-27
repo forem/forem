@@ -10,6 +10,11 @@ module Stories
 
     private
 
+    def assign_feed_stories
+      stories = appropriate_feed(params[:timeframe])
+      ArticleDecorator.decorate_collection(stories)
+    end
+
     def add_pinned_article
       return if params[:timeframe].present?
 
@@ -17,6 +22,21 @@ module Stories
       return if pinned_article.nil? || @stories.detect { |story| story.id == pinned_article.id }
 
       @stories.prepend(pinned_article.decorate)
+    end
+
+    def appropriate_feed(timeframe_param)
+      if timeframe_param.in?(Timeframe::FILTER_TIMEFRAMES)
+        timeframe_feed(timeframe_param)
+      elsif timeframe_param == Timeframe::LATEST_TIMEFRAME
+        latest_feed
+      elsif user_signed_in?
+        feed_setting =
+          Users::Setting.find_by(user_id: current_user.id).config_homepage_feed
+
+        render_user_chosen_feed(feed_setting)
+      else
+        signed_out_base_feed
+      end
     end
 
     def render_user_chosen_feed(feed_setting)
@@ -30,21 +50,6 @@ module Stories
       else
         signed_in_base_feed
       end
-    end
-
-    def appropriate_feed(timeframe_param)
-      feed_setting =
-        Users::Setting.find_by(user_id: current_user.id).config_homepage_feed
-
-      timeframe_feed(timeframe_param) if timeframe_param.in?(Timeframe::FILTER_TIMEFRAMES)
-      latest_feed if timeframe_param == Timeframe::LATEST_TIMEFRAME
-      render_user_chosen_feed(feed_setting) if user_signed_in?
-      signed_out_base_feed
-    end
-
-    def assign_feed_stories
-      stories = appropriate_feed(params[:timeframe])
-      ArticleDecorator.decorate_collection(stories)
     end
 
     def signed_in_base_feed
