@@ -2,72 +2,72 @@
 en:
   views:
     badges:
+      meta:
+        title: Badges
+        name: "%{title} Badge"
       all:
         one: Show one badge
         other: Show all %{count} badges
-      desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
       heading: Badges
-      meta:
-        name: "%{title} Badge"
-        title: Badges
-      name: "\U0001F3C5 %{title} Badge \U0001F3C5"
+      desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
+      name: "🏅 %{title} Badge 🏅"
     campaign:
       subtitle: Stories (%{count})
       view: See all posts
     deep_links:
-      alert:
-        again: Try again
-        back: Take me back
-        desc_html: Make sure it's installed and try again. If the problem persists contact %{email}
-        install: Install the app
-        subtitle: Whoops! Did you get stuck trying to open the mobile app?
       subtitle: Opening the mobile app...
+      alert:
+        subtitle: Whoops! Did you get stuck trying to open the mobile app?
+        desc_html: Make sure it's installed and try again. If the problem persists contact %{email}
+        back: Take me back
+        again: Try again
+        install: Install the app
     onboardings:
-      close: Close Welcome Message
-      heading: You're now a part of the community!
       meta:
         title: Welcome to %{community}
-      settings_html: "<span class=\"emoji\">\U0001F485\U0001F3FC</span>Customize your profile"
+      heading: You're now a part of the community!
       subtitle: SUGGESTED THINGS YOU CAN DO
-      welcome_html: "<span class=\"emoji\">\U0001F60A</span>Join the Welcome thread"
-      write_html: "<span class=\"emoji\">✍\U0001F3FE</span>Write your first %{community} post"
+      close: Close Welcome Message
+      settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"
+      welcome_html: "<span class=\"emoji\">😊</span>Join the Welcome thread"
+      write_html: "<span class=\"emoji\">✍🏾</span>Write your first %{community} post"
     pins:
       article: Pinned
+      pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
+      removed: "🗑 Pin removed"
       error: You can only have five pins
-      pinned: "\U0001F4CC Pinned! (pinned posts display chronologically, 5 max)"
-      removed: "\U0001F5D1 Pin removed"
     reading_list:
       meta:
+        title: Reading List
         description: My saved posts.
         og:
           title: Reading List - %{community}
-        title: Reading List
     series:
-      empty: This user doesn't have any series
-      heading: "%{user}'s Series"
-      list:
-        back: Back to %{user}'s Series
-        empty: This series doesn't have any articles
-        heading: "%{series} Series' Articles"
       meta:
         description: View %{title} on %{site}
+      heading: "%{user}'s Series"
+      empty: This user doesn't have any series
+      list:
+        heading: "%{series} Series' Articles"
+        back: Back to %{user}'s Series
+        empty: This series doesn't have any articles
     sponsor:
       icon: Love
       seek: Become a sponsor
     sticky:
+      joined: Joined
       default_cta: Learn more
       email: Email
       hot: Hot
-      joined: Joined
       location: Location
       more_from_html: More from %{actor}
       no_summary: Posts in this tag
       trending_html: Trending on %{app}
     videos:
-      beta_html: "<strong>Video is beta:</strong> %{contact}"
-      heading: "%{community} on Video"
       meta:
+        title: Videos
         og:
           description: All videos on %{community}
-        title: Videos
-      upload: "\U0001F3A5 Upload Video File \U0001F64C"
+      heading: "%{community} on Video"
+      beta_html: "<strong>Video is beta:</strong> %{contact}"
+      upload: "🎥 Upload Video File 🙌"

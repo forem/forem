@@ -3,23 +3,23 @@ fr:
   views:
     actions:
       copy:
-        button: Copier le lien
         text: Copied to Clipboard
         title: Copy article link to the clipboard
+        button: Copier le lien
       more:
-        aria_label: Share post options
         title: More...
+        aria_label: Share post options
       share:
         facebook:
           text: Partager sur Facebook
         hackernews:
           text: Partager sur Hacker News
-        link: Share Post via...
         linkedin:
           text: Partager sur LinkedIn
         reddit:
           text: Partager sur Reddit
-        report: Report Abuse
         twitter:
-          query: '"%{article}" by %{author}'
           text: Partager sur Twitter
+          query: '"%{article}" by %{author}'
+        link: Share Post via...
+        report: Report Abuse

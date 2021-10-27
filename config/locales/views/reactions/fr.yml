@@ -7,25 +7,25 @@ fr:
         like: Like
         readinglist: Reading list
         thinking: Thinking
-        thumbsdown: Thumbs down
         thumbsup: Thumbs up
+        thumbsdown: Thumbs down
         unicorn: Unicorn
         vomit: Vomit
+      summary:
+        count_html:
+          one: "%{count}%{start}\_réaction%{end}"
+          other: "%{count}%{start}\_réactions%{end}"
+        title: Reactions
       like:
+        title: Coeur
         aria_label: Like
         icon: Favorite heart button
         text: Like
-        title: Coeur
+      unicorn:
+        title: Licorne
+        aria_label: React with unicorn
       readingList:
+        title: Sauver
         aria_label: Add to reading list
         icon: Save button
         text: Save
-        title: Sauver
-      summary:
-        count_html:
-          one: "%{count}%{start} réaction%{end}"
-          other: "%{count}%{start} réactions%{end}"
-        title: Reactions
-      unicorn:
-        aria_label: React with unicorn
-        title: Licorne

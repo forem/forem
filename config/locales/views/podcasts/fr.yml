@@ -2,35 +2,35 @@
 fr:
   views:
     podcasts:
-      browse: Parcourir
-      close: "×"
-      featured_shows: Épisodes en vedette
-      form:
-        errors:
-          one: '1 error while creating a podcast:'
-          other: "%{count} errors while creating a podcast:"
-        heading: Suggest a Podcast
-        owner: I am the owner of this podcast
-        return: "< return to podcasts"
-        suggest: Suggest
-      heading: Podcasts
-      initializing: initializing...
-      latest_episodes: Épisodes Récents
-      list: podcasts
-      listen: Click here to download/listen
       meta:
+        title: Podcasts
         description: Discover technical podcasts for %{member}
         og:
           title: Podcasts on %{community}
-        title: Podcasts
+      browse: Parcourir
+      heading: Podcasts
+      close: "×"
+      form:
+        heading: Suggest a Podcast
+        errors:
+          one: '1 error while creating a podcast:'
+          other: "%{count} errors while creating a podcast:"
+        owner: I am the owner of this podcast
+        return: "< return to podcasts"
+        suggest: Suggest
+      list: podcasts
+      listen: Click here to download/listen
       source: Episode source
-      speed: 1x
       statuses:
         ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
         unparsable: Le rss du podcast n'a pas pu être analysé
         unplayable: Ce podcast peut ne pas être lisible dans le navigateur
         unreachable: Le feed_url du podcast n'est pas accessible
-      suggest_a_podcast: Suggérer un podcast
+      speed: 1x
       tag: podcast
+      initializing: initializing...
       unsupported: Your browser does not support the audio element.
+      featured_shows: Épisodes en vedette
+      latest_episodes: Épisodes Récents
+      suggest_a_podcast: Suggérer un podcast
       view_all_podcasts: Voir tous les podcasts

@@ -13,8 +13,8 @@ fr:
         see: See Full Post
       stackexchange:
         answer:
-          answer: answer
           text_html: "%{answer} re: %{title}"
+          answer: answer
         answers: 'Answers: %{count}'
         comments: 'Comments: %{count}'
         open:
@@ -25,9 +25,9 @@ fr:
         view: View on Twitter
       user_subscription:
         confirm:
+          subtitle: Confirm subscribe
           button_text: Confirm subscription
           cancel_text: Cancel
-          subtitle: Confirm subscribe
           text_html: You'll share your email address%{email}, username, name, and DEV profile URL with %{username}. Once you do this, you cannot undo this.
         logged_out: You must first sign in to DEV.
         sign_in: Sign In
