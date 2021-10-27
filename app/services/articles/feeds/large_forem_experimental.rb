@@ -1,15 +1,12 @@
 module Articles
   module Feeds
     class LargeForemExperimental
-      DEFAULT_USER_XP_LEVEL = 5
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
         @page = page
         @tag = tag
-        @tag_weight = 1 # default weight tags play in rankings
-        @comment_weight = 0.2 # default weight comments play in rankings
-        @xp_level_weight = 1 # default weight for user experience level
+        @article_score_applicator = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: user)
       end
 
       def default_home_feed(user_signed_in: false)
@@ -58,37 +55,12 @@ module Articles
         article_points
       end
 
-      # @api private
-      def score_followed_user(article, follow_user_score: 1, not_followed_user_score: 0)
-        user_following_users_ids.include?(article.user_id) ? follow_user_score : not_followed_user_score
-      end
-
-      # @api private
-      def score_followed_tags(article, nil_user_tag_score: 0, followed_tag_weight: @tag_weight, unfollowed_tag_score: 0)
-        return nil_user_tag_score unless @user
-
-        article_tags = article.decorate.cached_tag_list_array
-        user_followed_tags.sum do |tag|
-          article_tags.include?(tag.name) ? tag.points * followed_tag_weight : unfollowed_tag_score
-        end
-      end
-
-      # @api private
-      def score_followed_organization(article, followed_org_score: 1, not_followed_org_score: 0)
-        return not_followed_org_score unless article.organization_id?
-
-        user_following_org_ids.include?(article.organization_id) ? followed_org_score : not_followed_org_score
-      end
-
-      # @api private
-      def score_experience_level(article, xp_level_weight: @xp_level_weight)
-        - (((article.experience_level_rating - user_experience_level).abs / 2) * xp_level_weight)
-      end
-
-      # @api private
-      def score_comments(article, comment_weight: @comment_weight)
-        article.comments_count * comment_weight
-      end
+      delegate(:score_followed_user,
+               :score_followed_tags,
+               :score_followed_organization,
+               :score_experience_level,
+               :score_comments,
+               to: :@article_score_applicator)
 
       # @api private
       def globally_hot_articles(user_signed_in, article_score_threshold: -15, min_rand_limit: 15, max_rand_limit: 80)
@@ -113,28 +85,12 @@ module Articles
 
       private
 
-      def user_experience_level
-        @user_experience_level ||= @user&.setting&.experience_level || DEFAULT_USER_XP_LEVEL
-      end
-
       def experimental_hot_story_grab
         start_time = [(@user.page_views.second_to_last&.created_at || 7.days.ago) - 18.hours, 7.days.ago].max
         Article.published.limited_column_select.includes(top_comments: :user)
           .where("published_at > ?", start_time)
           .page(@page).per(@number_of_articles)
           .order(score: :desc)
-      end
-
-      def user_followed_tags
-        @user_followed_tags ||= (@user&.decorate&.cached_followed_tags || [])
-      end
-
-      def user_following_org_ids
-        @user_following_org_ids ||= (@user&.cached_following_organizations_ids || [])
-      end
-
-      def user_following_users_ids
-        @user_following_users_ids ||= (@user&.cached_following_users_ids || [])
       end
 
       def first_quarter(array)
