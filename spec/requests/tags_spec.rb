@@ -3,8 +3,11 @@ require "rails_helper"
 RSpec.describe "Tags", type: :request, proper_status: true do
   describe "GET /tags" do
     it "returns proper page" do
+      create(:tag, name: "ruby")
+      create(:tag, name: "javascript", alias_for: "")
+
       get tags_path
-      expect(response.body).to include("Top tags")
+      expect(response.body).to include("Top tags", "ruby", "javascript")
     end
 
     it "does not include tags with alias" do
