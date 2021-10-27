@@ -2,41 +2,100 @@
   <%= render "podcast_episodes/meta" %>
 <% end %>
 <% if @podcast %>
-  <div class="user-profile-header podcast-header" style="background:#<%= @podcast.main_color_hex %>;">
-    <div class="tag-or-query-header-container">
-      <h1><img class="record main-image" src="<%= Images::Optimizer.call(@podcast.image_url, crop: "fill", width: 420, height: 420) %>"
-               alt="<%= @podcast.title %>" /> <%= @podcast.title %>
-      </h1>
-      <h2>
-        <button
-          id="user-follow-butt"
-          class="crayons-btn follow-action-button"
-          style="min-width: 100px;"
-          data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
-            &nbsp;
-        </button>
-      </h2>
+  <div class="spec__podcast-header mb-3" style="background:#<%= @podcast.main_color_hex %>;" class="mb-4">
+    <div class="crayons-layout relative">
+      <nav class="s:absolute mt-2">
+        <a href="/pod" class="crayons-btn crayons-btn--ghost crayons-btn--inverted"><%= t("views.podcasts.view_all_podcasts") %></a>
+      </nav>
+      <div class="flex s:flex-col items-start s:items-center p-3 pt-0 s:pt-3">
+        <span class="crayons-logo crayons-logo--2xl s:crayons-logo--3xl mr-4 s:mr-0 s:mb-2">
+          <img class="crayons-logo__image" src="<%= Images::Optimizer.call(@podcast.image_url, crop: "fill", width: 420, height: 420) %>" alt="<%= @podcast.title %>" />
+        </span>
+        <div class="s:align-center">
+          <h1 class="crayons-title color-base-inverted mb-2">
+            <%= @podcast.title %>
+          </h1>
+          <p>
+            <button
+              id="user-follow-butt"
+              class="crayons-btn crayons-btn--inverted follow-action-button"
+              style="min-width: 100px;"
+              data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
+                &nbsp;
+            </button>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 <% end %>
 
-<div class="home" id="index-container"
-     data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-     data-tag=""
-     data-feed="<%= params[:timeframe] || "base-feed" %>"
-     data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
-  <%= render "podcast_episodes/sidebar" %>
-  <main class="articles-list" id="main-content">
-    <div class="substories" id="substories">
-      <% if @podcast_episodes %>
-        <%= render "podcast_episodes/episodes_feed" %>
+<main id="main-content" class="crayons-layout <% unless @podcast %>crayons-layout--header-inside<% end %> podcast-index mb-8">
+  <% unless @podcast %>
+    <header class="crayons-page-header">
+      <h1 class="crayons-title">
+        <%= t("views.podcasts.heading") %>
+      </h1>
+      <p><%= link_to t("views.podcasts.suggest_a_podcast"), new_podcast_path, class: "crayons-btn crayons-btn--ghost" %></p>
+    </header>
+  <% end %>
+  <h2 class="crayons-subtitle-1 p-3 pt-0 m:p-0"><%= t("views.podcasts.latest_episodes") %></h2>
+  <div class="grid gap-2 m:gap-4 grid-cols-2 s:grid-cols-3 m:grid-cols-5 px-2 m:px-0 mb-6">
+    <% @podcast_episodes.each do |episode| %>
+      <% episode = episode.decorate %>
+      <a href="/<%= episode.podcast.slug %>/<%= episode.slug %>" class="crayons-card podcast-episode-card <% unless @podcast %>podcast-episode-card--all<% end %>">
+        <div class="podcast-episode-card__logo">
+          <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
+                                  optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },
+                                  image_options: { alt: episode.title, loading: "lazy", class: "w-100 h-100" }) %>
+        </div>
+        <div class="podcast-episode-card__content">
+          <h3><%= episode.title %></h3>
+          <p>
+            <%= episode.podcast.title %>,
+            <% if episode.published_at? %>
+              <time class="published-at" datetime="<%= episode.published_timestamp %>">
+                <%= episode.readable_publish_date %>
+              </time>
+              <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= episode.published_at_int %>"></span>
+            <% end %>
+          </p>
+        </div>
+      </a>
+    <% end %>
+  </div>
+  <% if @podcast %>
+    <%= paginate @podcast_episodes, params: { i: nil } %>
+  <% end %>
+  <% if @featured_podcasts && @featured_podcasts.any? %>
+    <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("views.podcasts.featured_shows") %></h2>
+    <div class="grid gap-2 m:gap-4 l:gap-6 grid-cols-2 m:grid-cols-<%= [@featured_podcasts.size, 3].max %> px-2 m:px-0 mb-6">
+      <% @featured_podcasts.each do |podcast| %>
+        <a href="/<%= podcast.slug %>">
+            <%= optimized_image_tag(podcast.image_url,
+                                    optimizer_options: { crop: "imagga_scale", width: 500, height: 500 },
+                                    image_options: { alt: podcast.title, loading: "lazy", class: "w-100 h-auto border-2" }) %>
+            <h3 class="crayons-subtitle-2 align-center">
+              <%= podcast.title %>
+            </h3>
+        </a>
       <% end %>
     </div>
-    <div class="loading-articles" id="loading-articles">
-      loading...
+    <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("views.podcasts.browse") %></h2>
+    <div class="grid gap-2 s:grid-cols-2 m:grid-cols-4 px-2 m:px-0">
+      <% @more_podcasts.each do |podcast| %>
+        <a href="/<%= podcast.slug %>" class="crayons-link flex items-center m:fs-l  lh-tight">
+          <span class="crayons-logo crayons-logo--xl mr-3">
+            <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
+              alt="<%= podcast.title %>" aria-hidden="true" class="crayons-logo__image" />
+          </span>
+          <span class="truncate-at-2">
+            <%= podcast.title %>
+          </span>
+        </a>
+      <% end %>
     </div>
-  </main>
-  <%= render "podcast_episodes/sidebar_additional" %>
-</div>
+  <% end %>
+</main>
 
 <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", defer: true %>

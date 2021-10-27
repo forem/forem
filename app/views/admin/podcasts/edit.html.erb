@@ -94,10 +94,6 @@
         <%= f.text_field :twitter_username, class: "form-control" %>
       </div>
       <div class="form-group">
-        <%= f.label :pattern_image, for: "pattern_image" %>
-        <%= f.file_field :pattern_image, accept: "image/*", class: "form-control" %>
-      </div>
-      <div class="form-group">
         <%= f.label :main_color_hex, for: "main_color_hex" %>
         <%= f.text_field :main_color_hex, placeholder: "FF00FF", class: "form-control" %>
       </div>
@@ -112,6 +108,10 @@
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :reachable, class: "crayons-checkbox" %>
         <%= f.label :reachable, "Podcast is reachable", class: "crayons-field__label" %>
+      </div>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :featured, class: "crayons-checkbox" %>
+        <%= f.label :featured, class: "crayons-field__label" %>
       </div>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box "published", class: "crayons-checkbox" %>

@@ -155,7 +155,7 @@ class StoriesController < ApplicationController
     @podcast_index = true
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes
-      .reachable.order(published_at: :desc).limit(30).decorate
+      .reachable.order(published_at: :desc).page(params[:page]).per(30)
     set_surrogate_key_header "podcast_episodes"
     render template: "podcast_episodes/index"
   end
@@ -242,7 +242,7 @@ class StoriesController < ApplicationController
     else
       @default_home_feed = true
       feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
-      @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
+      @featured_story, @stories = feed.featured_story_and_default_home_feed(user_signed_in: user_signed_in?)
     end
 
     @pinned_article = pinned_article&.decorate

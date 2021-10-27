@@ -75,7 +75,7 @@
       <% end %>
 
       <% if @article.video_state == "PROGRESSING" %>
-        <div class="crayons-notice crayons-notice--warning mb-4" aria-live="polite">⏳ Video Transcoding In Progress ⏳</div>
+        <div class="crayons-notice crayons-notice--warning mb-4" aria-live="polite"><%= t("views.editor.video.progress.heading") %></div>
       <% end %>
 
       <article class="crayons-card crayons-article mb-4"
