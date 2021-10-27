@@ -125,6 +125,82 @@ fr:
       x_years:
         one: l’année dernière
         other: il y a %{count} ans
+    expired_ago:
+      about_x_hours:
+        one: Expired about 1 hour ago
+        other: Expired about %{count} hours ago
+      about_x_months:
+        one: Expired about 1 month ago
+        other: Expired about %{count} months ago
+      about_x_years:
+        one: Expired about 1 year ago
+        other: Expired about %{count} years ago
+      almost_x_years:
+        one: Expired almost 1 year ago
+        other: Expired almost %{count} years ago
+      half_a_minute: Expired half a minute ago
+      less_than_x_seconds:
+        one: Expired less than 1 second ago
+        other: Expired less than %{count} seconds ago
+      less_than_x_minutes:
+        one: Expired less than a minute ago
+        other: Expired less than %{count} minutes ago
+      over_x_years:
+        one: Expired over 1 year ago
+        other: Expired over %{count} years ago
+      x_seconds:
+        one: Expired 1 second ago
+        other: Expired %{count} seconds ago
+      x_minutes:
+        one: Expired 1 minute ago
+        other: Expired %{count} minutes ago
+      x_days:
+        one: Expired 1 day ago
+        other: Expired %{count} days ago
+      x_months:
+        one: Expired 1 month ago
+        other: Expired %{count} months ago
+      x_years:
+        one: Expired 1 year ago
+        other: Expired %{count} years ago
+    expires_in:
+      about_x_hours:
+        one: Expires in about 1 hour
+        other: Expires in about %{count} hours
+      about_x_months:
+        one: Expires in about 1 month
+        other: Expires in about %{count} months
+      about_x_years:
+        one: Expires in about 1 year
+        other: Expires in about %{count} years
+      almost_x_years:
+        one: Expires in almost 1 year
+        other: Expires in almost %{count} years
+      half_a_minute: Expires in half a minute
+      less_than_x_seconds:
+        one: Expires in less than 1 second
+        other: Expires in less than %{count} seconds
+      less_than_x_minutes:
+        one: Expires in less than a minute
+        other: Expires in less than %{count} minutes
+      over_x_years:
+        one: Expires in over 1 year
+        other: Expires in over %{count} years
+      x_seconds:
+        one: Expires in 1 second
+        other: Expires in %{count} seconds
+      x_minutes:
+        one: Expires in 1 minute
+        other: Expires in %{count} minutes
+      x_days:
+        one: Expires in 1 day
+        other: Expires in %{count} days
+      x_months:
+        one: Expires in 1 month
+        other: Expires in %{count} months
+      x_years:
+        one: Expires in 1 year
+        other: Expires in %{count} years
   errors:
     messages:
       accepted: doit être accepté
