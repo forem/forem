@@ -14,6 +14,7 @@ FactoryBot.define do
         employment_title: "Software Engineer",
         skills_languages: "Ruby",
         work: "Forem"
+        pronouns: "They/Them"
       }
     end
     website_url { "http://example.com" }
