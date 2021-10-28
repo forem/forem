@@ -43,15 +43,15 @@
   <div class="grid gap-2 m:gap-4 grid-cols-2 s:grid-cols-3 m:grid-cols-5 px-2 m:px-0 mb-6">
     <% @podcast_episodes.each do |episode| %>
       <% episode = episode.decorate %>
-      <a href="/<%= episode.podcast.slug %>/<%= episode.slug %>" class="crayons-card podcast-episode-card <% unless @podcast %>podcast-episode-card--all<% end %>">
-        <div class="podcast-episode-card__logo">
+      <a href="/<%= episode.podcast.slug %>/<%= episode.slug %>" class="crayons-card media-card <% unless @podcast %>media-card--all<% end %>">
+        <div class="media-card__artwork">
           <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
                                   optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },
                                   image_options: { alt: episode.title, loading: "lazy", class: "w-100 h-100" }) %>
         </div>
-        <div class="podcast-episode-card__content">
-          <h3><%= episode.title %></h3>
-          <p>
+        <div class="media-card__content">
+          <h3 class="fs-base mb-2 fw-medium"><%= episode.title %></h3>
+          <small class="fs-s">
             <%= episode.podcast.title %>,
             <% if episode.published_at? %>
               <time class="published-at" datetime="<%= episode.published_timestamp %>">
@@ -59,7 +59,7 @@
               </time>
               <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= episode.published_at_int %>"></span>
             <% end %>
-          </p>
+          </small>
         </div>
       </a>
     <% end %>
