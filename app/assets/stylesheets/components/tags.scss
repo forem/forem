@@ -1,32 +1,36 @@
 @import '../config/import';
 
 .crayons-tag {
-  font-size: var(--fs-s);
-  color: var(--tag-color);
-  line-height: 1.3;
+  --tag-color: var(--base-a60);
+  --tag-color-faded: var(--base-a5);
+
   border-radius: var(--radius);
-  padding: var(--su-1);
-  display: inline-block;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  transition: all var(--transition-props);
 
   &__prefix {
-    opacity: 0.4;
-    font-weight: normal;
+    content: '#';
+    color: var(--tag-color);
   }
 
-  &[href]:hover {
-    color: var(--tag-color-hover);
+  // &--flare::before {
+  //   color: revert;
+  // }
+
+  &--filled {
+    background: var(--tag-color-faded);
   }
 
-  &--l {
-    font-size: var(--fs-l);
-  }
+  &[href] {
+    padding: clamp(var(--su-1), 0.25em, 0.5em) 0.5em;
 
-  &--xl {
-    font-size: var(--fs-xl);
-  }
-
-  &--2xl {
-    font-size: var(--fs-2xl);
-    padding: var(--su-1) var(--su-2);
+    &:hover,
+    &:focus {
+      background: var(--tag-color-faded);
+      color: var(--base-100);
+    }
   }
 }
