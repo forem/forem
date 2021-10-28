@@ -9,7 +9,8 @@
 
     <div class="crayons-field">
       <%= f.label :name, for: "user[name]", class: "crayons-field__label" %>
-      <%= f.text_field "user[name]", maxlength: 30, class: "crayons-textfield", placeholder: "John Doe", value: @user.name %>
+      <%= f.text_field "user[name]", maxlength: 30, id: "name-field", class: "crayons-textfield", placeholder: "John Doe", value: @user.name %>
+      <div><span id="name-field-xters"></span> / 30</div>
     </div>
 
     <div class="crayons-field">
@@ -24,7 +25,8 @@
 
     <div class="crayons-field">
       <%= f.label :username, for: "user[username]", class: "crayons-field__label" %>
-      <%= f.text_field "user[username]", maxlength: 30, class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
+      <%= f.text_field "user[username]", maxlength: 30, id: "username-field", class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
+      <div><span id="username-field-xters"></span> / 30</div>
     </div>
 
     <div class="crayons-field">
@@ -155,3 +157,26 @@
     <button type="submit" class="crayons-btn">Save Profile Information</button>
   </div>
 <% end %>
+
+<script>
+  const nameField = document.getElementById("name-field");
+  const usernameField = document.getElementById("username-field");
+  const nameFieldCharacterValue = document.getElementById("name-field-xters");
+  const usernameFieldCharacterValue = document.getElementById("username-field-xters");
+
+  let nameFieldCharacterCount = nameField.value.length;
+  let usernameFieldCharacterCount = usernameField.value.length;
+
+  window.addEventListener('load', () => {
+    nameFieldCharacterValue.innerHTML = nameFieldCharacterCount;
+    usernameFieldCharacterValue.innerHTML = usernameFieldCharacterCount;
+  })
+
+  nameField.addEventListener('keyup', () => {
+    nameFieldCharacterValue.innerHTML = nameField.value.length;
+  });
+
+  usernameField.addEventListener('keyup', () => {
+    usernameFieldCharacterValue.innerHTML = usernameField.value.length;
+  });
+</script>
