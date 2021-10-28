@@ -291,6 +291,11 @@
   }
 }
 
+.sticky-sidebar {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
 #article-sidebar {
   height: fit-content;
 }
