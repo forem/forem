@@ -22,6 +22,13 @@ fr:
         cta_button_text: Link text
         cta_button_url: Link url
         proof: Proof
+      listing:
+        body_markdown: Body Markdown
+        expires_at: Custom Expire Date
+        location: Location
+        organization_id: Post under an organization
+        tag_list: Tags
+        title: Title
       podcast:
         android_url: Android url
         description: Description

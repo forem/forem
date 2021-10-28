@@ -19,7 +19,7 @@
 
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box "users_setting[display_email_on_profile]", class: "crayons-checkbox", checked: @user.setting.display_email_on_profile %>
-      <%= f.label :display_email_on_profile, for: "users_setting[display_email_on_profile]", class: "crayons-field__label" %>
+      <%= f.label :display_email_on_profile, t("views.users.profile_fields.display_email_on_profile"), for: "users_setting[display_email_on_profile]", class: "crayons-field__label" %>
     </div>
 
     <div class="crayons-field">
@@ -48,7 +48,7 @@
 
     <div class="crayons-field">
       <label class="crayons-field__label" for="profile[website_url]">
-        Website URL
+        <%= t("views.users.profile_fields.website.label") %>
       </label>
       <%= f.url_field "profile[website_url]",
                       value: profile.website_url,
@@ -58,21 +58,21 @@
 
     <div class="crayons-field">
       <label class="crayons-field__label" for="profile[location]">
-        Location
+        <%= t("views.users.profile_fields.location.label") %>
       </label>
       <%= f.text_field "profile[location]",
                        value: profile.location,
-                       placeholder: "Halifax, Nova Scotia",
+                       placeholder: t("views.users.profile_fields.location.placeholder"),
                        class: "crayons-textfield js-color-field" %>
     </div>
 
     <div class="crayons-field">
       <label class="crayons-field__label" for="profile[summary]">
-        Bio
+        <%= t("views.users.profile_fields.bio.label") %>
       </label>
       <%= f.text_area "profile[summary]",
                       value: profile.summary,
-                      placeholder: "A short bio...",
+                      placeholder: t("views.users.profile_fields.bio.placeholder"),
                       class: "crayons-textfield js-color-field" %>
     </div>
   </div>
@@ -118,7 +118,7 @@
     <h2>Branding</h2>
     <div class="crayons-field ">
       <label class="crayons-field__label" for="users_setting[brand_color1]">
-        Brand color 1
+        <%= t("views.logo.color_1.label") %>
       </label>
       <div class="flex items-center w-100 m:w-50">
         <%= f.public_send("text_field", "users_setting[brand_color1]",
@@ -130,12 +130,12 @@
                           value: users_setting.public_send("brand_color1"),
                           class: "crayons-color-selector js-color-field ml-2") %>
       </div>
-      <p class="crayons-field__description">Used for backgrounds, borders etc.</p>
+      <p class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
     </div>
 
     <div class="crayons-field ">
       <label class="crayons-field__label" for="users_setting[brand_color1]">
-        Brand color 2
+        <%= t("views.logo.color_2.label") %>
       </label>
       <div class="flex items-center w-100 m:w-50">
         <%= f.public_send("text_field", "users_setting[brand_color2]",
@@ -147,7 +147,7 @@
                           value: users_setting.public_send("brand_color2"),
                           class: "crayons-color-selector js-color-field ml-2") %>
       </div>
-      <p class="crayons-field__description">Used for texts (usually put on Brand color 1).</p>
+      <p class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
     </div>
   </div>
 
