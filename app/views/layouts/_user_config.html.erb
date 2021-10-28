@@ -6,8 +6,8 @@
     if (bodyClass) {
       document.body.className = bodyClass;
 
-      if (bodyClass.includes('night-theme')) {
-        document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/night.css"].to_s.squish.html_safe %></style>';
+      if (bodyClass.includes('dark-theme')) {
+        document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/dark.css"].to_s.squish.html_safe %></style>';
       } else if (bodyClass.includes('ten-x-hacker-theme')) {
         document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/hacker.css"].to_s.squish.html_safe %></style>'
       } else if (bodyClass.includes('pink-theme')) {
