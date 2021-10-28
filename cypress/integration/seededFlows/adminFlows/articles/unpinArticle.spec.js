@@ -16,8 +16,8 @@ describe('Unpin an article from the admin area', () => {
             tags: ['beginner', 'ruby', 'go'],
             content: `This is another test article's contents.`,
             published: true,
-          }).then((response) => {
-            cy.visit(`/admin/content_manager/articles/${response.body.id}`);
+          }).then(() => {
+            cy.visit('/admin/content_manager/articles');
           });
         });
       });
@@ -29,7 +29,7 @@ describe('Unpin an article from the admin area', () => {
   });
 
   it('should unpin the pinned article', () => {
-    cy.findAllByRole('link', { name: 'Pin Post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
 
     cy.findAllByRole('link', { name: 'Unpin Post' }).first().click();
 
