@@ -25,7 +25,7 @@ module Mailchimp
         gibbon.lists(Settings::General.mailchimp_newsletter_id).members(target_md5_email).upsert(
           body: {
             email_address: user.email,
-            status: user.email_newsletter ? "subscribed" : "unsubscribed",
+            status: user.notification_setting.email_newsletter ? "subscribed" : "unsubscribed",
             merge_fields: {
               NAME: user.name.to_s,
               USERNAME: user.username.to_s,
@@ -35,12 +35,14 @@ module Mailchimp
               ARTICLES: user.articles.size,
               COMMENTS: user.comments.size,
               ONBOARD_PK: user.onboarding_package_requested.to_s,
-              EXPERIENCE: user.experience_level || 666
+              EXPERIENCE: user.setting.experience_level || 666
             }
           },
         )
 
         success = true
+      rescue Gibbon::GibbonError => e
+        report_error(e)
       rescue Gibbon::MailChimpError => e
         # If user was previously subscribed, set their status to "pending"
         return resubscribe_to_newsletter if previously_subcribed?(e)
@@ -68,7 +70,7 @@ module Mailchimp
       return false unless Settings::General.mailchimp_community_moderators_id.present? && user.has_role?(:trusted)
 
       success = false
-      status = user.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
+      status = user.notification_setting.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
       begin
         gibbon.lists(Settings::General.mailchimp_community_moderators_id).members(target_md5_email).upsert(
           body: {
@@ -98,7 +100,7 @@ module Mailchimp
       tag_ids = user.roles.where(name: "tag_moderator").pluck(:resource_id)
       tag_names = Tag.where(id: tag_ids).pluck(:name)
 
-      status = user.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
+      status = user.notification_setting.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
 
       begin
         gibbon.lists(Settings::General.mailchimp_tag_moderators_id).members(target_md5_email).upsert(

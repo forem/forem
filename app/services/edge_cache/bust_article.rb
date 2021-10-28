@@ -1,14 +1,11 @@
 module EdgeCache
   class BustArticle
-    # rubocop:disable Rails/RelativeDateConstant
     TIMEFRAMES = [
       [-> { 1.week.ago }, "week"],
       [-> { 1.month.ago }, "month"],
       [-> { 1.year.ago }, "year"],
       [-> { 5.years.ago }, "infinity"],
     ].freeze
-    # rubocop:enable Rails/RelativeDateConstant
-
     def self.call(article)
       return unless article
 
@@ -88,7 +85,7 @@ module EdgeCache
         end
 
         TIMEFRAMES.each do |timestamp, interval|
-          next unless Article.published.where("published_at > ?", timestamp.call).tagged_with(tag)
+          next unless Article.published.where("published_at > ?", timestamp.call).cached_tagged_with_any(tag)
             .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
 
           cache_bust.call("/top/#{interval}")

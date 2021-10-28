@@ -633,6 +633,20 @@
     true,
     null
   ),
+  (
+    'object',
+    'object-fit',
+    (
+      'contain': contain,
+      'cover': cover,
+      'fill': fill,
+      'none': none,
+      'scale-down': scale-down
+    ),
+    (),
+    false
+  ),
+  ('aspect', 'aspect-ratio', ('1-1': 1 / 1, '16-9': 16 / 9), (), false),
   (null, 'all', ('reset': unset), (), false, null),
   (
     'break',

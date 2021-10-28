@@ -2,6 +2,11 @@ module Admin
   class PagesController < Admin::ApplicationController
     layout "admin"
 
+    PAGE_ALLOWED_PARAMS = %i[
+      title slug body_markdown body_html body_json description template
+      is_top_level_path social_image landing_page
+    ].freeze
+
     def index
       @pages = Page.all.order(created_at: :desc)
       @code_of_conduct = Page.find_by(slug: "code-of-conduct")
@@ -59,11 +64,7 @@ module Admin
     private
 
     def page_params
-      allowed_params = %i[
-        title slug body_markdown body_html body_json description template
-        is_top_level_path social_image landing_page
-      ]
-      params.require(:page).permit(allowed_params)
+      params.require(:page).permit(PAGE_ALLOWED_PARAMS)
     end
 
     def prepopulate_new_form(slug)

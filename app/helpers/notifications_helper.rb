@@ -2,14 +2,27 @@ module NotificationsHelper
   REACTION_IMAGES = {
     "like" => "heart-filled.svg",
     "unicorn" => "unicorn-filled.svg",
-    "hands" => "emoji/emoji-one-hands.png",
-    "thinking" => "emoji/emoji-one-thinking.png",
+    "hands" => "twemoji/hands.svg",
+    "thinking" => "twemoji/thinking.svg",
     "readinglist" => "save-filled.svg",
-    "thumbsdown" => "emoji/emoji-one-thumbs-down.png",
-    "vomit" => "emoji/emoji-one-nausea-face.png"
+    "thumbsdown" => "twemoji/thumb-down.svg",
+    "vomit" => "twemoji/suspicious.svg"
   }.freeze
 
   def reaction_image(category)
     REACTION_IMAGES[category]
+  end
+
+  def message_user_acted_maybe_org(data, action, if_org: "")
+    key_to_link = ->(key) { link_to(data[key]["name"], data[key]["path"], class: "crayons-link fw-bold") }
+    if if_org.present?
+      I18n.t(
+        action,
+        user: key_to_link.call("user"),
+        if_org: data["organization"] ? I18n.t(if_org, org: key_to_link.call("organization")) : "",
+      )
+    else
+      I18n.t(action, user: key_to_link.call("user"))
+    end.html_safe
   end
 end

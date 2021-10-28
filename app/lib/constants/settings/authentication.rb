@@ -39,6 +39,14 @@ module Constants
           "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
           placeholder: ""
         },
+        forem_key: {
+          description: "Forem key",
+          placeholder: ""
+        },
+        forem_secret: {
+          description: "Forem secret",
+          placeholder: ""
+        },
         github_key: {
           description: "The \"Client ID\" portion of the GitHub Oauth Apps portal",
           placeholder: ""
@@ -60,8 +68,8 @@ module Constants
           placeholder: "What is the Google reCAPTCHA secret key?"
         },
         require_captcha_for_email_password_registration: {
-          description: "People will be required to fill out a captcha when
-          they're creating a new account in your community",
+          description:
+            "People will be required to fill out a captcha when they're creating a new account in your community",
           placeholder: ""
         },
         twitter_key: {

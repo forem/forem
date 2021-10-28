@@ -2,17 +2,17 @@ class FeedbackMessagesController < ApplicationController
   # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
   FLASH_MESSAGE = "Make sure the forms are filled. 🤖 Other possible errors: "\
-    "%<errors>s".freeze
+                  "%<errors>s".freeze
+  FEEDBACK_ALLOWED_PARAMS = %i[message feedback_type category reported_url offender_id].freeze
 
   def create
     flash.clear
-    rate_limit!(:feedback_message_creation)
 
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
 
     recaptcha_enabled = ReCaptcha::CheckEnabled.call(current_user)
-    if (!recaptcha_enabled || recaptcha_verified? || connect_feedback?) && @feedback_message.save
+    if (!recaptcha_enabled || recaptcha_verified? || connect_feedback?) && !rate_limit? && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
         type: feedback_message_params[:feedback_type],
@@ -62,7 +62,16 @@ class FeedbackMessagesController < ApplicationController
   end
 
   def feedback_message_params
-    allowed_params = %i[message feedback_type category reported_url offender_id]
-    params.require(:feedback_message).permit(allowed_params)
+    params.require(:feedback_message).permit(FEEDBACK_ALLOWED_PARAMS)
+  end
+
+  def rate_limit?
+    begin
+      rate_limit!(:feedback_message_creation)
+    rescue StandardError => e
+      @feedback_message.errors.add(:feedback_message_creation, e.message)
+      return true
+    end
+    false
   end
 end

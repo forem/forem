@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
 
@@ -9,6 +10,7 @@ function getAdditionalClassNames({
   size,
   inverted,
   disabled,
+  tooltip,
 }) {
   let additionalClassNames = '';
 
@@ -36,6 +38,10 @@ function getAdditionalClassNames({
     additionalClassNames += ` ${className}`;
   }
 
+  if (tooltip) {
+    additionalClassNames += ` crayons-tooltip__activator`;
+  }
+
   return additionalClassNames;
 }
 
@@ -43,10 +49,10 @@ export const Button = (props) => {
   const {
     children,
     variant = 'primary',
-    tagName = 'button',
+    tagName,
     inverted,
-    contentType = 'text',
-    size = 'default',
+    contentType,
+    size,
     className,
     icon,
     url,
@@ -57,10 +63,22 @@ export const Button = (props) => {
     onMouseOut,
     onFocus,
     onBlur,
+    onKeyUp,
     tabIndex,
     title,
+    tooltip,
     ...restOfProps
   } = props;
+
+  const [suppressTooltip, setSuppressTooltip] = useState(false);
+
+  const handleKeyUp = (event) => {
+    onKeyUp?.(event);
+    if (!tooltip) {
+      return;
+    }
+    setSuppressTooltip(event.key === 'Escape');
+  };
 
   const ComponentName = tagName;
   const Icon = icon;
@@ -80,12 +98,14 @@ export const Button = (props) => {
         inverted,
         disabled: tagName === 'a' && disabled,
         children,
+        tooltip,
       })}`}
       onClick={onClick}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
       onFocus={onFocus}
       onBlur={onBlur}
+      onKeyUp={handleKeyUp}
       tabIndex={tabIndex}
       title={title}
       {...otherProps}
@@ -101,6 +121,15 @@ export const Button = (props) => {
       {contentType !== 'text' && contentType === 'icon-right' && Icon && (
         <Icon />
       )}
+      {tooltip ? (
+        <span
+          className={`crayons-tooltip__content ${
+            suppressTooltip ? 'crayons-tooltip__suppressed' : ''
+          }`}
+        >
+          {tooltip}
+        </span>
+      ) : null}
     </ComponentName>
   );
 };
@@ -121,10 +150,14 @@ Button.defaultProps = {
   onBlur: undefined,
   tabIndex: undefined,
   title: undefined,
+  tagName: 'button',
+  size: 'default',
+  contentType: 'text',
+  variant: 'primary',
 };
 
 Button.propTypes = {
-  children: defaultChildrenPropTypes.isRequired,
+  children: defaultChildrenPropTypes,
   variant: PropTypes.oneOf([
     'primary',
     'secondary',
@@ -135,7 +168,7 @@ Button.propTypes = {
     'ghost-success',
     'ghost-warning',
     'ghost-danger',
-  ]).isRequired,
+  ]),
   contentType: PropTypes.oneOf([
     'text',
     'icon-left',
@@ -146,7 +179,7 @@ Button.propTypes = {
   inverted: PropTypes.bool,
   tagName: PropTypes.oneOf(['a', 'button']).isRequired,
   className: PropTypes.string,
-  icon: PropTypes.node,
+  icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   url: PropTypes.string,
   buttonType: PropTypes.string,
   disabled: PropTypes.bool,
@@ -158,4 +191,5 @@ Button.propTypes = {
   onBlur: PropTypes.func,
   tabIndex: PropTypes.number,
   title: PropTypes.string,
+  tooltip: PropTypes.node,
 };

@@ -46,13 +46,13 @@ module AuthenticationHelper
   end
 
   def invite_only_mode_or_no_enabled_auth_options
-    Settings::Authentication.invite_only_mode ||
+    ForemInstance.invitation_only? ||
       (authentication_enabled_providers.none? &&
        !Settings::Authentication.allow_email_password_registration)
   end
 
   def tooltip_class_on_auth_provider_enablebtn
-    invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
+    invite_only_mode_or_no_enabled_auth_options ? "crayons-hover-tooltip" : ""
   end
 
   def disabled_attr_on_auth_provider_enable_btn
@@ -65,5 +65,22 @@ module AuthenticationHelper
     else
       ""
     end
+  end
+
+  def came_from_sign_up?
+    request.referer&.include?(new_user_registration_path)
+  end
+
+  def display_social_login?
+    return true if Authentication::Providers.enabled.include?(:apple)
+    return true if request.user_agent.to_s.match?(/Android/i)
+
+    # Don't display (return false) if UserAgent includes ForemWebview - iOS only
+    request.user_agent.to_s.exclude?("ForemWebView")
+  end
+
+  # Display the fallback message if we can't register with email and at the same time can't display the social options.
+  def display_registration_fallback?(state)
+    state == "new-user" && !Settings::Authentication.allow_email_password_registration && !display_social_login?
   end
 end

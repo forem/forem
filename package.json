@@ -12,68 +12,21 @@
     "lib": "lib",
     "test": "test"
   },
+  "resolutions": {
+    "glob-parent": "^6.0.1"
+  },
   "scripts": {
-    "api-docs:lint": "spectral lint -F hint -v docs/api_v0.yml",
-    "api-docs:serve": "redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch",
-    "storybook-prerequisites": "sass -q app/assets/stylesheets/themes:app/javascript/storybook-static/themes && bin/generate-css-utility-classes-docs.js",
-    "prebuild-storybook": "yarn run storybook-prerequisites",
-    "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets -o app/javascript/storybook-static --quiet",
-    "prestorybook": "yarn run storybook-prerequisites",
+    "prepare": "husky install",
+    "generate-storybook-themes": "sass -q app/assets/stylesheets/themes:app/javascript/storybook-static/themes && bin/generate-css-utility-classes-docs.js",
+    "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets -o app/javascript/storybook-static --quiet && yarn generate-storybook-themes",
+    "prestorybook": "rm -rf app/javascript/storybook-static && yarn generate-storybook-themes",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets,app/javascript/storybook-static",
     "lint:frontend": "eslint app/assets/javascripts/**/*.js app/javascript/**/*.jsx app/javascript/**/*.js cypress/**/*.js",
     "test": "jest app/javascript/ bin/ --coverage",
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
-    "e2e": "bin/e2e"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "app/assets/config/manifest.js": [
-      "prettier --write",
-      "eslint --fix -c app/assets/javascripts/.eslintrc.js"
-    ],
-    "docs/api_v0.yml": [
-      "spectral lint -F hint"
-    ],
-    "*.{js,jsx}": [
-      "prettier --write",
-      "eslint --fix",
-      "jest --findRelatedTests"
-    ],
-    "{app,spec,config,lib}/**/*.rb": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
-    ],
-    "app/views/**/*.jbuilder": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
-    ],
-    "./Gemfile": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
-    ],
-    "docs/Gemfile": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
-    ],
-    "*.rake": [
-      "bundle exec rubocop --require rubocop-rspec --auto-correct"
-    ],
-    "app/**/*.html.erb": [
-      "bundle exec erblint --autocorrect"
-    ],
-    "*.json": [
-      "prettier --write"
-    ],
-    "*.scss": [
-      "prettier --write"
-    ],
-    "*.md": [
-      "prettier --write --prose-wrap always"
-    ],
-    "*.svg": [
-      "svgo --pretty"
-    ]
+    "e2e": "bin/e2e",
+    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed"
   },
   "repository": {
     "type": "git",
@@ -86,103 +39,103 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@stoplight/spectral": "5.9.1",
-    "@storybook/addon-a11y": "^6.2.9",
-    "@storybook/addon-actions": "^6.2.9",
-    "@storybook/addon-docs": "^6.2.9",
+    "@knapsack-pro/cypress": "^4.4.1",
+    "@storybook/addon-a11y": "^6.3.12",
+    "@storybook/addon-actions": "^6.3.12",
+    "@storybook/addon-docs": "^6.3.12",
     "@storybook/addon-knobs": "^6.2.9",
-    "@storybook/addon-links": "^6.2.9",
+    "@storybook/addon-links": "^6.3.12",
     "@storybook/addon-notes": "^5.3.21",
-    "@storybook/addon-storyshots": "^6.1.8",
-    "@storybook/addon-storysource": "^6.2.9",
+    "@storybook/addon-storysource": "^6.3.12",
     "@storybook/addons": "^6.2.8",
-    "@storybook/preact": "^6.2.9",
-    "@testing-library/cypress": "^7.0.6",
-    "@testing-library/dom": "^7.31.2",
-    "@testing-library/jest-dom": "^5.13.0",
+    "@storybook/builder-webpack5": "^6.3.12",
+    "@storybook/manager-webpack5": "^6.3.12",
+    "@storybook/preact": "^6.3.12",
+    "@testing-library/cypress": "^7.0.7",
+    "@testing-library/dom": "^8.10.1",
+    "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
-    "@testing-library/user-event": "^13.1.9",
+    "@testing-library/user-event": "^13.5.0",
+    "@whitespace/storybook-addon-html": "^5.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^26.6.3",
+    "babel-jest": "^27.3.1",
     "babel-loader": "^8.2.2",
-    "css-loader": "^5.2.6",
-    "cssom": "^0.4.4",
-    "cypress": "^7.4.0",
-    "cypress-file-upload": "^5.0.7",
-    "eslint": "^7.28.0",
-    "eslint-config-preact": "^1.1.4",
+    "css-loader": "^5.2.7",
+    "cssom": "^0.5.0",
+    "cypress": "^8.6.0",
+    "cypress-failed-log": "^2.9.2",
+    "cypress-file-upload": "^5.0.8",
+    "eslint": "^7.32.0",
+    "eslint-config-preact": "^1.2.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-webpack": "^0.13.1",
     "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-cypress": "^2.11.3",
+    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-ignore-erb": "^0.1.1",
-    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-no-only-tests": "^2.6.0",
-    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react": "^7.26.1",
     "faker": "^5.5.3",
-    "gitdocs": "^2.0.0",
-    "husky": "^4.3.8",
-    "jest": "26.6.3",
+    "husky": "^7.0.2",
+    "jest": "27.3.1",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
-    "jest-watch-typeahead": "^0.6.3",
-    "jsdom": "^16.6.0",
-    "lint-staged": "^11.0.0",
+    "jest-watch-typeahead": "^1.0.0",
+    "jsdom": "^18.0.0",
+    "lint-staged": "^11.2.4",
     "markdown-loader": "^6.0.0",
-    "prettier": "^2.3.1",
-    "redoc-cli": "0.12.1",
-    "sass": "1.34.1",
-    "sass-loader": "^10.1.1",
+    "prettier": "^2.4.1",
+    "sass": "1.43.2",
+    "sass-loader": "^12.2.0",
+    "storybook-addon-jsx": "^7.3.14",
     "style-loader": "^2.0.0",
-    "svgo": "2.3.0",
-    "webpack-bundle-analyzer": "^4.4.2",
+    "svgo": "2.7.0",
+    "webpack-bundle-analyzer": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "@babel/core": "^7.14.2",
+    "@babel/core": "^7.15.8",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-react-jsx": "^7.14.5",
-    "@babel/preset-env": "^7.14.4",
+    "@babel/plugin-transform-react-jsx": "^7.14.9",
+    "@babel/preset-env": "^7.15.8",
     "@github/clipboard-copy-element": "^1.1.2",
+    "@github/time-elements": "3.1.2",
     "@honeybadger-io/webpack": "^1.2.0",
-    "@rails/ujs": "6.0.3-7",
-    "@rails/webpacker": "5.4.0",
-    "@reach/combobox": "^0.15.1",
-    "ahoy.js": "^0.3.8",
-    "autoprefixer": "^10.2.6",
+    "@hotwired/stimulus": "3.0.1",
+    "@hotwired/stimulus-webpack-helpers": "1.0.1",
+    "@rails/ujs": "6.1.4",
+    "@rails/webpacker": "5.4.3",
+    "@reach/combobox": "^0.16.3",
+    "ahoy.js": "^0.4.0",
+    "autoprefixer": "^10.3.7",
     "babel-preset-preact": "^2.0.0",
     "canvas": "^2.8.0",
-    "chart.js": "^3.3.2",
+    "chart.js": "^3.6.0",
     "clipboard-polyfill": "^3.0.3",
     "core-js": "3",
     "file-loader": "^6.2.0",
-    "focus-trap": "^6.4.0",
+    "focus-trap": "^6.7.1",
     "focus-visible": "^5.2.0",
     "he": "^1.2.0",
     "honeybadger-js": "2.3.0",
+    "i18n-js": "^3.8.0",
     "intersection-observer": "^0.12.0",
     "linkstate": "^2.0.1",
     "lodash.debounce": "4.0.8",
-    "postcss": "^8.3.3",
-    "postcss-cli": "^8.3.1",
+    "postcss": "^8.3.11",
+    "postcss-cli": "^9.0.1",
     "postcss-cssnext": "^3.1.0",
     "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
-    "preact": "^10.5.13",
+    "preact": "^10.5.15",
     "prop-types": "^15.7.2",
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
-    "stimulus": "^2.0.0",
-    "web-share-wrapper": "^0.2.1"
-  },
-  "resolutions": {
-    "gitdocs/markdown-to-jsx": "^6.11.4",
-    "gitdocs/prismjs": "^1.23.0",
-    "gitdocs/axios": "^0.21.1"
+    "web-share-wrapper": "^0.2.2"
   },
   "jest": {
     "setupFiles": [

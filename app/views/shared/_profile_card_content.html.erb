@@ -1,0 +1,75 @@
+<div class="-mt-4">
+  <a href="<%= actor.path %>" class="flex">
+    <span class="<% if actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2 shrink-0">
+      <img src="<%= Images::Profile.call(actor.profile_image_url, length: 90) %>" class="<% if actor.class.name == "User" %>crayons-avatar__image<% elsif actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="" loading="lazy" />
+    </span>
+    <span class="crayons-link crayons-subtitle-2 mt-5"><%= actor.name %></span>
+  </a>
+</div>
+
+<div class="print-hidden">
+  <%= follow_button(actor, style = "", classes = "w-100") %>
+</div>
+<% if actor.tag_line.present? %>
+  <div class="color-base-70">
+    <%= truncate (actor.tag_line || actor.summary || t("views.sticky.no_summary")), length: 200 %>
+  </div>
+<% end %>
+
+<% if actor.class.name == "User" %>
+  <div class="user-metadata-details">
+    <ul class="user-metadata-details-inner">
+      <% if actor.setting.display_email_on_profile && context != "sidebar" %>
+        <li>
+          <div class="key">
+            <%= t("views.sticky.email") %>
+          </div>
+          <div class="value">
+            <a href="mailto:<%= actor.email %>"><%= actor.email %></a>
+          </div>
+        </li>
+      <% end %>
+      <% if actor.profile.location.present? %>
+        <li>
+          <div class="key">
+            <%= t("views.sticky.location") %>
+          </div>
+          <div class="value">
+            <%= actor.profile.location %>
+          </div>
+        </li>
+      <% end %>
+      <% if (header_fields = actor.profile.decorate.ui_attributes_for(area: :header)).present? %>
+        <% header_fields.sort.each do |title, value| %>
+          <li>
+            <div class="key">
+              <%= t("views.users.profile_fields.#{title}") %>
+            </div>
+            <div class="value">
+              <%= value %>
+            </div>
+          </li>
+        <% end %>
+      <% end %>
+      <li>
+        <div class="key">
+          <%= t("views.sticky.joined") %>
+        </div>
+        <div class="value">
+          <%= local_date(actor.created_at) %>
+        </div>
+      </li>
+    </ul>
+  </div>
+<% elsif actor.class.name == "Organization" && actor.approved_and_filled_out_cta? %>
+  <div>
+    <%= sanitize_rendered_markdown(actor.cta_processed_html) %>
+  </div>
+  <% if actor.cta_button_text.present? && actor.cta_button_url.present? %>
+    <div>
+      <a href="<%= actor.cta_button_url %>" class="crayons-btn crayons-btn--outlined w-100">
+        <%= actor.cta_button_text || t("views.sticky.default_cta") %>
+      </a>
+    </div>
+  <% end %>
+<% end %>

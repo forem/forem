@@ -17,10 +17,8 @@ FactoryBot.define do
     saw_onboarding               { true }
     checked_code_of_conduct      { true }
     checked_terms_and_conditions { true }
-    display_announcements        { true }
     registered_at                { Time.current }
     signup_cta_variant           { "navbar_basic" }
-    email_digest_periodic        { false }
 
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }
@@ -53,6 +51,13 @@ FactoryBot.define do
 
     trait :super_admin do
       after(:build) { |user| user.add_role(:super_admin) }
+    end
+
+    trait :creator do
+      after(:build) do |user|
+        user.add_role(:super_admin)
+        user.add_role(:creator)
+      end
     end
 
     trait :admin do
@@ -164,8 +169,10 @@ FactoryBot.define do
     end
 
     trait :with_newsletters do
-      email_newsletter { true }
-      email_digest_periodic { true }
+      after(:create) do |user|
+        Users::NotificationSetting.find_by(user_id: user.id)
+          .update_columns(email_newsletter: true, email_digest_periodic: true)
+      end
     end
   end
 end

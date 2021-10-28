@@ -95,10 +95,6 @@ module ApplicationHelper
     end
   end
 
-  def invite_only_mode?
-    Settings::Authentication.invite_only_mode?
-  end
-
   def any_enabled_auth_providers?
     authentication_enabled_providers.any?
   end
@@ -126,12 +122,30 @@ module ApplicationHelper
   def follow_button(followable, style = "full", classes = "")
     return if followable == DELETED_USER
 
-    tag :button, # Yikes
-        class: "crayons-btn follow-action-button #{classes} whitespace-nowrap",
-        data: {
-          :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
-          "follow-action-button" => true
+    user_follow = followable.instance_of?(User) ? "follow-user" : ""
+    followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
+                        followable.object.class.name.downcase
+                      else
+                        followable.class.name.downcase
+                      end
+
+    followable_name = followable.name
+
+    tag.button(
+      I18n.t("core.follow"),
+      name: :button,
+      type: :button,
+      data: {
+        info: {
+          id: followable.id,
+          className: followable_type,
+          name: followable_name,
+          style: style
         }
+      },
+      class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
+      aria: { label: "Follow #{followable_type}: #{followable_name}", pressed: "false" },
+    )
   end
 
   def user_colors_style(user)
@@ -255,11 +269,6 @@ module ApplicationHelper
     URL.organization(organization)
   end
 
-  def sanitize_and_decode(str)
-    # using to_str instead of to_s to prevent removal of html entity code
-    HTMLEntities.new.decode(sanitize(str).to_str)
-  end
-
   def estimated_user_count
     User.registered.estimated_count
   end
@@ -285,8 +294,6 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
-    # TODO: [@jacobherrington] After all Forems have successfully deployed and the banned role
-    # has been deleted, removed this ternary.
-    role.name == "banned" ? "Suspended" : role.name.titlecase
+    role.name.titlecase
   end
 end

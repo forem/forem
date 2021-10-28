@@ -1,11 +1,11 @@
 <div class="form-group">
   <%= form.label :name %>
-  <%= form.text_field :name, class: "form-control" %>
+  <%= form.text_field :name, class: "form-control", required: true %>
   <div class="alert alert-info">A friendly name for the navigation link</div>
 </div>
 <div class="form-group">
   <%= form.label :url %>
-  <%= form.text_field :url, class: "form-control" %>
+  <%= form.text_field :url, class: "form-control", pattern: "^(https?:\/\/|\/)\w+\.[^\s]+$|^\/[^\s]*$", title: "The URL can be absolute by beginning with http/s or it can be relative beginning with a /", required: true %>
   <div class="alert alert-info">A full (external) or relative (internal) URL for the link</div>
 </div>
 <div class="form-group" data-controller="svg-icon-upload">
@@ -17,12 +17,31 @@
     <%= form.hidden_field :icon, "data-svg-icon-upload-target": "svgIconContent" %>
 
     <input
-      type="file" accept="image/svg+xml" class="form-control-file"
-      data-action="svg-icon-upload#selectSvgIcon" />
+      type="file"
+      accept="image/svg+xml"
+      class="form-control-file"
+      data-action="svg-icon-upload#selectSvgIcon"
+      <%= form.object[:icon].blank? ? "required=true" : "" %> />
 
     <div class="alert alert-info">An SVG icon should be uploaded</div>
     <div data-svg-icon-upload-target="svgIconMessageValidate"></div>
   </div>
+</div>
+<div class="form-group">
+  <fieldset aria-describedby="section-description">
+    <legend class="fs-l">Section</legend>
+    <div class="grid gap-4 grid-cols-2 l:grid-cols-3">
+      <label class="rich-selector crayons-field crayons-field--radio">
+        <%= form.radio_button :section, "default", checked: true, class: "crayons-radio" %>
+        <div class="crayons-field__label">Default</div>
+      </label>
+      <label class="rich-selector crayons-field crayons-field--radio">
+        <%= form.radio_button :section, "other", class: "crayons-radio" %>
+        <div class="crayons-field__label">Other</div>
+      </label>
+    </div>
+  </fieldset>
+  <div id="section-description" class="alert alert-info">Determines which section the link will be displayed in</div>
 </div>
 <div class="form-group">
   <%= form.label :position %>

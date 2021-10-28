@@ -27,6 +27,8 @@ class Article < ApplicationRecord
 
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
+  UNIQUE_URL_ERROR = "has already been taken. " \
+                     "Email #{ForemInstance.email} for further details.".freeze
 
   has_one :discussion_lock, dependent: :destroy
 
@@ -52,12 +54,15 @@ class Article < ApplicationRecord
   validates :body_markdown, bytesize: { maximum: 800.kilobytes, too_long: "is too long." }
   validates :body_markdown, length: { minimum: 0, allow_nil: false }
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
-  validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
-  validates :canonical_url, uniqueness: { allow_nil: true }
+  validates :canonical_url,
+            uniqueness: { allow_nil: true, scope: :published, message: UNIQUE_URL_ERROR },
+            if: :published?
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :comments_count, presence: true
-  validates :feed_source_url, uniqueness: { allow_nil: true }
+  validates :feed_source_url,
+            uniqueness: { allow_nil: true, scope: :published, message: UNIQUE_URL_ERROR },
+            if: :published?
   validates :feed_source_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
@@ -105,8 +110,11 @@ class Article < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
+  after_update_commit :update_notification_subscriptions, if: proc { |article|
+    article.saved_change_to_user_id?
+  }
 
-  after_commit :async_score_calc, :touch_collection, :detect_animated_images, on: %i[create update]
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -221,6 +229,16 @@ class Article < ApplicationRecord
     end
   }
 
+  # NOTE: @citizen428
+  # I'd usually avoid using Arel directly like this. However, none of the more
+  # straight-forward ways of negating the above scope worked:
+  # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
+  # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
+  #    only works for simple conditions and returns an empty hash in this case.
+  scope :not_cached_tagged_with_any, lambda { |tags|
+    where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
+  }
+
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
 
@@ -234,26 +252,18 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
+           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
            :last_comment_at)
   }
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
+           :main_image, :main_image_background_hex_color, :updated_at,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
            :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
-  }
-
-  scope :boosted_via_additional_articles, lambda {
-    where("boost_states ->> 'boosted_additional_articles' = 'true'")
-  }
-
-  scope :boosted_via_dev_digest_email, lambda {
-    where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
   scope :sorting, lambda { |value|
@@ -291,12 +301,6 @@ class Article < ApplicationRecord
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
-
-  store_attributes :boost_states do
-    boosted_additional_articles Boolean, default: false
-    boosted_dev_digest_email Boolean, default: false
-    boosted_additional_tags String, default: ""
-  end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date
@@ -484,11 +488,23 @@ class Article < ApplicationRecord
     followers.uniq.compact
   end
 
+  def skip_indexing?
+    # should the article be skipped indexed by crawlers?
+    # true if unpublished, or spammy,
+    # or low score, not featured, and from a user with no comments
+    !published ||
+      (score < Settings::UserExperience.index_minimum_score &&
+       user.comments_count < 1 &&
+       !featured) ||
+      featured_number.to_i < 1_500_000_000 ||
+      score < -1
+  end
+
   private
 
   def search_score
     comments_score = (comments_count * 3).to_i
-    partial_score = (comments_score + public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    partial_score = (comments_score + (public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i))
     calculated_score = hotness_score.to_i + partial_score
     calculated_score.to_i
   end
@@ -559,6 +575,10 @@ class Article < ApplicationRecord
 
   def update_notifications
     Notification.update_notifications(self, "Published")
+  end
+
+  def update_notification_subscriptions
+    NotificationSubscription.update_notification_subscriptions(self)
   end
 
   def before_destroy_actions
@@ -757,7 +777,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{title.to_s.downcase.parameterize.tr('_', '')}-#{rand(100_000).to_s(26)}"
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
   end
 
   def clean_data
@@ -821,10 +841,10 @@ class Article < ApplicationRecord
     Slack::Messengers::ArticlePublished.call(article: self)
   end
 
-  def detect_animated_images
+  def enrich_image_attributes
     return unless FeatureFlag.enabled?(:detect_animated_images)
     return unless saved_change_to_attribute?(:processed_html)
 
-    ::Articles::DetectAnimatedImagesWorker.perform_async(id)
+    ::Articles::EnrichImageAttributesWorker.perform_async(id)
   end
 end

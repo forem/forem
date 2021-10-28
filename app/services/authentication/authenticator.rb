@@ -124,16 +124,14 @@ module Authentication
         password_confirmation: password,
         signup_cta_variant: cta_variant,
         registered: true,
-        registered_at: Time.current,
-        saw_onboarding: false,
-        editor_version: :v2
+        registered_at: Time.current
       }
     end
 
     def update_user(user)
       user.tap do |model|
-        user.unlock_access! if user.access_locked?
-        user.assign_attributes(provider.existing_user_data)
+        model.unlock_access! if model.access_locked?
+        model.assign_attributes(provider.existing_user_data)
 
         update_profile_updated_at(model)
 

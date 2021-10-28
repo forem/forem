@@ -74,6 +74,7 @@ export class Tags extends Component {
       cursorIdx: 0,
       prevLen: 0,
       showingRulesForTag: null,
+      showingTopTags: false,
       ...listingState,
     };
   }
@@ -100,7 +101,7 @@ export class Tags extends Component {
 
   get isTopOfSearchResults() {
     const { selectedIndex } = this.state;
-    return selectedIndex <= 0;
+    return selectedIndex < 0;
   }
 
   get isBottomOfSearchResults() {
@@ -160,6 +161,7 @@ export class Tags extends Component {
 
   handleKeyDown = (e) => {
     const component = this;
+    const { searchResults } = this.state;
     const { maxTags } = this.props;
     if (component.selected.length === maxTags && e.key === KEYS.COMMA) {
       e.preventDefault();
@@ -169,7 +171,7 @@ export class Tags extends Component {
     if (
       (e.key === KEYS.DOWN || e.key === KEYS.TAB) &&
       !this.isBottomOfSearchResults &&
-      component.props.defaultValue !== ''
+      searchResults.length > 0
     ) {
       e.preventDefault();
       this.moveDownInSearchResults();
@@ -186,7 +188,7 @@ export class Tags extends Component {
         document.getElementById('tag-input').focus();
       }, 10);
     } else if (e.key === KEYS.COMMA && !this.isSearchResultSelected) {
-      this.resetSearchResults();
+      this.fetchTopTagSuggestions();
       this.clearSelectedSearchResult();
     } else if (e.key === KEYS.DELETE) {
       if (
@@ -300,19 +302,37 @@ export class Tags extends Component {
       input.value.slice(range[1], input.value.length);
     /* eslint-disable-next-line react/destructuring-assignment */
     this.props.onInput(newInput);
-    this.resetSearchResults();
+    this.fetchTopTagSuggestions();
     this.clearSelectedSearchResult();
+  }
+
+  fetchTopTagSuggestions() {
+    this.setState({ showingTopTags: true });
+    const { topTags = [] } = this.state;
+    if (topTags.length > 0) {
+      return Promise.resolve().then(() =>
+        this.setState({
+          searchResults: topTags.filter((t) => !this.selected.includes(t.name)),
+        }),
+      );
+    }
+    return window
+      .fetch('/tags/suggest')
+      .then((res) => res.json())
+      .then((tags) => {
+        this.setState({
+          topTags: tags,
+          searchResults: tags.filter((t) => !this.selected.includes(t.name)),
+        });
+      });
   }
 
   search(query) {
     if (query === '') {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          this.resetSearchResults();
-          resolve();
-        }, 5);
-      });
+      return this.fetchTopTagSuggestions();
     }
+    this.setState({ showingTopTags: false });
+
     const { listing } = this.props;
 
     const dataHash = { name: query };
@@ -336,15 +356,9 @@ export class Tags extends Component {
       // allows user to choose a tag when they've typed the partial or whole word
       this.setState({
         searchResults: response.result.filter(
-          (t) => !this.selected.includes(t.name),
+          (t) => t.name === query || !this.selected.includes(t.name),
         ),
       });
-    });
-  }
-
-  resetSearchResults() {
-    this.setState({
-      searchResults: [],
     });
   }
 
@@ -368,7 +382,8 @@ export class Tags extends Component {
 
   render() {
     let searchResultsHTML = '';
-    const { searchResults, selectedIndex, showingRulesForTag } = this.state;
+    const { searchResults, selectedIndex, showingRulesForTag, showingTopTags } =
+      this.state;
     const {
       classPrefix,
       defaultValue,
@@ -381,6 +396,7 @@ export class Tags extends Component {
     const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
+        key={`option-${tag.name}`}
         tabIndex="-1"
         role="button"
         className={`${classPrefix}__tagoptionrow ${classPrefix}__tagoptionrow--${
@@ -403,13 +419,15 @@ export class Tags extends Component {
         ) : (
           ''
         )}
-        <div
-          className={`${classPrefix}__tagrules--${
-            showingRulesForTag === tag.name ? 'active' : 'inactive'
-          }`}
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: tag.rules_html }}
-        />
+        {!showingTopTags && (
+          <div
+            className={`${classPrefix}__tagrules--${
+              showingRulesForTag === tag.name ? 'active' : 'inactive'
+            }`}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: tag.rules_html }}
+          />
+        )}
       </div>
     ));
     if (
@@ -422,6 +440,9 @@ export class Tags extends Component {
     ) {
       searchResultsHTML = (
         <div className={`${classPrefix}__tagsoptions`}>
+          {showingTopTags ? (
+            <h2 className={`${classPrefix}__tagsoptionsheading`}>Top tags</h2>
+          ) : null}
           {searchResultsRows}
           <div className={`${classPrefix}__tagsoptionsbottomrow`}>
             Some tags have rules and guidelines determined by community
@@ -455,7 +476,10 @@ export class Tags extends Component {
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
-          onFocus={onFocus}
+          onFocus={(e) => {
+            this.fetchTopTagSuggestions();
+            onFocus(e);
+          }}
           pattern={pattern}
         />
         {searchResultsHTML}
@@ -470,8 +494,8 @@ Tags.propTypes = {
   maxTags: PropTypes.number.isRequired,
   classPrefix: PropTypes.string.isRequired,
   fieldClassName: PropTypes.string.isRequired,
-  listing: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
+  listing: PropTypes.string,
+  category: PropTypes.string,
   onFocus: PropTypes.func.isRequired,
   pattern: PropTypes.string.isRequired,
 };

@@ -1,36 +1,20 @@
 module Admin
   module Settings
     class BaseController < Admin::ApplicationController
-      MISMATCH_ERROR = "The confirmation key does not match".freeze
-
-      before_action :extra_authorization_and_confirmation, only: [:create]
+      before_action :authorize_super_admin
 
       def create
         result = upsert_config(settings_params)
 
         if result.success?
           Audit::Logger.log(:internal, current_user, params.dup)
-          redirect_to admin_config_path, notice: "Successfully updated settings."
+          render json: { message: "Successfully updated settings." }, status: :ok
         else
-          redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
+          render json: { error: result.errors.to_sentence }, status: :unprocessable_entity
         end
       end
 
       private
-
-      def extra_authorization_and_confirmation
-        not_authorized unless current_user.has_role?(:super_admin)
-        raise_confirmation_mismatch_error unless confirmation_text_valid?
-      end
-
-      def confirmation_text_valid?
-        params.require(:confirmation) ==
-          "My username is @#{current_user.username} and this action is 100% safe and appropriate."
-      end
-
-      def raise_confirmation_mismatch_error
-        raise ActionController::BadRequest.new, MISMATCH_ERROR
-      end
 
       # Override this method if you need to call a custom class for upserting.
       # Ideally such a class eventually calls out to Settings::Upsert and returns
@@ -45,6 +29,10 @@ module Admin
         params
           .require(:"settings_#{authorization_resource.name.demodulize.underscore}")
           .permit(*authorization_resource.keys)
+      end
+
+      def authorize_super_admin
+        raise Pundit::NotAuthorizedError unless current_user.has_role?(:super_admin)
       end
     end
   end

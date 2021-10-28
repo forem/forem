@@ -7,7 +7,6 @@
 .eslintignore
 .eslintrc.js
 .gitattributes
-.gitdocs.js
 .github/
 .gitpod.dockerfile
 .gitpod.yml
@@ -40,7 +39,6 @@ cypress.dev.json
 cypress.json
 cypress/
 docker-compose.yml
-docs/
 empty-module.js
 jest.config.js
 postcss_error.log

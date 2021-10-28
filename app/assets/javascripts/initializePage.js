@@ -17,7 +17,6 @@
 
 function callInitializers() {
   initializeBaseTracking();
-  initializeRuntimeBanner();
   initializePaymentPointers();
   initializeCommentsPage();
   initializeArticleDate();
@@ -55,8 +54,6 @@ function initializePage() {
         initializeAllTagEditButtons();
       }
       initializeBroadcast();
-      initializeAllFollowButts();
-      initializeUserFollowButts();
       initializeReadingListIcons();
       initializeSponsorshipVisibility();
       if (document.getElementById('sidebar-additional')) {

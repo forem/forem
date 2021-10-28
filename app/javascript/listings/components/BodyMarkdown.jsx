@@ -17,7 +17,7 @@ export const BodyMarkdown = ({ onChange, defaultValue }) => (
     />
     <p className="crayons-field__description">
       400 characters max, 12 line break max, no images allowed, *markdown is
-      encouraged*
+      encouraged*. Please include a contact method if necessary.
     </p>
   </div>
 );

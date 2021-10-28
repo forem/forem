@@ -8,16 +8,9 @@ RSpec.describe Profile, type: :model do
     subject { profile }
 
     it { is_expected.to validate_uniqueness_of(:user_id) }
-    it { is_expected.to validate_presence_of(:data) }
 
     describe "conditionally validating summary" do
       let(:invalid_summary) { "x" * ProfileValidator::MAX_SUMMARY_LENGTH.next }
-
-      it "doesn't validate if the profile field doesn't exist" do
-        allow(ProfileField).to receive(:exists?).with(attribute_name: "summary").and_return(false)
-        profile.summary = invalid_summary
-        expect(profile).to be_valid
-      end
 
       it "is valid if users previously had long summaries and are grandfathered" do
         profile.summary = invalid_summary
@@ -38,45 +31,21 @@ RSpec.describe Profile, type: :model do
       end
     end
 
-    describe "validating color fields" do
-      it "is valid if the field is a correct hex color with leading #" do
-        profile.brand_color1 = "#abcdef"
-        expect(profile).to be_valid
-      end
-
-      it "is valid if the field is a correct hex color without leading #" do
-        profile.brand_color1 = "abcdef"
-        expect(profile).to be_valid
-      end
-
-      it "is valid if the field is a 3-digit hex color" do
-        profile.brand_color1 = "#ccc"
-        expect(profile).to be_valid
-      end
-
-      it "is invalid if the field is too long" do
-        profile.brand_color1 = "#deadbeef"
-        expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Brand color1 is not a valid hex color"
-      end
-
-      it "is invalid if the field contains non hex characters" do
-        profile.brand_color1 = "#abcdeg"
-        expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Brand color1 is not a valid hex color"
-      end
-    end
-
     describe "validating text areas" do
+      before do
+        create(:profile_field, label: "Test Text Area", input_type: :text_area)
+      end
+
       it "is valid if the text is short enough" do
-        profile.skills_languages = "Ruby"
+        profile.test_text_area = "Ruby"
         expect(profile).to be_valid
       end
 
       it "is invalid if the text is too long" do
-        profile.skills_languages = "x" * ProfileValidator::MAX_TEXT_AREA_LENGTH.next
+        profile.test_text_area = "x" * ProfileValidator::MAX_TEXT_AREA_LENGTH.next
         expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Skills languages is too long (maximum: 200)"
+        expect(profile.errors_as_sentence)
+          .to eq "Test text area is too long (maximum is 200 characters)"
       end
     end
 
@@ -89,7 +58,25 @@ RSpec.describe Profile, type: :model do
       it "is invalid if the text is too long" do
         profile.location = "x" * ProfileValidator::MAX_TEXT_FIELD_LENGTH.next
         expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Location is too long (maximum: 100)"
+        expect(profile.errors_as_sentence).to eq "Location is too long (maximum is 100 characters)"
+      end
+    end
+
+    describe "validating website_url" do
+      it "is valid if blank" do
+        profile.website_url = nil
+        expect(profile).to be_valid
+      end
+
+      it "is valid with a complete url" do
+        profile.website_url = "https://dev.to"
+        expect(profile).to be_valid
+      end
+
+      it "is invalid with an incomplete url" do
+        profile.website_url = "dev.to"
+        expect(profile).not_to be_valid
+        expect(profile.errors_as_sentence).to eq "Website url is not a valid URL"
       end
     end
   end
@@ -97,8 +84,7 @@ RSpec.describe Profile, type: :model do
   context "when accessing profile fields" do
     before do
       create(:profile_field, label: "Test 1")
-      create(:profile_field, label: "Test 2", input_type: :check_box)
-      described_class.refresh_attributes!
+      create(:profile_field, label: "Test 2", input_type: :text_area)
     end
 
     let(:profile) { described_class.new }
@@ -106,16 +92,6 @@ RSpec.describe Profile, type: :model do
     it "defines accessors for active profile fields", :aggregate_failures do
       expect(profile).to respond_to(:test1)
       expect(profile).to respond_to(:test2)
-    end
-
-    it "performs ActiveRecord typecasting for profile fields", :aggregate_failures do
-      expect do
-        profile.test2 = "true"
-      end.to change(profile, :test2).from(nil).to(true)
-
-      expect do
-        profile.test2 = "f"
-      end.to change(profile, :test2).to(false)
     end
   end
 end

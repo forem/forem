@@ -43,7 +43,7 @@ function fetchNext(el, endpoint, insertCallback) {
 }
 
 function insertNext(params, buildCallback) {
-  return function insertEntries(entries) {
+  return function insertEntries(entries = []) {
     var list = document.getElementById(params.listId || 'sublist');
     var newFollowersHTML = '';
     entries.forEach(function insertAnEntry(entry) {
@@ -57,7 +57,9 @@ function insertNext(params, buildCallback) {
     });
 
     var followList = document.getElementById('following-wrapper');
-    followList.insertAdjacentHTML('beforeend', newFollowersHTML);
+    if (followList) {
+      followList.insertAdjacentHTML('beforeend', newFollowersHTML);
+    }
     if (nextPage > 0) {
       fetching = false;
     }
@@ -158,27 +160,18 @@ function fetchNextFollowersPage(el) {
 }
 
 function buildVideoArticleHTML(videoArticle) {
-  return (
-    '<a class="single-video-article single-article" href="' +
-    videoArticle.path +
-    '" id="video-article-' +
-    videoArticle.id +
-    '">\n' +
-    '  <div class="video-image" style="background-image: url(' +
-    videoArticle.cloudinary_video_url +
-    ')">\n' +
-    '     <span class="video-timestamp">' +
-    videoArticle.video_duration_in_minutes +
-    '</span>\n' +
-    '   </div>\n' +
-    '   <p><strong>' +
-    videoArticle.title +
-    '</strong></p>\n' +
-    '  <p>' +
-    videoArticle.user.name +
-    '</p>\n' +
-    '</a>'
-  );
+  return `<a href="${videoArticle.path}" id="video-article-${videoArticle.id}" class="crayons-card media-card">
+    <div class="media-card__artwork">
+      <img src="${videoArticle.cloudinary_video_url}" class="w-100 object-cover block aspect-16-9 h-auto" width="320" height="180" alt="${videoArticle.title}">
+      <span class="media-card__artwork__badge">${videoArticle.video_duration_in_minutes}</span>
+    </div>
+    <div class="media-card__content">
+      <h2 class="fs-base mb-2 fw-medium">${videoArticle.title}</h2>
+      <small class="fs-s">
+        ${videoArticle.user.name}
+      </small>
+    </div>
+  </a>`;
 }
 
 function insertVideos(videoArticles) {
@@ -196,14 +189,11 @@ function insertVideos(videoArticles) {
 
   var distanceFromBottom =
     document.documentElement.scrollHeight - document.body.scrollTop;
-  var newNode = document.createElement('div');
-  newNode.innerHTML = newVideosHTML;
-  newNode.className += 'video-collection';
-  var singleArticles = document.querySelectorAll(
-    '.single-article, .crayons-story',
-  );
-  var lastElement = singleArticles[singleArticles.length - 1];
-  insertAfter(newNode, lastElement);
+
+  var parentNode = document.querySelector('.js-video-collection');
+  var frag = document.createRange().createContextualFragment(newVideosHTML);
+  parentNode.appendChild(frag);
+
   if (nextPage > 0) {
     fetching = false;
   }
@@ -286,15 +276,11 @@ function insertArticles(articles) {
   }
 }
 
-function fetchNextPodcastPage(el) {
-  fetchNext(el, '/api/podcast_episodes', insertArticles);
-}
-
 function paginate(tag, params, requiresApproval) {
-  const searchHash = {
-    ...{ per_page: 15, page: nextPage },
-    ...JSON.parse(params),
-  };
+  const searchHash = Object.assign(
+    { per_page: 15, page: nextPage },
+    JSON.parse(params),
+  );
 
   if (tag && tag.length > 0) {
     searchHash.tag_names = searchHash.tag_names || [];
@@ -365,12 +351,7 @@ function fetchNextPageIfNearBottom() {
   var fetchCallback;
   var scrollableElem;
 
-  if (indexWhich === 'podcast-episodes') {
-    scrollableElem = document.getElementById('main-content');
-    fetchCallback = function fetch() {
-      fetchNextPodcastPage(indexContainer);
-    };
-  } else if (indexWhich === 'videos') {
+  if (indexWhich === 'videos') {
     scrollableElem = document.getElementById('main-content');
     fetchCallback = function fetch() {
       fetchNextVideoPage(indexContainer);

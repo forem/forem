@@ -9,7 +9,7 @@ module Podcasts
 
     def get_episodes(limit: 100, force_update: false)
       # increased the redirect limit from 5 (default) to 7 to be able to handle such urls
-      rss = HTTParty.get(podcast.feed_url, limit: 7).body
+      rss = HTTParty.get(podcast.feed_url, limit: 7).body.to_s
       feed = RSS::Parser.parse(rss, false)
 
       set_unreachable(status: :unparsable, force_update: force_update) && return unless feed
@@ -35,7 +35,7 @@ module Podcasts
     def set_unreachable(status: :unreachable, force_update: false)
       # don't recheck if the podcast was already unreachable or force update is required
       need_refetching = podcast.reachable || force_update
-      podcast.update_columns(reachable: false, status_notice: I18n.t(status, scope: "podcasts.statuses"))
+      podcast.update_columns(reachable: false, status_notice: I18n.t(status, scope: "views.podcasts.statuses"))
       refetch_items if need_refetching
       true
     end

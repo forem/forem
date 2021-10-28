@@ -2,7 +2,7 @@
   <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
     <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
     <% if @sidebar_ad %>
-      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget">
+      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget" data-display-unit data-id="<%= @sidebar_ad.id %>">
         <%= @sidebar_ad.processed_html.html_safe %>
       </div>
     <% end %>
@@ -12,9 +12,9 @@
     <% if params[:timeframe].blank? && @listings.any? %>
       <section class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-2">Listings</h3>
+          <h3 class="crayons-subtitle-2"><%= t("core.listings") %></h3>
           <div class="crayons-card__actions">
-            <a href="/listings" class="crayons-link--branded fw-medium fs-s">See all</a>
+            <a href="/listings" class="crayons-link--branded fw-medium fs-s"><%= t("core.see_all") %></a>
           </div>
         </header>
 

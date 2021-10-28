@@ -58,7 +58,7 @@ RSpec.describe Search::Username, type: :service do
     it "finds multiple users whose names have common parts", :aggregate_failures do
       alex = create(:user, username: "alex")
       alexsmith = create(:user, name: "alexsmith")
-      rhymes = create(:user, username: "rhymes")
+      rhymes = create(:user, username: "rhymes", name: "Non-matching Name")
 
       result = described_class.search_documents("ale")
       usernames = result.pluck(:username)

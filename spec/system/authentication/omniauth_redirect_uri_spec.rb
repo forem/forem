@@ -6,9 +6,6 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
   # Avoid messing with other tests by resetting back Settings::General.app_domain
   after { Settings::General.app_domain = test_app_domain }
 
-  # Apple auth is in Beta so we need to enable the Feature Flag to test it
-  before { Flipper.enable(:apple_auth) }
-
   def provider_redirect_regex(provider_name)
     # URL encoding translates the query params (i.e. colons/slashes/etc)
     %r{
@@ -21,6 +18,7 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
 
   it "relies on Settings::General.app_domain to generate correct callbacks_url" do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
+    allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
     visit sign_up_path
     Authentication::Providers.available.each do |provider_name|
       provider_auth_button = find("button.crayons-btn--brand-#{provider_name}")

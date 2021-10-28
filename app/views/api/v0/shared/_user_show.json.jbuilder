@@ -5,12 +5,13 @@ json.extract!(
   :id,
   :username,
   :name,
-  :summary,
   :twitter_username,
   :github_username,
-  :website_url,
-  :location,
 )
+
+Profile.static_fields.each do |attr|
+  json.set! attr, user.profile.public_send(attr)
+end
 
 json.joined_at     user.created_at.strftime("%b %e, %Y")
 json.profile_image Images::Profile.call(user.profile_image_url, length: 320)

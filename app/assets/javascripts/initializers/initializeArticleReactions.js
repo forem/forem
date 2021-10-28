@@ -1,4 +1,4 @@
-/* global sendHapticMessage, showLoginModal */
+/* global sendHapticMessage, showLoginModal, showModalAfterError */
 
 // Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
@@ -17,26 +17,12 @@ function setReactionCount(reactionName, newCount) {
   }
 }
 
-function getReactionAriaLabel(reactionName, reacted) {
-  switch (reactionName) {
-    case 'readinglist':
-      return reacted ? 'Remove from reading list' : 'Add to reading list';
-    case 'unicorn':
-      return reacted ? 'Remove unicorn reaction' : 'React with unicorn';
-    case 'like':
-      return reacted ? 'Unlike' : 'Like';
-  }
-}
-
 function showUserReaction(reactionName, animatedClass) {
   const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.add('user-activated', animatedClass);
-  reactionButton.setAttribute(
-    'aria-label',
-    getReactionAriaLabel(reactionName, true),
-  );
+  reactionButton.setAttribute('aria-pressed', 'true');
 }
 
 function hideUserReaction(reactionName) {
@@ -44,10 +30,7 @@ function hideUserReaction(reactionName) {
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.remove('user-activated', 'user-animated');
-  reactionButton.setAttribute(
-    'aria-label',
-    getReactionAriaLabel(reactionName, false),
-  );
+  reactionButton.setAttribute('aria-pressed', 'false');
 }
 
 function hasUserReacted(reactionName) {
@@ -105,10 +88,17 @@ function reactToArticle(articleId, reaction) {
         return response.json().then(() => {
           document.getElementById('reaction-butt-' + reaction).disabled = false;
         });
+      } else {
+        toggleReaction();
+        document.getElementById('reaction-butt-' + reaction).disabled = false;
+        showModalAfterError({
+          response,
+          element: 'reaction',
+          action_ing: 'updating',
+          action_past: 'updated',
+        });
+        return undefined;
       }
-      toggleReaction();
-      document.getElementById('reaction-butt-' + reaction).disabled = false;
-      return undefined;
     })
     .catch((error) => {
       toggleReaction();

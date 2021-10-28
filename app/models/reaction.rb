@@ -25,6 +25,12 @@ class Reaction < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
   scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
   scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
+  scope :user_vomits, -> { where(category: "vomit", reactable_type: "User") }
+  scope :related_negative_reactions_for_user, lambda { |user|
+    article_vomits.where(reactable_id: user.article_ids)
+      .or(comment_vomits.where(reactable_id: user.comment_ids))
+      .or(user_vomits.where(user_id: user.id))
+  }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -54,7 +60,7 @@ class Reaction < ApplicationRecord
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.instance_of?(ArticleDecorator) ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
-        "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
+                   "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
@@ -66,7 +72,14 @@ class Reaction < ApplicationRecord
   # - receiver is the same user as the one who reacted
   # - receive_notification is disabled
   def skip_notification_for?(_receiver)
-    points.negative? || (user_id == reactable.user_id)
+    reactor_id = case reactable
+                 when User
+                   reactable.id
+                 else
+                   reactable.user_id
+                 end
+
+    points.negative? || (user_id == reactor_id)
   end
 
   def vomit_on_user?

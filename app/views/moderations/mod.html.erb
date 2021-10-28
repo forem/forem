@@ -1,4 +1,4 @@
-<% title "[Moderate] #{@moderatable.title}" %>
+<% title t("views.moderations.actions.meta.title2", title: @moderatable.title) %>
 
 <%= javascript_packs_with_chunks_tag "commentModPage", defer: true %>
 
@@ -24,10 +24,10 @@
       <%= hidden_field_tag(:id, @moderatable.id) %>
       <% if @moderatable.approved %>
         <%= hidden_field_tag(:approved, false) %>
-        <button class="crayons-btn crayons-btn--secondary approval-button approval-removal">Remove approval</button>
+        <button class="crayons-btn crayons-btn--secondary approval-button approval-removal"><%= t("views.moderations.actions.approve.remove") %></button>
       <% else %>
         <%= hidden_field_tag(:approved, true) %>
-        <button class="crayons-btn approval-button">Mark as approved</button>
+        <button class="crayons-btn approval-button"><%= t("views.moderations.actions.approve.add") %></button>
       <% end %>
     <% end %>
     <hr />
@@ -39,89 +39,81 @@
           data-category="thumbsup"
           data-reactable-type="<%= @moderatable.class.name %>">
     <div class="reaction-button-circle">
-      <%= image_tag("emoji/emoji-one-thumbs-up-gray.png", alt: "Thumbs up emoji", class: "emoji-grey") %>
-      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" />
-      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+      <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_up")) %>
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </div>
-    <span class="vote-text">High Quality</span>
+    <span class="vote-text"><%= t("views.moderations.actions.vote_up") %></span>
   </button>
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.id %>"
             data-category="thumbsdown"
             data-reactable-type="<%= @moderatable.class.name %>">
       <div class="reaction-button-circle">
-        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
-        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_down")) %>
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
       </div>
-      <span class="vote-text">Low Quality</span>
+      <span class="vote-text"><%= t("views.moderations.actions.vote_down") %></span>
     </button>
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.id %>"
             data-category="vomit"
             data-reactable-type="<%= @moderatable.class.name %>">
       <div class="reaction-button-circle">
-        <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.suspicious")) %>
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
       </div>
-      <span class="vote-text">Flag to Admins</span>
+      <span class="vote-text"><%= t("views.moderations.actions.flag_to_admins") %></span>
     </button>
   </div>
 
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
-    <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
-      <a href="/resource_admin/articles/<%= @moderatable.id %>" data-no-instant>ResourceAdmin:Article</a> |
-      <a href="<%= admin_article_path(@moderatable.id) %>" data-no-instant>Admin:Article</a></h3>
+    <h3> <a href="<%= @moderatable.path %>/edit"><%= t("views.moderations.actions.edit.post") %></a> |
+      <a href="/resource_admin/articles/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.resource_admin") %></a> |
+      <a href="<%= admin_article_path(@moderatable.id) %>" data-no-instant><%= t("views.moderations.actions.edit.article_admin") %></a></h3>
   <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
-    <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Admin:Comment</a> |
-      <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant>Admin:User</a></h3>
+    <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.comment_admin") %></a> |
+      <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant><%= t("views.moderations.actions.edit.user_admin") %></a></h3>
   <% end %>
   <p>
-    <b style="font-size:1em">All negative reactions are private.</b>
+    <b style="font-size:1em"><%= t("views.moderations.actions.hint.subtitle") %></b>
   </p>
   <p>
-    Use <b>High Quality</b> to move this content "up" for any reason (quality, usefulness, etc.).
-    <br />
-    Use <b>Low Quality</b> to move this content "down" for any reason (quality, usefulness, etc.).
-    <br />
-    Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
+    <%= t("views.moderations.actions.hint.desc_html") %>
   </p>
   <div class="tag-mod-form" style="display: flex; flex-direction: column; align-items: center;">
-    <h2>Flag <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a> as Abusive</h2>
+    <h2><%= t("views.moderations.actions.abusive.subtitle_html", user: link_to(@moderatable.user.username, @moderatable.user.path)) %></h2>
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.user.id %>"
             data-category="vomit"
             data-reactable-type="<%= @moderatable.user.class.name %>">
       <div class="reaction-button-circle">
-        <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.suspicious")) %>
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
       </div>
-      <span class="vote-text">Flag User</span>
+      <span class="vote-text"><%= t("views.moderations.actions.flag") %></span>
     </button>
     <p>
-      This is the equivalent of vomiting on <b>all</b> of this user's articles and will lower their article scores.
+      <%= t("views.moderations.actions.abusive.desc_html") %>
     </p>
   </div>
   <% if current_user.any_admin? && @moderatable.class.name == "Comment" && !@moderatable.deleted %>
     <div class="crayons-card crayons-card--secondary p-4 flex items-center">
       <div class="fw-medium flex-1" style="text-align: left;">
-        <p class="fw-bold fs-xl">Delete This Comment</p>
+        <p class="fw-bold fs-xl"><%= t("views.moderations.actions.delete.subtitle") %></p>
       </div>
       <div class="flex">
-        <%= button_to "Delete Comment", comment_admin_delete_path(@moderatable.id), method: :patch, class: "crayons-btn crayons-btn--secondary ml-2" %>
+        <%= button_to t("views.moderations.actions.delete.button"), comment_admin_delete_path(@moderatable.id), method: :patch, class: "crayons-btn crayons-btn--secondary ml-2" %>
       </div>
     </div>
   <% end %>
   <% if @hidden_comments.present? %>
     <div class="tag-mod-form">
-      <h2>Hidden Comments</h2>
+      <h2><%= t("views.moderations.actions.hidden.subtitle") %></h2>
       <form>
         <ul id="hidden-comments">
         <% @hidden_comments.each do |comment| %>
           <li>
-            <a href="<%= comment.path %>">Comment by <%= comment.user.username %></a>
+            <a href="<%= comment.path %>"><%= t("views.moderations.actions.hidden.by", user: comment.user.username) %></a>
           </li>
         <% end %>
         </ul>
@@ -130,12 +122,12 @@
   <% end %>
   <% if @allowed_to_adjust %>
     <div class="tag-mod-form">
-      <h2>Tag Adjustments</h2>
+      <h2><%= t("views.moderations.actions.tag.subtitle") %></h2>
       <%= form_for(@tag_adjustment) do |f| %>
-        <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
+        <%= t("views.moderations.actions.tag.live_html", tags: @moderatable.tag_list) %><br>
         <% if @tag_adjustment.errors.any? %>
           <div id="error_explanation">
-            <h2><%= pluralize(@tag_adjustment.errors.count, "error") %> prohibited this block from being saved:</h2>
+            <h2><%= t("views.moderations.actions.errors", count: @tag_adjustment.errors.count) %></h2>
             <ul>
               <% @tag_adjustment.errors.full_messages.each do |message| %>
                 <li><%= message %></li>
@@ -147,29 +139,30 @@
         <% if current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) } %>
           <div class="tag-mod-addition-radio">
             <%= f.radio_button :adjustment_type, "removal", required: true %>
-            <%= f.label :adjustment_type, "Remove", value: "removal" %>
+            <%= f.label :adjustment_type, t("views.moderations.actions.tag.remove"), value: "removal" %>
           </div>
         <% end %>
         <% if @moderatable.tag_list.size < 4 %>
           <div class="tag-mod-addition-radio">
             <%= f.radio_button :adjustment_type, "addition", required: true %>
-            <%= f.label :adjustment_type, "Add", value: "addition" %>
+            <%= f.label :adjustment_type, t("views.moderations.actions.tag.add"), value: "addition" %>
           </div>
         <% end %>
         <% if current_user.has_role?(:super_admin) %>
-          <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
+          <%= f.text_field :tag_name, placeholder: t("views.moderations.actions.tag.tag_name"), required: true %>
         <% else %>
-          <%= f.select :tag_name, @tag_moderator_tags, { prompt: "Select Tag" }, required: true %>
+          <%= f.select :tag_name, @tag_moderator_tags, { prompt: t("views.moderations.actions.tag.select") }, required: true %>
         <% end %>
-        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
-        <%= f.submit "Submit Tag Adjustment" %>
+        <%= f.text_area :reason_for_adjustment, placeholder: t("views.moderations.actions.tag.reason"), required: true %>
+        <%= f.submit t("views.moderations.actions.tag.submit") %>
       <% end %>
       <% if @adjustments.present? %>
         <% @adjustments.each do |adjustment| %>
           <% if current_user.any_admin? || adjustment.user_id == current_user.id %>
-            <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the #{adjustment.adjustment_type} of the #{adjustment.tag_name} tag?')" }) do |f| %>
-              <b><%= adjustment.adjustment_type == "removal" ? "Currently removed tag" : "Currently added tag" %>:</b> <%= adjustment.tag_name %>
-              <%= f.submit "×", id: "undo" %>
+            <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}",
+                                     html: { method: :delete, onsubmit: "return confirm('#{t('views.moderations.actions.tag.undo.confirm', type: t("views.moderations.actions.tag.undo.type.#{adjustment.adjustment_type}"), tag: adjustment.tag_name)}')" }) do |f| %>
+              <%= t("views.moderations.actions.tag.#{adjustment.adjustment_type == 'removal' ? 'removed' : 'added'}_html", tag: adjustment.tag_name) %>
+              <%= f.submit t("views.moderations.actions.tag.undo.button"), id: "undo" %>
             <% end %>
           <% end %>
         <% end %>
@@ -182,7 +175,7 @@
       <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
       <% rating_hash = { "Novice" => 1, "Beginner" => 2, "Mid-level" => 3, "Advanced" => 4, "Expert" => 5 } %>
 
-      <h2>Experience Level of Post</h2>
+      <h2><%= t("views.moderations.actions.experience.heading2") %></h2>
 
       <% rating_hash.each do |rating_name, rating_level| %>
       <button
@@ -195,13 +188,13 @@
         data-group="experience_level"
         style="margin: 0.5rem 0;">
         <div class="level-rating-content">
-          <span class="level-rating-number"><%= rating_level %> - </span>
-          <span class="level-rating-text"><%= rating_name %></span>
+          <span class="level-rating-number"><%= t("views.moderations.actions.experience.from", lvl: rating_level) %></span>
+          <span class="level-rating-text"><%= t("views.moderations.actions.experience.level.#{rating_name}") %></span>
         </div>
       </button>
       <% end %>
       <p>
-        Who <em>might</em> find this post most valuable, based on overall experience level?
+        <%= t("views.moderations.actions.experience.desc_html") %>
       </p>
     </div>
   <% end %>

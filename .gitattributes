@@ -8,3 +8,5 @@
 *.css  diff=css
 *.html diff=html
 *.erb  diff=html
+/CHANGELOG.md merge=union
+config/locales/*.yml merge=union

@@ -6,6 +6,10 @@ class PodcastsController < ApplicationController
   around_action :skip_bullet, only: %i[create], if: -> { defined?(Bullet) }
 
   IMAGE_KEYS = %w[image pattern_image].freeze
+  PODCASTS_ALLOWED_PARAMS = %i[
+    android_url image itunes_url main_color_hex overcast_url pattern_image
+    slug soundcloud_url twitter_username website_url title feed_url description
+  ].freeze
 
   def new
     @podcast = Podcast.new
@@ -42,11 +46,7 @@ class PodcastsController < ApplicationController
   end
 
   def podcast_params
-    allowed_params = %i[
-      android_url image itunes_url main_color_hex overcast_url pattern_image
-      slug soundcloud_url twitter_username website_url title feed_url description
-    ]
-    params.require(:podcast).permit(allowed_params)
+    params.require(:podcast).permit(PODCASTS_ALLOWED_PARAMS)
   end
 
   def skip_bullet

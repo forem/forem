@@ -134,7 +134,7 @@ RSpec.describe "StoriesShow", type: :request do
       user2 = create(:user)
       article.update(co_author_ids: [user2.id])
       get article.path
-      expect(response.body).to include "<em>with <b><a href=\"#{user2.path}\">"
+      expect(response.body).to include %(with <a href="#{user2.path}" class="crayons-link">)
     end
 
     it "renders articles of long length without breaking" do
@@ -187,21 +187,16 @@ RSpec.describe "StoriesShow", type: :request do
     end
 
     it "handles invalid slug characters" do
-      allow(Article).to receive(:find_by).and_raise(ArgumentError)
+      # rubocop:disable RSpec/MessageChain
+      allow(Article).to receive_message_chain(:includes, :find_by).and_raise(ArgumentError)
+      # rubocop:enable RSpec/MessageChain
       get article.path
 
-      expect(response.status).to be(400)
+      expect(response.status).to eq(400)
     end
 
     it "has noindex if article has low score" do
       article = create(:article, score: -5)
-      get article.path
-      expect(response.body).to include("noindex")
-    end
-
-    it "has noindex if article has low score even with <code>" do
-      article = create(:article, score: -5)
-      article.update_column(:processed_html, "<code>hello</code>")
       get article.path
       expect(response.body).to include("noindex")
     end
@@ -212,14 +207,7 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).not_to include("noindex")
     end
 
-    it "does not have noindex if article intermediate score and <code>" do
-      article = create(:article, score: 3)
-      article.update_column(:processed_html, "<code>hello</code>")
-      get article.path
-      expect(response.body).not_to include("noindex")
-    end
-
-    it "does not have noindex if article w/ intermediate score w/ 1 comment " do
+    it "does not have noindex if article w/ intermediate score w/ 1 comment" do
       article = create(:article, score: 3)
       article.user.update_column(:comments_count, 1)
       get article.path

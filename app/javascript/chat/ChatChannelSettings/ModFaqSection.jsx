@@ -11,7 +11,7 @@ export const ModFaqSection = ({ currentMembershipRole }) => {
       <p className="contact-details">
         Questions about Connect moderation?
         <a
-          href={`/contact`}
+          href="/contact"
           target="_blank"
           rel="noopener noreferrer"
           className="mx-2 url-link"

@@ -19,11 +19,6 @@ RSpec.describe "Comments", type: :request do
       expect(response.body).to include(comment.processed_html)
     end
 
-    it "displays full discussion text" do
-      get comment.path
-      expect(response.body).to include("Full discussion")
-    end
-
     it "renders user payment pointer if set" do
       article.user.update_column(:payment_pointer, "test-pointer-for-comments")
       get "#{article.path}/comments"
@@ -202,7 +197,7 @@ RSpec.describe "Comments", type: :request do
         article.destroy
 
         get comment.path
-        expect(response.body).to include("Comment from a deleted article or podcast")
+        expect(response.body).to include("Comment from a deleted post")
       end
     end
 
@@ -212,7 +207,7 @@ RSpec.describe "Comments", type: :request do
         podcast_episode.destroy
 
         get podcast_comment.path
-        expect(response.body).to include("Comment from a deleted article or podcast")
+        expect(response.body).to include("Comment from a deleted post")
       end
     end
   end

@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
+import { jsxDecorator } from 'storybook-addon-jsx';
+import 'focus-visible';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/views.scss';
@@ -61,11 +63,12 @@ const themeSwitcherDecorator = (storyFn) => {
           ))}
         </select>
       </label>
-      {storyFn()}
+      <div id="story-content">{storyFn()}</div>
     </div>
   );
 };
 
+addDecorator(jsxDecorator);
 addDecorator(themeSwitcherDecorator);
 addDecorator((Story) => <Story />);
 
@@ -102,5 +105,15 @@ export const parameters = {
         'Utility-First Classes',
       ],
     },
+  },
+  jsx: {
+    filterProps: (val) => val !== undefined,
+    functionValue: (fn) => {
+      fn.toString = () => '() => {}';
+      return fn;
+    },
+  },
+  html: {
+    root: '#story-content',
   },
 };

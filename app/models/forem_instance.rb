@@ -28,7 +28,15 @@ class ForemInstance
     (Settings::SMTP.user_name.present? && Settings::SMTP.password.present?) || ENV["SENDGRID_API_KEY"].present?
   end
 
-  def self.private?
+  def self.invitation_only?
     Settings::Authentication.invite_only_mode?
+  end
+
+  def self.private?
+    !Settings::UserExperience.public?
+  end
+
+  def self.needs_owner_secret?
+    ENV["FOREM_OWNER_SECRET"].present? && Settings::General.waiting_on_first_user
   end
 end

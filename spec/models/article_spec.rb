@@ -39,7 +39,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
 
-    it { is_expected.to validate_presence_of(:boost_states) }
     it { is_expected.to validate_presence_of(:comments_count) }
     it { is_expected.to validate_presence_of(:positive_reactions_count) }
     it { is_expected.to validate_presence_of(:previous_public_reactions_count) }
@@ -50,8 +49,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
 
-    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
-    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
@@ -528,7 +525,7 @@ RSpec.describe Article, type: :model do
     end
 
     context "when published" do
-      before { article0.update(published: true) }
+      before { article0.update!(published: true) }
 
       it "creates proper slug with this-is-the-slug format" do
         expect(article0.slug).to start_with("hey-this-is-a-slug")
@@ -543,6 +540,16 @@ RSpec.describe Article, type: :model do
         underscored_article = build(:article, title: "hey_hey_hey node_modules", published: true)
         expect(underscored_article.valid?).to eq true
       end
+
+      # rubocop:disable RSpec/NestedGroups
+      context "with non-Roman characters" do
+        let(:title) { "Я не говорю по-Русски" }
+
+        it "converts the slug to Roman characters" do
+          expect(article0.slug).to start_with("ia-nie-ghovoriu-po-russki")
+        end
+      end
+      # rubocop:enable RSpec/NestedGroups
     end
   end
 
@@ -944,6 +951,22 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".not_cached_tagged_with_any" do
+    it "can exclude multiple tags when given an array of strings" do
+      included = create(:article, tags: "includeme")
+      excluded1 = create(:article, tags: "includeme, lol")
+      excluded2 = create(:article, tags: "includeme, omg")
+
+      articles = described_class
+        .cached_tagged_with_any("includeme")
+        .not_cached_tagged_with_any(%w[lol omg])
+
+      expect(articles).to include included
+      expect(articles).not_to include excluded1
+      expect(articles).not_to include excluded2
+    end
+  end
+
   context "when callbacks are triggered before save" do
     it "assigns path on save" do
       expect(article.path).to eq("/#{article.username}/#{article.slug}")
@@ -977,17 +1000,17 @@ RSpec.describe Article, type: :model do
 
   context "when callbacks are triggered after create" do
     describe "detect animated images" do
-      it "does not enqueue Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is disabled" do
+      it "does not enqueue Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is disabled" do
         allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
 
-        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           build(:article).save
         end
       end
 
-      it "enqueues Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is enabled" do
+      it "enqueues Articles::EnrichImageAttributesWorker if the feature :detect_animated_images is enabled" do
         allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
-        sidekiq_assert_enqueued_jobs(1, only: Articles::DetectAnimatedImagesWorker) do
+        sidekiq_assert_enqueued_jobs(1, only: Articles::EnrichImageAttributesWorker) do
           build(:article).save
         end
       end
@@ -1115,26 +1138,26 @@ RSpec.describe Article, type: :model do
     end
 
     describe "detect animated images" do
-      it "does not enqueue Articles::DetectAnimatedImagesWorker if the feature :detect_animated_images is disabled" do
+      it "does not enqueue Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is disabled" do
         allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
 
-        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(body_markdown: "a body")
         end
       end
 
-      it "enqueues Articles::DetectAnimatedImagesWorker if the HTML has changed" do
+      it "enqueues Articles::EnrichImageAttributesWorker if the HTML has changed" do
         allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
 
-        sidekiq_assert_enqueued_with(job: Articles::DetectAnimatedImagesWorker, args: [article.id]) do
+        sidekiq_assert_enqueued_with(job: Articles::EnrichImageAttributesWorker, args: [article.id]) do
           article.update(body_markdown: "a body")
         end
       end
 
-      it "does not Articles::DetectAnimatedImagesWorker if the HTML does not change" do
+      it "does not Articles::EnrichImageAttributesWorker if the HTML does not change" do
         allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
 
-        sidekiq_assert_no_enqueued_jobs(only: Articles::DetectAnimatedImagesWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(tag_list: %w[fsharp go])
         end
       end
@@ -1307,6 +1330,47 @@ RSpec.describe Article, type: :model do
 
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
+    end
+  end
+
+  describe "#feed_source_url and canonical_url must be unique for published articles" do
+    let(:url) { "http://www.example.com" }
+
+    it "is valid when both articles are drafts" do
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is valid when first article is a draft, second is published" do
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is valid when first article is published, second is draft" do
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      body_markdown = "---\ntitle: Title\npublished: false\ncanonical_url: #{url}\n---\n\n"
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+
+      expect(another_article).to be_valid
+    end
+
+    it "is not valid when both articles are published" do
+      body_markdown = "---\ntitle: Title\npublished: true\ncanonical_url: #{url}\n---\n\n"
+      create(:article, body_markdown: body_markdown, feed_source_url: url)
+      another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
+      error_message = "has already been taken. " \
+                      "Email #{ForemInstance.email} for further details."
+      expect(another_article).not_to be_valid
+      expect(another_article.errors.messages[:canonical_url]).to include(error_message)
+      expect(another_article.errors.messages[:feed_source_url]).to include(error_message)
     end
   end
 end

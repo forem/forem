@@ -1,4 +1,6 @@
 class DeviseMailer < Devise::Mailer
+  include Deliverable
+
   before_action :use_settings_general_values
 
   def use_settings_general_values

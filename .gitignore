@@ -32,7 +32,6 @@ node_modules/
 /app/assets/javascripts/generated/*
 latest.dump
 .byebug_history
-.gitdocs_build/
 
 # Ignore application configuration
 /config/application.yml
@@ -59,14 +58,10 @@ package-lock.json
 
 #sitemap
 /public/sitemap.xml.gz
+/public/sitemaps/
 
 # Development Docker storage location
 _docker-storage/
-
-# YARD generated doc (in the Gitdocs folder)
-docs/.static/ruby-doc/
-# ReDoc generated API doc (in the Gitdocs folder)
-docs/.static/api/
 
 # AWS Cloud9 specific folder for user settings
 .c9/
@@ -94,6 +89,7 @@ app/javascript/generated_stories/
 # Cypress test run artifacts
 cypress/videos
 cypress/screenshots
+cypress/logs
 
 # PostCSS error log
 postcss_error.log
@@ -101,3 +97,9 @@ postcss_error.log
 # ripgrep ignore file
 .rgignore
 config/definitions.rb
+
+# ignore redis backup
+dump.rdb
+
+# pry configuration file
+.pryrc

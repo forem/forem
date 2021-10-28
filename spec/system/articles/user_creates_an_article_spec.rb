@@ -3,7 +3,11 @@ require "rails_helper"
 RSpec.describe "Creating an article with the editor", type: :system do
   include_context "with runkit_tag"
 
-  let(:user) { create(:user) }
+  let(:user) do
+    u = create(:user)
+    u.setting.update(editor_version: "v1")
+    u
+  end
   let!(:template) { file_fixture("article_published.txt").read }
   let!(:template_with_runkit_tag) do
     file_fixture("article_with_runkit_tag.txt").read
@@ -71,6 +75,26 @@ RSpec.describe "Creating an article with the editor", type: :system do
       click_button "Save changes"
 
       expect_runkit_tag_to_be_active
+    end
+  end
+
+  context "when user creates too many articles" do
+    let(:rate_limit_checker) { RateLimitChecker.new(user) }
+
+    before do
+      # avoid hitting new user rate limit check
+      allow(user).to receive(:created_at).and_return(1.week.ago)
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+      allow(rate_limit_checker).to receive(:limit_by_action)
+        .with(:published_article_creation)
+        .and_return(true)
+    end
+
+    it "displays a rate limit warning", :flaky, js: true do
+      visit new_path
+      fill_in "article_body_markdown", with: template
+      click_button "Save changes"
+      expect(page).to have_text("Rate limit reached")
     end
   end
 end

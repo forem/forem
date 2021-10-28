@@ -5,43 +5,11 @@ class User < ApplicationRecord
   include CloudinaryHelper
   include Storext.model
 
-  # @citizen428 Preparing to drop profile columns from the users table
-  PROFILE_COLUMNS = %w[
-    available_for
-    behance_url
-    bg_color_hex
-    currently_hacking_on
-    currently_learning
-    currently_streaming_on
-    dribbble_url
-    education
-    email_public
-    employer_name
-    employer_url
-    employment_title
-    facebook_url
-    gitlab_url
-    instagram_url
-    linkedin_url
-    location
-    mastodon_url
-    medium_url
-    mostly_work_with
-    stackoverflow_url
-    summary
-    text_color_hex
-    twitch_url
-    twitch_username
-    website_url
-    youtube_url
-  ].freeze
-
-  self.ignored_columns = PROFILE_COLUMNS
-
-  # NOTE: @citizen428 This is temporary code during profile migration and will
-  # be removed.
-  concerning :ProfileMigration do
+  # NOTE: we are using an inline module to keep profile related things together.
+  concerning :Profiles do
     included do
+      has_one :profile, dependent: :destroy
+
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
       # and can cause hard to track down bugs. We use an instance-level attribute
@@ -50,35 +18,13 @@ class User < ApplicationRecord
 
       # All new users should automatically have a profile
       after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
-
-      # Getters and setters for unmapped profile attributes
-      (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
-        delegate column, "#{column}=", to: :profile, allow_nil: true
-      end
-
-      # Getters and setters for mapped profile attributes
-      Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
-        define_method(user_attribute) { profile&.public_send(profile_attribute) }
-        define_method("#{user_attribute}=") do |value|
-          profile&.public_send("#{profile_attribute}=", value)
-        end
-      end
     end
   end
 
   ANY_ADMIN_ROLES = %i[admin super_admin].freeze
-  EDITORS = %w[v1 v2].freeze
-  FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
-  INBOXES = %w[open private].freeze
-  NAVBARS = %w[default static].freeze
-  THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
   USERNAME_MAX_LENGTH = 30
-  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
+  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
   MESSAGES = {
-    invalid_config_font: "%<value>s is not a valid font selection",
-    invalid_config_navbar: "%<value>s is not a valid navbar value",
-    invalid_config_theme: "%<value>s is not a valid theme",
-    invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
@@ -88,58 +34,7 @@ class User < ApplicationRecord
     ([a-zA-Z0-9\-.])+ # matches the hostname (ex ilp.uphold.com)
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
-  }x.freeze
-
-  # Relevant Fields for migration from Users table to Users_Settings table
-  USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    config_font
-    config_navbar
-    config_theme
-    display_announcements
-    display_sponsors
-    editor_version
-    experience_level
-    feed_mark_canonical
-    feed_referential_link
-    feed_url
-    inbox_guidelines
-    inbox_type
-    permit_adjacent_sponsors
-  ].to_set.freeze
-
-  # Relevant Fields for migration from Profiles table to Users_Settings table
-  PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE = %w[
-    brand_color1
-    brand_color2
-    display_email_on_profile
-  ].to_set.freeze
-
-  # Relevant Fields for migration from Users table to Users_Notification_Settings table
-  USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE = %w[
-    email_badge_notifications
-    email_comment_notifications
-    email_community_mod_newsletter
-    email_connect_messages
-    email_digest_periodic
-    email_follower_notifications
-    email_membership_newsletter
-    email_mention_notifications
-    email_newsletter
-    email_tag_mod_newsletter
-    email_unread_notifications
-    mobile_comment_notifications
-    mod_roundrobin_notifications
-    reaction_notifications
-    welcome_notifications
-  ].to_set.freeze
-
-  USER_SETTINGS_ENUM_FIELDS = %w[
-    config_font
-    config_navbar
-    config_theme
-    editor_version
-    inbox_type
-  ].to_set.freeze
+  }x
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -148,7 +43,6 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_one :profile, dependent: :destroy
   has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
   has_one :setting, class_name: "Users::Setting", dependent: :destroy
 
@@ -236,25 +130,12 @@ class User < ApplicationRecord
   validates :blocked_by_count, presence: true
   validates :blocking_others_count, presence: true
   validates :comments_count, presence: true
-  validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
-  validates :config_font, presence: true
-  validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
-  validates :config_navbar, presence: true
-  validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
-  validates :config_theme, presence: true
   validates :credits_count, presence: true
-  validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
-  validates :email_digest_periodic, inclusion: { in: [true, false] }
-  validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
-  validates :feed_referential_link, inclusion: { in: [true, false] }
-  validates :feed_url, length: { maximum: 500 }, allow_nil: true
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
   validates :following_users_count, presence: true
-  validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
-  validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
   validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
@@ -269,7 +150,6 @@ class User < ApplicationRecord
   validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
     "#{data[:value]} is taken."
   end }, if: :username_changed?
-  validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -285,7 +165,6 @@ class User < ApplicationRecord
 
   validate :non_banished_username, :username_changed?
   validate :unique_including_orgs_and_podcasts, if: :username_changed?
-  validate :validate_feed_url, if: :feed_url_changed?
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -293,9 +172,6 @@ class User < ApplicationRecord
   validate :password_matches_confirmation, if: :encrypted_password_changed?
 
   alias_attribute :public_reactions_count, :reactions_count
-  alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
-  alias_attribute :subscribed_to_mod_roundrobin_notifications?, :mod_roundrobin_notifications
-  alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
@@ -332,28 +208,23 @@ class User < ApplicationRecord
       ),
     )
   }
-  scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
-
   before_validation :check_for_username_change
   before_validation :downcase_email
-  before_validation :set_config_input
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
+  before_create :create_users_settings_and_notification_settings_records
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
-  # NOTE: @citizen428 Temporary while migrating to generalized profiles
-  after_save { |user| user.profile&.save if user.profile&.changed? }
-
   after_create_commit :send_welcome_notification
 
+  after_save :create_conditional_autovomits
   after_commit :subscribe_to_mailchimp_newsletter
-  after_commit :sync_users_settings_table, :sync_users_notification_settings_table, on: %i[create update]
   after_commit :bust_cache
 
-  def self.dev_account
+  def self.staff_account
     find_by(id: Settings::Community.staff_user_id)
   end
 
@@ -362,7 +233,7 @@ class User < ApplicationRecord
   end
 
   def tag_line
-    summary
+    profile.summary
   end
 
   def twitter_url
@@ -379,17 +250,37 @@ class User < ApplicationRecord
   end
 
   def calculate_score
-    score = (articles.where(featured: true).size * 100) + comments.sum(:score)
-    update_column(:score, score)
+    # User score is used to mitigate spam by reducing visibility of flagged users
+    # It can generally be used as a baseline for affecting certain functionality which
+    # relies on trust gray area.
+
+    # Current main use: If score is below zero, the user's profile page will render noindex
+    # meta tag. This is a subtle anti-spam mechanism.
+
+    # It can be changed as frequently as needed to do a better job reflecting its purpose
+    # Changes should generally keep the score within the same order of magnitude so that
+    # mass re-calculation is needed.
+    user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
+    calculated_score = (badge_achievements_count * 10) + user_reaction_points
+    update_column(:score, calculated_score)
   end
 
   def path
     "/#{username}"
   end
 
+  # NOTE: This method is only used in the EmailDigestArticleCollector and does
+  # not perform particularly well. It should most likely not be used in other
+  # parts of the app.
   def followed_articles
-    Article
-      .cached_tagged_with_any(cached_followed_tag_names).unscope(:select)
+    relation = Article
+    if cached_antifollowed_tag_names.any?
+      relation = relation.not_cached_tagged_with_any(cached_antifollowed_tag_names)
+    end
+
+    relation
+      .cached_tagged_with_any(cached_followed_tag_names)
+      .unscope(:select)
       .union(Article.where(user_id: cached_following_users_ids))
   end
 
@@ -423,7 +314,7 @@ class User < ApplicationRecord
   end
 
   def processed_website_url
-    website_url.to_s.strip if website_url.present?
+    profile.website_url.to_s.strip if profile.website_url.present?
   end
 
   def remember_me
@@ -437,15 +328,27 @@ class User < ApplicationRecord
         id: Follow.where(
           follower_id: id,
           followable_type: "ActsAsTaggableOn::Tag",
+          points: 1..,
+        ).select(:followable_id),
+      ).pluck(:name)
+    end
+  end
+
+  def cached_antifollowed_tag_names
+    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+      Tag.where(
+        id: Follow.where(
+          follower_id: id,
+          followable_type: "ActsAsTaggableOn::Tag",
+          points: ...1,
         ).select(:followable_id),
       ).pluck(:name)
     end
   end
 
   def suspended?
-    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
-    # and data scripts have successfully removed the banned role, we can remove `has_role?(:banned)`
-    has_role?(:suspended) || has_role?(:banned)
+    has_role?(:suspended)
   end
 
   def warned
@@ -454,6 +357,10 @@ class User < ApplicationRecord
 
   def admin?
     has_role?(:super_admin)
+  end
+
+  def creator?
+    has_role?(:creator)
   end
 
   def any_admin?
@@ -484,10 +391,7 @@ class User < ApplicationRecord
   end
 
   def comment_suspended?
-    # TODO: [@jacobherrington] After all of our Forems have been successfully deployed,
-    # and data scripts have successfully removed the comment_banned role,
-    # we can remove `has_role?(:comment_banned)`
-    has_role?(:comment_suspended) || has_role?(:comment_banned)
+    has_role?(:comment_suspended)
   end
 
   def workshop_eligible?
@@ -548,7 +452,7 @@ class User < ApplicationRecord
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank?
     return if saved_changes.key?(:unconfirmed_email) && saved_changes.key?(:confirmation_sent_at)
-    return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)
+    return unless saved_changes.key?(:email)
 
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
@@ -621,6 +525,18 @@ class User < ApplicationRecord
     "User:#{id}"
   end
 
+  def subscribed_to_welcome_notifications?
+    notification_setting.welcome_notifications
+  end
+
+  def subscribed_to_mod_roundrobin_notifications?
+    notification_setting.mod_roundrobin_notifications
+  end
+
+  def subscribed_to_email_follower_notifications?
+    notification_setting.email_follower_notifications
+  end
+
   protected
 
   # Send emails asynchronously
@@ -632,43 +548,9 @@ class User < ApplicationRecord
 
   private
 
-  def sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
-    PROFILE_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      # rubocop:disable Layout/LineLength
-      users_setting_record.assign_attributes(field => profile.public_send(field)) if profile&.public_send(field).present?
-      # rubocop:enable Layout/LineLength
-    end
-  end
-
-  def migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-    USER_FIELDS_TO_MIGRATE_TO_USERS_SETTINGS_TABLE.each do |field|
-      if USER_SETTINGS_ENUM_FIELDS.include?(field)
-        field_enums = Users::Setting.defined_enums[field]
-        users_setting_record.assign_attributes(field => field_enums[public_send(field).to_sym])
-      else
-        users_setting_record.assign_attributes(field => public_send(field))
-      end
-    end
-
-    sync_relevant_profile_fields_to_user_settings_table(users_setting_record)
-
-    users_setting_record.save
-  end
-
-  def sync_users_settings_table
-    users_setting_record = Users::Setting.create_or_find_by(user_id: id)
-
-    migrate_users_and_profile_fields_to_users_settings(users_setting_record)
-  end
-
-  def sync_users_notification_settings_table
-    users_notification_setting_record = Users::NotificationSetting.create_or_find_by(user_id: id)
-
-    USER_FIELDS_TO_MIGRATE_TO_USERS_NOTIFICATION_SETTINGS_TABLE.each do |field|
-      users_notification_setting_record.assign_attributes(field => public_send(field))
-    end
-
-    users_notification_setting_record.save
+  def create_users_settings_and_notification_settings_records
+    self.setting = Users::Setting.create
+    self.notification_setting = Users::NotificationSetting.create
   end
 
   def send_welcome_notification
@@ -711,12 +593,6 @@ class User < ApplicationRecord
     self.email = email.downcase if email
   end
 
-  def set_config_input
-    self.config_theme = config_theme&.tr(" ", "_")
-    self.config_font = config_font&.tr(" ", "_")
-    self.config_navbar = config_navbar&.tr(" ", "_")
-  end
-
   def check_for_username_change
     return unless username_changed?
 
@@ -736,18 +612,25 @@ class User < ApplicationRecord
     Users::BustCacheWorker.perform_async(id)
   end
 
-  def validate_feed_url
-    return if feed_url.blank?
+  def create_conditional_autovomits
+    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
+      name.match?(/#{term}/i)
+    end
 
-    valid = Feeds::ValidateUrl.call(feed_url)
-
-    errors.add(:feed_url, "is not a valid RSS/Atom feed") unless valid
-  rescue StandardError => e
-    errors.add(:feed_url, e.message)
+    Reaction.create!(
+      user_id: Settings::General.mascot_user_id,
+      reactable_id: id,
+      reactable_type: "User",
+      category: "vomit",
+    )
   end
 
+  # TODO: @citizen428 I don't want to completely remove this method yet, as we
+  # have similar methods in other models. But the previous implementation used
+  # three profile fields that we can't guarantee to exist across all Forems. So
+  # for now this method will just return an empty string.
   def tag_keywords_for_search
-    "#{employer_name}#{mostly_work_with}#{available_for}"
+    ""
   end
 
   # TODO: this can be removed once we migrate away from ES

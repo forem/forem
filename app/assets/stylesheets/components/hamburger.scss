@@ -47,3 +47,9 @@
     }
   }
 }
+
+body[data-left-nav-state='open'] {
+  @media (max-width: $breakpoint-m) {
+    overflow: hidden;
+  }
+}

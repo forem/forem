@@ -1,6 +1,8 @@
 module Admin
   module Settings
     class GeneralSettingsController < Admin::Settings::BaseController
+      after_action :bust_content_change_caches, only: %i[create]
+
       SPECIAL_PARAMS_TO_ADD = %w[
         credit_prices_in_cents
         meta_keywords
@@ -10,10 +12,9 @@ module Admin
         result = ::Settings::General::Upsert.call(settings_params)
         if result.success?
           Audit::Logger.log(:internal, current_user, params.dup)
-          bust_content_change_caches
-          redirect_to admin_config_path, notice: "Successfully updated settings."
+          render json: { message: "Successfully updated settings." }, status: :ok
         else
-          redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
+          render json: { error: result.errors.to_sentence }, status: :unprocessable_entity
         end
       end
 

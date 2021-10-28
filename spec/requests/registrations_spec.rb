@@ -10,7 +10,6 @@ RSpec.describe "Registrations", type: :request do
 
         Authentication::Providers.enabled.each do |provider_name|
           provider = Authentication::Providers.get!(provider_name)
-          next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth)
 
           expect(response.body).to include("Continue with #{provider.official_name}")
         end
@@ -22,7 +21,7 @@ RSpec.describe "Registrations", type: :request do
 
         get sign_up_path
 
-        expect(response.body).not_to include("Have a password? Continue with your email address")
+        expect(response.body).not_to include("Have a password? Log in")
       end
     end
 
@@ -46,7 +45,7 @@ RSpec.describe "Registrations", type: :request do
       it "does not show the sign in text for password based authentication" do
         get sign_up_path
 
-        expect(response.body).not_to include("Have a password? Continue with your email address")
+        expect(response.body).not_to include("Have a password? Log in")
       end
     end
 
@@ -77,7 +76,23 @@ RSpec.describe "Registrations", type: :request do
       it "shows the sign in text for password based authentication" do
         get sign_up_path, params: { state: "new-user" }
 
-        expect(response.body).to include("View more sign in options")
+        expect(response.body).to include("Already have an account? <a href=\"/enter\">Log in</a>")
+      end
+
+      it "persists uploaded image" do
+        name = "test"
+        image_path = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
+        post users_path, params: {
+          user: {
+            name: name,
+            username: "username",
+            email: "yo@whatup.com",
+            password: "password",
+            password_confirmation: "password",
+            profile_image: Rack::Test::UploadedFile.new(image_path, "image/jpeg")
+          }
+        }
+        expect(File.read(User.last.profile_image.file.file)).to eq(File.read(image_path))
       end
 
       it "creates a user with a random profile image if none was uploaded" do
@@ -141,8 +156,8 @@ RSpec.describe "Registrations", type: :request do
 
       it "renders the creator onboarding form" do
         get root_path
-        expect(response.body).to include("Let's create an admin account for your community.")
-        expect(response.body).to include("Create admin account")
+        expect(response.body).to include("Let's start your Forem journey!")
+        expect(response.body).to include("Create your admin account first")
       end
     end
   end
@@ -407,6 +422,18 @@ RSpec.describe "Registrations", type: :request do
                       password_confirmation: "PaSSw0rd_yo000" } }
           expect(User.first).to be nil
         end.to raise_error Pundit::NotAuthorizedError
+      end
+
+      it "enqueues Discover::RegisterWorker" do
+        sidekiq_assert_enqueued_with(job: Discover::RegisterWorker) do
+          post "/users", params:
+            { user: { name: "test #{rand(10)}",
+                      username: "haha_#{rand(10)}",
+                      email: "yoooo#{rand(100)}@yo.co",
+                      password: "PaSSw0rd_yo000",
+                      forem_owner_secret: "test",
+                      password_confirmation: "PaSSw0rd_yo000" } }
+        end
       end
     end
 

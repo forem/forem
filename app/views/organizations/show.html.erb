@@ -18,10 +18,10 @@
       <% end %>
     </div>
     <div class="loading-articles" id="loading-articles">
-      loading...
+      <%= t("core.loading") %>
     </div>
   </div>
   <%= render "organizations/sidebar_additional" %>
 </div>
 
-<%= render "stories/stories_list_script" %>
+<%= javascript_packs_with_chunks_tag "storiesList", "followButtons", defer: true %>

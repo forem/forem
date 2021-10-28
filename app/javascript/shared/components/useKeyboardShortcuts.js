@@ -177,7 +177,10 @@ KeyboardShortcuts.propTypes = {
   options: PropTypes.shape({
     timeout: PropTypes.number,
   }),
-  eventTarget: PropTypes.instanceOf(Element),
+  eventTarget: PropTypes.oneOfType([
+    PropTypes.instanceOf(Element),
+    PropTypes.instanceOf(Window),
+  ]),
 };
 
 KeyboardShortcuts.defaultProps = {

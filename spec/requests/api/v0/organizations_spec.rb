@@ -58,10 +58,13 @@ RSpec.describe "Api::V0::Organizations", type: :request do
 
       expect(response_org_users["type_of"]).to eq("user")
 
-      %w[
-        id username name summary twitter_username github_username website_url location
-      ].each do |attr|
+      %w[id username name twitter_username github_username].each do |attr|
         expect(response_org_users[attr]).to eq(org_user.public_send(attr))
+      end
+
+      org_user_profile = org_user.profile
+      %w[summary location website_url].each do |attr|
+        expect(response_org_users[attr]).to eq(org_user_profile.public_send(attr))
       end
 
       expect(response_org_users["joined_at"]).to eq(org_user.created_at.strftime("%b %e, %Y"))
@@ -104,9 +107,11 @@ RSpec.describe "Api::V0::Organizations", type: :request do
       expect(response_listing["tag_list"]).to eq(listing.cached_tag_list)
       expect(response_listing["tags"]).to match_array(listing.tag_list)
 
-      %w[name username twitter_username github_username website_url].each do |attr|
+      %w[name username twitter_username github_username].each do |attr|
         expect(response_listing["user"][attr]).to eq(org_user.public_send(attr))
       end
+
+      expect(response_listing["organization"]["website_url"]).to eq(org_user.profile.website_url)
 
       %w[name username slug].each do |attr|
         expect(response_listing["organization"][attr]).to eq(organization.public_send(attr))
@@ -149,9 +154,11 @@ RSpec.describe "Api::V0::Organizations", type: :request do
 
       expect(response_article["tag_list"]).to match_array(article.tag_list)
 
-      %w[name username twitter_username github_username website_url].each do |attr|
+      %w[name username twitter_username github_username].each do |attr|
         expect(response_article["user"][attr]).to eq(org_user.public_send(attr))
       end
+
+      expect(response_article["user"]["website_url"]).to eq(org_user.profile.website_url)
 
       %w[name username slug].each do |attr|
         expect(response_article["organization"][attr]).to eq(organization.public_send(attr))

@@ -1,7 +1,7 @@
 class TweetTag < LiquidTagBase
   include ActionView::Helpers::AssetTagHelper
   PARTIAL = "liquids/tweet".freeze
-  ID_REGEXP = /\A\d{10,20}\z/.freeze # id must be all numbers between 10 and 20 chars
+  ID_REGEXP = /\A\d{10,20}\z/ # id must be all numbers between 10 and 20 chars
 
   SCRIPT = <<~JAVASCRIPT.freeze
     var videoPreviews = document.getElementsByClassName("ltag__twitter-tweet__media__video-wrapper");

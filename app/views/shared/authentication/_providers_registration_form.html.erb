@@ -1,6 +1,7 @@
 <div class="registration__actions-providers">
   <% authentication_enabled_providers.each do |provider| %>
-    <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
+    <% next unless display_social_login? %>
+    <% next if provider.provider_name == :forem && !FeatureFlag.enabled?(:forem_passport) %>
     <%= form_with url: provider.sign_in_path(state: "navbar_basic"), class: "flex w-100", local: true do |f| %>
       <%= f.button type: :submit, class: "crayons-btn crayons-btn--l crayons-btn--brand-#{provider.provider_name} crayons-btn--icon-left grow-1 whitespace-nowrap" do %>
         <%= inline_svg_tag("#{provider.provider_name}.svg", aria_hidden: true, class: "crayons-icon", title: provider.provider_name) %>
@@ -8,7 +9,7 @@
       <% end %>
     <% end %>
   <% end %>
-  <% if params[:state] == "new-user" && Settings::Authentication.allow_email_password_registration && !Settings::Authentication.invite_only_mode %>
+  <% if params[:state] == "new-user" && Settings::Authentication.allow_email_password_registration && !ForemInstance.invitation_only? %>
     <%= link_to "#{inline_svg_tag('email.svg', aria_hidden: true, class: 'crayons-icon', title: 'email')}Sign up with Email".html_safe,
                 request.params.merge(state: "email_signup").except("i"),
                 class: "crayons-btn crayons-btn--l crayons-btn--brand-email crayons-btn--icon-left whitespace-nowrap",

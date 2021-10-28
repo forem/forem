@@ -1,56 +1,93 @@
-<nav class="hidden m:block">
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
-    Posts
-    <span class="crayons-indicator"><%= @user.articles_count %></span>
-  </a>
+<nav class="hidden m:block" aria-label="Dashboards">
+  <ul class="list-none p-0">
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>"
+      href="<%= dashboard_path %>"
+      <%= params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
+      <%= t("core.posts") %>
+      <span class="crayons-indicator"><%= @user.articles_count %></span>
+      </a>
+    </li>
 
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) %>" href="/<%= current_user.username %>/series">
-    Series
-    <span class="crayons-indicator"><%= @user.collections.count %></span>
-  </a>
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) %>"
+      href="<%= user_series_path(current_user.username) %>"
+      <%= params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
+      <%= t("core.series") %>
+      <span class="crayons-indicator"><%= @user.collections.count %></span>
+      </a>
+    </li>
 
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "followers" %>" href="/dashboard/user_followers">
-    Followers
-    <span class="crayons-indicator"><%= @user.followers_count %></span>
-  </a>
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "followers" %>"
+      href="/dashboard/user_followers"
+      <%= params[:action] == "followers" ? ' aria-current="page"'.html_safe : "" %>>
+      <%= t("core.followers") %>
+      <span class="crayons-indicator"><%= @user.followers_count %></span>
+      </a>
+    </li>
 
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_tags" %>" href="/dashboard/following_tags">
-    Following tags
-    <span class="crayons-indicator"><%= @user.following_tags_count %></span>
-  </a>
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_tags" %>"
+      href="<%= dashboard_following_tags_path %>"
+      <%= params[:action] == "following_tags" ? ' aria-current="page"'.html_safe : "" %>>
+      Following tags
+      <span class="crayons-indicator"><%= @user.following_tags_count %></span>
+      </a>
+    </li>
 
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_users" %>" href="/dashboard/following_users">
-    Following users
-    <span class="crayons-indicator"><%= @user.following_users_count %></span>
-  </a>
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_users" %>"
+      href="<%= dashboard_following_users_path %>"
+      <%= params[:action] == "following_users" ? ' aria-current="page"'.html_safe : "" %>>
+      Following users
+      <span class="crayons-indicator"><%= @user.following_users_count %></span>
+      </a>
+    </li>
 
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_organizations" %>" href="/dashboard/following_organizations">
-    Following organizations
-    <span class="crayons-indicator"><%= @user.following_organizations_count %></span>
-  </a>
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_organizations" %>"
+      href="<%= dashboard_following_organizations_path %>"
+      <%= params[:action] == "following_organizations" ? ' aria-current="page"'.html_safe : "" %>>
+      Following organizations
+      <span class="crayons-indicator"><%= @user.following_organizations_count %></span>
+      </a>
+    </li>
 
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_podcasts" %>" href="/dashboard/following_podcasts">
-    Following podcasts
-    <span class="crayons-indicator"><%= @user.following_podcasts_count %></span>
-  </a>
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_podcasts" %>"
+      href="<%= dashboard_following_podcasts_path %>"
+      <%= params[:action] == "following_podcasts" ? ' aria-current="page"'.html_safe : "" %>>
+      Following podcasts
+      <span class="crayons-indicator"><%= @user.following_podcasts_count %></span>
+      </a>
+    </li>
 
-  <a class="crayons-link crayons-link--block" href="/listings/dashboard" data-no-instant>
-    Listings
-    <%= inline_svg_tag("external-link.svg", aria_hidden: true, class: "crayons-icon") %>
-  </a>
+    <li>
+      <a class="crayons-link crayons-link--block" href="/listings/dashboard" data-no-instant>
+      <%= t("core.listings") %>
+      <%= inline_svg_tag("external-link.svg", aria_hidden: true, class: "crayons-icon") %>
+      </a>
+    </li>
 
-  <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_path %>">
-    Analytics
-  </a>
+    <li>
+      <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_path %>">
+      <%= t("core.analytics") %>
+      </a>
+    </li>
 
   <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
     <% @organizations.each do |org| %>
-      <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_org_path(org.id) %>">Analytics for <%= org.name %></a>
+      <li>
+        <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_org_path(org.id) %>">Analytics for <%= org.name %></a>
+      </li>
     <% end %>
   <% end %>
 
   <% if policy(:video).new? && policy(:video).enabled? %>
-    <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant> Upload a video
-    </a>
+    <li>
+      <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant> <%= t("dashboard.upload_a_video") %></a>
+    </li>
   <% end %>
+  </ul>
 </nav>
