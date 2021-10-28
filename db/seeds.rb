@@ -143,6 +143,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   )
 
   user.add_role(:super_admin)
+  user.add_role(:trusted)
   user.add_role(:tech_admin)
 end
 
