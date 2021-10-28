@@ -3,6 +3,10 @@
 import { h } from 'preact';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
+const FOREM_IOS_SCHEME = 'com.forem.app';
+const FOREM_APP_STORE_URL = 'https://apps.apple.com/us/app/forem/id1536933197';
+const FOREM_GOOGLE_PLAY_URL =
+  'https://play.google.com/store/apps/details?id=com.forem.android';
 
 function dismissBanner() {
   localStorage.setItem(BANNER_DISMISS_KEY, true);
@@ -12,6 +16,18 @@ function dismissBanner() {
 function removeFromDOM() {
   const container = document.getElementById('runtime-banner-container');
   container?.remove();
+}
+
+function androidTargetIntent() {
+  return (
+    'intent://scan/#Intent;' +
+    'action=android.intent.action.SEND;' +
+    'type=text/plain;' +
+    `S.browser_fallback_url=${FOREM_GOOGLE_PLAY_URL};` +
+    `S.android.intent.extra.TEXT=${window.location.host};` +
+    'scheme=com.forem.app;' +
+    'package=com.forem.android;end'
+  );
 }
 
 function handleDeepLinkFallback() {
@@ -27,13 +43,6 @@ function handleDeepLinkFallback() {
   const urlParams = new URLSearchParams(window.location.search);
   const targetPath = urlParams.get('deep_link');
 
-  // Constants - they will become dynamic (configurable by creators) in upcoming releases
-  const FOREM_IOS_SCHEME = 'com.forem.app';
-  const FOREM_APP_STORE_URL =
-    'https://apps.apple.com/us/app/forem/id1536933197';
-  const FOREM_GOOGLE_PLAY_URL =
-    'https://play.google.com/store/apps/details?id=to.dev.dev_android';
-
   if (Runtime.currentOS() === 'iOS') {
     // The install now must target Apple's AppStore
     installNowButton.href = FOREM_APP_STORE_URL;
@@ -44,8 +53,7 @@ function handleDeepLinkFallback() {
     retryButton.href = targetLink;
     window.location.href = targetLink;
   } else if (Runtime.currentOS() === 'Android') {
-    const targetIntent =
-      'intent://scan/#Intent;scheme=com.forem.app;package=com.forem.android;end';
+    const targetIntent = androidTargetIntent();
     retryButton.href = targetIntent;
     installNowButton.href = FOREM_GOOGLE_PLAY_URL;
     window.location.href = targetIntent;
@@ -78,7 +86,12 @@ export const RuntimeBanner = () => {
   }
 
   const targetPath = `https://${window.location.host}/r/mobile?deep_link=${window.location.pathname}`;
-  const targetURL = `https://udl.forem.com/${encodeURIComponent(targetPath)}`;
+  let targetURL = `https://udl.forem.com/${encodeURIComponent(targetPath)}`;
+  if (Runtime.currentOS() === 'Android') {
+    // Android handles Intents with a fallback URL: playstore URL to install the
+    // app if not available. It's best to redirect with the intent directly
+    targetURL = androidTargetIntent();
+  }
 
   return (
     <div class="runtime-banner">
