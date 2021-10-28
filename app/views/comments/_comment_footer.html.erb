@@ -7,14 +7,9 @@
     <%= inline_svg_tag("small-heart.svg",
                        aria: true,
                        class: "crayons-icon reaction-icon not-reacted",
-                       title: "Like comment:") %>
-    <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: "Like comment: ") %>
-    <span class="reactions-count">
-      <%= comment.public_reactions_count if comment.public_reactions_count.positive? %>
-    </span>
-    <span class="reactions-label hidden m:inline-block">
-      <%= like_button_text(comment).html_safe %>
-    </span>
+                       title: t("views.comments.footer.heart.icon")) %>
+    <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: t("views.comments.footer.heart.icon")) %>
+    <%= t("views.comments.footer.heart.count_html", num: tag.span((comment.public_reactions_count if comment.public_reactions_count.positive?), class: "reactions-count"), likes: tag.span(like_button_text(comment).html_safe, class: "reactions-label hidden m:inline-block")) %>
   </button>
 
   <% unless @discussion_lock %>
@@ -25,13 +20,13 @@
         data-comment-id="<%= comment.id %>"
         data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
         rel="nofollow">
-        <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Comment button") %>
-        <span class="hidden m:inline-block"><%= t("core.reply") %></span>
+        <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: t("views.comments.footer.reply.icon")) %>
+        <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>
       </a>
     <% else %>
       <span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">
-        <%= inline_svg_tag("small-thread.svg", aria: true, class: "crayons-icon", title: "Thread") %>
-        Thread
+        <%= inline_svg_tag("small-thread.svg", aria: true, class: "crayons-icon", title: t("views.comments.footer.thread.icon")) %>
+        <%= t("views.comments.footer.thread.text") %>
       </span>
     <% end %>
   <% end %>

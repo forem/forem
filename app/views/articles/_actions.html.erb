@@ -50,9 +50,9 @@
             target="_blank"
             class="crayons-link crayons-link--block"
             rel="noopener"
-            href='https://twitter.com/intent/tweet?text="<%= u t("views.actions.share.twitter.query",
-                                                                 article: @article.title.strip,
-                                                                 author: @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name) %><%= u " #{Settings::General.twitter_hashtag}" %><%= u " #{article_url(@article)}" %>'>
+            href='https://twitter.com/intent/tweet?text=<%= u t("views.actions.share.twitter.query",
+                                                                article: @article.title.strip,
+                                                                author: @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name) %><%= u " #{Settings::General.twitter_hashtag}" %><%= u " #{article_url(@article)}" %>'>
             <%= t("views.actions.share.twitter.text") %>
           </a>
           <a
