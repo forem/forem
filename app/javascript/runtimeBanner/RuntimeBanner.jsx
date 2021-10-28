@@ -3,7 +3,7 @@
 import { h } from 'preact';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
-const FOREM_IOS_SCHEME = 'com.forem.app';
+const APP_LAUNCH_SCHEME = 'com.forem.app';
 const FOREM_APP_STORE_URL = 'https://apps.apple.com/us/app/forem/id1536933197';
 const FOREM_GOOGLE_PLAY_URL =
   'https://play.google.com/store/apps/details?id=com.forem.android';
@@ -25,7 +25,7 @@ function androidTargetIntent() {
     'type=text/plain;' +
     `S.browser_fallback_url=${FOREM_GOOGLE_PLAY_URL};` +
     `S.android.intent.extra.TEXT=${window.location.host};` +
-    'scheme=com.forem.app;' +
+    `scheme=${APP_LAUNCH_SCHEME};` +
     'package=com.forem.android;end'
   );
 }
@@ -49,7 +49,7 @@ function handleDeepLinkFallback() {
 
     // We try to deep link directly by launching a custom scheme and populate
     // the retry button in case the user will need it
-    const targetLink = `${FOREM_IOS_SCHEME}://${window.location.host}${targetPath}`;
+    const targetLink = `${APP_LAUNCH_SCHEME}://${window.location.host}${targetPath}`;
     retryButton.href = targetLink;
     window.location.href = targetLink;
   } else if (Runtime.currentOS() === 'Android') {
