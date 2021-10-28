@@ -11,7 +11,7 @@
         </div>
       <% elsif should_be_hidden?(comment, @root_comment) %>
         <div class="p-6 align-center opacity-50 fs-s">
-          <span class="js-comment-username">Comment hidden by author</span>
+          Comment hidden by author
         </div>
       <% else %>
         <%= render partial: "comments/comment_quality_marker", locals: {
