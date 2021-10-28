@@ -188,7 +188,11 @@ export class ReadingList extends Component {
     const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
 
     const snackBar = archiving ? (
-      <div>{isStatusViewValid ? 'Archiving...' : 'Unarchiving...'}</div>
+      <div className="crayons-snackbar">
+        <div className="crayons-snackbar__item block">
+          {isStatusViewValid ? 'Archiving...' : 'Unarchiving...'}
+        </div>
+      </div>
     ) : (
       ''
     );
