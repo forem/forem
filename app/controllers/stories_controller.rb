@@ -241,7 +241,14 @@ class StoriesController < ApplicationController
       @stories = Articles::Feeds::Latest.call
     else
       @default_home_feed = true
-      feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
+      strategy = AbTestService.feed_strategy_for(user: current_user)
+      feed = if strategy.weighted_query_strategy?
+               # I'm uncertain why we don't pass a user here, but it mimics
+               # the behavior of the original LargeForemExperimental.
+               Articles::Feeds::WeightedQueryStrategy.new(user: nil, page: @page, tags: params[:tag])
+             else
+               Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
+             end
       @featured_story, @stories = feed.featured_story_and_default_home_feed(user_signed_in: user_signed_in?)
     end
 

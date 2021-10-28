@@ -34,23 +34,29 @@ module Stories
     end
 
     def signed_in_base_feed
-      if Settings::UserExperience.feed_strategy == "basic"
-        Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
-          .more_comments_minimal_weight_randomized
-      else
-        Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-          .more_comments_minimal_weight_randomized
-      end
+      strategy = AbTestService.feed_strategy_for(user: current_user)
+      feed = if strategy.weighted_query_strategy?
+               Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
+             elsif Settings::UserExperience.feed_strategy == "basic"
+               Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
+             else
+               Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+             end
+      feed.more_comments_minimal_weight_randomized
     end
 
     def signed_out_base_feed
-      if Settings::UserExperience.feed_strategy == "basic"
-        Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
-          .default_home_feed(user_signed_in: false)
-      else
-        Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-          .default_home_feed(user_signed_in: false)
-      end
+      strategy = AbTestService.feed_strategy_for(user: current_user)
+      feed = if strategy.weighted_query_strategy?
+               Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
+             elsif Settings::UserExperience.feed_strategy == "basic"
+               # I'm a bit uncertain why we're skipping the user on this call.
+               Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
+             else
+               Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+             end
+
+      feed.default_home_feed(user_signed_in: false)
     end
 
     def timeframe_feed

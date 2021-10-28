@@ -25,7 +25,7 @@ experiments:
   #     - user_views_article_four_hours_in_day
   #     - user_views_article_nine_days_in_two_week
   #     - user_views_article_twelve_hours_in_five_days
-  considering_weighted_query_strategy:
+  feed_strategy:
     variants:
       - original
       - weighted_query_strategy
