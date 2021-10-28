@@ -75,7 +75,10 @@
       <%= f.text_area "profile[summary]",
                       value: profile.summary,
                       placeholder: t("views.users.profile_fields.bio.placeholder"),
-                      class: "crayons-textfield js-color-field" %>
+                      id: "summary-field",
+                      class: "crayons-textfield js-color-field",
+                      maxlength: 200 %>
+      <div><span id="summary-field-xters"></span> / 200</div>
     </div>
   </div>
 
@@ -161,15 +164,19 @@
 <script>
   const nameField = document.getElementById("name-field");
   const usernameField = document.getElementById("username-field");
+  const summaryField = document.getElementById("summary-field");
   const nameFieldCharacterValue = document.getElementById("name-field-xters");
   const usernameFieldCharacterValue = document.getElementById("username-field-xters");
+  const summaryFieldCharacterValue = document.getElementById("summary-field-xters");
 
   let nameFieldCharacterCount = nameField.value.length;
   let usernameFieldCharacterCount = usernameField.value.length;
+  let summaryFieldCharacterCount = summaryField.value.length;
 
   window.addEventListener('load', () => {
     nameFieldCharacterValue.innerHTML = nameFieldCharacterCount;
     usernameFieldCharacterValue.innerHTML = usernameFieldCharacterCount;
+    summaryFieldCharacterValue.innerHTML = summaryFieldCharacterCount;
   })
 
   nameField.addEventListener('keyup', () => {
@@ -178,5 +185,9 @@
 
   usernameField.addEventListener('keyup', () => {
     usernameFieldCharacterValue.innerHTML = usernameField.value.length;
+  });
+
+  summaryField.addEventListener('keyup', () => {
+    summaryFieldCharacterValue.innerHTML = summaryField.value.length;
   });
 </script>
