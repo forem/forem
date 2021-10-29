@@ -6,6 +6,7 @@ RSpec.describe "/admin/invitations", type: :request do
 
   before do
     sign_in(admin)
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
   end
 
   describe "GET /admin/invitations" do
