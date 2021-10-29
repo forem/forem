@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_13_060449) do
+ActiveRecord::Schema.define(version: 2021_10_19_151431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -895,6 +895,7 @@ ActiveRecord::Schema.define(version: 2021_10_13_060449) do
     t.datetime "created_at", null: false
     t.bigint "creator_id"
     t.text "description"
+    t.boolean "featured", default: false
     t.string "feed_url", null: false
     t.string "image", null: false
     t.string "itunes_url"
@@ -1391,6 +1392,7 @@ ActiveRecord::Schema.define(version: 2021_10_13_060449) do
     t.string "brand_color1", default: "#000000"
     t.string "brand_color2", default: "#ffffff"
     t.integer "config_font", default: 0, null: false
+    t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
     t.integer "config_theme", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false

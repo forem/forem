@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 import { jsxDecorator } from 'storybook-addon-jsx';
+import 'focus-visible';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/views.scss';

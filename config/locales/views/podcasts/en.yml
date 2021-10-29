@@ -1,0 +1,36 @@
+---
+en:
+  views:
+    podcasts:
+      meta:
+        title: Podcasts
+        description: Discover technical podcasts for %{member}
+        og:
+          title: Podcasts on %{community}
+      browse: Browse
+      heading: Podcasts
+      close: "×"
+      form:
+        heading: Suggest a Podcast
+        errors:
+          one: '1 error while creating a podcast:'
+          other: "%{count} errors while creating a podcast:"
+        owner: I am the owner of this podcast
+        return: "< return to podcasts"
+        suggest: Suggest
+      list: podcasts
+      listen: Click here to download/listen
+      source: Episode source
+      statuses:
+        ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
+        unparsable: Podcast's rss couldn't be parsed
+        unplayable: This podcast may not be playable in the browser
+        unreachable: Podcast's feed_url is not reachable
+      speed: 1x
+      tag: podcast
+      initializing: initializing...
+      unsupported: Your browser does not support the audio element.
+      featured_shows: Featured shows
+      latest_episodes: Latest episodes
+      suggest_a_podcast: Suggest a Podcast
+      view_all_podcasts: View all podcasts

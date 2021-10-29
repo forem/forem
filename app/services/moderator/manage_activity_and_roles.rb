@@ -72,10 +72,12 @@ module Moderator
         check_super_admin
         remove_negative_roles
         user.add_role(:admin)
+        TagModerators::AddTrustedRole.call(user)
       when "Super Admin"
         check_super_admin
         remove_negative_roles
         user.add_role(:super_admin)
+        TagModerators::AddTrustedRole.call(user)
       when "Tech Admin"
         check_super_admin
         remove_negative_roles

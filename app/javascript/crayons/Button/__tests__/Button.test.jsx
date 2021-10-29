@@ -181,4 +181,11 @@ describe('<Button /> component', () => {
 
     expect(someEvent).toHaveBeenCalledTimes(1);
   });
+
+  it('should render with a tooltip', () => {
+    const { container } = render(
+      <Button tooltip="tooltip text">Hello world!</Button>,
+    );
+    expect(container.innerHTML).toMatchSnapshot();
+  });
 });
