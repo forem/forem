@@ -2,7 +2,7 @@
   <div class="profile-header__bottom fs-base">
     <% if @organization.email.present? %>
       <div class="crayons-definition">
-        <strong class="crayons-definition__title">Support email</strong>
+        <strong class="crayons-definition__title"><%= t("views.organizations.support") %></strong>
         <p class="crayons-definition__value">
           <a href="mailto:<%= sanitize @organization.email %>">
             <%= sanitize @organization.email %>
@@ -13,7 +13,7 @@
 
     <% if @organization.company_size.present? %>
       <div class="crayons-definition">
-        <strong class="crayons-definition__title">Employees</strong>
+        <strong class="crayons-definition__title"><%= t("views.organizations.size") %></strong>
         <p class="crayons-definition__value"><%= @organization.company_size %></p>
       </div>
     <% end %>

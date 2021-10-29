@@ -143,6 +143,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   )
 
   user.add_role(:super_admin)
+  user.add_role(:trusted)
   user.add_role(:tech_admin)
 end
 
@@ -169,6 +170,9 @@ end
 num_articles = 25 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Article, num_articles) do
+  user_ids = User.all.pluck(:id)
+  public_categories = %w[like unicorn]
+
   num_articles.times do |i|
     tags = []
     tags << "discuss" if (i % 3).zero?
@@ -187,12 +191,21 @@ seeder.create_if_none(Article, num_articles) do
       #{Faker::Hipster.paragraph(sentence_count: 2)}
     MARKDOWN
 
-    Article.create!(
+    article = Article.create!(
       body_markdown: markdown,
       featured: true,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
+
+    Random.random_number(10).times do |t|
+      article.reactions.create(
+        user_id: user_ids.sample,
+        category: public_categories.sample,
+      )
+    end
+
+    article.sync_reactions_count
   end
 end
 

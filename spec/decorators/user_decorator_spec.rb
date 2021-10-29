@@ -108,7 +108,7 @@ RSpec.describe UserDecorator, type: :decorator do
   describe "#config_body_class" do
     it "creates proper body class with defaults" do
       expected_result = %W[
-        default sans-serif-article-body
+        light-theme sans-serif-article-body
         trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -117,7 +117,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
       expected_result = %W[
-        default sans-serif-article-body
+        light-theme sans-serif-article-body
         trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -135,7 +135,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "works with static navbar" do
       user.setting.config_navbar = "static"
       expected_result = %W[
-        default sans-serif-article-body
+        light-theme sans-serif-article-body
         trusted-status-#{user.trusted} static-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -148,7 +148,7 @@ RSpec.describe UserDecorator, type: :decorator do
         user.add_role(:trusted)
 
         expected_result = %w[
-          default sans-serif-article-body
+          light-theme sans-serif-article-body
           trusted-status-true default-header
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)

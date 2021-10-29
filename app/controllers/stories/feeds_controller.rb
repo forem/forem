@@ -38,7 +38,7 @@ module Stories
         Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag]).feed
       else
         feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-        feed.more_comments_minimal_weight_randomized_at_end
+        feed.more_comments_minimal_weight_randomized
       end
     end
 
