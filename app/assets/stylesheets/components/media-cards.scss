@@ -2,7 +2,6 @@
 
 .media-card {
   background: var(--card-bg);
-  border-radius: var(--radius);
   display: flex;
   flex-direction: column;
   color: var(--card-color);
@@ -12,7 +11,7 @@
     position: relative;
 
     img {
-      border-radius: var(--radius) var(--radius) 0 0;
+      border-radius: var(--radius-auto) var(--radius-auto) 0 0;
     }
 
     &__badge {
