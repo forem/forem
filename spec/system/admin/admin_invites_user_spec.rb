@@ -5,12 +5,17 @@ RSpec.describe "Admin invites user", type: :system do
 
   before do
     sign_in admin
-    visit new_admin_invitation_path
   end
 
   context "when SMTP is not configured" do
     before do
       allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+      visit new_admin_invitation_path
+    end
+
+    it "shows a header" do
+      header = "Setup SMTP to invite users"
+      expect(page).to have_content(header)
     end
 
     it "shows a banner" do
@@ -21,20 +26,36 @@ RSpec.describe "Admin invites user", type: :system do
     end
 
     it "contains a link to the documentation" do
-      expect(page).to have_link(href: "https://admin.forem.com/docs/advanced-customization/config/smtp-settings")
+      expect(page).to have_link("read more about SMTP Settings in our admin guide", href: "https://admin.forem.com/docs/advanced-customization/config/smtp-settings")
     end
 
     it "contains a link to configure SMTP settings" do
-      expect(page).to have_link("Configure SMTP Settings", href: admin_config_path(anchor: "smtp-section"))
+      expect(page).to have_link("Configure your SMTP Settings", href: admin_config_path(anchor: "smtp-section"))
     end
 
-    it "disables the input fields" do
-      expect(page).to have_field "Email", disabled: true
-      expect(page).to have_field "Name", disabled: true
+    it "does not contain any for fields" do
+      expect(page).not_to have_field "Email"
+      expect(page).not_to have_field "Name"
     end
 
-    it "disables the submit button" do
-      expect(page).to have_button "Invite User", disabled: true
+    it "does not contain any submit buttons" do
+      expect(page).not_to have_button "Invite User"
+    end
+  end
+
+  context "when SMTP is configured" do
+    before do
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+      visit new_admin_invitation_path
+    end
+
+    it "shows the input fields" do
+      expect(page).to have_field "Email"
+      expect(page).to have_field "Name"
+    end
+
+    it "shows the submit button" do
+      expect(page).to have_button "Invite User"
     end
   end
 end
