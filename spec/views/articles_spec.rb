@@ -70,7 +70,10 @@ RSpec.describe "articles/show", type: :view do
     allow(article1).to receive(:crossposted_at).and_return(Time.current)
     allow(article1).to receive(:originally_published_at).and_return(Time.zone.at(0))
     render
-    expect(rendered).to have_text("Originally published at")
+
+    # Jan 1, 1970 or Dec 31, 1969, depending on time zone
+    expected_date = Time.zone.utc_offset.positive? ? "Jan 1, 1970" : "Dec 31, 1969"
+    expect(rendered).to have_text(expected_date)
     expect(rendered).not_to have_text("</time>")
   end
 end
