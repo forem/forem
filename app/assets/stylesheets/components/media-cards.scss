@@ -11,7 +11,9 @@
     position: relative;
 
     img {
-      border-radius: var(--radius-auto) var(--radius-auto) 0 0;
+      border-radius: var(--radius-auto);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
 
     &__badge {
