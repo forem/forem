@@ -19,7 +19,7 @@ class AsyncInfoController < ApplicationController
           param: request_forgery_protection_token,
           token: form_authenticity_token,
           user: user_data,
-          creator: creator_data,
+          creator: user_is_a_creator,
           creator_onboarding: use_creator_onboarding
         }
       end
@@ -64,7 +64,7 @@ class AsyncInfoController < ApplicationController
     end.to_json
   end
 
-  def creator_data
+  def user_is_a_creator
     @user.creator?
   end
 
