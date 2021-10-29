@@ -131,7 +131,7 @@
                       &bull; <%= t("views.articles.crossposted.text_html",
                                    url: link_to(get_host_without_www(@article.canonical_url || @article.feed_source_url), @article.canonical_url || @article.feed_source_url, style: "color:#1395b8"),
                                    on: if @article.crossposted_at
-                                         t("views.articles.crossposted.on",
+                                         t("views.articles.crossposted.on_html",
                                            date: local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year))
                                        else
                                          ""
