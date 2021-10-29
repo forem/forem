@@ -5,8 +5,6 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 
-import * as Routes from '../routes.js.erb';
-
 // Unique ID applied to modals created using window.Forem.showModal
 const WINDOW_MODAL_ID = 'window-modal';
 
@@ -60,7 +58,6 @@ window.Forem = {
     }
     return Promise.all(this.modalImports);
   },
-  routes: Routes,
   showModal: async ({
     title,
     contentSelector,
