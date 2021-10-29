@@ -76,7 +76,6 @@ en:
       co_authors_html: with %{names}
       crossposted:
         text_html: Originally published at %{url} %{on}
-        'on': on %{date}
         on_html: on %{date}
       edited: Updated on %{date}
       edited_html: Updated on %{date}
