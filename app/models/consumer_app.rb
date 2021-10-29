@@ -37,7 +37,7 @@ class ConsumerApp < ApplicationRecord
   def auth_credentials
     if forem_app? && ios?
       ApplicationConfig["RPUSH_IOS_PEM"]
-    elsif forem_app && android?
+    elsif forem_app? && android?
       ApplicationConfig["RPUSH_FCM_KEY"]
     else
       auth_key
