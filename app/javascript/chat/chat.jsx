@@ -1498,15 +1498,15 @@ export class Chat extends Component {
         className="bg-base-90 color-base-0 p-3 align-center fs-s m:fs-base lh-tight"
         aria-live="polite"
       >
-        We have made the decision to deprecate Connect as core functionality
-        from the application. &nbsp;
+        FORUM Chat is an experimental feature/auxiliary function in this application.
+        User experience may vary. &nbsp;
         <a
-          href="https://forem.dev/foremteam/deprecating-connect-chat-2kgi"
+          href="mailto:admin@forum.ax"
           className="text-underline color-base-10 fw-bold"
           target="_blank"
           rel="noreferrer"
         >
-          Read the announcement to learn more &raquo;
+          Please refer comments/feedback to FORUM Admin &raquo;
         </a>
         .
       </div>
