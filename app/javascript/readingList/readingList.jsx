@@ -9,6 +9,7 @@ import {
   selectTag,
   clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
+import { addSnackbarItem } from '../Snackbar';
 import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { TagList } from './components/TagList';
@@ -44,7 +45,6 @@ export class ReadingList extends Component {
     const { statusView } = this.props;
 
     this.state = {
-      archiving: false,
       query: '',
       index: null,
       page: 0,
@@ -107,6 +107,8 @@ export class ReadingList extends Component {
     event.preventDefault();
 
     const { statusView, items, itemsTotal } = this.state;
+    const isStatusViewValid = this.statusViewValid();
+
     request(`/reading_list_items/${item.id}`, {
       method: 'PUT',
       body: { current_status: statusView },
@@ -115,15 +117,13 @@ export class ReadingList extends Component {
     const newItems = items;
     newItems.splice(newItems.indexOf(item), 1);
     this.setState({
-      archiving: true,
       items: newItems,
       itemsTotal: itemsTotal - 1,
     });
 
-    // hide the snackbar in a few moments
-    setTimeout(() => {
-      this.setState({ archiving: false });
-    }, 1000);
+    addSnackbarItem({
+      message: isStatusViewValid ? 'Archiving...' : 'Unarchiving...',
+    });
   };
 
   statusViewValid() {
@@ -180,20 +180,12 @@ export class ReadingList extends Component {
       availableTags,
       selectedTag = '',
       showLoadMoreButton,
-      archiving,
       loading = false,
     } = this.state;
 
     const isStatusViewValid = this.statusViewValid();
     const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
 
-    const snackBar = archiving ? (
-      <div className="snackbar">
-        {isStatusViewValid ? 'Archiving...' : 'Unarchiving...'}
-      </div>
-    ) : (
-      ''
-    );
     return (
       <main
         id="main-content"
@@ -284,7 +276,6 @@ export class ReadingList extends Component {
             );
           }}
         />
-        {snackBar}
       </main>
     );
   }
