@@ -600,13 +600,26 @@ function handleHiddenComments(commentableType){
   const commentableAuthorIds = [];
   if(commentableType === "Article"){
     const articleContainer = document.querySelector('#article-show-container');
-    commentableAuthorIds.push(articleContainer.dataset.authorId);
-    articleContainer.dataset.coAuthorIds.split(',').forEach(coAuthorId => {
-      commentableAuthorIds.push(coAuthorId);
-    });
+    if(articleContainer){
+      commentableAuthorIds.push(articleContainer.dataset.authorId);
+      articleContainer.dataset.coAuthorIds.split(',').forEach(coAuthorId => {
+        commentableAuthorIds.push(coAuthorId);
+      });
+    }
+    else {
+      const commentsContainer = document.querySelector('#comments-container');
+      if(commentsContainer){
+        commentableAuthorIds.push(commentsContainer.dataset.commentableAuthorId);
+        commentsContainer.dataset.commentableCoAuthorIds.split(',').forEach(coAuthorId => {
+          commentableAuthorIds.push(coAuthorId);
+        });
+      }
+    }
   } else if(commentableType === "PodcastEpisode"){
     const podCastEpisodeContainer = document.querySelector('.podcast-episode-container');
-    commentableAuthorIds.push(podCastEpisodeContainer.dataset.creatorId);
+    if(podCastEpisodeContainer){
+      commentableAuthorIds.push(podCastEpisodeContainer.dataset.creatorId);
+    }
   }
   if (commentableAuthorIds.includes(currentUser?.id?.toString())){
     collapseCommentsHiddenByCommentableUser();
