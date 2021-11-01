@@ -41,7 +41,10 @@ function fetchBaseData() {
       // Assigning User
       if (checkUserLoggedIn()) {
         document.body.dataset.user = json.user;
+        document.body.dataset.creator = json.creator;
+        document.body.dataset.creatorOnboarding = json.creator_onboarding;
         browserStoreCache('set', json.user);
+
         setTimeout(() => {
           if (typeof ga === 'function') {
             ga('set', 'userId', JSON.parse(json.user).id);
@@ -50,6 +53,8 @@ function fetchBaseData() {
       } else {
         // Ensure user data is not exposed if no one is logged in
         delete document.body.dataset.user;
+        delete document.body.dataset.creator;
+        delete document.body.dataset.creatorOnboarding;
         browserStoreCache('remove');
       }
     }
