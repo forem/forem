@@ -275,6 +275,7 @@ module Admin
           .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
           .includes(:reactable)
           .order(created_at: :desc).limit(15)
+          .reject { |r| r.reactable.nil? }
     end
 
     def user_params
