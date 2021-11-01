@@ -953,11 +953,10 @@ describe('markdownSyntaxFormatters', () => {
       });
     });
 
-    // TODO:
-    describe.only('heading', () => {
+    describe('heading', () => {
       it('inserts a level 2 heading when no selection given, and no current heading on the same line', () => {
         const textAreaValue = 'one two three';
-        const expectedNewTextAreaValue = 'one \n## \ntwo three';
+        const expectedNewTextAreaValue = 'one \n\n## \ntwo three';
 
         const { newTextAreaValue, newCursorStart, newCursorEnd } =
           coreSyntaxFormatters['heading'].getFormatting({
@@ -967,40 +966,121 @@ describe('markdownSyntaxFormatters', () => {
           });
 
         expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(9);
+        expect(newCursorEnd).toEqual(9);
+      });
+
+      it('inserts a level 2 heading when text selected and line does not include a heading level', () => {
+        const textAreaValue = 'one two three';
+        const expectedNewTextAreaValue = 'one \n\n## two\n three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 7,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(9);
+        expect(newCursorEnd).toEqual(12);
+      });
+
+      it('changes a level 2 to a level 3 heading when no selection given, and line begins with ##', () => {
+        const textAreaValue = 'one\n\n## two\nthree';
+        const expectedNewTextAreaValue = 'one\n\n### two\nthree';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 11,
+            selectionEnd: 11,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(12);
+        expect(newCursorEnd).toEqual(12);
+      });
+
+      it('changes a level 2 to a level 3 heading when text selected, and line begins with ##', () => {
+        const textAreaValue = 'one\n\n## two\nthree';
+        const expectedNewTextAreaValue = 'one\n\n### two\nthree';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 8,
+            selectionEnd: 11,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(9);
+        expect(newCursorEnd).toEqual(12);
+      });
+
+      it('changes a level 3 to a level 4 heading when no selection given, and line begins with ###', () => {
+        const textAreaValue = 'one\n\n### two\nthree';
+        const expectedNewTextAreaValue = 'one\n\n#### two\nthree';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 12,
+            selectionEnd: 12,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(13);
+        expect(newCursorEnd).toEqual(13);
+      });
+
+      it('changes a level 3 to a level 4 heading when text selected, and line begins with ###', () => {
+        const textAreaValue = 'one\n\n### two\nthree';
+        const expectedNewTextAreaValue = 'one\n\n#### two\nthree';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 9,
+            selectionEnd: 12,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(10);
+        expect(newCursorEnd).toEqual(13);
+      });
+
+      it('removes a heading when no text selected and line begins with ####', () => {
+        const textAreaValue = 'one\n\n#### two\nthree';
+        const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 13,
+            selectionEnd: 13,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(8);
         expect(newCursorEnd).toEqual(8);
       });
 
-      it.todo(
-        'inserts a level 2 heading when text selected and line does not include a heading level',
-      );
+      it('removes a heading when text selected and line begins with ####', () => {
+        const textAreaValue = 'one\n\n#### two\nthree';
+        const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
 
-      it.todo(
-        'changes a level 2 to a level 3 heading when no selection given, and line begins with ##',
-      );
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 10,
+            selectionEnd: 13,
+          });
 
-      it.todo(
-        'changes a level 2 to a level 3 heading when text selected, and line begins with ##',
-      );
-
-      it.todo(
-        'changes a level 3 to a level 4 heading when no selection given, and line begins with ###',
-      );
-
-      it.todo(
-        'changes a level 3 to a level 4 heading when text selected, and line begins with ###',
-      );
-
-      it.todo(
-        'removes a heading when no text selected and line begins with ####',
-      );
-      it.todo(
-        'removes a heading when  text selected and line begins with ####',
-      );
-
-      it.todo(
-        'removes a heading when a user has started the line with greater than a level 4 heading',
-      );
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(5);
+        expect(newCursorEnd).toEqual(8);
+      });
     });
 
     describe('quote', () => {

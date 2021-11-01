@@ -416,8 +416,8 @@ export const coreSyntaxFormatters = {
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       let currentLineSelectionStart = selectionStart;
 
-      // The 'heading' formatter can edit a previously inserted syntax,
-      // so we check if we need adjust the selection to the start of the line
+      // The 'heading' formatter changes insertion based on the existing heading level of the current line
+      // So we find the start of the current line and check for '#' characters
       if (selectionStart > 0) {
         const lastNewLine = getLastIndexOfCharacter({
           content: value,
@@ -451,21 +451,18 @@ export const coreSyntaxFormatters = {
           newTextAreaValue: `${textBeforeSelection}${selectedText.substring(
             5,
           )}${textAfterSelection}`,
-          newCursorStart: selectionStart - 4,
-          newCursorEnd: selectionEnd - 4,
+          newCursorStart: selectionStart - 5,
+          newCursorEnd: selectionEnd - 5,
         };
       }
 
       const adjustingHeading = currentHeadingIndex > 0;
-
-      // TODO: cursor selection all off 🙃
-
-      const cursorOffset = adjustingHeading ? 1 : 4;
+      const cursorOffset = adjustingHeading ? 1 : 5;
 
       return {
         newTextAreaValue: adjustingHeading
           ? `${textBeforeSelection}#${selectedText}${textAfterSelection}`
-          : `${textBeforeSelection}\n## ${selectedText}\n${textAfterSelection}`,
+          : `${textBeforeSelection}\n\n## ${selectedText}\n${textAfterSelection}`,
         newCursorStart: selectionStart + cursorOffset,
         newCursorEnd: selectionEnd + cursorOffset,
       };
