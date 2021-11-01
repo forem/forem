@@ -132,24 +132,6 @@ RSpec.describe UserDecorator, type: :decorator do
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
-    it "creates proper body class with pink theme" do
-      user.setting.config_theme = "pink_theme"
-      expected_result = %W[
-        pink-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
-      ].join(" ")
-      expect(user.decorate.config_body_class).to eq(expected_result)
-    end
-
-    it "creates proper body class with minimal light theme" do
-      user.setting.config_theme = "minimal_light_theme"
-      expected_result = %W[
-        minimal-light-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
-      ].join(" ")
-      expect(user.decorate.config_body_class).to eq(expected_result)
-    end
-
     it "works with static navbar" do
       user.setting.config_navbar = "static"
       expected_result = %W[
@@ -171,23 +153,6 @@ RSpec.describe UserDecorator, type: :decorator do
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end
-    end
-  end
-
-  describe "#dark_theme?" do
-    it "determines dark theme if dark theme" do
-      user.setting.config_theme = "dark_theme"
-      expect(user.decorate.dark_theme?).to be(true)
-    end
-
-    it "determines dark theme if ten x hacker" do
-      user.setting.config_theme = "ten_x_hacker_theme"
-      expect(user.decorate.dark_theme?).to be(true)
-    end
-
-    it "determines not dark theme if not one of the dark themes" do
-      user.setting.config_theme = "light_theme"
-      expect(user.decorate.dark_theme?).to be(false)
     end
   end
 
