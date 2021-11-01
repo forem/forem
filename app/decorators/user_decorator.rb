@@ -62,7 +62,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def dark_theme?
-    setting.config_theme == "night_theme" || setting.config_theme == "ten_x_hacker_theme"
+    setting.dark_theme? || setting.ten_x_hacker_theme?
   end
 
   def assigned_color

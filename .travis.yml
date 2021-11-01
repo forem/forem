@@ -91,17 +91,41 @@ jobs:
         - bin/test-console-check
         - yarn build-storybook
     - stage: Test
-      name: "E2E Seeded"
+      name: "E2E Seeded Node 0"
+      env:
+        - KNAPSACK_PRO_CI_NODE_TOTAL=3
+        - KNAPSACK_PRO_CI_NODE_INDEX=0
+        - KNAPSACK_PRO_TEST_FILE_PATTERN="cypress/integration/seededFlows/**/*.spec.js"
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
-        - bin/e2e-ci
+        - bin/knapsack_pro_cypress
+    - stage: Test
+      name: "E2E Seeded Node 1"
+      env:
+        - KNAPSACK_PRO_CI_NODE_TOTAL=3
+        - KNAPSACK_PRO_CI_NODE_INDEX=1
+        - KNAPSACK_PRO_TEST_FILE_PATTERN="cypress/integration/seededFlows/**/*.spec.js"
+      script:
+        - bundle exec rails db:create db:schema:load assets:precompile
+        - yarn cypress install
+        - bin/knapsack_pro_cypress
+    - stage: Test
+      name: "E2E Seeded Node 2"
+      env:
+        - KNAPSACK_PRO_CI_NODE_TOTAL=3
+        - KNAPSACK_PRO_CI_NODE_INDEX=2
+        - KNAPSACK_PRO_TEST_FILE_PATTERN="cypress/integration/seededFlows/**/*.spec.js"
+      script:
+        - bundle exec rails db:create db:schema:load assets:precompile
+        - yarn cypress install
+        - bin/knapsack_pro_cypress
     - stage: Test
       name: "E2E Non-seeded"
       script:
         - bundle exec rails db:create db:schema:load assets:precompile
         - yarn cypress install
-        - CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows bin/e2e-ci
+        - CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request

@@ -6,6 +6,7 @@ module Articles
         @number_of_articles = number_of_articles
         @page = page
         @tag = tag
+        @article_score_applicator = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: @user)
       end
 
       def feed
@@ -18,29 +19,21 @@ module Articles
 
         articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
         articles.sort_by.with_index do |article, index|
-          article_tags = article.decorate.cached_tag_list_array
-          tag_score = user_followed_tags.sum do |tag|
-            article_tags.include?(tag.name) ? tag.points : 0
-          end
-          user_score = user_following_users_ids.include?(article.user_id) ? 1 : 0
-          org_score = user_following_org_ids.include?(article.organization_id) ? 1 : 0
+          tag_score = score_followed_tags(article)
+          user_score = score_followed_user(article)
+          org_score = score_followed_organization(article)
+
+          # NOTE: Not quite understanding the purpose of the `-
+          # index`.  My guess is that it helps reduce the impact of the
+          # hotness score on the sort order.
           tag_score + org_score + user_score - index
         end.reverse!
       end
 
-      private
-
-      def user_followed_tags
-        @user_followed_tags ||= (@user&.decorate&.cached_followed_tags || [])
-      end
-
-      def user_following_org_ids
-        @user_following_org_ids ||= (@user&.cached_following_organizations_ids || [])
-      end
-
-      def user_following_users_ids
-        @user_following_users_ids ||= (@user&.cached_following_users_ids || [])
-      end
+      delegate(:score_followed_tags,
+               :score_followed_user,
+               :score_followed_organization,
+               to: :@article_score_applicator)
     end
   end
 end

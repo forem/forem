@@ -1,9 +1,8 @@
 <% json_data = notification.json_data %>
 <div class="p-6 m:p-8 align-center w-100">
-  <p class="fs-l m:fs-2xl mb-4">🎉🎉🎉🎉🎉🎉🎉🎉</p>
+  <p class="fs-l m:fs-2xl mb-4"><%= t("views.notifications.milestone.intro") %></p>
   <h2 class="fw-normal fs-xl m:fs-2xl mb-4">
-    Your post
-    <a href="<%= json_data["article"]["path"] %>" class="crayons-link fw-bold"><%= h(json_data["article"]["title"]) %></a> passed <%= notification.milestone_count %> <%= notification.milestone_type.pluralize.downcase %>!
+    <%= t("views.notifications.milestone.heading_html", title: link_to(h(json_data["article"]["title"]), json_data["article"]["path"], class: "crayons-link fw-bold"), type: t("views.notifications.milestone.type.#{notification.milestone_type}", count: notification.milestone_count.to_i)) %>
   </h2>
 
   <a href="https://giphy.com/gifs/<%= json_data["gif_id"] %>" rel="noopener noreferrer" class="block my-4" target="_blank">
@@ -11,6 +10,6 @@
   </a>
 
   <a href="/dashboard" class="crayons-btn w-100 m:w-50">
-    Check your dashboard
+    <%= t("views.notifications.milestone.check") %>
   </a>
 </div>
