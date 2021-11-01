@@ -198,7 +198,7 @@ function initializeCommentsPage() {
   }
   listenForDetailsToggle();
 
-  handleHiddenComments();
+  handleHiddenComments(commentableType);
 }
 
 function toggleCodeOfConduct() {
@@ -595,11 +595,17 @@ function updateCommentsCount() {
   commentsCountDiv.innerHTML = `(${commentsCountData})`
 }
 
-function handleHiddenComments(){
+function handleHiddenComments(commentableType){
   const currentUser = userData();
-  const articleContainer = document.getElementById('article-show-container');
-  const articleAuthorId = articleContainer.dataset.authorId;
-  if (currentUser?.id?.toString() === articleAuthorId){
+  const commentableAuthorIds = [];
+  if(commentableType === "Article"){
+    const articleContainer = document.querySelector('#article-show-container');
+    commentableAuthorIds.push(articleContainer.dataset.authorId);
+  } else if(commentableType === "PodcastEpisode"){
+    const podCastEpisodeContainer = document.querySelector('.podcast-episode-container');
+    commentableAuthorIds.push(podCastEpisodeContainer.dataset.creatorId);
+  }
+  if (commentableAuthorIds.includes(currentUser?.id?.toString())){
     collapseCommentsHiddenByCommentableUser();
   }
   else {
