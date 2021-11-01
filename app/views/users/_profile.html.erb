@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", "stickySaveFooter", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "fieldCharacterLimits", "stickySaveFooter", "validateFileInputs", defer: true %>
 
 <%= render "users/additional_authentication" %>
 
@@ -183,7 +183,7 @@
   </div>
 <% end %>
 
-<script>
+<%# <script>
   const user_profile_field_ids = [
     "user[name]",
     "user[email]",
@@ -205,4 +205,4 @@
       });
     });
   });
-</script>
+</script> %>
