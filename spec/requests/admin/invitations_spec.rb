@@ -6,6 +6,7 @@ RSpec.describe "/admin/invitations", type: :request do
 
   before do
     sign_in(admin)
+    allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
   end
 
   describe "GET /admin/invitations" do
@@ -19,7 +20,8 @@ RSpec.describe "/admin/invitations", type: :request do
   describe "GET /admin/invitations/new" do
     it "renders to appropriate page" do
       get new_admin_invitation_path
-      expect(response.body).to include("Email:")
+      expect(response.body).to include("Email")
+      expect(response.body).to include("Name")
     end
   end
 
