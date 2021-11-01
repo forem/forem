@@ -598,21 +598,28 @@ function updateCommentsCount() {
 function handleHiddenComments(commentableType){
   const currentUser = userData();
   const commentableAuthorIds = [];
+  let coAuthorIds = '';
   if(commentableType === "Article"){
     const articleContainer = document.querySelector('#article-show-container');
     if(articleContainer){
-      commentableAuthorIds.push(articleContainer.dataset.authorId);
-      articleContainer.dataset.coAuthorIds.split(',').forEach(coAuthorId => {
-        commentableAuthorIds.push(coAuthorId);
-      });
+      commentableAuthorIds.push(articleContainer?.dataset?.authorId);
+      coAuthorIds = articleContainer?.dataset?.coAuthorIds;
+      if(coAuthorIds){
+        coAuthorIds.split(',').forEach(coAuthorId => {
+          commentableAuthorIds.push(coAuthorId);
+        });
+      }
     }
     else {
       const commentsContainer = document.querySelector('#comments-container');
       if(commentsContainer){
-        commentableAuthorIds.push(commentsContainer.dataset.commentableAuthorId);
-        commentsContainer.dataset.commentableCoAuthorIds.split(',').forEach(coAuthorId => {
-          commentableAuthorIds.push(coAuthorId);
-        });
+        commentableAuthorIds.push(commentsContainer?.dataset?.commentableAuthorId);
+        coAuthorIds = commentsContainer?.dataset?.commentableCoAuthorIds;
+        if(coAuthorIds){
+          coAuthorIds.split(',').forEach(coAuthorId => {
+            commentableAuthorIds.push(coAuthorId);
+          });
+        }
       }
     }
   } else if(commentableType === "PodcastEpisode"){
