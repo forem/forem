@@ -7,15 +7,15 @@ RSpec.describe UserDecorator, type: :decorator do
   context "with serialization" do
     it "serializes both the decorated object IDs and decorated methods" do
       user = saved_user.decorate
-      expected_result = { "id" => user.id, "dark_theme?" => user.dark_theme? }
-      expect(user.as_json(only: [:id], methods: [:dark_theme?])).to eq(expected_result)
+      expected_result = { "id" => user.id }
+      expect(user.as_json(only: [:id])).to eq(expected_result)
     end
 
     it "serializes collections of decorated objects" do
       user = saved_user.decorate
       decorated_collection = User.decorate
-      expected_result = [{ "id" => user.id, "dark_theme?" => user.dark_theme? }]
-      expect(decorated_collection.as_json(only: [:id], methods: [:dark_theme?])).to eq(expected_result)
+      expected_result = [{ "id" => user.id }]
+      expect(decorated_collection.as_json(only: [:id])).to eq(expected_result)
     end
   end
 
