@@ -14,8 +14,8 @@
                        class: "crayons-textfield",
                        placeholder: "John Doe",
                        value: @user.name,
-                       data: { characters_id: "name-characters" } %>
-      <div><span id="name-characters"></span> / 30</div>
+                       data: { character_span_id: "name-characters" } %>
+      <div class="align-self-flex-end fs-s"><span id="name-characters"></span>/30</div>
     </div>
 
     <div class="crayons-field">
@@ -25,8 +25,8 @@
                        class: "crayons-textfield",
                        placeholder: "john.doe@example.com",
                        value: @user.email,
-                       data: { characters_id: "email-characters" } %>
-      <div><span id="email-characters"></span> / 50</div>
+                       data: { character_span_id: "email-characters" } %>
+      <div class="align-self-flex-end fs-s"><span id="email-characters"></span>/50</div>
     </div>
 
     <div class="crayons-field crayons-field--checkbox">
@@ -41,8 +41,8 @@
                        class: "crayons-textfield",
                        placeholder: "johndoe",
                        value: @user.username,
-                       data: { characters_id: "username-characters" } %>
-      <div><span id="username-characters"></span> / 30</div>
+                       data: { character_span_id: "username-characters" } %>
+      <div class="align-self-flex-end fs-s"><span id="username-characters"></span>/30</div>
     </div>
 
     <div class="crayons-field">
@@ -73,8 +73,8 @@
                       value: profile.website_url,
                       placeholder: "https://yoursite.com",
                       class: "crayons-textfield",
-                      data: { characters_id: "url-characters" } %>
-      <div><span id="url-characters"></span> / 100</div>
+                      data: { character_span_id: "url-characters" } %>
+      <div class="align-self-flex-end fs-s"><span id="url-characters"></span>/100</div>
     </div>
 
     <div class="crayons-field">
@@ -86,8 +86,8 @@
                        value: profile.location,
                        placeholder: t("views.users.profile_fields.location.placeholder"),
                        class: "crayons-textfield",
-                       data: { characters_id: "location-characters" } %>
-      <div><span id="location-characters"></span> / 100</div>
+                       data: { character_span_id: "location-characters" } %>
+      <div class="align-self-flex-end fs-s"><span id="location-characters"></span>/100</div>
     </div>
 
     <div class="crayons-field">
@@ -99,8 +99,8 @@
                       value: profile.summary,
                       placeholder: t("views.users.profile_fields.bio.placeholder"),
                       class: "crayons-textfield",
-                      data: { characters_id: "summary-characters" } %>
-      <div><span id="summary-characters"></span> / 200</div>
+                      data: { character_span_id: "summary-characters" } %>
+      <div class="align-self-flex-end fs-s"><span id="summary-characters"></span>/200</div>
     </div>
   </div>
 
@@ -122,7 +122,7 @@
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
-          <% else %> # here I will check for if the field is a textarea (200) or text_field (100) then add the relevant information
+          <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
@@ -184,32 +184,25 @@
 <% end %>
 
 <script>
-  const nameField = document.getElementById("name-field");
-  const usernameField = document.getElementById("username-field");
-  const summaryField = document.getElementById("summary-field");
-  const nameFieldCharacterValue = document.getElementById("name-field-xters");
-  const usernameFieldCharacterValue = document.getElementById("username-field-xters");
-  const summaryFieldCharacterValue = document.getElementById("summary-field-xters");
-
-  let nameFieldCharacterCount = nameField.value.length;
-  let usernameFieldCharacterCount = usernameField.value.length;
-  let summaryFieldCharacterCount = summaryField.value.length;
+  const user_profile_field_ids = [
+    "user[name]",
+    "user[email]",
+    "user[username]",
+    "profile[website_url]",
+    "profile[location]",
+    "profile[summary]"
+  ];
 
   window.addEventListener('load', () => {
-    nameFieldCharacterValue.innerHTML = nameFieldCharacterCount;
-    usernameFieldCharacterValue.innerHTML = usernameFieldCharacterCount;
-    summaryFieldCharacterValue.innerHTML = summaryFieldCharacterCount;
-  })
+    user_profile_field_ids.forEach((field_id) => {
+      const field = document.getElementById(field_id);
+      const fieldValueLength = field.value.length;
+      let fieldCharacterSpan = document.getElementById(field.dataset.characterSpanId);
+      fieldCharacterSpan.innerHTML = fieldValueLength;
 
-  nameField.addEventListener('keyup', () => {
-    nameFieldCharacterValue.innerHTML = nameField.value.length;
-  });
-
-  usernameField.addEventListener('keyup', () => {
-    usernameFieldCharacterValue.innerHTML = usernameField.value.length;
-  });
-
-  summaryField.addEventListener('keyup', () => {
-    summaryFieldCharacterValue.innerHTML = summaryField.value.length;
+      document.getElementById(field_id).addEventListener('keyup', (event) => {
+        fieldCharacterSpan.innerHTML = event.target.value.length;
+      });
+    });
   });
 </script>
