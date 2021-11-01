@@ -23,6 +23,130 @@ const MARKDOWN_LINK_REGEX =
   /^\[([\w\s\d]*)\]\((url|(https?:\/\/[\w\d./?=#]+))\)$/;
 const URL_PLACEHOLDER_TEXT = 'url';
 
+const handleLinkFormattingForEmptyTextSelection = ({
+  textBeforeSelection,
+  textAfterSelection,
+  value,
+  selectionStart,
+  selectionEnd,
+}) => {
+  const basicFormattingForEmptySelection = {
+    newTextAreaValue: `${textBeforeSelection}[](${URL_PLACEHOLDER_TEXT})${textAfterSelection}`,
+    newCursorStart: selectionStart + 3,
+    newCursorEnd: selectionEnd + 6,
+  };
+
+  // Directly after inserting a link with a URL highlighted, cursor is inside the link description '[]'
+  // Check if we are inside empty link description remove the link syntax if so
+  const directlySurroundedByLinkStructure =
+    textBeforeSelection.slice(-1) === '[' &&
+    textAfterSelection.slice(0, 2) === '](';
+
+  if (!directlySurroundedByLinkStructure)
+    return basicFormattingForEmptySelection;
+
+  // Search for the closing bracket of markdown link
+  const indexOfLinkStructureEnd = getNextIndexOfCharacter({
+    content: value,
+    selectionIndex: selectionStart,
+    character: ')',
+    breakOnCharacters: [' ', '\n'],
+  });
+
+  if (indexOfLinkStructureEnd === -1) return basicFormattingForEmptySelection;
+
+  // Remove the markdown link structure, preserving the link text if it isn't the "url" placeholder
+  const urlText = value.slice(selectionEnd + 2, indexOfLinkStructureEnd);
+
+  return {
+    newTextAreaValue: `${textBeforeSelection.slice(0, -1)}${
+      urlText === URL_PLACEHOLDER_TEXT ? '' : urlText
+    }${value.slice(indexOfLinkStructureEnd + 1)}`,
+    newCursorStart: selectionStart - 1,
+    newCursorEnd: selectionEnd - 1,
+  };
+};
+
+const handleLinkFormattingForUrlSelection = ({
+  textBeforeSelection,
+  textAfterSelection,
+  value,
+  selectionStart,
+  selectedText,
+}) => {
+  const basicFormattingForLinkSelection = {
+    newTextAreaValue: `${textBeforeSelection}[](${selectedText})${textAfterSelection}`,
+    newCursorStart: selectionStart + 1,
+    newCursorEnd: selectionStart + 1,
+  };
+
+  // Check if the text selection is likely inside a currently formatted markdown link
+  const directlySurroundedByLinkStructure =
+    textBeforeSelection.slice(-2) === '](' &&
+    textAfterSelection.slice(0, 1) === ')';
+
+  if (!directlySurroundedByLinkStructure)
+    return basicFormattingForLinkSelection;
+
+  // Get the index of where the current link opens so we can get the text inside the square brackets
+  const indexOfSyntaxOpen = getLastIndexOfCharacter({
+    content: value,
+    selectionIndex: selectionStart,
+    character: '[',
+  });
+
+  // If link syntax is incomplete, format the selection as a link
+  if (indexOfSyntaxOpen === -1) return basicFormattingForLinkSelection;
+
+  // Replace the markdown with the link text in square brackets, if available
+  let textToReplaceMarkdown = textBeforeSelection.slice(
+    indexOfSyntaxOpen + 1,
+    -2,
+  );
+
+  // If not available, take the URL as long as it's not the placeholder 'url' text
+  if (textToReplaceMarkdown === '') {
+    textToReplaceMarkdown =
+      selectedText === URL_PLACEHOLDER_TEXT ? '' : selectedText;
+  }
+
+  return {
+    newTextAreaValue: `${textBeforeSelection.slice(
+      0,
+      indexOfSyntaxOpen,
+    )}${textToReplaceMarkdown}${textAfterSelection.slice(1)}`,
+    newCursorStart: selectionStart - 3,
+    newCursorEnd: selectionStart + textToReplaceMarkdown.length - 3,
+  };
+};
+
+const handleUndoMarkdownLinkSelection = ({
+  selectedText,
+  selectionStart,
+  textBeforeSelection,
+  textAfterSelection,
+}) => {
+  const linkDescriptionEnd = getNextIndexOfCharacter({
+    content: selectedText,
+    selectionIndex: 0,
+    character: ']',
+  });
+
+  let textToReplaceMarkdown = selectedText.slice(1, linkDescriptionEnd);
+
+  // Keep the URL instead if no link description exists
+  if (textToReplaceMarkdown === '') {
+    const linkText = selectedText.slice(linkDescriptionEnd + 2, -1);
+    textToReplaceMarkdown = linkText === URL_PLACEHOLDER_TEXT ? '' : linkText;
+  }
+
+  return {
+    newTextAreaValue: `${textBeforeSelection}${textToReplaceMarkdown}${textAfterSelection}`,
+    newCursorStart: selectionStart,
+    newCursorEnd: selectionStart + textToReplaceMarkdown.length,
+  };
+};
+
 const isStringStartAUrl = (string) => {
   const startingText = string.substring(0, 8);
   return startingText === 'https://' || startingText.startsWith('http://');
@@ -95,6 +219,32 @@ const undoOrAddFormattingForMultilineSyntax = ({
 
   if (linePrefix) {
     const { length: prefixLength } = linePrefix;
+
+    // If no selection, check if we're in a freshly inserted syntax
+    if (selectedText === '' && textBeforeSelection !== '') {
+      const lastNewLine = getLastIndexOfCharacter({
+        content: value,
+        selectionIndex: selectionStart - 1,
+        character: '\n',
+      });
+
+      if (
+        lastNewLine !== -1 &&
+        textBeforeSelection.slice(
+          lastNewLine + 1,
+          lastNewLine + prefixLength + 1,
+        ) === linePrefix
+      ) {
+        // Remove the list formatting
+        return {
+          newTextAreaValue: `${value.slice(0, lastNewLine + 1)}${value.slice(
+            lastNewLine + prefixLength + 1,
+          )}`,
+          newCursorStart: selectionStart - prefixLength,
+          newCursorEnd: selectionEnd - prefixLength,
+        };
+      }
+    }
 
     // Split by new lines and check each line has formatting
     const splitByNewLine = selectedText
@@ -238,111 +388,43 @@ export const coreSyntaxFormatters = {
       const { selectedText, textBeforeSelection, textAfterSelection } =
         getSelectionData({ selectionStart, selectionEnd, value });
 
-      // Check if we are inside empty link description [](something) and remove it if so
       if (selectedText === '') {
-        const directlySurroundedByLinkStructure =
-          textBeforeSelection.slice(-1) === '[' &&
-          textAfterSelection.slice(0, 2) === '](';
-
-        // Search beyond current position to check for the closing bracket of markdown link
-        const indexOfLinkStructureEnd = getNextIndexOfCharacter({
-          content: value,
-          selectionIndex: selectionStart,
-          character: ')',
-          breakOnCharacters: [' ', '\n'],
+        return handleLinkFormattingForEmptyTextSelection({
+          textBeforeSelection,
+          textAfterSelection,
+          value,
+          selectionStart,
+          selectionEnd,
         });
-
-        if (
-          directlySurroundedByLinkStructure &&
-          indexOfLinkStructureEnd !== -1
-        ) {
-          // Remove the markdown link structure, preserving the link text if it isn't the "url" placeholder
-          const urlText = value.slice(
-            selectionEnd + 2,
-            indexOfLinkStructureEnd,
-          );
-
-          return {
-            newTextAreaValue: `${textBeforeSelection.slice(0, -1)}${
-              urlText === URL_PLACEHOLDER_TEXT ? '' : urlText
-            }${value.slice(indexOfLinkStructureEnd + 1)}`,
-            newCursorStart: selectionStart,
-            newCursorEnd: selectionEnd,
-          };
-        }
       }
 
-      const isSelectedTextAUrl = isStringStartAUrl(selectedText);
-
-      // If the selected text is a URL or placeholder URL, check if it is already formatted as MD link
-      if (isSelectedTextAUrl || selectedText === URL_PLACEHOLDER_TEXT) {
-        const directlySurroundedByLinkStructure =
-          textBeforeSelection.slice(-2) === '](' &&
-          textAfterSelection.slice(0, 1) === ')';
-
-        if (directlySurroundedByLinkStructure) {
-          // Get the text inside the square brackets
-          const indexOfSyntaxOpen = getLastIndexOfCharacter({
-            content: value,
-            selectionIndex: selectionStart,
-            character: '[',
-          });
-
-          if (indexOfSyntaxOpen !== -1) {
-            // We want to replace the markdown with the link text in square brackets, if available
-            let textToReplaceMarkdown = textBeforeSelection.slice(
-              indexOfSyntaxOpen + 1,
-              -2,
-            );
-            // If not available, take the URL as long as it's not the placeholder 'url' text
-            if (textToReplaceMarkdown === '') {
-              textToReplaceMarkdown =
-                selectedText === URL_PLACEHOLDER_TEXT ? '' : selectedText;
-            }
-
-            return {
-              newTextAreaValue: `${textBeforeSelection.slice(
-                0,
-                indexOfSyntaxOpen,
-              )}${textToReplaceMarkdown}${textAfterSelection.slice(1)}`,
-              newCursorStart: selectionStart,
-              newCursorEnd: selectionEnd,
-            };
-          }
-        }
+      if (
+        isStringStartAUrl(selectedText) ||
+        selectedText === URL_PLACEHOLDER_TEXT
+      ) {
+        return handleLinkFormattingForUrlSelection({
+          textBeforeSelection,
+          textAfterSelection,
+          value,
+          selectionStart,
+          selectedText,
+          selectionEnd,
+        });
       }
 
       // If the whole selectedText matches markdown link formatting, undo it
       if (selectedText.match(MARKDOWN_LINK_REGEX)) {
-        const linkDescriptionEnd = getNextIndexOfCharacter({
-          content: selectedText,
-          selectionIndex: selectionStart,
-          character: ']',
+        return handleUndoMarkdownLinkSelection({
+          selectedText,
+          selectionStart,
+          textBeforeSelection,
+          textAfterSelection,
         });
-        let textToReplaceMarkdown = selectedText.slice(1, linkDescriptionEnd);
-
-        // Keep the URL instead if no link description exists
-        if (textToReplaceMarkdown === '') {
-          textToReplaceMarkdown = selectedText.slice(
-            linkDescriptionEnd + 2,
-            -1,
-          );
-        }
-
-        return {
-          newTextAreaValue: `${textBeforeSelection}${textToReplaceMarkdown}${textAfterSelection}`,
-          newCursorStart: selectionStart,
-          newCursorEnd: selectionEnd,
-        };
       }
 
-      // Finally, there is no syntax to undo, so format as a markdown URL
-      const markdownText = isSelectedTextAUrl
-        ? `[](${selectedText})`
-        : `[${selectedText}](${URL_PLACEHOLDER_TEXT})`;
-
+      // Finally, handle the case where link syntax is inserted for a selection other than a URL
       return {
-        newTextAreaValue: `${textBeforeSelection}${markdownText}${textAfterSelection}`,
+        newTextAreaValue: `${textBeforeSelection}[${selectedText}](${URL_PLACEHOLDER_TEXT})${textAfterSelection}`,
         newCursorStart: selectionStart + selectedText.length + 3,
         newCursorEnd: selectionEnd + 6,
       };
@@ -355,7 +437,31 @@ export const coreSyntaxFormatters = {
       const { selectedText, textBeforeSelection, textAfterSelection } =
         getSelectionData({ selectionStart, selectionEnd, value });
 
+      if (selectedText === '' && textBeforeSelection !== '') {
+        // Check start of line for whether we're in an empty ordered list
+        const lastNewLine = getLastIndexOfCharacter({
+          content: value,
+          selectionIndex: selectionStart - 1,
+          character: '\n',
+        });
+
+        if (
+          lastNewLine !== -1 &&
+          textBeforeSelection.slice(lastNewLine + 1, lastNewLine + 4) === '1. '
+        ) {
+          // Remove the list formatting
+          return {
+            newTextAreaValue: `${value.slice(0, lastNewLine + 1)}${value.slice(
+              lastNewLine + 4,
+            )}`,
+            newCursorStart: selectionStart - 3,
+            newCursorEnd: selectionEnd - 3,
+          };
+        }
+      }
+
       if (selectedText === '') {
+        // Otherwise insert an empty list for an empty selection
         return {
           newTextAreaValue: `${textBeforeSelection}\n\n1. \n${textAfterSelection}`,
           newCursorStart: selectionStart + 5,

@@ -690,47 +690,172 @@ describe('markdownSyntaxFormatters', () => {
       });
     });
 
-    // TODO:
     describe('link', () => {
-      it.todo(
-        'inserts placeholder link, and highlights url when no selection is given',
-      );
+      it('inserts placeholder link, and highlights url when no selection is given', () => {
+        const textAreaValue = 'one two three';
+        const expectedNewTextAreaValue = 'one two [](url)three';
 
-      it.todo(
-        'inserts link markdown, and highlights url when selected text does not begin with http:// or https://',
-      );
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 8,
+            selectionEnd: 8,
+          });
 
-      it.todo(
-        'inserts link markdown, and places cursor inside [], when selected text begins with http://',
-      );
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('url');
+      });
 
-      it.todo(
-        'inserts link markdown, and places cursor inside [], when selected text begins with https://',
-      );
+      it('inserts link markdown, and highlights url when selected text does not begin with http:// or https://', () => {
+        const textAreaValue = 'one two three';
+        const expectedNewTextAreaValue = 'one [two](url) three';
 
-      it.todo(
-        'removes link markdown when no text selected, cursor inside [], and markdown formatting present',
-      );
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 7,
+          });
 
-      it.todo(
-        'removes link markdown when placeholder url is selected, and full markdown formatting present',
-      );
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('url');
+      });
 
-      it.todo(
-        'removes link markdown when selected text is a url and full markdown formatting present',
-      );
+      it('inserts link markdown, and places cursor inside [], when selected text begins with http://', () => {
+        const textAreaValue = 'one http://something.com three';
+        const expectedNewTextAreaValue = 'one [](http://something.com) three';
 
-      it.todo(
-        'removes link markdown when full markdown syntax is selected, preserving link description',
-      );
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 24,
+          });
 
-      it.todo(
-        'removes link markdown when full markdown syntax is selected, preserving URL if link description does not exist',
-      );
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(5);
+        expect(newCursorEnd).toEqual(5);
+      });
 
-      it.todo(
-        'removes link markdown when full markdown syntax is selected, preserving no content if no link description exists, and URL is placeholder',
-      );
+      it('inserts link markdown, and places cursor inside [], when selected text begins with https://', () => {
+        const textAreaValue = 'one https://something.com three';
+        const expectedNewTextAreaValue = 'one [](https://something.com) three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 25,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(5);
+        expect(newCursorEnd).toEqual(5);
+      });
+
+      it('removes link markdown when no text selected, cursor inside [], and markdown formatting present', () => {
+        const textAreaValue = 'one [](url) three';
+        const expectedNewTextAreaValue = 'one  three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 5,
+            selectionEnd: 5,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(4);
+        expect(newCursorEnd).toEqual(4);
+      });
+
+      it('removes link markdown when placeholder url is selected, and full markdown formatting present', () => {
+        const textAreaValue = 'one [](url) three';
+        const expectedNewTextAreaValue = 'one  three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 7,
+            selectionEnd: 10,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(4);
+        expect(newCursorEnd).toEqual(4);
+      });
+
+      it('removes link markdown when selected text is a url and full markdown formatting present', () => {
+        const textAreaValue = 'one [](http://example.com) three';
+        const expectedNewTextAreaValue = 'one http://example.com three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 7,
+            selectionEnd: 25,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('http://example.com');
+      });
+
+      it('removes link markdown when full markdown syntax is selected, preserving link description', () => {
+        const textAreaValue =
+          'one [text description](http://example.com) three';
+        const expectedNewTextAreaValue = 'one text description three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 42,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('text description');
+      });
+
+      it('removes link markdown when full markdown syntax is selected, preserving URL if link description does not exist', () => {
+        const textAreaValue = 'one [](http://example.com) three';
+        const expectedNewTextAreaValue = 'one http://example.com three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 26,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('http://example.com');
+      });
+
+      it('removes link markdown when full markdown syntax is selected, preserving no content if no link description exists, and URL is placeholder', () => {
+        const textAreaValue = 'one [](url) three';
+        const expectedNewTextAreaValue = 'one  three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 11,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(4);
+        expect(newCursorEnd).toEqual(4);
+      });
     });
   });
 
@@ -804,10 +929,21 @@ describe('markdownSyntaxFormatters', () => {
         ).toEqual('two');
       });
 
-      // TODO:
-      it.todo(
-        'unformats a single line of text if no selection is given, and current line only contains 1. ',
-      );
+      it('unformats a single line of text if no selection is given, and current line start contains 1. ', () => {
+        const textAreaValue = 'one\n\n1. two\nthree';
+        const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['orderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 9,
+            selectionEnd: 9,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(6);
+        expect(newCursorEnd).toEqual(6);
+      });
 
       it('unformats multiple lines of text if every line starts with ordered list format', () => {
         const textAreaValue = '1. one\n2. two\n3. three';
@@ -913,10 +1049,21 @@ describe('markdownSyntaxFormatters', () => {
         ).toEqual('two');
       });
 
-      // TODO:
-      it.todo(
-        'unformats a single line of text if no selection is given, and current line only contains - ',
-      );
+      it('unformats a single line of text if no selection is given, and current line only contains - ', () => {
+        const textAreaValue = 'one\n\n- two\nthree';
+        const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['unorderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 9,
+            selectionEnd: 9,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(7);
+        expect(newCursorEnd).toEqual(7);
+      });
 
       it('unformats multiple lines of text if every line starts with unordered list format', () => {
         const textAreaValue = '- one\n- two\n- three';
@@ -1152,10 +1299,21 @@ describe('markdownSyntaxFormatters', () => {
         ).toEqual('two');
       });
 
-      // TODO:
-      it.todo(
-        'unformats a single line of text if no selection is given, and current line only contains > ',
-      );
+      it('unformats a single line of text if no selection is given, and current line only contains > ', () => {
+        const textAreaValue = 'one\n\n> two\nthree';
+        const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['quote'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 9,
+            selectionEnd: 9,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(7);
+        expect(newCursorEnd).toEqual(7);
+      });
 
       it('unformats multiple lines of text if every line starts with quote format', () => {
         const textAreaValue = '> one\n> two\n> three';
