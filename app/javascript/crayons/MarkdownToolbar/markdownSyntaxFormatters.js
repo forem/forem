@@ -115,8 +115,8 @@ const handleLinkFormattingForUrlSelection = ({
       0,
       indexOfSyntaxOpen,
     )}${textToReplaceMarkdown}${textAfterSelection.slice(1)}`,
-    newCursorStart: selectionStart - 3,
-    newCursorEnd: selectionStart + textToReplaceMarkdown.length - 3,
+    newCursorStart: indexOfSyntaxOpen,
+    newCursorEnd: indexOfSyntaxOpen + textToReplaceMarkdown.length,
   };
 };
 

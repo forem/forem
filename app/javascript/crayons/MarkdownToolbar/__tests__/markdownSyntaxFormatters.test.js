@@ -773,7 +773,7 @@ describe('markdownSyntaxFormatters', () => {
         expect(newCursorEnd).toEqual(4);
       });
 
-      it('removes link markdown when placeholder url is selected, and full markdown formatting present', () => {
+      it('removes link markdown when placeholder url is selected, and full markdown formatting present, no link description', () => {
         const textAreaValue = 'one [](url) three';
         const expectedNewTextAreaValue = 'one  three';
 
@@ -789,7 +789,24 @@ describe('markdownSyntaxFormatters', () => {
         expect(newCursorEnd).toEqual(4);
       });
 
-      it('removes link markdown when selected text is a url and full markdown formatting present', () => {
+      it('removes link markdown when placeholder url is selected, and full markdown formatting present, link description present', () => {
+        const textAreaValue = 'one [something](url) three';
+        const expectedNewTextAreaValue = 'one something three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 16,
+            selectionEnd: 19,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('something');
+      });
+
+      it('removes link markdown when selected text is a url and full markdown formatting present, no link description', () => {
         const textAreaValue = 'one [](http://example.com) three';
         const expectedNewTextAreaValue = 'one http://example.com three';
 
@@ -804,6 +821,23 @@ describe('markdownSyntaxFormatters', () => {
         expect(
           newTextAreaValue.substring(newCursorStart, newCursorEnd),
         ).toEqual('http://example.com');
+      });
+
+      it('removes link markdown when url is selected, and full markdown formatting present, link description present', () => {
+        const textAreaValue = 'one [something](http://example.com) three';
+        const expectedNewTextAreaValue = 'one something three';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['link'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 16,
+            selectionEnd: 34,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('something');
       });
 
       it('removes link markdown when full markdown syntax is selected, preserving link description', () => {
