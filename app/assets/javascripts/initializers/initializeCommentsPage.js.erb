@@ -601,6 +601,9 @@ function handleHiddenComments(commentableType){
   if(commentableType === "Article"){
     const articleContainer = document.querySelector('#article-show-container');
     commentableAuthorIds.push(articleContainer.dataset.authorId);
+    articleContainer.dataset.coAuthorIds.split(',').forEach(coAuthorId => {
+      commentableAuthorIds.push(coAuthorId);
+    });
   } else if(commentableType === "PodcastEpisode"){
     const podCastEpisodeContainer = document.querySelector('.podcast-episode-container');
     commentableAuthorIds.push(podCastEpisodeContainer.dataset.creatorId);
