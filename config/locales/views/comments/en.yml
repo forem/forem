@@ -72,7 +72,9 @@ en:
         conduct: View Code of Conduct
         hidden:
           icon: Info
-          text: Comment hidden by post author - thread only visible in this permalink
+          text:
+            visible_in_permalink: Comment hidden by post author - thread only visible in this permalink
+            accessible_via_permalink: Comment hidden by post author - thread only accessible via permalink
       write:
         errors:
           one: '1 error prohibited this comment from being saved:'
