@@ -6,7 +6,7 @@ require Rails.root.join(
 describe DataUpdateScripts::MigrateThemes do
   let(:user) { create(:user) }
 
-  it "updates default theme users to light and leaves OS sync enabled" do
+  it "leaves default theme users on light and leaves OS sync enabled" do
     user.setting.update_columns(config_theme: 0)
 
     expect { described_class.new.run }
