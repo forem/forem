@@ -1,16 +1,19 @@
 ---
 fr:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
+    if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
+    if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
   core:
     add_comment: Ajouter un commentaire
-    all: Tout
     analytics: Analytique
     comment: Commentaire
+    comments: Commentaires
     community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
     create_account: Créer un profil
     create_post: Créer une publication
     dashboard: Tableau de bord
-    discussion: Discussion
     edit_profile: Editer le profil
     feed: Fil
     follow: Suivre
@@ -18,8 +21,6 @@ fr:
     follower: Suiveur
     followers: Suiveurs
     following: Abonné
-    following_tags: Sujets suivis
-    full: Complet
     home: Page D'Accueil
     infinity: Infini
     joined: Rejoint
@@ -30,11 +31,11 @@ fr:
     loading: Chargement en cours...
     location: Lieu
     log_in: Se connecter
+    moderator_center: Centre de modération
     month: Mois
     more_from: Plus de la part de
     my_tags: Mes sujets
     pinned: Épinglé
-    on_video: "%{name} en Vidéo"
     popular_tags: Sujets populaires
     post: Publication
     posts: Publications
@@ -46,24 +47,17 @@ fr:
       heart: Coeur
       save: Sauver
       unicorn: Licorne
-    read_next: Lire ensuite
+    reading_list: Liste de lecture
     reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
     see_all: Tout voir
     series: Séries
-    share_to: Partager sur %{media}
-    tags: Sujets
-    tags_to_follow: Sujets dans %{community_name}
-    top_tags: Sujets les plus utilisées
+    settings: Paramètres
+    sign_out: Se déconnecter
     trending_on: Populaire sur
-    view: Vue
     week: Semaine
     year: Année
-  contact_prompts:
-    if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
-    if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
-    if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
   dashboard:
     empty_follower: Vous n'avez pas encore d'abonnés...
     empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
@@ -75,7 +69,7 @@ fr:
     write_new_post: Écrivez votre premier message maintenant
   date:
     abbr_month_names:
-    -
+    - 
     - janv
     - févr
     - mars
@@ -88,6 +82,121 @@ fr:
     - oct
     - nov
     - déc
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: il y a environ une heure
+        other: il y a environ %{count} heures
+      about_x_months:
+        one: il y a environ un mois
+        other: il y a environ %{count} mois
+      about_x_years:
+        one: il y a environ 1 an
+        other: il y a environ %{count} ans
+      almost_x_years:
+        one: il y a presque un an
+        other: il y a presque %{count} ans
+      half_a_minute: il y a une demi-minute
+      less_than_x_seconds:
+        one: il y a moins d’1 seconde
+        other: il y a moins de %{count} secondes
+      less_than_x_minutes:
+        one: il y a moins d’une minute
+        other: il y a moins de %{count} minutes
+      over_x_years:
+        one: il y a plus d’un an
+        other: il y a plus de %{count} ans
+      x_seconds:
+        one: il y a une seconde
+        other: il y a %{count} secondes
+      x_minutes:
+        one: il y a une minute
+        other: il y a %{count} minutes
+      x_days:
+        one: hier
+        other: il y a %{count} jours
+      x_months:
+        one: il y a un mois
+        other: il y a %{count} mois
+      x_years:
+        one: l’année dernière
+        other: il y a %{count} ans
+    expired_ago:
+      about_x_hours:
+        one: Expired about 1 hour ago
+        other: Expired about %{count} hours ago
+      about_x_months:
+        one: Expired about 1 month ago
+        other: Expired about %{count} months ago
+      about_x_years:
+        one: Expired about 1 year ago
+        other: Expired about %{count} years ago
+      almost_x_years:
+        one: Expired almost 1 year ago
+        other: Expired almost %{count} years ago
+      half_a_minute: Expired half a minute ago
+      less_than_x_seconds:
+        one: Expired less than 1 second ago
+        other: Expired less than %{count} seconds ago
+      less_than_x_minutes:
+        one: Expired less than a minute ago
+        other: Expired less than %{count} minutes ago
+      over_x_years:
+        one: Expired over 1 year ago
+        other: Expired over %{count} years ago
+      x_seconds:
+        one: Expired 1 second ago
+        other: Expired %{count} seconds ago
+      x_minutes:
+        one: Expired 1 minute ago
+        other: Expired %{count} minutes ago
+      x_days:
+        one: Expired 1 day ago
+        other: Expired %{count} days ago
+      x_months:
+        one: Expired 1 month ago
+        other: Expired %{count} months ago
+      x_years:
+        one: Expired 1 year ago
+        other: Expired %{count} years ago
+    expires_in:
+      about_x_hours:
+        one: Expires in about 1 hour
+        other: Expires in about %{count} hours
+      about_x_months:
+        one: Expires in about 1 month
+        other: Expires in about %{count} months
+      about_x_years:
+        one: Expires in about 1 year
+        other: Expires in about %{count} years
+      almost_x_years:
+        one: Expires in almost 1 year
+        other: Expires in almost %{count} years
+      half_a_minute: Expires in half a minute
+      less_than_x_seconds:
+        one: Expires in less than 1 second
+        other: Expires in less than %{count} seconds
+      less_than_x_minutes:
+        one: Expires in less than a minute
+        other: Expires in less than %{count} minutes
+      over_x_years:
+        one: Expires in over 1 year
+        other: Expires in over %{count} years
+      x_seconds:
+        one: Expires in 1 second
+        other: Expires in %{count} seconds
+      x_minutes:
+        one: Expires in 1 minute
+        other: Expires in %{count} minutes
+      x_days:
+        one: Expires in 1 day
+        other: Expires in %{count} days
+      x_months:
+        one: Expires in 1 month
+        other: Expires in %{count} months
+      x_years:
+        one: Expires in 1 year
+        other: Expires in %{count} years
   errors:
     messages:
       accepted: doit être accepté
@@ -130,25 +239,18 @@ fr:
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
-  videos:
-    new:
-      title: 🎥 Télécharger un fichier vidéo 🙌
-      beta_info_html: <strong>Vidéo est en bêta:</strong>
-  podcasts:
-    statuses:
-      ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
-      unparsable: Le rss du podcast n'a pas pu être analysé
-      unplayable: Ce podcast peut ne pas être lisible dans le navigateur
-      unreachable: Le feed_url du podcast n'est pas accessible
   settings_menu:
-    profile: Profil
-    customization: Personnalisation
-    notifications: Notifications
     account: Compte
     billing: Facturation
-    organization: Organisation
+    customization: Personnalisation
     extensions: Extensions
+    notifications: Notifications
+    organization: Organisation
+    profile: Profil
   time:
     formats:
+      comment: "%B %d, %Y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"
+      stackexchange: "%b %e '%y"
+      tweet: "%H:%M %p - %d %b %Y"

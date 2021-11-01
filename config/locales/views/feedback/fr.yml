@@ -1,0 +1,20 @@
+---
+fr:
+  views:
+    feedback:
+      meta:
+        title: Feedback
+      heading: Thank you for your report.
+      home: Return to home page
+      form:
+        rude_or_vulgar: Rude or vulgar
+        harassment: Harassment or hate speech
+        spam: Spam or copyright issue
+        listings: Inappropriate listings message/category
+        other: Other
+        url: Reported URL
+        message:
+          subtitle: Message
+          description: Please provide any additional information or context that will help us understand and handle the situation.
+          placeholder: "..."
+        submit: Send Feedback

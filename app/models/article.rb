@@ -110,8 +110,11 @@ class Article < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
+  after_update_commit :update_notification_subscriptions, if: proc { |article|
+    article.saved_change_to_user_id?
+  }
 
-  after_commit :async_score_calc, :touch_collection, :detect_animated_images, on: %i[create update]
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -574,6 +577,10 @@ class Article < ApplicationRecord
     Notification.update_notifications(self, "Published")
   end
 
+  def update_notification_subscriptions
+    NotificationSubscription.update_notification_subscriptions(self)
+  end
+
   def before_destroy_actions
     bust_cache
     touch_actor_latest_article_updated_at(destroying: true)
@@ -834,10 +841,10 @@ class Article < ApplicationRecord
     Slack::Messengers::ArticlePublished.call(article: self)
   end
 
-  def detect_animated_images
+  def enrich_image_attributes
     return unless FeatureFlag.enabled?(:detect_animated_images)
     return unless saved_change_to_attribute?(:processed_html)
 
-    ::Articles::DetectAnimatedImagesWorker.perform_async(id)
+    ::Articles::EnrichImageAttributesWorker.perform_async(id)
   end
 end
