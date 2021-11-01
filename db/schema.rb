@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_21_063645) do
+ActiveRecord::Schema.define(version: 2021_10_19_151431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1407,7 +1407,6 @@ ActiveRecord::Schema.define(version: 2021_10_21_063645) do
     t.string "inbox_guidelines"
     t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true
-    t.boolean "prefer_os_color_scheme", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
