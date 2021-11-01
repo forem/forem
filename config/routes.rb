@@ -146,7 +146,6 @@ Rails.application.routes.draw do
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
-    resources :followed_articles, only: [:index]
     resources :follows, only: %i[show create] do
       collection do
         get "/bulk_show", to: "follows#bulk_show"
@@ -158,6 +157,7 @@ Rails.application.routes.draw do
     resources :tags, only: [:index] do
       collection do
         get "/onboarding", to: "tags#onboarding"
+        get "/suggest", to: "tags#suggest", defaults: { format: :json }
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]
@@ -166,7 +166,6 @@ Rails.application.routes.draw do
         post "/update_or_create", to: "github_repos#update_or_create"
       end
     end
-    resources :events, only: %i[index show]
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
@@ -226,8 +225,8 @@ Rails.application.routes.draw do
                                            constraints: { view: /moderate/ }
     get "/listings/:category/:slug/delete_confirm", to: "listings#delete_confirm"
     delete "/listings/:category/:slug", to: "listings#destroy"
-    get "/notifications/:filter", to: "notifications#index"
-    get "/notifications/:filter/:org_id", to: "notifications#index"
+    get "/notifications/:filter", to: "notifications#index", as: :notifications_filter
+    get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     patch "/onboarding_update", to: "users#onboarding_update"
@@ -237,34 +236,40 @@ Rails.application.routes.draw do
     get "email_subscriptions/unsubscribe"
     post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
     post "/chat_channels/:id/open", to: "chat_channels#open"
-    get "/connect", to: "chat_channels#index"
-    get "/connect/:slug", to: "chat_channels#index"
-    get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
-    post "/chat_channels/create_chat", to: "chat_channels#create_chat"
-    post "/chat_channels/block_chat", to: "chat_channels#block_chat"
-    post "/chat_channel_memberships/remove_membership", to: "chat_channel_memberships#remove_membership"
-    post "/chat_channel_memberships/add_membership", to: "chat_channel_memberships#add_membership"
-    post "/join_chat_channel", to: "chat_channel_memberships#join_channel"
-    delete "/messages/:id", to: "messages#destroy"
-    patch "/messages/:id", to: "messages#update"
+
+    constraints(->(_request) { FeatureFlag.enabled?(:connect) }) do
+      get "/connect", to: "chat_channels#index"
+      get "/connect/:slug", to: "chat_channels#index"
+      get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
+      post "/chat_channels/create_chat", to: "chat_channels#create_chat"
+      post "/chat_channels/block_chat", to: "chat_channels#block_chat"
+      post "/chat_channel_memberships/remove_membership", to: "chat_channel_memberships#remove_membership"
+      post "/chat_channel_memberships/add_membership", to: "chat_channel_memberships#add_membership"
+      post "/join_chat_channel", to: "chat_channel_memberships#join_channel"
+      delete "/messages/:id", to: "messages#destroy"
+      patch "/messages/:id", to: "messages#update"
+
+      # Chat channel
+      patch "/chat_channels/update_channel/:id", to: "chat_channels#update_channel"
+      post "/create_channel", to: "chat_channels#create_channel"
+
+      # Chat Channel Membership json response
+      get "/chat_channel_memberships/chat_channel_info/:id", to: "chat_channel_memberships#chat_channel_info"
+      post "/chat_channel_memberships/create_membership_request",
+           to: "chat_channel_memberships#create_membership_request"
+      patch "/chat_channel_memberships/leave_membership/:id", to: "chat_channel_memberships#leave_membership"
+      patch "/chat_channel_memberships/update_membership/:id", to: "chat_channel_memberships#update_membership"
+      get "/channel_request_info/", to: "chat_channel_memberships#request_details"
+      patch "/chat_channel_memberships/update_membership_role/:id",
+            to: "chat_channel_memberships#update_membership_role"
+      get "/join_channel_invitation/:channel_slug", to: "chat_channel_memberships#join_channel_invitation"
+      post "/joining_invitation_response", to: "chat_channel_memberships#joining_invitation_response"
+    end
+
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
 
     post "/pusher/auth", to: "pusher#auth"
-
-    # Chat channel
-    patch "/chat_channels/update_channel/:id", to: "chat_channels#update_channel"
-    post "/create_channel", to: "chat_channels#create_channel"
-
-    # Chat Channel Membership json response
-    get "/chat_channel_memberships/chat_channel_info/:id", to: "chat_channel_memberships#chat_channel_info"
-    post "/chat_channel_memberships/create_membership_request", to: "chat_channel_memberships#create_membership_request"
-    patch "/chat_channel_memberships/leave_membership/:id", to: "chat_channel_memberships#leave_membership"
-    patch "/chat_channel_memberships/update_membership/:id", to: "chat_channel_memberships#update_membership"
-    get "/channel_request_info/", to: "chat_channel_memberships#request_details"
-    patch "/chat_channel_memberships/update_membership_role/:id", to: "chat_channel_memberships#update_membership_role"
-    get "/join_channel_invitation/:channel_slug", to: "chat_channel_memberships#join_channel_invitation"
-    post "/joining_invitation_response", to: "chat_channel_memberships#joining_invitation_response"
 
     get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
     get "/social_previews/user/:id", to: "social_previews#user", as: :user_social_preview
@@ -274,7 +279,6 @@ Rails.application.routes.draw do
     get "/social_previews/comment/:id", to: "social_previews#comment", as: :comment_social_preview
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
-    get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     # Settings
     post "users/join_org", to: "users#join_org"
@@ -296,7 +300,7 @@ Rails.application.routes.draw do
 
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
-    get "/api", to: redirect("https://docs.forem.com/api")
+    get "/api", to: redirect("https://developers.forem.com/api")
     get "/privacy", to: "pages#privacy"
     get "/terms", to: "pages#terms"
     get "/contact", to: "pages#contact"
@@ -308,10 +312,8 @@ Rails.application.routes.draw do
     get "/badge", to: "pages#badge", as: :pages_badge
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-    get "/events", to: "events#index"
-    get "/workshops", to: redirect("events")
     get "/sponsors", to: "pages#sponsors"
-    get "/search", to: "stories#search"
+    get "/search", to: "stories/articles_search#index"
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
 

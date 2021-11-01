@@ -1,6 +1,6 @@
 class WikipediaTag < LiquidTagBase
   PARTIAL = "liquids/wikipedia".freeze
-  WIKI_REGEXP = %r{\Ahttps?://([a-z-]+)\.wikipedia.org/wiki/(\S+)\z}.freeze
+  WIKI_REGEXP = %r{\Ahttps?://([a-z-]+)\.wikipedia.org/wiki/(\S+)\z}
   TEXT_CLEANUP_XPATH = "//div[contains(@class, 'noprint') or contains(@class, 'hatnote')] | " \
                        "//span[@class='mw-ref'] | //figure | //sup".freeze
 

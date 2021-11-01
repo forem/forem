@@ -1,0 +1,89 @@
+---
+fr:
+  views:
+    articles:
+      meta:
+        description: An article from the community
+      actions:
+        aria_label: Article actions
+      comments:
+        aria_label: Comments for post %{title} (%{num})
+        subtitle_html: Discussion %{num}
+        num: "(%{num})"
+        subscribe: Subscribe
+      conduct:
+        aria_label: Conduct controls
+        code: Code of Conduct
+        report: Report abuse
+      delete:
+        heading: Are you sure you want to delete this article?
+        desc:
+          text_html: You cannot undo this action, perhaps you just want to %{action} instead?
+          edit: edit
+          unpublish: unpublish
+        action:
+          button: Delete
+          cancel: Dismiss
+          edit: Edit
+          unpublish: Unpublish
+      lock:
+        meta:
+          title: Confirm Discussion Lock
+        heading: Are you sure you want to lock the discussion on this post?
+        desc_html: Users will not be able to add new comments. This will <em class="fw-bold">not</em> remove existing comments. You can unlock the discussion at any time to allow users to leave comments again.
+        cancel: Cancel
+        notes:
+          label: Notes (optional) - this is only visible to you and admins
+          placeholder: More details as to why you locked the discussion.
+        reason:
+          label: Reason for locking the discussion (optional) - this will be publicly displayed
+          placeholder: The reason why you're locking this discussion.
+        submit: Lock discussion
+      preview_discuss_html:
+        zero: New Discussion!
+        one: '#discuss <img src="%{image}" />%{count}'
+        other: '#discuss <img src="%{image}" />%{count}'
+      save:
+        title: Save to reading list
+        aria_label: Save to reading list
+        initial: Save
+        success: Saved
+      series:
+        subtitle: "%{slug} (%{size})"
+        size:
+          one: "%{count} Part Series"
+          other: "%{count} Part Series"
+        published: Published %{date}
+        inbetween:
+          num: "..."
+          text:
+            one: one more part...
+            other: "%{count} more parts..."
+          title: View more
+      unlock:
+        meta:
+          title: Confirm Discussion Unlock
+        heading: Are you sure you want to unlock the discussion on this post?
+        desc: Users will be able to add new comments. You can lock the discussion at any time to prevent users from leaving comments again.
+        cancel: Cancel
+        notes: 'Notes from when this discussion was locked (only visible to you and admins):'
+        reason: 'Reason this discussion was locked (publicly visible):'
+        submit: Unlock discussion
+      unpublished:
+        subtitle: Unpublished Post.
+        text: " This URL is public but secret, so share at your own discretion."
+        edit: Click to edit
+      co_authors_html: with %{names}
+      crossposted:
+        text_html: Originally published at %{url} %{on}
+        on_html: on %{date}
+      edited: Updated on %{date}
+      edited_html: Updated on %{date}
+      for_org_html: "%{start} for %{end}%{org}"
+      missing: Article No Longer Available
+      posted_html: Posted on %{date}
+      read_next: Lire ensuite
+      reading_time:
+        one: "1 min read"
+        other: "%{count} min read"
+      right_nav: Author details

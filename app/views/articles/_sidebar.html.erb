@@ -10,11 +10,11 @@
         <div class="<%= "hidden" if user_signed_in? %> px-1" id="sponsorship-widget">
           <h4 class="flex align-center fs-s ff-monospace fw-bold tt-uppercase mb-4">
             <%= Settings::General.sponsor_headline %>
-            <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: "Love") %>
+            <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: t("views.sponsor.seek")) %>
           </h4>
           <div class="grid grid-cols-1 gap-6">
             <%= render partial: "articles/single_sponsor", collection: @sponsorships, as: :sponsorship %>
-            <a href="/sponsorships" class="crayons-btn crayons-btn--secondary fs-s">Become a sponsor</a>
+            <a href="/sponsorships" class="crayons-btn crayons-btn--secondary fs-s"><%= t("views.sponsor.seek") %></a>
           </div>
         </div>
       <% end %>
@@ -22,8 +22,16 @@
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
       <% if @left_sidebar_ad %>
-        <div class="crayons-sponsorship-widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
+        <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
           <%= @left_sidebar_ad.processed_html.html_safe %>
+        </div>
+      <% end %>
+    <% end %>
+    <% cache("display-area-left-2-#{rand(5)}", expires_in: 5.minutes) do %>
+      <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2") %>
+      <% if @second_left_sidebar_ad %>
+        <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
+          <%= @second_left_sidebar_ad.processed_html.html_safe %>
         </div>
       <% end %>
     <% end %>

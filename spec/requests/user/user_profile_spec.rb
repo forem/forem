@@ -25,7 +25,7 @@ RSpec.describe "UserProfiles", type: :request do
     end
 
     it "does not render pins if they don't exist" do
-      get "/#{user.username}"
+      get "/#{user.username}?i=i" # Pinned will still be present in layout file, but not the "internal" version
       expect(response.body).not_to include "Pinned"
     end
 
@@ -98,19 +98,12 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body.split("Whoaaaa").first).to include "crayons-layout__sidebar-left"
     end
 
-    it "does not render settings_only on page" do
-      create(:profile_field, label: "whoaaaa", display_area: "settings_only")
-      get "/#{user.username}"
-      expect(response.body).not_to include "Whoaaaa"
-    end
-
     it "does not render special display header elements naively" do
-      user.location = "hawaii"
-      user.save
+      user.profile.update(location: "hawaii")
       get "/#{user.username}"
       # Does not include the word, but does include the SVG
       expect(response.body).not_to include "<p>Location</p>"
-      expect(response.body).to include user.location
+      expect(response.body).to include user.profile.location
       expect(response.body).to include "M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1112.728 0zM12 13a2 2 0 100-4 2 2 0"
     end
 

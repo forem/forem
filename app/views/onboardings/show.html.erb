@@ -1,4 +1,4 @@
-<% title "Welcome to #{community_name}" %>
+<% title t("views.onboardings.meta.title", community: community_name) %>
 
 <style>
   <% cache(release_adjusted_cache_key("onboarding-css"), expires_in: 10.hours) do %>

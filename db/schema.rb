@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_20_042422) do
+ActiveRecord::Schema.define(version: 2021_10_19_151431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -86,7 +86,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.boolean "archived", default: false
     t.text "body_html"
     t.text "body_markdown"
-    t.jsonb "boost_states", default: {}, null: false
     t.text "cached_organization"
     t.string "cached_tag_list"
     t.text "cached_user"
@@ -154,7 +153,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.string "video_state"
     t.string "video_thumbnail_url"
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
-    t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
     t.index ["collection_id"], name: "index_articles_on_collection_id"
@@ -441,7 +439,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.string "app_bundle"
     t.bigint "consumer_app_id"
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
@@ -497,25 +494,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.bigint "user_id"
     t.datetime "verified_at"
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
-  end
-
-  create_table "events", force: :cascade do |t|
-    t.string "category"
-    t.string "cover_image"
-    t.datetime "created_at", null: false
-    t.text "description_html"
-    t.text "description_markdown"
-    t.datetime "ends_at"
-    t.string "host_name"
-    t.boolean "live_now", default: false
-    t.string "location_name"
-    t.string "location_url"
-    t.string "profile_image"
-    t.boolean "published"
-    t.string "slug"
-    t.datetime "starts_at"
-    t.string "title"
-    t.datetime "updated_at", null: false
   end
 
   create_table "feedback_messages", force: :cascade do |t|
@@ -786,7 +764,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.string "type_of_user", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.string "user_title"
     t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
@@ -878,7 +855,6 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.text "body"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
-    t.integer "duration_in_seconds"
     t.string "guid", null: false
     t.boolean "https", default: true
     t.string "image"
@@ -919,6 +895,7 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.datetime "created_at", null: false
     t.bigint "creator_id"
     t.text "description"
+    t.boolean "featured", default: false
     t.string "feed_url", null: false
     t.string "image", null: false
     t.string "itunes_url"
@@ -1194,7 +1171,7 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.bigint "badge_id"
     t.string "bg_color_hex"
     t.string "category", default: "uncategorized", null: false
-    t.datetime "created_at"
+    t.datetime "created_at", null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.bigint "mod_chat_channel_id"
@@ -1211,7 +1188,7 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
-    t.datetime "updated_at"
+    t.datetime "updated_at", null: false
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
@@ -1276,10 +1253,7 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
   create_table "users", force: :cascade do |t|
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
-    t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
-    t.string "behance_url"
-    t.string "bg_color_hex"
     t.bigint "blocked_by_count", default: 0, null: false
     t.bigint "blocking_others_count", default: 0, null: false
     t.boolean "checked_code_of_conduct", default: false
@@ -1292,29 +1266,19 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.inet "current_sign_in_ip"
-    t.string "currently_hacking_on"
-    t.string "currently_learning"
-    t.string "dribbble_url"
-    t.string "education"
     t.string "email"
-    t.boolean "email_public", default: false
-    t.string "employer_name"
-    t.string "employer_url"
-    t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
-    t.string "facebook_url"
     t.string "facebook_username"
     t.integer "failed_attempts", default: 0
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
+    t.string "forem_username"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
-    t.string "gitlab_url"
-    t.string "instagram_url"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_created_at"
     t.integer "invitation_limit"
@@ -1333,13 +1297,8 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.datetime "latest_article_updated_at"
-    t.string "linkedin_url"
-    t.string "location"
     t.datetime "locked_at"
-    t.string "mastodon_url"
-    t.string "medium_url"
     t.integer "monthly_dues", default: 0
-    t.string "mostly_work_with"
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
@@ -1363,21 +1322,15 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.integer "sign_in_count", default: 0, null: false
     t.string "signup_cta_variant"
     t.integer "spent_credits_count", default: 0, null: false
-    t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.integer "subscribed_to_user_subscriptions_count", default: 0, null: false
-    t.text "summary"
-    t.string "text_color_hex"
-    t.string "twitch_url"
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.string "unlock_token"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "username"
-    t.string "website_url"
     t.datetime "workshop_expiration"
-    t.string "youtube_url"
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
@@ -1439,6 +1392,7 @@ ActiveRecord::Schema.define(version: 2021_07_20_042422) do
     t.string "brand_color1", default: "#000000"
     t.string "brand_color2", default: "#ffffff"
     t.integer "config_font", default: 0, null: false
+    t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
     t.integer "config_theme", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false

@@ -56,6 +56,10 @@ module.exports = {
     'jsx-a11y/no-onchange': 'off',
     'prefer-const': ['error'],
     'prefer-destructuring': ['warn', { object: true, array: false }],
+    'react/jsx-curly-brace-presence': [
+      'error',
+      { props: 'never', children: 'never' },
+    ],
   },
   overrides: [
     {

@@ -207,6 +207,11 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?("<img src=\"#{image_url}\"")).to be(true)
       end
 
+      it "shortens urls for article link previews" do
+        comment.body_markdown = "{% link #{URL.url(article.path)} %}"
+        expect { comment.validate! }.not_to raise_error
+      end
+
       it "adds timestamp url if commentable has video and timestamp", :aggregate_failures do
         article.video = "https://example.com"
 

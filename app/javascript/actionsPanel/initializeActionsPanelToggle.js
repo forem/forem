@@ -28,9 +28,11 @@ export function initializeActionsPanel(user, path) {
     const modContainer = document.getElementById('mod-container');
     const panelDocument = modContainer.contentDocument;
 
-    panelDocument
-      .getElementsByClassName('close-actions-panel')[0]
-      .classList.remove('hidden');
+    if (panelDocument) {
+      panelDocument
+        .getElementsByClassName('close-actions-panel')[0]
+        .classList.remove('hidden');
+    }
   }
 
   document.getElementsByClassName('mod-actions-menu')[0].innerHTML =

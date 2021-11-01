@@ -1,52 +1,233 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   'true': 'foo'
-#
-# To learn more, please read the Rails Internationalization guide
-# available at https://guides.rubyonrails.org/i18n.html.
-
+---
 en:
-  hello: "Hello world"
-  errors: &errors
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
+    if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
+    if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
+  core:
+    add_comment: Add comment
+    analytics: Analytics
+    comment: Comment
+    comments: Comments
+    community_name_is_great: "%{community_name} is great!"
+    copy_link: Copy link
+    create_account: Create account
+    create_post: Create Post
+    dashboard: Dashboard
+    edit_profile: Edit profile
+    feed: Feed
+    follow: Follow
+    follow_back: Follow back
+    follower: Follower
+    followers: Followers
+    following: Following
+    home: Home
+    infinity: Infinity
+    joined: Joined
+    joined_on: Joined on
+    latest: Latest
+    like: Like
+    listings: Listings
+    loading: loading...
+    location: Location
+    log_in: Log in
+    moderator_center: Moderator Center
+    month: Month
+    more_from: More from
+    my_tags: My Tags
+    pinned: Pinned
+    popular_tags: Popular Tags
+    post: Post
+    posts: Posts
+    reaction: Reaction
+    reaction_pluralized:
+      one: reaction
+      other: reactions
+    reactions:
+      heart: Heart
+      save: Save
+      unicorn: Unicorn
+    reading_list: Reading list
+    reply: Reply
+    report_abuse: Report abuse
+    search: Search
+    see_all: See all
+    series: Series
+    settings: Settings
+    sign_out: Sign Out
+    trending_on: Trending on
+    week: Week
+    year: Year
+  dashboard:
+    empty_follower: You don't have any followers yet...
+    empty_post: This is where you can manage your posts, but you haven't written anything yet.
+    following_users: Following users
+    loading: loading...
+    not_following_any_users: You don't follow any users...
+    page_title: Dashboard
+    upload_a_video: Upload a video
+    write_new_post: Write your first post now
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: about 1 hour ago
+        other: about %{count} hours ago
+      about_x_months:
+        one: about 1 month ago
+        other: about %{count} months ago
+      about_x_years:
+        one: about 1 year ago
+        other: about %{count} years ago
+      almost_x_years:
+        one: almost 1 year ago
+        other: almost %{count} years ago
+      half_a_minute: half a minute ago
+      less_than_x_seconds:
+        one: less than 1 second ago
+        other: less than %{count} seconds ago
+      less_than_x_minutes:
+        one: less than a minute ago
+        other: less than %{count} minutes ago
+      over_x_years:
+        one: over 1 year ago
+        other: over %{count} years ago
+      x_seconds:
+        one: 1 second ago
+        other: "%{count} seconds ago"
+      x_minutes:
+        one: 1 minute ago
+        other: "%{count} minutes ago"
+      x_days:
+        one: 1 day ago
+        other: "%{count} days ago"
+      x_months:
+        one: 1 month ago
+        other: "%{count} months ago"
+      x_years:
+        one: 1 year ago
+        other: "%{count} years ago"
+    expired_ago:
+      about_x_hours:
+        one: Expired about 1 hour ago
+        other: Expired about %{count} hours ago
+      about_x_months:
+        one: Expired about 1 month ago
+        other: Expired about %{count} months ago
+      about_x_years:
+        one: Expired about 1 year ago
+        other: Expired about %{count} years ago
+      almost_x_years:
+        one: Expired almost 1 year ago
+        other: Expired almost %{count} years ago
+      half_a_minute: Expired half a minute ago
+      less_than_x_seconds:
+        one: Expired less than 1 second ago
+        other: Expired less than %{count} seconds ago
+      less_than_x_minutes:
+        one: Expired less than a minute ago
+        other: Expired less than %{count} minutes ago
+      over_x_years:
+        one: Expired over 1 year ago
+        other: Expired over %{count} years ago
+      x_seconds:
+        one: Expired 1 second ago
+        other: Expired %{count} seconds ago
+      x_minutes:
+        one: Expired 1 minute ago
+        other: Expired %{count} minutes ago
+      x_days:
+        one: Expired 1 day ago
+        other: Expired %{count} days ago
+      x_months:
+        one: Expired 1 month ago
+        other: Expired %{count} months ago
+      x_years:
+        one: Expired 1 year ago
+        other: Expired %{count} years ago
+    expires_in:
+      about_x_hours:
+        one: Expires in about 1 hour
+        other: Expires in about %{count} hours
+      about_x_months:
+        one: Expires in about 1 month
+        other: Expires in about %{count} months
+      about_x_years:
+        one: Expires in about 1 year
+        other: Expires in about %{count} years
+      almost_x_years:
+        one: Expires in almost 1 year
+        other: Expires in almost %{count} years
+      half_a_minute: Expires in half a minute
+      less_than_x_seconds:
+        one: Expires in less than 1 second
+        other: Expires in less than %{count} seconds
+      less_than_x_minutes:
+        one: Expires in less than a minute
+        other: Expires in less than %{count} minutes
+      over_x_years:
+        one: Expires in over 1 year
+        other: Expires in over %{count} years
+      x_seconds:
+        one: Expires in 1 second
+        other: Expires in %{count} seconds
+      x_minutes:
+        one: Expires in 1 minute
+        other: Expires in %{count} minutes
+      x_days:
+        one: Expires in 1 day
+        other: Expires in %{count} days
+      x_months:
+        one: Expires in 1 month
+        other: Expires in %{count} months
+      x_years:
+        one: Expires in 1 year
+        other: Expires in %{count} years
+  errors:
     messages:
-       bad_uri: is an invalid url
-       bad_protocol: must start with %{protocols}
-  activemodel:
-    errors:
-      <<: *errors
-  activerecord:
-    errors:
-      <<: *errors
-  administrate:
-    actions:
-      new: 'New'
-  podcasts:
-    statuses:
-      unreachable: Podcast's feed_url is not reachable
-      unparsable: Podcast's rss couldn't be parsed
-      unplayable: This podcast may not be playable in the browser
-      ssl_failed: SSL certificate verify failed while fetching podcast's feed_url
+      accepted: must be accepted
+      bad_protocol: must start with %{protocols}
+      bad_uri: is an invalid url
+      blank: can't be blank
+      confirmation: doesn't match %{attribute}
+      empty: can't be empty
+      equal_to: must be equal to %{count}
+      even: must be even
+      exclusion: is reserved
+      greater_than: must be greater than %{count}
+      greater_than_or_equal_to: must be greater than or equal to %{count}
+      inclusion: is not included in the list
+      invalid: is invalid
+      less_than: must be less than %{count}
+      less_than_or_equal_to: must be less than or equal to %{count}
+      model_invalid: 'Validation failed: %{errors}'
+      not_a_number: is not a number
+      not_an_integer: must be an integer
+      odd: must be odd
+      other_than: must be other than %{count}
+      present: must be blank
+      required: must exist
+      taken: has already been taken
+      too_long:
+        one: is too long (maximum is 1 character)
+        other: is too long (maximum is %{count} characters)
+      too_short:
+        one: is too short (minimum is 1 character)
+        other: is too short (minimum is %{count} characters)
+      wrong_length:
+        one: is the wrong length (should be 1 character)
+        other: is the wrong length (should be %{count} characters)
+  settings_menu:
+    account: Account
+    billing: Billing
+    customization: Customization
+    extensions: Extensions
+    notifications: Notifications
+    organization: Organization
+    profile: Profile
+  time:
+    formats:
+      comment: "%B %d, %Y"
+      short: "%b %-e"
+      short_with_year: "%b %-e, %Y"
+      stackexchange: "%b %e '%y"
+      tweet: "%H:%M %p - %d %b %Y"

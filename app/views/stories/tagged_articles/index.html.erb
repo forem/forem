@@ -5,7 +5,7 @@
 <% flag = true %>
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
   <div class="crayons-layout">
-    <header class="tag-header crayons-card branded-4" style="border-top-color: <%= Color::CompareHex.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>">
+    <header class="crayons-card branded-4 p-4 l:p-6 spec__tag-header" style="border-top-color: <%= Color::CompareHex.new([@tag_model.bg_color_hex || "#000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>">
       <div class="flex">
         <% if @tag_model.badge_id && @tag_model.badge %>
             <img src="<%= optimized_image_url(@tag_model.badge.badge_image_url, width: 64) %>" alt="" class="mr-4" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg); width: 64px; height: 64px;" />
@@ -21,7 +21,12 @@
               <% end %>
             </h1>
             <% if @tag_model %>
-              <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>Follow</button>
+              <button
+                id="user-follow-butt"
+                class="crayons-btn follow-action-button"
+                data-info='{"id":<%= @tag_model.id %>,"className":"Tag", "name": "<%= @tag_model.pretty_name || @tag %>"}'>
+                <%= t("core.follow") %>
+              </button>
             <% end %>
           </div>
           <% if @tag_model && @tag_model.short_summary.present? %>
@@ -43,7 +48,7 @@
       data-requires-approval="<%= @tag_model.requires_approval %>"
       data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
     <%= render "stories/tagged_articles/sidebar" %>
-    <main class="articles-list" id="main-content">
+    <main class="articles-list" id="main-content" data-follow-button-container="true">
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden" id="on-page-nav-butt-left" aria-label="nav-button-left">
           <div class="crayons-icon nav-icon ">
@@ -113,5 +118,5 @@
     <%= render "stories/tagged_articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", defer: true %>
+  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", defer: true %>
 <% end %>

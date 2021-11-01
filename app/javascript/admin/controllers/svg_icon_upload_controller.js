@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 // eslint-disable-next-line no-restricted-syntax
 export default class SvgIconUploadController extends Controller {
@@ -30,7 +30,7 @@ export default class SvgIconUploadController extends Controller {
     reader.readAsText(icon);
 
     reader.onload = (content) => {
-      const result = content.target.result;
+      const { result } = content.target;
       this.svgIconContentTarget.value = result;
       this.setSvgIconPreview(result);
     };

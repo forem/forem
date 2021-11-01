@@ -2,7 +2,7 @@ module Users
   class Setting < ApplicationRecord
     self.table_name_prefix = "users_"
 
-    HEX_COLOR_REGEXP = /\A#?(?:\h{6}|\h{3})\z/.freeze
+    HEX_COLOR_REGEXP = /\A#?(?:\h{6}|\h{3})\z/
 
     belongs_to :user, touch: true
     scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
@@ -12,8 +12,10 @@ module Users
          _suffix: :font
     enum inbox_type: { private: 0, open: 1 }, _suffix: :inbox
     enum config_navbar: { default: 0, static: 1 }, _suffix: :navbar
-    enum config_theme: { default: 0, minimal_light_theme: 1, night_theme: 2, pink_theme: 3,
+    enum config_theme: { light_theme: 0, minimal_light_theme: 1, dark_theme: 2, pink_theme: 3,
                          ten_x_hacker_theme: 4 }
+    enum config_homepage_feed: { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
+         _suffix: :feed
 
     validates :brand_color1,
               :brand_color2,

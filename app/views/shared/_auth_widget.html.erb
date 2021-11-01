@@ -5,12 +5,10 @@
   <p class="color-base-70 mb-4">
     <% if Settings::Community.tagline.present? %>
       <%= Settings::Community.tagline %>
-    <% else %>
-      Log in to customize your experience and get involved.
     <% end %>
   </p>
   <div>
-    <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn w-100 mb-2" aria-label="Create new account">Create new account</a>
-    <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand w-100" aria-label="Log in">Log in</a>
+    <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn w-100 mb-2" aria-label="Create new account"><%= t("core.create_account") %></a>
+    <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand w-100" aria-label="Log in"><%= t("core.log_in") %></a>
   </div>
 </div>

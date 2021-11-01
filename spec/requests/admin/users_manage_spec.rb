@@ -110,6 +110,16 @@ RSpec.describe "Admin::Users", type: :request do
 
       expect(user.reload.twitter_username).to eq("Twitter")
     end
+
+    it "merges an identity on a single account into the other" do
+      create(:identity, user: user, provider: "twitter")
+      deleted_user_identity = create(:identity, user: user2)
+
+      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
+
+      expect(user.identities.count).to eq 2
+      expect(user.identity_ids).to include deleted_user_identity.id
+    end
   end
 
   context "when managing activity and roles" do
@@ -139,8 +149,7 @@ RSpec.describe "Admin::Users", type: :request do
       params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
       patch user_status_admin_user_path(user.id), params: params
 
-      expect(user.roles.count).to eq(1)
-      expect(user.roles.last.name).to eq("super_admin")
+      expect(user.has_role?(:super_admin)).to be(true)
     end
 
     it "does not allow non-super-admin to doll out admin" do

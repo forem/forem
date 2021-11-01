@@ -1,10 +1,9 @@
 class DropUserOptionalFields < ActiveRecord::Migration[6.0]
-  INDEX = [:user_optional_fields, [:label, :user_id], unique: true].freeze
-
   def up
     drop_table :user_optional_fields
 
-    remove_index(*INDEX) if index_exists?(*INDEX)
+    remove_index(:user_optional_fields, [:label, :user_id], unique: true) if
+      index_exists?(:user_optional_fields, [:label, :user_id], unique: true)
   end
 
   def down
@@ -16,7 +15,7 @@ class DropUserOptionalFields < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    add_index(*INDEX) unless index_exists?(*INDEX)
+    add_index(:user_optional_fields, [:label, :user_id], unique: true) unless
+      index_exists?(:user_optional_fields, [:label, :user_id], unique: true)
   end
 end
-

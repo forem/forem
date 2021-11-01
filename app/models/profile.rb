@@ -6,53 +6,23 @@ class Profile < ApplicationRecord
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates_with ProfileValidator
 
+  ATTRIBUTE_NAME_REGEX = /(?<attribute_name>\w+)=?/
+  CACHE_KEY = "profile/attributes".freeze
   # Static fields are columns on the profiles table; they have no relationship
   # to a ProfileField record. These are columns we can safely assume exist for
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url].freeze
 
-  SPECIAL_DISPLAY_ATTRIBUTES = %w[
-    summary
-    employment_title
-    employer_name
-    employer_url
-    location
-  ].freeze
-
-  # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
-  # profile migration/generalization work.
-  MAPPED_ATTRIBUTES = {
-    education: :education,
-    skills_languages: :mostly_work_with
-  }.with_indifferent_access.freeze
-
-  # Generates typed accessors for all currently defined profile fields.
+  # Update the Rails cache with the currently available attributes.
   def self.refresh_attributes!
-    return if ENV["ENV_AVAILABLE"] == "false"
-    return unless Database.table_available?("profiles")
-
-    ProfileField.find_each do |field|
-      # Don't generate accessors for static fields stored on the table.
-      # TODO: [@jacobherrington] Remove this when ProfileFields for the static
-      # fields are dropped from production and the associated data is removed.
-      # https://github.com/forem/forem/pull/13641#discussion_r637641185
-      next if STATIC_FIELDS.any?(field.attribute_name)
-
-      store_attribute :data, field.attribute_name.to_sym, field.type
-    end
+    Rails.cache.delete(CACHE_KEY)
+    attributes
   end
 
-  # Set up all profile attributes when this class loads so all store_attribute
-  # accessors get defined immediately.
-  refresh_attributes!
-
-  # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
-    (stored_attributes[:data] || []).map(&:to_s)
-  end
-
-  def self.special_attributes
-    SPECIAL_DISPLAY_ATTRIBUTES
+    Rails.cache.fetch(CACHE_KEY, expires_in: 24.hours) do
+      ProfileField.pluck(:attribute_name)
+    end
   end
 
   def self.static_fields
@@ -61,5 +31,27 @@ class Profile < ApplicationRecord
 
   def clear!
     update(data: {})
+  end
+
+  # Lazily add accessors for profile fields on first use
+  def method_missing(method_name, *args, **kwargs, &block)
+    match = method_name.match(ATTRIBUTE_NAME_REGEX)
+    field = ProfileField.find_by(attribute_name: match[:attribute_name])
+    super unless field
+
+    self.class.instance_eval do
+      store_attribute :data, field.attribute_name.to_sym, :string
+    end
+    public_send(method_name, *args, **kwargs, &block)
+  end
+
+  # Defining this is not only a good practice in general, it's also necessary
+  # for `update` to work since the `_assign_attribute` helper it uses performs
+  # an explicit `responds_to?` check.
+  def respond_to_missing?(method_name, include_private = false)
+    match = method_name.match(ATTRIBUTE_NAME_REGEX)
+    return true if match[:attribute_name].in?(self.class.attributes)
+
+    super
   end
 end

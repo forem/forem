@@ -21,19 +21,13 @@ describe('<ArticleCoverImage />', () => {
   });
 
   it('should have no a11y violations', async () => {
-    // TODO: The axe custom rules here should be removed when the below issue is fixed
-    // https://github.com/forem/forem/issues/13947
-    const customAxeRules = {
-      'nested-interactive': { enabled: false },
-    };
-
     const { container } = render(
       <ArticleCoverImage
         mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
         onMainImageUrlChange={jest.fn()}
       />,
     );
-    const results = await axe(container, { rules: customAxeRules });
+    const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
@@ -49,7 +43,7 @@ describe('<ArticleCoverImage />', () => {
     it('shows the uploaded image', () => {
       const { getByAltText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={jest.fn()}
         />,
       );
@@ -60,7 +54,7 @@ describe('<ArticleCoverImage />', () => {
     it('shows the change and remove buttons', () => {
       const { queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={jest.fn()}
         />,
       );
@@ -72,7 +66,7 @@ describe('<ArticleCoverImage />', () => {
       const onMainImageUrlChange = jest.fn();
       const { getByText, queryByLabelText, queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
@@ -102,7 +96,7 @@ describe('<ArticleCoverImage />', () => {
       const onMainImageUrlChange = jest.fn();
       const { getByLabelText, queryByLabelText, queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
@@ -138,7 +132,7 @@ describe('<ArticleCoverImage />', () => {
     const onMainImageUrlChange = jest.fn();
     const { getByLabelText, findByText } = render(
       <ArticleCoverImage
-        mainImage={'/some-fake-image.jpg'}
+        mainImage="/some-fake-image.jpg"
         onMainImageUrlChange={onMainImageUrlChange}
       />,
     );

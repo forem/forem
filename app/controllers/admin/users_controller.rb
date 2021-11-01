@@ -3,7 +3,19 @@ module Admin
     layout "admin"
     using StringToBoolean
 
-    after_action only: %i[update user_status banish full_delete merge] do
+    USER_ALLOWED_PARAMS = %i[
+      new_note note_for_current_role user_status
+      merge_user_id add_credits remove_credits
+      add_org_credits remove_org_credits
+      organization_id identity_id
+    ].freeze
+
+    EMAIL_ALLOWED_PARAMS = %i[
+      email_subject
+      email_body
+    ].freeze
+
+    after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
@@ -22,21 +34,31 @@ module Admin
 
     def show
       @user = User.find(params[:id])
-      @organizations = @user.organizations.order(:name)
-      @notes = @user.notes.order(created_at: :desc).limit(10)
-      @organization_memberships = @user.organization_memberships
-        .joins(:organization)
-        .order("organizations.name" => :asc)
-        .includes(:organization)
-      @last_email_verification_date = @user.email_authorizations
-        .where.not(verified_at: nil)
-        .order(created_at: :desc).first&.verified_at || "Never"
+
+      if FeatureFlag.enabled?(:new_admin_members, current_user)
+        render "admin/users/new/show"
+      else
+        @organizations = @user.organizations.order(:name)
+        @notes = @user.notes.order(created_at: :desc).limit(10)
+        @organization_memberships = @user.organization_memberships
+          .joins(:organization)
+          .order("organizations.name" => :asc)
+          .includes(:organization)
+        @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
+
+        render :show
+      end
     end
 
     def update
       @user = User.find(params[:id])
+
+      # TODO: [@rhymes] in the new Admin Member view this logic has been moved
+      # to Admin::Users::Tools::CreditsController and Admin::Users::Tools::NotesController#create.
+      # It can eventually be removed when we transition away from the old Admin UI
       Credits::Manage.call(@user, user_params)
       add_note if user_params[:new_note]
+
       redirect_to admin_user_path(params[:id])
     end
 
@@ -106,6 +128,12 @@ module Admin
       redirect_to admin_users_path
     end
 
+    def unpublish_all_articles
+      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+      flash[:success] = "Posts are being unpublished in the background. The job will complete soon."
+      redirect_to admin_users_path
+    end
+
     def merge
       @user = User.find(params[:id])
       begin
@@ -138,20 +166,77 @@ module Admin
       redirect_to edit_admin_user_path(@user.id)
     end
 
+    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
+    # once the HTML response isn't required anymore
     def send_email
-      if NotifyMailer.with(params).user_contact_email.deliver_now
-        redirect_back(fallback_location: users_path)
+      email_params = {
+        email_body: send_email_params[:email_body],
+        email_subject: send_email_params[:email_subject],
+        user_id: params[:id]
+      }
+
+      if NotifyMailer.with(email_params).user_contact_email.deliver_now
+        respond_to do |format|
+          message = "Email sent!"
+
+          format.html do
+            flash[:success] = message
+            redirect_back(fallback_location: admin_users_path)
+          end
+
+          format.js { render json: { result: message }, content_type: "application/json" }
+        end
       else
-        flash[:danger] = "Email failed to send!"
+        respond_to do |format|
+          message = "Email failed to send!"
+
+          format.html do
+            flash[:danger] = message
+            redirect_back(fallback_location: admin_users_path)
+          end
+
+          format.js do
+            render json: { error: message },
+                   content_type: "application/json",
+                   status: :service_unavailable
+          end
+        end
+      end
+    rescue ActionController::ParameterMissing
+      respond_to do |format|
+        format.json do
+          render json: { error: "Both subject and body are required!" },
+                 content_type: "application/json",
+                 status: :unprocessable_entity
+        end
       end
     end
 
+    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
+    # once the HTML response isn't required anymore
     def verify_email_ownership
-      if VerificationMailer.with(user_id: params[:user_id]).account_ownership_verification_email.deliver_now
-        flash[:success] = "Email Verification Mailer sent!"
-        redirect_back(fallback_location: admin_users_path)
+      if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
+        respond_to do |format|
+          message = "Verification email sent!"
+
+          format.html do
+            flash[:success] = message
+            redirect_back(fallback_location: admin_users_path)
+          end
+
+          format.js { render json: { result: message }, content_type: "application/json" }
+        end
       else
-        flash[:danger] = "Email failed to send!"
+        message = "Email failed to send!"
+
+        respond_to do |format|
+          format.html do
+            flash[:danger] = message
+            redirect_back(fallback_location: admin_users_path)
+          end
+
+          format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
+        end
       end
     end
 
@@ -184,22 +269,21 @@ module Admin
     def set_related_reactions
       user_article_ids = @user.articles.ids
       user_comment_ids = @user.comments.ids
-      @related_vomit_reactions = Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids,
-                                                category: "vomit")
-        .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
-        .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
-        .includes(:reactable)
-        .order(created_at: :desc).limit(15)
+      @related_vomit_reactions =
+        Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
+          .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
+          .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
+          .includes(:reactable)
+          .order(created_at: :desc).limit(15)
     end
 
     def user_params
-      allowed_params = %i[
-        new_note note_for_current_role user_status
-        merge_user_id add_credits remove_credits
-        add_org_credits remove_org_credits
-        organization_id identity_id
-      ]
-      params.require(:user).permit(allowed_params)
+      params.require(:user).permit(USER_ALLOWED_PARAMS)
+    end
+
+    def send_email_params
+      params.require(EMAIL_ALLOWED_PARAMS)
+      params.permit(EMAIL_ALLOWED_PARAMS)
     end
   end
 end

@@ -13,6 +13,7 @@ module DataUpdateScripts
       20200415200651_index_reading_list_reactions
       20200518173504_update_public_reactions_count_from_positive_reactions_count
       20200519142908_re_index_feed_content_and_users_to_elasticsearch
+      20200526181850_update_public_reaction_counts_again
       20200729120730_remove_orphaned_ahoy_events
       20200803142830_reindex_listing_search_column
       20200805171911_clean_up_language_settings

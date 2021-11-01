@@ -28,7 +28,7 @@ class ArticlesController < ApplicationController
                   handle_tag_feed
                 elsif request.path == latest_feed_path
                   @articles
-                    .where("score > ?", Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
+                    .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
                     .includes(:user)
                 else
                   @articles

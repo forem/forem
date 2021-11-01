@@ -5,7 +5,7 @@ class Comment < ApplicationRecord
   include PgSearch::Model
   include Reactable
 
-  BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
+  BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
@@ -18,7 +18,7 @@ class Comment < ApplicationRecord
     .+?             # host
     (?::\d+)?       # optional port
     \z
-  }x.freeze
+  }x
 
   # The date that we began limiting the number of user mentions in a comment.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
@@ -91,7 +91,11 @@ class Comment < ApplicationRecord
   alias touch_by_reaction save
 
   def self.tree_for(commentable, limit = 0)
-    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+    commentable.comments
+      .includes(user: %i[setting profile])
+      .arrange(order: "score DESC")
+      .to_a[0..limit - 1]
+      .to_h
   end
 
   def search_id
@@ -217,7 +221,7 @@ class Comment < ApplicationRecord
       urls.each do |url|
         anchor_content.sub!(/#{Regexp.escape(url)}/, strip_url(url))
       end
-      anchor.inner_html = anchor.inner_html.sub!(/#{Regexp.escape(anchor.content)}/, anchor_content)
+      anchor.inner_html = anchor.inner_html.sub(/#{Regexp.escape(anchor.content)}/, anchor_content)
     end
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end

@@ -4,8 +4,12 @@
 //= require initializePage
 //= require utilities/getImageForLink
 //= require honeybadger-js/dist/honeybadger.js
+//= require i18n
 //= require ahoy.js/dist/ahoy.js
 
+I18n.defaultLocale = 'en';
+I18n.locale = document.body.dataset.locale;
+I18n.translations = JSON.parse(document.getElementById('i18n-translations').dataset.translations);
 var instantClick
   , InstantClick = instantClick = function(document, location, $userAgent) {
   // Internal variables
@@ -123,15 +127,11 @@ var instantClick
     prog.classList.remove("showing");
 
     if (newUrl) {
-      // We skip showing the "Skip to content" button for the search page, see
-      // https://github.com/forem/forem/issues/13876
-      var path = new URL(newUrl, window.location.origin).pathname;
-      if (path != '/search') {
-        const skipLink = document.querySelector('.skip-content-link');
-        if (skipLink) {
+      const skipLink = document.querySelector('.skip-content-link');
+      const noSkipLink = newUrl.includes('/search?') && ['iOS', 'Android'].includes(Runtime.currentOS());
+        if (skipLink && !noSkipLink) {
           skipLink.focus();
         }
-      }
       document.getElementById('page-route-change').textContent = title;
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 

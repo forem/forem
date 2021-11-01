@@ -1,11 +1,11 @@
 # NOTE: we are using `GithubIssue` to store issues, pull requests and comments
 class GithubIssue < ApplicationRecord
   CATEGORIES = %w[issue issue_comment].freeze
-  API_URL_REGEXP = %r{\Ahttps://api.github.com/repos/.*\z}.freeze
-  PATH_COMMENT_REGEXP = %r{/issues/comments/}.freeze
-  PATH_ISSUE_REGEXP = %r{/issues/}.freeze
-  PATH_PULL_REQUEST_REGEXP = %r{/pulls/}.freeze
-  PATH_REPO_REGEXP = %r{.*github.com/repos/}.freeze
+  API_URL_REGEXP = %r{\Ahttps://api.github.com/repos/.*\z}
+  PATH_COMMENT_REGEXP = %r{/issues/comments/}
+  PATH_ISSUE_REGEXP = %r{/issues/}
+  PATH_PULL_REQUEST_REGEXP = %r{/pulls/}
+  PATH_REPO_REGEXP = %r{.*github.com/repos/}
 
   serialize :issue_serialized, Hash
 
@@ -39,10 +39,13 @@ class GithubIssue < ApplicationRecord
         issue.category = "issue"
       end
 
-      # despite the counter intuitive name `.markdown` returns HTML rendered
-      # from the original markdown
-      issue.processed_html = Github::OauthClient.new.markdown(issue.issue_serialized[:body])
-
+      issue.processed_html = if issue.issue_serialized[:body].present?
+                               # despite the counter intuitive name `.markdown` returns HTML rendered
+                               # from the original markdown
+                               Github::OauthClient.new.markdown(issue.issue_serialized[:body])
+                             else
+                               ""
+                             end
       issue.save!
 
       issue

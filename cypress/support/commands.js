@@ -117,6 +117,62 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   });
 });
 
+/**
+ * Logs in a creator with the given name, username, email, and password.
+ *
+ * @param credentials
+ * @param credentials.name {string} A name
+ * @param credentials.username {string} A username
+ * @param credentials.email {string} An email address
+ * @param credentials.password {string} A password
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a creator.
+ */
+Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
+  const encodedName = encodeURIComponent(name);
+  const encodedUsername = encodeURIComponent(username);
+  const encodedEmail = encodeURIComponent(email);
+  const encodedPassword = encodeURIComponent(password);
+
+  function getLoginRequest() {
+    return cy.request(
+      'POST',
+      '/users',
+      `utf8=%E2%9C%93&user%5Bname%5D=${encodedName}&user%5Busername%5D=${encodedUsername}&user%5Bemail%5D=${encodedEmail}%40forem.local&user%5Bpassword%5D=${encodedPassword}&commit=Create+my+account`,
+    );
+  }
+
+  return getLoginRequest().then((response) => {
+    if (response.status === 200) {
+      return response;
+    }
+
+    cy.log('Login failed. Attempting one more login.');
+
+    // If we have a login failure, try one more time.
+    // This is to combat some flaky tests where the login fails occasionnally.
+    return getLoginRequest();
+  });
+});
+
+/**
+ * Gets an iframe with the given selector (or the first/only iframe if none is passed in),
+ * waits for its content to be loaded, and returns a wrapped reference to the iframe body
+ * that can then be chained off of.
+ *
+ * See also: https://www.cypress.io/blog/2020/02/12/working-with-iframes-in-cypress/
+ *
+ * @example
+ * cy.getIframeBody('.article-frame').findByRole('heading', { name: 'Article title' });
+ */
+Cypress.Commands.add('getIframeBody', (selector = '') =>
+  cy
+    .get(`iframe${selector}`)
+    .its('0.contentDocument.body')
+    .should('not.be.empty')
+    .then(cy.wrap),
+);
+
 const toPayload = (isEnabled) => (isEnabled ? '1' : '0');
 
 const DEFAULT_AUTH_CONFIG = {
@@ -160,25 +216,22 @@ const DEFAULT_AUTH_CONFIG = {
  */
 Cypress.Commands.add(
   'updateAdminAuthConfig',
-  (
-    username = 'admin_mcadmin',
-    {
-      inviteOnlyMode = false,
-      emailRegistration = true,
-      allowedEmailDomains,
-      publicEmailDomainList = false,
-      requireRecaptcha = false,
-      recaptchaSiteKey,
-      recaptchaSecretKey,
-      authProvidersToEnable,
-      facebookKey,
-      facebookSecret,
-      githubKey,
-      githubSecret,
-      twitterKey,
-      twitterSecret,
-    } = DEFAULT_AUTH_CONFIG,
-  ) => {
+  ({
+    inviteOnlyMode = false,
+    emailRegistration = true,
+    allowedEmailDomains = '',
+    publicEmailDomainList = false,
+    requireRecaptcha = false,
+    recaptchaSiteKey = '',
+    recaptchaSecretKey = '',
+    authProvidersToEnable,
+    facebookKey = '',
+    facebookSecret = '',
+    githubKey = '',
+    githubSecret = '',
+    twitterKey = '',
+    twitterSecret = '',
+  } = DEFAULT_AUTH_CONFIG) => {
     return cy.request(
       'POST',
       '/admin/settings/authentications',
@@ -190,7 +243,7 @@ Cypress.Commands.add(
         publicEmailDomainList,
       )}&settings_authentication%5Brequire_captcha_for_email_password_registration%5D=${toPayload(
         requireRecaptcha,
-      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&confirmation=My+username+is+%40${username}+and+this+action+is+100%25+safe+and+appropriate.&commit=Update+Settings`,
+      )}&settings_authentication%5Brecaptcha_site_key%5D=${recaptchaSiteKey}&settings_authentication%5Brecaptcha_secret_key%5D=${recaptchaSecretKey}&settings_authentication%5Bauth_providers_to_enable%5D=${authProvidersToEnable}&settings_authentication%5Bfacebook_key%5D=${facebookKey}&settings_authentication%5Bfacebook_secret%5D=${facebookSecret}&settings_authentication%5Bgithub_key%5D=${githubKey}&settings_authentication%5Bgithub_secret%5D=${githubSecret}&settings_authentication%5Btwitter_key%5D=${twitterKey}&settings_authentication%5Btwitter_secret%5D=${twitterSecret}&commit=Update+Settings`,
     );
   },
 );

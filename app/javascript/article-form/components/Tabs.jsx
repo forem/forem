@@ -10,11 +10,13 @@ export const Tabs = ({ onPreview, previewShowing }) => {
       <ul className="crayons-tabs__list">
         <li>
           <button
-            data-text='Edit'
+            data-text="Edit"
             className={`crayons-tabs__item ${
               previewShowing ? '' : 'crayons-tabs__item--current'
             }`}
-            onClick={previewShowing && onPreview}
+            onClick={(e) => {
+              previewShowing && onPreview(e);
+            }}
             type="button"
             aria-current={previewShowing ? null : 'page'}
           >
@@ -23,11 +25,13 @@ export const Tabs = ({ onPreview, previewShowing }) => {
         </li>
         <li>
           <button
-            data-text='Preview'
+            data-text="Preview"
             className={`crayons-tabs__item ${
               previewShowing ? 'crayons-tabs__item--current' : ''
             }`}
-            onClick={!previewShowing && onPreview}
+            onClick={(e) => {
+              !previewShowing && onPreview(e);
+            }}
             type="button"
             aria-current={previewShowing ? 'page' : null}
           >

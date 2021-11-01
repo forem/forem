@@ -75,6 +75,16 @@ RSpec.describe Podcasts::GetMediaUrl, type: :service do
     expect(result.url).to eq(http_url)
   end
 
+  it "http, https unreachable with openssl error" do
+    httparty_result = instance_double(HTTParty::Response, code: 200)
+    allow(HTTParty).to receive(:head).with(https_url).and_raise(OpenSSL::SSL::SSLError)
+    allow(HTTParty).to receive(:head).with(http_url).and_return(httparty_result)
+    result = described_class.call(http_url)
+    expect(result.https).to be false
+    expect(result.reachable).to be true
+    expect(result.url).to eq(http_url)
+  end
+
   it "marks unreachable with addressable invalid url exception" do
     allow(HTTParty).to receive(:head).with(https_url).and_raise(Addressable::URI::InvalidURIError)
     allow(HTTParty).to receive(:head).with(http_url).and_raise(Addressable::URI::InvalidURIError)

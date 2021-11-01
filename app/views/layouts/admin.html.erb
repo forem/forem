@@ -28,14 +28,18 @@
   data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
   data-deployed-at="<%= ForemInstance.deployed_at %>"
   data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
-  data-ga-tracking="<%= Settings::General.ga_tracking_id %>">
+  data-ga-tracking="<%= Settings::General.ga_tracking_id %>"
+  data-controller="snackbar"
+  data-action="snackbar:add@document->snackbar#addItem">
   <header class="crayons-header">
     <div class="crayons-header__container">
       <%= render "layouts/logo" %>
 
       <h1 class="pl-4 fs-l">
         <a href="<%= admin_path %>">Admin</a>
-        <span class="color-base-60">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
+        <span class="color-base-60">&raquo;</span> <span class="fw-bold">
+          <%= yield(:h1).presence || controller_name.titleize %>
+        </span>
       </h1>
 
       <div class="flex items-center h-100 ml-auto">
@@ -70,7 +74,7 @@
           </ul>
       </nav>
     </div>
-    <main class="crayons-layout__content min-w-0">
+    <main class="crayons-layout__content min-w-0 p-2">
       <% flash.each do |type, message| %>
         <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert" aria-label="Close">
@@ -79,6 +83,13 @@
           <%= message %>
         </div>
       <% end %>
+
+      <div
+        data-controller="alert"
+        data-action="error:generate@document->alert#generateErrorAlert"
+        data-testid="alertzone">
+          <div data-alert-target="alertZone" role="alert"></div>
+      </div>
 
       <% if request.path.split("/")[-3] == "admin" %>
         <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu.nested_menu_items_from_request(request) %>
@@ -92,6 +103,8 @@
       <% end %>
     </main>
   </div>
+
+  <div data-snackbar-target="snackZone"></div>
 
   <!-- Bootstrap Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

@@ -1,14 +1,21 @@
+$dropdownhoverdelay: 590ms;
+$dropdowntransition: 300ms;
+
 .profile-preview-card {
   &__content.crayons-dropdown {
+    transition: border, border-top;
+    transition-duration: $dropdowntransition;
     color: var(--base-100);
     padding-top: 0;
     top: 100%;
     left: 0;
+    font-size: var(--fs-base);
+    font-weight: var(--fw-normal);
   }
 
   &__content.crayons-dropdown:hover {
     display: block;
-    animation: hoverAppear 500ms;
+    animation: hoverAppear $dropdownhoverdelay;
 
     &.showing {
       animation: none;
@@ -17,7 +24,7 @@
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
-    animation: hoverAppear 500ms;
+    animation: hoverAppear $dropdownhoverdelay;
 
     &.showing {
       animation: none;
@@ -27,14 +34,17 @@
   @keyframes hoverAppear {
     0% {
       opacity: var(--opacity-0);
+      pointer-events: none;
     }
 
     99% {
       opacity: var(--opacity-0);
+      pointer-events: none;
     }
 
     100% {
       opacity: var(--opacity-100);
+      pointer-events: unset;
     }
   }
 }

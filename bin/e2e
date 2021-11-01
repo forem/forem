@@ -30,7 +30,7 @@ printf "Starting the test runner...\n\n"
 
 bundle exec rails assets:precompile;
 
-if [ $1 = "--creator-onboarding-seed" ]; then
+if [ "$1" = "--creator-onboarding-seed" ]; then
    echo "Running E2E tests with creator onboarding seed data"
    CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test E2E=true CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows bundle exec rake cypress:open
 else

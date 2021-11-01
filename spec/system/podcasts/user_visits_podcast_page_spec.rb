@@ -10,13 +10,13 @@ RSpec.describe "User visits a podcast page", type: :system do
   before { visit podcast.path }
 
   it "displays the header" do
-    within "div.podcast-header" do
+    within "div.spec__podcast-header" do
       expect(page).to have_text(podcast.title)
     end
   end
 
   it "displays podcast episodes", js: true do
-    expect(page).to have_selector("div.single-article", visible: :visible, count: 2)
+    expect(page).to have_selector("a.crayons-card", visible: :visible, count: 2)
   end
 
   it "displays podcast publish_at" do

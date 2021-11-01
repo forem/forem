@@ -6,4 +6,13 @@ class NotificationSubscription < ApplicationRecord
   validates :notifiable_id, presence: true
   validates :notifiable_type, presence: true, inclusion: { in: %w[Comment Article] }
   validates :user_id, uniqueness: { scope: %i[notifiable_type notifiable_id] }
+
+  class << self
+    def update_notification_subscriptions(notifiable)
+      NotificationSubscriptions::UpdateWorker.perform_async(
+        notifiable.id,
+        notifiable.class.name,
+      )
+    end
+  end
 end

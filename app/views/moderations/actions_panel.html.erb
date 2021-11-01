@@ -1,4 +1,4 @@
-<% title "Moderating " + @moderatable.title %>
+<% title t("views.moderations.actions.meta.title", title: @moderatable.title) %>
 
 <% cache(release_adjusted_cache_key("mod-styling")) do %>
   <style>
@@ -10,10 +10,10 @@
 
 <div class="container mod-container">
   <header class="top-header">
-    <h1>Moderate Post</h1>
-    <h2>Rate the quality of this post</h2>
-    <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-rounded close-actions-panel hidden" type="button" title="Close moderator actions panel">
-      <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close moderator actions panel") %>
+    <h1><%= t("views.moderations.actions.heading") %></h1>
+    <h2><%= t("views.moderations.actions.subtitle") %></h2>
+    <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-rounded close-actions-panel hidden" type="button" title="<%= t("views.moderations.actions.close") %>">
+      <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: t("views.moderations.actions.close")) %>
     </button>
   </header>
 
@@ -24,36 +24,33 @@
               data-category="thumbsup"
               data-reactable-type="<%= @moderatable.class.name %>">
         <div class="reaction-button-circle">
-          <%= image_tag("emoji/emoji-one-thumbs-up-gray.png", alt: "Thumbs up emoji", class: "emoji-grey") %>
-          <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" />
-          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+          <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_up")) %>
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
         </div>
-        <span class="vote-text">High Quality</span>
+        <span class="vote-text"><%= t("views.moderations.actions.vote_up") %></span>
       </button>
       <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
               data-reactable-id="<%= @moderatable.id %>"
               data-category="thumbsdown"
               data-reactable-type="<%= @moderatable.class.name %>">
         <div class="reaction-button-circle">
-          <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
-          <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
-          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+          <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_down")) %>
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
         </div>
-        <span class="vote-text">Low Quality</span>
+        <span class="vote-text"><%= t("views.moderations.actions.vote_down") %></span>
       </button>
     </div>
     <button class="reaction-vomit-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.id %>"
             data-category="vomit"
             data-reactable-type="<%= @moderatable.class.name %>">
-      <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
-      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+      <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default mr-1", title: "Suspicious...") %>
       <span></span>
-      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </button>
     <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
       <span class="how-this-works-section">
-        How does this work?
+        <%= t("views.moderations.actions.how") %>
       </span>
     </a>
   </div>
@@ -61,31 +58,31 @@
   <div class="other-things-container">
     <header class="other-things">
       <h3>
-        Other things you can do
+        <%= t("views.moderations.actions.other") %>
       </h3>
     </header>
 
     <% if current_user.any_admin? || @should_show_adjust_tags %>
-      <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="Open adjust tags section">
+      <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
-            <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
+            <%= inline_svg_tag("mod-filled.svg", aria: true, title: t("views.moderations.actions.adjust.icon")) %>
           </div>
           <header>
-            <h2>Adjust tags</h2>
-            <h3>Add or remove tags</h3>
+            <h2><%= t("views.moderations.actions.adjust.heading") %></h2>
+            <h3><%= t("views.moderations.actions.adjust.subtitle") %></h3>
           </header>
         </div>
         <div class="toggle-chevron-container">
-          <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: "Toggle section") %>
+          <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
         </div>
       </button>
 
-      <div id="adjust-tags-options"  class="adjust-tags-options dropdown-options hidden">
+      <div id="adjust-tags-options" class="adjust-tags-options dropdown-options hidden">
         <% if current_user.any_admin? %>
           <% if @moderatable.tag_list.size < 4 %>
             <div class="add-tag-container">
-              <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="Add a tag" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
+              <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
             </div>
           <% end %>
 
@@ -93,14 +90,14 @@
             <button class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
               <span class="num-sign">#</span><%= tag.name %>
               <div class="circle centered-icon adjustment-icon subtract">
-                <%= inline_svg_tag("subtract.svg", aria: true, title: "Remove tag") %>
+                <%= inline_svg_tag("subtract.svg", aria: true, title: t("views.moderations.actions.adjust.remove")) %>
               </div>
             </button>
           <% end %>
         <% else %>
           <% @tag_moderator_tags.each do |tag| %>
             <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
-            <% subtract_or_plus_title = subtract_or_plus == "subtract" ? "Remove tag" : "Add tag" %>
+            <% subtract_or_plus_title = t("views.moderations.actions.adjust.#{subtract_or_plus == 'subtract' ? 'remove' : 'add'}") %>
             <button class="adjustable-tag" type="button" data-adjustment-type="<%= subtract_or_plus %>" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
               <span class="num-sign">#</span><%= tag.name %>
               <div class="circle centered-icon adjustment-icon <%= subtract_or_plus %>">
@@ -110,54 +107,55 @@
           <% end %>
         <% end %>
         <form id="adjustment-reason-container" class="adjustment-reason-container hidden">
-          <textarea class="crayons-textfield" placeholder="Reason for tag adjustment" id="tag-adjustment-reason" required></textarea>
-          <button class="crayons-btn" id="tag-adjust-submit" type="submit">Submit</button>
+          <textarea class="crayons-textfield" placeholder="<%= t("views.moderations.actions.adjust.reason") %>" id="tag-adjustment-reason" required></textarea>
+          <button class="crayons-btn" id="tag-adjust-submit" type="submit"><%= t("views.moderations.actions.adjust.submit") %></button>
         </form>
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
           <span class="how-this-works-section">
-            How does this work?
+            <%= t("views.moderations.actions.how") %>
           </span>
         </a>
       </div>
     <% end %>
 
     <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
-    <button aria-haspopup="true aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="Open experience level section">
+    <button aria-haspopup="true" aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="<%= t("views.moderations.actions.experience.aria_label") %>">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
-          <%= inline_svg_tag("book.svg", aria: true, title: "Book") %>
+          <%= inline_svg_tag("book.svg", aria: true, title: t("views.moderations.actions.experience.icon")) %>
         </div>
         <header>
-          <h2>Set experience level</h2>
-          <h3>Curate the most appropriate audience for this post</h3>
+          <h2><%= t("views.moderations.actions.experience.heading") %></h2>
+          <h3><%= t("views.moderations.actions.experience.subtitle") %></h3>
         </header>
       </div>
       <div class="toggle-chevron-container">
-        <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: "Toggle section") %>
+        <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
       </div>
     </button>
 
     <div id="set-experience-options" class="set-experience-options dropdown-options hidden">
       <% rating_hash = { "Expert" => [10, 5], "Advanced" => [8, 4], "Mid-level" => [5, 3], "Beginner" => [3, 2], "Novice" => [1, 1] } %>
+      <% current_rating_value = @rating_vote.rating.round(0) if @rating_vote %>
       <% rating_hash.each do |rating_name, rating_level| %>
       <button
         value="<%= rating_level[0] %>"
         name="rating_vote_<%= rating_level[0] %>"
         id="js__rating__vote__<%= rating_level[0] %>"
-        class="level-rating-button <%= " selected" if @rating_vote&.rating == rating_level[0].to_f %>"
+        class="level-rating-button <%= " selected" if current_rating_value == rating_level[0] %>"
         data-user-id="<%= current_user.id %>"
         data-article-id="<%= @moderatable.id %>"
         data-group="experience_level">
         <div class="level-rating-content">
           <span class="level-rating-number"><%= rating_level[1] %></span>
-          <span class="level-rating-text"><%= rating_name %></span>
+          <span class="level-rating-text"><%= t("views.moderations.actions.experience.level.#{rating_name}") %></span>
         </div>
-        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: t("views.moderations.actions.checkmark")) %>
       </button>
       <% end %>
       <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
         <span class="how-this-works-section">
-          How does this work?
+          <%= t("views.moderations.actions.how") %>
         </span>
       </a>
     </div>
@@ -169,15 +167,14 @@
           id="unpublish-article-btn"
           data-article-id="<%= @moderatable.id %>"
           data-article-author="<%= @moderatable.username %>"
-          data-article-slug="<%= @moderatable.slug %>"
-        >
-          Unpublish Article
+          data-article-slug="<%= @moderatable.slug %>">
+          <%= t("views.moderations.actions.unpublish") %>
         </button>
       </div>
     <% end %>
   </div>
 
   <div class="bottom-actions">
-    <button id="open-flag-user-modal" type="button">Flag user</button>
+    <button id="open-flag-user-modal" type="button"><%= t("views.moderations.actions.flag") %></button>
   </div>
 </div>

@@ -1,0 +1,26 @@
+@import '../config/import';
+
+.drawer-navigation {
+  &__item {
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      color: var(--body-color);
+    }
+
+    a[aria-current='page'] {
+      color: var(--link-brand-color);
+    }
+
+    .check-icon {
+      vertical-align: middle;
+      display: none;
+      color: var(--link-brand-color);
+    }
+
+    a[aria-current='page'] + .check-icon {
+      display: block;
+    }
+  }
+}

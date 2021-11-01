@@ -52,15 +52,6 @@ end
 
 ##############################################################################
 
-# NOTE: @citizen428 For the time being we want all current DEV profile fields.
-# The CSV import is idempotent by itself, since it uses find_or_create_by.
-seeder.create("Creating DEV profile fields") do
-  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(dev_fields_csv)
-end
-
-##############################################################################
-
 num_users = 10 * SEEDS_MULTIPLIER
 
 users_in_random_order = seeder.create_if_none(User, num_users) do
@@ -71,9 +62,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
     user = User.create!(
       name: name,
-      summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
       profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-      website_url: Faker::Internet.url,
       twitter_username: Faker::Internet.username(specifier: name),
       # Emails limited to 50 characters
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
@@ -82,6 +71,11 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       registered: true,
       password: "password",
       password_confirmation: "password",
+    )
+
+    user.profile.update(
+      summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+      website_url: Faker::Internet.url,
     )
 
     if i.zero?
@@ -137,15 +131,19 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     name: "Admin McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    website_url: Faker::Internet.url,
     confirmed_at: Time.current,
     password: "password",
     password_confirmation: "password",
   )
 
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
+  )
+
   user.add_role(:super_admin)
+  user.add_role(:trusted)
   user.add_role(:tech_admin)
 end
 
@@ -172,6 +170,9 @@ end
 num_articles = 25 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Article, num_articles) do
+  user_ids = User.all.pluck(:id)
+  public_categories = %w[like unicorn]
+
   num_articles.times do |i|
     tags = []
     tags << "discuss" if (i % 3).zero?
@@ -190,12 +191,21 @@ seeder.create_if_none(Article, num_articles) do
       #{Faker::Hipster.paragraph(sentence_count: 2)}
     MARKDOWN
 
-    Article.create!(
+    article = Article.create!(
       body_markdown: markdown,
       featured: true,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
+
+    Random.random_number(10).times do |t|
+      article.reactions.create(
+        user_id: user_ids.sample,
+        category: public_categories.sample,
+      )
+    end
+
+    article.sync_reactions_count
   end
 end
 
@@ -234,7 +244,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
       android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "CodingBlocks",
@@ -247,7 +258,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
       android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "Talk Python",
@@ -260,7 +272,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
       android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "Developer on Fire",
@@ -274,7 +287,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
       android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
   ]
 
@@ -515,7 +529,7 @@ seeder.create_if_none(Listing) do
       Listing.create!(
         user: user,
         title: Faker::Lorem.sentence,
-        body_markdown: Faker::Markdown.random,
+        body_markdown: Faker::Markdown.random.lines.take(10).join,
         location: Faker::Address.city,
         organization_id: user.organizations.first&.id,
         listing_category_id: category_id,

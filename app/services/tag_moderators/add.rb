@@ -15,7 +15,7 @@ module TagModerators
         tag = Tag.find(tag_ids[index])
         add_tag_mod_role(user, tag)
         ::TagModerators::AddTrustedRole.call(user)
-        add_to_chat_channels(user, tag)
+        add_to_chat_channels(user, tag) if FeatureFlag.enabled?(:connect)
         tag.update(supported: true) unless tag.supported?
 
         NotifyMailer

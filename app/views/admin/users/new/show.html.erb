@@ -1,0 +1,58 @@
+<style>
+  section {
+    margin-bottom: 1em;
+    box-shadow: none !important;
+  }
+
+  section:first-of-type {
+    margin-top: 1em;
+  }
+</style>
+
+<% content_for :h1 do %>
+Users — <%= @user.name %>
+<% end %>
+
+<header>
+  <h2 class="crayons-title">Manage member <%= @user.name %></h2>
+  <p><a href="<%= admin_users_path %>">← Go back to All members</a></p>
+</header>
+
+<article
+  class="flex flex-row flex-wrap justify-between content-between"
+  data-controller="user"
+  data-user-tools-component-path-value="<%= admin_user_tools_path(@user.id) %>"
+  data-action="user:tools@document->user#fetchAndOpenTools">
+  <div class="flex flex-column" style="flex-basis: 70%;">
+    <%# This div is paramount for accessibility as it will contains the title of the partial announced via aria-live %>
+    <div class="screen-reader-only" data-user-target="activeSection" aria-live="polite"></div>
+
+    <section class="crayons-card" id="profile">
+      <h3 class="crayons-subtitle-2"><%= @user.name %></h3>
+    </section>
+
+    <%= render(Admin::Users::ToolsComponent.new(user: @user)) %>
+
+    <section class="crayons-card" id="account">
+      <h3 class="crayons-subtitle-2">Account Information & Settings</h3>
+    </section>
+  </div>
+
+  <div class="flex flex-column">
+    <section class="crayons-card" id="status">
+      <h3 class="crayons-subtitle-2">Status</h3>
+    </section>
+
+    <section class="crayons-card" id="admin-roles">
+      <h3 class="crayons-subtitle-2">Admin Roles</h3>
+    </section>
+
+    <section class="crayons-card" id="tag-moderation">
+      <h3 class="crayons-subtitle-2">Tag Moderation</h3>
+    </section>
+
+    <section class="crayons-card" id="activity">
+      <h3 class="crayons-subtitle-2">Activity & Engagement</h3>
+    </section>
+  </div>
+</article>

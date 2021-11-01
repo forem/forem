@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 export default class DataUpdateScriptController extends Controller {
   static values = { url: String };
@@ -136,9 +136,9 @@ export default class DataUpdateScriptController extends Controller {
   }
 
   setErrorBanner(runAtColumn, statusColumn, error, bannerClass) {
-    const classList = document.getElementsByClassName(
+    const { classList } = document.getElementsByClassName(
       'data-update-script__alert',
-    )[0].classList;
+    )[0];
 
     classList.add(bannerClass);
     classList.remove('hidden');

@@ -15,7 +15,8 @@ RSpec.describe Authentication::Providers::Facebook, type: :service do
 
   describe ".sign_in_path" do
     let(:expected_path) do
-      "/users/auth/facebook?callback_url=http%3A%2F%2Flocalhost%3A3000%2Fusers%2Fauth%2Ffacebook%2Fcallback"
+      expected_callback_url = CGI.escape(URL.url("/users/auth/facebook/callback"))
+      "/users/auth/facebook?callback_url=#{expected_callback_url}"
     end
 
     it "returns the correct sign in path" do

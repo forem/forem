@@ -3,6 +3,8 @@
 class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
+  FEATURE_FLAGS = %i[profile_admin data_update_scripts connect].freeze
+
   ITEMS = Menu.define do
     scope :people, "group-2-line", [
       item(name: "people", controller: "users"),
@@ -54,7 +56,7 @@ class AdminMenu
     ]
 
     scope :apps, "palette-line", [
-      item(name: "chat channels"),
+      item(name: "chat channels", visible: false),
       item(name: "consumer apps", controller: "consumer_apps"),
       item(name: "events"),
       item(name: "listings"),
@@ -64,7 +66,7 @@ class AdminMenu
   # rubocop:enable Metrics/BlockLength
 
   def self.navigation_items
-    return ITEMS unless FeatureFlag.enabled?(:profile_admin) || FeatureFlag.enabled?(:data_update_scripts)
+    return ITEMS unless FEATURE_FLAGS.any? { |flag| FeatureFlag.enabled?(flag) }
 
     feature_flagged_menu_items
   end
@@ -104,6 +106,11 @@ class AdminMenu
         .detect { |item| item[:controller] ==  "tools" }[:children]
         .detect { |item| item[:controller] ==  "data_update_scripts" }
       data_update_script_hash[:visible] = true
+    end
+
+    if FeatureFlag.enabled?(:connect)
+      connect_hash = menu_items.dig(:apps, :children).detect { |item| item[:controller] = "chat_channels" }
+      connect_hash[:visible] = true
     end
 
     menu_items
