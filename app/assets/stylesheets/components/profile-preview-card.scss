@@ -1,10 +1,10 @@
-$dropdownhoverdelay: 590ms;
-$dropdowntransition: 300ms;
-
 .profile-preview-card {
+  --dropdown-hover-delay: 590ms;
+  --dropdown-transition: 300ms;
+
   &__content.crayons-dropdown {
     transition: border, border-top;
-    transition-duration: $dropdowntransition;
+    transition-duration: var(--dropdown-transition);
     color: var(--base-100);
     padding-top: 0;
     top: 100%;
@@ -15,7 +15,7 @@ $dropdowntransition: 300ms;
 
   &__content.crayons-dropdown:hover {
     display: block;
-    animation: hoverAppear $dropdownhoverdelay;
+    animation: hoverAppear var(--dropdown-hover-delay);
 
     &.showing {
       animation: none;
@@ -24,7 +24,7 @@ $dropdowntransition: 300ms;
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
-    animation: hoverAppear $dropdownhoverdelay;
+    animation: hoverAppear vaR(--dropdown-hover-delay);
 
     &.showing {
       animation: none;
