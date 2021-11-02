@@ -300,7 +300,7 @@ module ApplicationHelper
   def render_tag_link(tag, filled: false, monochrome: false, classes: "")
     color = tag_colors(tag)[:background] || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
-    label = "<span class='crayons-tag__prefix'>#</span>#{tag}".html_safe # rubocop:disable Rails/OutputSafety
+    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
 
     options = {
       class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
