@@ -1,36 +1,48 @@
 @import '../config/import';
 
 .crayons-tag {
-  --tag-color: var(--base-a60);
-  --tag-color-faded: var(--base-a5);
+  --tag-bg: var(--base-a5);
+  --tag-prefix: var(--base-a60);
 
+  --tag-bg-hover: var(--base-a5);
+  --tag-prefix-hover: var(--base);
+
+  background: transparent;
+  color: var(--base-80);
   border-radius: var(--radius);
-  color: inherit;
   display: inline-flex;
   align-items: center;
-  background: transparent;
+  white-space: nowrap;
+  flex-wrap: nowrap;
   transition: all var(--transition-props);
+  padding: clamp(var(--su-1), 0.25em, 0.5em) 0.5em;
 
   &__prefix {
-    content: '#';
-    color: var(--tag-color);
+    color: var(--tag-prefix);
+    transition: all var(--transition-props);
+    flex-shrink: 0;
   }
-
-  // &--flare::before {
-  //   color: revert;
-  // }
 
   &--filled {
-    background: var(--tag-color-faded);
+    background: var(--tag-bg);
+    color: var(--base-90);
   }
 
-  &[href] {
-    padding: clamp(var(--su-1), 0.25em, 0.5em) 0.5em;
+  &--monochrome {
+    .crayons-tag__prefix {
+      color: var(--base-a60);
+    }
+  }
 
-    &:hover,
-    &:focus {
-      background: var(--tag-color-faded);
-      color: var(--base-100);
+  &:hover,
+  &:focus {
+    background: var(--tag-bg-hover);
+    color: var(--base);
+    box-shadow: inset 0 0 0 1px var(--tag-bg-hover),
+      inset 0 0 0 1px var(--tag-bg-hover), inset 0 0 0 1px var(--tag-bg-hover);
+
+    .crayons-tag__prefix {
+      color: var(--tag-prefix-hover);
     }
   }
 }
