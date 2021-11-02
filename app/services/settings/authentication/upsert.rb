@@ -11,7 +11,10 @@ module Settings
       end
 
       def self.update_enabled_providers(value)
-        return if value.blank?
+        if value.blank?
+          Settings::Authentication.providers = []
+          return
+        end
 
         enabled_providers = value.split(",").filter_map do |entry|
           entry unless invalid_provider_entry(entry)
