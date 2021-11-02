@@ -297,10 +297,10 @@ module ApplicationHelper
     role.name.titlecase
   end
 
-  def render_tag_link(tag, filled: false, monochrome: false, classes: nil)
+  def render_tag_link(tag, filled: false, monochrome: false, classes: "")
     color = tag_colors(tag)[:background] || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
-    label = "<span class='crayons-tag__prefix'>#</span>#{tag}"
+    label = "<span class='crayons-tag__prefix'>#</span>#{tag}".html_safe # rubocop:disable Rails/OutputSafety
 
     options = {
       class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",

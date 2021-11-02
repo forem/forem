@@ -107,14 +107,14 @@
       <div class="crayons-story__tags">
         <% flare_tag = FlareTag.new(story, @tag).tag %>
         <% if flare_tag %>
-          <%= render_tag_link(flare_tag.name, filled = true) %>
+          <%= render_tag_link(flare_tag.name, filled: true) %>
         <% end %>
         <% tags_to_display = story.cached_tag_list_array
            if flare_tag
              tags_to_display = tags_to_display.reject { |tag| tag == flare_tag.name }
            end %>
         <% tags_to_display.each do |tag| %>
-          <%= render_tag_link(tag, filled = false, monochrome = true) %>
+          <%= render_tag_link(tag, filled: false, monochrome: true) %>
         <% end %>
       </div>
       <div class="crayons-story__bottom">
