@@ -1,3 +1,4 @@
+/* global Runtime */
 import {
   Bold,
   Italic,
@@ -13,6 +14,9 @@ import {
   Divider,
 } from './icons';
 
+const keyboardShortcutModifier = () =>
+  Runtime.currentOS() === 'macOS' ? 'cmd' : 'ctrl';
+
 const isStringStartAUrl = (string) => {
   const startingText = string.substring(0, 8);
   return startingText === 'https://' || startingText.startsWith('http://');
@@ -22,8 +26,13 @@ export const coreSyntaxFormatters = {
   bold: {
     icon: Bold,
     label: 'Bold',
-    keyboardShortcut: 'ctrl+b',
-    keyboardShortcutKeys: `B`,
+    getKeyboardShortcut: () => {
+      const modifier = keyboardShortcutModifier();
+      return {
+        command: `${modifier}+b`,
+        tooltipHint: `${modifier.toUpperCase()} + B`,
+      };
+    },
     getFormatting: (selection) => ({
       formattedText: `**${selection}**`,
       cursorOffsetStart: 2,
@@ -33,8 +42,13 @@ export const coreSyntaxFormatters = {
   italic: {
     icon: Italic,
     label: 'Italic',
-    keyboardShortcut: 'ctrl+i',
-    keyboardShortcutKeys: `I`,
+    getKeyboardShortcut: () => {
+      const modifier = keyboardShortcutModifier();
+      return {
+        command: `${modifier}+i`,
+        tooltipHint: `${modifier.toUpperCase()} + I`,
+      };
+    },
     getFormatting: (selection) => ({
       formattedText: `_${selection}_`,
       cursorOffsetStart: 1,
@@ -44,8 +58,13 @@ export const coreSyntaxFormatters = {
   link: {
     icon: Link,
     label: 'Link',
-    keyboardShortcut: 'ctrl+k',
-    keyboardShortcutKeys: `K`,
+    getKeyboardShortcut: () => {
+      const modifier = keyboardShortcutModifier();
+      return {
+        command: `${modifier}+k`,
+        tooltipHint: `${modifier.toUpperCase()} + K`,
+      };
+    },
     getFormatting: (selection) => {
       const isUrl = isStringStartAUrl(selection);
       const selectionLength = selection.length;
@@ -170,8 +189,13 @@ export const secondarySyntaxFormatters = {
   underline: {
     icon: Underline,
     label: 'Underline',
-    keyboardShortcut: 'ctrl+u',
-    keyboardShortcutKeys: `U`,
+    getKeyboardShortcut: () => {
+      const modifier = keyboardShortcutModifier();
+      return {
+        command: `${modifier}+u`,
+        tooltipHint: `${modifier.toUpperCase()} + U`,
+      };
+    },
     getFormatting: (selection) => ({
       formattedText: `<u>${selection}</u>`,
       cursorOffsetStart: 3,
@@ -181,8 +205,13 @@ export const secondarySyntaxFormatters = {
   strikethrough: {
     icon: Strikethrough,
     label: 'Strikethrough',
-    keyboardShortcut: 'ctrl+shift+x',
-    keyboardShortcutKeys: `SHIFT + X`,
+    getKeyboardShortcut: () => {
+      const modifier = keyboardShortcutModifier();
+      return {
+        command: `${modifier}+shift+x`,
+        tooltipHint: `${modifier.toUpperCase()} + SHIFT + X`,
+      };
+    },
     getFormatting: (selection) => ({
       formattedText: `~~${selection}~~`,
       cursorOffsetStart: 2,
