@@ -17,7 +17,7 @@ module Admin
       pages: "https://admin.forem.com/docs/forem-basics/pages",
       permissions: "https://admin.forem.com/docs/forem-basics/user-roles",
       podcasts: "https://admin.forem.com/docs/advanced-customization/content-manager/podcasts",
-      settings: "https://admin.forem.com/docs/advanced-customization/config/api-tokens",
+      settings: "https://admin.forem.com/docs/advanced-customization/config",
       tags: "https://admin.forem.com/docs/forem-basics/tags",
       users: "https://admin.forem.com/docs/forem-basics/user-roles"
     }.freeze
