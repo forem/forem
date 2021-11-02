@@ -103,4 +103,3 @@ dump.rdb
 
 # pry configuration file
 .pryrc
-*.swp
