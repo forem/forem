@@ -644,7 +644,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    reverse_markdown (2.0.0)
+    reverse_markdown (2.1.1)
       nokogiri
     rexml (3.2.5)
     rice (4.0.2)
@@ -987,7 +987,7 @@ DEPENDENCIES
   redis-rack (= 2.0.6)
   redis-rails (~> 5.0.2)
   request_store (~> 1.5)
-  reverse_markdown (~> 2.0)
+  reverse_markdown (~> 2.1)
   rolify (~> 6.0)
   rouge (~> 3.26)
   rpush (~> 6.0)
