@@ -40,16 +40,6 @@ function buildArticleHTML(article) {
         ${article.flare_tag.name}
       </a>`;
     }
-    if (article.class_name === 'PodcastEpisode') {
-      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
-    }
-    if (article.class_name === 'Comment') {
-      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
-    }
-    if (article.class_name === 'User') {
-      flareTag =
-        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
-    }
 
     var tagString = '';
     var tagList = article.tag_list || article.cached_tag_list_array || [];
