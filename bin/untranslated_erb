@@ -32,6 +32,7 @@ class I18nExtractor
   end
 
   private
+
   def in_script_block?(s)
     return true if s.nil? || s.strip.size == 0 
     jump_in_tag = SKIP_TAGS.find{ |start_tag,end_tag| s =~ start_tag}
