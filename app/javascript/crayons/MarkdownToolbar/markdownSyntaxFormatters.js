@@ -14,9 +14,6 @@ import {
   Divider,
 } from './icons';
 
-const keyboardShortcutModifier = () =>
-  Runtime.currentOS() === 'macOS' ? 'cmd' : 'ctrl';
-
 const isStringStartAUrl = (string) => {
   const startingText = string.substring(0, 8);
   return startingText === 'https://' || startingText.startsWith('http://');
@@ -27,7 +24,7 @@ export const coreSyntaxFormatters = {
     icon: Bold,
     label: 'Bold',
     getKeyboardShortcut: () => {
-      const modifier = keyboardShortcutModifier();
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+b`,
         tooltipHint: `${modifier.toUpperCase()} + B`,
@@ -43,7 +40,7 @@ export const coreSyntaxFormatters = {
     icon: Italic,
     label: 'Italic',
     getKeyboardShortcut: () => {
-      const modifier = keyboardShortcutModifier();
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+i`,
         tooltipHint: `${modifier.toUpperCase()} + I`,
@@ -59,7 +56,7 @@ export const coreSyntaxFormatters = {
     icon: Link,
     label: 'Link',
     getKeyboardShortcut: () => {
-      const modifier = keyboardShortcutModifier();
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+k`,
         tooltipHint: `${modifier.toUpperCase()} + K`,
@@ -190,7 +187,7 @@ export const secondarySyntaxFormatters = {
     icon: Underline,
     label: 'Underline',
     getKeyboardShortcut: () => {
-      const modifier = keyboardShortcutModifier();
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+u`,
         tooltipHint: `${modifier.toUpperCase()} + U`,
@@ -206,7 +203,7 @@ export const secondarySyntaxFormatters = {
     icon: Strikethrough,
     label: 'Strikethrough',
     getKeyboardShortcut: () => {
-      const modifier = keyboardShortcutModifier();
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+shift+x`,
         tooltipHint: `${modifier.toUpperCase()} + SHIFT + X`,

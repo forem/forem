@@ -477,7 +477,7 @@ export class ArticleForm extends Component {
 
         <KeyboardShortcuts
           shortcuts={{
-            [`${Runtime.currentOS() === 'macOS' ? 'cmd' : 'ctrl'}+shift+KeyP`]:
+            [`${Runtime.getOSKeyboardModifierKeyString()}+shift+KeyP`]:
               this.fetchPreview,
           }}
         />
