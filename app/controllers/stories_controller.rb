@@ -241,7 +241,7 @@ class StoriesController < ApplicationController
       @stories = Articles::Feeds::Latest.call
     else
       @default_home_feed = true
-      strategy = AbTestService.feed_strategy_for(user: current_user)
+      strategy = AbExperiment.feed_strategy_for(user: current_user)
       feed = if strategy.weighted_query_strategy?
                # I'm uncertain why we don't pass a user here, but it mimics
                # the behavior of the original LargeForemExperimental.
