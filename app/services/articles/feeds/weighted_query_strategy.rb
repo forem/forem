@@ -44,7 +44,7 @@ module Articles
       # In addition, as part of initialization, the caller can
       # configure each of the scoring methods :cases and :fallback.
       #
-      # Each scoring method has three keys:
+      # Each scoring method has the following keys:
       #
       # - clause: The SQL clause statement; note: there exists a
       #           coupling between the clause and the SQL fragments
@@ -236,13 +236,17 @@ module Articles
                                 ]
                               end
 
+        # This sub-query allows us to take the hard work of the
+        # hand-coded unsanitized sql and create a sub-query that we
+        # can use to help ensure that we can use all of the
+        # ActiveRecord goodness of scopes (e.g.,
+        # limited_column_select) and eager includes.
         Article.where(
-          # This sub-query allows us to take the hard work of the
-          # hand-coded unsanitized sql and create a sub-query that we
-          # can use to help ensure that we can use all of the
-          # ActiveRecord goodness of scopes (e.g.,
-          # limited_column_select) and eager includes.
-          Article.arel_table[:id].in(Arel.sql(Article.sanitize_sql(unsanitized_sub_sql))),
+          Article.arel_table[:id].in(
+            Arel.sql(
+              Article.sanitize_sql(unsanitized_sub_sql),
+            ),
+          ),
         ).limited_column_select.includes(top_comments: :user).order(published_at: :desc)
       end
       # rubocop:enable Layout/LineLength
