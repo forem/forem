@@ -632,10 +632,8 @@ function handleHiddenComments(commentableType){
       commentableAuthorIds.push(podCastEpisodeContainer.dataset.creatorId);
     }
   }
-  if(currentUser && currentUser.id){
-    if (commentableAuthorIds.includes(currentUser.id.toString())){
-      collapseCommentsHiddenByCommentableUser();
-    }
+  if(currentUser && commentableAuthorIds.includes(currentUser.id.toString())){
+    collapseCommentsHiddenByCommentableUser();
   }
   else {
     document.querySelectorAll('.comment-hidden-by-commentable-user, .details-comment-hidden-by-commentable-user').forEach(element => {
