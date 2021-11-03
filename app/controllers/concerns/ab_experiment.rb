@@ -11,7 +11,7 @@ module AbExperiment
   # Find the appropriate feed strategy we're testing for the given user.
   #
   # @param user [User] find the feed strategy for the given user.
-  # @param env [Hash] container for possible ENV override of strategy.
+  # @param config [Hash] container for possible ENV override of strategy.
   # @param default_value [String] fallback value in case we have an
   #        error.  This name maps to the key named variant "original" in the
   #        ":feed_strategy" experiment as defined in config/field_test.yml
@@ -21,8 +21,8 @@ module AbExperiment
   # @note You can force a named strategy by setting an ENV variable.
   #       This forced strategy might be super useful for anyone performing
   #       QA testing on AB Testing scenarios.
-  def feed_strategy_for(user:, env: ApplicationConfig, default_value: "original")
-    (env["AB_EXPERIMENT_VARIANT_FEED_STRATEGY"] || field_test(:feed_strategy, participant: user)).inquiry
+  def feed_strategy_for(user:, config: ApplicationConfig, default_value: "original")
+    (config["AB_EXPERIMENT_VARIANT_FEED_STRATEGY"] || field_test(:feed_strategy, participant: user)).inquiry
   rescue FieldTest::ExperimentNotFound
     # Because we should have a fall back plan in case the field test
     # has an odd configuration.
