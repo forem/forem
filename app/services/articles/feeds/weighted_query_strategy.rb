@@ -48,7 +48,9 @@ module Articles
       #
       # - clause: The SQL clause statement; note: there exists a
       #           coupling between the clause and the SQL fragments
-      #           that join the various tables.
+      #           that join the various tables.  Also, under no
+      #           circumstances should you allow any user value for
+      #           this, as it is not something we can sanitize.
       #
       # - cases: An Array of Arrays, the first value is what matches
       #          the clause, the second value is the multiplicative
@@ -397,9 +399,11 @@ module Articles
       end
 
       def offset_and_limit_clause(offset:, limit:)
-        clauses = "LIMIT #{limit.to_i}"
-        clauses = "OFFSET #{offset.to_i} " + clauses if offset.to_i.positive?
-        clauses
+        if offset.to_i.positive?
+          Article.sanitize_sql_array(["OFFSET ? LIMIT ?", offset, limit])
+        else
+          Article.sanitize_sql_array(["LIMIT ?", limit])
+        end
       end
 
       def determine_oldest_published_at(user:, most_number_of_days_to_consider: 31)
@@ -474,11 +478,20 @@ module Articles
       # @param cases [Array<Array<#to_i, #to_f>>]
       # @param fallback [#to_f]
       def build_score_element_from(clause:, cases:, fallback:)
+        values = []
+        # I would love to sanitize this, but alas, we must trust this
+        # clause.
         text = "(CASE #{clause}"
         cases.each do |value, factor|
-          text += "\nWHEN #{value.to_i} THEN #{factor.to_f}"
+          text += "\nWHEN ? THEN ?"
+          values << value.to_i
+          values << factor.to_f
         end
-        text += "\nELSE #{fallback.to_f} END)"
+        text += "\nELSE ? END)"
+        values << fallback.to_f
+        values.unshift(text)
+
+        Article.sanitize_sql_array(values)
       end
     end
   end
