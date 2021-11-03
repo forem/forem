@@ -632,7 +632,7 @@ function handleHiddenComments(commentableType){
       commentableAuthorIds.push(podCastEpisodeContainer.dataset.creatorId);
     }
   }
-  if(currentUser && commentableAuthorIds.includes(currentUser.id.toString())){
+  if(currentUser && commentableAuthorIds.includes(currentUser?.id?.toString())){
     collapseCommentsHiddenByCommentableUser();
   }
   else {
