@@ -43,7 +43,9 @@ module Stories
              else
                Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
              end
-      feed.more_comments_minimal_weight_randomized
+      Datadog.tracer.trace("#{self.class}.#{__method__}", span_type: "feed", resource: feed.class.to_s) do
+        feed.more_comments_minimal_weight_randomized
+      end
     end
 
     def signed_out_base_feed
@@ -57,8 +59,9 @@ module Stories
              else
                Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
              end
-
-      feed.default_home_feed(user_signed_in: false)
+      Datadog.tracer.trace("#{self.class}.#{__method__}", span_type: "feed", resource: feed.class.to_s) do
+        feed.default_home_feed(user_signed_in: false)
+      end
     end
 
     def timeframe_feed

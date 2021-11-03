@@ -250,7 +250,9 @@ class StoriesController < ApplicationController
              else
                Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
              end
-      @featured_story, @stories = feed.featured_story_and_default_home_feed(user_signed_in: user_signed_in?)
+      Datadog.tracer.trace("#{self.class}.#{__method__}", span_type: "feed", resource: feed.class.to_s) do
+        @featured_story, @stories = feed.featured_story_and_default_home_feed(user_signed_in: user_signed_in?)
+      end
     end
 
     @pinned_article = pinned_article&.decorate
