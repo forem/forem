@@ -90,7 +90,7 @@ jobs:
         - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
-        - bundle exec rake assets:precompile
+        - NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile
     - stage: Test
       name: "E2E Seeded Node 0"
       env:
