@@ -124,9 +124,7 @@
     class="crayons-card text-padding min-w-0 z-elevate"
     id="comments-container"
     data-commentable-id="<%= @commentable&.id %>"
-    data-commentable-type="<%= @commentable&.class&.name %>"
-    data-commentable-author-id="<%= @commentable&.user_id %>"
-    data-commentable-co-author-ids="<%= @commentable&.co_author_ids&.join(",") %>">
+    data-commentable-type="<%= @commentable&.class&.name %>">
 
     <% unless @root_comment %>
       <%= render "form",
