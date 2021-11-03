@@ -82,6 +82,7 @@
         id="article-show-container"
         data-article-id="<%= @article.id %>"
         data-author-id="<%= @article.user_id %>"
+        data-co-author-ids="<%= @article.co_author_ids.join(",") %>"
         data-path="<%= @article.path %>"
         data-published="<%= @article.published? %>"
         data-pin-path="<%= stories_feed_pinned_article_path %>"

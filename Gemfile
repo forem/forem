@@ -93,7 +93,7 @@ gem "redis-rack", "2.0.6" # Redis Store for Rack applications
 
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
-gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
+gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 3.26" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
@@ -146,7 +146,7 @@ group :development, :test do
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.22", require: false # Automatic Ruby code style checking tool
-  gem "rubocop-performance", "~> 1.11", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
+  gem "rubocop-performance", "~> 1.12", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.5", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
