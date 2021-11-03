@@ -602,23 +602,27 @@ function handleHiddenComments(commentableType){
   if(commentableType === "Article"){
     const articleContainer = document.querySelector('#article-show-container');
     if(articleContainer){
-      commentableAuthorIds.push(articleContainer?.dataset?.authorId);
-      coAuthorIds = articleContainer?.dataset?.coAuthorIds;
-      if(coAuthorIds){
-        coAuthorIds.split(',').forEach(coAuthorId => {
-          commentableAuthorIds.push(coAuthorId);
-        });
+      if (articleContainer.dataset) {
+        commentableAuthorIds.push(articleContainer.dataset.authorId);
+        coAuthorIds = articleContainer.dataset.coAuthorIds;
+        if(coAuthorIds){
+          coAuthorIds.split(',').forEach(coAuthorId => {
+            commentableAuthorIds.push(coAuthorId);
+          });
+        }
       }
     }
     else {
       const commentsContainer = document.querySelector('#comments-container');
       if(commentsContainer){
-        commentableAuthorIds.push(commentsContainer?.dataset?.commentableAuthorId);
-        coAuthorIds = commentsContainer?.dataset?.commentableCoAuthorIds;
-        if(coAuthorIds){
-          coAuthorIds.split(',').forEach(coAuthorId => {
-            commentableAuthorIds.push(coAuthorId);
-          });
+        if(commentsContainer.dataset) {
+          commentableAuthorIds.push(commentsContainer.dataset.commentableAuthorId);
+          coAuthorIds = commentsContainer.dataset.commentableCoAuthorIds;
+          if(coAuthorIds){
+            coAuthorIds.split(',').forEach(coAuthorId => {
+              commentableAuthorIds.push(coAuthorId);
+            });
+          }
         }
       }
     }
@@ -628,7 +632,7 @@ function handleHiddenComments(commentableType){
       commentableAuthorIds.push(podCastEpisodeContainer.dataset.creatorId);
     }
   }
-  if (commentableAuthorIds.includes(currentUser?.id?.toString())){
+  if(currentUser && commentableAuthorIds.includes(currentUser.id.toString())){
     collapseCommentsHiddenByCommentableUser();
   }
   else {
