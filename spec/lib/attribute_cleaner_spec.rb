@@ -48,7 +48,7 @@ RSpec.describe AttributeCleaner, type: :lib do
     expect { TestClass.new.validate }.not_to raise_error
   end
 
-  it "works with non-AR classes", :aggregate_failures do
+  it "works with non-AR classes" do
     klass = Struct.new(:test, keyword_init: true)
     klass.include(described_class.for(:test))
     test_instance = klass.new(test: " ")
