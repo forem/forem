@@ -159,7 +159,7 @@
                               class: "crayons-textfield") %>
             <div id="<%= field.attribute_name %>-description" class="self-end fs-s">
               <span class="screen-reader-only">Available characters used: </span>
-              <span id="<%= field.attribute_name %>-characters"></span>/<%= field["input_type"] == "text_field" ? "100" : "200" %>
+              <span id="<%= field.attribute_name %>-characters"></span>/<%= character_count_denominator(field["input_type"]) %>
             </div>
           <% end %>
           <% if field.description.present? %>
