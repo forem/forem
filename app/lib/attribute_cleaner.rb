@@ -13,7 +13,9 @@ module AttributeCleaner
   #   include AttributeCleaner.for(:attribute1, :attribute2)
   def self.for(*attributes)
     Module.new do
-      def self.included(klass)
+      define_singleton_method(:included) do |klass|
+        return unless klass < ActiveRecord::Base
+
         klass.before_validation(:nullify_blank_attributes)
       end
 

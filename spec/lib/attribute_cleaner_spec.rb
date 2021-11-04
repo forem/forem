@@ -47,4 +47,13 @@ RSpec.describe AttributeCleaner, type: :lib do
 
     expect { TestClass.new.validate }.not_to raise_error
   end
+
+  it "works with non-AR classes", :aggregate_failures do
+    klass = Struct.new(:test, keyword_init: true)
+    klass.include(described_class.for(:test))
+    test_instance = klass.new(test: " ")
+
+    expect { test_instance.nullify_blank_attributes }
+      .to change(test_instance, :test).from(" ").to(nil)
+  end
 end
