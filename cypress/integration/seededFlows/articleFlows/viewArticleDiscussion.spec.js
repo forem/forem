@@ -50,4 +50,14 @@ describe('View article discussion', () => {
       .first()
       .findByRole('button', { name: 'Edit profile' });
   });
+
+  it('does not see hidden comments on an article not authored by them', () => {
+    cy.visit('/admin_mcadmin/test-article-with-hidden-comments-slug');
+    cy.findByText(/Some comments have been hidden by the post's author/).should(
+      'exist',
+    );
+    cy.findByRole('button', { name: 'Toggle dropdown menu' }).should(
+      'not.exist',
+    );
+  });
 });

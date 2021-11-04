@@ -149,8 +149,7 @@ RSpec.describe "Admin::Users", type: :request do
       params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
       patch user_status_admin_user_path(user.id), params: params
 
-      expect(user.roles.count).to eq(1)
-      expect(user.roles.last.name).to eq("super_admin")
+      expect(user.has_role?(:super_admin)).to be(true)
     end
 
     it "does not allow non-super-admin to doll out admin" do

@@ -94,12 +94,3 @@ body.ten-x-hacker-theme {
 body.trusted-status-true .trusted-visible-block {
   display: flex !important;
 }
-
-@keyframes loading-fadein {
-  from {
-    opacity: var(--opacity-0);
-  }
-  to {
-    opacity: 0.6;
-  }
-}

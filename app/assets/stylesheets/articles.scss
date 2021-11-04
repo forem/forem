@@ -8,7 +8,7 @@
 .home {
   position: relative;
   margin: 0 auto;
-  max-width: $max-width;
+  max-width: var(--site-width);
   text-align: left;
 
   @media screen and (max-width: 949px) {
@@ -82,25 +82,7 @@
     @media screen and (min-width: 950px) {
       display: block;
     }
-
-    .search-partner-mention {
-      display: none;
-      text-align: center;
-      margin-top: 15px;
-      width: 98%;
-      img {
-        margin-top: 12px;
-        width: 180px;
-      }
-      &.showing {
-        display: block;
-      }
-    }
   }
-}
-
-.sidebar-tags-browser {
-  max-height: 420px;
 }
 
 .sidebar-navigation-links .crayons-icon svg {
@@ -317,29 +299,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    // Organization Badge
-    .org-headline-filler {
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        darken($light-gray, 6%)
-      );
-      color: var(--card-color);
-      padding: 8px;
-      border-radius: 3px 0 3px 0;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      font-size: 0.9em;
-      line-height: 1;
-      img {
-        width: 24px;
-        height: 24px;
-        margin-right: 4px;
-        border-radius: 50%;
-        vertical-align: middle;
-      }
-    }
 
     .small-pic {
       float: left;
@@ -355,18 +314,6 @@
         height: 100%;
         width: 100%;
         border-radius: 50%;
-      }
-    }
-    .tiny-pic {
-      display: inline-block;
-      height: 30px;
-      width: 30px;
-      img {
-        height: 100%;
-        width: 100%;
-        &.round {
-          border-radius: 50%;
-        }
       }
     }
     .content {
@@ -496,7 +443,6 @@
     background: transparent;
     border: 0;
     -webkit-appearance: none;
-    font-family: $helvetica-condensed;
     color: var(--card-color-tertiary);
     a {
       &:hover {
@@ -548,23 +494,6 @@
           display: inline-block;
         }
       }
-      &.following-butt {
-        background: transparent;
-        color: darken($purple, 33%);
-      }
-    }
-    &.featured-engagement-count {
-      margin-top: -38px;
-      bottom: auto;
-      z-index: 10;
-      &.engage-button {
-        margin-top: -39px;
-      }
-    }
-    .engagement-count-number {
-      min-width: 28px;
-      text-align: left;
-      display: inline-block;
     }
   }
 }

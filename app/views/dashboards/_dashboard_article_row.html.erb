@@ -2,7 +2,7 @@
   <div class="dashboard-story__title">
     <h3 class="flex items-center">
       <% if article.archived %>
-        <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal">Archived</span>
+        <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal whitespace-nowrap">Archived</span>
       <% end %>
       <a href="<%= article.current_state_path %>" class="inline-flex items-center">
         <% if article.organization_id %>

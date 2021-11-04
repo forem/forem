@@ -1,3 +1,4 @@
+/* global Runtime */
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
@@ -476,7 +477,8 @@ export class ArticleForm extends Component {
 
         <KeyboardShortcuts
           shortcuts={{
-            'ctrl+shift+KeyP': this.fetchPreview,
+            [`${Runtime.getOSKeyboardModifierKeyString()}+shift+KeyP`]:
+              this.fetchPreview,
           }}
         />
       </form>

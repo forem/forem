@@ -20,7 +20,7 @@ RSpec.describe "User updates a tag", type: :system do
       end
 
       it "defaults to black and white upon update", :aggregate_failures do
-        click_button("SAVE CHANGES")
+        click_button(I18n.t("views.tags.edit.form.submit"))
 
         tag.reload
 
@@ -41,7 +41,7 @@ RSpec.describe "User updates a tag", type: :system do
         old_bg_color_hex = tag.bg_color_hex
         old_text_color_hex = tag.text_color_hex
 
-        click_button("SAVE CHANGES")
+        click_button(I18n.t("views.tags.edit.form.submit"))
 
         expect(tag.reload.bg_color_hex).to eq(old_bg_color_hex)
         expect(tag.reload.text_color_hex).to eq(old_text_color_hex)
@@ -64,7 +64,7 @@ RSpec.describe "User updates a tag", type: :system do
       end
 
       it "defaults to black and white upon update", :aggregate_failures do
-        click_button("SAVE CHANGES")
+        click_button(I18n.t("views.tags.edit.form.submit"))
 
         tag.reload
 
@@ -86,7 +86,7 @@ RSpec.describe "User updates a tag", type: :system do
         old_bg_color_hex = tag.bg_color_hex
         old_text_color_hex = tag.text_color_hex
 
-        click_button("SAVE CHANGES")
+        click_button(I18n.t("views.tags.edit.form.submit"))
 
         expect(tag.reload.bg_color_hex).to eq(old_bg_color_hex)
         expect(tag.reload.text_color_hex).to eq(old_text_color_hex)

@@ -20,7 +20,9 @@
       left: 0;
       right: 0;
       bottom: 0;
-      border-radius: var(--radius) var(--radius) 0 0;
+      border-radius: var(--radius-auto);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
       object-fit: cover;
       width: 100%;
       height: 100%;

@@ -14,15 +14,12 @@
   box-shadow: 0 0 0 1px var(--card-border);
   margin: 0 0 var(--su-2);
   position: relative;
+  border-radius: var(--radius-auto);
 
   &:focus-within {
     outline: none;
     --card-border: var(--accent-brand);
     box-shadow: 0 0 0 2px var(--card-border);
-  }
-
-  @media (min-width: $breakpoint-m) {
-    border-radius: var(--radius);
   }
 
   --story-padding: var(--su-4) var(--su-4) var(--su-3);

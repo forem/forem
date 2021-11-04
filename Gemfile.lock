@@ -6,6 +6,15 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
+GIT
+  remote: https://github.com/forem/cypress-rails.git
+  revision: 3b89de0823ce2857a901f166647f508ad08f7463
+  branch: enable-knapsack-pro-support
+  specs:
+    cypress-rails (0.5.3)
+      puma (>= 3.8.0)
+      railties (>= 5.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -119,7 +128,7 @@ GEM
       safely_block (>= 0.1.1)
     bootsnap (1.9.1)
       msgpack (~> 1.0)
-    brakeman (5.1.1)
+    brakeman (5.1.2)
     browser (5.3.1)
     brpoplpush-redis_script (0.1.2)
       concurrent-ruby (~> 1.0, >= 1.0.5)
@@ -132,8 +141,9 @@ GEM
     bundler-audit (0.9.0.1)
       bundler (>= 1.2.0, < 3)
       thor (~> 1.0)
-    capybara (3.35.3)
+    capybara (3.36.0)
       addressable
+      matrix
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
       rack (>= 1.6.0)
@@ -169,15 +179,12 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.9)
     connection_pool (2.2.5)
-    counter_culture (2.9.0)
+    counter_culture (3.0.0)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    cypress-rails (0.5.3)
-      puma (>= 3.8.0)
-      railties (>= 5.2.0)
     dante (0.2.0)
     ddtrace (0.53.0)
       ffi (~> 1.0)
@@ -241,7 +248,7 @@ GEM
     et-orbi (1.2.4)
       tzinfo
     eventmachine (1.2.7)
-    excon (0.85.0)
+    excon (0.87.0)
     execjs (2.7.0)
     exifr (1.3.9)
     factory_bot (6.2.0)
@@ -353,7 +360,7 @@ GEM
     highline (2.0.3)
     hkdf (0.3.0)
     honeybadger (4.9.0)
-    honeycomb-beeline (2.7.0)
+    honeycomb-beeline (2.7.1)
       libhoney (~> 1.14, >= 1.14.2)
     html_tokenizer (0.0.7)
     html_truncator (0.4.2)
@@ -408,6 +415,8 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       sass (>= 3.2)
+    js-routes (2.1.2)
+      railties (>= 4)
     json (2.5.1)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
@@ -430,10 +439,10 @@ GEM
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
-    libhoney (1.20.0)
+    libhoney (1.21.0)
       addressable (~> 2.0)
       excon
-      http (>= 2.0, < 5.0)
+      http (>= 2.0, < 6.0)
     liquid (5.1.0)
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -445,6 +454,7 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (1.0.1)
+    matrix (0.4.2)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     memory_profiler (1.0.0)
@@ -454,7 +464,7 @@ GEM
     mime-types-data (3.2021.0901)
     mini_histogram (0.3.1)
     mini_magick (4.11.0)
-    mini_mime (1.1.1)
+    mini_mime (1.1.2)
     mini_portile2 (2.6.1)
     minitest (5.14.4)
     modis (4.0.0)
@@ -506,7 +516,7 @@ GEM
     omniauth-apple (1.0.2)
       jwt
       omniauth-oauth2
-    omniauth-facebook (8.0.0)
+    omniauth-facebook (9.0.0)
       omniauth-oauth2 (~> 1.2)
     omniauth-github (2.0.0)
       omniauth (~> 2.0)
@@ -634,7 +644,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    reverse_markdown (2.0.0)
+    reverse_markdown (2.1.1)
       nokogiri
     rexml (3.2.5)
     rice (4.0.2)
@@ -673,7 +683,7 @@ GEM
     rspec-support (3.10.2)
     rss (0.2.9)
       rexml
-    rubocop (1.22.1)
+    rubocop (1.22.3)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -684,7 +694,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.12.0)
       parser (>= 3.0.1.1)
-    rubocop-performance (1.11.5)
+    rubocop-performance (1.12.0)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     rubocop-rails (2.12.4)
@@ -815,7 +825,7 @@ GEM
     ulid (1.3.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.7)
+    unf_ext (0.0.8)
     unicode-display_width (2.1.0)
     uniform_notifier (1.14.2)
     validate_url (1.0.13)
@@ -824,7 +834,7 @@ GEM
     vault (0.16.0)
       aws-sigv4
     vcr (6.0.0)
-    view_component (2.40.0)
+    view_component (2.42.0)
       activesupport (>= 5.0.0, < 8.0)
       method_source (~> 1.0)
     virtus (1.0.5)
@@ -863,7 +873,7 @@ GEM
       activerecord (>= 5.2)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.4.2)
+    zeitwerk (2.5.1)
     zonebie (0.6.1)
 
 PLATFORMS
@@ -888,12 +898,12 @@ DEPENDENCIES
   brakeman (~> 5.1)
   bullet (~> 6.1)
   bundler-audit (~> 0.9)
-  capybara (~> 3.35.3)
+  capybara (~> 3.36.0)
   carrierwave (~> 2.2)
   carrierwave-bombshelter (~> 0.2)
   cloudinary (~> 1.21)
-  counter_culture (~> 2.9)
-  cypress-rails (~> 0.5.3)
+  counter_culture (~> 3.0)
+  cypress-rails!
   ddtrace (~> 0.53.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
@@ -925,7 +935,7 @@ DEPENDENCIES
   guard-livereload (~> 2.5)
   hairtrigger (~> 0.2.24)
   honeybadger (~> 4.9)
-  honeycomb-beeline (~> 2.7.0)
+  honeycomb-beeline (~> 2.7.1)
   html_truncator (~> 0.4)
   htmlentities (~> 4.3, >= 4.3.4)
   httparty (~> 0.20)
@@ -935,6 +945,7 @@ DEPENDENCIES
   imgproxy (~> 2.0)
   inline_svg (~> 1.7)
   jbuilder (~> 2.11)
+  js-routes (~> 2.1)
   jsonapi-serializer (~> 2.2)
   kaminari (~> 1.2)
   katex (~> 0.8.0)
@@ -949,7 +960,7 @@ DEPENDENCIES
   oj (~> 3.13)
   omniauth (~> 2.0)
   omniauth-apple (~> 1.0)
-  omniauth-facebook (~> 8.0)
+  omniauth-facebook (~> 9.0)
   omniauth-github (~> 2.0)
   omniauth-rails_csrf_protection (~> 1.0)
   omniauth-twitter (~> 1.4)
@@ -976,7 +987,7 @@ DEPENDENCIES
   redis-rack (= 2.0.6)
   redis-rails (~> 5.0.2)
   request_store (~> 1.5)
-  reverse_markdown (~> 2.0)
+  reverse_markdown (~> 2.1)
   rolify (~> 6.0)
   rouge (~> 3.26)
   rpush (~> 6.0)
@@ -985,7 +996,7 @@ DEPENDENCIES
   rspec-retry (~> 0.6)
   rss (~> 0.2.9)
   rubocop (~> 1.22)
-  rubocop-performance (~> 1.11)
+  rubocop-performance (~> 1.12)
   rubocop-rails (~> 2.12)
   rubocop-rspec (~> 2.5)
   ruby-prof (~> 1.4)
@@ -1017,7 +1028,7 @@ DEPENDENCIES
   validate_url (~> 1.0)
   vault (~> 0.16)
   vcr (~> 6.0)
-  view_component (~> 2.40)
+  view_component (~> 2.42)
   wcag_color_contrast (~> 0.1)
   web-console (~> 4.1)
   webdrivers (~> 5.0)

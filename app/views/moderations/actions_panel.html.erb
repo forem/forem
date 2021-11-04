@@ -129,7 +129,7 @@
           <h3><%= t("views.moderations.actions.experience.subtitle") %></h3>
         </header>
       </div>
-      <div class=" toggle-chevron-container ">
+      <div class="toggle-chevron-container">
         <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
       </div>
     </button>
@@ -145,24 +145,26 @@
         class="level-rating-button <%= " selected" if current_rating_value == rating_level[0] %>"
         data-user-id="<%= current_user.id %>"
         data-article-id="<%= @moderatable.id %>"
-        data-group=" experience_level ">
-        <div class=" level-rating-content ">
-          <span class=" level-rating-number "><%= rating_level[1] %></span>
-          <span class=" level-rating-text "><%= t("views.moderations.actions.experience.level.#{rating_name}") %></span>
+        data-group="experience_level">
+        <div class="level-rating-content">
+          <span class="level-rating-number"><%= rating_level[1] %></span>
+          <span class="level-rating-text"><%= t("views.moderations.actions.experience.level.#{rating_name}") %></span>
         </div>
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: t("views.moderations.actions.checkmark")) %>
       </button>
       <% end %>
-      <a href="<%= URL.url %> community-moderation
-          <%= t("views.moderations.actions.how") %>>
+      <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
+        <span class="how-this-works-section">
+          <%= t("views.moderations.actions.how") %>
+        </span>
       </a>
     </div>
 
     <% if current_user.any_admin? && @moderatable.published %>
-      <div class=" unpublish-article ">
+      <div class="unpublish-article">
         <button
-          class=" crayons-btn crayons-btn--danger "
-          id=" unpublish-article-btn "
+          class="crayons-btn crayons-btn--danger"
+          id="unpublish-article-btn"
           data-article-id="<%= @moderatable.id %>"
           data-article-author="<%= @moderatable.username %>"
           data-article-slug="<%= @moderatable.slug %>">
@@ -172,7 +174,7 @@
     <% end %>
   </div>
 
-  <div class=" bottom-actions ">
-    <button id=" open-flag-user-modal " type=" button "><%= t("views.moderations.actions.flag") %></button>
+  <div class="bottom-actions">
+    <button id="open-flag-user-modal" type="button"><%= t("views.moderations.actions.flag") %></button>
   </div>
 </div>

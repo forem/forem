@@ -255,17 +255,24 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
 ///////////////////////////////////////////////////
 .crayons-color-selector {
+  --swatch-width: var(--su-6);
+  --swatch-height: var(--su-6);
   @extend %form-styling;
   padding: calc(0.5em - var(--border-width)) 0.5em;
   height: 40px;
 
   &::-webkit-color-swatch-wrapper {
     padding: 0;
-    height: var(--su-6);
-    width: var(--su-6);
+    width: var(--swatch-width);
+    height: var(--swatch-height);
   }
 
   &::-webkit-color-swatch {
     border: 0;
+  }
+
+  &--full {
+    width: 100%;
+    --swatch-width: 100%;
   }
 }
