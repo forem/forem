@@ -8,7 +8,11 @@
     <% removal = data["adjustment_type"] == "removal" %>
       <h3 class="mb-2 color-base-90"><%= t("views.notifications.tag.heading") %></h3>
       <p class="mb-4">
-        <%= t("views.notifications.tag.#{removal ? "remove" : "add"}_html", tag: link_to("##{data["tag_name"]}", "/t/#{data["tag_name"]}")), title: link_to(h(data["article"]["title"]), data["article"]["path"])) %>
+        <%= t(
+              "views.notifications.tag.#{removal ? 'remove' : 'add'}_html",
+              tag: link_to("##{data['tag_name']}", "/t/#{data['tag_name']}"),
+              title: link_to(h(data["article"]["title"]), data["article"]["path"]),
+            ) %>
       </p>
       <div class="crayons-card crayons-card--secondary p-4 mb-4">
         <p class="color-base-70">

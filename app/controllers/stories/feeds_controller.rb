@@ -35,16 +35,18 @@ module Stories
 
     def signed_in_base_feed
       if Settings::UserExperience.feed_strategy == "basic"
-        Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag]).feed
+        Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
+          .more_comments_minimal_weight_randomized
       else
-        feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-        feed.more_comments_minimal_weight_randomized_at_end
+        Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+          .more_comments_minimal_weight_randomized
       end
     end
 
     def signed_out_base_feed
       if Settings::UserExperience.feed_strategy == "basic"
-        Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag]).feed
+        Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
+          .default_home_feed(user_signed_in: false)
       else
         Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
           .default_home_feed(user_signed_in: false)

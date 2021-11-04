@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :users_setting, class: "Users::Setting" do
     config_font { "sans_serif" }
     config_navbar { "default" }
-    config_theme { "night_theme" }
+    config_theme { "dark_theme" }
     display_announcements { true }
     display_sponsors { true }
     editor_version { "v1" }
