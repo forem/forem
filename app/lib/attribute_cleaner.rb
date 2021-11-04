@@ -19,9 +19,10 @@ module AttributeCleaner
 
       define_method(:nullify_blank_attributes) do
         attributes.each do |attr|
+          next unless respond_to?(attr)
           next if public_send(attr).present?
 
-          public_send("#{attr}=", nil) if public_send(attr)
+          public_send("#{attr}=", nil)
         end
       end
     end

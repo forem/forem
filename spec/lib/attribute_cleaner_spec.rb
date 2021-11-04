@@ -41,4 +41,10 @@ RSpec.describe AttributeCleaner, type: :lib do
 
     expect { test_instance.validate }.not_to change(test_instance, :string_attribute)
   end
+
+  it "ignores obsolete attributes" do
+    TestClass.include(described_class.for(:non_existing))
+
+    expect { TestClass.new.validate }.not_to raise_error
+  end
 end
