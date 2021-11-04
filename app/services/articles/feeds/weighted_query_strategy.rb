@@ -103,6 +103,13 @@ module Articles
           fallback: 0.93,
           requires_user: true
         },
+        # Weight to give for feature or unfeatured articles.
+        featured_article_factor: {
+          clause: "(CASE articles.featured WHEN true THEN 1 ELSE 0 END)",
+          cases: [[1, 1]],
+          fallback: 0.85,
+          requires_user: false
+        },
         # Weight to give when the given user follows the article's
         # author.
         following_author_factor: {
@@ -195,22 +202,21 @@ module Articles
       #
       # @param only_featured [Boolean] select only articles that are
       #        "featured"
-      # @param feature_requires_image [Boolean] select only articles
+      # @param must_have_main_image [Boolean] select only articles
       #        that have a main image.
       # @param limit [Integer] the number of records to return
-      # @param offset [Integer] start the paging window at the given
-      #        offset
+      # @param offset [Integer] start the paging window at the given offset
       # @param omit_article_ids [Array] don't include these articles
       #        in the search results
       #
       # @return ActiveRecord::Relation for Article
       # rubocop:disable Layout/LineLength
-      def call(only_featured: false, feature_requires_image: false, limit: default_limit, offset: default_offset, omit_article_ids: [])
+      def call(only_featured: false, must_have_main_image: false, limit: default_limit, offset: default_offset, omit_article_ids: [])
         unsanitized_sub_sql = if @user.nil?
                                 [
                                   sql_sub_query_for_nil_user(
                                     only_featured: only_featured,
-                                    feature_requires_image: feature_requires_image,
+                                    must_have_main_image: must_have_main_image,
                                     limit: limit,
                                     offset: offset,
                                     omit_article_ids: omit_article_ids,
@@ -224,7 +230,7 @@ module Articles
                                 [
                                   sql_sub_query_for_existing_user(
                                     only_featured: only_featured,
-                                    feature_requires_image: feature_requires_image,
+                                    must_have_main_image: must_have_main_image,
                                     limit: limit,
                                     offset: offset,
                                     omit_article_ids: omit_article_ids,
@@ -262,7 +268,6 @@ module Articles
       # The featured story should be the article that:
       #
       # - has the highest relevance score for the nil_user version
-      # - has `featured = true`
       # - (OPTIONALLY) has a main image
       #
       # The other articles should use the nil_user version and require
@@ -324,10 +329,10 @@ module Articles
 
       # The sql statement for selecting based on relevance scores that
       # are for nil users.
-      def sql_sub_query_for_nil_user(only_featured:, feature_requires_image:, limit:, offset:, omit_article_ids:)
+      def sql_sub_query_for_nil_user(only_featured:, must_have_main_image:, limit:, offset:, omit_article_ids:)
         where_clause = build_sql_with_where_clauses(
           only_featured: only_featured,
-          feature_requires_image: feature_requires_image,
+          must_have_main_image: must_have_main_image,
           omit_article_ids: omit_article_ids,
         )
         <<~THE_SQL_STATEMENT
@@ -346,10 +351,10 @@ module Articles
 
       # The sql statement for selecting based on relevance scores that
       # are user required.
-      def sql_sub_query_for_existing_user(only_featured:, feature_requires_image:, limit:, offset:, omit_article_ids:)
+      def sql_sub_query_for_existing_user(only_featured:, must_have_main_image:, limit:, offset:, omit_article_ids:)
         where_clause = build_sql_with_where_clauses(
           only_featured: only_featured,
-          feature_requires_image: feature_requires_image,
+          must_have_main_image: must_have_main_image,
           omit_article_ids: omit_article_ids,
         )
         <<~THE_SQL_STATEMENT
@@ -398,11 +403,11 @@ module Articles
       # @todo Do we want to favor published at for scoping, or do we
       #       want to consider `articles.last_comment_at`.  If we do,
       #       we must remember to add an index to that field.
-      def build_sql_with_where_clauses(only_featured:, feature_requires_image:, omit_article_ids:)
+      def build_sql_with_where_clauses(only_featured:, must_have_main_image:, omit_article_ids:)
         where_clauses = "articles.published = true AND articles.published_at > :oldest_published_at"
         where_clauses += " AND articles.id NOT IN (:omit_article_ids)" unless omit_article_ids.empty?
         where_clauses += " AND articles.featured = true" if only_featured
-        where_clauses += " AND articles.main_image IS NOT NULL" if feature_requires_image
+        where_clauses += " AND articles.main_image IS NOT NULL" if must_have_main_image
         where_clauses
       end
 
