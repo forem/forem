@@ -195,11 +195,13 @@ module Articles
       #
       # @param only_featured [Boolean] select only articles that are
       #        "featured"
-      # @param feature_requires_image [Boolean] select only articles that have
-      #        a main image.
+      # @param feature_requires_image [Boolean] select only articles
+      #        that have a main image.
       # @param limit [Integer] the number of records to return
-      # @param offset [Integer] start the paging window at the given offset
-      # @param omit_article_ids [Array] don't include these articles in the search results
+      # @param offset [Integer] start the paging window at the given
+      #        offset
+      # @param omit_article_ids [Array] don't include these articles
+      #        in the search results
       #
       # @return ActiveRecord::Relation for Article
       # rubocop:disable Layout/LineLength
@@ -267,7 +269,7 @@ module Articles
       # the `featured = true` attribute.  In my envisioned
       # implementation, the pagination would omit the featured story.
       #
-      # @param feature_requires_image [Boolean] do we mandate that the
+      # @param must_have_main_image [Boolean] do we mandate that the
       #        featured story/stories require an image?
       # @return [Array<Article, Array<Article>] a featured story
       #         Article and an array of Article objects.
@@ -285,20 +287,25 @@ module Articles
       #       what that means.
       # @note including the ** operator to mirror the method interface
       #       of the other feed strategies.
-      def featured_story_and_default_home_feed(feature_requires_image: true, **)
+      #
+      # @todo In other implementations, when user's aren't signed in
+      #       we favor featured stories.  But not so much that they're
+      #       in the featured story.  For non-signed in users, we may
+      #       want to use a completely different set of scoring
+      #       methods.
+      def featured_story_and_default_home_feed(must_have_main_image: true, **)
         # We could parameterize this, but callers would need to
         # consider the impact of that decision, and it would break the
         # current contract.
         number_of_featured_stories = 1
         featured_story = call(
-          feature_requires_image: feature_requires_image,
           only_featured: true,
+          must_have_main_image: must_have_main_image,
           limit: number_of_featured_stories,
           offset: 0,
         ).first
         articles = call(
-          feature_requires_image: feature_requires_image,
-          only_featured: true,
+          must_have_main_image: must_have_main_image,
           # Make sure that we don't include the featured_story
           omit_article_ids: [featured_story&.id],
         )
@@ -309,11 +316,8 @@ module Articles
       #       default home feed omits the featured story.  In this
       #       case, I don't want to do that.  Instead, I want to see
       #       how this behaves.
-      def default_home_feed(feature_requires_image: true, **)
-        call(
-          feature_requires_image: feature_requires_image,
-          only_featured: true,
-        )
+      def default_home_feed(must_have_main_image: true, **)
+        call(must_have_main_image: must_have_main_image)
       end
 
       private
