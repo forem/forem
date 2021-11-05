@@ -1,5 +1,5 @@
 /* global Runtime */
-import { waitForDataLoaded } from '../utilities/waitForDataLoaded';
+import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { request } from '@utilities/http';
 
 function loadForemMobileNamespace() {
@@ -70,8 +70,12 @@ function loadForemMobileNamespace() {
 }
 
 // Initialize (when ready)
-waitForDataLoaded().then(() => {
-  if (Runtime.currentMedium() === 'ForemWebView') {
-    loadForemMobileNamespace();
-  }
-});
+waitOnBaseData()
+  .then(() => {
+    if (Runtime.currentMedium() === 'ForemWebView') {
+      loadForemMobileNamespace();
+    }
+  })
+  .catch((error) => {
+    Honeybadger.notify(error);
+  });

@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import { RuntimeBanner } from '../runtimeBanner';
-import { waitForDataLoaded } from '../utilities/waitForDataLoaded';
+import { waitOnBaseData } from '../utilities/waitOnBaseData';
 
 function loadElement() {
   const container = document.getElementById('runtime-banner-container');
@@ -14,10 +14,14 @@ function loadElement() {
 // occurs when the page initializes for the first time or when signing out (no
 // cache request). In order to avoid this we defer the initialization until the
 // page is actually ready.
-waitForDataLoaded().then(() => {
-  window.InstantClick.on('change', () => {
-    loadElement();
-  });
+waitOnBaseData()
+  .then(() => {
+    window.InstantClick.on('change', () => {
+      loadElement();
+    });
 
-  loadElement();
-});
+    loadElement();
+  })
+  .catch((error) => {
+    Honeybadger.notify(error);
+  });
