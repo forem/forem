@@ -44,7 +44,12 @@ module Stories
                Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
              end
       Datadog.tracer.trace("#{self.class}.#{__method__}", span_type: "feed", resource: feed.class.to_s) do
-        feed.more_comments_minimal_weight_randomized
+        # Hey, why the to_a you say?  Because the
+        # LargeForemExperimental has already done this.  But the
+        # weighted strategy has not.  I also don't want to alter the
+        # weighted query implementation as it returns a lovely
+        # ActiveRecord::Relation.  So this is a compromise.
+        feed.more_comments_minimal_weight_randomized.to_a
       end
     end
 
@@ -60,7 +65,12 @@ module Stories
                Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
              end
       Datadog.tracer.trace("#{self.class}.#{__method__}", span_type: "feed", resource: feed.class.to_s) do
-        feed.default_home_feed(user_signed_in: false)
+        # Hey, why the to_a you say?  Because the
+        # LargeForemExperimental has already done this.  But the
+        # weighted strategy has not.  I also don't want to alter the
+        # weighted query implementation as it returns a lovely
+        # ActiveRecord::Relation.  So this is a compromise.
+        feed.default_home_feed(user_signed_in: false).to_a
       end
     end
 

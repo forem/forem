@@ -251,7 +251,13 @@ class StoriesController < ApplicationController
                Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
              end
       Datadog.tracer.trace("#{self.class}.#{__method__}", span_type: "feed", resource: feed.class.to_s) do
+        # Hey, why the to_a you say?  Because the
+        # LargeForemExperimental has already done this.  But the
+        # weighted strategy has not.  I also don't want to alter the
+        # weighted query implementation as it returns a lovely
+        # ActiveRecord::Relation.  So this is a concession.
         @featured_story, @stories = feed.featured_story_and_default_home_feed(user_signed_in: user_signed_in?)
+        @stories = @stories.to_a
       end
     end
 
