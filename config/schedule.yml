@@ -140,3 +140,7 @@ push_notifications_cleanup:
   description: "Cleans up Push Notifications from Redis (runs every 8 hours on the 20th minute after the hour)"
   cron: "20 */8 * * *"
   class: "PushNotifications::CleanupWorker"
+capture_query_stats:
+  description: "Collects Postgres query stats for PGHero (runs every 5 minutes)"
+  cron: "*/5 * * * *"
+  class: "CaptureQueryStatsWorker"
