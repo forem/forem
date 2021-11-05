@@ -250,7 +250,8 @@ class StoriesController < ApplicationController
              else
                Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
              end
-      Datadog.tracer.trace("#{self.class}.#{__method__}", span_type: "feed", resource: feed.class.to_s) do
+      Datadog.tracer.trace("feed.query", span_type: "db",
+                                         resource: "#{self.class}.#{__method__}.#{feed.class.to_s.dasherize}") do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the
