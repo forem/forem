@@ -157,13 +157,17 @@
                               aria: { describedby: "#{field.attribute_name}-description" },
                               data: { character_span_id: "#{field.attribute_name}-characters" },
                               class: "crayons-textfield") %>
-            <div id="<%= field.attribute_name %>-description" class="self-end fs-s">
-              <span class="screen-reader-only">Available characters used: </span>
-              <span id="<%= field.attribute_name %>-characters"></span>/<%= character_count_denominator(field["input_type"]) %>
+            <div style="display: grid; grid-template-columns: 85% 15%;">
+              <div>
+                <% if field.description.present? %>
+                  <p class="crayons-field__description"><%= field.description %></p>
+                <% end %>
+              </div>
+               <div id="<%= field.attribute_name %>-description" class="fs-s" style="justify-self: end;">
+                <span class="screen-reader-only">Available characters used: </span>
+                <span id="<%= field.attribute_name %>-characters"></span>/<%= character_count_denominator(field["input_type"]) %>
+              </div>
             </div>
-          <% end %>
-          <% if field.description.present? %>
-            <p class="crayons-field__description"><%= field.description %></p>
           <% end %>
         </div>
       <% end %>
