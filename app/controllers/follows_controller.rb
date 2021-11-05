@@ -55,7 +55,7 @@ class FollowsController < ApplicationController
 
     followable_klass = case params[:followable_type].capitalize
                        when "Organization", "Tag", "Podcast"
-                         params[:followable_type].constantize
+                         params[:followable_type].capitalize.constantize
                        else
                          User
                        end
