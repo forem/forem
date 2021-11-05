@@ -78,12 +78,6 @@ RSpec.describe "Comments", type: :request do
         expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
         expect(response.body).to include(child.processed_html)
       end
-
-      it "does not display the comment if it is hidden" do
-        child.update(hidden_by_commentable_user: true)
-        get comment.path
-        expect(response.body).not_to include child.processed_html
-      end
     end
 
     context "when the comment is two levels nested and hidden" do # child of a child

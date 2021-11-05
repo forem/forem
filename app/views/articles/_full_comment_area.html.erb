@@ -28,11 +28,7 @@
 
         <div class="comments" id="comment-trees-container">
           <% if @article.comments_count > 0 %>
-            <% Comment.tree_for(@article, @comments_to_show_count).each do |comment, sub_comments| %>
-              <% cache ["comment_root_cached_tree", comment] do %>
-                <%= tree_for(comment, sub_comments, @article) %>
-              <% end %>
-            <% end %>
+            <%= render partial: "articles/comment_tree", collection: Comment.tree_for(@article, @comments_to_show_count), as: :comment_node, cached: proc { |comment, _sub_comments| comment } %>
           <% end %>
         </div>
       </div>

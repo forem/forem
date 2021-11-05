@@ -65,6 +65,7 @@ namespace :admin do
     resources :articles, only: %i[index show update] do
       member do
         delete :unpin
+        post :pin
       end
     end
 

@@ -39,12 +39,6 @@ article {
   }
 }
 
-.home .container {
-  @media screen and (min-width: $max-width) {
-    margin-left: 16px;
-  }
-}
-
 .container {
   width: 880px;
   max-width: 100%;
