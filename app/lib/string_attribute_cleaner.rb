@@ -1,7 +1,7 @@
 # This module provides a method for generating a configurable before_validation
 # hook for cleaning up string attributes: all listed attributes will be
 # replaced with `nil` if they are blank.
-module AttributeCleaner
+module StringAttributeCleaner
   # This method specifies the list of attributes that should be cleaned before
   # validation happens.
   #
@@ -10,7 +10,7 @@ module AttributeCleaner
   # @return [void]
   #
   # @example Defining a list of attributes to be cleaned
-  #   include AttributeCleaner.for(:attribute1, :attribute2)
+  #   include StringAttributeCleaner.for(:attribute1, :attribute2)
   def self.for(*attributes)
     Module.new do
       define_singleton_method(:included) do |klass|

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AttributeCleaner, type: :lib do
+RSpec.describe StringAttributeCleaner, type: :lib do
   with_model :TestClass do
     table do |t|
       t.string :string_attribute
@@ -8,7 +8,7 @@ RSpec.describe AttributeCleaner, type: :lib do
 
     model do
       # rubocop:disable RSpec/DescribedClass
-      include AttributeCleaner.for(:string_attribute)
+      include StringAttributeCleaner.for(:string_attribute)
       # rubocop:enable RSpec/DescribedClass
     end
   end
