@@ -1,20 +1,6 @@
-/* global Runtime, fetchBaseData */
-
-function initializeNamespaceWhenPageIsReady() {
-  setTimeout(() => {
-    // Wait for data-loaded so we can ensure initializers have executed. This
-    // way we know the Runtime class will be available globally
-    if (document.body.getAttribute('data-loaded') === 'true') {
-      // We're ready to initialize
-      if (Runtime.currentMedium() === 'ForemWebView') {
-        loadForemMobileNamespace();
-      }
-    } else {
-      // Page hasn't initialized yet. We need to wait until the page is ready
-      initializeNamespaceWhenPageIsReady();
-    }
-  }, 100);
-}
+/* global Runtime */
+import { waitForDataLoaded } from '../utilities/waitForDataLoaded';
+import { request } from '@utilities/http';
 
 function loadForemMobileNamespace() {
   window.ForemMobile = {
@@ -39,22 +25,9 @@ function loadForemMobileNamespace() {
       });
     },
     registerDeviceToken(token, appBundle, platform) {
-      const params = JSON.stringify({
-        token,
-        platform,
-        app_bundle: appBundle,
-      });
-      const csrfToken = document.querySelector(
-        "meta[name='csrf-token']",
-      )?.content;
-      fetch('/users/devices', {
+      request(`/users/devices`, {
         method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'X-CSRF-Token': csrfToken,
-          'Content-Type': 'application/json',
-        },
-        body: params,
+        body: { token, platform, app_bundle: appBundle },
         credentials: 'same-origin',
       })
         .then((response) => response.json())
@@ -67,48 +40,38 @@ function loadForemMobileNamespace() {
             clearInterval(window.ForemMobile.deviceRegistrationInterval);
             window.ForemMobile.retryDelayMs = 700;
           } else {
-            // Registration failed - log error message
-            Honeybadger.notify(response.error);
+            // Registration failed - throw and log error message
+            throw new Error(response.error);
           }
         })
-        .catch(() => {
-          // Re-attempt with exponential backoff up to ~20s delay
-          clearInterval(window.ForemMobile.deviceRegistrationInterval);
+        .catch((error) => {
+          Honeybadger.notify(error);
+
+          // Increase backoff delay time
           if (window.ForemMobile.retryDelayMs < 20000) {
             window.ForemMobile.retryDelayMs =
               window.ForemMobile.retryDelayMs * 2;
           }
 
-          window.ForemMobile.deviceRegistrationInterval = setInterval(
-            window.registerDeviceToken,
-            window.ForemMobile.retryDelayMs,
-          );
-
-          // Force a refresh on BaseData (CSRF Token)
-          fetchBaseData();
+          // Attempt to register again after delay
+          setTimeout(() => {
+            window.ForemMobile.registerDeviceToken(token, appBundle, platform);
+          }, window.ForemMobile.retryDelayMs);
         });
-      window.deviceRegistrationInterval = setInterval(
-        window.registerDeviceToken,
-        window.ForemMobile.retryDelayMs,
-      );
     },
     unregisterDeviceToken(userId, token, appBundle, platform) {
-      const params = JSON.stringify({
-        token,
-        platform,
-        app_bundle: appBundle,
-      });
-      fetch(`/users/devices/${userId}`, {
+      request(`/users/devices/${userId}`, {
         method: 'DELETE',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: params,
+        body: { token, platform, app_bundle: appBundle },
+        credentials: 'same-origin',
       });
     },
   };
 }
 
 // Initialize (when ready)
-initializeNamespaceWhenPageIsReady();
+waitForDataLoaded().then(() => {
+  if (Runtime.currentMedium() === 'ForemWebView') {
+    loadForemMobileNamespace();
+  }
+});
