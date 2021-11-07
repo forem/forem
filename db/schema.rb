@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["main_category_id"], name: "index_articles_on_main_category_id"
+    t.index ["password"], name: "index_articles_on_password"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
@@ -387,6 +388,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.boolean "hidden_by_commentable_user", default: false
     t.string "id_code"
     t.integer "markdown_character_count"
+    t.string "password"
     t.integer "positive_reactions_count", default: 0, null: false
     t.text "processed_html"
     t.integer "public_reactions_count", default: 0, null: false
@@ -405,6 +407,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["deleted"], name: "index_comments_on_deleted", where: "(deleted = false)"
     t.index ["hidden_by_commentable_user"], name: "index_comments_on_hidden_by_commentable_user", where: "(hidden_by_commentable_user = false)"
+    t.index ["password"], name: "index_comments_on_password"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -1312,7 +1315,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
-	t.string "origin", null: true
+    t.string "origin", null: true
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
     t.string "payment_pointer"
