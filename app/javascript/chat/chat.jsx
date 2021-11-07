@@ -1498,7 +1498,7 @@ export class Chat extends Component {
         className="bg-base-90 color-base-0 p-3 align-center fs-s m:fs-base lh-tight"
         aria-live="polite"
       >
-        FORUM Chat is an experimental feature/auxiliary function in this application.
+        FORUM Chat is an experimental feature in this application.
         User experience may vary. &nbsp;
         <a
           href="mailto:admin@forum.ax"
