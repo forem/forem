@@ -10,15 +10,9 @@
     <div class="notification__content">
       <header class="mb-4">
         <h2 class="fs-base fw-normal">
-          <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold">
-            <%= json_data["user"]["name"] %>
-          </a>
-          made a new post
-          <% if json_data["organization"] %>
-            under <a href="<%= json_data["organization"]["path"] %>" class="crayons-link fw-bold"><%= json_data["organization"]["name"] %></a>
-          <% end %>
+          <%= message_user_acted_maybe_org(json_data, "views.notifications.new_post.verb_html", if_org: "views.notifications.new_post.if_org_html") %>
         </h2>
-        <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small></p>
+        <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words json_data["article"]["published_at"], scope: :"datetime.distance_in_words_ago" %></small></p>
       </header>
 
       <%= render "notifications/shared/article_preview", json_data: json_data, notification: notification, context: "default" %>

@@ -3,9 +3,10 @@
 
 .listings-columns {
   margin-bottom: var(--su-6);
+  display: grid;
+  gap: var(--su-2);
 
   @media (min-width: $breakpoint-m) {
-    display: grid;
     grid-gap: var(--su-4);
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   }

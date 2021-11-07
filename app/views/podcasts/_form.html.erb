@@ -3,12 +3,12 @@
 <%= form_with(model: podcast, local: true) do |form| %>
   <div>
     <header class="mb-4">
-      <a href="/pod" class="crayons-link crayons-link--secondary fs-s">&laquo; Return to podcasts</a>
-      <h1 class="crayons-title"><%= I18n.t("podcasts.suggest_a_podcast") %></h1>
+      <a href="/pod" class="crayons-link crayons-link--secondary fs-s"><%= t("views.podcasts.form.return") %></a>
+      <h1 class="crayons-title"><%= t("views.podcasts.form.heading") %></h1>
     </header>
     <% if podcast.errors.any? %>
       <div class="podcast-errors">
-        <h2><%= pluralize(podcast.errors.count, "error") %> while creating a podcast:</h2>
+        <h2><%= t("views.podcasts.form.errors", count: podcast.errors.count) %></h2>
         <ul>
         <% podcast.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -19,7 +19,7 @@
     <div id="podcast-form-data" class="crayons-card mb-6 grid grid-flow-row gap-4 s:gap-6 p-4 s:p-6">
       <div class="crayons-field crayons-field--checkbox">
         <%= check_box_tag :i_am_owner, {}, {}, class: "crayons-checkbox" %>
-        <%= label_tag :i_am_owner, "I am the owner of this podcast", class: "crayons-field__label" %>
+        <%= label_tag :i_am_owner, t("views.podcasts.form.owner"), class: "crayons-field__label" %>
       </div>
       <div class="crayons-field">
         <%= form.label :title, class: "crayons-field__label" %>
@@ -74,7 +74,7 @@
         <%= form.text_field :soundcloud_url, class: "crayons-textfield", placeholder: "https://..." %>
       </div>
       <div class="crayons-field">
-        <%= form.submit "Suggest", class: "crayons-btn" %>
+        <%= form.submit t("views.podcasts.form.suggest"), class: "crayons-btn" %>
       </div>
     </div>
   </div>

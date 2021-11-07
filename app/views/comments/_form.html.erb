@@ -3,7 +3,7 @@
 
 <% if @comment.errors.any? %>
   <div class="crayons-notice crayons-notice--danger" role="alert">
-    <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+    <h2><%= t("views.comments.write.errors", count: @comment.errors.count) %></h2>
     <ul>
       <% @comment.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -15,7 +15,7 @@
 <%= form_for(@comment, authenticity_token: false, html: { class: "comment-form print-hidden" }) do |f| %>
   <% if @article&.comment_template.present? && @comment.new_record? %>
     <div class="article-comment-form-preamble">
-      This post comes with a comment template
+      <%= t("views.comments.write.template.article") %>
     </div>
   <% end %>
 
@@ -34,7 +34,7 @@
   <div class="comment-form__inner">
     <div class="comment-form__field">
       <%= f.text_area :body_markdown,
-                      placeholder: "Add to the discussion",
+                      placeholder: t("views.comments.write.field.placeholder"),
                       onfocus: "handleFocus(event)",
                       onkeyup: "handleKeyUp(event)",
                       onkeydown: "handleKeyDown(event)",
@@ -42,34 +42,34 @@
                       id: "text-area",
                       required: true,
                       class: "crayons-textfield comment-textarea crayons-textfield--ghost",
-                      "aria-label": "Add a comment to the discussion" %>
+                      "aria-label": t("views.comments.write.field.aria_label") %>
       <div class="comment-form__toolbar">
         <div class="editor-image-upload">
           <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
           <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed" onclick="handleImageUpload(event,'main')">
             <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon") %>
-            <span class="hidden s:inline-block" aria-hidden="false">Upload image</span>
+            <span class="hidden s:inline-block" aria-hidden="false"><%= t("views.comments.write.field.upload") %></span>
           </button>
           <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
-          <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
+          <input type="submit" id='image-upload-submit-main' value="<%= t("views.comments.write.field.submit") %>" style="display:none">
           <input class="hidden" id="uploaded-image-main" />
         </div>
 
-        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button" title="Use a response template" data-has-listener="false" data-form-id="new_comment">
+        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button" title="<%= t("views.comments.write.field.use") %>" data-has-listener="false" data-form-id="new_comment">
           <%= inline_svg_tag("templates.svg", aria: true, class: "crayons-icon") %>
-          <span class="hidden s:inline-block" aria-hidden="false">Templates</span>
+          <span class="hidden s:inline-block" aria-hidden="false"><%= t("views.comments.write.field.templates") %></span>
         </button>
 
-        <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="Markdown Guide">
-          <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon", title: "Editor guide") %>
+        <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="<%= t("views.comments.write.field.guide.title") %>">
+          <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon", title: t("views.comments.write.field.guide.icon")) %>
         </a>
       </div>
     </div>
 
     <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 comment-form__templates fs-base hidden">
       <header class="mb-3">
-        <button type="button" class="crayons-btn personal-template-button active" data-target-type="personal" data-form-id="new_comment">Personal</button>
-        <button type="button" class="crayons-btn moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">Moderator</button>
+        <button type="button" class="crayons-btn personal-template-button active" data-target-type="personal" data-form-id="new_comment"><%= t("views.comments.write.template.personal") %></button>
+        <button type="button" class="crayons-btn moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment"><%= t("views.comments.write.template.moderator") %></button>
       </header>
 
       <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading" loading="lazy" />
@@ -82,17 +82,17 @@
       </div>
 
       <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>">
-        Create template
+        <%= t("views.comments.write.template.create.subtitle") %>
       </a>
-      <p>Templates let you quickly answer FAQs or store snippets for re-use.</p>
+      <p><%= t("views.comments.write.template.create.desc") %></p>
     </div>
 
     <div class="comment-form__preview text-styles text-styles--secondary" id="preview-div"></div>
 
     <div class="comment-form__buttons mb-4">
-      <button type="submit" class="crayons-btn mr-2 js-btn-enable" onclick="validateField(event)" disabled>Submit</button>
-      <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview js-btn-enable mr-2" disabled>Preview</button>
-      <a href="<%= @comment.path %>" class="dismiss-edit-comment crayons-btn crayons-btn--ghost js-btn-dismiss hidden">Dismiss</a>
+      <button type="submit" class="crayons-btn mr-2 js-btn-enable" onclick="validateField(event)" disabled><%= t("views.comments.write.submit") %></button>
+      <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview js-btn-enable mr-2" disabled><%= t("views.comments.write.preview") %></button>
+      <a href="<%= @comment.path %>" class="dismiss-edit-comment crayons-btn crayons-btn--ghost js-btn-dismiss hidden"><%= t("views.comments.write.cancel") %></a>
     </div>
   </div>
 
