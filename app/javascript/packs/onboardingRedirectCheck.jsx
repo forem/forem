@@ -9,11 +9,13 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
   return null;
 });
 
+// If localStorage.getItem('shouldRedirectToOnboarding') is not set, i.e. null, that means we should redirect.
 function redirectableLocation() {
   return (
     window.location.pathname !== '/onboarding' &&
     window.location.pathname !== '/signout_confirm' &&
-    window.location.pathname !== '/privacy'
+    window.location.pathname !== '/privacy' &&
+    window.location.pathname !== '/admin/creator_settings/new'
   );
 }
 
@@ -25,6 +27,14 @@ function onboardingSkippable(currentUser) {
   );
 }
 
+function onboardCreator(currentUser) {
+  return (
+    document.body.dataset.creator === 'true' &&
+    document.body.dataset.creatorOnboarding === 'true' &&
+    !currentUser.saw_onboarding
+  );
+}
+
 document.ready.then(
   getUserDataAndCsrfToken()
     .then(({ currentUser, csrfToken }) => {
@@ -32,7 +42,9 @@ document.ready.then(
       window.csrfToken = csrfToken;
       getUnopenedChannels();
 
-      if (redirectableLocation() && !onboardingSkippable(currentUser)) {
+      if (redirectableLocation() && onboardCreator(currentUser)) {
+        window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;
+      } else if (redirectableLocation() && !onboardingSkippable(currentUser)) {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
       }
     })
@@ -46,6 +58,12 @@ window.InstantClick.on('change', () => {
   getUserDataAndCsrfToken()
     .then(({ currentUser }) => {
       if (
+        redirectableLocation() &&
+        localStorage.getItem('shouldRedirectToOnboarding') === null &&
+        onboardCreator(currentUser)
+      ) {
+        window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;
+      } else if (
         redirectableLocation() &&
         localStorage.getItem('shouldRedirectToOnboarding') === null &&
         !onboardingSkippable(currentUser)

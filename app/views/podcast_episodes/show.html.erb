@@ -28,7 +28,7 @@
 
 <% end %>
 
-<main id="main-content" class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
+<main id="main-content" class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>" data-creator-id="<%= @podcast.creator_id %>">
   <div class="hero">
     <div class="title" style="background:#<%= @podcast.main_color_hex %>">
       <h2>

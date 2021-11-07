@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_19_151431) do
+ActiveRecord::Schema.define(version: 2021_11_04_161101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.integer "positive_reactions_count", default: 0, null: false
     t.integer "previous_positive_reactions_count", default: 0
     t.integer "previous_public_reactions_count", default: 0, null: false
+    t.integer "privileged_users_reaction_points_sum", default: 0
     t.text "processed_html"
     t.integer "public_reactions_count", default: 0, null: false
     t.boolean "published", default: false
@@ -837,6 +838,17 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
+  create_table "pghero_query_stats", force: :cascade do |t|
+    t.bigint "calls"
+    t.datetime "captured_at"
+    t.text "database"
+    t.text "query"
+    t.bigint "query_hash"
+    t.float "total_time"
+    t.text "user"
+    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
   end
 
   create_table "podcast_episode_appearances", force: :cascade do |t|

@@ -124,9 +124,9 @@ module ApplicationHelper
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
     followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
-                        followable.object.class.name.downcase
+                        followable.object.class.name
                       else
-                        followable.class.name.downcase
+                        followable.class.name
                       end
 
     followable_name = followable.name

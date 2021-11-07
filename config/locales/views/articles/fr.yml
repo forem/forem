@@ -75,8 +75,8 @@ fr:
         edit: Click to edit
       co_authors_html: with %{names}
       crossposted:
-        text_html: Originally published at %{url}%{on}
-        'on': " on %{date}"
+        text_html: Originally published at %{url} %{on}
+        on_html: on %{date}
       edited: Updated on %{date}
       edited_html: Updated on %{date}
       for_org_html: "%{start} for %{end}%{org}"

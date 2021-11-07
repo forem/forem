@@ -69,7 +69,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
 
         it "renders normal page if no articles but tag is supported" do
           Article.destroy_all
-          expect { get "/t/#{tag.name}" }.not_to raise_error(ActiveRecord::RecordNotFound)
+          expect { get "/t/#{tag.name}" }.not_to raise_error
         end
 
         it "renders page with top/week etc." do
