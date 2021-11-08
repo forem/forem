@@ -16,10 +16,10 @@
                        value: @user.name,
                        aria: { describedby: "name-description" },
                        data: { character_span_id: "name-characters" } %>
-      <div id="name-description" class="self-end fs-s">
+      <p id="name-description" class="crayons-field__description align-right">
         <span class="screen-reader-only">Available characters used: </span>
         <span id="name-characters"></span>/30
-      </div>
+      </p>
     </div>
 
     <div class="crayons-field">
@@ -31,10 +31,10 @@
                        value: @user.email,
                        aria: { describedby: "email-description" },
                        data: { character_span_id: "email-characters" } %>
-      <div id="email-description" class="self-end fs-s">
+      <p id="email-description" class="crayons-field__description align-right">
         <span class="screen-reader-only">Available characters used: </span>
         <span id="email-characters"></span>/50
-      </div>
+      </p>
     </div>
 
     <div class="crayons-field crayons-field--checkbox">
@@ -51,10 +51,10 @@
                        value: @user.username,
                        aria: { describedby: "username-description" },
                        data: { character_span_id: "username-characters" } %>
-      <div id="username-description" class="self-end fs-s">
+      <p id="username-description" class="crayons-field__description align-right">
         <span class="screen-reader-only">Available characters used: </span>
         <span id="username-characters"></span>/30
-      </div>
+      </p>
     </div>
 
     <div class="crayons-field">
@@ -87,10 +87,10 @@
                       class: "crayons-textfield",
                       aria: { describedby: "url-description" },
                       data: { character_span_id: "url-characters" } %>
-      <div id="url-description" class="self-end fs-s">
+      <p id="url-description" class="crayons-field__description align-right">
         <span class="screen-reader-only">Available characters used: </span>
         <span id="url-characters"></span>/100
-      </div>
+      </p>
     </div>
 
     <div class="crayons-field">
@@ -104,10 +104,10 @@
                        class: "crayons-textfield",
                        aria: { describedby: "location-description" },
                        data: { character_span_id: "location-characters" } %>
-      <div id="location-description" class="self-end fs-s">
+      <p id="location-description" class="crayons-field__description align-right">
         <span class="screen-reader-only">Available characters used: </span>
         <span id="location-characters"></span>/100
-      </div>
+      </p>
     </div>
 
     <div class="crayons-field">
@@ -121,10 +121,10 @@
                       class: "crayons-textfield",
                       aria: { describedby: "summary-description" },
                       data: { character_span_id: "summary-characters" } %>
-      <div id="summary-description" class="self-end fs-s">
+      <p id="summary-description" class="crayons-field__description align-right">
         <span class="screen-reader-only">Available characters used: </span>
         <span id="summary-characters"></span>/200
-      </div>
+      </p>
     </div>
   </div>
 
@@ -145,11 +145,17 @@
                               class: "crayons-checkbox") %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
+              <% if field.description.present? %>
+                <p class="crayons-field__description"><%= field.description %></p>
+              <% end %>
             </label>
           <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
+            <% if field.description.present? %>
+              <p class="crayons-field__description"><%= field.description %></p>
+            <% end %>
             <%= f.public_send(field["input_type"],
                               "profile[#{field.attribute_name}]",
                               value: profile.public_send(field.attribute_name),
@@ -157,13 +163,10 @@
                               aria: { describedby: "#{field.attribute_name}-description" },
                               data: { character_span_id: "#{field.attribute_name}-characters" },
                               class: "crayons-textfield") %>
-            <div id="<%= field.attribute_name %>-description" class="self-end fs-s">
+            <p id="<%= field.attribute_name %>-description" class="crayons-field__description align-right">
               <span class="screen-reader-only">Available characters used: </span>
               <span id="<%= field.attribute_name %>-characters"></span>/<%= character_count_denominator(field["input_type"]) %>
-            </div>
-          <% end %>
-          <% if field.description.present? %>
-            <p class="crayons-field__description"><%= field.description %></p>
+            </p>
           <% end %>
         </div>
       <% end %>
@@ -177,6 +180,7 @@
       <label class="crayons-field__label" for="users_setting[brand_color1]">
         <%= t("views.logo.color_1.label") %>
       </label>
+      <p class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
       <div class="flex items-center w-100 m:w-50">
         <%= f.public_send("text_field", "users_setting[brand_color1]",
                           value: users_setting.public_send("brand_color1"),
@@ -187,13 +191,13 @@
                           value: users_setting.public_send("brand_color1"),
                           class: "crayons-color-selector js-color-field ml-2") %>
       </div>
-      <p class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
     </div>
 
     <div class="crayons-field ">
       <label class="crayons-field__label" for="users_setting[brand_color1]">
         <%= t("views.logo.color_2.label") %>
       </label>
+      <p class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
       <div class="flex items-center w-100 m:w-50">
         <%= f.public_send("text_field", "users_setting[brand_color2]",
                           value: users_setting.public_send("brand_color2"),
@@ -204,7 +208,6 @@
                           value: users_setting.public_send("brand_color2"),
                           class: "crayons-color-selector js-color-field ml-2") %>
       </div>
-      <p class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
     </div>
   </div>
 
