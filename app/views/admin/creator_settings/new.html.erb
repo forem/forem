@@ -51,12 +51,12 @@
   <%= render "form" %>
   <div class="crayons-field mt-6 align-left">
     <%= submit_tag "Finish", class: "crayons-btn btn--primary" %>
-  </div>
-   <% if @help_url %>
-      <a class="admin-help-button crayons-btn crayons-btn--icon-rounded crayons-btn--s" href="<%= @help_url %>" target="_blank" rel="noopener noreferer">
-        <%= inline_svg_tag("circle-question.svg", aria: true, title: "Forem Admin Guide") %>
+    <% if @help_url %>
+      <a class="admin-help-button" href="<%= @help_url %>" target="_blank" rel="noopener noreferer">
+        <%= inline_svg_tag("circle-question.svg", aria: true, title: "Forem Admin Guide", class: "crayons-btn crayons-btn--icon-rounded crayons-btn--s") %>
       </a>
     <% end %>
+  </div>
   <% end %>
 <% end %>
 
