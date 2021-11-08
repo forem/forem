@@ -12,7 +12,7 @@
       <% end %>
     </div>
 
-    <%= form_tag(admin_creator_settings_path, method: "post", class: "relative z-elevate") do %>
+    <%= form_tag(admin_creator_settings_path, method: "post", class: "relative z-elevate p-4") do %>
       <% if defined?(resource) && resource&.errors&.any? %>
         <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
           <div class="crayons-card__header">
