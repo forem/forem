@@ -5,6 +5,16 @@
     display: flex;
     flex-direction: column;
   }
+
+  .admin-help-button {
+    position: fixed;
+    bottom: var(--su-7);
+    margin-bottom: env(safe-area-inset-bottom);
+    right: var(--su-7);
+    z-index: var(--z-elevate);
+    cursor: pointer;
+    border-radius: 50px;
+  }
 </style>
 <main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-xs">
   <div aria-live="assertive">
@@ -42,6 +52,11 @@
   <div class="crayons-field mt-6 align-left">
     <%= submit_tag "Finish", class: "crayons-btn btn--primary" %>
   </div>
+   <% if @help_url %>
+      <a class="admin-help-button crayons-btn crayons-btn--icon-rounded crayons-btn--s" href="<%= @help_url %>" target="_blank" rel="noopener noreferer">
+        <%= inline_svg_tag("circle-question.svg", aria: true, title: "Forem Admin Guide") %>
+      </a>
+    <% end %>
   <% end %>
 <% end %>
 
