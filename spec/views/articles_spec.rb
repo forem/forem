@@ -72,7 +72,7 @@ RSpec.describe "articles/show", type: :view do
     render
 
     # Jan 1, 1970 or Dec 31, 1969, depending on time zone
-    expected_date = Time.zone.utc_offset.negative? ? "Dec 31, 1969" : "Jan 1, 1970"
+    expected_date = Time.zone.at(0).utc_offset.negative? ? "Dec 31, 1969" : "Jan 1, 1970"
     expect(rendered).to have_text(expected_date)
     expect(rendered).not_to have_text("</time>")
   end

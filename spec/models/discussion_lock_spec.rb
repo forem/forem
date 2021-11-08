@@ -14,5 +14,14 @@ RSpec.describe DiscussionLock, type: :model do
     it { is_expected.to validate_presence_of(:article_id) }
     it { is_expected.to validate_presence_of(:locking_user_id) }
     it { is_expected.to validate_uniqueness_of(:article_id) }
+
+    it "sanitizes attributes before validation", :aggregate_failures do
+      discussion_lock = described_class.new(notes: "", reason: " ")
+
+      discussion_lock.validate
+
+      expect(discussion_lock.notes).to be_nil
+      expect(discussion_lock.reason).to be_nil
+    end
   end
 end

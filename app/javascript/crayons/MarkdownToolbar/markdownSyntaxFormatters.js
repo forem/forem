@@ -1,3 +1,4 @@
+/* global Runtime */
 import {
   getLastIndexOfCharacter,
   getNextIndexOfCharacter,
@@ -352,8 +353,13 @@ export const coreSyntaxFormatters = {
   bold: {
     icon: Bold,
     label: 'Bold',
-    keyboardShortcut: 'ctrl+b',
-    keyboardShortcutKeys: `B`,
+    getKeyboardShortcut: () => {
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      return {
+        command: `${modifier}+b`,
+        tooltipHint: `${modifier.toUpperCase()} + B`,
+      };
+    },
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       return undoOrAddFormattingForInlineSyntax({
         selectionStart,
@@ -367,8 +373,13 @@ export const coreSyntaxFormatters = {
   italic: {
     icon: Italic,
     label: 'Italic',
-    keyboardShortcut: 'ctrl+i',
-    keyboardShortcutKeys: `I`,
+    getKeyboardShortcut: () => {
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      return {
+        command: `${modifier}+i`,
+        tooltipHint: `${modifier.toUpperCase()} + I`,
+      };
+    },
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       return undoOrAddFormattingForInlineSyntax({
         selectionStart,
@@ -382,8 +393,13 @@ export const coreSyntaxFormatters = {
   link: {
     icon: Link,
     label: 'Link',
-    keyboardShortcut: 'ctrl+k',
-    keyboardShortcutKeys: `K`,
+    getKeyboardShortcut: () => {
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      return {
+        command: `${modifier}+k`,
+        tooltipHint: `${modifier.toUpperCase()} + K`,
+      };
+    },
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       const { selectedText, textBeforeSelection, textAfterSelection } =
         getSelectionData({ selectionStart, selectionEnd, value });
@@ -615,8 +631,13 @@ export const secondarySyntaxFormatters = {
   underline: {
     icon: Underline,
     label: 'Underline',
-    keyboardShortcut: 'ctrl+u',
-    keyboardShortcutKeys: `U`,
+    getKeyboardShortcut: () => {
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      return {
+        command: `${modifier}+u`,
+        tooltipHint: `${modifier.toUpperCase()} + U`,
+      };
+    },
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForInlineSyntax({
         selectionStart,
@@ -629,8 +650,13 @@ export const secondarySyntaxFormatters = {
   strikethrough: {
     icon: Strikethrough,
     label: 'Strikethrough',
-    keyboardShortcut: 'ctrl+shift+x',
-    keyboardShortcutKeys: `SHIFT + X`,
+    getKeyboardShortcut: () => {
+      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      return {
+        command: `${modifier}+shift+x`,
+        tooltipHint: `${modifier.toUpperCase()} + SHIFT + X`,
+      };
+    },
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForInlineSyntax({
         selectionStart,

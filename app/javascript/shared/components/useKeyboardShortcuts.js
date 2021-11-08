@@ -126,10 +126,13 @@ export function useKeyboardShortcuts(
     const keyEvent = (e) => {
       if (e.defaultPrevented) return;
 
-      // Get special keys
-      const keys = `${e.ctrlKey || e.metaKey ? 'ctrl+' : ''}${
-        e.altKey ? 'alt+' : ''
-      }${(e.ctrlKey || e.metaKey || e.altKey) && e.shiftKey ? 'shift+' : ''}`;
+      const ctrlKeyEntry = e.ctrlKey ? 'ctrl+' : '';
+      const cmdKeyEntry = e.metaKey ? 'cmd+' : '';
+      const altKeyEntry = e.altKey ? 'alt+' : '';
+      const shiftKeyEntry = e.shiftKey ? 'shift+' : '';
+
+      // We build the special keys string in an opinionated order to ensure consistency
+      const keys = `${ctrlKeyEntry}${cmdKeyEntry}${altKeyEntry}${shiftKeyEntry}`;
 
       // If no special keys, except shift, are pressed and focus is inside a field return
       if (e.target instanceof Node && isFormField(e.target) && !keys) return;
