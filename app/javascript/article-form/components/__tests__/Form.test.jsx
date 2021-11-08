@@ -19,7 +19,7 @@ describe('<Form />', () => {
       isNativeIOS: jest.fn(() => {
         return false;
       }),
-      currentOS: jest.fn(() => 'macOS'),
+      getOSKeyboardModifierKeyString: jest.fn(() => 'cmd'),
     };
 
     global.window.matchMedia = jest.fn((query) => {
