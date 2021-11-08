@@ -2854,10 +2854,10 @@
     lz-string "^1.4.4"
     pretty-format "^26.6.2"
 
-"@testing-library/dom@^8.10.1":
-  version "8.10.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.10.1.tgz#e24fed92ad51c619cf304c6f1410b4c76b1000c0"
-  integrity sha512-rab7vpf1uGig5efWwsCOn9j4/doy+W3VBoUyzX7C4y77u0wAckwc7R8nyH6e2rw0rRzKJR+gWPiAg8zhiFbxWQ==
+"@testing-library/dom@^8.11.0":
+  version "8.11.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.11.0.tgz#3679dfb4db58e0d2b95e4b0929eaf45237b60d94"
+  integrity sha512-8Ay4UDiMlB5YWy+ZvCeRyFFofs53ebxrWnOFvCoM1HpMAX4cHyuSrCuIM9l2lVuUWUt+Gr3loz/nCwdrnG6ShQ==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
@@ -13038,17 +13038,7 @@ pretty-format@^26.6.2:
     ansi-styles "^4.0.0"
     react-is "^17.0.1"
 
-pretty-format@^27.0.0, pretty-format@^27.0.2, pretty-format@^27.2.4:
-  version "27.2.5"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.2.5.tgz#7cfe2a8e8f01a5b5b29296a0b70f4140df0830c5"
-  integrity sha512-+nYn2z9GgicO9JiqmY25Xtq8SYfZ/5VCpEU3pppHHNAhd1y+ZXxmNPd1evmNcAd6Hz4iBV2kf0UpGth5A/VJ7g==
-  dependencies:
-    "@jest/types" "^27.2.5"
-    ansi-regex "^5.0.1"
-    ansi-styles "^5.0.0"
-    react-is "^17.0.1"
-
-pretty-format@^27.3.1:
+pretty-format@^27.0.0, pretty-format@^27.0.2, pretty-format@^27.2.4, pretty-format@^27.3.1:
   version "27.3.1"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-27.3.1.tgz#7e9486365ccdd4a502061fa761d3ab9ca1b78df5"
   integrity sha512-DR/c+pvFc52nLimLROYjnXPtolawm+uWDxr4FjuLDLUn+ktWnSN851KoHwHzzqq6rfCOjkzN8FLgDrSub6UDuA==
