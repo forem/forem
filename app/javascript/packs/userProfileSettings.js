@@ -1,12 +1,11 @@
-const userFieldIds = ['user[name]', 'user[email]', 'user[username]'];
+const userSettingForm = document.getElementById('user-profile-form');
 const profileFieldIds = Array.from(
   document.querySelectorAll('[id^="profile["]'),
 ).map((node) => node.id);
-const allFieldIds = [...userFieldIds, ...profileFieldIds];
 
 export function fieldCharacterLimits() {
-  window.addEventListener('load', () => {
-    allFieldIds.forEach((field_id) => {
+  if (document.readyState === 'complete') {
+    profileFieldIds.forEach((field_id) => {
       const field = document.getElementById(field_id);
       const fieldValueLength = field.value.length;
       const fieldCharacterSpan = document.getElementById(
@@ -15,18 +14,15 @@ export function fieldCharacterLimits() {
       fieldCharacterSpan.innerHTML = fieldValueLength;
     });
 
-    document
-      .getElementById('user-profile-form')
-      .addEventListener('keyup', (event) => {
-        if (!event.target.dataset.characterSpanId) {
-          return;
-        }
+    userSettingForm.addEventListener('keyup', (event) => {
+      if (!event.target.dataset.characterSpanId) {
+        return;
+      }
 
-        document.getElementById(
-          event.target.dataset.characterSpanId,
-        ).innerHTML = event.target.value.length;
-      });
-  });
+      document.getElementById(event.target.dataset.characterSpanId).innerHTML =
+        event.target.value.length;
+    });
+  }
 }
 
 fieldCharacterLimits();
