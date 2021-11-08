@@ -402,13 +402,7 @@
     (),
     true
   ),
-  (
-    'm',
-    'margin',
-    ('auto': auto, 'unset': unset, '0': 0, 'px': 1px),
-    $spacing-units,
-    true
-  ),
+  ('m', 'margin', ('auto': auto, 'unset': unset, '0': 0), $spacing-units, true),
   ('-m', 'margin', $negative-spacing-units, (), true),
   (
     'my',
@@ -421,7 +415,7 @@
   (
     'mx',
     ('margin-left', 'margin-right'),
-    ('auto': auto, 'unset': unset, '0': 0, 'px': 1px),
+    ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
     true
   ),
@@ -429,7 +423,7 @@
   (
     'mt',
     'margin-top',
-    ('auto': auto, 'unset': unset, '0': 0, 'px': 1px),
+    ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
     true
   ),
@@ -437,7 +431,7 @@
   (
     'mb',
     'margin-bottom',
-    ('auto': auto, 'unset': unset, '0': 0, 'px': 1px),
+    ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
     true
   ),
@@ -445,7 +439,7 @@
   (
     'ml',
     'margin-left',
-    ('auto': auto, 'unset': unset, '0': 0, 'px': 1px),
+    ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
     true
   ),
@@ -453,7 +447,7 @@
   (
     'mr',
     'margin-right',
-    ('auto': auto, 'unset': unset, '0': 0, 'px': 1px),
+    ('auto': auto, 'unset': unset, '0': 0),
     $spacing-units,
     true
   ),
