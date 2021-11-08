@@ -195,7 +195,7 @@ describe('<ImageUploader />', () => {
       expect(uploadControls[0].getAttribute('type')).toEqual('file');
     });
 
-    it('displays uploading tooltip during upload', () => {
+    it('displays cancel upload tooltip during upload', () => {
       fetch.mockResponse(
         JSON.stringify({
           links: ['/i/fake-link.jpg'],
@@ -206,7 +206,7 @@ describe('<ImageUploader />', () => {
         <ImageUploader editorVersion="v2" />,
       );
 
-      expect(queryByText('Uploading')).toBeNull();
+      expect(queryByText('Cancel upload')).toBeNull();
 
       const inputEl = getAllByLabelText(/Upload image/i)[0];
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
@@ -214,7 +214,7 @@ describe('<ImageUploader />', () => {
       });
 
       fireEvent.change(inputEl, { target: { files: [file] } });
-      expect(queryByText('Uploading')).toBeInTheDocument();
+      expect(queryByText('Cancel upload')).toBeInTheDocument();
     });
 
     it('invokes upload start and success callbacks when image is uploaded', async () => {
@@ -244,7 +244,7 @@ describe('<ImageUploader />', () => {
 
       expect(uploadStartCallback).toHaveBeenCalled();
 
-      await waitFor(() => expect(queryByText('Uploading')).toBeNull());
+      await waitFor(() => expect(queryByText('Cancel upload')).toBeNull());
 
       expect(uploadSuccessCallback).toHaveBeenCalledWith(
         '![Image description](/i/fake-link.jpg)',
@@ -280,7 +280,7 @@ describe('<ImageUploader />', () => {
         },
       });
 
-      await waitFor(() => expect(queryByText('Uploading')).toBeNull());
+      await waitFor(() => expect(queryByText('Cancel upload')).toBeNull());
       expect(uploadErrorCallback).toHaveBeenCalled();
     });
   });

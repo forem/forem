@@ -23,6 +23,28 @@ const ImageIcon = () => (
   </svg>
 );
 
+const CancelIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    className="crayons-icon cancel"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-hidden="true"
+  >
+    <title id="as1mn15llu5e032u2pgzlc6yhvss2myk">Cancel</title>
+    <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
+  </svg>
+);
+
+const SpinnerOrCancel = () => (
+  <span className="spinner-or-cancel">
+    <Spinner />
+    <CancelIcon />
+  </span>
+);
+
 ImageIcon.displayName = 'ImageIcon';
 
 function imageUploaderReducer(state, action) {
@@ -32,7 +54,7 @@ function imageUploaderReducer(state, action) {
     case 'uploading_image':
       return {
         ...state,
-        uploadingErrorMessage: null,
+        uploadErrorMessage: null,
         uploadingImage: true,
         insertionImageUrls: [],
       };
@@ -50,7 +72,7 @@ function imageUploaderReducer(state, action) {
         ...state,
         insertionImageUrls: payload.insertionImageUrls,
         uploadingImage: false,
-        uploadingErrorMessage: null,
+        uploadErrorMessage: null,
       };
 
     default:
@@ -124,7 +146,21 @@ const V2EditorImageUpload = ({
     }
   }, [uploadErrorMessage]);
 
+  const [abortRequestController, setAbortRequestController] = useState(null);
+
+  const startNewRequest = (e) => {
+    const controller = new AbortController();
+    setAbortRequestController(controller);
+    handleInsertionImageUpload(e, controller.signal);
+  };
+
+  const cancelRequest = () => {
+    abortRequestController.abort();
+    setAbortRequestController(null);
+  };
+
   const { tooltip: actionTooltip } = buttonProps;
+
   return (
     <Fragment>
       {useNativeUpload ? (
@@ -140,26 +176,33 @@ const V2EditorImageUpload = ({
           tabindex="-1"
           aria-label="Upload image"
           id="image-upload-field"
-          onChange={handleInsertionImageUpload}
+          onChange={startNewRequest}
           className="screen-reader-only"
           accept="image/*"
           data-max-file-size-mb="25"
         />
       )}
-
-      <Button
-        {...buttonProps}
-        icon={uploadingImage ? Spinner : ImageIcon}
-        onClick={() => {
-          if (useNativeUpload) {
-            initNativeImagePicker();
-          } else {
-            document.getElementById('image-upload-field').click();
-          }
-        }}
-        aria-label="Upload image"
-        tooltip={uploadingImage ? 'Uploading' : actionTooltip}
-      />
+      {uploadingImage ? (
+        <Button
+          {...buttonProps}
+          icon={SpinnerOrCancel}
+          onClick={cancelRequest}
+          aria-label="Cancel image upload"
+          tooltip="Cancel upload"
+        />
+      ) : (
+        <Button
+          {...buttonProps}
+          icon={ImageIcon}
+          onClick={() => {
+            useNativeUpload
+              ? initNativeImagePicker()
+              : document.getElementById('image-upload-field').click();
+          }}
+          aria-label="Upload image"
+          tooltip={actionTooltip}
+        />
+      )}
     </Fragment>
   );
 };
@@ -289,7 +332,7 @@ export const ImageUploader = ({
     });
   }
 
-  function handleInsertionImageUpload(e) {
+  function handleInsertionImageUpload(e, abortSignal) {
     const { files } = e.target;
 
     if (files.length > 0 && validateFileInputs()) {
@@ -299,7 +342,12 @@ export const ImageUploader = ({
       });
 
       onImageUploadStart?.();
-      generateMainImage(payload, handleInsertImageUploadSuccess, onUploadError);
+      generateMainImage({
+        payload,
+        successCb: handleInsertImageUploadSuccess,
+        failureCb: onUploadError,
+        signal: abortSignal,
+      });
     }
   }
 
@@ -310,6 +358,9 @@ export const ImageUploader = ({
     });
 
     onImageUploadSuccess?.(`![Image description](${response.links})`);
+
+    document.getElementById('upload-success-info').innerText =
+      'image upload complete';
   }
 
   function handleNativeMessage(e) {
@@ -343,27 +394,32 @@ export const ImageUploader = ({
   const useNativeUpload = Runtime.isNativeIOS('imageUpload');
 
   if (editorVersion === 'v2') {
-    return (
-      <V2EditorImageUpload
-        buttonProps={buttonProps}
-        uploadingImage={uploadingImage}
-        handleInsertionImageUpload={handleInsertionImageUpload}
-        useNativeUpload={useNativeUpload}
-        handleNativeMessage={handleNativeMessage}
-        uploadErrorMessage={uploadErrorMessage}
-      />
-    );
   }
 
   return (
-    <V1EditorImageUpload
-      uploadingImage={uploadingImage}
-      useNativeUpload={useNativeUpload}
-      handleNativeMessage={handleNativeMessage}
-      handleInsertionImageUpload={handleInsertionImageUpload}
-      insertionImageUrls={insertionImageUrls}
-      uploadErrorMessage={uploadErrorMessage}
-    />
+    <Fragment>
+      <div id="upload-success-info" className="screen-reader-only" />
+
+      {editorVersion === 'v2' ? (
+        <V2EditorImageUpload
+          buttonProps={buttonProps}
+          uploadingImage={uploadingImage}
+          handleInsertionImageUpload={handleInsertionImageUpload}
+          useNativeUpload={useNativeUpload}
+          handleNativeMessage={handleNativeMessage}
+          uploadErrorMessage={uploadErrorMessage}
+        />
+      ) : (
+        <V1EditorImageUpload
+          uploadingImage={uploadingImage}
+          useNativeUpload={useNativeUpload}
+          handleNativeMessage={handleNativeMessage}
+          handleInsertionImageUpload={handleInsertionImageUpload}
+          insertionImageUrls={insertionImageUrls}
+          uploadErrorMessage={uploadErrorMessage}
+        />
+      )}
+    </Fragment>
   );
 };
 

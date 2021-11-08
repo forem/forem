@@ -157,11 +157,11 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   };
 
   const handleImageUploadStarted = () => {
-    const { textBeforeInsertion, textAfterInsertion, selectionEnd } =
-      getSelectionData();
+    const { textBeforeSelection, textAfterSelection, selectionEnd } =
+      getSelectionData(textArea);
 
     const placeholder = '![Uploading image](...)';
-    const textWithPlaceholder = `${textBeforeInsertion}\n${placeholder}${textAfterInsertion}`;
+    const textWithPlaceholder = `${textBeforeSelection}\n${placeholder}${textAfterSelection}`;
     textArea.value = textWithPlaceholder;
     // Make sure Editor text area updates via linkstate
     textArea.dispatchEvent(new Event('input'));
