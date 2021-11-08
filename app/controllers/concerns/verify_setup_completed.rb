@@ -19,7 +19,7 @@ module VerifySetupCompleted
   end
 
   def creator_setup_mode?
-    current_user&.saw_onboarding = true && creator_setup_path?
+    User.with_role(:creator).first.saw_onboarding = true && creator_setup_path?
   end
 
   private
