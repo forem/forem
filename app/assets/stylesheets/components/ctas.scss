@@ -414,20 +414,17 @@
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
-// .c-btn //////////////////////////////////////////////////
+// .c-cta //////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-.c-btn {
+.c-cta {
   position: relative;
   display: inline-block;
   padding: var(--su-2) var(--su-4);
   border-radius: var(--radius);
   font: inherit;
-  font-weight: var(--fw-medium);
-  text-align: center;
-  cursor: pointer;
   transition: all var(--transition-props);
-  border: none;
+  border: var(--border-color) var(--border-width) solid;
   outline: 0;
   overflow-wrap: normal;
 
@@ -444,23 +441,9 @@
     box-shadow: 0 0 0 2px var(--base-inverted),
       0 0 0 4px var(--button-primary-bg-hover);
   }
-
-  &[disabled] {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  // This makes sure icons inside buttons don't cause problems with click handlers
-  // See: https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
-  & > * {
-    pointer-events: none;
-    + input {
-      pointer-events: revert;
-    }
-  }
 }
 
-.c-btn {
+.c-cta {
   --bg: var(--button-primary-bg);
   --bg-hover: var(--button-primary-bg-hover);
   --color: var(--button-primary-color);
@@ -474,7 +457,7 @@
   }
 }
 
-.c-btn--secondary {
+.c-cta--secondary {
   --bg: transparent;
   --bg-hover: var(--base-20);
   --color: var(--base-80);
@@ -488,12 +471,9 @@
   }
 }
 
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-// .c-cta //////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-.c-cta {
-  //
+.c-cta--outlined {
+  --bg: transparent;
+  --bg-hover: var(--base-20);
+  --color: var(--base-80);
+  --color-hover: var(--base-100);
 }

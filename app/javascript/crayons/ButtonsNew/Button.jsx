@@ -8,6 +8,7 @@ export const Button = (props) => {
     variant,
     icon,
     rounded,
+    destructive,
     type = 'button',
     className,
     tooltip,
@@ -28,6 +29,8 @@ export const Button = (props) => {
   const classes = classNames('c-btn', {
     [`c-btn--${variant}`]: variant,
     'c-btn--icon-left': icon,
+    'c-btn--destructive': destructive,
+    'crayons-tooltip__activator': tooltip,
     'c-btn--icon': icon && children,
     'radius-full': rounded,
     [className]: className,

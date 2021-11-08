@@ -1,24 +1,31 @@
 import { h } from 'preact';
-// import notes from './buttons.md';
 import { Button } from '../';
-import '../../storybook-utilities/designSystem.scss';
 
 export default {
   component: Button,
-  title: 'Components/Button',
+  title: 'Components/Button [BETA]',
   argTypes: {
-    variant: {
-      options: ['primary', 'secondary'],
-      control: { type: 'select' },
-    },
     rounded: {
+      control: { type: 'boolean' },
+    },
+    destructive: {
       control: { type: 'boolean' },
     },
   },
 };
 
-export const Primary = () => <Button>Primary button</Button>;
+export const Primary = (args) => <Button {...args}>Primary button</Button>;
+Primary.args = {
+  rounded: false,
+  destructive: false,
+};
 
-export const Secondary = () => (
-  <Button variant="secondary">Primary button</Button>
+export const Secondary = (args) => (
+  <Button variant="secondary" {...args}>
+    Secondary button
+  </Button>
 );
+Secondary.args = {
+  rounded: false,
+  destructive: false,
+};
