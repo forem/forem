@@ -63,9 +63,6 @@ describe('Creator Setup Page', () => {
     cy.findByRole('button', { name: /logo/i }).should('have.attr', 'required');
     // should not redirect the creator to the home page when the form is not completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();
-    cy.url().should(
-      'equal',
-      `${baseUrl}admin/creator_settings/new?referrer=${baseUrl}`,
-    );
+    cy.url().should('equal', `${baseUrl}admin/creator_settings/new`);
   });
 });
