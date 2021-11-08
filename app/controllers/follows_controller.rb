@@ -53,16 +53,14 @@ class FollowsController < ApplicationController
   def create
     authorize Follow
 
-    followable = case params[:followable_type]
-                 when "Organization"
-                   Organization.find(params[:followable_id])
-                 when "Tag"
-                   Tag.find(params[:followable_id])
-                 when "Podcast"
-                   Podcast.find(params[:followable_id])
-                 else
-                   User.find(params[:followable_id])
-                 end
+    followable_klass = case params[:followable_type].capitalize
+                       when "Organization", "Tag", "Podcast"
+                         params[:followable_type].capitalize.constantize
+                       else
+                         User
+                       end
+
+    followable = followable_klass.find(params[:followable_id])
 
     need_notification = Follow.need_new_follower_notification_for?(followable.class.name)
 

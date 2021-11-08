@@ -53,7 +53,7 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
       decorated_article = article.decorate
 
       expect do
-        patch admin_article_path(article.id), params: { article: { pinned: true } }
+        post pin_admin_article_path(article.id)
       end.to change { decorated_article.pinned? }.to(true)
     end
 
