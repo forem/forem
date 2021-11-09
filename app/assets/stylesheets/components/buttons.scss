@@ -423,7 +423,6 @@
   padding: var(--su-2) var(--su-4);
   border-radius: var(--radius);
   font: inherit;
-  font-weight: var(--fw-medium);
   text-align: center;
   cursor: pointer;
   transition: all var(--transition-props);
@@ -441,8 +440,7 @@
   }
 
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--base-inverted),
-      0 0 0 4px var(--button-primary-bg-hover);
+    box-shadow: var(--focus-ring);
   }
 
   &[disabled] {
@@ -479,6 +477,8 @@
   --bg-hover: var(--button-primary-bg-hover);
   --color: var(--button-primary-color);
   --color-hover: var(--button-primary-color-hover);
+
+  font-weight: var(--fw-medium);
 
   &.c-btn--destructive {
     --bg: var(--accent-danger);
