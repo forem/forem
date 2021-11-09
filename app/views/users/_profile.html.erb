@@ -13,13 +13,7 @@
                        maxlength: 30,
                        class: "crayons-textfield",
                        placeholder: "John Doe",
-                       value: @user.name,
-                       aria: { describedby: "name-description" },
-                       data: { character_span_id: "name-characters" } %>
-      <p id="name-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
-        <span id="name-characters"></span>/30
-      </p>
+                       value: @user.name %>
     </div>
 
     <div class="crayons-field">
@@ -28,13 +22,7 @@
                        maxlength: 50,
                        class: "crayons-textfield",
                        placeholder: "john.doe@example.com",
-                       value: @user.email,
-                       aria: { describedby: "email-description" },
-                       data: { character_span_id: "email-characters" } %>
-      <p id="email-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
-        <span id="email-characters"></span>/50
-      </p>
+                       value: @user.email %>
     </div>
 
     <div class="crayons-field crayons-field--checkbox">
@@ -48,13 +36,7 @@
                        maxlength: 30,
                        class: "crayons-textfield",
                        placeholder: "johndoe",
-                       value: @user.username,
-                       aria: { describedby: "username-description" },
-                       data: { character_span_id: "username-characters" } %>
-      <p id="username-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
-        <span id="username-characters"></span>/30
-      </p>
+                       value: @user.username %>
     </div>
 
     <div class="crayons-field">
