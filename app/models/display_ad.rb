@@ -37,8 +37,8 @@ class DisplayAd < ApplicationRecord
     markdown = Redcarpet::Markdown.new(renderer)
     initial_html = markdown.render(body_markdown)
     stripped_html = ActionController::Base.helpers.sanitize initial_html,
-                                                            tags: HtmlRendering::AllowedTags::DISPLAY_ADD,
-                                                            attributes: HtmlRendering::AllowedAttributes::DISPLAY_ADD
+                                                            tags: HtmlRendering::AllowedTags::DISPLAY_AD,
+                                                            attributes: HtmlRendering::AllowedAttributes::DISPLAY_AD
     html = stripped_html.delete("\n")
     self.processed_html = Html::Parser.new(html).prefix_all_images(350, synchronous_detail_detection: true).html
   end
