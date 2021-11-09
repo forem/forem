@@ -71,7 +71,7 @@ module Articles
 
       # @api private
       # rubocop:disable Layout/LineLength
-      def globally_hot_articles(user_signed_in, must_have_main_image:, article_score_threshold: -15, min_rand_limit: 15, max_rand_limit: 80)
+      def globally_hot_articles(user_signed_in, must_have_main_image: true, article_score_threshold: -15, min_rand_limit: 15, max_rand_limit: 80)
         # rubocop:enable Layout/LineLength
         if user_signed_in
           hot_stories = experimental_hot_story_grab
