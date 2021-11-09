@@ -1,26 +1,19 @@
-<div id="hide-comments-modal" class="hide-comments-modal hidden">
-  <div class="hide-comments-modal__container">
-    <%= form_with url: "/comments/hide", class: "hide-comments-modal__form", id: "hide-comments-modal__form", method: :patch, remote: true, html: { "data-type": "json" } do |f| %>
-      <div class="hide-comments-modal__content">
-        <p class="hide-comments-modal__description">
-          Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.
-        </p>
-
-        <div class="crayons-field crayons-field--checkbox">
-          <%= f.check_box :hide_children, class: "hide_children crayons-checkbox" %>
-          <%= f.label :hide_children, "Hide child comments as well", class: "crayons-field__label" %>
-        </div>
-        <p>
-          <button type="submit" class="crayons-btn">
-            Confirm
-          </button>
-        </p>
+<div id="hide-comments-modal" class="hidden">
+  <%= form_with url: "/comments/hide", class: "hide-comments-modal__form", id: "hide-comments-modal__form", method: :patch, remote: true, html: { "data-type": "json" } do |f| %>
+    <div class="hide-comments-modal__content">
+      <p class="pb-2">
+        Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.
+      </p>
+      <div class="crayons-field crayons-field--checkbox pb-2 pt-2">
+        <%= f.check_box :hide_children, class: "hide_children crayons-checkbox" %>
+        <%= f.label :hide_children, "Hide child comments as well", class: "crayons-field__label" %>
       </div>
-    <% end %>
-    <footer class="hide-comments-modal__footer">
-      <p>For further actions, you may consider blocking this person and/or reporting abuse.</p>
-    </footer>
-  </div>
+      <p class="pb-4 pt-2">
+        <button type="submit" class="crayons-btn">
+          Confirm
+        </button>
+      </p>
+    </div>
+  <% end %>
+  <p class="fs-s color-base-60">For further actions, you may consider blocking this person and/or reporting abuse</p>
 </div>
-
-<%= javascript_packs_with_chunks_tag "hideCommentsModalShortcuts", defer: true %>
