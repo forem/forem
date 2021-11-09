@@ -370,6 +370,7 @@ module Articles
               AND followed_tags.followable_type = 'ActsAsTaggableOn::Tag'
               AND followed_tags.follower_type = 'User'
               AND followed_tags.follower_id = :user_id
+              AND followed_tags.explicit_points >= 0
           LEFT OUTER JOIN follows AS followed_user
             ON articles.user_id = followed_user.followable_id
               AND followed_user.followable_type = 'User'
