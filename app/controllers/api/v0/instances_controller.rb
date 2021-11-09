@@ -5,15 +5,15 @@ module Api
 
       def show
         render json: {
-          context: ApplicationConfig["FOREM_CONTEXT"].to_s,
-          cover_image_url: Settings::General.main_social_image.to_s,
-          description: Settings::Community.community_description.to_s,
+          context: ApplicationConfig["FOREM_CONTEXT"],
+          cover_image_url: Settings::General.main_social_image,
+          description: Settings::Community.community_description,
           display_in_directory: Settings::UserExperience.display_in_directory,
-          domain: Settings::General.app_domain.to_s,
-          logo_image_url: Settings::General.logo_png.to_s,
-          name: Settings::Community.community_name.to_s,
+          domain: Settings::General.app_domain,
+          logo_image_url: Settings::General.logo_png,
+          name: Settings::Community.community_name,
           registered_users_count: User.registered.estimated_count,
-          tagline: Settings::Community.tagline.to_s,
+          tagline: Settings::Community.tagline,
           version: release_version,
           visibility: visibility
         }, status: :ok
