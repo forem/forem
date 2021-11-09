@@ -1,11 +1,9 @@
 const userSettingForm = document.getElementById('user-profile-form');
-const profileFieldIds = Array.from(
-  document.querySelectorAll('[id^="profile["]'),
-).map((node) => node.id);
+const profileFields = document.querySelectorAll('[id^="profile["]');
 
 export function fieldCharacterLimits() {
-  profileFieldIds.forEach((field_id) => {
-    const field = document.getElementById(field_id);
+  profileFields.forEach((node) => {
+    const field = document.getElementById(node.id);
     const fieldValueLength = field.value.length;
     const fieldCharacterSpan = document.getElementById(
       field.dataset.characterSpanId,
