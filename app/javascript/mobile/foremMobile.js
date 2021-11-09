@@ -1,9 +1,8 @@
 /* global Runtime */
-import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { request } from '@utilities/http';
 
-function loadForemMobileNamespace() {
-  window.ForemMobile = {
+export function foremMobileNamespace() {
+  return {
     retryDelayMs: 700,
     getUserData() {
       return document.body.dataset.user;
@@ -77,22 +76,13 @@ function loadForemMobileNamespace() {
     userSessionBroadcast() {
       const currentUser = document.body.dataset.user;
       if (currentUser) {
-        window.ForemMobile.injectNativeMessage('userLogin', JSON.parse(currentUser));
+        window.ForemMobile.injectNativeMessage(
+          'userLogin',
+          JSON.parse(currentUser),
+        );
       } else {
         window.ForemMobile.injectNativeMessage('userLogout', {});
       }
-    }
+    },
   };
 }
-
-// Initialize (when ready)
-waitOnBaseData()
-  .then(() => {
-    if (Runtime.currentMedium() === 'ForemWebView') {
-      loadForemMobileNamespace();
-      window.ForemMobile.userSessionBroadcast();
-    }
-  })
-  .catch((error) => {
-    Honeybadger.notify(error);
-  });
