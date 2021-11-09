@@ -461,20 +461,6 @@
 }
 
 .c-btn {
-  --bg: var(--button-primary-bg);
-  --bg-hover: var(--button-primary-bg-hover);
-  --color: var(--button-primary-color);
-  --color-hover: var(--button-primary-color-hover);
-
-  &.c-btn--destructive {
-    --bg: var(--accent-danger);
-    --bg-hover: var(--accent-danger-darker);
-    --color: #fff;
-    --color-hover: #fff;
-  }
-}
-
-.c-btn--secondary {
   --bg: transparent;
   --bg-hover: var(--base-20);
   --color: var(--base-80);
@@ -488,12 +474,27 @@
   }
 }
 
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-// .c-cta //////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
+.c-btn--primary {
+  --bg: var(--button-primary-bg);
+  --bg-hover: var(--button-primary-bg-hover);
+  --color: var(--button-primary-color);
+  --color-hover: var(--button-primary-color-hover);
 
-.c-cta {
-  //
+  &.c-btn--destructive {
+    --bg: var(--accent-danger);
+    --bg-hover: var(--accent-danger-darker);
+    --color: #fff;
+    --color-hover: #fff;
+  }
+}
+
+.c-btn--icon-alone {
+  padding: var(--su-2);
+}
+
+.c-btn--icon-left {
+  .c-btn__icon {
+    margin-right: var(--su-2);
+    margin-left: calc(var(--su-1) * -1);
+  }
 }

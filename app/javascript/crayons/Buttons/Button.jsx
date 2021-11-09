@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import classNames from 'classnames/bind';
+import { Icon } from '@crayons';
 
 export const Button = (props) => {
   const {
     children,
-    variant,
+    primary,
     icon,
     rounded,
     destructive,
@@ -27,11 +28,11 @@ export const Button = (props) => {
   };
 
   const classes = classNames('c-btn', {
-    [`c-btn--${variant}`]: variant,
-    'c-btn--icon-left': icon,
+    'c-btn--primary': primary,
     'c-btn--destructive': destructive,
+    'c-btn--icon-left': icon && children,
+    'c-btn--icon-alone': icon && !children,
     'crayons-tooltip__activator': tooltip,
-    'c-btn--icon': icon && children,
     'radius-full': rounded,
     [className]: className,
   });
@@ -43,6 +44,7 @@ export const Button = (props) => {
       onKeyUp={handleKeyUp}
       {...otherProps}
     >
+      {icon && <Icon src={icon} className={classNames('c-btn__icon')} />}
       {children}
       {tooltip ? (
         <span

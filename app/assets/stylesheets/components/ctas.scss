@@ -418,23 +418,29 @@
 ////////////////////////////////////////////////////////////
 
 .c-cta {
+  --border-width: 1px;
   position: relative;
   display: inline-block;
-  padding: var(--su-2) var(--su-4);
+  padding: calc(var(--su-2) - var(--border-width)) calc(var(--su-4) - var(--border-width));
   border-radius: var(--radius);
   font: inherit;
+  font-weight: var(--fw-medium);
+  text-align: center;
+  cursor: pointer;
   transition: all var(--transition-props);
-  border: var(--border-color) var(--border-width) solid;
+  border: var(--border-width) solid var(--border);
   outline: 0;
   overflow-wrap: normal;
+  text-decoration: none;
 
   background-color: var(--bg);
   color: var(--color);
 
-  &:hover:enabled,
+  &:hover,
   &:focus-visible {
     background-color: var(--bg-hover);
     color: var(--color-hover);
+    text-decoration: underline;
   }
 
   &:focus-visible {
@@ -444,36 +450,34 @@
 }
 
 .c-cta {
-  --bg: var(--button-primary-bg);
-  --bg-hover: var(--button-primary-bg-hover);
-  --color: var(--button-primary-color);
-  --color-hover: var(--button-primary-color-hover);
-
-  &.c-btn--destructive {
-    --bg: var(--accent-danger);
-    --bg-hover: var(--accent-danger-darker);
-    --color: #fff;
-    --color-hover: #fff;
-  }
-}
-
-.c-cta--secondary {
   --bg: transparent;
   --bg-hover: var(--base-20);
   --color: var(--base-80);
   --color-hover: var(--base-100);
-
-  &.c-btn--destructive {
-    --bg: transparent;
-    --bg-hover: var(--accent-danger-a10);
-    --color: var(--accent-danger);
-    --color-hover: var(--accent-danger-darker);
-  }
+  --border: var(--base-60);
+  --border-hover: var(--base-80);
 }
 
-.c-cta--outlined {
+.c-cta--branded {
   --bg: transparent;
-  --bg-hover: var(--base-20);
-  --color: var(--base-80);
-  --color-hover: var(--base-100);
+  --bg-hover: var(--accent-brand-a10);
+  --color: var(--accent-brand);
+  --color-hover: var(--accent-brand-darker);
+  --border: var(--accent-brand);
+  --border-hover: var(--accent-brand-darker);
+}
+
+.c-cta--ghost {
+  --border-width: 0px;
+}
+
+.c-cta--icon-alone {
+  padding: var(--su-2);
+}
+
+.c-cta--icon-left {
+  .c-cta__icon {
+    margin-right: var(--su-2);
+    margin-left: calc(var(--su-1) * -1);
+  }
 }
