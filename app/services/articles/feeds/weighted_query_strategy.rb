@@ -141,6 +141,17 @@ module Articles
           fallback: 1,
           requires_user: true
         },
+        # Weight privileged user's reactions.
+        privileged_user_reaction_factor: {
+          clause: "(CASE
+                 WHEN articles.privileged_users_reaction_points_sum < :negative_reaction_threshold THEN -1
+                 WHEN articles.privileged_users_reaction_points_sum > :positive_reaction_threshold THEN 1
+                 ELSE 0 END)",
+          cases: [[-1, 0.2],
+                  [1, 1]],
+          fallback: 0.95,
+          requires_user: false
+        },
         # Weight to give for the number of reactions on the article.
         reactions_factor: {
           clause: "articles.reactions_count",
@@ -159,6 +170,9 @@ module Articles
 
       DEFAULT_USER_EXPERIENCE_LEVEL = 5
 
+      DEFAULT_NEGATIVE_REACTION_THRESHOLD = -10
+      DEFAULT_POSITIVE_REACTION_THRESHOLD = 10
+
       # @param user [User] who are we querying for?
       # @param number_of_articles [Integer] how many articles are we
       #   returning
@@ -172,6 +186,14 @@ module Articles
       #   This is most relevant when running A/B testing.
       # @option config [Integer] :most_number_of_days_to_consider
       #   defines the oldest published date that we'll consider.
+      # @option config [Integer] :negative_reaction_threshold, when
+      #         the `articles.privileged_users_reaction_points_sum` is
+      #         less than this amount, treat this is a negative
+      #         reaction from moderators.
+      # @option config [Integer] :positive_reaction_threshold when
+      #         the `articles.privileged_users_reaction_points_sum` is
+      #         greater than this amount, treat this is a positive
+      #         reaction from moderators.
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
@@ -182,6 +204,8 @@ module Articles
         # TODO: The tag parameter is vestigial, there's no logic around this value.
         @tag = tag
         @default_user_experience_level = config.fetch(:default_user_experience_level) { DEFAULT_USER_EXPERIENCE_LEVEL }
+        @negative_reaction_threshold = config.fetch(:negative_reaction_threshold, DEFAULT_NEGATIVE_REACTION_THRESHOLD)
+        @positive_reaction_threshold = config.fetch(:positive_reaction_threshold, DEFAULT_POSITIVE_REACTION_THRESHOLD)
         @oldest_published_at = determine_oldest_published_at(
           user: @user,
           most_number_of_days_to_consider: config.fetch(:most_number_of_days_to_consider, 31),
@@ -212,6 +236,12 @@ module Articles
       # @return ActiveRecord::Relation for Article
       # rubocop:disable Layout/LineLength
       def call(only_featured: false, must_have_main_image: false, limit: default_limit, offset: default_offset, omit_article_ids: [])
+        repeated_query_variables = {
+          negative_reaction_threshold: @negative_reaction_threshold,
+          positive_reaction_threshold: @positive_reaction_threshold,
+          oldest_published_at: @oldest_published_at,
+          omit_article_ids: omit_article_ids
+        }
         unsanitized_sub_sql = if @user.nil?
                                 [
                                   sql_sub_query_for_nil_user(
@@ -221,10 +251,7 @@ module Articles
                                     offset: offset,
                                     omit_article_ids: omit_article_ids,
                                   ),
-                                  {
-                                    oldest_published_at: @oldest_published_at,
-                                    omit_article_ids: omit_article_ids
-                                  },
+                                  repeated_query_variables,
                                 ]
                               else
                                 [
@@ -235,12 +262,10 @@ module Articles
                                     offset: offset,
                                     omit_article_ids: omit_article_ids,
                                   ),
-                                  {
-                                    user_id: @user.id,
-                                    default_user_experience_level: @default_user_experience_level.to_i,
-                                    oldest_published_at: @oldest_published_at,
-                                    omit_article_ids: omit_article_ids
-                                  },
+                                  repeated_query_variables.merge({
+                                                                   user_id: @user.id,
+                                                                   default_user_experience_level: @default_user_experience_level.to_i
+                                                                 }),
                                 ]
                               end
 
