@@ -85,8 +85,8 @@
           <%= simple_format((@episode.processed_html || @episode.body), sanitize: true) %>
         <% else %>
           <%= sanitize (@episode.processed_html || ""),
-                       tags: HtmlRendering::AllowedTags::PODCAST_EPISODE,
-                       attributes: HtmlRendering::AllowedAttributes::PODCAST_EPISODE %>
+                       tags: HtmlRendering::AllowedTags::PODCAST_SHOW,
+                       attributes: HtmlRendering::AllowedAttributes::PODCAST_SHOW %>
         <% end %>
 
         <p><a href="<%= @episode.website_url %>"><%= t("views.podcasts.source") %></a></p>
