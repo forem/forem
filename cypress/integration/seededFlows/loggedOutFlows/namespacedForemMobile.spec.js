@@ -22,6 +22,9 @@ describe('Namespaced ForemMobile functions', () => {
         assert.isFunction(win.ForemMobile.getInstanceMetadata);
         assert.isFunction(win.ForemMobile.registerDeviceToken);
         assert.isFunction(win.ForemMobile.unregisterDeviceToken);
+        assert.isFunction(win.ForemMobile.injectJSMessage);
+        assert.isFunction(win.ForemMobile.injectNativeMessage);
+        assert.isFunction(win.ForemMobile.userSessionBroadcast);
       });
     });
 
@@ -54,6 +57,22 @@ describe('Namespaced ForemMobile functions', () => {
             });
         });
       });
+    });
+
+    it('should inject messages using CustomEvent', () => {
+      cy.document().then((doc) => {
+        doc.addEventListener('ForemMobile', cy.stub().as('bridgeEvent'));
+      })
+      .then(() => cy.window())
+      .then((win) => {
+        win.ForemMobile.injectJSMessage({ action: 'test' });
+      });
+
+      // on load the app should have sent an event
+      cy.get('@bridgeEvent')
+        .should('have.been.calledOnce')
+        .its('firstCall.args.0.detail')
+        .should('deep.equal', { action: 'test' })
     });
   });
 

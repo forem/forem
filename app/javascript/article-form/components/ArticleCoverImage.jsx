@@ -14,7 +14,6 @@ const NativeIosImageUpload = ({
   extraProps,
   uploadLabel,
   isUploadingImage,
-  handleNativeMessage,
 }) => (
   <Fragment>
     {isUploadingImage ? null : (
@@ -26,12 +25,6 @@ const NativeIosImageUpload = ({
         {uploadLabel}
       </Button>
     )}
-    <input
-      type="hidden"
-      id="native-cover-image-upload-message"
-      value=""
-      onChange={handleNativeMessage}
-    />
   </Fragment>
 );
 
@@ -103,14 +96,15 @@ export class ArticleCoverImage extends Component {
 
   initNativeImagePicker = (e) => {
     e.preventDefault();
-    window.webkit.messageHandlers.imageUpload.postMessage({
-      id: 'native-cover-image-upload-message',
+    window.ForemMobile?.injectNativeMessage('coverUpload', {
+      action: 'coverImageUpload',
       ratio: `${100.0 / 42.0}`,
     });
   };
 
   handleNativeMessage = (e) => {
-    const message = JSON.parse(e.target.value);
+    const message = JSON.parse(e.detail);
+    if (message.namespace !== 'coverUpload') { return }
 
     switch (message.action) {
       case 'uploading':
@@ -169,6 +163,9 @@ export class ArticleCoverImage extends Component {
         }
       : {};
 
+    // Native Bridge messages come through ForemMobile events
+    document.addEventListener('ForemMobile', this.handleNativeMessage);
+
     return (
       <DragAndDropZone
         onDragOver={onDragOver}
@@ -198,7 +195,6 @@ export class ArticleCoverImage extends Component {
                   isUploadingImage={uploadingImage}
                   extraProps={extraProps}
                   uploadLabel={uploadLabel}
-                  handleNativeMessage={this.handleNativeMessage}
                 />
               ) : (
                 <StandardImageUpload

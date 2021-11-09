@@ -6,14 +6,7 @@ function loadForemMobileNamespace() {
   window.ForemMobile = {
     retryDelayMs: 700,
     getUserData() {
-      const userStatus = document
-        .getElementsByTagName('body')[0]
-        .getAttribute('data-user-status');
-      if (userStatus === 'logged-in') {
-        return document
-          .getElementsByTagName('body')[0]
-          .getAttribute('data-user');
-      }
+      return document.body.dataset.user;
     },
     getInstanceMetadata() {
       return JSON.stringify({
@@ -66,6 +59,29 @@ function loadForemMobileNamespace() {
         credentials: 'same-origin',
       });
     },
+    injectJSMessage(message) {
+      const event = new CustomEvent('ForemMobile', { detail: message });
+      document.dispatchEvent(event);
+    },
+    injectNativeMessage(namespace, message) {
+      try {
+        if (Runtime.isNativeIOS(namespace)) {
+          window.webkit.messageHandlers[namespace].postMessage(message);
+        } else if (Runtime.isNativeAndroid(namespace)) {
+          AndroidBridge[`${namespace}Message`](JSON.stringify(message));
+        }
+      } catch (error) {
+        Honeybadger.notify(error);
+      }
+    },
+    userSessionBroadcast() {
+      const currentUser = document.body.dataset.user;
+      if (currentUser) {
+        window.ForemMobile.injectNativeMessage('userLogin', JSON.parse(currentUser));
+      } else {
+        window.ForemMobile.injectNativeMessage('userLogout', {});
+      }
+    }
   };
 }
 
@@ -74,6 +90,7 @@ waitOnBaseData()
   .then(() => {
     if (Runtime.currentMedium() === 'ForemWebView') {
       loadForemMobileNamespace();
+      window.ForemMobile.userSessionBroadcast();
     }
   })
   .catch((error) => {

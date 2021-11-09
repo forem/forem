@@ -69,7 +69,6 @@ function imageUploaderReducer(state, action) {
 const NativeIosImageUpload = ({
   uploadingImage,
   extraProps,
-  handleNativeMessage,
 }) => (
   <Fragment>
     {!uploadingImage && (
@@ -83,12 +82,6 @@ const NativeIosImageUpload = ({
         Upload image
       </Button>
     )}
-    <input
-      type="hidden"
-      id="native-image-upload-message"
-      value=""
-      onChange={handleNativeMessage}
-    />
   </Fragment>
 );
 
@@ -177,7 +170,8 @@ export const ImageUploader = () => {
   }
 
   function handleNativeMessage(e) {
-    const message = JSON.parse(e.target.value);
+    const message = JSON.parse(e.detail);
+    if (message.namespace !== 'imageUpload') { return }
 
     switch (message.action) {
       case 'uploading':
@@ -202,9 +196,7 @@ export const ImageUploader = () => {
 
   function initNativeImagePicker(e) {
     e.preventDefault();
-    window.webkit.messageHandlers.imageUpload.postMessage({
-      id: 'native-image-upload-message',
-    });
+    window.ForemMobile?.injectNativeMessage('imageUpload', { action: 'imageUpload' });
   }
 
   // When the component is rendered in an environment that supports a native
@@ -215,6 +207,9 @@ export const ImageUploader = () => {
   const extraProps = useNativeUpload
     ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
     : { tabIndex: -1 };
+
+  // Native Bridge messages come through ForemMobile events
+  document.addEventListener('ForemMobile', handleNativeMessage);
 
   return (
     <div className="flex items-center">
@@ -228,7 +223,6 @@ export const ImageUploader = () => {
         <NativeIosImageUpload
           extraProps={extraProps}
           uploadingImage={uploadingImage}
-          handleNativeMessage={handleNativeMessage}
         />
       ) : (
         <StandardImageUpload
