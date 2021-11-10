@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Button } from '..';
-import SampleIcon from '../../../../assets/images/cog.svg';
+import SampleIcon from '@img/cog.svg';
 
 export default {
   component: Button,
@@ -18,7 +18,7 @@ Default.args = {
 export const Primary = (args) => <Button {...args} />;
 Primary.args = {
   ...Default.args,
-  primary: true
+  primary: true,
 };
 
 export const WithIcon = (args) => <Button {...args} />;

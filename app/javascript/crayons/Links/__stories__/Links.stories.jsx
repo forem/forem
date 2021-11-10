@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Link } from '..';
-import SampleIcon from '../../../../assets/images/cog.svg';
+import SampleIcon from '@img/cog.svg';
 
 export default {
   component: Link,

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { CTA } from '../';
-import SampleIcon from '../../../../assets/images/cog.svg';
+import SampleIcon from '@img/cog.svg';
 
 export default {
   component: CTA,
@@ -9,15 +9,15 @@ export default {
     variant: {
       control: {
         type: 'select',
-        options: ['default', 'branded']
-      }
-    }
-  }
+        options: ['default', 'branded'],
+      },
+    },
+  },
 };
 
 export const Default = (args) => <CTA {...args} />;
 Default.args = {
-  children: "Call to action",
+  children: 'Call to action',
   variant: 'default',
   rounded: false,
 };
