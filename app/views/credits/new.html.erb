@@ -158,7 +158,7 @@
     var stripe = Stripe('<%= Settings::General.stripe_publishable_key %>');
     var elements = stripe.elements();
 
-    <% if current_user.dark_theme? %>
+    <% if current_user.setting.dark_theme? %>
       var style = {
       base: {
         color: 'white',
