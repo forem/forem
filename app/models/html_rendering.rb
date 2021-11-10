@@ -44,6 +44,10 @@ module HtmlRendering
 
     MARKDOWN_PROCESSOR_LISTINGS = %w[a abbr aside b blockquote br code em h4 h5 h6 hr i
                                      kbd li ol p pre small span strong sub sup u ul].freeze
+
+    SIDEBAR = %w[b br em i p strike strong u].freeze
+
+    BADGE_ACHIEVEMENT_CONTEXT_MESSAGE = %w[a b code em i strong u].freeze
   end
 
   # A container module for the allowed attributes in various rendering
@@ -62,5 +66,7 @@ module HtmlRendering
                                     rowspan span src start title type value].freeze
 
     MARKDOWN_PROCESSOR = %w[alt href src].freeze
+
+    BADGE_ACHIEVEMENT_CONTEXT_MESSAGE = %w[href name].freeze
   end
 end
