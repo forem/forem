@@ -4,10 +4,10 @@
       <p class="pb-2">
         Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.
       </p>
-      <div class="crayons-field crayons-field--checkbox pb-2 pt-2">
+      <label class="crayons-field crayons-field--checkbox my-2">
         <%= f.check_box :hide_children, class: "hide_children crayons-checkbox" %>
-        <%= f.label :hide_children, "Hide child comments as well", class: "crayons-field__label" %>
-      </div>
+        <p class="crayons-field__label">Hide child comments as well</p>
+      </label>
       <p class="pb-4 pt-2">
         <button type="submit" class="crayons-btn">
           Confirm
