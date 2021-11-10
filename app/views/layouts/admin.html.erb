@@ -32,6 +32,7 @@
   data-controller="snackbar"
   data-action="snackbar:add@document->snackbar#addItem">
   <header class="crayons-header">
+    <a href="#main-content" class="skip-content-link">Skip to content</a>
     <div class="crayons-header__container">
       <%= render "layouts/logo" %>
 
@@ -74,7 +75,7 @@
           </ul>
       </nav>
     </div>
-    <main class="crayons-layout__content min-w-0 p-2">
+    <main id="main-content" class="crayons-layout__content min-w-0 p-2">
       <% flash.each do |type, message| %>
         <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert" aria-label="Close">
