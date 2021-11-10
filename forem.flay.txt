@@ -1,0 +1,913 @@
+Total score (lower is better) = 14503
+
+1) IDENTICAL code found in :block (mass*2 = 268)
+  app/views/admin/profile_fields/_add_group_modal.html.erb:8
+  app/views/admin/profile_fields/_edit_group_modal.html.erb:8
+
+2) Similar code found in :attrasgn (mass = 259)
+  app/views/admin/broadcasts/edit.html.erb:3
+  app/views/admin/broadcasts/new.html.erb:3
+  app/views/admin/display_ads/edit.html.erb:4
+  app/views/admin/display_ads/new.html.erb:3
+  app/views/admin/html_variants/new.html.erb:3
+  app/views/admin/listing_categories/edit.html.erb:3
+  app/views/admin/listing_categories/new.html.erb:3
+
+3) Similar code found in :attrasgn (mass = 222)
+  app/views/doorkeeper/authorizations/new.html.erb:66
+  app/views/doorkeeper/authorizations/new.html.erb:76
+
+4) IDENTICAL code found in :array (mass*2 = 212)
+  app/models/display_ad.rb:19
+  app/sanitizers/rendered_markdown_scrubber.rb:6
+
+5) Similar code found in :attrasgn (mass = 210)
+  app/components/admin/users/tools/credits_component.html.erb:70
+  app/components/admin/users/tools/credits_component.html.erb:102
+
+6) IDENTICAL code found in :if (mass*2 = 204)
+  app/views/admin/settings/forms/authentication/_apple_auth_provider_settings.html.erb:53
+  app/views/admin/settings/forms/authentication/_auth_provider_settings.html.erb:23
+
+7) Similar code found in :attrasgn (mass = 194)
+  app/views/pages/privacy.html.erb:3
+  app/views/pages/terms.html.erb:3
+
+8) Similar code found in :block (mass = 192)
+  app/views/admin/settings/forms/_email_digest_frequency.html.erb:6
+  app/views/admin/settings/forms/_sponsors.html.erb:3
+
+9) IDENTICAL code found in :defn (mass*2 = 188)
+  app/controllers/sidebars_controller.rb:12
+  app/controllers/stories_controller.rb:58
+
+10) Similar code found in :attrasgn (mass = 188)
+  app/views/admin/users/_credits.html.erb:29
+  app/views/admin/users/_credits.html.erb:37
+
+11) Similar code found in :defn (mass = 184)
+  app/controllers/admin/users/tools/credits_controller.rb:13
+  app/controllers/admin/users/tools/credits_controller.rb:40
+
+12) Similar code found in :attrasgn (mass = 180)
+  app/views/admin/badge_achievements/index.html.erb:16
+  app/views/admin/chat_channels/index.html.erb:19
+  app/views/admin/moderator_actions/index.html.erb:2
+
+13) Similar code found in :block (mass = 178)
+  app/views/dashboards/followers.html.erb:17
+  app/views/dashboards/following_users.html.erb:17
+
+14) IDENTICAL code found in :call (mass*3 = 171)
+  app/controllers/messages_controller.rb:19
+  app/controllers/messages_controller.rb:44
+  app/controllers/messages_controller.rb:69
+
+15) Similar code found in :attrasgn (mass = 170)
+  app/components/admin/users/tools_component.html.erb:22
+  app/components/admin/users/tools_component.html.erb:32
+  app/components/admin/users/tools_component.html.erb:42
+  app/components/admin/users/tools_component.html.erb:52
+  app/components/admin/users/tools_component.html.erb:62
+
+16) Similar code found in :iter (mass = 162)
+  app/views/admin/navigation_links/index.html.erb:10
+  app/views/admin/navigation_links/index.html.erb:40
+
+17) IDENTICAL code found in :block (mass*2 = 156)
+  app/views/pages/sponsors.html.erb:20
+  app/views/pages/sponsors.html.erb:38
+
+18) IDENTICAL code found in :defn (mass*3 = 144)
+  app/controllers/api/v0/followers_controller.rb:25
+  app/controllers/dashboards_controller.rb:90
+  app/controllers/followings_controller.rb:42
+
+19) Similar code found in :attrasgn (mass = 141)
+  app/views/admin/tools/index.html.erb:5
+  app/views/admin/tools/index.html.erb:17
+  app/views/admin/tools/index.html.erb:24
+
+20) Similar code found in :block (mass = 134)
+  app/views/dashboards/_dashboard_article.html.erb:51
+  app/views/dashboards/_dashboard_article_row.html.erb:77
+
+21) Similar code found in :if (mass = 133)
+  app/views/admin/creator_settings/new.html.erb:8
+  app/views/chat_channel_memberships/index.html.erb:1
+  app/views/feedback_messages/_form.html.erb:20
+  app/views/layouts/application.html.erb:86
+  app/views/shared/authentication/_email_registration_form.html.erb:2
+  app/views/shared/authentication/_forem_creator_signup.html.erb:16
+  app/views/users/edit.html.erb:4
+
+22) Similar code found in :attrasgn (mass = 132)
+  app/views/users/_org_admin.html.erb:25
+  app/views/users/_org_admin.html.erb:31
+  app/views/users/_org_admin.html.erb:36
+
+23) IDENTICAL code found in :until (mass*2 = 124)
+  app/models/message.rb:64
+  app/services/html/parser.rb:227
+
+24) Similar code found in :if (mass = 119)
+  app/views/admin/settings/forms/_campaign.html.erb:38
+  app/views/admin/settings/forms/_images.html.erb:21
+  app/views/devise/invitations/edit.html.erb:5
+  app/views/layouts/_signup_modal.html.erb:9
+  app/views/layouts/application.html.erb:11
+  app/views/layouts/application.html.erb:82
+  app/views/shared/_auth_widget.html.erb:6
+
+25) Similar code found in :attrasgn (mass = 118)
+  app/views/chat_channel_memberships/join_channel_invitation.html.erb:6
+  app/views/chat_channel_memberships/join_channel_invitation.html.erb:11
+
+26) IDENTICAL code found in :iter (mass*2 = 116)
+  app/controllers/admin/articles_controller.rb:56
+  app/controllers/admin/articles_controller.rb:72
+
+27) IDENTICAL code found in :if (mass*2 = 116)
+  app/controllers/admin/settings/base_controller.rb:9
+  app/controllers/admin/settings/general_settings_controller.rb:13
+
+28) Similar code found in :attrasgn (mass = 114)
+  app/views/articles/new.html.erb:2
+  app/views/organizations/show.html.erb:3
+  app/views/podcast_episodes/index.html.erb:1
+  app/views/podcasts/new.html.erb:1
+  app/views/stories/articles_search/index.html.erb:1
+  app/views/stories/tagged_articles/index.html.erb:1
+
+29) Similar code found in :block (mass = 108)
+  app/views/admin/creator_settings/new.html.erb:17
+  app/views/shared/authentication/_email_registration_form.html.erb:11
+  app/views/shared/authentication/_forem_creator_signup.html.erb:26
+
+30) Similar code found in :block (mass = 108)
+  app/views/admin/data_update_scripts/index.html.erb:22
+  app/views/admin/data_update_scripts/index.html.erb:36
+  app/views/admin/welcome/index.html.erb:11
+  app/views/credits/new.html.erb:10
+  app/views/users/_account_providers_settings.html.erb:3
+  app/views/users/_org_member.html.erb:5
+
+31) Similar code found in :if (mass = 108)
+  app/views/users/_notifications.html.erb:16
+  app/views/users/_notifications.html.erb:22
+  app/views/users/_notifications.html.erb:95
+
+32) Similar code found in :if (mass = 105)
+  app/views/admin/pages/index.html.erb:28
+  app/views/admin/pages/index.html.erb:34
+  app/views/admin/pages/index.html.erb:40
+
+33) Similar code found in :attrasgn (mass = 100)
+  app/views/admin/users/_menu.html.erb:7
+  app/views/admin/users/_menu.html.erb:10
+  app/views/admin/users/_menu.html.erb:13
+  app/views/admin/users/_menu.html.erb:16
+
+34) Similar code found in :if (mass = 100)
+  app/views/credits/index.html.erb:4
+  app/views/layouts/doorkeeper/admin.html.erb:30
+  app/views/layouts/doorkeeper/application.html.erb:14
+  app/views/moderations/mod.html.erb:11
+  app/views/users/edit.html.erb:10
+
+35) Similar code found in :attrasgn (mass = 100)
+  app/views/shared/authentication/_email_registration_form.html.erb:53
+  app/views/shared/authentication/_email_registration_form.html.erb:61
+  app/views/shared/authentication/_email_registration_form.html.erb:69
+  app/views/shared/authentication/_email_registration_form.html.erb:77
+  app/views/shared/authentication/_email_registration_form.html.erb:85
+
+36) Similar code found in :module (mass = 96)
+  app/controllers/admin/users/tools/emails_controller.rb:2
+  app/controllers/admin/users/tools/organizations_controller.rb:2
+  app/controllers/admin/users/tools/reactions_controller.rb:2
+  app/controllers/admin/users/tools/reports_controller.rb:2
+
+37) Similar code found in :attrasgn (mass = 96)
+  app/views/moderations/actions_panel.html.erb:27
+  app/views/moderations/actions_panel.html.erb:37
+  app/views/moderations/mod.html.erb:42
+  app/views/moderations/mod.html.erb:52
+  app/views/moderations/mod.html.erb:62
+  app/views/moderations/mod.html.erb:90
+
+38) Similar code found in :attrasgn (mass = 95)
+  app/views/admin/html_variants/index.html.erb:4
+  app/views/admin/html_variants/index.html.erb:5
+  app/views/admin/sponsorships/index.html.erb:4
+  app/views/admin/sponsorships/index.html.erb:5
+  app/views/admin/sponsorships/index.html.erb:6
+
+39) Similar code found in :block (mass = 94)
+  app/views/articles/_block.html.erb:3
+  app/views/articles/_block.html.erb:11
+
+40) Similar code found in :iter (mass = 93)
+  app/views/social_previews/articles/article.html.erb:130
+  app/views/social_previews/comment.html.erb:127
+  app/views/social_previews/user.html.erb:120
+
+41) IDENTICAL code found in :defn (mass*2 = 92)
+  app/controllers/users/notification_settings_controller.rb:51
+  app/controllers/users_controller.rb:317
+
+42) Similar code found in :attrasgn (mass = 92)
+  app/views/admin/settings/forms/_authentication.html.erb:83
+  app/views/admin/settings/forms/_campaign.html.erb:63
+  app/views/admin/settings/forms/_onboarding.html.erb:31
+  app/views/admin/settings/forms/_rate_limit.html.erb:40
+
+43) Similar code found in :block (mass = 90)
+  app/views/articles/show.html.erb:51
+  app/views/articles/show.html.erb:117
+  app/views/comments/index.html.erb:40
+  app/views/podcast_episodes/show.html.erb:20
+  app/views/users/edit.html.erb:81
+
+44) Similar code found in :module (mass = 88)
+  app/services/notifications/new_follower/follow_data.rb:2
+  app/services/notifications/reactions/reaction_data.rb:2
+
+45) Similar code found in :if (mass = 88)
+  app/views/admin/organizations/show.html.erb:24
+  app/views/admin/organizations/show.html.erb:30
+  app/views/admin/users/show.html.erb:30
+  app/views/admin/users/show.html.erb:36
+
+46) Similar code found in :attrasgn (mass = 86)
+  app/views/chat_channel_memberships/index.html.erb:14
+  app/views/chat_channel_memberships/index.html.erb:18
+
+47) IDENTICAL code found in :attrasgn (mass*2 = 84)
+  app/views/admin/profile_fields/_grouped_profile_fields.html.erb:31
+  app/views/admin/profile_fields/_ungrouped_profile_fields.html.erb:4
+
+48) Similar code found in :class (mass = 82)
+  app/liquid_tags/replit_tag.rb:1
+  app/liquid_tags/speakerdeck_tag.rb:1
+
+49) Similar code found in :attrasgn (mass = 82)
+  app/views/admin/consumer_apps/edit.html.erb:3
+  app/views/admin/consumer_apps/new.html.erb:3
+
+50) Similar code found in :defn (mass = 81)
+  app/controllers/admin/badge_achievements_controller.rb:14
+  app/controllers/admin/broadcasts_controller.rb:49
+  app/controllers/admin/display_ads_controller.rb:50
+
+51) Similar code found in :iter (mass = 78)
+  app/views/articles/_sidebar.html.erb:22
+  app/views/articles/_sidebar.html.erb:30
+
+52) Similar code found in :if (mass = 78)
+  app/views/comments/_form.html.erb:4
+  app/views/moderations/mod.html.erb:128
+
+53) Similar code found in :if (mass = 78)
+  app/views/listings/_form_errors.html.erb:1
+  app/views/podcasts/_form.html.erb:9
+
+54) Similar code found in :iter (mass = 78)
+  app/views/users/_customization.html.erb:27
+  app/views/users/_customization.html.erb:36
+  app/views/users/_customization.html.erb:50
+
+55) Similar code found in :if (mass = 78)
+  app/views/users/_org_admin.html.erb:98
+  app/views/users/_org_admin.html.erb:109
+  app/views/users/_org_admin.html.erb:119
+
+56) IDENTICAL code found in :args (mass*2 = 76)
+  app/queries/homepage/articles_query.rb:27
+  app/services/homepage/fetch_articles.rb:11
+
+57) Similar code found in :attrasgn (mass = 76)
+  app/views/admin/broadcasts/index.html.erb:7
+  app/views/admin/broadcasts/index.html.erb:10
+  app/views/admin/mods/index.html.erb:7
+  app/views/admin/mods/index.html.erb:10
+
+58) Similar code found in :defn (mass = 72)
+  app/controllers/admin/badges_controller.rb:17
+  app/controllers/admin/listing_categories_controller.rb:23
+  app/controllers/admin/sponsorships_controller.rb:23
+
+59) IDENTICAL code found in :if (mass*2 = 72)
+  app/controllers/admin/tags/moderators_controller.rb:14
+  app/controllers/admin/tags/moderators_controller.rb:32
+
+60) Similar code found in :block (mass = 72)
+  app/views/admin/listings/edit.html.erb:7
+  app/views/admin/mods/index.html.erb:50
+  app/views/admin/response_templates/edit.html.erb:3
+  app/views/comments/settings.html.erb:29
+
+61) IDENTICAL code found in :block (mass*2 = 72)
+  app/views/articles/show.html.erb:165
+  app/views/articles/show.html.erb:176
+
+62) Similar code found in :if (mass = 72)
+  app/views/dashboards/_actions.html.erb:79
+  app/views/dashboards/_actions_mobile.html.erb:14
+
+63) Similar code found in :if (mass = 72)
+  app/views/social_previews/articles/article.html.erb:102
+  app/views/social_previews/comment.html.erb:109
+
+64) Similar code found in :block (mass = 70)
+  app/views/admin/organizations/index.html.erb:1
+  app/views/admin/podcasts/index.html.erb:1
+
+65) Similar code found in :block (mass = 70)
+  app/views/moderations/mod.html.erb:140
+  app/views/moderations/mod.html.erb:146
+
+66) Similar code found in :iter (mass = 69)
+  app/views/feedback_messages/index.html.erb:2
+  app/views/moderations/actions_panel.html.erb:3
+  app/views/moderations/mod.html.erb:5
+
+67) Similar code found in :attrasgn (mass = 68)
+  app/views/admin/display_ads/index.html.erb:8
+  app/views/admin/listing_categories/index.html.erb:2
+
+68) Similar code found in :attrasgn (mass = 68)
+  app/views/admin/settings/forms/authentication/_auth_provider_settings.html.erb:7
+  app/views/admin/settings/forms/authentication/_auth_provider_settings.html.erb:17
+
+69) Similar code found in :class (mass = 68)
+  app/workers/articles/bust_cache_worker.rb:2
+  app/workers/listings/bust_cache_worker.rb:2
+  app/workers/tags/bust_cache_worker.rb:2
+  app/workers/users/bust_cache_worker.rb:2
+
+70) Similar code found in :if (mass = 66)
+  app/views/comments/_comment_header.html.erb:4
+  app/views/comments/_comment_header.html.erb:15
+
+71) Similar code found in :attrasgn (mass = 66)
+  app/views/doorkeeper/applications/_delete_form.html.erb:2
+  app/views/doorkeeper/authorized_applications/_delete_form.html.erb:2
+
+72) Similar code found in :block (mass = 66)
+  app/views/organizations/_header.html.erb:38
+  app/views/users/show.html.erb:74
+
+73) Similar code found in :if (mass = 66)
+  app/views/organizations/_header.html.erb:50
+  app/views/organizations/_header.html.erb:55
+
+74) Similar code found in :defn (mass = 64)
+  app/controllers/admin/display_ads_controller.rb:7
+  app/controllers/admin/listing_categories_controller.rb:6
+
+75) IDENTICAL code found in :call (mass*2 = 64)
+  app/controllers/response_templates_controller.rb:40
+  app/controllers/response_templates_controller.rb:70
+
+76) IDENTICAL code found in :defn (mass*2 = 64)
+  app/decorators/organization_decorator.rb:2
+  app/decorators/user_decorator.rb:36
+
+77) Similar code found in :defn (mass = 64)
+  app/services/credits/manage.rb:28
+  app/services/credits/manage.rb:35
+  app/services/credits/manage.rb:42
+  app/services/credits/manage.rb:49
+
+78) IDENTICAL code found in :lasgn (mass*2 = 64)
+  app/services/follows/check_cached.rb:16
+  app/services/follows/delete_cached.rb:16
+
+79) IDENTICAL code found in :attrasgn (mass*2 = 64)
+  app/views/admin/users/edit.html.erb:4
+  app/views/admin/users/show.html.erb:5
+
+80) IDENTICAL code found in :attrasgn (mass*2 = 64)
+  app/views/articles/index.html.erb:46
+  app/views/stories/tagged_articles/index.html.erb:64
+
+81) IDENTICAL code found in :call (mass*2 = 64)
+  app/views/devise/confirmations/new.html.erb:29
+  app/views/devise/confirmations/new.html.erb:54
+
+82) Similar code found in :block (mass = 64)
+  app/views/listings/_form.html.erb:99
+  app/views/listings/edit.html.erb:50
+  app/views/listings/edit.html.erb:52
+  app/views/listings/edit.html.erb:64
+
+83) IDENTICAL code found in :block (mass*2 = 64)
+  app/views/sidebars/_homepage_content.html.erb:42
+  app/views/sidebars/_homepage_content.html.erb:46
+
+84) Similar code found in :array (mass = 63)
+  app/controllers/articles_controller.rb:16
+  app/sanitizers/rendered_markdown_scrubber.rb:12
+  app/views/podcast_episodes/show.html.erb:89
+
+85) Similar code found in :attrasgn (mass = 63)
+  app/views/admin/settings/forms/authentication/_apple_auth_provider_settings.html.erb:16
+  app/views/admin/settings/forms/authentication/_apple_auth_provider_settings.html.erb:26
+  app/views/admin/settings/forms/authentication/_apple_auth_provider_settings.html.erb:47
+
+86) Similar code found in :block (mass = 62)
+  app/views/admin/feedback_messages/_feedback_message.html.erb:30
+  app/views/admin/feedback_messages/_feedback_message.html.erb:38
+
+87) Similar code found in :attrasgn (mass = 62)
+  app/views/pages/editor_guide.html.erb:3
+  app/views/pages/sponsors.html.erb:3
+
+88) Similar code found in :if (mass = 62)
+  app/views/podcast_episodes/_episodes_feed.html.erb:15
+  app/views/podcast_episodes/index.html.erb:56
+
+89) Similar code found in :block (mass = 62)
+  app/views/users/_metadata.html.erb:4
+  app/views/users/_sidebar.html.erb:36
+
+90) Similar code found in :attrasgn (mass = 60)
+  app/views/articles/_actions.html.erb:5
+  app/views/articles/_actions.html.erb:13
+  app/views/articles/_actions.html.erb:21
+
+91) Similar code found in :attrasgn (mass = 60)
+  app/views/dashboards/_actions.html.erb:4
+  app/views/dashboards/_actions.html.erb:13
+  app/views/dashboards/_actions_mobile.html.erb:3
+
+92) Similar code found in :iter (mass = 60)
+  app/views/notifications/_comment.html.erb:6
+  app/views/notifications/_mention.html.erb:3
+
+93) Similar code found in :defn (mass = 58)
+  app/controllers/admin/profile_field_groups_controller.rb:8
+  app/controllers/admin/profile_fields_controller.rb:13
+
+94) Similar code found in :iter (mass = 58)
+  app/controllers/admin/users_controller.rb:179
+  app/controllers/admin/users_controller.rb:219
+
+95) Similar code found in :defn (mass = 58)
+  app/models/message.rb:201
+  app/models/message.rb:207
+
+96) Similar code found in :call (mass = 58)
+  app/views/notifications/_aggregated_reactions.html.erb:28
+  app/views/notifications/_follow.html.erb:29
+
+97) Similar code found in :if (mass = 57)
+  app/views/articles/show.html.erb:17
+  app/views/organizations/_header.html.erb:1
+  app/views/users/show.html.erb:14
+
+98) Similar code found in :defn (mass = 56)
+  app/controllers/admin/navigation_links_controller.rb:34
+  app/controllers/admin/profile_field_groups_controller.rb:28
+
+99) Similar code found in :resbody (mass = 56)
+  app/controllers/stripe_active_cards_controller.rb:24
+  app/controllers/stripe_active_cards_controller.rb:46
+
+100) Similar code found in :defn (mass = 56)
+  app/services/github/oauth_client.rb:71
+  app/services/twitter_client/client.rb:29
+
+101) Similar code found in :class (mass = 56)
+  app/workers/badge_achievements/send_email_notification_worker.rb:2
+  app/workers/mentions/send_email_notification_worker.rb:2
+
+102) Similar code found in :defn (mass = 56)
+  app/workers/users/record_field_test_event_worker.rb:33
+  app/workers/users/record_field_test_event_worker.rb:42
+
+103) Similar code found in :defn (mass = 54)
+  app/controllers/admin/badges_controller.rb:29
+  app/controllers/admin/listing_categories_controller.rb:35
+
+104) Similar code found in :cdecl (mass = 54)
+  app/controllers/admin/tags_controller.rb:5
+  app/controllers/users/notification_settings_controller.rb:7
+  app/services/search/listing.rb:3
+
+105) Similar code found in :defn (mass = 54)
+  app/controllers/api/v0/analytics_controller.rb:20
+  app/controllers/api/v0/analytics_controller.rb:37
+
+106) Similar code found in :block (mass = 54)
+  app/views/comments/_comment_quality_marker.html.erb:2
+  app/views/comments/settings.html.erb:10
+  app/views/comments/settings.html.erb:13
+
+107) Similar code found in :block (mass = 54)
+  app/views/sidebars/_homepage_content.html.erb:57
+  app/views/sidebars/_homepage_content.html.erb:72
+
+108) Similar code found in :if (mass = 54)
+  app/views/stories/tagged_articles/index.html.erb:16
+  app/views/tags/edit.html.erb:6
+
+109) Similar code found in :attrasgn (mass = 54)
+  app/views/users/_billing.html.erb:26
+  app/views/users/_billing.html.erb:30
+  app/views/users/_billing.html.erb:33
+
+110) Similar code found in :array (mass = 52)
+  app/services/markdown_processor/parser.rb:88
+  app/views/admin/comments/index.html.erb:15
+
+111) Similar code found in :defn (mass = 52)
+  app/services/user_blocks/channel_handler.rb:16
+  app/services/user_blocks/channel_handler.rb:26
+
+112) Similar code found in :attrasgn (mass = 52)
+  app/views/admin/tags/index.html.erb:7
+  app/views/admin/tags/index.html.erb:10
+
+113) Similar code found in :block (mass = 52)
+  app/views/admin/users/edit.html.erb:128
+  app/views/admin/users/edit.html.erb:136
+
+114) Similar code found in :block (mass = 52)
+  app/views/articles/show.html.erb:95
+  app/views/comments/index.html.erb:59
+
+115) Similar code found in :if (mass = 52)
+  app/views/organizations/_sidebar.html.erb:4
+  app/views/organizations/_sidebar.html.erb:14
+
+116) Similar code found in :attrasgn (mass = 51)
+  app/views/admin/feedback_messages/_feedback_message.html.erb:125
+  app/views/admin/feedback_messages/_feedback_message.html.erb:133
+  app/views/admin/feedback_messages/_feedback_message.html.erb:141
+
+117) Similar code found in :attrasgn (mass = 51)
+  app/views/admin/feedback_messages/_feedback_message.html.erb:129
+  app/views/admin/feedback_messages/_feedback_message.html.erb:137
+  app/views/admin/feedback_messages/_feedback_message.html.erb:145
+
+118) Similar code found in :defn (mass = 50)
+  app/controllers/admin/navigation_links_controller.rb:14
+  app/controllers/admin/profile_field_groups_controller.rb:18
+
+119) Similar code found in :block (mass = 50)
+  app/views/articles/_comments_actions.html.erb:3
+  app/views/users/_comments_section.html.erb:51
+
+120) Similar code found in :block (mass = 50)
+  app/views/articles/_tag_identifier.html.erb:3
+  app/views/sidebars/_homepage_content.html.erb:23
+
+121) Similar code found in :block (mass = 50)
+  app/views/articles/show.html.erb:121
+  app/views/articles/show.html.erb:128
+
+122) Similar code found in :if (mass = 50)
+  app/views/dashboards/_actions.html.erb:87
+  app/views/dashboards/_actions_mobile.html.erb:20
+
+123) Similar code found in :class (mass = 50)
+  app/workers/notifications/mention_worker.rb:2
+  app/workers/notifications/new_badge_achievement_worker.rb:2
+
+124) Similar code found in :when (mass = 48)
+  app/controllers/admin/pages_controller.rb:77
+  app/controllers/admin/pages_controller.rb:85
+  app/controllers/admin/pages_controller.rb:93
+
+125) Similar code found in :cdecl (mass = 48)
+  app/controllers/api/v0/organizations_controller.rb:6
+  app/controllers/podcasts_controller.rb:9
+  app/queries/homepage/articles_query.rb:3
+
+126) Similar code found in :call (mass = 48)
+  app/controllers/search_controller.rb:138
+  app/controllers/search_controller.rb:146
+
+127) Similar code found in :cdecl (mass = 48)
+  app/lib/constants/tags.rb:3
+  app/services/search/chat_channel_membership.rb:3
+  app/services/search/podcast_episode.rb:3
+
+128) Similar code found in :defn (mass = 48)
+  app/services/mailchimp/bot.rb:137
+  app/services/mailchimp/bot.rb:147
+
+129) Similar code found in :attrasgn (mass = 48)
+  app/views/articles/_single_story.html.erb:124
+  app/views/articles/_single_story.html.erb:133
+  app/views/articles/_single_story.html.erb:141
+
+130) Similar code found in :attrasgn (mass = 48)
+  app/views/articles/_sticky_nav.html.erb:3
+  app/views/organizations/_header.html.erb:8
+  app/views/users/show.html.erb:23
+
+131) Similar code found in :attrasgn (mass = 48)
+  app/views/doorkeeper/applications/_form.html.erb:17
+  app/views/doorkeeper/applications/_form.html.erb:40
+  app/views/doorkeeper/applications/_form.html.erb:51
+
+132) Similar code found in :attrasgn (mass = 48)
+  app/views/fields/carrierwave_field/_form.html.erb:5
+  app/views/fields/carrierwave_field/_index.html.erb:1
+  app/views/fields/carrierwave_field/_show.html.erb:1
+
+133) Similar code found in :attrasgn (mass = 48)
+  app/views/shared/authentication/_providers_registration_form.html.erb:7
+  app/views/users/_account.html.erb:100
+  app/views/users/_additional_authentication.html.erb:13
+
+134) Similar code found in :block (mass = 48)
+  app/views/stories/tagged_articles/_sidebar_additional.html.erb:26
+  app/views/stories/tagged_articles/_sidebar_additional.html.erb:39
+
+135) Similar code found in :attrasgn (mass = 48)
+  app/views/users/_profile.html.erb:82
+  app/views/users/_profile.html.erb:99
+
+136) Similar code found in :defn (mass = 46)
+  app/services/broadcasts/welcome_notification/generator.rb:41
+  app/services/broadcasts/welcome_notification/generator.rb:51
+
+137) Similar code found in :defn (mass = 46)
+  app/services/exporter/articles.rb:10
+  app/services/exporter/comments.rb:10
+
+138) Similar code found in :defn (mass = 46)
+  app/services/users/suggest_recent.rb:59
+  app/services/users/suggest_recent.rb:65
+
+139) Similar code found in :attrasgn (mass = 46)
+  app/views/admin/settings/forms/_images.html.erb:51
+  app/views/admin/settings/forms/_mascot.html.erb:20
+
+140) Similar code found in :attrasgn (mass = 46)
+  app/views/admin/users/edit.html.erb:102
+  app/views/admin/users/edit.html.erb:157
+
+141) Similar code found in :attrasgn (mass = 46)
+  app/views/podcast_episodes/index.html.erb:75
+  app/views/videos/index.html.erb:32
+
+142) Similar code found in :iter (mass = 46)
+  app/views/sitemaps/posts.xml.erb:3
+  app/views/sitemaps/users.xml.erb:3
+
+143) Similar code found in :if (mass = 44)
+  app/controllers/admin/profile_fields_controller.rb:25
+  app/controllers/admin/profile_fields_controller.rb:36
+
+144) Similar code found in :defn (mass = 44)
+  app/liquid_tags/link_tag.rb:41
+  app/liquid_tags/link_tag.rb:48
+
+145) Similar code found in :class (mass = 44)
+  app/services/badges/award_fab_five.rb:2
+  app/services/badges/award_top_seven.rb:2
+
+146) Similar code found in :if (mass = 44)
+  app/views/admin/organizations/index.html.erb:27
+  app/views/admin/organizations/index.html.erb:32
+
+147) Similar code found in :attrasgn (mass = 44)
+  app/views/dashboards/_actions.html.erb:6
+  app/views/dashboards/_actions.html.erb:15
+
+148) Similar code found in :if (mass = 44)
+  app/views/devise/mailer/invitation_instructions.html.erb:7
+  app/views/devise/mailer/invitation_instructions.text.erb:7
+
+149) Similar code found in :defn (mass = 42)
+  app/liquid_tags/stackery_tag.rb:9
+  app/liquid_tags/wikipedia_tag.rb:12
+
+150) Similar code found in :defn (mass = 42)
+  app/services/broadcasts/welcome_notification/generator.rb:61
+  app/services/broadcasts/welcome_notification/generator.rb:78
+
+151) Similar code found in :iter (mass = 42)
+  app/views/dashboards/_dashboard_article.html.erb:40
+  app/views/listings/_liquid.html.erb:25
+
+152) Similar code found in :defn (mass = 40)
+  app/controllers/admin/articles_controller.rb:95
+  app/controllers/admin/articles_controller.rb:104
+
+153) Similar code found in :array (mass = 40)
+  app/controllers/api/v0/articles_controller.rb:27
+  app/services/exporter/articles.rb:44
+
+154) Similar code found in :defn (mass = 40)
+  app/helpers/social_link_helper.rb:2
+  app/helpers/social_link_helper.rb:8
+
+155) Similar code found in :cdecl (mass = 40)
+  app/lib/constants/role.rb:11
+  app/models/role.rb:2
+
+156) Similar code found in :block (mass = 40)
+  app/models/github_issue.rb:33
+  app/models/github_issue.rb:37
+
+157) Similar code found in :defn (mass = 40)
+  app/services/html/parser.rb:79
+  app/services/html/parser.rb:91
+
+158) Similar code found in :attrasgn (mass = 40)
+  app/views/admin/invitations/index.html.erb:20
+  app/views/admin/users/gdpr_delete_requests/index.html.erb:23
+
+159) Similar code found in :attrasgn (mass = 40)
+  app/views/admin/sponsorships/edit.html.erb:28
+  app/views/admin/sponsorships/edit.html.erb:52
+
+160) Similar code found in :block (mass = 40)
+  app/views/articles/_comments_actions.html.erb:11
+  app/views/comments/index.html.erb:152
+
+161) Similar code found in :attrasgn (mass = 40)
+  app/views/articles/_single_story.html.erb:125
+  app/views/articles/_single_story.html.erb:134
+
+162) Similar code found in :iter (mass = 40)
+  app/views/comments/index.html.erb:144
+  app/views/podcast_episodes/show.html.erb:107
+
+163) Similar code found in :block (mass = 40)
+  app/views/users/edit.html.erb:88
+  app/views/users/edit.html.erb:92
+
+164) Similar code found in :resbody (mass = 40)
+  app/workers/moderator/banish_user_worker.rb:11
+  app/workers/moderator/sink_articles_worker.rb:12
+
+165) Similar code found in :defn (mass = 38)
+  app/controllers/concerns/listings_toolkit.rb:39
+  app/controllers/feedback_messages_controller.rb:68
+
+166) Similar code found in :defs (mass = 38)
+  app/services/search/article.rb:38
+  app/services/search/reading_list.rb:104
+
+167) Similar code found in :if (mass = 38)
+  app/views/dashboards/_dashboard_article.html.erb:80
+  app/views/dashboards/_dashboard_article_row.html.erb:55
+
+168) Similar code found in :call (mass = 36)
+  app/models/users/setting.rb:11
+  app/models/users/setting.rb:17
+
+169) Similar code found in :block (mass = 36)
+  app/views/admin/feedback_messages/_feedback_message.html.erb:46
+  app/views/dashboards/_dashboard_article_row.html.erb:90
+
+170) Similar code found in :attrasgn (mass = 36)
+  app/views/admin/organizations/show.html.erb:45
+  app/views/admin/organizations/show.html.erb:54
+
+171) Similar code found in :attrasgn (mass = 36)
+  app/views/admin/tags/_form.html.erb:55
+  app/views/admin/tags/_form.html.erb:62
+
+172) Similar code found in :block (mass = 36)
+  app/views/articles/show.html.erb:11
+  app/views/layouts/application.html.erb:26
+
+173) Similar code found in :block (mass = 36)
+  app/views/articles/show.html.erb:72
+  app/views/users/show.html.erb:37
+
+174) Similar code found in :block (mass = 36)
+  app/views/feedback_messages/_form.html.erb:71
+  app/views/shared/authentication/_email_registration_form.html.erb:104
+
+175) Similar code found in :iter (mass = 36)
+  app/views/layouts/_main_nav.html.erb:20
+  app/views/layouts/_main_nav.html.erb:32
+
+176) Similar code found in :block (mass = 36)
+  app/views/moderations/actions_panel.html.erb:84
+  app/views/organizations/_metadata.html.erb:15
+
+177) Similar code found in :call (mass = 36)
+  app/views/notifications/shared/_article_preview.html.erb:11
+  app/views/notifications/shared/_comment_box.html.erb:49
+
+178) Similar code found in :if (mass = 36)
+  app/views/shared/_profile_card_content.html.erb:3
+  app/views/shared/_profile_card_content.html.erb:4
+
+179) Similar code found in :array (mass = 34)
+  app/controllers/admin/podcasts_controller.rb:6
+  app/controllers/stories_controller.rb:5
+
+180) Similar code found in :block (mass = 34)
+  app/controllers/response_templates_controller.rb:35
+  app/controllers/response_templates_controller.rb:66
+
+181) Similar code found in :call (mass = 34)
+  app/liquid_tags/null_tag.rb:7
+  app/services/users/profile_image_generator.rb:4
+
+182) Similar code found in :defn (mass = 34)
+  app/liquid_tags/stackblitz_tag.rb:15
+  app/liquid_tags/twitch_tag.rb:12
+
+183) Similar code found in :resbody (mass = 34)
+  app/services/payments/customer.rb:67
+  app/services/payments/customer.rb:70
+
+184) Similar code found in :attrasgn (mass = 34)
+  app/views/admin/sponsorships/new.html.erb:16
+  app/views/admin/sponsorships/new.html.erb:21
+
+185) Similar code found in :if (mass = 34)
+  app/views/credits/new.html.erb:19
+  app/views/users/_billing.html.erb:9
+
+186) Similar code found in :block (mass = 34)
+  app/views/shared/authentication/_email_registration_form.html.erb:94
+  app/views/shared/authentication/_forem_creator_signup.html.erb:89
+
+187) Similar code found in :lasgn (mass = 34)
+  app/views/social_previews/articles/article.html.erb:2
+  app/views/social_previews/comment.html.erb:2
+
+188) Similar code found in :block (mass = 32)
+  app/controllers/admin/organization_memberships_controller.rb:54
+  app/controllers/admin/organization_memberships_controller.rb:88
+
+189) Similar code found in :block (mass = 32)
+  app/controllers/stripe_active_cards_controller.rb:19
+  app/controllers/stripe_active_cards_controller.rb:41
+
+190) Similar code found in :defn (mass = 32)
+  app/helpers/feedback_messages_helper.rb:31
+  app/helpers/feedback_messages_helper.rb:36
+
+191) Similar code found in :call (mass = 32)
+  app/models/identity.rb:15
+  app/models/identity.rb:19
+
+192) Similar code found in :lasgn (mass = 32)
+  app/models/poll_skip.rb:10
+  app/models/poll_vote.rb:25
+
+193) Similar code found in :if (mass = 32)
+  app/services/edge_cache/bust_article.rb:73
+  app/services/edge_cache/bust_comment.rb:23
+
+194) Similar code found in :block (mass = 32)
+  app/views/admin/privileged_reactions/index.html.erb:41
+  app/views/admin/privileged_reactions/index.html.erb:43
+
+195) Similar code found in :attrasgn (mass = 32)
+  app/views/admin/tags/_form.html.erb:54
+  app/views/admin/tags/_form.html.erb:61
+
+196) Similar code found in :block (mass = 32)
+  app/views/articles/_full_comment_area.html.erb:26
+  app/views/comments/index.html.erb:132
+
+197) Similar code found in :iter (mass = 32)
+  app/views/articles/_sticky_nav.html.erb:20
+  app/views/articles/_sticky_nav.html.erb:45
+
+198) Similar code found in :block (mass = 32)
+  app/views/articles/_widget_list_item.html.erb:6
+  app/views/articles/manage.html.erb:9
+
+199) Similar code found in :if (mass = 32)
+  app/views/dashboards/_dashboard_article.html.erb:64
+  app/views/dashboards/_dashboard_article_row.html.erb:91
+
+200) Similar code found in :attrasgn (mass = 32)
+  app/views/kaminari/internal/_next_page.html.erb:2
+  app/views/kaminari/internal/_prev_page.html.erb:2
+
+201) Similar code found in :block (mass = 32)
+  app/views/liquid_embeds/show.html.erb:3
+  app/views/onboardings/show.html.erb:5
+
+202) Similar code found in :and (mass = 32)
+  app/views/liquids/_tweet.html.erb:2
+  app/views/liquids/_tweet.html.erb:21
+
+203) Similar code found in :block (mass = 32)
+  app/views/liquids/_tweet.html.erb:17
+  app/views/liquids/_tweet.html.erb:22
+
+204) Similar code found in :lasgn (mass = 32)
+  app/views/social_previews/articles/article.html.erb:1
+  app/views/social_previews/comment.html.erb:1
+
+205) Similar code found in :attrasgn (mass = 32)
+  app/views/stories/tagged_articles/index.html.erb:8
+  app/views/tags/edit.html.erb:4

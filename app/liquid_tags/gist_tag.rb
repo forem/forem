@@ -60,3 +60,5 @@ class GistTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("gist", GistTag)
+
+UnifiedEmbed.register(GistTag, regexp: %r{https?://gist.github.com})
