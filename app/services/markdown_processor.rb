@@ -1,7 +1,9 @@
-# The purpose of this module is to provide a common place for
-# answering the question:
+# The purpose of this module is provide a common place for logic
+# around Markdown processing.
 #
-# What HTML tags and attributes are allowed for what contexts?
+# The submodules AllowedTags and AllowedAttributes answer the
+# question: What HTML tags and attributes are allowed for what
+# contexts?
 #
 # In performing some analysis, I found that we had at least 5 places
 # in our code base that specified AllowedTags and AllowedAttributes.
@@ -9,7 +11,7 @@
 # There should be parity between the name of constants in both
 # AllowedTags and AllowedAttributes.  That is to say if one of those
 # modules has FEED then the other should have FEED as well.
-module HtmlRendering
+module MarkdownProcessor
   # A container module for the allowed tags in various rendering
   # contexts.
   module AllowedTags

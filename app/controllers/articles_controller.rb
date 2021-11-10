@@ -35,8 +35,8 @@ class ArticlesController < ApplicationController
       articles: @articles,
       user: @user,
       tag: @tag,
-      allowed_tags: HtmlRendering::AllowedTags::FEED,
-      allowed_attributes: HtmlRendering::AllowedAttributes::FEED
+      allowed_tags: MarkdownProcessor::AllowedTags::FEED,
+      allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED
     }
   end
 

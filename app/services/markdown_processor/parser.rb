@@ -45,25 +45,27 @@ module MarkdownProcessor
       (word_count / WORDS_READ_PER_MINUTE).ceil
     end
 
-    def evaluate_markdown(allowed_tags: HtmlRendering::AllowedTags::MARKDOWN_PROCESSOR_DEFAULT)
+    def evaluate_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_DEFAULT)
       return if @content.blank?
 
       renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       ActionController::Base.helpers.sanitize(markdown.render(@content),
                                               tags: allowed_tags,
-                                              attributes: HtmlRendering::AllowedAttributes::MARKDOWN_PROCESSOR)
+                                              attributes: MarkdownProcessor::AllowedAttributes::MARKDOWN_PROCESSOR)
     end
 
-    def evaluate_limited_markdown(allowed_tags: HtmlRendering::AllowedTags::MARKDOWN_PROCESSOR_LIMITED)
+    def evaluate_limited_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_LIMITED)
       evaluate_markdown(allowed_tags: allowed_tags)
     end
 
-    def evaluate_inline_limited_markdown(allowed_tags: HtmlRendering::AllowedTags::MARKDOWN_PROCESSOR_INLINE_LIMITED)
+    # rubocop:disable Layout/LineLength
+    def evaluate_inline_limited_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_INLINE_LIMITED)
       evaluate_markdown(allowed_tags: allowed_tags)
     end
+    # rubocop:enable Layout/LineLength
 
-    def evaluate_listings_markdown(allowed_tags: HtmlRendering::AllowedTags::MARKDOWN_PROCESSOR_LISTINGS)
+    def evaluate_listings_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_LISTINGS)
       evaluate_markdown(allowed_tags: allowed_tags)
     end
 

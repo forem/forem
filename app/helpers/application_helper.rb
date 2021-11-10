@@ -116,7 +116,7 @@ module ApplicationHelper
 
   def sanitized_sidebar(text)
     ActionController::Base.helpers.sanitize simple_format(text),
-                                            tags: HtmlRendering::AllowedTags::SIDEBAR
+                                            tags: MarkdownProcessor::AllowedTags::SIDEBAR
   end
 
   def follow_button(followable, style = "full", classes = "")

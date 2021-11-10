@@ -27,8 +27,8 @@ class BadgeAchievement < ApplicationRecord
     html = parsed_markdown.finalize
     final_html = ActionController::Base.helpers.sanitize(
       html,
-      tags: HtmlRendering::AllowedTags::BADGE_ACHIEVEMENT_CONTEXT_MESSAGE,
-      attributes: HtmlRendering::AllowedAttributes::BADGE_ACHIEVEMENT_CONTEXT_MESSAGE,
+      tags: MarkdownProcessor::AllowedTags::BADGE_ACHIEVEMENT_CONTEXT_MESSAGE,
+      attributes: MarkdownProcessor::AllowedAttributes::BADGE_ACHIEVEMENT_CONTEXT_MESSAGE,
     )
 
     self.rewarding_context_message = final_html

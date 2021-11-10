@@ -3,9 +3,9 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   def initialize
     super
 
-    self.tags = HtmlRendering::AllowedTags::RENDERED_MARKDOWN_SCRUBBER
+    self.tags = MarkdownProcessor::AllowedTags::RENDERED_MARKDOWN_SCRUBBER
 
-    self.attributes = HtmlRendering::AllowedAttributes::RENDERED_MARKDOWN_SCRUBBER
+    self.attributes = MarkdownProcessor::AllowedAttributes::RENDERED_MARKDOWN_SCRUBBER
   end
 
   def allowed_node?(node)
