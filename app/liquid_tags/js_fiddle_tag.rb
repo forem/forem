@@ -52,3 +52,5 @@ class JsFiddleTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("jsfiddle", JsFiddleTag)
+
+UnifiedEmbed.register(JsFiddleTag, regexp: %r{https?://jsfiddle.net/})

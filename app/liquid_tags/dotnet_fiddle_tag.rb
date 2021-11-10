@@ -47,3 +47,5 @@ class DotnetFiddleTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("dotnetfiddle", DotnetFiddleTag)
+
+UnifiedEmbed.register(AsciinemaTag, regexp: %r{https?://(dotnetfiddle\.net)/(Widget)/[a-zA-Z0-9\-/]*\z})
