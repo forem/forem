@@ -1,4 +1,4 @@
-describe('Creator Setup Page', () => {
+describe('Creator Settings Page', () => {
   const { baseUrl } = Cypress.config();
 
   beforeEach(() => {
@@ -8,7 +8,7 @@ describe('Creator Setup Page', () => {
       cy.loginCreator(creator);
     });
 
-    cy.visit(`${baseUrl}admin/creator_settings/new?referrer=${baseUrl}`);
+    cy.visit(`${baseUrl}admin/creator_settings/new`);
   });
 
   it('should submit the creator settings form', () => {
