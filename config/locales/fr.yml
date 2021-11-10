@@ -12,31 +12,22 @@ fr:
     community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
     create_account: Créer un profil
-    create_post: Créer une publication
     dashboard: Tableau de bord
     edit_profile: Editer le profil
-    feed: Fil
     follow: Suivre
     follow_back: Suivre aussi
     follower: Suiveur
     followers: Suiveurs
     following: Abonné
-    home: Page D'Accueil
-    infinity: Infini
     joined: Rejoint
     joined_on: Rejoint le
-    latest: Récent
     like: Aime
     listings: Annonces
     loading: Chargement en cours...
     location: Lieu
     log_in: Se connecter
-    moderator_center: Centre de modération
-    month: Mois
     more_from: Plus de la part de
-    my_tags: Mes sujets
     pinned: Épinglé
-    popular_tags: Sujets populaires
     post: Publication
     posts: Publications
     reaction: Réaction
@@ -47,17 +38,12 @@ fr:
       heart: Coeur
       save: Sauver
       unicorn: Licorne
-    reading_list: Liste de lecture
     reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
-    see_all: Tout voir
     series: Séries
     settings: Paramètres
-    sign_out: Se déconnecter
     trending_on: Populaire sur
-    week: Semaine
-    year: Année
   dashboard:
     empty_follower: Vous n'avez pas encore d'abonnés...
     empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
