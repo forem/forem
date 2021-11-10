@@ -11,7 +11,17 @@ RSpec.describe "credits/new", type: :view do
     sign_in purchaser
   end
 
-  it "shows the page" do
+  it "shows the page for light mode by default" do
     render
+
+    expect(rendered).to have_content("color: '#32325d'")
+  end
+
+  it "respects dark mode if set" do
+    purchaser.setting.update(config_theme: :dark_theme)
+
+    render
+
+    expect(rendered).to have_content("color: 'white'")
   end
 end
