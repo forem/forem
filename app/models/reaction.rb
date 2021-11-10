@@ -5,8 +5,14 @@ class Reaction < ApplicationRecord
     "thumbsdown" => -10.0
   }.freeze
 
+  # The union of public and privileged categories
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
+
+  # These are the general category of reactions that anyone can choose
   PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
+
+  # These are categories of reactions that administrators can select
+  PRIVILEGED_CATEGORIES = %w[thumbsup thumbsdown vomit].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -31,6 +37,7 @@ class Reaction < ApplicationRecord
       .or(comment_vomits.where(reactable_id: user.comment_ids))
       .or(user_vomits.where(user_id: user.id))
   }
+  scope :privileged_category, -> { where(category: PRIVILEGED_CATEGORIES) }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
