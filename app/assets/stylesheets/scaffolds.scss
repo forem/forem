@@ -93,3 +93,16 @@ body.dark-theme {
 body.trusted-status-true .trusted-visible-block {
   display: flex !important;
 }
+
+// The .admin-help-button class is included in this file since it
+// is referenced in both the admin and application layout.
+
+.admin-help-button {
+  position: fixed;
+  margin-bottom: env(safe-area-inset-bottom);
+  border-radius: 50px;
+
+  @media (max-width: $breakpoint-m) {
+    bottom: calc(var(--header-height) + var(--su-3));
+  }
+}
