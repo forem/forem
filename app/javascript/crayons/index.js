@@ -1,4 +1,6 @@
 export * from '@crayons/Button';
+export * from '@crayons/Links';
+export * from '@crayons/CTAs';
 export * from '@crayons/ButtonGroup';
 export * from '@crayons/Dropdown';
 export * from '@crayons/formElements';

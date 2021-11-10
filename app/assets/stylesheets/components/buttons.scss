@@ -427,19 +427,34 @@
   cursor: pointer;
   transition: all var(--transition-props);
   border: none;
-  outline: 0;
   overflow-wrap: normal;
-
+  outline: 0;
   background-color: var(--bg);
   color: var(--color);
 
-  &:hover:enabled,
+  &:hover:enabled {
+    background-color: var(--bg-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+  }
+  
+  // Both focus declarations below are the same but we unfortunately can't
+  // combine them because Safari doesn't handle it properly.
+  //  • First declaration is for all browsers that support :focus-visible
+  //    which is basically almost all of them.
+  //  • Second declaration is for browsers that do not support :focus-visible
+  //    which basically is only Safari right now :shrug:
   &:focus-visible {
     background-color: var(--bg-hover);
     color: var(--color-hover);
+    z-index: var(--z-elevate);
+    box-shadow: var(--focus-ring);
   }
 
-  &:focus-visible {
+  .js-focus-visible &.focus-visible:focus {
+    background-color: var(--bg-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
     box-shadow: var(--focus-ring);
   }
 

@@ -4,7 +4,7 @@ import SampleIcon from '../../../../assets/images/cog.svg';
 
 export default {
   component: Button,
-  title: 'Components/BETA/Buttons',
+  title: 'BETA/Buttons',
 };
 
 export const Default = (args) => <Button {...args} />;
