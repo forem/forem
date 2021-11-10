@@ -20,7 +20,9 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     described_class.call(article)
 
     parsed_html = Nokogiri::HTML.fragment(article.processed_html)
-    images_with_width_and_height_set = parsed_html.css("img").select { |img| img[:width].present? && img[:height].present? }
+    images_with_width_and_height_set = parsed_html.css("img").select do |img|
+      img[:width].present? && img[:height].present?
+    end
     expect(images_with_width_and_height_set.count).to eq(count)
   end
 
@@ -205,7 +207,8 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
       assert_has_data_animated_attribute(article, 1)
     end
 
-    it "sets width and height with multiple animated images", vcr: { cassette_name: "download_animated_images_twice" } do
+    it "sets width and height with multiple animated images",
+       vcr: { cassette_name: "download_animated_images_twice" } do
       article.update(body_markdown: "![image](#{animated_image_url}) ![image](#{animated_image_url})")
 
       assert_has_data_width_height_attributes(article, 2)

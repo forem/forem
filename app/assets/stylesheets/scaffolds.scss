@@ -39,8 +39,7 @@ div {
   display: none !important;
 }
 
-body.night-theme,
-body.ten-x-hacker-theme {
+body.dark-theme {
   .on-page-nav-butt img,
   .icon-img,
   .reaction-button:not(.reacted) img,
@@ -93,13 +92,4 @@ body.ten-x-hacker-theme {
 
 body.trusted-status-true .trusted-visible-block {
   display: flex !important;
-}
-
-@keyframes loading-fadein {
-  from {
-    opacity: var(--opacity-0);
-  }
-  to {
-    opacity: 0.6;
-  }
 }

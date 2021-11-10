@@ -156,4 +156,14 @@ class Runtime {
       return event.ctrlKey;
     }
   }
+
+  /**
+   * Returns a string representation of the expected modifier key for the current OS.
+   * This allows us to display correct shortcut key hints to users in the UI, and set up correct shortcut key bindings.
+   *
+   * @returns {string} either 'cmd' if on macOS, or 'ctrl' otherwise
+   */
+  static getOSKeyboardModifierKeyString() {
+    return Runtime.currentOS() === 'macOS' ? 'cmd' : 'ctrl';
+  }
 }

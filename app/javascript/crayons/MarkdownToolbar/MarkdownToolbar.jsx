@@ -1,4 +1,3 @@
-/* global Runtime */
 import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import {
@@ -16,9 +15,6 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
 
-  const keyboardShortcutModifierText =
-    Runtime.currentOS() === 'macOS' ? 'CMD' : 'CTRL';
-
   const markdownSyntaxFormatters = {
     ...coreSyntaxFormatters,
     ...secondarySyntaxFormatters,
@@ -27,11 +23,13 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   const keyboardShortcuts = Object.fromEntries(
     Object.keys(markdownSyntaxFormatters)
       .filter(
-        (syntaxName) => !!markdownSyntaxFormatters[syntaxName].keyboardShortcut,
+        (syntaxName) =>
+          !!markdownSyntaxFormatters[syntaxName].getKeyboardShortcut,
       )
       .map((syntaxName) => {
-        const { keyboardShortcut } = markdownSyntaxFormatters[syntaxName];
-        return [keyboardShortcut, () => insertSyntax(syntaxName)];
+        const { command } =
+          markdownSyntaxFormatters[syntaxName].getKeyboardShortcut?.();
+        return [command, () => insertSyntax(syntaxName)];
       }),
   );
 
@@ -189,8 +187,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
   const getSecondaryFormatterButtons = (isOverflow) =>
     Object.keys(secondarySyntaxFormatters).map((controlName, index) => {
-      const { icon, label, keyboardShortcutKeys } =
+      const { icon, label, getKeyboardShortcut } =
         secondarySyntaxFormatters[controlName];
+
       return (
         <Button
           key={`${controlName}-btn`}
@@ -216,9 +215,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             smallScreen ? null : (
               <span aria-hidden="true">
                 {label}
-                {keyboardShortcutKeys ? (
+                {getKeyboardShortcut ? (
                   <span className="opacity-75">
-                    {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
+                    {` ${getKeyboardShortcut().tooltipHint}`}
                   </span>
                 ) : null}
               </span>
@@ -236,7 +235,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       aria-controls={textAreaId}
     >
       {Object.keys(coreSyntaxFormatters).map((controlName, index) => {
-        const { icon, label, keyboardShortcutKeys } =
+        const { icon, label, getKeyboardShortcut } =
           coreSyntaxFormatters[controlName];
         return (
           <Button
@@ -253,9 +252,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
               smallScreen ? null : (
                 <span aria-hidden="true">
                   {label}
-                  {keyboardShortcutKeys ? (
+                  {getKeyboardShortcut ? (
                     <span className="opacity-75">
-                      {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
+                      {` ${getKeyboardShortcut().tooltipHint}`}
                     </span>
                   ) : null}
                 </span>

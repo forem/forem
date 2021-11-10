@@ -12,8 +12,8 @@ module Users
          _suffix: :font
     enum inbox_type: { private: 0, open: 1 }, _suffix: :inbox
     enum config_navbar: { default: 0, static: 1 }, _suffix: :navbar
-    enum config_theme: { default: 0, minimal_light_theme: 1, night_theme: 2, pink_theme: 3,
-                         ten_x_hacker_theme: 4 }
+    # NOTE: We previously had a set of 5 themes with values from 0 to 4.
+    enum config_theme: { light_theme: 0, dark_theme: 2 }
     enum config_homepage_feed: { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
          _suffix: :feed
 

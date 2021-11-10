@@ -9,11 +9,14 @@ namespace :admin do
                                  { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                  remote_token http_origin session_hijacking] } })
     mount flipper_ui, at: "feature_flags"
+    mount PgHero::Engine, at: "pghero"
   end
   resources :invitations, only: %i[index new create destroy]
   resources :organization_memberships, only: %i[update destroy create]
   resources :permissions, only: %i[index]
-  resources :reactions, only: [:update]
+  resources :reactions, only: %i[update]
+  resources :creator_settings, only: %i[create new]
+
   namespace :settings do
     resources :authentications, only: [:create]
     resources :campaigns, only: [:create]
@@ -63,6 +66,7 @@ namespace :admin do
     resources :articles, only: %i[index show update] do
       member do
         delete :unpin
+        post :pin
       end
     end
 

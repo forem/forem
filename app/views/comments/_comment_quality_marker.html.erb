@@ -7,6 +7,10 @@
 <% if comment.hidden_by_commentable_user %>
   <div class="low-quality-comment-marker comment__quality-marker">
     <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon mr-2", title: t("views.comments.quality.hidden.icon")) %>
-    <%= t("views.comments.quality.hidden.text") %>
+    <% if @root_comment %>
+      <%= t("views.comments.quality.hidden.text.visible_in_permalink") %>
+    <% else %>
+      <%= t("views.comments.quality.hidden.text.accessible_via_permalink") %>
+    <% end %>
   </div>
 <% end %>
