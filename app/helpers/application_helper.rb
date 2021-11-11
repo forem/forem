@@ -298,7 +298,7 @@ module ApplicationHelper
   end
 
   def render_tag_link(tag, filled: false, monochrome: false, classes: "")
-    color = tag_colors(tag)[:background] || Settings::UserExperience.primary_brand_color_hex
+    color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
     color_faded = Color::CompareHex.new([color]).opacity(0.1)
     label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
 
