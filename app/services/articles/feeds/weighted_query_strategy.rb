@@ -293,7 +293,7 @@ module Articles
       # The featured story should be the article that:
       #
       # - has the highest relevance score for the nil_user version
-      # - (OPTIONALLY) has a main image
+      # - has a main image (see note below).
       #
       # The other articles should use the nil_user version and require
       # the `featured = true` attribute.  In my envisioned
@@ -312,9 +312,11 @@ module Articles
       #       hotness score is most analogue to how this class
       #       calculates the relevance score when we don't have a
       #       user.
+      #
       # @note There are requests to allow for the featured article to
       #       NOT require a main image.  We're still talking through
-      #       what that means.
+      #       what that means.  This work relates to PR #15333.
+      #
       # @note including the ** operator to mirror the method interface
       #       of the other feed strategies.
       #
