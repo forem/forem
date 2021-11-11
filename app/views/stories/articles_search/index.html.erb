@@ -15,9 +15,9 @@
         <form accept-charset="UTF-8" method="get" action="/search" role="search">
           <div class="crayons-fields crayons-fields--horizontal">
             <div class="crayons-field flex-1 relative">
-              <input class="crayons-textfield" type="text" name="q" placeholder="Search..." autocomplete="on" />
+              <input class="crayons-textfield" type="text" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="on" />
               <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
-                <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: "Search") %>
+                <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: t("views.search.icon.title")) %>
               </button>
             </div>
           </div>
@@ -25,19 +25,19 @@
       </div>
 
       <h1 class="crayons-title hidden s:block">
-        Search results <%= "for #{params[:q]}" if params[:q].present? %>
+        <%= t("views.search.heading", for: (params[:q].present? ? t("views.search.for", query: params[:q]) : "")) %>
       </h1>
 
-      <nav id="sorting-option-tabs" aria-label="Search result sort options" class="-mx-3 m:mx-0">
+      <nav id="sorting-option-tabs" aria-label="<%= t("views.search.sort.aria_label") %>" class="-mx-3 m:mx-0">
         <ul class="crayons-navigation crayons-navigation--horizontal">
           <li>
-            <a data-text="Most Relevant" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :relevance %>" aria-current="page">Most Relevant</a>
+            <a data-text="<%= t("views.search.sort.relevance") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :relevance %>" aria-current="page"><%= t("views.search.sort.relevance") %></a>
           </li>
           <li>
-            <a data-text="Newest" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
+            <a data-text="<%= t("views.search.sort.newest") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc"><%= t("views.search.sort.newest") %></a>
           </li>
           <li>
-            <a data-text="Oldest" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
+            <a data-text="<%= t("views.search.sort.oldest") %>" href="javascript:;" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc"><%= t("views.search.sort.oldest") %></a>
           </li>
         </ul>
       </nav>
@@ -59,7 +59,7 @@
         </div>
       </div>
       <div class="loading-articles" id="loading-articles">
-        loading...
+        <%= t("core.loading") %>
       </div>
     </div>
   </div>
