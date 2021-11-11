@@ -1,5 +1,48 @@
 module Html
   class Parser
+    module WrapMentionWithLinks
+      # Wrap all mentions with links
+      #
+      # @param html [String]
+      # @param mention_handler [#call] When we find a "mention" call
+      #        this function to transform the mention into something
+      #        meaningful.
+      #
+      # @return [String]
+      #
+      # @yield Replace
+      def self.call(html, mention_handler:)
+        # This guard clause looks a bit silly, but if html is "falsey"
+        # don't go any further.
+        return html unless html
+
+        html_doc = Nokogiri::HTML(html)
+
+        # looks for nodes that isn't <code>, <a>, and contains "@"
+        targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
+
+        # A Queue system to look for and replace possible usernames
+        until targets.empty?
+          node = targets.shift
+
+          # only focus on portion of text with "@"
+          node.xpath("text()[contains(.,'@')]").each do |el|
+            el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) { |text| mention_handler.call(text) })
+          end
+
+          # enqueue children that has @ in it's text
+          children = node.xpath('*[not(self::code) and not(self::a) and contains(., "@")]').to_a
+          targets.concat(children)
+        end
+
+        if html_doc.at_css("body")
+          html_doc.at_css("body").inner_html
+        else
+          html_doc.to_html
+        end
+      end
+    end
+
     # Each of the instance methods should return self to support chaining of
     # methods
     # For example:
@@ -218,32 +261,8 @@ module Html
     end
 
     def wrap_mentions_with_links
-      html_doc = Nokogiri::HTML(@html)
-
-      # looks for nodes that isn't <code>, <a>, and contains "@"
-      targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
-
-      # A Queue system to look for and replace possible usernames
-      until targets.empty?
-        node = targets.shift
-
-        # only focus on portion of text with "@"
-        node.xpath("text()[contains(.,'@')]").each do |el|
-          el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
-        end
-
-        # enqueue children that has @ in it's text
-        children = node.xpath('*[not(self::code) and not(self::a) and contains(., "@")]').to_a
-        targets.concat(children)
-      end
-
-      @html =
-        if html_doc.at_css("body")
-          html_doc.at_css("body").inner_html
-        else
-          html_doc.to_html
-        end
-
+      # What's going on here?  I'm grabbling the method :user_link_if_exists
+      @html = WrapMentionWithLinks.call(@html, mention_handler: method(:user_link_if_exists))
       self
     end
 
