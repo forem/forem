@@ -296,4 +296,22 @@ module ApplicationHelper
   def role_display_name(role)
     role.name.titlecase
   end
+
+  def render_tag_link(tag, filled: false, monochrome: false, classes: "")
+    color = tag_colors(tag)[:background] || Settings::UserExperience.primary_brand_color_hex
+    color_faded = Color::CompareHex.new([color]).opacity(0.1)
+    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
+
+    options = {
+      class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
+      style: "
+        --tag-bg: #{color_faded};
+        --tag-prefix: #{color};
+        --tag-bg-hover: #{color_faded};
+        --tag-prefix-hover: #{color};
+      "
+    }
+
+    link_to(label, tag_path(tag), options)
+  end
 end
