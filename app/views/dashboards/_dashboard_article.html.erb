@@ -27,7 +27,7 @@
   <a href="<%= article.current_state_path %>"><h2>
     <%= t("views.dashboard.article.heading.text_html",
           archived: article.archived ? t("views.dashboard.article.heading.archived") : "",
-          title: tag.span(article.title, class: "with-content-font", lang: article.base_lang)) %>
+          title: article.title) %>
   </h2></a>
   <div class="dashboard-meta-details">
     <% if article.published %>
