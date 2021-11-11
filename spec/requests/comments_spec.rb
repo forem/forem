@@ -172,7 +172,7 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the article is deleted" do
-      it "raises not found when listing aritcle comments" do
+      it "raises not found when listing article comments" do
         path = "#{article.path}/comments"
 
         article.destroy
