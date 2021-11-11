@@ -1331,6 +1331,14 @@ RSpec.describe Article, type: :model do
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
     end
+
+    it "caches the privileged score values" do
+      user = create(:user, :trusted)
+
+      create(:thumbsdown_reaction, reactable: article, user: user)
+
+      expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
+    end
   end
 
   describe "#feed_source_url and canonical_url must be unique for published articles" do
