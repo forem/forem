@@ -2,7 +2,11 @@
 <% if @root_comment.present? %>
   <% title(@root_comment.title.to_s) %>
 <% else %>
+    <% if @commentable %>
   <% title(t("views.comments.meta.title_root", title: @commentable.title)) %>
+    <% else %>
+  <% title(t("views.comments.orphan.deleted")) %>
+    <% end %>
 <% end %>
 
 <% if @commentable %>
@@ -61,6 +65,7 @@
           </div>
         <% end %>
 
+  <% if @commentable %>
         <div class="crayons-article__header__meta">
           <h1 class="fs-2xl s:fs-3xl l:fs-4xl fw-bold s:fw-heavy lh-tight mb-1">
             <%= @commentable.title %>
@@ -71,9 +76,10 @@
                   on: tag.span(@commentable.published_at ? t("views.comments.parent.date", date: @commentable.published_at.strftime(t("time.formats.comment"))) : "", class: %w[published-at])) %>
           </p>
         </div>
+  <% end %>
       </header>
 
-      <% if @commentable.processed_html.present? %>
+      <% if @commentable && @commentable.processed_html.present? %>
         <div class="crayons-article__main">
           <div class="crayons-article__body text-styles -mt-1 m:-mt-2">
             <% if @commentable.processed_html.size < 350 %>
@@ -139,7 +145,7 @@
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
           <%= tree_for(@root_comment, @root_comment.subtree.includes(user: %i[setting profile]).arrange[@root_comment], @commentable) %>
         <% end %>
-      <% else %>
+      <% elsif @commentable %>
         <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
           <% cache ["comment_root_#{user_signed_in?}", comment] do %>
             <%= tree_for(comment, sub_comments, @commentable) %>
