@@ -237,7 +237,6 @@ describe('<Form />', () => {
       const overflowMenuButton = getByRole('button', { name: 'More options' });
 
       overflowMenuButton.click();
-      // await findByRole('menuitem', { name: 'Underline' });
       await waitFor(() =>
         expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
       );

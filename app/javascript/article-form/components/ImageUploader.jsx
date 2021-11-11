@@ -393,9 +393,6 @@ export const ImageUploader = ({
   // image picker, we want to use the native UX rather than standard file upload
   const useNativeUpload = Runtime.isNativeIOS('imageUpload');
 
-  if (editorVersion === 'v2') {
-  }
-
   return (
     <Fragment>
       <div id="upload-success-info" className="screen-reader-only" />
