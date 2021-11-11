@@ -73,3 +73,5 @@ class RedditTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("reddit", RedditTag)
+
+UnifiedEmbed.register(RedditTag, regexp: %r{https?://(www.)?reddit.com})

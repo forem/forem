@@ -35,3 +35,5 @@ class NextTechTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("nexttech", NextTechTag)
+
+UnifiedEmbed.register(NextTechTag, regexp: %r{https?://nt.dev/s/})

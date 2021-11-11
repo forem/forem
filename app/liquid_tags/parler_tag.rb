@@ -33,3 +33,5 @@ class ParlerTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("parler", ParlerTag)
+
+UnifiedEmbed.register(ParlerTag, regexp: %r{https?://parler.io})
