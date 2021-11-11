@@ -15,4 +15,13 @@ module ProfileHelper
 
     { github: urls["GitHub"], twitter: urls["Twitter"], facebook: urls["Facebook"] }.compact
   end
+
+  def character_count_denominator(field_type)
+    case field_type
+    when "text_field"
+      "100"
+    when "text_area"
+      "200"
+    end
+  end
 end

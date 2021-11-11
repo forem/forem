@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+PS4='[script/test:${LINENO}] $ '
+set -euo pipefail
+set -x
+
+echo "---> Installing dependencies"
+bundle
+cd example
+bundle
+yarn
+cd ..
+
+echo "---> Running tests"
+bundle exec rake
+./script/test_example_app
+
+echo "---> Job's done!"
+

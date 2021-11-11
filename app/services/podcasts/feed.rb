@@ -35,7 +35,7 @@ module Podcasts
     def set_unreachable(status: :unreachable, force_update: false)
       # don't recheck if the podcast was already unreachable or force update is required
       need_refetching = podcast.reachable || force_update
-      podcast.update_columns(reachable: false, status_notice: I18n.t(status, scope: "podcasts.statuses"))
+      podcast.update_columns(reachable: false, status_notice: I18n.t(status, scope: "views.podcasts.statuses"))
       refetch_items if need_refetching
       true
     end

@@ -30,20 +30,44 @@ describe('Pin an article from the admin area', () => {
       statusCode: 404,
     });
 
-    cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
-    cy.findAllByRole('button', { name: 'Submit' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
 
-    // Verify that the form has submitted and the page has changed to the confirmation page
+    // Verify that the form has submitted and the page has changed to the post page
     cy.url().should('contain', '/content_manager/articles/');
 
-    cy.findAllByRole('checkbox', { name: 'Pinned' })
+    cy.findByRole('button', { name: 'Pin Post' }).should('not.exist');
+    cy.findByRole('link', { name: 'Unpin Post' }).should('exist');
+    cy.findByText(/Pinned post/i).should('exist');
+  });
+
+  it('should display a warning modal when pinning an article, and one is already pinned', () => {
+    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
+
+    cy.createArticle({
+      title: 'A new article',
+      tags: ['beginner', 'ruby', 'go'],
+      content: `This is another test article's contents.`,
+      published: true,
+    }).then((response) => {
+      cy.visit(`/admin/content_manager/articles/${response.body.id}`);
+    });
+
+    cy.findByRole('main')
       .first()
-      .should('be.checked');
+      .within(() => {
+        cy.findAllByRole('button', { name: 'Pin Post' }).last().click();
+      });
+
+    cy.findByRole('dialog').within(() => {
+      cy.findByRole('heading', {
+        name: "There's another article pinned...",
+        level: 2,
+      });
+    });
   });
 
   it('should change the pinned article when choosing to pin a new article', () => {
-    cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
-    cy.findAllByRole('button', { name: 'Submit' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
 
     cy.createArticle({
       title: 'A new article',
@@ -57,47 +81,21 @@ describe('Pin an article from the admin area', () => {
     cy.findByRole('main')
       .first()
       .within(() => {
-        cy.findAllByRole('checkbox', { name: 'Pinned' }).last().check();
-        cy.findAllByRole('button', { name: 'Pin new article' }).last().click();
-        cy.findAllByRole('button', { name: 'Submit' }).last().click();
+        cy.findAllByRole('button', { name: 'Pin Post' }).last().click();
       });
 
-    cy.findByRole('main')
-      .findAllByRole('checkbox', { name: 'Pinned' })
-      .first()
-      .should('be.checked');
-  });
-
-  it('should not change the pinned article when choosing to dismiss', () => {
-    cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
-    cy.findAllByRole('button', { name: 'Submit' }).first().click();
-
-    cy.createArticle({
-      title: 'A new article',
-      tags: ['beginner', 'ruby', 'go'],
-      content: `This is another test article's contents.`,
-      published: true,
-    }).then((response) => {
-      cy.visit(`/admin/content_manager/articles/${response.body.id}`);
+    cy.findByRole('dialog').within(() => {
+      cy.findByRole('button', { name: 'Pin new article' }).click();
     });
 
-    cy.findByRole('main')
-      .first()
-      .within(() => {
-        cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
-        cy.findAllByRole('button', { name: 'Dismiss' }).first().click();
-        cy.findAllByRole('button', { name: 'Submit' }).first().click();
-      });
-
-    cy.findByRole('main')
-      .findAllByRole('checkbox', { name: 'Pinned' })
-      .first()
-      .should('not.be.checked');
+    cy.findByRole('main').within(() => {
+      cy.findByText(/A new article/i).should('exist');
+      cy.findByText(/Pinned post/i).should('exist');
+    });
   });
 
   it('should show the pinned post to a logged out user', () => {
-    cy.findAllByRole('checkbox', { name: 'Pinned' }).first().check();
-    cy.findAllByRole('button', { name: 'Submit' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
 
     cy.signOutUser();
 

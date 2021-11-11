@@ -52,7 +52,7 @@ RSpec.describe "User visits podcast show page", type: :system, js: true do
       podcast_episode = create(:podcast_episode, https: false)
       visit podcast_episode.path.to_s
 
-      expect(page).to have_text(I18n.t("podcasts.statuses.unplayable"))
+      expect(page).to have_text(I18n.t("views.podcasts.statuses.unplayable"))
       expect(page).to have_text("Click here to download")
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe "User visits podcast show page", type: :system, js: true do
     it "doesn't display status_notice" do
       visit podcast_episode.path.to_s
       expect(page).not_to have_text("Random status notice")
-      expect(page).not_to have_text(I18n.t("podcasts.statuses.unplayable"))
+      expect(page).not_to have_text(I18n.t("views.podcasts.statuses.unplayable"))
       expect(page).not_to have_text("Click here to download")
     end
   end

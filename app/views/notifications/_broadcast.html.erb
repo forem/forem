@@ -9,7 +9,7 @@
       <%= json_data["broadcast"]["processed_html"].html_safe %>
 
       <% if notification.json_data['broadcast']['type_of'] == "Welcome" %>
-        <p class="fs-base pt-6 color-base-70">Visit <a href="<%= user_settings_path(tab: :notifications) %>">Settings</a> to manage your notifications.</p>
+        <p class="fs-base pt-6 color-base-70"><%= t("views.notifications.broadcast.visit_html", settings: link_to(t("views.notifications.broadcast.settings"), user_settings_path(tab: :notifications))) %></p>
       <% end %>
     </div>
   <% end %>

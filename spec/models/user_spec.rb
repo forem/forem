@@ -641,52 +641,34 @@ RSpec.describe User, type: :model do
     end
 
     it "creates proper body class with defaults" do
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
-    end
-
-    it "determines dark theme if night theme" do
-      user.setting.config_theme = "night_theme"
-      expect(user.decorate.dark_theme?).to eq(true)
-    end
-
-    it "determines dark theme if ten x hacker" do
-      user.setting.config_theme = "ten_x_hacker_theme"
-      expect(user.decorate.dark_theme?).to eq(true)
-    end
-
-    it "determines not dark theme if not one of the dark themes" do
-      user.setting.config_theme = "default"
-      expect(user.decorate.dark_theme?).to eq(false)
     end
 
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.setting.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
-      expect(user.decorate.config_body_class).to eq(classes)
-    end
-
-    it "creates proper body class with night theme" do
-      user.setting.config_theme = "night_theme"
-
       # rubocop:disable Layout/LineLength
-      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes = "light-theme open-dyslexic-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
-    it "creates proper body class with pink theme" do
-      user.setting.config_theme = "pink_theme"
+    it "creates proper body class with dark theme" do
+      user.setting.config_theme = "dark_theme"
 
-      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes = "dark-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
