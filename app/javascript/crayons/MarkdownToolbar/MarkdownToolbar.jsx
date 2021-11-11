@@ -8,7 +8,6 @@ import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
-import { getIndexOfLineStart } from '@utilities/textAreaUtils';
 
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
@@ -126,63 +125,15 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     }
   };
 
-  const getSelectionData = (syntaxName) => {
-    const {
-      selectionStart: initialSelectionStart,
-      selectionEnd,
-      value,
-    } = textArea;
-
-    let selectionStart = initialSelectionStart;
-
-    // The 'heading' formatter can edit a previously inserted syntax,
-    // so we check if we need adjust the selection to the start of the line
-    if (syntaxName === 'heading') {
-      const indexOfLineStart = getIndexOfLineStart(
-        textArea.value,
-        initialSelectionStart,
-      );
-
-      if (textArea.value.charAt(indexOfLineStart + 1) === '#') {
-        selectionStart = indexOfLineStart;
-      }
-    }
-
-    const textBeforeInsertion = value.substring(0, selectionStart);
-    const textAfterInsertion = value.substring(selectionEnd, value.length);
-    const selectedText = value.substring(selectionStart, selectionEnd);
-
-    return {
-      textBeforeInsertion,
-      textAfterInsertion,
-      selectedText,
-      selectionStart,
-      selectionEnd,
-    };
-  };
-
   const insertSyntax = (syntaxName) => {
     setOverflowMenuOpen(false);
 
-    const {
-      textBeforeInsertion,
-      textAfterInsertion,
-      selectedText,
-      selectionStart,
-      selectionEnd,
-    } = getSelectionData(syntaxName);
+    const { newTextAreaValue, newCursorStart, newCursorEnd } =
+      markdownSyntaxFormatters[syntaxName].getFormatting(textArea);
 
-    const { formattedText, cursorOffsetStart, cursorOffsetEnd } =
-      markdownSyntaxFormatters[syntaxName].getFormatting(selectedText);
-
-    const newTextContent = `${textBeforeInsertion}${formattedText}${textAfterInsertion}`;
-
-    textArea.value = newTextContent;
+    textArea.value = newTextAreaValue;
     textArea.focus({ preventScroll: true });
-    textArea.setSelectionRange(
-      selectionStart + cursorOffsetStart,
-      selectionEnd + cursorOffsetEnd,
-    );
+    textArea.setSelectionRange(newCursorStart, newCursorEnd);
   };
 
   const getSecondaryFormatterButtons = (isOverflow) =>

@@ -1,4 +1,9 @@
-import { getMentionWordData, getIndexOfLineStart } from '../textAreaUtils';
+import {
+  getMentionWordData,
+  getLastIndexOfCharacter,
+  getNextIndexOfCharacter,
+  getSelectionData,
+} from '../textAreaUtils';
 
 describe('getMentionWordData', () => {
   it('returns userMention false for cursor at start of input', () => {
@@ -62,16 +67,124 @@ describe('getMentionWordData', () => {
   });
 });
 
-describe('getIndexOfLineStart', () => {
-  it('returns 0 for empty text', () => {
-    expect(getIndexOfLineStart('', 0)).toEqual(0);
+describe('getLastIndexOfCharacter', () => {
+  it('returns -1 when content is empty', () => {
+    expect(
+      getLastIndexOfCharacter({
+        content: '',
+        selectionIndex: 0,
+        character: 'f',
+      }),
+    ).toEqual(-1);
   });
 
-  it('returns start index of 0 for a single line of text', () => {
-    expect(getIndexOfLineStart('something', 5)).toEqual(0);
+  it("returns -1 for a character that isn't present", () => {
+    expect(
+      getLastIndexOfCharacter({
+        content: 'abcde',
+        selectionIndex: 4,
+        character: 'f',
+      }),
+    ).toEqual(-1);
   });
 
-  it('returns start index of line for a multi-line text', () => {
-    expect(getIndexOfLineStart('one\ntwo', 6)).toEqual(4);
+  it('returns index of the last occurence within a single word', () => {
+    expect(
+      getLastIndexOfCharacter({
+        content: 'abcde',
+        selectionIndex: 4,
+        character: 'b',
+      }),
+    ).toEqual(1);
+  });
+
+  it('returns index of the last occurence searching through multiple words', () => {
+    expect(
+      getLastIndexOfCharacter({
+        content: 'ab cd ef ghi',
+        selectionIndex: 10,
+        character: 'b',
+      }),
+    ).toEqual(1);
+  });
+
+  it('halts the search when encountering a break character', () => {
+    expect(
+      getLastIndexOfCharacter({
+        content: 'ab cd ef ghi',
+        selectionIndex: 10,
+        character: 'b',
+        breakOnCharacters: [' '],
+      }),
+    ).toEqual(-1);
+  });
+});
+
+describe('getNextIndexOfCharacter', () => {
+  it('returns -1 when content is empty', () => {
+    expect(
+      getNextIndexOfCharacter({
+        content: '',
+        selectionIndex: 0,
+        character: 'f',
+      }),
+    ).toEqual(-1);
+  });
+
+  it("returns -1 for a character that isn't present", () => {
+    expect(
+      getNextIndexOfCharacter({
+        content: 'abcde',
+        selectionIndex: 1,
+        character: 'f',
+      }),
+    ).toEqual(-1);
+  });
+
+  it('returns index of the last occurence within a single word', () => {
+    expect(
+      getNextIndexOfCharacter({
+        content: 'abcde',
+        selectionIndex: 0,
+        character: 'e',
+      }),
+    ).toEqual(4);
+  });
+
+  it('returns index of the last occurence searching through multiple words', () => {
+    expect(
+      getNextIndexOfCharacter({
+        content: 'ab cd ef ghi',
+        selectionIndex: 0,
+        character: 'f',
+      }),
+    ).toEqual(7);
+  });
+
+  it('halts the search when encountering a break character', () => {
+    expect(
+      getNextIndexOfCharacter({
+        content: 'ab cd ef ghi',
+        selectionIndex: 0,
+        character: 'f',
+        breakOnCharacters: [' '],
+      }),
+    ).toEqual(-1);
+  });
+});
+
+describe('getSelectionData', () => {
+  it('returns selection data for given inputs', () => {
+    expect(
+      getSelectionData({
+        selectionStart: 4,
+        selectionEnd: 7,
+        value: 'one two three four',
+      }),
+    ).toEqual({
+      textBeforeSelection: 'one ',
+      textAfterSelection: ' three four',
+      selectedText: 'two',
+    });
   });
 });

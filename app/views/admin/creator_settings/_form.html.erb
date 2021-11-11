@@ -14,7 +14,7 @@
     <p id="logo-subtitle" class="crayons-field__description">Ideally SVG, but PNG will work, too. Min size: 300x300px.</p>
   <% end %>
   <span class="block border-none">
-    <%= file_field_tag :logo_svg, class: "crayons-btn crayons-btn--secondary", role: "button", required: true %>
+    <%= file_field_tag :logo_svg, class: "crayons-btn crayons-btn--secondary  w-100 ", role: "button", required: true %>
   </span>
 
   <% if ::Settings::General.logo_svg.present? %>
@@ -31,8 +31,8 @@
     <p id="color-selector-subtitle" class="crayons-field__description">This will be the "accent" color used for buttons, links, etc.</p>
   <% end %>
 
- <div class="flex items-center w-100 m:w-50 crayons-field">
-    <div class="flex items-center">
+  <div class="flex w-100 m:w-50 crayons-field">
+    <div class="flex">
       <%= text_field_tag :primary_brand_color_hex,
                          ::Settings::UserExperience.primary_brand_color_hex,
                          pattern: "^#+([a-fA-F0-9]{6})$",
@@ -44,30 +44,38 @@
                           placeholder: ::Settings::UserExperience.primary_brand_color_hex,
                           class: "crayons-color-selector js-color-field ml-2",
                           required: true %>
-   </div>
+    </div>
+  </div>
 </div>
 
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
-    <legend class="fs-l">Who can join this community?</legend>
+    <legend class="crayons-field__label mb-2">Who can join this community?</legend>
     <div>
-      <%= radio_button_tag :invite_only_mode, "0", class: "crayons-field crayons-field--radio", required: true %>
-      <label for="invite_only_mode_0">Everyone</label>
-      <br>
-      <%= radio_button_tag :invite_only_mode, "1", class: "crayons-field crayons-field--radio", required: true %>
-      <label for="invite_only_mode_1">Only people who are invited</label>
+      <div class="mb-2">
+        <%= radio_button_tag :invite_only_mode, "0", class: "crayons-field crayons-field--radio", required: true %>
+        <label for="invite_only_mode_0">Everyone</label>
+      </div>
+      <div>
+        <%= radio_button_tag :invite_only_mode, "1", class: "crayons-field crayons-field--radio", required: true %>
+        <label for="invite_only_mode_1">Only people who are invited</label>
+      </div>
     </div>
   </fieldset>
+</div>
 
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
-    <legend class="fs-l">Who can view content in this community?</legend>
+    <legend class="crayons-field__label mb-2">Who can view content in this community?</legend>
     <div>
-      <%= radio_button_tag :public, "0", class: "crayons-field crayons-field--radio", required: true %>
-      <label for="public_0">Everyone</label>
-      <br>
-      <%= radio_button_tag :public, "1", class: "crayons-field crayons-field--radio", required: true %>
-      <label for="public_1">Members only</label>
+      <div class="mb-2">
+        <%= radio_button_tag :public, "0", class: "crayons-field crayons-field--radio", required: true %>
+        <label for="public_0">Everyone</label>
+      </div>
+      <div>
+        <%= radio_button_tag :public, "1", class: "crayons-field crayons-field--radio", required: true %>
+        <label for="public_1">Members only</label>
+      </div>
     </div>
-  </div>
+  </fieldset>
 </div>
