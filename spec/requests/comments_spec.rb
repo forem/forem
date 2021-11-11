@@ -172,21 +172,15 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the article is deleted" do
-      it "index action shows comment from a deleted post" do
-        article = create(:article)
-        create(:comment, commentable: article)
-        article_path = article.path
+      it "raises not found when listing aritcle comments" do
+        path = "#{article.path}/comments"
 
         article.destroy
 
-        get "#{article_path}/comments"
-        expect(response.body).to include("Comment from a deleted post")
+        expect { get path }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "show action shows comment from a deleted post" do
-        article = create(:article)
-        comment = create(:comment, commentable: article)
-
+      it "shows comment from a deleted post" do
         article.destroy
 
         get comment.path
