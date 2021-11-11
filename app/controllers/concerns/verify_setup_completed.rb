@@ -18,10 +18,6 @@ module VerifySetupCompleted
     @missing_configs ||= Settings::Mandatory.missing
   end
 
-  def creator_setup_mode?
-    User.with_role(:creator).first.saw_onboarding = true && creator_setup_path?
-  end
-
   private
 
   def missing_configs_text
@@ -33,7 +29,7 @@ module VerifySetupCompleted
     # This is the only flash in our application layout, don't override it if
     # there's already another message.
     return if flash[:global_notice].present?
-    return if config_path? || setup_completed? || Settings::General.waiting_on_first_user || creator_setup_mode?
+    return if config_path? || setup_completed? || Settings::General.waiting_on_first_user || creator_setup_path?
 
     link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })
 
@@ -47,6 +43,6 @@ module VerifySetupCompleted
   end
 
   def creator_setup_path?
-    request.env["PATH_INFO"] == new_admin_creator_setting_path
+    request.env["PATH_INFO"] == "/admin/creator_settings/new"
   end
 end
