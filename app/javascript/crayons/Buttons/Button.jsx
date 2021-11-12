@@ -1,6 +1,8 @@
 import { h } from 'preact';
+import PropTypes from 'prop-types';
 import { useState } from 'preact/hooks';
 import classNames from 'classnames/bind';
+import { defaultChildrenPropTypes } from '../../common-prop-types/default-children-prop-types';
 import { Icon } from '@crayons';
 
 export const ButtonNew = (props) => {
@@ -61,3 +63,15 @@ export const ButtonNew = (props) => {
 };
 
 ButtonNew.displayName = 'ButtonNew';
+
+ButtonNew.propTypes = {
+  children: defaultChildrenPropTypes,
+  primary: PropTypes.bool,
+  rounded: PropTypes.bool,
+  destructive: PropTypes.bool,
+  type: PropTypes.oneOf(['button', 'submit']),
+  className: PropTypes.string,
+  tooltip: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  onKeyUp: PropTypes.func,
+  icon: PropTypes.string,
+};

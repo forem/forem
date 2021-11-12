@@ -18,4 +18,5 @@ CTA.displayName = 'CTA';
 
 CTA.propTypes = {
   variant: PropTypes.oneOf(['default', 'branded']),
+  className: PropTypes.string,
 };

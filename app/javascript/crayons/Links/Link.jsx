@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
+import { defaultChildrenPropTypes } from '../../common-prop-types/default-children-prop-types';
 import { Icon } from '@crayons';
 
 export const Link = (props) => {
@@ -36,4 +37,10 @@ Link.displayName = 'Link';
 
 Link.propTypes = {
   variant: PropTypes.oneOf(['default', 'branded']),
+  block: PropTypes.bool,
+  rounded: PropTypes.bool,
+  href: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  children: defaultChildrenPropTypes,
+  icon: PropTypes.string,
 };
