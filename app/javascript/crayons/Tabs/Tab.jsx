@@ -14,8 +14,8 @@ export const Tab = (props) => {
     [className]: className,
   });
 
-  const linkCurrentProps = current && {'aria-current': 'page'};
   const buttonCurrentProps = current ? {'aria-pressed': true} : {'aria-pressed': false};
+  const linkCurrentProps = current && {'aria-current': 'page'};
 
   return control === 'buttons' ? (
     <ButtonNew className={classes} {...buttonCurrentProps} {...otherProps} />
