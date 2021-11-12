@@ -13,18 +13,14 @@ describe DataUpdateScripts::NullifyEmptyTagColors do
   end
 
   it "sets empty string in background color to nil" do
-    expect(empty_bg_tag.bg_color_hex).to eq("")
-
-    described_class.new.run
-
-    expect(empty_bg_tag.reload.bg_color_hex).to be_nil
+    expect { described_class.new.run }
+      .to change { empty_bg_tag.reload.bg_color_hex }
+      .from("").to(nil)
   end
 
   it "sets empty string in foreground text color to nil" do
-    expect(empty_fg_tag.text_color_hex).to eq("")
-
-    described_class.new.run
-
-    expect(empty_fg_tag.reload.text_color_hex).to be_nil
+    expect { described_class.new.run }
+      .to change { empty_fg_tag.reload.text_color_hex }
+      .from("").to(nil)
   end
 end
