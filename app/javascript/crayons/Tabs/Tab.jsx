@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import classNames from 'classnames/bind';
-import { Button2, Link } from '@crayons';
+import { ButtonNew, Link } from '@crayons';
 
 export const Tab = (props) => {
   const {
@@ -18,7 +18,7 @@ export const Tab = (props) => {
   const buttonCurrentProps = current ? {'aria-pressed': true} : {'aria-pressed': false};
 
   return control === 'buttons' ? (
-    <Button2 className={classes} {...buttonCurrentProps} {...otherProps} />
+    <ButtonNew className={classes} {...buttonCurrentProps} {...otherProps} />
   ) : (
     <Link block className={classes} {...linkCurrentProps} {...otherProps} />
   );

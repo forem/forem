@@ -39,7 +39,6 @@
   //  • Second declaration is for browsers that do not support :focus-visible
   //    which basically is only Safari right now.
   &:focus-visible {
-    background-color: var(--bg-hover);
     color: var(--color-hover);
     z-index: var(--z-elevate);
     box-shadow: var(--focus-ring);
@@ -47,11 +46,20 @@
   }
 
   .js-focus-visible &.focus-visible:focus {
-    background-color: var(--bg-hover);
     color: var(--color-hover);
     z-index: var(--z-elevate);
     box-shadow: var(--focus-ring);
     text-decoration: underline;
+  }
+
+  &--block {
+    &:focus-visible {
+      background-color: var(--bg-hover);
+    }
+
+    .js-focus-visible &.focus-visible:focus {
+      background-color: var(--bg-hover);
+    }
   }
 
   &[aria-current="page"] {
