@@ -240,7 +240,8 @@ module Articles
           negative_reaction_threshold: @negative_reaction_threshold,
           positive_reaction_threshold: @positive_reaction_threshold,
           oldest_published_at: @oldest_published_at,
-          omit_article_ids: omit_article_ids
+          omit_article_ids: omit_article_ids,
+          now: Time.current
         }
         unsanitized_sub_sql = if @user.nil?
                                 [
@@ -433,6 +434,8 @@ module Articles
       #       we must remember to add an index to that field.
       def build_sql_with_where_clauses(only_featured:, must_have_main_image:, omit_article_ids:)
         where_clauses = "articles.published = true AND articles.published_at > :oldest_published_at"
+        # See Articles.published scope discussion regarding the query planner
+        where_clauses += " AND articles.published_at < :now"
         where_clauses += " AND articles.id NOT IN (:omit_article_ids)" unless omit_article_ids.empty?
         where_clauses += " AND articles.featured = true" if only_featured
         where_clauses += " AND articles.main_image IS NOT NULL" if must_have_main_image
