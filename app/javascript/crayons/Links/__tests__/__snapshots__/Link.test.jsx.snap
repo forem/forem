@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Link /> renders a link with icon alone 1`] = `"<a href=\\"/url\\" class=\\"c-link\\"></a>"`;
+
+exports[`<Link /> renders block link 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--block\\">Hello world!</a>"`;
+
+exports[`<Link /> renders branded link 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--branded\\">Hello world!</a>"`;
+
+exports[`<Link /> renders default link 1`] = `"<a href=\\"/url\\" class=\\"c-link\\">Hello world!</a>"`;
+
+exports[`<Link /> renders rounded link 1`] = `"<a href=\\"/url\\" class=\\"c-link radius-full\\">Hello world!</a>"`;
+
+exports[`<Link /> renders with additional classnames 1`] = `"<a href=\\"/url\\" class=\\"c-link one two three\\">Hello world!</a>"`;
+
+exports[`<Link /> renders with icon and text 1`] = `"<a href=\\"/url\\" class=\\"c-link\\">Hello world!</a>"`;
