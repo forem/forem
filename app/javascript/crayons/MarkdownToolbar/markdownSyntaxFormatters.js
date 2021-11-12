@@ -43,13 +43,10 @@ const getNewLinePrefixSuffixes = ({ selectionStart, selectionEnd, value }) => {
       : NUMBER_OF_NEW_LINES_BEFORE_BLOCK_SYNTAX -
         numberOfNewLinesBeforeSelection;
 
-  let newLinesPrefix = '';
-  // only add new lines if we're not at the beginning of the text area
-  if (numberOfNewLinesNeededAtStart > 0) {
-    for (let i = 0; i < numberOfNewLinesNeededAtStart; i++) {
-      newLinesPrefix = `${newLinesPrefix}\n`;
-    }
-  }
+  const newLinesPrefix = String.prototype.padStart(
+    numberOfNewLinesNeededAtStart,
+    '\n',
+  );
 
   const newLinesSuffix =
     numberOfNewLinesFollowingSelection >=
