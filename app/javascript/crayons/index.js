@@ -1,4 +1,5 @@
 export * from '@crayons/Button';
+export * from '@crayons/Buttons';
 export * from '@crayons/Links';
 export * from '@crayons/CTAs';
 export * from '@crayons/ButtonGroup';
