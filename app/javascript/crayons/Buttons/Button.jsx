@@ -48,6 +48,7 @@ export const ButtonNew = (props) => {
       {children}
       {tooltip ? (
         <span
+          data-testid="tooltip"
           className={classNames('crayons-tooltip__content', {
             'crayons-tooltip__suppressed': suppressTooltip,
           })}
