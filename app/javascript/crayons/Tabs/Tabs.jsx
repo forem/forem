@@ -19,8 +19,8 @@ export const Tabs = (props) => {
 
   return (
     <Wrapper className={classes} {...otherProps}>
-      {children.map(tab => {
-        return cloneElement(tab, { control })
+      {children.map((tab) => {
+        return cloneElement(tab, { control });
       })}
     </Wrapper>
   );

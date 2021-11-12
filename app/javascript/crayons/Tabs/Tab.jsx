@@ -14,13 +14,16 @@ export const Tab = (props) => {
     [className]: className,
   });
 
+  const sharedProps = {
+    className: classes
+  }
   const buttonCurrentProps = current ? {'aria-pressed': true} : {'aria-pressed': false};
   const linkCurrentProps = current && {'aria-current': 'page'};
 
   return control === 'buttons' ? (
-    <ButtonNew className={classes} {...buttonCurrentProps} {...otherProps} />
+    <ButtonNew {...sharedProps} {...buttonCurrentProps} {...otherProps} />
   ) : (
-    <Link block className={classes} {...linkCurrentProps} {...otherProps} />
+    <Link block {...sharedProps} {...linkCurrentProps} {...otherProps} />
   );
 };
 
