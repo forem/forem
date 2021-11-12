@@ -151,7 +151,7 @@
             </h1>
 
             <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
-              <div class="spec__tags flex">
+              <div class="spec__tags flex flex-wrap">
                 <% @article.cached_tag_list_array.each do |tag| %>
                   <%= render_tag_link(tag) %>
                 <% end %>
