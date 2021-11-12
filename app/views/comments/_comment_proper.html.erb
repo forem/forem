@@ -10,6 +10,11 @@
           <span class="js-comment-username">Comment deleted</span>
         </div>
       <% elsif should_be_hidden?(comment, @root_comment) %>
+        <%= render partial: "comments/comment_header", locals: {
+              comment: comment,
+              commentable: commentable,
+              decorated_comment: decorated_comment
+            } %>
         <div class="p-6 align-center opacity-50 fs-s">
           Comment hidden by author
         </div>
