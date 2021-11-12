@@ -4,7 +4,8 @@ import classNames from 'classnames/bind';
 export const Tabs = (props) => {
   const {
     children,
-    scrollable,
+    stacked,
+    fitted,
     className,
     control = 'buttons',
     ...otherProps
@@ -13,14 +14,15 @@ export const Tabs = (props) => {
   const Wrapper = control === 'buttons' ? 'div' : 'nav';
 
   const classes = classNames('c-tabs', {
-    'c-tabs--scrollable': scrollable,
+    'c-tabs--stacked': stacked,
+    'c-tabs--fitted': fitted,
     [className]: className,
   });
 
   return (
     <Wrapper className={classes} {...otherProps}>
       {children.map((tab) => {
-        return cloneElement(tab, { control });
+        return cloneElement(tab, { control, fitted });
       })}
     </Wrapper>
   );

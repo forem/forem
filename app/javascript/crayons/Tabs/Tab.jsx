@@ -7,10 +7,12 @@ export const Tab = (props) => {
     className,
     current,
     control,
+    fitted,
     ...otherProps
   } = props;
 
   const classes = classNames('c-tab', {
+    'c-tab--fitted': fitted,
     [className]: className,
   });
 

@@ -248,3 +248,38 @@
     }
   }
 }
+
+
+.c-tabs {
+  display: flex;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  
+  &--stacked {
+    @media (min-width: $breakpoint-s) {
+      flex-direction: column;
+      overflow-x: unset;
+    }
+  }
+
+  &--fitted {
+    overflow-x: unset;
+  }
+}
+
+.c-tab {
+  white-space: nowrap;
+  text-align: left;
+  justify-content: flex-start;
+
+  .c-tabs--stacked & {
+    white-space: unset;
+  }
+
+  &--fitted {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+}

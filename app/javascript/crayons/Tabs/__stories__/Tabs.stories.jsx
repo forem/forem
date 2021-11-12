@@ -27,6 +27,34 @@ export const Default = (args) => (
 
 Default.args = {
   control: 'buttons',
+  stacked: false,
+  fitted: false,
+};
+
+export const Fitted = (args) => (
+  <Tabs {...args}>
+    <Tab current>First</Tab>
+    <Tab>Second</Tab>
+    <Tab>Third</Tab>
+  </Tabs>
+);
+
+Fitted.args = {
+  ...Default.args,
+  fitted: true,
+};
+
+export const Stacked = (args) => (
+  <Tabs {...args}>
+    <Tab current>First</Tab>
+    <Tab>Second</Tab>
+    <Tab>Third</Tab>
+  </Tabs>
+);
+
+Stacked.args = {
+  ...Default.args,
+  stacked: true,
 };
 
 export const WithIcon = (args) => (
@@ -40,5 +68,6 @@ export const WithIcon = (args) => (
 );
 
 WithIcon.args = {
+  ...Default.args,
   control: 'buttons',
 };
