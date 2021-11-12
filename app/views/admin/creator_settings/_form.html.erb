@@ -15,7 +15,7 @@
   </div>
   <div class="flex gap-2">
     <div class="flex items-center">
-      <%= file_field_tag :logo_svg, class: "screen-reader-only", required: true, accept: "image/*", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" } %>
+      <%= file_field_tag :logo_svg, class: "screen-reader-only", required: true, accept: ".svg,.png,image/png,image/svg+xml", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" } %>
       <label class="cursor-pointer crayons-btn crayons-btn--s crayons-btn--secondary" for="logo_svg">
         Upload Logo
       </label>
