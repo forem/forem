@@ -28,6 +28,7 @@ module.exports = {
               '@crayons': path.join(__dirname, './crayons'),
               '@utilities': path.join(__dirname, './utilities'),
               '@components': path.join(__dirname, './shared/components'),
+              '@controllers': path.join(__dirname, './controllers'),
             },
             extensions: ['.js', '.jsx'],
           },
