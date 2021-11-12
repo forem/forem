@@ -1,4 +1,5 @@
 export * from '@crayons/Button';
+export * from '@crayons/Buttons';
 export * from '@crayons/Links';
 export * from '@crayons/CTAs';
 export * from '@crayons/ButtonGroup';
@@ -10,3 +11,4 @@ export * from '@crayons/Spinner';
 export * from '@crayons/MobileDrawer';
 export * from '@crayons/navigation';
 export * from '@crayons/MarkdownToolbar';
+export * from '@crayons/Tabs';

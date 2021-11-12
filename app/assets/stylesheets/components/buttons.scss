@@ -458,6 +458,12 @@
     box-shadow: var(--focus-ring);
   }
 
+  &[aria-pressed="true"] {
+    --bg: var(--base-inverted);
+    --color: var(--base-100);
+    font-weight: var(--fw-bold);
+  }
+
   &[disabled] {
     opacity: 0.6;
     cursor: not-allowed;

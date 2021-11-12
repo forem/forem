@@ -1,13 +1,13 @@
 import { h } from 'preact';
-import { Button } from '..';
+import { Button2 } from '@crayons';
 import SampleIcon from '@img/cog.svg';
 
 export default {
-  component: Button,
+  component: Button2,
   title: 'BETA/Buttons',
 };
 
-export const Default = (args) => <Button {...args} />;
+export const Default = (args) => <Button2 {...args} />;
 Default.args = {
   primary: false,
   rounded: false,
@@ -15,13 +15,13 @@ Default.args = {
   children: 'Button label',
 };
 
-export const Primary = (args) => <Button {...args} />;
+export const Primary = (args) => <Button2 {...args} />;
 Primary.args = {
   ...Default.args,
   primary: true,
 };
 
-export const WithIcon = (args) => <Button {...args} />;
+export const WithIcon = (args) => <Button2 {...args} />;
 WithIcon.args = {
   ...Default.args,
   icon: SampleIcon,

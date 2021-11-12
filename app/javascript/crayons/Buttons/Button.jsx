@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks';
 import classNames from 'classnames/bind';
 import { Icon } from '@crayons';
 
-export const Button = (props) => {
+export const Button2 = (props) => {
   const {
     children,
     primary,
@@ -59,4 +59,4 @@ export const Button = (props) => {
   );
 };
 
-Button.displayName = 'Button';
+Button2.displayName = 'Button2';
