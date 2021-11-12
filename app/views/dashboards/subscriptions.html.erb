@@ -32,7 +32,7 @@
       </div>
     <% else %>
       <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">
-        <%= t("views.dashboard.subscriptions.empty", kind: @source.class.name) %>
+        <%= t("views.dashboard.subscriptions.empty", kind: @source.class.name.downcase) %>
       </div>
     <% end %>
   </main>
