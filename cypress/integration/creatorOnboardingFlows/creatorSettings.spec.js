@@ -1,4 +1,4 @@
-describe('Creator Setup Page', () => {
+describe('Creator Settings Page', () => {
   const { baseUrl } = Cypress.config();
 
   beforeEach(() => {
@@ -8,7 +8,7 @@ describe('Creator Setup Page', () => {
       cy.loginCreator(creator);
     });
 
-    cy.visit(`${baseUrl}admin/creator_settings/new?referrer=${baseUrl}`);
+    cy.visit(`${baseUrl}admin/creator_settings/new`);
   });
 
   it('should submit the creator settings form', () => {
@@ -63,9 +63,6 @@ describe('Creator Setup Page', () => {
     cy.findByRole('button', { name: /logo/i }).should('have.attr', 'required');
     // should not redirect the creator to the home page when the form is not completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();
-    cy.url().should(
-      'equal',
-      `${baseUrl}admin/creator_settings/new?referrer=${baseUrl}`,
-    );
+    cy.url().should('equal', `${baseUrl}admin/creator_settings/new`);
   });
 });

@@ -1,8 +1,6 @@
 import { h } from 'preact';
-import {
-  articlePropTypes,
-  organizationPropType,
-} from '../../common-prop-types';
+import PropTypes from 'prop-types';
+import { articlePropTypes } from '../../common-prop-types';
 import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
 
@@ -97,7 +95,11 @@ Meta.defaultProps = {
 
 Meta.propTypes = {
   article: articlePropTypes.isRequired,
-  organization: organizationPropType,
+  organization: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    profile_image_90: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+  }),
 };
 
 Meta.displayName = 'Meta';

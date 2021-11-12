@@ -21,14 +21,9 @@ class CommentsController < ApplicationController
       @user = @podcast
       @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
     else
-      @user = User.find_by(username: params[:username]) ||
-        Organization.find_by(slug: params[:username]) ||
-        not_found
-      @commentable = @root_comment&.commentable ||
-        @user.articles.find_by(slug: params[:slug]) || nil
-      @article = @commentable
-
-      not_found if @commentable && !@commentable.published
+      set_user
+      set_commentable
+      not_found unless comment_should_be_visible?
     end
 
     @commentable_type = @commentable.class.name if @commentable
@@ -273,6 +268,26 @@ class CommentsController < ApplicationController
   end
 
   private
+
+  def comment_should_be_visible?
+    if @article
+      @article.published?
+    else
+      @root_comment
+    end
+  end
+
+  def set_user
+    @user = User.find_by(username: params[:username]) ||
+      Organization.find_by(slug: params[:username]) ||
+      not_found
+  end
+
+  def set_commentable
+    @commentable = @root_comment&.commentable ||
+      @user.articles.find_by(slug: params[:slug]) || nil
+    @article = @commentable if @commentable.is_a?(Article)
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_comment

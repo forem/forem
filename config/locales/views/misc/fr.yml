@@ -22,6 +22,14 @@ fr:
         back: Take me back
         again: Try again
         install: Install the app
+    hamburger:
+      icon: Navigation menu
+      back: Back
+      forward: Forward
+      refresh: Refresh
+      icon_close: Close
+      icon_left: Left menu
+      icon_right: Right menu
     logo:
       color_1:
         label: Brand color 1
@@ -58,6 +66,27 @@ fr:
         description: My saved posts.
         og:
           title: Reading List - %{community}
+    search:
+      heading: Search results%{for}
+      for: " for %{query}"
+      placeholder: Recherche...
+      icon:
+        aria_label: Search
+        title: Search
+      nav:
+        posts: Posts
+        podcasts: Podcasts
+        people: People
+        comments: Comments
+        my_posts: My posts only
+      sort:
+        aria_label: Search result sort options
+        relevance: Most Relevant
+        newest: Newest
+        oldest: Oldest
+      meta:
+        title: Search Results
+        description: "%{site} => Search Results"
     series:
       meta:
         description: View %{title} on %{site}
