@@ -26,7 +26,7 @@ export const Default = (args) => (
 );
 
 Default.args = {
-  control: 'buttons'
+  control: 'buttons',
 };
 
 export const WithIcon = (args) => (
@@ -38,3 +38,7 @@ export const WithIcon = (args) => (
     <Tab icon={Mod}>Third</Tab>
   </Tabs>
 );
+
+WithIcon.args = {
+  control: 'buttons',
+};
