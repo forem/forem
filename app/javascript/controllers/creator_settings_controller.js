@@ -1,5 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 
+const MAX_LOGO_PREVIEW_HEIGHT = 80;
+const MAX_LOGO_PREVIEW_WIDTH = 220;
+
 export class CreatorSettingsController extends Controller {
   static targets = ['previewLogo'];
 
@@ -24,9 +27,14 @@ export class CreatorSettingsController extends Controller {
             target: { width, height },
           } = event;
 
-          if (height > 80) {
-            width = (width / height) * 80;
-            height = 80;
+          if (height > MAX_LOGO_PREVIEW_HEIGHT) {
+            width = (width / height) * MAX_LOGO_PREVIEW_HEIGHT;
+            height = MAX_LOGO_PREVIEW_HEIGHT;
+          }
+
+          if (width > MAX_LOGO_PREVIEW_WIDTH) {
+            width = MAX_LOGO_PREVIEW_WIDTH;
+            height = (width / height) * MAX_LOGO_PREVIEW_WIDTH;
           }
 
           image.style.width = `${width}px`;
