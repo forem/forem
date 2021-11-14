@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ButtonNew /> renders a default button 1`] = `"<button type=\\"button\\" class=\\"c-btn\\">Hello world!</button>"`;
+
+exports[`<ButtonNew /> renders a destructive button 1`] = `"<button type=\\"button\\" class=\\"c-btn c-btn--destructive\\">Hello world!</button>"`;
+
+exports[`<ButtonNew /> renders a primary button 1`] = `"<button type=\\"button\\" class=\\"c-btn c-btn--primary\\">Hello world!</button>"`;
+
+exports[`<ButtonNew /> renders a rounded button 1`] = `"<button type=\\"button\\" class=\\"c-btn radius-full\\">Hello world!</button>"`;
+
+exports[`<ButtonNew /> renders with a tooltip 1`] = `"<button type=\\"button\\" class=\\"c-btn crayons-tooltip__activator\\">Hello world!<span data-testid=\\"tooltip\\" class=\\"crayons-tooltip__content\\">tooltip text</span></button>"`;
+
+exports[`<ButtonNew /> renders with additional classnames 1`] = `"<button type=\\"button\\" class=\\"c-btn one two three\\">Hello world!</button>"`;
+
+exports[`<ButtonNew /> renders with an icon and text 1`] = `"<button type=\\"button\\" class=\\"c-btn\\">Hello world!</button>"`;
+
+exports[`<ButtonNew /> renders with an icon only 1`] = `"<button type=\\"button\\" class=\\"c-btn\\"></button>"`;
+
+exports[`<ButtonNew /> should render a button as a specific button type (HTML type attribute) when buttonType is set. 1`] = `"<button type=\\"submit\\" class=\\"c-btn\\">Hello world!</button>"`;

@@ -13,6 +13,7 @@ Default.args = {
   rounded: false,
   destructive: false,
   children: 'Button label',
+  tooltip: 'Tooltip text',
 };
 
 export const Primary = (args) => <ButtonNew {...args} />;
