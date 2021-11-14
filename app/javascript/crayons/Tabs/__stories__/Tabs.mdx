@@ -1,0 +1,76 @@
+# Tabs
+
+## What exactly?
+Tabs navigations is supposed to allow users to navigate easily between views within the same context.
+Tabs component is responsible only for dipslaying Tabs-like navigation (controls). 
+This component is **not** supposed to handle displaying tabbed content (literally switching between tab panels).
+
+## Buttons vs Links
+Depending on your use case, you may want to either use Buttons or Links for individual tabs. 
+Therefore, individual `<Tab />` elements will inherit props for either Buttons or Links, respectively.
+
+## Usage
+
+Nielsen Norman Groups has a great [resource about using tabs correctly](https://www.nngroup.com/articles/tabs-used-right/).
+Below you can find couple rules of thumb.
+
+### Short labels
+Write short tab labels and use plain language, rather than made-up terms. Tab labels should usually be 1–2 words.
+Short labels are more scannable; if you need longer labels, it’s a sign that the choices are too complicated for a tab control.
+
+### Number of tabs
+
+Keep number of tabs limitied. Even though we don't have any defined constraint here, it's probably wise to never exceed 5 or 6 tabs. 
+This maintains an uncluttered UI and reduces cognitive load for users. If you think more tabs is needed, then you should yell at your designer.
+
+### Tabs are not inputs
+
+Tabs component should never be considered as Form control, for example acting like radio buttons. 
+So don't treat it as another input or part of your Form.
+
+### Provide current state
+
+Individual `<Tab />` can have `current` prop which defines currently selected (active) tab. Always have **one** `<Tab current />` at a time.
+
+Rememeber that "**current**" (aka *active*, aka *selected*) is defined differently:
+
+- For JSX add `current` prop to appropriate tab.
+- For HTML:
+    - For `<button>` tabs you need to use `aria-pressed="true"` attribute for *current* tab and `aria-pressed="false"` for the rest.
+    - For `<a>` tabs you only need to use `aria-current="page"` attribute for *current* tab.
+
+### JSX
+In JSX world you just need to define your `elements` prop to be `buttons` or `links` and appropriate code will be handled automatically.
+
+- For `buttons`, individual `<Tab />` elements will turn into `<Button />`. Keep in mind to add `onClick` attribute (or anything else that will handle actual navigation).
+- For `links`, individual `<Tab />` elements will turn into `<Link />`. Keep in mind to add `href` attribute.
+
+Both come with slightly different styling (mostly for `:hover` effects) and in both cases it is possible to use their respective props.
+
+### HTML
+In HTML world, after defininig appropriate `elements` prop in Controls panel (in Storybook) you can generate HTML snippet that will contain either `<button>` or `<a>` elements.
+
+## Scrollable container
+
+Tabs component is, by default, *scorllable* which means that user will be able to scroll through tabs once there's not enough horizontal space to fit them all.
+Keep in mind that this should only be a case for mobile breakpoint. Because if you end up having scorllable tabs on desktop breakpoint then you should definitely talk to your designer.
+
+## Configuration
+
+### Stacked tabs
+
+Tabs come in horizontal orientation by default. There's a setting for stacking them, one on top of another:
+- For JSX it's just `stacked` prop.
+- For HTML it's `c-tabs--stacked` class.
+
+Keep in mind that stacked (vertical) tabs will turn into horizontal on the smallest breakpoint, automatically.
+
+### Fitted layout
+
+Tabs can take full available space (for 2 tabs: each will be 1/2 of the container, for 3 tabs: each will be 1/3 of the container, and so on). 
+To turn this on:
+- For JSX add `stacked` prop.
+- For HTML add `c-tabs--fitted` class.
+
+## Design
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2F8TcFDQXLQD1SaFIUELOrc5%2FButtons-vs-CTAs%3Fnode-id%3D0%253A1" allowfullscreen></iframe>

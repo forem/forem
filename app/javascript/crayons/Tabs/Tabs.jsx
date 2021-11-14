@@ -7,11 +7,11 @@ export const Tabs = (props) => {
     stacked,
     fitted,
     className,
-    control = 'buttons',
+    elements = 'buttons',
     ...otherProps
   } = props;
 
-  const Wrapper = control === 'buttons' ? 'div' : 'nav';
+  const Wrapper = elements === 'buttons' ? 'div' : 'nav';
 
   const classes = classNames('c-tabs', {
     'c-tabs--stacked': stacked,
@@ -22,7 +22,7 @@ export const Tabs = (props) => {
   return (
     <Wrapper className={classes} {...otherProps}>
       {children.map((tab) => {
-        return cloneElement(tab, { control, fitted });
+        return cloneElement(tab, { elements, fitted });
       })}
     </Wrapper>
   );

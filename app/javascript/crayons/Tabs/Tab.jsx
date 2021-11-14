@@ -6,7 +6,7 @@ export const Tab = (props) => {
   const {
     className,
     current,
-    control,
+    elements,
     fitted,
     ...otherProps
   } = props;
@@ -22,7 +22,7 @@ export const Tab = (props) => {
   const buttonCurrentProps = current ? {'aria-pressed': true} : {'aria-pressed': false};
   const linkCurrentProps = current && {'aria-current': 'page'};
 
-  return control === 'buttons' ? (
+  return elements === 'buttons' ? (
     <ButtonNew {...sharedProps} {...buttonCurrentProps} {...otherProps} />
   ) : (
     <Link block {...sharedProps} {...linkCurrentProps} {...otherProps} />
