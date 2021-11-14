@@ -15,9 +15,9 @@
   </div>
   <div class="flex gap-4" style="max-height: 80px;height: 80px;">
     <div class="flex items-center">
-      <%= file_field_tag :logo_svg, class: "screen-reader-only", required: true, accept: ".svg,.png,image/png,image/svg+xml", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" } %>
       <label class="cursor-pointer crayons-btn crayons-btn--s crayons-btn--secondary" for="logo_svg">
         Upload Logo
+        <%= file_field_tag :logo_svg, class: "screen-reader-only", required: true, accept: ".svg,.png,image/png,image/svg+xml", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" } %>
       </label>
     </div>
     <div class="site-logo" aria-hidden="true" data-creator-settings-target="previewLogo">
