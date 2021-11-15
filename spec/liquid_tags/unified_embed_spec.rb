@@ -33,5 +33,10 @@ RSpec.describe UnifiedEmbed do
       expect(described_class.find_liquid_tag_for(link: "https://www.reddit.com/r/Cricket/comments/qrkwol/match_thread_2nd_semifinal_australia_vs_pakistan/"))
         .to eq(RedditTag)
     end
+
+    it "returns SoundcloudTag for a soundcloud url" do
+      expect(described_class.find_liquid_tag_for(link: "https://soundcloud.com/before-30-tv/stranger-moni-lati-lo-1"))
+        .to eq(SoundcloudTag)
+    end
   end
 end

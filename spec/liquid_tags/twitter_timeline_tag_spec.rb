@@ -5,7 +5,7 @@ RSpec.describe TwitterTimelineTag, type: :lyquid_tag do
     let(:valid_twitter_timeline_links) do
       [
         "https://twitter.com/FreyaHolmer/timelines/1215413954505297922",
-        "https://twitter.com/FreyaHolmer/timelines/1215413954505297922 ",
+        "https://twitter.com/FreyaHolmer/timelines/1215413954505297922",
       ]
     end
     let(:invalid_twitter_timeline_links) do

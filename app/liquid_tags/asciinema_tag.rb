@@ -33,4 +33,4 @@ end
 
 Liquid::Template.register_tag("asciinema", AsciinemaTag)
 
-UnifiedEmbed.register(AsciinemaTag, regexp: %r{https?://asciinema.org/a/})
+UnifiedEmbed.register(AsciinemaTag, regexp: %r{https://asciinema.org/a/(?<id>\d+)})

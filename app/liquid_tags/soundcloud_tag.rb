@@ -41,3 +41,5 @@ class SoundcloudTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("soundcloud", SoundcloudTag)
+
+UnifiedEmbed.register(SoundcloudTag, regexp: %r{https?://soundcloud.com})

@@ -44,3 +44,5 @@ class TwitterTimelineTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("twitter_timeline", TwitterTimelineTag)
+
+UnifiedEmbed.register(TwitterTimelineTag, regexp: %r{\Ahttps://twitter\.com/[a-zA-Z0-9]+/timelines/\d+\Z})
