@@ -20,6 +20,9 @@ export class CreatorSettingsController extends Controller {
       const image = document.createElement('img');
       image.src = imageURL;
 
+      // The logo preview image is purely visual so no need to communicate this to assistive technology.
+      image.alt = '';
+
       image.addEventListener(
         'load',
         (event) => {
@@ -39,7 +42,6 @@ export class CreatorSettingsController extends Controller {
 
           image.style.width = `${width}px`;
           image.style.height = `${height}px`;
-          image.src = imageURL;
 
           this.previewLogoTarget.replaceChild(
             image,
