@@ -1,3 +1,4 @@
+import 'focus-visible';
 import {
   initializeMobileMenu,
   setCurrentPageIconLink,
