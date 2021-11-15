@@ -7,9 +7,14 @@ Button labels express what action will occur when the user interacts with it.
  It is therefore very important that the different variants are implemented consistently across product, 
  so that they message the correct actions.
 
-## Buttons ≠ Links
+## CTAs vs Links vs Buttons
 
-**Do not use buttons as navigational elements. Instead, use Links (or CTAs) when the desired action is to take the user to a new page.**
+The most important of these rules is that the `<CTA />` (or `<Link />`) and `<Button />` elements are assigned to appropriate respective tasks. 
+That is: `<CTA />` or `<Link />` should be used where navigation is elicited, and `<Button />` where a non-navigational action is being invoked.
+For example, a 'Submit' control on 'Sign in' view (form) would suit a `<Button />` because its job is to submit the form. 
+However, 'Register' call-to-action—taking the user to a different form, in a different page or screen—would benefit from `<CTA />` or `<Link />` semantics.
+
+Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) when the desired action is to take the user to a new page.
 
 ## Variants
 
