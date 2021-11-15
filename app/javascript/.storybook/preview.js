@@ -40,7 +40,7 @@ function themeSwitcher(event) {
   addStylesheet(theme);
 }
 
-const THEMES = Object.freeze(['default', 'night', 'minimal', 'pink', 'hacker']);
+const THEMES = Object.freeze(['light', 'dark']);
 
 const themeSwitcherDecorator = (storyFn) => {
   const lastThemeUsed = localStorage.getItem('storybook-crayons-theme') || '';
