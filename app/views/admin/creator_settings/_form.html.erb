@@ -14,7 +14,7 @@
     <p id="logo-subtitle" class="crayons-field__description">Ideally SVG, but PNG will work, too. Min size: 300x300px.</p>
   </div>
   <div class="flex gap-4" style="max-height: 80px;height: 80px;">
-    <div class="flex items-center">
+    <div class="flex items-start">
       <label class="cursor-pointer crayons-btn crayons-btn--s crayons-btn--secondary" for="logo_svg">
         Upload Logo
         <%= file_field_tag :logo_svg, class: "screen-reader-only", required: true, accept: ".svg,.png,image/png,image/svg+xml", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" } %>
