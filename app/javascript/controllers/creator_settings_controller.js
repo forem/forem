@@ -21,7 +21,7 @@ export class CreatorSettingsController extends Controller {
       image.src = imageURL;
 
       // The logo preview image is purely visual so no need to communicate this to assistive technology.
-      image.alt = '';
+      image.alt = 'preview of logo selected';
 
       image.addEventListener(
         'load',

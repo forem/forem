@@ -30,6 +30,9 @@ describe('Creator Settings Page', () => {
     cy.findByLabelText(/upload logo/i, { selector: 'input' }).attachFile(
       '/images/admin-image.png',
     );
+    cy.findByRole('img', { name: /preview of logo selected/i }).should(
+      'be.visible',
+    );
 
     // should contain a brand color field
     cy.findByText(/^Brand color/).should('be.visible');
