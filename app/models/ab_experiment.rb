@@ -59,6 +59,7 @@ class AbExperiment < SimpleDelegator
   end
 
   # @api private
+  # @note Called via AbExperiment.get
   def feed_strategy(user:, config:, default_value:)
     (config["AB_EXPERIMENT_FEED_STRATEGY"] || field_test(:feed_strategy, participant: user)).inquiry
   rescue FieldTest::ExperimentNotFound
