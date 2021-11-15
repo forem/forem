@@ -46,7 +46,14 @@ export const ButtonNew = (props) => {
       onKeyUp={handleKeyUp}
       {...otherProps}
     >
-      {icon && <Icon src={icon} className={classNames('c-btn__icon')} />}
+      {icon && (
+        <Icon
+          aria-hidden="true"
+          focusable="false"
+          src={icon}
+          className={classNames('c-btn__icon')}
+        />
+      )}
       {children}
       {tooltip ? (
         <span

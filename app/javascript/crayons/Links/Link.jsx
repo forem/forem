@@ -27,7 +27,14 @@ export const Link = (props) => {
 
   return (
     <a href={href} className={classes} {...otherProps}>
-      {icon && <Icon src={icon} className={classNames('c-link__icon')} />}
+      {icon && (
+        <Icon
+          src={icon}
+          aria-hidden="true"
+          focusable="false"
+          className={classNames('c-link__icon')}
+        />
+      )}
       {children}
     </a>
   );

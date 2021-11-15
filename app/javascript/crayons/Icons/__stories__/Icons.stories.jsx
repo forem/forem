@@ -1,11 +1,33 @@
 import { h } from 'preact';
 import { Icon } from '..';
-import SampleIcon from '../../../../assets/images/twitter.svg';
+import IconsDoc from './Icons.mdx'
+import SampleIcon from '@img/twitter.svg';
 
 export default {
   component: Icon,
-  title: 'Components/Icons',
+  title: 'BETA/Icons',
+  parameters: {
+    docs: {
+      page: IconsDoc,
+    },
+  },
+  argTypes: {
+    native: {
+      description: 'Whether or not icon should maintain its original color. By default (`false`) icon will inherit color from parent container. Most of our icons actually come "unstyled" - which means they are meant to inherit color from parent. Using native colors should be an exception for e.g. branded icons that come with their own specific color (some logos like Twitter, Facebook, etc.) or multicolor icons.',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+  },
 };
 
-export const InheritColors = () => <Icon src={SampleIcon} />;
-export const NativeColors = () => <Icon native src={SampleIcon} />;
+
+export const Default = (args) => <Icon src={SampleIcon} {...args} />;
+Default.args = {
+  native: false
+};
+
+export const NativeColors = (args) => <Icon native src={SampleIcon} {...args} />;
+NativeColors.args = {
+  native: true,
+};

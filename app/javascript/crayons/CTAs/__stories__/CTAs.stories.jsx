@@ -1,10 +1,16 @@
 import { h } from 'preact';
 import { CTA } from '../';
+import CTAsDoc from './CTAs.mdx';
 import SampleIcon from '@img/cog.svg';
 
 export default {
   component: CTA,
   title: 'BETA/Navigation/CTAs',
+  parameters: {
+    docs: {
+      page: CTAsDoc,
+    },
+  },
   argTypes: {
     variant: {
       control: {

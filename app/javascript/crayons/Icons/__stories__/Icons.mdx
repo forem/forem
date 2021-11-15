@@ -1,0 +1,55 @@
+# Icons
+
+This component is supposed to make it easy to add icons to your JSX code.
+
+## How?
+
+You can pass an object or a path as `src` prop:
+
+**Recommended:**
+
+```
+import Twitter from '/path/to/twitter.svg';
+<Icon src={Twitter} />
+```
+
+**Less recommended** (but still fine :D):
+
+```
+<Icon src="/path/to/twitter.svg" />
+```
+<br />
+
+### `@img`
+
+We have an alias `@img` that should make it easier to access `/app/assets/images` folder:
+
+```
+import Twitter from '@img/twitter.svg';
+```
+
+
+## Colors
+
+If asset (SVG file) was exported correctly (see Rules section below) and `<Icon />` component was used correctly, 
+icon should inherit some Crayons styling that will, for example, automatically apply container's color to the icon itself. 
+For example, icon will automatically inherit link color whenever it's placed inside a link element.
+
+### Native colors
+
+By adding `native` prop we tell icon to NOT inherit its parent color.
+Instead it will keep whatever colors were defined in the SVG code. 
+This is helpful for branded icons that come with their own specific color (logos like Twitter, Facebook, etc.) or for multicolor icons.
+
+## Rules
+
+Most of the icons you would ever need should already be inside `/app/assets/images` folder. If you can't find one, ask your designer.
+If you want to export icon by yourself, go for it, just follow couple rules:
+
+1. Icons must be 24x24px. **It should include appropriate padding.**
+2. Icons must be in SVG format.
+3. Icons must be placed in `/app/assets/images` folder.
+4. We primarily use icons from [remixicon.com](http://remixicon.com/) (open source library) with bunch of exceptions and custom made ones.
+5. Icons must be optimized in a tool like [SVGOMG](https://jakearchibald.github.io/svgomg/).
+6. Icons should **not** have any `fill` attribute - this will let us style them pragmatically with Crayons magic (see "Colors" section above).
+    - Only exception is for multicolor and/or branded icons.

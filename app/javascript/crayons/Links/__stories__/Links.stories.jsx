@@ -1,10 +1,16 @@
 import { h } from 'preact';
 import { Link } from '..';
+import LinksDoc from './Links.mdx';
 import SampleIcon from '@img/cog.svg';
 
 export default {
   component: Link,
   title: 'BETA/Navigation/Links',
+  parameters: {
+    docs: {
+      page: LinksDoc,
+    },
+  },
 };
 
 export const Inline = (args) => <Link {...args} />;
