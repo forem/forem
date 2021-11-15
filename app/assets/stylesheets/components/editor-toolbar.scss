@@ -2,6 +2,11 @@
   display: flex;
   background: var(--base-0);
 
+  &::-webkit-scrollbar {
+    background: transparent;
+    height: 0;
+  }
+
   .toolbar-btn .spinner-or-cancel {
     .cancel {
       display: none;
