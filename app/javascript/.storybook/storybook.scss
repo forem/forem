@@ -13,4 +13,12 @@ body {
     margin: revert;
     padding: revert;
   }
+
+  code {
+    all: revert;
+  }
+
+  .docblock-source {
+    margin: revert;
+  }
 }

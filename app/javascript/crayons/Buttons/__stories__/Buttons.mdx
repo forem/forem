@@ -1,0 +1,58 @@
+# Buttons
+
+Buttons are clickable elements that are used to trigger actions. 
+They communicate calls to action to the user and allow users to interact with pages in a variety of ways. 
+Button labels express what action will occur when the user interacts with it.
+
+ It is therefore very important that the different variants are implemented consistently across product, 
+ so that they message the correct actions.
+
+## Buttons ≠ Links
+
+**Do not use buttons as navigational elements. Instead, use Links (or CTAs) when the desired action is to take the user to a new page.**
+
+## Variants
+
+### Primary
+
+Primary button has special look: high contrast (against rest of the view/component) and it's filled with accent color. 
+
+Ideally there should be only one Primary button per entire component, or sometimes even per entire view.
+Primary buttons should be used for the principal call to action on the page.
+
+### Default
+
+Default variant is less prominent, and therefore can be used for less prominent actions.
+Default buttons are visually light (greyish) and you can have as many of them as you want (within common sense :D). 
+They can (but don't have to) be used in conjuction with a Primary button. In that case, default variant should be used for any remaining actions.
+
+## Configuration
+
+### Destructive actions
+
+For actions that could have destructive effects on the user’s data (for example, *delete* or *remove*) we have a special style.
+This style can be applied by using `destructive` prop and it will work for both: primary and default variants.
+
+### Icons
+
+Icon can be placed in front of a label to both clarify an action and call attention to a button. 
+By passing path or object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself won't be customizable.
+
+#### Icon-only
+
+There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
+Icon-only buttons should always use clear and obvious icon, ideally accompanied by a tooltip or title.
+
+##### Fully rounded
+
+In most cases, whenever we display icon-only buttons (standalone, not in a *buttons group*) we tend to make button fully rounded - use `rounded` prop for that.
+Other than that please avoid customizing border-radius on buttons.
+
+### Tooltip
+
+By passing a string or node in `tooltip` prop, button will get a custom tooltip (visually different than a classic `title`) on `:hover`.
+
+## Design
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FgHpwugeu9jFGW4d9u3ReuR%2FCrayons%3Fnode-id%3D1%253A29" allowfullscreen></iframe>

@@ -21,9 +21,13 @@ export const Tabs = (props) => {
 
   return (
     <Wrapper className={classes} {...otherProps}>
-      {children.map((tab) => {
-        return cloneElement(tab, { elements, fitted });
-      })}
+      <ul className="c-tabs__list">
+        {children.map((tab) => (
+          <li key={tab} className="c-tabs__list__item">
+            {cloneElement(tab, { elements, fitted })}
+          </li>
+        ))}
+      </ul>
     </Wrapper>
   );
 };
