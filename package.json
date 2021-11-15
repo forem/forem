@@ -75,7 +75,7 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.27.0",
     "faker": "^5.5.3",
