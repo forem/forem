@@ -13,7 +13,8 @@ class AbExperiment < SimpleDelegator
 
   # @api public
   #
-  # A convenience method to reduce the
+  # A convenience method to insulate against the implementation
+  # details of the field_test gem.
   #
   # @param experiment [Symbol] the named method we'll call for an
   #        experiment.  It should be a method name defined on this
@@ -61,6 +62,7 @@ class AbExperiment < SimpleDelegator
   def feed_strategy(user:, config:, default_value:)
     (config["AB_EXPERIMENT_FEED_STRATEGY"] || field_test(:feed_strategy, participant: user)).inquiry
   rescue FieldTest::ExperimentNotFound
+    Rails.logger.debug { "No experiment found for :feed_strategy." }
     # Because we should have a fall back plan in case the field test
     # has an odd configuration.
     default_value.inquiry
