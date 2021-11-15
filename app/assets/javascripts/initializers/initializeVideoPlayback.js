@@ -124,7 +124,9 @@ function initializeVideoPlayback() {
 
   function handleVideoMessages(event) {
     const message = JSON.parse(event.detail);
-    if (message.namespace !== 'podcast') { return }
+    if (message.namespace !== 'video') {
+      return;
+    }
 
     switch (message.action) {
       case 'play':
@@ -161,7 +163,7 @@ function initializeVideoPlayback() {
 
     Runtime.videoMessage = (msg) => {
       window.ForemMobile.injectNativeMessage('video', msg);
-    }
+    };
 
     var playerElement = getById(`video-player-${metadata.id}`);
     playerElement.addEventListener('click', requestFocus);
