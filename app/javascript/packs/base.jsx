@@ -163,6 +163,6 @@ async function loadCreatorSettings() {
   }
 }
 
-if (document.location.href.endsWith('/admin/creator_settings/new')) {
+if (document.location.pathname === '/admin/creator_settings/new') {
   loadCreatorSettings();
 }
