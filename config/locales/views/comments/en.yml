@@ -45,6 +45,8 @@ en:
       hidden:
         text_html: Some comments have been hidden by the post's author - %{info}
         info: find out more
+      hide:
+        confirm: Confirm hiding the comment
       locked: The discussion has been locked. New comments can't be added.
       orphan:
         deleted: "[Comment from a deleted post]"

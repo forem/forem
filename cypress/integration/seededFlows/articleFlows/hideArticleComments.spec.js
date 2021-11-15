@@ -12,6 +12,8 @@ describe('Hiding/unhiding comments on an article', () => {
     it('Hides a comment and then unhides it from the same screen', () => {
       cy.findByRole('button', { name: 'Toggle dropdown menu' }).click();
       cy.findByRole('link', { name: "Hide Admin McAdmin's comment" }).click();
+      cy.findByRole('button', { name: 'Confirm hiding the comment' }).click();
+
       cy.findByRole('button', { name: 'Toggle dropdown menu' }).should(
         'not.be.visible',
       );
