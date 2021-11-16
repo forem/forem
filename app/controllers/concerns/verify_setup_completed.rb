@@ -14,10 +14,6 @@ module VerifySetupCompleted
     missing_configs.empty?
   end
 
-  def creator_setup_mode?
-    current_user.creator? && creator_setup_path?
-  end
-
   def missing_configs
     @missing_configs ||= Settings::Mandatory.missing
   end
@@ -33,7 +29,7 @@ module VerifySetupCompleted
     # This is the only flash in our application layout, don't override it if
     # there's already another message.
     return if flash[:global_notice].present?
-    return if config_path? || setup_completed? || Settings::General.waiting_on_first_user || creator_setup_mode?
+    return if config_path? || setup_completed? || Settings::General.waiting_on_first_user || creator_setup_path?
 
     link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })
 
