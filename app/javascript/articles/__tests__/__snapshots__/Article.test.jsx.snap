@@ -131,7 +131,9 @@ Object {
                     class="crayons-story__tertiary fs-xs"
                     href="/some-post/path"
                   >
-                    <time>
+                    <time
+                      datetime="Tue, 18 Feb 2020 14:59:24 GMT"
+                    >
                       February 18
                        (just now)
                     </time>
@@ -158,9 +160,9 @@ Object {
                 class="crayons-story__tags"
               >
                 <a
-                  class="crayons-tag"
+                  class="crayons-tag crayons-tag--filled"
                   href="/t/javascript"
-                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
+                  style="--tag-bg: #0000001a; --tag-prefix: #000000; --tag-bg-hover: #0000001a; --tag-prefix-hover: #000000;"
                 >
                   <span
                     class="crayons-tag__prefix"
@@ -378,7 +380,9 @@ Object {
                   class="crayons-story__tertiary fs-xs"
                   href="/some-post/path"
                 >
-                  <time>
+                  <time
+                    datetime="Tue, 18 Feb 2020 14:59:24 GMT"
+                  >
                     February 18
                      (just now)
                   </time>
@@ -405,9 +409,9 @@ Object {
               class="crayons-story__tags"
             >
               <a
-                class="crayons-tag"
+                class="crayons-tag crayons-tag--filled"
                 href="/t/javascript"
-                style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
+                style="--tag-bg: #0000001a; --tag-prefix: #000000; --tag-bg-hover: #0000001a; --tag-prefix-hover: #000000;"
               >
                 <span
                   class="crayons-tag__prefix"

@@ -1,9 +1,9 @@
 <article class="notification__preview crayons-card">
   <a href="<%= json_data["article"]["path"] %>" class="crayons-link block notification__preview__inner">
     <h3 class="notification__preview__title"><%= h(json_data["article"]["title"]) %></h3>
-    <div class="-ml-1">
+    <div class="flex flex-wrap fs-s">
       <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
-        <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+        <span class="mr-2"><span class="opacity-50">#</span><%= tag %></span>
       <% end %>
     </div>
   </a>
