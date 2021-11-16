@@ -54,7 +54,7 @@
             <% end %>
             <% if @user.github_username.present? %>
               <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: t("views.organizations.github.icon")) %>
+                <%= inline_svg_tag("github-logo.svg", class: "crayons-icon", aria: true, title: t("views.organizations.github.icon")) %>
               </a>
             <% end %>
             <% if @user.profile.website_url.present? %>
