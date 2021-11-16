@@ -37,7 +37,7 @@ export class CreatorSettingsController extends Controller {
 
           if (width > MAX_LOGO_PREVIEW_WIDTH) {
             width = MAX_LOGO_PREVIEW_WIDTH;
-            height = (width / height) * MAX_LOGO_PREVIEW_WIDTH;
+            height = (height / width) * MAX_LOGO_PREVIEW_WIDTH;
           }
 
           image.style.width = `${width}px`;
