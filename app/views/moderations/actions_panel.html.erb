@@ -90,7 +90,7 @@
             <button class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
               <span class="num-sign">#</span><%= tag.name %>
               <div class="circle centered-icon adjustment-icon subtract color-base-inverted">
-                –
+                <%= inline_svg_tag("minus.svg", aria: true, title: t("views.moderations.actions.adjust.remove")) %>
               </div>
             </button>
           <% end %>
