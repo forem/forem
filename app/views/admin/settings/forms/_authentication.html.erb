@@ -95,6 +95,14 @@
                     <%= admin_config_description Constants::Settings::Authentication::DETAILS[:display_email_domain_allow_list_publicly][:description] %>
                   </div>
                 </div>
+                <div class="crayons-field">
+                  <%= admin_config_label :blocked_registration_email_domains, "Block email domains", model: Settings::Authentication %>
+                  <%= admin_config_description Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:description] %>
+                  <%= f.text_field :blocked_registration_email_domains,
+                                   class: "crayons-textfield",
+                                   value: Settings::Authentication.blocked_registration_email_domains.join(","),
+                                   placeholder: Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:placeholder] %>
+                </div>
                 <div class="crayons-field--checkbox">
                   <%= f.check_box :require_captcha_for_email_password_registration,
                                   checked: Settings::Authentication.require_captcha_for_email_password_registration,
