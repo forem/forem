@@ -53,4 +53,4 @@ end
 
 Liquid::Template.register_tag("jsfiddle", JsFiddleTag)
 
-UnifiedEmbed.register(JsFiddleTag, regexp: %r{https?://jsfiddle.net/})
+UnifiedEmbed.register(JsFiddleTag, regexp: JsFiddleTag::LINK_REGEXP)

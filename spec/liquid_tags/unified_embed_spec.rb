@@ -19,6 +19,11 @@ RSpec.describe UnifiedEmbed do
         .to eq(CodepenTag)
     end
 
+    it "returns JsFiddle for a jsfiddle url" do
+      expect(described_class.find_liquid_tag_for(link: "http://jsfiddle.net/link2twenty/v2kx9jcd"))
+        .to eq(JsFiddleTag)
+    end
+
     it "returns MediumTag for a medium url" do
       expect(described_class.find_liquid_tag_for(link: "https://medium.com/@ryan79z28/im-a-twenty-year-truck-driver-i-will-tell-you-why-america-s-shipping-crisis-will-not-end-bbe0ebac6a91"))
         .to eq(MediumTag)
