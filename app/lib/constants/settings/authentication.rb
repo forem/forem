@@ -26,6 +26,10 @@ module Constants
           "The \"PEM\" key from the Authentication Service configured in the Apple Developer Portal",
           placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
         },
+        blocked_registration_email_domains: {
+          description: "Block registration from specified domains?  (comma-separated list)",
+          placeholder: "seo-hunt.com"
+        },
         display_email_domain_allow_list_publicly: {
           description: "Do you want to display the list of allowed domains, or keep it private?"
         },
