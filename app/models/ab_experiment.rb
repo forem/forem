@@ -63,7 +63,12 @@ class AbExperiment < SimpleDelegator
   def feed_strategy(user:, config:, default_value:)
     (config["AB_EXPERIMENT_FEED_STRATEGY"] || field_test(:feed_strategy, participant: user)).inquiry
   rescue FieldTest::ExperimentNotFound
-    Rails.logger.debug { "No experiment found for :feed_strategy." }
+    # rubocop:disable Layout/LineLength
+    Rails.logger.warn do
+      "Upstream request :feed_strategy experiment.  There are no registered :feed_strategy experiments.  Using the default value of #{default_value.inspect} for :feed_strategy experiment."
+    end
+    # rubocop:enable Layout/LineLength
+
     # Because we should have a fall back plan in case the field test
     # has an odd configuration.
     default_value.inquiry
