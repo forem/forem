@@ -20,7 +20,7 @@
         <%= file_field_tag :logo_svg, class: "screen-reader-only", required: true, accept: ".svg,.png,.jpg,image/svg+xml,image/png,image/jpg", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo", aria: { describedby: "logo-subtitle" } } %>
       </label>
     </div>
-    <div class="site-logo" data-creator-settings-target="previewLogo">
+    <div data-creator-settings-target="previewLogo">
       <% if ::Settings::General.logo_svg.present? %>
         <%= ::Settings::General.logo_svg.html_safe %>
       <% end %>
