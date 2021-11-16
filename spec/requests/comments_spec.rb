@@ -135,23 +135,6 @@ RSpec.describe "Comments", type: :request do
         create(:comment, parent_id: third_level_child.id, commentable: article, user: user)
       end
 
-      it "does not show the hidden comment in the article's comments section" do
-        get "#{article.path}/comments"
-        expect(response.body).not_to include(third_level_child.processed_html)
-      end
-
-      it "shows hidden comment's children in the article's comments section if children are not hidden explicitly" do
-        fourth_level_child
-        get "#{article.path}/comments"
-        expect(response.body).to include(fourth_level_child.processed_html)
-      end
-
-      # When opening a non-hidden comment by a permalink we want to see only visible comments.
-      it "doesn't show hidden child comments in its parent's permalink when parent is not hidden" do
-        get second_level_child.path
-        expect(response.body).not_to include(third_level_child.processed_html)
-      end
-
       # When opening a hidden comment by a permalink we want to see the full thread including hidden comments.
       it "shows hidden child comments in its parent's permalink when parent is also hidden" do
         third_level_child
