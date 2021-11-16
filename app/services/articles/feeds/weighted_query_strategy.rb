@@ -61,10 +61,21 @@ module Articles
       # - requires_user: Does this scoring method require a given
       #                  user.  If not, don't use it if we don't have
       #                  a nil user.
+      #
+      # - group_by: An SQL fragment that ensures a valid postgres
+      #             statement in older versions of postgres.  See
+      #             https://github.com/forem/forem/pull/15240#discussion_r750392321
+      #             for further sleuthing details.  When you reference
+      #             a field in the clause, you likely need to include
+      #             a corresponding :group_by attribute.
+      #
+      # @note The group by clause appears necessary for postgres
+      #       versions and Heroku configurations of current (as of
+      #       <2021-11-16 Tue>) DEV.to installations.
       SCORING_METHOD_CONFIGURATIONS = {
         # Weight to give based on the age of the article.
         daily_decay_factor: {
-          clause: "(current_date - published_at::date)",
+          clause: "(current_date - articles.published_at::date)",
           cases: [
             [0, 1], [1, 0.95], [2, 0.9],
             [3, 0.85], [4, 0.8], [5, 0.75],
@@ -73,7 +84,8 @@ module Articles
             [12, 0.3], [13, 0.2], [14, 0.1]
           ],
           fallback: 0.001,
-          requires_user: false
+          requires_user: false,
+          group_by: "articles.published_at"
         },
         # Weight to give for the number of comments on the article
         # from other users that the given user follows.
@@ -88,7 +100,8 @@ module Articles
           clause: "articles.comments_count",
           cases: [[0, 0.9], [1, 0.94], [2, 0.95], [3, 0.98], [4, 0.999]],
           fallback: 1,
-          requires_user: false
+          requires_user: false,
+          group_by: "articles.comments_count"
         },
         # Weight to give based on the difference between experience
         # level of the article and given user.
@@ -101,14 +114,16 @@ module Articles
             )))",
           cases: [[0, 1], [1, 0.98], [2, 0.97], [3, 0.96], [4, 0.95], [5, 0.94]],
           fallback: 0.93,
-          requires_user: true
+          requires_user: true,
+          group_by: "articles.experience_level_rating"
         },
         # Weight to give for feature or unfeatured articles.
         featured_article_factor: {
           clause: "(CASE articles.featured WHEN true THEN 1 ELSE 0 END)",
           cases: [[1, 1]],
           fallback: 0.85,
-          requires_user: false
+          requires_user: false,
+          group_by: "articles.featured"
         },
         # Weight to give when the given user follows the article's
         # author.
@@ -150,21 +165,24 @@ module Articles
           cases: [[-1, 0.2],
                   [1, 1]],
           fallback: 0.95,
-          requires_user: false
+          requires_user: false,
+          group_by: "articles.privileged_users_reaction_points_sum"
         },
         # Weight to give for the number of reactions on the article.
         reactions_factor: {
           clause: "articles.reactions_count",
           cases: [[0, 0.9988], [1, 0.9988], [2, 0.9988], [3, 0.9988]],
           fallback: 1,
-          requires_user: false
+          requires_user: false,
+          group_by: "articles.reactions_count"
         },
         # Weight to give based on spaminess of the article.
         spaminess_factor: {
           clause: "articles.spaminess_rating",
           cases: [[0, 1]],
           fallback: 0,
-          requires_user: false
+          requires_user: false,
+          group_by: "articles.spaminess_rating"
         }
       }.freeze
 
@@ -355,6 +373,13 @@ module Articles
 
       private
 
+      # Concatenate the required group by clauses.
+      #
+      # @return [String]
+      def group_by_fields_as_sql
+        @group_by_fields.join(", ")
+      end
+
       # The sql statement for selecting based on relevance scores that
       # are for nil users.
       def sql_sub_query_for_nil_user(only_featured:, must_have_main_image:, limit:, offset:, omit_article_ids:)
@@ -422,7 +447,7 @@ module Articles
             ON comments.commentable_id = articles.id
               AND comments.commentable_type = 'Article'
           WHERE #{where_clause}
-          GROUP BY articles.id
+          GROUP BY #{group_by_fields_as_sql}
           ORDER BY (#{relevance_score_components_as_sql}) DESC,
             articles.published_at DESC
             #{offset_and_limit_clause(offset: offset, limit: limit)}
@@ -456,7 +481,7 @@ module Articles
 
       # We multiply the relevance score components together.
       def relevance_score_components_as_sql
-        @relevance_score_components.join(" * ")
+        @relevance_score_components.join(" * \n")
       end
 
       def default_limit
@@ -484,6 +509,12 @@ module Articles
       def configure!(scoring_configs:)
         @relevance_score_components = []
 
+        # By default we always need to group by the articles.id
+        # column.  And as we add scoring methods to the query, we need
+        # to add additional group_by clauses based on the chosen
+        # scoring method.
+        @group_by_fields = ["articles.id"]
+
         # We looping through the possible scoring method
         # configurations, we're only accepting those as valid
         # configurations.
@@ -500,6 +531,9 @@ module Articles
           # If the caller didn't provide a hash for this scoring configuration,
           # then we'll use the default configuration.
           scoring_config = default_config unless scoring_config.is_a?(Hash)
+
+          # This scoring method requires a group by clause.
+          @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)
 
           @relevance_score_components << build_score_element_from(
             # Under NO CIRCUMSTANCES should you trust the caller to
