@@ -4,6 +4,10 @@ import {
   getInstantClick,
   initializeMemberMenu,
 } from '../topNavigation/utilities';
+import * as Routes from '@routes';
+
+// Make the rails routes available to not ES module code.
+window.Routes = Routes;
 
 // Unique ID applied to modals created using window.Forem.showModal
 const WINDOW_MODAL_ID = 'window-modal';
@@ -163,6 +167,6 @@ async function loadCreatorSettings() {
   }
 }
 
-if (document.location.pathname === '/admin/creator_settings/new') {
+if (document.location.pathname === Routes.newAdminCreatorSettingPath()) {
   loadCreatorSettings();
 }
