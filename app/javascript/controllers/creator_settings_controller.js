@@ -13,6 +13,11 @@ export class CreatorSettingsController extends Controller {
       },
     } = event;
 
+    if (!firstFile) {
+      // Most likely the user cancelled the file selection.
+      return;
+    }
+
     const reader = new FileReader();
 
     reader.onload = () => {
