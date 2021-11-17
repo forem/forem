@@ -29,7 +29,7 @@ module VerifySetupCompleted
     # This is the only flash in our application layout, don't override it if
     # there's already another message.
     return if flash[:global_notice].present?
-    return if config_path? || setup_completed? || Settings::General.waiting_on_first_user || creator_setup_path?
+    return if config_path? || setup_completed? || Settings::General.waiting_on_first_user
 
     link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })
 
@@ -40,9 +40,5 @@ module VerifySetupCompleted
 
   def config_path?
     request.env["PATH_INFO"] == admin_config_path
-  end
-
-  def creator_setup_path?
-    request.env["PATH_INFO"] == new_admin_creator_setting_path
   end
 end
