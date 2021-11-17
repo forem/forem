@@ -4,6 +4,8 @@ module Badges
       return unless (badge_id = Badge.id_for_slug(slug))
 
       user_relation.find_each do |user|
+        next if user.banished?
+
         achievement = user.badge_achievements.create(
           badge_id: badge_id,
           rewarding_context_message_markdown: message_markdown,

@@ -109,7 +109,7 @@ gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "store_attribute", "~> 0.9.2" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.39" # Ruby library for the Stripe API
+gem "stripe", "~> 5.41" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -147,7 +147,7 @@ group :development, :test do
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.22", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.23", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.12", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.6", require: false # Code style checking for RSpec files
