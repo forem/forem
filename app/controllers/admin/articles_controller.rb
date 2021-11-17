@@ -6,6 +6,17 @@ module Admin
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
+    ARTICLES_ALLOWED_PARAMS = %i[featured
+                                 social_image
+                                 body_markdown
+                                 approved
+                                 email_digest_eligible
+                                 main_image_background_hex_color
+                                 featured_number
+                                 user_id
+                                 co_author_ids_list
+                                 published_at].freeze
+
     def index
       @pinned_article = PinnedArticle.get
 
@@ -13,8 +24,6 @@ module Admin
       when /top-/
         months_ago = params[:state].split("-")[1].to_i.months.ago
         @articles = articles_top(months_ago)
-      when "boosted-additional-articles"
-        @articles = articles_boosted_additional
       when "chronological"
         @articles = articles_chronological
       else
@@ -31,8 +40,6 @@ module Admin
       article = Article.find(params[:id])
 
       if article.update(article_params)
-        PinnedArticle.set(article) if params.dig(:article, :pinned)
-
         flash[:success] = "Article saved!"
       else
         flash[:danger] = article.errors_as_sentence
@@ -47,7 +54,26 @@ module Admin
       PinnedArticle.remove
 
       respond_to do |format|
-        format.html { redirect_to admin_article_path(article.id) }
+        format.html do
+          flash[:success] = "Article Pinned!"
+          redirect_to admin_article_path(article.id)
+        end
+        format.js do
+          render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
+        end
+      end
+    end
+
+    def pin
+      article = Article.find(params[:id])
+
+      PinnedArticle.set(article)
+
+      respond_to do |format|
+        format.html do
+          flash[:success] = "Article Pinned!"
+          redirect_to admin_article_path(article.id)
+        end
         format.js do
           render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
         end
@@ -64,15 +90,6 @@ module Admin
         .order(public_reactions_count: :desc)
         .page(params[:page])
         .per(50)
-    end
-
-    def articles_boosted_additional
-      Article.boosted_via_additional_articles
-        .includes(:user)
-        .limited_columns_internal_select
-        .order(published_at: :desc)
-        .page(params[:page])
-        .per(100)
     end
 
     def articles_chronological
@@ -103,19 +120,7 @@ module Admin
     end
 
     def article_params
-      allowed_params = %i[featured
-                          social_image
-                          body_markdown
-                          approved
-                          email_digest_eligible
-                          boosted_additional_articles
-                          boosted_dev_digest_email
-                          main_image_background_hex_color
-                          featured_number
-                          user_id
-                          co_author_ids_list
-                          published_at]
-      params.require(:article).permit(allowed_params)
+      params.require(:article).permit(ARTICLES_ALLOWED_PARAMS)
     end
 
     def authorize_admin

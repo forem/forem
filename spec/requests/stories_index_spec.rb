@@ -59,14 +59,17 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include("This is a landing page!")
     end
 
-    it "renders all display_ads when published and approved" do
+    it "renders all display_ads of different placements when published and approved" do
       org = create(:organization)
-      ad = create(:display_ad, published: true, approved: true, organization: org)
+      ad = create(:display_ad, published: true, approved: true, organization: org, placement_area: "sidebar_left")
+      second_left_ad = create(:display_ad, published: true, approved: true, organization: org,
+                                           placement_area: "sidebar_left_2")
       right_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
                                      organization: org)
 
       get "/"
       expect(response.body).to include(ad.processed_html)
+      expect(response.body).to include(second_left_ad.processed_html)
       expect(response.body).to include(right_ad.processed_html)
     end
 
@@ -79,6 +82,17 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).not_to include(ad.processed_html)
       expect(response.body).not_to include(right_ad.processed_html)
+    end
+
+    it "renders only one display ad of placement" do
+      org = create(:organization)
+      left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left", organization: org)
+      second_left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left",
+                                           organization: org)
+
+      get "/"
+      expect(response.body).to include(left_ad.processed_html).or(include(second_left_ad.processed_html))
+      expect(response.body).to include("crayons-sponsorship-widget").once
     end
 
     it "displays correct sponsors", :aggregate_failures do
@@ -267,6 +281,38 @@ RSpec.describe "StoriesIndex", type: :request do
         get "/"
         expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
+    end
+
+    context "with default_locale configured to fr" do
+      before do
+        allow(Settings::UserExperience).to receive(:default_locale).and_return("fr")
+        get "/"
+      end
+
+      it "names proper locale" do
+        expect(I18n.locale).to eq(:fr)
+      end
+
+      it "has proper locale content on page" do
+        expect(response.body).to include("Recherche")
+      end
+    end
+  end
+
+  describe "GET locale index" do
+    it "names proper locale" do
+      get "/locale/fr"
+      expect(I18n.locale).to eq(:fr)
+    end
+
+    it "has proper locale content on page" do
+      get "/locale/fr"
+      expect(response.body).to include("Recherche")
+    end
+
+    it "uses fallback locale if invalid locale passed" do
+      get "/locale/fake"
+      expect(I18n.locale).to eq(:en)
     end
   end
 

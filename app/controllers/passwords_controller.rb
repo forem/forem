@@ -10,6 +10,7 @@ class PasswordsController < Devise::PasswordsController
   protected
 
   def after_sending_reset_password_instructions_path_for(_resource_name)
+    flash[:global_notice] = "Your password reset instructions have been sent."
     session[:referrer]
   end
 end

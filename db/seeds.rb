@@ -143,6 +143,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   )
 
   user.add_role(:super_admin)
+  user.add_role(:trusted)
   user.add_role(:tech_admin)
 end
 
@@ -169,6 +170,9 @@ end
 num_articles = 25 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Article, num_articles) do
+  user_ids = User.all.ids
+  public_categories = %w[like unicorn]
+
   num_articles.times do |i|
     tags = []
     tags << "discuss" if (i % 3).zero?
@@ -187,12 +191,21 @@ seeder.create_if_none(Article, num_articles) do
       #{Faker::Hipster.paragraph(sentence_count: 2)}
     MARKDOWN
 
-    Article.create!(
+    article = Article.create!(
       body_markdown: markdown,
       featured: true,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
+
+    Random.random_number(10).times do |_t|
+      article.reactions.create(
+        user_id: user_ids.sample,
+        category: public_categories.sample,
+      )
+    end
+
+    article.sync_reactions_count
   end
 end
 
@@ -231,7 +244,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
       android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "CodingBlocks",
@@ -244,7 +258,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
       android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "Talk Python",
@@ -257,7 +272,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
       android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "Developer on Fire",
@@ -271,7 +287,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
       android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
   ]
 

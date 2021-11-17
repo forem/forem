@@ -46,7 +46,7 @@ const CloseIcon = () => (
  * @param {Function} props.onClose  Callback for any function to be executed on close button click or Escape
  * @param {boolean} props.closeOnClickOutside Whether the modal should close if the user clicks outside of it
  * @param {string} props.focusTrapSelector The CSS selector for where to trap the user's focus. This should be unique to the page in which the modal is presented.
- * 
+ *
  * @example
  *  <Modal
       overlay={true}

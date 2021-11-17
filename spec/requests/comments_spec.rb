@@ -19,11 +19,6 @@ RSpec.describe "Comments", type: :request do
       expect(response.body).to include(comment.processed_html)
     end
 
-    it "displays full discussion text" do
-      get comment.path
-      expect(response.body).to include("Full discussion")
-    end
-
     it "renders user payment pointer if set" do
       article.user.update_column(:payment_pointer, "test-pointer-for-comments")
       get "#{article.path}/comments"
@@ -75,12 +70,6 @@ RSpec.describe "Comments", type: :request do
         get child.path
         expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
         expect(response.body).to include(child.processed_html)
-      end
-
-      it "does not display the comment if it is hidden" do
-        child.update(hidden_by_commentable_user: true)
-        get comment.path
-        expect(response.body).not_to include child.processed_html
       end
     end
 
@@ -144,21 +133,9 @@ RSpec.describe "Comments", type: :request do
         expect(response.body).not_to include(third_level_child.processed_html)
       end
 
-      it "does not show the hidden comment's children in the article's comments section" do
-        fourth_level_child
-        get "#{article.path}/comments"
-        expect(response.body).not_to include(fourth_level_child.processed_html)
-      end
-
       it "does not show the hidden comment in its parent's permalink" do
         get second_level_child.path
         expect(response.body).not_to include(third_level_child.processed_html)
-      end
-
-      it "does not show the hidden comment's child in its parent's permalink" do
-        fourth_level_child
-        get second_level_child.path
-        expect(response.body).not_to include(fourth_level_child.processed_html)
       end
 
       it "shows the comment in the permalink" do
@@ -195,14 +172,19 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the article is deleted" do
-      it "index action renders deleted_commentable_comment view" do
-        article = create(:article)
-        comment = create(:comment, commentable: article)
+      it "raises not found when listing article comments" do
+        path = "#{article.path}/comments"
 
         article.destroy
 
+        expect { get path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "shows comment from a deleted post" do
+        article.destroy
+
         get comment.path
-        expect(response.body).to include("Comment from a deleted article or podcast")
+        expect(response.body).to include("Comment from a deleted post")
       end
     end
 
@@ -212,7 +194,7 @@ RSpec.describe "Comments", type: :request do
         podcast_episode.destroy
 
         get podcast_comment.path
-        expect(response.body).to include("Comment from a deleted article or podcast")
+        expect(response.body).to include("Comment from a deleted post")
       end
     end
   end

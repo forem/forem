@@ -14,11 +14,14 @@ describe('Follow user from notifications', () => {
     cy.findByRole('button', { name: 'Follow user back: User' }).as(
       'followButton',
     );
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
     cy.get('@followButton').click();
 
     cy.get('@followButton').should('have.text', 'Following');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     cy.get('@followButton').click();
     cy.get('@followButton').should('have.text', 'Follow back');
+    cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
   });
 });

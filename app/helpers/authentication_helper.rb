@@ -52,7 +52,7 @@ module AuthenticationHelper
   end
 
   def tooltip_class_on_auth_provider_enablebtn
-    invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
+    invite_only_mode_or_no_enabled_auth_options ? "crayons-hover-tooltip" : ""
   end
 
   def disabled_attr_on_auth_provider_enable_btn

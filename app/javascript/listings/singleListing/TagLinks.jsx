@@ -7,6 +7,7 @@ export const TagLinks = ({ tags, onClick }) => (
       ? tags.map((tag) => {
           return (
             <a
+              key={tag}
               href={`/listings?t=${tag}`}
               onClick={(e) => onClick(e, tag)}
               className="crayons-tag"

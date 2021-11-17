@@ -35,7 +35,7 @@ class AdminMenu
       item(name: "admin team", controller: "permissions"),
     ]
 
-    scope :moderation, "shield-flash-line", [
+    scope :moderation, "mod", [
       item(name: "reports"),
       item(name: "mods"),
       item(name: "moderator actions ads", controller: "moderator_actions"),

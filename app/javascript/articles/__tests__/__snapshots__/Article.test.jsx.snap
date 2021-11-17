@@ -76,7 +76,7 @@ Object {
                         Stella Macejkovic
                       </button>
                       <div
-                        class="profile-preview-card__content crayons-dropdown"
+                        class="profile-preview-card__content crayons-dropdown p-4"
                         data-repositioning-dropdown="true"
                         data-testid="profile-preview-card"
                         id="story-author-preview-content-62407"
@@ -132,7 +132,7 @@ Object {
                     href="/some-post/path"
                   >
                     <time
-                      datetime=""
+                      datetime="Tue, 18 Feb 2020 14:59:24 GMT"
                     >
                       February 18
                        (just now)
@@ -160,9 +160,9 @@ Object {
                 class="crayons-story__tags"
               >
                 <a
-                  class="crayons-tag"
+                  class="crayons-tag crayons-tag--filled"
                   href="/t/javascript"
-                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
+                  style="--tag-bg: #0000001a; --tag-prefix: #000000; --tag-bg-hover: #0000001a; --tag-prefix-hover: #000000;"
                 >
                   <span
                     class="crayons-tag__prefix"
@@ -201,6 +201,7 @@ Object {
                   class="crayons-story__details"
                 >
                   <a
+                    aria-label="Comments for post Unbranded Home Loan Account (0)"
                     class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                     data-testid="add-a-comment"
                     href="/some-post/path#comments"
@@ -223,7 +224,7 @@ Object {
                     <span
                       class="hidden s:inline"
                     >
-                      Add comment
+                      [missing "en.core.add_comment" translation]
                     </span>
                   </a>
                 </div>
@@ -324,7 +325,7 @@ Object {
                       Stella Macejkovic
                     </button>
                     <div
-                      class="profile-preview-card__content crayons-dropdown"
+                      class="profile-preview-card__content crayons-dropdown p-4"
                       data-repositioning-dropdown="true"
                       data-testid="profile-preview-card"
                       id="story-author-preview-content-62407"
@@ -380,7 +381,7 @@ Object {
                   href="/some-post/path"
                 >
                   <time
-                    datetime=""
+                    datetime="Tue, 18 Feb 2020 14:59:24 GMT"
                   >
                     February 18
                      (just now)
@@ -408,9 +409,9 @@ Object {
               class="crayons-story__tags"
             >
               <a
-                class="crayons-tag"
+                class="crayons-tag crayons-tag--filled"
                 href="/t/javascript"
-                style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
+                style="--tag-bg: #0000001a; --tag-prefix: #000000; --tag-bg-hover: #0000001a; --tag-prefix-hover: #000000;"
               >
                 <span
                   class="crayons-tag__prefix"
@@ -449,6 +450,7 @@ Object {
                 class="crayons-story__details"
               >
                 <a
+                  aria-label="Comments for post Unbranded Home Loan Account (0)"
                   class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
                   data-testid="add-a-comment"
                   href="/some-post/path#comments"
@@ -471,7 +473,7 @@ Object {
                   <span
                     class="hidden s:inline"
                   >
-                    Add comment
+                    [missing "en.core.add_comment" translation]
                   </span>
                 </a>
               </div>

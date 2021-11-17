@@ -25,7 +25,7 @@ RSpec.describe "User comments", type: :system do
   end
 
   context "when user has too many comments" do
-    it "show user's last comments ", js: true do
+    it "show user's last comments", js: true do
       stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
       visit "/user3000/comments"
       within("#substories div.profile-comment-card") do

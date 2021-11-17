@@ -18,6 +18,7 @@ module Users
                         mod_roundrobin_notifications
                         reaction_notifications
                         welcome_notifications].freeze
+    ONBOARDING_ALLOWED_PARAMS = %i[email_newsletter email_digest_periodic].freeze
 
     def update
       authorize current_user, policy_class: UserPolicy
@@ -36,8 +37,7 @@ module Users
       authorize User
 
       if params[:notifications]
-        permitted_params = %i[email_newsletter email_digest_periodic]
-        current_user.notification_setting.assign_attributes(params[:notifications].permit(permitted_params))
+        current_user.notification_setting.assign_attributes(params[:notifications].permit(ONBOARDING_ALLOWED_PARAMS))
       end
 
       current_user.saw_onboarding = true

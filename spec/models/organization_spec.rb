@@ -150,7 +150,7 @@ RSpec.describe Organization, type: :model do
       expect(organization.errors[:slug].to_s.include?("reserved")).to be true
     end
 
-    it "takes organization slug into account " do
+    it "takes organization slug into account" do
       create(:user, username: "lightalloy")
       organization = build(:organization, slug: "lightalloy")
       expect(organization).not_to be_valid

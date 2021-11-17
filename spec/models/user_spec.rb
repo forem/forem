@@ -11,8 +11,11 @@ RSpec.describe User, type: :model do
   end
 
   def mock_username(provider_name, username)
-    if provider_name == :apple
+    case provider_name
+    when :apple
       OmniAuth.config.mock_auth[provider_name].info.first_name = username
+    when :forem
+      OmniAuth.config.mock_auth[provider_name].info.user_nickname = username
     else
       OmniAuth.config.mock_auth[provider_name].info.nickname = username
     end
@@ -419,7 +422,10 @@ RSpec.describe User, type: :model do
   describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
-    before { omniauth_mock_providers_payload }
+    before do
+      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
+      omniauth_mock_providers_payload
+    end
 
     Authentication::Providers.available.each do |provider_name|
       it "finds user by email and assigns identity to that if exists for #{provider_name}" do
@@ -532,6 +538,40 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "spam" do
+    before do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
+      allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(
+        ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
+      )
+    end
+
+    it "creates vomit reaction if possible spam" do
+      user.name = "Hi my name is Yahoomagoo gogo"
+      user.save
+      expect(Reaction.last.category).to eq("vomit")
+      expect(Reaction.last.reactable_id).to eq(user.id)
+    end
+
+    it "creates vomit reaction if possible spam based on pattern" do
+      user.name = "Hi my name is magoo to the magee"
+      user.save
+      expect(Reaction.last.category).to eq("vomit")
+      expect(Reaction.last.reactable_id).to eq(user.id)
+    end
+
+    it "does not create vomit reaction if does not have matching title" do
+      user.save
+      expect(Reaction.last).to be nil
+    end
+
+    it "does not create vomit reaction if does not have pattern match" do
+      user.name = "Hi my name is magoo to"
+      user.save
+      expect(Reaction.last).to be nil
+    end
+  end
+
   describe "#suspended?" do
     subject { user.suspended? }
 
@@ -598,62 +638,44 @@ RSpec.describe User, type: :model do
     end
 
     it "creates proper body class with defaults" do
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
-    end
-
-    it "determines dark theme if night theme" do
-      user.setting.config_theme = "night_theme"
-      expect(user.decorate.dark_theme?).to eq(true)
-    end
-
-    it "determines dark theme if ten x hacker" do
-      user.setting.config_theme = "ten_x_hacker_theme"
-      expect(user.decorate.dark_theme?).to eq(true)
-    end
-
-    it "determines not dark theme if not one of the dark themes" do
-      user.setting.config_theme = "default"
-      expect(user.decorate.dark_theme?).to eq(false)
     end
 
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.setting.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
-      expect(user.decorate.config_body_class).to eq(classes)
-    end
-
-    it "creates proper body class with night theme" do
-      user.setting.config_theme = "night_theme"
-
       # rubocop:disable Layout/LineLength
-      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes = "light-theme open-dyslexic-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
-    it "creates proper body class with pink theme" do
-      user.setting.config_theme = "pink_theme"
+    it "creates proper body class with dark theme" do
+      user.setting.config_theme = "dark_theme"
 
-      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes = "dark-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
 
   describe "#calculate_score" do
     it "calculates a score" do
-      create(:article, featured: true, user: user)
+      user.update_column(:badge_achievements_count, 3)
 
       user.calculate_score
-      expect(user.score).to be_positive
+      expect(user.score).to eq(30)
     end
   end
 

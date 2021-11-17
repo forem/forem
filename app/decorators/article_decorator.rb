@@ -39,18 +39,6 @@ class ArticleDecorator < ApplicationDecorator
     end
   end
 
-  def internal_utm_params(place = "additional_box")
-    org_slug = organization&.slug
-
-    campaign = if boosted_additional_articles
-                 "#{org_slug}_boosted"
-               else
-                 "regular"
-               end
-
-    "?utm_source=#{place}&utm_medium=internal&utm_campaign=#{campaign}&booster_org=#{org_slug}"
-  end
-
   def published_at_int
     published_at.to_i
   end
@@ -99,7 +87,7 @@ class ArticleDecorator < ApplicationDecorator
 
   def co_author_name_and_path
     co_authors.map do |user|
-      "<b><a href=\"#{user.path}\">#{user.name}</a></b>"
+      %(<a href="#{user.path}" class="crayons-link">#{user.name}</a>)
     end.to_sentence
   end
 

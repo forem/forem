@@ -17,7 +17,7 @@ RSpec.describe GithubRepos::RepoSyncWorker, type: :worker do
     end
 
     let(:stubbed_github_repo) do
-      OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url)) # rubocop:disable Performance/OpenStruct
+      OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url)) # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
     end
     let(:github_client) { instance_double(fake_github_client, repository: stubbed_github_repo) }
 
@@ -44,7 +44,7 @@ RSpec.describe GithubRepos::RepoSyncWorker, type: :worker do
       end
     end
 
-    it "does not touch repo user again if recently updated " do
+    it "does not touch repo user again if recently updated" do
       repo.update_column(:updated_at, 1.day.ago)
       worker.perform(repo.id)
       old_updated_at = repo.user.reload.github_repos_updated_at

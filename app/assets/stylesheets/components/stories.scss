@@ -11,11 +11,10 @@
 
 .crayons-story {
   background: var(--card-bg);
-  font-size: var(--fs-base); // Todo: remove when ready.
   box-shadow: 0 0 0 1px var(--card-border);
-  margin: 0 var(--su-3) var(--su-3);
+  margin: 0 0 var(--su-2);
   position: relative;
-  border-radius: var(--radius);
+  border-radius: var(--radius-auto);
 
   &:focus-within {
     outline: none;
@@ -23,11 +22,7 @@
     box-shadow: 0 0 0 2px var(--card-border);
   }
 
-  @media (min-width: $breakpoint-m) {
-    margin: 0 0 var(--su-3);
-  }
-
-  --story-padding: var(--su-3) var(--su-3) var(--su-2);
+  --story-padding: var(--su-4) var(--su-4) var(--su-3);
   --title-font-size: var(--fs-xl);
 
   @media (min-width: $breakpoint-s) {
@@ -37,6 +32,10 @@
     &--featured {
       --title-font-size: var(--fs-3xl);
     }
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --story-padding: var(--su-5);
   }
 
   &__hidden-navigation-link {
@@ -75,7 +74,10 @@
     padding-bottom: 42%;
     background-size: cover;
     background-position: center center;
-    border-radius: var(--radius) var(--radius) 0 0;
+
+    @media (min-width: $breakpoint-s) {
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
   }
 
   &__body {
@@ -134,6 +136,11 @@
   &__tags {
     margin-bottom: var(--su-2);
     margin-left: calc(var(--su-1) * -1);
+    font-size: var(--fs-s);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    color: var(--base-80);
   }
 
   &__title {
@@ -145,7 +152,7 @@
     margin-bottom: var(--su-1);
 
     @media (min-width: $breakpoint-m) {
-      margin-bottom: var(--su-2);
+      margin-bottom: var(--su-1);
     }
 
     a {
@@ -188,7 +195,7 @@
 
   &__comments {
     cursor: default;
-    background: var(--story-comments-bg);
+    background: RGB(var(--story-comments-bg));
     border-radius: var(--radius);
     position: relative;
     bottom: var(--su-2);

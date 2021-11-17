@@ -16,7 +16,7 @@ function loadForm() {
   const snackZone = document.getElementById('snack-zone');
 
   if (snackZone) {
-    render(<Snackbar lifespan="3" />, snackZone);
+    render(<Snackbar lifespan={3} />, snackZone);
   }
 
   getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {

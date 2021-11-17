@@ -11,9 +11,14 @@ module Settings
     setting :apple_key_id, type: :string
     setting :apple_pem, type: :string
     setting :apple_team_id, type: :string
+    setting :blocked_registration_email_domains, type: :array, default: %(), validates: {
+      valid_domain_csv: true
+    }
     setting :display_email_domain_allow_list_publicly, type: :boolean, default: false
     setting :facebook_key, type: :string
     setting :facebook_secret, type: :string
+    setting :forem_key, type: :string
+    setting :forem_secret, type: :string
     setting :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
     setting :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
     setting :invite_only_mode, type: :boolean, default: false
@@ -36,5 +41,16 @@ module Settings
       "present"
     end
     singleton_class.alias_method(:apple_secret, :apple_key)
+
+    # @param domain [String] The domain to check for acceptability
+    #
+    # @return [Boolean] do we allow this domain?
+    def self.acceptable_domain?(domain:)
+      return false if blocked_registration_email_domains.include?(domain)
+      return true if allowed_registration_email_domains.empty?
+      return true if allowed_registration_email_domains.include?(domain)
+
+      false
+    end
   end
 end

@@ -32,26 +32,13 @@ function buildArticleHTML(article) {
       currentTag = JSON.parse(container.dataset.params).tag;
     }
     if (article.flare_tag && currentTag !== article.flare_tag.name) {
-      flareTag =
-        "<a href='/t/" +
-        article.flare_tag.name +
-        "' class='crayons-tag' style='background:" +
-        article.flare_tag.bg_color_hex +
-        ';color:' +
-        article.flare_tag.text_color_hex +
-        "'><span className='crayons-tag__prefix'>#</span>" +
-        article.flare_tag.name +
-        '</a>';
-    }
-    if (article.class_name === 'PodcastEpisode') {
-      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
-    }
-    if (article.class_name === 'Comment') {
-      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
-    }
-    if (article.class_name === 'User') {
-      flareTag =
-        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
+      flareTag = `<a href="/t/${article.flare_tag.name}" 
+        class="crayons-tag crayons-tag--filled" 
+        style="--tag-bg: ${article.flare_tag.bg_color_hex}1a; --tag-prefix: ${article.flare_tag.bg_color_hex}; --tag-bg-hover: ${article.flare_tag.bg_color_hex}1a; --tag-prefix-hover: ${article.flare_tag.bg_color_hex};"
+      >
+        <span class="crayons-tag__prefix">#</span>
+        ${article.flare_tag.name}
+      </a>`;
     }
 
     var tagString = '';
@@ -66,11 +53,7 @@ function buildArticleHTML(article) {
       tagList.forEach(function buildTagString(t) {
         tagString =
           tagString +
-          '<a href="/t/' +
-          t +
-          '" class="crayons-tag"><span class="crayons-tag__prefix">#</span>' +
-          t +
-          '</a>\n';
+          `<a href="/t/${t}" class="crayons-tag crayons-tag--monochrome"><span class="crayons-tag__prefix">#</span>${t}</a>\n`;
       });
     }
 
@@ -79,11 +62,21 @@ function buildArticleHTML(article) {
     if ((article.comments_count || '0') > 0) {
       commentsCount = article.comments_count || '0';
     }
+
+    var commentsAriaLabelText =
+      ' aria-label="Comments for post ' +
+      article.title +
+      ' (' +
+      commentsCount +
+      ')" ';
+
     if (article.class_name !== 'User') {
       commentsDisplay =
         '<a href="' +
         article.path +
-        '#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left "><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>';
+        '#comments"' +
+        commentsAriaLabelText +
+        'class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left "><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>';
       if (commentsCount > 0) {
         commentsDisplay +=
           commentsCount +
@@ -102,7 +95,9 @@ function buildArticleHTML(article) {
       reactionsDisplay =
         '<a href="' +
         article.path +
-        '" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>' +
+        '"' +
+        commentsAriaLabelText +
+        'class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>' +
         reactionsCount +
         `<span class="hidden s:inline">&nbsp;${reactionsText}</span></a>`;
     }
@@ -176,7 +171,7 @@ function buildArticleHTML(article) {
     var isArticle = article.class_name === 'Article';
 
     var previewCardContent = `
-      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
           <div class="-mt-4">
             <a href="/${profileUsername}" class="flex">

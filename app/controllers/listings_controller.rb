@@ -27,7 +27,6 @@ class ListingsController < ApplicationController
   # actions `create` and `update` are defined in the module `ListingsToolkit`,
   # we thus silence Rubocop lexical scope filter cop: https://rails.rubystyle.guide/#lexically-scoped-action-filter
   # rubocop:disable Rails/LexicallyScopedActionFilter
-  before_action :check_limit, only: [:create]
   before_action :set_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
   before_action :raise_suspended, only: %i[new create update]
@@ -140,10 +139,6 @@ class ListingsController < ApplicationController
 
   def process_after_unpublish
     redirect_to "/listings/dashboard"
-  end
-
-  def check_limit
-    rate_limit!(:listing_creation)
   end
 
   # This is a convenience method to query listings for use in the index view in

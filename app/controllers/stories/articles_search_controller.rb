@@ -1,7 +1,5 @@
 module Stories
   class ArticlesSearchController < ApplicationController
-    before_action :set_cache_control_headers, only: :index
-
     rescue_from ArgumentError, with: :bad_request
 
     def index

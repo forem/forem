@@ -190,17 +190,25 @@ function clearAdjustmentReason() {
 }
 
 function renderTagOnArticle(tagName, colors) {
-  const [articleTagsContainer] = window.parent.document
-    .getElementsByClassName('article-iframe')[0]
-    .contentWindow.document.getElementsByClassName('spec__tags');
+  const articleTagsContainer =
+    getArticleContainer().getElementsByClassName('spec__tags')[0];
 
   const newTag = document.createElement('a');
-  newTag.innerText = `#${tagName}`;
-  newTag.setAttribute('class', 'crayons-tag mr-1');
+  newTag.innerHTML = `<span class="crayons-tag__prefix">#</span>${tagName}`;
+  newTag.setAttribute('class', 'crayons-tag');
   newTag.setAttribute('href', `/t/${tagName}`);
-  newTag.style = `background-color: ${colors.bg}; color: ${colors.text};`;
+  newTag.style = `--tag-bg: ${colors.bg}1a; --tag-prefix: ${colors.bg}; --tag-bg-hover: ${colors.bg}1a; --tag-prefix-hover: ${colors.bg};`;
 
   articleTagsContainer.appendChild(newTag);
+}
+
+function getArticleContainer() {
+  const articleIframe =
+    window.parent.document?.getElementsByClassName('article-iframe')[0];
+
+  return articleIframe
+    ? articleIframe.contentWindow.document
+    : window.parent.document.getElementById('main-content');
 }
 
 async function adjustTag(el) {
@@ -243,11 +251,8 @@ async function adjustTag(el) {
       if (outcome.result === 'addition') {
         renderTagOnArticle(adjustedTagName, outcome.colors);
       } else {
-        window.parent.document
-          .getElementsByClassName('article-iframe')[0]
-          .contentWindow.document.querySelector(
-            `.crayons-tag[href="/t/${adjustedTagName}"]`,
-          )
+        getArticleContainer()
+          .querySelector(`.crayons-tag[href="/t/${adjustedTagName}"]`)
           .remove();
       }
 
