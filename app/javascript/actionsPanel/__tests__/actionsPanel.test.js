@@ -16,7 +16,7 @@ describe('addCloseListener()', () => {
         </button>
       </div>
       <div id="mod-actions-menu-btn-area">
-        <div class="mod-actions-menu-btn crayons-btn crayons-btn--icon-rounded crayons-btn--s hidden">
+        <div class="mod-actions-menu-btn crayons-btn crayons-btn--icon-rounded crayons-btn--s">
         </div>
       </div>
     </body>
