@@ -1,12 +1,16 @@
 class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
+  # rubocop:disable Layout/LineLength
+  YOUTUBE_URL_REGEX = %r{https?://(www\.)?(youtube|youtu)\.(com|be)/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
+  # rubocop:enable Layout/LineLength
 
   def initialize(_tag_name, id, _parse_context)
-    # ID or URL
     super
-    # what we want is @url equal the https://youtu.....
-    # @url = parse_id_or_url(id)
-    @id = parse_id(id)
+
+    # for if id is an unstripped URL; doesn't appear to affect bare youtube ids
+    input = ActionController::Base.helpers.strip_tags(id).strip
+
+    @id = parse_id_or_url(input)
     @width = 710
     @height = 399
   end
@@ -22,38 +26,38 @@ class YoutubeTag < LiquidTagBase
     )
   end
 
-  def parse_id_or_url(input)
-    # write a test for passing in url, get url back; pass id in, get id back
-    # input_no_space = input.delete(" ")
-  end
-
   private
 
-  def parse_id(input)
-    input_no_space = input.delete(" ")
-    raise StandardError, "Invalid YouTube ID" unless valid_id?(input_no_space) # NOT going to work
-    return translate_start_time(input_no_space) if input_no_space.include?("?t=") # needs to prefix URL
+  def parse_id_or_url(input)
+    if (input =~ YOUTUBE_URL_REGEX)&.zero?
+      extract_youtube_id(input)
+    else
+      input_no_space = input.delete(" ")
+      raise StandardError, "Invalid YouTube ID" unless valid_id?(input_no_space)
+      return translate_start_time(input_no_space) if input_no_space.include?("?t=")
 
-    input_no_space
+      input_no_space
+    end
+  end
+
+  def extract_youtube_id(url)
+    url = url.gsub(/(>|<)/i, "").split(%r{(vi/|v=|/v/|youtu\.be/|/embed/)})
+    raise StandardError, "Invalid YouTube URL" if url[2].nil?
+
+    id = url[2].split(/[^a-zA-Z0-9_-]/i) # tweak this to allow for time, fix youtube_tag_spec
+    id[0]
   end
 
   def translate_start_time(id)
-    time = id.split("?t=")[-1]
-    time_hash = {
-      h: time.scan(/\d+h/)[0]&.delete("h").to_i,
-      m: time.scan(/\d+m/)[0]&.delete("m").to_i,
-      s: time.scan(/\d+s/)[0]&.delete("s").to_i
-    }
-    time_in_seconds = (time_hash[:h] * 3600) + (time_hash[:m] * 60) + time_hash[:s]
+    time_in_seconds = id.split("?t=")[-1]
     "#{id.split('?t=')[0]}?start=#{time_in_seconds}"
   end
 
   def valid_id?(id)
-    id =~ /\A[a-zA-Z0-9_-]{11}((\?t=)?(\d{1}h)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
+    id =~ /[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)/
   end
 end
 
 Liquid::Template.register_tag("youtube", YoutubeTag)
 
-# UnifiedEmbed.register(YoutubeTag, regexp: %r{https?://(www\.)?youtube\.com/embed/[a-zA-Z0-9_-]{11}((\?t=)?(\d{1}h)?
-# (\d{1,2}m)?(\d{1,2}s)?){5,11}?})
+UnifiedEmbed.register(YoutubeTag, regexp: YoutubeTag::YOUTUBE_URL_REGEX)
