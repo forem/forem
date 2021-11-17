@@ -162,8 +162,6 @@ async function loadCreatorSettings() {
     Honeybadger.notify(
       `Error loading the creator settings controller: ${error.message}`,
     );
-  } finally {
-    // TODO: Friendly error message if the controller fails to load
   }
 }
 
