@@ -35,3 +35,10 @@ body.default-header {
     display: block;
   }
 }
+
+// This ID is tied the global "Setup not complete" banner
+// and is necessary for the removal of the banner on the
+// Creator Settings page
+#setup-banner {
+  display: none;
+}
