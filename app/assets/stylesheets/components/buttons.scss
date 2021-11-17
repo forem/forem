@@ -132,7 +132,9 @@
 }
 
 .js-focus-visible .crayons-btn.focus-visible:focus,
-.js-focus-visible .crayons-btn.focus-visible:focus-within {
+.js-focus-visible .crayons-btn.focus-visible:focus-within,
+label[class*='crayons-btn']:focus-within // label for input[type="file"] made to look like a button as the browse... button can't be styled.
+{
   background-color: var(--bg-hover);
   border-color: var(--border-hover);
   box-shadow: var(--shadow-hover);

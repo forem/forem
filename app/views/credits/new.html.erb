@@ -1,18 +1,18 @@
-<% title "Purchase Credits" %>
+<% title t("views.credits.new.meta.title") %>
 
 <div class="credits-container">
   <div class="credits-banner">
-    <h1>Purchase credits for @<%= @purchaser.username %></h1>
+    <h1><%= t("views.credits.new.heading", name: @purchaser.username) %></h1>
 
     <% if @organizations %>
         <% @organizations.each do |org| %>
           <% unless @purchaser.id == org.id %>
-            <a href="/credits/purchase?organization_id=<%= org.id %>" data-no-instant>Switch to <%= org.name %></a>
+            <a href="/credits/purchase?organization_id=<%= org.id %>" data-no-instant><%= t("views.credits.new.switch.org", name: org.name) %></a>
           <% end %>
         <% end %>
       <% end %>
       <% unless @purchaser.is_a? User %>
-        <a href="/credits/purchase" data-no-instant>Switch to personal purchase</a>
+        <a href="/credits/purchase" data-no-instant><%= t("views.credits.new.switch.user") %></a>
       <% end %>
   </div>
 
@@ -74,32 +74,33 @@
     </details>
     <details>
       <summary>
-        How many credits <%= params[:organization_id].present? ? "does #{@purchaser.name}" : "do I currently" %> have?
+        <%= params[:organization_id].present? ? t("views.credits.new.status.subtitle.org", name: @purchaser.name) : t("views.credits.new.status.subtitle.user") %>
       </summary>
       <div>
         <p>
-          <%= params[:organization_id].present? ? "#{@purchaser.name} has" : "You have" %> <%= @purchaser.credits.where(spent: false).size %> credits.
+          <% count = @purchaser.credits.where(spent: false).size %>
+          <%= params[:organization_id].present? ? t("views.credits.new.status.desc.org", name: @purchaser.name, count: count) : t("views.credits.new.status.desc.user", count: count) %>
         </p>
       </div>
     </details>
     <details>
       <summary>
-        How can I earn credits?
+        <%= t("views.credits.new.how.subtitle") %>
       </summary>
       <div>
         <p>
-          Members receive <strong>5 credits</strong> for every profile badge you earn.
+          <%= t("views.credits.new.how.desc_html") %>
         </p>
       </div>
     </details>
     <%= form_for(@credit) do |f| %>
       <label for="amount-input" class="main-form-label">
-        Amount to Purchase
+        <%= t("views.credits.new.form.amount.label") %>
       </label>
       <div class="amount-wrapper">
         <%= f.number_field :number_to_purchase,
                            id: "amount-input",
-                           placeholder: "Enter any amount", autocomplete: "off",
+                           placeholder: t("views.credits.new.form.amount.placeholder"), autocomplete: "off",
                            min: "0",
                            max: "10000000",
                            required: true %>
@@ -110,7 +111,7 @@
       <% end %>
       <div class="form-row">
       <label for="card-element" class="main-form-label">
-        Payment Method
+        <%= t("views.credits.new.form.method.label") %>
       </label>
       <% if @customer %>
         <div id="cards-wrapper">
@@ -120,12 +121,12 @@
               name="selected_card" value="<%= source.id %>" id="existing-card-<%= source.id %>" />
             <label for="existing-card-<%= source.id %>">
               <span class="credit-card-component credit-card-component--bold"><%= source.brand %></span>
-              <span class="credit-card-component">**** **** **** <%= source.last4 %></span>
-              <span class="credit-card-component"><%= source.exp_month %>/<%= source.exp_year.to_s.last(2) %></span>
+              <span class="credit-card-component"><%= t("views.credits.new.form.method.number", last: source.last4) %></span>
+              <span class="credit-card-component"><%= t("views.credits.new.form.method.exp", mm: source.exp_month, yy: source.exp_year.to_s.last(2)) %></span>
             </label>
             </div>
           <% end %>
-          <button id="add-new-card">Add New Card</button>
+          <button id="add-new-card"><%= t("views.credits.new.form.method.add") %></button>
         </div>
       <% else %>
         <div id="card-element">
@@ -135,9 +136,9 @@
       <%# Used to display form errors. %>
       <div id="card-errors" role="alert"></div>
       </div>
-      <button id="add-credit-card-button" class="credit-card-button">Complete Purchase</button>
+      <button id="add-credit-card-button" class="credit-card-button"><%= t("views.credits.new.form.submit") %></button>
       <% if @purchaser.is_a? Organization %>
-        <p><em>*All org admins have access to credits owned by organization</em></p>
+        <p><em><%= t("views.credits.new.form.note_org") %></em></p>
       <% end %>
     <% end %>
   </div>
@@ -151,13 +152,13 @@
 
     var form = document.getElementById('new_credit');
     form.onsubmit = function(_event) {
-      changeSubmitButton({ text: 'Submitting...', active: false })
+      changeSubmitButton({ text: <%= t("views.credits.new.form.submitting") %>, active: false })
     }
 
     var stripe = Stripe('<%= Settings::General.stripe_publishable_key %>');
     var elements = stripe.elements();
 
-    <% if current_user.decorate.dark_theme? %>
+    <% if current_user.setting.dark_theme? %>
       var style = {
       base: {
         color: 'white',
@@ -216,7 +217,7 @@
           stripe.createToken(card).then(function(result) {
             if (result.error) {
               // Inform the user if there was an error.
-              changeSubmitButton({ text: "Complete Purchase", active: true });
+              changeSubmitButton({ text: <%= t("views.credits.new.form.submit") %>, active: true });
               var errorElement = document.getElementById('card-errors');
               errorElement.textContent = result.error.message;
             } else {

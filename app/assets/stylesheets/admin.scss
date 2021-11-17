@@ -169,22 +169,6 @@ label {
   color: var(--base-inverted);
 }
 
-.admin-help-button {
-  position: fixed;
-  bottom: var(--su-7);
-  margin-bottom: env(safe-area-inset-bottom);
-  right: var(--su-7);
-  z-index: var(--z-elevate);
-  cursor: pointer;
-  border-radius: 50px;
-
-  @media (max-width: $breakpoint-m) {
-    bottom: calc(var(--header-height) + var(--su-3));
-    right: var(--su-3);
-    padding: 0;
-  }
-}
-
 .mod-actions__data {
   max-width: 300px;
 }
