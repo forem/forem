@@ -69,6 +69,9 @@ module Articles
       #             a field in the clause, you likely need to include
       #             a corresponding :group_by attribute.
       #
+      # - joins: An SQL fragment that defines the join necessary to
+      #          fulfill the clause of the scoring method.
+      #
       # @note The group by clause appears necessary for postgres
       #       versions and Heroku configurations of current (as of
       #       <2021-11-16 Tue>) DEV.to installations.
@@ -93,7 +96,17 @@ module Articles
           clause: "COUNT(comments_by_followed.id)",
           cases: [[0, 0.95], [1, 0.98], [2, 0.99]],
           fallback: 0.93,
-          requires_user: true
+          requires_user: true,
+          joins: ["LEFT OUTER JOIN follows AS followed_user
+            ON articles.user_id = followed_user.followable_id
+              AND followed_user.followable_type = 'User'
+              AND followed_user.follower_id = :user_id
+              AND followed_user.follower_type = 'User'",
+                  "LEFT OUTER JOIN comments AS comments_by_followed
+            ON comments_by_followed.commentable_id = articles.id
+              AND comments_by_followed.commentable_type = 'Article'
+              AND followed_user.followable_id = comments_by_followed.user_id
+              AND followed_user.followable_type = 'User'"]
         },
         # Weight to give to the number of comments on the article.
         comments_count_factor: {
@@ -131,7 +144,12 @@ module Articles
           clause: "COUNT(followed_user.follower_id)",
           cases: [[0, 0.8], [1, 1]],
           fallback: 1,
-          requires_user: true
+          requires_user: true,
+          joins: ["LEFT OUTER JOIN follows AS followed_user
+            ON articles.user_id = followed_user.followable_id
+              AND followed_user.followable_type = 'User'
+              AND followed_user.follower_id = :user_id
+              AND followed_user.follower_type = 'User'"]
         },
         # Weight to give to the when the given user follows the
         # article's organization.
@@ -139,14 +157,22 @@ module Articles
           clause: "COUNT(followed_org.follower_id)",
           cases: [[0, 0.95], [1, 1]],
           fallback: 1,
-          requires_user: true
+          requires_user: true,
+          joins: ["LEFT OUTER JOIN follows AS followed_org
+            ON articles.organization_id = followed_org.followable_id
+              AND followed_org.followable_type = 'Organization'
+              AND followed_org.follower_id = :user_id
+              AND followed_org.follower_type = 'User'"]
         },
         # Weight to give an article based on it's most recent comment.
         latest_comment_factor: {
           clause: "(current_date - MAX(comments.created_at)::date)",
           cases: [[0, 1], [1, 0.9988]],
           fallback: 0.988,
-          requires_user: false
+          requires_user: false,
+          joins: ["LEFT OUTER JOIN comments
+            ON comments.commentable_id = articles.id
+              AND comments.commentable_type = 'Article'"]
         },
         # Weight to give for the number of intersecting tags the given
         # user follows and the article has.
@@ -154,7 +180,18 @@ module Articles
           clause: "COUNT(followed_tags.follower_id)",
           cases: [[0, 0.4], [1, 0.9]],
           fallback: 1,
-          requires_user: true
+          requires_user: true,
+          joins: ["LEFT OUTER JOIN taggings
+            ON taggings.taggable_id = articles.id
+              AND taggable_type = 'Article'",
+                  "INNER JOIN tags
+              ON taggings.tag_id = tags.id",
+                  "LEFT OUTER JOIN follows AS followed_tags
+              ON tags.id = followed_tags.followable_id
+                AND followed_tags.followable_type = 'ActsAsTaggableOn::Tag'
+                AND followed_tags.follower_type = 'User'
+                AND followed_tags.follower_id = :user_id
+                AND followed_tags.explicit_points >= 0"]
         },
         # Weight privileged user's reactions.
         privileged_user_reaction_factor: {
@@ -252,6 +289,19 @@ module Articles
       #        in the search results
       #
       # @return ActiveRecord::Relation for Article
+      #
+      # @note This creates a complicated SQL query; well actually an
+      #       ActiveRecord::Relation object on which you can call
+      #       `to_sql`.  Which you might find helpful to see what's
+      #       really going on.  A great place to do this is in the
+      #       corresponding spec file.  See the example below:
+      #
+      # @example
+      #
+      #    user = User.first
+      #    strategy = Articles::Feed::WeightedQueryStrategy.new(user: user)
+      #    puts strategy.call.to_sql
+      #
       # rubocop:disable Layout/LineLength
       def call(only_featured: false, must_have_main_image: false, limit: default_limit, offset: default_offset, omit_article_ids: [])
         repeated_query_variables = {
@@ -391,9 +441,7 @@ module Articles
         <<~THE_SQL_STATEMENT
           SELECT articles.id
           FROM articles
-          LEFT OUTER JOIN comments
-            ON comments.commentable_id = articles.id
-              AND comments.commentable_type = 'Article'
+          #{joins_clauses_as_sql}
           WHERE #{where_clause}
           GROUP BY articles.id
           ORDER BY (#{relevance_score_components_as_sql}) DESC,
@@ -413,39 +461,7 @@ module Articles
         <<~THE_SQL_STATEMENT
           SELECT articles.id
           FROM articles
-          LEFT OUTER JOIN taggings
-            ON taggings.taggable_id = articles.id
-              AND taggable_type = 'Article'
-          INNER JOIN tags
-            ON taggings.tag_id = tags.id
-          LEFT OUTER JOIN follows AS followed_tags
-            ON tags.id = followed_tags.followable_id
-              AND followed_tags.followable_type = 'ActsAsTaggableOn::Tag'
-              AND followed_tags.follower_type = 'User'
-              AND followed_tags.follower_id = :user_id
-              AND followed_tags.explicit_points >= 0
-          LEFT OUTER JOIN follows AS followed_user
-            ON articles.user_id = followed_user.followable_id
-              AND followed_user.followable_type = 'User'
-              AND followed_user.follower_id = :user_id
-              AND followed_user.follower_type = 'User'
-          LEFT OUTER JOIN follows AS followed_org
-            ON articles.organization_id = followed_org.followable_id
-              AND followed_org.followable_type = 'Organization'
-              AND followed_org.follower_id = :user_id
-              AND followed_org.follower_type = 'User'
-          LEFT OUTER JOIN comments AS comments_by_followed
-            ON comments_by_followed.commentable_id = articles.id
-              AND comments_by_followed.commentable_type = 'Article'
-              AND followed_user.followable_id = comments_by_followed.user_id
-              AND followed_user.followable_type = 'User'
-          LEFT OUTER JOIN user_blocks
-            ON user_blocks.blocked_id = articles.user_id
-              AND user_blocks.blocked_id IS NULL
-              AND user_blocks.blocker_id = :user_id
-          LEFT OUTER JOIN comments
-            ON comments.commentable_id = articles.id
-              AND comments.commentable_type = 'Article'
+          #{joins_clauses_as_sql}
           WHERE #{where_clause}
           GROUP BY #{group_by_fields_as_sql}
           ORDER BY (#{relevance_score_components_as_sql}) DESC,
@@ -473,6 +489,10 @@ module Articles
         else
           Article.sanitize_sql_array(["LIMIT ?", limit])
         end
+      end
+
+      def joins_clauses_as_sql
+        @joins.join("\n")
       end
 
       def determine_oldest_published_at(user:, most_number_of_days_to_consider: 31)
@@ -515,6 +535,15 @@ module Articles
         # scoring method.
         @group_by_fields = ["articles.id"]
 
+        @joins = Set.new
+
+        unless @user.nil?
+          @joins << "LEFT OUTER JOIN user_blocks
+            ON user_blocks.blocked_id = articles.user_id
+              AND user_blocks.blocked_id IS NULL
+              AND user_blocks.blocker_id = :user_id"
+        end
+
         # We looping through the possible scoring method
         # configurations, we're only accepting those as valid
         # configurations.
@@ -534,6 +563,8 @@ module Articles
 
           # This scoring method requires a group by clause.
           @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)
+
+          @joins += default_config[:joins] if default_config.key?(:joins)
 
           @relevance_score_components << build_score_element_from(
             # Under NO CIRCUMSTANCES should you trust the caller to
