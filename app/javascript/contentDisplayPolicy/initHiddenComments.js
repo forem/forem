@@ -25,13 +25,11 @@ export function initHiddenComments() {
       contentSelector: '#hide-comments-modal',
       overlay: true,
     }).then(() => {
-      const hideCommentForms = document.querySelectorAll(
-        '.hide-comments-modal__form',
+      const hideCommentForm = document.querySelector(
+        '#window-modal .hide-comments-modal__form',
       );
 
-      hideCommentForms.forEach((form) => {
-        form.addEventListener('submit', handleHideCommentsFormSubmit);
-      });
+      hideCommentForm.addEventListener('submit', handleHideCommentsFormSubmit);
     });
   }
 
