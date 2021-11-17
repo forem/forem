@@ -30,10 +30,6 @@ RSpec.describe "/creator_settings/new", type: :request do
       it "renders the correct page" do
         expect(response.body).to include("Lovely! Let's set up your Forem.")
       end
-
-      it "does not render the 'Setup not complete' banner on the page" do
-        expect(response.body).not_to include("Setup not completed yet")
-      end
     end
 
     context "when the user is a not a creator" do
