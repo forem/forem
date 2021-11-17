@@ -6,7 +6,8 @@ export class CreatorSettingsController extends Controller {
 
     document.documentElement.style.setProperty('--accent-brand', color);
 
-    // responsible for the hover effect
+    // responsible for the hover effect over the button.
+    // We need to recalculate this in javascript as it's currently being calculated in ruby
     document.documentElement.style.setProperty(
       '--accent-brand-darker',
       this.updatedBrightness(color, 0.85),
@@ -34,13 +35,13 @@ export class CreatorSettingsController extends Controller {
   }
 
   rgbToHex(r, g, b) {
-    return `#${this.rgbComponentToHex(r)}${this.rgbComponentToHex(
+    return `#${this.rgbParameterToHex(r)}${this.rgbParameterToHex(
       g,
-    )}${this.rgbComponentToHex(b)}`;
+    )}${this.rgbParameterToHex(b)}`;
   }
 
-  rgbComponentToHex(c) {
-    const hex = c.toString(16);
-    return hex.length == 1 ? `0${  hex}` : hex;
+  rgbParameterToHex(param) {
+    const hex = param.toString(16);
+    return hex.length == 1 ? `0${hex}` : hex;
   }
 }
