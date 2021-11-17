@@ -19,7 +19,8 @@ module Admin
       podcasts: "https://admin.forem.com/docs/advanced-customization/content-manager/podcasts",
       settings: "https://admin.forem.com/docs/advanced-customization/config",
       tags: "https://admin.forem.com/docs/forem-basics/tags",
-      users: "https://admin.forem.com/docs/forem-basics/user-roles"
+      users: "https://admin.forem.com/docs/forem-basics/user-roles",
+      creator_settings: "https://admin.forem.com/docs/getting-started/first-user-registration"
     }.freeze
 
     protected

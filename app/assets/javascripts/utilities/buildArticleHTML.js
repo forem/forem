@@ -32,26 +32,13 @@ function buildArticleHTML(article) {
       currentTag = JSON.parse(container.dataset.params).tag;
     }
     if (article.flare_tag && currentTag !== article.flare_tag.name) {
-      flareTag =
-        "<a href='/t/" +
-        article.flare_tag.name +
-        "' class='crayons-tag' style='background:" +
-        article.flare_tag.bg_color_hex +
-        ';color:' +
-        article.flare_tag.text_color_hex +
-        "'><span className='crayons-tag__prefix'>#</span>" +
-        article.flare_tag.name +
-        '</a>';
-    }
-    if (article.class_name === 'PodcastEpisode') {
-      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
-    }
-    if (article.class_name === 'Comment') {
-      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
-    }
-    if (article.class_name === 'User') {
-      flareTag =
-        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
+      flareTag = `<a href="/t/${article.flare_tag.name}" 
+        class="crayons-tag crayons-tag--filled" 
+        style="--tag-bg: ${article.flare_tag.bg_color_hex}1a; --tag-prefix: ${article.flare_tag.bg_color_hex}; --tag-bg-hover: ${article.flare_tag.bg_color_hex}1a; --tag-prefix-hover: ${article.flare_tag.bg_color_hex};"
+      >
+        <span class="crayons-tag__prefix">#</span>
+        ${article.flare_tag.name}
+      </a>`;
     }
 
     var tagString = '';
@@ -66,11 +53,7 @@ function buildArticleHTML(article) {
       tagList.forEach(function buildTagString(t) {
         tagString =
           tagString +
-          '<a href="/t/' +
-          t +
-          '" class="crayons-tag"><span class="crayons-tag__prefix">#</span>' +
-          t +
-          '</a>\n';
+          `<a href="/t/${t}" class="crayons-tag crayons-tag--monochrome"><span class="crayons-tag__prefix">#</span>${t}</a>\n`;
       });
     }
 

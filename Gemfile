@@ -100,7 +100,7 @@ gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 3.26" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sidekiq", "~> 6.2.2" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq", "~> 6.3.1" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.1.8" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
@@ -109,14 +109,14 @@ gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "store_attribute", "~> 0.9.2" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.39" # Ruby library for the Stripe API
+gem "stripe", "~> 5.41" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
-gem "view_component", "~> 2.42", require: "view_component/engine" # View components for Rails
+gem "view_component", "~> 2.43", require: "view_component/engine" # View components for Rails
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails
 
@@ -130,7 +130,7 @@ group :development do
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.18", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
-  gem "i18n-tasks", "~> 0.9.34" # Helpers to find and manage missing and unused translations
+  gem "i18n-tasks", "~> 0.9.35" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "web-console", "~> 4.1" # Rails Console on the Browser
@@ -147,10 +147,10 @@ group :development, :test do
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.22", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.23", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.12", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.5", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.6", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
   gem "spring", "~> 3.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring

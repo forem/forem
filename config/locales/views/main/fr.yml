@@ -1,0 +1,77 @@
+---
+fr:
+  views:
+    main:
+      aria_home: "%{community} Home"
+      header:
+        create_account: Créer un profil
+        connect:
+          aria_label: Connect
+          icon: Connect
+        login: Se connecter
+        nav:
+          aria_label: Navigation menu
+        moderation:
+          aria_label: Moderation
+          icon: Moderation
+        notifications:
+          aria_label: Notifications
+          icon: Notifications
+        skip: Skip to content
+      modal:
+        create_account:
+          aria_label: Create new account
+          text: Créer un profil
+        login:
+          aria_label: Log in
+          text: Se connecter
+        footer: We strive for transparency and don't collect excess data.
+      nav:
+        admin: Admin
+        dashboard: Tableau de bord
+        placeholder: "..."
+        list: Liste de lecture
+        moderator_center: Centre de modération
+        other: Other
+        settings: Settings
+      nav_name:
+        About: About
+        Code of Conduct: Code of Conduct
+        Contact: Contact
+        FAQ: FAQ
+        Listings: Listings
+        Podcasts: Podcasts
+        Privacy Policy: Privacy Policy
+        Reading List: Reading List
+        Sponsors: Sponsors
+        Tags: Tags
+        Terms of use: Terms of use
+        Videos: Videos
+      side:
+        listings:
+          heading: Listings
+          all: Tout voir
+          new: Create a Listing
+        trend: trending guides/resources
+        recent: recently queried
+      tags:
+        aria_label: Customize tag priority
+        follow: Suivre
+        my_tags: Mes sujets
+        popular_tags: Sujets populaires
+      footer:
+        aria_label: Site information
+        built:
+          text_html: Built on %{forem} — the %{opensource} software that powers %{dev} and other inclusive communities.
+          forem: Forem
+          opensource: open source
+          dev: DEV
+        desc: "%{community} – %{desc}"
+        logo: Forem logo
+        powered:
+          text_html: Made with love and %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
+          rails: Ruby on Rails
+      home: Page D'Accueil
+      create_post: Créer une publication
+      signout: Se déconnecter
+      signup: Sign In/Up
