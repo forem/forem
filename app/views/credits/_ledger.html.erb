@@ -3,10 +3,10 @@
 
   <thead>
     <tr>
-      <th>Category</th>
-      <th>Item</th>
-      <th>Cost (credits)</th>
-      <th>Date</th>
+      <th><%= t("views.credits.ledger.category") %></th>
+      <th><%= t("views.credits.ledger.item") %></th>
+      <th><%= t("views.credits.ledger.cost") %></th>
+      <th><%= t("views.credits.ledger.date") %></th>
     </tr>
   </thead>
 
@@ -20,14 +20,14 @@
         <% end %>
           <td>
             <% if item.purchase %>
-              <%= item.purchase.class.name == "Listing" ? "Listing" : item.purchase.class.name.titleize %>
+              <%= item.purchase.instance_of?(Listing) ? t("views.credits.ledger.class.listing") : item.purchase.class.name.titleize %>
             <% end %>
           </td>
           <td>
             <% if item.purchase %>
               <%= render "ledger_#{item.purchase.class.name.underscore}", purchase: item.purchase %>
             <% else %>
-              <span>Miscellaneous items</span>
+              <span><%= t("views.credits.ledger.misc") %></span>
             <% end %>
           </td>
           <td class="cost"><%= item.cost %></td>

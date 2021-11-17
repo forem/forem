@@ -39,8 +39,7 @@ div {
   display: none !important;
 }
 
-body.night-theme,
-body.ten-x-hacker-theme {
+body.dark-theme {
   .on-page-nav-butt img,
   .icon-img,
   .reaction-button:not(.reacted) img,
@@ -93,4 +92,15 @@ body.ten-x-hacker-theme {
 
 body.trusted-status-true .trusted-visible-block {
   display: flex !important;
+}
+
+// The .admin-help-button class is included in this file since it
+// is referenced in both the admin and application layout.
+
+.admin-help-button {
+  margin-bottom: env(safe-area-inset-bottom);
+
+  @media (max-width: $breakpoint-m) {
+    bottom: calc(var(--header-height) + var(--su-3));
+  }
 }

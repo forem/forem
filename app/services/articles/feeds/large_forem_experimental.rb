@@ -1,7 +1,7 @@
 module Articles
   module Feeds
     class LargeForemExperimental
-      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil)
+      def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
         @page = page

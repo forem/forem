@@ -2,9 +2,6 @@ module Settings
   class General < Base
     self.table_name = "site_configs"
 
-    LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
-    STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
-
     # Forem Team
     # [forem-fix] Remove channel name from Settings::General
     setting :article_published_slack_channel, type: :string, default: "activity"
