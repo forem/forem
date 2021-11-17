@@ -4,7 +4,7 @@ exports[`<Link /> renders a link with icon alone 1`] = `"<a href=\\"/url\\" clas
 
 exports[`<Link /> renders block link 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--block\\">Hello world!</a>"`;
 
-exports[`<Link /> renders branded link 1`] = `"<a href=\\"/url\\" class=\\"c-link\\" variant=\\"branded\\">Hello world!</a>"`;
+exports[`<Link /> renders branded link 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--branded\\">Hello world!</a>"`;
 
 exports[`<Link /> renders default link 1`] = `"<a href=\\"/url\\" class=\\"c-link\\">Hello world!</a>"`;
 
