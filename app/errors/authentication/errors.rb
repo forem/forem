@@ -23,6 +23,7 @@ module Authentication
       end
     end
 
+    # Raised when we find an email that's from a spammy domain.
     class SpammyEmailDomain < Error
     end
   end
