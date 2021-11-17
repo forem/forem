@@ -22,5 +22,8 @@ module Authentication
                community_email: ForemInstance.email)
       end
     end
+
+    class SpammyEmailDomain < Error
+    end
   end
 end
