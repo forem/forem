@@ -61,6 +61,8 @@ class AbExperiment < SimpleDelegator
   # @api private
   # @note Called via AbExperiment.get
   def feed_strategy(user:, config:, default_value:)
+    return default_value.inquiry unless FeatureFlag.accessible?(:ab_experiment_feed_strategy)
+
     (config["AB_EXPERIMENT_FEED_STRATEGY"] || field_test(:feed_strategy, participant: user)).inquiry
   rescue FieldTest::ExperimentNotFound
     # rubocop:disable Layout/LineLength

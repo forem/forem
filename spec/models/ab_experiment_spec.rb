@@ -30,6 +30,18 @@ RSpec.describe AbExperiment do
         expect(result).to eq("not_special")
         expect(result).to be_not_special
       end
+
+      it "returns the default value when the FeatureFlipper is off" do
+        allow(FeatureFlag).to receive(:accessible?).with(:ab_experiment_feed_strategy).and_return(false)
+
+        result = described_class.get(experiment: :feed_strategy,
+                                     user: user,
+                                     controller: controller,
+                                     default_value: "special",
+                                     config: { "AB_EXPERIMENT_FEED_STRATEGY" => "not_special" })
+        expect(result).to eq("special")
+        expect(result).to be_special
+      end
     end
   end
 end
