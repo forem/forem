@@ -33,20 +33,28 @@ export function initHiddenComments() {
     });
   }
 
-  const hideLinks = Array.from(document.getElementsByClassName('hide-comment'));
+  const hideButtons = Array.from(
+    document.getElementsByClassName('hide-comment'),
+  );
 
-  hideLinks.forEach((link) => {
-    const { hideType, commentId } = link.dataset;
-    if (hideType === 'hide') {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        showHideCommentsModal(commentId);
-      });
-    } else if (hideType === 'unhide') {
-      link.addEventListener('click', () => {
-        unhide(commentId);
-      });
-    }
+  hideButtons.forEach((butt) => {
+    const { commentId } = butt.dataset;
+    butt.addEventListener('click', (e) => {
+      e.preventDefault();
+      showHideCommentsModal(commentId);
+    });
+  });
+
+  const unhideLinks = Array.from(
+    document.getElementsByClassName('unhide-comment'),
+  );
+
+  unhideLinks.forEach((link) => {
+    const { commentId } = link.dataset;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      unhide(commentId);
+    });
   });
 
   const handleHideCommentsFormSubmit = (e) => {

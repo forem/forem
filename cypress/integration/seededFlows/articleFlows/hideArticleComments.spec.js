@@ -19,7 +19,9 @@ describe('Hiding/unhiding comments on an article', () => {
       );
       cy.findByRole('img', { name: 'Expand' }).click();
       cy.findByRole('button', { name: 'Toggle dropdown menu' }).click();
-      cy.findByRole('link', { name: "Unhide Admin McAdmin's comment" }).click();
+      cy.findByRole('button', {
+        name: "Unhide Admin McAdmin's comment",
+      }).click();
       cy.findByRole('img', { name: 'Expand' }).should('not.exist');
     });
   });
