@@ -43,5 +43,15 @@ RSpec.describe UnifiedEmbed do
       expect(described_class.find_liquid_tag_for(link: "https://soundcloud.com/before-30-tv/stranger-moni-lati-lo-1"))
         .to eq(SoundcloudTag)
     end
+
+    it "returns TwitterTimelineTag for a twitter timeline url" do
+      expect(described_class.find_liquid_tag_for(link: "https://twitter.com/FreyaHolmer/timelines/1215413954505297922"))
+        .to eq(TwitterTimelineTag)
+    end
+
+    it "returns YoutubeTag for a youtube url" do
+      expect(described_class.find_liquid_tag_for(link: "https://www.youtube.com/embed/dQw4w9WgXcQ"))
+        .to eq(YoutubeTag)
+    end
   end
 end

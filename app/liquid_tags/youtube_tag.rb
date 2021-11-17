@@ -2,7 +2,10 @@ class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
 
   def initialize(_tag_name, id, _parse_context)
+    # ID or URL
     super
+    # what we want is @url equal the https://youtu.....
+    # @url = parse_id_or_url(id)
     @id = parse_id(id)
     @width = 710
     @height = 399
@@ -19,12 +22,17 @@ class YoutubeTag < LiquidTagBase
     )
   end
 
+  def parse_id_or_url(input)
+    # write a test for passing in url, get url back; pass id in, get id back
+    # input_no_space = input.delete(" ")
+  end
+
   private
 
   def parse_id(input)
     input_no_space = input.delete(" ")
-    raise StandardError, "Invalid YouTube ID" unless valid_id?(input_no_space)
-    return translate_start_time(input_no_space) if input_no_space.include?("?t=")
+    raise StandardError, "Invalid YouTube ID" unless valid_id?(input_no_space) # NOT going to work
+    return translate_start_time(input_no_space) if input_no_space.include?("?t=") # needs to prefix URL
 
     input_no_space
   end
@@ -46,3 +54,6 @@ class YoutubeTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("youtube", YoutubeTag)
+
+# UnifiedEmbed.register(YoutubeTag, regexp: %r{https?://(www\.)?youtube\.com/embed/[a-zA-Z0-9_-]{11}((\?t=)?(\d{1}h)?
+# (\d{1,2}m)?(\d{1,2}s)?){5,11}?})
