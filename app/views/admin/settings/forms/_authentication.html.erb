@@ -14,7 +14,7 @@
         <h3 class="crayons-subtitle-3 mb-3">
           General settings
         </h3>
-        <div class="crayons-field">
+        <div class="crayons-field mb-6">
           <%= admin_config_label :blocked_registration_email_domains, "Block email domains", model: Settings::Authentication %>
           <%= admin_config_description Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:description] %>
           <%= f.text_field :blocked_registration_email_domains,
