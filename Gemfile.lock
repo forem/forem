@@ -941,7 +941,7 @@ DEPENDENCIES
   html_truncator (~> 0.4)
   htmlentities (~> 4.3, >= 4.3.4)
   httparty (~> 0.20)
-  httpclient (~> 2.8)
+  httpclient (~> 2.8.3)
   hypershield (~> 0.2.2)
   i18n-js (~> 3.9.0)
   i18n-tasks (~> 0.9.35)

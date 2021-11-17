@@ -48,6 +48,7 @@ gem "honeycomb-beeline", "~> 2.7.1" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
+gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.0" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
@@ -175,5 +176,3 @@ group :test do
   gem "with_model", "~> 2.1.5" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
-
-gem "httpclient", "~> 2.8"
