@@ -62,7 +62,9 @@ export function initHiddenComments() {
     e.stopPropagation();
     const { target: form } = e;
     const hide_children_check = form.getElementsByClassName('hide_children')[0];
-const url = `${form.action}${hide_children_check.checked ? '?hide_children=1' : ''}`
+    const url = `${form.action}${
+      hide_children_check.checked ? '?hide_children=1' : ''
+    }`;
 
     fetch(url, {
       method: 'PATCH',
