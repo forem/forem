@@ -1033,10 +1033,10 @@ RSpec.describe Article, type: :model do
     end
 
     describe "spam" do
-      it "delegates spam handling to Spam::ArticleHandler" do
-        allow(Spam::ArticleHandler).to receive(:handle!).with(article: article).and_call_original
+      it "delegates spam handling to Spam::Handler.handle_article!" do
+        allow(Spam::Handler).to receive(:handle_article!).with(article: article).and_call_original
         article.save
-        expect(Spam::ArticleHandler).to have_received(:handle!).with(article: article)
+        expect(Spam::Handler).to have_received(:handle_article!).with(article: article)
       end
     end
 
