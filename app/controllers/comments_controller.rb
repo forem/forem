@@ -224,10 +224,15 @@ class CommentsController < ApplicationController
   def hide
     @comment = Comment.find(params[:comment_id])
     authorize @comment
-    @comment.hidden_by_commentable_user = true
-    @comment&.commentable&.update_column(:any_comments_hidden, true)
+    success = @comment.update(hidden_by_commentable_user: true)
 
-    if @comment.save
+    if success
+      @comment&.commentable&.update_column(:any_comments_hidden, true)
+      if params[:hide_children] == "1"
+        @comment.descendants.includes(:user, :commentable).each do |c|
+          c.update(hidden_by_commentable_user: true)
+        end
+      end
       render json: { hidden: "true" }, status: :ok
     else
       render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity

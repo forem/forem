@@ -32,15 +32,8 @@
           </span>
 
           <div class="profile-header__actions">
-            <% if user_signed_in? %>
-              <% if FeatureFlag.enabled?(:connect) %>
-                <a href="/connect/@<%= @user.username %>" class="hidden mr-2" id="user-connect-redirect">
-                  <button class="chat-action-button crayons-btn crayons-btn--outlined hidden" id="modal-opener"><%= t("views.users.chat") %></button>
-                </a>
-              <% end %>
-            <% end %>
-            <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'><%= t("views.users.follow") %></button>
-            <div class="profile-dropdown ml-2 s:relative hidden" data-username="<%= @user.username %>">
+              <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'><%= t("views.users.follow") %></button>
+	      <div class="profile-dropdown ml-2 s:relative hidden" data-username="<%= @user.username %>">
               <button id="user-profile-dropdown" aria-expanded="false" aria-controls="user-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
                 <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: t("views.users.dropdown")) %>
               </button>
@@ -112,13 +105,6 @@
 
         <div class="crayons-modal align-left hidden">
           <div class="crayons-modal__box">
-            <div class="crayons-modal__box__header">
-              <h2 class="crayons-modal__box__header__title"><%= t("views.users.chat_with", user: @user.name) %></h2>
-              <button title="Close" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon close-modal">
-                <%= inline_svg_tag("x.svg", class: "crayons-icon", aria: true, title: t("views.users.close")) %>
-              </button>
-            </div>
-
             <div class="crayons-modal__box__body">
               <% if @user.setting.inbox_guidelines.present? %>
                 <p class="fw-bold mb-2">@<%= @user.username %>'s guidelines:</p>

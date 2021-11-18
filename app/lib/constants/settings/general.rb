@@ -90,7 +90,7 @@ module Constants
           placeholder: "$pay.somethinglikethis.co/value"
         },
         periodic_email_digest: {
-          description: "Determines how often periodic email digests are sent",
+          description: "Determines how often email digests are sent (in days)",
           placeholder: 2
         },
         sidebar_tags: {
