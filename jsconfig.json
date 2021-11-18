@@ -5,8 +5,7 @@
       "@crayons/*": ["app/javascript/crayons/*"],
       "@utilities/*": ["app/javascript/utilities/*"],
       "@components/*": ["app/javascript/shared/components/*"],
-      "@controllers/*": ["app/javascript/controllers/*"],
-      "@routes": ["app/javascript/routes.js.erb"]
+      "@admin-controllers/*": ["app/javascript/admin/controllers/*"]
     }
   },
   "exclude": ["node_modules", "**/node_modules/*"]

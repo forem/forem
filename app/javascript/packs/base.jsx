@@ -4,10 +4,6 @@ import {
   getInstantClick,
   initializeMemberMenu,
 } from '../topNavigation/utilities';
-import * as Routes from '@routes';
-
-// Make the rails routes available to not ES module code.
-window.Routes = Routes;
 
 // Unique ID applied to modals created using window.Forem.showModal
 const WINDOW_MODAL_ID = 'window-modal';
@@ -152,7 +148,7 @@ initializeNav();
 async function loadCreatorSettings() {
   try {
     const [{ CreatorSettingsController }, { Application }] = await Promise.all([
-      import('@controllers/creator_settings_controller'),
+      import('@admin-controllers/creator_settings_controller'),
       import('@hotwired/stimulus'),
     ]);
 
@@ -165,6 +161,6 @@ async function loadCreatorSettings() {
   }
 }
 
-if (document.location.pathname === Routes.newAdminCreatorSettingPath()) {
+if (document.location.pathname === '/admin/creator_settings/new') {
   loadCreatorSettings();
 }
