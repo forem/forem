@@ -143,3 +143,23 @@ getInstantClick().then((spa) => {
 });
 
 initializeNav();
+
+async function loadCreatorSettings() {
+  try {
+    const [{ CreatorSettingsController }, { Application }] = await Promise.all([
+      import('@admin-controllers/creator_settings_controller'),
+      import('@hotwired/stimulus'),
+    ]);
+
+    const application = Application.start();
+    application.register('creator-settings', CreatorSettingsController);
+  } catch (error) {
+    Honeybadger.notify(
+      `Error loading the creator settings controller: ${error.message}`,
+    );
+  }
+}
+
+if (document.location.pathname === '/admin/creator_settings/new') {
+  loadCreatorSettings();
+}
