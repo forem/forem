@@ -1,4 +1,5 @@
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfToken } from '../chat/util';
+import { getUnopenedChannels } from '../utilities/connect';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -39,6 +40,7 @@ document.ready.then(
     .then(({ currentUser, csrfToken }) => {
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
+      getUnopenedChannels();
 
       if (redirectableLocation() && onboardCreator(currentUser)) {
         window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;

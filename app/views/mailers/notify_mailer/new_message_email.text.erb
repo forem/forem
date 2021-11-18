@@ -1,0 +1,3 @@
+<%= ActionController::Base.helpers.strip_tags(@message.message_html.html_safe) %>
+
+View now: <%= app_url("/connect/@#{@message.user.username}") %>

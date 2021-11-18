@@ -20,7 +20,9 @@ export const getInterceptsForLingeringUserRequests = (
     return ['@baseDataRequest'];
   }
 
-  const intercepts = ['@baseDataRequest'];
+  cy.intercept('/chat_channels**').as('chatRequest');
+
+  const intercepts = ['@baseDataRequest', '@chatRequest'];
 
   if (!url.includes('/notifications')) {
     cy.intercept('/notifications?i=i').as('notificationsRequest');

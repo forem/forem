@@ -6,6 +6,7 @@ module Search
       bumped_at
       cached_tag_list
       classified_listing_category_id
+      contact_via_connect
       expires_at
       organization_id
       originally_published_at

@@ -1,5 +1,6 @@
 import { h, render } from 'preact';
-import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { getUserDataAndCsrfToken } from '../chat/util';
+import { getUnopenedChannels } from '../utilities/connect';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -36,6 +37,7 @@ document.ready.then(
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
 
+      getUnopenedChannels();
       renderPage();
     })
     .catch((error) => {

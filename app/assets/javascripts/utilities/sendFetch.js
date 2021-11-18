@@ -46,6 +46,12 @@ function sendFetch(switchStatement, body) {
         addTokenToBody: true,
         body,
       });
+    case 'chat-creation':
+      return fetchCallback({
+        url: '/chat_channels/create_chat',
+        addTokenToBody: true,
+        body,
+      });
     case 'block-user':
       return fetchCallback({
         url: '/user_blocks',

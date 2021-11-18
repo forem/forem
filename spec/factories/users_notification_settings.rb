@@ -3,6 +3,7 @@ FactoryBot.define do
     email_badge_notifications { true }
     email_comment_notifications { true }
     email_community_mod_newsletter { false }
+    email_connect_messages { true }
     email_digest_periodic { false }
     email_follower_notifications { true }
     email_membership_newsletter { false }

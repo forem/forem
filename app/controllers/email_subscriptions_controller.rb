@@ -19,6 +19,7 @@ class EmailSubscriptionsController < ApplicationController
       email_comment_notifications: "comment notifications",
       email_follower_notifications: "follower notifications",
       email_mention_notifications: "mention notifications",
+      email_connect_messages: "#{Settings::Community.community_name} connect messages",
       email_unread_notifications: "unread notifications",
       email_badge_notifications: "badge notifications"
     }.freeze

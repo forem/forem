@@ -1,5 +1,5 @@
 module ApplicationHelper
-  # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
+  # rubocop:disable Performance/OpenStruct
   USER_COLORS = ["#19063A", "#dce9f3"].freeze
 
   DELETED_USER = OpenStruct.new(
@@ -11,7 +11,7 @@ module ApplicationHelper
     twitter_username: nil,
     github_username: nil,
   )
-  # rubocop:enable Style/OpenStructUse, Performance/OpenStruct
+  # rubocop:enable Performance/OpenStruct
 
   LARGE_USERBASE_THRESHOLD = 1000
 

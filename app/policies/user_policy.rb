@@ -15,6 +15,7 @@ class UserPolicy < ApplicationPolicy
     email_badge_notifications
     email_comment_notifications
     email_community_mod_newsletter
+    email_connect_messages
     email_digest_periodic
     email_follower_notifications
     email_membership_newsletter
