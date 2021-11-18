@@ -84,7 +84,7 @@ RSpec.describe "UserSettings", type: :request do
 
         feed_section = "Publishing to #{Settings::Community.community_name} from RSS"
         stackbit_section = "Generate a personal blog from your #{Settings::Community.community_name} posts"
-        titles = ["Comment templates", "Connect settings", feed_section, "Web monetization", stackbit_section]
+        titles = ["Comment templates", feed_section, "Web monetization", stackbit_section]
         expect(response.body).to include(*titles)
       end
 

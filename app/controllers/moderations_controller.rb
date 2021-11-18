@@ -22,7 +22,6 @@ class ModerationsController < ApplicationController
     @articles = articles.includes(:user).to_json(JSON_OPTIONS)
     @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?
     @current_user_tags = current_user.moderator_for_tags
-    @community_mod_channel = current_user.chat_channels.find_by("channel_name LIKE ?", "Community Mods: Team%")
   end
 
   def article
