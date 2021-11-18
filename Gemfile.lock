@@ -186,10 +186,11 @@ GEM
       rexml
     crass (1.0.6)
     dante (0.2.0)
-    ddtrace (0.53.0)
-      ffi (~> 1.0)
+    ddtrace (0.54.0)
+      debase-ruby_core_source (= 0.10.12)
       msgpack
     dead_end (1.1.7)
+    debase-ruby_core_source (0.10.12)
     derailed_benchmarks (2.1.1)
       benchmark-ips (~> 2)
       dead_end
@@ -906,7 +907,7 @@ DEPENDENCIES
   cloudinary (~> 1.21)
   counter_culture (~> 3.0)
   cypress-rails!
-  ddtrace (~> 0.53.0)
+  ddtrace (~> 0.54.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
   devise_invitable (~> 2.0.5)
