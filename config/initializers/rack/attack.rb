@@ -30,8 +30,8 @@ module Rack
       track_and_return_ip(request.env["HTTP_FASTLY_CLIENT_IP"])
     end
 
-    throttle("message_tag_throttle", limit: 2, period: 1) do |request|
-      if message_or_tag_request(request)
+    throttle("tag_throttle", limit: 2, period: 1) do |request|
+      if tag_request?(request)
         track_and_return_ip(request.env["HTTP_FASTLY_CLIENT_IP"])
       end
     end
@@ -43,9 +43,8 @@ module Rack
       ip_address.to_s
     end
 
-    def self.message_or_tag_request(request)
-      (request.path.starts_with?("/messages") && request.post?) ||
-        request.path.include?("/t/")
+    def self.tag_request?(request)
+      request.path.include?("/t/")
     end
   end
 end

@@ -50,15 +50,6 @@ RSpec.describe "UserBlock", type: :request do
       expect(response.media_type).to eq "application/json"
       expect(response.parsed_body["result"]).to eq "blocked"
     end
-
-    it "blocks the potential chat channel" do
-      chat_channel = create(:chat_channel, channel_type: "direct", slug: "#{blocker.username}/#{blocked.username}",
-                                           status: "active")
-      create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocker.id)
-      create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocked.id)
-      post "/user_blocks", params: { user_block: { blocked_id: blocked.id } }
-      expect(chat_channel.reload.status).to eq "blocked"
-    end
   end
 
   describe "DELETE /user_blocks/:blocked_id or #delete" do
@@ -94,15 +85,6 @@ RSpec.describe "UserBlock", type: :request do
     it "removes the correct user_block" do
       delete "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
       expect(blocker.blocking?(blocked)).to eq false
-    end
-
-    it "unblocks the direct chat channel" do
-      chat_channel = create(:chat_channel, channel_type: "direct", slug: "#{blocker.username}/#{blocked.username}",
-                                           status: "blocked")
-      create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocker.id)
-      create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocked.id)
-      delete "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
-      expect(chat_channel.reload.status).to eq "active"
     end
   end
 end

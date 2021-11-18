@@ -11,17 +11,16 @@
   <%= label_tag :logo_svg, class: "crayons-field__label" do %>
     Logo
     <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the logo for your Forem" aria-describedby="logo-subtitle"></span>
-    <p id="logo-subtitle" class="crayons-field__description">Ideally SVG, but PNG will work, too. Min size: 300x300px.</p>
+    <p id="logo-subtitle" class="crayons-field__description">Ideally SVG, but PNG or JPEG will work, too.</p>
   <% end %>
-  <span class="block border-none">
-    <%= file_field_tag :logo_svg, class: "crayons-btn crayons-btn--secondary  w-100 ", role: "button", required: true %>
-  </span>
-
-  <% if ::Settings::General.logo_svg.present? %>
-    <div class="site-logo">
-      <%= ::Settings::General.logo_svg.html_safe %>
+  <div class="flex flex-1 gap-4">
+    <%= file_field_tag :logo_svg, required: true, accept: ".svg,.png,.jpg,image/svg+xml,image/png,image/jpg", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
+    <div data-creator-settings-target="previewLogo">
+      <% if ::Settings::General.logo_svg.present? %>
+        <%= ::Settings::General.logo_svg.html_safe %>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>
 
 <div class="crayons-field mt-6 align-left">
