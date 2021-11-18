@@ -148,7 +148,7 @@ initializeNav();
 async function loadCreatorSettings() {
   try {
     const [{ CreatorSettingsController }, { Application }] = await Promise.all([
-      import('@controllers/creator_settings_controller'),
+      import('@admin-controllers/creator_settings_controller'),
       import('@hotwired/stimulus'),
     ]);
 

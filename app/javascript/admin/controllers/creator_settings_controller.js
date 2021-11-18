@@ -3,9 +3,17 @@ import { Controller } from '@hotwired/stimulus';
 const MAX_LOGO_PREVIEW_HEIGHT = 80;
 const MAX_LOGO_PREVIEW_WIDTH = 220;
 
+/**
+ * Manages interactions on the Creator Settings page.
+ */
 export class CreatorSettingsController extends Controller {
   static targets = ['previewLogo'];
 
+  /**
+   * Displays a preview of the image selected by the user.
+   *
+   * @param {Event} event
+   */
   previewLogo(event) {
     const {
       target: {
