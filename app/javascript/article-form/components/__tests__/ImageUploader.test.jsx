@@ -49,19 +49,13 @@ describe('<ImageUploader />', () => {
     });
 
     it('triggers a webkit messageHandler call when isNativeIOS', async () => {
-      global.window.webkit = {
-        messageHandlers: {
-          imageUpload: {
-            postMessage: jest.fn(),
-          },
-        },
-      };
+      global.window.ForemMobile = { injectNativeMessage: jest.fn() };
 
       const { queryByLabelText } = render(<ImageUploader />);
       const uploadButton = queryByLabelText(/Upload an image/i);
       uploadButton.click();
       expect(
-        window.webkit.messageHandlers.imageUpload.postMessage,
+        global.window.ForemMobile.injectNativeMessage,
       ).toHaveBeenCalledTimes(1);
     });
 
@@ -69,7 +63,7 @@ describe('<ImageUploader />', () => {
       const { container, findByTitle } = render(<ImageUploader />); // eslint-disable-line no-unused-vars
 
       // Fire a change event in the hidden input with JSON payload for success
-      const fakeSuccessMessage = { "action": "success", "link": "/some-fake-image.jpg", "namespace": "imageUpload" };
+      const fakeSuccessMessage = JSON.stringify({ "action": "success", "link": "/some-fake-image.jpg", "namespace": "imageUpload" });
       const event = createEvent('ForemMobile', document, { detail: fakeSuccessMessage }, { EventType: 'CustomEvent' });
       fireEvent(document, event);
 
