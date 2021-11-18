@@ -145,6 +145,8 @@ class Comment < ApplicationRecord
 
   # A helper method to encode logic formerly part of spam detection.
   def from_recently_registered_user?
+    return true unless user&.registered_at
+
     user.registered_at <= 5.days.ago
   end
 
