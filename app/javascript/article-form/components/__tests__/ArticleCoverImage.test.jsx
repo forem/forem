@@ -210,8 +210,17 @@ describe('<ArticleCoverImage />', () => {
         );
 
         // Fire a change event in the hidden input with JSON payload for success
-        const fakeSuccessMessage = { 'action': 'success', 'link': '/some-fake-image.jpg', 'namespace': 'coverUpload' };
-        const event = createEvent('ForemMobile', document, { detail: fakeSuccessMessage }, { EventType: 'CustomEvent' });
+        const fakeSuccessMessage = JSON.stringify({
+          action: 'success',
+          link: '/some-fake-image.jpg',
+          namespace: 'coverUpload',
+        });
+        const event = createEvent(
+          'ForemMobile',
+          document,
+          { detail: fakeSuccessMessage },
+          { EventType: 'CustomEvent' },
+        );
         fireEvent(document, event);
 
         expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
@@ -231,8 +240,17 @@ describe('<ArticleCoverImage />', () => {
         const error = 'oh no!';
 
         // Fire a change event in the hidden input with JSON payload for an error
-        const fakeErrorMessage = { action: 'error', error, 'namespace': 'coverUpload' };
-        const event = createEvent('ForemMobile', document, { detail: fakeErrorMessage }, { EventType: 'CustomEvent' });
+        const fakeErrorMessage = JSON.stringify({
+          action: 'error',
+          error,
+          namespace: 'coverUpload',
+        });
+        const event = createEvent(
+          'ForemMobile',
+          document,
+          { detail: fakeErrorMessage },
+          { EventType: 'CustomEvent' },
+        );
         fireEvent(document, event);
 
         await findByText(error);
@@ -252,8 +270,16 @@ describe('<ArticleCoverImage />', () => {
         /* eslint-enable no-unused-vars  */
 
         // Fire a change event in the hidden input with JSON payload for an error
-        const fakeUploadingMessage = { action: 'uploading', 'namespace': 'coverUpload' };
-        const event = createEvent('ForemMobile', document, { detail: fakeUploadingMessage }, { EventType: 'CustomEvent' });
+        const fakeUploadingMessage = JSON.stringify({
+          action: 'uploading',
+          namespace: 'coverUpload',
+        });
+        const event = createEvent(
+          'ForemMobile',
+          document,
+          { detail: fakeUploadingMessage },
+          { EventType: 'CustomEvent' },
+        );
         fireEvent(document, event);
 
         await findByText(/Uploading.../i);
