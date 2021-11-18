@@ -92,7 +92,7 @@ seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   organization = Organization.create!(
     name: "Bachmanity",
     summary: Faker::Company.bs,
-    remote_profile_image_url: logo = Faker::Company.logo,
+    profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     nav_image: logo,
     url: Faker::Internet.url,
     slug: "bachmanity",
@@ -396,14 +396,25 @@ seeder.create_if_doesnt_exist(Article, "slug", "test-article-with-hidden-comment
   )
 
   comment_attributes = {
-    body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+    body_markdown: "#{Faker::Hipster.paragraph(sentence_count: 1)} I am hidden",
     user_id: admin_user.id,
     commentable_id: article.id,
     commentable_type: "Article",
     hidden_by_commentable_user: true
   }
 
-  Comment.create!(comment_attributes)
+  comment = Comment.create!(comment_attributes)
+
+  child_comment_attributes = {
+    body_markdown: "Child of a hidden comment",
+    user_id: admin_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article",
+    parent: comment,
+    hidden_by_commentable_user: false
+  }
+
+  Comment.create!(child_comment_attributes)
 end
 
 ##############################################################################

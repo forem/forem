@@ -24,6 +24,11 @@ RSpec.shared_examples "PATCH /comments/:comment_id/hide or unhide" do |args|
       patch "/comments/#{parent_comment.id}/#{args[:path]}", headers: { HTTP_ACCEPT: "application/json" }
     end
 
+    it "sets hidden_by_commentable_user appropriately" do
+      parent_comment.reload
+      expect(parent_comment.hidden_by_commentable_user).to eq(args[:path] == "hide")
+    end
+
     it "marks article as having hidden comments" do
       expect(article.reload.any_comments_hidden).to eq(args[:path] == "hide")
     end
