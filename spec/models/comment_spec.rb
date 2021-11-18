@@ -439,9 +439,9 @@ RSpec.describe Comment, type: :model do
 
   describe "spam" do
     it "delegates spam handling to Spam::Handler.handle_comment!" do
-      allow(Spam::Handler).to receive(:handle_comment!).with(article: comment).and_call_original
-
+      allow(Spam::Handler).to receive(:handle_comment!).with(comment: comment).and_call_original
       comment.save
+      expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
     end
   end
 
