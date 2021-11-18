@@ -15,7 +15,9 @@ tasks:
   - name: Forem Server
     before: redis-server &
     init: ./gitpod-init.sh
-    command: bin/startup
+    command: >
+      gp await-port 5432 &&
+      bin/startup
   - name: Open Site
     command: >
       gp await-port 3000 &&
