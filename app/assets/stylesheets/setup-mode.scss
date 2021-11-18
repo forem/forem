@@ -18,22 +18,9 @@ body.default-header {
   background: white;
 }
 
-.logo-selection {
+[data-creator-settings-target='previewLogo'] {
   max-height: 80px;
   height: 80px;
-
-  .required {
-    position: absolute;
-    left: 0;
-    bottom: calc(- var(--fs-xs));
-    font-size: var(--fs-s);
-    color: var(--accent-danger-darker);
-    display: none;
-  }
-
-  :focus:invalid + .required {
-    display: block;
-  }
 }
 
 // This ID is tied the global "Setup not complete" banner
