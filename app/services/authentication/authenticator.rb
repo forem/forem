@@ -88,7 +88,7 @@ module Authentication
       return unless domain
       return if Settings::Authentication.acceptable_domain?(domain: domain)
 
-      message = "Marking as spam email #{identity.email} from provider #{identity.provider}."
+      message = "This #{identity.provider} email address #{identity.email} has been marked as spam"
 
       raise Authentication::Errors::SpammyEmailDomain, message
     end
