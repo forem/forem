@@ -30,10 +30,6 @@ environment.splitChunks((config) => {
           __dirname,
           '../../app/javascript/shared/components',
         ),
-        '@routes': path.resolve(
-          __dirname,
-          '../../app/javascript/routes.js.erb',
-        ),
         react: 'preact/compat',
         'react-dom': 'preact/compat',
       },
