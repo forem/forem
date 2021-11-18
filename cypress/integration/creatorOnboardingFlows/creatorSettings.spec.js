@@ -27,8 +27,11 @@ describe('Creator Settings Page', () => {
 
     // should contain a logo upload field and upload a logo upon click
     cy.findByText(/^Logo/).should('be.visible');
-    cy.findByRole('button', { name: /logo/i }).attachFile(
+    cy.findByLabelText(/upload logo/i, { selector: 'input' }).attachFile(
       '/images/admin-image.png',
+    );
+    cy.findByRole('img', { name: /preview of logo selected/i }).should(
+      'be.visible',
     );
 
     // should contain a brand color field
@@ -60,7 +63,12 @@ describe('Creator Settings Page', () => {
       'have.attr',
       'required',
     );
-    cy.findByRole('button', { name: /logo/i }).should('have.attr', 'required');
+
+    cy.findByLabelText(/upload logo/i, { selector: 'input' }).should(
+      'have.attr',
+      'required',
+    );
+
     // should not redirect the creator to the home page when the form is not completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();
     cy.url().should('equal', `${baseUrl}admin/creator_settings/new`);

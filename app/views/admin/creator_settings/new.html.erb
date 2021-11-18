@@ -3,7 +3,7 @@
     <%= Rails.application.assets["setup-mode.css"].to_s.html_safe %>
   </style>
 
-  <main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-xs">
+  <main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-xs" data-controller="creator-settings">
     <div aria-live="assertive">
       <% if flash[:error] %>
         <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
