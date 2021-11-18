@@ -29,8 +29,7 @@ describe('Creator Settings Page', () => {
     cy.get('@communityName').type('Climbing Life');
 
     // should contain a logo upload field and upload a logo upon click
-    cy.findByText(/^Logo/).should('be.visible');
-    cy.findByLabelText(/upload logo/i, { selector: 'input' }).attachFile(
+    cy.findByLabelText(/logo/i, { selector: 'input' }).attachFile(
       '/images/admin-image.png',
     );
     cy.findByRole('img', { name: /preview of logo selected/i }).should(
@@ -67,7 +66,7 @@ describe('Creator Settings Page', () => {
       'required',
     );
 
-    cy.findByLabelText(/upload logo/i, { selector: 'input' }).should(
+    cy.findByLabelText(/logo/i, { selector: 'input' }).should(
       'have.attr',
       'required',
     );
