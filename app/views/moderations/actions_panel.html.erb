@@ -74,7 +74,7 @@
           </header>
         </div>
         <div class="toggle-chevron-container">
-          <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
+          <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
         </div>
       </button>
 
@@ -89,8 +89,8 @@
           <% @moderatable.tags.each do |tag| %>
             <button class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
               <span class="num-sign">#</span><%= tag.name %>
-              <div class="circle centered-icon adjustment-icon subtract">
-                <%= inline_svg_tag("subtract.svg", aria: true, title: t("views.moderations.actions.adjust.remove")) %>
+              <div class="circle centered-icon adjustment-icon subtract color-base-inverted">
+                <%= inline_svg_tag("minus.svg", aria: true, title: t("views.moderations.actions.adjust.remove")) %>
               </div>
             </button>
           <% end %>
@@ -130,7 +130,7 @@
         </header>
       </div>
       <div class="toggle-chevron-container">
-        <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
+        <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
       </div>
     </button>
 

@@ -29,6 +29,7 @@ module.exports = {
               '@utilities': path.join(__dirname, './utilities'),
               '@components': path.join(__dirname, './shared/components'),
               '@controllers': path.join(__dirname, './controllers'),
+              '@routes': path.join(__dirname, './routes.js.erb'),
             },
             extensions: ['.js', '.jsx'],
           },

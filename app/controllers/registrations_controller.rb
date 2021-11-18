@@ -64,10 +64,12 @@ class RegistrationsController < Devise::RegistrationsController
 
   def check_allowed_email(resource)
     domain = resource.email.split("@").last
-    allow_list = Settings::Authentication.allowed_registration_email_domains
-    return if allow_list.empty? || allow_list.include?(domain)
+    return true if Settings::Authentication.acceptable_domain?(domain: domain)
 
     resource.email = nil
+    # Alright, this error message isn't quite correct.  Is the email
+    # from a blocked domain?  Or an explicitly allowed domain.  I
+    # think this is enough.
     resource.errors.add(:email, "is not included in allowed domains.")
   end
 

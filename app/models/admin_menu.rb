@@ -35,7 +35,7 @@ class AdminMenu
       item(name: "admin team", controller: "permissions"),
     ]
 
-    scope :moderation, "shield-flash-line", [
+    scope :moderation, "mod", [
       item(name: "reports"),
       item(name: "mods"),
       item(name: "moderator actions ads", controller: "moderator_actions"),
@@ -58,7 +58,6 @@ class AdminMenu
     scope :apps, "palette-line", [
       item(name: "chat channels", visible: false),
       item(name: "consumer apps", controller: "consumer_apps"),
-      item(name: "events"),
       item(name: "listings"),
       item(name: "welcome"),
     ]
