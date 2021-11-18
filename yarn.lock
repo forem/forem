@@ -1628,10 +1628,10 @@
     axios-retry "^3.1.9"
     winston "^3.3.3"
 
-"@knapsack-pro/cypress@^4.4.1":
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-4.4.1.tgz#4cf91c4c7eaaca2196c9a1e829fcb893da9c22d9"
-  integrity sha512-VRHB14XXTQWqWLi8qdSC0j3fPOa3SI5CfChk4mR67w0INbxHi5QqC/ijWgRC01+h5RLwDH9WTiIEV+AFszQ3OA==
+"@knapsack-pro/cypress@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-4.5.0.tgz#957a7ae43bb7fa0c6fb3dae2fa915912dc23fefe"
+  integrity sha512-jSjcZKC312QEoIYS43xNVIVNCwqH/3fiCkKgtSfQSHlmKgcaw7sUVGuVLZp9w7zb0gZA7bfq2nihzcWxyKxJUA==
   dependencies:
     "@knapsack-pro/core" "^3.1.1"
     glob "^7.1.6"
