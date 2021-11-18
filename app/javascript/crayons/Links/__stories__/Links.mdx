@@ -16,7 +16,7 @@ Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) 
 In Crayons you can either use inline link (which basically is plain text) or block link (which has a bit of padding and is slightly visually heavier).
 Both variants are just fine and which one you gonna use is dependent on the context.
 
-`<Link />` component is just an HTML's `<a>` element under the hood so it can use the same attributes, like `href` for setting path, `target` for defininig whether link should open in new window, etc.
+`<Link />` component is just an HTML's `<a>` element under the hood so it can use the same attributes, like `href` for setting path, `target` for defining whether link should open in new window, etc.
 
 ## Configuration
 
@@ -35,7 +35,7 @@ By default, the icon itself won't be customizable.
 #### Icon-only
 
 There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
-Icon-only links should always use clear and obvious icon, ideally accompanied by a title.
+Icon-only links should always use clear and obvious icon, ideally accompanied by a title. Icon-only links will require an `aria-label` to ensure they are understood by users of assistive technologies.
 
 ##### Fully rounded
 

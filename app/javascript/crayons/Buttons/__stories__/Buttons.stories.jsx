@@ -34,7 +34,7 @@ export default {
       },
     },
     tooltip: {
-      description: 'If defined, button will have a custom tooltip on `:hover`.',
+      description: "If defined, button will have a custom tooltip on `:hover` and `:focus`. The tooltip content will form part of the button's accessible name unless passed as a `<span>` with `aria-hidden='true'`",
       control: {
         type: 'text',
       },
