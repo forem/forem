@@ -3,21 +3,10 @@ module Metrics
     include Sidekiq::Worker
     sidekiq_options queue: :low_priority, retry: 10
 
-    MODELS = [
-      Article,
-      Comment,
-      Listing,
-      Notification,
-      Organization,
-      PageView,
-      Podcast,
-      PodcastEpisode,
-      Profile,
-      User,
-    ].freeze
-
     def perform
-      MODELS.each do |model|
+      models = [User, Article, Organization, Comment, Podcast, PodcastEpisode, Listing, PageView, Notification,
+                Profile]
+      models.each do |model|
         db_count = begin
           model.count
         rescue ActiveRecord::QueryCanceled
