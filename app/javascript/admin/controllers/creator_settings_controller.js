@@ -68,6 +68,11 @@ export class CreatorSettingsController extends Controller {
     reader.readAsDataURL(firstFile);
   }
 
+  /**
+   * Updates ths branding/colors on the Creator Settings Page.
+   *
+   * @param {Event} event
+   */
   updateBranding(event) {
     const color = event.target.value;
 
