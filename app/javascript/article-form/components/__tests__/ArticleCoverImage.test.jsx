@@ -185,7 +185,9 @@ describe('<ArticleCoverImage />', () => {
     it('triggers a webkit messageHandler call when isNativeIOS', async () => {
       global.window.ForemMobile = { injectNativeMessage: jest.fn() };
 
-      const { queryByLabelText } = render(<ArticleCoverImage mainImage="" />);
+      const { queryByLabelText } = render(
+        <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
+      );
       const uploadButton = queryByLabelText(/Upload cover image/i);
       uploadButton.click();
       expect(
