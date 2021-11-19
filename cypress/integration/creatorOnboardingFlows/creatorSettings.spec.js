@@ -83,7 +83,7 @@ describe('Creator Settings Page', () => {
       .focus()
       .should('have.css', 'border-color', rgbColor);
 
-    cy.get('.admin-help-button').should(
+    cy.findByRole('link', { name: /Forem Admin Guide/i }).should(
       'have.css',
       'background-color',
       rgbColor,
