@@ -132,7 +132,7 @@ Object {
                     href="/some-post/path"
                   >
                     <time
-                      datetime=""
+                      datetime="Tue, 18 Feb 2020 14:59:24 GMT"
                     >
                       February 18
                        (just now)
@@ -381,7 +381,7 @@ Object {
                   href="/some-post/path"
                 >
                   <time
-                    datetime=""
+                    datetime="Tue, 18 Feb 2020 14:59:24 GMT"
                   >
                     February 18
                      (just now)

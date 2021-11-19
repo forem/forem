@@ -59,7 +59,7 @@
             <% end %>
             <% if @user.profile.website_url.present? %>
               <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
-                <%= inline_svg_tag("external.svg", class: "crayons-icon", aria: true, title: t("views.organizations.external.icon")) %>
+                <%= inline_svg_tag("external-link.svg", class: "crayons-icon", aria: true, title: t("views.organizations.external.icon")) %>
               </a>
             <% end %>
           </span>

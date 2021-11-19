@@ -1,4 +1,5 @@
 @import '../config/import';
+@import './skip-link';
 
 .crayons-header {
   --indicator-outline: var(--header-bg);
@@ -124,33 +125,6 @@
     --trigger-border-color: var(--header-button-focus-color);
     --trigger-color: var(--header-button-focus-color);
   }
-}
-
-.skip-content-link {
-  position: absolute;
-  left: 50%;
-  background: var(--body-color);
-  color: var(--body-color-inverted);
-  z-index: var(--z-popover);
-  padding: var(--su-4);
-  pointer-events: none;
-  border-radius: var(--radius);
-  height: var(--header-height);
-  transform: translate(-50%, -200%);
-  transition: transform var(--transition-props);
-  opacity: var(--opacity-0);
-}
-
-.js-focus-visible .skip-content-link:focus:not(.focus-visible) {
-  visibility: hidden;
-}
-
-.js-focus-visible .skip-content-link:focus {
-  pointer-events: auto;
-  transform: translate(-50%, 0);
-  outline: none;
-  border: 2px solid var(--header-button-focus-color);
-  opacity: var(--opacity-1);
 }
 
 .pwa-nav-buttons {

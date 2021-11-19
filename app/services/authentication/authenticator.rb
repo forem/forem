@@ -20,12 +20,22 @@ module Authentication
       @cta_variant = cta_variant
     end
 
+    # @api public
+    #
+    # @see #initialize method for parameters
+    #
+    # @return user [User] when the given provider is valid
+    #
+    # @raises [Authentication::Errors::PreviouslySuspended] when the user was already suspended
+    # @raises [Authentication::Errors::SpammyEmailDomain] when the associated email is spammy
     def self.call(...)
       new(...).call
     end
 
+    # @api private
     def call
       identity = Identity.build_from_omniauth(provider)
+      guard_against_spam_from!(identity: identity)
       return current_user if current_user_identity_exists?
 
       # These variables need to be set outside of the scope of the
@@ -72,6 +82,16 @@ module Authentication
     end
 
     private
+
+    def guard_against_spam_from!(identity:)
+      domain = identity.email.split("@")[-1]
+      return unless domain
+      return if Settings::Authentication.acceptable_domain?(domain: domain)
+
+      message = "This #{identity.provider} email address #{identity.email} has been marked as spam"
+
+      raise Authentication::Errors::SpammyEmailDomain, message
+    end
 
     attr_reader :provider, :current_user, :cta_variant
 
