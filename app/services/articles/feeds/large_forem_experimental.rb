@@ -14,8 +14,15 @@ module Articles
         stories
       end
 
-      def featured_story_and_default_home_feed(user_signed_in: false, ranking: true)
-        featured_story, hot_stories = globally_hot_articles(user_signed_in)
+      # @param user_signed_in [Boolean] are we treating this as an
+      #        anonymous user?
+      # @param ranking [Boolean] if true, apply a ranking algorithm
+      # @param must_have_main_image [Boolean] if true, the featured
+      #        story must have a main image
+      #
+      # @note the must_have_main_image parameter name matches PR #15240
+      def featured_story_and_default_home_feed(user_signed_in: false, ranking: true, must_have_main_image: true)
+        featured_story, hot_stories = globally_hot_articles(user_signed_in, must_have_main_image: must_have_main_image)
         hot_stories = rank_and_sort_articles(hot_stories) if @user && ranking
         [featured_story, hot_stories]
       end
@@ -63,11 +70,13 @@ module Articles
                to: :@article_score_applicator)
 
       # @api private
-      def globally_hot_articles(user_signed_in, article_score_threshold: -15, min_rand_limit: 15, max_rand_limit: 80)
+      # rubocop:disable Layout/LineLength
+      def globally_hot_articles(user_signed_in, must_have_main_image: true, article_score_threshold: -15, min_rand_limit: 15, max_rand_limit: 80)
+        # rubocop:enable Layout/LineLength
         if user_signed_in
           hot_stories = experimental_hot_story_grab
           hot_stories = hot_stories.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
-          featured_story = hot_stories.where.not(main_image: nil).first
+          featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
           new_stories = Article.published
             .where("score > ?", article_score_threshold)
             .limited_column_select.includes(top_comments: :user).order(published_at: :desc)
@@ -78,12 +87,18 @@ module Articles
             .page(@page).per(@number_of_articles)
             .where("score >= ? OR featured = ?", Settings::UserExperience.home_feed_minimum_score, true)
             .order(hotness_score: :desc)
-          featured_story = hot_stories.where.not(main_image: nil).first
+          featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
         end
         [featured_story, hot_stories.to_a]
       end
 
       private
+
+      def featured_story_from(stories:, must_have_main_image:)
+        return stories.first unless must_have_main_image
+
+        stories.where.not(main_image: nil).first
+      end
 
       def experimental_hot_story_grab
         start_time = [(@user.page_views.second_to_last&.created_at || 7.days.ago) - 18.hours, 7.days.ago].max
