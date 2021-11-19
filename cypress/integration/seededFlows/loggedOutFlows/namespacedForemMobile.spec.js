@@ -46,33 +46,45 @@ describe('Namespaced ForemMobile functions', () => {
 
     it('should return user data JSON when logged in', () => {
       // Attempt to login user and fetch its data
-      cy.fixture('users/adminUser.json').as('user');
-      cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() => {
-          cy.visit('/settings', runtimeStub)
-            .then(() => cy.window())
-            .then((win) => {
-              var res = JSON.parse(win.ForemMobile.getUserData());
-              assert.isObject(res);
-            });
-        });
+
+      // Manual attempt (?)
+      cy.contains('.crayons-btn', 'Log in').click();
+      cy.get('#user_email').type('admin@forem.local');
+      cy.get('#user_password').type('password');
+      cy.get('input[type="submit"]').click();
+      cy.window().then((win) => {
+        var res = JSON.parse(win.ForemMobile.getUserData());
+        assert.isObject(res);
       });
+
+      // Previous attempt with cy.loginUser():
+      //
+      // cy.fixture('users/adminUser.json').as('user');
+      // cy.get('@user').then((user) => {
+      //   return cy.loginUser(user);
+      // }).then(() => {
+      //   return cy.visit('/settings', runtimeStub);
+      // }).then(() => cy.window()).then((win) => {
+      //   var res = JSON.parse(win.ForemMobile.getUserData());
+      //   assert.isObject(res);
+      // });
     });
 
     it('should inject messages using CustomEvent', () => {
-      cy.document().then((doc) => {
-        doc.addEventListener('ForemMobile', cy.stub().as('bridgeEvent'));
-      })
-      .then(() => cy.window())
-      .then((win) => {
-        win.ForemMobile.injectJSMessage({ action: 'test' });
-      });
+      cy.document()
+        .then((doc) => {
+          doc.addEventListener('ForemMobile', cy.stub().as('bridgeEvent'));
+        })
+        .then(() => cy.window())
+        .then((win) => {
+          win.ForemMobile.injectJSMessage({ action: 'test' });
+        });
 
       // on load the app should have sent an event
       cy.get('@bridgeEvent')
         .should('have.been.calledOnce')
         .its('firstCall.args.0.detail')
-        .should('deep.equal', { action: 'test' })
+        .should('deep.equal', { action: 'test' });
     });
   });
 
