@@ -74,7 +74,7 @@ export class CreatorSettingsController extends Controller {
    * @param {Event} event
    */
   updateBranding(event) {
-    const color = event.target.value;
+    const { value: color } = event.target;
 
     document.documentElement.style.setProperty('--accent-brand', color);
 
