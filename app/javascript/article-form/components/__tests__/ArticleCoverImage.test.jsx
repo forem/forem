@@ -195,11 +195,11 @@ describe('<ArticleCoverImage />', () => {
 
     describe('when an image is uploaded', () => {
       it('successfully uploads an image', async () => {
-        const onMainImageUrlChange = jest.fn();
+        const onMainImageUrlChangeSpy = jest.fn();
         render(
           <ArticleCoverImage
             mainImage=""
-            onMainImageUrlChange={onMainImageUrlChange}
+            onMainImageUrlChange={onMainImageUrlChangeSpy}
           />,
         );
 
@@ -217,7 +217,7 @@ describe('<ArticleCoverImage />', () => {
         );
         fireEvent(document, event);
 
-        expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
+        expect(onMainImageUrlChangeSpy).toHaveBeenCalledTimes(1);
       });
 
       it('displays an upload error when necessary', async () => {

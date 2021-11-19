@@ -119,7 +119,11 @@ export class ArticleCoverImage extends Component {
         });
         break;
       case 'success':
-        this.props.onMainImageUrlChange({ links: [message.link] });
+        const { onMainImageUrlChange } = this.props;
+        console.log("Is this undefined::::: ", onMainImageUrlChange);
+        onMainImageUrlChange({
+          links: [message.link],
+        });
         this.setState({ uploadingImage: false });
         break;
     }
