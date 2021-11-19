@@ -36,5 +36,3 @@ class MediumTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("medium", MediumTag)
-
-UnifiedEmbed.register(MediumTag, regexp: %r{https?://medium.com/})
