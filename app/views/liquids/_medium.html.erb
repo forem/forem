@@ -9,7 +9,7 @@
       <h2><%= response[:title] %></h2>
       <h3><%= response[:author] %> ・ <time datetime='<%= response[:published_time] %>'><%= response[:publication_date] %></time> ・ <%= response[:reading_time] %></h4>
       <div class="ltag__link__servicename">
-        <img src="<%= asset_path("medium_icon.svg") %>" alt="Medium Logo" aria-label="<%= t("views.liquids.medium.logo") %>" />
+        <img src="<%= asset_path("medium.svg") %>" alt="Medium Logo" aria-label="<%= t("views.liquids.medium.logo") %>" />
         <%= ApplicationController.helpers.get_host_without_www response[:url] %>
       </div>
     </div>

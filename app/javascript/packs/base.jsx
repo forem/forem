@@ -111,7 +111,6 @@ window.Forem = {
 function getPageEntries() {
   return Object.entries({
     'notifications-index': document.getElementById('notifications-link'),
-    'chat_channels-index': document.getElementById('connect-link'),
     'moderations-index': document.getElementById('moderation-link'),
     'stories-search': document.getElementById('search-link'),
   });
@@ -144,3 +143,23 @@ getInstantClick().then((spa) => {
 });
 
 initializeNav();
+
+async function loadCreatorSettings() {
+  try {
+    const [{ CreatorSettingsController }, { Application }] = await Promise.all([
+      import('@admin-controllers/creator_settings_controller'),
+      import('@hotwired/stimulus'),
+    ]);
+
+    const application = Application.start();
+    application.register('creator-settings', CreatorSettingsController);
+  } catch (error) {
+    Honeybadger.notify(
+      `Error loading the creator settings controller: ${error.message}`,
+    );
+  }
+}
+
+if (document.location.pathname === '/admin/creator_settings/new') {
+  loadCreatorSettings();
+}

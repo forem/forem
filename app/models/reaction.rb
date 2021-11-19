@@ -72,6 +72,14 @@ class Reaction < ApplicationRecord
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
     end
+
+    # @param user [User] the user who might be spamming the system
+    #
+    # @return [TrueClass] yup, they're spamming the system.
+    # @return [FalseClass] they're not (yet) spamming the system
+    def user_has_been_given_too_many_spammy_reactions?(user:)
+      article_vomits.where(reactable_type: "Article", reactable_id: user.articles.pluck(:id)).size > 2
+    end
   end
 
   # no need to send notification if:

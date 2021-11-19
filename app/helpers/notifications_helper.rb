@@ -23,6 +23,6 @@ module NotificationsHelper
       )
     else
       I18n.t(action, user: key_to_link.call("user"))
-    end.html_safe
+    end.html_safe # rubocop:disable Rails/OutputSafety
   end
 end
