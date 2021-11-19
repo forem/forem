@@ -190,20 +190,19 @@ describe('<Form />', () => {
       userEvent.clear(textArea);
 
       getByRole('button', { name: 'Ordered list' }).click();
-      // TODO: After new lines PR this will change
-      expect(textArea.value).toEqual('\n\n1. \n');
+      expect(textArea.value).toEqual('1. \n');
       userEvent.clear(textArea);
 
       getByRole('button', { name: 'Unordered list' }).click();
-      expect(textArea.value).toEqual('\n\n- \n');
+      expect(textArea.value).toEqual('- \n');
       userEvent.clear(textArea);
 
       getByRole('button', { name: 'Heading' }).click();
-      expect(textArea.value).toEqual('\n\n## \n');
+      expect(textArea.value).toEqual('## \n');
       userEvent.clear(textArea);
 
       getByRole('button', { name: 'Quote' }).click();
-      expect(textArea.value).toEqual('\n\n> \n');
+      expect(textArea.value).toEqual('> \n');
       userEvent.clear(textArea);
 
       getByRole('button', { name: 'Code' }).click();
@@ -211,7 +210,7 @@ describe('<Form />', () => {
       userEvent.clear(textArea);
 
       getByRole('button', { name: 'Code block' }).click();
-      expect(textArea.value).toEqual('\n\n```\n\n```\n');
+      expect(textArea.value).toEqual('```\n\n```\n');
       userEvent.clear(textArea);
     });
 
@@ -266,7 +265,7 @@ describe('<Form />', () => {
       );
 
       getByRole('menuitem', { name: 'Line divider' }).click();
-      expect(textArea.value).toEqual('\n\n---\n\n');
+      expect(textArea.value).toEqual('---\n\n');
       userEvent.clear(textArea);
       await waitFor(() =>
         expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'false'),
