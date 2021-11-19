@@ -1,0 +1,233 @@
+---
+he:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">צרו קשר</a> לכל שאלה.
+    if_continued_trouble_html: <a href="/contact">צרו קשר</a> לכל בעייה חוזרת.
+    if_we_can_help_html: <a href="/contact">צרו קשר</a> אם נוכל לעזןר בכל דבר רלוונטי.
+  core:
+    add_comment: הוספת תגובה
+    analytics: אנליטיקס
+    comment: תגובה
+    comments: תגובות
+    community_name_is_great: "%{community_name} התותח/ית!"
+    copy_link: העתקת קישור
+    create_account: יצירת חשבון
+    create_post: יצירת פוסט
+    dashboard: דשבורד
+    edit_profile: עריכת פרופיל
+    feed: פיד
+    follow: מעקב
+    follow_back: מעקב בחזרה
+    follower: עוקב/ת אחרי
+    followers: עוקבים אחרי
+    following: שאני עוקב/ת אחריהם
+    home: בית
+    infinity: אינסוף
+    joined: הצטרפ/ה
+    joined_on: הצטרפ/ה ב
+    latest: לאחרונה
+    like: לייק
+    listings: רשימות
+    loading: טעינה...
+    location: מיקום
+    log_in: כניסה
+    moderator_center: מרכז התפעול
+    month: חודש
+    more_from: עוד מ
+    my_tags: התגיות שלי
+    pinned: נעוץ
+    popular_tags: תגיות נפוצות
+    post: פוסט
+    posts: פוסטים
+    reaction: הבעה
+    reaction_pluralized:
+      one: הבעה
+      other: הבעות
+    reactions:
+      heart: לב
+      save: שמור
+      unicorn: חד קרן
+    reading_list: רשימת קריאה
+    reply: תגובה
+    report_abuse: דיווח על ספאם
+    search: חיפוש
+    see_all: צפייה בהכל
+    series: סדרה
+    settings: הגדרות
+    sign_out: יציאה
+    trending_on: מגמות
+    week: שבוע
+    year: שנה
+  dashboard:
+    empty_follower: אין לכם עוקבים עדיין...
+    empty_post: פה תוכלו לנהל את הפוסטים שלכם, אבל עדיין לא כתבתם שום דבר.
+    following_users: משתמשים עוקבים
+    loading: בטעינה...
+    not_following_any_users: אתם לא עוקבים עדיין אחר משתמשים....
+    page_title: דשבורד
+    upload_a_video: העלאת סרטון
+    write_new_post: כתבו את הפוסט הראשון שלכם
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: לפני כשעה
+        other: לפני כ %{count} שעות
+      about_x_months:
+        one: לפני כחודש
+        other: לפני כ %{count} חודשים
+      about_x_years:
+        one: לפני כשנה
+        other: לפני כ %{count} שנים
+      almost_x_years:
+        one: לפני כמעט שנה
+        other: לפני כמעט %{count} שנים
+      half_a_minute: לפני כחצי דקה
+      less_than_x_seconds:
+        one: לפני פחות משנייה
+        other: לפני פחות מ %{count} שניות
+      less_than_x_minutes:
+        one: לפני פחות מדקה
+        other: לפני פחות מ %{count} דקות
+      over_x_years:
+        one: לפני למעלה משנה
+        other: לפני למעלה מ %{count} שנים
+      x_seconds:
+        one: לפני שנייה
+        other: "לפני %{count} שניות"
+      x_minutes:
+        one: לפני דקה
+        other: "לפני %{count} דקות"
+      x_days:
+        one: לפני יום
+        other: "לפני %{count} ימים"
+      x_months:
+        one: לפני חודש
+        other: "לפני %{count} חודשים"
+      x_years:
+        one: לפני שנה
+        other: "לפני %{count} שנים"
+    expired_ago:
+      about_x_hours:
+        one: לא בתוקף לפני כשעה
+        other: לא בתוקף לפני כ %{count} שעות
+      about_x_months:
+        one: לא בתוקף לפני כחודש
+        other: לא בתוקף לפני כ %{count} חודשים
+      about_x_years:
+        one: לא בתוקף לפני כשנה
+        other: לא בתוקף לפני כ %{count} שנים
+      almost_x_years:
+        one: לא בתוקף לפני כמעט שנה
+        other: לא בתוקף לפני כמעט %{count} שנים
+      half_a_minute: לא בתוקף לפני כחצי דקה
+      less_than_x_seconds:
+        one: לא בתוקף לפני פחות משנייה
+        other: לא בתוקף לפני פחות מ %{count} שניות
+      less_than_x_minutes:
+        one: לא בתוקף לפני פחות מדקה
+        other: לא בתוקף לפני פחות מ %{count} דקות
+      over_x_years:
+        one: לא בתוקף יותר משנה
+        other: לא בתוקף יותר מ %{count} שנים
+      x_seconds:
+        one: לא בתוקף לפני שנייה
+        other: לא בתוקף לפני %{count} שניות
+      x_minutes:
+        one: לא בתוקף לפני דקה
+        other: לא בתוקף לפני %{count} דקות
+      x_days:
+        one: לא בתוקף לפני יום
+        other: לא בתוקף לפני %{count} ימים
+      x_months:
+        one: לא בתוקף לפני חודש
+        other: לא בתוקף לפני %{count} חודשים
+      x_years:
+        one: לא בתוקף לפני שנה
+        other: לא בתוקף לפני %{count} שנים
+    expires_in:
+      about_x_hours:
+        one: יפוג תוקפו תוך כשעה
+        other: יפוג תוקפו תוך כ %{count} שעות
+      about_x_months:
+        one: יפוג תוקפו תוך כחודש
+        other: יפוג תוקפו תוך כ %{count} חודשים
+      about_x_years:
+        one: יפוג תוקפו תוך כשנה
+        other: יפוג תוקפו תוך כ %{count} שנים
+      almost_x_years:
+        one: יפוג תוקפו תוך כמעט שנה
+        other: יפוג תוקפו תוך כמעט %{count} שנים
+      half_a_minute: יפוג תוקפו תוך חצי דקה
+      less_than_x_seconds:
+        one: יפוג תוקפו תוך פחות משנייה
+        other: יפוג תוקפו תוך פחות מ %{count} שניות
+      less_than_x_minutes:
+        one: יפוג תוקפו תוך פחות מדקה
+        other: יפוג תוקפו תוך פחות מ %{count} דקות
+      over_x_years:
+        one: יפוג תוקפו תוך יותר משנה
+        other: יפוג תוקפו תוך יותר מ %{count} שנים
+      x_seconds:
+        one: יפוג תוקפו תוך שנייה
+        other: יפוג תוקפו תוך %{count} שניות
+      x_minutes:
+        one: יפוג תוקפו תוך דקה
+        other: יפוג תוקפו תוך %{count} דקות
+      x_days:
+        one: יפוג תוקפו תוך יום
+        other: יפוג תוקפו תוך %{count} ימים
+      x_months:
+        one: יפוג תוקפו תוך חודש
+        other: יפוג תוקפו תוך %{count} חודשים
+      x_years:
+        one: יפוג תוקפו תוך שנה
+        other: יפוג תוקפו תוך %{count} שנים
+  errors:
+    messages:
+      accepted: חייב להתקבל
+      bad_protocol: חייב להתחיל עם %{protocols}
+      bad_uri: כתובת לא חוקית
+      blank: לא יכול להיות ריק
+      confirmation: לא מתאים ל %{attribute}
+      empty: לא יכול להיות ריק
+      equal_to: חייב להיות שקול ל %{count}
+      even: חייב להיות זוגי
+      exclusion: הינו שמור
+      greater_than: חייב להיות גדול מ %{count}
+      greater_than_or_equal_to: חייב להיות גדול או שווה ל %{count}
+      inclusion: לא כלול ברשימה
+      invalid: לא תקין
+      less_than: חייב להיות קטן מ %{count}
+      less_than_or_equal_to: חייב להיות קטן או שווה ל %{count}
+      model_invalid: 'בדיקת תקינות נכשלה: %{errors}'
+      not_a_number: לא מספרי
+      not_an_integer: חייב להיות מספר שלם
+      odd: חייב להיות אי זוגי
+      other_than: חייב להיות שונה מ %{count}
+      present: חייב להיות ריק
+      required: נדרש
+      taken: כבר בשימוש
+      too_long:
+        one: ארוך מדי (תו אחד לכל היותר)
+        other: ארוך מדי (%{count} תווים לכל היותר)
+      too_short:
+        one: קצר מדי (תו אחד לכל הפחות)
+        other: קצר מדי (%{count} תווים לכל הפחות)
+      wrong_length:
+        one: באורך לא תקין (צריך להכיל תו אחד בלבד)
+        other: באורך לא תקין (צריך להכיל %{count} תווים)
+  settings_menu:
+      account: חשבון
+      billing: חיובים
+      customization: התאמות
+      extensions: תוספים
+      notifications: התראות
+      organization: ארגונים
+      profile: פרופיל
+  time:
+    formats:
+      comment: "%B %d, %Y"
+      short: "%b %-e"
+      short_with_year: "%b %-e, %Y"
+      stackexchange: "%b %e '%y"
+      tweet: "%H:%M %p - %d %b %Y"
