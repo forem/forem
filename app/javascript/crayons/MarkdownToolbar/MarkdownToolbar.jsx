@@ -11,6 +11,15 @@ import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
 
+/**
+ * Returns the next sibling in the DOM which matches the given CSS selector.
+ * This makes sure that only toolbar buttons are cycled through on Arrow key press,
+ * and not e.g. the hidden file input from ImageUploader
+ *
+ * @param {HTMLElement} element The current HTML element
+ * @param {string} selector The CSS selector to match
+ * @returns
+ */
 const getNextMatchingSibling = (element, selector) => {
   let sibling = element.nextElementSibling;
 
@@ -20,6 +29,15 @@ const getNextMatchingSibling = (element, selector) => {
   }
 };
 
+/**
+ * Returns the previous sibling in the DOM which matches the given CSS selector.
+ * This makes sure that only toolbar buttons are cycled through on Arrow key press,
+ * and not e.g. the hidden file input from ImageUploader
+ *
+ * @param {HTMLElement} element The current HTML element
+ * @param {string} selector The CSS selector to match
+ * @returns
+ */
 const getPreviousMatchingSibling = (element, selector) => {
   let sibling = element.previousElementSibling;
 
@@ -29,6 +47,12 @@ const getPreviousMatchingSibling = (element, selector) => {
   }
 };
 
+/**
+ * UI component providing markdown shortcuts, to be inserted into the textarea with the given ID
+ *
+ * @param {object} props
+ * @param {string} props.textAreaId The ID of the textarea the markdown formatting should be added to
+ */
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
