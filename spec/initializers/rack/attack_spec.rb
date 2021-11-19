@@ -96,39 +96,13 @@ describe Rack::Attack, type: :request, throttle: true do
     end
   end
 
-  describe "message_tag_throttle" do
+  describe "tag_throttle" do
     let(:user) { create(:user) }
-    let(:chat_channel) { create(:chat_channel) }
-    let(:new_message) do
-      {
-        message_markdown: "hi",
-        user_id: user.id,
-        temp_id: "sd78jdssd",
-        chat_channel_id: chat_channel.id
-      }
-    end
     let(:headers) { { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" } }
     let(:dif_headers) { { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" } }
 
     before do
-      allow(Pusher).to receive(:trigger).and_return(true)
       sign_in user
-    end
-
-    it "throttles creating messages" do
-      Timecop.freeze do
-        valid_responses = Array.new(2).map do
-          post messages_path, params: { message: new_message }, headers: headers
-        end
-        throttled_response = post messages_path, params: { message: new_message }, headers: headers
-        new_response = post messages_path, params: { message: new_message }, headers: dif_headers
-
-        valid_responses.each { |r| expect(r).not_to eq(429) }
-        expect(throttled_response).to eq(429)
-        expect(new_response).not_to eq(429)
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(6).times
-        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
-      end
     end
 
     # rubocop:disable RSpec/AnyInstance, RSpec/ExampleLength

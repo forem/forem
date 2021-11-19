@@ -111,7 +111,6 @@ window.Forem = {
 function getPageEntries() {
   return Object.entries({
     'notifications-index': document.getElementById('notifications-link'),
-    'chat_channels-index': document.getElementById('connect-link'),
     'moderations-index': document.getElementById('moderation-link'),
     'stories-search': document.getElementById('search-link'),
   });

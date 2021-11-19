@@ -68,8 +68,6 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
-  has_many :chat_channel_memberships, dependent: :destroy
-  has_many :chat_channels, through: :chat_channel_memberships
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
@@ -85,7 +83,6 @@ class User < ApplicationRecord
   has_many :identities_enabled, -> { enabled }, class_name: "Identity", inverse_of: false
   has_many :listings, dependent: :destroy
   has_many :mentions, dependent: :destroy
-  has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy
   has_many :notification_subscriptions, dependent: :destroy
   has_many :notifications, dependent: :destroy
@@ -598,10 +595,6 @@ class User < ApplicationRecord
 
     self.old_old_username = old_username
     self.old_username = username_was
-    chat_channels.find_each do |channel|
-      channel.slug = channel.slug.gsub(username_was, username)
-      channel.save
-    end
     articles.find_each do |article|
       article.path = article.path.gsub(username_was, username)
       article.save
