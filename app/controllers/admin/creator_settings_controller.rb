@@ -13,10 +13,12 @@ module Admin
         ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]
         ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]
         ::Settings::UserExperience.public = settings_params[:public]
-        settings_params[:checked_code_of_conduct]
-        settings_params[:checked_terms_and_conditions]
       end
-      current_user.update!(saw_onboarding: true)
+      current_user.update!(
+        saw_onboarding: true,
+        checked_code_of_conduct: settings_params[:checked_code_of_conduct],
+        checked_terms_and_conditions: settings_params[:checked_terms_and_conditions],
+      )
       redirect_to root_path
     rescue StandardError => e
       flash.now[:error] = e.message
