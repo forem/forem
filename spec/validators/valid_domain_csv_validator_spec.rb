@@ -19,6 +19,11 @@ RSpec.describe ValidDomainCsvValidator do
     expect(model).to be_valid
   end
 
+  it "marks valid a two character domain" do
+    model.domains = ["2u.com"]
+    expect(model).to be_valid
+  end
+
   it "marks invalid a domain with a dash as a prefix" do
     model.domains = ["-seo-hunt.com"]
     expect(model).to be_invalid
