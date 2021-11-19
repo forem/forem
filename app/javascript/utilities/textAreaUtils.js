@@ -176,6 +176,61 @@ export const getNextIndexOfCharacter = ({
 };
 
 /**
+ * Counts how many new lines come immediately before the user's current selection start
+ * @param {object} args
+ * @param {number} args.selectionStart The index of user's current selection start
+ * @param {string} args.value The value of the textarea
+ *
+ * @returns {number} Number of new lines directly before selection start
+ */
+export const getNumberOfNewLinesPrecedingSelection = ({
+  selectionStart,
+  value,
+}) => {
+  if (selectionStart === 0) {
+    return 0;
+  }
+
+  let count = 0;
+  let searchIndex = selectionStart - 1;
+
+  while (searchIndex >= 0 && value.charAt(searchIndex) === '\n') {
+    count++;
+    searchIndex--;
+  }
+
+  return count;
+};
+
+/**
+ * Counts how many new lines come immediately after the user's current selection end
+ *
+ * @param {object} args
+ * @param {number} args.selectionEnd The index of user's current selection end
+ * @param {string} args.value The value of the textarea
+ *
+ * @returns {number} the count of new line characters immediately following selection
+ */
+export const getNumberOfNewLinesFollowingSelection = ({
+  selectionEnd,
+  value,
+}) => {
+  if (selectionEnd === value.length) {
+    return 0;
+  }
+
+  let count = 0;
+  let searchIndex = selectionEnd;
+
+  while (searchIndex < value.length && value.charAt(searchIndex) === '\n') {
+    count++;
+    searchIndex++;
+  }
+
+  return count;
+};
+
+/**
  * Retrieve data about the user's current text selection
  *
  * @param {Object} params
