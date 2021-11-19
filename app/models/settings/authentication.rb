@@ -11,7 +11,7 @@ module Settings
     setting :apple_key_id, type: :string
     setting :apple_pem, type: :string
     setting :apple_team_id, type: :string
-    setting :blocked_registration_email_domains, type: :array, default: %(), validates: {
+    setting :blocked_registration_email_domains, type: :array, default: %w[], validates: {
       valid_domain_csv: true
     }
     setting :display_email_domain_allow_list_publicly, type: :boolean, default: false
