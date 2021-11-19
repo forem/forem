@@ -38,5 +38,3 @@ class JsitorTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("jsitor", JsitorTag)
-
-UnifiedEmbed.register(JsitorTag, regexp: %r{https?://jsitor.com/embed/})
