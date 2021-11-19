@@ -914,7 +914,7 @@ describe('markdownSyntaxFormatters', () => {
 
       it('formats multiple lines of text as an ordered list', () => {
         const textAreaValue = 'one\ntwo\nthree';
-        const expectedNewTextAreaValue = '\n\n1. one\n2. two\n3. three\n';
+        const expectedNewTextAreaValue = '1. one\n2. two\n3. three\n';
 
         const { newTextAreaValue, newCursorStart, newCursorEnd } =
           coreSyntaxFormatters['orderedList'].getFormatting({
@@ -998,7 +998,7 @@ describe('markdownSyntaxFormatters', () => {
 
       it("formats as an ordered list if at least one line of selection doesn't match ordered list format", () => {
         const textAreaValue = '1. one\ntwo\n3. three';
-        const expectedNewTextAreaValue = '\n\n1. 1. one\n2. two\n3. 3. three\n';
+        const expectedNewTextAreaValue = '1. 1. one\n2. two\n3. 3. three\n';
 
         const { newTextAreaValue, newCursorStart, newCursorEnd } =
           coreSyntaxFormatters['orderedList'].getFormatting({
@@ -1011,6 +1011,91 @@ describe('markdownSyntaxFormatters', () => {
         expect(
           newTextAreaValue.substring(newCursorStart, newCursorEnd),
         ).toEqual('1. 1. one\n2. two\n3. 3. three');
+      });
+
+      it("doesn't add new lines before list, if at the beginning of text area", () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '1. one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['orderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('1. one');
+      });
+
+      it('adds one new line before list, if directly preceded by a single new line', () => {
+        const textAreaValue = '\none';
+        const expectedNewTextAreaValue = '\n\n1. one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['orderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 1,
+            selectionEnd: 4,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('1. one');
+      });
+
+      it('adds two new lines before list, if no new lines already exist before it', () => {
+        const textAreaValue = 'one two';
+        const expectedNewTextAreaValue = 'one \n\n1. two\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['orderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 7,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('1. two');
+      });
+
+      it("doesn't add a new line after list if one already exists", () => {
+        const textAreaValue = 'one\n';
+        const expectedNewTextAreaValue = '1. one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['orderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('1. one');
+      });
+
+      it('adds a new line after list if none exists', () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '1. one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['orderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('1. one');
       });
     });
 
@@ -1034,7 +1119,7 @@ describe('markdownSyntaxFormatters', () => {
 
       it('formats multiple lines of text as an unordered list', () => {
         const textAreaValue = 'one\ntwo\nthree';
-        const expectedNewTextAreaValue = '\n\n- one\n- two\n- three\n';
+        const expectedNewTextAreaValue = '- one\n- two\n- three\n';
 
         const { newTextAreaValue, newCursorStart, newCursorEnd } =
           coreSyntaxFormatters['unorderedList'].getFormatting({
@@ -1118,7 +1203,7 @@ describe('markdownSyntaxFormatters', () => {
 
       it("formats as an unordered list if at least one line of selection doesn't match unordered list format", () => {
         const textAreaValue = '- one\ntwo\n- three';
-        const expectedNewTextAreaValue = '\n\n- - one\n- two\n- - three\n';
+        const expectedNewTextAreaValue = '- - one\n- two\n- - three\n';
 
         const { newTextAreaValue, newCursorStart, newCursorEnd } =
           coreSyntaxFormatters['unorderedList'].getFormatting({
@@ -1131,6 +1216,91 @@ describe('markdownSyntaxFormatters', () => {
         expect(
           newTextAreaValue.substring(newCursorStart, newCursorEnd),
         ).toEqual('- - one\n- two\n- - three');
+      });
+
+      it("doesn't add new lines before list, if at the beginning of text area", () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '- one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['unorderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('- one');
+      });
+
+      it('adds one new line before list, if directly preceded by a single new line', () => {
+        const textAreaValue = '\none';
+        const expectedNewTextAreaValue = '\n\n- one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['unorderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 1,
+            selectionEnd: 4,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('- one');
+      });
+
+      it('adds two new lines before list, if no new lines already exist before it', () => {
+        const textAreaValue = 'one two';
+        const expectedNewTextAreaValue = 'one \n\n- two\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['unorderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 7,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('- two');
+      });
+
+      it("doesn't add a new line after list if one already exists", () => {
+        const textAreaValue = 'one\n';
+        const expectedNewTextAreaValue = '- one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['unorderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('- one');
+      });
+
+      it('adds a new line after list if none exists', () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '- one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['unorderedList'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('- one');
       });
     });
 
@@ -1262,6 +1432,91 @@ describe('markdownSyntaxFormatters', () => {
         expect(newCursorStart).toEqual(5);
         expect(newCursorEnd).toEqual(8);
       });
+
+      it("doesn't add new lines before heading, if at the beginning of text area", () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '## one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
+
+      it('adds one new line before heading, if directly preceded by a single new line', () => {
+        const textAreaValue = '\none';
+        const expectedNewTextAreaValue = '\n\n## one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 1,
+            selectionEnd: 4,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
+
+      it('adds two new lines before heading, if no new lines already exist before it', () => {
+        const textAreaValue = 'one two';
+        const expectedNewTextAreaValue = 'one \n\n## two\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 7,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('two');
+      });
+
+      it("doesn't add a new line after heading if one already exists", () => {
+        const textAreaValue = 'one\n';
+        const expectedNewTextAreaValue = '## one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
+
+      it('adds a new line after heading if none exists', () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '## one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['heading'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
     });
 
     describe('quote', () => {
@@ -1284,7 +1539,7 @@ describe('markdownSyntaxFormatters', () => {
 
       it('formats multiple lines of text as a quote', () => {
         const textAreaValue = 'one\ntwo\nthree';
-        const expectedNewTextAreaValue = '\n\n> one\n> two\n> three\n';
+        const expectedNewTextAreaValue = '> one\n> two\n> three\n';
 
         const { newTextAreaValue, newCursorStart, newCursorEnd } =
           coreSyntaxFormatters['quote'].getFormatting({
@@ -1368,7 +1623,7 @@ describe('markdownSyntaxFormatters', () => {
 
       it("formats as a quote if at least one line of selection doesn't match quote format", () => {
         const textAreaValue = '> one\ntwo\n> three';
-        const expectedNewTextAreaValue = '\n\n> > one\n> two\n> > three\n';
+        const expectedNewTextAreaValue = '> > one\n> two\n> > three\n';
 
         const { newTextAreaValue, newCursorStart, newCursorEnd } =
           coreSyntaxFormatters['quote'].getFormatting({
@@ -1381,6 +1636,91 @@ describe('markdownSyntaxFormatters', () => {
         expect(
           newTextAreaValue.substring(newCursorStart, newCursorEnd),
         ).toEqual('> > one\n> two\n> > three');
+      });
+
+      it("doesn't add new lines before quote, if at the beginning of text area", () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '> one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['quote'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('> one');
+      });
+
+      it('adds one new line before quote, if directly preceded by a single new line', () => {
+        const textAreaValue = '\none';
+        const expectedNewTextAreaValue = '\n\n> one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['quote'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 1,
+            selectionEnd: 4,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('> one');
+      });
+
+      it('adds two new lines before quote, if no new lines already exist before it', () => {
+        const textAreaValue = 'one two';
+        const expectedNewTextAreaValue = 'one \n\n> two\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['quote'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 7,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('> two');
+      });
+
+      it("doesn't add a new line after quote if one already exists", () => {
+        const textAreaValue = 'one\n';
+        const expectedNewTextAreaValue = '> one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['quote'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('> one');
+      });
+
+      it('adds a new line after quote if none exists', () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '> one\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['quote'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('> one');
       });
     });
 
@@ -1404,7 +1744,7 @@ describe('markdownSyntaxFormatters', () => {
 
       it('formats multiple lines of text as a code block', () => {
         const textAreaValue = 'one\ntwo\nthree';
-        const expectedNewTextAreaValue = '\n\n```\none\ntwo\nthree\n```\n';
+        const expectedNewTextAreaValue = '```\none\ntwo\nthree\n```\n';
 
         const { newTextAreaValue, newCursorStart, newCursorEnd } =
           coreSyntaxFormatters['codeBlock'].getFormatting({
@@ -1503,6 +1843,91 @@ describe('markdownSyntaxFormatters', () => {
           newTextAreaValue.substring(newCursorStart, newCursorEnd),
         ).toEqual('two');
       });
+
+      it("doesn't add new lines before code block, if at the beginning of text area", () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '```\none\n```\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['codeBlock'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
+
+      it('adds one new line before code block, if directly preceded by a single new line', () => {
+        const textAreaValue = '\none';
+        const expectedNewTextAreaValue = '\n\n```\none\n```\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['codeBlock'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 1,
+            selectionEnd: 4,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
+
+      it('adds two new lines before code block, if no new lines already exist before it', () => {
+        const textAreaValue = 'one two';
+        const expectedNewTextAreaValue = 'one \n\n```\ntwo\n```\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['codeBlock'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 7,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('two');
+      });
+
+      it("doesn't add a new line after code block if one already exists", () => {
+        const textAreaValue = 'one\n';
+        const expectedNewTextAreaValue = '```\none\n```\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['codeBlock'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
+
+      it('adds a new line after code block if none exists', () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '```\none\n```\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          coreSyntaxFormatters['codeBlock'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
     });
 
     describe('divider', () => {
@@ -1570,6 +1995,74 @@ describe('markdownSyntaxFormatters', () => {
         expect(
           newTextAreaValue.substring(newCursorStart, newCursorEnd),
         ).toEqual('two');
+      });
+
+      it("doesn't add new lines before divider, if at the beginning of text area", () => {
+        const textAreaValue = 'one';
+        const expectedNewTextAreaValue = '---\none\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          secondarySyntaxFormatters['divider'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
+
+      it('adds one new line before divider, if directly preceded by a single new line', () => {
+        const textAreaValue = '\none';
+        const expectedNewTextAreaValue = '\n\n---\none\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          secondarySyntaxFormatters['divider'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 1,
+            selectionEnd: 4,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
+      });
+
+      it('adds two new lines before divider, if no new lines already exist before it', () => {
+        const textAreaValue = 'one two';
+        const expectedNewTextAreaValue = 'one \n\n---\ntwo\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          secondarySyntaxFormatters['divider'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 4,
+            selectionEnd: 7,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('two');
+      });
+
+      it("doesn't add a new line after divider if one already exists", () => {
+        const textAreaValue = 'one\n';
+        const expectedNewTextAreaValue = '---\none\n';
+
+        const { newTextAreaValue, newCursorStart, newCursorEnd } =
+          secondarySyntaxFormatters['divider'].getFormatting({
+            value: textAreaValue,
+            selectionStart: 0,
+            selectionEnd: 3,
+          });
+
+        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        expect(
+          newTextAreaValue.substring(newCursorStart, newCursorEnd),
+        ).toEqual('one');
       });
     });
   });

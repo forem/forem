@@ -4,7 +4,8 @@
     "paths": {
       "@crayons/*": ["app/javascript/crayons/*"],
       "@utilities/*": ["app/javascript/utilities/*"],
-      "@components/*": ["app/javascript/shared/components/*"]
+      "@components/*": ["app/javascript/shared/components/*"],
+      "@admin-controllers/*": ["app/javascript/admin/controllers/*"]
     }
   },
   "exclude": ["node_modules", "**/node_modules/*"]

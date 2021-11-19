@@ -3,6 +3,11 @@ class YoutubeTag < LiquidTagBase
   # rubocop:disable Layout/LineLength
   YOUTUBE_URL_REGEX = %r{https?://(www\.)?(youtube|youtu)\.(com|be)/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
   # rubocop:enable Layout/LineLength
+  MARKER_TO_SECONDS_MAP = {
+    "h" => 60 * 60,
+    "m" => 60,
+    "s" => 1
+  }.freeze
 
   def initialize(_tag_name, id, _parse_context)
     super
@@ -48,13 +53,23 @@ class YoutubeTag < LiquidTagBase
     id[0]
   end
 
-  def translate_start_time(id)
-    time_in_seconds = id.split("?t=")[-1]
-    "#{id.split('?t=')[0]}?start=#{time_in_seconds}"
+  def valid_id?(id)
+    id.match?(/\A[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,}h?)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/)
   end
 
-  def valid_id?(id)
-    id =~ /[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)/
+  def translate_start_time(id)
+    time = id.split("?t=")[-1]
+    return "#{id.split('?t=')[0]}?start=#{time}" if time.match?(/\A\d+\Z/)
+
+    time_elements = time.split(/[a-z]/)
+    time_markers = time.split(/\d+/)[1..]
+
+    seconds = 0
+    time_markers.each_with_index do |m, i|
+      seconds += MARKER_TO_SECONDS_MAP.fetch(m, 0) * time_elements[i].to_i
+    end
+
+    "#{id.split('?t=')[0]}?start=#{seconds}"
   end
 end
 

@@ -636,8 +636,11 @@ function handleHiddenComments(commentableType){
     collapseCommentsHiddenByCommentableUser();
   }
   else {
-    document.querySelectorAll('.comment-hidden-by-commentable-user, .details-comment-hidden-by-commentable-user').forEach(element => {
+    document.querySelectorAll('.element-hidden-by-commentable-user').forEach(element => {
       element.classList.add('hidden');
+    })
+    document.querySelectorAll('.comment-hidden-by-author-text').forEach(element => {
+      element.classList.remove('hidden');
     })
   }
 }

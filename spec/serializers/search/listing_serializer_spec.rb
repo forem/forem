@@ -6,9 +6,8 @@ RSpec.describe Search::ListingSerializer do
   it "serializes a Listing" do
     data_hash = described_class.new(listing).serializable_hash.dig(:data, :attributes)
     expect(data_hash.keys).to include(
-      :id, :body_markdown, :bumped_at, :category, :contact_via_connect, :expires_at,
-      :originally_published_at, :location, :processed_html, :published, :slug, :title, :user_id,
-      :tags, :author
+      :id, :body_markdown, :bumped_at, :category, :expires_at, :originally_published_at,
+      :location, :processed_html, :published, :slug, :title, :user_id, :tags, :author
     )
   end
 

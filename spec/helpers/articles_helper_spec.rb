@@ -50,7 +50,7 @@ describe ArticlesHelper do
 
       before { allow(helper).to receive(:internal_navigation?).and_return(false) }
 
-      it { is_expected.to include('height="18" width="18"') }
+      it { is_expected.to include('width="18" height="18"') }
     end
   end
 
