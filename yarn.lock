@@ -5102,14 +5102,6 @@ cli-table3@0.6.0, cli-table3@~0.6.0:
   optionalDependencies:
     colors "^1.1.2"
 
-cli-truncate@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/cli-truncate/-/cli-truncate-3.1.0.tgz#3f23ab12535e3d73e839bb43e73c9de487db1389"
-  integrity sha512-wfOBkjXteqSnI59oPcJkcPl/ZmwvMMOj340qUIY1SKZCv0B9Cf4D4fAucRkIKQmsIuYK3x1rrgU7MeGRruiuiA==
-  dependencies:
-    slice-ansi "^5.0.0"
-    string-width "^5.0.0"
-
 cli-truncate@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cli-truncate/-/cli-truncate-2.1.0.tgz#c39e28bf05edcde5be3b98992a22deed5a2b93c7"
@@ -5117,6 +5109,14 @@ cli-truncate@^2.1.0:
   dependencies:
     slice-ansi "^3.0.0"
     string-width "^4.2.0"
+
+cli-truncate@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/cli-truncate/-/cli-truncate-3.1.0.tgz#3f23ab12535e3d73e839bb43e73c9de487db1389"
+  integrity sha512-wfOBkjXteqSnI59oPcJkcPl/ZmwvMMOj340qUIY1SKZCv0B9Cf4D4fAucRkIKQmsIuYK3x1rrgU7MeGRruiuiA==
+  dependencies:
+    slice-ansi "^5.0.0"
+    string-width "^5.0.0"
 
 clipboard-polyfill@^3.0.3:
   version "3.0.3"
@@ -5557,7 +5557,7 @@ cosmiconfig@^6.0.0:
     path-type "^4.0.0"
     yaml "^1.7.2"
 
-cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
+cosmiconfig@^7.0.0:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-7.0.1.tgz#714d756522cace867867ccb4474c5d01bbae5d6d"
   integrity sha512-a1YWNUV2HwGimB7dU2s1wUMurNKjpx60HxBB6xUM8Re+2s1g1IIfJvFR0/iCF+XHdE0GMTKTuLR32UQff4TEyQ==
@@ -8114,11 +8114,6 @@ has-flag@^4.0.0:
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-4.0.0.tgz#944771fd9c81c81265c4d6941860da06bb59479b"
   integrity sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==
 
-has-flag@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-5.0.1.tgz#5483db2ae02a472d1d0691462fc587d1843cd940"
-  integrity sha512-CsNUt5x9LUdx6hnk/E2SZLsDyvfqANZSUq4+D3D8RzDJ2M+HDTIkF60ibS1vHaK55vzgiZw1bEPFG9yH7l33wA==
-
 has-glob@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/has-glob/-/has-glob-1.0.0.tgz#9aaa9eedbffb1ba3990a7b0010fb678ee0081207"
@@ -10255,10 +10250,10 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lilconfig@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-2.0.3.tgz#68f3005e921dafbd2a2afb48379986aa6d2579fd"
-  integrity sha512-EHKqr/+ZvdKCifpNrJCKxBTgk5XupZA3y/aCPY9mxfgBzmgh93Mt/WqjjQ38oMxXuvDokaKiM3lAgvSH2sjtHg==
+lilconfig@2.0.4, lilconfig@^2.0.3:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/lilconfig/-/lilconfig-2.0.4.tgz#f4507d043d7058b380b6a8f5cb7bcd4b34cee082"
+  integrity sha512-bfTIN7lEsiooCocSISTWXkiWJkRqtL9wYtYy+8EK3Y41qh3mpwPU0ycTOgjdY9ErwXCc8QyrQp82bdL0Xkm9yA==
 
 lines-and-columns@^1.1.6:
   version "1.1.6"
@@ -10272,23 +10267,25 @@ linkstate@^2.0.1:
   dependencies:
     esm "^3.2.25"
 
-lint-staged@^12.0.2:
-  version "12.0.2"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-12.0.2.tgz#b0f96f2a57898658a5b59e087aeff975dad03fc1"
-  integrity sha512-tpCvACqc7bykziGJmXG0G8YG2RaCrWiDBwmrP9wU7i/3za9JMOvCECQmXjw/sO4ICC70ApVwyqixS1htQX9Haw==
+lint-staged@^12.1.2:
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-12.1.2.tgz#90c571927e1371fc133e720671dd7989eab53f74"
+  integrity sha512-bSMcQVqMW98HLLLR2c2tZ+vnDCnx4fd+0QJBQgN/4XkdspGRPc8DGp7UuOEBe1ApCfJ+wXXumYnJmU+wDo7j9A==
   dependencies:
-    cli-truncate "3.1.0"
+    cli-truncate "^3.1.0"
     colorette "^2.0.16"
     commander "^8.3.0"
-    cosmiconfig "^7.0.1"
     debug "^4.3.2"
+    enquirer "^2.3.6"
     execa "^5.1.1"
+    lilconfig "2.0.4"
     listr2 "^3.13.3"
     micromatch "^4.0.4"
     normalize-path "^3.0.0"
-    object-inspect "1.11.0"
-    string-argv "0.3.1"
-    supports-color "9.0.2"
+    object-inspect "^1.11.0"
+    string-argv "^0.3.1"
+    supports-color "^9.0.2"
+    yaml "^1.10.2"
 
 listr2@^3.13.3, listr2@^3.8.3:
   version "3.13.3"
@@ -11272,7 +11269,7 @@ object-copy@^0.1.0:
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
-object-inspect@1.11.0, object-inspect@^1.11.0, object-inspect@^1.9.0:
+object-inspect@^1.11.0, object-inspect@^1.9.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.11.0.tgz#9dceb146cedd4148a0d9e51ab88d34cf509922b1"
   integrity sha512-jp7ikS6Sd3GxQfZJPyH3cjcbJF6GZPClgdV+EFygjFLQ5FmW/dRUnTd9PQ9k0JhoNDabWFbpF1yCdSWCC6gexg==
@@ -14866,7 +14863,7 @@ strict-uri-encode@^1.0.0:
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz#279b225df1d582b1f54e65addd4352e18faa0713"
   integrity sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
 
-string-argv@0.3.1:
+string-argv@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/string-argv/-/string-argv-0.3.1.tgz#95e2fbec0427ae19184935f816d74aaa4c5c19da"
   integrity sha512-a1uQGz7IyVy9YwhqjZIZu1c8JO8dNIe20xBmSS6qu9kv++k3JGzCVmprbNN5Kn+BgzD5E7YYwg1CcjuJMRNsvg==
@@ -15106,13 +15103,6 @@ sugarss@^1.0.1:
   dependencies:
     postcss "^6.0.14"
 
-supports-color@9.0.2:
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-9.0.2.tgz#50f082888e4b0a4e2ccd2d0b4f9ef4efcd332485"
-  integrity sha512-ii6tc8ImGFrgMPYq7RVAMKkhPo9vk8uA+D3oKbJq/3Pk2YSMv1+9dUAesa9UxMbxBTvxwKTQffBahNVNxEvM8Q==
-  dependencies:
-    has-flag "^5.0.0"
-
 supports-color@^5.3.0, supports-color@^5.4.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
@@ -15140,6 +15130,11 @@ supports-color@^8.0.0, supports-color@^8.1.1:
   integrity sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==
   dependencies:
     has-flag "^4.0.0"
+
+supports-color@^9.0.2:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-9.1.0.tgz#558963681dafeff41ed68220488cbf438d29f351"
+  integrity sha512-lOCGOTmBSN54zKAoPWhHkjoqVQ0MqgzPE5iirtoSixhr0ZieR/6l7WZ32V53cvy9+1qghFnIk7k52p991lKd6g==
 
 supports-hyperlinks@^2.0.0:
   version "2.2.0"
