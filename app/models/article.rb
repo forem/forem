@@ -9,6 +9,8 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
+
   attr_accessor :publish_under_org
   attr_writer :series
 
@@ -807,27 +809,7 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
-                    Regexp.new(term.downcase).match?(title.downcase)
-                  end
-
-    Reaction.create(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "Article",
-      category: "vomit",
-    )
-
-    return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
-
-    user.add_role(:suspended)
-    Note.create(
-      author_id: Settings::General.mascot_user_id,
-      noteable_id: user_id,
-      noteable_type: "User",
-      reason: "automatic_suspend",
-      content: "User suspended for too many spammy articles, triggered by autovomit.",
-    )
+    Spam::ArticleHandler.handle!(article: self)
   end
 
   def async_bust

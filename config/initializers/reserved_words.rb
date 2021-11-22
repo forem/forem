@@ -33,7 +33,6 @@ class ReservedWords
     challenge
     changelog
     chat
-    chat_channels
     code
     code-of-conduct
     coffee

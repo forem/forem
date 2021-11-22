@@ -3,6 +3,8 @@ import {
   getLastIndexOfCharacter,
   getNextIndexOfCharacter,
   getSelectionData,
+  getNumberOfNewLinesPrecedingSelection,
+  getNumberOfNewLinesFollowingSelection,
 } from '../textAreaUtils';
 
 describe('getMentionWordData', () => {
@@ -186,5 +188,99 @@ describe('getSelectionData', () => {
       textAfterSelection: ' three four',
       selectedText: 'two',
     });
+  });
+});
+
+describe('getNumberOfNewLinesPrecedingSelection', () => {
+  it('returns 0 when selection start is 0', () => {
+    expect(
+      getNumberOfNewLinesPrecedingSelection({
+        selectionStart: 0,
+        value: 'some text',
+      }),
+    ).toEqual(0);
+  });
+
+  it('returns 0 if no new lines exist before selection', () => {
+    expect(
+      getNumberOfNewLinesPrecedingSelection({
+        selectionStart: 9,
+        value: 'some text',
+      }),
+    ).toEqual(0);
+  });
+
+  it('returns count of new lines before selection', () => {
+    expect(
+      getNumberOfNewLinesPrecedingSelection({
+        selectionStart: 6,
+        value: 'some\n\ntext',
+      }),
+    ).toEqual(2);
+  });
+
+  it('only returns count of new lines immediately before selection', () => {
+    expect(
+      getNumberOfNewLinesPrecedingSelection({
+        selectionStart: 7,
+        value: 'some\n\ntext',
+      }),
+    ).toEqual(0);
+  });
+
+  it('stops counting new lines as soon as any other character occurs', () => {
+    expect(
+      getNumberOfNewLinesPrecedingSelection({
+        selectionStart: 9,
+        value: '\n\n\nsome\n\ntext',
+      }),
+    ).toEqual(2);
+  });
+});
+
+describe('getNumberOfNewLinesFollowingSelection', () => {
+  it('returns 0 when selection end is end of text area value', () => {
+    expect(
+      getNumberOfNewLinesFollowingSelection({
+        selectionEnd: 9,
+        value: 'some text',
+      }),
+    ).toEqual(0);
+  });
+
+  it('returns 0 if no new lines exist after selection', () => {
+    expect(
+      getNumberOfNewLinesFollowingSelection({
+        selectionEnd: 1,
+        value: 'some text',
+      }),
+    ).toEqual(0);
+  });
+
+  it('returns count of new lines after selection', () => {
+    expect(
+      getNumberOfNewLinesFollowingSelection({
+        selectionEnd: 4,
+        value: 'some\n\ntext',
+      }),
+    ).toEqual(2);
+  });
+
+  it('only returns count of new lines immediately after selection', () => {
+    expect(
+      getNumberOfNewLinesFollowingSelection({
+        selectionEnd: 1,
+        value: 'some\n\ntext',
+      }),
+    ).toEqual(0);
+  });
+
+  it('stops counting new lines as soon as any other character occurs', () => {
+    expect(
+      getNumberOfNewLinesFollowingSelection({
+        selectionEnd: 0,
+        value: '\n\n\nsome\n\ntext',
+      }),
+    ).toEqual(3);
   });
 });

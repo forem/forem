@@ -6,6 +6,19 @@ RSpec.describe Authentication::Authenticator, type: :service do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
+  # A shared context is somewhat like a module mixin.  You define
+  # the specs to share and then later you can `include_context` for
+  # that shared context.
+  shared_examples "spam handling" do
+    context "when email is spammy" do
+      it "raises an Identity::SpamDomainForIdentityError" do
+        allow(Settings::Authentication).to receive(:acceptable_domain?).and_return(false)
+
+        expect { service.call }.to raise_error(Authentication::Errors::SpammyEmailDomain)
+      end
+    end
+  end
+
   context "when authenticating through an unknown provider" do
     it "raises ProviderNotFound" do
       auth_payload = OmniAuth.config.mock_auth[:github].merge(provider: "okta")
@@ -18,6 +31,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
   context "when authenticating through Apple", vcr: { cassette_name: "fastly_sloan" } do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:apple] }
     let!(:service) { described_class.new(auth_payload) }
+
+    include_context "spam handling"
 
     describe "new user" do
       it "creates a new user" do
@@ -212,6 +227,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
   context "when authenticating through Github" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:github] }
     let!(:service) { described_class.new(auth_payload) }
+
+    include_context "spam handling"
 
     describe "new user" do
       it "creates a new user" do
@@ -414,6 +431,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:facebook] }
     let!(:service) { described_class.new(auth_payload) }
 
+    include_context "spam handling"
+
     describe "new user" do
       it "creates a new user" do
         expect do
@@ -502,6 +521,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
   context "when authenticating through Twitter" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
     let!(:service) { described_class.new(auth_payload) }
+
+    include_context "spam handling"
 
     describe "new user" do
       it "creates a new user" do

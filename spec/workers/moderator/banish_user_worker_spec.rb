@@ -14,7 +14,6 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
       create(:listing, user: user)
-      ChatChannels::CreateWithUsers.call(users: [user, user2])
       user.follow(user2)
       described_class.new.perform(admin.id, user.id)
       user.reload
@@ -29,7 +28,6 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
       expect(user.reactions.count).to eq(0)
       expect(user.comments.count).to eq(0)
       expect(user.articles.count).to eq(0)
-      expect(user.chat_channels.count).to eq(0)
       expect(user.follows.count).to eq(0)
       expect(user.listings.count).to eq(0)
     end
