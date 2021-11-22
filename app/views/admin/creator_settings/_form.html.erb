@@ -35,6 +35,7 @@
       <%= text_field_tag :primary_brand_color_hex,
                          ::Settings::UserExperience.primary_brand_color_hex,
                          pattern: "^#+([a-fA-F0-9]{6})$",
+                         title: "Provide a valid HEX Color or pick your color from the color picker.",
                          placeholder: ::Settings::UserExperience.primary_brand_color_hex,
                          class: "crayons-textfield js-color-field",
                          "data-action": "change->creator-settings#updateBranding" %>

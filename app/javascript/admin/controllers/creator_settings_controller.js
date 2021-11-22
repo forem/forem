@@ -76,6 +76,10 @@ export class CreatorSettingsController extends Controller {
   updateBranding(event) {
     const color = event.target.value;
 
+    if (!new RegExp(event.target.getAttribute('pattern')).test(color)) {
+      return;
+    }
+
     document.documentElement.style.setProperty('--accent-brand', color);
 
     // responsible for the hover effect over the button.
