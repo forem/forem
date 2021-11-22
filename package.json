@@ -109,7 +109,7 @@
     "@hotwired/stimulus-webpack-helpers": "1.0.1",
     "@rails/ujs": "6.1.4",
     "@rails/webpacker": "5.4.3",
-    "@reach/combobox": "^0.16.3",
+    "@reach/combobox": "^0.16.4",
     "ahoy.js": "^0.4.0",
     "autoprefixer": "^10.4.0",
     "babel-preset-preact": "^2.0.0",

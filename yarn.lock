@@ -1819,10 +1819,10 @@
     "@reach/utils" "0.16.0"
     tslib "^2.3.0"
 
-"@reach/combobox@^0.16.3":
-  version "0.16.3"
-  resolved "https://registry.yarnpkg.com/@reach/combobox/-/combobox-0.16.3.tgz#1ed7066cd0d7ab5265345cd55a648659754dd33d"
-  integrity sha512-ch2zmUgDg1JlN9L4l7NHbJaQHo95Qri2cx6pkWry389P6OQUkxHqP2TDvo4l2ivnSlrp0qdh8m9L979WvWREOQ==
+"@reach/combobox@^0.16.4":
+  version "0.16.4"
+  resolved "https://registry.yarnpkg.com/@reach/combobox/-/combobox-0.16.4.tgz#0a6ad32e383211ac089f8dfa084a0b527f02e4d5"
+  integrity sha512-j9TANKr72Q1/K1Ez7C0qJ2E/JRKrkwUYyxMUTRp9Jiegcx/aW7RGv58ogipAB3fi0WrVklJgCAXAqtVocZ8kvA==
   dependencies:
     "@reach/auto-id" "0.16.0"
     "@reach/descendants" "0.16.1"
@@ -1830,6 +1830,7 @@
     "@reach/portal" "0.16.2"
     "@reach/utils" "0.16.0"
     prop-types "^15.7.2"
+    tiny-warning "^1.0.3"
     tslib "^2.3.0"
 
 "@reach/descendants@0.16.1":
