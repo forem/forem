@@ -11,6 +11,9 @@ import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
 
+// Placeholder text displayed while an image is uploading
+const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
+
 /**
  * Returns the next sibling in the DOM which matches the given CSS selector.
  * This makes sure that only toolbar buttons are cycled through on Arrow key press,
@@ -184,8 +187,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     const { textBeforeSelection, textAfterSelection, selectionEnd } =
       getSelectionData(textArea);
 
-    const placeholder = '![Uploading image](...)';
-    const textWithPlaceholder = `${textBeforeSelection}\n${placeholder}${textAfterSelection}`;
+    const textWithPlaceholder = `${textBeforeSelection}\n${UPLOADING_IMAGE_PLACEHOLDER}${textAfterSelection}`;
     textArea.value = textWithPlaceholder;
     // Make sure Editor text area updates via linkstate
     textArea.dispatchEvent(new Event('input'));
@@ -193,13 +195,14 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     textArea.focus({ preventScroll: true });
 
     // Set cursor to the end of the placeholder
-    const newCursorPosition = selectionEnd + placeholder.length + 1;
+    const newCursorPosition =
+      selectionEnd + UPLOADING_IMAGE_PLACEHOLDER.length + 1;
     textArea.setSelectionRange(newCursorPosition, newCursorPosition);
   };
 
   const handleImageUploadSuccess = (imageMarkdown) => {
     const newTextValue = textArea.value.replace(
-      '![Uploading image](...)',
+      UPLOADING_IMAGE_PLACEHOLDER,
       imageMarkdown,
     );
     textArea.value = newTextValue;
@@ -208,7 +211,10 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   };
 
   const handleImageUploadError = () => {
-    const newTextValue = textArea.value.replace('![Uploading image](...)', '');
+    const newTextValue = textArea.value.replace(
+      UPLOADING_IMAGE_PLACEHOLDER,
+      '',
+    );
     textArea.value = newTextValue;
     // Make sure Editor text area updates via linkstate
     textArea.dispatchEvent(new Event('input'));
