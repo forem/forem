@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
-
+import { WCAGColorContrast } from '../../utilities/colorContrast';
 const MAX_LOGO_PREVIEW_HEIGHT = 80;
 const MAX_LOGO_PREVIEW_WIDTH = 220;
 
@@ -7,7 +7,7 @@ const MAX_LOGO_PREVIEW_WIDTH = 220;
  * Manages interactions on the Creator Settings page.
  */
 export class CreatorSettingsController extends Controller {
-  static targets = ['previewLogo'];
+  static targets = ['previewLogo', 'colorContrastError'];
 
   /**
    * Displays a preview of the image selected by the user.
@@ -66,5 +66,21 @@ export class CreatorSettingsController extends Controller {
     };
 
     reader.readAsDataURL(firstFile);
+  }
+
+  /**
+   * Validates the color contrast on brand color picker
+   * for accessibility.
+   *
+   * @param {Event} event
+   */
+  validateColorContrast(event) {
+    const { value: color } = event.target;
+
+    if (WCAGColorContrast.isLow(color)) {
+      this.colorContrastErrorTarget.classList.remove('hidden');
+    } else {
+      this.colorContrastErrorTarget.classList.add('hidden');
+    }
   }
 }
