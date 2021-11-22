@@ -75,7 +75,7 @@ export class CreatorSettingsController extends Controller {
    * @param {Event} event
    */
   updateBranding(event) {
-    const color = event.target.value;
+    const { value: color } = event.target;
 
     if (!new RegExp(event.target.getAttribute('pattern')).test(color)) {
       return;
