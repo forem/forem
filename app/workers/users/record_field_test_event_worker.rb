@@ -8,9 +8,7 @@ module Users
     def perform(user_id, goal)
       @user = User.find_by(id: user_id)
       return unless @user
-      return if FieldTest.config["experiments"].nil?
-
-      FieldTest.config["experiments"].each_key do |key|
+      FieldTest.config["experiments"].to_h.each_key do |key|
         @experiment = key.to_sym
         case goal
         # We have special conditional goals for some where we look for past events for commulative wins
