@@ -25,7 +25,7 @@ FactoryBot.define do
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
     main_image    { with_main_image ? Faker::Avatar.image : nil }
     experience_level_rating { rand(4..6) }
-    cached_tag_list { tags if with_tags }
+    # cached_tag_list { tags if with_tags }
     body_markdown do
       <<~HEREDOC
         ---

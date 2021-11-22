@@ -554,6 +554,7 @@ class Article < ApplicationRecord
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.cached_tag_list = tag_list.join(", ")
   end
 
   def async_score_calc
