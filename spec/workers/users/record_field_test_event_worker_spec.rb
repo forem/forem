@@ -9,6 +9,13 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
 
     let(:user) { create(:user) }
 
+    context "with no field tests configured" do
+      it "gracefully handles a case where there are no tests" do
+        allow(FieldTest).to receive(:config).and_return({ "experiments" => nil })
+        worker.perform(user.id, "user_creates_reaction")
+      end
+    end
+
     context "with user who is part of field test" do
       before do
         field_test(:wut, participant: user)
