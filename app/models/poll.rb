@@ -18,6 +18,10 @@ class Poll < ApplicationRecord
   before_save :evaluate_markdown
   after_create :create_poll_options
 
+  # We only want a user to be able to vote (or abstain) once per poll.
+  # This query helps validate that constraint.
+  #
+  #
   # @param user_id [Integer]
   #
   # @return [TrueClass] if the given user has a registered vote or skip
