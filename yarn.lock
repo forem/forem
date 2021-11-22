@@ -1334,10 +1334,10 @@
   resolved "https://registry.yarnpkg.com/@github/time-elements/-/time-elements-3.1.2.tgz#cc36d7a34ff2033d7f0b216f1a724405b8fbc201"
   integrity sha512-YVtZVLBikP6I7na22kfB9PKIseISwX41MFJ7lPuNz1VVH2IR5cpRRU6F1X6kcchPChljuvMUR4OiwMWHOJQ8kQ==
 
-"@honeybadger-io/webpack@^1.2.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@honeybadger-io/webpack/-/webpack-1.5.0.tgz#ef48249f5af51b6021f802bcf1280f309089056d"
-  integrity sha512-AX1tL0ZI1zVu4mAKBP0pGAz3b5EsEng9Uc4iQivWN9msbsO2/2xGSkvuWN3nrXljDNmHYKL0mvZKy70B9KVapg==
+"@honeybadger-io/webpack@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/webpack/-/webpack-1.5.1.tgz#60829621fa8c766e1ea8fa4626e31ad1a1351e49"
+  integrity sha512-e1F3hdVhBB6Fj7H8bFRRf7IWVlpR2Mbn/o1az2t8hqViFbYnWz0bGJUDlzQlYmu9HLXyPwJ8+mRR8oQQO31I1w==
   dependencies:
     "@babel/runtime" "^7.14.5"
     "@vercel/fetch-retry" "^5.0.3"
