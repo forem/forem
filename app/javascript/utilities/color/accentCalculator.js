@@ -1,5 +1,3 @@
-
-
 /**
  * Updates the brightness of the color
  * @param {String} color
