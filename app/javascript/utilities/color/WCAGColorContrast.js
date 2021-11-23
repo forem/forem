@@ -1,25 +1,10 @@
 /**
  * Check color contrast according to WCAG 2.0 spec
- * @namespace ColorContrast
  * @see http://www.w3.org/TR/WCAG20-TECHS/G17.html
- * based on original implementation
+ * Based on original implementation
  * https://github.com/doochik/wcag-color-contrast
  */
 export const WCAGColorContrast = {
-
-  /**
-   * Determine if the contast ratio is low
-   * @param {String} rgb1 6-letter RGB color.
-   * @param {String} rgb2 6-letter RGB color.
-   * @return {Boolean}
-   */
-  isLow(color, comparedColor = "ffffff", minContrast = 4.5 ) {
-    return this.ratio(
-      color.replace('#', ''),
-      comparedColor.replace('#', '')
-    ) < minContrast
-  },
-
   /**
    * Calculate contast ratio beetween rgb1 and rgb2
    * @param {String} rgb1 6-letter RGB color.
@@ -28,14 +13,14 @@ export const WCAGColorContrast = {
    */
   ratio(rgb1, rgb2) {
     if (this.validRGB(rgb1)) {
-        var sRGB1 = this.RGBtosRGB(rgb1);
+      var sRGB1 = this.RGBtosRGB(rgb1);
     } else {
-        throw `Invalid color ${  rgb1}`;
+      throw `Invalid color ${rgb1}`;
     }
     if (this.validRGB(rgb2)) {
-        var sRGB2 = this.RGBtosRGB(rgb2);
+      var sRGB2 = this.RGBtosRGB(rgb2);
     } else {
-        throw `Invalid color ${  rgb2}`;
+      throw `Invalid color ${rgb2}`;
     }
 
     const L1 = this.sRGBLightness(sRGB1);
@@ -57,12 +42,12 @@ export const WCAGColorContrast = {
    */
   RGBtosRGB(rgb) {
     if (rgb.length === 3) {
-        rgb = rgb[0] + rgb[0] + rgb[1] + rgb[1] + rgb[2] + rgb[2];
+      rgb = rgb[0] + rgb[0] + rgb[1] + rgb[1] + rgb[2] + rgb[2];
     }
     return [
-        parseInt(rgb.slice(0,2), 16) / 255,
-        parseInt(rgb.slice(2,4), 16) / 255,
-        parseInt(rgb.slice(4,6), 16) / 255
+      parseInt(rgb.slice(0, 2), 16) / 255,
+      parseInt(rgb.slice(2, 4), 16) / 255,
+      parseInt(rgb.slice(4, 6), 16) / 255,
     ];
   },
 
@@ -80,9 +65,20 @@ export const WCAGColorContrast = {
     const GsRGB = sRGB[1];
     const BsRGB = sRGB[2];
 
-    return 0.2126 * (RsRGB <= 0.03928 ? RsRGB / 12.92 : Math.pow((RsRGB+0.055)/1.055, 2.4)) +
-        0.7152 * (GsRGB <= 0.03928 ? GsRGB / 12.92 : Math.pow((GsRGB+0.055)/1.055, 2.4)) +
-        0.0722 * (BsRGB <= 0.03928 ? BsRGB / 12.92 : Math.pow((BsRGB+0.055)/1.055, 2.4));
+    return (
+      0.2126 *
+        (RsRGB <= 0.03928
+          ? RsRGB / 12.92
+          : Math.pow((RsRGB + 0.055) / 1.055, 2.4)) +
+      0.7152 *
+        (GsRGB <= 0.03928
+          ? GsRGB / 12.92
+          : Math.pow((GsRGB + 0.055) / 1.055, 2.4)) +
+      0.0722 *
+        (BsRGB <= 0.03928
+          ? BsRGB / 12.92
+          : Math.pow((BsRGB + 0.055) / 1.055, 2.4))
+    );
   },
 
   /**
@@ -92,5 +88,5 @@ export const WCAGColorContrast = {
    */
   validRGB(rgb) {
     return rgb && (/^[a-f0-9]{3}$/i.test(rgb) || /^[a-f0-9]{6}$/i.test(rgb));
-  }
+  },
 };

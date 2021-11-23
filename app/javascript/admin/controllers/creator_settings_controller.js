@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
-import { WCAGColorContrast } from '../../utilities/colorContrast';
+import { isLowContrast } from '../../utilities/color/contrastValidator';
 import { brightness } from '../../utilities/color/accentCalculator';
 
 const MAX_LOGO_PREVIEW_HEIGHT = 80;
@@ -79,7 +79,7 @@ export class CreatorSettingsController extends Controller {
   handleValidationsAndUpdates(event) {
     const { value: color } = event.target;
 
-    if (WCAGColorContrast.isLow(color)) {
+    if (isLowContrast(color)) {
       this.colorContrastErrorTarget.classList.remove('hidden');
     } else {
       this.updateBranding(color);
@@ -119,7 +119,7 @@ export class CreatorSettingsController extends Controller {
    */
   formValidations(event) {
     const { value: color } = this.brandColorTarget;
-    if (WCAGColorContrast.isLow(color)) {
+    if (isLowContrast(color)) {
       this.colorContrastErrorTarget.classList.remove('hidden');
       //  we don't want the form to submit if the contrast is low
       event.preventDefault();
