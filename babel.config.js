@@ -69,6 +69,15 @@ module.exports = function (api) {
           pragma: 'h',
         },
       ],
+      'inline-react-svg',
+      [
+        'module-resolver',
+        {
+          alias: {
+            '@images': './app/assets/images/',
+          },
+        },
+      ],
     ].filter(Boolean),
   };
 };
