@@ -4,6 +4,7 @@
     "paths": {
       "@crayons/*": ["app/javascript/crayons/*"],
       "@utilities/*": ["app/javascript/utilities/*"],
+      "@images/*": ["app/assets/images/*"],
       "@components/*": ["app/javascript/shared/components/*"],
       "@admin-controllers/*": ["app/javascript/admin/controllers/*"]
     }

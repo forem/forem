@@ -112,6 +112,8 @@
     "@reach/combobox": "^0.16.4",
     "ahoy.js": "^0.4.0",
     "autoprefixer": "^10.4.0",
+    "babel-plugin-inline-react-svg": "^2.0.1",
+    "babel-plugin-module-resolver": "^4.1.0",
     "babel-preset-preact": "^2.0.0",
     "canvas": "^2.8.0",
     "chart.js": "^3.6.0",
