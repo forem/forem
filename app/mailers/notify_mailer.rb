@@ -85,28 +85,6 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: params[:email_subject])
   end
 
-  def new_message_email
-    @message = params[:message]
-    @user = @message.direct_receiver
-    subject = "#{@message.user.name} just messaged you"
-    @unsubscribe = generate_unsubscribe_token(@user.id, :email_connect_messages)
-
-    mail(to: @user.email, subject: subject)
-  end
-
-  def channel_invite_email
-    @membership = params[:membership]
-    @inviter = params[:inviter]
-
-    subject = if @membership.role == "mod"
-                "You are invited to the #{@membership.chat_channel.channel_name} channel as moderator."
-              else
-                "You are invited to the #{@membership.chat_channel.channel_name} channel."
-              end
-
-    mail(to: @membership.user.email, subject: subject)
-  end
-
   def account_deleted_email
     @name = params[:name]
 
@@ -142,7 +120,6 @@ class NotifyMailer < ApplicationMailer
   def tag_moderator_confirmation_email
     @user = params[:user]
     @tag = params[:tag]
-    @channel_slug = params[:channel_slug]
 
     subject = "Congrats! You're the moderator for ##{@tag.name}"
     mail(to: @user.email, subject: subject)

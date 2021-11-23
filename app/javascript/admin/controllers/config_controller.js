@@ -32,7 +32,7 @@ export default class ConfigController extends Controller {
     const element = document.querySelector(
       `${window.location.hash} .card-body`,
     );
-    element.classList.add('show');
+    element?.classList.add('show');
   }
 
   // GENERAL FUNCTIONS START

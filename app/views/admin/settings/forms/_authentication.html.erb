@@ -14,6 +14,14 @@
         <h3 class="crayons-subtitle-3 mb-3">
           General settings
         </h3>
+        <div class="crayons-field mb-6">
+          <%= admin_config_label :blocked_registration_email_domains, "Block email domains", model: Settings::Authentication %>
+          <%= admin_config_description Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:description] %>
+          <%= f.text_field :blocked_registration_email_domains,
+                           class: "crayons-textfield",
+                           value: Settings::Authentication.blocked_registration_email_domains.join(","),
+                           placeholder: Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:placeholder] %>
+        </div>
         <div
             class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-hover-tooltip" : "" %>"
             data-tooltip="Unchecking this will enable Email Registration">

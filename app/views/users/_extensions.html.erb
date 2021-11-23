@@ -1,34 +1,5 @@
 <%= render partial: "response_templates" %>
 
-<% if FeatureFlag.enabled?(:connect) %>
-  <div class="crayons-card crayons-card--content-rows">
-    <h2 class="crayons-subtitle-1">
-      <%= t("views.settings.extensions.connect") %>
-    </h2>
-    <%= form_for(@users_setting, url: users_settings_path, html: { id: nil, class: "grid gap-6" }) do |f| %>
-      <div class="crayons-field">
-        <%= f.label :inbox_type, "Inbox privacy", class: "crayons-field__label" %>
-        <p class="crayons-field__description"><%= t("views.settings.extensions.privacy") %></p>
-        <%= f.select :inbox_type, [[t("views.settings.extensions.open"), "open"], [t("views.settings.extensions.private"), "private"]], {}, { class: "crayons-select" } %>
-      </div>
-
-      <div class="crayons-field">
-        <%= f.label :inbox_guidelines, t("views.settings.extensions.guidelines.label"), class: "crayons-field__label" %>
-        <p class="crayons-field__description">
-          <%= t("views.settings.extensions.optional") %>
-        </p>
-
-        <%= f.text_area :inbox_guidelines, maxlength: 200, class: "crayons-textfield", rows: 3, placeholder: t("views.settings.extensions.guidelines.placeholder") %>
-      </div>
-
-      <%= f.hidden_field :tab, value: @tab, id: nil %>
-      <button type="submit" class="crayons-btn w-max">
-        <%= t("views.settings.extensions.save_connect") %>
-      </button>
-    <% end %>
-  </div>
-<% end %>
-
 <%= render partial: "publishing_from_rss" %>
 
 <div class="crayons-card crayons-card--content-rows">

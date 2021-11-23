@@ -1,6 +1,6 @@
 /*
   global initializeLocalStorageRender, initializeBodyData,
-  initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
+  initializeAllTagEditButtons, initializeUserFollowButts,
   initializeBaseTracking, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeSettings,
@@ -50,7 +50,6 @@ function initializePage() {
       clearInterval(waitingForDataLoad);
       if (document.body.getAttribute('data-user-status') === 'logged-in') {
         initializeBaseUserData();
-        initializeAllChatButtons();
         initializeAllTagEditButtons();
       }
       initializeBroadcast();
