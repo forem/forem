@@ -423,7 +423,6 @@ RSpec.describe User, type: :model do
     let(:user) { create(:user) }
 
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
       omniauth_mock_providers_payload
     end
 
