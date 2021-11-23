@@ -66,10 +66,7 @@ function imageUploaderReducer(state, action) {
   }
 }
 
-const NativeIosImageUpload = ({
-  uploadingImage,
-  extraProps,
-}) => (
+const NativeIosImageUpload = ({ uploadingImage, extraProps }) => (
   <Fragment>
     {!uploadingImage && (
       <Button
@@ -171,7 +168,9 @@ export const ImageUploader = () => {
 
   function handleNativeMessage(e) {
     const message = JSON.parse(e.detail);
-    if (message.namespace !== 'imageUpload') { return }
+    if (message.namespace !== 'imageUpload') {
+      return;
+    }
 
     switch (message.action) {
       case 'uploading':
@@ -196,14 +195,22 @@ export const ImageUploader = () => {
 
   function initNativeImagePicker(e) {
     e.preventDefault();
-    window.ForemMobile?.injectNativeMessage('imageUpload', { action: 'imageUpload' });
+    window.ForemMobile?.injectNativeMessage('imageUpload', {
+      action: 'imageUpload',
+    });
   }
 
   // When the component is rendered in an environment that supports a native
   // image picker for image upload we want to add the aria-label attr and the
   // onClick event to the UI button. This event will kick off the native UX.
   // The props are unwrapped (using spread operator) in the button below
-  const useNativeUpload = Runtime.isNativeIOS('imageUpload');
+  //
+  //
+  //
+  // This namespace is not implemented in the native side. This allows us to
+  // deploy our refactor and wait until our iOS app is approved by AppStore
+  // review. The old web implementation will be the fallback until then.
+  const useNativeUpload = Runtime.isNativeIOS('imageUpload_disabled');
   const extraProps = useNativeUpload
     ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
     : { tabIndex: -1 };

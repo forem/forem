@@ -91,7 +91,10 @@ export class ArticleCoverImage extends Component {
   };
 
   useNativeUpload = () => {
-    return Runtime.isNativeIOS('imageUpload');
+    // This namespace is not implemented in the native side. This allows us to
+    // deploy our refactor and wait until our iOS app is approved by AppStore
+    // review. The old web implementation will be the fallback until then.
+    return Runtime.isNativeIOS('imageUpload_disabled');
   };
 
   initNativeImagePicker = (e) => {
@@ -104,8 +107,11 @@ export class ArticleCoverImage extends Component {
 
   handleNativeMessage = (e) => {
     const message = JSON.parse(e.detail);
-    if (message.namespace !== 'coverUpload') { return }
+    if (message.namespace !== 'coverUpload') {
+      return;
+    }
 
+    /* eslint-disable no-case-declarations */
     switch (message.action) {
       case 'uploading':
         this.setState({ uploadingImage: true });
@@ -120,13 +126,13 @@ export class ArticleCoverImage extends Component {
         break;
       case 'success':
         const { onMainImageUrlChange } = this.props;
-        console.log("Is this undefined::::: ", onMainImageUrlChange);
         onMainImageUrlChange({
           links: [message.link],
         });
         this.setState({ uploadingImage: false });
         break;
     }
+    /* eslint-enable no-case-declarations */
   };
 
   triggerMainImageRemoval = (e) => {

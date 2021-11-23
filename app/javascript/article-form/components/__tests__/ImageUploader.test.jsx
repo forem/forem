@@ -34,11 +34,11 @@ describe('<ImageUploader />', () => {
     expect(uploadInput.getAttribute('type')).toEqual('file');
   });
 
-  describe('when rendered in native iOS with imageUpload support', () => {
+  describe('when rendered in native iOS with imageUpload_disabled support', () => {
     beforeEach(() => {
       global.Runtime = {
         isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload';
+          return namespace === 'imageUpload_disabled';
         }),
       };
     });
@@ -63,8 +63,17 @@ describe('<ImageUploader />', () => {
       const { container, findByTitle } = render(<ImageUploader />); // eslint-disable-line no-unused-vars
 
       // Fire a change event in the hidden input with JSON payload for success
-      const fakeSuccessMessage = JSON.stringify({ "action": "success", "link": "/some-fake-image.jpg", "namespace": "imageUpload" });
-      const event = createEvent('ForemMobile', document, { detail: fakeSuccessMessage }, { EventType: 'CustomEvent' });
+      const fakeSuccessMessage = JSON.stringify({
+        action: 'success',
+        link: '/some-fake-image.jpg',
+        namespace: 'imageUpload',
+      });
+      const event = createEvent(
+        'ForemMobile',
+        document,
+        { detail: fakeSuccessMessage },
+        { EventType: 'CustomEvent' },
+      );
       fireEvent(document, event);
 
       expect(await findByTitle(/copy markdown for image/i)).toBeDefined();
