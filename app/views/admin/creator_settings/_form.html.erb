@@ -35,13 +35,16 @@
       <%= text_field_tag :primary_brand_color_hex,
                          ::Settings::UserExperience.primary_brand_color_hex,
                          pattern: "^#+([a-fA-F0-9]{6})$",
+                         title: "Provide a valid HEX Color or pick your color from the color picker.",
                          placeholder: ::Settings::UserExperience.primary_brand_color_hex,
-                         class: "crayons-textfield js-color-field" %>
+                         class: "crayons-textfield js-color-field",
+                         "data-action": "change->creator-settings#updateBranding" %>
       <%= color_field_tag :primary_brand_color_hex,
                           ::Settings::UserExperience.primary_brand_color_hex,
                           pattern: "^#+([a-fA-F0-9]{6})$",
                           placeholder: ::Settings::UserExperience.primary_brand_color_hex,
                           class: "crayons-color-selector js-color-field ml-2",
+                          "data-action": "change->creator-settings#updateBranding",
                           required: true %>
     </div>
   </div>
@@ -52,11 +55,11 @@
     <legend class="crayons-field__label mb-2">Who can join this community?</legend>
     <div>
       <div class="mb-2">
-        <%= radio_button_tag :invite_only_mode, "0", class: "crayons-field crayons-field--radio", required: true %>
+        <%= radio_button_tag :invite_only_mode, "0", false, class: "crayons-radio" %>
         <label for="invite_only_mode_0">Everyone</label>
       </div>
       <div>
-        <%= radio_button_tag :invite_only_mode, "1", class: "crayons-field crayons-field--radio", required: true %>
+        <%= radio_button_tag :invite_only_mode, "1", true, class: "crayons-radio" %>
         <label for="invite_only_mode_1">Only people who are invited</label>
       </div>
     </div>
@@ -68,11 +71,11 @@
     <legend class="crayons-field__label mb-2">Who can view content in this community?</legend>
     <div>
       <div class="mb-2">
-        <%= radio_button_tag :public, "0", class: "crayons-field crayons-field--radio", required: true %>
+        <%= radio_button_tag :public, "0", false, class: "crayons-radio" %>
         <label for="public_0">Everyone</label>
       </div>
       <div>
-        <%= radio_button_tag :public, "1", class: "crayons-field crayons-field--radio", required: true %>
+        <%= radio_button_tag :public, "1", true, class: "crayons-radio" %>
         <label for="public_1">Members only</label>
       </div>
     </div>

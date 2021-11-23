@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { brightness } from '../../utilities/color/accentCalculator';
 
 const MAX_LOGO_PREVIEW_HEIGHT = 80;
 const MAX_LOGO_PREVIEW_WIDTH = 220;
@@ -66,5 +67,30 @@ export class CreatorSettingsController extends Controller {
     };
 
     reader.readAsDataURL(firstFile);
+  }
+
+  /**
+   * Updates ths branding/colors on the Creator Settings Page.
+   *
+   * @param {Event} event
+   */
+  updateBranding(event) {
+    const { value: color } = event.target;
+
+    if (!new RegExp(event.target.getAttribute('pattern')).test(color)) {
+      return;
+    }
+
+    document.documentElement.style.setProperty('--accent-brand', color);
+
+    // We need to recalculate '--accent-brand-darker' in javascript as it's
+    // currently being calculated in ruby. It is used for the hover effect
+    // over the button.
+    // 0.85 represents the brightness value set in Ruby to calculate
+    // '--accent-brand-darker'
+    document.documentElement.style.setProperty(
+      '--accent-brand-darker',
+      brightness(color, 0.85),
+    );
   }
 }
