@@ -6,9 +6,14 @@ RSpec.describe ArticleDecorator, type: :decorator do
     article.decorate
   end
 
+  subject(:decorated_article) { build(:article).decorate }
+
   let(:article) { build(:article) }
   let(:published_article) { create_article(published: true) }
   let(:organization) { build(:organization) }
+
+  it { is_expected.to respond_to(:can_be_featured_in_feed) }
+  it { is_expected.to respond_to(:can_be_featured_in_feed?) }
 
   context "with serialization" do
     it "serializes both the decorated object IDs and decorated methods" do

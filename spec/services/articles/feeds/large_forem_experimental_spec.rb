@@ -11,6 +11,26 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let!(:old_story) { create(:article, published_at: 3.days.ago) }
   let!(:low_scoring_article) { create(:article, score: -1000) }
 
+  describe "#must_have_main_image?" do
+    subject { feed.must_have_main_image? }
+
+    context "when FeatureFlag.accessible?(:featured_story_must_have_main_image) is true" do
+      before do
+        allow(FeatureFlag).to receive(:accessible?).with(:featured_story_must_have_main_image).and_return(true)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when FeatureFlag.accessible?(:featured_story_must_have_main_image) is false" do
+      before do
+        allow(FeatureFlag).to receive(:accessible?).with(:featured_story_must_have_main_image).and_return(false)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe "#featured_story_and_default_home_feed" do
     let(:default_feed) { feed.featured_story_and_default_home_feed }
     let(:featured_story) { default_feed.first }

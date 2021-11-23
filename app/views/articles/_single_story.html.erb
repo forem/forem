@@ -3,7 +3,8 @@
   <% if featured == true %>
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
-  <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
+  <%# In https://github.com/forem/forem/issues/15292 we no longer require that a featured article have an image. %>
+  <% if story.main_image.present? && (featured == true || feed_style_preference == "rich") %>
     <a href="<%= story.path %>" title="<%= story.title %>" aria-label="article"
       style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);"
       class="crayons-story__cover crayons-story__cover__image">

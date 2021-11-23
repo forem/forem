@@ -1,6 +1,31 @@
 class ArticleDecorator < ApplicationDecorator
   LONG_MARKDOWN_THRESHOLD = 900
 
+  # This method answers whethor or not this decorated article can be
+  # featured in the feed.
+  #
+  # @note From #15292 we want to no longer require the featured
+  #       article to have an image.  However, there are some
+  #       assumptions made in the view about featured articles having
+  #       images.  Furthermore, by enabling a feature flag, if the
+  #       code breaks we can toggle the requirement back on.
+  #
+  # @return [TrueClass] if this article can be "featured" in the feed
+  # @return [FalseClass] if this article should not be "featured" in
+  #         the feed
+  def can_be_featured_in_feed
+    return false unless featured
+    return true if main_image.present?
+    return true unless FeatureFlag.accessible?(:featured_story_must_have_main_image)
+
+    false
+  end
+
+  # Why the alias?  Because an associated JSON builder uses the
+  # can_be_featured_in_feed, but having the can_be_featured_in_feed?
+  # method helps create conditions of least surprise.
+  alias can_be_featured_in_feed? can_be_featured_in_feed
+
   def current_state_path
     published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end

@@ -38,8 +38,11 @@ export const Article = ({
     'crayons-story__tertiary',
   ];
 
+  // In https://github.com/forem/forem/issues/15292 we no longer
+  // require that a featured article have an image.
   let showCover =
-    (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
+    article.main_image &&
+    (isFeatured || feedStyle === 'rich') &&
     !article.cloudinary_video_url;
 
   // pinned article can have a cover image

@@ -31,12 +31,13 @@ export const Feed = ({ timeFrame, renderFeed }) => {
 
         const pinnedArticle = feedItems.find((story) => story.pinned === true);
 
-        // Ensure first article is one with a main_image
-        // This is important because the featuredStory will
-        // appear at the top of the feed, with a larger
-        // main_image than any of the stories or feed elements.
+        // In https://github.com/forem/forem/issues/15292 we
+        // introduced the idea that the featured story did not require
+        // an image.  So instead of encoding that it has an image, I'm
+        // falling back to the server to state if this is an article
+        // that can be featured.
         const featuredStory = feedItems.find(
-          (story) => story.main_image !== null,
+          (story) => story.can_be_featured_in_feed === true,
         );
 
         // If pinned and featured article aren't the same,
