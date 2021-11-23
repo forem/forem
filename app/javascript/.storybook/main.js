@@ -83,6 +83,17 @@ module.exports = {
   },
   babel: async (options) => ({
     ...options,
-    plugins: [...options.plugins, 'inline-react-svg'],
+    plugins: [
+      ...options.plugins,
+      'inline-react-svg',
+      [
+        'module-resolver',
+        {
+          alias: {
+            '@images': './app/assets/images/',
+          },
+        },
+      ],
+    ],
   }),
 };
