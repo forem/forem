@@ -10,6 +10,11 @@ const MAX_LOGO_PREVIEW_WIDTH = 220;
 export class CreatorSettingsController extends Controller {
   static targets = ['previewLogo'];
 
+  constructor() {
+    super();
+    console.log("Something else!");
+  }
+
   /**
    * Displays a preview of the image selected by the user.
    *

@@ -146,13 +146,14 @@ initializeNav();
 
 async function loadCreatorSettings() {
   try {
-    const [{ CreatorSettingsController }, { Application }] = await Promise.all([
+    const [{ CreatorSettingsController }, ModalController, { Application }] = await Promise.all([
       import('@admin-controllers/creator_settings_controller'),
+      import('@admin-controllers/modal_controller'),
       import('@hotwired/stimulus'),
     ]);
 
     const application = Application.start();
-    application.register('creator-settings', CreatorSettingsController);
+    application.register('modal', ModalController);
   } catch (error) {
     Honeybadger.notify(
       `Error loading the creator settings controller: ${error.message}`,
