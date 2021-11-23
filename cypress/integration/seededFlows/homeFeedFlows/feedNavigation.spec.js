@@ -11,13 +11,13 @@ describe('Home Feed Navigation', () => {
     });
   });
 
-  it('should show Relevance by default', () => {
+  it('should show Relevant by default', () => {
     cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
-      cy.findByRole('link', { name: 'Relevance' }).as('relevance');
+      cy.findByRole('link', { name: 'Relevant' }).as('relevant');
       cy.findByRole('link', { name: 'Top' }).as('top');
       cy.findByRole('link', { name: 'Latest' }).as('latest');
 
-      cy.get('@relevance').should('have.attr', 'aria-current', 'page');
+      cy.get('@relevant').should('have.attr', 'aria-current', 'page');
 
       cy.get('@top').should('not.have.attr', 'aria-current');
       cy.get('@latest').should('not.have.attr', 'aria-current');
