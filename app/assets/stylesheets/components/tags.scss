@@ -1,32 +1,48 @@
 @import '../config/import';
 
 .crayons-tag {
-  font-size: var(--fs-s);
-  color: var(--tag-color);
-  line-height: 1.3;
+  --tag-bg: var(--base-a5);
+  --tag-prefix: var(--base-a60);
+
+  --tag-bg-hover: var(--base-a5);
+  --tag-prefix-hover: var(--base);
+
+  background: transparent;
+  color: var(--base-80);
   border-radius: var(--radius);
-  padding: var(--su-1);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  transition: all var(--transition-props);
+  padding: clamp(var(--su-1), 0.25em, 0.5em) 0.5em;
 
   &__prefix {
-    opacity: 0.4;
-    font-weight: normal;
+    color: var(--tag-prefix);
+    transition: all var(--transition-props);
+    flex-shrink: 0;
   }
 
-  &[href]:hover {
-    color: var(--tag-color-hover);
+  &--filled {
+    background: var(--tag-bg);
+    color: var(--base-90);
   }
 
-  &--l {
-    font-size: var(--fs-l);
+  &--monochrome {
+    .crayons-tag__prefix {
+      color: var(--base-a60);
+    }
   }
 
-  &--xl {
-    font-size: var(--fs-xl);
-  }
+  &:hover,
+  &:focus {
+    background: var(--tag-bg-hover);
+    color: var(--base);
+    box-shadow: inset 0 0 0 1px var(--tag-bg-hover),
+      inset 0 0 0 1px var(--tag-bg-hover), inset 0 0 0 1px var(--tag-bg-hover);
 
-  &--2xl {
-    font-size: var(--fs-2xl);
-    padding: var(--su-1) var(--su-2);
+    .crayons-tag__prefix {
+      color: var(--tag-prefix-hover);
+    }
   }
 }

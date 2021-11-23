@@ -1,7 +1,7 @@
 /* global userData */
 /* eslint-disable no-alert, import/order */
 import { request } from '@utilities/http';
-import { getUserDataAndCsrfToken } from '../chat/util';
+import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 function addFlagUserBehavior(flagButton) {
   const { profileUserId, profileUserName } = flagButton.dataset;

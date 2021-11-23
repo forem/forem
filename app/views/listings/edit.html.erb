@@ -33,13 +33,6 @@
                 <%= t("views.listings.form.expiry.description") %>
               </p>
           </div>
-          <div class="crayons-field crayons-field--checkbox">
-            <%= f.check_box "contact_via_connect", class: "crayons-checkbox" %>
-            <label class="crayons-field__label" for="contact_via_connect">
-              <%= t("views.listings.form.connect.subtitle") %>
-              <p class="crayons-field__description"><%= t("views.listings.form.connect.description") %></p>
-            </label>
-          </div>
           <div class="crayons-field">
             <%= f.label "location", class: "crayons-field__label" %>
             <%= f.text_field "location", maxlength: 32, placeholder: t("views.listings.form.location.placeholder"), class: "crayons-textfield m:max-w-50" %>
