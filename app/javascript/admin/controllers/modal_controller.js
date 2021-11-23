@@ -1,21 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
-debugger
-export default class ModalController extends Controller {
+
+export class ModalController extends Controller {
   static values = {
     rootSelector: String,
     contentSelector: String,
     title: String,
     size: String,
   };
-
-  constructor() {
-    super();
-    console.log("Hello, this is the modal controller, potato!!!");
-  }
-
-  clickMe() {
-    alert("POTATO!");
-  }
 
   async closeModal() {
     const { render } = await import('preact');
@@ -49,3 +40,6 @@ export default class ModalController extends Controller {
     );
   }
 }
+
+// This is so the controller still loads properly in the Admin section
+export default ModalController;
