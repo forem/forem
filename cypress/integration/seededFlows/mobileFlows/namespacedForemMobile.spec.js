@@ -1,6 +1,7 @@
+// This E2E test focuses on ensuring the mobile bridge integration
 describe('Namespaced ForemMobile functions', () => {
-  function waitForMobileToBootstrap() {
-    cy.get('body').should('have.attr', 'data-runtime', 'ForemWebView-iOS');
+  function waitForBaseDataLoaded() {
+    cy.get('body').should('have.attr', 'data-loaded', 'true');
   }
 
   // Make the runtime act as ForemWebView context
@@ -22,7 +23,8 @@ describe('Namespaced ForemMobile functions', () => {
         cy.get('@user').then((user) => {
           cy.loginUser(user).then(() => {
             cy.visit('/', runtimeStub);
-            waitForMobileToBootstrap();
+            cy.get('body').should('have.attr', 'data-user-status', 'logged-in');
+            waitForBaseDataLoaded();
           });
         });
       });
@@ -83,7 +85,7 @@ describe('Namespaced ForemMobile functions', () => {
       it('should return empty user data when logged out', () => {
         cy.testSetup();
         cy.visit('/', runtimeStub);
-        waitForMobileToBootstrap();
+        waitForBaseDataLoaded();
 
         cy.window().then((win) => {
           assert.isUndefined(win.ForemMobile.getUserData());
@@ -96,6 +98,7 @@ describe('Namespaced ForemMobile functions', () => {
     it('should not load namespaced functions on other contexts', () => {
       cy.testSetup();
       cy.visit('/');
+      waitForBaseDataLoaded();
 
       cy.get('body')
         .invoke('attr', 'data-runtime')
