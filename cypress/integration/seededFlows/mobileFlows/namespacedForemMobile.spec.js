@@ -91,6 +91,23 @@ describe('Namespaced ForemMobile functions', () => {
           assert.isUndefined(win.ForemMobile.getUserData());
         });
       });
+
+      it('should inject messages using CustomEvent', () => {
+        cy.document()
+          .then((doc) => {
+            doc.addEventListener('ForemMobile', cy.stub().as('bridgeEvent'));
+          })
+          .then(() => cy.window())
+          .then((win) => {
+            win.ForemMobile.injectJSMessage({ action: 'test' });
+          });
+
+        // on load the app should have sent an event
+        cy.get('@bridgeEvent')
+          .should('have.been.calledOnce')
+          .its('firstCall.args.0.detail')
+          .should('deep.equal', { action: 'test' });
+      });
     });
   });
 
