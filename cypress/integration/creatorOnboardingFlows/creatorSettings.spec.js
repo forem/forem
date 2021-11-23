@@ -99,9 +99,9 @@ describe('Creator Settings Page', () => {
         .type(lowContrastColor)
         .trigger('change');
 
-      cy.findByText(/^The color must be darker for accessibility./).should(
-        'be.visible',
-      );
+      cy.findByText(
+        /^The selected color must be darker for accessibility purposes./,
+      ).should('be.visible');
     });
 
     it('should not show an error when the constrast ratio of a brand color is good', () => {
@@ -112,9 +112,9 @@ describe('Creator Settings Page', () => {
         .type(adequateContrastColor)
         .trigger('change');
 
-      cy.findByText(/^The color must be darker for accessibility./).should(
-        'not.be.visible',
-      );
+      cy.findByText(
+        /^The selected color must be darker for accessibility purposes./,
+      ).should('not.be.visible');
     });
   });
 
