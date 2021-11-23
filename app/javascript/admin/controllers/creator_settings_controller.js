@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 import { WCAGColorContrast } from '../../utilities/colorContrast';
+import { brightness } from '../../utilities/color/accentCalculator';
+
 const MAX_LOGO_PREVIEW_HEIGHT = 80;
 const MAX_LOGO_PREVIEW_WIDTH = 220;
 
@@ -69,23 +71,48 @@ export class CreatorSettingsController extends Controller {
   }
 
   /**
-   * Validates the color contrast on brand color picker
-   * for accessibility.
-   *
+   * Validates the color contrast for accessibility,
+   * if the contrast is okay, it updates the branding,
+   * else it displays the error.
    * @param {Event} event
    */
-  validateColorContrast(event) {
+  handleValidationsAndUpdates(event) {
     const { value: color } = event.target;
 
     if (WCAGColorContrast.isLow(color)) {
       this.colorContrastErrorTarget.classList.remove('hidden');
     } else {
+      this.updateBranding(color);
       this.colorContrastErrorTarget.classList.add('hidden');
     }
   }
 
   /**
-   * Validates the form and prevents a submission if the
+   * Updates ths branding/colors on the Creator Settings Page.
+   * by overridding the accent-color in the :root object
+   *
+   * @param {String} color
+   */
+  updateBranding(color) {
+    if (!new RegExp(event.target.getAttribute('pattern')).test(color)) {
+      return;
+    }
+
+    document.documentElement.style.setProperty('--accent-brand', color);
+
+    // We need to recalculate '--accent-brand-darker' in javascript as it's
+    // currently being calculated in ruby. It is used for the hover effect
+    // over the button.
+    // 0.85 represents the brightness value set in Ruby to calculate
+    // '--accent-brand-darker'
+    document.documentElement.style.setProperty(
+      '--accent-brand-darker',
+      brightness(color, 0.85),
+    );
+  }
+
+  /**
+   * Prevents a submission of the form if the
    * color contrast is low.
    *
    * @param {Event} event
