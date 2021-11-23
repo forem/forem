@@ -13,6 +13,9 @@ class ArticleDecorator < ApplicationDecorator
   # @return [TrueClass] if this article can be "featured" in the feed
   # @return [FalseClass] if this article should not be "featured" in
   #         the feed
+  #
+  # @see ./app/views/stories/feeds/show.json.jbuilder for an example
+  #      of usage
   def can_be_featured_in_feed
     return false unless featured
     return true if main_image.present?
