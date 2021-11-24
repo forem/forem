@@ -473,19 +473,9 @@ function initializePodcastPlayback() {
     }
   }
 
-  function handlePodcastMessages(mutation) {
-    if (mutation.type !== 'attributes') {
-      return;
-    }
-
-    var message = {};
-    try {
-      var messageData = getById('audiocontent').dataset.podcast;
-      message = JSON.parse(messageData);
-    } catch (e) {
-      console.log(e); // eslint-disable-line no-console
-      return;
-    }
+  function handlePodcastMessages(event) {
+    const message = JSON.parse(event.detail);
+    if (message.namespace !== 'podcast') { return }
 
     var currentState = currentAudioState();
     switch (message.action) {
@@ -499,41 +489,24 @@ function initializePodcastPlayback() {
         updateProgress(currentState.currentTime, currentState.duration, 100);
         break;
       default:
-        console.log('Unrecognized podcast message: ', message); // eslint-disable-line no-console
+        console.log('Unrecognized message: ', message); // eslint-disable-line no-console
     }
 
     saveMediaState(currentState);
-  }
-
-  function addMutationObserver() {
-    var mutationObserver = new MutationObserver(function (mutations) {
-      mutations.forEach(function (mutation) {
-        handlePodcastMessages(mutation);
-      });
-    });
-    mutationObserver.observe(getById('audiocontent'), { attributes: true });
   }
 
   // When Runtime.podcastMessage is undefined we need to execute web logic
   function initRuntime() {
     if (Runtime.isNativeIOS('podcast')) {
       deviceType = 'iOS';
-      Runtime.podcastMessage = function (message) {
-        try {
-          window.webkit.messageHandlers.podcast.postMessage(message);
-        } catch (err) {
-          console.log(err.message); // eslint-disable-line no-console
-        }
-      };
     } else if (Runtime.isNativeAndroid('podcastMessage')) {
       deviceType = 'Android';
-      Runtime.podcastMessage = function (message) {
-        try {
-          AndroidBridge.podcastMessage(JSON.stringify(message));
-        } catch (err) {
-          console.log(err.message); // eslint-disable-line no-console
-        }
-      };
+    }
+
+    if (deviceType !== 'web') {
+      Runtime.podcastMessage = (msg) => {
+        window.ForemMobile.injectNativeMessage('podcast', msg);
+      }
     }
   }
 
@@ -560,7 +533,7 @@ function initializePodcastPlayback() {
         updateProgressListener(audio),
         false,
       );
-      addMutationObserver();
+      document.addEventListener('ForemMobile', handlePodcastMessages);
     }, 500);
     applyOnclickToPodcastBar(audio);
   }

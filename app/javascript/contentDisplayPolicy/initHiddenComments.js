@@ -16,9 +16,19 @@ export function initHiddenComments() {
       });
   }
 
-  function showHideCommentsModal(commentId) {
+  function showHideCommentsModal(commentId, commentUrl) {
     const form = document.getElementById('hide-comments-modal__form');
     form.action = `/comments/${commentId}/hide`;
+
+    const report_link = document.getElementById(
+      'hide-comments-modal__report-link',
+    );
+    report_link.href = `/report-abuse?url=${commentUrl}`;
+
+    const comment_permalink = document.getElementById(
+      'hide-comments-modal__comment-permalink',
+    );
+    comment_permalink.href = commentUrl;
 
     window.Forem.showModal({
       title: 'Confirm hiding the comment',
@@ -38,10 +48,10 @@ export function initHiddenComments() {
   );
 
   hideButtons.forEach((butt) => {
-    const { commentId } = butt.dataset;
+    const { commentId, commentUrl } = butt.dataset;
     butt.addEventListener('click', (e) => {
       e.preventDefault();
-      showHideCommentsModal(commentId);
+      showHideCommentsModal(commentId, commentUrl);
     });
   });
 

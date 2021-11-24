@@ -66,11 +66,7 @@ function imageUploaderReducer(state, action) {
   }
 }
 
-const NativeIosImageUpload = ({
-  uploadingImage,
-  extraProps,
-  handleNativeMessage,
-}) => (
+const NativeIosImageUpload = ({ uploadingImage, extraProps }) => (
   <Fragment>
     {!uploadingImage && (
       <Button
@@ -83,12 +79,6 @@ const NativeIosImageUpload = ({
         Upload image
       </Button>
     )}
-    <input
-      type="hidden"
-      id="native-image-upload-message"
-      value=""
-      onChange={handleNativeMessage}
-    />
   </Fragment>
 );
 
@@ -177,7 +167,10 @@ export const ImageUploader = () => {
   }
 
   function handleNativeMessage(e) {
-    const message = JSON.parse(e.target.value);
+    const message = JSON.parse(e.detail);
+    if (message.namespace !== 'imageUpload') {
+      return;
+    }
 
     switch (message.action) {
       case 'uploading':
@@ -202,8 +195,8 @@ export const ImageUploader = () => {
 
   function initNativeImagePicker(e) {
     e.preventDefault();
-    window.webkit.messageHandlers.imageUpload.postMessage({
-      id: 'native-image-upload-message',
+    window.ForemMobile?.injectNativeMessage('imageUpload', {
+      action: 'imageUpload',
     });
   }
 
@@ -211,10 +204,19 @@ export const ImageUploader = () => {
   // image picker for image upload we want to add the aria-label attr and the
   // onClick event to the UI button. This event will kick off the native UX.
   // The props are unwrapped (using spread operator) in the button below
-  const useNativeUpload = Runtime.isNativeIOS('imageUpload');
+  //
+  //
+  //
+  // This namespace is not implemented in the native side. This allows us to
+  // deploy our refactor and wait until our iOS app is approved by AppStore
+  // review. The old web implementation will be the fallback until then.
+  const useNativeUpload = Runtime.isNativeIOS('imageUpload_disabled');
   const extraProps = useNativeUpload
     ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
     : { tabIndex: -1 };
+
+  // Native Bridge messages come through ForemMobile events
+  document.addEventListener('ForemMobile', handleNativeMessage);
 
   return (
     <div className="flex items-center">
@@ -228,7 +230,6 @@ export const ImageUploader = () => {
         <NativeIosImageUpload
           extraProps={extraProps}
           uploadingImage={uploadingImage}
-          handleNativeMessage={handleNativeMessage}
         />
       ) : (
         <StandardImageUpload

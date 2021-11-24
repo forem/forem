@@ -73,6 +73,37 @@ describe('Creator Settings Page', () => {
     cy.url().should('equal', baseUrl);
   });
 
+  it('should update the colors on the form when a new brand color is selected', () => {
+    const color = '#25544b';
+    const rgbColor = 'rgb(37, 84, 75)';
+
+    cy.findByLabelText(/^Brand color/)
+      .clear()
+      .type(color)
+      .trigger('change');
+
+    cy.findByRole('button', { name: 'Finish' }).should(
+      'have.css',
+      'background-color',
+      rgbColor,
+    );
+
+    cy.findAllByRole('radio', { name: /members only/i })
+      .check()
+      .should('have.css', 'background-color', rgbColor)
+      .should('have.css', 'border-color', rgbColor);
+
+    cy.findByRole('textbox', { name: /community name/i })
+      .focus()
+      .should('have.css', 'border-color', rgbColor);
+
+    cy.findByRole('link', { name: /Forem Admin Guide/i }).should(
+      'have.css',
+      'background-color',
+      rgbColor,
+    );
+  });
+
   it('should not submit the creator settings form if any of the fields are not filled out', () => {
     // TODO: Circle back around to testing this once the styling for the form is complete
     cy.findByRole('textbox', { name: /community name/i }).should(
