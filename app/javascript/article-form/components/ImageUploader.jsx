@@ -204,12 +204,6 @@ export const ImageUploader = () => {
   // image picker for image upload we want to add the aria-label attr and the
   // onClick event to the UI button. This event will kick off the native UX.
   // The props are unwrapped (using spread operator) in the button below
-  //
-  //
-  //
-  // This namespace is not implemented in the native side. This allows us to
-  // deploy our refactor and wait until our iOS app is approved by AppStore
-  // review. The old web implementation will be the fallback until then.
   const useNativeUpload = Runtime.isNativeIOS('imageUpload');
   const extraProps = useNativeUpload
     ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
