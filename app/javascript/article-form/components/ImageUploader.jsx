@@ -181,9 +181,9 @@ const V2EditorImageUpload = ({
         <Button
           {...buttonProps}
           icon={ImageIcon}
-          onClick={() => {
+          onClick={(e) => {
             useNativeUpload
-              ? initNativeImagePicker()
+              ? initNativeImagePicker(e)
               : document.getElementById('image-upload-field').click();
           }}
           aria-label="Upload image"
