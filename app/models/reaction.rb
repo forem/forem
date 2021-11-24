@@ -26,6 +26,10 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
+
+  # Be wary, this is all things on the reading list, but for an end
+  # user they might only see readinglist items that are published.
+  # See https://github.com/forem/forem/issues/14796
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }

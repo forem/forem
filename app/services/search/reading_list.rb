@@ -19,6 +19,17 @@ module Search
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100 # to avoid querying too many items, we set a maximum amount for a page
 
+    # Search for the given user's reading list.
+    #
+    # @param user [User] whose reading list are we searching?
+    # @param term [String] search term for the articles
+    # @param statuses [Array<String>] what reading list status(es) to filter our search
+    # @param tags [Array<String>] a list of tags to filter our search
+    # @param page [Integer] the page in the pagination
+    # @param per_page [Integer] how many items do we return in our pagination result set
+    #
+    # @return [Hash<Symbol,Object>] with keys :items and :total.
+    #         :total is an Integer and :items is an Array of serialized data.
     def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
       return {} unless user
 

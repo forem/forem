@@ -23,8 +23,6 @@ RSpec.describe Search::ReadingList, type: :service do
   describe "::search_documents" do
     before do
       create(:reaction, user: user, reactable: article, category: :readinglist, status: :valid)
-      create(:reaction, user: user, reactable: unpublished_article, category: :readinglist, status: :valid)
-      unpublished_article.update_columns(published: false)
     end
 
     it "returns an empty result without a user" do
@@ -59,6 +57,18 @@ RSpec.describe Search::ReadingList, type: :service do
 
       result = described_class.search_documents(user)
       expect(result[:total]).to eq(count_of_published_readling_items_for(user: user))
+    end
+
+    context "with an article added to a reading list then unpublished" do
+      before do
+        create(:reaction, user: user, reactable: unpublished_article, category: :readinglist, status: :valid)
+        unpublished_article.update_columns(published: false)
+      end
+
+      it "does not include the unpublished article" do
+        result = described_class.search_documents(user)
+        expect(extract_from_results(result, :path)).not_to include(unpublished_article.path)
+      end
     end
 
     context "when describing the result format" do
