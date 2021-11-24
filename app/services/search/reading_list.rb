@@ -86,7 +86,7 @@ module Search
         "INNER JOIN (#{reaction_query_sql}) reactions ON reactions.reactable_id = articles.id",
       )
 
-      relation = relation.where(published: true) if only_published.present?
+      relation = relation.published if only_published
 
       relation = relation.search_articles(term) if term.present?
 
