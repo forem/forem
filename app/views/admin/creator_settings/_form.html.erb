@@ -16,9 +16,6 @@
   <div class="flex flex-1 gap-4">
     <%= file_field_tag :logo, required: true, accept: ".svg,.png,.jpg,image/svg+xml,image/png,image/jpg", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
     <div data-creator-settings-target="previewLogo">
-      <% if ::Settings::General.logo_svg.present? %>
-        <%= ::Settings::General.logo_svg.html_safe %>
-      <% end %>
     </div>
   </div>
 </div>

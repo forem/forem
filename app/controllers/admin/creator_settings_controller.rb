@@ -1,6 +1,6 @@
 module Admin
   class CreatorSettingsController < Admin::ApplicationController
-    ALLOWED_PARAMS = %i[community_name logo_svg primary_brand_color_hex invite_only_mode public checked_code_of_conduct
+    ALLOWED_PARAMS = %i[community_name primary_brand_color_hex invite_only_mode public checked_code_of_conduct
                         checked_terms_and_conditions authenticity_token utf8 logo commit locale].freeze
 
     def new; end

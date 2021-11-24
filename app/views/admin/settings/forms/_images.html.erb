@@ -55,7 +55,7 @@
                           placeholder: Constants::Settings::General::DETAILS[:logo_svg][:placeholder] %>
           <% if Settings::General.logo_svg.present? %>
             <div class="site-logo">
-              <%= Settings::General.logo_svg.html_safe %>
+              <a href="<%= Settings::General.logo_svg.html_safe %>" target="_blank" rel="noopener"><img src="<%= Settings::General.logo_svg.html_safe %>" alt="<%= community_name %> logo" style="max-width: 100%" loading="lazy" /></a>
             </div>
           <% end %>
         </div>

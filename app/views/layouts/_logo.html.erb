@@ -1,6 +1,6 @@
 <a href="/" class="site-logo" aria-label="<%= t("views.main.aria_home") %>">
   <% if Settings::General.logo_svg.present? %>
-    <%= logo_svg %>
+    <img src="<%= logo_svg %>" alt="<%= community_name %>" style="object-fit: contain;max-width: 300px;max-height: 40px;" />
   <% else %>
     <span class="truncate-at-2">
       <%= community_name %>
