@@ -10,7 +10,6 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { ArticleCoverImage } from '../ArticleCoverImage';
 
-jest.mock('react-inlinesvg');
 global.fetch = fetch;
 
 describe('<ArticleCoverImage />', () => {

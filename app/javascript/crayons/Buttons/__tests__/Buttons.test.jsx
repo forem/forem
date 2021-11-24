@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { ButtonNew } from '@crayons';
-import SampleIcon from '@img/cog.svg';
+import CogIcon from '@images/cog.svg';
 import '@testing-library/jest-dom';
 
 describe('<ButtonNew />', () => {
@@ -15,13 +15,7 @@ describe('<ButtonNew />', () => {
 
   it('has no accessibility errors when props provided', async () => {
     const { container } = render(
-      <ButtonNew
-        primary
-        rounded
-        destructive
-        icon={SampleIcon}
-        tooltip="tooltip"
-      >
+      <ButtonNew primary rounded destructive icon={CogIcon} tooltip="tooltip">
         Hello world!
       </ButtonNew>,
     );
@@ -42,13 +36,13 @@ describe('<ButtonNew />', () => {
 
   it('renders with an icon and text', () => {
     const { container } = render(
-      <ButtonNew icon={SampleIcon}>Hello world!</ButtonNew>,
+      <ButtonNew icon={CogIcon}>Hello world!</ButtonNew>,
     );
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders with an icon only', () => {
-    const { container } = render(<ButtonNew icon={SampleIcon} />);
+    const { container } = render(<ButtonNew icon={CogIcon} />);
     expect(container.innerHTML).toMatchSnapshot();
   });
 

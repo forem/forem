@@ -1,13 +1,12 @@
 import { h } from 'preact';
-import SVG from 'react-inlinesvg';
+import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 
 export const Icon = (props) => {
-  const { src, native, className, ...otherProps } = props;
+  const { src: InternalIcon, native, className, ...otherProps } = props;
 
   return (
-    <SVG
-      src={src}
+    <InternalIcon
       className={classNames('crayons-icon', {
         'crayons-icon--default': native,
         [className]: className,
@@ -18,3 +17,9 @@ export const Icon = (props) => {
 };
 
 Icon.displayName = 'Icon';
+
+Icon.propTypes = {
+  native: PropTypes.bool,
+  className: PropTypes.string,
+  src: PropTypes.ReactNode,
+};

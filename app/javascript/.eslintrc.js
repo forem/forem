@@ -27,7 +27,6 @@ module.exports = {
             alias: {
               '@crayons': path.join(__dirname, './crayons'),
               '@utilities': path.join(__dirname, './utilities'),
-              '@img': path.join(__dirname, '../../app/assets/images'),
               '@components': path.join(__dirname, './shared/components'),
               '@images': path.join(__dirname, '../assets/images'),
               '@admin-controllers': path.join(__dirname, './admin/controllers'),

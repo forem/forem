@@ -10,7 +10,6 @@ import fetch from 'jest-fetch-mock';
 import { ImageUploader } from '../ImageUploader';
 import '@testing-library/jest-dom';
 
-jest.mock('react-inlinesvg');
 global.fetch = fetch;
 
 describe('<ImageUploader />', () => {

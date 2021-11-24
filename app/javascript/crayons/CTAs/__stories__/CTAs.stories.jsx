@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { CTA } from '../';
 import CTAsDoc from './CTAs.mdx';
-import SampleIcon from '@img/cog.svg';
+import CogIcon from '@images/cog.svg';
 
 export default {
   component: CTA,
@@ -49,5 +49,5 @@ Branded.args = {
 export const WithIcon = (args) => <CTA {...args} />;
 WithIcon.args = {
   ...Default.args,
-  icon: SampleIcon,
+  icon: CogIcon,
 };

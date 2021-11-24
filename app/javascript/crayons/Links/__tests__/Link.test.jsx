@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
+import CogIcon from '@images/cog.svg';
 import { Link } from '@crayons';
-import SampleIcon from '@img/cog.svg';
 
 describe('<Link />', () => {
   it('has no accessibility violations', async () => {
@@ -45,13 +45,13 @@ describe('<Link />', () => {
   });
 
   it('renders a link with icon alone', () => {
-    const { container } = render(<Link icon={SampleIcon} href="/url" />);
+    const { container } = render(<Link icon={CogIcon} href="/url" />);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders with icon and text', () => {
     const { container } = render(
-      <Link icon={SampleIcon} href="/url">
+      <Link icon={CogIcon} href="/url">
         Hello world!
       </Link>,
     );

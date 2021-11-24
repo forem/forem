@@ -80,5 +80,5 @@ ButtonNew.propTypes = {
   className: PropTypes.string,
   tooltip: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   onKeyUp: PropTypes.func,
-  icon: PropTypes.string,
+  icon: PropTypes.ReactNode,
 };
