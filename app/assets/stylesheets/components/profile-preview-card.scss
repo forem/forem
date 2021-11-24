@@ -14,7 +14,7 @@
   }
 
   &__content.crayons-dropdown:hover {
-    display: table;
+    display: block;
     animation: hoverAppear var(--dropdown-hover-delay);
 
     &.showing {
@@ -23,8 +23,8 @@
   }
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
-    display: table;
-    animation: hoverAppear vaR(--dropdown-hover-delay);
+    display: block;
+    animation: hoverAppear var(--dropdown-hover-delay);
 
     &.showing {
       animation: none;
