@@ -5,9 +5,9 @@ class Poll < ApplicationRecord
 
   belongs_to :article
 
-  has_many :poll_options, dependent: :destroy
-  has_many :poll_skips, dependent: :destroy
-  has_many :poll_votes, dependent: :destroy
+  has_many :poll_options, dependent: :delete_all
+  has_many :poll_skips, dependent: :delete_all
+  has_many :poll_votes, dependent: :delete_all
 
   validates :poll_options_count, presence: true
   validates :poll_options_input_array, presence: true, length: { minimum: 2, maximum: 15 }
