@@ -2,9 +2,12 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 
-export const Icon = (props) => {
-  const { src: InternalIcon, native, className, ...otherProps } = props;
-
+export const Icon = ({
+  src: InternalIcon,
+  native,
+  className,
+  ...otherProps
+}) => {
   return (
     <InternalIcon
       className={classNames('crayons-icon', {
