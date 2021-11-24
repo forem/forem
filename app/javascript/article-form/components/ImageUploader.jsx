@@ -81,20 +81,13 @@ function imageUploaderReducer(state, action) {
 }
 
 function initNativeImagePicker(e) {
-  e?.preventDefault();
-  window.webkit.messageHandlers.imageUpload.postMessage({
-    id: 'native-image-upload-message',
+  e.preventDefault();
+  window.ForemMobile?.injectNativeMessage('imageUpload', {
+    action: 'imageUpload',
   });
 }
 
-/**
- * Button which triggers native iOS image upload behavior in V1 Editor UI
- *
- * @param {object} props
- * @param {boolean} props.uploadingImage Is an image currently being uploaded
- * @param {function} props.handleNativeMessage Callback to handle iOS native message
- */
-const NativeIosV1ImageUpload = ({ uploadingImage, handleNativeMessage }) => (
+const NativeIosV1ImageUpload = ({ uploadingImage }) => (
   <Fragment>
     {!uploadingImage && (
       <Button
@@ -108,12 +101,6 @@ const NativeIosV1ImageUpload = ({ uploadingImage, handleNativeMessage }) => (
         Upload image
       </Button>
     )}
-    <input
-      type="hidden"
-      id="native-image-upload-message"
-      value=""
-      onChange={handleNativeMessage}
-    />
   </Fragment>
 );
 
@@ -364,7 +351,10 @@ export const ImageUploader = ({
   }
 
   function handleNativeMessage(e) {
-    const message = JSON.parse(e.target.value);
+    const message = JSON.parse(e.detail);
+    if (message.namespace !== 'imageUpload') {
+      return;
+    }
 
     switch (message.action) {
       case 'uploading':
@@ -390,8 +380,19 @@ export const ImageUploader = ({
   }
 
   // When the component is rendered in an environment that supports a native
-  // image picker, we want to use the native UX rather than standard file upload
-  const useNativeUpload = Runtime.isNativeIOS('imageUpload');
+  // image picker for image upload we want to add the aria-label attr and the
+  // onClick event to the UI button. This event will kick off the native UX.
+  // The props are unwrapped (using spread operator) in the button below
+  //
+  //
+  //
+  // This namespace is not implemented in the native side. This allows us to
+  // deploy our refactor and wait until our iOS app is approved by AppStore
+  // review. The old web implementation will be the fallback until then.
+  const useNativeUpload = Runtime.isNativeIOS('imageUpload_disabled');
+
+  // Native Bridge messages come through ForemMobile events
+  document.addEventListener('ForemMobile', handleNativeMessage);
 
   return (
     <Fragment>

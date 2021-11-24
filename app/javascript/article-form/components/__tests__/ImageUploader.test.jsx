@@ -4,6 +4,7 @@ import {
   fireEvent,
   waitForElementToBeRemoved,
   waitFor,
+  createEvent,
 } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
@@ -123,11 +124,11 @@ describe('<ImageUploader />', () => {
     });
   });
 
-  describe('Editor v1, native iOS', () => {
+  describe('Editor v1, native iOS with imageUpload_disabled support', () => {
     beforeEach(() => {
       global.Runtime = {
         isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload';
+          return namespace === 'imageUpload_disabled';
         }),
       };
     });
@@ -138,33 +139,32 @@ describe('<ImageUploader />', () => {
     });
 
     it('triggers a webkit messageHandler call when isNativeIOS', async () => {
-      global.window.webkit = {
-        messageHandlers: {
-          imageUpload: {
-            postMessage: jest.fn(),
-          },
-        },
-      };
+      global.window.ForemMobile = { injectNativeMessage: jest.fn() };
 
       const { queryByLabelText } = render(<ImageUploader editorVersion="v1" />);
       const uploadButton = queryByLabelText(/Upload an image/i);
       uploadButton.click();
       expect(
-        window.webkit.messageHandlers.imageUpload.postMessage,
+        global.window.ForemMobile.injectNativeMessage,
       ).toHaveBeenCalledTimes(1);
     });
 
     it('handles a native bridge message correctly', async () => {
-      const { container, findByTitle } = render(
-        <ImageUploader editorVersion="v1" />,
-      );
-      const nativeInput = container.querySelector(
-        '#native-image-upload-message',
-      );
+      const { findByTitle } = render(<ImageUploader editorVersion="v1" />);
 
       // Fire a change event in the hidden input with JSON payload for success
-      const fakeSuccessMessage = `{ "action": "success", "link": "/some-fake-image.jpg" }`;
-      fireEvent.change(nativeInput, { target: { value: fakeSuccessMessage } });
+      const fakeSuccessMessage = JSON.stringify({
+        action: 'success',
+        link: '/some-fake-image.jpg',
+        namespace: 'imageUpload',
+      });
+      const event = createEvent(
+        'ForemMobile',
+        document,
+        { detail: fakeSuccessMessage },
+        { EventType: 'CustomEvent' },
+      );
+      fireEvent(document, event);
 
       expect(await findByTitle(/copy markdown for image/i)).toBeDefined();
     });
@@ -285,23 +285,17 @@ describe('<ImageUploader />', () => {
     });
   });
 
-  describe('Editor v2, native iOS', () => {
+  describe('Editor v2, native iOS with imageUpload_disabled support', () => {
     beforeEach(() => {
       global.Runtime = {
         isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload';
+          return namespace === 'imageUpload_disabled';
         }),
       };
     });
 
     it('triggers a webkit messageHandler call when isNativeIOS', async () => {
-      global.window.webkit = {
-        messageHandlers: {
-          imageUpload: {
-            postMessage: jest.fn(),
-          },
-        },
-      };
+      global.window.ForemMobile = { injectNativeMessage: jest.fn() };
 
       const { getByRole } = render(<ImageUploader editorVersion="v2" />);
       const uploadButton = getByRole('button', { name: /Upload image/i });
@@ -309,7 +303,7 @@ describe('<ImageUploader />', () => {
 
       await waitFor(() =>
         expect(
-          window.webkit.messageHandlers.imageUpload.postMessage,
+          global.window.ForemMobile.injectNativeMessage,
         ).toHaveBeenCalledTimes(1),
       );
     });
@@ -317,19 +311,26 @@ describe('<ImageUploader />', () => {
     it('handles a native bridge message correctly', async () => {
       const uploadSuccess = jest.fn();
 
-      const { container } = render(
+      render(
         <ImageUploader
           editorVersion="v2"
           onImageUploadSuccess={uploadSuccess}
         />,
       );
-      const nativeInput = container.querySelector(
-        '#native-image-upload-message',
-      );
 
       // Fire a change event in the hidden input with JSON payload for success
-      const fakeSuccessMessage = `{ "action": "success", "link": "/some-fake-image.jpg" }`;
-      fireEvent.change(nativeInput, { target: { value: fakeSuccessMessage } });
+      const fakeSuccessMessage = JSON.stringify({
+        action: 'success',
+        link: '/some-fake-image.jpg',
+        namespace: 'imageUpload',
+      });
+      const event = createEvent(
+        'ForemMobile',
+        document,
+        { detail: fakeSuccessMessage },
+        { EventType: 'CustomEvent' },
+      );
+      fireEvent(document, event);
 
       await waitFor(() =>
         expect(uploadSuccess).toHaveBeenCalledWith(

@@ -31,9 +31,8 @@ describe('toggling the actions panel', () => {
         `<html><body><button class="close-actions-panel hidden"></body></html>`,
       );
 
-      const modActionsMenu = document.getElementsByClassName(
-        'mod-actions-menu',
-      )[0];
+      const modActionsMenu =
+        document.getElementsByClassName('mod-actions-menu')[0];
       const modActionsMenuBtn = document.getElementsByClassName(
         'mod-actions-menu-btn',
       )[0];
@@ -41,7 +40,6 @@ describe('toggling the actions panel', () => {
       modActionsMenuBtn.click();
 
       expect(modActionsMenu.classList.contains('showing')).toBeTruthy();
-      expect(modActionsMenuBtn.classList.contains('hidden')).toBeTruthy();
 
       const panelDocument = modContainer.contentDocument;
 
