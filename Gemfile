@@ -133,6 +133,7 @@ group :development do
   gem "i18n-tasks", "~> 0.9.35" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
+  gem "solargraph", "~> 0.44", require: false # For LSP support (such as symbol renaming, documentation lookup)
   gem "web-console", "~> 4.2" # Rails Console on the Browser
 end
 
