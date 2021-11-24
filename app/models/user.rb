@@ -8,7 +8,7 @@ class User < ApplicationRecord
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
     included do
-      has_one :profile, dependent: :destroy
+      has_one :profile, dependent: :delete
 
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
@@ -43,8 +43,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
-  has_one :setting, class_name: "Users::Setting", dependent: :destroy
+  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
+  has_one :setting, class_name: "Users::Setting", dependent: :delete
 
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
                            inverse_of: :resource_owner, dependent: :delete_all
@@ -52,13 +52,13 @@ class User < ApplicationRecord
                            inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
-  has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :destroy
-  has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :destroy
-  has_many :api_secrets, dependent: :destroy
+  has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :delete_all
+  has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
+  has_many :api_secrets, dependent: :delete_all
   has_many :articles, dependent: :destroy
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :badge_achievements, dependent: :destroy
+  has_many :badge_achievements, dependent: :delete_all
   has_many :badge_achievements_rewarded, class_name: "BadgeAchievement", foreign_key: :rewarder_id,
                                          inverse_of: :rewarder, dependent: :nullify
   has_many :badges, through: :badge_achievements
@@ -72,32 +72,33 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
-  has_many :discussion_locks, dependent: :destroy, inverse_of: :locking_user, foreign_key: :locking_user_id
-  has_many :display_ad_events, dependent: :destroy
+  has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
+  has_many :display_ad_events, dependent: :delete_all
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
+  # Consider that we might be able to use dependent: :delete_all as the GithubRepo busts the user cache
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
-  has_many :identities, dependent: :destroy
+  has_many :identities, dependent: :delete_all
   has_many :identities_enabled, -> { enabled }, class_name: "Identity", inverse_of: false
   has_many :listings, dependent: :destroy
-  has_many :mentions, dependent: :destroy
-  has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy
-  has_many :notification_subscriptions, dependent: :destroy
-  has_many :notifications, dependent: :destroy
+  has_many :mentions, dependent: :delete_all
+  has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :delete_all
+  has_many :notification_subscriptions, dependent: :delete_all
+  has_many :notifications, dependent: :delete_all
   has_many :offender_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
-  has_many :organization_memberships, dependent: :destroy
+  has_many :organization_memberships, dependent: :delete_all
   has_many :organizations, through: :organization_memberships
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify
-  has_many :podcast_episode_appearances, dependent: :destroy, inverse_of: :user
+  has_many :podcast_episode_appearances, dependent: :delete_all, inverse_of: :user
   has_many :podcast_episodes, through: :podcast_episode_appearances, source: :podcast_episode
-  has_many :podcast_ownerships, dependent: :destroy, inverse_of: :owner
+  has_many :podcast_ownerships, dependent: :delete_all, inverse_of: :owner
   has_many :podcasts_owned, through: :podcast_ownerships, source: :podcast
-  has_many :poll_skips, dependent: :destroy
-  has_many :poll_votes, dependent: :destroy
+  has_many :poll_skips, dependent: :delete_all
+  has_many :poll_votes, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
 
   # we keep rating votes as they belong to the article, not to the user who viewed it
@@ -106,7 +107,7 @@ class User < ApplicationRecord
   has_many :reactions, dependent: :destroy
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
-  has_many :response_templates, inverse_of: :user, dependent: :destroy
+  has_many :response_templates, inverse_of: :user, dependent: :delete_all
   has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
                                                 foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription",
@@ -115,7 +116,7 @@ class User < ApplicationRecord
   has_many :tweets, dependent: :nullify
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
   has_many :devices, dependent: :delete_all
-  has_many :sponsorships, dependent: :destroy
+  has_many :sponsorships, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 

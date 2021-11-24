@@ -14,7 +14,6 @@ const NativeIosImageUpload = ({
   extraProps,
   uploadLabel,
   isUploadingImage,
-  handleNativeMessage,
 }) => (
   <Fragment>
     {isUploadingImage ? null : (
@@ -26,12 +25,6 @@ const NativeIosImageUpload = ({
         {uploadLabel}
       </Button>
     )}
-    <input
-      type="hidden"
-      id="native-cover-image-upload-message"
-      value=""
-      onChange={handleNativeMessage}
-    />
   </Fragment>
 );
 
@@ -98,20 +91,27 @@ export class ArticleCoverImage extends Component {
   };
 
   useNativeUpload = () => {
-    return Runtime.isNativeIOS('imageUpload');
+    // This namespace is not implemented in the native side. This allows us to
+    // deploy our refactor and wait until our iOS app is approved by AppStore
+    // review. The old web implementation will be the fallback until then.
+    return Runtime.isNativeIOS('imageUpload_disabled');
   };
 
   initNativeImagePicker = (e) => {
     e.preventDefault();
-    window.webkit.messageHandlers.imageUpload.postMessage({
-      id: 'native-cover-image-upload-message',
+    window.ForemMobile?.injectNativeMessage('coverUpload', {
+      action: 'coverImageUpload',
       ratio: `${100.0 / 42.0}`,
     });
   };
 
   handleNativeMessage = (e) => {
-    const message = JSON.parse(e.target.value);
+    const message = JSON.parse(e.detail);
+    if (message.namespace !== 'coverUpload') {
+      return;
+    }
 
+    /* eslint-disable no-case-declarations */
     switch (message.action) {
       case 'uploading':
         this.setState({ uploadingImage: true });
@@ -125,10 +125,14 @@ export class ArticleCoverImage extends Component {
         });
         break;
       case 'success':
-        this.props.onMainImageUrlChange({ links: [message.link] });
+        const { onMainImageUrlChange } = this.props;
+        onMainImageUrlChange({
+          links: [message.link],
+        });
         this.setState({ uploadingImage: false });
         break;
     }
+    /* eslint-enable no-case-declarations */
   };
 
   triggerMainImageRemoval = (e) => {
@@ -169,6 +173,9 @@ export class ArticleCoverImage extends Component {
         }
       : {};
 
+    // Native Bridge messages come through ForemMobile events
+    document.addEventListener('ForemMobile', this.handleNativeMessage);
+
     return (
       <DragAndDropZone
         onDragOver={onDragOver}
@@ -198,7 +205,6 @@ export class ArticleCoverImage extends Component {
                   isUploadingImage={uploadingImage}
                   extraProps={extraProps}
                   uploadLabel={uploadLabel}
-                  handleNativeMessage={this.handleNativeMessage}
                 />
               ) : (
                 <StandardImageUpload

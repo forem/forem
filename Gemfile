@@ -116,7 +116,7 @@ gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
-gem "view_component", "~> 2.43", require: "view_component/engine" # View components for Rails
+gem "view_component", "~> 2.44", require: "view_component/engine" # View components for Rails
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails
 
@@ -141,6 +141,7 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.36.0" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", github: "forem/cypress-rails", branch: "enable-knapsack-pro-support" # For end to end tests (E2E)
+  gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 3.1.3" # Help parallelize Ruby spec builds
