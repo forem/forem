@@ -13,7 +13,7 @@ RSpec.describe Search::ReadingList, type: :service do
   end
 
   def count_of_published_readling_items_for(user:)
-    Article.where(published: true).where(id: user.reactions.readinglist.map(&:reactable_id)).count
+    Article.published.where(id: user.reactions.readinglist.map(&:reactable_id)).count
   end
 
   def published_reading_list_item_for(user:)
