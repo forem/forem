@@ -31,6 +31,14 @@ module Feeds
 
     private
 
+    def feed_url
+      @feed_url ||=
+        @feed.url.presence ||
+        URI.parse(@feed_source_url).then do |uri|
+          "#{uri.scheme}://#{uri.host}"
+        end
+    end
+
     def processed_title
       @title.truncate(128, omission: "...", separator: " ")
     end
@@ -43,7 +51,7 @@ module Feeds
 
     def assemble_body_markdown
       cleaned_content = Feeds::CleanHtml.call(get_content)
-      cleaned_content = thorough_parsing(cleaned_content, @feed.url)
+      cleaned_content = thorough_parsing(cleaned_content, feed_url)
 
       content = ReverseMarkdown
         .convert(cleaned_content, github_flavored: true)
