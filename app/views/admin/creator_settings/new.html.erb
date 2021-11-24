@@ -12,7 +12,7 @@
       <% end %>
     </div>
 
-    <%= form_tag(admin_creator_settings_path, method: "post", class: "relative z-elevate p-4") do %>
+    <%= form_tag(admin_creator_settings_path, method: "post", multipart: true, class: "relative z-elevate p-4") do %>
       <% if defined?(resource) && resource&.errors&.any? %>
         <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
           <div class="crayons-card__header">
@@ -37,6 +37,7 @@
       <br>
       <%= render "form" %>
       <div class="crayons-field mt-6 align-left">
+      <input type="hidden" name="logo_svg" value="legacy_logo_ignore">
         <%= submit_tag "Finish", class: "crayons-btn btn--primary" %>
       </div>
       <% if @help_url %>
