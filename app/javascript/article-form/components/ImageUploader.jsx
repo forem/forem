@@ -210,7 +210,7 @@ export const ImageUploader = () => {
   // This namespace is not implemented in the native side. This allows us to
   // deploy our refactor and wait until our iOS app is approved by AppStore
   // review. The old web implementation will be the fallback until then.
-  const useNativeUpload = Runtime.isNativeIOS('imageUpload_disabled');
+  const useNativeUpload = Runtime.isNativeIOS('imageUpload');
   const extraProps = useNativeUpload
     ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
     : { tabIndex: -1 };

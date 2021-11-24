@@ -155,16 +155,16 @@ describe('<ArticleCoverImage />', () => {
     await findByText(/some fake error/i);
   });
 
-  describe('when rendered in native iOS with imageUpload_disabled support', () => {
+  describe('when rendered in native iOS with imageUpload support', () => {
     beforeEach(() => {
       global.Runtime = {
         isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload_disabled';
+          return namespace === 'imageUpload';
         }),
       };
     });
 
-    it('should have no a11y violations when native iOS imageUpload_disabled support is available', async () => {
+    it('should have no a11y violations when native iOS imageUpload support is available', async () => {
       const { container } = render(
         <ArticleCoverImage
           mainImage="/i/r5tvutqpl7th0qhzcw7f.png"

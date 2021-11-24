@@ -34,11 +34,11 @@ describe('<ImageUploader />', () => {
     expect(uploadInput.getAttribute('type')).toEqual('file');
   });
 
-  describe('when rendered in native iOS with imageUpload_disabled support', () => {
+  describe('when rendered in native iOS with imageUpload support', () => {
     beforeEach(() => {
       global.Runtime = {
         isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload_disabled';
+          return namespace === 'imageUpload';
         }),
       };
     });
