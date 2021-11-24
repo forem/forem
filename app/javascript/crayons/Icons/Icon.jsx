@@ -21,5 +21,5 @@ Icon.displayName = 'Icon';
 Icon.propTypes = {
   native: PropTypes.bool,
   className: PropTypes.string,
-  src: PropTypes.ReactNode,
+  src: PropTypes.node.isRequired,
 };
