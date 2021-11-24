@@ -4,30 +4,14 @@ This component is supposed to make it easy to add icons to your JSX code.
 
 ## How?
 
-You can pass an object or a path as `src` prop:
-
-**Recommended:**
+You can pass an object as `src` prop:
 
 ```
-import Twitter from '/path/to/twitter.svg';
+import Twitter from '@images/twitter.svg';
 <Icon src={Twitter} />
 ```
 
-**Less recommended** (but still fine :D):
-
-```
-<Icon src="/path/to/twitter.svg" />
-```
-<br />
-
-### `@img`
-
-We have an alias `@img` that should make it easier to access `/app/assets/images` folder:
-
-```
-import Twitter from '@img/twitter.svg';
-```
-
+Yes, we have an alias `@images` that should make it easier to access `/app/assets/images` folder. 
 
 ## Colors
 

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import ButtonsDoc from './Buttons.mdx';
 import { ButtonNew } from '@crayons';
-import SampleIcon from '@img/cog.svg';
+import CogIcon from '@images/cog.svg';
 
 export default {
   component: ButtonNew,
@@ -34,12 +34,21 @@ export default {
       },
     },
     tooltip: {
-      description: 'If defined, button will have a custom tooltip on `:hover`.',
+      description:
+        "If defined, button will have a custom tooltip on `:hover` and `:focus`. The tooltip content will form part of the button's accessible name unless passed as a `<span>` with `aria-hidden='true'`",
       control: {
         type: 'text',
       },
       table: {
         defaultValue: { summary: undefined },
+      },
+    },
+    icon: {
+      control: false,
+      description:
+        'Even though the generated JSX code in this component will have an empty function as prop value (`<ButtonNew icon={() => {}}>`), the actual value should be an icon object imported from `@images`. Read more about icons in their dedicated Storybook page.',
+      table: {
+        defaultValue: { summary: 'CogIcon' },
       },
     },
   },
@@ -63,5 +72,5 @@ Primary.args = {
 export const WithIcon = (args) => <ButtonNew {...args} />;
 WithIcon.args = {
   ...Default.args,
-  icon: SampleIcon,
+  icon: CogIcon,
 };

@@ -2,6 +2,8 @@
 import {
   getLastIndexOfCharacter,
   getNextIndexOfCharacter,
+  getNumberOfNewLinesFollowingSelection,
+  getNumberOfNewLinesPrecedingSelection,
   getSelectionData,
 } from '../../utilities/textAreaUtils';
 import {
@@ -23,6 +25,37 @@ const ORDERED_LIST_ITEM_REGEX = /^\d+\.\s+.*/;
 const MARKDOWN_LINK_REGEX =
   /^\[([\w\s\d]*)\]\((url|(https?:\/\/[\w\d./?=#]+))\)$/;
 const URL_PLACEHOLDER_TEXT = 'url';
+
+const NUMBER_OF_NEW_LINES_BEFORE_BLOCK_SYNTAX = 2;
+const NUMBER_OF_NEW_LINES_BEFORE_AFTER_SYNTAX = 1;
+
+const getNewLinePrefixSuffixes = ({ selectionStart, selectionEnd, value }) => {
+  const numberOfNewLinesBeforeSelection = getNumberOfNewLinesPrecedingSelection(
+    { selectionStart, value },
+  );
+  const numberOfNewLinesFollowingSelection =
+    getNumberOfNewLinesFollowingSelection({ selectionEnd, value });
+
+  // We only add new lines if we're not at the beginning of the text area
+  const numberOfNewLinesNeededAtStart =
+    selectionStart === 0
+      ? 0
+      : NUMBER_OF_NEW_LINES_BEFORE_BLOCK_SYNTAX -
+        numberOfNewLinesBeforeSelection;
+
+  const newLinesPrefix = String.prototype.padStart(
+    numberOfNewLinesNeededAtStart,
+    '\n',
+  );
+
+  const newLinesSuffix =
+    numberOfNewLinesFollowingSelection >=
+    NUMBER_OF_NEW_LINES_BEFORE_AFTER_SYNTAX
+      ? ''
+      : '\n';
+
+  return { newLinesPrefix, newLinesSuffix };
+};
 
 const handleLinkFormattingForEmptyTextSelection = ({
   textBeforeSelection,
@@ -316,18 +349,18 @@ const undoOrAddFormattingForMultilineSyntax = ({
   }
 
   // Add the formatting
-  const numberOfNewLinesBeforeSelection = (
-    textBeforeSelection.slice(-2).match(/\n/g) || []
-  ).length;
+
+  const { newLinesPrefix, newLinesSuffix } = getNewLinePrefixSuffixes({
+    selectionStart,
+    selectionEnd,
+    value,
+  });
+  const { length: newLinePrefixLength } = newLinesPrefix;
 
   // Multiline insertions should occur after two new lines (whether added already by user or inserted automatically)
-  const newLinesToAddBeforeSelection = 2 - numberOfNewLinesBeforeSelection;
-  let newtextBeforeSelection = textBeforeSelection;
-  Array.from({ length: newLinesToAddBeforeSelection }, () => {
-    newtextBeforeSelection += '\n';
-  });
+  const newtextBeforeSelection = `${textBeforeSelection}${newLinesPrefix}`;
 
-  const cursorStartBaseline = selectionStart + newLinesToAddBeforeSelection;
+  const cursorStartBaseline = selectionStart + newLinePrefixLength;
   const cursorStartBlockPrefixOffset = blockPrefix ? blockPrefix.length : 0;
   const cursorStartLinePrefixOffset =
     selectedText === '' && linePrefix ? linePrefix.length : 0;
@@ -335,7 +368,9 @@ const undoOrAddFormattingForMultilineSyntax = ({
   return {
     newTextAreaValue: `${newtextBeforeSelection}${
       blockPrefix ? blockPrefix : ''
-    }${formattedText}${blockSuffix ? blockSuffix : ''}\n${textAfterSelection}`,
+    }${formattedText}${
+      blockSuffix ? blockSuffix : ''
+    }${newLinesSuffix}${textAfterSelection}`,
     newCursorStart:
       cursorStartBaseline +
       cursorStartBlockPrefixOffset +
@@ -344,7 +379,7 @@ const undoOrAddFormattingForMultilineSyntax = ({
       selectionEnd +
       formattedText.length -
       selectedText.length +
-      newLinesToAddBeforeSelection +
+      newLinePrefixLength +
       (blockPrefix?.length || 0),
   };
 };
@@ -453,6 +488,14 @@ export const coreSyntaxFormatters = {
       const { selectedText, textBeforeSelection, textAfterSelection } =
         getSelectionData({ selectionStart, selectionEnd, value });
 
+      const { newLinesPrefix, newLinesSuffix } = getNewLinePrefixSuffixes({
+        selectionStart,
+        selectionEnd,
+        value,
+      });
+      const { length: newLinePrefixLength } = newLinesPrefix;
+      const { length: newLineSuffixLength } = newLinesSuffix;
+
       if (selectedText === '' && textBeforeSelection !== '') {
         // Check start of line for whether we're in an empty ordered list
         const lastNewLine = getLastIndexOfCharacter({
@@ -479,9 +522,9 @@ export const coreSyntaxFormatters = {
       if (selectedText === '') {
         // Otherwise insert an empty list for an empty selection
         return {
-          newTextAreaValue: `${textBeforeSelection}\n\n1. \n${textAfterSelection}`,
-          newCursorStart: selectionStart + 5,
-          newCursorEnd: selectionEnd + 5,
+          newTextAreaValue: `${textBeforeSelection}${newLinesPrefix}1. ${newLinesSuffix}${textAfterSelection}`,
+          newCursorStart: selectionStart + 3 + newLinePrefixLength,
+          newCursorEnd: selectionEnd + 3 + newLinePrefixLength,
         };
       }
 
@@ -508,15 +551,18 @@ export const coreSyntaxFormatters = {
         };
       }
       // Otherwise convert to an ordered list
-      const formattedList = `\n\n${splitByNewLine
+      const formattedList = `${newLinesPrefix}${splitByNewLine
         .map((textChunk, index) => `${index + 1}. ${textChunk}`)
-        .join('\n')}\n`;
+        .join('\n')}${newLinesSuffix}`;
+
+      const cursorOffsetStart =
+        selectedText.length === 0 ? 4 : newLinePrefixLength;
 
       return {
         newTextAreaValue: `${textBeforeSelection}${formattedList}${textAfterSelection}`,
-        newCursorStart: selectionStart + (selectedText.length === 0 ? 4 : 2),
+        newCursorStart: selectionStart + cursorOffsetStart,
         newCursorEnd:
-          selectionEnd + formattedList.length - selectedText.length - 1,
+          selectionStart + formattedList.length - newLineSuffixLength,
       };
     },
   },
@@ -578,13 +624,20 @@ export const coreSyntaxFormatters = {
         };
       }
 
+      const { newLinesPrefix, newLinesSuffix } = getNewLinePrefixSuffixes({
+        selectionStart,
+        selectionEnd,
+        value,
+      });
+      const { length: newLinePrefixLength } = newLinesPrefix;
+
       const adjustingHeading = currentHeadingIndex > 0;
-      const cursorOffset = adjustingHeading ? 1 : 5;
+      const cursorOffset = adjustingHeading ? 1 : 3 + newLinePrefixLength;
 
       return {
         newTextAreaValue: adjustingHeading
           ? `${textBeforeSelection}#${selectedText}${textAfterSelection}`
-          : `${textBeforeSelection}\n\n## ${selectedText}\n${textAfterSelection}`,
+          : `${textBeforeSelection}${newLinesPrefix}## ${selectedText}${newLinesSuffix}${textAfterSelection}`,
         newCursorStart: selectionStart + cursorOffset,
         newCursorEnd: selectionEnd + cursorOffset,
       };

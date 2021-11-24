@@ -36,18 +36,18 @@ They can (but don't have to) be used in conjuction with a Primary button. In tha
 ### Destructive actions
 
 For actions that could have destructive effects on the user’s data (for example, *delete* or *remove*) we have a special style.
-This style can be applied by using `destructive` prop and it will work for both: primary and default variants.
+This style can be applied by using `destructive` prop and it will work for both: primary and default variants. Take care when using the default variant to ensure that the red text has sufficient color contrast against the background where you are using it.
 
 ### Icons
 
 Icon can be placed in front of a label to both clarify an action and call attention to a button. 
-By passing path or object in `icon` prop, there will be automatically included `<Icon />` component.
-By default, the icon itself won't be customizable.
+By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself won't be customizable. Icons within buttons are hidden from assistive technology, so make sure your button has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
 
 #### Icon-only
 
 There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
-Icon-only buttons should always use clear and obvious icon, ideally accompanied by a tooltip or title.
+Icon-only buttons should always use clear and obvious icon, ideally accompanied by a tooltip or title. Make sure your button is adequately labelled for assistive technologies, either by the tooltip or by an `aria-label`.
 
 ##### Fully rounded
 
@@ -56,7 +56,7 @@ Other than that please avoid customizing border-radius on buttons.
 
 ### Tooltip
 
-By passing a string or node in `tooltip` prop, button will get a custom tooltip (visually different than a classic `title`) on `:hover`.
+By passing a string or node in `tooltip` prop, button will get a custom tooltip (visually different than a classic `title`) on `:hover` and `:focus`. The tooltip makes up part of the "accessible name" used by assistive technologies like screen readers. If you _do not_ wish the tooltip to be part of the accessible name, consider wrapping it in a `<span aria-hidden="true">`. Tooltips can be temporarily dismissed on `Escape` key press.
 
 ## Design
 

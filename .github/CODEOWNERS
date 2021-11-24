@@ -2,7 +2,30 @@
 # see https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
 # for further details
 
+
+# File exentions based ownership
+#
+# They are: .builder, .css, .erb, .gif, .ico, .jbuilder, .js, .jsx,
+#           .map, .md, .mdx, .otf, .png, .rake, .rb, .scss, .snap,
+#           .svg, .toml, .xml
+#
+# Use the following to generate the list:
+#
+# * `tree app | rg "\.\w+$" --only-matching | sort | uniq`
+# * `tree lib | rg "\.\w+$" --only-matching | sort | uniq`
+#
+**/*.builder                                        @forem/ruby
+**/*.css                                            @forem/css
+**/*.erb                                            @forem/ruby
+**/*.jbuilder                                       @forem/ruby
+**/*.js                                             @forem/javascript
+**/*.json                                           @forem/javascript @forem/ruby
+**/*.jsx                                            @forem/javascript
 **/*.md                                             @forem/oss
+**/*.rb                                             @forem/ruby
+**/*.scss                                           @forem/css
+
+# Context based ownership
 /app/assets/                                        @forem/frontend
 /app/controllers/async_info_controller.rb           @forem/sre
 /app/javascript/                                    @forem/frontend
@@ -20,8 +43,8 @@
 Containerfile                                       @forem/systems
 docker-compose.yml                                  @forem/systems
 Dockerfile                                          @forem/systems
-Gemfile                                             @forem/sre @forem/backend
-Gemfile.lock                                        @forem/sre @forem/backend
+Gemfile                                             @forem/ruby @forem/sre @forem/backend
+Gemfile.lock                                        @forem/ruby @forem/sre @forem/backend
 package.json                                        @forem/frontend
 podman-compose.yml                                  @forem/systems
 scripts/                                            @forem/systems

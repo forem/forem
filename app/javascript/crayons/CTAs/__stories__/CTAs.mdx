@@ -1,7 +1,7 @@
 # CTAs (Call To Actions)
 
 Call To Action is an extension for `<Link block />` component therefore it inherits Link's props and configuration.
-CTA is meant to be more prominent and viusally heavy so use these cautiously.
+CTA is meant to be more prominent and visually heavy so use these cautiously.
 
 ## CTAs vs Links vs Buttons
 
@@ -22,13 +22,13 @@ Call To Actions has slighlty different UI than regular `<Link block />` as our i
 ### Icons
 
 Icon can be placed in front of a label to both clarify an action and call attention to a CTA.
-By passing path or object in `icon` prop, there will be automatically included `<Icon />` component.
-By default, the icon itself won't be customizable.
+By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself won't be customizable. Icons within CTAs are hidden from assistive technology, so make sure your button has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
 
 #### Icon-only
 
 There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
-Icon-only CTAs should always use clear and obvious icon, ideally accompanied by a title.
+Icon-only CTAs should always use clear and obvious icon, ideally accompanied by a title. Icon-only CTAs will require an `aria-label` to ensure they are understood by users of assistive technologies.
 
 ##### Fully rounded
 

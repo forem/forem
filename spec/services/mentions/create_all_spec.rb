@@ -16,6 +16,31 @@ RSpec.shared_examples "valid notifiable and no mentions" do
     described_class.call(notifiable)
     expect(Mention.all.size).to eq(1)
   end
+
+  it "does not create a mention if notifiable is updated with mention inside code block", :aggregate_failures do
+    set_markdown_and_save(notifiable, mention_code_markdown)
+    described_class.call(notifiable)
+    expect(Mention.all.size).to eq(0)
+  end
+
+  it "does not create a mention if notifiable is updated with mention inside code snippet", :aggregate_failures do
+    set_markdown_and_save(notifiable, mention_snippet_markdown)
+    described_class.call(notifiable)
+    expect(Mention.all.size).to eq(0)
+  end
+
+  it "does not create a mention if notifiable is updated liquid tag that would render mention-like text",
+     :aggregate_failures do
+    mock_liquid_template = Liquid::Template.new
+    allow(Liquid::Template).to receive(:parse).and_return(mock_liquid_template)
+    allow(mock_liquid_template).to receive(:render).and_return(
+      "<p>A sample github</p> <div class=\"ltag-github\">Embedded content @#{user.username}</div>",
+    )
+
+    set_markdown_and_save(notifiable, mention_liquid)
+    described_class.call(notifiable)
+    expect(Mention.all.size).to eq(0)
+  end
 end
 
 RSpec.shared_examples "valid notifiable and has mentions" do
@@ -115,7 +140,10 @@ RSpec.describe Mentions::CreateAll, type: :service do
   let(:user2)              { create(:user) }
   let(:article)            { create(:article, user_id: user.id) }
   let(:markdown)           { "Hello, you are cool." }
-  let(:mention_markdown)   { "Hello @#{user.username}, you are cool." }
+  let(:mention_markdown) { "Hello @#{user.username}, you are cool." }
+  let(:mention_snippet_markdown) { "This is how I would mention `@#{user.username}` without a notification" }
+  let(:mention_code_markdown) { " ... ``` mention a user @#{user.username} in a code block``` ..." }
+  let(:mention_liquid) { " A sample github\n {% github https://github.com/forem/forem/pull/ %} ..." }
 
   def set_markdown_and_save(notifiable, markdown)
     notifiable.update(body_markdown: markdown)

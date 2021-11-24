@@ -16,7 +16,7 @@ describe('addCloseListener()', () => {
         </button>
       </div>
       <div id="mod-actions-menu-btn-area">
-        <div class="mod-actions-menu-btn crayons-btn crayons-btn--icon-rounded crayons-btn--s hidden">
+        <div class="mod-actions-menu-btn crayons-btn crayons-btn--icon-rounded crayons-btn--s">
         </div>
       </div>
     </body>
@@ -29,11 +29,7 @@ describe('addCloseListener()', () => {
     closeButton.click();
     // eslint-disable-next-line no-restricted-globals
     const modPanel = top.document.getElementsByClassName('mod-actions-menu')[0];
-    const modPanelBtn = top.document.getElementsByClassName(
-      'mod-actions-menu-btn',
-    )[0];
     expect(modPanel.classList).not.toContain('showing');
-    expect(modPanelBtn.classList).not.toContain('hidden');
   });
 });
 
