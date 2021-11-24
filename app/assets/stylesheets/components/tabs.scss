@@ -252,11 +252,17 @@
 .c-tabs {
   --tabs-direction: row;
   --tabs-overflow: auto;
+  --tabs-padding: var(--su-1);
   --tab-flex: unset;
   --tab-alignment: left;
   --tab-alignment-flex: flex-start;
 
   overflow-x: var(--tabs-overflow);
+
+  // Padding + negative margin is to add space for focus effect.
+  // Otherwise it would be cut off if combined with `--tab-overflow: auto`.
+  padding: var(--tabs-padding);
+  margin: calc(-1 * var(--tabs-padding));
 
   &__list {
     display: flex;
@@ -268,11 +274,16 @@
     @media (min-width: $breakpoint-s) {
       --tabs-direction: column;
       --tabs-overflow: unset;
+      // Setting padding back to `0` to reduce room for potential visual bugs
+      // whenever it's avoidable. `0` will work better than `unset` because
+      // we use `calc()` function for setting negative margin. (see couple lines above).
+      --tabs-padding: 0;
     }
   }
 
   &--fitted {
     --tabs-overflow: unset;
+    --tabs-padding: 0;
     --tab-flex: 1;
     --tab-alignment: center;
     --tab-alignment-flex: center;

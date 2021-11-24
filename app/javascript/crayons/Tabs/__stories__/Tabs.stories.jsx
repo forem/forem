@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import TabsDoc from './Tabs.mdx';
 import { Tabs, Tab } from '@crayons';
-import Cog from '@img/cog.svg';
-import Unicorn from '@img/unicorn.svg';
-import Mod from '@img/mod.svg';
+import Cog from '@images/cog.svg';
+import Unicorn from '@images/unicorn.svg';
+import Mod from '@images/mod.svg';
 
 export default {
   component: Tabs,
