@@ -58,7 +58,7 @@ module Search
       }
     end
 
-    def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:)
+    def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:, only_published: true)
       # [@jgaskins, @rhymes] as `reactions` is potentially a big table, adding pagination
       # to an INNER JOIN (eg. `joins(:reactions)`) exponentially decreases the performance,
       # incrementing query time as the database has to scan all the rows just to discard
@@ -74,6 +74,8 @@ module Search
       relation = ::Article.joins(
         "INNER JOIN (#{reaction_query_sql}) reactions ON reactions.reactable_id = articles.id",
       )
+
+      relation = relation.where(published: true) if only_published.present?
 
       relation = relation.search_articles(term) if term.present?
 

@@ -6,14 +6,25 @@ RSpec.describe Search::ReadingList, type: :service do
   let(:article_not_in_reading_list) { create(:article) }
   let(:article_1) { create(:article, with_tags: false) }
   let(:article_2) { create(:article, with_tags: false) }
+  let(:unpublished_article) { create(:article) }
 
   def extract_from_results(result, attribute)
     result[:items].pluck(:reactable).pluck(attribute)
   end
 
+  def count_of_published_readling_items_for(user:)
+    Article.where(published: true).where(id: user.reactions.readinglist.map(&:reactable_id)).count
+  end
+
+  def published_reading_list_item_for(user:)
+    user.reactions.readinglist.detect { |item| item.reactable.published? }
+  end
+
   describe "::search_documents" do
     before do
       create(:reaction, user: user, reactable: article, category: :readinglist, status: :valid)
+      create(:reaction, user: user, reactable: unpublished_article, category: :readinglist, status: :valid)
+      unpublished_article.update_columns(published: false)
     end
 
     it "returns an empty result without a user" do
@@ -47,7 +58,7 @@ RSpec.describe Search::ReadingList, type: :service do
       articles.each { |article| create(:reaction, category: :readinglist, reactable: article, user: user) }
 
       result = described_class.search_documents(user)
-      expect(result[:total]).to eq(user.reactions.readinglist.count)
+      expect(result[:total]).to eq(count_of_published_readling_items_for(user: user))
     end
 
     context "when describing the result format" do
@@ -63,7 +74,11 @@ RSpec.describe Search::ReadingList, type: :service do
         item = result[:items].first
 
         expect(item.keys).to match_array(%i[id user_id reactable])
-        expect(item[:id]).to eq(user.reactions.readinglist.first.id)
+
+        # The user's reading includes published and unpublished
+        # articles.  We want to make sure that what we found in the
+        # search is on the user's reading list.
+        expect(user.reactions.readinglist.map(&:id)).to include(item[:id])
         expect(item[:user_id]).to eq(user.id)
       end
 
@@ -100,14 +115,14 @@ RSpec.describe Search::ReadingList, type: :service do
 
     context "when filtering by statuses" do
       it "returns confirmed items by default" do
-        item = user.reactions.readinglist.last
+        item = published_reading_list_item_for(user: user)
         item.update_columns(status: :confirmed)
 
         expect(described_class.search_documents(user)[:items].first[:id]).to eq(item.id)
       end
 
       it "returns valid items by default" do
-        item = user.reactions.readinglist.last
+        item = published_reading_list_item_for(user: user)
         item.update_columns(status: :valid)
 
         expect(described_class.search_documents(user)[:items].first[:id]).to eq(item.id)
@@ -317,7 +332,7 @@ RSpec.describe Search::ReadingList, type: :service do
 
       it "returns the total count of the articles pre-pagination" do
         result = described_class.search_documents(user, page: 1, per_page: 1)
-        expect(result[:total]).to eq(user.reactions.readinglist.count)
+        expect(result[:total]).to eq(count_of_published_readling_items_for(user: user))
       end
 
       it "returns no items when out of pagination bounds" do
