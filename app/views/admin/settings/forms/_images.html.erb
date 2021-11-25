@@ -54,7 +54,7 @@
                           rows: 6,
                           placeholder: Constants::Settings::General::DETAILS[:logo_svg][:placeholder] %>
           <% if Settings::General.logo_svg.present? %>
-            <div class="site-logo">
+            <div class="mt-2">
               <a href="<%= Settings::General.logo_svg.html_safe %>" target="_blank" rel="noopener"><img src="<%= Settings::General.logo_svg.html_safe %>" alt="<%= community_name %> logo" style="max-width: 100%" loading="lazy" /></a>
             </div>
           <% end %>
