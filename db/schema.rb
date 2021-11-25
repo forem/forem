@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_04_161101) do
+ActiveRecord::Schema.define(version: 2021_11_25_174730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -385,6 +385,17 @@ ActiveRecord::Schema.define(version: 2021_11_04_161101) do
     t.string "team_id"
     t.datetime "updated_at", precision: 6, null: false
     t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.text "description"
+    t.text "meta_description"
+    t.string "meta_title"
+    t.string "name"
+    t.boolean "published"
+    t.string "slug"
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "credits", force: :cascade do |t|
