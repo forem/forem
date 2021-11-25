@@ -30,13 +30,13 @@ function getGistTags(nodes) {
 
 function loadEmbeddedGists(postscribe, gistTags) {
   for (const gistTag of gistTags) {
-    setTimeout(() => {
-      postscribe(gistTag, gistTag.firstElementChild.outerHTML, {
-        beforeWrite(text) {
-          return gistTag.childElementCount > 3 ? '' : text;
-        },
-      });
-    }, 500);
+    const gistWrapper = gistTag.firstElementChild;
+    postscribe(gistTag, gistWrapper.outerHTML, {
+      beforeWrite(text) {
+        return gistTag.childElementCount > 3 ? '' : text;
+      },
+    });
+    gistWrapper.remove();
   }
 }
 
