@@ -230,3 +230,15 @@
   --reaction-save-color: var(--accent-brand);
   --reaction-save-bg: var(--accent-brand-a10);
 }
+
+:root {
+  ////////////////////////////////////////////////
+  // Buttons /////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Buttons: Primary
+  --btn-primary-bg-hover: var(--accent-brand-lighter);
+
+  // Buttons: Primary Destructive
+  --btn-primary-destructive-bg-hover: var(--accent-danger-lighter);
+}

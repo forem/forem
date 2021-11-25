@@ -439,7 +439,7 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
     color: var(--color-hover);
     z-index: var(--z-elevate);
   }
-  
+
   // Both focus declarations below are the same but we unfortunately can't
   // combine them because Safari doesn't handle it properly.
   //  • First declaration is for all browsers that support :focus-visible
@@ -476,32 +476,32 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
 }
 
 .c-btn {
-  --bg: transparent;
-  --bg-hover: var(--base-20);
-  --color: var(--base-80);
-  --color-hover: var(--base-100);
+  --bg: var(--btn-bg);
+  --bg-hover: var(--btn-bg-hover);
+  --color: var(--btn-color);
+  --color-hover: var(--btn-color-hover);
 
   &.c-btn--destructive {
-    --bg: transparent;
-    --bg-hover: var(--accent-danger-a10);
-    --color: var(--accent-danger);
-    --color-hover: var(--accent-danger-darker);
+    --bg: var(--btn-destructive-bg);
+    --bg-hover: var(--btn-destructive-bg-hover);
+    --color: var(--btn-destructive-color);
+    --color-hover: var(--btn-destructive-color-hover);
   }
 }
 
 .c-btn--primary {
-  --bg: var(--button-primary-bg);
-  --bg-hover: var(--button-primary-bg-hover);
-  --color: var(--button-primary-color);
-  --color-hover: var(--button-primary-color-hover);
+  --bg: var(--btn-primary-bg);
+  --bg-hover: var(--btn-primary-bg-hover);
+  --color: var(--btn-primary-color);
+  --color-hover: var(--btn-primary-color-hover);
 
   font-weight: var(--fw-medium);
 
   &.c-btn--destructive {
-    --bg: var(--accent-danger);
-    --bg-hover: var(--accent-danger-darker);
-    --color: #fff;
-    --color-hover: #fff;
+    --bg: var(--btn-primary-destructive-bg);
+    --bg-hover: var(--btn-primary-destructive-bg-hover);
+    --color: var(--btn-primary-destructive-color);
+    --color-hover: var(--btn-primary-destructive-color-hover);
   }
 }
 

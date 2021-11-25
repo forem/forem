@@ -241,3 +241,33 @@
   --reaction-comment-color: var(--accent-warning);
   --reaction-comment-bg: var(--accent-warning-a10);
 }
+
+:root {
+  ////////////////////////////////////////////////
+  // Buttons /////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Buttons: Default
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--base-20);
+  --btn-color: var(--base-80);
+  --btn-color-hover: var(--base-100);
+
+  // Buttons: Default Destructive
+  --btn-destructive-bg: transparent;
+  --btn-destructive-bg-hover: var(--accent-danger-a10);
+  --btn-destructive-color: var(--accent-danger);
+  --btn-destructive-color-hover: var(--accent-danger-darker);
+
+  // Buttons: Primary
+  --btn-primary-bg: var(--accent-brand);
+  --btn-primary-bg-hover: var(--accent-brand-darker);
+  --btn-primary-color: var(--base-inverted);
+  --btn-primary-color-hover: var(--base-inverted);
+
+  // Buttons: Primary Destructive
+  --btn-primary-destructive-bg: var(--accent-danger);
+  --btn-primary-destructive-bg-hover: var(--accent-danger-darker);
+  --btn-primary-destructive-color: var(--base-inverted);
+  --btn-primary-destructive-color-hover: var(--base-inverted);
+}
