@@ -18,7 +18,7 @@ en:
       updated_not_active: Your password was set successfully.
     mailer:
       invitation_instructions:
-        accept_instructions: Vous pouvez accepter l'invitation en cliquant sur ce lien
+        accept_instructions: You can accept the invitation by clicking this link
         accept: Accept Invitation
         accept_until: This invitation will expire after %{due_date}.
         hello: Hello %{name}
