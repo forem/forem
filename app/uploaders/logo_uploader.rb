@@ -1,6 +1,6 @@
 class LogoUploader < BaseUploader
   process :resize_image
-  EXTENSION_ALLOWLIST = %w[svg jpg jpeg png].freeze
+  EXTENSION_ALLOWLIST = %w[svg jpg jpeg jpe png].freeze
 
   def store_dir
     "uploads/logos/"
@@ -11,7 +11,7 @@ class LogoUploader < BaseUploader
   end
 
   def image_type_whitelist
-    %i[svg jpg jpeg png]
+    %i[svg jpg jpeg jpe png]
   end
 
   def size_range
