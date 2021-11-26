@@ -33,9 +33,9 @@ class LogoUploader < BaseUploader
     image.resize resize_dimensions
   end
 
-  # def content_type_whitelist
-  #   %w[image/svg+xml]
-  # end
+  def content_type_whitelist
+    %w[image/svg+xml image/png image/jpg]
+  end
 
   # Process files as they are uploaded:
   # process scale: [200, 300]
