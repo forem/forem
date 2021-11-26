@@ -14,7 +14,7 @@
     <p id="logo-subtitle" class="crayons-field__description">Ideally SVG, but PNG or JPEG will work, too.</p>
   <% end %>
   <div class="flex flex-1 gap-4">
-    <%= file_field_tag :logo, required: true, accept: ".svg,.png,.jpg,.jpe,image/svg+xml,image/png,image/jpg", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
+    <%= file_field_tag :logo, required: true, accept: @logo_allowed_types.to_s, data: { "max-file-size-mb": @max_file_size.to_s, action: "change->creator-settings#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
     <div data-creator-settings-target="previewLogo">
     </div>
   </div>

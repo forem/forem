@@ -3,7 +3,11 @@ module Admin
     ALLOWED_PARAMS = %i[community_name primary_brand_color_hex invite_only_mode public checked_code_of_conduct
                         checked_terms_and_conditions authenticity_token utf8 logo commit locale].freeze
 
-    def new; end
+    def new
+      @max_file_size = LogoUploader::MAX_FILE_SIZE
+      @logo_allowed_types = (LogoUploader::IMAGE_TYPE_ALLOWLIST +
+        LogoUploader::EXTENSION_ALLOWLIST.map { |extension| ".#{extension}" }).join(",")
+    end
 
     def create
       extra_authorization

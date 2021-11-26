@@ -2,6 +2,9 @@ class LogoUploader < BaseUploader
   process :resize_image
   EXTENSION_ALLOWLIST = %w[svg jpg jpeg jpe png].freeze
 
+  MAX_FILE_SIZE = 3 # Megabytes
+  IMAGE_TYPE_ALLOWLIST = %w[image/svg+xml image/png image/jpg].freeze
+
   def store_dir
     "uploads/logos/"
   end
@@ -17,7 +20,7 @@ class LogoUploader < BaseUploader
   def size_range
     # TODO: decide with @nickytonline on a size range that
     # matches the frotend validation.
-    1..(3.megabytes)
+    1..(MAX_FILE_SIZE.megabytes)
   end
 
   def resize_image
