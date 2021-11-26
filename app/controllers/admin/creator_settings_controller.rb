@@ -7,9 +7,10 @@ module Admin
 
     def create
       extra_authorization
-      ActiveRecord::Base.transaction do
-        raise CarrierWave::IntegrityError if settings_params[:logo].blank?
 
+      raise CarrierWave::IntegrityError if settings_params[:logo].blank?
+
+      ActiveRecord::Base.transaction do
         ::Settings::General.logo_svg = upload_logo(settings_params[:logo]).url
         ::Settings::Community.community_name = settings_params[:community_name]
         ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]
