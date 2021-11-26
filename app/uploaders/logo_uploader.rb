@@ -13,6 +13,11 @@ class LogoUploader < BaseUploader
     %i[svg jpg jpeg png]
   end
 
+  def size_range
+    # TODO: decide with @nickytonline on a size range that
+    # matches the frotend validation.
+    1..(3.megabytes)
+  end
   # def content_type_whitelist
   #   %w[image/svg+xml]
   # end
