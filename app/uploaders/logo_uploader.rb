@@ -21,6 +21,9 @@ class LogoUploader < BaseUploader
   end
 
   def resize_image
+    # SVGs cannot be resized.
+    return if file.content_type.include?("svg")
+
     # Question: this alters the origiinal file, we are able
     # to make a copy if we think thats a better approach
     image = MiniMagick::Image.new(file.path)
