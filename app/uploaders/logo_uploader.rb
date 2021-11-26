@@ -1,4 +1,5 @@
 class LogoUploader < BaseUploader
+  process :resize_image
   EXTENSION_ALLOWLIST = %w[svg jpg jpeg png].freeze
 
   def store_dir
@@ -18,6 +19,17 @@ class LogoUploader < BaseUploader
     # matches the frotend validation.
     1..(3.megabytes)
   end
+
+  def resize_image
+    # Question: this alters the origiinal file, we are able
+    # to make a copy if we think thats a better approach
+    image = MiniMagick::Image.new(file.path)
+
+    # TODO: update this to calculate the resize dimensions
+    resize_dimensions = "512x512"
+    image.resize resize_dimensions
+  end
+
   # def content_type_whitelist
   #   %w[image/svg+xml]
   # end
