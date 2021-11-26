@@ -40,7 +40,7 @@ module Admin
     end
 
     def upload_logo(image)
-      ArticleImageUploader.new.tap do |uploader|
+      LogoUploader.new.tap do |uploader|
         uploader.store!(image)
       end
     end
