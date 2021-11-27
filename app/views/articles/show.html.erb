@@ -38,12 +38,12 @@
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
     <meta property="og:title" content="<%= @article.title %>" />
-    <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
+    <meta property="og:description" content="<%= @article.description || t("views.articles.meta.description") %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
     <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
-    <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
+    <meta name="twitter:description" content="<%= @article.description || t("views.articles.meta.description") %>">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:widgets:new-embed-design" content="on">
     <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -59,7 +59,7 @@
 <% end %>
 
 <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
-  <aside class="crayons-layout__sidebar-left" aria-label="Article actions">
+  <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
     <%= render "articles/actions" %>
   </aside>
 
@@ -67,9 +67,9 @@
     <div class="article-wrapper">
       <% if !@article.published %>
         <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
-          <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
+          <strong><%= t("views.articles.unpublished.subtitle") %></strong><%= t("views.articles.unpublished.text") %>
           <% if user_signed_in? %>
-            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none">Click to edit</a>
+            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none"><%= t("views.articles.unpublished.edit") %></a>
           <% end %>
         </div>
       <% end %>
@@ -82,6 +82,7 @@
         id="article-show-container"
         data-article-id="<%= @article.id %>"
         data-author-id="<%= @article.user_id %>"
+        data-co-author-ids="<%= @article.co_author_ids.join(",") %>"
         data-path="<%= @article.path %>"
         data-published="<%= @article.published? %>"
         data-pin-path="<%= stories_feed_pinned_article_path %>"
@@ -117,24 +118,25 @@
                   <% end %>
                   <p class="fs-xs color-base-60">
                     <% if @article.published_timestamp.present? %>
-                      Posted on
-                      <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
+                      <%= t("views.articles.posted_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %>
                     <% end %>
                     <% if @article.co_author_ids.present? %>
-                      with <%= @article.co_author_name_and_path.html_safe %>
+                      <%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path.html_safe) %>
                     <% end %>
 
                     <% if should_show_updated_on?(@article) %>
-                      &bull; Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %>
+                      &bull; <%= t("views.articles.edited_html", date: local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year)) %>
                     <% end %>
 
                     <% if should_show_crossposted_on?(@article) %>
-                      &bull; Originally published at
-                      <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
-                      <% if @article.crossposted_at %>
-                        on
-                        <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
-                      <% end %>
+                      &bull; <%= t("views.articles.crossposted.text_html",
+                                   url: link_to(get_host_without_www(@article.canonical_url || @article.feed_source_url), @article.canonical_url || @article.feed_source_url, style: "color:#1395b8"),
+                                   on: if @article.crossposted_at
+                                         t("views.articles.crossposted.on_html",
+                                           date: local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year))
+                                       else
+                                         ""
+                                       end) %>
                     <% end %>
                   </p>
                 </div>
@@ -149,9 +151,9 @@
             </h1>
 
             <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
-              <div class="spec__tags">
+              <div class="spec__tags flex flex-wrap">
                 <% @article.cached_tag_list_array.each do |tag| %>
-                  <a class="crayons-tag" href="/t/<%= tag %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+                  <%= render_tag_link(tag) %>
                 <% end %>
               </div>
             <% end %>
@@ -188,7 +190,7 @@
     </div>
   </main>
 
-  <aside class="crayons-layout__sidebar-right" aria-label="Author details">
+  <aside class="crayons-layout__sidebar-right" aria-label="<%= t("views.articles.right_nav") %>">
     <% stick_nav_cache_key = "sticky-sidebar-#{@article.id}-#{(@organization || @user).profile_updated_at}-#{(@organization || @user).latest_article_updated_at}" %>
     <% cache(stick_nav_cache_key, expires_in: 50.hours) do %>
       <%= render "articles/sticky_nav" %>
@@ -210,7 +212,6 @@
 <% end %>
 
 <div class="mod-actions-menu print-hidden"></div>
-<div id="mod-actions-menu-btn-area" class="print-hidden"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
 <div class="fullscreen-code js-fullscreen-code"></div>

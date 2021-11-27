@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_19_151431) do
+ActiveRecord::Schema.define(version: 2021_11_04_161101) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.integer "positive_reactions_count", default: 0, null: false
     t.integer "previous_positive_reactions_count", default: 0
     t.integer "previous_public_reactions_count", default: 0, null: false
+    t.integer "privileged_users_reaction_points_sum", default: 0
     t.text "processed_html"
     t.integer "public_reactions_count", default: 0, null: false
     t.boolean "published", default: false
@@ -285,33 +286,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.datetime "updated_at"
     t.index ["broadcastable_type", "broadcastable_id"], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
     t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
-  end
-
-  create_table "chat_channel_memberships", force: :cascade do |t|
-    t.bigint "chat_channel_id", null: false
-    t.datetime "created_at", null: false
-    t.boolean "has_unopened_messages", default: false
-    t.datetime "last_opened_at", default: "2017-01-01 05:00:00"
-    t.string "role", default: "member"
-    t.boolean "show_global_badge_notification", default: true
-    t.string "status", default: "active"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["chat_channel_id", "user_id"], name: "index_chat_channel_memberships_on_chat_channel_id_and_user_id", unique: true
-    t.index ["user_id", "chat_channel_id"], name: "index_chat_channel_memberships_on_user_id_and_chat_channel_id"
-  end
-
-  create_table "chat_channels", force: :cascade do |t|
-    t.string "channel_name"
-    t.string "channel_type", null: false
-    t.datetime "created_at", null: false
-    t.string "description"
-    t.boolean "discoverable", default: false
-    t.datetime "last_message_at", default: "2017-01-01 05:00:00"
-    t.string "slug"
-    t.string "status", default: "active"
-    t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|
@@ -648,19 +622,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.index ["user_id", "mentionable_id", "mentionable_type"], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
   end
 
-  create_table "messages", force: :cascade do |t|
-    t.string "chat_action"
-    t.bigint "chat_channel_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "edited_at"
-    t.string "message_html", null: false
-    t.string "message_markdown", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
-    t.index ["user_id"], name: "index_messages_on_user_id"
-  end
-
   create_table "navigation_links", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.boolean "display_only_when_signed_in", default: false
@@ -837,6 +798,17 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
+  create_table "pghero_query_stats", force: :cascade do |t|
+    t.bigint "calls"
+    t.datetime "captured_at"
+    t.text "database"
+    t.text "query"
+    t.bigint "query_hash"
+    t.float "total_time"
+    t.text "user"
+    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
   end
 
   create_table "podcast_episode_appearances", force: :cascade do |t|
@@ -1407,6 +1379,7 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
     t.string "inbox_guidelines"
     t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true
+    t.boolean "prefer_os_color_scheme", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
@@ -1451,8 +1424,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "badge_achievements", "users", column: "rewarder_id", on_delete: :nullify
   add_foreign_key "banished_users", "users", column: "banished_by_id", on_delete: :nullify
-  add_foreign_key "chat_channel_memberships", "chat_channels"
-  add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
@@ -1480,8 +1451,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "mentions", "users", on_delete: :cascade
-  add_foreign_key "messages", "chat_channels"
-  add_foreign_key "messages", "users"
   add_foreign_key "notes", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "notifications", "organizations", on_delete: :cascade
@@ -1520,7 +1489,6 @@ ActiveRecord::Schema.define(version: 2021_10_19_151431) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
-  add_foreign_key "tags", "chat_channels", column: "mod_chat_channel_id", on_delete: :nullify
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"

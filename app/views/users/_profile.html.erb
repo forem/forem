@@ -1,30 +1,42 @@
-<%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", "stickySaveFooter", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "stickySaveFooter", "userProfileSettings", "validateFileInputs", defer: true %>
 
 <%= render "users/additional_authentication" %>
 
-<%= form_with(url: profile_path(@user.profile_id), method: "put", html: { class: "sticky-footer-form" }) do |f| %>
+<%= form_with(url: profile_path(@user.profile_id), method: "put", html: { class: "sticky-footer-form", id: "user-profile-form" }) do |f| %>
 
   <div class="crayons-card crayons-card--content-rows">
     <h2>User</h2>
 
     <div class="crayons-field">
       <%= f.label :name, for: "user[name]", class: "crayons-field__label" %>
-      <%= f.text_field "user[name]", maxlength: 30, class: "crayons-textfield", placeholder: "John Doe", value: @user.name %>
+      <%= f.text_field "user[name]",
+                       maxlength: 30,
+                       class: "crayons-textfield",
+                       placeholder: "John Doe",
+                       value: @user.name %>
     </div>
 
     <div class="crayons-field">
       <%= f.label :email, for: "user[email]", class: "crayons-field__label" %>
-      <%= f.text_field "user[email]", class: "crayons-textfield", placeholder: "john.doe@example.com", value: @user.email %>
+      <%= f.text_field "user[email]",
+                       maxlength: 50,
+                       class: "crayons-textfield",
+                       placeholder: "john.doe@example.com",
+                       value: @user.email %>
     </div>
 
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box "users_setting[display_email_on_profile]", class: "crayons-checkbox", checked: @user.setting.display_email_on_profile %>
-      <%= f.label :display_email_on_profile, for: "users_setting[display_email_on_profile]", class: "crayons-field__label" %>
+      <%= f.label :display_email_on_profile, t("views.users.profile_fields.display_email_on_profile"), for: "users_setting[display_email_on_profile]", class: "crayons-field__label" %>
     </div>
 
     <div class="crayons-field">
       <%= f.label :username, for: "user[username]", class: "crayons-field__label" %>
-      <%= f.text_field "user[username]", maxlength: 30, class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
+      <%= f.text_field "user[username]",
+                       maxlength: 30,
+                       class: "crayons-textfield",
+                       placeholder: "johndoe",
+                       value: @user.username %>
     </div>
 
     <div class="crayons-field">
@@ -48,32 +60,53 @@
 
     <div class="crayons-field">
       <label class="crayons-field__label" for="profile[website_url]">
-        Website URL
+        <%= t("views.users.profile_fields.website.label") %>
       </label>
       <%= f.url_field "profile[website_url]",
+                      maxlength: 100,
                       value: profile.website_url,
                       placeholder: "https://yoursite.com",
-                      class: "crayons-textfield js-color-field" %>
+                      class: "crayons-textfield",
+                      aria: { describedby: "url-description" },
+                      data: { character_span_id: "url-characters" } %>
+      <p id="url-description" class="crayons-field__description align-right">
+        <span class="screen-reader-only">Available characters used: </span>
+        <span id="url-characters"></span>/100
+      </p>
     </div>
 
     <div class="crayons-field">
       <label class="crayons-field__label" for="profile[location]">
-        Location
+        <%= t("views.users.profile_fields.location.label") %>
       </label>
       <%= f.text_field "profile[location]",
+                       maxlength: 100,
                        value: profile.location,
-                       placeholder: "Halifax, Nova Scotia",
-                       class: "crayons-textfield js-color-field" %>
+                       placeholder: t("views.users.profile_fields.location.placeholder"),
+                       class: "crayons-textfield",
+                       aria: { describedby: "location-description" },
+                       data: { character_span_id: "location-characters" } %>
+      <p id="location-description" class="crayons-field__description align-right">
+        <span class="screen-reader-only">Available characters used: </span>
+        <span id="location-characters"></span>/100
+      </p>
     </div>
 
     <div class="crayons-field">
       <label class="crayons-field__label" for="profile[summary]">
-        Bio
+        <%= t("views.users.profile_fields.bio.label") %>
       </label>
       <%= f.text_area "profile[summary]",
+                      maxlength: 200,
                       value: profile.summary,
-                      placeholder: "A short bio...",
-                      class: "crayons-textfield js-color-field" %>
+                      placeholder: t("views.users.profile_fields.bio.placeholder"),
+                      class: "crayons-textfield",
+                      aria: { describedby: "summary-description" },
+                      data: { character_span_id: "summary-characters" } %>
+      <p id="summary-description" class="crayons-field__description align-right">
+        <span class="screen-reader-only">Available characters used: </span>
+        <span id="summary-characters"></span>/200
+      </p>
     </div>
   </div>
 
@@ -94,19 +127,28 @@
                               class: "crayons-checkbox") %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
+              <% if field.description.present? %>
+                <p class="crayons-field__description"><%= field.description %></p>
+              <% end %>
             </label>
           <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
+            <% if field.description.present? %>
+              <p class="crayons-field__description"><%= field.description %></p>
+            <% end %>
             <%= f.public_send(field["input_type"],
                               "profile[#{field.attribute_name}]",
                               value: profile.public_send(field.attribute_name),
                               placeholder: field["placeholder_text"],
+                              aria: { describedby: "#{field.attribute_name}-description" },
+                              data: { character_span_id: "#{field.attribute_name}-characters" },
                               class: "crayons-textfield") %>
-          <% end %>
-          <% if field.description.present? %>
-            <p class="crayons-field__description"><%= field.description %></p>
+            <p id="<%= field.attribute_name %>-description" class="crayons-field__description align-right">
+              <span class="screen-reader-only">Available characters used: </span>
+              <span id="<%= field.attribute_name %>-characters"></span>/<%= character_count_denominator(field["input_type"]) %>
+            </p>
           <% end %>
         </div>
       <% end %>
@@ -118,8 +160,9 @@
     <h2>Branding</h2>
     <div class="crayons-field ">
       <label class="crayons-field__label" for="users_setting[brand_color1]">
-        Brand color 1
+        <%= t("views.logo.color_1.label") %>
       </label>
+      <p class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
       <div class="flex items-center w-100 m:w-50">
         <%= f.public_send("text_field", "users_setting[brand_color1]",
                           value: users_setting.public_send("brand_color1"),
@@ -130,13 +173,13 @@
                           value: users_setting.public_send("brand_color1"),
                           class: "crayons-color-selector js-color-field ml-2") %>
       </div>
-      <p class="crayons-field__description">Used for backgrounds, borders etc.</p>
     </div>
 
     <div class="crayons-field ">
       <label class="crayons-field__label" for="users_setting[brand_color1]">
-        Brand color 2
+        <%= t("views.logo.color_2.label") %>
       </label>
+      <p class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
       <div class="flex items-center w-100 m:w-50">
         <%= f.public_send("text_field", "users_setting[brand_color2]",
                           value: users_setting.public_send("brand_color2"),
@@ -147,7 +190,6 @@
                           value: users_setting.public_send("brand_color2"),
                           class: "crayons-color-selector js-color-field ml-2") %>
       </div>
-      <p class="crayons-field__description">Used for texts (usually put on Brand color 1).</p>
     </div>
   </div>
 

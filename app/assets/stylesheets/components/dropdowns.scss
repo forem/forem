@@ -2,9 +2,11 @@
 
 .crayons-dropdown {
   position: absolute;
+  top: 100%;
   display: none; // initially hidden
   padding: var(--su-2);
   min-width: 250px;
+  margin-top: var(--su-1);
   z-index: var(--z-dropdown);
   background: var(--card-bg);
   color: var(--card-color);
@@ -21,5 +23,7 @@
     // Flips the dropdown to drop-upwards when set
     bottom: 100%;
     top: unset;
+    margin-top: unset;
+    margin-bottom: var(--su-1);
   }
 }

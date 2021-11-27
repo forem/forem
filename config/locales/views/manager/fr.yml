@@ -9,10 +9,10 @@ fr:
       tools:
         heading: 'Tools:'
         subtitle: 'Experience Level of Post:'
-        text_html: " Is your post written more for a beginner or an advanced audience?  Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most."
+        text_html: "Is your post written more for a beginner or an advanced audience? Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most."
       nav:
         dashboard: Dashboard
-        text: " 👉 Manage Your Post"
+        text: "👉 Manage Your Post"
       rating:
         heading: Experience Level of Post
         text: Who is this post most relevant for?

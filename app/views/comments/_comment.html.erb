@@ -1,34 +1,36 @@
-<% if comment && comment.user && !should_be_hidden?(comment, @root_comment) %>
+<% if comment && comment.user %>
   <% if comment.depth < 3 %>
-    <details class="comment-wrapper js-comment-wrapper comment-wrapper--deep-<%= comment.depth %> <%= comment_class(comment, is_view_root: is_view_root) %>" open>
+    <details class="comment-wrapper js-comment-wrapper comment-wrapper--deep-<%= comment.depth %>
+                    <%= comment_class(comment, is_view_root: is_view_root) %>
+                    <%= should_be_hidden?(comment, @root_comment) ? "details-comment-hidden-by-commentable-user" : "" %>" open>
       <summary>
         <span class="<% if comment.depth > 0 %>mx-0<% else %>m:mx-1<% end %> inline-block align-middle">
-          <%= inline_svg_tag("collapse.svg", aria: true, class: "crayons-icon expanded", title: "Collapse") %>
-          <%= inline_svg_tag("expand.svg", aria: true, class: "crayons-icon collapsed", title: "Expand") %>
+          <%= inline_svg_tag("collapse.svg", aria: true, class: "crayons-icon expanded", title: t("views.comments.collapse")) %>
+          <%= inline_svg_tag("expand.svg", aria: true, class: "crayons-icon collapsed", title: t("views.comments.expand")) %>
         </span>
         <span class="js-collapse-comment-content inline-block align-middle"></span>
       </summary>
   <% end %>
-      <div
-        id="comment-node-<%= comment.id %>"
-        class="
-          comment single-comment-node
-          <%= "low-quality-comment" if comment.decorate.low_quality %>
-          <%= comment_class(comment, is_view_root: is_view_root) %>
-          comment--deep-<%= comment.depth %>
-          <%= "comment--too-deep" if comment.depth > 3 %>
-        "
-        data-comment-id="<%= comment.id %>"
-        data-path="<%= commentable&.path %>/comments/<%= comment.id_code_generated %>"
-        data-comment-author-id="<%= comment_user_id_unless_deleted comment %>"
-        data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
-        <%= render("comments/comment_proper",
-                   comment: comment,
-                   commentable: commentable,
-                   is_view_root: is_view_root,
-                   is_childless: is_childless,
-                   subtree_html: subtree_html) %>
-      </div>
+  <div
+    id="comment-node-<%= comment.id %>"
+    class="
+      comment single-comment-node
+      <%= "low-quality-comment" if comment.decorate.low_quality %>
+      <%= comment_class(comment, is_view_root: is_view_root) %>
+      comment--deep-<%= comment.depth %>
+      <%= "comment--too-deep" if comment.depth > 3 %>
+    "
+    data-comment-id="<%= comment.id %>"
+    data-path="<%= commentable&.path %>/comments/<%= comment.id_code_generated %>"
+    data-comment-author-id="<%= comment_user_id_unless_deleted comment %>"
+    data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
+    <%= render("comments/comment_proper",
+               comment: comment,
+               commentable: commentable,
+               is_view_root: is_view_root,
+               is_childless: is_childless,
+               subtree_html: subtree_html) %>
+  </div>
   <% if comment.depth < 3 %>
     </details>
   <% end %>

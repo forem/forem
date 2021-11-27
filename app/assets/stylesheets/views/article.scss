@@ -20,7 +20,9 @@
       left: 0;
       right: 0;
       bottom: 0;
-      border-radius: var(--radius) var(--radius) 0 0;
+      border-radius: var(--radius-auto);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
       object-fit: cover;
       width: 100%;
       height: 100%;
@@ -115,7 +117,7 @@
 
     @media (min-width: $breakpoint-m) {
       display: grid;
-      gap: var(--su-6);
+      gap: var(--su-4);
       justify-content: stretch;
     }
   }
@@ -153,11 +155,14 @@
   &__count {
     color: var(--base-70);
     font-size: var(--fs-s);
-    display: block;
-    min-width: var(--su-7);
+    display: inline-flex;
+    margin-left: var(--su-1);
+    min-width: var(--su-6);
 
     @media (min-width: $breakpoint-m) {
       min-width: auto;
+      margin-left: 0;
+      display: block;
     }
   }
 

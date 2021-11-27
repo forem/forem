@@ -5,8 +5,14 @@ class Reaction < ApplicationRecord
     "thumbsdown" => -10.0
   }.freeze
 
+  # The union of public and privileged categories
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
+
+  # These are the general category of reactions that anyone can choose
   PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
+
+  # These are categories of reactions that administrators can select
+  PRIVILEGED_CATEGORIES = %w[thumbsup thumbsdown vomit].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -20,6 +26,10 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
+
+  # Be wary, this is all things on the reading list, but for an end
+  # user they might only see readinglist items that are published.
+  # See https://github.com/forem/forem/issues/14796
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
@@ -31,6 +41,7 @@ class Reaction < ApplicationRecord
       .or(comment_vomits.where(reactable_id: user.comment_ids))
       .or(user_vomits.where(user_id: user.id))
   }
+  scope :privileged_category, -> { where(category: PRIVILEGED_CATEGORIES) }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -64,6 +75,14 @@ class Reaction < ApplicationRecord
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
+    end
+
+    # @param user [User] the user who might be spamming the system
+    #
+    # @return [TrueClass] yup, they're spamming the system.
+    # @return [FalseClass] they're not (yet) spamming the system
+    def user_has_been_given_too_many_spammy_reactions?(user:)
+      article_vomits.where(reactable_type: "Article", reactable_id: user.articles.pluck(:id)).size > 2
     end
   end
 

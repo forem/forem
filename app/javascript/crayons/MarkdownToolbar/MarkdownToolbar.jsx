@@ -1,4 +1,3 @@
-/* global Runtime */
 import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import {
@@ -9,15 +8,11 @@ import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
-import { getIndexOfLineStart } from '@utilities/textAreaUtils';
 
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
-
-  const keyboardShortcutModifierText =
-    Runtime.currentOS() === 'macOS' ? 'CMD' : 'CTRL';
 
   const markdownSyntaxFormatters = {
     ...coreSyntaxFormatters,
@@ -27,11 +22,13 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   const keyboardShortcuts = Object.fromEntries(
     Object.keys(markdownSyntaxFormatters)
       .filter(
-        (syntaxName) => !!markdownSyntaxFormatters[syntaxName].keyboardShortcut,
+        (syntaxName) =>
+          !!markdownSyntaxFormatters[syntaxName].getKeyboardShortcut,
       )
       .map((syntaxName) => {
-        const { keyboardShortcut } = markdownSyntaxFormatters[syntaxName];
-        return [keyboardShortcut, () => insertSyntax(syntaxName)];
+        const { command } =
+          markdownSyntaxFormatters[syntaxName].getKeyboardShortcut?.();
+        return [command, () => insertSyntax(syntaxName)];
       }),
   );
 
@@ -128,69 +125,22 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     }
   };
 
-  const getSelectionData = (syntaxName) => {
-    const {
-      selectionStart: initialSelectionStart,
-      selectionEnd,
-      value,
-    } = textArea;
-
-    let selectionStart = initialSelectionStart;
-
-    // The 'heading' formatter can edit a previously inserted syntax,
-    // so we check if we need adjust the selection to the start of the line
-    if (syntaxName === 'heading') {
-      const indexOfLineStart = getIndexOfLineStart(
-        textArea.value,
-        initialSelectionStart,
-      );
-
-      if (textArea.value.charAt(indexOfLineStart + 1) === '#') {
-        selectionStart = indexOfLineStart;
-      }
-    }
-
-    const textBeforeInsertion = value.substring(0, selectionStart);
-    const textAfterInsertion = value.substring(selectionEnd, value.length);
-    const selectedText = value.substring(selectionStart, selectionEnd);
-
-    return {
-      textBeforeInsertion,
-      textAfterInsertion,
-      selectedText,
-      selectionStart,
-      selectionEnd,
-    };
-  };
-
   const insertSyntax = (syntaxName) => {
     setOverflowMenuOpen(false);
 
-    const {
-      textBeforeInsertion,
-      textAfterInsertion,
-      selectedText,
-      selectionStart,
-      selectionEnd,
-    } = getSelectionData(syntaxName);
+    const { newTextAreaValue, newCursorStart, newCursorEnd } =
+      markdownSyntaxFormatters[syntaxName].getFormatting(textArea);
 
-    const { formattedText, cursorOffsetStart, cursorOffsetEnd } =
-      markdownSyntaxFormatters[syntaxName].getFormatting(selectedText);
-
-    const newTextContent = `${textBeforeInsertion}${formattedText}${textAfterInsertion}`;
-
-    textArea.value = newTextContent;
+    textArea.value = newTextAreaValue;
     textArea.focus({ preventScroll: true });
-    textArea.setSelectionRange(
-      selectionStart + cursorOffsetStart,
-      selectionEnd + cursorOffsetEnd,
-    );
+    textArea.setSelectionRange(newCursorStart, newCursorEnd);
   };
 
   const getSecondaryFormatterButtons = (isOverflow) =>
     Object.keys(secondarySyntaxFormatters).map((controlName, index) => {
-      const { icon, label, keyboardShortcutKeys } =
+      const { icon, label, getKeyboardShortcut } =
         secondarySyntaxFormatters[controlName];
+
       return (
         <Button
           key={`${controlName}-btn`}
@@ -216,9 +166,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             smallScreen ? null : (
               <span aria-hidden="true">
                 {label}
-                {keyboardShortcutKeys ? (
+                {getKeyboardShortcut ? (
                   <span className="opacity-75">
-                    {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
+                    {` ${getKeyboardShortcut().tooltipHint}`}
                   </span>
                 ) : null}
               </span>
@@ -236,7 +186,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       aria-controls={textAreaId}
     >
       {Object.keys(coreSyntaxFormatters).map((controlName, index) => {
-        const { icon, label, keyboardShortcutKeys } =
+        const { icon, label, getKeyboardShortcut } =
           coreSyntaxFormatters[controlName];
         return (
           <Button
@@ -253,9 +203,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
               smallScreen ? null : (
                 <span aria-hidden="true">
                   {label}
-                  {keyboardShortcutKeys ? (
+                  {getKeyboardShortcut ? (
                     <span className="opacity-75">
-                      {` ${keyboardShortcutModifierText} + ${keyboardShortcutKeys}`}
+                      {` ${getKeyboardShortcut().tooltipHint}`}
                     </span>
                   ) : null}
                 </span>

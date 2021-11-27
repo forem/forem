@@ -68,4 +68,14 @@ describe ProfileHelper do
       end
     end
   end
+
+  describe "character_count_denominator" do
+    it "returns '100' when the field_type is 'text_field'" do
+      expect(helper.character_count_denominator("text_field")).to eq("100")
+    end
+
+    it "returns '200' when the field_type is 'text_area'" do
+      expect(helper.character_count_denominator("text_area")).to eq("200")
+    end
+  end
 end

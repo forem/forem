@@ -89,10 +89,12 @@ export const getMentionWordData = (textArea) => {
     };
   }
 
-  const indexOfAutocompleteStart = getIndexOfCurrentWordAutocompleteSymbol(
-    valueBeforeKeystroke,
-    selectionStart,
-  );
+  const indexOfAutocompleteStart = getLastIndexOfCharacter({
+    content: valueBeforeKeystroke,
+    selectionIndex: selectionStart,
+    character: '@',
+    breakOnCharacters: [' ', '', '\n'],
+  });
 
   return {
     isUserMention: indexOfAutocompleteStart !== -1,
@@ -100,20 +102,148 @@ export const getMentionWordData = (textArea) => {
   };
 };
 
-const getIndexOfCurrentWordAutocompleteSymbol = (content, selectionIndex) => {
+/**
+ * Searches backwards through text content for the last occurence of the given character
+ *
+ * @param {Object} params
+ * @param {string} content The chunk of text to search within
+ * @param {number} selectionIndex The starting point to search from
+ * @param {string} character The character to search for
+ * @param {string[]} breakOnCharacters Any characters which should result in an immediate halt to the search
+ * @returns {number} Index of the last occurence of the character, or -1 if it isn't found
+ */
+export const getLastIndexOfCharacter = ({
+  content,
+  selectionIndex,
+  character,
+  breakOnCharacters = [],
+}) => {
   const currentCharacter = content.charAt(selectionIndex);
   const previousCharacter = content.charAt(selectionIndex - 1);
 
-  if (selectionIndex !== 0 && ![' ', '', '\n'].includes(previousCharacter)) {
-    return getIndexOfCurrentWordAutocompleteSymbol(content, selectionIndex - 1);
+  if (currentCharacter === character) {
+    return selectionIndex;
   }
 
-  if (currentCharacter === '@') {
-    return selectionIndex;
+  if (selectionIndex !== 0 && !breakOnCharacters.includes(previousCharacter)) {
+    return getLastIndexOfCharacter({
+      content,
+      selectionIndex: selectionIndex - 1,
+      character,
+      breakOnCharacters,
+    });
   }
 
   return -1;
 };
+
+/**
+ * Searches forwards through text content for the next occurence of the given character
+ *
+ * @param {Object} params
+ * @param {string} content The chunk of text to search within
+ * @param {number} selectionIndex The starting point to search from
+ * @param {string} character The character to search for
+ * @param {string[]} breakOnCharacters Any characters which should result in an immediate halt to the search
+ * @returns {number} Index of the next occurence of the character, or -1 if it isn't found
+ */
+export const getNextIndexOfCharacter = ({
+  content,
+  selectionIndex,
+  character,
+  breakOnCharacters = [],
+}) => {
+  const currentCharacter = content.charAt(selectionIndex);
+  const nextCharacter = content.charAt(selectionIndex + 1);
+
+  if (currentCharacter === character) {
+    return selectionIndex;
+  }
+
+  if (
+    selectionIndex <= content.length &&
+    !breakOnCharacters.includes(nextCharacter)
+  ) {
+    return getNextIndexOfCharacter({
+      content,
+      selectionIndex: selectionIndex + 1,
+      character,
+      breakOnCharacters,
+    });
+  }
+
+  return -1;
+};
+
+/**
+ * Counts how many new lines come immediately before the user's current selection start
+ * @param {object} args
+ * @param {number} args.selectionStart The index of user's current selection start
+ * @param {string} args.value The value of the textarea
+ *
+ * @returns {number} Number of new lines directly before selection start
+ */
+export const getNumberOfNewLinesPrecedingSelection = ({
+  selectionStart,
+  value,
+}) => {
+  if (selectionStart === 0) {
+    return 0;
+  }
+
+  let count = 0;
+  let searchIndex = selectionStart - 1;
+
+  while (searchIndex >= 0 && value.charAt(searchIndex) === '\n') {
+    count++;
+    searchIndex--;
+  }
+
+  return count;
+};
+
+/**
+ * Counts how many new lines come immediately after the user's current selection end
+ *
+ * @param {object} args
+ * @param {number} args.selectionEnd The index of user's current selection end
+ * @param {string} args.value The value of the textarea
+ *
+ * @returns {number} the count of new line characters immediately following selection
+ */
+export const getNumberOfNewLinesFollowingSelection = ({
+  selectionEnd,
+  value,
+}) => {
+  if (selectionEnd === value.length) {
+    return 0;
+  }
+
+  let count = 0;
+  let searchIndex = selectionEnd;
+
+  while (searchIndex < value.length && value.charAt(searchIndex) === '\n') {
+    count++;
+    searchIndex++;
+  }
+
+  return count;
+};
+
+/**
+ * Retrieve data about the user's current text selection
+ *
+ * @param {Object} params
+ * @param {number} selectionStart The start point of user's selection
+ * @param {number} selectionEnd The end point of user's selection
+ * @param {string} value The current value of the textarea
+ * @returns {Object} object containing the text chunks before and after insertion, and the currently selected text
+ */
+export const getSelectionData = ({ selectionStart, selectionEnd, value }) => ({
+  textBeforeSelection: value.substring(0, selectionStart),
+  textAfterSelection: value.substring(selectionEnd, value.length),
+  selectedText: value.substring(selectionStart, selectionEnd),
+});
 
 /**
  * This hook can be used to keep the height of a textarea in step with the current content height, avoiding a scrolling textarea.
@@ -165,24 +295,4 @@ export const useTextAreaAutoResize = () => {
   }, [textArea, additionalElements, constrainToContentHeight]);
 
   return { setTextArea, setAdditionalElements, setConstrainToContentHeight };
-};
-
-/**
- * Helper function to return the index of the current line's starting point
- *
- * @param {string} text The text value of the textArea
- * @param {number} cursorStart The current position of the user's cursor
- * @returns
- */
-export const getIndexOfLineStart = (text, cursorStart) => {
-  const currentCharacter = text.charAt(cursorStart - 1);
-  if (currentCharacter === '\n') {
-    return cursorStart;
-  }
-
-  if (cursorStart !== 0) {
-    return getIndexOfLineStart(text, cursorStart - 1);
-  }
-
-  return 0;
 };

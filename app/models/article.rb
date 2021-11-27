@@ -9,6 +9,8 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
+
   attr_accessor :publish_under_org
   attr_writer :series
 
@@ -30,17 +32,21 @@ class Article < ApplicationRecord
   UNIQUE_URL_ERROR = "has already been taken. " \
                      "Email #{ForemInstance.email} for further details.".freeze
 
-  has_one :discussion_lock, dependent: :destroy
+  has_one :discussion_lock, dependent: :delete
 
-  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
-  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
-  has_many :page_views, dependent: :destroy
+  has_many :page_views, dependent: :delete_all
+  # `dependent: :destroy` because in Poll we cascade the deletes of
+  #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy
-  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :destroy
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :delete_all
+  # `dependent: :destroy` because in RatingVote we're relying on
+  #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
@@ -110,8 +116,11 @@ class Article < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
+  after_update_commit :update_notification_subscriptions, if: proc { |article|
+    article.saved_change_to_user_id?
+  }
 
-  after_commit :async_score_calc, :touch_collection, :detect_animated_images, on: %i[create update]
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -457,6 +466,7 @@ class Article < ApplicationRecord
   def update_score
     self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
     update_columns(score: score,
+                   privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))
@@ -574,9 +584,12 @@ class Article < ApplicationRecord
     Notification.update_notifications(self, "Published")
   end
 
+  def update_notification_subscriptions
+    NotificationSubscription.update_notification_subscriptions(self)
+  end
+
   def before_destroy_actions
-    bust_cache
-    touch_actor_latest_article_updated_at(destroying: true)
+    bust_cache(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -784,13 +797,13 @@ class Article < ApplicationRecord
     organization&.touch(:latest_article_updated_at)
   end
 
-  def bust_cache
+  def bust_cache(destroying: false)
     cache_bust = EdgeCache::Bust.new
     cache_bust.call(path)
     cache_bust.call("#{path}?i=i")
     cache_bust.call("#{path}?preview=#{password}")
     async_bust
-    touch_actor_latest_article_updated_at
+    touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
   def calculate_base_scores
@@ -799,27 +812,7 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
-                    Regexp.new(term.downcase).match?(title.downcase)
-                  end
-
-    Reaction.create(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "Article",
-      category: "vomit",
-    )
-
-    return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
-
-    user.add_role(:suspended)
-    Note.create(
-      author_id: Settings::General.mascot_user_id,
-      noteable_id: user_id,
-      noteable_type: "User",
-      reason: "automatic_suspend",
-      content: "User suspended for too many spammy articles, triggered by autovomit.",
-    )
+    Spam::ArticleHandler.handle!(article: self)
   end
 
   def async_bust
@@ -834,10 +827,10 @@ class Article < ApplicationRecord
     Slack::Messengers::ArticlePublished.call(article: self)
   end
 
-  def detect_animated_images
+  def enrich_image_attributes
     return unless FeatureFlag.enabled?(:detect_animated_images)
     return unless saved_change_to_attribute?(:processed_html)
 
-    ::Articles::DetectAnimatedImagesWorker.perform_async(id)
+    ::Articles::EnrichImageAttributesWorker.perform_async(id)
   end
 end

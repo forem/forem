@@ -2,7 +2,7 @@ class ConsumerApp < ApplicationRecord
   resourcify
 
   FOREM_BUNDLE = "com.forem.app".freeze
-  FOREM_APP_PLATFORMS = %w[ios].freeze
+  FOREM_APP_PLATFORMS = %w[ios android].freeze
   FOREM_TEAM_ID = "R9SWHSQNV8".freeze
 
   enum platform: { android: Device::ANDROID, ios: Device::IOS }
@@ -35,8 +35,10 @@ class ConsumerApp < ApplicationRecord
   # custom PN targets will get their credentials from the auth_key stored in
   # the DB (configured by the Forem creator).
   def auth_credentials
-    if forem_app?
+    if forem_app? && ios?
       ApplicationConfig["RPUSH_IOS_PEM"]
+    elsif forem_app? && android?
+      ApplicationConfig["RPUSH_FCM_KEY"]
     else
       auth_key
     end

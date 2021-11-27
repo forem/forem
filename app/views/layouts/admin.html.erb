@@ -32,6 +32,8 @@
   data-controller="snackbar"
   data-action="snackbar:add@document->snackbar#addItem">
   <header class="crayons-header">
+    <span id="route-change-target" tabindex="-1"></span>
+    <a href="#main-content" class="skip-content-link"><%= t("views.main.header.skip") %></a>
     <div class="crayons-header__container">
       <%= render "layouts/logo" %>
 
@@ -67,14 +69,14 @@
             <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
             <li class="block s:hidden">
               <a class="crayons-link crayons-link--block" href="/">
-                <%= inline_svg_tag("website.svg", aria: true, class: "dropdown-icon crayons-icon") %>
+                <%= inline_svg_tag("external-link.svg", aria: true, class: "dropdown-icon crayons-icon") %>
                 Go to <%= community_name %> home page
               </a>
             </li>
           </ul>
       </nav>
     </div>
-    <main class="crayons-layout__content min-w-0 p-2">
+    <main id="main-content" class="crayons-layout__content min-w-0 p-2">
       <% flash.each do |type, message| %>
         <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert" aria-label="Close">
@@ -96,10 +98,8 @@
       <% end %>
 
       <%= yield %>
-      <% if false #@help_url HELP BUTTON NOT CURRENTLY LINKING TO PROPER PAGES %>
-        <a class="admin-help-button crayons-btn crayons-btn--icon-rounded crayons-btn--s" href="<%= @help_url %>" target="_blank" rel="noopener noreferer">
-          <%= inline_svg_tag("circle-question.svg", aria: true, title: "Forem Admin Guide") %>
-        </a>
+      <% if @help_url %>
+        <%= render "shared/help_icon" %>
       <% end %>
     </main>
   </div>

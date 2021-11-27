@@ -11,9 +11,6 @@ export function addCloseListener() {
     articleDocument
       .getElementsByClassName('mod-actions-menu')[0]
       .classList.toggle('showing');
-    articleDocument
-      .getElementsByClassName('mod-actions-menu-btn')[0]
-      .classList.toggle('hidden');
   });
 }
 
@@ -194,10 +191,10 @@ function renderTagOnArticle(tagName, colors) {
     getArticleContainer().getElementsByClassName('spec__tags')[0];
 
   const newTag = document.createElement('a');
-  newTag.innerText = `#${tagName}`;
-  newTag.setAttribute('class', 'crayons-tag mr-1');
+  newTag.innerHTML = `<span class="crayons-tag__prefix">#</span>${tagName}`;
+  newTag.setAttribute('class', 'crayons-tag');
   newTag.setAttribute('href', `/t/${tagName}`);
-  newTag.style = `background-color: ${colors.bg}; color: ${colors.text};`;
+  newTag.style = `--tag-bg: ${colors.bg}1a; --tag-prefix: ${colors.bg}; --tag-bg-hover: ${colors.bg}1a; --tag-prefix-hover: ${colors.bg};`;
 
   articleTagsContainer.appendChild(newTag);
 }

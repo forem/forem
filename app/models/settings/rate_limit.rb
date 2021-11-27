@@ -21,5 +21,18 @@ module Settings
     setting :user_considered_new_days, type: :integer, default: 3
     setting :user_subscription_creation, type: :integer, default: 3
     setting :user_update, type: :integer, default: 15
+
+    # A helper function to determine if text is spammy.
+    #
+    # @param text [String] text to check for "spamminess"
+    #
+    # @return [TrueClass] if this is spammy
+    # @return [FalseClass] if this isn't spammy
+    def self.trigger_spam_for?(text:)
+      return false if spam_trigger_terms.empty?
+
+      regexp = Regexp.new("(#{spam_trigger_terms.join('|')})", true)
+      regexp.match?(text)
+    end
   end
 end

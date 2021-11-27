@@ -21,7 +21,6 @@ module Moderator
       delete_user_activity
       delete_comments
       delete_articles
-      Users::CleanupChatChannels.call(user)
       reassign_and_bust_username
       delete_vomit_reactions
     end

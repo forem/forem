@@ -16,7 +16,7 @@ export const ListingFilters = ({
   query,
 }) => {
   return (
-    <div className="crayons-layout__sidebar-left">
+    <div className="crayons-layout__sidebar-left pb-3">
       <ListingFiltersTags
         message={message}
         onKeyUp={onKeyUp}

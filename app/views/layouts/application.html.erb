@@ -18,12 +18,11 @@
       <% end %>
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <% unless user_signed_in? %>
-        <%= javascript_packs_with_chunks_tag "base", "Search", "runtimeBanner", defer: true %>
-      <% end %>
       <%= javascript_include_tag "base", defer: true %>
       <% if user_signed_in? %>
         <%= javascript_packs_with_chunks_tag "base", "Search", "runtimeBanner", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
+      <% else %>
+        <%= javascript_packs_with_chunks_tag "base", "Search", "runtimeBanner", defer: true %>
       <% end %>
       <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -50,8 +49,6 @@
         data-user-status="<%= user_logged_in_status %>"
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-locale="<%= I18n.locale %>"
-        data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
-        data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
         data-deployed-at="<%= ForemInstance.deployed_at %>"
         data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
@@ -84,7 +81,7 @@
 <% end %>
 <div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
-    <div class="crayons-banner" aria-live="polite">
+    <div class="crayons-banner" id="setup-banner" aria-live="polite">
       <%= flash[:global_notice] %>
     </div>
   <% end %>

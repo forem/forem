@@ -5,18 +5,21 @@ module Admin
     after_action :verify_authorized
 
     HELP_URLS = {
-      badges: "https://admin.forem.com/docs/admin/badges",
-      badge_achievements: "https://admin.forem.com/docs/admin/badges",
-      configs: "https://admin.forem.com/docs/admin/config/README",
-      navigation_links: "https://admin.forem.com/docs/admin/navigation-links",
-      pages: "https://admin.forem.com/docs/admin/pages",
-      podcasts: "https://admin.forem.com/docs/admin/podcasts",
-      reports: "https://admin.forem.com/docs/admin/reports",
-      users: "https://admin.forem.com/docs/admin/users/README",
-      html_variants: "https://admin.forem.com/docs/admin/html-variants",
-      display_ads: "https://admin.forem.com/docs/admin/display-ads",
-      chat_channels: "https://admin.forem.com/docs/admin/chat-channels",
-      tags: "https://admin.forem.com/docs/admin/tags"
+      articles: "https://admin.forem.com/docs/forem-basics/posts",
+      badges: "https://admin.forem.com/docs/forem-basics/badges",
+      badge_achievements: "https://admin.forem.com/docs/forem-basics/badges",
+      display_ads: "https://admin.forem.com/docs/advanced-customization/display-ads",
+      feedback_messages: "https://admin.forem.com/docs/advanced-customization/reports",
+      html_variants: "https://admin.forem.com/docs/advanced-customization/html-variants",
+      navigation_links: "https://admin.forem.com/docs/advanced-customization/navigation-links",
+      organizations: "https://admin.forem.com/docs/managing-your-community/organization-pages",
+      pages: "https://admin.forem.com/docs/forem-basics/pages",
+      permissions: "https://admin.forem.com/docs/forem-basics/user-roles",
+      podcasts: "https://admin.forem.com/docs/advanced-customization/content-manager/podcasts",
+      settings: "https://admin.forem.com/docs/advanced-customization/config",
+      tags: "https://admin.forem.com/docs/forem-basics/tags",
+      users: "https://admin.forem.com/docs/forem-basics/user-roles",
+      creator_settings: "https://admin.forem.com/docs/getting-started/first-user-registration"
     }.freeze
 
     protected

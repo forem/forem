@@ -102,6 +102,7 @@
     height: var(--article-form-actions-height);
     display: flex;
     align-items: center;
+    position: relative;
     padding: 0 var(--su-2);
 
     @media (min-width: $breakpoint-m) {

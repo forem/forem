@@ -32,23 +32,16 @@
           </span>
 
           <div class="profile-header__actions">
-            <% if user_signed_in? %>
-              <% if FeatureFlag.enabled?(:connect) %>
-                <a href="/connect/@<%= @user.username %>" class="hidden mr-2" id="user-connect-redirect">
-                  <button class="chat-action-button crayons-btn crayons-btn--outlined hidden" id="modal-opener">Chat</button>
-                </a>
-              <% end %>
-            <% end %>
-            <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'><%= t("core.follow") %></button>
-            <div class="profile-dropdown ml-2 s:relative hidden" data-username="<%= @user.username %>">
+              <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button follow-user" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'><%= t("views.users.follow") %></button>
+        <div class="profile-dropdown ml-2 s:relative hidden" data-username="<%= @user.username %>">
               <button id="user-profile-dropdown" aria-expanded="false" aria-controls="user-profile-dropdownmenu" aria-haspopup="true" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
-                <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: "User actions") %>
+                <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: t("views.users.dropdown")) %>
               </button>
 
               <div id="user-profile-dropdownmenu" class="crayons-dropdown left-2 right-2 s:right-0 s:left-auto top-100 mt-1">
                 <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
                 <% if user_signed_in? %>
-                  <a href="javascript:void(0);" id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block">Block @<%= @user.username %></a>
+                  <a href="javascript:void(0);" id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block"><%= t("views.users.block", user: @user.username) %></a>
                   <a
                     href="javascript:void(0);"
                     id="user-profile-dropdownmenu-flag-button"
@@ -56,7 +49,7 @@
                     data-profile-user-name="@<%= @user.username %>"
                     data-is-user-flagged="<%= @is_user_flagged %>"
                     class="border-none crayons-link crayons-link--block">
-                    <%= @flag_status ? "Unflag" : "Flag" %> @<%= @user.username %>
+                    <%= t("views.users.#{@flag_status ? 'unflag' : 'flag'}", user: @user.username) %>
                   </a>
                 <% end %>
                 <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= user_url(@user) %>"></span>
@@ -67,39 +60,38 @@
 
         <div class="profile-header__details">
           <h1 class="crayons-title fw-heavy mb-2"><%= @user.name %></h1>
-          <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || ["404 bio not found"].sample %></p>
+          <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || [t("views.users.empty")].sample %></p>
 
           <div class="profile-header__meta">
             <% if @user.profile.location.present? %>
               <span class="profile-header__meta__item">
-                <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("core.location")) %>
+                <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("views.users.location_icon")) %>
                 <%= @user.profile.location %>
               </span>
             <% end %>
 
             <span class="profile-header__meta__item">
-              <%= inline_svg_tag("cake.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("core.joined")) %>
-              <%= t("core.joined_on") %>&nbsp;
-              <%= local_date(@user.created_at) %>
+              <%= inline_svg_tag("cake.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("views.users.joined.icon")) %>
+              <%= t("views.users.joined.text_html", date: local_date(@user.created_at)) %>
             </span>
 
             <% if @user.setting.display_email_on_profile %>
               <a href="mailto:<%= @user.email %>" class="profile-header__meta__item">
-                <%= inline_svg_tag("email.svg", class: "crayons-icon mr-2 shrink-0", aria: true, title: "Email address") %>
+                <%= inline_svg_tag("email.svg", class: "crayons-icon mr-2 shrink-0", aria: true, title: t("views.users.email_icon")) %>
                 <%= @user.email %>
               </a>
             <% end %>
 
             <% if @user.profile.website_url.present? %>
               <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener me" class="profile-header__meta__item">
-                <%= inline_svg_tag("link-external.svg", class: "crayons-icon mr-2 shrink-0", aria: true, title: "Personal website") %>
+                <%= inline_svg_tag("external-link.svg", class: "crayons-icon mr-2 shrink-0", aria: true, title: t("views.users.website")) %>
                 <%= @user.profile.website_url %>
               </a>
             <% end %>
 
             <% social_authentication_links_for(@user).each do |provider_name, url| %>
               <a href="<%= url %>" target="_blank" rel="noopener me" class="profile-header__meta__item p-1">
-                <%= inline_svg_tag("#{provider_name}.svg", class: "crayons-icon shrink-0", aria: true, title: "#{provider_name} website") %>
+                <%= inline_svg_tag("#{provider_name}.svg", class: "crayons-icon shrink-0", aria: true, title: t("views.users.social", service: provider_name)) %>
               </a>
             <% end %>
           </div>
@@ -108,28 +100,21 @@
         <%= render "users/metadata" %>
 
         <div class="p-3 pt-0 block m:hidden js-user-info-trigger-wrapper">
-          <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger">More info about @<%= @user.username %></button>
+          <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger"><%= t("views.users.more", user: @user.username) %></button>
         </div>
 
         <div class="crayons-modal align-left hidden">
           <div class="crayons-modal__box">
-            <div class="crayons-modal__box__header">
-              <h2 class="crayons-modal__box__header__title">Chat with <%= @user.name %></h2>
-              <button title="Close" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon close-modal">
-                <%= inline_svg_tag("x.svg", class: "crayons-icon", aria: true, title: "Close modal") %>
-              </button>
-            </div>
-
             <div class="crayons-modal__box__body">
               <% if @user.setting.inbox_guidelines.present? %>
                 <p class="fw-bold mb-2">@<%= @user.username %>'s guidelines:</p>
                 <p class="mb-6"><%= @user.setting.inbox_guidelines %></p>
               <% end %>
               <form id="new-message-form" class="message-form mb-4" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.setting.inbox_type %>"}'>
-                <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..." class="crayons-textfield"></textarea>
-                <button type="submit" class="submit-message crayons-btn">Send</button>
+                <textarea id="new-message" rows="4" cols="70" placeholder="<%= t("views.users.send_pm.placeholder") %>" class="crayons-textfield"></textarea>
+                <button type="submit" class="submit-message crayons-btn"><%= t("views.users.send_pm.submit") %></button>
               </form>
-              <p class="fs-s color-base-60">All private interactions <b>must</b> abide by the <a href="/code-of-conduct">code of conduct</a>.</p>
+              <p class="fs-s color-base-60"><%= t("views.users.send_pm.notice_html", code: link_to(t("views.users.send_pm.code"), "/code-of-conduct")) %></p>
             </div>
           </div>
           <div class="crayons-modal__overlay"></div>
@@ -160,7 +145,7 @@
       <% end %>
     </div>
     <div class="loading-articles" id="loading-articles">
-      loading...
+      <%= t("core.loading") %>
     </div>
   </main>
 </div>

@@ -2,6 +2,32 @@
 fr:
   views:
     users:
+      meta:
+        og:
+          title: "%{user} — %{community} Profile"
+      comments:
+        all:
+          one: All %{count} comments
+          other: All %{count} comments
+        last:
+          one: Last %{count} comments
+          other: Last %{count} comments
+        recent: Recent comments
+        view: View all activity
+        view_all:
+          one: View all %{count} comments
+          other: View all %{count} comments
+        view_last:
+          one: View last 1 Comment
+          other: View last %{count} Comments
+      github:
+        heading: GitHub Repositories
+        fork: Fork
+        stars:
+          one: 1 star
+          other: "%{count} stars"
+      pin_icon: Pin
+      pinned: Pinned
       profile_fields:
         bio:
           label: Bio
@@ -19,3 +45,50 @@ fr:
         available_for: Available for
         skills_languages: Skills/Languages
         work: Work
+      side:
+        comment:
+          icon: Comment
+          text:
+            one: 1 comment written
+            other: "%{count} comments written"
+        org: Organizations
+        post:
+          icon: Post
+          text:
+            one: 1 post published
+            other: "%{count} posts published"
+        tag:
+          icon: Tag
+          text:
+            one: 1 tag followed
+            other: "%{count} tags followed"
+      signout:
+        meta:
+          title: Confirm Signout - %{community}
+        heading: Are you sure you want to sign out?
+        'yes': Yes, sign out
+      block: Block @%{user}
+      chat: Chat
+      chat_with: Chat with %{user}
+      close: Close modal
+      details: "%{user} profile details"
+      dropdown: User actions
+      email_icon: Email address
+      empty: 404 bio not found
+      flag: Flag @%{user}
+      follow: Suivre
+      guidelines: "%{user}'s guidelines:"
+      joined:
+        icon: Rejoint
+        text_html: "Rejoint le\_%{date}"
+      location_icon: Lieu
+      logo: "%{user} profile picture"
+      more: More info about @%{user}
+      send_pm:
+        code: code of conduct
+        notice_html: All private interactions <b>must</b> abide by the %{code}.
+        placeholder: Enter your message here...
+        submit: Send
+      social: "%{service} website"
+      unflag: Unflag @%{user}
+      website: Personal website
