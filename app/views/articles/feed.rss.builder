@@ -9,7 +9,7 @@ xml.rss version: "2.0" do
     xml.author user ? user.name : community_name
     xml.description user ? user.tag_line : Settings::Community.community_description
     xml.link user ? app_url(user.path) : app_url
-    xml.language t("xml.lang")
+    xml.language "en" # TODO: [yheuhtozr] support localized feeds (see #15136)
     if user
       xml.image do
         xml.url user.profile_image_90

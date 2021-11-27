@@ -1,7 +1,6 @@
 ---
 en:
   xml:
-    lang: en
     opensearch:
       short_name: "%{community} Search"
       description: Find posts from %{community}.
