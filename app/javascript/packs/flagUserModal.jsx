@@ -70,7 +70,7 @@ export function toggleFlagUserModal() {
  *
  * @param {number} authorId
  */
-export function initializeFlagUserModal(authorId) {
+export function initializeFlagUserModal(authorId, communityName) {
   // Check whether context is ModCenter or Friday-Night-Mode
   const modContainer = document.getElementById('mod-container');
 
@@ -79,7 +79,7 @@ export function initializeFlagUserModal(authorId) {
   }
 
   render(
-    <FlagUserModal authorId={authorId} />,
+    <FlagUserModal authorId={authorId} communityName={communityName} />,
     document.getElementsByClassName('flag-user-modal-container')[0],
   );
 }
@@ -90,11 +90,15 @@ export function initializeFlagUserModal(authorId) {
  *
  * @param {string} props.modCenterUrl (optional) The article URL loaded when in the moderation center.
  * @param {number} props.authorId The author ID associated to the content being moderated.
+ * @param {string} props.communityName The specif forem name
  */
-export function FlagUserModal({ modCenterArticleUrl, authorId }) {
+export function FlagUserModal({
+  modCenterArticleUrl,
+  authorId,
+  communityName,
+}) {
   const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
   const vomitAllRef = useRef(null);
-
   return (
     <div
       data-testid="flag-user-modal"
@@ -122,8 +126,8 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
         <div class="crayons-modal__box__body">
           <div class="grid gap-4">
             <p>
-              Thanks for keeping DEV safe. Here is what you can do to flag this
-              user:
+              {`Thanks for keeping ${communityName} safe. Here is what you can do to flag this
+              user:`}
             </p>
             <div class="crayons-field crayons-field--radio">
               <input
@@ -203,4 +207,5 @@ FlagUserModal.displayName = 'FlagUserModal';
 FlagUserModal.propTypes = {
   moderationUrl: PropTypes.string,
   authorId: PropTypes.number.isRequired,
+  communityName: PropTypes.string.isRequired,
 };

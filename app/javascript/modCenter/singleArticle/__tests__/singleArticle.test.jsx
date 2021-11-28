@@ -14,6 +14,7 @@ const getTestArticle = () => ({
     articles_count: 1,
     name: 'hello',
   },
+  communityName: 'Forem',
 });
 
 describe('<SingleArticle />', () => {
