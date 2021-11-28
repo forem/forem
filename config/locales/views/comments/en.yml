@@ -45,6 +45,13 @@ en:
       hidden:
         text_html: Some comments have been hidden by the post's author - %{info}
         info: find out more
+      hider:
+        description_html: Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's %{permalink}.
+        hide_child: Hide child comments as well
+        note_html: For further actions, you may consider blocking this person and/or %{reporting}
+        permalink: permalink
+        reporting: reporting abuse
+        submit: Confirm
       locked: The discussion has been locked. New comments can't be added.
       orphan:
         deleted: "[Comment from a deleted post]"

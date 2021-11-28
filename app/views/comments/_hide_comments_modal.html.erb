@@ -2,18 +2,18 @@
   <%= form_with url: "/comments/hide", class: "hide-comments-modal__form", id: "hide-comments-modal__form", method: :patch, remote: true, html: { "data-type": "json" } do |f| %>
     <div class="hide-comments-modal__content">
       <p class="pb-2">
-        Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's <%= link_to "permalink", "#", id: "hide-comments-modal__comment-permalink" %>.
+        <%= t("views.comments.hider.description_html", permalink: link_to(t("views.comments.hider.permalink"), "#", id: "hide-comments-modal__comment-permalink")) %>
       </p>
       <label class="crayons-field crayons-field--checkbox my-2">
         <%= f.check_box :hide_children, class: "hide_children crayons-checkbox" %>
-        <p class="crayons-field__label">Hide child comments as well</p>
+        <p class="crayons-field__label"><%= t("views.comments.hider.hide_child") %></p>
       </label>
       <p class="pb-4 pt-2">
         <button type="submit" class="crayons-btn">
-          Confirm
+          <%= t("views.comments.hider.submit") %>
         </button>
       </p>
     </div>
   <% end %>
-  <p class="fs-s color-base-60">For further actions, you may consider blocking this person and/or <%= link_to "reporting abuse", "/report-abuse", id: "hide-comments-modal__report-link" %></p>
+  <p class="fs-s color-base-60"><%= t("views.comments.hider.note_html", reporting: link_to(t("views.comments.hider.reporting"), "/report-abuse", id: "hide-comments-modal__report-link")) %></p>
 </div>
