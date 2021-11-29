@@ -5,8 +5,8 @@ branches:
 language: ruby
 cache:
   bundler: true
-  directories:
-    - node_modules
+  #directories:
+  #  - node_modules
 rvm:
   - 3.0.2
 addons:
