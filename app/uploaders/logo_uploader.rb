@@ -18,8 +18,6 @@ class LogoUploader < BaseUploader
   end
 
   def size_range
-    # TODO: decide with @nickytonline on a size range that
-    # matches the frotend validation.
     1..(MAX_FILE_SIZE.megabytes)
   end
 
