@@ -34,7 +34,8 @@ class LogoUploader < BaseUploader
     end
   end
 
-  #  it will take less time to generate resized_mobile_logo a smaller, already processed image
+  #  it will take less time to generate resized_mobile_logo if its from_version
+  # is the processed image
   version :resized_mobile_logo, if: :not_svg?, from_version: :resized_web_logo do
     process resize_to_limit: [112, 40]
     def full_filename(_for_file = file)
