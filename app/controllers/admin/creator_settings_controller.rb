@@ -15,7 +15,11 @@ module Admin
       raise CarrierWave::IntegrityError if settings_params[:logo].blank?
 
       ActiveRecord::Base.transaction do
-        ::Settings::General.logo_svg = upload_logo(settings_params[:logo]).url
+        logo_uploader = upload_logo(settings_params[:logo])
+        ::Settings::General.original_logo = logo_uploader.url
+        ::Settings::General.resized_web_logo = logo_uploader.resized_web_logo.url
+        ::Settings::General.resized_mobile_logo = logo_uploader.resized_mobile_logo.url
+
         ::Settings::Community.community_name = settings_params[:community_name]
         ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]
         ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]

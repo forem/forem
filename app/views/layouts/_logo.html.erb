@@ -1,7 +1,8 @@
 <a href="/" class="site-logo" aria-label="<%= t("views.main.aria_home") %>">
   <% if Settings::General.logo_svg.present? %>
     <% if FeatureFlag.enabled?(:creator_onboarding) %>
-      <img src="<%= logo_svg %>" alt="<%= community_name %>" style="object-fit: contain;max-width: 300px;max-height: 40px;" />
+      <!-- we can move this logic to the controller, how do we determine if its mobile? -->
+      <img src="<%= Settings::General.resized_web_logo || Settings::General.original_logo %>" alt="<%= community_name %>" style="object-fit: contain;max-width: 300px;max-height: 40px;" />
     <% else %>
       <%= Settings::General.logo_svg %>
     <% end %>
