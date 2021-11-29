@@ -31,6 +31,41 @@ module Articles
     # @note For those considering extending this, be very mindful of
     #       SQL injection.
     class WeightedQueryStrategy
+      # The default number of days old that an article can be for us
+      # to consider it in the relevance feed.
+      DEFAULT_PUBLISHED_SINCE = 7
+
+      # @api private
+      #
+      # This method helps answer the question: What are the articles
+      # that I should consider as new for the given user?  This method
+      # provides a date by which to filter out "stale to the user"
+      # articles.
+      #
+      # @note Do we need to continue using this method?  It's part of
+      #       the hot story grab experiment that we ran with the
+      #       Article::Feeds::LargeForemExperimental, but may not be
+      #       relevant.
+      #
+      # @param user [User]
+      # @param published_since [Integer] if someone
+      #        hasn't viewed any articles, give them things from the
+      #        database seeds.
+      #
+      # @return [ActiveSupport::TimeWithZone]
+      #
+      # @note the published_since is something carried
+      #       over from the LargeForemExperimental and may not be
+      #       relevant given that we have the :daily_factor_decay.
+      #       However, this further limitation based on a user's
+      #       second most recent page view helps further winnow down
+      #       the result set.
+      def self.oldest_published_at_to_consider_for(user:, published_since: DEFAULT_PUBLISHED_SINCE)
+        time_of_second_latest_page_view = user&.page_views&.second_to_last&.created_at
+        return published_since.days.ago unless time_of_second_latest_page_view
+
+        time_of_second_latest_page_view - 18.hours
+      end
       # This constant defines the allowable relevance scoring methods.
       #
       # A scoring method should be a SQL fragement that produces a
@@ -239,8 +274,6 @@ module Articles
       # @option config [Array<Symbol>] :scoring_configs
       #   allows for you to configure which methods you want to use.
       #   This is most relevant when running A/B testing.
-      # @option config [Integer] :most_number_of_days_to_consider
-      #   defines the oldest published date that we'll consider.
       # @option config [Integer] :negative_reaction_threshold, when
       #         the `articles.privileged_users_reaction_points_sum` is
       #         less than this amount, treat this is a negative
@@ -255,18 +288,19 @@ module Articles
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
-        @page = page.to_i
+        @page = (page || 1).to_i
         # TODO: The tag parameter is vestigial, there's no logic around this value.
         @tag = tag
         @default_user_experience_level = config.fetch(:default_user_experience_level) { DEFAULT_USER_EXPERIENCE_LEVEL }
         @negative_reaction_threshold = config.fetch(:negative_reaction_threshold, DEFAULT_NEGATIVE_REACTION_THRESHOLD)
         @positive_reaction_threshold = config.fetch(:positive_reaction_threshold, DEFAULT_POSITIVE_REACTION_THRESHOLD)
-        @oldest_published_at = determine_oldest_published_at(
-          user: @user,
-          most_number_of_days_to_consider: config.fetch(:most_number_of_days_to_consider, 31),
-        )
         @scoring_configs = config.fetch(:scoring_configs) { default_scoring_configs }
         configure!(scoring_configs: @scoring_configs)
+
+        @oldest_published_at = self.class.oldest_published_at_to_consider_for(
+          user: @user,
+          published_since: @published_since,
+        )
       end
 
       # The goal of this query is to generate a list of articles that
@@ -495,10 +529,6 @@ module Articles
         @joins.join("\n")
       end
 
-      def determine_oldest_published_at(user:, most_number_of_days_to_consider: 31)
-        user&.page_views&.second_to_last&.created_at || most_number_of_days_to_consider.days.ago
-      end
-
       # We multiply the relevance score components together.
       def relevance_score_components_as_sql
         @relevance_score_components.join(" * \n")
@@ -527,6 +557,7 @@ module Articles
       # @see SCORING_METHOD_CONFIGURATIONS
       # @note Be mindful to guard against SQL injection!
       def configure!(scoring_configs:)
+        @published_since = DEFAULT_PUBLISHED_SINCE
         @relevance_score_components = []
 
         # By default we always need to group by the articles.id
@@ -576,6 +607,12 @@ module Articles
             cases: scoring_config.fetch(:cases),
             fallback: scoring_config.fetch(:fallback),
           )
+
+          # Make sure that we consider all of the days for which we're
+          # establishing cases and for which there is a fallback.
+          if valid_method_name == :daily_decay_factor
+            @published_since = scoring_config.fetch(:cases).count + 1
+          end
         end
       end
 
