@@ -54,6 +54,8 @@ RSpec.describe Articles::Feeds::WeightedQueryStrategy, type: :service do
       # of the test is to see if the SQL statement runs.
       article = create(:article)
       response = feed_strategy.call
+      puts response.to_sql
+
       expect(response).to be_a(ActiveRecord::Relation)
       expect(response).to match_array([article])
     end
