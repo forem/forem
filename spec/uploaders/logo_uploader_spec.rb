@@ -43,7 +43,7 @@ describe LogoUploader, type: :uploader do
 
   describe "formats" do
     it "permits a set of extensions" do
-      expect(uploader.extension_allowlist).to eq(%w[svg jpg jpeg jpe png])
+      expect(uploader.extension_allowlist).to eq(%w[svg png jpg jpeg jpe])
     end
 
     it "permits jpegs" do
@@ -70,36 +70,39 @@ describe LogoUploader, type: :uploader do
     end
   end
 
-  # describe "frame validation" do
-  #   it "raises an error if frame count is > FRAME_MAX" do
-  #     stub_const("BaseUploader::FRAME_MAX", 20)
-  #
-  #     expect { uploader.store!(high_frame_count) }.to raise_error(CarrierWave::IntegrityError, /too many frames/)
-  #   end
-  #
-  #   it "raises a CarrierWave error which can be parsed if MiniMagick timeout occurs" do
-  #     allow(MiniMagick::Image).to receive(:new).and_raise(Timeout::Error)
-  #
-  #     expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError, /Image processing timed out/)
-  #   end
-  # end
+  describe "error handling" do
+    it "raises a CarrierWave error which can be parsed if MiniMagick timeout occurs" do
+      allow(MiniMagick::Image).to receive(:new).and_raise(Timeout::Error)
 
-  # describe "exif removal" do
-  #   it "removes EXIF and GPS data on single frame image upload" do
-  #     expect(EXIFR::JPEG.new(image_with_gps.path).exif?).to be(true)
-  #     expect(EXIFR::JPEG.new(image_with_gps.path).gps.present?).to be(true)
-  #     uploader.store!(image_with_gps)
-  #     expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(false)
-  #     expect(EXIFR::JPEG.new(uploader.file.path).gps.present?).to be(false)
-  #   end
-  #
-  #   it "does NOT remove EXIF and GPS data if frame count is > FRAME_STRIP_MAX" do
-  #     stub_const("BaseUploader::FRAME_STRIP_MAX", 0)
-  #     expect(EXIFR::JPEG.new(image_with_gps.path).exif?).to be(true)
-  #     expect(EXIFR::JPEG.new(image_with_gps.path).gps.present?).to be(true)
-  #     uploader.store!(image_with_gps)
-  #     expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(true)
-  #     expect(EXIFR::JPEG.new(uploader.file.path).gps.present?).to be(true)
-  #   end
-  # end
+      expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError, /Image processing timed out/)
+    end
+  end
+
+  describe "exif removal" do
+    it "removes EXIF and GPS data on single frame image upload" do
+      expect(EXIFR::JPEG.new(image_with_gps.path).exif?).to be(true)
+      expect(EXIFR::JPEG.new(image_with_gps.path).gps.present?).to be(true)
+      uploader.store!(image_with_gps)
+      expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(false)
+      expect(EXIFR::JPEG.new(uploader.file.path).gps.present?).to be(false)
+    end
+  end
+
+  describe "resize_image" do
+    it "creates versions of the image with different filenames" do
+      uploader.store!(image_jpg)
+      expect(uploader.filename).to match(/original_logo.jpg/)
+      expect(uploader.resized_web_logo.file.filename).to match(/resized_web_logo.jpg/)
+      expect(uploader.resized_mobile_logo.file.filename).to match(/resized_mobile_logo.jpg/)
+    end
+
+    it "creates versions of the image with different sizes" do
+      uploader.store!(image_jpg)
+      expect(uploader.resized_web_logo.size).to be <= uploader.size
+      expect(uploader.resized_mobile_logo.size).to be <= uploader.resized_web_logo.size
+      # Ideally, we'd want to test the dimensions
+      # however we can't test the dimensions without opening the files
+      # through MiniMagick processing.
+    end
+  end
 end
