@@ -303,6 +303,15 @@ export const ImageUploader = ({
   onImageUploadSuccess,
   onImageUploadError,
 }) => {
+  useEffect(() => {
+    // Native Bridge messages come through ForemMobile events
+    document.addEventListener('ForemMobile', handleNativeMessage);
+
+    // Cleanup afterwards
+    return () =>
+      document.removeEventListener('ForemMobile', handleNativeMessage);
+  }, []);
+
   const [state, dispatch] = useReducer(imageUploaderReducer, {
     insertionImageUrls: [],
     uploadErrorMessage: null,
@@ -384,9 +393,6 @@ export const ImageUploader = ({
   // onClick event to the UI button. This event will kick off the native UX.
   // The props are unwrapped (using spread operator) in the button below
   const useNativeUpload = Runtime.isNativeIOS('imageUpload');
-
-  // Native Bridge messages come through ForemMobile events
-  document.addEventListener('ForemMobile', handleNativeMessage);
 
   return (
     <Fragment>
