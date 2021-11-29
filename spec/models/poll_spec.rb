@@ -9,9 +9,9 @@ RSpec.describe Poll, type: :model do
     describe "builtin validations" do
       subject { poll }
 
-      it { is_expected.to have_many(:poll_options).dependent(:destroy) }
-      it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
-      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_options).dependent(:delete_all) }
+      it { is_expected.to have_many(:poll_skips).dependent(:delete_all) }
+      it { is_expected.to have_many(:poll_votes).dependent(:delete_all) }
 
       it { is_expected.to validate_length_of(:poll_options_input_array).is_at_least(2).is_at_most(15) }
 

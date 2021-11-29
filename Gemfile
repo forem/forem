@@ -116,7 +116,7 @@ gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
-gem "view_component", "~> 2.44", require: "view_component/engine" # View components for Rails
+gem "view_component", "~> 2.45", require: "view_component/engine" # View components for Rails
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails
 
@@ -133,6 +133,7 @@ group :development do
   gem "i18n-tasks", "~> 0.9.35" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
+  gem "solargraph", "~> 0.44", require: false # For LSP support (such as symbol renaming, documentation lookup)
   gem "web-console", "~> 4.2" # Rails Console on the Browser
 end
 
@@ -153,7 +154,7 @@ group :development, :test do
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.6", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
-  gem "spring", "~> 3.0" # Preloads your application so things like console, rake and tests run faster
+  gem "spring", "~> 3.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
 

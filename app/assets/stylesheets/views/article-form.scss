@@ -168,12 +168,18 @@
     top: 0;
     background: var(--base-0);
     padding: var(--su-2) var(--content-padding-x);
+    padding-right: var(--toolbar-padding-right, 0);
+
     margin: calc(var(--content-padding-y) * -1)
       calc(var(--content-padding-x) * -1) var(--su-6)
       calc(var(--content-padding-x) * -1);
 
     > :first-child {
       margin-left: calc(var(--su-2) * -1);
+    }
+
+    @media (min-width: $breakpoint-m) {
+      --toolbar-padding-right: var(--content-padding-x);
     }
   }
 
