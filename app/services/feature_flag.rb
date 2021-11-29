@@ -16,7 +16,7 @@ module FeatureFlag
     #
     # @note This is an optimistic test, namely if the given
     #       :feature_flag_name does not exist (e.g., has never been
-    #       enabled, enabled, or has been removed), the feature is
+    #       enabled, disabled, or has been removed), the feature is
     #       accessible.
     #
     # @see https://github.com/forem/forem/pull/8149
