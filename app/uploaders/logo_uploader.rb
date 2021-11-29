@@ -37,7 +37,7 @@ class LogoUploader < BaseUploader
   end
 
   def content_type_whitelist
-    %w[image/svg+xml image/png image/jpg]
+    %w[image/svg+xml image/png image/jpg image/jpeg]
   end
 
   # Process files as they are uploaded:

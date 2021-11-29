@@ -43,7 +43,7 @@ describe LogoUploader, type: :uploader do
 
   describe "formats" do
     it "permits a set of extensions" do
-      expect(uploader.extension_allowlist).to eq(%w[svg jpg jpeg png])
+      expect(uploader.extension_allowlist).to eq(%w[svg jpg jpeg jpe png])
     end
 
     it "permits jpegs" do
