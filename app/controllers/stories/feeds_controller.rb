@@ -34,22 +34,45 @@ module Stories
     end
 
     def signed_in_base_feed
-      if Settings::UserExperience.feed_strategy == "basic"
-        Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
-          .more_comments_minimal_weight_randomized
-      else
-        Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-          .more_comments_minimal_weight_randomized
+      strategy = AbExperiment.get(experiment: :feed_strategy, controller: self, user: current_user,
+                                  default_value: "original")
+      feed = if strategy.weighted_query_strategy?
+               Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
+             elsif Settings::UserExperience.feed_strategy == "basic"
+               Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
+             else
+               Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+             end
+      Datadog.tracer.trace("feed.query", span_type: "db",
+                                         resource: "#{self.class}.#{__method__}.#{feed.class.to_s.dasherize}") do
+        # Hey, why the to_a you say?  Because the
+        # LargeForemExperimental has already done this.  But the
+        # weighted strategy has not.  I also don't want to alter the
+        # weighted query implementation as it returns a lovely
+        # ActiveRecord::Relation.  So this is a compromise.
+        feed.more_comments_minimal_weight_randomized.to_a
       end
     end
 
     def signed_out_base_feed
-      if Settings::UserExperience.feed_strategy == "basic"
-        Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
-          .default_home_feed(user_signed_in: false)
-      else
-        Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-          .default_home_feed(user_signed_in: false)
+      strategy = AbExperiment.get(experiment: :feed_strategy, controller: self, user: current_user,
+                                  default_value: "original")
+      feed = if strategy.weighted_query_strategy?
+               Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
+             elsif Settings::UserExperience.feed_strategy == "basic"
+               # I'm a bit uncertain why we're skipping the user on this call.
+               Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
+             else
+               Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+             end
+      Datadog.tracer.trace("feed.query", span_type: "db",
+                                         resource: "#{self.class}.#{__method__}.#{feed.class.to_s.dasherize}") do
+        # Hey, why the to_a you say?  Because the
+        # LargeForemExperimental has already done this.  But the
+        # weighted strategy has not.  I also don't want to alter the
+        # weighted query implementation as it returns a lovely
+        # ActiveRecord::Relation.  So this is a compromise.
+        feed.default_home_feed(user_signed_in: false).to_a
       end
     end
 

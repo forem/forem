@@ -5,25 +5,23 @@ RSpec.describe PollSkip, type: :model do
   let(:user) { create(:user) }
   let(:poll) { create(:poll, article: article) }
 
-  describe "validations" do
-    context "when checking against poll" do
-      before do
-        create(:poll_skip, user: user, poll: poll)
-      end
+  context "when user has already voted (or skipped) on the poll" do
+    it "is invalid" do
+      vote = build(:poll_skip, user: user, poll: poll)
+      allow(vote.poll).to receive(:vote_previously_recorded_for?).with(user_id: user.id).and_return(true)
 
-      it "is unique across poll and user" do
-        expect(build(:poll_skip, user: user, poll: poll)).not_to be_valid
-      end
-
-      it "is valid if it belongs to the same user but to a different poll" do
-        second_poll = create(:poll, article: article)
-        expect(build(:poll_skip, user: user, poll: second_poll)).to be_valid
-      end
+      expect(vote).not_to be_valid
+      expect(vote.errors[:base]).to include("cannot vote more than once in one poll")
     end
+  end
 
-    it "is unique across user and poll votes for the poll" do
-      create(:poll_vote, user: user, poll: poll, poll_option: poll.poll_options.last)
-      expect(build(:poll_skip, user: user, poll: poll)).not_to be_valid
+  context "when user has not voted nor skipped the poll" do
+    it "is valid" do
+      vote = build(:poll_skip, user: user, poll: poll)
+      allow(vote.poll).to receive(:vote_previously_recorded_for?).with(user_id: user.id).and_return(false)
+
+      expect(vote).to be_valid
+      expect(vote.errors[:base]).to be_empty
     end
   end
 end
