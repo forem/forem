@@ -67,7 +67,7 @@ Rails.application.configure do
   config.assets.quiet = true
 
   # Raises error for missing translations.
-  # config.i18n.raise_on_missing_translations = true
+  config.i18n.raise_on_missing_translations = true
 
   # Annotate rendered view with file names.
   config.action_view.annotate_rendered_view_with_filenames = true
@@ -135,9 +135,9 @@ Rails.application.configure do
 
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?
-      message = "Data update scripts need to be run before you can start the application. " \
-                "Please run 'rails data_updates:run'"
-      raise message
+      Rails.application.load_tasks
+      puts "Running data updates..." # rubocop:disable Rails/Output
+      Rake::Task["data_updates:run"].invoke
     end
   end
 end

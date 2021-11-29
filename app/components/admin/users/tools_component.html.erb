@@ -7,7 +7,7 @@
 
   <h3 class="crayons-subtitle-2">Tools</h3>
 
-  <div class="crayons-card__body grid grid-cols-2 grid-rows-3 gap-3">
+  <div class="crayons-card__body grid grid-cols-1 l:grid-cols-2 grid-rows-3 gap-3">
     <%= link_to admin_user_tools_emails_path(@user), remote: true,
                                                      data: { action: "ajax:success->user#replacePartial" },
                                                      class: "crayons-card box js-action" do %>

@@ -94,10 +94,6 @@ send_welcome_notifications:
   description: "Sends welcome notifications to new users (runs daily at 16:30 UTC)"
   cron: "0 16 * * *"
   class: "Broadcasts::SendWelcomeNotificationsWorker"
-sitemap_refresh:
-  description: "Regenerates the sitemap and pings search engines (runs hourly on the 30th minute after the hour)"
-  cron: "30 * * * *"
-  class: "SitemapRefreshWorker"
 hourly_feed_cache_bust:
   description: "Busts the edge cache of the feed (runs hourly on the hour)"
   cron: "0 * * * *"
@@ -124,6 +120,10 @@ remove_old_notifications:
   description: "Deletes old notifications from the database (runs daily at 05:00 UTC)"
   cron: "0 5 * * *"
   class: "Notifications::RemoveOldNotificationsWorker"
+remove_old_emails:
+  description: "Deletes old emails we don't need to retain from the database (runs daily at 06:00 UTC)"
+  cron: "0 6 * * *"
+  class: "Emails::RemoveOldEmailsWorker"
 sync_credits_counter_cache:
   description: "Sychronizes counter caches for credits (runs daily at 16:00 UTC)"
   cron: "0 16 * * *"
@@ -140,3 +140,7 @@ push_notifications_cleanup:
   description: "Cleans up Push Notifications from Redis (runs every 8 hours on the 20th minute after the hour)"
   cron: "20 */8 * * *"
   class: "PushNotifications::CleanupWorker"
+capture_query_stats:
+  description: "Collects Postgres query stats for PGHero (runs every 5 minutes)"
+  cron: "*/5 * * * *"
+  class: "CaptureQueryStatsWorker"

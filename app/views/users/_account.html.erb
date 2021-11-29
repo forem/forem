@@ -119,7 +119,7 @@
           </li>
 
           <%# TODO: expand the delete messaging later %>
-          <li>Delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
+          <li>Delete any and all content you have, such as articles, comments, or your reading list.</li>
           <li>Allow your username to become available to anyone.</li>
         </ul>
         <div><button class="crayons-btn crayons-btn--danger" id="delete__account__btn" type="submit">Delete Account</button></div>
@@ -130,6 +130,8 @@
   </div>
 
   <div>
-    <p>Feel free to contact <%= email_link %> with any questions.</p>
+    <p>
+      <%= t("contact_prompts.if_any_questions_html") %>
+    </p>
   </div>
 </div>

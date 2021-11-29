@@ -1,24 +1,24 @@
 @import '../config/import';
 
-.crayons-page-header {
-  padding: var(--su-3) var(--su-3) var(--su-1);
-
-  @media (min-width: $breakpoint-m) {
-    padding: 0;
-  }
-}
-
 .crayons-title,
 .crayons-subtitle-1,
 .crayons-subtitle-2,
 .crayons-subtitle-3 {
   font-weight: var(--fw-bold);
   color: var(--base-90);
+  line-height: var(--lh-tight);
+
+  @media (min-width: $breakpoint-s) {
+    line-height: var(--lh-base);
+  }
 }
 
 .crayons-title {
   color: var(--base-100);
   font-size: var(--fs-2xl);
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
 
   @media (min-width: $breakpoint-s) {
     font-size: var(--fs-3xl);

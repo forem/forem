@@ -5,6 +5,9 @@ const renderer = new marked.Renderer();
 const prettierConfig = require('../../../.prettierrc.json');
 
 module.exports = {
+  core: {
+    builder: 'webpack5',
+  },
   // https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#correct-globs-in-mainjs
   stories: ['../**/__stories__/*.stories.@(mdx|jsx)'],
   addons: [
@@ -69,6 +72,7 @@ module.exports = {
         ...config.resolve.alias,
         '@crayons': path.resolve(__dirname, '../crayons'),
         '@utilities': path.resolve(__dirname, '../utilities'),
+        '@images': path.resolve(__dirname, '../../assets/images'),
         '@components': path.resolve(__dirname, '../shared/components'),
         react: 'preact/compat',
         'react-dom': 'preact/compat',

@@ -9,6 +9,8 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
+
   attr_accessor :publish_under_org
   attr_writer :series
 
@@ -30,17 +32,21 @@ class Article < ApplicationRecord
   UNIQUE_URL_ERROR = "has already been taken. " \
                      "Email #{ForemInstance.email} for further details.".freeze
 
-  has_one :discussion_lock, dependent: :destroy
+  has_one :discussion_lock, dependent: :delete
 
-  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
-  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
-  has_many :page_views, dependent: :destroy
+  has_many :page_views, dependent: :delete_all
+  # `dependent: :destroy` because in Poll we cascade the deletes of
+  #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy
-  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :destroy
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :delete_all
+  # `dependent: :destroy` because in RatingVote we're relying on
+  #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
@@ -54,7 +60,6 @@ class Article < ApplicationRecord
   validates :body_markdown, bytesize: { maximum: 800.kilobytes, too_long: "is too long." }
   validates :body_markdown, length: { minimum: 0, allow_nil: false }
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
-  validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url,
             uniqueness: { allow_nil: true, scope: :published, message: UNIQUE_URL_ERROR },
@@ -111,8 +116,11 @@ class Article < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
+  after_update_commit :update_notification_subscriptions, if: proc { |article|
+    article.saved_change_to_user_id?
+  }
 
-  after_commit :async_score_calc, :touch_collection, :detect_animated_images, on: %i[create update]
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -250,26 +258,18 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
+           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
            :last_comment_at)
   }
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
            :comments_count, :public_reactions_count, :cached_tag_list,
-           :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
+           :main_image, :main_image_background_hex_color, :updated_at,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
            :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
-  }
-
-  scope :boosted_via_additional_articles, lambda {
-    where("boost_states ->> 'boosted_additional_articles' = 'true'")
-  }
-
-  scope :boosted_via_dev_digest_email, lambda {
-    where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
   scope :sorting, lambda { |value|
@@ -307,12 +307,6 @@ class Article < ApplicationRecord
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
-
-  store_attributes :boost_states do
-    boosted_additional_articles Boolean, default: false
-    boosted_dev_digest_email Boolean, default: false
-    boosted_additional_tags String, default: ""
-  end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date
@@ -472,6 +466,7 @@ class Article < ApplicationRecord
   def update_score
     self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
     update_columns(score: score,
+                   privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))
@@ -589,9 +584,12 @@ class Article < ApplicationRecord
     Notification.update_notifications(self, "Published")
   end
 
+  def update_notification_subscriptions
+    NotificationSubscription.update_notification_subscriptions(self)
+  end
+
   def before_destroy_actions
-    bust_cache
-    touch_actor_latest_article_updated_at(destroying: true)
+    bust_cache(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -785,7 +783,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{title.to_s.downcase.parameterize.tr('_', '')}-#{rand(100_000).to_s(26)}"
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
   end
 
   def clean_data
@@ -799,13 +797,13 @@ class Article < ApplicationRecord
     organization&.touch(:latest_article_updated_at)
   end
 
-  def bust_cache
+  def bust_cache(destroying: false)
     cache_bust = EdgeCache::Bust.new
     cache_bust.call(path)
     cache_bust.call("#{path}?i=i")
     cache_bust.call("#{path}?preview=#{password}")
     async_bust
-    touch_actor_latest_article_updated_at
+    touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
   def calculate_base_scores
@@ -814,27 +812,7 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
-                    Regexp.new(term.downcase).match?(title.downcase)
-                  end
-
-    Reaction.create(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "Article",
-      category: "vomit",
-    )
-
-    return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
-
-    user.add_role(:suspended)
-    Note.create(
-      author_id: Settings::General.mascot_user_id,
-      noteable_id: user_id,
-      noteable_type: "User",
-      reason: "automatic_suspend",
-      content: "User suspended for too many spammy articles, triggered by autovomit.",
-    )
+    Spam::ArticleHandler.handle!(article: self)
   end
 
   def async_bust
@@ -849,10 +827,10 @@ class Article < ApplicationRecord
     Slack::Messengers::ArticlePublished.call(article: self)
   end
 
-  def detect_animated_images
+  def enrich_image_attributes
     return unless FeatureFlag.enabled?(:detect_animated_images)
     return unless saved_change_to_attribute?(:processed_html)
 
-    ::Articles::DetectAnimatedImagesWorker.perform_async(id)
+    ::Articles::EnrichImageAttributesWorker.perform_async(id)
   end
 end

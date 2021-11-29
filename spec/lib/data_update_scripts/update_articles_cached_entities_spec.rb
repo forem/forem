@@ -1,9 +1,9 @@
 require "rails_helper"
 require Rails.root.join("lib/data_update_scripts/20200723070918_update_articles_cached_entities.rb")
 
+# rubocop:disable Style/OpenStructUse, Performance/OpenStruct
 describe DataUpdateScripts::UpdateArticlesCachedEntities do
   def make_ostruct(object)
-    # rubocop:disable Performance/OpenStruct
     OpenStruct.new(
       name: object.name,
       userame: object.username,
@@ -11,7 +11,6 @@ describe DataUpdateScripts::UpdateArticlesCachedEntities do
       profile_image_90: object.profile_image_90,
       profile_image_url: object.profile_image_url,
     )
-    # rubocop:enable Performance/OpenStruct
   end
 
   it "changes cached organizations from OpenStructs to Structs" do
@@ -35,3 +34,4 @@ describe DataUpdateScripts::UpdateArticlesCachedEntities do
     end.to change { article.reload.cached_user.class }.from(OpenStruct).to(Articles::CachedEntity)
   end
 end
+# rubocop:enable Style/OpenStructUse, Performance/OpenStruct

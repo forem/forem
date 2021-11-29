@@ -18,7 +18,9 @@ class AsyncInfoController < ApplicationController
           broadcast: broadcast_data,
           param: request_forgery_protection_token,
           token: form_authenticity_token,
-          user: user_data
+          user: user_data,
+          creator: user_is_a_creator,
+          creator_onboarding: use_creator_onboarding
         }
       end
     end
@@ -60,6 +62,14 @@ class AsyncInfoController < ApplicationController
         admin: @user.any_admin?
       }
     end.to_json
+  end
+
+  def user_is_a_creator
+    @user.creator?
+  end
+
+  def use_creator_onboarding
+    FeatureFlag.enabled?(:creator_onboarding) && user_is_a_creator
   end
 
   def user_cache_key

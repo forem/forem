@@ -28,7 +28,11 @@ class RegistrationsController < Devise::RegistrationsController
         redirect_to confirm_email_path(email: resource.email)
       else
         sign_in(resource)
-        redirect_to root_path
+        if FeatureFlag.enabled?(:creator_onboarding)
+          redirect_to new_admin_creator_setting_path
+        else
+          redirect_to root_path
+        end
       end
     else
       render action: "by_email"
@@ -46,6 +50,7 @@ class RegistrationsController < Devise::RegistrationsController
     resource.skip_confirmation!
     Settings::General.waiting_on_first_user = false
     Users::CreateMascotAccount.call
+    Discover::RegisterWorker.perform_async # Register Forem instance on https://discover.forem.com
   end
 
   def recaptcha_verified?
@@ -59,10 +64,12 @@ class RegistrationsController < Devise::RegistrationsController
 
   def check_allowed_email(resource)
     domain = resource.email.split("@").last
-    allow_list = Settings::Authentication.allowed_registration_email_domains
-    return if allow_list.empty? || allow_list.include?(domain)
+    return true if Settings::Authentication.acceptable_domain?(domain: domain)
 
     resource.email = nil
+    # Alright, this error message isn't quite correct.  Is the email
+    # from a blocked domain?  Or an explicitly allowed domain.  I
+    # think this is enough.
     resource.errors.add(:email, "is not included in allowed domains.")
   end
 
@@ -70,7 +77,7 @@ class RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
     resource.registered_at = Time.current
     resource.build_setting(editor_version: "v2")
-    resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.remote_profile_image_url.blank?
+    resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.profile_image.blank?
     if FeatureFlag.enabled?(:creator_onboarding)
       resource.password_confirmation = resource.password
     end

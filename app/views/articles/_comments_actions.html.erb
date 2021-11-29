@@ -2,14 +2,14 @@
   <% if @comments_to_show_count && @article.comments_count > @comments_to_show_count %>
     <div class="mb-4">
       <a class="crayons-btn crayons-btn--secondary w-100" href="<%= @article.path %>/comments">
-        <%= t("core.view") %> <%= t("core.full") %> <%= t("core.discussion") %> (<%= @article.comments_count %> comments)
+        <%= t("views.comments.parent.view_full", count: @article.comments_count) %>
       </a>
     </div>
   <% end %>
 
   <% if @article.any_comments_hidden %>
     <p class="fs-s color-base-60 mb-4">
-      Some comments have been hidden by the post's author - <a href="/faq">find out more</a>
+      <%= t("views.comments.hidden.text_html", info: link_to(t("views.comments.hidden.info"), "/faq")) %>
     </p>
   <% end %>
 

@@ -1,5 +1,5 @@
 /* global jQuery */
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 import { adminModal } from '../adminModal';
 import { displaySnackbar } from '../messageUtilities';
 
@@ -27,6 +27,13 @@ export default class ConfigController extends Controller {
     'inviteOnlyMode',
     'requireCaptchaForEmailPasswordRegistration',
   ];
+
+  connect() {
+    const element = document.querySelector(
+      `${window.location.hash} .card-body`,
+    );
+    element?.classList.add('show');
+  }
 
   // GENERAL FUNCTIONS START
 
@@ -270,7 +277,7 @@ export default class ConfigController extends Controller {
       const targetAuthDisableBtn = document.querySelector(
         '[data-enable-auth="true"]',
       );
-      targetAuthDisableBtn.parentElement.classList.add('crayons-tooltip');
+      targetAuthDisableBtn.parentElement.classList.add('crayons-hover-tooltip');
       targetAuthDisableBtn.parentElement.setAttribute(
         'data-tooltip',
         'To edit this, you must first enable Email address as a registration option',
