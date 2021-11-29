@@ -1,9 +1,7 @@
 class LogoUploader < BaseUploader
-  process :resize_image
-  EXTENSION_ALLOWLIST = %w[svg jpg jpeg jpe png].freeze
-
   MAX_FILE_SIZE = 3 # Megabytes
-  IMAGE_TYPE_ALLOWLIST = %w[image/svg+xml image/png image/jpg].freeze
+  EXTENSION_ALLOWLIST = %w[svg png jpg jpeg jpe].freeze
+  CONTENT_TYPE_ALLOWLIST = %w[image/svg+xml image/png image/jpg image/jpeg].freeze
 
   def store_dir
     "uploads/logos/"
@@ -21,20 +19,32 @@ class LogoUploader < BaseUploader
     1..(MAX_FILE_SIZE.megabytes)
   end
 
-  def resize_image
-    # SVGs cannot be resized.
-    return if file.content_type.include?("svg")
-
-    # Question: this alters the origiinal file, we are able
-    # to make a copy if we think thats a better approach
-    image = MiniMagick::Image.new(file.path)
-
-    # TODO: update this to calculate the resize dimensions
-    resize_dimensions = "512x512"
-    image.resize resize_dimensions
+  def content_type_allowlist
+    CONTENT_TYPE_ALLOWLIST
   end
 
-  def content_type_whitelist
-    %w[image/svg+xml image/png image/jpg image/jpeg]
+  def filename
+    "original_logo.#{file.extension}" if original_filename
+  end
+
+  version :resized_web_logo, if: :not_svg? do
+    process resize_to_limit: [nil, 40]
+    def full_filename(_for_file = file)
+      "resized_web_logo.#{file.extension}" if original_filename
+    end
+  end
+
+  #  it will take less time to generate resized_mobile_logo a smaller, already processed image
+  version :resized_mobile_logo, if: :not_svg?, from_version: :resized_web_logo do
+    process resize_to_limit: [112, 40]
+    def full_filename(_for_file = file)
+      "resized_mobile_logo.#{file.extension}" if original_filename
+    end
+  end
+
+  private
+
+  def not_svg?(file)
+    file.content_type.exclude?("svg")
   end
 end
