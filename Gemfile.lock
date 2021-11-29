@@ -791,7 +791,7 @@ GEM
     simplecov_json_formatter (0.1.2)
     slack-notifier (2.4.0)
     smart_properties (1.15.0)
-    solargraph (0.44.1)
+    solargraph (0.44.2)
       backport (~> 1.2)
       benchmark
       bundler (>= 1.17.2)
