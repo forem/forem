@@ -104,9 +104,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     const escapePressHandler = ({ key }) => {
       if (key === 'Escape') {
         setOverflowMenuOpen(false);
-        document
-          .getElementById('overflow-menu-button')
-          .focus({ preventScroll: true });
+        document.getElementById('overflow-menu-button').focus();
       }
       if (key === 'Tab') {
         setOverflowMenuOpen(false);
