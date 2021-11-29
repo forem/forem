@@ -2,7 +2,7 @@
   <%= form_with url: "/comments/hide", class: "hide-comments-modal__form", id: "hide-comments-modal__form", method: :patch, remote: true, html: { "data-type": "json" } do |f| %>
     <div class="hide-comments-modal__content">
       <p class="pb-2">
-        Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's permalink.
+        Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's <%= link_to "permalink", "#", id: "hide-comments-modal__comment-permalink" %>.
       </p>
       <label class="crayons-field crayons-field--checkbox my-2">
         <%= f.check_box :hide_children, class: "hide_children crayons-checkbox" %>
@@ -15,5 +15,5 @@
       </p>
     </div>
   <% end %>
-  <p class="fs-s color-base-60">For further actions, you may consider blocking this person and/or reporting abuse</p>
+  <p class="fs-s color-base-60">For further actions, you may consider blocking this person and/or <%= link_to "reporting abuse", "/report-abuse", id: "hide-comments-modal__report-link" %></p>
 </div>

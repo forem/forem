@@ -1,7 +1,11 @@
 <script>
+  // MarkdownToolbar relies on these Runtime functions being available in stories
   var Runtime = {
     getOSKeyboardModifierKeyString: function () {
       return 'cmd';
+    },
+    isNativeIOS: function () {
+      return false;
     },
   };
 </script>

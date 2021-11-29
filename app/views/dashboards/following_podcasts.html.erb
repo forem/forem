@@ -1,11 +1,11 @@
-<% title("Dashboard - #{community_name}") %>
+<% title t("views.dashboard.meta.title", site: community_name) %>
 
 <div id="index-container"
   data-params="<%= params.to_json(only: %i[action per_page]) %>"
   data-which="following">
   <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
     <header class="crayons-page-header block">
-      <h1 class="crayons-title"><%= t("dashboard.page_title") %> &raquo; Following podcasts</h1>
+      <h1 class="crayons-title"><%= t("views.dashboard.following_pods.heading") %></h1>
       <%= render "actions_mobile" %>
     </header>
 
@@ -39,7 +39,7 @@
           <% end %>
         </div>
       <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any podcasts yet...</div>
+        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center"><%= t("views.dashboard.following_pods.empty") %></div>
       <% end %>
       <%= render "sublist" %>
     </div>

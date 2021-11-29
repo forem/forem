@@ -1,4 +1,4 @@
-<% title("Dashboard - #{community_name}") %>
+<% title t("views.dashboard.meta.title", site: community_name) %>
 
 <div id="index-container"
   data-params="<%= params.to_json(only: %i[which per_page]) %>"
@@ -6,7 +6,7 @@
 
   <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
     <header class="crayons-page-header block">
-      <h1 class="crayons-title"><%= t("core.dashboard") %> &raquo; <%= t("core.followers") %></h1>
+      <h1 class="crayons-title"><%= t("views.dashboard.followers.heading") %></h1>
       <%= render "actions_mobile" %>
     </header>
     <div class="crayons-layout__sidebar-left">
@@ -41,7 +41,7 @@
           <% end %>
         </div>
       <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l"><%= t("dashboard.empty_follower") %></div>
+        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l"><%= t("views.dashboard.followers.empty") %></div>
       <% end %>
       <%= render "sublist" %>
     </div>

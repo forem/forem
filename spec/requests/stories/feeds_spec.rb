@@ -186,14 +186,6 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
     end
 
-    context "when there are no params passed (base feed) and user is not signed in" do
-      it "does not set a field test" do
-        expect do
-          get stories_feed_path
-        end.not_to change(FieldTest::Membership, :count)
-      end
-    end
-
     context "when there are highly rated comments" do
       let(:comment) { create(:comment, score: 20, user: user) }
       let(:article) { comment.commentable }

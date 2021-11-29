@@ -1,5 +1,7 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, waitFor } from '@testing-library/preact';
+import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { Form } from '../Form';
 
@@ -19,6 +21,7 @@ describe('<Form />', () => {
       isNativeIOS: jest.fn(() => {
         return false;
       }),
+      getOSKeyboardModifierKeyString: jest.fn(() => 'cmd'),
     };
 
     global.window.matchMedia = jest.fn((query) => {
@@ -152,6 +155,127 @@ describe('<Form />', () => {
 
       // Ensure max file size
       expect(Number(coverImageInput.dataset.maxFileSizeMb)).toEqual(25);
+    });
+
+    it('renders a toolbar of markdown formatters', () => {
+      const { getByRole, getByLabelText } = render(
+        <Form
+          titleDefaultValue="Test Title v2"
+          titleOnChange={null}
+          tagsDefaultValue="javascript, career"
+          tagsOnInput={null}
+          bodyDefaultValue=""
+          bodyOnChange={null}
+          bodyHasFocus={false}
+          version="v2"
+          mainImage={mainImage}
+          onMainImageUrlChange={null}
+          errors={null}
+          switchHelpContext={null}
+        />,
+      );
+
+      const textArea = getByLabelText('Post Content');
+
+      getByRole('button', { name: 'Bold' }).click();
+      expect(textArea.value).toEqual('****');
+      userEvent.clear(textArea);
+
+      getByRole('button', { name: 'Italic' }).click();
+      expect(textArea.value).toEqual('__');
+      userEvent.clear(textArea);
+
+      getByRole('button', { name: 'Link' }).click();
+      expect(textArea.value).toEqual('[](url)');
+      userEvent.clear(textArea);
+
+      getByRole('button', { name: 'Ordered list' }).click();
+      expect(textArea.value).toEqual('1. \n');
+      userEvent.clear(textArea);
+
+      getByRole('button', { name: 'Unordered list' }).click();
+      expect(textArea.value).toEqual('- \n');
+      userEvent.clear(textArea);
+
+      getByRole('button', { name: 'Heading' }).click();
+      expect(textArea.value).toEqual('## \n');
+      userEvent.clear(textArea);
+
+      getByRole('button', { name: 'Quote' }).click();
+      expect(textArea.value).toEqual('> \n');
+      userEvent.clear(textArea);
+
+      getByRole('button', { name: 'Code' }).click();
+      expect(textArea.value).toEqual('``');
+      userEvent.clear(textArea);
+
+      getByRole('button', { name: 'Code block' }).click();
+      expect(textArea.value).toEqual('```\n\n```\n');
+      userEvent.clear(textArea);
+    });
+
+    it('renders an overflow menu of markdown formatters', async () => {
+      const { getByRole, getByLabelText } = render(
+        <Form
+          titleDefaultValue="Test Title v2"
+          titleOnChange={null}
+          tagsDefaultValue="javascript, career"
+          tagsOnInput={null}
+          bodyDefaultValue=""
+          bodyOnChange={null}
+          bodyHasFocus={false}
+          version="v2"
+          mainImage={mainImage}
+          onMainImageUrlChange={null}
+          errors={null}
+          switchHelpContext={null}
+        />,
+      );
+
+      const textArea = getByLabelText('Post Content');
+      const overflowMenuButton = getByRole('button', { name: 'More options' });
+
+      overflowMenuButton.click();
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
+      );
+
+      getByRole('menuitem', { name: 'Underline' }).click();
+      expect(textArea.value).toEqual('<u></u>');
+      userEvent.clear(textArea);
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'false'),
+      );
+
+      getByRole('button', { name: 'More options' }).click();
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
+      );
+
+      getByRole('menuitem', { name: 'Strikethrough' }).click();
+      expect(textArea.value).toEqual('~~~~');
+      userEvent.clear(textArea);
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'false'),
+      );
+
+      getByRole('button', { name: 'More options' }).click();
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
+      );
+
+      getByRole('menuitem', { name: 'Line divider' }).click();
+      expect(textArea.value).toEqual('---\n\n');
+      userEvent.clear(textArea);
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'false'),
+      );
+
+      getByRole('button', { name: 'More options' }).click();
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
+      );
+      expect(getByRole('menuitem', { name: 'Help' })).toBeInTheDocument();
     });
   });
 
