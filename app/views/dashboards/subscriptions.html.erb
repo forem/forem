@@ -1,14 +1,13 @@
-<% title "Subscriptions #{@source.title}" %>
+<% title t("views.dashboard.subscriptions.meta.title", title: @source.title) %>
 
 <div class="crayons-layout">
 
   <main id="main-content">
     <section class="flex items-center justify-between p-2 m:p-0">
       <div>
-        <h1 class="crayons-title">Subscriptions</h1>
+        <h1 class="crayons-title"><% t("views.dashboard.subscriptions.heading") %></h1>
         <h2 class="fs-base s:fs-xl fw-medium">
-          <em class="fs-italic fw-normal color-base-60">for</em>
-          <a href=<%= @source.path %>><%= @source.title %></a>
+          <%= t "views.dashboard.subscriptions.subhead.text_html", for: tag.em(t("views.dashboard.subscriptions.subhead.for"), class: %w[fs-italic fw-normal color-base-60]), source: link_to(@source.title, @source.path) %>
         </h2>
       </div>
       <%#TODO: [@forem/delightful]: uncomment this when ready to implement CSV exports%>
@@ -23,7 +22,7 @@
             <tr>
               <td class="fw-medium"><a href=<%= user_profile_path(subscriber.username) %> <%= "#{subscriber.name} DEV profile" %>><%= subscriber.name %></a></td>
               <td><a href="<%= "mailto: #{subscription.subscriber_email}" %>"><%= subscription.subscriber_email %></a></td>
-              <td class="fs-s color-base-60"><%= "#{time_ago_in_words(subscription.created_at)} ago" %></td>
+              <td class="fs-s color-base-60"><%= time_ago_in_words subscription.created_at, scope: :"datetime.distance_in_words_ago" %></td>
             </tr>
           <% end %>
         </tbody>
@@ -33,7 +32,7 @@
       </div>
     <% else %>
       <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">
-        You don't have any subscribers for this <%= @source.class.name.downcase %> yet...
+        <%= t("views.dashboard.subscriptions.empty", kind: @source.class.name.downcase) %>
       </div>
     <% end %>
   </main>

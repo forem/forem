@@ -85,7 +85,8 @@ en:
         newest: Newest
         oldest: Oldest
       meta:
-        title: Search Results
+        title: Search Results%{for}
+        for: " for %{query}"
         description: "%{site} => Search Results"
     series:
       meta:

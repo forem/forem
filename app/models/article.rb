@@ -32,17 +32,21 @@ class Article < ApplicationRecord
   UNIQUE_URL_ERROR = "has already been taken. " \
                      "Email #{ForemInstance.email} for further details.".freeze
 
-  has_one :discussion_lock, dependent: :destroy
+  has_one :discussion_lock, dependent: :delete
 
-  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
-  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
-  has_many :page_views, dependent: :destroy
+  has_many :page_views, dependent: :delete_all
+  # `dependent: :destroy` because in Poll we cascade the deletes of
+  #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy
-  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :destroy
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :delete_all
+  # `dependent: :destroy` because in RatingVote we're relying on
+  #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
@@ -585,8 +589,7 @@ class Article < ApplicationRecord
   end
 
   def before_destroy_actions
-    bust_cache
-    touch_actor_latest_article_updated_at(destroying: true)
+    bust_cache(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -794,13 +797,13 @@ class Article < ApplicationRecord
     organization&.touch(:latest_article_updated_at)
   end
 
-  def bust_cache
+  def bust_cache(destroying: false)
     cache_bust = EdgeCache::Bust.new
     cache_bust.call(path)
     cache_bust.call("#{path}?i=i")
     cache_bust.call("#{path}?preview=#{password}")
     async_bust
-    touch_actor_latest_article_updated_at
+    touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
   def calculate_base_scores

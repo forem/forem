@@ -1,3 +1,10 @@
+#  @note When we destroy the related user, it's using dependent:
+#        :delete for the relationship.  That means no before/after
+#        destroy callbacks will be called on this object.
+#
+# @note When we destroy the related article, it's using dependent:
+#       :delete for the relationship.  That means no before/after
+#       destroy callbacks will be called on this object.
 class NotificationSubscription < ApplicationRecord
   belongs_to :notifiable, polymorphic: true
   belongs_to :user

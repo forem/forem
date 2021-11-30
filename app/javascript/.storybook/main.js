@@ -72,6 +72,7 @@ module.exports = {
         ...config.resolve.alias,
         '@crayons': path.resolve(__dirname, '../crayons'),
         '@utilities': path.resolve(__dirname, '../utilities'),
+        '@images': path.resolve(__dirname, '../../assets/images'),
         '@components': path.resolve(__dirname, '../shared/components'),
         react: 'preact/compat',
         'react-dom': 'preact/compat',

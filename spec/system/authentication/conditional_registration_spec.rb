@@ -4,7 +4,8 @@ require "rails_helper"
 # ForemWebView contexts when Apple Auth isn't enabled
 RSpec.describe "Conditional registration (ForemWebView)", type: :system do
   let(:all_providers) { Authentication::Providers.available }
-  let(:all_providers_except_apple) { Authentication::Providers.available - [:apple] }
+  let(:all_providers_except_apple) { Authentication::Providers.available - %i[apple] }
+  let(:all_providers_minus_apple_forem) { Authentication::Providers.available - %i[apple forem] }
   let(:mobile_browser_ua) { "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148" }
   let(:foremwebview_ua) do
     "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 ForemWebView/1.0"
@@ -87,22 +88,45 @@ RSpec.describe "Conditional registration (ForemWebView)", type: :system do
       expect(page).to have_text("Have a password? Continue with your email address")
     end
 
-    it "renders the fallback message when Apple Auth and email registration aren't enabled" do
-      # Only renders email option because Apple Auth isn't available for registration
-      allow(Settings::Authentication).to receive(:providers).and_return(all_providers_except_apple)
-      allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false)
-      visit sign_up_path(state: "new-user")
-      expect(page).not_to have_text("Sign up with Apple")
-      expect(page).not_to have_text("Sign up with GitHub")
-      expect(page).not_to have_text("Sign up with Email")
-      expect(page).to have_text("Sorry to be a bummer...")
-      expect(page).to have_text(flow_b_fallback_text)
+    context "when Apple Auth and email registration aren't enabled" do
+      before do
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false)
+      end
 
-      # Only renders email option because Apple Auth isn't available for login
-      visit sign_up_path
-      expect(page).not_to have_text("Continue with Apple")
-      expect(page).not_to have_text("Continue with GitHub")
-      expect(page).to have_text("Have a password? Continue with your email address")
+      it "renders the fallback message if Forem Auth is also disabled" do
+        # Only renders email option because Apple Auth isn't available for registration
+        allow(Settings::Authentication).to receive(:providers).and_return(all_providers_minus_apple_forem)
+
+        visit sign_up_path(state: "new-user")
+        expect(page).not_to have_text("Sign up with Apple")
+        expect(page).not_to have_text("Sign up with GitHub")
+        expect(page).not_to have_text("Sign up with Forem")
+        expect(page).to have_text("Sorry to be a bummer...")
+        expect(page).to have_text(flow_b_fallback_text)
+
+        # Only renders email option because Apple Auth isn't available for login
+        visit sign_up_path
+        expect(page).not_to have_text("Continue with Apple")
+        expect(page).not_to have_text("Continue with GitHub")
+        expect(page).to have_text("Have a password? Continue with your email address")
+      end
+
+      it "doesn't render the fallback because Forem Auth is enabled" do
+        # Only renders email option because Apple Auth isn't available for registration
+        allow(Settings::Authentication).to receive(:providers).and_return(all_providers_except_apple)
+        visit sign_up_path(state: "new-user")
+        expect(page).not_to have_text("Sign up with GitHub")
+        expect(page).to have_text("Sign up with Forem")
+        expect(page).not_to have_text("Sorry to be a bummer...")
+        expect(page).not_to have_text(flow_b_fallback_text)
+
+        # Only renders email option because Apple Auth isn't available for login
+        visit sign_up_path
+        expect(page).not_to have_text("Continue with Apple")
+        expect(page).not_to have_text("Continue with GitHub")
+        expect(page).to have_text("Continue with Forem")
+        expect(page).to have_text("Have a password? Continue with your email address")
+      end
     end
   end
 end

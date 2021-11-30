@@ -22,6 +22,7 @@ environment.splitChunks((config) => {
         ...(config.resolve ? config.resolve.alias : {}),
         '@crayons': path.resolve(__dirname, '../../app/javascript/crayons'),
         '@utilities': path.resolve(__dirname, '../../app/javascript/utilities'),
+        '@images': path.resolve(__dirname, '../../app/assets/images'),
         '@admin-controllers': path.resolve(
           __dirname,
           '../../app/javascript/admin/controllers',
