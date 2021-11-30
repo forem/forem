@@ -3,12 +3,6 @@ require "rails_helper"
 RSpec.describe Articles::Feeds::WeightedQueryStrategy, type: :service do
   subject(:feed_strategy) { described_class.new(user: user) }
 
-  describe ".oldest_published_at_to_consider_for" do
-    subject { described_class.oldest_published_at_to_consider_for(user: nil) }
-
-    it { is_expected.to be_a ActiveSupport::TimeWithZone }
-  end
-
   describe "with a nil user" do
     let(:user) { nil }
 

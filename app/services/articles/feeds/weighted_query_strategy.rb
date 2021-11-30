@@ -31,41 +31,6 @@ module Articles
     # @note For those considering extending this, be very mindful of
     #       SQL injection.
     class WeightedQueryStrategy
-      # The default number of days old that an article can be for us
-      # to consider it in the relevance feed.
-      DEFAULT_PUBLISHED_SINCE = 7
-
-      # @api private
-      #
-      # This method helps answer the question: What are the articles
-      # that I should consider as new for the given user?  This method
-      # provides a date by which to filter out "stale to the user"
-      # articles.
-      #
-      # @note Do we need to continue using this method?  It's part of
-      #       the hot story grab experiment that we ran with the
-      #       Article::Feeds::LargeForemExperimental, but may not be
-      #       relevant.
-      #
-      # @param user [User]
-      # @param published_since [Integer] if someone
-      #        hasn't viewed any articles, give them things from the
-      #        database seeds.
-      #
-      # @return [ActiveSupport::TimeWithZone]
-      #
-      # @note the published_since is something carried
-      #       over from the LargeForemExperimental and may not be
-      #       relevant given that we have the :daily_factor_decay.
-      #       However, this further limitation based on a user's
-      #       second most recent page view helps further winnow down
-      #       the result set.
-      def self.oldest_published_at_to_consider_for(user:, published_since: DEFAULT_PUBLISHED_SINCE)
-        time_of_second_latest_page_view = user&.page_views&.second_to_last&.created_at
-        return published_since.days.ago unless time_of_second_latest_page_view
-
-        time_of_second_latest_page_view - 18.hours
-      end
       # This constant defines the allowable relevance scoring methods.
       #
       # A scoring method should be a SQL fragement that produces a
@@ -297,7 +262,7 @@ module Articles
         @scoring_configs = config.fetch(:scoring_configs) { default_scoring_configs }
         configure!(scoring_configs: @scoring_configs)
 
-        @oldest_published_at = self.class.oldest_published_at_to_consider_for(
+        @oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
           user: @user,
           published_since: @published_since,
         )
