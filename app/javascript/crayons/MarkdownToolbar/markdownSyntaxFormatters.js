@@ -65,7 +65,9 @@ const handleLinkFormattingForEmptyTextSelection = ({
   selectionEnd,
 }) => {
   const basicFormattingForEmptySelection = {
-    newTextAreaValue: `${textBeforeSelection}[](${URL_PLACEHOLDER_TEXT})${textAfterSelection}`,
+    editSelectionStart: selectionStart,
+    editSelectionEnd: selectionEnd,
+    replaceSelectionWith: `[](${URL_PLACEHOLDER_TEXT})`,
     newCursorStart: selectionStart + 3,
     newCursorEnd: selectionEnd + 6,
   };
@@ -93,9 +95,9 @@ const handleLinkFormattingForEmptyTextSelection = ({
   const urlText = value.slice(selectionEnd + 2, indexOfLinkStructureEnd);
 
   return {
-    newTextAreaValue: `${textBeforeSelection.slice(0, -1)}${
-      urlText === URL_PLACEHOLDER_TEXT ? '' : urlText
-    }${value.slice(indexOfLinkStructureEnd + 1)}`,
+    editSelectionStart: selectionStart - 1,
+    editSelectionEnd: indexOfLinkStructureEnd + 1,
+    replaceSelectionWith: urlText === URL_PLACEHOLDER_TEXT ? '' : urlText,
     newCursorStart: selectionStart - 1,
     newCursorEnd: selectionEnd - 1,
   };
@@ -106,10 +108,13 @@ const handleLinkFormattingForUrlSelection = ({
   textAfterSelection,
   value,
   selectionStart,
+  selectionEnd,
   selectedText,
 }) => {
   const basicFormattingForLinkSelection = {
-    newTextAreaValue: `${textBeforeSelection}[](${selectedText})${textAfterSelection}`,
+    editSelectionStart: selectionStart,
+    editSelectionEnd: selectionEnd,
+    replaceSelectionWith: `[](${selectedText})`,
     newCursorStart: selectionStart + 1,
     newCursorEnd: selectionStart + 1,
   };
@@ -145,10 +150,9 @@ const handleLinkFormattingForUrlSelection = ({
   }
 
   return {
-    newTextAreaValue: `${textBeforeSelection.slice(
-      0,
-      indexOfSyntaxOpen,
-    )}${textToReplaceMarkdown}${textAfterSelection.slice(1)}`,
+    editSelectionStart: indexOfSyntaxOpen,
+    editSelectionEnd: selectionEnd + 1,
+    replaceSelectionWith: textToReplaceMarkdown,
     newCursorStart: indexOfSyntaxOpen,
     newCursorEnd: indexOfSyntaxOpen + textToReplaceMarkdown.length,
   };
@@ -157,8 +161,7 @@ const handleLinkFormattingForUrlSelection = ({
 const handleUndoMarkdownLinkSelection = ({
   selectedText,
   selectionStart,
-  textBeforeSelection,
-  textAfterSelection,
+  selectionEnd,
 }) => {
   const linkDescriptionEnd = getNextIndexOfCharacter({
     content: selectedText,
@@ -175,7 +178,9 @@ const handleUndoMarkdownLinkSelection = ({
   }
 
   return {
-    newTextAreaValue: `${textBeforeSelection}${textToReplaceMarkdown}${textAfterSelection}`,
+    editSelectionStart: selectionStart,
+    editSelectionEnd: selectionEnd,
+    replaceSelectionWith: textToReplaceMarkdown,
     newCursorStart: selectionStart,
     newCursorEnd: selectionStart + textToReplaceMarkdown.length,
   };
@@ -205,10 +210,9 @@ const undoOrAddFormattingForInlineSyntax = ({
 
   if (selectedTextAlreadyFormatted) {
     return {
-      newTextAreaValue: `${textBeforeSelection}${selectedText.slice(
-        prefixLength,
-        -1 * suffixLength,
-      )}${textAfterSelection}`,
+      editSelectionStart: selectionStart,
+      editSelectionEnd: selectionEnd,
+      replaceSelectionWith: selectedText.slice(prefixLength, -1 * suffixLength),
       newCursorStart: selectionStart,
       newCursorEnd: selectionEnd - (prefixLength + suffixLength),
     };
@@ -221,10 +225,9 @@ const undoOrAddFormattingForInlineSyntax = ({
 
   if (surroundingTextHasFormatting) {
     return {
-      newTextAreaValue: `${textBeforeSelection.slice(
-        0,
-        -1 * prefixLength,
-      )}${selectedText}${textAfterSelection.slice(suffixLength)}`,
+      editSelectionStart: selectionStart - prefixLength,
+      editSelectionEnd: selectionEnd + suffixLength,
+      replaceSelectionWith: selectedText,
       newCursorStart: selectionStart - prefixLength,
       newCursorEnd: selectionEnd - prefixLength,
     };
@@ -232,7 +235,9 @@ const undoOrAddFormattingForInlineSyntax = ({
 
   // No formatting to undo - format the selected text
   return {
-    newTextAreaValue: `${textBeforeSelection}${prefix}${selectedText}${suffix}${textAfterSelection}`,
+    editSelectionStart: selectionStart,
+    editSelectionEnd: selectionEnd,
+    replaceSelectionWith: `${prefix}${selectedText}${suffix}`,
     newCursorStart: selectionStart + prefixLength,
     newCursorEnd: selectionEnd + prefixLength,
   };
@@ -255,25 +260,28 @@ const undoOrAddFormattingForMultilineSyntax = ({
     const { length: prefixLength } = linePrefix;
 
     // If no selection, check if we're in a freshly inserted syntax
-    if (selectedText === '' && textBeforeSelection !== '') {
-      const lastNewLine = getLastIndexOfCharacter({
-        content: value,
-        selectionIndex: selectionStart - 1,
-        character: '\n',
-      });
+    if (selectedText === '') {
+      const lastNewLine =
+        textBeforeSelection === ''
+          ? -1
+          : getLastIndexOfCharacter({
+              content: value,
+              selectionIndex: selectionStart - 1,
+              character: '\n',
+            });
+
+      const lineStart = lastNewLine === -1 ? 0 : lastNewLine + 1;
 
       if (
-        lastNewLine !== -1 &&
-        textBeforeSelection.slice(
-          lastNewLine + 1,
-          lastNewLine + prefixLength + 1,
-        ) === linePrefix
+        textBeforeSelection.slice(lineStart, lineStart + prefixLength) ===
+        linePrefix
       ) {
         // Remove the list formatting
+
         return {
-          newTextAreaValue: `${value.slice(0, lastNewLine + 1)}${value.slice(
-            lastNewLine + prefixLength + 1,
-          )}`,
+          editSelectionStart: lineStart,
+          editSelectionEnd: lineStart + prefixLength,
+          replaceSelectionWith: '',
           newCursorStart: selectionStart - prefixLength,
           newCursorEnd: selectionEnd - prefixLength,
         };
@@ -298,7 +306,9 @@ const undoOrAddFormattingForMultilineSyntax = ({
         .join('\n');
 
       return {
-        newTextAreaValue: `${textBeforeSelection}${unformattedText}${textAfterSelection}`,
+        editSelectionStart: selectionStart,
+        editSelectionEnd: selectionEnd,
+        replaceSelectionWith: unformattedText,
         newCursorStart: selectionStart,
         newCursorEnd:
           selectionEnd + (unformattedText.length - selectedText.length),
@@ -322,10 +332,12 @@ const undoOrAddFormattingForMultilineSyntax = ({
 
     if (selectionIsFormatted) {
       return {
-        newTextAreaValue: `${textBeforeSelection}${selectedText.slice(
+        editSelectionStart: selectionStart,
+        editSelectionEnd: selectionEnd,
+        replaceSelectionWith: selectedText.slice(
           prefixLength,
           -1 * suffixLength,
-        )}${textAfterSelection}`,
+        ),
         newCursorStart: selectionStart,
         newCursorEnd: selectionEnd - prefixLength - suffixLength,
       };
@@ -338,10 +350,9 @@ const undoOrAddFormattingForMultilineSyntax = ({
 
     if (surroundingTextIsFormatted) {
       return {
-        newTextAreaValue: `${textBeforeSelection.slice(
-          0,
-          -1 * prefixLength,
-        )}${selectedText}${textAfterSelection.slice(suffixLength)}`,
+        editSelectionStart: selectionStart - prefixLength,
+        editSelectionEnd: selectionEnd + suffixLength,
+        replaceSelectionWith: selectedText,
         newCursorStart: selectionStart - prefixLength,
         newCursorEnd: selectionEnd - prefixLength,
       };
@@ -357,20 +368,17 @@ const undoOrAddFormattingForMultilineSyntax = ({
   });
   const { length: newLinePrefixLength } = newLinesPrefix;
 
-  // Multiline insertions should occur after two new lines (whether added already by user or inserted automatically)
-  const newtextBeforeSelection = `${textBeforeSelection}${newLinesPrefix}`;
-
   const cursorStartBaseline = selectionStart + newLinePrefixLength;
   const cursorStartBlockPrefixOffset = blockPrefix ? blockPrefix.length : 0;
   const cursorStartLinePrefixOffset =
     selectedText === '' && linePrefix ? linePrefix.length : 0;
 
   return {
-    newTextAreaValue: `${newtextBeforeSelection}${
+    editSelectionStart: selectionStart,
+    editSelectionEnd: selectionEnd,
+    replaceSelectionWith: `${newLinesPrefix}${
       blockPrefix ? blockPrefix : ''
-    }${formattedText}${
-      blockSuffix ? blockSuffix : ''
-    }${newLinesSuffix}${textAfterSelection}`,
+    }${formattedText}${blockSuffix ? blockSuffix : ''}${newLinesSuffix}`,
     newCursorStart:
       cursorStartBaseline +
       cursorStartBlockPrefixOffset +
@@ -383,6 +391,17 @@ const undoOrAddFormattingForMultilineSyntax = ({
       (blockPrefix?.length || 0),
   };
 };
+
+export const getNewTextAreaValueWithEdits = ({
+  textAreaValue,
+  editSelectionStart,
+  editSelectionEnd,
+  replaceSelectionWith,
+}) =>
+  `${textAreaValue.substring(
+    0,
+    editSelectionStart,
+  )}${replaceSelectionWith}${textAreaValue.substring(editSelectionEnd)}`;
 
 export const coreSyntaxFormatters = {
   bold: {
@@ -468,6 +487,7 @@ export const coreSyntaxFormatters = {
         return handleUndoMarkdownLinkSelection({
           selectedText,
           selectionStart,
+          selectionEnd,
           textBeforeSelection,
           textAfterSelection,
         });
@@ -475,7 +495,9 @@ export const coreSyntaxFormatters = {
 
       // Finally, handle the case where link syntax is inserted for a selection other than a URL
       return {
-        newTextAreaValue: `${textBeforeSelection}[${selectedText}](${URL_PLACEHOLDER_TEXT})${textAfterSelection}`,
+        editSelectionStart: selectionStart,
+        editSelectionEnd: selectionEnd,
+        replaceSelectionWith: `[${selectedText}](${URL_PLACEHOLDER_TEXT})`,
         newCursorStart: selectionStart + selectedText.length + 3,
         newCursorEnd: selectionEnd + 6,
       };
@@ -485,8 +507,11 @@ export const coreSyntaxFormatters = {
     icon: OrderedList,
     label: 'Ordered list',
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
-      const { selectedText, textBeforeSelection, textAfterSelection } =
-        getSelectionData({ selectionStart, selectionEnd, value });
+      const { selectedText, textBeforeSelection } = getSelectionData({
+        selectionStart,
+        selectionEnd,
+        value,
+      });
 
       const { newLinesPrefix, newLinesSuffix } = getNewLinePrefixSuffixes({
         selectionStart,
@@ -496,23 +521,25 @@ export const coreSyntaxFormatters = {
       const { length: newLinePrefixLength } = newLinesPrefix;
       const { length: newLineSuffixLength } = newLinesSuffix;
 
-      if (selectedText === '' && textBeforeSelection !== '') {
+      if (selectedText === '') {
         // Check start of line for whether we're in an empty ordered list
-        const lastNewLine = getLastIndexOfCharacter({
-          content: value,
-          selectionIndex: selectionStart - 1,
-          character: '\n',
-        });
+        const lastNewLine =
+          textBeforeSelection === ''
+            ? -1
+            : getLastIndexOfCharacter({
+                content: value,
+                selectionIndex: selectionStart - 1,
+                character: '\n',
+              });
 
-        if (
-          lastNewLine !== -1 &&
-          textBeforeSelection.slice(lastNewLine + 1, lastNewLine + 4) === '1. '
-        ) {
+        const lineStart = lastNewLine === -1 ? 0 : lastNewLine + 1;
+
+        if (textBeforeSelection.slice(lineStart, lineStart + 3) === '1. ') {
           // Remove the list formatting
           return {
-            newTextAreaValue: `${value.slice(0, lastNewLine + 1)}${value.slice(
-              lastNewLine + 4,
-            )}`,
+            editSelectionStart: lineStart,
+            editSelectionEnd: lineStart + 3,
+            replaceSelectionWith: '',
             newCursorStart: selectionStart - 3,
             newCursorEnd: selectionEnd - 3,
           };
@@ -522,7 +549,9 @@ export const coreSyntaxFormatters = {
       if (selectedText === '') {
         // Otherwise insert an empty list for an empty selection
         return {
-          newTextAreaValue: `${textBeforeSelection}${newLinesPrefix}1. ${newLinesSuffix}${textAfterSelection}`,
+          editSelectionStart: selectionStart,
+          editSelectionEnd: selectionEnd,
+          replaceSelectionWith: `${newLinesPrefix}1. ${newLinesSuffix}`,
           newCursorStart: selectionStart + 3 + newLinePrefixLength,
           newCursorEnd: selectionEnd + 3 + newLinePrefixLength,
         };
@@ -545,7 +574,9 @@ export const coreSyntaxFormatters = {
           .join('\n');
 
         return {
-          newTextAreaValue: `${textBeforeSelection}${newText}${textAfterSelection}`,
+          editSelectionStart: selectionStart,
+          editSelectionEnd: selectionEnd,
+          replaceSelectionWith: newText,
           newCursorStart: selectionStart + selectedText.indexOf('.') - 1,
           newCursorEnd: selectionEnd + newText.length - selectedText.length,
         };
@@ -559,7 +590,9 @@ export const coreSyntaxFormatters = {
         selectedText.length === 0 ? 4 : newLinePrefixLength;
 
       return {
-        newTextAreaValue: `${textBeforeSelection}${formattedList}${textAfterSelection}`,
+        editSelectionStart: selectionStart,
+        editSelectionEnd: selectionEnd,
+        replaceSelectionWith: formattedList,
         newCursorStart: selectionStart + cursorOffsetStart,
         newCursorEnd:
           selectionStart + formattedList.length - newLineSuffixLength,
@@ -601,12 +634,11 @@ export const coreSyntaxFormatters = {
         }
       }
 
-      const { selectedText, textBeforeSelection, textAfterSelection } =
-        getSelectionData({
-          selectionStart: currentLineSelectionStart,
-          selectionEnd,
-          value,
-        });
+      const { selectedText } = getSelectionData({
+        selectionStart: currentLineSelectionStart,
+        selectionEnd,
+        value,
+      });
 
       let currentHeadingIndex = 0;
       while (selectedText.charAt(currentHeadingIndex) === '#') {
@@ -616,9 +648,9 @@ export const coreSyntaxFormatters = {
       //   After h4, revert to no heading at all
       if (currentHeadingIndex >= 4) {
         return {
-          newTextAreaValue: `${textBeforeSelection}${selectedText.substring(
-            5,
-          )}${textAfterSelection}`,
+          editSelectionStart: currentLineSelectionStart,
+          editSelectionEnd: selectionEnd,
+          replaceSelectionWith: selectedText.substring(5),
           newCursorStart: selectionStart - 5,
           newCursorEnd: selectionEnd - 5,
         };
@@ -635,9 +667,13 @@ export const coreSyntaxFormatters = {
       const cursorOffset = adjustingHeading ? 1 : 3 + newLinePrefixLength;
 
       return {
-        newTextAreaValue: adjustingHeading
-          ? `${textBeforeSelection}#${selectedText}${textAfterSelection}`
-          : `${textBeforeSelection}${newLinesPrefix}## ${selectedText}${newLinesSuffix}${textAfterSelection}`,
+        editSelectionStart: adjustingHeading
+          ? currentLineSelectionStart
+          : selectionStart,
+        editSelectionEnd: selectionEnd,
+        replaceSelectionWith: adjustingHeading
+          ? `#${selectedText}`
+          : `${newLinesPrefix}## ${selectedText}${newLinesSuffix}`,
         newCursorStart: selectionStart + cursorOffset,
         newCursorEnd: selectionEnd + cursorOffset,
       };
