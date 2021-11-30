@@ -20,7 +20,7 @@ describe('<Tags />', () => {
   });
 
   describe('handleKeyDown', () => {
-    it('does not call preventDefault on used keyCode', () => {
+    it.skip('does not call preventDefault on used keyCode', () => {
       const { getByTestId } = render(
         <Tags defaultValue="defaultValue" listing />,
       );
