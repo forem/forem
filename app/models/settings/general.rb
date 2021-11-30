@@ -36,6 +36,7 @@ module Settings
             validates: { url: true }
 
     setting :logo_svg, type: :string
+
     setting :original_logo, type: :string
     setting :resized_web_logo, type: :string
     setting :resized_mobile_logo, type: :string
