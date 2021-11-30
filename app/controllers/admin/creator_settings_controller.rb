@@ -32,8 +32,6 @@ module Admin
         checked_terms_and_conditions: settings_params[:checked_terms_and_conditions],
       )
       redirect_to root_path
-    # Should I be rescuing CarrierWave::IntegrityError and CarrierWave::ProcessingError
-    # or just leave it as rescue StandardError?
     rescue StandardError => e
       flash.now[:error] = e.message
       render new_admin_creator_setting_path
