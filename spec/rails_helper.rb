@@ -80,6 +80,11 @@ RSpec.configure do |config|
 
   config.extend WithModel
 
+  config.before(:each, :system) do
+    # Test that our tests handle the "future state" of the application code.
+    allow(FeatureFlag).to receive(:accessible?).with(:featured_story_must_have_main_image).and_return(false)
+  end
+
   config.after(:each, type: :system) do
     Warden::Manager._on_request.clear
   end

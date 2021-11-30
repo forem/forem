@@ -11,7 +11,7 @@ module Articles
         # Per #15292 we want to move towards not requiring feature's
         # to have a main image.  This allows us to inch our way
         # towards that configuration.
-        @must_have_main_image = false # FeatureFlag.accessible?(:featured_story_must_have_main_image)
+        @must_have_main_image = FeatureFlag.accessible?(:featured_story_must_have_main_image)
       end
 
       def must_have_main_image?
