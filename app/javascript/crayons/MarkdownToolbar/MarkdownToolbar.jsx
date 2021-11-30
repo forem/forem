@@ -378,6 +378,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             tagName="a"
             role="menuitem"
             url="/p/editor_guide"
+            target="_blank"
+            rel="noopener noreferrer"
             variant="ghost"
             contentType="icon"
             icon={Help}
