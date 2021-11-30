@@ -8,7 +8,7 @@
       <% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? && request.env["PATH_INFO"] == new_admin_creator_setting_path %>
         Privacy Policy, all applicable laws and regulations,
       <% else %>
-        <a href="/privacy">Privacy Policy</a>, all applicable laws and regulations,
+        <a href="<%= app_url("/privacy") %>">Privacy Policy</a>, all applicable laws and regulations,
       <% end %>
       and agree that you are responsible for compliance with any applicable local
       laws. If you do not agree with any of these terms, you are prohibited from
