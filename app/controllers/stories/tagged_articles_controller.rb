@@ -20,7 +20,7 @@ module Stories
 
       set_number_of_articles(tag: @tag)
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
-      not_found_if_not_established(page: @page, tag: @tag, stories: @stories)
+      not_found_if_not_established(tag: @tag, stories: @stories)
 
       set_surrogate_key_header "articles-#{@tag}"
       set_cache_control_headers(600,
