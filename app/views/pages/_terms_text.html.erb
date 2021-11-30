@@ -1,3 +1,5 @@
+    <% creator_settings_form = FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? && request.env["PATH_INFO"] == new_admin_creator_setting_path %>
+
     <h3 id="terms-text">
       1. Terms
     </h3>
@@ -5,7 +7,7 @@
     <p>
       By accessing this web site, you are agreeing to be bound by these
       web site Terms and Conditions of Use, our
-      <% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? && request.env["PATH_INFO"] == new_admin_creator_setting_path %>
+      <% if creator_settings_form %>
         Privacy Policy, all applicable laws and regulations,
       <% else %>
         <a href="<%= app_url("/privacy") %>">Privacy Policy</a>, all applicable laws and regulations,
