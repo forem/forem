@@ -135,7 +135,7 @@ RSpec.describe "Stories::Feeds", type: :request do
 
         get timeframe_stories_feed_path(:week)
 
-        expect(Articles::Feeds::Timeframe).to have_received(:call).with("week", page: nil, tag: nil)
+        expect(Articles::Feeds::Timeframe).to have_received(:call).with("week", page: 1, tag: nil)
       end
 
       it "calls the feed service for latest" do
