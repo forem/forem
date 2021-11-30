@@ -59,6 +59,7 @@ const getPreviousMatchingSibling = (element, selector) => {
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
+  const [storedCursorPosition, setStoredCursorPosition] = useState({});
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
 
   const markdownSyntaxFormatters = {
@@ -190,8 +191,10 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   };
 
   const handleImageUploadStarted = () => {
-    const { textBeforeSelection, textAfterSelection, selectionEnd } =
+    const { textBeforeSelection, textAfterSelection } =
       getSelectionData(textArea);
+
+    const { selectionEnd } = storedCursorPosition;
 
     const textWithPlaceholder = `${textBeforeSelection}\n${UPLOADING_IMAGE_PLACEHOLDER}${textAfterSelection}`;
     textArea.value = textWithPlaceholder;
@@ -203,27 +206,46 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     // Set cursor to the end of the placeholder
     const newCursorPosition =
       selectionEnd + UPLOADING_IMAGE_PLACEHOLDER.length + 1;
+
     textArea.setSelectionRange(newCursorPosition, newCursorPosition);
   };
 
-  const handleImageUploadSuccess = (imageMarkdown) => {
+  const handleImageUploadEnd = (imageMarkdown = '') => {
+    const {
+      selectionStart,
+      selectionEnd,
+      value: currentTextAreaValue,
+    } = textArea;
+
+    const indexOfPlaceholder = currentTextAreaValue.indexOf(
+      UPLOADING_IMAGE_PLACEHOLDER,
+    );
+
+    // User has deleted placeholder, nothing to do
+    if (indexOfPlaceholder === -1) return;
+
     const newTextValue = textArea.value.replace(
       UPLOADING_IMAGE_PLACEHOLDER,
       imageMarkdown,
     );
-    textArea.value = newTextValue;
-    // Make sure Editor text area updates via linkstate
-    textArea.dispatchEvent(new Event('input'));
-  };
 
-  const handleImageUploadError = () => {
-    const newTextValue = textArea.value.replace(
-      UPLOADING_IMAGE_PLACEHOLDER,
-      '',
-    );
     textArea.value = newTextValue;
     // Make sure Editor text area updates via linkstate
     textArea.dispatchEvent(new Event('input'));
+
+    // The change to image markdown length does not affect cursor position
+    if (indexOfPlaceholder > selectionStart) {
+      textArea.setSelectionRange(selectionStart, selectionEnd);
+      return;
+    }
+
+    const differenceInLength =
+      imageMarkdown.length - UPLOADING_IMAGE_PLACEHOLDER.length;
+
+    textArea.setSelectionRange(
+      selectionStart + differenceInLength,
+      selectionEnd + differenceInLength,
+    );
   };
 
   const getSecondaryFormatterButtons = (isOverflow) =>
@@ -308,10 +330,14 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       <ImageUploader
         editorVersion="v2"
         onImageUploadStart={handleImageUploadStarted}
-        onImageUploadSuccess={handleImageUploadSuccess}
-        onImageUploadError={handleImageUploadError}
+        onImageUploadSuccess={handleImageUploadEnd}
+        onImageUploadError={handleImageUploadEnd}
         buttonProps={{
           onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
+          onClick: () => {
+            const { selectionStart, selectionEnd } = textArea;
+            setStoredCursorPosition({ selectionStart, selectionEnd });
+          },
           tooltip: smallScreen ? null : (
             <span aria-hidden="true">Upload image</span>
           ),
