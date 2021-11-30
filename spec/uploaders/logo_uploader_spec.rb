@@ -30,17 +30,6 @@ describe LogoUploader, type: :uploader do
     expect(uploader.store_dir).to eq("uploads/logos/")
   end
 
-  describe "filename" do
-    it "defaults to nil" do
-      expect(uploader.filename).to be_nil
-    end
-
-    it "contains the original file extension when a file is stored" do
-      uploader.store!(image_jpg)
-      expect(uploader.filename).to match(/\.jpg\z/)
-    end
-  end
-
   describe "formats" do
     it "permits a set of extensions" do
       expect(uploader.extension_allowlist).to eq(%w[svg png jpg jpeg jpe])
@@ -91,18 +80,22 @@ describe LogoUploader, type: :uploader do
   describe "resize_image" do
     it "creates versions of the image with different filenames" do
       uploader.store!(image_jpg)
-      expect(uploader.filename).to match(/original_logo.jpg/)
-      expect(uploader.resized_web_logo.file.filename).to match(/resized_web_logo.jpg/)
-      expect(uploader.resized_mobile_logo.file.filename).to match(/resized_mobile_logo.jpg/)
+      expect(uploader.filename).to match(/original_logo/)
+      expect(uploader.resized_web_logo.file.filename).to match(/resized_web_logo/)
+      expect(uploader.resized_mobile_logo.file.filename).to match(/resized_mobile_logo/)
+    end
+
+    it "contains the original file extension when a file is stored" do
+      uploader.store!(image_jpg)
+      expect(uploader.filename).to match(/\.jpg\z/)
     end
 
     it "creates versions of the image with different sizes" do
       uploader.store!(image_jpg)
       expect(uploader.resized_web_logo.size).to be <= uploader.size
       expect(uploader.resized_mobile_logo.size).to be <= uploader.resized_web_logo.size
-      # Ideally, we'd want to test the dimensions
-      # however we can't test the dimensions without opening the files
-      # through MiniMagick processing.
+      # Ideally, we'd want to test the dimensions however we can't test the dimensions
+      # without opening the files through MiniMagick processing.
     end
   end
 end
