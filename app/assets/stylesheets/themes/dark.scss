@@ -232,6 +232,10 @@
 }
 
 :root {
+  // Separating some variables here as these are the results
+  // of broader Crayons refactoring (see #15311) and I didn't
+  // want to mix everything together.
+
   ////////////////////////////////////////////////
   // Buttons /////////////////////////////////////
   ////////////////////////////////////////////////
