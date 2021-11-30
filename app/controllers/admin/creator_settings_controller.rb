@@ -18,8 +18,7 @@ module Admin
         logo_uploader = upload_logo(settings_params[:logo])
         ::Settings::General.original_logo = logo_uploader.url
         # An SVG will not be resized, hence we apply the OR statements below to populate SETTINGS consistently.
-        ::Settings::General.resized_web_logo = logo_uploader.resized_web_logo.url || logo_uploader.url
-        ::Settings::General.resized_mobile_logo = logo_uploader.resized_mobile_logo.url || logo_uploader.url
+        ::Settings::General.resized_logo = logo_uploader.resized_logo.url || logo_uploader.url
 
         ::Settings::Community.community_name = settings_params[:community_name]
         ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]

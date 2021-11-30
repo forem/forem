@@ -30,19 +30,10 @@ class LogoUploader < BaseUploader
     "original_logo_#{random_string}.#{file.extension}" if original_filename
   end
 
-  version :resized_web_logo, if: :not_svg? do
-    process resize_to_limit: [nil, 40]
+  version :resized_logo, if: :not_svg? do
+    process resize_to_limit: [nil, 80]
     def full_filename(_for_file = file)
-      "resized_web_logo_#{random_string}.#{file.extension}" if original_filename
-    end
-  end
-
-  #  it will take less time to generate resized_mobile_logo if its from_version
-  # is the processed image
-  version :resized_mobile_logo, if: :not_svg?, from_version: :resized_web_logo do
-    process resize_to_limit: [112, 40]
-    def full_filename(_for_file = file)
-      "resized_mobile_logo_#{random_string}.#{file.extension}" if original_filename
+      "resized_logo_#{random_string}.#{file.extension}" if original_filename
     end
   end
 
