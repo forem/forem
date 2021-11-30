@@ -199,7 +199,11 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     try {
       // We first try to use execCommand which allows the change to be correctly added to the undo queue.
       // document.execCommand is deprecated, but the API which will eventually replace it is still incoming (https://w3c.github.io/input-events/)
-      document.execCommand('insertText', false, replaceSelectionWith);
+      if (replaceSelectionWith === '') {
+        document.execCommand('delete', false);
+      } else {
+        document.execCommand('insertText', false, replaceSelectionWith);
+      }
     } catch {
       // In the event of any error using execCommand, we make sure the text area updates (but undo queue will not)
       textArea.value = getNewTextAreaValueWithEdits({
