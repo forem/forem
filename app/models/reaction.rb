@@ -26,6 +26,10 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
+
+  # Be wary, this is all things on the reading list, but for an end
+  # user they might only see readinglist items that are published.
+  # See https://github.com/forem/forem/issues/14796
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
@@ -77,8 +81,16 @@ class Reaction < ApplicationRecord
     #
     # @return [TrueClass] yup, they're spamming the system.
     # @return [FalseClass] they're not (yet) spamming the system
-    def user_has_been_given_too_many_spammy_reactions?(user:)
-      article_vomits.where(reactable_type: "Article", reactable_id: user.articles.pluck(:id)).size > 2
+    def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2)
+      article_vomits.where(reactable_id: user.articles.ids).size > threshold
+    end
+
+    # @param user [User] the user who might be spamming the system
+    #
+    # @return [TrueClass] yup, they're spamming the system.
+    # @return [FalseClass] they're not (yet) spamming the system
+    def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2)
+      comment_vomits.where(reactable_id: user.comments.ids).size > threshold
     end
   end
 

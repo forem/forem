@@ -1,0 +1,150 @@
+---
+en:
+  views:
+    dashboard:
+      meta:
+        title: Dashboard - %{site}
+      heading: Dashboard
+      actions:
+        mobile:
+          posts: Posts (%{num})
+          followers: Followers (%{num})
+          following_tags: Following tags (%{num})
+          following_users: Following users (%{num})
+          following_orgs: Following organizations (%{num})
+          following_pods: Following podcasts (%{num})
+        posts: Posts
+        series: Series
+        followers: Followers
+        following_tags: Following tags
+        following_users: Following users
+        following_orgs: Following organizations
+        following_pods: Following podcasts
+        listings: Listings
+        analytics: Analytics
+        for_org: Analytics for %{org}
+        upload: Upload a video
+      analytics:
+        meta:
+          title: Analytics
+        heading: Analytics Dashboard for %{name}
+        desc_1: Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the %{members} ecosystem.
+        desc_2: This dashboard highlights deep insights especially relevant to %{members} relations, authors, and serious bloggers.
+        back: "👈 Back to Main Dashboard"
+        your: Your Dashboard
+        org: "%{org} Analytics Dashboard"
+      article:
+        heading:
+          text_html: "%{archived}%{title}"
+          archived: "[Archived] "
+        archived: Archived
+        published: 'Published:'
+        published_html: 'Published: %{date}'
+        edited: 'Edited:'
+        edited_html: 'Edited: %{date}'
+        series: 'Series:'
+        series_html: "<strong>Series:</strong> %{series}"
+        draft: Draft
+        reactions:
+          title: Reactions
+          icon: Reactions
+          text_html:
+            one: "%{num} reaction"
+            other: "%{num} reactions"
+        comments:
+          title: Comments
+          icon: Comments
+          text_html:
+            one: "%{num} comment"
+            other: "%{num} comments"
+        views:
+          title: Views
+          icon: Views
+          lt_25: "< 25"
+          text_html:
+            one: "%{scale} view"
+            other: "%{scale} views"
+          u_25: under 25
+        subscriptions:
+          title: Subscriptions
+          icon: Data
+          number: Subscriptions (%{num})
+        delete: Delete
+        unpin: Unpin
+        pin:
+          title: Pin to profile
+          button: Pin to profile
+          text: Pin
+        manage:
+          aria_label: 'Manage post: %{title}'
+          text: Manage
+        lock: Lock discussion
+        unlock: Unlock discussion
+        edit:
+          aria_label: 'Edit post: %{title}'
+          text: Edit
+        more:
+          title: 'More options for post: %{title}'
+          icon: More...
+        stats: Stats
+        archive: Archive post
+        unarchive: Unarchive post
+        author: Author
+        author_is: 'AUTHOR: '
+        save: Save
+        submit: Submit author change
+      followers:
+        heading: Dashboard » Followers
+        empty: You don't have any followers yet...
+      following_orgs:
+        heading: Dashboard » Following organizations
+        empty: You don't follow any organizations yet...
+      following_pods:
+        heading: Dashboard » Following podcasts
+        empty: You don't follow any podcasts yet...
+      following_tags:
+        heading: Dashboard » Following tags
+        adjust: Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
+        anti:
+          title: This tag has negative follow weight
+          text: Anti-follow
+        default: Default 1.0
+        empty: You don't follow any tags yet...
+        number:
+          aria_label: "%{name} tag weight"
+        update: Update Weights
+      following_users:
+        heading: Dashboard » Following users
+        empty: You don't follow any users...
+      listings:
+        meta:
+          title: Listings Dashboard
+      posts:
+        heading: Posts
+        archived: Show archived
+        option:
+          creation-desc: Recently Created
+          published-desc: Recently Published
+          views-desc: Most Views
+          reactions-desc: Most Reactions
+          comments-desc: Most Comments
+          aria_label: Sort By
+        org: "%{name} (%{num})"
+        personal: Personal
+        empty:
+          desc: This is where you can manage your posts, but you haven't written anything yet.
+          new: Write your first post now
+      subscriptions:
+        meta:
+          title: Subscriptions %{title}
+        heading: Subscriptions
+        subhead:
+          text_html: "%{for} %{source}"
+          for: for
+        empty: You don't have any subscribers for this %{kind} yet...
+      summary:
+        reactions: Total post reactions
+        views: Total post views
+        listings: Listings created
+        credits: Credits available
+        lt_500: "< 500"

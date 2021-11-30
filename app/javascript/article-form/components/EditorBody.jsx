@@ -73,7 +73,7 @@ export const EditorBody = ({
       data-testid="article-form__body"
       className="crayons-article-form__body drop-area text-padding"
     >
-      <Toolbar version={version} />
+      <Toolbar version={version} textAreaId="article_body_markdown" />
       <MentionAutocompleteTextArea
         ref={textAreaRef}
         fetchSuggestions={(username) => fetchSearch('usernames', { username })}

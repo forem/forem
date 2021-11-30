@@ -8,6 +8,9 @@ describe('<MarkdownToolbar />', () => {
   beforeEach(() => {
     global.Runtime = {
       getOSKeyboardModifierKeyString: jest.fn(() => 'cmd'),
+      isNativeIOS: jest.fn(() => {
+        return false;
+      }),
     };
 
     global.window.matchMedia = jest.fn((query) => {

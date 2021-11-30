@@ -18,17 +18,17 @@ RSpec.describe Article, type: :model do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
 
-    it { is_expected.to have_one(:discussion_lock).dependent(:destroy) }
+    it { is_expected.to have_one(:discussion_lock).dependent(:delete) }
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
-    it { is_expected.to have_many(:mentions).dependent(:destroy) }
+    it { is_expected.to have_many(:mentions).dependent(:delete_all) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
-    it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
-    it { is_expected.to have_many(:page_views).dependent(:destroy) }
+    it { is_expected.to have_many(:page_views).dependent(:delete_all) }
     it { is_expected.to have_many(:polls).dependent(:destroy) }
-    it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
+    it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
     it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
     it { is_expected.to have_many(:sourced_subscribers) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
@@ -1033,10 +1033,10 @@ RSpec.describe Article, type: :model do
     end
 
     describe "spam" do
-      it "delegates spam handling to Spam::ArticleHandler" do
-        allow(Spam::ArticleHandler).to receive(:handle!).with(article: article).and_call_original
+      it "delegates spam handling to Spam::Handler.handle_article!" do
+        allow(Spam::Handler).to receive(:handle_article!).with(article: article).and_call_original
         article.save
-        expect(Spam::ArticleHandler).to have_received(:handle!).with(article: article)
+        expect(Spam::Handler).to have_received(:handle_article!).with(article: article)
       end
     end
 
