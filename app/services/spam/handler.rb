@@ -32,7 +32,7 @@ module Spam
       #
       # I believe the intention of the past logic was that we want to
       # treat recently registered users with a bit of suspicion.
-      return :not_spam unless comment.from_recently_registered_user?
+      return :not_spam unless Settings::RateLimit.user_considered_new?(user: comment&.user)
       return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: comment.body_markdown)
 
       issue_spam_reaction_for!(reactable: comment)

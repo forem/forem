@@ -54,7 +54,7 @@ RSpec.describe Spam::Handler, type: :service do
     let(:mascot_user) { create(:user) }
 
     before do
-      allow(comment).to receive(:from_recently_registered_user?).and_return(true)
+      allow(Settings::RateLimit).to receive(:user_considered_new?).with(user: comment.user).and_return(true)
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
     end
 
