@@ -83,7 +83,7 @@
             <% end %>
 
             <% if @user.profile.website_url.present? %>
-              <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener me" class="profile-header__meta__item">
+              <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener me <%= "ugc" unless @user.trusted? %>" class="profile-header__meta__item">
                 <%= inline_svg_tag("external-link.svg", class: "crayons-icon mr-2 shrink-0", aria: true, title: t("views.users.website")) %>
                 <%= @user.profile.website_url %>
               </a>

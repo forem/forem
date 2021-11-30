@@ -182,6 +182,7 @@ const V2EditorImageUpload = ({
           {...buttonProps}
           icon={ImageIcon}
           onClick={(e) => {
+            buttonProps.onClick?.(e);
             useNativeUpload
               ? initNativeImagePicker(e)
               : document.getElementById('image-upload-field').click();

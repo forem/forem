@@ -106,7 +106,9 @@ module Articles
             ON comments_by_followed.commentable_id = articles.id
               AND comments_by_followed.commentable_type = 'Article'
               AND followed_user.followable_id = comments_by_followed.user_id
-              AND followed_user.followable_type = 'User'"]
+              AND followed_user.followable_type = 'User'
+              AND comments_by_followed.deleted = false
+              AND comments_by_followed.created_at > :oldest_published_at"]
         },
         # Weight to give to the number of comments on the article.
         comments_count_factor: {
@@ -172,7 +174,9 @@ module Articles
           requires_user: false,
           joins: ["LEFT OUTER JOIN comments
             ON comments.commentable_id = articles.id
-              AND comments.commentable_type = 'Article'"]
+              AND comments.commentable_type = 'Article'
+              AND comments.deleted = false
+              AND comments.created_at > :oldest_published_at"]
         },
         # Weight to give for the number of intersecting tags the given
         # user follows and the article has.
