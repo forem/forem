@@ -8,7 +8,7 @@ module Articles
         @tag = tag
         @article_score_applicator = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: user)
 
-        # Per #15292 we want to move towards not requiring feature's
+        # Per #15292 we want to move towards not requiring features
         # to have a main image.  This allows us to inch our way
         # towards that configuration.
         @must_have_main_image = FeatureFlag.accessible?(:featured_story_must_have_main_image)
