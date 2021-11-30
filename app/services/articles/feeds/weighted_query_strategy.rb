@@ -46,31 +46,34 @@ module Articles
       #
       # Each scoring method has the following keys:
       #
-      # - clause: The SQL clause statement; note: there exists a
-      #           coupling between the clause and the SQL fragments
-      #           that join the various tables.  Also, under no
-      #           circumstances should you allow any user value for
+      # - clause: [Required] The SQL clause statement; note: there
+      #           exists a coupling between the clause and the SQL
+      #           fragments that join the various tables.  Also, under
+      #           no circumstances should you allow any user value for
       #           this, as it is not something we can sanitize.
       #
-      # - cases: An Array of Arrays, the first value is what matches
-      #          the clause, the second value is the multiplicative
-      #          factor.
+      # - cases: [Required] An Array of Arrays, the first value is
+      #          what matches the clause, the second value is the
+      #          multiplicative factor.
       #
-      # - fallback: When no case is matched use this factor.
+      # - fallback: [Required] When no case is matched use this
+      #             factor.
       #
-      # - requires_user: Does this scoring method require a given
-      #                  user.  If not, don't use it if we don't have
-      #                  a nil user.
+      # - requires_user: [Required] Does this scoring method require a
+      #                  given user.  If not, don't use it if we don't
+      #                  have a nil user.
       #
-      # - group_by: An SQL fragment that ensures a valid postgres
-      #             statement in older versions of postgres.  See
+      # - group_by: [Optional] An SQL fragment that ensures a valid
+      #             postgres statement in older versions of postgres.
+      #             See
       #             https://github.com/forem/forem/pull/15240#discussion_r750392321
       #             for further sleuthing details.  When you reference
       #             a field in the clause, you likely need to include
       #             a corresponding :group_by attribute.
       #
-      # - joins: An SQL fragment that defines the join necessary to
-      #          fulfill the clause of the scoring method.
+      # - joins: [Optional] An SQL fragment that defines the join
+      #          necessary to fulfill the clause of the scoring
+      #          method.
       #
       # @note The group by clause appears necessary for postgres
       #       versions and Heroku configurations of current (as of
