@@ -1,37 +1,37 @@
-<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}-#{user_signed_in?}-#{@page}", expires_in: 5.hours do %>
+<% cache "tag-sidebar-#{@tag.name}-#{@tag&.updated_at}-#{@tag&.taggings_count}-#{user_signed_in?}-#{@page}", expires_in: 5.hours do %>
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <aside class="side-bar">
-      <% if @tag_model && @tag_model.rules_html.present? %>
+      <% if @tag && @tag.rules_html.present? %>
         <div class="widget">
           <header>
             <h4><%= t("views.tags.sidebar.guidelines") %></h4>
           </header>
           <div class="widget-body">
-            <%= sanitize @tag_model.rules_html %>
-            <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag %>">
+            <%= sanitize @tag.rules_html %>
+            <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag.name %>">
               <%= t("views.tags.sidebar.new") %>
             </a>
           </div>
         </div>
       <% end %>
-      <% if @tag_model && @tag_model.wiki_body_html.present? %>
+      <% if @tag && @tag.wiki_body_html.present? %>
         <div class="widget">
           <header>
-            <h4><%= t("views.tags.sidebar.about", tag: @tag) %></h4>
+            <h4><%= t("views.tags.sidebar.about", tag: @tag.name) %></h4>
           </header>
           <div class="widget-body">
-            <%= sanitize @tag_model.wiki_body_html %>
+            <%= sanitize @tag.wiki_body_html %>
           </div>
         </div>
       <% end %>
-      <% if @tag_model.sponsorship && @tag_model.sponsorship.status == "live" && @tag_model.sponsorship.expires_at > Time.current %>
+      <% if @tag.sponsorship && @tag.sponsorship.status == "live" && @tag.sponsorship.expires_at > Time.current %>
         <div class="widget">
           <header>
-            <h4><%= t("views.tags.sidebar.sponsor", tag: @tag) %></h4>
+            <h4><%= t("views.tags.sidebar.sponsor", tag: @tag.name) %></h4>
           </header>
           <div class="widget-body">
-            <%= render "articles/single_sponsor", sponsorship: @tag_model.sponsorship %>
+            <%= render "articles/single_sponsor", sponsorship: @tag.sponsorship %>
           </div>
         </div>
       <% end %>
@@ -59,27 +59,27 @@
           <div class="crayons-btn-group mt-3">
             <a style="display:none;"
                 id="tag-edit-button"
-                data-tag="<%= @tag_model.name %>"
+                data-tag="<%= @tag.name %>"
                 class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
-                href="<%= tag_url(@tag_model, @page) %>/edit"
-                style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+                href="<%= tag_url(@tag, @page) %>/edit"
+                style="color:<%= @tag.text_color_hex %>;background-color:<%= @tag.bg_color_hex %>">
               <%= t("views.tags.sidebar.edit") %>
             </a>
             <a style="display:none;"
                id="tag-admin-button"
-               data-tag="<%= @tag_model.name %>"
+               data-tag="<%= @tag.name %>"
                class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
-               href="<%= edit_admin_tag_path(@tag_model.id) %>"
-               style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>"
+               href="<%= edit_admin_tag_path(@tag.id) %>"
+               style="color:<%= @tag.text_color_hex %>;background-color:<%= @tag.bg_color_hex %>"
                data-no-instant>
               <%= t("views.tags.sidebar.admin") %>
             </a>
             <a style="display:none;"
                id="tag-mod-button"
-               data-tag="<%= @tag_model.name %>"
+               data-tag="<%= @tag.name %>"
                class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
-               href="/mod/<%= @tag_model.name %>"
-               style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+               href="/mod/<%= @tag.name %>"
+               style="color:<%= @tag.text_color_hex %>;background-color:<%= @tag.bg_color_hex %>">
               <%= t("views.tags.sidebar.moderate") %>
             </a>
           </div>
@@ -88,19 +88,19 @@
           <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
           <% if number_of_pages > 1 %>
             <hr />
-            <div class="olderposts-header"><%= t("views.tags.sidebar.older", tag: @tag) %></div>
+            <div class="olderposts-header"><%= t("views.tags.sidebar.older", tag: @tag.name) %></div>
             <div class="olderposts-links">
               <% range.each do |n| %>
                 <% if @page == n %>
                     <span class="olderposts-pagenumber"><%= n %></span>
                 <% else %>
-                    <a href="<%= tag_url(@tag_model, n) %>" class="olderposts-pagenumber"><%= n %></a>
+                    <a href="<%= tag_url(@tag, n) %>" class="olderposts-pagenumber"><%= n %></a>
                 <% end %>
               <% end %>
               <% if @page == 1 && number_of_pages > 100 %>
                 <div>
-                  …<a href="<%= tag_url(@tag_model, 75) %>" class="olderposts-pagenumber">75</a>
-                  …<a href="<%= tag_url(@tag_model, number_of_pages) %>" class="olderposts-pagenumber"><%= number_of_pages %></a>
+                  …<a href="<%= tag_url(@tag, 75) %>" class="olderposts-pagenumber">75</a>
+                  …<a href="<%= tag_url(@tag, number_of_pages) %>" class="olderposts-pagenumber"><%= number_of_pages %></a>
                 </div>
               <% end %>
             </div>

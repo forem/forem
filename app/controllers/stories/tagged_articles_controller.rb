@@ -7,21 +7,20 @@ module Stories
     rescue_from ArgumentError, with: :bad_request
 
     def index
-      @tag = params[:tag].downcase
-      @tag_model = Tag.find_by(name: @tag) || not_found
+      @tag = Tag.find_by(name: params[:tag].downcase) || not_found
 
-      if @tag_model.alias_for.present?
-        redirect_permanently_to("/t/#{@tag_model.alias_for}")
+      if @tag.alias_for.present?
+        redirect_permanently_to("/t/#{@tag.alias_for}")
         return
       end
 
       @page = (params[:page] || 1).to_i
       @article_index = true
-      @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
+      @moderators = User.with_role(:tag_moderator, @tag).select(:username, :profile_image, :id)
 
       set_number_of_articles
       set_stories
-      not_found_if_not_established
+      not_found_if_not_established(page: @page, tag: @tag, stories: @stories)
 
       set_surrogate_key_header "articles-#{@tag}"
       set_cache_control_headers(600,
@@ -32,12 +31,12 @@ module Stories
     private
 
     def set_number_of_articles
-      @num_published_articles = if @tag_model.requires_approval?
-                                  @tag_model.articles.published.where(approved: true).count
+      @num_published_articles = if @tag.requires_approval?
+                                  @tag.articles.published.where(approved: true).count
                                 elsif Settings::UserExperience.feed_strategy == "basic"
                                   tagged_count
                                 else
-                                  Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
+                                  Rails.cache.fetch("article-cached-tagged-count-#{@tag.name}", expires_in: 2.hours) do
                                     tagged_count
                                   end
                                 end
@@ -48,18 +47,18 @@ module Stories
     def set_stories
       @stories = Articles::Feeds::Tag.call(@tag, number_of_articles: @number_of_articles, page: @page)
 
-      @stories = @stories.where(approved: true) if @tag_model&.requires_approval
+      @stories = @stories.where(approved: true) if @tag.requires_approval?
 
       @stories = stories_by_timeframe
       @stories = @stories.decorate
     end
 
     def tagged_count
-      @tag_model.articles.published.where("score >= ?", Settings::UserExperience.tag_feed_minimum_score).count
+      @tag.articles.published.where("score >= ?", Settings::UserExperience.tag_feed_minimum_score).count
     end
 
     def not_found_if_not_established
-      not_found if @stories.none? && !@tag_model.supported
+      not_found if @stories.none? && !@tag.supported?
     end
 
     def stories_by_timeframe
