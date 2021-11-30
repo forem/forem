@@ -1,7 +1,7 @@
 <p>All participants of <%= community_name %> are expected to abide by our Code of Conduct, both online and during in-person events that are hosted and/or associated with <%= community_name %>.</p>
 <h2>Our Pledge</h2>
 <p>In the interest of fostering an open and welcoming environment, we as moderators of
-<% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? %>
+<% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? && request.env["PATH_INFO"] == new_admin_creator_setting_path %>
   <%= community_name %> pledge to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
 <% else %>
   <a href="<%= app_url %>"><%= community_name %></a> pledge to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
@@ -35,7 +35,7 @@
 </ul>
 <h2>Enforcement</h2>
 <p>Violations of the Code of Conduct may be reported by contacting the team via the
-<% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? %>
+<% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? && request.env["PATH_INFO"] == new_admin_creator_setting_path %>
   abuse report form or by sending an email to <%= email_link %>. All reports will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. Further details of specific enforcement policies may be posted separately.
 <% else %>
   <a href="<%= app_url("/report-abuse") %>">abuse report form</a> or by sending an email to <%= email_link %>. All reports will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. Further details of specific enforcement policies may be posted separately.

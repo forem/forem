@@ -5,7 +5,7 @@
     <p>
       By accessing this web site, you are agreeing to be bound by these
       web site Terms and Conditions of Use, our
-      <% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? %>
+      <% if FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? && request.env["PATH_INFO"] == new_admin_creator_setting_path %>
         Privacy Policy, all applicable laws and regulations,
       <% else %>
         <a href="/privacy">Privacy Policy</a>, all applicable laws and regulations,
