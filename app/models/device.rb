@@ -63,7 +63,7 @@ class Device < ApplicationRecord
       title: title,
       body: body,
       sound: "default",
-      click_action: payload[:url]
+      click_action: ".presentation.home.HomeActivity"
     }
     n.data = { data: payload }
     n.save!
