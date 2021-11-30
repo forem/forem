@@ -15,6 +15,14 @@ RSpec.describe ArticleDecorator, type: :decorator do
   it { is_expected.to respond_to(:can_be_featured_in_feed) }
   it { is_expected.to respond_to(:can_be_featured_in_feed?) }
 
+  describe "#can_be_featured_in_feed" do
+    it "is an alias of #can_be_featured_in_feed?" do
+      decorated_article = build(:article).decorate
+      expect(decorated_article.method(:can_be_featured_in_feed))
+        .to eq(decorated_article.method(:can_be_featured_in_feed?))
+    end
+  end
+
   context "with serialization" do
     it "serializes both the decorated object IDs and decorated methods" do
       article = published_article

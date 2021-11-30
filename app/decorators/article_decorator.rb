@@ -16,7 +16,7 @@ class ArticleDecorator < ApplicationDecorator
   #
   # @see ./app/views/stories/feeds/show.json.jbuilder for an example
   #      of usage
-  def can_be_featured_in_feed
+  def can_be_featured_in_feed?
     return false unless featured
     return true if main_image.present?
     return true unless FeatureFlag.accessible?(:featured_story_must_have_main_image)
@@ -27,7 +27,7 @@ class ArticleDecorator < ApplicationDecorator
   # Why the alias?  Because an associated JSON builder uses the
   # can_be_featured_in_feed, but having the can_be_featured_in_feed?
   # method helps create conditions of least surprise.
-  alias can_be_featured_in_feed? can_be_featured_in_feed
+  alias can_be_featured_in_feed can_be_featured_in_feed?
 
   def current_state_path
     published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
