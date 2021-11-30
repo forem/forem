@@ -2015,6 +2015,20 @@
     util-deprecate "^1.0.2"
     uuid-browser "^3.1.0"
 
+"@storybook/addon-controls@^6.3.12":
+  version "6.3.12"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-controls/-/addon-controls-6.3.12.tgz#dbb732c62cf06fb7ccaf87d6ab11c876d14456fc"
+  integrity sha512-WO/PbygE4sDg3BbstJ49q0uM3Xu5Nw4lnHR5N4hXSvRAulZt1d1nhphRTHjfX+CW+uBcfzkq9bksm6nKuwmOyw==
+  dependencies:
+    "@storybook/addons" "6.3.12"
+    "@storybook/api" "6.3.12"
+    "@storybook/client-api" "6.3.12"
+    "@storybook/components" "6.3.12"
+    "@storybook/node-logger" "6.3.12"
+    "@storybook/theming" "6.3.12"
+    core-js "^3.8.2"
+    ts-dedent "^2.0.0"
+
 "@storybook/addon-docs@^6.3.12":
   version "6.3.12"
   resolved "https://registry.yarnpkg.com/@storybook/addon-docs/-/addon-docs-6.3.12.tgz#2ec73b4f231d9f190d5c89295bc47bea6a95c6d1"
@@ -5369,6 +5383,11 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
+
+classnames@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
+  integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
 
 clean-css@^4.2.3:
   version "4.2.3"
