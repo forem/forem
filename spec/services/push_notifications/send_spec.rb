@@ -74,7 +74,7 @@ RSpec.describe PushNotifications::Send, type: :service do
 
       described_class.call(**params)
 
-      expect(mocked_objects[:rpush_notification]).to have_received(:save!).exactly(1).times
+      expect(mocked_objects[:rpush_notification]).to have_received(:save!).once
 
       sidekiq_assert_enqueued_jobs(1, only: PushNotifications::DeliverWorker)
     end
@@ -85,8 +85,8 @@ RSpec.describe PushNotifications::Send, type: :service do
 
       described_class.call(**many_targets_params)
 
-      expect(ios_mocked_objects[:rpush_notification]).to have_received(:save!).exactly(2).times
-      expect(android_mocked_objects[:rpush_notification]).to have_received(:save!).exactly(1).times
+      expect(ios_mocked_objects[:rpush_notification]).to have_received(:save!).twice
+      expect(android_mocked_objects[:rpush_notification]).to have_received(:save!).once
 
       sidekiq_assert_enqueued_jobs(1, only: PushNotifications::DeliverWorker)
     end
