@@ -1,6 +1,7 @@
 class LogoUploader < BaseUploader
   MAX_FILE_SIZE = 3 # Megabytes
   EXTENSION_ALLOWLIST = %w[svg png jpg jpeg jpe].freeze
+  IMAGE_TYPE_WHITELIST = %i[svg png jpg jpeg jpe].freeze
   CONTENT_TYPE_ALLOWLIST = %w[image/svg+xml image/png image/jpg image/jpeg].freeze
 
   def store_dir
@@ -12,7 +13,8 @@ class LogoUploader < BaseUploader
   end
 
   def image_type_whitelist
-    %i[svg jpg jpeg jpe png]
+    # this is needed by CarrierWave::BombShelter
+    IMAGE_TYPE_WHITELIST
   end
 
   def size_range
