@@ -7,16 +7,17 @@ module Stories
     rescue_from ArgumentError, with: :bad_request
 
     def index
-      @page = (params[:page] || 1).to_i
-      @article_index = true
       @tag = params[:tag].downcase
       @tag_model = Tag.find_by(name: @tag) || not_found
-      @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
 
       if @tag_model.alias_for.present?
         redirect_permanently_to("/t/#{@tag_model.alias_for}")
         return
       end
+
+      @page = (params[:page] || 1).to_i
+      @article_index = true
+      @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
 
       set_number_of_articles
       set_stories
