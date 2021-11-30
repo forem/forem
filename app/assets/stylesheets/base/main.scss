@@ -64,6 +64,7 @@ a {
 // Logo
 .site-logo {
   max-width: var(--max-width, 125px);
+  max-height: 40px;
   font-size: var(--font-size, var(--fs-base));
   font-weight: var(--font-weight, var(--fw-medium));
 
