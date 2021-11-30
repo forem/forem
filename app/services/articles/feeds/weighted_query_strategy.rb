@@ -267,7 +267,7 @@ module Articles
 
         @oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
           user: @user,
-          published_since: @published_since,
+          days_since_published: @days_since_published,
         )
       end
 
@@ -525,7 +525,7 @@ module Articles
       # @see SCORING_METHOD_CONFIGURATIONS
       # @note Be mindful to guard against SQL injection!
       def configure!(scoring_configs:)
-        @published_since = DEFAULT_PUBLISHED_SINCE
+        @days_since_published = Articles::Feeds::DEFAULT_DAYS_SINCE_PUBLISHED
         @relevance_score_components = []
 
         # By default we always need to group by the articles.id
@@ -579,7 +579,7 @@ module Articles
           # Make sure that we consider all of the days for which we're
           # establishing cases and for which there is a fallback.
           if valid_method_name == :daily_decay_factor
-            @published_since = scoring_config.fetch(:cases).count + 1
+            @days_since_published = scoring_config.fetch(:cases).count + 1
           end
         end
       end
