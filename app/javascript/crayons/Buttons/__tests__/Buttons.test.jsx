@@ -1,13 +1,13 @@
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import { ButtonNew } from '@crayons';
+import { ButtonNew as Button } from '@crayons';
 import CogIcon from '@images/cog.svg';
 import '@testing-library/jest-dom';
 
-describe('<ButtonNew />', () => {
+describe('<Button />', () => {
   it('has no accessibility errors in default variant', async () => {
-    const { container } = render(<ButtonNew>Hello world!</ButtonNew>);
+    const { container } = render(<Button>Hello world!</Button>);
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
@@ -15,9 +15,9 @@ describe('<ButtonNew />', () => {
 
   it('has no accessibility errors when props provided', async () => {
     const { container } = render(
-      <ButtonNew primary rounded destructive icon={CogIcon} tooltip="tooltip">
+      <Button primary rounded destructive icon={CogIcon} tooltip="tooltip">
         Hello world!
-      </ButtonNew>,
+      </Button>,
     );
     const results = await axe(container);
 
@@ -25,57 +25,51 @@ describe('<ButtonNew />', () => {
   });
 
   it('renders a default button', () => {
-    const { container } = render(<ButtonNew>Hello world!</ButtonNew>);
+    const { container } = render(<Button>Hello world!</Button>);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders a primary button', () => {
-    const { container } = render(<ButtonNew primary>Hello world!</ButtonNew>);
+    const { container } = render(<Button primary>Hello world!</Button>);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders with an icon and text', () => {
-    const { container } = render(
-      <ButtonNew icon={CogIcon}>Hello world!</ButtonNew>,
-    );
+    const { container } = render(<Button icon={CogIcon}>Hello world!</Button>);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders with an icon only', () => {
-    const { container } = render(<ButtonNew icon={CogIcon} />);
+    const { container } = render(<Button icon={CogIcon} />);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders a destructive button', () => {
-    const { container } = render(
-      <ButtonNew destructive>Hello world!</ButtonNew>,
-    );
+    const { container } = render(<Button destructive>Hello world!</Button>);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders a rounded button', () => {
-    const { container } = render(<ButtonNew rounded>Hello world!</ButtonNew>);
+    const { container } = render(<Button rounded>Hello world!</Button>);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders with a tooltip', () => {
     const { container } = render(
-      <ButtonNew tooltip="tooltip text">Hello world!</ButtonNew>,
+      <Button tooltip="tooltip text">Hello world!</Button>,
     );
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('renders with additional classnames', () => {
     const { container } = render(
-      <ButtonNew className="one two three">Hello world!</ButtonNew>,
+      <Button className="one two three">Hello world!</Button>,
     );
     expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('should render a button as a specific button type (HTML type attribute) when buttonType is set.', () => {
-    const { container } = render(
-      <ButtonNew type="submit">Hello world!</ButtonNew>,
-    );
+    const { container } = render(<Button type="submit">Hello world!</Button>);
     expect(container.innerHTML).toMatchSnapshot();
   });
 
@@ -83,7 +77,7 @@ describe('<ButtonNew />', () => {
     const mockClickHandler = jest.fn();
 
     const { getByRole } = render(
-      <ButtonNew onClick={mockClickHandler}>Hello world!</ButtonNew>,
+      <Button onClick={mockClickHandler}>Hello world!</Button>,
     );
 
     const button = getByRole('button', { name: 'Hello world!' });
@@ -96,9 +90,9 @@ describe('<ButtonNew />', () => {
     const mockKeyUpHandler = jest.fn();
 
     const { getByRole, getByTestId } = render(
-      <ButtonNew tooltip="test tooltip" onKeyUp={mockKeyUpHandler}>
+      <Button tooltip="test tooltip" onKeyUp={mockKeyUpHandler}>
         Hello world!
-      </ButtonNew>,
+      </Button>,
     );
 
     const button = getByRole('button', { name: 'Hello world! test tooltip' });

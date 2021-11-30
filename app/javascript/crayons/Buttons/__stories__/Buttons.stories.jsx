@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import ButtonsDoc from './Buttons.mdx';
-import { ButtonNew } from '@crayons';
+import { ButtonNew as Button } from '@crayons';
 import CogIcon from '@images/cog.svg';
 
 export default {
-  component: ButtonNew,
+  component: Button,
   title: 'BETA/Buttons',
   parameters: {
     docs: {
@@ -46,7 +46,7 @@ export default {
     icon: {
       control: false,
       description:
-        'Even though the generated JSX code in this component will have an empty function as prop value (`<ButtonNew icon={() => {}}>`), the actual value should be an icon object imported from `@images`. Read more about icons in their dedicated Storybook page.',
+        'Even though the generated JSX code in this component will have an empty function as prop value (`<Button icon={() => {}}>`), the actual value should be an icon object imported from `@images`. Read more about icons in their dedicated Storybook page.',
       table: {
         defaultValue: { summary: 'CogIcon' },
       },
@@ -54,7 +54,7 @@ export default {
   },
 };
 
-export const Default = (args) => <ButtonNew {...args} />;
+export const Default = (args) => <Button {...args} />;
 Default.args = {
   primary: false,
   destructive: false,
@@ -63,13 +63,13 @@ Default.args = {
   rounded: false,
 };
 
-export const Primary = (args) => <ButtonNew {...args} />;
+export const Primary = (args) => <Button {...args} />;
 Primary.args = {
   ...Default.args,
   primary: true,
 };
 
-export const WithIcon = (args) => <ButtonNew {...args} />;
+export const WithIcon = (args) => <Button {...args} />;
 WithIcon.args = {
   ...Default.args,
   icon: CogIcon,
