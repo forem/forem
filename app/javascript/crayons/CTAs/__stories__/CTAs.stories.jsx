@@ -12,13 +12,13 @@ export default {
     },
   },
   argTypes: {
-    style: {
+    variant: {
       control: {
         type: 'select',
         options: ['default', 'branded'],
       },
       description:
-        'There are two available styles to pick from: _default_ and _branded_. The primary difference is color: _default_ uses grey color and _branded_ uses accent color.',
+        'There are two available variants (styles) to pick from: _default_ and _branded_. The primary difference is color: _default_ uses grey color and _branded_ uses accent color.',
       table: {
         defaultValue: { summary: 'default' },
       },
@@ -36,14 +36,14 @@ export default {
 export const Default = (args) => <CTA {...args} />;
 Default.args = {
   children: 'Call to action',
-  style: 'default',
+  variant: 'default',
   rounded: false,
 };
 
 export const Branded = (args) => <CTA {...args} />;
 Branded.args = {
   ...Default.args,
-  style: 'branded',
+  variant: 'branded',
 };
 
 export const WithIcon = (args) => <CTA {...args} />;

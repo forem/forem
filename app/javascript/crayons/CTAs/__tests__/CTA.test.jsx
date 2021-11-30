@@ -4,15 +4,15 @@ import { axe } from 'jest-axe';
 import { CTA } from '@crayons';
 
 describe('<CTA />', () => {
-  it('has no accessibility errors in default style', async () => {
+  it('has no accessibility errors in default variant', async () => {
     const { container } = render(<CTA>Hello world!</CTA>);
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
   });
 
-  it('has no accessibility errors in branded style', async () => {
-    const { container } = render(<CTA style="branded">Hello world!</CTA>);
+  it('has no accessibility errors in branded variant', async () => {
+    const { container } = render(<CTA variant="branded">Hello world!</CTA>);
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
@@ -24,7 +24,7 @@ describe('<CTA />', () => {
   });
 
   it('renders branded CTA', () => {
-    const { container } = render(<CTA style="branded">Hello world!</CTA>);
+    const { container } = render(<CTA variant="branded">Hello world!</CTA>);
     expect(container.innerHTML).toMatchSnapshot();
   });
 });

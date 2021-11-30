@@ -19,7 +19,7 @@ describe('<Link />', () => {
 
   it('renders branded link', () => {
     const { container } = render(
-      <Link style="branded" href="/url">
+      <Link variant="branded" href="/url">
         Hello world!
       </Link>,
     );
