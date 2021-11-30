@@ -84,8 +84,9 @@
 
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
-    <legend class="crayons-field__label mb-2">Finally, please agree to the following:</legend>
+    <legend class="crayons-field__label">Finally, please agree to the following:</legend>
     <div>
+      <p class="crayons-field__description">You will have the opportunity to establish the Code of Conduct and Terms and Conditions for the users of your Forem during the setup process.</p>
       <div class="mb-2">
         <%= hidden_field_tag :checked_code_of_conduct, "0" %>
         <%= check_box_tag :checked_code_of_conduct, "1", false, class: "crayons-checkbox", required: true %>
@@ -97,6 +98,5 @@
         <label for="checked_terms_and_conditions">I agree to our <a href="/terms">Terms and Conditions</a>.</label>
       </div>
     </div>
-    <p class="crayons-field__description fs-italic p-2">You will have the opportunity to establish the Code of Conduct and Terms and Conditions for the users of your Forem during the setup process.</p>
   </fieldset>
 </div>
