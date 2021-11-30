@@ -19,7 +19,7 @@ module Stories
       @moderators = User.with_role(:tag_moderator, @tag).select(:username, :profile_image, :id)
 
       set_number_of_articles(tag: @tag)
-      set_stories(number_of_articles: number_of_articles, tag: @tag, page: @page)
+      set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
       not_found_if_not_established(page: @page, tag: @tag, stories: @stories)
 
       set_surrogate_key_header "articles-#{@tag}"
