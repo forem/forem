@@ -1974,7 +1974,7 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@storybook/addon-a11y@^6.4.0":
+"@storybook/addon-a11y@^6.4.1":
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.4.1.tgz#6076cd7ae8b2b614dfe428f17563ea0d4ea8e39d"
   integrity sha512-Ow2tthtyYI2Uz47Sg1MUKjdSQeHOpDMPOM7GIEoOh7M93+rYlGpoWlm4rA9qg1M+FKT9tyQttCNxiFfv1IqahQ==
@@ -1996,7 +1996,7 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-actions@^6.4.0":
+"@storybook/addon-actions@^6.4.1":
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-6.4.1.tgz#8f264b957da6f96ea4c5d3edbc41935699d7d2fd"
   integrity sha512-V9brZ9Th+7uPj1JfcBekpTEiCUBXSc4+yBIztnIEBUP7+kbsy5J6zYnsHVhDscnDAAakFI8G2mueNexnZI9+Pw==
@@ -2034,7 +2034,7 @@
     core-js "^3.8.2"
     ts-dedent "^2.0.0"
 
-"@storybook/addon-docs@^6.3.12":
+"@storybook/addon-docs@^6.4.1":
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/@storybook/addon-docs/-/addon-docs-6.4.1.tgz#095e695351988ba1f4470b16b77f37633611ff20"
   integrity sha512-bQkM8e7yZl86DIsvKtLmXwyZQC9YyX5Wz4UbnFoyBf45/ToGcsHf3p2GmviKz5C3yTUf6vrTNz7W1VDmb94V2g==
@@ -2086,7 +2086,7 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-knobs@^6.2.9":
+"@storybook/addon-knobs@^6.4.0":
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/@storybook/addon-knobs/-/addon-knobs-6.4.0.tgz#fa5943ef21826cdc2e20ded74edfdf5a6dc71dcf"
   integrity sha512-DiH1/5e2AFHoHrncl1qLu18ZHPHzRMMPvOLFz8AWvvmc+VCqTdIaE+tdxKr3e8rYylKllibgvDOzrLjfTNjF+Q==
@@ -2103,7 +2103,7 @@
     react-lifecycles-compat "^3.0.4"
     react-select "^3.2.0"
 
-"@storybook/addon-links@^6.3.12":
+"@storybook/addon-links@^6.4.1":
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/@storybook/addon-links/-/addon-links-6.4.1.tgz#cfa9d1abd78142534b3996511067a68dc196a480"
   integrity sha512-nDvfykgptOMVcuREM9AQDRJftV7Zv/OnU2jjkaDC/uo3huiLTKqdKjXI+ubVaBp38gXjAq3B8pBEju5JLi2nzg==
