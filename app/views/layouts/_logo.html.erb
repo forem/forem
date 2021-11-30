@@ -1,4 +1,4 @@
-<a href="/" aria-label="<%= t("views.main.aria_home") %>">
+<a href="/" class="<%= "site-logo" unless FeatureFlag.enabled?(:creator_onboarding) %>" aria-label="<%= t("views.main.aria_home") %>">
 
   <% if Settings::General.logo_svg %>
       <%= Settings::General.logo_svg %>
