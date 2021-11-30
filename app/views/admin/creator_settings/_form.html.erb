@@ -53,14 +53,14 @@
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
     <legend class="crayons-field__label mb-2">Who can join this community?</legend>
-    <div>
-      <div class="mb-2">
+    <div class="flex gap-3">
+      <div>
         <%= radio_button_tag :invite_only_mode, "0", false, class: "crayons-radio" %>
         <label for="invite_only_mode_0">Everyone</label>
       </div>
       <div>
         <%= radio_button_tag :invite_only_mode, "1", true, class: "crayons-radio" %>
-        <label for="invite_only_mode_1">Only people who are invited</label>
+        <label for="invite_only_mode_1">Invite only</label>
       </div>
     </div>
   </fieldset>
@@ -69,8 +69,8 @@
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
     <legend class="crayons-field__label mb-2">Who can view content in this community?</legend>
-    <div>
-      <div class="mb-2">
+    <div class="flex gap-3">
+      <div>
         <%= radio_button_tag :public, "1", true, class: "crayons-radio" %>
         <label for="public_0">Everyone</label>
       </div>
