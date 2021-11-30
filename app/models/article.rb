@@ -812,7 +812,7 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    Spam::ArticleHandler.handle!(article: self)
+    Spam::Handler.handle_article!(article: self)
   end
 
   def async_bust

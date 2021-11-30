@@ -13,9 +13,9 @@ RSpec.describe Reaction, type: :model do
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
   end
 
-  describe ".user_has_been_given_too_many_spammy_reactions?" do
+  describe ".user_has_been_given_too_many_spammy_article_reactions?" do
     it "performs a valid query for the user" do
-      expect { described_class.user_has_been_given_too_many_spammy_reactions?(user: user) }.not_to raise_error
+      expect { described_class.user_has_been_given_too_many_spammy_article_reactions?(user: user) }.not_to raise_error
     end
   end
 

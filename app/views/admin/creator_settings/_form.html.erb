@@ -53,14 +53,14 @@
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
     <legend class="crayons-field__label mb-2">Who can join this community?</legend>
-    <div>
-      <div class="mb-2">
+    <div class="flex gap-3">
+      <div>
         <%= radio_button_tag :invite_only_mode, "0", false, class: "crayons-radio" %>
         <label for="invite_only_mode_0">Everyone</label>
       </div>
       <div>
         <%= radio_button_tag :invite_only_mode, "1", true, class: "crayons-radio" %>
-        <label for="invite_only_mode_1">Only people who are invited</label>
+        <label for="invite_only_mode_1">Invite only</label>
       </div>
     </div>
   </fieldset>
@@ -69,8 +69,8 @@
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
     <legend class="crayons-field__label mb-2">Who can view content in this community?</legend>
-    <div>
-      <div class="mb-2">
+    <div class="flex gap-3">
+      <div>
         <%= radio_button_tag :public, "1", true, class: "crayons-radio" %>
         <label for="public_0">Everyone</label>
       </div>
@@ -84,8 +84,9 @@
 
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
-    <legend class="crayons-field__label mb-2">Finally, please agree to the following:</legend>
+    <legend class="crayons-field__label">Finally, please agree to the following:</legend>
     <div>
+      <p class="crayons-field__description">You will have the opportunity to establish the Code of Conduct and Terms and Conditions for the users of your Forem during the setup process.</p>
       <div class="mb-2">
         <%= hidden_field_tag :checked_code_of_conduct, "0" %>
         <%= check_box_tag :checked_code_of_conduct, "1", false, class: "crayons-checkbox", required: true %>
@@ -97,6 +98,5 @@
         <label for="checked_terms_and_conditions">I agree to our <a href="/terms">Terms and Conditions</a>.</label>
       </div>
     </div>
-    <p class="crayons-field__description fs-italic p-2">You will have the opportunity to establish the Code of Conduct and Terms and Conditions for the users of your Forem during the setup process.</p>
   </fieldset>
 </div>
