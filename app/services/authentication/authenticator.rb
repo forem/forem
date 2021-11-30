@@ -152,16 +152,17 @@ module Authentication
       user.tap do |model|
         model.unlock_access! if model.access_locked?
 
-        # We don't want to update users' email or any other fields if they're
-        # connecting an existing account with an already confirmed email.
-        unless model.confirmed?
-          # If the user doesn't have a confirmed email we can update their info
-          # (main email will now be the one given by the OAuth provider) and
-          # consider it trustworthy - auth provider confirmed email ownership
+        if model.confirmed?
+          # We don't want to update users' email or any other fields if they're
+          # connecting an existing account that already has a confirmed email.
+          model.assign_attributes(provider.existing_user_data.except(:email))
+        else
+          # If the user doesn't have a confirmed email we can update their email
+          # and trust it because the auth provider confirmed email ownership
           model.assign_attributes(provider.existing_user_data)
-          update_profile_updated_at(model)
-          model.confirm!
         end
+
+        update_profile_updated_at(model)
 
         model.set_remember_fields
       end
