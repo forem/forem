@@ -182,9 +182,9 @@ RSpec.describe UserDecorator, type: :decorator do
     let(:decorated_user) { user.decorate }
 
     it "delegates to Settings::RateLimit.considered_new?" do
-      allow(Settings::RateLimit).to receive(:considered_new?).with(user: decorated_user).and_return(true)
+      allow(Settings::RateLimit).to receive(:user_considered_new?).with(user: decorated_user).and_return(true)
       expect(decorated_user.considered_new?).to be(true)
-      expect(Settings::RateLimit).to have_received(:considered_new?).with(user: decorated_user)
+      expect(Settings::RateLimit).to have_received(:user_considered_new?).with(user: decorated_user)
     end
   end
 end

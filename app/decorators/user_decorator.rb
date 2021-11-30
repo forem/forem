@@ -102,7 +102,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def considered_new?
-    Settings::RateLimit.considered_new?(user: self)
+    Settings::RateLimit.user_considered_new?(user: self)
   end
 
   # Returns the user's public email if it is set and the display_email_on_profile
