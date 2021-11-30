@@ -78,7 +78,7 @@ class Reaction < ApplicationRecord
     # @return [TrueClass] yup, they're spamming the system.
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2)
-      article_vomits.where(reactable_type: "Article", reactable_id: user.articles.pluck(:id)).size > threshold
+      article_vomits.where(reactable_type: "Article", reactable_id: user.articles.ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
