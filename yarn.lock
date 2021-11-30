@@ -2133,18 +2133,18 @@
     prop-types "^15.7.2"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-storysource@^6.4.0":
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.4.0.tgz#fd663bfa2648f01b54eb40a1eca9d4ac3ed33daa"
-  integrity sha512-5jiHDnk2FQeE5fZVVjgfXS/+D5fDJXt3rpJxC8h0941a6/N+vS7cJOymKKVh3qc6Jtey8yHnWtx0lRkmHsXD7Q==
+"@storybook/addon-storysource@^6.4.1":
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.4.1.tgz#ac637780f5896aa0e535b45d9d4f7f008bbbceee"
+  integrity sha512-emyqg4r9bO5oTrG3o8kwM4cUmjZe+dOjv5nKqKKYkLcdrp8ucUQuS0rw6yKEItl/5mOTn1Dmjz2bj1qFlsUW3Q==
   dependencies:
-    "@storybook/addons" "6.4.0"
-    "@storybook/api" "6.4.0"
-    "@storybook/client-logger" "6.4.0"
-    "@storybook/components" "6.4.0"
-    "@storybook/router" "6.4.0"
-    "@storybook/source-loader" "6.4.0"
-    "@storybook/theming" "6.4.0"
+    "@storybook/addons" "6.4.1"
+    "@storybook/api" "6.4.1"
+    "@storybook/client-logger" "6.4.1"
+    "@storybook/components" "6.4.1"
+    "@storybook/router" "6.4.1"
+    "@storybook/source-loader" "6.4.1"
+    "@storybook/theming" "6.4.1"
     core-js "^3.8.2"
     estraverse "^5.2.0"
     loader-utils "^2.0.0"
@@ -2198,7 +2198,7 @@
     global "^4.4.0"
     regenerator-runtime "^0.13.7"
 
-"@storybook/addons@^6.4.1":
+"@storybook/addons@6.4.1", "@storybook/addons@^6.4.1":
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.4.1.tgz#841ed6f0daae7333f85c25a9399213fcb58f521a"
   integrity sha512-gTCOuQnkqh0Wr39G4jZ79lqDc/U6cQX2wNKOfOsQN4hMKKn0lzn14GQ03jwie1+3Y1Fe/Q2P348Y9o0zms/z+w==
@@ -2610,7 +2610,7 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/components@6.4.0", "@storybook/components@^6.1.21":
+"@storybook/components@6.4.0":
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/@storybook/components/-/components-6.4.0.tgz#36f443bf43e3a5d23fa8a4968f3d0583c4f63688"
   integrity sha512-IgmekBeBVHbYnG7aIEScHShoKIz2X/uY7In8njfO0Exj9Tw6n/yB1UVm34ABTkiKW+ApF/acO0BPXuv/Cuseug==
@@ -2619,6 +2619,36 @@
     "@storybook/client-logger" "6.4.0"
     "@storybook/csf" "0.0.2--canary.87bc651.0"
     "@storybook/theming" "6.4.0"
+    "@types/color-convert" "^2.0.0"
+    "@types/overlayscrollbars" "^1.12.0"
+    "@types/react-syntax-highlighter" "11.0.5"
+    color-convert "^2.0.1"
+    core-js "^3.8.2"
+    fast-deep-equal "^3.1.3"
+    global "^4.4.0"
+    lodash "^4.17.20"
+    markdown-to-jsx "^7.1.3"
+    memoizerific "^1.11.3"
+    overlayscrollbars "^1.13.1"
+    polished "^4.0.5"
+    prop-types "^15.7.2"
+    react-colorful "^5.1.2"
+    react-popper-tooltip "^3.1.1"
+    react-syntax-highlighter "^13.5.3"
+    react-textarea-autosize "^8.3.0"
+    regenerator-runtime "^0.13.7"
+    ts-dedent "^2.0.0"
+    util-deprecate "^1.0.2"
+
+"@storybook/components@6.4.1", "@storybook/components@^6.1.21":
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/@storybook/components/-/components-6.4.1.tgz#c3ae0d59921b435aff369e547d5628b8322c99cc"
+  integrity sha512-2sccDGRSKlw4qveWw7AUF/pA4Xxco1zWhNVNXLXpeF+712ry+MW/EZFC6pEYsYM9mQGGMT3V1IC9AM5RKGJ28A==
+  dependencies:
+    "@popperjs/core" "^2.6.0"
+    "@storybook/client-logger" "6.4.1"
+    "@storybook/csf" "0.0.2--canary.87bc651.0"
+    "@storybook/theming" "6.4.1"
     "@types/color-convert" "^2.0.0"
     "@types/overlayscrollbars" "^1.12.0"
     "@types/react-syntax-highlighter" "11.0.5"
@@ -3036,13 +3066,13 @@
     prettier "~2.2.1"
     regenerator-runtime "^0.13.7"
 
-"@storybook/source-loader@6.4.0":
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-6.4.0.tgz#a03df3d333233f08558dbc9443c6ff4491f8350e"
-  integrity sha512-zlAXpjttXzYq0OUIErp7O2ZFkVa7JcGvk6QsHIwBsU6RNqrY+142gEGPCsSjqfFFdKjBaub/SBvROs/yctPdMQ==
+"@storybook/source-loader@6.4.1":
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-6.4.1.tgz#cd4287eed139ed2fd9d7ec706df605e98aa92a4f"
+  integrity sha512-CrHm+9iEN3507Z3ucY9Bmvz7+8OLeYchdn0alRpQkZfx8mir8203Nl8DVnqsk8Pcj6CPFjhxFZ7Lq4+aSiK5rg==
   dependencies:
-    "@storybook/addons" "6.4.0"
-    "@storybook/client-logger" "6.4.0"
+    "@storybook/addons" "6.4.1"
+    "@storybook/client-logger" "6.4.1"
     "@storybook/csf" "0.0.2--canary.87bc651.0"
     core-js "^3.8.2"
     estraverse "^5.2.0"
@@ -5391,10 +5421,10 @@ character-reference-invalid@^1.0.0:
   resolved "https://registry.yarnpkg.com/character-reference-invalid/-/character-reference-invalid-1.1.4.tgz#083329cda0eae272ab3dbbf37e9a382c13af1560"
   integrity sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==
 
-chart.js@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.6.0.tgz#a87fce8431d4e7c5523d721f487f53aada1e42fe"
-  integrity sha512-iOzzDKePL+bj+ccIsVAgWQehCXv8xOKGbaU2fO/myivH736zcx535PGJzQGanvcSGVOqX6yuLZsN3ygcQ35UgQ==
+chart.js@^3.6.1:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.6.1.tgz#edcb6584b8d810306f655f89538c00a4f440c58e"
+  integrity sha512-AycnixR0I325Fp3bqQ7wRJbkIJPwz/9IZtUBvdBWMjK5+nKCy6FZ3VejkDTtB9udePEXNt1UYoGTsNL49JoIbg==
 
 check-more-types@^2.24.0:
   version "2.24.0"
