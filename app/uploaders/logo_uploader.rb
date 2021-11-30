@@ -24,13 +24,14 @@ class LogoUploader < BaseUploader
   end
 
   def filename
-    "original_logo.#{file.extension}" if original_filename
+    # random_string in the filename to avoid caching issues
+    "original_logo_#{random_string}.#{file.extension}" if original_filename
   end
 
   version :resized_web_logo, if: :not_svg? do
     process resize_to_limit: [nil, 40]
     def full_filename(_for_file = file)
-      "resized_web_logo.#{file.extension}" if original_filename
+      "resized_web_logo_#{random_string}.#{file.extension}" if original_filename
     end
   end
 
@@ -39,11 +40,15 @@ class LogoUploader < BaseUploader
   version :resized_mobile_logo, if: :not_svg?, from_version: :resized_web_logo do
     process resize_to_limit: [112, 40]
     def full_filename(_for_file = file)
-      "resized_mobile_logo.#{file.extension}" if original_filename
+      "resized_mobile_logo_#{random_string}.#{file.extension}" if original_filename
     end
   end
 
   private
+
+  def random_string
+    Array.new(20) { rand(36).to_s(36) }.join
+  end
 
   def not_svg?(file)
     file.content_type.exclude?("svg")
