@@ -4,10 +4,10 @@ import classNames from 'classnames/bind';
 import { Link } from '@crayons';
 
 export const CTA = (props) => {
-  const { style = 'default', className, ...otherProps } = props;
+  const { variant = 'default', className, ...otherProps } = props;
 
   const classes = classNames('c-cta', {
-    [`c-cta--${style}`]: style,
+    [`c-cta--${variant}`]: variant,
     [className]: className,
   });
 
@@ -17,6 +17,6 @@ export const CTA = (props) => {
 CTA.displayName = 'CTA';
 
 CTA.propTypes = {
-  style: PropTypes.oneOf(['default', 'branded']),
+  variant: PropTypes.oneOf(['default', 'branded']),
   className: PropTypes.string,
 };
