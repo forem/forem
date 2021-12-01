@@ -78,7 +78,7 @@ describe LogoUploader, type: :uploader do
   end
 
   describe "resize_image" do
-    it "creates versions of the image with different filenames" do
+    it "creates versions of the image with different filenames", :aggregate_failures do
       uploader.store!(image_jpg)
       expect(uploader.filename).to match(/original_logo/)
       expect(uploader.resized_logo.file.filename).to match(/resized_logo/)
