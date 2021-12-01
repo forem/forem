@@ -1,7 +1,7 @@
 module Admin
   class CreatorSettingsController < Admin::ApplicationController
-    ALLOWED_PARAMS = %i[community_name primary_brand_color_hex invite_only_mode public checked_code_of_conduct
-                        checked_terms_and_conditions logo].freeze
+    ALLOWED_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions community_name  
+                        invite_only_mode logo primary_brand_color_hex public]
 
     def new
       @max_file_size = LogoUploader::MAX_FILE_SIZE
