@@ -25,6 +25,9 @@ class CreditsController < ApplicationController
 
     number_to_purchase = params[:credit][:number_to_purchase].to_i
 
+    ensure_selected_card!
+    ensure_nonzero_amount!(number_to_purchase)
+
     payment = Payments::ProcessCreditPurchase.call(
       current_user,
       number_to_purchase,
@@ -38,5 +41,19 @@ class CreditsController < ApplicationController
       flash[:error] = payment.error
       redirect_to purchase_credits_path
     end
+  end
+
+  def ensure_selected_card!
+    return if params[:selected_card].present?
+
+    flash[:error] = "Please add a credit card before purchasing"
+    redirect_to purchase_credits_path
+  end
+
+  def ensure_nonzero_amount!(number_to_purchase)
+    return if number_to_purchase.positive?
+
+    flash[:error] = "At least one credit must be purchased"
+    redirect_to purchase_credits_path
   end
 end
