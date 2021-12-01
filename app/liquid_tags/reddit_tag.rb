@@ -74,4 +74,4 @@ end
 
 Liquid::Template.register_tag("reddit", RedditTag)
 
-UnifiedEmbed.register(RedditTag, regexp: %r{https?://(www.)?reddit.com})
+UnifiedEmbed.register(RedditTag, regexp: RedditTag::URL_REGEXP)

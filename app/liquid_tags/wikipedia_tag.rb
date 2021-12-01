@@ -101,4 +101,4 @@ end
 
 Liquid::Template.register_tag("wikipedia", WikipediaTag)
 
-UnifiedEmbed.register(WikipediaTag, regexp: %r{\Ahttps?://([a-z-]+)\.wikipedia.org/wiki/(\S+)\z})
+UnifiedEmbed.register(WikipediaTag, regexp: WikipediaTag::WIKI_REGEXP)
