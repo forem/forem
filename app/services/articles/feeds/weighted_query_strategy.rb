@@ -364,6 +364,14 @@ module Articles
       #
       # @note I really dislike this method name as it is opaque on
       #       it's purpose.
+      # @note We're specifically In the LargeForemExperimental implementation, the
+      #       default home feed omits the featured story.  In this
+      #       case, I don't want to do that.  Instead, I want to see
+      #       how this behaves.
+      def default_home_feed(**)
+        call
+      end
+
       alias more_comments_minimal_weight_randomized call
 
       # The featured story should be the article that:
@@ -416,8 +424,6 @@ module Articles
         )
         [featured_story, articles]
       end
-
-      alias default_home_feed call
 
       private
 

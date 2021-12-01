@@ -3,6 +3,17 @@ require "rails_helper"
 RSpec.describe Articles::Feeds::WeightedQueryStrategy, type: :service do
   subject(:feed_strategy) { described_class.new(user: user) }
 
+  let(:user) { nil }
+
+  describe "#default_home_feed" do
+    # This test helps test the common interface between the
+    # WeightedQueryStrategy and the LargeForemExperimental
+    it "receives `user_signed_in: false` and behaves" do
+      response = feed_strategy.default_home_feed(user_signed_in: false)
+      expect(response).to be_a(ActiveRecord::Relation)
+    end
+  end
+
   describe "with a nil user" do
     let(:user) { nil }
 
