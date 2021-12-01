@@ -609,16 +609,7 @@ class User < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
-      name.match?(/#{term}/i)
-    end
-
-    Reaction.create!(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "User",
-      category: "vomit",
-    )
+    Spam::Handler.handle_user!(user: self)
   end
 
   # TODO: @citizen428 I don't want to completely remove this method yet, as we

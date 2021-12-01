@@ -17,7 +17,9 @@ export function initializeActionsPanel(user, path) {
   `;
 
   function toggleModActionsMenu() {
-    document.getElementById('mod-actions-menu-btn-area').classList.remove('hidden');
+    document
+      .getElementById('mod-actions-menu-btn-area')
+      .classList.remove('hidden');
     document
       .getElementsByClassName('mod-actions-menu')[0]
       .classList.toggle('showing');
@@ -41,8 +43,8 @@ export function initializeActionsPanel(user, path) {
   // eslint-disable-next-line no-restricted-globals
   if (!isModerationPage()) {
     // don't show mod button in mod center page
-    document.getElementById('mod-actions-menu-btn-area')
-      .innerHTML = modActionsMenuIconHTML
+    document.getElementById('mod-actions-menu-btn-area').innerHTML =
+      modActionsMenuIconHTML;
     document
       .getElementsByClassName('mod-actions-menu-btn')[0]
       .addEventListener('click', toggleModActionsMenu);

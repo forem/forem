@@ -65,10 +65,10 @@
   --accent-warning-a10: #{rgba(#ffcf4c, 0.1)};
 
   // Danger
-  --accent-danger: #dc1818;
-  --accent-danger-darker: #c20a0a;
-  --accent-danger-lighter: #ec5050;
-  --accent-danger-a10: #{rgba(#dc1818, 0.1)};
+  --accent-danger: #ed3434;
+  --accent-danger-darker: #e40a0a;
+  --accent-danger-lighter: #f15555;
+  --accent-danger-a10: #{rgba(#ed3434, 0.1)};
 
   // Main colors
   --body-bg: var(--base-0);
@@ -229,4 +229,20 @@
   --reaction-custom-bg: var(--accent-success-a10);
   --reaction-save-color: var(--accent-brand);
   --reaction-save-bg: var(--accent-brand-a10);
+}
+
+:root {
+  // Separating some variables here as these are the results
+  // of broader Crayons refactoring (see #15311) and I didn't
+  // want to mix everything together.
+
+  ////////////////////////////////////////////////
+  // Buttons /////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Buttons: Primary
+  --btn-primary-bg-hover: var(--accent-brand-lighter);
+
+  // Buttons: Primary Destructive
+  --btn-primary-destructive-bg-hover: var(--accent-danger-lighter);
 }

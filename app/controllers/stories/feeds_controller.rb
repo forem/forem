@@ -3,6 +3,7 @@ module Stories
     respond_to :json
 
     def show
+      @page = (params[:page] || 1).to_i
       @stories = assign_feed_stories
 
       add_pinned_article
