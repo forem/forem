@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
-import { isLowContrast } from '../../utilities/color/contrastValidator';
-import { brightness } from '../../utilities/color/accentCalculator';
+import { isLowContrast } from '@utilities/color/contrastValidator';
+import { brightness } from '@utilities/color/accentCalculator';
 
 const MAX_LOGO_PREVIEW_HEIGHT = 80;
 const MAX_LOGO_PREVIEW_WIDTH = 220;
@@ -80,10 +80,11 @@ export class CreatorSettingsController extends Controller {
     const { value: color } = event.target;
 
     if (isLowContrast(color)) {
-      this.colorContrastErrorTarget.classList.remove('hidden');
+      this.colorContrastErrorTarget.innerText =
+        'The selected color must be darker for accessibility purposes.';
     } else {
       this.updateBranding(color);
-      this.colorContrastErrorTarget.classList.add('hidden');
+      this.colorContrastErrorTarget.innerText = '';
     }
   }
 
@@ -120,9 +121,9 @@ export class CreatorSettingsController extends Controller {
   formValidations(event) {
     const { value: color } = this.brandColorTarget;
     if (isLowContrast(color)) {
+      event.preventDefault();
       this.colorContrastErrorTarget.classList.remove('hidden');
       //  we don't want the form to submit if the contrast is low
-      event.preventDefault();
     }
   }
 }

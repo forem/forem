@@ -114,19 +114,23 @@ describe('Creator Settings Page', () => {
 
       cy.findByText(
         /^The selected color must be darker for accessibility purposes./,
-      ).should('not.be.visible');
+      ).should('not.exist');
     });
   });
 
   context('brand color updates', () => {
     it('should not update the brand color if the color contrast ratio is low', () => {
-      const lowContrastColor = '#25544b';
-      const lowContrastRgbColor = 'rgb(37, 84, 75)';
+      const lowContrastColor = '#a6e8a6';
+      const lowContrastRgbColor = 'rgb(166, 232, 166)';
 
       cy.findByLabelText(/^Brand color/)
         .clear()
         .type(lowContrastColor)
         .trigger('change');
+
+      cy.findByText(
+        /^The selected color must be darker for accessibility purposes./,
+      ).should('be.visible');
 
       cy.findByRole('button', { name: 'Finish' }).should(
         'not.have.css',
@@ -155,15 +159,16 @@ describe('Creator Settings Page', () => {
         .should('have.css', 'background-color', rgbColor)
         .should('have.css', 'border-color', rgbColor);
 
-      cy.findByRole('textbox', { name: /community name/i })
-        .focus()
-        .should('have.css', 'border-color', rgbColor);
-
       cy.findByRole('link', { name: /Forem Admin Guide/i }).should(
         'have.css',
         'background-color',
         rgbColor,
       );
+
+      cy.findByRole('textbox', { name: /community name/i })
+        .focus()
+        .type('Climbing Life')
+        .should('have.css', 'border-color', rgbColor);
     });
   });
 });
