@@ -53,7 +53,7 @@
           <div class="fs-xs color-base-60 flex">
             <%= t("views.auth.creator.hint.text_html", start: tag("span", nil, true), end: "</span>".html_safe,
                                                        button: tag.button(
-                                                         [tag.span(class: "js-creator-signup-username-hint"), inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: t("views.auth.creator.hint.icon"))],
+                                                         tag.span(class: "js-creator-signup-username-hint") + inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: t("views.auth.creator.hint.icon")),
                                                          class: "cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90",
                                                          role: "button", type: "button",
                                                          aria: { label: t("views.auth.creator.hint.aria_label") },
