@@ -1,4 +1,5 @@
 /* global Runtime */
+import 'focus-visible';
 import {
   initializeMobileMenu,
   setCurrentPageIconLink,

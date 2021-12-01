@@ -3,6 +3,7 @@ module Stories
     respond_to :json
 
     def show
+      @page = (params[:page] || 1).to_i
       @stories = assign_feed_stories
 
       add_pinned_article
@@ -43,8 +44,10 @@ module Stories
              else
                Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
              end
-      Datadog.tracer.trace("feed.query", span_type: "db",
-                                         resource: "#{self.class}.#{__method__}.#{feed.class.to_s.dasherize}") do
+      Datadog.tracer.trace("feed.query",
+                           span_type: "db",
+                           resource: "#{self.class}.#{__method__}",
+                           tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the
@@ -65,8 +68,10 @@ module Stories
              else
                Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
              end
-      Datadog.tracer.trace("feed.query", span_type: "db",
-                                         resource: "#{self.class}.#{__method__}.#{feed.class.to_s.dasherize}") do
+      Datadog.tracer.trace("feed.query",
+                           span_type: "db",
+                           resource: "#{self.class}.#{__method__}",
+                           tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the

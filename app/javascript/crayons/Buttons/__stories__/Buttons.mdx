@@ -1,0 +1,63 @@
+# Buttons
+
+Buttons are clickable elements that are used to trigger actions. 
+They communicate calls to action to the user and allow users to interact with pages in a variety of ways. 
+Button labels express what action will occur when the user interacts with it.
+
+ It is therefore very important that the different variants are implemented consistently across product, 
+ so that they message the correct actions.
+
+## CTAs vs Links vs Buttons
+
+The most important of these rules is that the `<CTA />` (or `<Link />`) and `<Button />` elements are assigned to appropriate respective tasks. 
+That is: `<CTA />` or `<Link />` should be used where navigation is elicited, and `<Button />` where a non-navigational action is being invoked.
+For example, a 'Submit' control on 'Sign in' view (form) would suit a `<Button />` because its job is to submit the form. 
+However, 'Register' call-to-action—taking the user to a different form, in a different page or screen—would benefit from `<CTA />` or `<Link />` semantics.
+
+Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) when the desired action is to take the user to a new page.
+
+## Variants
+
+### Primary
+
+Primary button has special look: high contrast (against rest of the view/component) and it's filled with accent color. 
+
+Ideally there should be only one Primary button per entire component, or sometimes even per entire view.
+Primary buttons should be used for the principal call to action on the page.
+
+### Default
+
+Default variant is less prominent, and therefore can be used for less prominent actions.
+Default buttons are visually light (greyish) and you can have as many of them as you want (within common sense :D). 
+They can (but don't have to) be used in conjuction with a Primary button. In that case, default variant should be used for any remaining actions.
+
+## Configuration
+
+### Destructive actions
+
+For actions that could have destructive effects on the user’s data (for example, *delete* or *remove*) we have a special style.
+This style can be applied by using `destructive` prop and it will work for both: primary and default variants. Take care when using the default variant to ensure that the red text has sufficient color contrast against the background where you are using it.
+
+### Icons
+
+Icon can be placed in front of a label to both clarify an action and call attention to a button. 
+By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself won't be customizable. Icons within buttons are hidden from assistive technology, so make sure your button has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
+
+#### Icon-only
+
+There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
+Icon-only buttons should always use clear and obvious icon, ideally accompanied by a tooltip or title. Make sure your button is adequately labelled for assistive technologies, either by the tooltip or by an `aria-label`.
+
+##### Fully rounded
+
+In most cases, whenever we display icon-only buttons (standalone, not in a *buttons group*) we tend to make button fully rounded - use `rounded` prop for that.
+Other than that please avoid customizing border-radius on buttons.
+
+### Tooltip
+
+By passing a string or node in `tooltip` prop, button will get a custom tooltip (visually different than a classic `title`) on `:hover` and `:focus`. The tooltip makes up part of the "accessible name" used by assistive technologies like screen readers. If you _do not_ wish the tooltip to be part of the accessible name, consider wrapping it in a `<span aria-hidden="true">`. Tooltips can be temporarily dismissed on `Escape` key press.
+
+## Design
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FgHpwugeu9jFGW4d9u3ReuR%2FCrayons%3Fnode-id%3D1%253A29" allowfullscreen></iframe>

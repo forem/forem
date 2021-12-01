@@ -62,6 +62,7 @@ en:
           icon: Views
           lt_25: "< 25"
           text_html:
+            one: "%{scale} view"
             other: "%{scale} views"
           u_25: under 25
         subscriptions:
