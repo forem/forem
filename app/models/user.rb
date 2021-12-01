@@ -356,7 +356,7 @@ class User < ApplicationRecord
   # Included as a courtesy but let's consider removing it.
   alias warned warned?
 
-  def admin?
+  def super_admin?
     has_role?(:super_admin)
   end
 
