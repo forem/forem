@@ -45,12 +45,15 @@ class CreditsController < ApplicationController
   end
 
   def validate_input(number_to_purchase)
-    # these set flash[:error] as a side-effect before returning false.
+    # these both set flash[:error] as a side-effect before returning false.
     ensure_payment_option! && ensure_nonzero_amount!(number_to_purchase)
   end
 
   def ensure_payment_option!
-    return true if params[:selected_card].present? || params[:stripe_token].present?
+    # we need either a credit card, a stripe token, or an organization (with billing setup)
+    # to complete the payment
+    purchase_options = params.slice(:selected_card, :stripe_token, :organization_id).compact_blank
+    return true if purchase_options.present?
 
     flash[:error] = "Please add a credit card before purchasing"
     false
