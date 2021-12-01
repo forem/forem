@@ -25,7 +25,7 @@
         <%= f.label :email_tag_mod_newsletter, "Send me tag moderator newsletter emails", class: "crayons-field__label" %>
       </div>
     <% end %>
-    <% if current_user.has_role?(:trusted) %>
+    <% if current_user.has_trusted_role? %>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :email_community_mod_newsletter, class: "crayons-checkbox" %>
         <%= f.label :email_community_mod_newsletter, "Send me community moderator newsletter emails", class: "crayons-field__label" %>

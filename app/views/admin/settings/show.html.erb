@@ -1,5 +1,5 @@
 <div class="grid gap-6" data-controller="config">
-  <% unless current_user.has_role?(:super_admin) %>
+  <% unless current_user.super_admin? %>
     <div class="crayons-notice crayons-notice--info" role="alert">
       <p class="mb-1">
         Only users with <strong>Super Admin</strong> privileges may edit this page.

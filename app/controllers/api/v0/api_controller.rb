@@ -39,7 +39,7 @@ module Api
       end
 
       def authorize_super_admin
-        error_unauthorized unless @user.has_role?(:super_admin)
+        error_unauthorized unless @user.super_admin?
       end
 
       # Checks if the user is authenticated, sets @user to nil otherwise
