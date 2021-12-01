@@ -68,7 +68,7 @@ describe LogoUploader, type: :uploader do
   end
 
   describe "exif removal" do
-    it "removes EXIF and GPS data on single frame image upload" do
+    it "removes EXIF and GPS data on single frame image upload", :aggregate_failures do
       expect(EXIFR::JPEG.new(image_with_gps.path).exif?).to be(true)
       expect(EXIFR::JPEG.new(image_with_gps.path).gps.present?).to be(true)
       uploader.store!(image_with_gps)
