@@ -167,8 +167,15 @@
     position: sticky;
     top: 0;
     background: var(--base-0);
-    padding: var(--su-2) var(--content-padding-x);
+    padding: 0 var(--content-padding-x);
     padding-right: var(--toolbar-padding-right, 0);
+    overflow-x: auto;
+    flex-shrink: 0;
+
+    &::-webkit-scrollbar {
+      background: transparent;
+      height: 0;
+    }
 
     margin: calc(var(--content-padding-y) * -1)
       calc(var(--content-padding-x) * -1) var(--su-6)
@@ -180,6 +187,7 @@
 
     @media (min-width: $breakpoint-m) {
       --toolbar-padding-right: var(--content-padding-x);
+      overflow: visible;
     }
   }
 

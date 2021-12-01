@@ -321,7 +321,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
   return (
     <div
-      className="editor-toolbar relative overflow-x-auto m:overflow-visible"
+      className="editor-toolbar relative"
       aria-label="Markdown formatting toolbar"
       role="toolbar"
       aria-controls={textAreaId}
@@ -335,7 +335,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             variant="ghost"
             contentType="icon"
             icon={icon}
-            className="toolbar-btn mr-2"
+            className="toolbar-btn mr-1"
             tabindex={index === 0 ? '0' : '-1'}
             onClick={() => insertSyntax(controlName)}
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
