@@ -25,8 +25,14 @@ module Payments
     end
 
     def call
-      process_purchase
-      create_credits if success?
+      # we expect at least one of :stripe_token, :organization_id, or :selected_card to process
+      if purchase_options.compact_blank.present?
+        process_purchase
+        create_credits if success?
+      else
+        self.error = "Please select a payment method"
+      end
+
       self
     end
 
