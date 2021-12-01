@@ -349,9 +349,12 @@ class User < ApplicationRecord
     has_role?(:suspended)
   end
 
-  def warned
+  def warned?
     has_role?(:warned)
   end
+
+  # Included as a courtesy but let's consider removing it.
+  alias warned warned?
 
   def admin?
     has_role?(:super_admin)

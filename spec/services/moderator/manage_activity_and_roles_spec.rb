@@ -12,7 +12,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "warning user", user_status: "Warn" },
     )
-    expect(user.warned).to be true
+    expect(user.warned?).to be true
     expect(user.suspended?).to be false
   end
 
