@@ -18,7 +18,7 @@ class LogoUploader < BaseUploader
   end
 
   def size_range
-    1..(MAX_FILE_SIZE.megabytes)
+    1..MAX_FILE_SIZE
   end
 
   def content_type_allowlist
