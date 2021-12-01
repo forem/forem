@@ -1,5 +1,6 @@
 class NextTechTag < LiquidTagBase
   PARTIAL = "liquids/nexttech".freeze
+  REGISTRY_REGEXP = %r{https?://nt.dev/s/}
 
   def initialize(_tag_name, share_url, _parse_context)
     super
@@ -36,4 +37,4 @@ end
 
 Liquid::Template.register_tag("nexttech", NextTechTag)
 
-UnifiedEmbed.register(NextTechTag, regexp: %r{https?://nt.dev/s/})
+UnifiedEmbed.register(NextTechTag, regexp: NextTechTag::REGISTRY_REGEXP)

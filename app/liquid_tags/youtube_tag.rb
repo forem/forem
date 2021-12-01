@@ -1,8 +1,6 @@
 class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
-  # rubocop:disable Layout/LineLength
-  YOUTUBE_URL_REGEX = %r{https?://(www\.)?youtube\.(com|be)/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
-  # rubocop:enable Layout/LineLength
+  REGISTRY_REGEXP = %r{https?://(www\.)?youtube\.(com|be)/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
   MARKER_TO_SECONDS_MAP = {
     "h" => 60 * 60,
     "m" => 60,
@@ -34,7 +32,7 @@ class YoutubeTag < LiquidTagBase
   private
 
   def parse_id_or_url(input)
-    if (input =~ YOUTUBE_URL_REGEX)&.zero?
+    if (input =~ REGISTRY_REGEXP)&.zero?
       extract_youtube_id(input)
     else
       input_no_space = input.delete(" ")
@@ -75,4 +73,4 @@ end
 
 Liquid::Template.register_tag("youtube", YoutubeTag)
 
-UnifiedEmbed.register(YoutubeTag, regexp: YoutubeTag::YOUTUBE_URL_REGEX)
+UnifiedEmbed.register(YoutubeTag, regexp: YoutubeTag::REGISTRY_REGEXP)
