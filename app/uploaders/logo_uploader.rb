@@ -1,11 +1,12 @@
 class LogoUploader < BaseUploader
   MAX_FILE_SIZE = 3.megabytes
+  STORE_DIRECTORY = "uploads/logos/".freeze
   EXTENSION_ALLOWLIST = %w[svg png jpg jpeg jpe].freeze
   IMAGE_TYPE_ALLOWLIST = %i[svg png jpg jpeg jpe].freeze
   CONTENT_TYPE_ALLOWLIST = %w[image/svg+xml image/png image/jpg image/jpeg].freeze
 
   def store_dir
-    "uploads/logos/"
+    STORE_DIRECTORY
   end
 
   def extension_allowlist
