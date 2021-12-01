@@ -11,7 +11,6 @@ module Admin
 
     def create
       extra_authorization
-
       ActiveRecord::Base.transaction do
         ::Settings::Community.community_name = settings_params[:community_name]
         ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]
