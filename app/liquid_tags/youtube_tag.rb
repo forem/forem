@@ -1,7 +1,7 @@
 class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
   # rubocop:disable Layout/LineLength
-  YOUTUBE_URL_REGEX = %r{https?://(www\.)?(youtube|youtu)\.(com|be)/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
+  YOUTUBE_URL_REGEX = %r{https?://(www\.)?youtube\.(com|be)/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
   # rubocop:enable Layout/LineLength
   MARKER_TO_SECONDS_MAP = {
     "h" => 60 * 60,
@@ -46,7 +46,7 @@ class YoutubeTag < LiquidTagBase
   end
 
   def extract_youtube_id(url)
-    url = url.gsub(/(>|<)/i, "").split(%r{(vi/|v=|/v/|youtu\.be/|/embed/)})
+    url = url.gsub(/(>|<)/, "").split(%r{(vi/|v=|/v/|youtu\.be/|/embed/)})
     raise StandardError, "Invalid YouTube URL" if url[2].nil?
 
     id = url[2].split(/[^a-zA-Z0-9_-]/i) # tweak this to allow for time, fix youtube_tag_spec

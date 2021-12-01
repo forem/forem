@@ -58,6 +58,4 @@ end
 
 Liquid::Template.register_tag("codepen", CodepenTag)
 
-# rubocop:disable Layout/LineLength
-UnifiedEmbed.register(CodepenTag, regexp: %r{https?://(codepen\.io|codepen\.io/team)/[a-zA-Z0-9_\-]{1,30}/pen/([a-zA-Z0-9]{5,32})/{0,1}\z})
-# rubocop:enable Layout/LineLength
+UnifiedEmbed.register(CodepenTag, regexp: CodepenTag::URL_REGEXP)

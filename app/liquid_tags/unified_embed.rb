@@ -39,14 +39,8 @@ class UnifiedEmbed
   end
 
   def find_liquid_tag_for(link:)
-    klass = nil
     link = ActionController::Base.helpers.strip_tags(link).strip if link.include?("href=")
-    @registry.each do |regexp, tag_class|
-      next unless regexp.match?(link)
-
-      klass = tag_class
-      break
-    end
+    _regexp, klass = @registry.detect { |regexp, _tag_class| regexp.match?(link) }
     klass
   end
 end
