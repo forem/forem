@@ -25,35 +25,41 @@ class CreditsController < ApplicationController
 
     number_to_purchase = params[:credit][:number_to_purchase].to_i
 
-    ensure_selected_card!
-    ensure_nonzero_amount!(number_to_purchase)
+    if validate_input(number_to_purchase)
+      payment = Payments::ProcessCreditPurchase.call(
+        current_user,
+        number_to_purchase,
+        purchase_options: params.slice(:stripe_token, :selected_card, :organization_id),
+      )
 
-    payment = Payments::ProcessCreditPurchase.call(
-      current_user,
-      number_to_purchase,
-      purchase_options: params.slice(:stripe_token, :selected_card, :organization_id),
-    )
-
-    if payment.success?
-      @purchaser = payment.purchaser
-      redirect_to credits_path, notice: "#{number_to_purchase} new credits purchased!"
+      if payment.success?
+        @purchaser = payment.purchaser
+        redirect_to credits_path, notice: "#{number_to_purchase} new credits purchased!"
+      else
+        flash[:error] = payment.error
+        redirect_to purchase_credits_path
+      end
     else
-      flash[:error] = payment.error
       redirect_to purchase_credits_path
     end
   end
 
-  def ensure_selected_card!
-    return if params[:selected_card].present?
+  def validate_input(number_to_purchase)
+    # these set flash[:error] as a side-effect before returning false.
+    ensure_payment_option! && ensure_nonzero_amount!(number_to_purchase)
+  end
+
+  def ensure_payment_option!
+    return true if params[:selected_card].present? || params[:stripe_token].present?
 
     flash[:error] = "Please add a credit card before purchasing"
-    redirect_to purchase_credits_path
+    false
   end
 
   def ensure_nonzero_amount!(number_to_purchase)
-    return if number_to_purchase.positive?
+    return true if number_to_purchase.positive?
 
     flash[:error] = "At least one credit must be purchased"
-    redirect_to purchase_credits_path
+    false
   end
 end
