@@ -44,6 +44,11 @@ RSpec.describe UnifiedEmbed do
         .to eq(TwitterTimelineTag)
     end
 
+    it "returns WikipediaTag for a twitter timeline url" do
+      expect(described_class.find_liquid_tag_for(link: "https://en.wikipedia.org/wiki/Steve_Jobs"))
+        .to eq(WikipediaTag)
+    end
+
     it "returns YoutubeTag for a youtube url" do
       expect(described_class.find_liquid_tag_for(link: "https://www.youtube.com/embed/dQw4w9WgXcQ"))
         .to eq(YoutubeTag)
