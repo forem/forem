@@ -292,6 +292,8 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
+  scope :featured, -> { where(featured: true) }
+
   scope :feed, lambda {
                  published.includes(:taggings)
                    .select(
