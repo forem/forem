@@ -1,11 +1,6 @@
 .editor-toolbar {
   display: flex;
-  background: var(--base-0);
-
-  &::-webkit-scrollbar {
-    background: transparent;
-    height: 0;
-  }
+  // background: var(--base-0);
 
   .toolbar-btn .spinner-or-cancel {
     .cancel {
