@@ -69,9 +69,9 @@
   --accent-warning-a10: #{rgba(#ffcf4c, 0.1)};
 
   // Danger
-  --accent-danger: #dc1818;
-  --accent-danger-darker: #c20a0a;
-  --accent-danger-lighter: #ec5050;
+  --accent-danger: #d31616;
+  --accent-danger-darker: #b90909;
+  --accent-danger-lighter: #ec4646;
   --accent-danger-a10: #{rgba(#dc1818, 0.1)};
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -240,4 +240,38 @@
   --reaction-save-bg: var(--accent-brand-a10);
   --reaction-comment-color: var(--accent-warning);
   --reaction-comment-bg: var(--accent-warning-a10);
+}
+
+:root {
+  // Separating some variables here as these are the results
+  // of broader Crayons refactoring (see #15311) and I didn't
+  // want to mix everything together.
+
+  ////////////////////////////////////////////////
+  // Buttons /////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Buttons: Default
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--base-20);
+  --btn-color: var(--base-80);
+  --btn-color-hover: var(--base-100);
+
+  // Buttons: Default Destructive
+  --btn-destructive-bg: transparent;
+  --btn-destructive-bg-hover: var(--accent-danger-a10);
+  --btn-destructive-color: var(--accent-danger);
+  --btn-destructive-color-hover: var(--accent-danger-darker);
+
+  // Buttons: Primary
+  --btn-primary-bg: var(--accent-brand);
+  --btn-primary-bg-hover: var(--accent-brand-darker);
+  --btn-primary-color: var(--base-inverted);
+  --btn-primary-color-hover: var(--base-inverted);
+
+  // Buttons: Primary Destructive
+  --btn-primary-destructive-bg: var(--accent-danger);
+  --btn-primary-destructive-bg-hover: var(--accent-danger-darker);
+  --btn-primary-destructive-color: var(--base-inverted);
+  --btn-primary-destructive-color-hover: var(--base-inverted);
 }

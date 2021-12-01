@@ -83,7 +83,7 @@ function generateUploadFormdata(payload) {
   return formData;
 }
 
-export function generateMainImage(payload, successCb, failureCb) {
+export function generateMainImage({ payload, successCb, failureCb, signal }) {
   fetch('/image_uploads', {
     method: 'POST',
     headers: {
@@ -91,6 +91,7 @@ export function generateMainImage(payload, successCb, failureCb) {
     },
     body: generateUploadFormdata(payload),
     credentials: 'same-origin',
+    signal,
   })
     .then((response) => response.json())
     .then((json) => {
@@ -120,6 +121,10 @@ export function processImageUpload(
   if (images.length > 0 && validateFileInputs()) {
     const payload = { image: images };
 
-    generateMainImage(payload, handleImageSuccess, handleImageFailure);
+    generateMainImage({
+      payload,
+      successCb: handleImageSuccess,
+      failureCb: handleImageFailure,
+    });
   }
 }

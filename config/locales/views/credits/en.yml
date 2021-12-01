@@ -48,6 +48,8 @@ en:
       tag: 'Tag: %{name}'
       status:
         user:
-          other: You have %{count} personal credits to spend
+          one: "You have %{count} personal credit to spend"
+          other: "You have %{count} personal credits to spend"
         org_html:
+          one: "%{name} has %{num} credit to spend"
           other: "%{name} has %{num} credits to spend"

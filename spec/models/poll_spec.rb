@@ -35,6 +35,33 @@ RSpec.describe Poll, type: :model do
     end
   end
 
+  describe "#vote_previously_recorded_for?" do
+    subject(:registered) { poll.vote_previously_recorded_for?(user_id: user.id) }
+
+    let(:poll) {  create(:poll) }
+    let(:user) {  create(:user) }
+
+    context "when user has existing poll_votes" do
+      before do
+        create(:poll_vote, poll: poll, user: user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user has existing poll_skips" do
+      before do
+        create(:poll_skip, poll: poll, user: user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user has no poll_skips nor poll votes" do
+      it { is_expected.to be_falsey }
+    end
+  end
+
   context "when callbacks are triggered after create" do
     it "creates options from input" do
       options = %w[hello goodbye heyheyhey]

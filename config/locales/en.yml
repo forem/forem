@@ -6,7 +6,6 @@ en:
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   core:
     add_comment: Add comment
-    analytics: Analytics
     comment: Comment
     comments: Comments
     community_name_is_great: "%{community_name} is great!"
@@ -17,7 +16,6 @@ en:
     follow: Follow
     follow_back: Follow back
     follower: Follower
-    followers: Followers
     following: Following
     joined: Joined
     joined_on: Joined on
@@ -29,7 +27,6 @@ en:
     more_from: More from
     pinned: Pinned
     post: Post
-    posts: Posts
     reaction: Reaction
     reaction_pluralized:
       one: reaction
@@ -41,18 +38,8 @@ en:
     reply: Reply
     report_abuse: Report abuse
     search: Search
-    series: Series
     settings: Settings
     trending_on: Trending on
-  dashboard:
-    empty_follower: You don't have any followers yet...
-    empty_post: This is where you can manage your posts, but you haven't written anything yet.
-    following_users: Following users
-    loading: loading...
-    not_following_any_users: You don't follow any users...
-    page_title: Dashboard
-    upload_a_video: Upload a video
-    write_new_post: Write your first post now
   datetime:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:

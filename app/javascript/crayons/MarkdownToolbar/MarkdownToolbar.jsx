@@ -1,17 +1,66 @@
 import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
+import { ImageUploader } from '../../article-form/components/ImageUploader';
 import {
   coreSyntaxFormatters,
   secondarySyntaxFormatters,
+  getNewTextAreaValueWithEdits,
 } from './markdownSyntaxFormatters';
 import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
+import { getSelectionData } from '@utilities/textAreaUtils';
 
+// Placeholder text displayed while an image is uploading
+const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
+
+/**
+ * Returns the next sibling in the DOM which matches the given CSS selector.
+ * This makes sure that only toolbar buttons are cycled through on Arrow key press,
+ * and not e.g. the hidden file input from ImageUploader
+ *
+ * @param {HTMLElement} element The current HTML element
+ * @param {string} selector The CSS selector to match
+ * @returns
+ */
+const getNextMatchingSibling = (element, selector) => {
+  let sibling = element.nextElementSibling;
+
+  while (sibling) {
+    if (sibling.matches(selector)) return sibling;
+    sibling = sibling.nextElementSibling;
+  }
+};
+
+/**
+ * Returns the previous sibling in the DOM which matches the given CSS selector.
+ * This makes sure that only toolbar buttons are cycled through on Arrow key press,
+ * and not e.g. the hidden file input from ImageUploader
+ *
+ * @param {HTMLElement} element The current HTML element
+ * @param {string} selector The CSS selector to match
+ * @returns
+ */
+const getPreviousMatchingSibling = (element, selector) => {
+  let sibling = element.previousElementSibling;
+
+  while (sibling) {
+    if (sibling.matches(selector)) return sibling;
+    sibling = sibling.previousElementSibling;
+  }
+};
+
+/**
+ * UI component providing markdown shortcuts, to be inserted into the textarea with the given ID
+ *
+ * @param {object} props
+ * @param {string} props.textAreaId The ID of the textarea the markdown formatting should be added to
+ */
 export const MarkdownToolbar = ({ textAreaId }) => {
   const [textArea, setTextArea] = useState(null);
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
+  const [storedCursorPosition, setStoredCursorPosition] = useState({});
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
 
   const markdownSyntaxFormatters = {
@@ -28,7 +77,13 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       .map((syntaxName) => {
         const { command } =
           markdownSyntaxFormatters[syntaxName].getKeyboardShortcut?.();
-        return [command, () => insertSyntax(syntaxName)];
+        return [
+          command,
+          (e) => {
+            e.preventDefault();
+            insertSyntax(syntaxName);
+          },
+        ];
       }),
   );
 
@@ -85,10 +140,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   // Handles keyboard 'roving tabindex' pattern for toolbar
   const handleToolbarButtonKeyPress = (event, className) => {
     const { key, target } = event;
-    const {
-      nextElementSibling: nextButton,
-      previousElementSibling: previousButton,
-    } = target;
+
+    const nextButton = getNextMatchingSibling(target, `.${className}`);
+    const previousButton = getPreviousMatchingSibling(target, `.${className}`);
 
     switch (key) {
       case 'ArrowRight':
@@ -128,12 +182,99 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   const insertSyntax = (syntaxName) => {
     setOverflowMenuOpen(false);
 
-    const { newTextAreaValue, newCursorStart, newCursorEnd } =
-      markdownSyntaxFormatters[syntaxName].getFormatting(textArea);
+    const {
+      newCursorStart,
+      newCursorEnd,
+      editSelectionStart,
+      editSelectionEnd,
+      replaceSelectionWith,
+    } = markdownSyntaxFormatters[syntaxName].getFormatting(textArea);
 
-    textArea.value = newTextAreaValue;
+    // We try to update the textArea with document.execCommand, which requires the contentEditable attribute to be true.
+    // The value is later toggled back to 'false'
+    textArea.contentEditable = 'true';
     textArea.focus({ preventScroll: true });
+    textArea.setSelectionRange(editSelectionStart, editSelectionEnd);
+
+    try {
+      // We first try to use execCommand which allows the change to be correctly added to the undo queue.
+      // document.execCommand is deprecated, but the API which will eventually replace it is still incoming (https://w3c.github.io/input-events/)
+      if (replaceSelectionWith === '') {
+        document.execCommand('delete', false);
+      } else {
+        document.execCommand('insertText', false, replaceSelectionWith);
+      }
+    } catch {
+      // In the event of any error using execCommand, we make sure the text area updates (but undo queue will not)
+      textArea.value = getNewTextAreaValueWithEdits({
+        textAreaValue: textArea.value,
+        editSelectionStart,
+        editSelectionEnd,
+        replaceSelectionWith,
+      });
+    }
+
+    textArea.contentEditable = 'false';
+    textArea.dispatchEvent(new Event('input'));
     textArea.setSelectionRange(newCursorStart, newCursorEnd);
+  };
+
+  const handleImageUploadStarted = () => {
+    const { textBeforeSelection, textAfterSelection } =
+      getSelectionData(textArea);
+
+    const { selectionEnd } = storedCursorPosition;
+
+    const textWithPlaceholder = `${textBeforeSelection}\n${UPLOADING_IMAGE_PLACEHOLDER}${textAfterSelection}`;
+    textArea.value = textWithPlaceholder;
+    // Make sure Editor text area updates via linkstate
+    textArea.dispatchEvent(new Event('input'));
+
+    textArea.focus({ preventScroll: true });
+
+    // Set cursor to the end of the placeholder
+    const newCursorPosition =
+      selectionEnd + UPLOADING_IMAGE_PLACEHOLDER.length + 1;
+
+    textArea.setSelectionRange(newCursorPosition, newCursorPosition);
+  };
+
+  const handleImageUploadEnd = (imageMarkdown = '') => {
+    const {
+      selectionStart,
+      selectionEnd,
+      value: currentTextAreaValue,
+    } = textArea;
+
+    const indexOfPlaceholder = currentTextAreaValue.indexOf(
+      UPLOADING_IMAGE_PLACEHOLDER,
+    );
+
+    // User has deleted placeholder, nothing to do
+    if (indexOfPlaceholder === -1) return;
+
+    const newTextValue = textArea.value.replace(
+      UPLOADING_IMAGE_PLACEHOLDER,
+      imageMarkdown,
+    );
+
+    textArea.value = newTextValue;
+    // Make sure Editor text area updates via linkstate
+    textArea.dispatchEvent(new Event('input'));
+
+    // The change to image markdown length does not affect cursor position
+    if (indexOfPlaceholder > selectionStart) {
+      textArea.setSelectionRange(selectionStart, selectionEnd);
+      return;
+    }
+
+    const differenceInLength =
+      imageMarkdown.length - UPLOADING_IMAGE_PLACEHOLDER.length;
+
+    textArea.setSelectionRange(
+      selectionStart + differenceInLength,
+      selectionEnd + differenceInLength,
+    );
   };
 
   const getSecondaryFormatterButtons = (isOverflow) =>
@@ -180,7 +321,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
   return (
     <div
-      className="editor-toolbar relative overflow-x-auto m:overflow-visible"
+      className="editor-toolbar relative"
       aria-label="Markdown formatting toolbar"
       role="toolbar"
       aria-controls={textAreaId}
@@ -194,7 +335,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             variant="ghost"
             contentType="icon"
             icon={icon}
-            className="toolbar-btn mr-2"
+            className="toolbar-btn mr-1"
             tabindex={index === 0 ? '0' : '-1'}
             onClick={() => insertSyntax(controlName)}
             onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
@@ -214,6 +355,29 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           />
         );
       })}
+
+      <ImageUploader
+        editorVersion="v2"
+        onImageUploadStart={handleImageUploadStarted}
+        onImageUploadSuccess={handleImageUploadEnd}
+        onImageUploadError={handleImageUploadEnd}
+        buttonProps={{
+          onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
+          onClick: () => {
+            const { selectionStart, selectionEnd } = textArea;
+            setStoredCursorPosition({ selectionStart, selectionEnd });
+          },
+          tooltip: smallScreen ? null : (
+            <span aria-hidden="true">Upload image</span>
+          ),
+          key: 'image-btn',
+          variant: 'ghost',
+          contentType: 'icon',
+          className: 'toolbar-btn formatter-btn',
+          tabindex: '-1',
+        }}
+      />
+
       {smallScreen ? getSecondaryFormatterButtons(false) : null}
 
       {smallScreen ? null : (
@@ -243,6 +407,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             tagName="a"
             role="menuitem"
             url="/p/editor_guide"
+            target="_blank"
+            rel="noopener noreferrer"
             variant="ghost"
             contentType="icon"
             icon={Help}

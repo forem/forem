@@ -101,7 +101,7 @@ module Articles
       end
 
       def experimental_hot_story_grab
-        start_time = [(@user.page_views.second_to_last&.created_at || 7.days.ago) - 18.hours, 7.days.ago].max
+        start_time = Articles::Feeds.oldest_published_at_to_consider_for(user: @user)
         Article.published.limited_column_select.includes(top_comments: :user)
           .where("published_at > ?", start_time)
           .page(@page).per(@number_of_articles)

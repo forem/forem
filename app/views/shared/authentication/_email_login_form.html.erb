@@ -15,11 +15,11 @@
   </div>
 
   <div class="actions pt-3">
-    <%= f.submit "Continue", class: "crayons-btn crayons-btn--l w-100" %>
+    <%= f.submit t("views.auth.login.continue"), class: "crayons-btn crayons-btn--l w-100" %>
   </div>
 <% end %>
 <p class="pt-6 fs-s align-center">
   <a href="<%= new_password_path(:user) %>">
-    I forgot my password
+    <%= t("views.auth.login.forgot") %>
   </a>
 </p>

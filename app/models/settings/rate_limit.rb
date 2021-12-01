@@ -22,6 +22,20 @@ module Settings
     setting :user_subscription_creation, type: :integer, default: 3
     setting :user_update, type: :integer, default: 15
 
+    # A helper function to determine if we should consider the user a "new" user.
+    #
+    # @note A "new" user is more likely to start spamming than an "old" user.
+    #
+    # @param user [User, UserDecorator]
+    #
+    # @return [Boolean]
+    def self.user_considered_new?(user:)
+      return true unless user
+      return false unless user_considered_new_days.positive?
+
+      user.created_at.after?(user_considered_new_days.days.ago)
+    end
+
     # A helper function to determine if text is spammy.
     #
     # @param text [String] text to check for "spamminess"

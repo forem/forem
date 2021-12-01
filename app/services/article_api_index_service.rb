@@ -139,7 +139,7 @@ class ArticleApiIndexService
 
   def base_articles
     published_articles_with_users_and_organizations
-      .where(featured: true)
+      .featured
       .order(hotness_score: :desc)
       .page(page)
       .per(per_page || DEFAULT_PER_PAGE)

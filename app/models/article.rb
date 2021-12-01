@@ -292,6 +292,8 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
+  scope :featured, -> { where(featured: true) }
+
   scope :feed, lambda {
                  published.includes(:taggings)
                    .select(
@@ -812,7 +814,7 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    Spam::ArticleHandler.handle!(article: self)
+    Spam::Handler.handle_article!(article: self)
   end
 
   def async_bust

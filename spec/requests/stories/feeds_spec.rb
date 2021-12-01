@@ -135,7 +135,7 @@ RSpec.describe "Stories::Feeds", type: :request do
 
         get timeframe_stories_feed_path(:week)
 
-        expect(Articles::Feeds::Timeframe).to have_received(:call).with("week", page: nil, tag: nil)
+        expect(Articles::Feeds::Timeframe).to have_received(:call).with("week", page: 1, tag: nil)
       end
 
       it "calls the feed service for latest" do
@@ -183,14 +183,6 @@ RSpec.describe "Stories::Feeds", type: :request do
           "organization" => hash_including("name" => organization.name),
           "tag_list" => article.decorate.cached_tag_list_array,
         )
-      end
-    end
-
-    context "when there are no params passed (base feed) and user is not signed in" do
-      it "does not set a field test" do
-        expect do
-          get stories_feed_path
-        end.not_to change(FieldTest::Membership, :count)
       end
     end
 

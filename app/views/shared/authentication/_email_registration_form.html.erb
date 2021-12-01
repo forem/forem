@@ -11,7 +11,7 @@
       <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
         <div class="crayons-card__header">
           <h3 class="crayons-card__headline">
-            Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
+            <%= t("views.auth.register.errors", count: resource.errors.size) %>
           </h3>
         </div>
         <div class="crayons-card__body">
@@ -23,16 +23,16 @@
         </div>
       </div>
     <% else %>
-      <p class="pb-4 fw-bold">Create your account</p>
+      <p class="pb-4 fw-bold"><%= t("views.auth.register.create") %></p>
     <% end %>
 
     <% if Settings::Authentication.display_email_domain_allow_list_publicly &&
       Settings::Authentication.allowed_registration_email_domains.any? %>
       <div class="crayons-notice crayons-notice--info" aria-live="polite">
         <% if Settings::Authentication.allowed_registration_email_domains.one? %>
-          Registration restricted to <strong>@<%= Settings::Authentication.allowed_registration_email_domains.first %></strong> emails.
+          <%= t("views.auth.register.allow.one_html", domain: Settings::Authentication.allowed_registration_email_domains.first) %>
         <% else %>
-          Registration restricted to the following emails
+          <%= t("views.auth.register.allow.list") %>
           <ul>
             <% Settings::Authentication.allowed_registration_email_domains.each do |domain| %>
               <li>
@@ -50,41 +50,41 @@
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :name, class: "crayons-field__label", aria: { label: "Name" } do %>
-        Name
-        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="* - required">*</span>
+      <%= f.label :name, class: "crayons-field__label", aria: { label: t("views.auth.register.field.name.aria_label") } do %>
+        <%= t("views.auth.register.field.name.label") %>
+        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="<%= t("views.auth.register.field.required") %>">*</span>
       <% end %>
       <%= f.text_field :name, class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :username, class: "crayons-field__label", aria: { label: "Username" } do %>
-        Username
-        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="* - required">*</span>
+      <%= f.label :username, class: "crayons-field__label", aria: { label: t("views.auth.register.field.username.aria_label") } do %>
+        <%= t("views.auth.register.field.username.label") %>
+        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="<%= t("views.auth.register.field.required") %>">*</span>
       <% end %>
       <%= f.text_field :username, class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :email, class: "crayons-field__label", aria: { label: "Email" } do %>
-        Email
-        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="* - required">*</span>
+      <%= f.label :email, class: "crayons-field__label", aria: { label: t("views.auth.register.field.email.aria_label") } do %>
+        <%= t("views.auth.register.field.email.label") %>
+        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="<%= t("views.auth.register.field.required") %>">*</span>
       <% end %>
       <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :password, class: "crayons-field__label", aria: { label: "Password" } do %>
-        Password
-        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="* - required">*</span>
+      <%= f.label :password, class: "crayons-field__label", aria: { label: t("views.auth.register.field.password.aria_label") } do %>
+        <%= t("views.auth.register.field.password.label") %>
+        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="<%= t("views.auth.register.field.required") %>">*</span>
       <% end %>
       <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield", required: true %>
     </div>
 
     <div class="crayons-field mt-2">
-      <%= f.label :password_confirmation, class: "crayons-field__label", aria: { label: "Password Confirmation" } do %>
-        Password Confirmation
-        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="* - required">*</span>
+      <%= f.label :password_confirmation, class: "crayons-field__label", aria: { label: t("views.auth.register.field.confirm.aria_label") } do %>
+        <%= t("views.auth.register.field.confirm.label") %>
+        <span class="crayons-field__required crayons-hover-tooltip" data-tooltip="<%= t("views.auth.register.field.required") %>">*</span>
       <% end %>
       <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "crayons-textfield", required: true %>
     </div>
@@ -94,8 +94,8 @@
         <%= f.hidden_field :forem_owner_secret, value: params[:forem_owner_secret] %>
       <% else %>
         <div class="crayons-field mt-2">
-          <%= f.label :forem_owner_secret, "New Forem Secret", class: "crayons-field__label" %>
-          <%= f.password_field :forem_owner_secret, class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
+          <%= f.label :forem_owner_secret, t("views.auth.register.secret.label"), class: "crayons-field__label" %>
+          <%= f.password_field :forem_owner_secret, class: "crayons-textfield", required: true, placeholder: t("views.auth.register.secret.placeholder") %>
         </div>
       <% end %>
     <% end %>
@@ -107,7 +107,7 @@
     <% end %>
 
     <div class="actions pt-3">
-      <%= f.submit "Sign up", class: "crayons-btn" %>
+      <%= f.submit t("views.auth.register.submit"), class: "crayons-btn" %>
     </div>
   <% end %>
 </div>
