@@ -1,4 +1,4 @@
-FROM quay.io/forem/ruby:3.0.2 as builder
+FROM quay.io/forem/ruby:3.0.2-testing as builder
 
 USER root
 
