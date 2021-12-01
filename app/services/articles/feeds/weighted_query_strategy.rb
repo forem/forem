@@ -273,6 +273,7 @@ module Articles
           user: @user,
           days_since_published: @days_since_published,
         )
+        @must_have_main_image = true
       end
 
       # The goal of this query is to generate a list of articles that
@@ -374,8 +375,6 @@ module Articles
       # the `featured = true` attribute.  In my envisioned
       # implementation, the pagination would omit the featured story.
       #
-      # @param must_have_main_image [Boolean] do we mandate that the
-      #        featured story/stories require an image?
       # @return [Array<Article, Array<Article>] a featured story
       #         Article and an array of Article objects.
       #
@@ -400,32 +399,25 @@ module Articles
       #       in the featured story.  For non-signed in users, we may
       #       want to use a completely different set of scoring
       #       methods.
-      def featured_story_and_default_home_feed(must_have_main_image: true, **)
+      def featured_story_and_default_home_feed(**)
         # We could parameterize this, but callers would need to
         # consider the impact of that decision, and it would break the
         # current contract.
         number_of_featured_stories = 1
         featured_story = call(
           only_featured: true,
-          must_have_main_image: must_have_main_image,
+          must_have_main_image: @must_have_main_image,
           limit: number_of_featured_stories,
           offset: 0,
         ).first
         articles = call(
-          must_have_main_image: must_have_main_image,
           # Make sure that we don't include the featured_story
           omit_article_ids: [featured_story&.id],
         )
         [featured_story, articles]
       end
 
-      # @note In the LargeForemExperimental implementation, the
-      #       default home feed omits the featured story.  In this
-      #       case, I don't want to do that.  Instead, I want to see
-      #       how this behaves.
-      def default_home_feed(must_have_main_image: true, **)
-        call(must_have_main_image: must_have_main_image)
-      end
+      alias default_home_feed call
 
       private
 
