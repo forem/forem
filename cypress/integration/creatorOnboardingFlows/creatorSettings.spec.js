@@ -97,7 +97,7 @@ describe('Creator Settings Page', () => {
       cy.findByLabelText(/^Brand color/)
         .clear()
         .type(lowContrastColor)
-        .trigger('change');
+        .blur();
 
       cy.findByText(
         /^The selected color must be darker for accessibility purposes./,
