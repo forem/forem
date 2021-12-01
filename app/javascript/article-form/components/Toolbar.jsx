@@ -10,7 +10,7 @@ export const Toolbar = ({ version, textAreaId }) => {
         version === 'v1' ? 'border-t-0' : ''
       }`}
     >
-      <div className="my-1 s:my-2">
+      <div className="my-2">
         {version === 'v1' ? (
           <ImageUploader editorVersion={version} />
         ) : (
