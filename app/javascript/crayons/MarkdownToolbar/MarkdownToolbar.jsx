@@ -4,6 +4,7 @@ import { ImageUploader } from '../../article-form/components/ImageUploader';
 import {
   coreSyntaxFormatters,
   secondarySyntaxFormatters,
+  getNewTextAreaValueWithEdits,
 } from './markdownSyntaxFormatters';
 import { Overflow, Help } from './icons';
 import { Button } from '@crayons';
@@ -181,12 +182,40 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   const insertSyntax = (syntaxName) => {
     setOverflowMenuOpen(false);
 
-    const { newTextAreaValue, newCursorStart, newCursorEnd } =
-      markdownSyntaxFormatters[syntaxName].getFormatting(textArea);
+    const {
+      newCursorStart,
+      newCursorEnd,
+      editSelectionStart,
+      editSelectionEnd,
+      replaceSelectionWith,
+    } = markdownSyntaxFormatters[syntaxName].getFormatting(textArea);
 
-    textArea.value = newTextAreaValue;
-    textArea.dispatchEvent(new Event('input'));
+    // We try to update the textArea with document.execCommand, which requires the contentEditable attribute to be true.
+    // The value is later toggled back to 'false'
+    textArea.contentEditable = 'true';
     textArea.focus({ preventScroll: true });
+    textArea.setSelectionRange(editSelectionStart, editSelectionEnd);
+
+    try {
+      // We first try to use execCommand which allows the change to be correctly added to the undo queue.
+      // document.execCommand is deprecated, but the API which will eventually replace it is still incoming (https://w3c.github.io/input-events/)
+      if (replaceSelectionWith === '') {
+        document.execCommand('delete', false);
+      } else {
+        document.execCommand('insertText', false, replaceSelectionWith);
+      }
+    } catch {
+      // In the event of any error using execCommand, we make sure the text area updates (but undo queue will not)
+      textArea.value = getNewTextAreaValueWithEdits({
+        textAreaValue: textArea.value,
+        editSelectionStart,
+        editSelectionEnd,
+        replaceSelectionWith,
+      });
+    }
+
+    textArea.contentEditable = 'false';
+    textArea.dispatchEvent(new Event('input'));
     textArea.setSelectionRange(newCursorStart, newCursorEnd);
   };
 
