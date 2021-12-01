@@ -402,21 +402,21 @@ class User < ApplicationRecord
   end
 
   def admin_organizations
-    org_ids = organization_memberships.where(type_of_user: "admin").pluck(:organization_id)
+    org_ids = organization_memberships.admin.pluck(:organization_id)
     organizations.where(id: org_ids)
   end
 
   def member_organizations
-    org_ids = organization_memberships.where(type_of_user: %w[admin member]).pluck(:organization_id)
+    org_ids = organization_memberships.member.pluck(:organization_id)
     organizations.where(id: org_ids)
   end
 
   def org_member?(organization)
-    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: %w[admin member])
+    organization_memberships.member.exists?(organization: organization)
   end
 
   def org_admin?(organization)
-    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: "admin")
+    organization_memberships.admin.exists?(organization: organization)
   end
 
   def block; end
