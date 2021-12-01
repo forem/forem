@@ -409,7 +409,7 @@ class User < ApplicationRecord
   end
 
   def org_member?(organization)
-    organization_memberships.member.exists(organization: organization)
+    organization_memberships.member.exists?(organization: organization)
   end
 
   def org_admin?(organization)
