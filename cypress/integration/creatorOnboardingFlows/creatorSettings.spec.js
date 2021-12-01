@@ -73,37 +73,6 @@ describe('Creator Settings Page', () => {
     cy.url().should('equal', baseUrl);
   });
 
-  it('should update the colors on the form when a new brand color is selected', () => {
-    const color = '#25544b';
-    const rgbColor = 'rgb(37, 84, 75)';
-
-    cy.findByLabelText(/^Brand color/)
-      .clear()
-      .type(color)
-      .trigger('change');
-
-    cy.findByRole('button', { name: 'Finish' }).should(
-      'have.css',
-      'background-color',
-      rgbColor,
-    );
-
-    cy.findAllByRole('radio', { name: /members only/i })
-      .check()
-      .should('have.css', 'background-color', rgbColor)
-      .should('have.css', 'border-color', rgbColor);
-
-    cy.findByRole('textbox', { name: /community name/i })
-      .focus()
-      .should('have.css', 'border-color', rgbColor);
-
-    cy.findByRole('link', { name: /Forem Admin Guide/i }).should(
-      'have.css',
-      'background-color',
-      rgbColor,
-    );
-  });
-
   it('should not submit the creator settings form if any of the fields are not filled out', () => {
     // TODO: Circle back around to testing this once the styling for the form is complete
     cy.findByRole('textbox', { name: /community name/i }).should(
@@ -119,5 +88,87 @@ describe('Creator Settings Page', () => {
     // should not redirect the creator to the home page when the form is not completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();
     cy.url().should('equal', `${baseUrl}admin/creator_settings/new`);
+  });
+
+  context('color contrast ratios', () => {
+    it('should show an error when the constrast ratio of a brand color is too low', () => {
+      const lowContrastColor = '#a6e8a6';
+
+      cy.findByLabelText(/^Brand color/)
+        .clear()
+        .type(lowContrastColor)
+        .blur();
+
+      cy.findByText(
+        /^The selected color must be darker for accessibility purposes./,
+      ).should('be.visible');
+    });
+
+    it('should not show an error when the constrast ratio of a brand color is good', () => {
+      const adequateContrastColor = '#25544b';
+
+      cy.findByLabelText(/^Brand color/)
+        .clear()
+        .type(adequateContrastColor)
+        .blur();
+
+      cy.findByText(
+        /^The selected color must be darker for accessibility purposes./,
+      ).should('not.exist');
+    });
+  });
+
+  context('brand color updates', () => {
+    it('should not update the brand color if the color contrast ratio is low', () => {
+      const lowContrastColor = '#a6e8a6';
+      const lowContrastRgbColor = 'rgb(166, 232, 166)';
+
+      cy.findByLabelText(/^Brand color/)
+        .clear()
+        .type(lowContrastColor)
+        .blur();
+
+      cy.findByText(
+        /^The selected color must be darker for accessibility purposes./,
+      ).should('be.visible');
+
+      cy.findByRole('button', { name: 'Finish' }).should(
+        'not.have.css',
+        'background-color',
+        lowContrastRgbColor,
+      );
+    });
+
+    it('should update the colors on the form when a new brand color is selected', () => {
+      const color = '#25544b';
+      const rgbColor = 'rgb(37, 84, 75)';
+
+      cy.findByLabelText(/^Brand color/)
+        .clear()
+        .type(color)
+        .blur();
+
+      cy.findByRole('button', { name: 'Finish' }).should(
+        'have.css',
+        'background-color',
+        rgbColor,
+      );
+
+      cy.findAllByRole('radio', { name: /members only/i })
+        .check()
+        .should('have.css', 'background-color', rgbColor)
+        .should('have.css', 'border-color', rgbColor);
+
+      cy.findByRole('link', { name: /Forem Admin Guide/i }).should(
+        'have.css',
+        'background-color',
+        rgbColor,
+      );
+
+      cy.findByRole('textbox', { name: /community name/i })
+        .focus()
+        .type('Climbing Life')
+        .should('have.css', 'border-color', rgbColor);
+    });
   });
 });

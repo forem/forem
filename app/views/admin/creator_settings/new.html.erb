@@ -3,7 +3,7 @@
     <%= Rails.application.assets["setup-mode.css"].to_s.html_safe %>
   </style>
 
-  <main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-xs" data-controller="creator-settings">
+  <main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-s" data-controller="creator-settings">
     <div aria-live="assertive">
       <% if flash[:error] %>
         <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
@@ -12,7 +12,7 @@
       <% end %>
     </div>
 
-    <%= form_tag(admin_creator_settings_path, method: "post", class: "relative z-elevate p-4") do %>
+    <%= form_tag(admin_creator_settings_path, method: "post", class: "relative z-elevate p-4", "data-action": "submit->creator-settings#formValidations") do %>
       <% if defined?(resource) && resource&.errors&.any? %>
         <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
           <div class="crayons-card__header">
@@ -44,7 +44,7 @@
       <% end %>
     <% end %>
 
-    <%= inline_svg_tag("forem-background.svg", aria_hidden: true, class: "forem-background absolute bottom-0 right-0 hidden m:block") %>
+    <%= inline_svg_tag("forem-background.svg", aria_hidden: true, class: "forem-background fixed bottom-0 right-0 hidden m:block") %>
   </main>
 
 <% end %>

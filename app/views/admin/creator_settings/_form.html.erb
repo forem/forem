@@ -38,16 +38,19 @@
                          title: "Provide a valid HEX Color or pick your color from the color picker.",
                          placeholder: ::Settings::UserExperience.primary_brand_color_hex,
                          class: "crayons-textfield js-color-field",
-                         "data-action": "change->creator-settings#updateBranding" %>
+                         "data-action": "change->creator-settings#handleValidationsAndUpdates",
+                         "data-creator-settings-target": "brandColor",
+                         "aria-describedby": "color-contrast-error" %>
       <%= color_field_tag :primary_brand_color_hex,
                           ::Settings::UserExperience.primary_brand_color_hex,
                           pattern: "^#+([a-fA-F0-9]{6})$",
                           placeholder: ::Settings::UserExperience.primary_brand_color_hex,
                           class: "crayons-color-selector js-color-field ml-2",
-                          "data-action": "change->creator-settings#updateBranding",
-                          required: true %>
+                          required: true,
+                          "data-action": "change->creator-settings#handleValidationsAndUpdates" %>
     </div>
   </div>
+  <div id="color-contrast-error" data-creator-settings-target="colorContrastError" aria-live="polite" class="mt-1 color-accent-danger"></div>
 </div>
 
 <div class="crayons-field mt-6 align-left">
