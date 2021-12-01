@@ -25,7 +25,7 @@ class TagAdjustment < ApplicationRecord
 
     user.has_role?(:tag_moderator, tag) ||
       user.has_role?(:admin) ||
-      user.has_role?(:super_admin)
+      user.authorizer.super_admin?
   end
 
   def article_tag_list

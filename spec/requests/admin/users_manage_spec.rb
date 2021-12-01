@@ -146,7 +146,7 @@ RSpec.describe "Admin::Users", type: :request do
       params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
       patch user_status_admin_user_path(user.id), params: params
 
-      expect(user.has_role?(:super_admin)).to be(true)
+      expect(user.authorizer.super_admin?).to be(true)
     end
 
     it "does not allow non-super-admin to doll out admin" do
@@ -157,7 +157,7 @@ RSpec.describe "Admin::Users", type: :request do
       params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
       patch user_status_admin_user_path(user.id), params: params
 
-      expect(user.has_role?(:super_admin)).not_to be false
+      expect(user.authorizer.super_admin?).not_to be false
     end
 
     it "creates a general note on the user" do
@@ -178,7 +178,7 @@ RSpec.describe "Admin::Users", type: :request do
         delete admin_user_path(user.id), params: { user_id: user.id, role: :trusted }
       end.to change(user.roles, :count).by(-1)
 
-      expect(user.has_role?(:trusted)).to be false
+      expect(user.authorizer.has_trusted_role?).to be false
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
 
@@ -203,7 +203,7 @@ RSpec.describe "Admin::Users", type: :request do
         delete admin_user_path(user.id), params: { user_id: user.id, role: :super_admin }
       end.not_to change(user.roles, :count)
 
-      expect(user.has_role?(:super_admin)).to be true
+      expect(user.authorizer.super_admin?).to be true
       expect(request.flash["danger"]).to include("cannot be removed.")
     end
 

@@ -346,65 +346,101 @@ class User < ApplicationRecord
     end
   end
 
-  def suspended?
-    has_role?(:suspended)
+  ##############################################################################
+  #
+  # Heads Up: Start Authorization Refactor
+  #
+  ##############################################################################
+  #
+  # What's going on here?  First, I'm wanting to encourage folks to
+  # not call these methods directly.  Instead I want to get all of
+  # these method calls in a single location so we can begin to analyze
+  # the behavior.
+
+  alias __has_role_without_warning? has_role?
+  private :__has_role_without_warning?
+
+  # @api private
+  #
+  # The method originally comes from the Rollify gem.  Please don't
+  # call it from controllers or views.
+  #
+  # @see AuthorizationLayer for further discussion.
+  #
+  # @note Calling this method will issue a deprecation warning, which
+  #       is a bit of a misnomer.  [@jeremyf] I don't plan to remove
+  #       this method, I simply want to discourage it's public usage.
+  #       I'm contemplating "privatizing" this method.
+  def has_role?(*args)
+    ActiveSupport::Deprecation.warn("User#has_role?")
+    __has_role_without_warning?(*args)
   end
 
-  def warned?
-    has_role?(:warned)
+  ##
+  # @api private
+  #
+  # The method originally comes from the Rollify gem.  Please don't
+  # call it from controllers or views.
+  #
+  # @see AuthorizationLayer for further discussion.
+  #
+  # @note Calling this method will issue a deprecation warning, which
+  #       is a bit of a misnomer.  [@jeremyf] I don't plan to remove
+  #       this method, I simply want to discourage it's public usage.
+  #       I'm contemplating "privatizing" this method.
+  def has_any_role?(*args)
+    ActiveSupport::Deprecation.warn("User#has_any_role?")
+    __has_any_role_without_warning?(*args)
   end
 
-  def warned
-    ActiveSupport::Deprecation.warn("User#warned is deprecated, favor User#warned?")
-    warned?
+  alias __has_any_role_without_warning? has_any_role?
+  private :__has_role_without_warning?
+
+  ##
+  # @api private
+  #
+  # This is a refactoring step to help move the role questions out of the user object.
+  #
+  # @see https://github.com/forem/forem/issues/15624 for more discussion.
+  def authorizer
+    @authorizer ||= AuthorizationLayer::DeprecatedImpliedQueries.new(user: self)
   end
 
-  def super_admin?
-    has_role?(:super_admin)
-  end
-
-  def creator?
-    has_role?(:creator)
-  end
-
-  def any_admin?
-    @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
-  end
-
-  def tech_admin?
-    has_role?(:tech_admin) || has_role?(:super_admin)
-  end
-
-  def vomited_on?
-    Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
-  end
-
-  def trusted?
-    return @trusted if defined? @trusted
-
-    @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
-      has_role?(:trusted)
-    end
-  end
-
-  def trusted
-    ActiveSupport::Deprecation.warn("User#trusted is deprecated, favor User#trusted?")
-    trusted?
-  end
+  # My preference is to go with:
+  #
+  #   `Authorize.for(user: user, to: <action>, on: <subject>)`
+  #
+  # However, this is a refactor, and it's goal is to reduce the direct
+  # calls to user.<role question>.
+  delegate(
+    :warned?,
+    :warned, # TODO: Remove this method from the code-base
+    :admin?,
+    :creator?,
+    :any_admin?,
+    :tech_admin?,
+    :vomitted_on?,
+    :trusted?,
+    :trusted, # Remove this method from the code-base
+    :comment_suspended?,
+    :workshop_eligible?,
+    :banished?,
+    :auditable?,
+    :tag_moderator?,
+    :suspended?,
+    to: :authorizer,
+  )
+  ##############################################################################
+  #
+  # End Authorization Refactor
+  #
+  ##############################################################################
 
   def moderator_for_tags
     Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
       tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
       Tag.where(id: tag_ids).pluck(:name)
     end
-  end
-
-  def comment_suspended?
-    has_role?(:comment_suspended)
-  end
-
-  def workshop_eligible?
-    has_any_role?(:workshop_pass)
   end
 
   def admin_organizations
@@ -453,10 +489,6 @@ class User < ApplicationRecord
     errors.add(:username, "has been banished.") if BanishedUser.exists?(username: username)
   end
 
-  def banished?
-    username.starts_with?("spam_")
-  end
-
   def subscribe_to_mailchimp_newsletter
     return unless registered && email.present?
     return if Settings::General.mailchimp_api_key.blank?
@@ -490,14 +522,6 @@ class User < ApplicationRecord
     return if Settings::General.mailchimp_api_key.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
-  end
-
-  def auditable?
-    trusted || tag_moderator? || any_admin?
-  end
-
-  def tag_moderator?
-    roles.where(name: "tag_moderator").any?
   end
 
   def enough_credits?(num_credits_needed)

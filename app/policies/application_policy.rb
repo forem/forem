@@ -60,11 +60,11 @@ class ApplicationPolicy
   end
 
   def minimal_admin?
-    user.has_role?(:super_admin) || user.has_role?(:admin)
+    user.authorizer.super_admin? || user.has_role?(:admin)
   end
 
   def user_admin?
-    user.has_role?(:super_admin)
+    user.authorizer.super_admin?
   end
 
   def support_admin?
@@ -74,6 +74,6 @@ class ApplicationPolicy
   delegate :suspended?, to: :user, prefix: true
 
   def user_trusted?
-    user.has_role?(:trusted)
+    user.authorizer.has_trusted_role?
   end
 end
