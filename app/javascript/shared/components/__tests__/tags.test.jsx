@@ -37,7 +37,7 @@ describe('<Tags />', () => {
       const tests = [
         { key: 'a', code: '65' },
         { key: '1', code: '49' },
-        // { key: ',', code: '188' },
+        { key: ',', code: '188' },
         { key: 'Enter', code: '13' },
       ];
 
