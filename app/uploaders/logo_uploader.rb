@@ -40,7 +40,7 @@ class LogoUploader < BaseUploader
   private
 
   def random_string
-    Array.new(20) { rand(36).to_s(36) }.join
+    SecureRandom.alphanumeric(20)
   end
 
   def not_svg?(file)
