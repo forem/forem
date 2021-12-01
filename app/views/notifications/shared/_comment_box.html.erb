@@ -12,7 +12,7 @@
         <%= json_data["comment"]["processed_html"].html_safe %>
       </div>
 
-      <% if context == "moderation" && current_user.has_role?(:trusted) %>
+      <% if context == "moderation" && current_user.has_trusted_role? %>
         <div class="crayons-card crayons-card--secondary crayons-card--elevated notification__mod-controls">
           <button
             class="crayons-btn crayons-btn--icon crayons-btn--icon-rounded crayons-btn--ghost inline-flex crayons-btn--s reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "thumbsdown") ? "reacted" : "" %>"

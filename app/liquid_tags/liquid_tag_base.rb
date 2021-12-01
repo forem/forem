@@ -1,4 +1,17 @@
 class LiquidTagBase < Liquid::Tag
+  # The method name to send the user to ask whether or not they
+  # have access to the given liquid tag.
+  #
+  # @see LiquidTagPolicy
+  #
+  # @note My preference would be to use `class_attribute` as it keeps
+  #       things tidier, but that's not a hard preference.
+  #
+  # @note Should we verify that the user responds to this given method?
+  def self.user_authorization_method_name
+    nil
+  end
+
   def self.script
     ""
   end
@@ -23,6 +36,12 @@ class LiquidTagBase < Liquid::Tag
     regex_options
       .filter_map { |regex| input.match(regex) }
       .first
+  end
+
+  # A method to help collaborators not need to reach into the class
+  # implementation details.
+  def user_authorization_method_name
+    self.class.user_authorization_method_name
   end
 
   private
