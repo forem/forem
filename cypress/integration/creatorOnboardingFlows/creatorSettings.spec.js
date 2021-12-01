@@ -110,7 +110,7 @@ describe('Creator Settings Page', () => {
       cy.findByLabelText(/^Brand color/)
         .clear()
         .type(adequateContrastColor)
-        .trigger('change');
+        .blur();
 
       cy.findByText(
         /^The selected color must be darker for accessibility purposes./,
@@ -126,7 +126,7 @@ describe('Creator Settings Page', () => {
       cy.findByLabelText(/^Brand color/)
         .clear()
         .type(lowContrastColor)
-        .trigger('change');
+        .blur();
 
       cy.findByText(
         /^The selected color must be darker for accessibility purposes./,
@@ -146,7 +146,7 @@ describe('Creator Settings Page', () => {
       cy.findByLabelText(/^Brand color/)
         .clear()
         .type(color)
-        .trigger('change');
+        .blur();
 
       cy.findByRole('button', { name: 'Finish' }).should(
         'have.css',
