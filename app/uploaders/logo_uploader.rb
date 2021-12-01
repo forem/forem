@@ -1,5 +1,5 @@
 class LogoUploader < BaseUploader
-  MAX_FILE_SIZE = 3 # Megabytes
+  MAX_FILE_SIZE = 3.megabytes
   EXTENSION_ALLOWLIST = %w[svg png jpg jpeg jpe].freeze
   IMAGE_TYPE_ALLOWLIST = %i[svg png jpg jpeg jpe].freeze
   CONTENT_TYPE_ALLOWLIST = %w[image/svg+xml image/png image/jpg image/jpeg].freeze
