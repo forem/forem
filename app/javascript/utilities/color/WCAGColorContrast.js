@@ -12,13 +12,16 @@ export const WCAGColorContrast = {
    * @return {Number}
    */
   ratio(rgb1, rgb2) {
+    let sRGB1;
+    let sRGB2;
+
     if (this.validRGB(rgb1)) {
-      var sRGB1 = this.RGBtosRGB(rgb1);
+      sRGB1 = this.RGBtosRGB(rgb1);
     } else {
       throw `Invalid color ${rgb1}`;
     }
     if (this.validRGB(rgb2)) {
-      var sRGB2 = this.RGBtosRGB(rgb2);
+      sRGB2 = this.RGBtosRGB(rgb2);
     } else {
       throw `Invalid color ${rgb2}`;
     }
