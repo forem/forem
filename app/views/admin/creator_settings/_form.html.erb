@@ -90,12 +90,12 @@
       <div class="mb-2">
         <%= hidden_field_tag :checked_code_of_conduct, "0" %>
         <%= check_box_tag :checked_code_of_conduct, "1", false, class: "crayons-checkbox", required: true %>
-        <label for="checked_code_of_conduct">I agree to uphold our <a href="/code-of-conduct">Code of Conduct</a>.</label>
+        <label for="checked_code_of_conduct">I agree to uphold our <a href="/code-of-conduct" target="code-of-conduct">Code of Conduct</a>.</label>
       </div>
       <div>
         <%= hidden_field_tag :checked_terms_and_conditions, "0" %>
         <%= check_box_tag :checked_terms_and_conditions, "1", false, class: "crayons-checkbox", required: true %>
-        <label for="checked_terms_and_conditions">I agree to our <a href="/terms">Terms and Conditions</a>.</label>
+        <label for="checked_terms_and_conditions">I agree to our <a href="/terms" target="terms-and-conditions">Terms and Conditions</a>.</label>
       </div>
     </div>
   </fieldset>
