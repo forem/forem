@@ -69,7 +69,7 @@ begin
   puts "Merged #{source} into #{channel}"
 
   begin
-    run "echo '#{tag}' > .release-version"
+    File.write ".release-version", tag
     run "git add .release-version"
     run "git commit --message 'Version #{tag}'"
     run "git tag #{tag}"
