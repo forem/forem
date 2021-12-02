@@ -21,6 +21,7 @@ class User < ApplicationRecord
     end
   end
 
+  include StringAttributeCleaner.for(:email)
   ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
@@ -208,10 +209,8 @@ class User < ApplicationRecord
   }
   before_validation :check_for_username_change
   before_validation :downcase_email
+
   # make sure usernames are not empty, to be able to use the database unique index
-
-  StringAttributeCleaner.for(:email)
-
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records

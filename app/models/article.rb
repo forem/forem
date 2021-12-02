@@ -9,6 +9,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
+  include StringAttributeCleaner.for(:canonical_url, on: :before_save)
   DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
 
   attr_accessor :publish_under_org
@@ -102,8 +103,6 @@ class Article < ApplicationRecord
   before_validation :evaluate_markdown, :create_slug
   before_save :update_cached_user
   before_save :set_all_dates
-
-  StringAttributeCleaner.for(:canonical_url, on: :before_save)
 
   before_save :calculate_base_scores
   before_save :fetch_video_duration
