@@ -66,7 +66,7 @@ export function foremMobileNamespace() {
       try {
         if (Runtime.isNativeIOS(namespace)) {
           window.webkit.messageHandlers[namespace].postMessage(message);
-        } else if (Runtime.isNativeAndroid(namespace)) {
+        } else if (Runtime.isNativeAndroid(`${namespace}Message`)) {
           AndroidBridge[`${namespace}Message`](JSON.stringify(message));
         }
       } catch (error) {
