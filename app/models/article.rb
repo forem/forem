@@ -103,7 +103,7 @@ class Article < ApplicationRecord
   before_save :update_cached_user
   before_save :set_all_dates
 
-  StringAttributeCleaner.for(:canonical_url)
+  StringAttributeCleaner.for(:canonical_url, on: :before_save)
 
   before_save :calculate_base_scores
   before_save :fetch_video_duration
