@@ -23,21 +23,12 @@ export default {
         defaultValue: { summary: 'default' },
       },
     },
-    rounded: {
-      description:
-        'By enabling this setting you can turn all corners of the CTA to be fully rounded. We usually use it **only** for CTAs containing **icon without label**.',
-      table: {
-        defaultValue: { summary: false },
-      },
-    },
   },
 };
 
 export const Default = (args) => <CTA {...args} />;
 Default.args = {
   children: 'Call to action',
-  variant: 'default',
-  rounded: false,
 };
 
 export const Branded = (args) => <CTA {...args} />;

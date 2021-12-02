@@ -14,10 +14,8 @@ Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) 
 
 ## Usage
 
-Under the hood, CTA outputs `<a>` element.
-
-Call To Actions has slighlty different UI than regular `<Link block />` as our intention here was to make these more prominent. 
-`<CTA />` is basically a `<Link />` therefore standard link markup should be used, including an `href` (links omitting `href` attributes are not focusable by keyboard).
+Under the hood, CTA outputs `<a>` element, therefore standard link markup should be used,
+including an `href` (links omitting `href` attributes are not focusable by keyboard).
 
 ### Icons
 
@@ -27,13 +25,8 @@ By default, the icon itself won't be customizable. Icons within CTAs are hidden 
 
 #### Icon-only
 
-There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
-Icon-only CTAs should always use clear and obvious icon, ideally accompanied by a title. Icon-only CTAs will require an `aria-label` to ensure they are understood by users of assistive technologies.
-
-##### Fully rounded
-
-In most cases, whenever we display icon-only CTAs we tend to make them fully rounded - use `rounded` prop for that.
-Other than that please avoid customizing border-radius on CTAs.
+Call To Actions should never come without label, therefore it is forbidden to create CTAs with icon only.
+For such a scenario you should use `<Link />s` or `<Button />s` (depending on use case).
 
 ## Design
 

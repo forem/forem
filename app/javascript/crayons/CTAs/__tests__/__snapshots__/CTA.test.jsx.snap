@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<CTA /> renders branded CTA 1`] = `"<a href=\\"#\\" class=\\"c-link c-link--block c-cta c-cta--branded\\">Hello world!</a>"`;
+exports[`<CTA /> renders branded CTA 1`] = `"<a href=\\"#\\" class=\\"c-cta c-cta--branded\\">Hello world!</a>"`;
 
-exports[`<CTA /> renders default CTA 1`] = `"<a href=\\"#\\" class=\\"c-link c-link--block c-cta c-cta--default\\">Hello world!</a>"`;
+exports[`<CTA /> renders default CTA 1`] = `"<a href=\\"#\\" class=\\"c-cta\\">Hello world!</a>"`;
