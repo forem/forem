@@ -8,11 +8,11 @@
 
   <div class="crayons-card crayons-card--content-rows">
     <h2 class="crayons-subtitle-1">
-      Appearance
+      <%= t("views.settings.custom.appearance") %>
     </h2>
 
     <fieldset class="crayons-field">
-      <legend class="crayons-field__label">Site Theme</legend>
+      <legend class="crayons-field__label"><%= t("views.settings.custom.theme") %></legend>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
         <%# This is temporary while we're migrating themes %>
         <% %w[light_theme dark_theme].each do |theme| %>
@@ -22,7 +22,7 @@
     </fieldset>
 
     <div class="crayons-field">
-      <%= f.label :config_font, "Base Reading Font", class: "crayons-field__label" %>
+      <%= f.label :config_font, t("views.settings.custom.font"), class: "crayons-field__label" %>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
         <% Users::Setting.config_fonts.keys.each do |font| %>
           <%= render partial: "font_selector", locals: { f: f, font: font } %>
@@ -31,7 +31,7 @@
     </div>
 
     <div class="crayons-field">
-      <%= f.label :config_navbar, "Site Navbar", class: "crayons-field__label" %>
+      <%= f.label :config_navbar, t("views.settings.custom.navbar"), class: "crayons-field__label" %>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
         <% Users::Setting.config_navbars.keys.each do |navbar| %>
           <%= render partial: "navbar_selector", locals: { f: f, navbar: navbar } %>
@@ -42,10 +42,10 @@
 
   <div class="crayons-card crayons-card--content-rows">
     <h2 class="crayons-subtitle-1">
-      Writing
+      <%= t("views.settings.custom.writing") %>
     </h2>
     <div class="crayons-field">
-      <%= f.label :editor_version, "Editor Version", class: "crayons-field__label" %>
+      <%= f.label :editor_version, t("views.settings.custom.editor"), class: "crayons-field__label" %>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
         <% Users::Setting.editor_versions.keys.each do |version| %>
           <%= render partial: "editor_selector", locals: { f: f, version: version } %>
@@ -56,18 +56,17 @@
 
   <div class="crayons-card crayons-card--content-rows">
     <h2 class="crayons-subtitle-1">
-      Content
+      <%= t("views.settings.custom.content") %>
     </h2>
     <div class="crayons-field">
-      <%= f.label :experience_level, "What is your approximate experience level (1-5)?", class: "crayons-field__label" %>
+      <%= f.label :experience_level, t("views.settings.custom.level"), class: "crayons-field__label" %>
       <div class="theme-selector-field grid grid-cols-5">
         <% user_experience_levels.each_with_index do |exp, i| %>
           <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i, label: user_experience_labels } %>
         <% end %>
       </div>
       <p>
-        This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are
-        shown along with tags you follow etc.
+        <%= t("views.settings.custom.level_desc") %>
       </p>
     </div>
   </div>
@@ -75,25 +74,22 @@
   <div class="crayons-card crayons-card--content-rows">
     <header>
       <h2 class="crayons-subtitle-1">
-        Sponsors
+        <%= t("views.settings.custom.sponsor") %>
       </h2>
       <p>
-        You have the option to remove sponsor messaging (where it is practical
-        to do so). Our wonderful sponsors help sustain the platform and improve
-        your experience, and we strive to make their presence constructive to
-        the community, but feel free to use this setting if you wish.
+        <%= t("views.settings.custom.sponsor_desc") %>
       </p>
     </header>
 
     <fieldset class="grid gap-4">
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :display_sponsors, class: "crayons-checkbox" %>
-        <%= f.label :display_sponsors, "Display Sponsors (When browsing)", class: "crayons-field__label" %>
+        <%= f.label :display_sponsors, t("views.settings.custom.sponsor_field"), class: "crayons-field__label" %>
       </div>
 
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :permit_adjacent_sponsors, class: "crayons-checkbox" %>
-        <%= f.label :permit_adjacent_sponsors, "Permit Nearby Sponsors (When publishing)", class: "crayons-field__label" %>
+        <%= f.label :permit_adjacent_sponsors, t("views.settings.custom.adjacent"), class: "crayons-field__label" %>
       </div>
     </fieldset>
   </div>
@@ -101,23 +97,22 @@
   <div class="crayons-card crayons-card--content-rows">
     <header>
       <h2 class="crayons-subtitle-1">
-        Announcements
+        <%= t("views.settings.custom.announce") %>
       </h2>
       <p>
-        Announcements inform you on important site-wide
-        information, like updates and events.
+        <%= t("views.settings.custom.announce_desc") %>
       </p>
     </header>
 
     <fieldset class="grid gap-4">
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :display_announcements, class: "crayons-checkbox" %>
-        <%= f.label :display_announcements, "Display Announcements (When browsing)", class: "crayons-field__label" %>
+        <%= f.label :display_announcements, t("views.settings.custom.announce_field"), class: "crayons-field__label" %>
       </div>
     </fieldset>
   </div>
 
   <div class="save-footer crayons-card crayons-card--content-rows">
-    <button class="crayons-btn" type="submit">Save</button>
+    <button class="crayons-btn" type="submit"><%= t("views.settings.custom.save") %></button>
   </div>
 <% end %>
