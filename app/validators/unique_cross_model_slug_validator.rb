@@ -37,7 +37,7 @@ class UniqueCrossModelSlugValidator < ActiveModel::EachValidator
     return true if value.include?("sitemap-")
 
     model_and_attribute_name_for_uniquness_test.detect do |model, attribute|
-      next if record.is_a?(klass)
+      next if record.is_a?(model)
 
       model.exists?(attribute => value)
     end

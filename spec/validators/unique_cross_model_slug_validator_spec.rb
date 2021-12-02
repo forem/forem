@@ -11,8 +11,23 @@ RSpec.describe UniqueCrossModelSlugValidator do
       include ActiveModel::Validations
       attr_accessor :name
 
-      validates :name, unique_cross_model_slug: true
+      def initialize
+        @enforce_validation = true
+      end
+
+      attr_accessor :enforce_validation
+      alias_method :enforce_validation?, :enforce_validation
+
+      validates :name, unique_cross_model_slug: true, if: :enforce_validation?
     end
+  end
+
+  context "when if option is false" do
+    let(:name) { "sitemap-happy" }
+
+    before { record.enforce_validation = false }
+
+    it { is_expected.to be_valid }
   end
 
   context "when name includes sitemap-" do
