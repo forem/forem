@@ -8,9 +8,9 @@
     <% end %>
   </div>
 </div>
-<h2>Danger zone</h2>
-<%= form_tag users_leave_org_path(@organization), onsubmit: "return confirm('Are you sure you want to leave this organization?');" do %>
+<h2><%= t("views.settings.danger") %></h2>
+<%= form_tag users_leave_org_path(@organization), onsubmit: "return confirm('#{t('views.settings.org.leave.confirm')}');" do %>
   <div class="field">
-    <%= submit_tag "Leave Organization", class: "danger-button" %>
+    <%= submit_tag t("views.settings.org.leave.submit"), class: "danger-button" %>
   </div>
 <% end %>
