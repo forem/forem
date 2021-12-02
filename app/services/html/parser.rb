@@ -44,7 +44,7 @@ module Html
         next if allowed_image_host?(src)
 
         if synchronous_detail_detection && img
-          attribute_width, attribute_height = image_width_height(img)
+          attribute_width, attribute_height = Articles::EnrichImageAttributes.image_width_height(img, TIMEOUT)
           img["width"] = attribute_width
           img["height"] = attribute_height
         end
@@ -60,13 +60,6 @@ module Html
       @html = doc.to_html
 
       self
-    end
-
-    def image_width_height(img)
-      src = img.attr("src")
-      return unless src
-
-      FastImage.size(src, timeout: TIMEOUT)
     end
 
     def wrap_all_images_in_links

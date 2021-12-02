@@ -13,7 +13,7 @@
     <header class="profile-header crayons-card mt-2">
       <div class="relative profile-header__top">
         <span class="crayons-logo crayons-logo--3xl">
-          <img src="<%= Images::Profile.call(@user.profile_image_url, length: 320) %>" alt="<%= @user.name %> logo" width="128" height="128" alt="<%= @user.name %> profile picture" class="crayons-logo__image">
+          <img src="<%= Images::Profile.call(@user.profile_image_url, length: 320) %>" alt="<%= @user.name %> logo" width="128" height="128" title="<%= t("views.organizations.logo", org: @user.name) %>" class="crayons-logo__image">
         </span>
 
         <div class="profile-header__actions">
@@ -21,7 +21,7 @@
             id="user-follow-butt"
             class="crayons-btn whitespace-nowrap follow-action-button"
             data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'>
-            <%= t("core.follow") %>
+            <%= t("views.organizations.follow") %>
           </button>
         </div>
       </div>
@@ -31,36 +31,35 @@
         <% if @user.tag_line.present? %>
           <p class="fs-l m:fs-xl color-base-70 mb-4 mx-auto max-w-100 m:max-w-75"><%= sanitize @user.tag_line %></p>
         <% end %>
-        <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= sanitize(@user.summary.presence || "404 bio not found") %></p>
+        <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= sanitize(@user.summary.presence || t("views.organizations.empty")) %></p>
 
         <div class="profile-header__meta">
           <% if @organization.location.present? %>
             <span class="profile-header__meta__item">
-              <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("core.location")) %>
+              <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("views.organizations.location.icon")) %>
               <%= sanitize @organization.location %>
             </span>
           <% end %>
 
           <span class="profile-header__meta__item">
-            <%= inline_svg_tag("cake.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("core.joined")) %>
-            <%= t("core.joined_on") %>&nbsp;
-            <%= local_date(@user.created_at) %>
+            <%= inline_svg_tag("cake.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("views.organizations.joined.icon")) %>
+            <%= t("views.organizations.joined.text_html", date: local_date(@user.created_at)) %>
           </span>
 
           <span class="profile-header__meta__item -ml-1">
             <% if @user.twitter_username.present? %>
               <a href="https://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: t("views.organizations.twitter.icon")) %>
               </a>
             <% end %>
             <% if @user.github_username.present? %>
               <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "GitHub logo") %>
+                <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: t("views.organizations.github.icon")) %>
               </a>
             <% end %>
             <% if @user.profile.website_url.present? %>
               <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
-                <%= inline_svg_tag("external.svg", class: "crayons-icon", aria: true, title: "External link icon") %>
+                <%= inline_svg_tag("external-link.svg", class: "crayons-icon", aria: true, title: t("views.organizations.external.icon")) %>
               </a>
             <% end %>
           </span>

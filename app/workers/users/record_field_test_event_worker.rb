@@ -8,6 +8,7 @@ module Users
     def perform(user_id, goal)
       @user = User.find_by(id: user_id)
       return unless @user
+      return unless FieldTest.config["experiments"]
 
       FieldTest.config["experiments"].each_key do |key|
         @experiment = key.to_sym

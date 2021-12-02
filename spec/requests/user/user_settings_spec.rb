@@ -15,7 +15,7 @@ RSpec.describe "UserSettings", type: :request do
       before { sign_in user }
 
       it "renders various settings tabs properly" do
-        Settings.tab_list.each do |tab|
+        Constants::Settings::TAB_LIST.each do |tab|
           get user_settings_path(tab.downcase.tr(" ", "-"))
 
           expect(response.body).to include("Settings for")
@@ -84,7 +84,7 @@ RSpec.describe "UserSettings", type: :request do
 
         feed_section = "Publishing to #{Settings::Community.community_name} from RSS"
         stackbit_section = "Generate a personal blog from your #{Settings::Community.community_name} posts"
-        titles = ["Comment templates", "Connect settings", feed_section, "Web monetization", stackbit_section]
+        titles = ["Comment templates", feed_section, "Web monetization", stackbit_section]
         expect(response.body).to include(*titles)
       end
 

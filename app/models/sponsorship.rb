@@ -2,6 +2,7 @@ class Sponsorship < ApplicationRecord
   LEVELS = %w[gold silver bronze tag media devrel].freeze
   METAL_LEVELS = %w[gold silver bronze].freeze
   STATUSES = %w[none pending live].freeze
+  SPONSORABLE_TYPES = %w[Tag ActsAsTaggableOn::Tag].freeze
   # media has no fixed amount of credits
   CREDITS = {
     gold: 6_000,
@@ -19,6 +20,11 @@ class Sponsorship < ApplicationRecord
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
   validates :user, :organization, :featured_number, presence: true
+  validates :sponsorable_type, inclusion: {
+    in: SPONSORABLE_TYPES,
+    allow_blank: true,
+    message: "is not a sponsorable type"
+  }
 
   validate :validate_tag_uniqueness, if: proc { level.to_s == "tag" }
   validate :validate_level_uniqueness, if: proc { METAL_LEVELS.include?(level) }

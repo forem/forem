@@ -1,6 +1,6 @@
 <% if purchase.sponsorable && purchase.sponsorable.class.name.include?("Tag") %>
   <a href="<%= tag_path(purchase.sponsorable.name) %>">
-    Tag: <%= purchase.sponsorable.name %>
+    <%= t("views.credits.tag", name: purchase.sponsorable.name) %>
   </a>
 <% else %>
   <span><%= purchase.level.titleize %></span>

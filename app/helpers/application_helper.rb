@@ -1,5 +1,5 @@
 module ApplicationHelper
-  # rubocop:disable Performance/OpenStruct
+  # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
   USER_COLORS = ["#19063A", "#dce9f3"].freeze
 
   DELETED_USER = OpenStruct.new(
@@ -11,7 +11,7 @@ module ApplicationHelper
     twitter_username: nil,
     github_username: nil,
   )
-  # rubocop:enable Performance/OpenStruct
+  # rubocop:enable Style/OpenStructUse, Performance/OpenStruct
 
   LARGE_USERBASE_THRESHOLD = 1000
 
@@ -124,9 +124,9 @@ module ApplicationHelper
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
     followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
-                        followable.object.class.name.downcase
+                        followable.object.class.name
                       else
-                        followable.class.name.downcase
+                        followable.class.name
                       end
 
     followable_name = followable.name
@@ -295,5 +295,23 @@ module ApplicationHelper
 
   def role_display_name(role)
     role.name.titlecase
+  end
+
+  def render_tag_link(tag, filled: false, monochrome: false, classes: "")
+    color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
+    color_faded = Color::CompareHex.new([color]).opacity(0.1)
+    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
+
+    options = {
+      class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
+      style: "
+        --tag-bg: #{color_faded};
+        --tag-prefix: #{color};
+        --tag-bg-hover: #{color_faded};
+        --tag-prefix-hover: #{color};
+      "
+    }
+
+    link_to(label, tag_path(tag), options)
   end
 end

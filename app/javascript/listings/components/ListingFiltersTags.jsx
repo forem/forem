@@ -15,7 +15,7 @@ export const ListingFiltersTags = ({
   const shouldRenderClearQueryButton = query.length > 0;
 
   return (
-    <div className="relative pb-2 m:pb-6 px-2 m:px-0">
+    <div className="relative pb-2 m:pb-3 px-3 m:px-0">
       <input
         type="text"
         placeholder="Search..."

@@ -272,7 +272,7 @@ module Admin
       @related_vomit_reactions =
         Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
           .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
-          .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
+          .or(Reaction.where(reactable_type: "User", reactable_id: @user.id, category: "vomit"))
           .includes(:reactable)
           .order(created_at: :desc).limit(15)
     end

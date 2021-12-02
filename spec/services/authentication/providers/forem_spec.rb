@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Authentication::Providers::Forem, type: :service do
-  before { allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true) }
-
   describe ".authentication_path" do
     it "returns the correct authentication path" do
       expected_path = Rails.application.routes.url_helpers.user_forem_omniauth_authorize_path

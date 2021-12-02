@@ -72,10 +72,12 @@ module Moderator
         check_super_admin
         remove_negative_roles
         user.add_role(:admin)
+        TagModerators::AddTrustedRole.call(user)
       when "Super Admin"
         check_super_admin
         remove_negative_roles
         user.add_role(:super_admin)
+        TagModerators::AddTrustedRole.call(user)
       when "Tech Admin"
         check_super_admin
         remove_negative_roles
@@ -115,13 +117,13 @@ module Moderator
 
     def remove_negative_roles
       user.remove_role(:suspended) if user.suspended?
-      user.remove_role(:warned) if user.warned
+      user.remove_role(:warned) if user.warned?
       user.remove_role(:comment_suspended) if user.comment_suspended?
     end
 
     def update_trusted_cache
       Rails.cache.delete("user-#{@user.id}/has_trusted_role")
-      @user.trusted
+      @user.trusted?
     end
 
     def update_roles

@@ -9,7 +9,6 @@ import { SingleListing } from '../singleListing/SingleListing';
 const listing = {
   id: 22,
   category: 'misc',
-  contact_via_connect: true,
   location: 'West Refugio',
   processed_html:
     '\u003cp\u003eEius et ullam. Dolores et qui. Quis \u003cstrong\u003equi\u003c/strong\u003e omnis.\u003c/p\u003e\n',

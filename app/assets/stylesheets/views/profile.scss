@@ -2,14 +2,12 @@
 
 .profile-header {
   --padding: var(--su-3);
-  border-radius: 0;
 
   @media (min-width: $breakpoint-s) {
     --padding: var(--su-4);
   }
 
   @media (min-width: $breakpoint-m) {
-    border-radius: var(--radius);
     text-align: center;
   }
 

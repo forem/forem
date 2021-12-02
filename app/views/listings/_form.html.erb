@@ -10,27 +10,27 @@
       <div class="grid gap-6">
         <div class="crayons-field">
           <%= form.label "title", class: "crayons-label" %>
-          <%= form.text_field "title", placeholder: "128 characters max, plain text", class: "crayons-textfield" %>
+          <%= form.text_field "title", placeholder: t("views.listings.form.title.placeholder"), class: "crayons-textfield" %>
         </div>
 
         <div class="crayons-field">
-          <%= form.label "body_markdown", "Body Markdown", class: "crayons-field__label" %>
-          <%= form.text_area "body_markdown", placeholder: "...", class: "crayons-textfield" %>
-          <p class="crayons-field__description">400 characters max, 12 line break max, no images allowed, *markdown is encouraged*</p>
+          <%= form.label "body_markdown", class: "crayons-field__label" %>
+          <%= form.text_area "body_markdown", placeholder: t("views.listings.form.body_markdown.placeholder"), class: "crayons-textfield" %>
+          <p class="crayons-field__description"><%= t("views.listings.form.body_markdown.description") %></p>
         </div>
 
         <div>
           <div class="crayons-field mb-4">
-            <label class="crayons-field__label" id="listing_category_placeholder">Category</label>
+            <label class="crayons-field__label" id="listing_category_placeholder"><%= t("views.listings.form.category.label") %></label>
             <select class="crayons-select" id="listing_category_placeholder">
               <option>
-                Conference CFP (1 Credit)
+                <%= t("views.listings.form.category.placeholder") %>
               </option>
             </select>
           </div>
 
           <details>
-            <summary>Category details/rules</summary>
+            <summary><%= t("views.listings.form.category.summary") %></summary>
           </details>
         </div>
         <%# The following tag_list field is overriden by the Tags JS component
@@ -39,15 +39,15 @@
         we prevent the screen from "jumping" once the deferred JS is loaded
         and executed. %>
         <div class="crayons-field">
-          <%= form.label "tag_list", "Tags", class: "crayons-field__label" %>
-          <%= form.text_field "tag_list", placeholder: "Add up to 8 tags...", class: "crayons-textfield" %>
+          <%= form.label "tag_list", class: "crayons-field__label" %>
+          <%= form.text_field "tag_list", placeholder: t("views.listings.form.tags.placeholder"), class: "crayons-textfield" %>
         </div>
 
         <div class="crayons-field">
           <label class="crayons-field__label" for="expires_at_placeholder">
-            Custom Expire Date
+            <%= t("helpers.label.listing.expires_at") %>
             <p class="crayons-field__description">
-              If applicable for time sensitive events, deadlines, etc.
+              <%= t("views.listings.form.expiry.description") %>
             </p>
           </label>
           <input
@@ -58,24 +58,11 @@
 
         <% if @organizations.present? && @organizations.size > 0 %>
           <div class="crayons-field">
-            <%= form.label "organization_id", "Post under an organization", class: "crayons-field__label" %>
-            <%= form.select :organization_id, { "None" => "None" }, {}, { class: "crayons-select m:max-w-50" } %>
-            <p class="crayons-field__description">Posting on behalf of an organization spends the organization's credits.</p>
+            <%= form.label "organization_id", class: "crayons-field__label" %>
+            <%= form.select :organization_id, { t("views.listings.form.organization.none") => "None" }, {}, { class: "crayons-select m:max-w-50" } %>
+            <p class="crayons-field__description"><%= t("views.listings.form.organization.description") %></p>
           </div>
         <% end %>
-
-        <div class="crayons-field crayons-field--checkbox">
-          <input
-            type="checkbox"
-            class="crayons-checkbox"
-            id="contact_via_connect_placeholder"
-            checked=true />
-
-          <label class="crayons-field__label" for="contact_via_connect_placeholder">
-            Connect messaging
-            <p class="crayons-field__description">Allow Users to message me via Connect.</p>
-          </label>
-        </div>
       </div>
     </div>
 
@@ -84,25 +71,25 @@
     <% end %>
 
     <div class="crayons-field">
-      <%= form.label "location", "Location (If applicable for events, etc.)", class: "crayons-field__label" %>
-      <%= form.text_field "location", placeholder: "New York", class: "crayons-textfield m:max-w-50" %>
-      <p class="crayons-field__description">32 characters max, plain text</p>
+      <%= form.label "location", t("views.listings.form.location.label"), class: "crayons-field__label" %>
+      <%= form.text_field "location", placeholder: t("views.listings.form.location.placeholder"), class: "crayons-textfield m:max-w-50" %>
+      <p class="crayons-field__description"><%= t("views.listings.form.location.description") %></p>
     </div>
   </div>
 
   <div class="px-4 m:px-0">
     <% unless @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
-      <div class="crayons-notice mb-4" aria-live="polite">You need at least one credit to create a listing.</div>
+      <div class="crayons-notice mb-4" aria-live="polite"><%= t("views.listings.form.no_credit") %></div>
     <% end %>
     <div class="flex mb-4 items-center">
       <% if @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
-        <%= form.submit "Publish listing", class: "crayons-btn mr-2" %>
+        <%= form.submit t("views.listings.form.publish"), class: "crayons-btn mr-2" %>
       <% else %>
-        <a href="/credits/new" class="crayons-btn mr-2" data-no-instant>Purchase credits</a>
+        <a href="/credits/new" class="crayons-btn mr-2" data-no-instant><%= t("views.listings.form.purchase") %></a>
       <% end %>
-      <%= form.button "Save draft", type: "submit", name: "listing[action]", class: "crayons-btn crayons-btn--secondary", value: "draft" %>
+      <%= form.button t("views.listings.form.save"), type: "submit", name: "listing[action]", class: "crayons-btn crayons-btn--secondary", value: "draft" %>
     </div>
 
-    <p class="fs-s color-base-70 mb-6">You will not be charged credits to save a draft.</p>
+    <p class="fs-s color-base-70 mb-6"><%= t("views.listings.form.save_notice") %></p>
   </div>
 <% end %>

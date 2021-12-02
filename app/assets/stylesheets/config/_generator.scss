@@ -37,7 +37,7 @@
     // Explicitly set opacity-0 to 0.00001 to ensure accessibility on ChromeVox. See https://github.com/forem/forem/issues/12939
     ('100': 1, '75': 0.75, '50': 0.5, '25': 0.25, '0': 0.00001),
     (),
-    true
+    false
   ),
   (
     'cursor',
@@ -60,70 +60,10 @@
     'border-radius',
     ('default': var(--radius), '0': 0, 'full': 9999px),
     (),
-    true
-  ),
-  (
-    'bg',
-    'background-position',
-    (
-      'bottom': bottom,
-      'center': center,
-      'left': left,
-      'right': right,
-      'top': top,
-      'left-bottom': left bottom,
-      'left-top': left top,
-      'right-bottom': right bottom,
-      'right-top': right top
-    ),
-    (),
     false
   ),
-  (
-    'bg',
-    'background-repeat',
-    (
-      'repeat': repeat,
-      'repeat-x': repeat-x,
-      'repeat-y': repeat-y,
-      'no-repeat': no-repeat
-    ),
-    (),
-    false
-  ),
-  (
-    'bg',
-    'background-size',
-    ('auto': auto, 'cover': cover, 'contain': contain),
-    (),
-    false
-  ),
-  (
-    'bg',
-    'background-attachment',
-    ('fixed': fixed, 'local': local, 'scroll': scroll),
-    (),
-    false
-  ),
-  (
-    'flex',
-    'flex-direction',
-    (
-      'row': row,
-      'col': column,
-      'row-reverse': row-reverse,
-      'col-reverse': column-reverse
-    ),
-    (),
-    true
-  ),
-  (
-    'flex',
-    'flex-wrap',
-    ('wrap': wrap, 'nowrap': nowrap, 'wrap-reverse': wrap-reverse),
-    (),
-    true
-  ),
+  ('flex', 'flex-direction', ('row': row, 'col': column), (), true),
+  ('flex', 'flex-wrap', ('wrap': wrap, 'nowrap': nowrap), (), true),
   (
     'items',
     'align-items',
@@ -131,8 +71,7 @@
       'stretch': stretch,
       'start': flex-start,
       'center': center,
-      'end': flex-end,
-      'baseline': baseline
+      'end': flex-end
     ),
     (),
     true
@@ -184,23 +123,19 @@
     (),
     true
   ),
-  ('grow', 'flex-grow', ('0': 0, '1': 1), (), true),
-  ('shrink', 'flex-shrink', ('0': 0, '1': 1), (), true),
+  ('grow', 'flex-grow', ('0': 0, '1': 1), (), false),
+  ('shrink', 'flex-shrink', ('0': 0, '1': 1), (), false),
   ('order', 'order', ('first': -9999, 'last': 9999, '0': 0), (), true),
-  ('gap', 'grid-gap', ('0': 0), $spacing-units, true),
+  ('gap', 'gap', ('0': 0), $spacing-units, true),
   (
     'grid-cols',
     'grid-template-columns',
     (
-      'none': none,
       '1': repeat(1, minmax(0, 1fr)),
       '2': repeat(2, minmax(0, 1fr)),
       '3': repeat(3, minmax(0, 1fr)),
       '4': repeat(4, minmax(0, 1fr)),
-      '5': repeat(5, minmax(0, 1fr)),
-      '6': repeat(6, minmax(0, 1fr)),
-      '7': repeat(7, minmax(0, 1fr)),
-      '8': repeat(8, minmax(0, 1fr))
+      '5': repeat(5, minmax(0, 1fr))
     ),
     (),
     true
@@ -212,87 +147,42 @@
       'none': none,
       '1': repeat(1, minmax(0, 1fr)),
       '2': repeat(2, minmax(0, 1fr)),
-      '3': repeat(3, minmax(0, 1fr)),
-      '4': repeat(4, minmax(0, 1fr))
+      '3': repeat(3, minmax(0, 1fr))
     ),
     (),
     true
   ),
-  (
-    'grid-flow',
-    'grid-auto-flow',
-    (
-      'row': row,
-      'col': column,
-      'row-dense': row dense,
-      'col-dense': column dense
-    ),
-    (),
-    true
-  ),
-  (
-    'grid-items',
-    'justify-items',
-    ('start': start, 'end': end, 'center': center, 'stretch': stretch),
-    (),
-    true
-  ),
+  ('grid-flow', 'grid-auto-flow', ('row': row, 'col': column), (), true),
   (
     'float',
     'float',
     ('left': left, 'right': right, 'none': none, 'unset': unset),
     (),
-    true
-  ),
-  (
-    'box',
-    'box-sizing',
-    ('border': border-box, 'content': content-box),
-    (),
     false
   ),
-  ('table', 'table-layout', ('auto': auto, 'fixed': fixed), (), false),
-  (
-    'border',
-    'border-style',
-    ('solid': solid, 'dashed': dashed, 'dotted': dotted, 'none': none),
-    (),
-    true
-  ),
-  (
-    'border',
-    'border-width',
-    ('0': 0, '1': 1px, '2': 2px, '3': 3px, '4': 4px, '8': 8px),
-    (),
-    true
-  ),
-  (
-    'border',
-    'border-top-width',
-    ('t-0': 0, 't-1': 1px, 't-2': 2px, 't-3': 3px, 't-4': 4px, 't-8': 8px),
-    (),
-    true
-  ),
+  ('border', 'border-style', ('solid': solid, 'none': none), (), false),
+  ('border', 'border-width', ('0': 0, '1': 1px, '2': 2px), (), false),
+  ('border', 'border-top-width', ('t-0': 0, 't-1': 1px, 't-2': 2px), (), false),
   (
     'border',
     'border-bottom-width',
-    ('b-0': 0, 'b-1': 1px, 'b-2': 2px, 'b-3': 3px, 'b-4': 4px, 'b-8': 8px),
+    ('b-0': 0, 'b-1': 1px, 'b-2': 2px),
     (),
-    true
+    false
   ),
   (
     'border',
     'border-left-width',
-    ('l-0': 0, 'l-1': 1px, 'l-2': 2px, 'l-3': 3px, 'l-4': 4px, 'l-8': 8px),
+    ('l-0': 0, 'l-1': 1px, 'l-2': 2px),
     (),
-    true
+    false
   ),
   (
     'border',
     'border-right-width',
-    ('r-0': 0, 'r-1': 1px, 'r-2': 2px, 'r-3': 3px, 'r-4': 4px, 'r-8': 8px),
+    ('r-0': 0, 'r-1': 1px, 'r-2': 2px),
     (),
-    true
+    false
   ),
   (
     'top',
@@ -330,24 +220,12 @@
   (
     'overflow',
     'overflow',
-    ('auto': auto, 'visible': visible, 'scroll': scroll, 'hidden': hidden),
+    ('auto': auto, 'visible': visible, 'hidden': hidden),
     (),
     true
   ),
-  (
-    'overflow-x',
-    'overflow-x',
-    ('auto': auto, 'visible': visible, 'scroll': scroll, 'hidden': hidden),
-    (),
-    true
-  ),
-  (
-    'overflow-y',
-    'overflow-y',
-    ('auto': auto, 'visible': visible, 'scroll': scroll, 'hidden': hidden),
-    (),
-    true
-  ),
+  ('overflow-x', 'overflow-x', ('auto': auto, 'hidden': hidden), (), false),
+  ('overflow-y', 'overflow-y', ('auto': auto, 'hidden': hidden), (), false),
   (
     'w',
     'width',
@@ -364,7 +242,7 @@
     (),
     true
   ),
-  ('min-w', 'min-width', ('0': 0, '100': 100%, 'unset': unset), (), true),
+  ('min-w', 'min-width', ('0': 0, '100': 100%, 'unset': unset), (), false),
   (
     'h',
     'height',
@@ -379,21 +257,14 @@
       'unset': unset
     ),
     (),
-    true
+    false
   ),
   (
     'min-h',
     'min-height',
     ('0': 0, '100': 100%, 'full': 100vh, 'unset': unset),
     (),
-    true
-  ),
-  (
-    'max-h',
-    'max-height',
-    ('0': 0, '100': 100%, 'full': 100vh, 'unset': unset),
-    (),
-    true
+    false
   ),
   (
     'max-w',
@@ -471,17 +342,7 @@
   ('pb', 'padding-bottom', ('0': 0, 'unset': unset), $spacing-units, true),
   ('pl', 'padding-left', ('0': 0, 'unset': unset), $spacing-units, true),
   ('pr', 'padding-right', ('0': 0, 'unset': unset), $spacing-units, true),
-  (
-    'ff',
-    'font-family',
-    (
-      'sans-serif': var(--ff-sans-serif),
-      'serif': var(--ff-serif),
-      'monospace': var(--ff-monospace)
-    ),
-    (),
-    false
-  ),
+  ('ff', 'font-family', ('monospace': var(--ff-monospace)), (), false),
   (
     'fs',
     'font-size',
@@ -504,7 +365,7 @@
     'line-height',
     ('tight': var(--lh-tight), 'base': var(--lh-base)),
     (),
-    true
+    false
   ),
   (
     'fw',
@@ -528,33 +389,16 @@
   (
     'text',
     'text-decoration',
-    ('underline': underline, 'none': none, 'strike': line-through),
+    ('underline': underline, 'none': none),
     (),
     false
   ),
-  ('fs', 'font-style', ('italic': italic, 'normal': normal), (), false),
-  (
-    'text',
-    'text-transform',
-    (
-      'uppercase': uppercase,
-      'lowercase': lowercase,
-      'capitalize': capitalize,
-      'normal': none
-    ),
-    (),
-    false
-  ),
+  ('fs', 'font-style', ('italic': italic), (), false),
+  ('text', 'text-transform', ('uppercase': uppercase), (), false),
   (
     'align',
     'text-align',
-    (
-      'left': left,
-      'center': center,
-      'right': right,
-      'justify': justify,
-      'unset': unset
-    ),
+    ('left': left, 'center': center, 'right': right),
     (),
     true
   ),
@@ -562,38 +406,15 @@
     'align',
     'vertical-align',
     (
-      'baseline': baseline,
       'top': top,
       'middle': middle,
-      'bottom': bottom,
       'text-top': text-top,
       'text-bottom': text-bottom
     ),
     (),
-    true
-  ),
-  (
-    'whitespace',
-    'white-space',
-    (
-      'normal': normal,
-      'nowrap': nowrap,
-      'pre': pre,
-      'prewrap': pre-wrap,
-      'unset': unset
-    ),
-    (),
-    true
-  ),
-  (
-    'scrolling',
-    '-webkit-overflow-scrolling',
-    ('touch': touch, 'auto': auto),
-    (),
     false
   ),
-  ('shadow', 'box-shadow', ('none': none), (), true),
-  ('outline', 'outline', ('none': none), (), false),
+  ('whitespace', 'white-space', ('nowrap': nowrap), (), false),
   (
     null,
     'display',
@@ -612,15 +433,6 @@
   ),
   (
     null,
-    'visibility',
-    ('visible': visible, 'invisible': hidden),
-    (),
-    true,
-    null
-  ),
-  (null, 'clear', ('clear': both), (), false, null),
-  (
-    null,
     'position',
     (
       'static': static,
@@ -633,24 +445,8 @@
     true,
     null
   ),
-  (null, 'all', ('reset': unset), (), false, null),
-  (
-    'break',
-    'word-break',
-    (
-      'normal': normal,
-      'all': break-all,
-      'word': break-word,
-      'initial': initial
-    ),
-    (),
-    true
-  ),
-  (
-    'resize',
-    'resize',
-    ('x': horizontal, 'y': vertical, 'none': none),
-    (),
-    false
-  )
+  ('object', 'object-fit', ('cover': cover), (), false),
+  ('aspect', 'aspect-ratio', ('16-9': 16 / 9), (), false),
+  ('break', 'word-break', ('word': break-word), (), false),
+  ('resize', 'resize', ('y': vertical), (), false)
 );

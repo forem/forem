@@ -4,7 +4,7 @@
 <% user_comments = comments_filter && params[:org_id].blank? %>
 <% user_posts = params[:filter].to_s.match?(/^posts$/i) && params[:org_id].blank? %>
 
-<nav class="hidden m:block pt-4" aria-label="Notifications">
+<nav class="hidden m:block pt-4" aria-label="<%= t("views.notifications.nav.aria_label") %>">
   <div>
     <% if @organizations.present? %>
       <h3 class="crayons-subtitle-3 mb-4 pl-2"><%= @user.name %></h3>
@@ -13,17 +13,17 @@
     <a
       class="crayons-link crayons-link--block <%= "crayons-link--current" if no_filter %>"
       href="<%= notifications_path %>">
-      <%= t("core.all") %>
+      <%= t("views.notifications.nav.all") %>
     </a>
     <a
       class="crayons-link crayons-link--block <%= "crayons-link--current" if user_comments %>"
       href="<%= notifications_filter_path(:comments) %>">
-      <%= t("core.comments") %>
+      <%= t("views.notifications.nav.comments") %>
     </a>
     <a
       class="crayons-link crayons-link--block <%= "crayons-link--current" if user_posts %>"
       href="<%= notifications_filter_path(:posts) %>">
-      <%= t("core.posts") %>
+      <%= t("views.notifications.nav.posts") %>
     </a>
   </div>
 
@@ -34,19 +34,19 @@
         <a
           class="crayons-link crayons-link--block <%= "crayons-link--current" if org_filter && params[:org_id].to_i == org.id %>"
           href="<%= notifications_filter_org_path(filter: :org, org_id: org.id) %>">
-          <%= t("core.all") %>
+          <%= t("views.notifications.nav.all") %>
         </a>
         <a
           class="crayons-link crayons-link--block <%= "crayons-link--current" if comments_filter && params[:org_id].to_i == org.id %>"
           href="<%= notifications_filter_org_path(filter: :comments, org_id: org.id) %>">
-          <%= t("core.comments") %>
+          <%= t("views.notifications.nav.comments") %>
         </a>
       </div>
     <% end %>
   <% end %>
 </nav>
 
-<nav class="block m:hidden px-4" aria-label="Notifications">
+<nav class="block m:hidden px-3" aria-label="<%= t("views.notifications.nav.aria_label") %>">
   <% if @organizations.present? %>
     <select id="notifications-filter__select" class="crayons-select mb-2">
       <option value="<%= notifications_path %>"><%= @user.name %></option>
@@ -64,7 +64,7 @@
           class="crayons-tabs__item <%= "crayons-tabs__item--current" if no_filter %>"
           href="<%= notifications_path %>"
           aria-current="<%= "page" if no_filter %>">
-          <%= t("core.all") %>
+          <%= t("views.notifications.nav.all") %>
         </a>
       </li>
       <li>
@@ -73,7 +73,7 @@
           class="crayons-tabs__item <%= "crayons-tabs__item--current" if user_comments %>"
           href="<%= notifications_filter_path(:comments) %>"
           aria-current="<%= "page" if user_comments %>">
-          <%= t("core.comments") %>
+          <%= t("views.notifications.nav.comments") %>
         </a>
       </li>
       <li>
@@ -82,7 +82,7 @@
           class="crayons-tabs__item <%= "crayons-tabs__item--current" if user_posts %>"
           href="<%= notifications_filter_path(:posts) %>"
           aria-current="<%= "page" if user_posts %>">
-          <%= t("core.posts") %>
+          <%= t("views.notifications.nav.posts") %>
         </a>
       </li>
     </ul>
@@ -95,13 +95,13 @@
           data-text="All"
           class="crayons-tabs__item <%= "crayons-tabs__item--current" if org_filter && params[:org_id].to_i == org.id %>"
           href="<%= notifications_filter_org_path(filter: :org, org_id: org.id) %>">
-          <%= t("core.all") %>
+          <%= t("views.notifications.nav.all") %>
         </a>
         <a
           data-text="Comments"
           class="crayons-tabs__item <%= "crayons-tabs__item--current" if comments_filter && params[:org_id].to_i == org.id %>"
           href="<%= notifications_filter_org_path(filter: :comments, org_id: org.id) %>">
-          <%= t("core.comments") %>
+          <%= t("views.notifications.nav.comments") %>
         </a>
       </div>
     <% end %>

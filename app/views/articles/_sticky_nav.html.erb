@@ -18,7 +18,7 @@
               <%= article.title %>
               <div class="crayons-link__secondary -ml-1">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>
-                  <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+                  <span class="mr-1"><span class="opacity-50">#</span><%= tag %></span>
                 <% end %>
               </div>
             </a>
@@ -43,7 +43,7 @@
                 <%= article.title %>
                 <div class="crayons-link__secondary -ml-1">
                   <% article.decorate.cached_tag_list_array.each do |tag| %>
-                    <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+                    <span class="mr-1"><span class="opacity-50">#</span><%= tag %></span>
                   <% end %>
                 </div>
               </div>

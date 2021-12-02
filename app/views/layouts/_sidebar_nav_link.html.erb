@@ -4,7 +4,7 @@
       <span class="crayons-icon crayons-icon--default">
         <%= link.icon.html_safe %>
       </span>
-      <%= link.name %>
+      <%= t("views.main.nav_name.#{link.name}", default: link.name) %>
       <% if link.url.include?("readinglist") %>
         <span id="reading-list-count" class="crayons-indicator"></span>
       <% end %>

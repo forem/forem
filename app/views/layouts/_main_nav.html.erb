@@ -6,14 +6,14 @@
     <li>
       <a href="<%= root_path %>" class="crayons-link crayons-link--block">
         <%= inline_svg_tag("twemoji/house.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
-        <%= t("core.home") %>
+        <%= t("views.main.home") %>
       </a>
     </li>
     <li>
       <% unless user_signed_in? %>
         <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
           <%= inline_svg_tag("twemoji/handshake.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
-          Sign In/Up
+          <%= t("views.main.signup") %>
         </a>
       <% end %>
     </li>
@@ -26,7 +26,7 @@
 <% if other_nav_links.any? %>
   <nav class="mb-6 <%= "mt-4" if user_signed_in? %>" aria-labelledby="other-nav-heading">
     <h2 id="other-nav-heading" class="mt-6 mb-2 fs-base">
-      Other
+      <%= t("views.main.nav.other") %>
     </h2>
     <ul class="other-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
       <% other_nav_links.each do |link| %>

@@ -35,6 +35,14 @@
               class: "btn btn-sm btn-secondary",
               data: { "article-target": "unpinButton" },
             ) %>
+      <% else %>
+          <form method="post" action="<%= pin_admin_article_path(decorated_article.id) %>" class="inline"
+            data-action="submit->article#pinArticle">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+            <button type="submit" class="btn btn-sm btn-secondary">
+              Pin Post
+            </button>
+          </form>
       <% end %>
 
       <a href="<%= admin_user_path(article.user_id) %>" class="badge badge-light">@<%= article.user&.username %></a>
@@ -140,15 +148,9 @@
       </div>
       <div class="form-check col">
       <div class="form-check col">
-        <%= check_box_tag :pinned, "1", decorated_article.pinned?,
-                          name: "article[pinned]",
-                          id: "pinned-#{article.id}",
-                          data: {
-                            "article-target": "pinnedCheckbox",
-                            "article-pinned-modal-target": "pinnedCheckbox",
-                            action: "click->article#togglePin"
-                          } %>
-        <label for="pinned-<%= article.id %>">Pinned</label>
+        <% if decorated_article.pinned? %>
+          <span class="badge badge-success">Pinned Post</span>
+        <% end %>
       </div>
       <div class="col">
         <button class="btn btn-primary float-right">Submit</button>

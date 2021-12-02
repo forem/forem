@@ -196,6 +196,14 @@ RSpec.configure do |config|
                "exclude" => { "bots" => true },
                "cache" => true,
                "cookies" => false }
+
+    begin
+      # Add the field tests that are currently configured (if any).
+      field_tests = Psych.load_file("config/field_test.yml")
+      config["experiments"].merge!(field_tests.fetch("experiments", {}))
+    rescue StandardError
+      # Accept that we may not have experiments.
+    end
     allow(FieldTest).to receive(:config).and_return(config)
   end
 

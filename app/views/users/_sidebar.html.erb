@@ -3,7 +3,7 @@
     <% if @user.organizations.present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-3 spec-org-titles">Organizations</h3>
+          <h3 class="crayons-subtitle-3 spec-org-titles"><%= t("views.users.side.org") %></h3>
         </header>
         <div>
           <%# it's unlikely that a user will belong to enough organizations to cause a performance issue here %>
@@ -36,7 +36,7 @@
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-3">
-            <%= sanitized_sidebar title.titleize %>
+            <%= sanitized_sidebar t("views.users.profile_fields.#{title}", default: title.titleize) %>
           </h3>
         </header>
 
@@ -50,16 +50,16 @@
   <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}", expires_in: 10.days do %>
     <div class="crayons-card crayons-card--secondary p-4">
       <div class="flex items-center mb-4">
-        <%= inline_svg_tag("post.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Post") %>
-        <%= pluralize @user.articles.published.size, "post" %> published
+        <%= inline_svg_tag("post.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.post.icon")) %>
+        <%= t "views.users.side.post.text", count: @user.articles.published.size %>
       </div>
       <div class="flex items-center mb-4">
-        <%= inline_svg_tag("comment.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Comment") %>
-        <%= pluralize @user.comments.where(deleted: false).size, "comment" %> written
+        <%= inline_svg_tag("comment.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.comment.icon")) %>
+        <%= t "views.users.side.comment.text", count: @user.comments.where(deleted: false).size %>
       </div>
       <div class="flex items-center">
-        <%= inline_svg_tag("tag.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Tag") %>
-        <%= pluralize @user.decorate.cached_followed_tags.size, "tag" %> followed
+        <%= inline_svg_tag("tag.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.tag.icon")) %>
+        <%= t("views.users.side.tag.text", count: @user.decorate.cached_followed_tags.size) %>
       </div>
     </div>
   <% end %>

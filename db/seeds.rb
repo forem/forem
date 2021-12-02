@@ -55,7 +55,7 @@ end
 num_users = 10 * SEEDS_MULTIPLIER
 
 users_in_random_order = seeder.create_if_none(User, num_users) do
-  roles = %i[trusted chatroom_beta_tester workshop_pass]
+  roles = %i[trusted workshop_pass]
 
   num_users.times do |i|
     name = Faker::Name.unique.name
@@ -143,6 +143,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   )
 
   user.add_role(:super_admin)
+  user.add_role(:trusted)
   user.add_role(:tech_admin)
 end
 
@@ -169,6 +170,9 @@ end
 num_articles = 25 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Article, num_articles) do
+  user_ids = User.all.ids
+  public_categories = %w[like unicorn]
+
   num_articles.times do |i|
     tags = []
     tags << "discuss" if (i % 3).zero?
@@ -187,12 +191,21 @@ seeder.create_if_none(Article, num_articles) do
       #{Faker::Hipster.paragraph(sentence_count: 2)}
     MARKDOWN
 
-    Article.create!(
+    article = Article.create!(
       body_markdown: markdown,
       featured: true,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
+
+    Random.random_number(10).times do |_t|
+      article.reactions.create(
+        user_id: user_ids.sample,
+        category: public_categories.sample,
+      )
+    end
+
+    article.sync_reactions_count
   end
 end
 
@@ -353,32 +366,6 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(ChatChannel) do
-  %w[Workshop Meta General].each do |chan|
-    ChatChannel.create!(
-      channel_name: chan,
-      channel_type: "open",
-      slug: chan,
-    )
-  end
-
-  # This channel is hard-coded in a few places
-  ChatChannel.create!(
-    channel_name: "Tag Moderators",
-    channel_type: "open",
-    slug: "tag-moderators",
-  )
-
-  direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
-  Message.create!(
-    chat_channel: direct_channel,
-    user: User.last,
-    message_markdown: "This is **awesome**",
-  )
-end
-
-##############################################################################
-
 seeder.create_if_none(HtmlVariant) do
   HtmlVariant.create!(
     name: rand(100).to_s,
@@ -520,7 +507,6 @@ seeder.create_if_none(Listing) do
         location: Faker::Address.city,
         organization_id: user.organizations.first&.id,
         listing_category_id: category_id,
-        contact_via_connect: true,
         published: true,
         originally_published_at: Time.current,
         bumped_at: Time.current,

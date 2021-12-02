@@ -5,7 +5,7 @@
   <%= render "collections/meta", title_string: title_string, description_string: description_string, path: @collection.path %>
 <% end %>
 
-<main id="main-content" class="crayons-layout crayons-layout--1-col">
+<main id="main-content" class="crayons-layout">
   <header class="px-2 m:px-0">
     <h1><%= title_string %></h1>
     <%= link_to t("views.series.list.back", user: @user.name), user_series_path(@user.username) %>

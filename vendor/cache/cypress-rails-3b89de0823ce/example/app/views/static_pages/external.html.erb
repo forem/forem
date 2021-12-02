@@ -1,0 +1,21 @@
+<h1>Getting external compliments!</h1>
+
+<script type="text/javascript">
+  fetch('http://127.0.0.1:8080/compliment.json')
+  .then(response => response.json())
+  .then(data => {
+    // create a new div element
+    const newDiv = document.createElement("div");
+
+    // and give it some content
+    const newContent = document.createTextNode(data.complimentText);
+
+    // add the text node to the newly created div
+    newDiv.appendChild(newContent);
+    newDiv.id = 'external_compliment';
+
+    // add the newly created element and its content into the DOM
+    document.body.append(newDiv);
+  })
+  .catch((e) => { console.log(e) })
+</script>

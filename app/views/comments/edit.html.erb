@@ -6,7 +6,7 @@
     id="comments-container"
     data-commentable-id="<%= @comment.commentable_id %>"
     data-commentable-type="<%= @comment.commentable_type %>">
-    <h1 class="crayons-title mb-6">Editing comment</h1>
+    <h1 class="crayons-title mb-6"><%= t("views.comments.edit") %></h1>
     <%= render "form",
                commentable: @commentable,
                commentable_type: @comment.commentable_type %>

@@ -28,6 +28,13 @@ export default class ConfigController extends Controller {
     'requireCaptchaForEmailPasswordRegistration',
   ];
 
+  connect() {
+    const element = document.querySelector(
+      `${window.location.hash} .card-body`,
+    );
+    element?.classList.add('show');
+  }
+
   // GENERAL FUNCTIONS START
 
   // This is a bit of hack because we have to deal with Bootstrap used inline, jQuery and Stimulus  :-/

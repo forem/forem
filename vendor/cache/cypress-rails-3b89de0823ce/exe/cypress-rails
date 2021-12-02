@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+ENV["RAILS_ENV"] ||= "test"
+require "pathname"
+require "cypress-rails"
+require Pathname.new(CypressRails::Config.new.dir).join("config/environment")
+
+command = ARGV[0]
+case command
+when "init"
+  CypressRails::Init.new.call
+when "open"
+  CypressRails::Open.new.call
+when "run"
+  passed = CypressRails::Run.new.call
+  exit 1 unless passed
+when "run_knapsack"
+  passed = CypressRails::RunKnapsack.new.call
+  exit 1 unless passed
+end

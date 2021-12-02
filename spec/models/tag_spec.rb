@@ -17,12 +17,6 @@ RSpec.describe Tag, type: :model do
 
       # rubocop:disable RSpec/NamedSubject
       it do
-        expect(subject).to belong_to(:mod_chat_channel)
-          .class_name("ChatChannel")
-          .optional
-      end
-
-      it do
         expect(subject).to validate_inclusion_of(:category)
           .in_array(%w[uncategorized language library tool site_mechanic location subcommunity])
       end
@@ -131,12 +125,6 @@ RSpec.describe Tag, type: :model do
     allow(Rails.cache).to receive(:delete)
     tag.save
     expect(Rails.cache).to have_received(:delete).with("view-helper-#{tag.name}/tag_colors")
-  end
-
-  it "finds mod chat channel" do
-    channel = create(:chat_channel)
-    tag.mod_chat_channel_id = channel.id
-    expect(tag.mod_chat_channel).to eq(channel)
   end
 
   describe "::aliased_name" do

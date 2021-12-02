@@ -2,7 +2,7 @@
 <div class="crayons-card notification notification--promoted grid gap-4">
     <header class="mb-2 m:mb-4">
       <h3 class="fw-normal fs-l s:fs-xl m:fs-2xl">
-      You received the <strong class="fw-bold"><%= sanitize(json_data["badge_achievement"]["badge"]["title"]) %></strong> badge
+      <%= t("views.notifications.badge.heading_html", badge: tag.strong(sanitize(json_data["badge_achievement"]["badge"]["title"]), class: "fw-bold")) %>
       </h3>
       <p class="fs-l"><%= json_data["badge_achievement"]["badge"]["description"] %></p>
     </header>
@@ -12,10 +12,13 @@
       <p class="color-base-70"><em><%= json_data["badge_achievement"]["rewarding_context_message"].to_s.html_safe %></em></p>
     </div>
 
-  <p class="self-stretch"><a href="<%= json_data["user"]["path"] %>" class="crayons-btn w-100 m:w-50">Visit your profile</a></p>
+  <p class="self-stretch"><a href="<%= json_data["user"]["path"] %>" class="crayons-btn w-100 m:w-50"><%= t("views.notifications.badge.profile") %></a></p>
   <% credits_awarded = json_data["badge_achievement"]["badge"]["credits_awarded"] %>
   <% unless credits_awarded.present? && credits_awarded.zero? %>
-    <p class="max-w-75 mx-auto">You also get <a href="/credits" class="crayons-link crayons-link--brand fw-bold"><%= json_data["badge_achievement"]["badge"]["credits_awarded"] %> new credits</a> to use for <a href="/listings">community listings</a> if you have anything you'd like to promote. 🎉</p>
-    <p class="fs-s"><a href="<%= about_listings_url %>" class="crayons-link crayons-link--secondary">More information about listings<a></p>
+    <p class="max-w-75 mx-auto">
+      <%= t("views.notifications.badge.awarded_html", credits: link_to(t("views.notifications.badge.credits", count: json_data["badge_achievement"]["badge"]["credits_awarded"]), "/credits", class: "crayons-link crayons-link--brand fw-bold"),
+                                                      listings: link_to(t("views.notifications.badge.listings"), "/listings")) %>
+    </p>
+    <p class="fs-s"><a href="<%= about_listings_url %>" class="crayons-link crayons-link--secondary"><%= t("views.notifications.badge.more") %><a></p>
   <% end %>
 </div>

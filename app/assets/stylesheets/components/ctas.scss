@@ -1,0 +1,40 @@
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+// .c-cta //////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+.c-link {
+  &.c-cta {
+    --border-width: 1px;
+    padding: calc(var(--su-2) - var(--border-width))
+      calc(var(--su-4) - var(--border-width));
+    border: var(--border-width) solid var(--border);
+    text-decoration: none;
+    background-color: var(--bg);
+    color: var(--color);
+    text-align: center;
+    display: inline-block;
+  }
+
+  &.c-cta {
+    --bg: transparent;
+    --bg-hover: var(--base-20);
+    --color: var(--base-80);
+    --color-hover: var(--base-100);
+    --border: var(--base-60);
+    --border-hover: var(--base-80);
+  }
+
+  &.c-cta--branded {
+    --bg: transparent;
+    --bg-hover: var(--accent-brand-a10);
+    --color: var(--accent-brand);
+    --color-hover: var(--accent-brand-darker);
+    --border: var(--accent-brand);
+    --border-hover: var(--accent-brand-darker);
+
+    font-weight: var(--fw-medium);
+  }
+
+}

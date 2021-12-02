@@ -1,4 +1,4 @@
-<% title "Feedback" %>
+<% title t("views.feedback.meta.title") %>
 <% cache(release_adjusted_cache_key("feedback-messages-lander-styling")) do %>
   <style>
     <%= Rails.application.assets["feedback_messages.css"].to_s.html_safe %>
@@ -6,8 +6,8 @@
 <% end %>
 <div class="dialog">
   <div>
-    <h2>Thank you for your report.</h2>
-    <h3><a href="/">Return to home page</a></h3>
+    <h2><%= t("views.feedback.heading") %></h2>
+    <h3><a href="/"><%= t("views.feedback.home") %></a></h3>
     <p>
       <%= t("contact_prompts.if_any_questions_html") %>
     </p>

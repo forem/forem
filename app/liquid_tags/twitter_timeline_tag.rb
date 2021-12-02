@@ -4,6 +4,8 @@ class TwitterTimelineTag < LiquidTagBase
 
   URL_REGEXP = %r{\Ahttps://twitter\.com/[a-zA-Z0-9]+/timelines/\d+\Z}
 
+  REGISTRY_REGEXP = %r{https://twitter\.com/[a-zA-Z0-9]+/timelines/\d+}
+
   SCRIPT = <<~JAVASCRIPT.freeze
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   JAVASCRIPT
@@ -44,3 +46,5 @@ class TwitterTimelineTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("twitter_timeline", TwitterTimelineTag)
+
+UnifiedEmbed.register(TwitterTimelineTag, regexp: TwitterTimelineTag::REGISTRY_REGEXP)

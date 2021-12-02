@@ -80,7 +80,7 @@ module ListingsToolkit
 
   ALLOWED_PARAMS = %i[
     title body_markdown listing_category_id tag_list
-    expires_at contact_via_connect location organization_id action
+    expires_at location organization_id action
   ].freeze
 
   # Filter for a set of known safe params

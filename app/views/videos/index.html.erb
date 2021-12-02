@@ -19,20 +19,27 @@
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
-<div class="home video-page-title" id="index-container" data-which="videos" data-params="<%= params.to_json(only: %i[tag username q]) %>">
+<div id="index-container" data-which="videos" data-params="<%= params.to_json(only: %i[tag username q]) %>">
 
-  <main id="main-content">
-    <header class="video-page-title">
-      <h1><%= t("views.videos.heading", community: community_name) %></h1>
+  <main id="main-content" class="crayons-layout crayons-layout--header-inside">
+    <header class="crayons-page-header">
+      <h1 class="crayons-title"><%= t("views.videos.heading", community: community_name) %></h1>
     </header>
-    <div class="video-collection" id="video-collection">
+    <div class="js-video-collection grid gap-2 m:gap-4 s:grid-cols-2 m:grid-cols-3 mb-6">
       <% @video_articles.each do |video_article| %>
-        <a class="single-video-article single-article" href="<%= video_article.path %>" id="video-article-<%= video_article.id %>">
-            <div class="video-image" style="background-image: url(<%= video_article.cloudinary_video_url %>)">
-              <span class="video-timestamp"><%= video_article.video_duration_in_minutes %></span>
-            </div>
-            <p><strong><%= video_article.title %></strong></p>
-            <p class="video-username"><%= video_article.user.name %></p>
+        <a href="<%= video_article.path %>" id="video-article-<%= video_article.id %>" class="crayons-card media-card">
+          <div class="media-card__artwork">
+            <%= optimized_image_tag(video_article.video_thumbnail_url,
+                                    optimizer_options: { crop: "imagga_scale", width: 320, height: 180 },
+                                    image_options: { alt: video_article.title, loading: "lazy", class: "w-100 object-cover block aspect-16-9 h-auto" }) %>
+            <span class="media-card__artwork__badge"><%= video_article.video_duration_in_minutes %></span>
+          </div>
+          <div class="media-card__content">
+            <h2 class="fs-base mb-2 fw-medium"><%= video_article.title %></h2>
+            <small class="fs-s">
+              <%= video_article.user.name %>
+            </small>
+          </div>
         </a>
       <% end %>
     </div>

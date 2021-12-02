@@ -1,6 +1,16 @@
 ---
 en:
   views:
+    badges:
+      meta:
+        title: Badges
+        name: "%{title} Badge"
+      all:
+        one: Show one badge
+        other: Show all %{count} badges
+      heading: Badges
+      desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
+      name: "🏅 %{title} Badge 🏅"
     campaign:
       subtitle: Stories (%{count})
       view: See all posts
@@ -21,6 +31,30 @@ en:
         heading: Token expired or invalid
         description_html: Please %{signin} to manage your email preferences.
         signin: sign-in
+    hamburger:
+      icon: Navigation menu
+      back: Back
+      forward: Forward
+      refresh: Refresh
+      icon_close: Close
+      icon_left: Left menu
+      icon_right: Right menu
+    logo:
+      color_1:
+        label: Brand color 1
+        description: Used for backgrounds, borders etc.
+        select:
+          aria_label: Brand color 1 color selector
+          label: Brand color 1 color select
+      color_2:
+        label: Brand color 2
+        description_html: Used for texts (usually put on <em>Brand color 1</em>).
+        select:
+          aria_label: Brand color 2 color selector
+          label: Brand color 2 color select
+      preview:
+        icon: App logo
+        text: 'Preview:'
     onboardings:
       meta:
         title: Welcome to %{community}
@@ -41,6 +75,28 @@ en:
         description: My saved posts.
         og:
           title: Reading List - %{community}
+    search:
+      heading: Search results%{for}
+      for: " for %{query}"
+      placeholder: Search...
+      icon:
+        aria_label: Search
+        title: Search
+      nav:
+        posts: Posts
+        podcasts: Podcasts
+        people: People
+        comments: Comments
+        my_posts: My posts only
+      sort:
+        aria_label: Search result sort options
+        relevance: Most Relevant
+        newest: Newest
+        oldest: Oldest
+      meta:
+        title: Search Results%{for}
+        for: " for %{query}"
+        description: "%{site} => Search Results"
     series:
       meta:
         description: View %{title} on %{site}

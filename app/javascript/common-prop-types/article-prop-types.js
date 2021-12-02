@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { organizationPropType } from './organization-prop-type';
 
 export const articleSnippetResultPropTypes = PropTypes.shape({
   body_text: PropTypes.arrayOf(PropTypes.string),
@@ -30,7 +29,11 @@ export const articlePropTypes = PropTypes.shape({
     username: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   }),
-  organization: organizationPropType,
+  organization: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    profile_image_90: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+  }),
   highlight: articleSnippetResultPropTypes,
   public_reactions_count: PropTypes.number,
   reactions_count: PropTypes.number,

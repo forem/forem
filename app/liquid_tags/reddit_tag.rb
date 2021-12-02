@@ -2,7 +2,7 @@ class RedditTag < LiquidTagBase
   include ActionView::Helpers::SanitizeHelper
 
   PARTIAL = "liquids/reddit".freeze
-  URL_REGEXP = %r{\Ahttps://(www.)?reddit.com}
+  REGISTRY_REGEXP = %r{\Ahttps://(www.)?reddit.com}
 
   def initialize(_tag_name, url, _parse_context)
     super
@@ -61,7 +61,7 @@ class RedditTag < LiquidTagBase
   end
 
   def validate_url
-    return true if valid_url?(@url.delete(" ")) && (@url =~ URL_REGEXP)&.zero?
+    return true if valid_url?(@url.delete(" ")) && (@url =~ REGISTRY_REGEXP)&.zero?
 
     raise StandardError, "Invalid Reddit link: #{@url}"
   end
@@ -73,3 +73,5 @@ class RedditTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("reddit", RedditTag)
+
+UnifiedEmbed.register(RedditTag, regexp: RedditTag::REGISTRY_REGEXP)

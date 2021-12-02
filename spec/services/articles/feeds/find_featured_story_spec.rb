@@ -8,12 +8,26 @@ RSpec.describe Articles::Feeds::FindFeaturedStory, type: :service do
       featured_story = described_class.call(Article.all)
       expect(featured_story.main_image).not_to be_nil
     end
+
+    context "when must_have_main_image is false" do
+      it "returns the first article" do
+        featured_story = described_class.call(Article.all)
+        expect(featured_story).to be_persisted
+      end
+    end
   end
 
   context "when passed an array" do
     it "returns first article with a main image" do
       featured_story = described_class.call(Article.all.to_a)
       expect(featured_story.main_image).to be_present
+    end
+
+    context "when must_have_main_image is false" do
+      it "returns the first article" do
+        featured_story = described_class.call(Article.all.to_a)
+        expect(featured_story).to be_persisted
+      end
     end
   end
 

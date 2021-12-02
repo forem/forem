@@ -319,22 +319,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     end
   end
 
-  describe "#new_message_email" do
-    let(:direct_channel) { ChatChannels::CreateWithUsers.call(users: [user, user2], channel_type: "direct") }
-    let(:direct_message) { create(:message, user: user, chat_channel: direct_channel) }
-    let(:email) { described_class.with(message: direct_message).new_message_email }
-
-    include_examples "#renders_proper_email_headers"
-
-    it "renders proper subject" do
-      expect(email.subject).to eq("#{user.name} just messaged you")
-    end
-
-    it "renders proper receiver" do
-      expect(email.to).to eq([direct_message.direct_receiver.email])
-    end
-  end
-
   describe "#account_deleted_email" do
     let(:email) { described_class.with(name: user.name, email: user.email).account_deleted_email }
 
@@ -418,40 +402,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-  end
-
-  describe "#channel_invite_email" do
-    let(:moderator_membership) { create(:chat_channel_membership, user_id: user2.id, role: "mod") }
-    let(:regular_membership) { create(:chat_channel_membership, user_id: user2.id, role: "member") }
-    let(:moderator_email) { described_class.with(membership: moderator_membership, inviter: nil).channel_invite_email }
-    let(:member_email) { described_class.with(membership: regular_membership, inviter: user).channel_invite_email }
-
-    it "renders proper subject" do
-      mod_subject = "You are invited to the #{moderator_membership.chat_channel.channel_name} channel as moderator."
-      expect(moderator_email.subject).to eq(mod_subject)
-
-      member_subject = "You are invited to the #{regular_membership.chat_channel.channel_name} channel."
-      expect(member_email.subject).to eq(member_subject)
-    end
-
-    it "renders proper sender" do
-      expected_from = "#{Settings::Community.community_name} <#{ForemInstance.email}>"
-
-      expect(moderator_email.from).to eq([ForemInstance.email])
-      expect(moderator_email["from"].value).to eq(expected_from)
-
-      expect(member_email.from).to eq([ForemInstance.email])
-      expect(member_email["from"].value).to eq(expected_from)
-    end
-
-    it "renders proper reply_to" do
-      expect(moderator_email["reply_to"].value).to eq(ForemInstance.email)
-    end
-
-    it "renders proper receiver" do
-      expect(moderator_email.to).to eq([user2.email])
-      expect(member_email.to).to eq([user2.email])
     end
   end
 end

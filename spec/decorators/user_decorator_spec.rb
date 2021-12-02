@@ -7,15 +7,15 @@ RSpec.describe UserDecorator, type: :decorator do
   context "with serialization" do
     it "serializes both the decorated object IDs and decorated methods" do
       user = saved_user.decorate
-      expected_result = { "id" => user.id, "dark_theme?" => user.dark_theme? }
-      expect(user.as_json(only: [:id], methods: [:dark_theme?])).to eq(expected_result)
+      expected_result = { "id" => user.id }
+      expect(user.as_json(only: [:id])).to eq(expected_result)
     end
 
     it "serializes collections of decorated objects" do
       user = saved_user.decorate
       decorated_collection = User.decorate
-      expected_result = [{ "id" => user.id, "dark_theme?" => user.dark_theme? }]
-      expect(decorated_collection.as_json(only: [:id], methods: [:dark_theme?])).to eq(expected_result)
+      expected_result = [{ "id" => user.id }]
+      expect(decorated_collection.as_json(only: [:id])).to eq(expected_result)
     end
   end
 
@@ -108,7 +108,7 @@ RSpec.describe UserDecorator, type: :decorator do
   describe "#config_body_class" do
     it "creates proper body class with defaults" do
       expected_result = %W[
-        default sans-serif-article-body
+        light-theme sans-serif-article-body
         trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -117,34 +117,16 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
       expected_result = %W[
-        default sans-serif-article-body
+        light-theme sans-serif-article-body
         trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
 
-    it "creates proper body class with night theme" do
-      user.setting.config_theme = "night_theme"
+    it "creates proper body class with dark theme" do
+      user.setting.config_theme = "dark_theme"
       expected_result = %W[
-        night-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
-      ].join(" ")
-      expect(user.decorate.config_body_class).to eq(expected_result)
-    end
-
-    it "creates proper body class with pink theme" do
-      user.setting.config_theme = "pink_theme"
-      expected_result = %W[
-        pink-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
-      ].join(" ")
-      expect(user.decorate.config_body_class).to eq(expected_result)
-    end
-
-    it "creates proper body class with minimal light theme" do
-      user.setting.config_theme = "minimal_light_theme"
-      expected_result = %W[
-        minimal-light-theme sans-serif-article-body
+        dark-theme sans-serif-article-body
         trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -153,7 +135,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "works with static navbar" do
       user.setting.config_navbar = "static"
       expected_result = %W[
-        default sans-serif-article-body
+        light-theme sans-serif-article-body
         trusted-status-#{user.trusted} static-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -166,28 +148,11 @@ RSpec.describe UserDecorator, type: :decorator do
         user.add_role(:trusted)
 
         expected_result = %w[
-          default sans-serif-article-body
+          light-theme sans-serif-article-body
           trusted-status-true default-header
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end
-    end
-  end
-
-  describe "#dark_theme?" do
-    it "determines dark theme if night theme" do
-      user.setting.config_theme = "night_theme"
-      expect(user.decorate.dark_theme?).to be(true)
-    end
-
-    it "determines dark theme if ten x hacker" do
-      user.setting.config_theme = "ten_x_hacker_theme"
-      expect(user.decorate.dark_theme?).to be(true)
-    end
-
-    it "determines not dark theme if not one of the dark themes" do
-      user.setting.config_theme = "default"
-      expect(user.decorate.dark_theme?).to be(false)
     end
   end
 
@@ -214,18 +179,12 @@ RSpec.describe UserDecorator, type: :decorator do
   end
 
   describe "#considered_new?" do
-    before do
-      allow(Settings::RateLimit).to receive(:user_considered_new_days).and_return(3)
-    end
+    let(:decorated_user) { user.decorate }
 
-    it "returns true for new users" do
-      user.created_at = 1.day.ago
-      expect(user.decorate.considered_new?).to be(true)
-    end
-
-    it "returns false for new users" do
-      user.created_at = 1.year.ago
-      expect(user.decorate.considered_new?).to be(false)
+    it "delegates to Settings::RateLimit.considered_new?" do
+      allow(Settings::RateLimit).to receive(:user_considered_new?).with(user: decorated_user).and_return(true)
+      expect(decorated_user.considered_new?).to be(true)
+      expect(Settings::RateLimit).to have_received(:user_considered_new?).with(user: decorated_user)
     end
   end
 end
