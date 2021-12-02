@@ -15,11 +15,11 @@ en:
     email_subscriptions:
       unsubscribe:
         heading: "You have been unsubscribed from %{type}. 😔"
-        desc: You will no longer receive emails like this. If you'd like to re-subscribe or manage your full email preferences, please %{link}.
+        description_html: You will no longer receive emails like this. If you'd like to re-subscribe or manage your full email preferences, please %{link}.
         link: click here
       invalid:
         heading: Token expired or invalid
-        desc: Please %{signin} to manage your email preferences.
+        description_html: Please %{signin} to manage your email preferences.
         signin: sign-in
     onboardings:
       meta:
