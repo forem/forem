@@ -10,13 +10,11 @@ export const Toolbar = ({ version, textAreaId }) => {
         version === 'v1' ? 'border-t-0' : ''
       }`}
     >
-      <div className="my-2">
-        {version === 'v1' ? (
-          <ImageUploader editorVersion={version} />
-        ) : (
-          <MarkdownToolbar textAreaId={textAreaId} />
-        )}
-      </div>
+      {version === 'v1' ? (
+        <ImageUploader editorVersion={version} />
+      ) : (
+        <MarkdownToolbar textAreaId={textAreaId} />
+      )}
     </div>
   );
 };
