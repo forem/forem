@@ -209,7 +209,9 @@ class User < ApplicationRecord
   before_validation :check_for_username_change
   before_validation :downcase_email
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_email
+
+  StringAttributeCleaner.for(:email)
+
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
@@ -560,10 +562,6 @@ class User < ApplicationRecord
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
 
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
-  end
-
-  def verify_email
-    self.email = nil if email == ""
   end
 
   def set_username
