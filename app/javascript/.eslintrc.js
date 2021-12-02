@@ -43,6 +43,7 @@ module.exports = {
   },
   plugins: ['import', 'react', 'jsx-a11y'],
   rules: {
+    'no-var': 'error',
     'import/order': ['error'],
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],

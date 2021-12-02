@@ -1,7 +1,7 @@
 class JsFiddleTag < LiquidTagBase
   PARTIAL = "liquids/jsfiddle".freeze
   OPTION_REGEXP = /\A(js|html|css|result|,)*\z/
-  LINK_REGEXP = %r{\A(http|https)://(jsfiddle\.net)/[a-zA-Z0-9\-/]*\z}
+  REGISTRY_REGEXP = %r{\A(http|https)://(jsfiddle\.net)/[a-zA-Z0-9\-/]*\z}
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -47,8 +47,10 @@ class JsFiddleTag < LiquidTagBase
 
   def valid_link?(link)
     link_no_space = link.delete(" ")
-    (link_no_space =~ LINK_REGEXP).zero?
+    (link_no_space =~ REGISTRY_REGEXP).zero?
   end
 end
 
 Liquid::Template.register_tag("jsfiddle", JsFiddleTag)
+
+UnifiedEmbed.register(JsFiddleTag, regexp: JsFiddleTag::REGISTRY_REGEXP)

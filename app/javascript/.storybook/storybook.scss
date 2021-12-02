@@ -6,4 +6,19 @@ body {
   #root {
     padding: 2rem;
   }
+
+  .sbdocs-ul,
+  .sbdocs-ol {
+    list-style: revert;
+    margin: revert;
+    padding: revert;
+  }
+
+  code {
+    all: revert;
+  }
+
+  .docblock-source {
+    margin: revert;
+  }
 }

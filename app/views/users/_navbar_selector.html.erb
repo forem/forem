@@ -2,9 +2,9 @@
   <%= f.radio_button :config_navbar, navbar, checked: @users_setting.config_navbar == navbar, class: "crayons-radio" %>
   <div class="crayons-field__label">
     <% if navbar == "default" %>
-      Fixed to window
+      <%= t("views.settings.custom.fixed") %>
     <% else %>
-      Static top of page
+      <%= t("views.settings.custom.static") %>
     <% end %>
   </div>
 </label>

@@ -1,22 +1,22 @@
 <div class="crayons-card crayons-card--content-rows">
   <h2 class="crayons-subtitle-1">
-    Generate a personal blog from your <%= community_name %> posts
+    <%= t "views.settings.extensions.generate", community: community_name %>
   </h2>
   <div class="single-app-integration">
     <% if current_user.decorate.stackbit_integration? %>
-      <h3>Connected to Stackbit <sup>beta</sup><img width="20px" style="margin-left:2px;" src="<%= asset_path("checkmark-green.svg") %>" /></h3>
-      <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard">Go To Your Stackbit Dashboard</a></strong></p>
-      <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Create New Stackbit Site</a></strong></p>
+      <h3><%= t("views.settings.extensions.stackbit.connected") %> <sup><%= t("core.beta") %></sup><img width="20px" style="margin-left:2px;" src="<%= asset_path("checkmark-green.svg") %>" /></h3>
+      <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard"><%= t("views.settings.extensions.stackbit.goto") %></a></strong></p>
+      <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto"><%= t("views.settings.extensions.stackbit.create") %></a></strong></p>
     <% else %>
       <h3 class="crayons-subtitle-2 flex items-center">
-        Connect to Stackbit
-        <span class="ml-2 crayons-indicator crayons-indicator--accent">beta</span>
+        <%= t("views.settings.extensions.stackbit.connect") %>
+        <span class="ml-2 crayons-indicator crayons-indicator--accent"><%= t("core.beta") %></span>
       </h3>
       <p class="mb-4">
-        Automatically generate a self-hosted static blog feed from your <%= community_name %> posts.
+        <%= t("views.settings.extensions.stackbit.desc", community: community_name) %>
       </p>
       <a href="/connecting-with-stackbit" class="crayons-btn">
-        Get Started
+        <%= t("views.settings.extensions.stackbit.start") %>
       </a>
     <% end %>
   </div>

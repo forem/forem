@@ -46,31 +46,34 @@ module Articles
       #
       # Each scoring method has the following keys:
       #
-      # - clause: The SQL clause statement; note: there exists a
-      #           coupling between the clause and the SQL fragments
-      #           that join the various tables.  Also, under no
-      #           circumstances should you allow any user value for
+      # - clause: [Required] The SQL clause statement; note: there
+      #           exists a coupling between the clause and the SQL
+      #           fragments that join the various tables.  Also, under
+      #           no circumstances should you allow any user value for
       #           this, as it is not something we can sanitize.
       #
-      # - cases: An Array of Arrays, the first value is what matches
-      #          the clause, the second value is the multiplicative
-      #          factor.
+      # - cases: [Required] An Array of Arrays, the first value is
+      #          what matches the clause, the second value is the
+      #          multiplicative factor.
       #
-      # - fallback: When no case is matched use this factor.
+      # - fallback: [Required] When no case is matched use this
+      #             factor.
       #
-      # - requires_user: Does this scoring method require a given
-      #                  user.  If not, don't use it if we don't have
-      #                  a nil user.
+      # - requires_user: [Required] Does this scoring method require a
+      #                  given user.  If not, don't use it if we don't
+      #                  have a nil user.
       #
-      # - group_by: An SQL fragment that ensures a valid postgres
-      #             statement in older versions of postgres.  See
+      # - group_by: [Optional] An SQL fragment that ensures a valid
+      #             postgres statement in older versions of postgres.
+      #             See
       #             https://github.com/forem/forem/pull/15240#discussion_r750392321
       #             for further sleuthing details.  When you reference
       #             a field in the clause, you likely need to include
       #             a corresponding :group_by attribute.
       #
-      # - joins: An SQL fragment that defines the join necessary to
-      #          fulfill the clause of the scoring method.
+      # - joins: [Optional] An SQL fragment that defines the join
+      #          necessary to fulfill the clause of the scoring
+      #          method.
       #
       # @note The group by clause appears necessary for postgres
       #       versions and Heroku configurations of current (as of
@@ -243,8 +246,6 @@ module Articles
       # @option config [Array<Symbol>] :scoring_configs
       #   allows for you to configure which methods you want to use.
       #   This is most relevant when running A/B testing.
-      # @option config [Integer] :most_number_of_days_to_consider
-      #   defines the oldest published date that we'll consider.
       # @option config [Integer] :negative_reaction_threshold, when
       #         the `articles.privileged_users_reaction_points_sum` is
       #         less than this amount, treat this is a negative
@@ -259,18 +260,20 @@ module Articles
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
-        @page = page.to_i
+        @page = (page || 1).to_i
         # TODO: The tag parameter is vestigial, there's no logic around this value.
         @tag = tag
         @default_user_experience_level = config.fetch(:default_user_experience_level) { DEFAULT_USER_EXPERIENCE_LEVEL }
         @negative_reaction_threshold = config.fetch(:negative_reaction_threshold, DEFAULT_NEGATIVE_REACTION_THRESHOLD)
         @positive_reaction_threshold = config.fetch(:positive_reaction_threshold, DEFAULT_POSITIVE_REACTION_THRESHOLD)
-        @oldest_published_at = determine_oldest_published_at(
-          user: @user,
-          most_number_of_days_to_consider: config.fetch(:most_number_of_days_to_consider, 31),
-        )
         @scoring_configs = config.fetch(:scoring_configs) { default_scoring_configs }
         configure!(scoring_configs: @scoring_configs)
+
+        @oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
+          user: @user,
+          days_since_published: @days_since_published,
+        )
+        @must_have_main_image = true
       end
 
       # The goal of this query is to generate a list of articles that
@@ -361,6 +364,14 @@ module Articles
       #
       # @note I really dislike this method name as it is opaque on
       #       it's purpose.
+      # @note We're specifically In the LargeForemExperimental implementation, the
+      #       default home feed omits the featured story.  In this
+      #       case, I don't want to do that.  Instead, I want to see
+      #       how this behaves.
+      def default_home_feed(**)
+        call
+      end
+
       alias more_comments_minimal_weight_randomized call
 
       # The featured story should be the article that:
@@ -372,8 +383,6 @@ module Articles
       # the `featured = true` attribute.  In my envisioned
       # implementation, the pagination would omit the featured story.
       #
-      # @param must_have_main_image [Boolean] do we mandate that the
-      #        featured story/stories require an image?
       # @return [Array<Article, Array<Article>] a featured story
       #         Article and an array of Article objects.
       #
@@ -398,31 +407,22 @@ module Articles
       #       in the featured story.  For non-signed in users, we may
       #       want to use a completely different set of scoring
       #       methods.
-      def featured_story_and_default_home_feed(must_have_main_image: true, **)
+      def featured_story_and_default_home_feed(**)
         # We could parameterize this, but callers would need to
         # consider the impact of that decision, and it would break the
         # current contract.
         number_of_featured_stories = 1
         featured_story = call(
           only_featured: true,
-          must_have_main_image: must_have_main_image,
+          must_have_main_image: @must_have_main_image,
           limit: number_of_featured_stories,
           offset: 0,
         ).first
         articles = call(
-          must_have_main_image: must_have_main_image,
           # Make sure that we don't include the featured_story
           omit_article_ids: [featured_story&.id],
         )
         [featured_story, articles]
-      end
-
-      # @note In the LargeForemExperimental implementation, the
-      #       default home feed omits the featured story.  In this
-      #       case, I don't want to do that.  Instead, I want to see
-      #       how this behaves.
-      def default_home_feed(must_have_main_image: true, **)
-        call(must_have_main_image: must_have_main_image)
       end
 
       private
@@ -499,10 +499,6 @@ module Articles
         @joins.join("\n")
       end
 
-      def determine_oldest_published_at(user:, most_number_of_days_to_consider: 31)
-        user&.page_views&.second_to_last&.created_at || most_number_of_days_to_consider.days.ago
-      end
-
       # We multiply the relevance score components together.
       def relevance_score_components_as_sql
         @relevance_score_components.join(" * \n")
@@ -531,6 +527,7 @@ module Articles
       # @see SCORING_METHOD_CONFIGURATIONS
       # @note Be mindful to guard against SQL injection!
       def configure!(scoring_configs:)
+        @days_since_published = Articles::Feeds::DEFAULT_DAYS_SINCE_PUBLISHED
         @relevance_score_components = []
 
         # By default we always need to group by the articles.id
@@ -580,6 +577,12 @@ module Articles
             cases: scoring_config.fetch(:cases),
             fallback: scoring_config.fetch(:fallback),
           )
+
+          # Make sure that we consider all of the days for which we're
+          # establishing cases and for which there is a fallback.
+          if valid_method_name == :daily_decay_factor
+            @days_since_published = scoring_config.fetch(:cases).count + 1
+          end
         end
       end
 

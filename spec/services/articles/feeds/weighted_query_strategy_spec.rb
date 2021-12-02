@@ -3,6 +3,17 @@ require "rails_helper"
 RSpec.describe Articles::Feeds::WeightedQueryStrategy, type: :service do
   subject(:feed_strategy) { described_class.new(user: user) }
 
+  let(:user) { nil }
+
+  describe "#default_home_feed" do
+    # This test helps test the common interface between the
+    # WeightedQueryStrategy and the LargeForemExperimental
+    it "receives `user_signed_in: false` and behaves" do
+      response = feed_strategy.default_home_feed(user_signed_in: false)
+      expect(response).to be_a(ActiveRecord::Relation)
+    end
+  end
+
   describe "with a nil user" do
     let(:user) { nil }
 
@@ -16,7 +27,7 @@ RSpec.describe Articles::Feeds::WeightedQueryStrategy, type: :service do
     it "#call is successful with parameterization" do
       # NOTE: I'm not testing the SQL logic, merely that the SQL is
       # valid.
-      response = feed_strategy.call(only_featured: true, must_have_main_image: true)
+      response = feed_strategy.call(only_featured: true)
       expect(response).to be_a(ActiveRecord::Relation)
       expect(response).to match_array([])
     end
@@ -62,7 +73,7 @@ RSpec.describe Articles::Feeds::WeightedQueryStrategy, type: :service do
     it "#call is successful with parameterization" do
       # NOTE: I'm not testing the SQL logic, merely that the SQL is
       # valid.
-      response = feed_strategy.call(only_featured: true, must_have_main_image: true)
+      response = feed_strategy.call(only_featured: true)
       expect(response).to be_a(ActiveRecord::Relation)
       expect(response).to match_array([])
     end
