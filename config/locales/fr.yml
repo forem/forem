@@ -6,7 +6,6 @@ fr:
     if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
   core:
     add_comment: Ajouter un commentaire
-    analytics: Analytique
     beta: bêta
     comment: Commentaire
     comments: Commentaires
@@ -18,7 +17,6 @@ fr:
     follow: Suivre
     follow_back: Suivre aussi
     follower: Suiveur
-    followers: Suiveurs
     following: Abonné
     joined: Rejoint
     joined_on: Rejoint le
@@ -30,7 +28,6 @@ fr:
     more_from: Plus de la part de
     pinned: Épinglé
     post: Publication
-    posts: Publications
     reaction: Réaction
     reaction_pluralized:
       one: réaction
@@ -42,18 +39,8 @@ fr:
     reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
-    series: Séries
     settings: Paramètres
     trending_on: Populaire sur
-  dashboard:
-    empty_follower: Vous n'avez pas encore d'abonnés...
-    empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
-    following_users: Utilisateurs suivis
-    loading: Chargement en cours...
-    not_following_any_users: Vous ne suivez aucun utilisateur...
-    page_title: Tableau de bord
-    upload_a_video: Charger une vidéo
-    write_new_post: Écrivez votre premier message maintenant
   date:
     abbr_month_names:
     - 

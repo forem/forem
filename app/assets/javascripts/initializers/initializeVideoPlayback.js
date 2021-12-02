@@ -122,17 +122,9 @@ function initializeVideoPlayback() {
     videoPlayerEvent(true);
   }
 
-  function handleVideoMessages(mutation) {
-    if (mutation.type !== 'attributes') {
-      return;
-    }
-
-    var message = {};
-    try {
-      var messageData = getById('video-player-source').dataset.message;
-      message = JSON.parse(messageData);
-    } catch (e) {
-      console.log(e); // eslint-disable-line no-console
+  function handleVideoMessages(event) {
+    const message = JSON.parse(event.detail);
+    if (message.namespace !== 'video') {
       return;
     }
 
@@ -151,7 +143,7 @@ function initializeVideoPlayback() {
         currentTime = message.currentTime;
         break;
       default:
-        console.log('Unrecognized video message: ', message); // eslint-disable-line no-console
+        console.log('Unrecognized message: ', message); // eslint-disable-line no-console
     }
   }
 
@@ -161,27 +153,17 @@ function initializeVideoPlayback() {
 
     if (Runtime.isNativeIOS('video')) {
       deviceType = 'iOS';
-      Runtime.videoMessage = function (message) {
-        try {
-          window.webkit.messageHandlers.video.postMessage(message);
-        } catch (err) {
-          console.log(err.message); // eslint-disable-line no-console
-        }
-      };
     } else if (Runtime.isNativeAndroid('videoMessage')) {
       deviceType = 'Android';
-      Runtime.videoMessage = function (message) {
-        try {
-          AndroidBridge.videoMessage(JSON.stringify(message));
-        } catch (err) {
-          console.log(err.message); // eslint-disable-line no-console
-        }
-      };
     } else {
       // jwplayer is initialized and no further interaction is needed
       initWebPlayer(seconds, metadata);
       return;
     }
+
+    Runtime.videoMessage = (msg) => {
+      window.ForemMobile.injectNativeMessage('video', msg);
+    };
 
     var playerElement = getById(`video-player-${metadata.id}`);
     playerElement.addEventListener('click', requestFocus);
@@ -189,12 +171,7 @@ function initializeVideoPlayback() {
     playerElement.classList.add('native');
     getById('play-butt').classList.add('active');
 
-    var mutationObserver = new MutationObserver(function (mutations) {
-      mutations.forEach(function (mutation) {
-        handleVideoMessages(mutation);
-      });
-    });
-    mutationObserver.observe(videoSource, { attributes: true });
+    document.addEventListener('ForemMobile', handleVideoMessages);
 
     currentTime = `${seconds}`;
   }

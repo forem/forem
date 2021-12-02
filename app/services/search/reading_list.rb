@@ -19,6 +19,17 @@ module Search
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100 # to avoid querying too many items, we set a maximum amount for a page
 
+    # Search for the given user's reading list.
+    #
+    # @param user [User] whose reading list are we searching?
+    # @param term [String] search term for the articles
+    # @param statuses [Array<String>] what reading list status(es) to filter our search
+    # @param tags [Array<String>] a list of tags to filter our search
+    # @param page [Integer] the page in the pagination
+    # @param per_page [Integer] how many items do we return in our pagination result set
+    #
+    # @return [Hash<Symbol,Object>] with keys :items and :total.
+    #         :total is an Integer and :items is an Array of serialized data.
     def self.search_documents(user, term: nil, statuses: [], tags: [], page: 0, per_page: DEFAULT_PER_PAGE)
       return {} unless user
 
@@ -58,7 +69,7 @@ module Search
       }
     end
 
-    def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:)
+    def self.find_articles(user:, term:, statuses:, tags:, page:, per_page:, only_published: true)
       # [@jgaskins, @rhymes] as `reactions` is potentially a big table, adding pagination
       # to an INNER JOIN (eg. `joins(:reactions)`) exponentially decreases the performance,
       # incrementing query time as the database has to scan all the rows just to discard
@@ -74,6 +85,8 @@ module Search
       relation = ::Article.joins(
         "INNER JOIN (#{reaction_query_sql}) reactions ON reactions.reactable_id = articles.id",
       )
+
+      relation = relation.published if only_published
 
       relation = relation.search_articles(term) if term.present?
 

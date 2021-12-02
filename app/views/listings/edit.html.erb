@@ -68,7 +68,7 @@
         </header>
         <div class="flex items-center">
           <%= f.submit t("views.listings.edit.bump.button"), class: "crayons-btn crayons-btn--secondary mr-4" %>
-          <p class="color-base-70"><%= t("views.listings.edit.bump.last", date: time_ago_in_words(@listing.bumped_at, scope: :'datetime.distance_in_words_ago')) %></p>
+          <p class="color-base-70"><%= t("views.listings.edit.bump.last", date: time_ago_in_words(@listing.bumped_at, scope: :"datetime.distance_in_words_ago")) %></p>
         </div>
         <input type="hidden" name="listing[action]" value="bump" />
       <% end %>

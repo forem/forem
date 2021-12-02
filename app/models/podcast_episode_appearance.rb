@@ -1,3 +1,6 @@
+#  @note When we destroy the related user, it's using dependent:
+#        :delete for the relationship.  That means no before/after
+#        destroy callbacks will be called on this object.
 class PodcastEpisodeAppearance < ApplicationRecord
   belongs_to :user, class_name: "User", inverse_of: :podcast_episode_appearances
   belongs_to :podcast_episode

@@ -179,18 +179,12 @@ RSpec.describe UserDecorator, type: :decorator do
   end
 
   describe "#considered_new?" do
-    before do
-      allow(Settings::RateLimit).to receive(:user_considered_new_days).and_return(3)
-    end
+    let(:decorated_user) { user.decorate }
 
-    it "returns true for new users" do
-      user.created_at = 1.day.ago
-      expect(user.decorate.considered_new?).to be(true)
-    end
-
-    it "returns false for new users" do
-      user.created_at = 1.year.ago
-      expect(user.decorate.considered_new?).to be(false)
+    it "delegates to Settings::RateLimit.considered_new?" do
+      allow(Settings::RateLimit).to receive(:user_considered_new?).with(user: decorated_user).and_return(true)
+      expect(decorated_user.considered_new?).to be(true)
+      expect(Settings::RateLimit).to have_received(:user_considered_new?).with(user: decorated_user)
     end
   end
 end

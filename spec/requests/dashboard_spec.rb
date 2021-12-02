@@ -330,7 +330,7 @@ RSpec.describe "Dashboards", type: :request do
 
     it "displays a message if no subscriptions are found" do
       get "/dashboard/subscriptions", params: params
-      expect(response.body).to include("You don't have any subscribers for this")
+      expect(response.body).to include(CGI.escapeHTML("You don't have any subscribers for this"))
     end
 
     it "raises unauthorized when trying to access a source the user doesn't own" do

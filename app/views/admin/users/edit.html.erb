@@ -22,7 +22,7 @@
         User Status
         <% if @user.suspended? %>
           <span class="badge badge-danger">🚨 Member is Suspended 🚨</span>
-        <% elsif @user.warned %>
+        <% elsif @user.warned? %>
           <span class="badge badge-warning">Member is Warned</span>
         <% elsif @user.comment_suspended? %>
           <span class="badge badge-warning">Member is Comment Suspended</span>

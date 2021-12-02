@@ -42,6 +42,7 @@
               class="flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0 hide-comment"
               data-hide-type="hide"
               data-comment-id="<%= comment.id %>"
+              data-comment-url="<%= URL.url(comment.path) %>"
               aria-label="<%= t("views.comments.menu.action.aria_label", action: t("views.comments.menu.action.hide"), user: comment.user.name) %>">
               <%= t("views.comments.menu.action.hide_text") %>
             </button>

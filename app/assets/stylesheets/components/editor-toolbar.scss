@@ -1,4 +1,23 @@
 .editor-toolbar {
   display: flex;
-  background: var(--base-0);
+
+  .toolbar-btn .spinner-or-cancel {
+    .cancel {
+      display: none;
+    }
+  }
+
+  .toolbar-btn:hover,
+  .toolbar-btn:focus {
+    .spinner-or-cancel {
+      .cancel {
+        display: block;
+        color: var(--accent-danger);
+      }
+
+      svg:not(.cancel) {
+        display: none;
+      }
+    }
+  }
 }

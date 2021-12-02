@@ -40,49 +40,49 @@ RSpec.describe User, type: :model do
     describe "builtin validations" do
       subject { user }
 
-      it { is_expected.to have_one(:profile).dependent(:destroy) }
-      it { is_expected.to have_one(:notification_setting).dependent(:destroy) }
-      it { is_expected.to have_one(:setting).dependent(:destroy) }
+      it { is_expected.to have_one(:profile).dependent(:delete) }
+      it { is_expected.to have_one(:notification_setting).dependent(:delete) }
+      it { is_expected.to have_one(:setting).dependent(:delete) }
 
       it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
       it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
-      it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:destroy) }
-      it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:destroy) }
-      it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
+      it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:delete_all) }
+      it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:delete_all) }
+      it { is_expected.to have_many(:api_secrets).dependent(:delete_all) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
-      it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
+      it { is_expected.to have_many(:badge_achievements).dependent(:delete_all) }
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
-      it { is_expected.to have_many(:discussion_locks).dependent(:destroy) }
-      it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
+      it { is_expected.to have_many(:discussion_locks).dependent(:delete_all) }
+      it { is_expected.to have_many(:display_ad_events).dependent(:delete_all) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
-      it { is_expected.to have_many(:identities).dependent(:destroy) }
+      it { is_expected.to have_many(:identities).dependent(:delete_all) }
       it { is_expected.to have_many(:identities_enabled) }
       it { is_expected.to have_many(:listings).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
-      it { is_expected.to have_many(:notes).dependent(:destroy) }
-      it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
-      it { is_expected.to have_many(:notifications).dependent(:destroy) }
-      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:delete_all) }
+      it { is_expected.to have_many(:notes).dependent(:delete_all) }
+      it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
+      it { is_expected.to have_many(:notifications).dependent(:delete_all) }
+      it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
       it { is_expected.to have_many(:page_views).dependent(:nullify) }
-      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:delete_all) }
       it { is_expected.to have_many(:podcast_episodes).through(:podcast_episode_appearances).source(:podcast_episode) }
-      it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_ownerships).dependent(:delete_all) }
       it { is_expected.to have_many(:podcasts_owned).through(:podcast_ownerships).source(:podcast) }
-      it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
-      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_skips).dependent(:delete_all) }
+      it { is_expected.to have_many(:poll_votes).dependent(:delete_all) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
       it { is_expected.to have_many(:rating_votes).dependent(:nullify) }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:response_templates).dependent(:destroy) }
+      it { is_expected.to have_many(:response_templates).dependent(:delete_all) }
       it { is_expected.to have_many(:source_authored_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribers).dependent(:destroy) }
@@ -423,7 +423,6 @@ RSpec.describe User, type: :model do
     let(:user) { create(:user) }
 
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
       omniauth_mock_providers_payload
     end
 
@@ -539,36 +538,10 @@ RSpec.describe User, type: :model do
   end
 
   describe "spam" do
-    before do
-      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
-      allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(
-        ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
-      )
-    end
+    it "delegates spam handling to Spam::Handler.handle_user!" do
+      allow(Spam::Handler).to receive(:handle_user!).with(user: user).and_call_original
 
-    it "creates vomit reaction if possible spam" do
-      user.name = "Hi my name is Yahoomagoo gogo"
       user.save
-      expect(Reaction.last.category).to eq("vomit")
-      expect(Reaction.last.reactable_id).to eq(user.id)
-    end
-
-    it "creates vomit reaction if possible spam based on pattern" do
-      user.name = "Hi my name is magoo to the magee"
-      user.save
-      expect(Reaction.last.category).to eq("vomit")
-      expect(Reaction.last.reactable_id).to eq(user.id)
-    end
-
-    it "does not create vomit reaction if does not have matching title" do
-      user.save
-      expect(Reaction.last).to be nil
-    end
-
-    it "does not create vomit reaction if does not have pattern match" do
-      user.name = "Hi my name is magoo to"
-      user.save
-      expect(Reaction.last).to be nil
     end
   end
 

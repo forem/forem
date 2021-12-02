@@ -28,6 +28,7 @@ module.exports = {
               '@crayons': path.join(__dirname, './crayons'),
               '@utilities': path.join(__dirname, './utilities'),
               '@components': path.join(__dirname, './shared/components'),
+              '@images': path.join(__dirname, '../assets/images'),
               '@admin-controllers': path.join(__dirname, './admin/controllers'),
             },
             extensions: ['.js', '.jsx'],
@@ -42,6 +43,7 @@ module.exports = {
   },
   plugins: ['import', 'react', 'jsx-a11y'],
   rules: {
+    'no-var': 'error',
     'import/order': ['error'],
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
