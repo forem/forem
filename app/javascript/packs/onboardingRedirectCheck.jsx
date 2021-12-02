@@ -10,22 +10,20 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 
 // If localStorage.getItem('shouldRedirectToOnboarding') is not set, i.e. null, that means we should redirect.
 function redirectableLocation() {
-  return (
-    window.location.pathname !== '/onboarding' &&
-    window.location.pathname !== '/signout_confirm' &&
-    window.location.pathname !== '/privacy'
+  return !['/onboarding', '/signout_confirm', '/privacy'].includes(
+    window.location.pathname,
   );
 }
 
 function redirectableCreatorOnboardingLocation() {
-  return (
-    window.location.pathname !== '/onboarding' &&
-    window.location.pathname !== '/signout_confirm' &&
-    window.location.pathname !== '/privacy' &&
-    window.location.pathname !== '/code-of-conduct' &&
-    window.location.pathname !== '/terms' &&
-    window.location.pathname !== '/admin/creator_settings/new'
-  );
+  return ![
+    '/onboarding',
+    '/signout_confirm',
+    '/privacy',
+    '/admin/creator_settings/new',
+    '/code-of-conduct',
+    '/terms',
+  ].includes(window.location.pathname);
 }
 
 function onboardingSkippable(currentUser) {
