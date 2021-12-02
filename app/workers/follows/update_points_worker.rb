@@ -31,7 +31,7 @@ module Follows
         .pluck(:reactable_id).last(100)
       last_100_long_page_view_article_ids = user.page_views.where(time_tracked_in_seconds: 45..)
         .pluck(:article_id).last(100)
-      articles = Article.where(id: last_100_reactable_ids + last_100_long_page_view_article_ids).joins(:tags)
+      articles = Article.where(id: last_100_reactable_ids + last_100_long_page_view_article_ids)
       tags = articles.map(&:tag_list).flatten
       occurrences = tags.count(tag.name)
       bonus = inverse_popularity_bonus(tag)
