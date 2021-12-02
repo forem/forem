@@ -1,11 +1,11 @@
 ##
 # Validates if the give attribute is used across the reserved spaces.
 class UniqueCrossModelSlugValidator < ActiveModel::EachValidator
-  class_attribute :model_and_attribute_name_for_uniquness_test
+  class_attribute :model_and_attribute_name_for_uniqueness_test
 
   # Why a class attribute?  Allow for other implementations to extend
   # this behavior.
-  self.model_and_attribute_name_for_uniquness_test = {
+  self.model_and_attribute_name_for_uniqueness_test = {
     Organization => :slug,
     Page => :slug,
     Podcast => :slug,
@@ -36,7 +36,7 @@ class UniqueCrossModelSlugValidator < ActiveModel::EachValidator
     return false unless value
     return true if value.include?("sitemap-")
 
-    model_and_attribute_name_for_uniquness_test.detect do |model, attribute|
+    model_and_attribute_name_for_uniqueness_test.detect do |model, attribute|
       next if record.is_a?(model)
 
       model.exists?(attribute => value)
