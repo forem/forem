@@ -123,7 +123,7 @@ module Moderator
 
     def update_trusted_cache
       Rails.cache.delete("user-#{@user.id}/has_trusted_role")
-      @user.trusted
+      @user.trusted?
     end
 
     def update_roles

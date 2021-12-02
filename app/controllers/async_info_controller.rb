@@ -54,7 +54,7 @@ class AsyncInfoController < ApplicationController
         checked_terms_and_conditions: @user.checked_terms_and_conditions,
         display_sponsors: @user.display_sponsors,
         display_announcements: @user.display_announcements,
-        trusted: @user.trusted,
+        trusted: @user.trusted?,
         moderator_for_tags: @user.moderator_for_tags,
         config_body_class: @user.config_body_class,
         feed_style: feed_style_preference,
