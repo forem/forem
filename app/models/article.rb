@@ -102,7 +102,9 @@ class Article < ApplicationRecord
   before_validation :evaluate_markdown, :create_slug
   before_save :update_cached_user
   before_save :set_all_dates
-  before_save :clean_data
+
+  StringAttributeCleaner.for(:canonical_url)
+
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
@@ -786,10 +788,6 @@ class Article < ApplicationRecord
 
   def title_to_slug
     "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
-  end
-
-  def clean_data
-    self.canonical_url = nil if canonical_url == ""
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)
