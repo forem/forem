@@ -13,7 +13,12 @@ function redirectableLocation() {
   return (
     window.location.pathname !== '/onboarding' &&
     window.location.pathname !== '/signout_confirm' &&
-    window.location.pathname !== '/privacy' &&
+    window.location.pathname !== '/privacy'
+  );
+}
+
+function redirectableCreatorOnboardingLocation() {
+  return (
     window.location.pathname !== '/code-of-conduct' &&
     window.location.pathname !== '/terms' &&
     window.location.pathname !== '/admin/creator_settings/new'
@@ -42,7 +47,10 @@ document.ready.then(
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
 
-      if (redirectableLocation() && onboardCreator(currentUser)) {
+      if (
+        redirectableCreatorOnboardingLocation() &&
+        onboardCreator(currentUser)
+      ) {
         window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;
       } else if (redirectableLocation() && !onboardingSkippable(currentUser)) {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
@@ -58,7 +66,7 @@ window.InstantClick.on('change', () => {
   getUserDataAndCsrfToken()
     .then(({ currentUser }) => {
       if (
-        redirectableLocation() &&
+        redirectableCreatorOnboardingLocation() &&
         localStorage.getItem('shouldRedirectToOnboarding') === null &&
         onboardCreator(currentUser)
       ) {
