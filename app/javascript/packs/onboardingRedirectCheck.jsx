@@ -10,9 +10,12 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 
 // If localStorage.getItem('shouldRedirectToOnboarding') is not set, i.e. null, that means we should redirect.
 function redirectableLocation() {
-  return !['/onboarding', '/signout_confirm', '/privacy'].includes(
-    window.location.pathname,
-  );
+  return ![
+    '/onboarding',
+    '/signout_confirm',
+    '/privacy',
+    '/admin/creator_settings/new',
+  ].includes(window.location.pathname);
 }
 
 function redirectableCreatorOnboardingLocation() {
