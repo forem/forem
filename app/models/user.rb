@@ -353,8 +353,10 @@ class User < ApplicationRecord
     has_role?(:warned)
   end
 
-  # Included as a courtesy but let's consider removing it.
-  alias warned warned?
+  def warned
+    ActiveSupport::Deprecation.warn("User#warned is deprecated, favor User#warned?")
+    warned?
+  end
 
   def super_admin?
     has_role?(:super_admin)
@@ -376,7 +378,7 @@ class User < ApplicationRecord
     Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
 
-  def trusted
+  def trusted?
     return @trusted if defined? @trusted
 
     @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
@@ -384,7 +386,10 @@ class User < ApplicationRecord
     end
   end
 
-  alias trusted? trusted
+  def trusted
+    ActiveSupport::Deprecation.warn("User#trusted is deprecated, favor User#trusted?")
+    trusted?
+  end
 
   def moderator_for_tags
     Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
