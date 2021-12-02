@@ -57,11 +57,7 @@
     <header>
       <h2 class="crayons-subtitle-1 flex items-center">
         <%= t("views.settings.notifications.mobile") %>
-        <span class="ml-2 crayons-indicator crayons-indicator--accent"><%= t("core.beta") %></span>
       </h2>
-      <p class="color-base-70">
-        <%= t("views.settings.notifications.mobile_notice") %>
-      </p>
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :mobile_comment_notifications, class: "crayons-checkbox" %>
@@ -88,7 +84,7 @@
     </div>
   </div>
 
-  <% if current_user.trusted %>
+  <% if current_user.trusted? %>
     <div class="crayons-card crayons-card--content-rows">
       <h2 class="crayons-subtitle-1">
         <%= t("views.settings.notifications.moderator") %>

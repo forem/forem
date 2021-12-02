@@ -185,7 +185,6 @@ en:
         general: General notifications
         general_desc_html: Notifications that only appear on the %{page}.
         mobile: Mobile notifications
-        mobile_notice: Additional settings will be rolled out as new notification features are made available.
         moderator: Moderator notifications
         page: notifications page
         save: Save

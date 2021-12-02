@@ -21,6 +21,7 @@ class User < ApplicationRecord
     end
   end
 
+  include StringAttributeCleaner.for(:email)
   ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
@@ -208,8 +209,8 @@ class User < ApplicationRecord
   }
   before_validation :check_for_username_change
   before_validation :downcase_email
+
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
@@ -353,8 +354,10 @@ class User < ApplicationRecord
     has_role?(:warned)
   end
 
-  # Included as a courtesy but let's consider removing it.
-  alias warned warned?
+  def warned
+    ActiveSupport::Deprecation.warn("User#warned is deprecated, favor User#warned?")
+    warned?
+  end
 
   def super_admin?
     has_role?(:super_admin)
@@ -376,7 +379,7 @@ class User < ApplicationRecord
     Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
 
-  def trusted
+  def trusted?
     return @trusted if defined? @trusted
 
     @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
@@ -384,7 +387,10 @@ class User < ApplicationRecord
     end
   end
 
-  alias trusted? trusted
+  def trusted
+    ActiveSupport::Deprecation.warn("User#trusted is deprecated, favor User#trusted?")
+    trusted?
+  end
 
   def moderator_for_tags
     Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
@@ -560,10 +566,6 @@ class User < ApplicationRecord
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
 
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
-  end
-
-  def verify_email
-    self.email = nil if email == ""
   end
 
   def set_username
