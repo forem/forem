@@ -29,7 +29,7 @@ module Payments
         process_purchase
         create_credits if success?
       else
-        self.error = "Please select a payment method"
+        self.error = I18n.t("services.payments.errors.select_payment_method")
       end
 
       self
