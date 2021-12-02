@@ -7,7 +7,7 @@ RSpec.describe UnifiedEmbedTag, type: :liquid_tag do
     allow(GistTag).to receive(:new).and_call_original
     parsed_tag = Liquid::Template.parse("{% embed #{link} %}")
     expect { parsed_tag.render }.not_to raise_error
-    expect(GistTag).to have_received(:new).with(link)
+    expect(GistTag).to have_received(:new)
   end
 
   it "renders an A-tag when no link-matching class is found" do
