@@ -41,7 +41,7 @@
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
-          <a href="<%= new_path %>" class="c-link c-link--block c-cta c-cta--branded mr-2 whitespace-nowrap"><%= t("views.main.create_post") %></a>
+          <a href="<%= new_path %>" class="c-cta c-cta--branded mr-2 whitespace-nowrap"><%= t("views.main.create_post") %></a>
 
           <span class="trusted-visible-block">
             <a id="moderation-link" class="c-link c-link--icon-alone c-link--block radius-full mx-1" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= mod_path %>">
@@ -68,7 +68,7 @@
           </a>
         </span>
 
-        <a href="<%= sign_up_path(state: "new-user") %>" class="c-link c-link--block c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
+        <a href="<%= sign_up_path(state: "new-user") %>" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
           <%= t("views.main.header.create_account") %>
         </a>
       <% end %>
