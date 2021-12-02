@@ -10,7 +10,6 @@
   border-radius: var(--radius);
   font: inherit;
   cursor: pointer;
-  transition: all var(--transition-props);
   outline: 0;
   text-decoration: none;
   color: var(--color);
@@ -60,6 +59,12 @@
     .js-focus-visible &.focus-visible:focus {
       background-color: var(--bg-hover);
     }
+  }
+
+  &[aria-current="page"] {
+    --bg: var(--base-inverted);
+    --color: var(--base-100);
+    font-weight: var(--fw-bold);
   }
 }
 

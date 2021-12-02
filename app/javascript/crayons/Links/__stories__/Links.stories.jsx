@@ -60,7 +60,7 @@ export const Block = (args) => <Link {...args} />;
 Block.args = {
   ...Inline.args,
   block: true,
-  variant: 'default',
+  variant: undefined,
   children: 'Block link',
 };
 

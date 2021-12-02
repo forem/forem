@@ -69,16 +69,6 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
       menuNavButton.setAttribute('aria-expanded', 'true');
     });
   } else {
-    memberTopMenu.addEventListener('mouseover', (_event) => {
-      classList.add('desktop');
-      openHeaderMenu(memberTopMenu, menuNavButton);
-    });
-    memberTopMenu.addEventListener('mouseout', (_event) => {
-      if (!memberTopMenu.dataset.clicked) {
-        closeHeaderMenu(memberTopMenu, menuNavButton);
-      }
-    });
-
     memberTopMenu.addEventListener('keyup', (e) => {
       if (e.key === 'Escape' && classList.contains('showing')) {
         closeHeaderMenu(memberTopMenu, menuNavButton);
@@ -192,9 +182,9 @@ export function setCurrentPageIconLink(currentPage, pageEntries) {
     .forEach(([page, iconLink]) => {
       if (currentPage === page) {
         iconLink.blur();
-        iconLink.classList.add('crayons-header__link--current');
+        iconLink.setAttribute('aria-current', 'page');
       } else {
-        iconLink.classList.remove('crayons-header__link--current');
+        iconLink.removeAttribute('aria-current');
       }
     });
 }
