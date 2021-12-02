@@ -1,6 +1,6 @@
 <a href="/" class="<%= "site-logo" unless FeatureFlag.enabled?(:creator_onboarding) %>" aria-label="<%= t("views.main.aria_home") %>">
-  <% if Settings::General.logo_svg %>
-      <%= Settings::General.logo_svg %>
+  <% if Settings::General.logo_svg.present? %>
+    <%= logo_svg %>
   <% elsif FeatureFlag.enabled?(:creator_onboarding) %>
       <img class="site-logo" src="<%= Settings::General.resized_logo %>" alt="<%= community_name %>">
   <% else %>
