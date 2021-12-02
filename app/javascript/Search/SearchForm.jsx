@@ -3,7 +3,7 @@ import { h } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { locale } from '../utilities/locale';
 import { ButtonNew as Button } from '@crayons';
-import SearchIcon from '@images/search.svg'
+import SearchIcon from '@images/search.svg';
 
 export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch }, ref) => (
   <form
@@ -29,7 +29,7 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch }, ref) => (
         <Button
           type="submit"
           icon={SearchIcon}
-          className="absolute right-0 bottom-0 top-0 mt-0"
+          className="absolute inset-px left-auto mt-0 py-0"
           aria-label="Search"
         />
       </div>
