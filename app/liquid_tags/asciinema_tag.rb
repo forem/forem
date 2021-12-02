@@ -1,6 +1,6 @@
 class AsciinemaTag < LiquidTagBase
   PARTIAL = "liquids/asciinema".freeze
-  ASCIINEMA_URL_REGEX = %r{https://asciinema.org/a/(?<id>\d+)}
+  REGISTRY_REGEXP = %r{https://asciinema.org/a/(?<id>\d+)}
 
   def initialize(_tag_name, id, _parse_context)
     super
@@ -20,7 +20,7 @@ class AsciinemaTag < LiquidTagBase
 
   def parse_id(input)
     sanitized_input = input.strip
-    match_data = sanitized_input.match(ASCIINEMA_URL_REGEX)
+    match_data = sanitized_input.match(REGISTRY_REGEXP)
     match_data ? match_data["id"] : validate(sanitized_input)
   end
 
@@ -32,3 +32,5 @@ class AsciinemaTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("asciinema", AsciinemaTag)
+
+UnifiedEmbed.register(AsciinemaTag, regexp: AsciinemaTag::REGISTRY_REGEXP)
