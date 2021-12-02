@@ -12,6 +12,7 @@ export const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
 
         return (
           <a
+            key={category.slug}
             href={`/listings/${category.slug}`}
             id={`category-link-${category.slug}`}
             className={`crayons-link crayons-link--block ${

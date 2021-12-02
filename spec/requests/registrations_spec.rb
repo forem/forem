@@ -156,7 +156,7 @@ RSpec.describe "Registrations", type: :request do
 
       it "renders the creator onboarding form" do
         get root_path
-        expect(response.body).to include("Let's start your Forem journey!")
+        expect(response.body).to include(CGI.escapeHTML("Let's start your Forem journey!"))
         expect(response.body).to include("Create your admin account first")
       end
     end

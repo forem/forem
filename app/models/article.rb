@@ -187,6 +187,11 @@ class Article < ApplicationRecord
   }
   scope :unpublished, -> { where(published: false) }
 
+  # [@jeremyf] For approved articles is there always an assumption of
+  #            published?  Regardless, the scope helps us deal with
+  #            that in the future.
+  scope :approved, -> { where(approved: true) }
+
   scope :admin_published_with, lambda { |tag_name|
     published
       .where(user_id: User.with_role(:super_admin)
@@ -291,6 +296,8 @@ class Article < ApplicationRecord
 
     order(column => dir.to_sym)
   }
+
+  scope :featured, -> { where(featured: true) }
 
   scope :feed, lambda {
                  published.includes(:taggings)

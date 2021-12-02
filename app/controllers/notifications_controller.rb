@@ -55,7 +55,7 @@ class NotificationsController < ApplicationController
   private
 
   def user_to_view
-    if params[:username] && current_user.admin?
+    if params[:username] && current_user.super_admin?
       User.find_by(username: params[:username])
     else
       current_user
@@ -83,6 +83,6 @@ class NotificationsController < ApplicationController
   end
 
   def allowed_user?
-    @user.org_member?(params[:org_id]) || @user.admin?
+    @user.org_member?(params[:org_id]) || @user.super_admin?
   end
 end

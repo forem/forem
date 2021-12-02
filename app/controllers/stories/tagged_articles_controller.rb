@@ -32,7 +32,7 @@ module Stories
 
     def set_number_of_articles
       @num_published_articles = if @tag_model.requires_approval?
-                                  @tag_model.articles.published.where(approved: true).count
+                                  @tag_model.articles.published.approved.count
                                 elsif Settings::UserExperience.feed_strategy == "basic"
                                   tagged_count
                                 else
@@ -47,7 +47,7 @@ module Stories
     def set_stories
       @stories = Articles::Feeds::Tag.call(@tag, number_of_articles: @number_of_articles, page: @page)
 
-      @stories = @stories.where(approved: true) if @tag_model&.requires_approval
+      @stories = @stories.approved if @tag_model&.requires_approval
 
       @stories = stories_by_timeframe
       @stories = @stories.decorate
