@@ -7,7 +7,15 @@ RSpec.describe Articles::Feeds do
     context "when the given user is nil" do
       let(:user) { nil }
 
-      it { is_expected.to be_a ActiveSupport::TimeWithZone }
+      it "returns Article::Feeds::DEFAULT_DAYS_SINCE_PUBLISHED days ago" do
+        # Why the to_date coercion?  Because Integer.days.ago is an
+        # ActiveSupport::TimeWithZone variable that includes
+        # microseconds, and in the time between the function_call and
+        # the expectation test, there's a few microseconds that passed
+        # (based on your processor).  In theory, this test might fail
+        # if someone ran the test right around the stroke of midnight.
+        expect(function_call.to_date).to eq(Articles::Feeds::DEFAULT_DAYS_SINCE_PUBLISHED.days.ago.to_date)
+      end
     end
 
     context "when the given user has no page views" do

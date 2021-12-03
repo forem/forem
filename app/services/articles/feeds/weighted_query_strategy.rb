@@ -273,7 +273,6 @@ module Articles
           user: @user,
           days_since_published: @days_since_published,
         )
-        @must_have_main_image = true
       end
 
       # The goal of this query is to generate a list of articles that
@@ -407,21 +406,26 @@ module Articles
       #       in the featured story.  For non-signed in users, we may
       #       want to use a completely different set of scoring
       #       methods.
+      #
+      # @note The logic of Articles::Feeds::FindFeaturedStory does not
+      #       (at present) filter apply an `Article.featured` scope.
+      #       [@jeremyf] I have reported this in
+      #       https://github.com/forem/forem/issues/15613 to get clarity
+      #       from product.
       def featured_story_and_default_home_feed(**)
-        # We could parameterize this, but callers would need to
-        # consider the impact of that decision, and it would break the
-        # current contract.
-        number_of_featured_stories = 1
-        featured_story = call(
-          only_featured: true,
-          must_have_main_image: @must_have_main_image,
-          limit: number_of_featured_stories,
-          offset: 0,
-        ).first
-        articles = call(
-          # Make sure that we don't include the featured_story
-          omit_article_ids: [featured_story&.id],
-        )
+        # NOTE: See the
+        # https://github.com/forem/forem/blob/c1a3ba99ebec2e1ca220e9530c26cac7757c690b/app/services/articles/feeds/weighted_query_strategy.rb#L410-L426
+        # state of the codebase for the implementation of first selecting
+        # the feature story (using the same query logic) then selecting
+        # the related articles.  With the below implementation, we need to
+        # do antics in the upstream javascript file to remove the featured
+        # file.  See the
+        # https://github.com/forem/forem/blob/c1a3ba99ebec2e1ca220e9530c26cac7757c690b/app/javascript/articles/Feed.jsx#L42-L63
+        # for that process.
+        #
+        # tl;dr - the below implementation creates additional downstream complexities.
+        articles = call
+        featured_story = Articles::Feeds::FindFeaturedStory.call(articles)
         [featured_story, articles]
       end
 
@@ -436,7 +440,9 @@ module Articles
 
       # The sql statement for selecting based on relevance scores that
       # are for nil users.
-      def sql_sub_query_for_nil_user(only_featured:, must_have_main_image:, limit:, offset:, omit_article_ids:)
+      # rubocop:disable Layout/LineLength
+      def sql_sub_query_for_nil_user(limit:, offset:, omit_article_ids:, only_featured: false, must_have_main_image: false)
+        # rubocop:enable Layout/LineLength
         where_clause = build_sql_with_where_clauses(
           only_featured: only_featured,
           must_have_main_image: must_have_main_image,
@@ -481,7 +487,11 @@ module Articles
         where_clauses = "articles.published = true AND articles.published_at > :oldest_published_at"
         # See Articles.published scope discussion regarding the query planner
         where_clauses += " AND articles.published_at < :now"
-        where_clauses += " AND articles.id NOT IN (:omit_article_ids)" unless omit_article_ids.empty?
+
+        # Without the compact, if we have `omit_article_ids: [nil]` we
+        # have the following SQL clause: `articles.id NOT IN (NULL)`
+        # which will immediately omit EVERYTHING from the query.
+        where_clauses += " AND articles.id NOT IN (:omit_article_ids)" unless omit_article_ids.compact.empty?
         where_clauses += " AND articles.featured = true" if only_featured
         where_clauses += " AND articles.main_image IS NOT NULL" if must_have_main_image
         where_clauses
