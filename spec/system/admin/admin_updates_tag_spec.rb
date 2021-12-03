@@ -5,7 +5,7 @@ RSpec.describe "Admin updates a tag", type: :system do
   let(:bg_color_hex) { "#000000" }
   let(:text_color_hex) { "#ffffff" }
 
-  context "when no colors have been choosen for the tag" do
+  context "when no colors have been chosen for the tag" do
     let(:tag) { create(:tag) }
 
     before do
@@ -39,7 +39,7 @@ RSpec.describe "Admin updates a tag", type: :system do
     end
   end
 
-  context "when colors have already been choosen for the tag" do
+  context "when colors have already been chosen for the tag" do
     let(:tag) { create(:tag, bg_color_hex: "#0000ff", text_color_hex: "#ff0000") }
 
     before do
