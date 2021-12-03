@@ -6,7 +6,7 @@
  */
 export const WCAGColorContrast = {
   /**
-   * Calculate contast ratio beetween rgb1 and rgb2
+   * Calculate contast ratio between rgb1 and rgb2
    * @param {String} rgb1 6-letter RGB color.
    * @param {String} rgb2 6-letter RGB color.
    * @return {Number}
