@@ -152,7 +152,7 @@
 
     var form = document.getElementById('new_credit');
     form.onsubmit = function(_event) {
-      changeSubmitButton({ text: <%= t("views.credits.new.form.submitting") %>, active: false })
+      changeSubmitButton({ text: '<%= t("views.credits.new.form.submitting") %>', active: false })
     }
 
     var stripe = Stripe('<%= Settings::General.stripe_publishable_key %>');
@@ -217,7 +217,7 @@
           stripe.createToken(card).then(function(result) {
             if (result.error) {
               // Inform the user if there was an error.
-              changeSubmitButton({ text: <%= t("views.credits.new.form.submit") %>, active: true });
+              changeSubmitButton({ text: '<%= t("views.credits.new.form.submit") %>', active: true });
               var errorElement = document.getElementById('card-errors');
               errorElement.textContent = result.error.message;
             } else {

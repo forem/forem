@@ -188,7 +188,7 @@ GEM
       rexml
     crass (1.0.6)
     dante (0.2.0)
-    ddtrace (0.54.0)
+    ddtrace (0.54.1)
       debase-ruby_core_source (= 0.10.12)
       msgpack
     dead_end (1.1.7)
@@ -777,7 +777,7 @@ GEM
     sidekiq-cron (1.2.0)
       fugit (~> 1.1)
       sidekiq (>= 4.2.1)
-    sidekiq-unique-jobs (7.1.11)
+    sidekiq-unique-jobs (7.1.12)
       brpoplpush-redis_script (> 0.1.1, <= 2.0.0)
       concurrent-ruby (~> 1.0, >= 1.0.5)
       sidekiq (>= 5.0, < 8.0)
@@ -939,7 +939,7 @@ DEPENDENCIES
   cloudinary (~> 1.21)
   counter_culture (~> 3.1)
   cypress-rails!
-  ddtrace (~> 0.54.0)
+  ddtrace (~> 0.54.1)
   debug (>= 1.0.0)
   derailed_benchmarks (~> 2.1)
   devise (~> 4.8)
@@ -1044,7 +1044,7 @@ DEPENDENCIES
   shoulda-matchers (~> 5.0.0)
   sidekiq (~> 6.3.1)
   sidekiq-cron (~> 1.1)
-  sidekiq-unique-jobs (~> 7.1.11)
+  sidekiq-unique-jobs (~> 7.1.12)
   simplecov (~> 0.21.2)
   slack-notifier (~> 2.4)
   solargraph (~> 0.44)

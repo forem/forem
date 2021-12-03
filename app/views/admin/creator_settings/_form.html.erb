@@ -8,17 +8,14 @@
 </div>
 
 <div class="crayons-field mt-6 align-left">
-  <%= label_tag :logo_svg, class: "crayons-field__label" do %>
+  <%= label_tag :logo, class: "crayons-field__label" do %>
     Logo
     <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the logo for your Forem" aria-describedby="logo-subtitle"></span>
     <p id="logo-subtitle" class="crayons-field__description">Ideally SVG, but PNG or JPEG will work, too.</p>
   <% end %>
   <div class="flex flex-1 gap-4">
-    <%= file_field_tag :logo_svg, required: true, accept: ".svg,.png,.jpg,image/svg+xml,image/png,image/jpg", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
+    <%= file_field_tag :logo, accept: @logo_allowed_types.to_s, data: { "max-file-size-mb": @max_file_size.to_s, action: "change->creator-settings#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
     <div data-creator-settings-target="previewLogo">
-      <% if ::Settings::General.logo_svg.present? %>
-        <%= ::Settings::General.logo_svg.html_safe %>
-      <% end %>
     </div>
   </div>
 </div>
@@ -38,16 +35,19 @@
                          title: "Provide a valid HEX Color or pick your color from the color picker.",
                          placeholder: ::Settings::UserExperience.primary_brand_color_hex,
                          class: "crayons-textfield js-color-field",
-                         "data-action": "change->creator-settings#updateBranding" %>
+                         "data-action": "change->creator-settings#handleValidationsAndUpdates",
+                         "data-creator-settings-target": "brandColor",
+                         "aria-describedby": "color-contrast-error" %>
       <%= color_field_tag :primary_brand_color_hex,
                           ::Settings::UserExperience.primary_brand_color_hex,
                           pattern: "^#+([a-fA-F0-9]{6})$",
                           placeholder: ::Settings::UserExperience.primary_brand_color_hex,
                           class: "crayons-color-selector js-color-field ml-2",
-                          "data-action": "change->creator-settings#updateBranding",
-                          required: true %>
+                          required: true,
+                          "data-action": "change->creator-settings#handleValidationsAndUpdates" %>
     </div>
   </div>
+  <div id="color-contrast-error" data-creator-settings-target="colorContrastError" aria-live="polite" class="mt-1 color-accent-danger"></div>
 </div>
 
 <div class="crayons-field mt-6 align-left">
@@ -90,12 +90,12 @@
       <div class="mb-2">
         <%= hidden_field_tag :checked_code_of_conduct, "0" %>
         <%= check_box_tag :checked_code_of_conduct, "1", false, class: "crayons-checkbox", required: true %>
-        <label for="checked_code_of_conduct">I agree to uphold our <a href="/code-of-conduct">Code of Conduct</a>.</label>
+        <label for="checked_code_of_conduct">I agree to uphold our <a href="/code-of-conduct" target="code-of-conduct">Code of Conduct</a>.</label>
       </div>
       <div>
         <%= hidden_field_tag :checked_terms_and_conditions, "0" %>
         <%= check_box_tag :checked_terms_and_conditions, "1", false, class: "crayons-checkbox", required: true %>
-        <label for="checked_terms_and_conditions">I agree to our <a href="/terms">Terms and Conditions</a>.</label>
+        <label for="checked_terms_and_conditions">I agree to our <a href="/terms" target="terms-and-conditions">Terms and Conditions</a>.</label>
       </div>
     </div>
   </fieldset>

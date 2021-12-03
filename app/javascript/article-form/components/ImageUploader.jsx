@@ -397,7 +397,11 @@ export const ImageUploader = ({
 
   return (
     <Fragment>
-      <div id="upload-success-info" className="screen-reader-only" />
+      <div
+        id="upload-success-info"
+        aria-live="polite"
+        className="screen-reader-only"
+      />
 
       {editorVersion === 'v2' ? (
         <V2EditorImageUpload

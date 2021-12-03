@@ -37,6 +37,9 @@ module Settings
 
     setting :logo_svg, type: :string
 
+    setting :original_logo, type: :string
+    setting :resized_logo, type: :string
+
     setting :enable_video_upload, type: :boolean, default: false
 
     # Mascot

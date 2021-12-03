@@ -43,7 +43,7 @@ RSpec.describe "Admin bans user", type: :system do
     add_tag_moderator_role
     warn_user
 
-    expect(user.warned).to eq(true)
+    expect(user.warned?).to eq(true)
     expect(Note.last.reason).to eq "Warn"
     expect(user.has_role?(:tag_moderator)).to eq(false)
   end
@@ -62,7 +62,7 @@ RSpec.describe "Admin bans user", type: :system do
 
     expect(user.suspended?).to eq(true)
     expect(user.trusted).to eq(false)
-    expect(user.warned).to eq(false)
+    expect(user.warned?).to eq(false)
     expect(user.has_role?(:tag_modertor)).to eq(false)
   end
 

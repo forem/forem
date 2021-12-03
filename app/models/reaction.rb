@@ -172,7 +172,7 @@ class Reaction < ApplicationRecord
   def negative_reaction_from_untrusted_user?
     return if user&.any_admin? || user&.id == Settings::General.mascot_user_id
 
-    negative? && !user.trusted
+    negative? && !user.trusted?
   end
 
   def notify_slack_channel_about_vomit_reaction

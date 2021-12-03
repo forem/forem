@@ -24,4 +24,11 @@ RSpec.describe "credits/new", type: :view do
 
     expect(rendered).to have_content("color: 'white'")
   end
+
+  it "renders localized submitting message in js correctly" do
+    render
+
+    expect(rendered).to have_content("changeSubmitButton({ text: 'Submitting...', active: false })")
+    expect(rendered).to have_content("changeSubmitButton({ text: 'Complete Purchase', active: true })")
+  end
 end
