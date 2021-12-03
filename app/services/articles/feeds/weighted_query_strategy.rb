@@ -33,7 +33,7 @@ module Articles
     class WeightedQueryStrategy
       # This constant defines the allowable relevance scoring methods.
       #
-      # A scoring method should be a SQL fragement that produces a
+      # A scoring method should be a SQL fragment that produces a
       # value between 0 and 1.  The closer the value is to 1, the more
       # relevant the article is for the given user.  Note: the values
       # are multiplicative.  Make sure to consider if you want a 0
