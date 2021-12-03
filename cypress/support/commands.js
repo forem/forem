@@ -112,7 +112,7 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
     cy.log('Login failed. Attempting one more login.');
 
     // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionnally.
+    // This is to combat some flaky tests where the login fails occasionally.
     return getLoginRequest();
   });
 });
@@ -150,7 +150,7 @@ Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
     cy.log('Login failed. Attempting one more login.');
 
     // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionnally.
+    // This is to combat some flaky tests where the login fails occasionally.
     return getLoginRequest();
   });
 });
