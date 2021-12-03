@@ -26,7 +26,7 @@ RSpec.describe Users::Update, type: :service do
     end.to change { profile.data.key?("removed") }.to(false)
   end
 
-  it "propagates changes to user", :agregate_failures do
+  it "propagates changes to user", :aggregate_failures do
     new_name = "Sloan Doe"
     described_class.call(user, profile: {}, user: { name: new_name })
     expect(profile.user.name).to eq new_name
