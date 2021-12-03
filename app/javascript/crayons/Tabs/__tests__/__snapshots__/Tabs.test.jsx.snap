@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Tabs /> renders default Tabs with buttons 1`] = `"<div class=\\"c-tabs\\"><ul class=\\"c-tabs__list\\"><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-btn c-tab\\" aria-pressed=\\"true\\">One</button></li><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-btn c-tab\\" aria-pressed=\\"false\\">two</button></li></ul></div>"`;
+
+exports[`<Tabs /> renders default Tabs with links 1`] = `"<nav class=\\"c-tabs\\"><ul class=\\"c-tabs__list\\"><li class=\\"c-tabs__list__item\\"><a href=\\"#\\" class=\\"c-link c-link--block c-tab\\" aria-current=\\"page\\">One</a></li><li class=\\"c-tabs__list__item\\"><a href=\\"#\\" class=\\"c-link c-link--block c-tab\\">two</a></li></ul></nav>"`;
+
+exports[`<Tabs /> renders fitted Tabs 1`] = `"<div class=\\"c-tabs c-tabs--fitted\\"><ul class=\\"c-tabs__list\\"><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-btn c-tab c-tab--fitted\\" aria-pressed=\\"true\\">One</button></li><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-btn c-tab c-tab--fitted\\" aria-pressed=\\"false\\">two</button></li></ul></div>"`;
+
+exports[`<Tabs /> renders stacked Tabs 1`] = `"<div class=\\"c-tabs c-tabs--stacked\\"><ul class=\\"c-tabs__list\\"><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-btn c-tab\\" aria-pressed=\\"true\\">One</button></li><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-btn c-tab\\" aria-pressed=\\"false\\">two</button></li></ul></div>"`;
