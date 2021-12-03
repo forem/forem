@@ -24,7 +24,7 @@ RSpec.shared_examples "UserSubscriptionSourceable" do
 
   describe "#create_user_subscription" do
     it "returns a created UserSubcription with the correct attributes" do
-      user_subscription_fields = %w[author_id subsciber_id subscriber_email user_subscription_sourceable_id
+      user_subscription_fields = %w[author_id subscriber_id subscriber_email user_subscription_sourceable_id
                                     user_susbcription_sourceable_type]
 
       user_subscription = create(
