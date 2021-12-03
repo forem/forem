@@ -193,7 +193,7 @@ const DEFAULT_AUTH_CONFIG = {
 };
 
 /**
- * Sets default values of Settings::General atrributes relevant to Authentication Section.
+ * Sets default values of Settings::General attributes relevant to Authentication Section.
  *
  * @param username {string} The username used in the test
  * @param settingsGeneral
