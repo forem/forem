@@ -3,7 +3,7 @@ module Articles
     # @api private
     #
     # This is an experimental object that we're refining to be a
-    # competetor to the existing feed strategies.
+    # competitor to the existing feed strategies.
     #
     # It works to implement conceptual parity with two methods of
     # Articles::Feeds::LargeForemExperimental:
