@@ -35,6 +35,14 @@ export default {
         defaultValue: { summary: false },
       },
     },
+    title: {
+      description:
+        'Tabs container should have a title describing particular navigation purpose. Labelling the navigation helps screen reader users get to the right one quickly and easily. Keep in mind, it will not be visible.',
+      type: 'string',
+      table: {
+        defaultValue: { summary: undefined },
+      },
+    },
     fitted: {
       description:
         'Tabs can be sized automatically (i.e. individual tab will be as wide as its content) OR they can take full available space (for 2 tabs: each will be 1/2 of the container, for 3 tabs: each will be 1/3 of the container, and so on)',
@@ -55,6 +63,7 @@ export const Default = (args) => (
 
 Default.args = {
   elements: 'buttons',
+  title: 'My navigation',
   stacked: false,
   fitted: false,
 };

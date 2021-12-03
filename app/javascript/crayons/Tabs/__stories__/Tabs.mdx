@@ -28,6 +28,11 @@ This maintains an uncluttered UI and reduces cognitive load for users. If you th
 Tabs component should never be considered as Form control, for example acting like radio buttons. 
 So don't treat it as another input or part of your Form.
 
+### Provide title
+
+Always provide a desciptive `title` prop for your tabs navigation as this helps screen reader users get to the right one quickly and easily.
+Keep in mind, it will not be **visible** in the interface.
+
 ### Provide current state
 
 Individual `<Tab />` can have `current` prop which defines currently selected (active) tab. Always have **one** `<Tab current />` at a time.
