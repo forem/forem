@@ -55,20 +55,20 @@
 }
 
 .c-cta {
-  --bg: var(--link-bg);
-  --bg-hover: var(--link-bg-hover);
-  --color: var(--link-color);
-  --color-hover: var(--link-color-hover);
-  --border: var(--link-border);
-  --border-hover: var(--link-border-hover);
+  --bg: var(--cta-bg);
+  --bg-hover: var(--cta-bg-hover);
+  --color: var(--cta-color);
+  --color-hover: var(--cta-color-hover);
+  --border: var(--cta-border);
+  --border-hover: var(--cta-border-hover);
 
   &--branded {
-    --bg: var(--link-branded-bg);
-    --bg-hover: var(--link-branded-bg-hover);
-    --color: var(--link-branded-color);
-    --color-hover: var(--link-branded-color-hover);
-    --border: var(--link-branded-border);
-    --border-hover: var(--link-branded-border-hover);
+    --bg: var(--cta-branded-bg);
+    --bg-hover: var(--cta-branded-bg-hover);
+    --color: var(--cta-branded-color);
+    --color-hover: var(--cta-branded-color-hover);
+    --border: var(--cta-branded-border);
+    --border-hover: var(--cta-branded-border-hover);
 
     font-weight: var(--fw-medium);
   }

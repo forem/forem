@@ -137,7 +137,6 @@ describe('Creator Settings Page', () => {
     it('should update the colors on the form when a new brand color is selected', () => {
       const color = '#25544b';
       const rgbColor = 'rgb(37, 84, 75)';
-      const rgbDarkerColor = 'rgb(31, 71, 64)';
 
       cy.findByLabelText(/^Brand color/)
         .clear()
@@ -164,7 +163,7 @@ describe('Creator Settings Page', () => {
       cy.findByRole('textbox', { name: /community name/i })
         .focus()
         .type('Climbing Life')
-        .should('have.css', 'border-color', rgbDarkerColor);
+        .should('have.css', 'border-color', rgbColor);
     });
   });
 });
