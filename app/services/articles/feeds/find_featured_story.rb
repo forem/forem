@@ -13,7 +13,9 @@ module Articles
       #       `Articles.where(featured: true)` but in my sleuthing,
       #       the origin of this method's inner logic never included a
       #       consideration for `featured == true`.  Perhaps that
-      #       should change?
+      #       should change?  This has been reported in
+      #       https://github.com/forem/forem/issues/15613 and impacts
+      #       Articles::Feeds::WeightedQueryStrategy.
       def self.call(stories, must_have_main_image: true)
         featured_story =
           if must_have_main_image
