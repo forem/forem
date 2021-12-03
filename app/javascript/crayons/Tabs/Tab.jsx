@@ -1,9 +1,15 @@
 import { h } from 'preact';
 import classNames from 'classnames/bind';
+import PropTypes from 'prop-types';
 import { ButtonNew as Button, Link } from '@crayons';
 
-export const Tab = ({ className, current, elements, fitted, ...otherProps }) => {
-
+export const Tab = ({
+  className,
+  current,
+  elements,
+  fitted,
+  ...otherProps
+}) => {
   const classes = classNames('c-tab', {
     'c-tab--fitted': fitted,
     [className]: className,
@@ -12,7 +18,7 @@ export const Tab = ({ className, current, elements, fitted, ...otherProps }) => 
   const sharedProps = {
     className: classes,
   };
-  const buttonCurrentProps = { 'aria-pressed': !!current }
+  const buttonCurrentProps = { 'aria-pressed': !!current };
   const linkCurrentProps = current && { 'aria-current': 'page' };
 
   return elements === 'buttons' ? (
@@ -23,3 +29,10 @@ export const Tab = ({ className, current, elements, fitted, ...otherProps }) => 
 };
 
 Tab.displayName = 'Tab';
+
+Tab.propTypes = {
+  className: PropTypes.string,
+  current: PropTypes.bool,
+  elements: PropTypes.oneOf(['buttons', 'links']),
+  fitted: PropTypes.bool,
+};
