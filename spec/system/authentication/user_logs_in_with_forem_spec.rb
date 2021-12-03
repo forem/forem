@@ -35,7 +35,7 @@ RSpec.describe "Authenticating with Forem" do
       end
     end
 
-    context "when using valid credentials but witholding email address" do
+    context "when using valid credentials but withholding email address" do
       before do
         OmniAuth.config.mock_auth[:forem][:info].delete(:email)
         OmniAuth.config.mock_auth[:forem][:extra][:raw_info].delete(:email)
