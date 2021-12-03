@@ -355,9 +355,9 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     it "raises an error when the source can't be found" do
-      nonexistant_article_params = { source_type: article.class.name, source_id: article.id + 999 }
+      nonexistent_article_params = { source_type: article.class.name, source_id: article.id + 999 }
       expect do
-        get "/dashboard/subscriptions", params: nonexistant_article_params
+        get "/dashboard/subscriptions", params: nonexistent_article_params
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
