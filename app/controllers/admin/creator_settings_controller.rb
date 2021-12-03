@@ -20,8 +20,7 @@ module Admin
         if settings_params[:logo]
           logo_uploader = upload_logo(settings_params[:logo])
           ::Settings::General.original_logo = logo_uploader.url
-          # An SVG will not be resized, hence we apply the OR statements below to populate SETTINGS consistently.
-          ::Settings::General.resized_logo = logo_uploader.resized_logo.url || logo_uploader.url
+          ::Settings::General.resized_logo = logo_uploader.resized_logo.url
         end
       end
       current_user.update!(
