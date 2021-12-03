@@ -90,7 +90,7 @@ export class CreatorSettingsController extends Controller {
 
   /**
    * Updates ths branding/colors on the Creator Settings Page.
-   * by overridding the accent-color in the :root object
+   * by overriding the accent-color in the :root object
    *
    * @param {String} color
    */
