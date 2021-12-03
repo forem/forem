@@ -5,7 +5,6 @@ require "exifr/jpeg"
 describe LogoUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
-  let(:image_svg) { fixture_file_upload("300x100.svg") }
   let(:image_jpg) { fixture_file_upload("800x600.jpg", "image/jpeg") }
   let(:image_png) { fixture_file_upload("800x600.png", "image/png") }
   let(:image_webp) { fixture_file_upload("800x600.webp", "image/webp") }
@@ -32,7 +31,7 @@ describe LogoUploader, type: :uploader do
 
   describe "formats" do
     it "permits a set of extensions" do
-      expect(uploader.extension_allowlist).to eq(%w[svg png jpg jpeg jpe])
+      expect(uploader.extension_allowlist).to eq(%w[png jpg jpeg jpe])
     end
 
     it "permits jpegs" do
@@ -43,11 +42,6 @@ describe LogoUploader, type: :uploader do
     it "permits pngs" do
       uploader.store!(image_png)
       expect(uploader).to be_format("png")
-    end
-
-    it "permits svgs" do
-      uploader.store!(image_svg)
-      expect(uploader).to be_format("svg")
     end
 
     it "rejects unsupported formats like webp" do
