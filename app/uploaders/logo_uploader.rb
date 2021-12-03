@@ -31,7 +31,7 @@ class LogoUploader < BaseUploader
     "original_logo_#{random_string}.#{file.extension}" if original_filename
   end
 
-  version :resized_logo, if: :not_svg? do
+  version :resized_logo do
     process resize_to_limit: [nil, 80]
     def full_filename(_for_file = file)
       "resized_logo_#{random_string}.#{file.extension}" if original_filename
@@ -42,9 +42,5 @@ class LogoUploader < BaseUploader
 
   def random_string
     SecureRandom.alphanumeric(20)
-  end
-
-  def not_svg?(file)
-    file.content_type.exclude?("svg")
   end
 end
