@@ -1,15 +1,14 @@
 import { h, cloneElement } from 'preact';
 import classNames from 'classnames/bind';
 
-export const Tabs = (props) => {
-  const {
+export const Tabs = ({
     children,
     stacked,
     fitted,
     className,
     elements = 'buttons',
     ...otherProps
-  } = props;
+  }) => {
 
   const Wrapper = elements === 'buttons' ? 'div' : 'nav';
 

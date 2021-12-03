@@ -2,8 +2,7 @@ import { h } from 'preact';
 import classNames from 'classnames/bind';
 import { ButtonNew as Button, Link } from '@crayons';
 
-export const Tab = (props) => {
-  const { className, current, elements, fitted, ...otherProps } = props;
+export const Tab = ({ className, current, elements, fitted, ...otherProps }) => {
 
   const classes = classNames('c-tab', {
     'c-tab--fitted': fitted,
@@ -13,9 +12,7 @@ export const Tab = (props) => {
   const sharedProps = {
     className: classes,
   };
-  const buttonCurrentProps = current
-    ? { 'aria-pressed': true }
-    : { 'aria-pressed': false };
+  const buttonCurrentProps = { 'aria-pressed': !!current }
   const linkCurrentProps = current && { 'aria-current': 'page' };
 
   return elements === 'buttons' ? (
