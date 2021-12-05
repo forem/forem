@@ -11,27 +11,21 @@ module Admin
 
     def create
       extra_authorization
-      ActiveRecord::Base.transaction do
-        ::Settings::Community.community_name = settings_params[:community_name]
-        ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]
-        ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]
-        ::Settings::UserExperience.public = settings_params[:public]
 
-        if settings_params[:logo]
-          logo_uploader = upload_logo(settings_params[:logo])
-          ::Settings::General.original_logo = logo_uploader.url
-          ::Settings::General.resized_logo = logo_uploader.resized_logo.url
-        end
+      @creator_settings_form = CreatorSettingsForm.new(settings_params)
+      # CreatorSettingsForm.new(community_name: "gdfghja", invite_only_mode: true, primary_brand_color_hex: "#3030a1",
+      # public: true, checked_code_of_conduct: true, checked_terms_and_conditions: true).save
+      if @creator_settings_form.save
+        current_user.update!(
+          saw_onboarding: true,
+          checked_code_of_conduct: settings_params[:checked_code_of_conduct],
+          checked_terms_and_conditions: settings_params[:checked_terms_and_conditions],
+        )
+        redirect_to root_path
+      else
+        flash.now[:error] = e.message
+        render new_admin_creator_setting_path
       end
-      current_user.update!(
-        saw_onboarding: true,
-        checked_code_of_conduct: settings_params[:checked_code_of_conduct],
-        checked_terms_and_conditions: settings_params[:checked_terms_and_conditions],
-      )
-      redirect_to root_path
-    rescue StandardError => e
-      flash.now[:error] = e.message
-      render new_admin_creator_setting_path
     end
 
     private
