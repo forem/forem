@@ -13,8 +13,9 @@ class CreatorSettingsForm
   attr_accessor :community_name, :primary_brand_color_hex, :invite_only_mode, :public, :logo,
                 :checked_code_of_conduct, :checked_terms_and_conditions
 
-  def initialize(community_name:, primary_brand_color_hex:, invite_only_mode:, public:,
-                 checked_code_of_conduct:, checked_terms_and_conditions:, logo: nil)
+  # TODO: determine the default values
+  def initialize(community_name: nil, primary_brand_color_hex: nil, invite_only_mode: nil, public: nil,
+                 checked_code_of_conduct: false, checked_terms_and_conditions: false, logo: nil)
     @community_name = community_name
     @primary_brand_color_hex = primary_brand_color_hex
     @invite_only_mode = invite_only_mode
