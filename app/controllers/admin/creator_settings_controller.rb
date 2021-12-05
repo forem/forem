@@ -4,6 +4,7 @@ module Admin
                         invite_only_mode logo primary_brand_color_hex public].freeze
 
     def new
+      @creator_settings_form = CreatorSettingsForm.new
       @max_file_size = LogoUploader::MAX_FILE_SIZE
       @logo_allowed_types = (LogoUploader::CONTENT_TYPE_ALLOWLIST +
         LogoUploader::EXTENSION_ALLOWLIST.map { |extension| ".#{extension}" }).join(",")
