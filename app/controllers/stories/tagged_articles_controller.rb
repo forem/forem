@@ -19,6 +19,7 @@ module Stories
       @moderators = User.with_role(:tag_moderator, @tag).select(:username, :profile_image, :id)
 
       set_number_of_articles(tag: @tag)
+
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
       not_found_if_not_established(tag: @tag, stories: @stories)
 
@@ -45,7 +46,7 @@ module Stories
     end
 
     def set_stories(number_of_articles:, page:, tag:)
-      stories = Articles::Feeds::Tag.call(tag, number_of_articles: number_of_articles, page: page)
+      stories = Articles::Feeds::Tag.call(tag.name, number_of_articles: number_of_articles, page: page)
 
       stories = stories.where(approved: true) if tag.requires_approval?
 
