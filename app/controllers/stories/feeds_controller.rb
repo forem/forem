@@ -35,7 +35,7 @@ module Stories
     end
 
     def signed_in_base_feed
-      strategy = AbExperiment.get(experiment: :feed_strategy, controller: self, user: current_user,
+      strategy = AbExperiment.get(experiment: :feed_strategy_round_2, controller: self, user: current_user,
                                   default_value: "original")
       feed = if strategy.weighted_query_strategy?
                Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
@@ -58,7 +58,7 @@ module Stories
     end
 
     def signed_out_base_feed
-      strategy = AbExperiment.get(experiment: :feed_strategy, controller: self, user: current_user,
+      strategy = AbExperiment.get(experiment: :feed_strategy_round_2, controller: self, user: current_user,
                                   default_value: "original")
       feed = if strategy.weighted_query_strategy?
                Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
