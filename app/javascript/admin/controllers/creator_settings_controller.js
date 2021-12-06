@@ -3,7 +3,7 @@ import { isLowContrast } from '@utilities/color/contrastValidator';
 import { brightness } from '@utilities/color/accentCalculator';
 
 const MAX_LOGO_PREVIEW_HEIGHT = 80;
-const MAX_LOGO_PREVIEW_WIDTH = 220;
+const MAX_LOGO_PREVIEW_WIDTH = 200;
 
 /**
  * Manages interactions on the Creator Settings page.
@@ -46,17 +46,18 @@ export class CreatorSettingsController extends Controller {
           } = event;
 
           if (height > MAX_LOGO_PREVIEW_HEIGHT) {
-            width = (width / height) * MAX_LOGO_PREVIEW_HEIGHT;
+            width = (MAX_LOGO_PREVIEW_HEIGHT / height) * width;
             height = MAX_LOGO_PREVIEW_HEIGHT;
           }
 
           if (width > MAX_LOGO_PREVIEW_WIDTH) {
+            height = (MAX_LOGO_PREVIEW_WIDTH / width) * height;
             width = MAX_LOGO_PREVIEW_WIDTH;
-            height = (height / width) * MAX_LOGO_PREVIEW_WIDTH;
           }
 
-          image.style.width = `${width}px`;
-          image.style.height = `${height}px`;
+          image.width = width;
+          image.height = height;
+          image.className = 'site-logo';
 
           this.previewLogoTarget.replaceChild(
             image,
