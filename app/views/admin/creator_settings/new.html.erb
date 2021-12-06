@@ -12,8 +12,7 @@
       <% end %>
     </div>
 
-    /* TODO: add the form data */
-    <%= form_tag(admin_creator_settings_path, method: "post", multipart: true, class: "relative z-elevate p-4", "data-action": "submit->creator-settings#formValidations") do %>
+    <%= form_with url: admin_creator_settings_path, model: @creator_settings_form, local: true, method: "post", multipart: true, class: "relative z-elevate p-4", "data-action": "submit->creator-settings#formValidations" do |f| %>
       <% if defined?(resource) && resource&.errors&.any? %>
         <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
           <div class="crayons-card__header">
@@ -36,9 +35,9 @@
         <p class="color-base-70 fs-xl">No stress, you can always change it later.</p>
       </div>
       <br>
-      <%= render "form" %>
+      <%= render "form", creator_settings_form: @creator_settings_form, f: f %>
       <div class="crayons-field mt-6 align-left">
-        <%= submit_tag "Finish", class: "crayons-btn btn--primary" %>
+        <%= f.submit "Finish", class: "crayons-btn btn--primary" %>
       </div>
       <% if @help_url %>
         <%= render "shared/help_icon" %>
