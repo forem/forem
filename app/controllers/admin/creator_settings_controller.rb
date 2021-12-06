@@ -13,14 +13,15 @@ module Admin
     def create
       extra_authorization
 
-      @creator_settings_form = CreatorSettingsForm.new(settings_params)
+      params = settings_params[:creator_settings_form]
+      @creator_settings_form = CreatorSettingsForm.new(params)
       # CreatorSettingsForm.new(community_name: "gdfghja", invite_only_mode: true, primary_brand_color_hex: "#3030a1",
       # public: true, checked_code_of_conduct: true, checked_terms_and_conditions: true).save
       if @creator_settings_form.save
         current_user.update!(
           saw_onboarding: true,
-          checked_code_of_conduct: settings_params[:checked_code_of_conduct],
-          checked_terms_and_conditions: settings_params[:checked_terms_and_conditions],
+          checked_code_of_conduct: params[:checked_code_of_conduct],
+          checked_terms_and_conditions: params[:checked_terms_and_conditions],
         )
         redirect_to root_path
       else
@@ -36,7 +37,7 @@ module Admin
     end
 
     def settings_params
-      params.permit(ALLOWED_PARAMS)
+      params.permit(creator_settings_form: ALLOWED_PARAMS)
     end
 
     def upload_logo(image)
