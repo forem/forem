@@ -314,4 +314,9 @@ module ApplicationHelper
 
     link_to(label, tag_path(tag), options)
   end
+
+  def creator_settings_form?
+    FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? &&
+      request.env["PATH_INFO"] == new_admin_creator_setting_path
+  end
 end
