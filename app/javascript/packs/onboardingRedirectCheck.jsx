@@ -19,14 +19,10 @@ function redirectableLocation() {
 }
 
 function redirectableCreatorOnboardingLocation() {
-  return ![
-    '/onboarding',
-    '/signout_confirm',
-    '/privacy',
-    '/admin/creator_settings/new',
-    '/code-of-conduct',
-    '/terms',
-  ].includes(window.location.pathname);
+  return (
+    redirectableLocation() &&
+    !['/code-of-conduct', '/terms'].includes(window.location.pathname)
+  );
 }
 
 function onboardingSkippable(currentUser) {
