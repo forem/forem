@@ -3,7 +3,6 @@ import { isLowContrast } from '@utilities/color/contrastValidator';
 import { brightness } from '@utilities/color/accentCalculator';
 
 const MAX_LOGO_PREVIEW_HEIGHT = 80;
-const MAX_LOGO_PREVIEW_WIDTH = 200;
 
 /**
  * Manages interactions on the Creator Settings page.
@@ -34,6 +33,7 @@ export class CreatorSettingsController extends Controller {
       const imageURL = reader.result;
       const image = document.createElement('img');
       image.src = imageURL;
+      image.className = 'site-logo';
 
       // The logo preview image is purely visual so no need to communicate this to assistive technology.
       image.alt = 'preview of logo selected';
@@ -45,24 +45,28 @@ export class CreatorSettingsController extends Controller {
             target: { width, height },
           } = event;
 
+          this.previewLogoTarget.replaceChild(
+            image,
+            this.previewLogoTarget.firstChild,
+          );
+
+          const maxLogoPreviewWidth = parseInt(
+            getComputedStyle(image).getPropertyValue('--max-width'),
+            10,
+          );
+
           if (height > MAX_LOGO_PREVIEW_HEIGHT) {
             width = (MAX_LOGO_PREVIEW_HEIGHT / height) * width;
             height = MAX_LOGO_PREVIEW_HEIGHT;
           }
 
-          if (width > MAX_LOGO_PREVIEW_WIDTH) {
-            height = (MAX_LOGO_PREVIEW_WIDTH / width) * height;
-            width = MAX_LOGO_PREVIEW_WIDTH;
+          if (width > maxLogoPreviewWidth) {
+            height = (maxLogoPreviewWidth / width) * height;
+            width = maxLogoPreviewWidth;
           }
 
           image.width = width;
           image.height = height;
-          image.className = 'site-logo';
-
-          this.previewLogoTarget.replaceChild(
-            image,
-            this.previewLogoTarget.firstChild,
-          );
         },
         { once: true },
       );
