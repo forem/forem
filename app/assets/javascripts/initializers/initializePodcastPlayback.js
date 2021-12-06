@@ -268,7 +268,7 @@ function initializePodcastPlayback() {
         setPlaying(true);
         resolve();
       } else {
-        audio.currrentTime = currentState.currentTime;
+        audio.currentTime = currentState.currentTime;
         audio
           .play()
           .then(function () {
