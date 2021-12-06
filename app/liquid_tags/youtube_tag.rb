@@ -1,7 +1,7 @@
 class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(www\.)?(youtube\.com|youtu\.be)?/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
+  REGISTRY_REGEXP = %r{https?://(www\.)?(youtube\.com|youtu\.be)/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
   # rubocop:enable Layout/LineLength
   MARKER_TO_SECONDS_MAP = {
     "h" => 60 * 60,
