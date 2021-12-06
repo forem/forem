@@ -33,13 +33,13 @@
       <script>
         const deleteAccountBtn = document.getElementById('delete__account__btn');
         const deleteAccountUsernameInput = document.getElementById('delete__account__username__field');
-        const deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field');
+        const deleteAccountVerificationInput = document.getElementById('delete__account__verification__field');
         function bothInputsVerified() {
-          return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "<%= t("views.settings.destroy.word") %>";
+          return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAccountVerificationInput.value === "<%= t("views.settings.destroy.word") %>";
         }
         const disableDeleteAccountBtn = () => { deleteAccountBtn.disabled = !bothInputsVerified() };
         deleteAccountUsernameInput.addEventListener('input', disableDeleteAccountBtn);
-        deleteAcccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
+        deleteAccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
       </script>
       <p>
         <%= t("views.settings.destroy.ghost_html", ghost: link_to("@ghost", "/ghost"), click: email_link(text: t("views.settings.destroy.click"), additional_info: { subject: "Request Account Deletion", body: @email_body })) %>

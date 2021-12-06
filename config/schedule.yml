@@ -47,7 +47,7 @@ award_four_week_streak_badge:
     - award_four_week_streak
     - ""
 award_eight_week_streak_badge:
-  description: "Awards 'eigth week publishing streak' badges to users (runs every 12 hours on the 15th minute after the hour)"
+  description: "Awards 'eight week publishing streak' badges to users (runs every 12 hours on the 15th minute after the hour)"
   cron: "15 */12 * * *"
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
@@ -125,7 +125,7 @@ remove_old_emails:
   cron: "0 6 * * *"
   class: "Emails::RemoveOldEmailsWorker"
 sync_credits_counter_cache:
-  description: "Sychronizes counter caches for credits (runs daily at 16:00 UTC)"
+  description: "Synchronizes counter caches for credits (runs daily at 16:00 UTC)"
   cron: "0 16 * * *"
   class: "Credits::SyncCounterCache"
 get_podcast_episodes:

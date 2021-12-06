@@ -20,4 +20,4 @@ And there arere four styles to pick from:
 - Critical (red) - something super important, don&apos;t overuse it!!
 
 - Inverted (dark grey) - alternative to the default one, especially when we need
-  to show two defautl indicators next to each other.
+  to show two default indicators next to each other.
