@@ -6,6 +6,7 @@ en:
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   core:
     add_comment: Add comment
+    beta: beta
     comment: Comment
     comments: Comments
     community_name_is_great: "%{community_name} is great!"
@@ -189,14 +190,6 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
-  settings_menu:
-    account: Account
-    billing: Billing
-    customization: Customization
-    extensions: Extensions
-    notifications: Notifications
-    organization: Organization
-    profile: Profile
   time:
     formats:
       comment: "%B %d, %Y"

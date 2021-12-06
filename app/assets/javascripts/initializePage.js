@@ -32,8 +32,6 @@ function callInitializers() {
   initializeCreditsPage();
   initializeProfileInfoToggle();
   initializeProfileBadgesToggle();
-  initializePodcastPlayback();
-  initializeVideoPlayback();
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
@@ -58,6 +56,8 @@ function initializePage() {
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
+      initializePodcastPlayback();
+      initializeVideoPlayback();
     }
   }, 1);
 

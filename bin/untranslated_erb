@@ -4,7 +4,7 @@ require 'rails-html-sanitizer'
 class I18nExtractor
   ERB_TAG = /<%(.*?)%>/
   HTML_TAG = /<[^>]*>|<\/[^>]*>|[^>]*\/>|\".+">|">|<\w+(.+|)|.+="(.+)|"/
-  SEPERATOR = '_@@@_'
+  SEPARATOR = '_@@@_'
   SKIP_TAGS = [[/<script/i,/<\/script>/i],[/<%/,/%>/],[/<style/i,/\/style>/i]]
 
   def initialize(filename)

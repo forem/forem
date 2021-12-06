@@ -291,8 +291,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           icon={icon}
           className={
             isOverflow
-              ? 'overflow-menu-btn hidden m:block mr-2'
-              : 'toolbar-btn m:hidden mr-2'
+              ? 'overflow-menu-btn hidden m:block mr-1'
+              : 'toolbar-btn m:hidden mr-1'
           }
           tabindex={isOverflow && index === 0 ? '0' : '-1'}
           onClick={() => insertSyntax(controlName)}
@@ -373,7 +373,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           key: 'image-btn',
           variant: 'ghost',
           contentType: 'icon',
-          className: 'toolbar-btn formatter-btn',
+          className: 'toolbar-btn formatter-btn mr-1',
           tabindex: '-1',
         }}
       />
