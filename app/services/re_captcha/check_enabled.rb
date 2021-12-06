@@ -25,7 +25,7 @@ module ReCaptcha
       return true if @user.suspended?
 
       # recaptcha will be enabled if the user has a vomit or is too recent
-      @user.vomitted_on? || @user.created_at.after?(1.month.ago)
+      @user.vomited_on? || @user.created_at.after?(1.month.ago)
     end
 
     private

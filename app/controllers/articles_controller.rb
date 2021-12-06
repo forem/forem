@@ -52,7 +52,7 @@ class ArticlesController < ApplicationController
   end
 
   def new
-    base_editor_assigments
+    base_editor_assignments
 
     @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
 
@@ -216,7 +216,7 @@ class ArticlesController < ApplicationController
 
   private
 
-  def base_editor_assigments
+  def base_editor_assignments
     @user = current_user
     @version = @user.setting.editor_version if @user
     @organizations = @user&.organizations
