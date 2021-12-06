@@ -47,11 +47,10 @@ document.ready.then(
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
 
-      if (
-        redirectableCreatorOnboardingLocation() &&
-        onboardCreator(currentUser)
-      ) {
-        window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;
+      if (onboardCreator(currentUser)) {
+        if (redirectableCreatorOnboardingLocation()) {
+          window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;
+        }
       } else if (redirectableLocation() && !onboardingSkippable(currentUser)) {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
       }
