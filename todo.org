@@ -1,0 +1,2 @@
+app/services/users/approved_liquid_tags.rb
+9:        liquid_tag if liquid_tag::VALID_ROLES.any? { |role| user.has_role?(*Array(role)) }

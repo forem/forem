@@ -55,6 +55,8 @@ module AuthorizationLayer
     end
 
     def admin?
+      # Yes, this is correct!  For historical reasons `user.admin?`
+      # in fact asked the question `has_role?(:super_admin)`
       has_role?(:super_admin)
     end
 
@@ -103,8 +105,14 @@ module AuthorizationLayer
       trusted || tag_moderator? || any_admin?
     end
 
-    def tag_moderator?
-      user.roles.where(name: "tag_moderator").any?
+    def tag_moderator?(tag: nil)
+      return user.roles.where(name: "tag_moderator").any? unless tag
+
+      has_role?(:tag_moderator, tag)
+    end
+
+    def support_admin?
+      has_role?(:support_admin)
     end
 
     private

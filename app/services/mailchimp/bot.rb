@@ -67,9 +67,7 @@ module Mailchimp
     end
 
     def manage_community_moderator_list
-      # rubocop:disable Layout/LineLength
-      return false unless Settings::General.mailchimp_community_moderators_id.present? && user.authorizer.has_trusted_role?
-      # rubocop:enable Layout/LineLength
+      return false unless Settings::General.mailchimp_community_moderators_id.present? && user.has_trusted_role?
 
       success = false
       status = user.notification_setting.email_community_mod_newsletter ? "subscribed" : "unsubscribed"

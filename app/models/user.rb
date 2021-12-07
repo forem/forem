@@ -417,6 +417,7 @@ class User < ApplicationRecord
     :warned, # TODO: Remove this method from the code-base
     :admin?,
     :creator?,
+    :support_admin?,
     :any_admin?,
     :tech_admin?,
     :vomitted_on?,
