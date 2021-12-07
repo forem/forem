@@ -410,7 +410,7 @@ class User < ApplicationRecord
   #
   #   `Authorize.for(user: user, to: <action>, on: <subject>)`
   #
-  # However, this is a refactor, and it's goal is to reduce the direct
+  # However, this is a refactor, and its goal is to reduce the direct
   # calls to user.<role question>.
   delegate(
     :warned?,
