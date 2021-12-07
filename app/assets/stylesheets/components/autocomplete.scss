@@ -1,4 +1,5 @@
 @import '../config/import';
+@import './forms';
 @import '@reach/combobox/styles';
 
 .crayons-autocomplete {
@@ -59,6 +60,20 @@
 }
 
 .c-autocomplete--multi {
+  &__wrapper:focus-within {
+    @extend %form-styling-focus;
+  }
+
+  &__input {
+    background-color: var(--form-bg);
+    color: var(--body-color);
+    border: none;
+  }
+
+  &__input:focus {
+    background-color: var(--form-bg-focus);
+  }
+
   ul.c-autocomplete--multi__popover {
     padding: var(--su-1);
     z-index: var(--z-elevate);

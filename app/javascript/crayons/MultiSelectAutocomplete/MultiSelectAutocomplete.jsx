@@ -147,7 +147,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
   const allSelectedItemElements = selectedItems.map((item, index) => (
     <li key={item} className="w-max">
       <button
-        className="mr-1 w-max"
+        className="mr-1 mb-1 w-max"
         onClick={() => deselectItem(item)}
         aria-describedby="remove-helper-text"
       >
@@ -183,7 +183,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
           aria-expanded={suggestions.length > 0}
           aria-owns="listbox1"
           aria-controls="listbox1"
-          className="flex items-center crayons-textfield"
+          className="c-autocomplete--multi__wrapper flex items-center crayons-textfield"
         >
           <ul
             aria-live="assertive"
@@ -198,7 +198,9 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
           <input
             ref={inputRef}
             autocomplete="off"
-            className={`border-none ${inputPosition === null ? 'w-100' : ''}`}
+            className={`c-autocomplete--multi__input ${
+              inputPosition === null ? 'w-100' : ''
+            }`}
             aria-activedescendant={
               activeDescendentIndex !== null
                 ? suggestions[activeDescendentIndex]
