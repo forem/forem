@@ -46,9 +46,7 @@ describe('Member Menu Dropdown', () => {
 
     cy.get('body').type('{esc}');
     cy.get('@dashboard').should('not.be.visible');
-    cy.get('@menuButton')
-      .should('have.attr', 'aria-expanded', 'false')
-      .should('have.focus');
+    cy.get('@menuButton').should('have.attr', 'aria-expanded', 'false');
   });
 
   it('closes menu on click outside', () => {
