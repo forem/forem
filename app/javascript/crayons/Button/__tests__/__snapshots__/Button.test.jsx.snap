@@ -4,7 +4,7 @@ exports[`<Button /> component should render a button as a specific button type (
 
 exports[`<Button /> component should render a button as an anchor element if "tagName" is set to "a" 1`] = `"<a class=\\"crayons-btn\\" href=\\"https://dev.to\\">Hello world!</a>"`;
 
-exports[`<Button /> component should render a button with addtional CSS classes when className is set 1`] = `"<button class=\\"crayons-btn some-additional-class-name\\" type=\\"button\\" disabled=\\"\\">Hello world!</button>"`;
+exports[`<Button /> component should render a button with additional CSS classes when className is set 1`] = `"<button class=\\"crayons-btn some-additional-class-name\\" type=\\"button\\" disabled=\\"\\">Hello world!</button>"`;
 
 exports[`<Button /> component should render a button with with an icon when an icon is set and there is button text 1`] = `"<button class=\\"crayons-btn crayons-btn--icon-left\\" type=\\"button\\"><svg width=\\"24\\" height=\\"24\\" xmlns=\\"http://www.w3.org/2000/svg\\" class=\\"crayons-icon\\"><path d=\\"M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z\\"></path></svg>Hello world!</button>"`;
 

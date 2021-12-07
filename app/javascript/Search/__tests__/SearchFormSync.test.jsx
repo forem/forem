@@ -17,7 +17,7 @@ describe('<SearchFormSync />', () => {
     document.body.innerHTML =
       '<div id="mobile-search-container"><form></form></div>';
 
-    setWindowLocation(`https://locahost:3000/`);
+    setWindowLocation(`https://localhost:3000/`);
 
     global.InstantClick = jest.fn(() => ({
       on: jest.fn(),
@@ -41,7 +41,7 @@ describe('<SearchFormSync />', () => {
     const searchTerm = 'diphthong';
 
     // simulates a search result returned which contains the server side rendered search form for mobile only.
-    setWindowLocation(`https://locahost:3000/search?q=${searchTerm}`);
+    setWindowLocation(`https://localhost:3000/search?q=${searchTerm}`);
 
     fireEvent(
       window,
@@ -72,7 +72,7 @@ describe('<SearchFormSync />', () => {
     const searchTerm = 'diphthong';
 
     // simulates a search result returned which contains the server side rendered search form for mobile only.
-    setWindowLocation(`https://locahost:3000/search?q=${searchTerm}`);
+    setWindowLocation(`https://localhost:3000/search?q=${searchTerm}`);
 
     fireEvent(
       window,
@@ -91,7 +91,7 @@ describe('<SearchFormSync />', () => {
     const searchTerm2 = 'diphthong2';
 
     // simulates a search result returned which contains the server side rendered search form for mobile only.
-    setWindowLocation(`https://locahost:3000/search?q=${searchTerm2}`);
+    setWindowLocation(`https://localhost:3000/search?q=${searchTerm2}`);
 
     const oldPortalContainer = document.getElementById(
       'mobile-search-container',

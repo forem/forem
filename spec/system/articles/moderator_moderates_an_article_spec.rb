@@ -27,8 +27,8 @@ RSpec.describe "Views an article", type: :system do
   end
 
   it "shows hidden comments on /mod" do
-    commentor = create(:user)
-    create(:comment, commentable: article, user: commentor, hidden_by_commentable_user: true)
+    commenter = create(:user)
+    create(:comment, commentable: article, user: commenter, hidden_by_commentable_user: true)
     visit "/#{user.username}/#{article.slug}/mod"
     expect(page).to have_content("Hidden Comments")
     expect(page).to have_selector("ul#hidden-comments")

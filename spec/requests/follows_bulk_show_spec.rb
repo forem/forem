@@ -5,26 +5,26 @@ RSpec.describe "Follows #bulk_show", type: :request do
   let(:followed_user) { create(:user) }
   let(:not_followed_user) { create(:user) }
   let(:follow_back_user) { create(:user) }
-  let(:mutal_follow_user) { create(:user) }
+  let(:mutual_follow_user) { create(:user) }
 
   context "when ids are present" do
     before do
       sign_in current_user
       current_user.follow(followed_user)
-      current_user.follow(mutal_follow_user)
+      current_user.follow(mutual_follow_user)
       follow_back_user.follow(current_user)
-      mutal_follow_user.follow(current_user)
+      mutual_follow_user.follow(current_user)
     end
 
     it "returns correct following values" do
-      ids = [followed_user.id, not_followed_user.id, current_user.id, follow_back_user.id, mutal_follow_user.id]
+      ids = [followed_user.id, not_followed_user.id, current_user.id, follow_back_user.id, mutual_follow_user.id]
       get bulk_show_follows_path, params: { ids: ids }
 
       expect(response.parsed_body[current_user.id.to_s]).to eq("self")
       expect(response.parsed_body[followed_user.id.to_s]).to eq("true")
       expect(response.parsed_body[not_followed_user.id.to_s]).to eq("false")
       expect(response.parsed_body[follow_back_user.id.to_s]).to eq("follow-back")
-      expect(response.parsed_body[mutal_follow_user.id.to_s]).to eq("mutual")
+      expect(response.parsed_body[mutual_follow_user.id.to_s]).to eq("mutual")
     end
   end
 

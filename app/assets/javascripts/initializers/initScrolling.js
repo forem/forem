@@ -300,7 +300,7 @@ function paginate(tag, params, requiresApproval) {
     searchHash.sort_by = 'public_reactions_count';
   }
 
-  // Brute force copying code from a utlity for quick fix
+  // Brute force copying code from a utility for quick fix
   const searchParams = new URLSearchParams();
   Object.keys(searchHash).forEach((key) => {
     const value = searchHash[key];

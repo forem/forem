@@ -10,7 +10,7 @@ RSpec.describe "User leaves an organization", type: :system do
   end
 
   context "when user visits member organization settings" do
-    it "shows the leave oranization button", js: true do
+    it "shows the leave organization button", js: true do
       expect(page).to have_button("Leave Organization")
     end
   end

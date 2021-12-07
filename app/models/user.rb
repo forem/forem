@@ -163,7 +163,7 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
-  validate :unique_including_orgs_and_podcasts, if: :username_changed?
+  validates :username, unique_cross_model_slug: true, if: :username_changed?
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -375,7 +375,7 @@ class User < ApplicationRecord
     has_role?(:tech_admin) || has_role?(:super_admin)
   end
 
-  def vomitted_on?
+  def vomited_on?
     Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
 
@@ -437,16 +437,6 @@ class User < ApplicationRecord
 
   def blocked_by?(blocker_id)
     UserBlock.blocking?(blocker_id, id)
-  end
-
-  def unique_including_orgs_and_podcasts
-    username_taken = (
-      Organization.exists?(slug: username) ||
-      Podcast.exists?(slug: username) ||
-      Page.exists?(slug: username)
-    )
-
-    errors.add(:username, "is taken.") if username_taken
   end
 
   def non_banished_username

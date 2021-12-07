@@ -48,7 +48,7 @@ class GithubReposController < ApplicationController
       repo
     end
 
-    # Remove pinned repositorioes that were removed from GH or are now private,
+    # Remove pinned repositories that were removed from GH or are now private,
     # since the user will not be able to remove them by themselves.
     known_repositories.each(&:destroy)
 

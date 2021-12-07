@@ -8,7 +8,7 @@ RSpec.describe "/admin", type: :request do
     allow(FeatureFlag).to receive(:enabled?).and_call_original
   end
 
-  describe "Last deployed and Lastest Commit ID card" do
+  describe "Last deployed and Latest Commit ID card" do
     before do
       ForemInstance.instance_variable_set(:@deployed_at, nil)
     end

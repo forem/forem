@@ -231,7 +231,7 @@ RSpec.describe "Registrations", type: :request do
         expect(User.all.size).to be 1
       end
 
-      it "marks as registerd" do
+      it "marks as registered" do
         post "/users", params:
         { user: { name: "test #{rand(10)}",
                   username: "haha_#{rand(10)}",

@@ -2,12 +2,12 @@
 
 <div class="grid grid-cols-2 m:grid-cols-4 gap-2 m:gap-4 pt-3">
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
-    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@reactions_count, delimeter: ",") %></strong>
+    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@reactions_count, delimiter: ",") %></strong>
     <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.reactions") %></span>
   </div>
 
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
-    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= num_views > 500 ? number_with_delimiter(num_views, delimeter: ",") : t("views.dashboard.summary.lt_500") %></strong>
+    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= num_views > 500 ? number_with_delimiter(num_views, delimiter: ",") : t("views.dashboard.summary.lt_500") %></strong>
     <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.views") %></span>
   </div>
 
