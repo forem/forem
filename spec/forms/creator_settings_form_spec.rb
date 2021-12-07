@@ -13,7 +13,7 @@ RSpec.describe CreatorSettingsForm, type: :model do
                                                        primary_brand_color_hex public])
     end
 
-    it "sets default values" do
+    it "sets default values", :aggregate_failures do
       attributes = described_class.new.attributes
       expect(attributes["checked_code_of_conduct"]).to be(false)
       expect(attributes["checked_terms_and_conditions"]).to be(false)
@@ -22,7 +22,7 @@ RSpec.describe CreatorSettingsForm, type: :model do
       expect(attributes["public"]).to be(true)
     end
 
-    it "updates default values" do
+    it "updates default values", :aggregate_failures do
       attributes = described_class.new(
         primary_brand_color_hex: "#0a0a0a",
         invite_only_mode: false,
@@ -33,7 +33,7 @@ RSpec.describe CreatorSettingsForm, type: :model do
   end
 
   describe "#save" do
-    it "saves the updated attributes to the correct Settings values" do
+    it "saves the updated attributes to the correct Settings values", :aggregate_failures do
       creator_settings_form = described_class.new(
         checked_code_of_conduct: true,
         checked_terms_and_conditions: true,
