@@ -15,7 +15,7 @@ import {
 } from '../utilities';
 
 // TODO: ★★★ These tests should be promoted to E2E tests once we have that in place. ★★★
-describe('top navigation utilitities', () => {
+describe('top navigation utilities', () => {
   beforeEach(() => {
     // Recreating the body element completely so as to remove any CSS classes
     // that were added to it.

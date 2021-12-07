@@ -42,7 +42,7 @@ class Device < ApplicationRecord
         },
         "thread-id": Settings::Community.community_name,
         sound: "default",
-        # This key is required to modify the notifiaction in the iOS app: https://developer.apple.com/documentation/usernotifications/modifying_content_in_newly_delivered_notifications#2942066
+        # This key is required to modify the notification in the iOS app: https://developer.apple.com/documentation/usernotifications/modifying_content_in_newly_delivered_notifications#2942066
         "mutable-content": 1
       },
       data: payload

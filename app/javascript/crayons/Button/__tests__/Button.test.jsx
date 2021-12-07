@@ -52,7 +52,7 @@ describe('<Button /> component', () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 
-  it('should render a button with addtional CSS classes when className is set', () => {
+  it('should render a button with additional CSS classes when className is set', () => {
     const { container } = render(
       <Button disabled className="some-additional-class-name">
         Hello world!

@@ -202,12 +202,12 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "does not update the username when the first_name is nil" do
-        previos_username = user.apple_username
+        previous_username = user.apple_username
         auth_payload.info.first_name = nil
 
         user = described_class.call(auth_payload)
 
-        expect(user.apple_username).to eq(previos_username)
+        expect(user.apple_username).to eq(previous_username)
       end
 
       it "updates profile_updated_at when the username is changed" do

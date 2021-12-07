@@ -4,7 +4,7 @@ module Articles
     # to consider it in the relevance feed.
     #
     # @note I believe that it is likely we would extract this constant
-    #       into an adminsitrative setting.  Hence, I want to keep it
+    #       into an administrative setting.  Hence, I want to keep it
     #       a scalar.
     DEFAULT_DAYS_SINCE_PUBLISHED = 7
 
