@@ -17,12 +17,11 @@ RSpec.describe CreatorSettingsForm, type: :model do
       attributes = described_class.new.attributes
       expect(attributes["checked_code_of_conduct"]).to be(false)
       expect(attributes["checked_terms_and_conditions"]).to be(false)
-      expect(attributes["invite_only_mode"]).to be(true)
-      expect(attributes["primary_brand_color_hex"]).to eq("#3b49df")
-      expect(attributes["public"]).to be(true)
     end
+  end
 
-    it "updates default values", :aggregate_failures do
+  describe "initializer" do
+    it "updates the values when we pass an attribute as a param", :aggregate_failures do
       attributes = described_class.new(
         primary_brand_color_hex: "#0a0a0a",
         invite_only_mode: false,
