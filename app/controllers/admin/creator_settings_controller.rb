@@ -14,8 +14,7 @@ module Admin
       extra_authorization
 
       @creator_settings_form = CreatorSettingsForm.new(settings_params)
-      # CreatorSettingsForm.new(community_name: "gdfghja", invite_only_mode: true, primary_brand_color_hex: "#3030a1",
-      # public: true, checked_code_of_conduct: true, checked_terms_and_conditions: true).save
+
       if @creator_settings_form.save
         current_user.update!(
           saw_onboarding: true,
