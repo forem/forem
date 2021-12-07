@@ -15,6 +15,10 @@ class LiquidTagBase < Liquid::Tag
     )
   end
 
+  def strip_tags(string)
+    ActionController::Base.helpers.strip_tags(string).strip
+  end
+
   private
 
   def validate_contexts

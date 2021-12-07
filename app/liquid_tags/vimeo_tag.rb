@@ -1,10 +1,12 @@
 class VimeoTag < LiquidTagBase
   PARTIAL = "liquids/vimeo".freeze
-  REGISTRY_REGEXP = %r{https?://(player\.|www\.)?vimeo\.com/(video/|embed/|watch)?(ondemand/\w+/)?(\d*)}
+  # rubocop:disable Layout/LineLength
+  REGISTRY_REGEXP = %r{https?://(?:player\.|www\.)?vimeo\.com/(?:video/|embed/|watch)?(?:ondemand/\w+/)?(?<video_id>\d*)}
+  # rubocop:enable Layout/LineLength
 
   def initialize(_tag_name, token, _parse_context)
     super
-    url = ActionController::Base.helpers.strip_tags(token).strip
+    url     = strip_tags(token)
     @id     = get_id(url)
     @width  = 710
     @height = 399
@@ -24,7 +26,7 @@ class VimeoTag < LiquidTagBase
   private
 
   def get_id(url)
-    url.to_s.scan(/\d+/).first
+    url.match(REGISTRY_REGEXP)[:video_id]
   end
 end
 
@@ -32,7 +34,3 @@ Liquid::Template.register_tag("vimeo", VimeoTag)
 
 # NOTE: this does not process Vimeo Showcase IDs; add to documentation
 UnifiedEmbed.register(VimeoTag, regexp: VimeoTag::REGISTRY_REGEXP)
-
-# https://player.vimeo.com/video/652446985?h=a68f6ed1f5
-# https://vimeo.com/ondemand/withchude/647355334
-# https://vimeo.com/636725488
