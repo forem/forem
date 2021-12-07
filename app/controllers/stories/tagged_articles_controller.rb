@@ -55,7 +55,7 @@ module Stories
     end
 
     def tagged_count(tag:)
-      tag.articles.published.where("score >= ?", Settings::UserExperience.tag_feed_minimum_score).count
+      tag.articles.published.where(score: Settings::UserExperience.tag_feed_minimum_score..).count
     end
 
     def not_found_if_not_established(stories:, tag:)
@@ -63,11 +63,11 @@ module Stories
     end
 
     def stories_by_timeframe(stories:)
-      if %w[week month year infinity].include?(params[:timeframe])
+      if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
         stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
           .order(public_reactions_count: :desc)
-      elsif params[:timeframe] == "latest"
-        stories.where("score > ?", -20).order(published_at: :desc)
+      elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
+        stories.where(score: -20..).order(published_at: :desc)
       else
         stories.order(hotness_score: :desc).where(score: Settings::UserExperience.home_feed_minimum_score..)
       end

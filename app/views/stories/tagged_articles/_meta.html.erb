@@ -1,5 +1,6 @@
+<% display_tag_name = @tag.name.capitalize %>
 <% title_with_timeframe(
-     page_title: @tag.name.capitalize + (@page.present? && @page > 1 ? t("views.stories.meta.page", page: @page) : ""),
+     page_title: display_tag_name + (@page.present? && @page > 1 ? t("views.stories.meta.page", page: @page) : ""),
      timeframe: params[:timeframe],
      content_for: true,
    ) %>
@@ -10,14 +11,14 @@
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content="<%= tag_url(@tag, @page) %>" />
-<meta property="og:title" content="<%= title_with_timeframe(page_title: @tag.name.capitalize, timeframe: params[:timeframe]) %>" />
-<meta property="og:description" content="<%= t("views.stories.meta.description_tagged", tag: @tag.name.capitalize, name: community_name) %>" />
+<meta property="og:title" content="<%= title_with_timeframe(page_title: display_tag_name, timeframe: params[:timeframe]) %>" />
+<meta property="og:description" content="<%= t("views.stories.meta.description_tagged", tag: display_tag_name, name: community_name) %>" />
 <meta property="og:site_name" content="<%= community_name %>" />
 
 <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
-<meta name="twitter:creator" content="@<%= @tag.name.capitalize %>">
-<meta name="twitter:title" content="<%= title_with_timeframe(page_title: @tag.name.capitalize, timeframe: params[:timeframe]) %>">
-<meta name="twitter:description" content="<%= t("views.stories.meta.description_tagged", tag: @tag.name.capitalize, name: community_name) %>">
+<meta name="twitter:creator" content="@<%= display_tag_name %>">
+<meta name="twitter:title" content="<%= title_with_timeframe(page_title: display_tag_name, timeframe: params[:timeframe]) %>">
+<meta name="twitter:description" content="<%= t("views.stories.meta.description_tagged", tag: display_tag_name, name: community_name) %>">
 
 <% if @tag %>
   <meta name="twitter:card" content="summary_large_image">
