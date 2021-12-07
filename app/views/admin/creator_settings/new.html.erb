@@ -7,7 +7,9 @@
     <div aria-live="assertive">
       <% if flash[:error] %>
         <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
-          <%= flash[:error] %>
+          <% flash[:error].each do |message| %>
+            <div><%= message %></div>
+          <% end %>
         </div>
       <% end %>
     </div>
