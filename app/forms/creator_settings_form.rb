@@ -4,11 +4,11 @@ class CreatorSettingsForm
 
   attribute :checked_code_of_conduct, :boolean, default: false
   attribute :checked_terms_and_conditions, :boolean, default: false
-  attribute :community_name, :string
-  attribute :invite_only_mode, :boolean, default: true
+  attribute :community_name, :string, default: ::Settings::Community.community_name
+  attribute :invite_only_mode, :boolean, default: ::Settings::Authentication.invite_only_mode
   attribute :logo
   attribute :primary_brand_color_hex, :string, default: ::Settings::UserExperience.primary_brand_color_hex
-  attribute :public, :boolean, default: true
+  attribute :public, :boolean, default: ::Settings::UserExperience.public
 
   validates :community_name,
             :primary_brand_color_hex, presence: true
@@ -17,6 +17,8 @@ class CreatorSettingsForm
   validates :checked_terms_and_conditions, inclusion: { in: [true, false] }
   validates :invite_only_mode, inclusion: { in: [true, false] }
   validates :public, inclusion: { in: [true, false] }
+
+  attr_accessor :success
 
   def initialize(attributes = {})
     super
@@ -31,18 +33,26 @@ class CreatorSettingsForm
   end
 
   def save
-    return false unless valid?
+    if valid?
+      begin
+        ::Settings::Community.community_name = community_name
+        ::Settings::UserExperience.primary_brand_color_hex = primary_brand_color_hex
+        ::Settings::Authentication.invite_only_mode = invite_only_mode
+        ::Settings::UserExperience.public = public
 
-    ::Settings::Community.community_name = community_name
-    ::Settings::UserExperience.primary_brand_color_hex = primary_brand_color_hex
-    ::Settings::Authentication.invite_only_mode = invite_only
-    ::Settings::UserExperience.public = public
-
-    return unless logo
-
-    logo_uploader = upload_logo(logo)
-    ::Settings::General.original_logo = logo_uploader.url
-    ::Settings::General.resized_logo = logo_uploader.resized_logo.url
+        if logo
+          logo_uploader = upload_logo(logo)
+          ::Settings::General.original_logo = logo_uploader.url
+          ::Settings::General.resized_logo = logo_uploader.resized_logo.url
+        end
+        @success = true
+      rescue StandardError => e
+        errors.add(:base, e.message)
+        @success = false
+      end
+    else
+      @success = false
+    end
   end
 
   private
