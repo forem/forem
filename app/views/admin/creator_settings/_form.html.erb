@@ -7,7 +7,7 @@
   <%= text_field_tag :community_name, "", placeholder: "Climbing Life", class: "crayons-textfield", required: true %>
 </div>
 
-<%= render partial: "admin/shared/logo_upload", locals: { logo_allowed_types: @logo_allowed_types, max_file_size: @max_file_size } %>
+<%= render partial: "admin/shared/logo_upload", locals: { allowed_types: @logo_allowed_types, max_file_size: @max_file_size } %>
 
 <div class="crayons-field mt-6 align-left">
   <%= label_tag :primary_brand_color_hex, class: "crayons-field__label" do %>

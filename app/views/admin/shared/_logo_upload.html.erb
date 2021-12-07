@@ -5,7 +5,7 @@
     <p id="logo-subtitle" class="crayons-field__description">You can upload a PNG or JPEG image.</p>
   <% end %>
   <div class="flex flex-1 gap-4">
-    <%= file_field_tag :logo, accept: @logo_allowed_types.to_s, data: { "max-file-size-mb": @max_file_size.to_s, action: "change->logo-upload#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
+    <%= file_field_tag :logo, accept: allowed_types.to_s, data: { "max-file-size-mb": max_file_size.to_s, action: "change->logo-upload#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
     <div data-logo-upload-target="previewLogo">
     </div>
   </div>
