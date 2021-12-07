@@ -3,9 +3,6 @@ describe('Member Menu Dropdown', () => {
     cy.testSetup();
     cy.fixture('users/articleEditorV1User.json').as('user');
 
-    // Explicitly set the viewport to make sure we're in the full desktop view for these tests
-    cy.viewport('macbook-15');
-
     cy.get('@user').then((user) => {
       cy.loginAndVisit(user, '/');
     });
