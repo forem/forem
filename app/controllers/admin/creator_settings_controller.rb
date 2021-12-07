@@ -14,8 +14,8 @@ module Admin
       extra_authorization
 
       @creator_settings_form = CreatorSettingsForm.new(settings_params)
-
-      if @creator_settings_form.save
+      @creator_settings_form.save
+      if @creator_settings_form.success
         current_user.update!(
           saw_onboarding: true,
           checked_code_of_conduct: @creator_settings_form.checked_code_of_conduct,
@@ -23,8 +23,8 @@ module Admin
         )
         redirect_to root_path
       else
-        flash.now[:error] = @creator_settings_form.errors.full_messages
-        render new_admin_creator_setting_path
+        flash[:error] = @creator_settings_form.errors.full_messages
+        render :new
       end
     end
 
