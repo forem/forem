@@ -37,11 +37,5 @@ module Admin
     def settings_params
       params.require(:creator_settings_form).permit(ALLOWED_PARAMS)
     end
-
-    def upload_logo(image)
-      LogoUploader.new.tap do |uploader|
-        uploader.store!(image)
-      end
-    end
   end
 end
