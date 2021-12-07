@@ -24,7 +24,7 @@ module Admin
         redirect_to root_path
       else
         flash[:error] = @creator_settings_form.errors.full_messages
-        render :new
+        redirect_to new_admin_creator_setting_path
       end
     end
 
