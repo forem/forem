@@ -316,7 +316,9 @@ module ApplicationHelper
   end
 
   def creator_settings_form?
-    FeatureFlag.enabled?(:creator_onboarding) && User.with_role(:creator).any? &&
-      request.env["PATH_INFO"] == new_admin_creator_setting_path
+    return unless current_user.has_role?(:creator)
+
+    FeatureFlag.enabled?(:creator_onboarding) && !current_user.checked_code_of_conduct &&
+      !current_user.checked_terms_and_conditions
   end
 end
