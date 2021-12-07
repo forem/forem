@@ -1,7 +1,7 @@
 import { WCAGColorContrast } from './WCAGColorContrast';
 
 /**
- * Determine if the contast ratio is low.
+ * Determine if the contrast ratio is low.
  * Uses the WCAGColorContrast utility library.
  *
  * @param {String} rgb1 6-letter RGB color.

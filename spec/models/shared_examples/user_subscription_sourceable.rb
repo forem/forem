@@ -6,7 +6,7 @@ RSpec.shared_examples "UserSubscriptionSourceable" do
   let(:subscriber) { create(:user) }
 
   describe "#build_user_subscription" do
-    it "returns a new UserSubcription with the correct attributes" do
+    it "returns a new UserSubscription with the correct attributes" do
       new_user_subscription = UserSubscription.new(
         user_subscription_sourceable: source,
         author_id: source.user_id,
@@ -23,9 +23,9 @@ RSpec.shared_examples "UserSubscriptionSourceable" do
   end
 
   describe "#create_user_subscription" do
-    it "returns a created UserSubcription with the correct attributes" do
-      user_subscription_fields = %w[author_id subsciber_id subscriber_email user_subscription_sourceable_id
-                                    user_susbcription_sourceable_type]
+    it "returns a created UserSubscription with the correct attributes" do
+      user_subscription_fields = %w[author_id subscriber_id subscriber_email user_subscription_sourceable_id
+                                    user_subscription_sourceable_type]
 
       user_subscription = create(
         :user_subscription,

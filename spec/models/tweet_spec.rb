@@ -83,7 +83,7 @@ RSpec.describe Tweet, type: :model, vcr: true do
         expect(tweet.last_fetched_at).to be_present
       end
 
-      it "is assignes to the existing user if the screen name corresponds" do
+      it "is assigns to the existing user if the screen name corresponds" do
         user = create(:user, twitter_username: "ThePracticalDev")
 
         tweet = described_class.find_or_fetch(tweet_id)

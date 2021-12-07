@@ -176,7 +176,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?("/#{user.username}")).to be(true)
       end
 
-      it "does case insentive mention recognition" do
+      it "does case incentive mention recognition" do
         comment.body_markdown = "Hello @#{user.username.titleize}, you are cool."
         comment.validate!
         expect(comment.processed_html.include?("/#{user.username}")).to be(true)

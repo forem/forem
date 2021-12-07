@@ -69,7 +69,7 @@ RSpec.describe UserSubscription, type: :model do
   end
 
   describe "#build" do
-    it "returns a new UserSubcription with the correct attributes" do
+    it "returns a new UserSubscription with the correct attributes" do
       new_user_subscription = described_class.new(
         user_subscription_sourceable: source,
         author_id: source.user_id,
@@ -86,7 +86,7 @@ RSpec.describe UserSubscription, type: :model do
   end
 
   describe "#make" do
-    it "returns a created UserSubcription with the correct attributes" do
+    it "returns a created UserSubscription with the correct attributes" do
       factory_user_subscription = described_class.make(source: source, subscriber: subscriber)
 
       expect(factory_user_subscription.user_subscription_sourceable).to eq source
