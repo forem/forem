@@ -49,5 +49,5 @@ Link.propTypes = {
   href: PropTypes.string.isRequired,
   className: PropTypes.string,
   children: defaultChildrenPropTypes,
-  icon: PropTypes.ReactNode,
+  icon: PropTypes.elementType,
 };
