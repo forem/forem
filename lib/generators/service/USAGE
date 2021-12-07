@@ -41,7 +41,7 @@ Examples:
           end
         end
 
-        # spec/servics/import_users_spec.rb
+        # spec/services/import_users_spec.rb
         # Same as above
 
     * Generating a namespaced service:

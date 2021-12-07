@@ -90,7 +90,7 @@ describe('getLastIndexOfCharacter', () => {
     ).toEqual(-1);
   });
 
-  it('returns index of the last occurence within a single word', () => {
+  it('returns index of the last occurrence within a single word', () => {
     expect(
       getLastIndexOfCharacter({
         content: 'abcde',
@@ -100,7 +100,7 @@ describe('getLastIndexOfCharacter', () => {
     ).toEqual(1);
   });
 
-  it('returns index of the last occurence searching through multiple words', () => {
+  it('returns index of the last occurrence searching through multiple words', () => {
     expect(
       getLastIndexOfCharacter({
         content: 'ab cd ef ghi',
@@ -143,7 +143,7 @@ describe('getNextIndexOfCharacter', () => {
     ).toEqual(-1);
   });
 
-  it('returns index of the last occurence within a single word', () => {
+  it('returns index of the last occurrence within a single word', () => {
     expect(
       getNextIndexOfCharacter({
         content: 'abcde',
@@ -153,7 +153,7 @@ describe('getNextIndexOfCharacter', () => {
     ).toEqual(4);
   });
 
-  it('returns index of the last occurence searching through multiple words', () => {
+  it('returns index of the last occurrence searching through multiple words', () => {
     expect(
       getNextIndexOfCharacter({
         content: 'ab cd ef ghi',

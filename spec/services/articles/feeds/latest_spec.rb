@@ -13,7 +13,7 @@ RSpec.describe Articles::Feeds::Latest, type: :service do
     expect(result).to eq [newest_article, hot_article, month_old_article]
   end
 
-  it "only returns articles with scores above the minumum" do
+  it "only returns articles with scores above the minimum" do
     expect(described_class.call).not_to include(low_scoring_article)
   end
 end

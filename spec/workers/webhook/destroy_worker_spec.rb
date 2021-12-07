@@ -8,7 +8,7 @@ RSpec.describe Webhook::DestroyWorker, type: :worker do
   let(:worker) { subject }
 
   describe "#perform_now" do
-    it "destrous webhook by user_id and app_id" do
+    it "destroys webhook by user_id and app_id" do
       worker.perform(user.id, oauth_app.id)
       expect(Webhook::Endpoint.find_by(id: webhook_endpoint.id)).to be_nil
       expect(other_webhook_endpoint.reload).to be_present

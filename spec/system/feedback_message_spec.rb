@@ -10,7 +10,7 @@ RSpec.describe "Feedback report by chat channel messages", type: :system do
       sign_in user
     end
 
-    it "feedback messahe should increase by one", js: true do
+    it "feedback message should increase by one", js: true do
       expect do
         post "/feedback_messages", params: {
           feedback_message: {
