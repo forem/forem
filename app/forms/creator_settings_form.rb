@@ -2,25 +2,32 @@ class CreatorSettingsForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
+  attribute :checked_code_of_conduct, :boolean, default: false
+  attribute :checked_terms_and_conditions, :boolean, default: false
   attribute :community_name, :string
-  attribute :primary_brand_color_hex, :string
-  # [TODO]: add some more attributes here
+  attribute :invite_only_mode, :boolean, default: true
+  attribute :logo
+  attribute :primary_brand_color_hex, :string, default: ::Settings::UserExperience.primary_brand_color_hex
+  attribute :public, :boolean, default: true
 
-  validates :community_name, :primary_brand_color_hex, :invite_only_mode, :public, :checked_code_of_conduct,
-            :checked_terms_and_conditions, presence: true
-  # maybe we validate the contrast color here?
+  validates :community_name,
+            :primary_brand_color_hex, presence: true
 
-  attr_accessor :community_name, :primary_brand_color_hex, :invite_only_mode, :public, :logo,
-                :checked_code_of_conduct, :checked_terms_and_conditions
+  validates :checked_code_of_conduct, inclusion: { in: [true, false] }
+  validates :checked_terms_and_conditions, inclusion: { in: [true, false] }
+  validates :invite_only_mode, inclusion: { in: [true, false] }
+  validates :public, inclusion: { in: [true, false] }
 
   def initialize(attributes = {})
     super
 
-    @primary_brand_color_hex = primary_brand_color_hex || ::Settings::UserExperience.primary_brand_color_hex
-    @invite_only_mode = invite_only_mode || 1
-    @public = public || 1
-    @checked_code_of_conduct ||= 0
-    @checked_terms_and_conditions ||= 0
+    @checked_code_of_conduct = checked_code_of_conduct
+    @checked_terms_and_conditions = checked_terms_and_conditions
+    @community_name = community_name
+    @invite_only_mode = invite_only_mode
+    @logo = logo
+    @primary_brand_color_hex = primary_brand_color_hex
+    @public = public
   end
 
   def save
