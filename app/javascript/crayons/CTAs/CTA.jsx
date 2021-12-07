@@ -43,5 +43,5 @@ CTA.propTypes = {
   href: PropTypes.string.isRequired,
   className: PropTypes.string,
   children: defaultChildrenPropTypes.isRequired,
-  icon: PropTypes.ReactNode,
+  icon: PropTypes.elementType,
 };
