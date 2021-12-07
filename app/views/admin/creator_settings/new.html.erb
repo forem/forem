@@ -13,22 +13,6 @@
     </div>
 
     <%= form_with url: admin_creator_settings_path, model: @creator_settings_form, local: true, method: "post", multipart: true, class: "relative z-elevate p-4", "data-action": "submit->creator-settings#formValidations" do |f| %>
-      <% if defined?(resource) && resource&.errors&.any? %>
-        <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
-          <div class="crayons-card__header">
-            <h1 class="crayons-card__headline">
-              Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
-            </h1>
-          </div>
-          <div class="crayons-card__body">
-            <ul>
-              <% resource.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
-        </div>
-      <% end %>
 
       <div class="align-center">
         <p class="fs-3xl fw-bold">Lovely! Let's set up your Forem.</p>
