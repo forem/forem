@@ -4,11 +4,11 @@ class CreatorSettingsForm
 
   attribute :checked_code_of_conduct, :boolean, default: false
   attribute :checked_terms_and_conditions, :boolean, default: false
-  attribute :community_name, :string, default: ::Settings::Community.community_name
-  attribute :invite_only_mode, :boolean, default: ::Settings::Authentication.invite_only_mode
+  attribute :community_name, :string
+  attribute :invite_only_mode, :boolean
   attribute :logo
-  attribute :primary_brand_color_hex, :string, default: ::Settings::UserExperience.primary_brand_color_hex
-  attribute :public, :boolean, default: ::Settings::UserExperience.public
+  attribute :primary_brand_color_hex, :string
+  attribute :public, :boolean
 
   validates :community_name,
             :primary_brand_color_hex, presence: true
