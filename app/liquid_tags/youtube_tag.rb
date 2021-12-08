@@ -47,15 +47,9 @@ class YoutubeTag < LiquidTagBase
   end
 
   def pattern_match_for(input)
-    match = nil
-    REGEXP_OPTIONS.each do |regex|
-      m = input.match(regex)
-      if m
-        match = m
-        break
-      end
-    end
-    match
+    REGEXP_OPTIONS
+      .filter_map { |regex| input.match(regex) }
+      .first
   end
 
   def translate_start_time(video_id, time_parameter)
