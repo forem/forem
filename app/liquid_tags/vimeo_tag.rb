@@ -1,13 +1,13 @@
 class VimeoTag < LiquidTagBase
   PARTIAL = "liquids/vimeo".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(?:player\.|www\.)?vimeo\.com/(?:video/|embed/|watch)?(?:ondemand/\w+/)?(?<video_id>\d*)}
+  REGISTRY_REGEXP = %r{(?:https?://)?(?:player\.|www\.)?vimeo\.com/(?:video/|embed/|watch)?(?:ondemand/\w+/)?(?<video_id>\d*)}
   # rubocop:enable Layout/LineLength
 
   def initialize(_tag_name, token, _parse_context)
     super
-    url     = strip_tags(token)
-    @id     = get_id(url)
+    input   = strip_tags(token)
+    @id     = get_id(input)
     @width  = 710
     @height = 399
   end
@@ -25,8 +25,10 @@ class VimeoTag < LiquidTagBase
 
   private
 
-  def get_id(url)
-    url.match(REGISTRY_REGEXP)[:video_id]
+  def get_id(input)
+    match = input.match(REGISTRY_REGEXP)
+    # binding.pry
+    match ? match[:video_id] : input
   end
 end
 
