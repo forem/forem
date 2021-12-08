@@ -43,11 +43,13 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
   }, [inputPosition, editValue]);
 
   const enterEditState = (editItem, editItemIndex) => {
+    inputSizerRef.current.innerText = editItem;
     setEditValue(editItem);
     setInputPosition(editItemIndex);
   };
 
   const exitEditState = (nextInputValue = '') => {
+    inputSizerRef.current.innerText = nextInputValue;
     setEditValue(nextInputValue);
     setInputPosition(nextInputValue === '' ? null : inputPosition + 1);
   };
@@ -142,12 +144,9 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     }
   };
 
-  const acceptCurrentInput = () => {
-    const {
-      current: { value: currentValue },
-    } = inputRef;
-    if (currentValue !== '') {
-      selectItem(currentValue);
+  const acceptCurrentInput = ({ currentTarget: { value } }) => {
+    if (value !== '') {
+      selectItem(value);
     }
   };
 
