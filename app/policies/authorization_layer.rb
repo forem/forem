@@ -20,6 +20,32 @@ module AuthorizationLayer
     end
     attr_reader :user
 
+    def admin?
+      # Yes, this is correct!  For historical reasons `user.admin?`
+      # in fact asked the question `has_role?(:super_admin)`
+      has_role?(:super_admin)
+    end
+
+    def any_admin?
+      @any_admin ||= user.roles.where(name: ANY_ADMIN_ROLES).any?
+    end
+
+    def auditable?
+      trusted || tag_moderator? || any_admin?
+    end
+
+    def comment_suspended?
+      has_role?(:comment_suspended)
+    end
+
+    def creator?
+      has_role?(:creator)
+    end
+
+    def banished?
+      username.starts_with?("spam_")
+    end
+
     # When you need to know if we trust the user, but don't want to
     # have stale information that the `trusted?` method might give
     # you.
@@ -41,8 +67,39 @@ module AuthorizationLayer
       has_role?(:super_admin)
     end
 
+    def support_admin?
+      has_role?(:support_admin)
+    end
+
     def suspended?
       has_role?(:suspended)
+    end
+
+    def tag_moderator?(tag: nil)
+      return user.roles.where(name: "tag_moderator").any? unless tag
+
+      has_role?(:tag_moderator, tag)
+    end
+
+    def tech_admin?
+      has_role?(:tech_admin) || has_role?(:super_admin)
+    end
+
+    def trusted
+      ActiveSupport::Deprecation.warn("User#trusted is deprecated, favor User#trusted?")
+      trusted?
+    end
+
+    def trusted?
+      return @trusted if defined? @trusted
+
+      @trusted = Rails.cache.fetch("user-#{user.id}/has_trusted_role", expires_in: 200.hours) do
+        has_role?(:trusted)
+      end
+    end
+
+    def vomitted_on?
+      Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
     end
 
     def warned?
@@ -54,65 +111,8 @@ module AuthorizationLayer
       warned?
     end
 
-    def admin?
-      # Yes, this is correct!  For historical reasons `user.admin?`
-      # in fact asked the question `has_role?(:super_admin)`
-      has_role?(:super_admin)
-    end
-
-    def creator?
-      has_role?(:creator)
-    end
-
-    def any_admin?
-      @any_admin ||= user.roles.where(name: ANY_ADMIN_ROLES).any?
-    end
-
-    def tech_admin?
-      has_role?(:tech_admin) || has_role?(:super_admin)
-    end
-
-    def vomitted_on?
-      Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
-    end
-
-    def trusted?
-      return @trusted if defined? @trusted
-
-      @trusted = Rails.cache.fetch("user-#{user.id}/has_trusted_role", expires_in: 200.hours) do
-        has_role?(:trusted)
-      end
-    end
-
-    def trusted
-      ActiveSupport::Deprecation.warn("User#trusted is deprecated, favor User#trusted?")
-      trusted?
-    end
-
-    def comment_suspended?
-      has_role?(:comment_suspended)
-    end
-
     def workshop_eligible?
       has_any_role?(:workshop_pass)
-    end
-
-    def banished?
-      username.starts_with?("spam_")
-    end
-
-    def auditable?
-      trusted || tag_moderator? || any_admin?
-    end
-
-    def tag_moderator?(tag: nil)
-      return user.roles.where(name: "tag_moderator").any? unless tag
-
-      has_role?(:tag_moderator, tag)
-    end
-
-    def support_admin?
-      has_role?(:support_admin)
     end
 
     private

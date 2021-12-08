@@ -413,22 +413,22 @@ class User < ApplicationRecord
   # However, this is a refactor, and its goal is to reduce the direct
   # calls to user.<role question>.
   delegate(
-    :warned?,
-    :warned, # TODO: Remove this method from the code-base
     :admin?,
+    :any_admin?,
+    :auditable?,
+    :banished?,
+    :comment_suspended?,
     :creator?,
     :support_admin?,
-    :any_admin?,
-    :tech_admin?,
-    :vomitted_on?,
-    :trusted?,
-    :trusted, # Remove this method from the code-base
-    :comment_suspended?,
-    :workshop_eligible?,
-    :banished?,
-    :auditable?,
-    :tag_moderator?,
     :suspended?,
+    :tag_moderator?,
+    :tech_admin?,
+    :trusted, # Remove this method from the code-base
+    :trusted?,
+    :vomitted_on?,
+    :warned, # TODO: Remove this method from the code-base
+    :workshop_eligible?,
+    :warned?,
     to: :authorizer,
   )
   ##############################################################################
