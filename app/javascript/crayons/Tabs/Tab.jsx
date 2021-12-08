@@ -1,13 +1,14 @@
 import { h } from 'preact';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
-import { ButtonNew as Button, Link } from '@crayons';
+// import { ButtonNew as Button, Link } from '@crayons';
 
 export const Tab = ({
   className,
   current,
   elements,
   fitted,
+  children,
   ...otherProps
 }) => {
   const classes = classNames('c-tab', {
@@ -15,16 +16,19 @@ export const Tab = ({
     [className]: className,
   });
 
-  const sharedProps = {
-    className: classes,
-  };
-  const buttonCurrentProps = { 'aria-pressed': !!current };
-  const linkCurrentProps = current && { 'aria-current': 'page' };
-
   return elements === 'buttons' ? (
-    <Button {...sharedProps} {...buttonCurrentProps} {...otherProps} />
+    <button
+      type="button"
+      className={classes}
+      aria-pressed={!!current}
+      {...otherProps}
+    >
+      {children}
+    </button>
   ) : (
-    <Link block {...sharedProps} {...linkCurrentProps} {...otherProps} />
+    <a className={classes} aria-current={current && 'page'} {...otherProps}>
+      {children}
+    </a>
   );
 };
 

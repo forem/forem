@@ -11,7 +11,7 @@ module Follows
       adjust_other_tag_follows_of_user(user.id)
       followed_tag_names =
         user.cached_followed_tag_names + user.cached_antifollowed_tag_names
-      article.decorate.cached_tag_list_array.each do |tag_name|
+      article.tag_list.each do |tag_name|
         if followed_tag_names.include?(tag_name)
           recalculate_tag_follow_points(tag_name, user)
         end
@@ -32,7 +32,7 @@ module Follows
       last_100_long_page_view_article_ids = user.page_views.where(time_tracked_in_seconds: 45..)
         .pluck(:article_id).last(100)
       articles = Article.where(id: last_100_reactable_ids + last_100_long_page_view_article_ids)
-      tags = articles.pluck(:cached_tag_list).compact.flat_map { |list| list.split(", ") }
+      tags = articles.map(&:tag_list).flatten
       occurrences = tags.count(tag.name)
       bonus = inverse_popularity_bonus(tag)
       finalized_points(occurrences, bonus)

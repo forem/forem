@@ -14,6 +14,8 @@ function redirectableLocation() {
     window.location.pathname !== '/onboarding' &&
     window.location.pathname !== '/signout_confirm' &&
     window.location.pathname !== '/privacy' &&
+    window.location.pathname !== '/code-of-conduct' &&
+    window.location.pathname !== '/terms' &&
     window.location.pathname !== '/admin/creator_settings/new'
   );
 }

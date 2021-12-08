@@ -108,18 +108,19 @@ RSpec.describe "User visits articles by timeframe", type: :system do
   context "when user has logged in", js: true do
     let(:user) { create(:user) }
 
-    before do
-      sign_in user
-      visit "/top/week"
-    end
+    before { sign_in user }
 
-    it "shows correct articles", :aggregate_failures do
-      shows_correct_articles_count_via_xpath(1)
-      shows_main_article
+    context "when viewing articles for week" do
+      before { visit "/top/week" }
 
-      within("#main-content") do
-        expect(page).to have_text(article.title)
-        expect(page).to have_text(days_old_article.title)
+      it "shows correct articles", :aggregate_failures do
+        shows_correct_articles_count_via_xpath(1)
+        shows_main_article
+
+        within("#main-content") do
+          expect(page).to have_text(article.title)
+          expect(page).to have_text(days_old_article.title)
+        end
       end
     end
 

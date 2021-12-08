@@ -59,7 +59,12 @@ class Device < ApplicationRecord
     n.registration_ids = [token]
     n.priority = "high"
     n.content_available = true
-    n.notification = { title: title, body: body }
+    n.notification = {
+      title: title,
+      body: body,
+      sound: "default",
+      click_action: ".presentation.home.HomeActivity"
+    }
     n.data = { data: payload }
     n.save!
   end

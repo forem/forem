@@ -5,5 +5,5 @@ the main font.
 
 Please, do not overuse Accent typography.
 
-We strongly encourage to limit number of sizes and weights to what presesented
+We strongly encourage to limit number of sizes and weights to what presented
 below.

@@ -1,4 +1,6 @@
-@import '../config/import';
+@use '../components/links';
+@use '../components/buttons';
+@use '../config/import';
 
 .crayons-tabs {
   // Setup
@@ -293,6 +295,13 @@
     flex: var(--tab-flex);
   }
 
+  button.c-tab {
+    @extend .c-btn;
+  }
+  a.c-tab {
+    @extend .c-link;
+    @extend .c-link--block;
+  }
   .c-tab {
     white-space: nowrap;
     text-align: var(--tab-alignment);
