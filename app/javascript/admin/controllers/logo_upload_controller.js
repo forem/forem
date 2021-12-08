@@ -74,4 +74,11 @@ export class LogoUploadController extends Controller {
   }
 }
 
+/**
+ * It looks weird having this default export along with the named export
+ * LogoUploadController, but the reason it's here is so the admin pack
+ * app/javascript/packs/admin.js file can load it with the rest of the
+ * admin Stimulus controllers via
+ * const context = require.context('admin/controllers', true, /.js$/);
+ */
 export default LogoUploadController;
