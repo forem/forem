@@ -13,8 +13,8 @@ Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) 
 
 ## Usage
 
-Under the hood, CTA outputs `<a>` element, therefore standard link markup should be used,
-including an `href` (links omitting `href` attributes are not focusable by keyboard).
+A CTA renders an anchor element, therefore standard link markup must be used,
+including a `href` attribute, otherwise, it is not focusable by the keyboard.
 
 
 ### Icons
@@ -25,8 +25,8 @@ By default, the icon itself won't be customizable. Icons within CTAs are hidden 
 
 #### Icon-only
 
-Call To Actions should never come without label, therefore it is forbidden to create CTAs with icon only.
-For such a scenario you should use `<Link />s` or `<Button />s` (depending on use case).
+A call to action requires a label, therefore it is forbidden to create a CTA with an icon only.
+For such a scenario, use a `<Link />` or `<Button />` component (depending on the use case).
 
 ## Design
 
