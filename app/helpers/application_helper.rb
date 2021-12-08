@@ -316,10 +316,10 @@ module ApplicationHelper
   end
 
   def creator_settings_form?
+    return unless FeatureFlag.enabled?(:creator_onboarding)
     return unless User.with_role(:creator).any?
 
     creator = User.with_role(:creator).first
-    FeatureFlag.enabled?(:creator_onboarding) && !creator.checked_code_of_conduct &&
-      !creator.checked_terms_and_conditions
+    !creator.checked_code_of_conduct && !creator.checked_terms_and_conditions
   end
 end
