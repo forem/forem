@@ -4,7 +4,6 @@ class YoutubeTag < LiquidTagBase
   REGISTRY_REGEXP = %r{https?://(?:www\.)?(?:youtube\.com|youtu\.be)/(?:embed/|watch\?v=)?(?<video_id>[a-zA-Z0-9_-]{11})(?:\?|&)?(?:t=|start=)?(?<time_parameter>(?:\d{1,}h?)?(?:\d{1,2}m)?(?:\d{1,2}s)?{5,11})?}
   VALID_ID_REGEXP = /\A(?<video_id>[a-zA-Z0-9_-]{11})(?:\?|&)?(?:t=|start=)?(?<time_parameter>(?:\d{1,}h?)?(?:\d{1,2}m)?(?:\d{1,2}s)?{5,11})?\Z/
   # rubocop:enable Layout/LineLength
-  # VALID_ID_REGEXP = /\A[a-zA-Z0-9_-]{11}((\?|&)?(t=|start=)?(\d{1,}h?)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
 
   MARKER_TO_SECONDS_MAP = {
     "h" => 60 * 60,
@@ -47,13 +46,15 @@ class YoutubeTag < LiquidTagBase
   end
 
   def pattern_match_for(input)
-    match = input.match(REGISTRY_REGEXP)
-    return match if match
-
-    match = input.match(VALID_ID_REGEXP)
-    return match if match
-
-    false
+    match = nil
+    [REGISTRY_REGEXP, VALID_ID_REGEXP].each do |regex|
+      m = input.match(regex)
+      if m
+        match = m
+        break
+      end
+    end
+    match
   end
 
   def translate_start_time(video_id, time_parameter)
