@@ -27,7 +27,7 @@ export const CTA = (props) => {
           src={icon}
           aria-hidden="true"
           focusable="false"
-          className={classNames('c-cta__icon')}
+          className="c-cta__icon"
         />
       )}
       {children}
