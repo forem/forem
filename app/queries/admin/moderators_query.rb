@@ -4,7 +4,7 @@ module Admin
       state: :trusted
     }.with_indifferent_access.freeze
 
-    VALID_ROLES = %i[comment_suspended suspended trusted warned].freeze
+    POTENTIAL_ROLE_NAMES = %i[comment_suspended suspended trusted warned].freeze
 
     def self.call(relation: User.all, options: {})
       options = DEFAULT_OPTIONS.merge(options)
@@ -29,7 +29,7 @@ module Admin
     end
 
     def self.potential_role_ids
-      @potential_role_ids ||= Role.where(name: VALID_ROLES).select(:id)
+      @potential_role_ids ||= Role.where(name: POTENTIAL_ROLE_NAMES).select(:id)
     end
 
     def self.search_relation(relation, search)
