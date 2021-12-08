@@ -32,7 +32,7 @@ export const Link = (props) => {
           src={icon}
           aria-hidden="true"
           focusable="false"
-          className={classNames('c-link__icon')}
+          className="c-link__icon"
         />
       )}
       {children}
