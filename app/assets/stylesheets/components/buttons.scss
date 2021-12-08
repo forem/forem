@@ -461,6 +461,13 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
     outline: 0;
   }
 
+  &[aria-expanded='true'],
+  &[aria-pressed='true'] {
+    --bg: var(--btn-current-bg);
+    --color: var(--btn-current-color);
+    font-weight: var(--fw-bold);
+  }
+
   &[disabled] {
     opacity: 0.6;
     cursor: not-allowed;

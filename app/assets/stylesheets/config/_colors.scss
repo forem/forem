@@ -254,6 +254,9 @@
   --btn-color: var(--base-80);
   --btn-color-hover: var(--accent-brand-darker);
 
+  --btn-current-bg: var(--base-20);
+  --btn-current-color: var(--base-100);
+
   // Buttons: Default Destructive
   --btn-destructive-bg: transparent;
   --btn-destructive-bg-hover: var(--accent-danger-a10);
@@ -282,7 +285,7 @@
   --link-color: var(--base-80);
   --link-color-hover: var(--accent-brand-darker);
 
-  --link-current-bg: var(--base-0);
+  --link-current-bg: var(--base-20);
   --link-current-color: var(--base-100);
 
   // Links: Branded

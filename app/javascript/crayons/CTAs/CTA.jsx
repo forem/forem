@@ -38,7 +38,7 @@ export const CTA = (props) => {
 CTA.displayName = 'CTA';
 
 CTA.propTypes = {
-  variant: PropTypes.oneOf(['default', 'branded']),
+  variant: PropTypes.oneOf([undefined, 'branded']),
   rounded: PropTypes.bool,
   href: PropTypes.string.isRequired,
   className: PropTypes.string,
