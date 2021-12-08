@@ -123,7 +123,7 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindex (0.8.1)
-    blazer (2.4.7)
+    blazer (2.4.8)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
@@ -164,7 +164,7 @@ GEM
       activesupport (>= 3.2.0)
       carrierwave
       fastimage
-    chartkick (4.0.5)
+    chartkick (4.1.2)
     childprocess (4.1.0)
     cloudinary (1.21.0)
       aws_cf_signer
@@ -928,7 +928,7 @@ DEPENDENCIES
   amazing_print (~> 1.4)
   ancestry (~> 4.1)
   better_errors (~> 2.9)
-  blazer (~> 2.4.7)
+  blazer (~> 2.4.8)
   bootsnap (>= 1.1.0)
   brakeman (~> 5.1)
   bullet (~> 6.1)
