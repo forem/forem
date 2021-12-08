@@ -82,7 +82,7 @@
 
     <% cache "admin-user-info-#{article.user_id}-#{article.user&.updated_at}", expires_in: 4.hours do %>
 
-    <% if article.user&.warned %>
+    <% if article.user&.warned? %>
     <h2><span class="badge badge-warning">USER WARNED</span></h2>
     <% end %>
 
