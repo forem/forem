@@ -483,7 +483,7 @@ class User < ApplicationRecord
   end
 
   def auditable?
-    trusted || tag_moderator? || any_admin?
+    trusted? || tag_moderator? || any_admin?
   end
 
   def tag_moderator?
