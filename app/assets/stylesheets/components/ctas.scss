@@ -1,3 +1,5 @@
+@import './links';
+
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
@@ -5,28 +7,20 @@
 ////////////////////////////////////////////////////////////
 
 .c-cta {
+  @extend .c-link;
+  @extend .c-link--block;
+  display: inline-flex;
+  text-align: center;
+}
+.c-cta {
   --border-width: 1px;
-  padding: calc(var(--su-2) - var(--border-width))
-    calc(var(--su-4) - var(--border-width));
   border: var(--border-width) solid;
   border-color: var(--border);
-  text-decoration: none;
-  border-radius: var(--radius);
-  font: inherit;
-  background-color: var(--bg);
-  color: var(--color);
-  outline: 0;
-  text-align: center;
-  display: inline-flex;
-  position: relative;
-  overflow-wrap: normal;
+  padding: calc(var(--su-2) - var(--border-width))
+    calc(var(--su-4) - var(--border-width));
 
   &:hover {
-    background-color: var(--bg-hover);
     border-color: var(--border-hover);
-    color: var(--color-hover);
-    z-index: var(--z-elevate);
-    text-decoration: underline;
   }
 
   // Both focus declarations below are the same but we unfortunately can't
@@ -36,21 +30,11 @@
   //  • Second declaration is for browsers that do not support :focus-visible
   //    which basically is only Safari right now.
   &:focus-visible {
-    background-color: var(--bg-hover);
     border-color: var(--border-hover);
-    color: var(--color-hover);
-    z-index: var(--z-elevate);
-    box-shadow: var(--focus-ring);
-    text-decoration: underline;
   }
 
   .js-focus-visible &.focus-visible:focus {
-    background-color: var(--bg-hover);
     border-color: var(--border-hover);
-    color: var(--color-hover);
-    z-index: var(--z-elevate);
-    box-shadow: var(--focus-ring);
-    text-decoration: underline;
   }
 }
 
@@ -63,13 +47,13 @@
   --border-hover: var(--cta-border-hover);
 
   &--branded {
+    @extend .c-link--branded;
     --bg: var(--cta-branded-bg);
     --bg-hover: var(--cta-branded-bg-hover);
     --color: var(--cta-branded-color);
     --color-hover: var(--cta-branded-color-hover);
     --border: var(--cta-branded-border);
     --border-hover: var(--cta-branded-border-hover);
-
     font-weight: var(--fw-medium);
   }
 }

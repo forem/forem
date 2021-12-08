@@ -2,7 +2,7 @@
 
 exports[`<Tabs /> renders default Tabs with buttons 1`] = `"<nav class=\\"c-tabs\\"><ul class=\\"c-tabs__list\\"><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-tab\\" aria-pressed=\\"true\\">One</button></li><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-tab\\" aria-pressed=\\"false\\">two</button></li></ul></nav>"`;
 
-exports[`<Tabs /> renders default Tabs with links 1`] = `"<nav class=\\"c-tabs\\"><ul class=\\"c-tabs__list\\"><li class=\\"c-tabs__list__item\\"><a class=\\"c-tab\\" aria-current=\\"page\\">One</a></li><li class=\\"c-tabs__list__item\\"><a class=\\"c-tab\\">two</a></li></ul></nav>"`;
+exports[`<Tabs /> renders default Tabs with links 1`] = `"<nav class=\\"c-tabs\\"><ul class=\\"c-tabs__list\\"><li class=\\"c-tabs__list__item\\"><a class=\\"c-tab\\" href=\\"#\\" aria-current=\\"page\\">One</a></li><li class=\\"c-tabs__list__item\\"><a class=\\"c-tab\\" href=\\"#\\">two</a></li></ul></nav>"`;
 
 exports[`<Tabs /> renders fitted Tabs 1`] = `"<nav class=\\"c-tabs c-tabs--fitted\\"><ul class=\\"c-tabs__list\\"><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-tab c-tab--fitted\\" aria-pressed=\\"true\\">One</button></li><li class=\\"c-tabs__list__item\\"><button type=\\"button\\" class=\\"c-tab c-tab--fitted\\" aria-pressed=\\"false\\">two</button></li></ul></nav>"`;
 

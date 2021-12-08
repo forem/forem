@@ -8,6 +8,7 @@ export const Tab = ({
   current,
   elements,
   fitted,
+  href = '#',
   children,
   ...otherProps
 }) => {
@@ -26,7 +27,12 @@ export const Tab = ({
       {children}
     </button>
   ) : (
-    <a className={classes} aria-current={current && 'page'} {...otherProps}>
+    <a
+      className={classes}
+      href={href}
+      aria-current={current && 'page'}
+      {...otherProps}
+    >
       {children}
     </a>
   );

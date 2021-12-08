@@ -299,8 +299,7 @@
     @extend .c-btn;
   }
   a.c-tab {
-    @extend .c-link;
-    @extend .c-link--block;
+    @extend .c-link, .c-link--block;
   }
   .c-tab {
     white-space: nowrap;
