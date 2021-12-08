@@ -2,8 +2,9 @@ class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
   # rubocop:disable Layout/LineLength
   REGISTRY_REGEXP = %r{https?://(?:www\.)?(?:youtube\.com|youtu\.be)/(?:embed/|watch\?v=)?(?<video_id>[a-zA-Z0-9_-]{11})(?:\?|&)?(?:t=|start=)?(?<time_parameter>(?:\d{1,}h?)?(?:\d{1,2}m)?(?:\d{1,2}s)?{5,11})?}
+  VALID_ID_REGEXP = /\A(?<video_id>[a-zA-Z0-9_-]{11})(?:\?|&)?(?:t=|start=)?(?<time_parameter>(?:\d{1,}h?)?(?:\d{1,2}m)?(?:\d{1,2}s)?{5,11})?\Z/
   # rubocop:enable Layout/LineLength
-  VALID_ID_REGEXP = /\A[a-zA-Z0-9_-]{11}((\?|&)?(t=|start=)?(\d{1,}h?)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
+  # VALID_ID_REGEXP = /\A[a-zA-Z0-9_-]{11}((\?|&)?(t=|start=)?(\d{1,}h?)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
 
   MARKER_TO_SECONDS_MAP = {
     "h" => 60 * 60,
@@ -34,27 +35,25 @@ class YoutubeTag < LiquidTagBase
   private
 
   def parse_id_or_url(input)
-    raise StandardError, "Invalid YouTube ID" unless valid_input?(input)
+    match = pattern_match_for(input)
+    raise StandardError, "Invalid YouTube ID" unless match
 
-    if input.match?(REGISTRY_REGEXP)
-      match          = input.match(REGISTRY_REGEXP)
-      video_id       = match[:video_id]
-      time_parameter = match[:time_parameter]
+    video_id       = match[:video_id]
+    time_parameter = match[:time_parameter]
 
-      return video_id if time_parameter.blank?
+    return video_id if time_parameter.blank?
 
-      translate_start_time(video_id, time_parameter)
-    else
-      video_id, time_parameter = input.split(/(?:\?t=|\?start=)/)
-
-      return input if time_parameter.blank?
-
-      translate_start_time(video_id, time_parameter)
-    end
+    translate_start_time(video_id, time_parameter)
   end
 
-  def valid_input?(input)
-    input.match?(REGISTRY_REGEXP) || input.match?(VALID_ID_REGEXP)
+  def pattern_match_for(input)
+    match = input.match(REGISTRY_REGEXP)
+    return match if match
+
+    match = input.match(VALID_ID_REGEXP)
+    return match if match
+
+    false
   end
 
   def translate_start_time(video_id, time_parameter)
