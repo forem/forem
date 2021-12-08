@@ -43,7 +43,7 @@ export default {
     icon: {
       control: false,
       description:
-        'Icons are only supported in *block* links (`block`). Even though the generated JSX code in this component will have an empty function as prop value (`<Link block icon={() => {}}>`), the actual value should be an icon object imported from `@images`. Read more about icons in their dedicated Storybook page.',
+        'Even though the generated JSX code in this component will have an empty function as prop value (`<Link icon={() => {}}>`), the actual value should be an icon object imported from `@images`. Read more about icons in their dedicated Storybook page.',
       table: {
         defaultValue: { summary: 'CogIcon' },
       },
@@ -53,10 +53,15 @@ export default {
 
 export const Inline = (args) => <Link {...args} />;
 Inline.args = {
-  variant: 'branded',
   block: false,
   rounded: false,
   children: 'Inline link',
+};
+
+export const InlineBranded = (args) => <Link {...args} />;
+InlineBranded.args = {
+  ...Inline.args,
+  variant: 'branded',
 };
 
 export const Block = (args) => <Link {...args} />;
@@ -65,6 +70,12 @@ Block.args = {
   block: true,
   variant: undefined,
   children: 'Block link',
+};
+
+export const BlockBranded = (args) => <Link {...args} />;
+BlockBranded.args = {
+  ...Block.args,
+  variant: 'branded',
 };
 
 export const WithIcon = (args) => <Link block {...args} />;

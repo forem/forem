@@ -76,6 +76,12 @@ Primary.args = {
   variant: 'primary',
 };
 
+export const Secondary = (args) => <Button {...args} />;
+Secondary.args = {
+  ...Default.args,
+  variant: 'secondary',
+};
+
 export const Destructive = (args) => <Button {...args} />;
 Destructive.args = {
   ...Default.args,

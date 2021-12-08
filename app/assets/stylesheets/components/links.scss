@@ -92,7 +92,13 @@
 
 .c-link--icon-left {
   .c-link__icon {
-    margin-right: var(--su-2);
-    margin-left: calc(var(--su-1) * -1);
+    margin-right: var(--su-1);
+  }
+
+  &.c-link--block {
+    .c-link__icon {
+      margin-right: var(--su-2);
+      margin-left: calc(var(--su-1) * -1);
+    }
   }
 }
