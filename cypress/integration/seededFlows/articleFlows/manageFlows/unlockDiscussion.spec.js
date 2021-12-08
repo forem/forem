@@ -84,7 +84,7 @@ describe('Unlock discussion', () => {
     });
 
     it('should not show a discussion lock', () => {
-      cy.get('#dicussion-lock').should('not.exist');
+      cy.get('#discussion-lock').should('not.exist');
     });
   });
 });

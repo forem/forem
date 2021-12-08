@@ -53,7 +53,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include("Email notifications", "Mobile notifications", "General notifications")
       end
 
-      it "displays moderator notifications secons on Notifications tab if trusted" do
+      it "displays moderator notifications second on Notifications tab if trusted" do
         user.add_role(:trusted)
 
         get user_settings_path(:notifications)

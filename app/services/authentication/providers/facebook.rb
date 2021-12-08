@@ -1,6 +1,6 @@
 module Authentication
   module Providers
-    # Facbook authentication provider, uses omniauth-facebook as backend
+    # Facebook authentication provider, uses omniauth-facebook as backend
     class Facebook < Provider
       OFFICIAL_NAME = "Facebook".freeze
       SETTINGS_URL = "https://www.facebook.com/settings?tab=applications".freeze

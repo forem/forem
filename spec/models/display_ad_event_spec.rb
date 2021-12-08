@@ -16,7 +16,7 @@ RSpec.describe DisplayAdEvent, type: :model do
       expect(event).to be_valid
     end
 
-    it "is not valid with an uknown category" do
+    it "is not valid with an unknown category" do
       event = build(:display_ad_event, category: "wazoo", user: user, display_ad: display_ad)
       expect(event).not_to be_valid
     end

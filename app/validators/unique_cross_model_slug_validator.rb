@@ -31,7 +31,7 @@ class UniqueCrossModelSlugValidator < ActiveModel::EachValidator
   # @return [TrueClass] if the value already exists across the various classes.
   # @return [FalseClass] if the given value is not already used.
   #
-  # @see CLASS_AND_ATTRIBUTE_NAME_FOR_UNIQUNESS_TEST
+  # @see CLASS_AND_ATTRIBUTE_NAME_FOR_UNIQUENESS_TEST
   def already_exists?(value:, record:)
     return false unless value
     return true if value.include?("sitemap-")

@@ -36,7 +36,7 @@ RSpec.describe "Authenticating with Facebook" do
       end
     end
 
-    context "when using valid credentials but witholding email address" do
+    context "when using valid credentials but withholding email address" do
       before do
         OmniAuth.config.mock_auth[:facebook][:info].delete(:email)
         OmniAuth.config.mock_auth[:facebook][:extra][:raw_info].delete(:email)
@@ -160,7 +160,7 @@ RSpec.describe "Authenticating with Facebook" do
       end
     end
 
-    context "when a validation failure occurrs" do
+    context "when a validation failure occurs" do
       before do
         # A User is invalid if their name is more than 100 chars long
         OmniAuth.config.mock_auth[:facebook].info.name = "X" * 101

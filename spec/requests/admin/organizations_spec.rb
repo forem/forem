@@ -25,7 +25,7 @@ RSpec.describe "/admin/content_manager/organizations", type: :request do
     end
   end
 
-  describe "GET /admin/orgnaizations/:id" do
+  describe "GET /admin/organizations/:id" do
     it "renders the correct organization" do
       get admin_organization_path(organization.id)
       expect(response.body).to include(CGI.escapeHTML(organization.name))

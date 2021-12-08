@@ -27,7 +27,7 @@ module Settings
     setting :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
     setting :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
 
-    # Google ReCATPCHA keys
+    # Google ReCAPTCHA keys
     setting :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
     setting :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 

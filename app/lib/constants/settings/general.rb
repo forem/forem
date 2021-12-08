@@ -135,7 +135,7 @@ module Constants
           description: "Secret key used to allow AWS video encoding through the VideoStatesController",
           placeholder: ""
         }
-        # Dynamic values ommitted: configurable_rate_limits and social_media_handles
+        # Dynamic values omitted: configurable_rate_limits and social_media_handles
       }.freeze
     end
   end
