@@ -3,6 +3,7 @@ class YoutubeTag < LiquidTagBase
   # rubocop:disable Layout/LineLength
   REGISTRY_REGEXP = %r{https?://(?:www\.)?(?:youtube\.com|youtu\.be)/(?:embed/|watch\?v=)?(?<video_id>[a-zA-Z0-9_-]{11})(?:\?|&)?(?:t=|start=)?(?<time_parameter>(?:\d{1,}h?)?(?:\d{1,2}m)?(?:\d{1,2}s)?{5,11})?}
   # rubocop:enable Layout/LineLength
+  VALID_ID_REGEXP = /\A[a-zA-Z0-9_-]{11}((\?|&)?(t=|start=)?(\d{1,}h?)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
 
   MARKER_TO_SECONDS_MAP = {
     "h" => 60 * 60,
@@ -13,9 +14,8 @@ class YoutubeTag < LiquidTagBase
   def initialize(_tag_name, id, _parse_context)
     super
 
-    input   = strip_tags(id)
-    url     = CGI.unescape_html(input)
-    @id     = parse_id_or_url(url)
+    input   = CGI.unescape_html(strip_tags(id))
+    @id     = parse_id_or_url(input)
     @width  = 710
     @height = 399
   end
@@ -33,18 +33,28 @@ class YoutubeTag < LiquidTagBase
 
   private
 
-  def parse_id_or_url(url)
-    video_id = url.match(REGISTRY_REGEXP)[:video_id]
-    time_parameter = url.match(REGISTRY_REGEXP)[:time_parameter]
+  def parse_id_or_url(input)
+    raise StandardError, "Invalid YouTube ID" unless valid_input?(input)
 
-    raise StandardError, "Invalid YouTube ID" unless valid_id?(video_id)
-    return video_id if time_parameter.blank?
+    if input.match?(REGISTRY_REGEXP)
+      match          = input.match(REGISTRY_REGEXP)
+      video_id       = match[:video_id]
+      time_parameter = match[:time_parameter]
 
-    translate_start_time(video_id, time_parameter)
+      return video_id if time_parameter.blank?
+
+      translate_start_time(video_id, time_parameter)
+    else
+      video_id, time_parameter = input.split(/(?:\?t=|\?start=)/)
+
+      return input if time_parameter.blank?
+
+      translate_start_time(video_id, time_parameter)
+    end
   end
 
-  def valid_id?(id)
-    id.match?(/\A[a-zA-Z0-9_-]{11}((\?|&)?(t=|start=)?(\d{1,}h?)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/)
+  def valid_input?(input)
+    input.match?(REGISTRY_REGEXP) || input.match?(VALID_ID_REGEXP)
   end
 
   def translate_start_time(video_id, time_parameter)
