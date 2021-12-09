@@ -32,6 +32,7 @@ RSpec.describe CreatorSettingsForm, type: :model do
   end
 
   describe "#save" do
+    # rubocop:disable RSpec/ExampleLength
     it "saves the updated attributes to the correct Settings values", :aggregate_failures do
       # NOTE: override the profile migration hack from rails_helper.rb
       # TODO: remove this once we remove it in rails_helper.rb
@@ -48,10 +49,13 @@ RSpec.describe CreatorSettingsForm, type: :model do
 
       expect(creator_settings_form.valid?).to be(true)
       creator_settings_form.save
+
+      expect(creator_settings_form.success).to be(true)
       expect(Settings::Community.community_name).to eq("Climbing Life")
       expect(Settings::UserExperience.primary_brand_color_hex).to eq("#a81adb")
       expect(Settings::UserExperience.public).to eq(false)
       expect(Settings::Authentication.invite_only_mode).to eq(false)
     end
+    # rubocop:enable RSpec/ExampleLength
   end
 end
