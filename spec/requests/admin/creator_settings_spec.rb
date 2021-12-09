@@ -6,11 +6,12 @@ RSpec.describe "/creator_settings/new", type: :request do
   let(:params) do
     { creator_settings_form:
       {
+        checked_code_of_conduct: true,
+        checked_terms_and_conditions: true,
         community_name: "Climbing Life",
-        logo_svg: "https://dummyimage.com/300x300.png",
-        primary_brand_color_hex: "000000",
-        public: true,
-        invite_only: false
+        invite_only_mode: false,
+        primary_brand_color_hex: "#000000",
+        public: true
       } }
   end
 
@@ -27,7 +28,7 @@ RSpec.describe "/creator_settings/new", type: :request do
 
     context "when the user is a creator" do
       it "allows the request" do
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:ok)
       end
 
       it "renders the correct page" do
@@ -58,6 +59,7 @@ RSpec.describe "/creator_settings/new", type: :request do
         expect(creator.saw_onboarding).to eq(true)
         expect(creator.checked_code_of_conduct).to eq(true)
         expect(creator.checked_terms_and_conditions).to eq(true)
+        # we redirect immadiately on success, hence we llook for a 302
         expect(response).to have_http_status(:ok)
       end
     end
