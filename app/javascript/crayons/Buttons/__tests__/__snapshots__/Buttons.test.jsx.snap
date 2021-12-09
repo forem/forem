@@ -4,9 +4,11 @@ exports[`<Button /> renders a default button 1`] = `"<button type=\\"button\\" c
 
 exports[`<Button /> renders a destructive button 1`] = `"<button type=\\"button\\" class=\\"c-btn c-btn--destructive\\">Hello world!</button>"`;
 
-exports[`<Button /> renders a primary button 1`] = `"<button type=\\"button\\" class=\\"c-btn\\" primary=\\"true\\">Hello world!</button>"`;
+exports[`<Button /> renders a primary button 1`] = `"<button type=\\"button\\" class=\\"c-btn c-btn--primary\\">Hello world!</button>"`;
 
 exports[`<Button /> renders a rounded button 1`] = `"<button type=\\"button\\" class=\\"c-btn radius-full\\">Hello world!</button>"`;
+
+exports[`<Button /> renders a secondary button 1`] = `"<button type=\\"button\\" class=\\"c-btn c-btn--secondary\\">Hello world!</button>"`;
 
 exports[`<Button /> renders with a tooltip 1`] = `"<button type=\\"button\\" class=\\"c-btn crayons-tooltip__activator\\">Hello world!<span data-testid=\\"tooltip\\" class=\\"crayons-tooltip__content\\">tooltip text</span></button>"`;
 
