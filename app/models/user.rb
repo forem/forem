@@ -536,6 +536,10 @@ class User < ApplicationRecord
     notification_setting.email_follower_notifications
   end
 
+  def reactions_to
+    Reaction.for_user(self)
+  end
+
   protected
 
   # Send emails asynchronously
