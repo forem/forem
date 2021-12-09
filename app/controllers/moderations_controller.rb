@@ -10,7 +10,7 @@ class ModerationsController < ApplicationController
 
   def index
     skip_authorization
-    return unless current_user&.trusted
+    return unless current_user&.trusted?
 
     articles = Article.published
       .order(published_at: :desc).limit(70)
