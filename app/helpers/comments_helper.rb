@@ -31,7 +31,8 @@ module CommentsHelper
   end
 
   def should_be_hidden?(comment, root_comment)
-    comment.hidden_by_commentable_user && comment != root_comment
+    # when opened by a permalink + root comment is hidden => show root comment and its descendants
+    comment.hidden_by_commentable_user && comment != root_comment && !root_comment&.hidden_by_commentable_user
   end
 
   def high_number_of_comments?(comments_number)

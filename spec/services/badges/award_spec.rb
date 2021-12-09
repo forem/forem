@@ -18,5 +18,13 @@ RSpec.describe Badges::Award, type: :service do
       expect(user2.badge_achievements.pluck(:rewarding_context_message_markdown))
         .to eq(["Congrats on a badge!"])
     end
+
+    it "doesn't award badges to spam accounts" do
+      spammer = create(:user, username: "spam_account")
+
+      described_class.call(User.all, "one-year-club", "Congrats on a badge!")
+      expect(user.badge_achievements.any?).to be true
+      expect(spammer.badge_achievements.any?).to be false
+    end
   end
 end

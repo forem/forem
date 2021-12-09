@@ -1,4 +1,6 @@
 class Tag < ActsAsTaggableOn::Tag
+  self.ignored_columns = %w[mod_chat_channel_id].freeze
+
   attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
@@ -12,7 +14,6 @@ class Tag < ActsAsTaggableOn::Tag
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
 
   belongs_to :badge, optional: true
-  belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
 
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
 

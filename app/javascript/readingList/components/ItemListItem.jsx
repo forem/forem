@@ -53,7 +53,11 @@ export const ItemListItem = ({ item, children }) => {
             <span datatestid="item-tags">
               <span class="color-base-30"> • </span>
               {adaptedItem.tags.map((tag) => (
-                <a className="crayons-tag" key={tag} href={`/t/${tag.name}`}>
+                <a
+                  className="crayons-tag crayons-tag--monochrome"
+                  key={tag}
+                  href={`/t/${tag.name}`}
+                >
                   {`#${tag.name}`}
                 </a>
               ))}

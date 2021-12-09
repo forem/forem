@@ -12,7 +12,7 @@ describe('Adjust post tags', () => {
     it('should add a tag to a post', () => {
       cy.findByRole('heading', { name: 'Tag test article' }).click();
       cy.getIframeBody('.article-iframe')
-        .findByRole('link', { name: '#tag2' })
+        .findByRole('link', { name: /# tag2/ })
         .should('not.exist');
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
@@ -24,13 +24,15 @@ describe('Adjust post tags', () => {
 
       cy.getIframeBody('.article-iframe').within(() => {
         cy.findByText('The #tag2 tag was added.');
-        cy.findByRole('link', { name: '#tag2' });
+        cy.findByRole('link', { name: /# tag2/ });
       });
     });
 
     it('should remove a tag from a post', () => {
       cy.findByRole('heading', { name: 'Tag test article' }).click();
-      cy.getIframeBody('.article-iframe').findByRole('link', { name: '#tag1' });
+      cy.getIframeBody('.article-iframe').findByRole('link', {
+        name: /# tag1/,
+      });
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', { name: 'Open adjust tags section' }).click();
@@ -42,7 +44,7 @@ describe('Adjust post tags', () => {
 
       cy.getIframeBody('.article-iframe').within(() => {
         cy.findByText('The #tag1 tag was removed.');
-        cy.findByRole('link', { name: '#tag1' }).should('not.exist');
+        cy.findByRole('link', { name: /# tag1/ }).should('not.exist');
       });
     });
   });
@@ -60,7 +62,7 @@ describe('Adjust post tags', () => {
     it('should add a tag to a post', () => {
       cy.findByRole('heading', { name: 'Tag test article' }).click();
       cy.getIframeBody('.article-iframe')
-        .findByRole('link', { name: '#tag2' })
+        .findByRole('link', { name: /#tag2/ })
         .should('not.exist');
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
@@ -72,13 +74,15 @@ describe('Adjust post tags', () => {
 
       cy.getIframeBody('.article-iframe').within(() => {
         cy.findByText('The #tag2 tag was added.');
-        cy.findByRole('link', { name: '#tag2' });
+        cy.findByRole('link', { name: /# tag2/ });
       });
     });
 
     it('should remove a tag from a post', () => {
       cy.findByRole('heading', { name: 'Tag test article' }).click();
-      cy.getIframeBody('.article-iframe').findByRole('link', { name: '#tag1' });
+      cy.getIframeBody('.article-iframe').findByRole('link', {
+        name: /# tag1/,
+      });
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', { name: 'Open adjust tags section' }).click();
@@ -90,7 +94,7 @@ describe('Adjust post tags', () => {
 
       cy.getIframeBody('.article-iframe').within(() => {
         cy.findByText('The #tag1 tag was removed.');
-        cy.findByRole('link', { name: '#tag1' }).should('not.exist');
+        cy.findByRole('link', { name: /# tag1/ }).should('not.exist');
       });
     });
   });
@@ -109,7 +113,7 @@ describe('Adjust post tags', () => {
       cy.findByRole('heading', { name: 'Tag test article' });
       cy.findByRole('main').as('main');
 
-      cy.findByRole('link', { name: '#tag2' }).should('not.exist');
+      cy.findByRole('link', { name: /# tag2/ }).should('not.exist');
 
       cy.findByRole('button', { name: 'Moderation' }).click();
       cy.getIframeBody('#mod-container').within(() => {
@@ -120,7 +124,7 @@ describe('Adjust post tags', () => {
       });
 
       cy.get('@main').within(() => {
-        cy.findByRole('link', { name: '#tag2' });
+        cy.findByRole('link', { name: /# tag2/ });
       });
     });
 
@@ -128,7 +132,7 @@ describe('Adjust post tags', () => {
       cy.findByRole('heading', { name: 'Tag test article' });
       cy.findByRole('main').as('main');
 
-      cy.findByRole('link', { name: '#tag1' }).should('exist');
+      cy.findByRole('link', { name: /# tag1/ }).should('exist');
       cy.findByRole('button', { name: 'Moderation' }).click();
 
       cy.getIframeBody('#mod-container').within(() => {
@@ -140,7 +144,7 @@ describe('Adjust post tags', () => {
       });
 
       cy.get('@main').within(() => {
-        cy.findByRole('link', { name: '#tag1' }).should('not.exist');
+        cy.findByRole('link', { name: /# tag1/ }).should('not.exist');
       });
     });
   });

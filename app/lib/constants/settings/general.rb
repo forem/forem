@@ -90,7 +90,7 @@ module Constants
           placeholder: "$pay.somethinglikethis.co/value"
         },
         periodic_email_digest: {
-          description: "Determines how often periodic email digests are sent",
+          description: "Determines how often email digests are sent (in days)",
           placeholder: 2
         },
         sidebar_tags: {
@@ -135,7 +135,7 @@ module Constants
           description: "Secret key used to allow AWS video encoding through the VideoStatesController",
           placeholder: ""
         }
-        # Dynamic values ommitted: configurable_rate_limits and social_media_handles
+        # Dynamic values omitted: configurable_rate_limits and social_media_handles
       }.freeze
     end
   end

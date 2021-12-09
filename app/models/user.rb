@@ -8,7 +8,7 @@ class User < ApplicationRecord
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
     included do
-      has_one :profile, dependent: :destroy
+      has_one :profile, dependent: :delete
 
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
@@ -21,6 +21,7 @@ class User < ApplicationRecord
     end
   end
 
+  include StringAttributeCleaner.for(:email)
   ANY_ADMIN_ROLES = %i[admin super_admin].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
@@ -43,8 +44,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :destroy
-  has_one :setting, class_name: "Users::Setting", dependent: :destroy
+  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
+  has_one :setting, class_name: "Users::Setting", dependent: :delete
 
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
                            inverse_of: :resource_owner, dependent: :delete_all
@@ -52,13 +53,13 @@ class User < ApplicationRecord
                            inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
-  has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :destroy
-  has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :destroy
-  has_many :api_secrets, dependent: :destroy
+  has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :delete_all
+  has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
+  has_many :api_secrets, dependent: :delete_all
   has_many :articles, dependent: :destroy
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :badge_achievements, dependent: :destroy
+  has_many :badge_achievements, dependent: :delete_all
   has_many :badge_achievements_rewarded, class_name: "BadgeAchievement", foreign_key: :rewarder_id,
                                          inverse_of: :rewarder, dependent: :nullify
   has_many :badges, through: :badge_achievements
@@ -68,39 +69,37 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
-  has_many :chat_channel_memberships, dependent: :destroy
-  has_many :chat_channels, through: :chat_channel_memberships
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
-  has_many :discussion_locks, dependent: :destroy, inverse_of: :locking_user, foreign_key: :locking_user_id
-  has_many :display_ad_events, dependent: :destroy
+  has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
+  has_many :display_ad_events, dependent: :delete_all
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
+  # Consider that we might be able to use dependent: :delete_all as the GithubRepo busts the user cache
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
-  has_many :identities, dependent: :destroy
+  has_many :identities, dependent: :delete_all
   has_many :identities_enabled, -> { enabled }, class_name: "Identity", inverse_of: false
   has_many :listings, dependent: :destroy
-  has_many :mentions, dependent: :destroy
-  has_many :messages, dependent: :destroy
-  has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy
-  has_many :notification_subscriptions, dependent: :destroy
-  has_many :notifications, dependent: :destroy
+  has_many :mentions, dependent: :delete_all
+  has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :delete_all
+  has_many :notification_subscriptions, dependent: :delete_all
+  has_many :notifications, dependent: :delete_all
   has_many :offender_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
-  has_many :organization_memberships, dependent: :destroy
+  has_many :organization_memberships, dependent: :delete_all
   has_many :organizations, through: :organization_memberships
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify
-  has_many :podcast_episode_appearances, dependent: :destroy, inverse_of: :user
+  has_many :podcast_episode_appearances, dependent: :delete_all, inverse_of: :user
   has_many :podcast_episodes, through: :podcast_episode_appearances, source: :podcast_episode
-  has_many :podcast_ownerships, dependent: :destroy, inverse_of: :owner
+  has_many :podcast_ownerships, dependent: :delete_all, inverse_of: :owner
   has_many :podcasts_owned, through: :podcast_ownerships, source: :podcast
-  has_many :poll_skips, dependent: :destroy
-  has_many :poll_votes, dependent: :destroy
+  has_many :poll_skips, dependent: :delete_all
+  has_many :poll_votes, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
 
   # we keep rating votes as they belong to the article, not to the user who viewed it
@@ -109,7 +108,7 @@ class User < ApplicationRecord
   has_many :reactions, dependent: :destroy
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
-  has_many :response_templates, inverse_of: :user, dependent: :destroy
+  has_many :response_templates, inverse_of: :user, dependent: :delete_all
   has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
                                                 foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription",
@@ -118,7 +117,7 @@ class User < ApplicationRecord
   has_many :tweets, dependent: :nullify
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
   has_many :devices, dependent: :delete_all
-  has_many :sponsorships, dependent: :destroy
+  has_many :sponsorships, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -164,7 +163,7 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
-  validate :unique_including_orgs_and_podcasts, if: :username_changed?
+  validates :username, unique_cross_model_slug: true, if: :username_changed?
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -210,8 +209,8 @@ class User < ApplicationRecord
   }
   before_validation :check_for_username_change
   before_validation :downcase_email
+
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
@@ -351,11 +350,16 @@ class User < ApplicationRecord
     has_role?(:suspended)
   end
 
-  def warned
+  def warned?
     has_role?(:warned)
   end
 
-  def admin?
+  def warned
+    ActiveSupport::Deprecation.warn("User#warned is deprecated, favor User#warned?")
+    warned?
+  end
+
+  def super_admin?
     has_role?(:super_admin)
   end
 
@@ -371,16 +375,21 @@ class User < ApplicationRecord
     has_role?(:tech_admin) || has_role?(:super_admin)
   end
 
-  def vomitted_on?
+  def vomited_on?
     Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
   end
 
-  def trusted
+  def trusted?
     return @trusted if defined? @trusted
 
     @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role?(:trusted)
     end
+  end
+
+  def trusted
+    ActiveSupport::Deprecation.warn("User#trusted is deprecated, favor User#trusted?")
+    trusted?
   end
 
   def moderator_for_tags
@@ -399,21 +408,21 @@ class User < ApplicationRecord
   end
 
   def admin_organizations
-    org_ids = organization_memberships.where(type_of_user: "admin").pluck(:organization_id)
+    org_ids = organization_memberships.admin.pluck(:organization_id)
     organizations.where(id: org_ids)
   end
 
   def member_organizations
-    org_ids = organization_memberships.where(type_of_user: %w[admin member]).pluck(:organization_id)
+    org_ids = organization_memberships.member.pluck(:organization_id)
     organizations.where(id: org_ids)
   end
 
   def org_member?(organization)
-    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: %w[admin member])
+    organization_memberships.member.exists?(organization: organization)
   end
 
   def org_admin?(organization)
-    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: "admin")
+    organization_memberships.admin.exists?(organization: organization)
   end
 
   def block; end
@@ -428,16 +437,6 @@ class User < ApplicationRecord
 
   def blocked_by?(blocker_id)
     UserBlock.blocking?(blocker_id, id)
-  end
-
-  def unique_including_orgs_and_podcasts
-    username_taken = (
-      Organization.exists?(slug: username) ||
-      Podcast.exists?(slug: username) ||
-      Page.exists?(slug: username)
-    )
-
-    errors.add(:username, "is taken.") if username_taken
   end
 
   def non_banished_username
@@ -559,10 +558,6 @@ class User < ApplicationRecord
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
   end
 
-  def verify_email
-    self.email = nil if email == ""
-  end
-
   def set_username
     set_temp_username if username.blank?
     self.username = username&.downcase
@@ -598,10 +593,6 @@ class User < ApplicationRecord
 
     self.old_old_username = old_username
     self.old_username = username_was
-    chat_channels.find_each do |channel|
-      channel.slug = channel.slug.gsub(username_was, username)
-      channel.save
-    end
     articles.find_each do |article|
       article.path = article.path.gsub(username_was, username)
       article.save
@@ -613,16 +604,7 @@ class User < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
-      name.match?(/#{term}/i)
-    end
-
-    Reaction.create!(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "User",
-      category: "vomit",
-    )
+    Spam::Handler.handle_user!(user: self)
   end
 
   # TODO: @citizen428 I don't want to completely remove this method yet, as we

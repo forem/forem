@@ -33,7 +33,7 @@
             <summary><%= t("views.listings.form.category.summary") %></summary>
           </details>
         </div>
-        <%# The following tag_list field is overriden by the Tags JS component
+        <%# The following tag_list field is overridden by the Tags JS component
         from the listingForm. We keep this form field in place to facilitate
         SSR. By having the form field loaded on the DOM first with this view,
         we prevent the screen from "jumping" once the deferred JS is loaded
@@ -63,19 +63,6 @@
             <p class="crayons-field__description"><%= t("views.listings.form.organization.description") %></p>
           </div>
         <% end %>
-
-        <div class="crayons-field crayons-field--checkbox">
-          <input
-            type="checkbox"
-            class="crayons-checkbox"
-            id="contact_via_connect_placeholder"
-            checked=true />
-
-          <label class="crayons-field__label" for="contact_via_connect_placeholder">
-            <%= t("views.listings.form.connect.subtitle") %>
-            <p class="crayons-field__description"><%= t("views.listings.form.connect.description") %></p>
-          </label>
-        </div>
       </div>
     </div>
 

@@ -92,7 +92,7 @@ seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   organization = Organization.create!(
     name: "Bachmanity",
     summary: Faker::Company.bs,
-    remote_profile_image_url: logo = Faker::Company.logo,
+    profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     nav_image: logo,
     url: Faker::Internet.url,
     slug: "bachmanity",
@@ -186,57 +186,6 @@ end
 
 ##############################################################################
 
-chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.local") do
-  user = User.create!(
-    name: "Chat user 1",
-    email: "chat-user-1@forem.local",
-    username: "chat_user_1",
-    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    confirmed_at: Time.current,
-    password: "password",
-    password_confirmation: "password",
-    saw_onboarding: true,
-    checked_code_of_conduct: true,
-    checked_terms_and_conditions: true,
-  )
-  user.notification_setting.update(
-    email_comment_notifications: false,
-    email_follower_notifications: false,
-  )
-  user.profile.update(
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
-    website_url: Faker::Internet.url,
-  )
-  user
-end
-
-##############################################################################
-
-chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.local") do
-  user = User.create!(
-    name: "Chat user 2",
-    email: "chat-user-2@forem.local",
-    username: "chat_user_2",
-    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    confirmed_at: Time.current,
-    password: "password",
-    password_confirmation: "password",
-    saw_onboarding: true,
-    checked_code_of_conduct: true,
-    checked_terms_and_conditions: true,
-  )
-  user.notification_setting.update(
-    email_comment_notifications: false,
-    email_follower_notifications: false,
-  )
-  user.profile.update(
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
-    website_url: Faker::Internet.url,
-  )
-  user
-end
-
-##############################################################################
 seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") do
   user = User.create!(
     name: "Notifications User",
@@ -289,23 +238,6 @@ seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.local") do
 
   admin_user.follows.create!(followable: liquid_tags_user)
 end
-##############################################################################
-
-seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") do
-  channel = ChatChannel.create(
-    channel_type: "open",
-    channel_name: "test chat channel",
-    slug: "test-chat-channel",
-    last_message_at: 1.week.ago,
-    status: "active",
-  )
-
-  channel.invite_users(users: [chat_user_1, chat_user_2])
-
-  Message.create(message_markdown: "Test message from chat_user_1", user_id: chat_user_1.id,
-                 chat_channel_id: channel.id)
-end
-
 ##############################################################################
 
 seeder.create_if_none(NavigationLink) do
@@ -375,6 +307,50 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(Article, "slug", "test-article-with-hidden-comments-slug") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Test article with hidden comments
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  article = Article.create!(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: admin_user.id,
+    slug: "test-article-with-hidden-comments-slug",
+    any_comments_hidden: true,
+  )
+
+  comment_attributes = {
+    body_markdown: "#{Faker::Hipster.paragraph(sentence_count: 1)} I am hidden",
+    user_id: admin_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article",
+    hidden_by_commentable_user: true
+  }
+
+  comment = Comment.create!(comment_attributes)
+
+  child_comment_attributes = {
+    body_markdown: "Child of a hidden comment",
+    user_id: admin_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article",
+    parent: comment,
+    hidden_by_commentable_user: false
+  }
+
+  Comment.create!(child_comment_attributes)
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "title", "Organization test article") do
   markdown = <<~MARKDOWN
     ---
@@ -392,6 +368,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Organization test article") do
     show_comments: true,
     user_id: admin_user.id,
     organization_id: Organization.first.id,
+    slug: "test-organization-article-slug",
   )
 end
 
@@ -469,7 +446,6 @@ seeder.create_if_none(Listing) do
     location: Faker::Address.city,
     organization_id: admin_user.organizations.first&.id,
     listing_category_id: ListingCategory.first.id,
-    contact_via_connect: true,
     published: true,
     originally_published_at: Time.current,
     bumped_at: Time.current,

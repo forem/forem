@@ -1,1 +1,4 @@
-<a href="/"><%= community_name %></a> is a community of <%= display_estimated_user_count? ? number_with_delimiter(estimated_user_count) : "" %> amazing <%= community_members_label %>
+<%= t("views.auth.title.text_html",
+      name: community_name,
+      maybe_size: display_estimated_user_count? ? t("views.auth.title.size", num: number_with_delimiter(estimated_user_count)) : "",
+      label: community_members_label) %>

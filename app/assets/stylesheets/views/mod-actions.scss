@@ -4,9 +4,9 @@
 
 .mod-actions-menu {
   position: fixed;
-  top: var(--header-height);
+  top: 0;
   right: 0;
-  height: calc(100vh - var(--header-height));
+  height: 100vh;
   z-index: var(--z-drawer);
   transform: translateX(360px);
   transition: var(--transition-props);

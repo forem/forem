@@ -26,6 +26,7 @@ export class CategoryLinksMobile extends Component {
           {categories.map((category) => {
             return (
               <option
+                key={category.slug}
                 value={`/listings/${category.slug}`}
                 selected={category.slug === selectedCategory}
               >

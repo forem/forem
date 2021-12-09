@@ -96,6 +96,6 @@ describe('Creator Signup Page', () => {
       .click();
 
     const { baseUrl } = Cypress.config();
-    cy.url().should('equal', `${baseUrl}onboarding?referrer=${baseUrl}`);
+    cy.url().should('equal', `${baseUrl}admin/creator_settings/new`);
   });
 });

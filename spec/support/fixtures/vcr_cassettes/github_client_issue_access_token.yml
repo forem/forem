@@ -87,7 +87,7 @@ http_interactions:
         properly when the colours are related.\r\n\r\nSee the pictures below or visit
         my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To Reproduce**\r\n\r\n1.
         Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected behavior**\r\n\r\nMy
-        name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Additional
         information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
         do you recommend to fix the issue? If you have any recommendations, I''m happy
         to pick the issue.\r\n","closed_by":null}'

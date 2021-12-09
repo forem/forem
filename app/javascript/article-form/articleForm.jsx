@@ -1,3 +1,4 @@
+/* global Runtime */
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
@@ -306,8 +307,8 @@ export class ArticleForm extends Component {
 
     this.setState({
       // When the formKey prop changes, it causes the <Form /> component to recreate the DOM nodes that it manages.
-      // This permits us to reset the defaultValue for the MentionAutcompleteTextArea component without having to change
-      // MentionAutcompleteTextArea component's implementation.
+      // This permits us to reset the defaultValue for the MentionAutocompleteTextArea component without having to change
+      // MentionAutocompleteTextArea component's implementation.
       formKey: new Date().toISOString(),
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
@@ -476,7 +477,8 @@ export class ArticleForm extends Component {
 
         <KeyboardShortcuts
           shortcuts={{
-            'ctrl+shift+KeyP': this.fetchPreview,
+            [`${Runtime.getOSKeyboardModifierKeyString()}+shift+KeyP`]:
+              this.fetchPreview,
           }}
         />
       </form>

@@ -5,7 +5,7 @@ module Metrics
 
     def perform
       models = [User, Article, Organization, Comment, Podcast, PodcastEpisode, Listing, PageView, Notification,
-                Message, Profile]
+                Profile]
       models.each do |model|
         db_count = begin
           model.count

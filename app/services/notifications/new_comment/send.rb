@@ -36,7 +36,7 @@ module Notifications
           )
         end
 
-        # Send PNs using Rpush - respecting users' notificaton delivery settings
+        # Send PNs using Rpush - respecting users' notification delivery settings
         targets = User.joins(:notification_setting)
           .where(id: user_ids, notification_setting: { mobile_comment_notifications: true }).ids
 

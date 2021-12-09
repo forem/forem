@@ -27,12 +27,9 @@
 
   <div class="grid gap-3 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-3 m:px-0 pb-3" data-follow-button-container="true">
     <% @tags.each do |tag| %>
-      <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-      <div class="tag-card crayons-card branded-4 p-3 pt-2 m:p-6 m:pt-4 relative" style="border-top-color: <%= color %>; ">
-        <h3 class="crayons-tag crayons-tag--l mb-1 -ml-1">
-          <a href="<%= URL.tag tag %>" class="crayons-link">
-            <span class="crayons-tag__prefix">#</span><%= tag.name %>
-          </a>
+      <div class="tag-card crayons-card branded-4 p-3 pt-2 m:p-6 m:pt-4 relative" style="border-top-color: <%= tag.bg_color_hex %>; ">
+        <h3 class="mb-1 -ml-2">
+          <%= render_tag_link(tag.name) %>
         </h3>
         <% if tag.short_summary.present? %>
           <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>

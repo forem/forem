@@ -38,39 +38,6 @@ export class CommentSubscription extends Component {
     this.state = initialState;
   }
 
-  componentDidUpdate() {
-    const { showOptions } = this.state;
-
-    if (showOptions) {
-      window.addEventListener('scroll', this.dropdownPlacementHandler);
-      this.dropdownPlacementHandler();
-    } else {
-      window.removeEventListener('scroll', this.dropdownPlacementHandler);
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.dropdownPlacementHandler);
-  }
-
-  dropdownPlacementHandler = () => {
-    const { base: element } = this.dropdownElement;
-
-    // Reset the top before doing any calculations
-    element.style.bottom = '';
-
-    const { bottom: dropDownBottom } = element.getBoundingClientRect();
-    const { height } = this.buttonGroupElement.base.getBoundingClientRect();
-
-    if (
-      Math.sign(dropDownBottom) === -1 ||
-      dropDownBottom > window.innerHeight
-    ) {
-      // The 4 pixels is the box shadow from the drop down.
-      element.style.bottom = `${height + 4}px`;
-    }
-  };
-
   commentSubscriptionClick = (event) => {
     this.setState({
       subscriptionType: event.target.value,
@@ -143,8 +110,9 @@ export class CommentSubscription extends Component {
             triggerButtonId="subscription-settings-btn"
             dropdownContentId="subscription-settings-dropdown"
             dropdownContentCloseButtonId="subscription-settings-done-btn"
+            data-repositioning-dropdown="true"
             data-testid="subscriptions-panel"
-            className={`right-4 left-4 s:right-0 p-4 s:left-auto${
+            className={`right-0 p-4 s:left-auto${
               positionType === 'relative' ? ' w-full' : ''
             }`}
             ref={(element) => {

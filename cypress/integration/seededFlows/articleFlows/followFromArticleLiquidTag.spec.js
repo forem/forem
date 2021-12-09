@@ -83,10 +83,10 @@ describe('Follow from article liquid tag', () => {
 
       it('Follows a user from an article liquid tag', () => {
         cy.findByRole('main').within(() => {
-          cy.findByRole('button', { name: 'Follow user: Admin McAdmin' }).as(
-            'followUserButton',
-          );
-          cy.get('@followUserButton').should('have.text', 'Follow');
+          cy.findByRole('button', {
+            name: 'Follow user back: Admin McAdmin',
+          }).as('followUserButton');
+          cy.get('@followUserButton').should('have.text', 'Follow back');
           cy.get('@followUserButton').click();
           cy.get('@followUserButton').should('have.text', 'Following');
           cy.get('@followUserButton').click();

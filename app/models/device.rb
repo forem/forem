@@ -42,7 +42,7 @@ class Device < ApplicationRecord
         },
         "thread-id": Settings::Community.community_name,
         sound: "default",
-        # This key is required to modify the notifiaction in the iOS app: https://developer.apple.com/documentation/usernotifications/modifying_content_in_newly_delivered_notifications#2942066
+        # This key is required to modify the notification in the iOS app: https://developer.apple.com/documentation/usernotifications/modifying_content_in_newly_delivered_notifications#2942066
         "mutable-content": 1
       },
       data: payload
@@ -52,11 +52,19 @@ class Device < ApplicationRecord
 
   def android_notification(title, body, payload)
     n = Rpush::Gcm::Notification.new
-    n.app = ConsumerApp.rpush_app(app_bundle: app_bundle, platform: platform)
+    n.app = ConsumerApps::RpushAppQuery.call(
+      app_bundle: consumer_app.app_bundle,
+      platform: platform,
+    )
     n.registration_ids = [token]
     n.priority = "high"
     n.content_available = true
-    n.notification = { title: title, body: body }
+    n.notification = {
+      title: title,
+      body: body,
+      sound: "default",
+      click_action: ".presentation.home.HomeActivity"
+    }
     n.data = { data: payload }
     n.save!
   end

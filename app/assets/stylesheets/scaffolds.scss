@@ -39,15 +39,13 @@ div {
   display: none !important;
 }
 
-body.night-theme,
-body.ten-x-hacker-theme {
+body.dark-theme {
   .on-page-nav-butt img,
   .icon-img,
   .reaction-button:not(.reacted) img,
   .image-upload-button button,
   .icon-image,
   .dev-badge,
-  .chatchannels__config img,
   .message__actions img {
     -webkit-filter: invert(95%);
     filter: invert(95%);
@@ -95,11 +93,13 @@ body.trusted-status-true .trusted-visible-block {
   display: flex !important;
 }
 
-@keyframes loading-fadein {
-  from {
-    opacity: var(--opacity-0);
-  }
-  to {
-    opacity: 0.6;
+// The .admin-help-button class is included in this file since it
+// is referenced in both the admin and application layout.
+
+.admin-help-button {
+  margin-bottom: env(safe-area-inset-bottom);
+
+  @media (max-width: $breakpoint-m) {
+    bottom: calc(var(--header-height) + var(--su-3));
   }
 }

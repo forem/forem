@@ -1,7 +1,7 @@
 module Articles
   module Feeds
     module Timeframe
-      def self.call(timeframe, tag: nil, number_of_articles: 50, page: 1)
+      def self.call(timeframe, tag: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1)
         articles = ::Articles::Feeds::Tag.call(tag)
 
         articles

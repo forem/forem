@@ -1,0 +1,6 @@
+---
+en:
+  services:
+    payments:
+      errors:
+        select_payment_method: "Please select a payment method"

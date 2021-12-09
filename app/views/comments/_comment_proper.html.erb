@@ -28,13 +28,20 @@
             text-styles--secondary
             body
             <%= "color-base-60" if comment.decorate.low_quality %>
+            <%= should_be_hidden?(comment, @root_comment) ? "element-hidden-by-commentable-user" : "" %>
           ">
           <%= comment.safe_processed_html %>
         </div>
+
+        <% if should_be_hidden?(comment, @root_comment) %>
+          <div class="p-6 align-center opacity-50 fs-s hidden comment-hidden-by-author-text">
+            Comment hidden by author
+          </div>
+        <% end %>
       <% end %>
     </div>
 
-    <%= unless comment.deleted || commentable.nil?
+    <%= unless comment.deleted || commentable.nil? || should_be_hidden?(comment, @root_comment)
           (render partial: "comments/comment_footer", locals: {
             comment: comment,
             commentable: commentable,

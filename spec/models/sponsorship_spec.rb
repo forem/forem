@@ -111,6 +111,12 @@ RSpec.describe Sponsorship, type: :model do
         expect(tag_sponsorship).not_to be_valid
         expect(tag_sponsorship.errors[:level]).to be_present
       end
+
+      it "ensures sponsorable_type is loadable when present" do
+        sponsorship = build(:sponsorship, user: user, organization: org, sponsorable_type: "Unsponsorable")
+        expect(sponsorship).not_to be_valid
+        expect(sponsorship.errors[:sponsorable_type]).to include("is not a sponsorable type")
+      end
     end
   end
 end

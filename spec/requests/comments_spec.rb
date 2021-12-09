@@ -51,7 +51,7 @@ RSpec.describe "Comments", type: :request do
         expect(response.body).to include('<meta name="googlebot" content="noindex">')
       end
 
-      it "displays does not display noindex if comment has 0 or more score" do
+      it "does not display noindex if comment has 0 or more score" do
         get comment.path
         expect(response.body).not_to include('<meta name="googlebot" content="noindex">')
       end
@@ -60,6 +60,13 @@ RSpec.describe "Comments", type: :request do
         comment.commentable.update_column(:score, -5)
         get comment.path
         expect(response.body).to include('<meta name="googlebot" content="noindex">')
+      end
+
+      it "displays child comment if it's not hidden" do
+        child_comment = create(:comment, parent: comment, user: user, commentable: article)
+        comment.update(hidden_by_commentable_user: true)
+        get comment.path
+        expect(response.body).to include(child_comment.processed_html)
       end
     end
 
@@ -70,12 +77,6 @@ RSpec.describe "Comments", type: :request do
         get child.path
         expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
         expect(response.body).to include(child.processed_html)
-      end
-
-      it "does not display the comment if it is hidden" do
-        child.update(hidden_by_commentable_user: true)
-        get comment.path
-        expect(response.body).not_to include child.processed_html
       end
     end
 
@@ -134,26 +135,18 @@ RSpec.describe "Comments", type: :request do
         create(:comment, parent_id: third_level_child.id, commentable: article, user: user)
       end
 
-      it "does not show the hidden comment in the article's comments section" do
-        get "#{article.path}/comments"
-        expect(response.body).not_to include(third_level_child.processed_html)
+      # When opening a hidden comment by a permalink we want to see the full thread including hidden comments.
+      it "shows hidden child comments in its parent's permalink when parent is also hidden" do
+        third_level_child
+        child.update_column(:hidden_by_commentable_user, true)
+        get child.path
+        expect(response.body).to include(third_level_child.processed_html)
       end
 
-      it "does not show the hidden comment's children in the article's comments section" do
-        fourth_level_child
-        get "#{article.path}/comments"
-        expect(response.body).not_to include(fourth_level_child.processed_html)
-      end
-
-      it "does not show the hidden comment in its parent's permalink" do
-        get second_level_child.path
-        expect(response.body).not_to include(third_level_child.processed_html)
-      end
-
-      it "does not show the hidden comment's child in its parent's permalink" do
+      it "shows the hidden comment's child in its parent's permalink if the child is not hidden explicitly" do
         fourth_level_child
         get second_level_child.path
-        expect(response.body).not_to include(fourth_level_child.processed_html)
+        expect(response.body).to include(fourth_level_child.processed_html)
       end
 
       it "shows the comment in the permalink" do
@@ -190,10 +183,15 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the article is deleted" do
-      it "index action renders deleted_commentable_comment view" do
-        article = create(:article)
-        comment = create(:comment, commentable: article)
+      it "raises not found when listing article comments" do
+        path = "#{article.path}/comments"
 
+        article.destroy
+
+        expect { get path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "shows comment from a deleted post" do
         article.destroy
 
         get comment.path
@@ -367,6 +365,50 @@ RSpec.describe "Comments", type: :request do
         notification = user.notifications.last
         patch "/comments/#{comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
         expect(Notification.exists?(id: notification.id)).to eq(false)
+      end
+
+      it "deletes children notification when comment is hidden" do
+        child_comment = create(:comment, commentable: article, user: user2, parent: comment)
+        Notification.send_new_comment_notifications_without_delay(child_comment)
+        notification = child_comment.notifications.last
+        patch "/comments/#{comment.id}/hide", params: { hide_children: "1" },
+                                              headers: { HTTP_ACCEPT: "application/json" }
+        child_comment.reload
+        expect(child_comment.hidden_by_commentable_user).to be true
+        expect(Notification.exists?(id: notification.id)).to eq(false)
+      end
+    end
+
+    context "with hiding child comments" do
+      let(:commentable_author) { create(:user) }
+      let(:article) { create(:article, user: commentable_author) }
+      let(:parent_comment) { create(:comment, commentable: article, user: commentable_author) }
+      let!(:child_comment) { create(:comment, commentable: article, parent: parent_comment) }
+
+      before do
+        sign_in commentable_author
+      end
+
+      it "hides child comment when hide_children is passed" do
+        patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "1" },
+                                                     headers: { HTTP_ACCEPT: "application/json" }
+        child_comment.reload
+        expect(child_comment.hidden_by_commentable_user).to be true
+      end
+
+      it "hides second level child if hide_children is passed" do
+        second_level_child = create(:comment, parent: child_comment, commentable: article, user: user)
+        patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "1" },
+                                                     headers: { HTTP_ACCEPT: "application/json" }
+        second_level_child.reload
+        expect(second_level_child.hidden_by_commentable_user).to be true
+      end
+
+      it "hides child comment when hide_children is not passed" do
+        patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "0" },
+                                                     headers: { HTTP_ACCEPT: "application/json" }
+        child_comment.reload
+        expect(child_comment.hidden_by_commentable_user).to be false
       end
     end
   end

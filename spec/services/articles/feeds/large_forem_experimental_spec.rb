@@ -171,7 +171,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       end
 
       # This test handles a situation in which there are a low number of hot or new stories, and the user is logged in.
-      # Previously the offest factor could result in zero stories being returned sometimes.
+      # Previously the offset factor could result in zero stories being returned sometimes.
 
       # We manually called `feed.globally_hot_articles` here because `let` caches it!
       it "still returns articles" do

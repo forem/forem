@@ -61,10 +61,6 @@ class UserDecorator < ApplicationDecorator
     body_class.join(" ")
   end
 
-  def dark_theme?
-    setting.dark_theme? || setting.ten_x_hacker_theme?
-  end
-
   def assigned_color
     colors = [
       {
@@ -101,15 +97,8 @@ class UserDecorator < ApplicationDecorator
     articles_count.zero? && comments_count.zero? && suspended?
   end
 
-  def stackbit_integration?
-    access_tokens.any?
-  end
-
   def considered_new?
-    min_days = Settings::RateLimit.user_considered_new_days
-    return false unless min_days.positive?
-
-    created_at.after?(min_days.days.ago)
+    Settings::RateLimit.user_considered_new?(user: self)
   end
 
   # Returns the user's public email if it is set and the display_email_on_profile

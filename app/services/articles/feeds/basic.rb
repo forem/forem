@@ -1,7 +1,7 @@
 module Articles
   module Feeds
     class Basic
-      def initialize(user: nil, number_of_articles: 25, page: 1, tag: nil)
+      def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil)
         @user = user
         @number_of_articles = number_of_articles
         @page = page
@@ -9,7 +9,7 @@ module Articles
         @article_score_applicator = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: @user)
       end
 
-      def feed
+      def default_home_feed(**_kwargs)
         articles = Article.published
           .order(hotness_score: :desc)
           .where(score: 0..)
@@ -29,6 +29,15 @@ module Articles
           tag_score + org_score + user_score - index
         end.reverse!
       end
+
+      # Alias :feed to preserve past implementations, but favoring a
+      # convergence of interface implementations.
+      alias feed default_home_feed
+
+      # Creating :more_comments_minimal_weight_randomized to conform
+      # to the public interface of
+      # Articles::Feeds::LargeForemExperimental
+      alias more_comments_minimal_weight_randomized default_home_feed
 
       delegate(:score_followed_tags,
                :score_followed_user,

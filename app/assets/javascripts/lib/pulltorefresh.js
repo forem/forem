@@ -22,7 +22,7 @@
     distThreshold: 60,
     distMax: 80,
     distReload: 50,
-    distIgnore: 0,
+    distIgnore: 10,
     bodyOffset: 20,
     mainElement: 'body',
     triggerElement: 'body',
@@ -53,7 +53,8 @@
           document.getElementById('article-body') ||
           document.getElementById('listings-index-container')) &&
         !document.body.classList.contains('modal-open') &&
-        document.body.dataset.leftNavState !== 'open'
+        document.body.dataset.leftNavState !== 'open' &&
+        !document.getElementById('article-form')
       );
     },
   };

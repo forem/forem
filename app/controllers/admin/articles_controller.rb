@@ -40,8 +40,6 @@ module Admin
       article = Article.find(params[:id])
 
       if article.update(article_params)
-        PinnedArticle.set(article) if params.dig(:article, :pinned)
-
         flash[:success] = "Article saved!"
       else
         flash[:danger] = article.errors_as_sentence
@@ -56,7 +54,26 @@ module Admin
       PinnedArticle.remove
 
       respond_to do |format|
-        format.html { redirect_to admin_article_path(article.id) }
+        format.html do
+          flash[:success] = "Article Pinned!"
+          redirect_to admin_article_path(article.id)
+        end
+        format.js do
+          render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
+        end
+      end
+    end
+
+    def pin
+      article = Article.find(params[:id])
+
+      PinnedArticle.set(article)
+
+      respond_to do |format|
+        format.html do
+          flash[:success] = "Article Pinned!"
+          redirect_to admin_article_path(article.id)
+        end
         format.js do
           render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
         end
@@ -95,7 +112,7 @@ module Admin
 
     def articles_featured
       Article.published.or(Article.where(published_from_feed: true))
-        .where(featured: true)
+        .featured
         .where("featured_number > ?", Time.current.to_i)
         .includes(:user)
         .limited_columns_internal_select

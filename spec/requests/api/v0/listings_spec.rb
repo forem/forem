@@ -418,8 +418,8 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect(Listing.find(response.parsed_body["id"]).location).to eq("Frejus")
       end
 
-      it "creates a listing with a list of tags and a contact" do
-        params = listing_params.merge(tags: %w[discuss javascript], contact_via_connect: true)
+      it "creates a listing with a list of tags" do
+        params = listing_params.merge(tags: %w[discuss javascript])
         expect do
           post_listing(**params)
           expect(response).to have_http_status(:created)
@@ -428,7 +428,6 @@ RSpec.describe "Api::V0::Listings", type: :request do
         listing = Listing.find(response.parsed_body["id"])
 
         expect(listing.cached_tag_list).to eq("discuss, javascript")
-        expect(listing.contact_via_connect).to be(true)
       end
     end
 

@@ -7,7 +7,10 @@ import { MarkdownToolbar } from '../MarkdownToolbar';
 describe('<MarkdownToolbar />', () => {
   beforeEach(() => {
     global.Runtime = {
-      currentOS: jest.fn(() => 'macOS'),
+      getOSKeyboardModifierKeyString: jest.fn(() => 'cmd'),
+      isNativeIOS: jest.fn(() => {
+        return false;
+      }),
     };
 
     global.window.matchMedia = jest.fn((query) => {

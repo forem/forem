@@ -41,7 +41,7 @@ class DisplayAd < ApplicationRecord
 
   def process_markdown
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-    markdown = Redcarpet::Markdown.new(renderer)
+    markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
     initial_html = markdown.render(body_markdown)
     stripped_html = ActionController::Base.helpers.sanitize initial_html,
                                                             tags: ALLOWED_TAGS,

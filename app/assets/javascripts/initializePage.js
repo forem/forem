@@ -1,6 +1,6 @@
 /*
   global initializeLocalStorageRender, initializeBodyData,
-  initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
+  initializeAllTagEditButtons, initializeUserFollowButts,
   initializeBaseTracking, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeSettings,
@@ -32,8 +32,6 @@ function callInitializers() {
   initializeCreditsPage();
   initializeProfileInfoToggle();
   initializeProfileBadgesToggle();
-  initializePodcastPlayback();
-  initializeVideoPlayback();
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
@@ -50,7 +48,6 @@ function initializePage() {
       clearInterval(waitingForDataLoad);
       if (document.body.getAttribute('data-user-status') === 'logged-in') {
         initializeBaseUserData();
-        initializeAllChatButtons();
         initializeAllTagEditButtons();
       }
       initializeBroadcast();
@@ -59,6 +56,8 @@ function initializePage() {
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
+      initializePodcastPlayback();
+      initializeVideoPlayback();
     }
   }, 1);
 

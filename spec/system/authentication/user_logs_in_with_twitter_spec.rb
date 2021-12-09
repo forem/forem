@@ -123,7 +123,7 @@ RSpec.describe "Authenticating with Twitter" do
       end
     end
 
-    context "when a validation failure occurrs" do
+    context "when a validation failure occurs" do
       before do
         # A User is invalid if their name is more than 100 chars long
         OmniAuth.config.mock_auth[:twitter].extra.raw_info.name = "X" * 101

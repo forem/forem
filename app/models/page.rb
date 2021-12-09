@@ -6,7 +6,7 @@ class Page < ApplicationRecord
   validates :slug, presence: true, format: /\A[0-9a-z\-_]*\z/
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
-  validate :unique_slug_including_users_and_orgs, if: :slug_changed?
+  validates :slug, unique_cross_model_slug: true, if: :slug_changed?
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -48,18 +48,6 @@ class Page < ApplicationRecord
     return unless body_markdown.blank? && body_html.blank? && body_json.blank?
 
     errors.add(:body_markdown, "must exist if body_html or body_json doesn't exist.")
-  end
-
-  def unique_slug_including_users_and_orgs
-    slug_exists = (
-      User.exists?(username: slug) ||
-      Organization.exists?(slug: slug) ||
-      Podcast.exists?(slug: slug) ||
-      slug.include?("sitemap-")
-    )
-    return unless slug_exists
-
-    errors.add(:slug, "is taken.")
   end
 
   # As there can only be one global landing page, we want to ensure that

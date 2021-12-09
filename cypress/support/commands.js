@@ -112,7 +112,7 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
     cy.log('Login failed. Attempting one more login.');
 
     // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionnally.
+    // This is to combat some flaky tests where the login fails occasionally.
     return getLoginRequest();
   });
 });
@@ -138,7 +138,7 @@ Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
     return cy.request(
       'POST',
       '/users',
-      `utf8=%E2%9C%93&user%5Bname%5D=${encodedName}&user%5Busername%5D=${encodedUsername}&user%5Bemail%5D=${encodedEmail}%40forem.local&user%5Bpassword%5D=${encodedPassword}&commit=Create+my+account`,
+      `utf8=%E2%9C%93&user%5Bname%5D=${encodedName}&user%5Busername%5D=${encodedUsername}&user%5Bemail%5D=${encodedEmail}%40forem.local&user%5Bpassword%5D=${encodedPassword}&commit=Create+my+account&user%5Bforem_owner_secret%5D=secret`,
     );
   }
 
@@ -150,7 +150,7 @@ Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
     cy.log('Login failed. Attempting one more login.');
 
     // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionnally.
+    // This is to combat some flaky tests where the login fails occasionally.
     return getLoginRequest();
   });
 });
@@ -193,7 +193,7 @@ const DEFAULT_AUTH_CONFIG = {
 };
 
 /**
- * Sets default values of Settings::General atrributes relevant to Authentication Section.
+ * Sets default values of Settings::General attributes relevant to Authentication Section.
  *
  * @param username {string} The username used in the test
  * @param settingsGeneral

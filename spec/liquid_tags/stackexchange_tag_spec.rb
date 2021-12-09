@@ -42,7 +42,7 @@ RSpec.describe StackexchangeTag, type: :liquid_tag, vcr: true do
       end.to raise_error(StandardError)
     end
 
-    it "does not break with volountarily removed questions" do
+    it "does not break with voluntarily removed questions" do
       VCR.use_cassette("stackexchange_tag_deleted_question") do
         expect do
           liquid = generate_exchange_liquid(valid_id_deleted_question)

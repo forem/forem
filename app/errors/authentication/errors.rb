@@ -22,5 +22,9 @@ module Authentication
                community_email: ForemInstance.email)
       end
     end
+
+    # Raised when we find an email that's from a spammy domain.
+    class SpammyEmailDomain < Error
+    end
   end
 end

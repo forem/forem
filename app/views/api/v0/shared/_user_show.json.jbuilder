@@ -13,5 +13,5 @@ Profile.static_fields.each do |attr|
   json.set! attr, user.profile.public_send(attr)
 end
 
-json.joined_at     user.created_at.strftime("%b %e, %Y")
+json.joined_at     I18n.l(user.created_at, format: :json)
 json.profile_image Images::Profile.call(user.profile_image_url, length: 320)
