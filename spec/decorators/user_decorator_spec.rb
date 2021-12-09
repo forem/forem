@@ -167,17 +167,6 @@ RSpec.describe UserDecorator, type: :decorator do
     end
   end
 
-  describe "#stackbit_integration?" do
-    it "returns false by default" do
-      expect(user.decorate.stackbit_integration?).to be(false)
-    end
-
-    it "returns true if the user has access tokens" do
-      user.access_tokens.build
-      expect(user.decorate.stackbit_integration?).to be(true)
-    end
-  end
-
   describe "#considered_new?" do
     let(:decorated_user) { user.decorate }
 

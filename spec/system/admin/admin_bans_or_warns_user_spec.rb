@@ -63,7 +63,7 @@ RSpec.describe "Admin bans user", type: :system do
     expect(user.suspended?).to eq(true)
     expect(user.trusted).to eq(false)
     expect(user.warned?).to eq(false)
-    expect(user.has_role?(:tag_modertor)).to eq(false)
+    expect(user.has_role?(:tag_moderator)).to eq(false)
   end
 
   it "unsuspends user" do

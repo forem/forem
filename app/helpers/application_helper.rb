@@ -314,4 +314,12 @@ module ApplicationHelper
 
     link_to(label, tag_path(tag), options)
   end
+
+  def creator_settings_form?
+    return unless FeatureFlag.enabled?(:creator_onboarding)
+    return unless User.with_role(:creator).any?
+
+    creator = User.with_role(:creator).first
+    !creator.checked_code_of_conduct && !creator.checked_terms_and_conditions
+  end
 end

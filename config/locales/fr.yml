@@ -215,6 +215,7 @@ fr:
         other: est la mauvaise longueur (devrait être %{count} caractères)
   time:
     formats:
+      json: "%b %e, %Y"
       comment: "%B %d, %Y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"

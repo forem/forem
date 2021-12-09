@@ -20,7 +20,8 @@ class Podcast < ApplicationRecord
             uniqueness: true,
             format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
             exclusion: { in: ReservedWords.all, message: "slug is reserved" }
-  validate :unique_slug_including_users_and_orgs, if: :slug_changed?
+
+  validates :slug, unique_cross_model_slug: true, if: :slug_changed?
 
   after_save :bust_cache
 
@@ -53,11 +54,6 @@ class Podcast < ApplicationRecord
   end
 
   private
-
-  def unique_slug_including_users_and_orgs
-    slug_exists = User.exists?(username: slug) || Organization.exists?(slug: slug) || Page.exists?(slug: slug)
-    errors.add(:slug, "is taken.") if slug_exists
-  end
 
   def bust_cache
     return unless path

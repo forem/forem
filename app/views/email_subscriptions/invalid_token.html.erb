@@ -1,12 +1,10 @@
 <meta name="robots" content="noindex" />
 <div class="unsubscribed unsubscribed--red">
   <div class="unsubscribed__title">
-    Token expired or invalid
+    <%= t("views.email_subscriptions.invalid.heading") %>
   </div>
   <br />
   <div class="unsubscribed__message">
-    Please
-    <a href="<%= app_url(user_settings_path(:notifications)) %>">sign-in</a>
-    to manage your email preferences.
+    <%= t("views.email_subscriptions.invalid.description_html", signin: tag.a(t("views.email_subscriptions.invalid.signin"), href: app_url(user_settings_path(:notifications)))) %>
   </div>
 </div>

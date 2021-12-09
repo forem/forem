@@ -97,10 +97,6 @@ class UserDecorator < ApplicationDecorator
     articles_count.zero? && comments_count.zero? && suspended?
   end
 
-  def stackbit_integration?
-    access_tokens.any?
-  end
-
   def considered_new?
     Settings::RateLimit.user_considered_new?(user: self)
   end

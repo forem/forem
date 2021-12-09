@@ -163,13 +163,6 @@ fr:
           submit: Submit Feed Settings
         save_connect: Save Connect Settings
         save_web: Save Web Monetization Settings
-        stackbit:
-          connect: Connect to Stackbit
-          connected: Connected to Stackbit
-          create: Create New Stackbit Site
-          desc: Automatically generate a self-hosted static blog feed from your %{community} posts.
-          goto: Go To Your Stackbit Dashboard
-          start: Get Started
         web: Web monetization
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
       for_html: Settings for %{name}

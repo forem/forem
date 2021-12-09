@@ -1,7 +1,11 @@
 <p>All participants of <%= community_name %> are expected to abide by our Code of Conduct, both online and during in-person events that are hosted and/or associated with <%= community_name %>.</p>
 <h2>Our Pledge</h2>
 <p>In the interest of fostering an open and welcoming environment, we as moderators of
+<% if creator_settings_form? %>
+  <%= community_name %> pledge to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
+<% else %>
   <a href="<%= app_url %>"><%= community_name %></a> pledge to make participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
+<% end %>
 </p>
 <h2>Our Standards</h2>
 <p>Examples of behavior that contributes to creating a positive environment include:</p>
@@ -31,7 +35,11 @@
 </ul>
 <h2>Enforcement</h2>
 <p>Violations of the Code of Conduct may be reported by contacting the team via the
+<% if creator_settings_form? %>
+  abuse report form or by sending an email to <%= email_link %>. All reports will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. Further details of specific enforcement policies may be posted separately.
+<% else %>
   <a href="<%= app_url("/report-abuse") %>">abuse report form</a> or by sending an email to <%= email_link %>. All reports will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. Further details of specific enforcement policies may be posted separately.
+<% end %>
 </p>
 <p>Moderators have the right and responsibility to remove comments or other contributions that are not aligned to this Code of Conduct, or to suspend temporarily or permanently any members for other behaviors that they deem inappropriate, threatening, offensive, or harmful.</p>
 <h2>Attribution</h2>

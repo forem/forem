@@ -4,6 +4,18 @@ RSpec.describe UnifiedEmbed do
   subject(:unified_embed) { described_class }
 
   describe ".find_liquid_tag_for" do
+    valid_youtube_url_formats = [
+      "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "https://www.youtube.com/watch?v=rc5AyncB_Xw&t=18s",
+      "https://youtu.be/rc5AyncB_Xw",
+    ]
+
+    valid_vimeo_url_formats = [
+      "https://player.vimeo.com/video/652446985?h=a68f6ed1f5",
+      "https://vimeo.com/ondemand/withchude/647355334",
+      "https://vimeo.com/636725488",
+    ]
+
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
         .to eq(GistTag)
@@ -49,9 +61,18 @@ RSpec.describe UnifiedEmbed do
         .to eq(WikipediaTag)
     end
 
-    it "returns YoutubeTag for a youtube url" do
-      expect(described_class.find_liquid_tag_for(link: "https://www.youtube.com/embed/dQw4w9WgXcQ"))
-        .to eq(YoutubeTag)
+    valid_youtube_url_formats.each do |url|
+      it "returns YoutubeTag for a valid youtube url format" do
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(YoutubeTag)
+      end
+    end
+
+    valid_vimeo_url_formats.each do |url|
+      it "returns VimeoTag for a valid vimeo url format" do
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(VimeoTag)
+      end
     end
   end
 end

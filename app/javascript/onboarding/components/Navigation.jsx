@@ -5,7 +5,7 @@ export class Navigation extends Component {
   /**
    * A function to render the progress stepper within the `Navigation` component.
    * By default, it does not show the stepper for the first slide (the `IntroSlide` component).
-   * It builds a list of `<span>` elements correseponding to the slides, and adds an "active"
+   * It builds a list of `<span>` elements corresponding to the slides, and adds an "active"
    * class to any slide that has already been seen or is currently being seen.
    *
    * @returns {String} The HTML markup for the stepper.
@@ -52,15 +52,8 @@ export class Navigation extends Component {
   }
 
   render() {
-    const {
-      next,
-      prev,
-      hideNext,
-      hidePrev,
-      disabled,
-      canSkip,
-      className,
-    } = this.props;
+    const { next, prev, hideNext, hidePrev, disabled, canSkip, className } =
+      this.props;
     return (
       <nav
         class={`onboarding-navigation${
