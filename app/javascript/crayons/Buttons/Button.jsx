@@ -51,7 +51,7 @@ export const ButtonNew = (props) => {
           aria-hidden="true"
           focusable="false"
           src={icon}
-          className={classNames('c-btn__icon')}
+          className="c-btn__icon"
         />
       )}
       {children}
@@ -80,5 +80,5 @@ ButtonNew.propTypes = {
   className: PropTypes.string,
   tooltip: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   onKeyUp: PropTypes.func,
-  icon: PropTypes.ReactNode,
+  icon: PropTypes.elementType,
 };

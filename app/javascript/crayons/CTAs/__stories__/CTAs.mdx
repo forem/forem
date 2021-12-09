@@ -1,7 +1,6 @@
 # CTAs (Call To Actions)
 
-Call To Action is an extension for `<Link block />` component therefore it inherits Link's props and configuration.
-CTA is meant to be more prominent and visually heavy so use these cautiously.
+CTA is meant to be more prominent and visually heavy than regular links and should deliver clear... well... *call to action* :).
 
 ## CTAs vs Links vs Buttons
 
@@ -14,10 +13,9 @@ Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) 
 
 ## Usage
 
-Under the hood, CTA outputs `<a>` element.
+A CTA renders an anchor element, therefore standard link markup must be used,
+including a `href` attribute, otherwise, it is not focusable by the keyboard.
 
-Call To Actions has slightly different UI than regular `<Link block />` as our intention here was to make these more prominent. 
-`<CTA />` is basically a `<Link />` therefore standard link markup should be used, including an `href` (links omitting `href` attributes are not focusable by keyboard).
 
 ### Icons
 
@@ -27,13 +25,8 @@ By default, the icon itself won't be customizable. Icons within CTAs are hidden 
 
 #### Icon-only
 
-There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
-Icon-only CTAs should always use clear and obvious icon, ideally accompanied by a title. Icon-only CTAs will require an `aria-label` to ensure they are understood by users of assistive technologies.
-
-##### Fully rounded
-
-In most cases, whenever we display icon-only CTAs we tend to make them fully rounded - use `rounded` prop for that.
-Other than that please avoid customizing border-radius on CTAs.
+A call to action requires a label, therefore it is forbidden to create a CTA with an icon only.
+For such a scenario, use a `<Link />` or `<Button />` component (depending on the use case).
 
 ## Design
 

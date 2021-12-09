@@ -15,7 +15,10 @@ export default {
     variant: {
       control: {
         type: 'select',
-        options: ['default', 'branded'],
+        options: {
+          default: undefined,
+          branded: 'branded',
+        },
       },
       description:
         'There are two available variants (styles) to pick from: _default_ and _branded_. The primary difference is color: _default_ uses grey color and _branded_ uses accent color.',
@@ -60,7 +63,7 @@ export const Block = (args) => <Link {...args} />;
 Block.args = {
   ...Inline.args,
   block: true,
-  variant: 'default',
+  variant: undefined,
   children: 'Block link',
 };
 
