@@ -53,12 +53,12 @@
     <legend class="crayons-field__label mb-2">Who can join this community?</legend>
     <div class="flex gap-3">
       <div>
-        <%= f.radio_button :invite_only_mode, false, class: "crayons-radio" %>
-        <label for="invite_only_mode_0">Everyone</label>
+        <%= f.radio_button :invite_only_mode, false, class: "crayons-radio", role: "radio" %>
+        <%= label_tag "creator_settings_form_invite_only_mode_false", "Everyone" %>
       </div>
       <div>
-        <%= f.radio_button :invite_only_mode, true, class: "crayons-radio" %>
-        <label for="invite_only_mode_1">Invite only</label>
+        <%= f.radio_button :invite_only_mode, true, class: "crayons-radio", role: "radio" %>
+        <%= label_tag "creator_settings_form_invite_only_mode_true", "Members Only" %>
       </div>
     </div>
   </fieldset>
@@ -69,12 +69,12 @@
     <legend class="crayons-field__label mb-2">Who can view content in this community?</legend>
     <div class="flex gap-3">
       <div>
-        <%= f.radio_button :public, true, class: "crayons-radio" %>
-        <label for="public_0">Everyone</label>
+        <%= f.radio_button :public, true, class: "crayons-radio", role: "radio" %>
+        <%= label_tag "creator_settings_form_public_true", "Everyone" %>
       </div>
       <div>
-        <%= f.radio_button :public, false, class: "crayons-radio" %>
-        <label for="public_1">Members only</label>
+        <%= f.radio_button :public, false, class: "crayons-radio", role: "radio" %>
+        <%= label_tag "creator_settings_form_public_false", "Members Only" %>
       </div>
     </div>
   </fieldset>
