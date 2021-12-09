@@ -69,7 +69,7 @@ RSpec.describe Users::Delete, type: :service do
   end
 
   it "deletes reactions to the user" do
-    create(:vomit_reaction, user: create(:user, :trusted), reactable: user)
+    create(:vomit_reaction, reactable: user)
 
     expect do
       described_class.call(user)
