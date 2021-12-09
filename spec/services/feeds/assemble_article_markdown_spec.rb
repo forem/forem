@@ -18,6 +18,7 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
       categories: %w[tag1 tag2 tag3 tag4 tag5],
       published: "2020-12-20",
       content: content,
+      url: "https://feed.source",
     )
   end
 
