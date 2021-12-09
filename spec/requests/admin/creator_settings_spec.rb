@@ -4,11 +4,14 @@ RSpec.describe "/creator_settings/new", type: :request do
   let!(:creator) { create(:user, :creator) }
   let!(:non_admin_user) { create(:user) }
   let(:params) do
-    { community_name: "Climbing Life",
-      logo_svg: "https://dummyimage.com/300x300.png",
-      primary_brand_color_hex: "000000",
-      public: true,
-      invite_only: false }
+    { creator_settings_form:
+      {
+        community_name: "Climbing Life",
+        logo_svg: "https://dummyimage.com/300x300.png",
+        primary_brand_color_hex: "000000",
+        public: true,
+        invite_only: false
+      } }
   end
 
   before do
@@ -24,7 +27,7 @@ RSpec.describe "/creator_settings/new", type: :request do
 
     context "when the user is a creator" do
       it "allows the request" do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:found)
       end
 
       it "renders the correct page" do
