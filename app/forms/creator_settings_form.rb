@@ -20,18 +20,6 @@ class CreatorSettingsForm
 
   attr_accessor :success
 
-  def initialize(attributes = {})
-    super
-
-    self.checked_code_of_conduct = checked_code_of_conduct
-    self.checked_terms_and_conditions = checked_terms_and_conditions
-    self.community_name = community_name
-    self.invite_only_mode = invite_only_mode
-    self.logo = logo
-    self.primary_brand_color_hex = primary_brand_color_hex
-    self.public = public
-  end
-
   def save
     if valid?
       begin
