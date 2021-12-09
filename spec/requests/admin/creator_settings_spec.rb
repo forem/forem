@@ -59,8 +59,8 @@ RSpec.describe "/creator_settings/new", type: :request do
         expect(creator.saw_onboarding).to eq(true)
         expect(creator.checked_code_of_conduct).to eq(true)
         expect(creator.checked_terms_and_conditions).to eq(true)
-        # we redirect immadiately on success, hence we llook for a 302
-        expect(response).to have_http_status(:ok)
+        # we redirect immadiately on success
+        expect(response).to have_http_status(:found)
       end
     end
   end
