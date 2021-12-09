@@ -73,7 +73,7 @@ ButtonNew.displayName = 'ButtonNew';
 
 ButtonNew.propTypes = {
   children: defaultChildrenPropTypes,
-  variant: PropTypes.oneOf([undefined, 'primary', 'secondary']),
+  variant: PropTypes.oneOf(['default', 'primary', 'secondary']),
   rounded: PropTypes.bool,
   destructive: PropTypes.bool,
   type: PropTypes.oneOf(['button', 'submit']),

@@ -43,7 +43,7 @@ export const Link = (props) => {
 Link.displayName = 'Link';
 
 Link.propTypes = {
-  variant: PropTypes.oneOf([undefined, 'branded']),
+  variant: PropTypes.oneOf(['default', 'branded']),
   block: PropTypes.bool,
   rounded: PropTypes.bool,
   href: PropTypes.string.isRequired,
