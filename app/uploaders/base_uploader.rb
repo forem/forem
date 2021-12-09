@@ -26,6 +26,8 @@ class BaseUploader < CarrierWave::Uploader::Base
 
   # strip EXIF (and GPS) data
   def strip_exif
+    return if file.content_type.include?("svg")
+
     manipulate! do |image|
       image.strip unless image.frames.count > FRAME_STRIP_MAX
       image = yield(image) if block_given?

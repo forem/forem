@@ -1,5 +1,8 @@
-class LogoSVGUploader < BaseUploader
-  # This Uploader is being used by a DUS to convert logo_svg contents to a png file.
+class LogoSvgUploader < BaseUploader
+  # This Uploader is being used by a Data Update Script
+  # lib/data_update_scripts/20211208074428_migrate_logo_svg_data.rb
+  # to convert logo_svg contents to a png file.
+
   STORE_DIRECTORY = "uploads/logos/".freeze
   EXTENSION_ALLOWLIST = %w[svg png].freeze
   IMAGE_TYPE_ALLOWLIST = %i[svg png].freeze
