@@ -32,6 +32,8 @@ RSpec.describe CreatorSettingsForm, type: :model do
   end
 
   describe "#save" do
+    let(:current_user) { create(:user) }
+
     # rubocop:disable RSpec/ExampleLength
     it "saves the updated attributes to the correct Settings values", :aggregate_failures do
       # NOTE: override the profile migration hack from rails_helper.rb
@@ -55,6 +57,8 @@ RSpec.describe CreatorSettingsForm, type: :model do
       expect(Settings::UserExperience.primary_brand_color_hex).to eq("#a81adb")
       expect(Settings::UserExperience.public).to eq(false)
       expect(Settings::Authentication.invite_only_mode).to eq(false)
+      expect(current_user.checked_code_of_conduct).to eq(true)
+      expect(current_user.checked_terms_and_conditions).to eq(true)
     end
     # rubocop:enable RSpec/ExampleLength
   end

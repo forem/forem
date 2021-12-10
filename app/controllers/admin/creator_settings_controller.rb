@@ -9,6 +9,8 @@ module Admin
         public: ::Settings::UserExperience.public,
         invite_only_mode: ::Settings::Authentication.invite_only_mode,
         primary_brand_color_hex: ::Settings::UserExperience.primary_brand_color_hex,
+        checked_code_of_conduct: current_user.checked_code_of_conduct,
+        checked_terms_and_conditions: current_user.checked_terms_and_conditions,
       )
       @max_file_size = LogoUploader::MAX_FILE_SIZE
       @logo_allowed_types = (LogoUploader::CONTENT_TYPE_ALLOWLIST +
@@ -19,13 +21,14 @@ module Admin
       extra_authorization
 
       @creator_settings_form = CreatorSettingsForm.new(settings_params)
+      current_user.update!(
+        checked_code_of_conduct: @creator_settings_form.checked_code_of_conduct,
+        checked_terms_and_conditions: @creator_settings_form.checked_terms_and_conditions,
+      )
       @creator_settings_form.save
+
       if @creator_settings_form.success
-        current_user.update!(
-          saw_onboarding: true,
-          checked_code_of_conduct: @creator_settings_form.checked_code_of_conduct,
-          checked_terms_and_conditions: @creator_settings_form.checked_terms_and_conditions,
-        )
+        current_user.update!(saw_onboarding: true)
         redirect_to root_path
       else
         flash[:error] = @creator_settings_form.errors.full_messages
