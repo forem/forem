@@ -102,6 +102,8 @@ export default class ConfigController extends Controller {
 
   async updateConfigurationSettings(event) {
     event.preventDefault();
+    let errored = false;
+
     try {
       const body = new FormData(event.target);
       const response = await fetch(event.target.action, {
@@ -119,7 +121,27 @@ export default class ConfigController extends Controller {
 
       displaySnackbar(outcome.message ?? outcome.error);
     } catch (err) {
+      errored = true;
       displaySnackbar(err.message);
+    } finally {
+      // Only update the site logo in the header if the new logo is uploaded successfully.
+      if (!errored) {
+        this.updateHeaderLogo(event.target);
+      }
+    }
+  }
+
+  updateHeaderLogo(form) {
+    if (form.elements.settings_general_logo) {
+      const previewLogo = document.querySelector(
+        '#logo-upload-preview .site-logo',
+      );
+
+      [...document.querySelectorAll('.site-logo')]
+        .filter((logo) => logo !== previewLogo)
+        .forEach((logo) => {
+          logo.src = previewLogo.src;
+        });
     }
   }
 

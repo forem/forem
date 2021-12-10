@@ -6,15 +6,31 @@ module Admin
       SPECIAL_PARAMS_TO_ADD = %w[
         credit_prices_in_cents
         meta_keywords
+        logo
       ].freeze
 
       def create
-        result = ::Settings::General::Upsert.call(settings_params)
+        if settings_params[:logo].present?
+          logo_uploader = upload_logo(settings_params[:logo])
+          ::Settings::General.original_logo = logo_uploader.url
+          ::Settings::General.resized_logo = logo_uploader.resized_logo.url
+        end
+
+        # The logo param is excluded because it needs to be handled by the logo uploader
+        # Including it results in a NoMethodError - undefined method `strip'
+        # for #<ActionDispatch::Http::UploadedFile:0x00007f9e6d85d7a8
+        result = ::Settings::General::Upsert.call(settings_params.except(:logo))
         if result.success?
           Audit::Logger.log(:internal, current_user, params.dup)
           render json: { message: "Successfully updated settings." }, status: :ok
         else
           render json: { error: result.errors.to_sentence }, status: :unprocessable_entity
+        end
+      end
+
+      def upload_logo(image)
+        LogoUploader.new.tap do |uploader|
+          uploader.store!(image)
         end
       end
 
