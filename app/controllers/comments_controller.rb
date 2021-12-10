@@ -50,7 +50,7 @@ class CommentsController < ApplicationController
     @comment.user_id = current_user.id
 
     authorize @comment
-    permit_commentor
+    permit_commenter
 
     if @comment.save
       checked_code_of_conduct = params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
@@ -106,7 +106,7 @@ class CommentsController < ApplicationController
     @comment.user_id = moderator.id
     @comment.body_markdown = response_template.content
     authorize @comment
-    permit_commentor
+    permit_commenter
 
     if @comment.save
       Notification.send_new_comment_notifications_without_delay(@comment)
@@ -312,7 +312,7 @@ class CommentsController < ApplicationController
     end
   end
 
-  def permit_commentor
+  def permit_commenter
     return unless user_blocked?
 
     raise ModerationUnauthorizedError, "Not allowed due to moderation action"

@@ -192,6 +192,7 @@ en:
         other: is the wrong length (should be %{count} characters)
   time:
     formats:
+      json: "%b %e, %Y"
       comment: "%B %d, %Y"
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"

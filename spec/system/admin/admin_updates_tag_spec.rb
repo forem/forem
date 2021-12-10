@@ -5,7 +5,7 @@ RSpec.describe "Admin updates a tag", type: :system do
   let(:bg_color_hex) { "#000000" }
   let(:text_color_hex) { "#ffffff" }
 
-  context "when no colors have been choosen for the tag" do
+  context "when no colors have been chosen for the tag" do
     let(:tag) { create(:tag) }
 
     before do
@@ -13,7 +13,7 @@ RSpec.describe "Admin updates a tag", type: :system do
       visit edit_admin_tag_path(tag.id)
     end
 
-    it "allows an Admin to succesfully update a tag", :aggregate_failures do
+    it "allows an Admin to successfully update a tag", :aggregate_failures do
       visit edit_admin_tag_path(tag.id)
       expect(page).to have_content("Edit details")
       check "Supported"
@@ -39,7 +39,7 @@ RSpec.describe "Admin updates a tag", type: :system do
     end
   end
 
-  context "when colors have already been choosen for the tag" do
+  context "when colors have already been chosen for the tag" do
     let(:tag) { create(:tag, bg_color_hex: "#0000ff", text_color_hex: "#ff0000") }
 
     before do

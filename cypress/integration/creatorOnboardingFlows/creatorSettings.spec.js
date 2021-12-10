@@ -86,7 +86,7 @@ describe('Creator Settings Page', () => {
   });
 
   context('color contrast ratios', () => {
-    it('should show an error when the constrast ratio of a brand color is too low', () => {
+    it('should show an error when the contrast ratio of a brand color is too low', () => {
       const lowContrastColor = '#a6e8a6';
 
       cy.findByLabelText(/^Brand color/)
@@ -99,7 +99,7 @@ describe('Creator Settings Page', () => {
       ).should('be.visible');
     });
 
-    it('should not show an error when the constrast ratio of a brand color is good', () => {
+    it('should not show an error when the contrast ratio of a brand color is good', () => {
       const adequateContrastColor = '#25544b';
 
       cy.findByLabelText(/^Brand color/)

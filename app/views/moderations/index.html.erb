@@ -4,7 +4,7 @@
 
 <div id="moderation-page" aria-hidden="true"></div>
 
-<% if current_user&.trusted %>
+<% if current_user&.trusted? %>
   <div class="crayons-layout crayons-layout--2-cols" id="mod-center">
     <%= render "moderations/mod_sidebar_left" %>
     <main class="mod-index-container articles-list crayons-layout__content">

@@ -15,19 +15,15 @@ export default {
     variant: {
       control: {
         type: 'select',
-        options: ['default', 'branded'],
+        options: {
+          default: undefined,
+          branded: 'branded',
+        },
       },
       description:
         'There are two available variants (styles) to pick from: _default_ and _branded_. The primary difference is color: _default_ uses grey color and _branded_ uses accent color.',
       table: {
         defaultValue: { summary: 'default' },
-      },
-    },
-    rounded: {
-      description:
-        'By enabling this setting you can turn all corners of the CTA to be fully rounded. We usually use it **only** for CTAs containing **icon without label**.',
-      table: {
-        defaultValue: { summary: false },
       },
     },
   },
@@ -36,8 +32,6 @@ export default {
 export const Default = (args) => <CTA {...args} />;
 Default.args = {
   children: 'Call to action',
-  variant: 'default',
-  rounded: false,
 };
 
 export const Branded = (args) => <CTA {...args} />;

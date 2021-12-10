@@ -109,9 +109,6 @@
   --footer-link-color-hover: var(--base-100);
 
   // Links
-  --link-color: var(--base-90);
-  --link-color-hover: var(--accent-brand-lighter);
-  --link-bg-hover: var(--base-a5);
   --link-bg-hover-alt: var(--base-inverted);
   --link-brand-color: #17a1f6;
   --link-color-current: var(--base-100);
@@ -240,9 +237,40 @@
   // Buttons /////////////////////////////////////
   ////////////////////////////////////////////////
 
+  // Buttons: Default
+  --btn-color-hover: var(--accent-brand-lighter);
+
   // Buttons: Primary
   --btn-primary-bg-hover: var(--accent-brand-lighter);
 
   // Buttons: Primary Destructive
   --btn-primary-destructive-bg-hover: var(--accent-danger-lighter);
+
+  ////////////////////////////////////////////////
+  // Links ///////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Links: Default
+  --link-color-hover: var(--accent-brand-lighter);
+
+  // Links: Branded
+  --link-branded-color-hover: var(--accent-brand-lighter);
+
+  ////////////////////////////////////////////////
+  // CTAs ////////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // CTAs: Default
+  --cta-color-hover: var(--accent-brand-lighter);
+  --cta-border-hover: var(--accent-brand-lighter);
+
+  // CTAs: Branded
+  --cta-branded-bg-hover: var(--accent-brand);
+  --cta-branded-border: var(--accent-brand);
+  --cta-branded-border-hover: var(--accent-brand-lighter);
+
+  ////////////////////////////////////////////////
+  // Utilities ///////////////////////////////////
+  ////////////////////////////////////////////////
+  --focus: var(--accent-brand-lighter);
 }

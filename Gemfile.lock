@@ -123,7 +123,7 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindex (0.8.1)
-    blazer (2.4.7)
+    blazer (2.4.8)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
@@ -164,7 +164,7 @@ GEM
       activesupport (>= 3.2.0)
       carrierwave
       fastimage
-    chartkick (4.0.5)
+    chartkick (4.1.2)
     childprocess (4.1.0)
     cloudinary (1.21.0)
       aws_cf_signer
@@ -868,7 +868,7 @@ GEM
     vault (0.16.0)
       aws-sigv4
     vcr (6.0.0)
-    view_component (2.45.0)
+    view_component (2.46.0)
       activesupport (>= 5.0.0, < 8.0)
       method_source (~> 1.0)
     virtus (1.0.5)
@@ -928,7 +928,7 @@ DEPENDENCIES
   amazing_print (~> 1.4)
   ancestry (~> 4.1)
   better_errors (~> 2.9)
-  blazer (~> 2.4.7)
+  blazer (~> 2.4.8)
   bootsnap (>= 1.1.0)
   brakeman (~> 5.1)
   bullet (~> 6.1)
@@ -1067,7 +1067,7 @@ DEPENDENCIES
   validate_url (~> 1.0)
   vault (~> 0.16)
   vcr (~> 6.0)
-  view_component (~> 2.45)
+  view_component (~> 2.46)
   wcag_color_contrast (~> 0.1)
   web-console (~> 4.2)
   webdrivers (~> 5.0)

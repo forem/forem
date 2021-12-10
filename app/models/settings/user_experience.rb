@@ -1,5 +1,5 @@
 module Settings
-  # Basic UX settings that can be overriden by individual user preferences.
+  # Basic UX settings that can be overridden by individual user preferences.
   class UserExperience < Base
     self.table_name = :settings_user_experiences
 

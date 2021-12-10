@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Settings::UserExperience do
   describe "validating hex string format" do
-    it "allows 3 chacter hex strings" do
+    it "allows 3 character hex strings" do
       expect do
         described_class.primary_brand_color_hex = "#000"
       end.not_to raise_error

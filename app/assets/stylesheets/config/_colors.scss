@@ -116,9 +116,6 @@
   --footer-link-color-hover: var(--base-100);
 
   // Links
-  --link-color: var(--base-90);
-  --link-color-hover: var(--accent-brand-darker);
-  --link-bg-hover: var(--base-a5);
   --link-bg-hover-alt: var(--base-inverted);
   --link-brand-color: var(--accent-brand);
   --link-color-current: var(--base-100);
@@ -253,9 +250,12 @@
 
   // Buttons: Default
   --btn-bg: transparent;
-  --btn-bg-hover: var(--base-20);
+  --btn-bg-hover: var(--accent-brand-a10);
   --btn-color: var(--base-80);
-  --btn-color-hover: var(--base-100);
+  --btn-color-hover: var(--accent-brand-darker);
+
+  --btn-current-bg: var(--base-20);
+  --btn-current-color: var(--base-100);
 
   // Buttons: Default Destructive
   --btn-destructive-bg: transparent;
@@ -274,4 +274,49 @@
   --btn-primary-destructive-bg-hover: var(--accent-danger-darker);
   --btn-primary-destructive-color: var(--base-inverted);
   --btn-primary-destructive-color-hover: var(--base-inverted);
+
+  ////////////////////////////////////////////////
+  // Links ///////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Links: Default
+  --link-bg: transparent;
+  --link-bg-hover: var(--accent-brand-a10);
+  --link-color: var(--base-80);
+  --link-color-hover: var(--accent-brand-darker);
+
+  --link-current-bg: var(--base-20);
+  --link-current-color: var(--base-100);
+
+  // Links: Branded
+  --link-branded-bg: transparent;
+  --link-branded-bg-hover: var(--accent-brand-a10);
+  --link-branded-color: var(--accent-brand);
+  --link-branded-color-hover: var(--accent-brand-darker);
+
+  ////////////////////////////////////////////////
+  // CTAs ////////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // CTAs: Default
+  --cta-bg: transparent;
+  --cta-bg-hover: var(--accent-brand-a10);
+  --cta-color: var(--base-80);
+  --cta-color-hover: var(--accent-brand-darker);
+  --cta-border: var(--base-60);
+  --cta-border-hover: var(--accent-brand-darker);
+
+  // CTAs: Branded
+  --cta-branded-bg: transparent;
+  --cta-branded-bg-hover: var(--accent-brand);
+  --cta-branded-color: var(--accent-brand);
+  --cta-branded-color-hover: var(--base-inverted);
+  --cta-branded-border: var(--accent-brand);
+  --cta-branded-border-hover: var(--accent-brand-darker);
+
+  ////////////////////////////////////////////////
+  // Utilities ///////////////////////////////////
+  ////////////////////////////////////////////////
+
+  --focus: var(--accent-brand);
 }

@@ -237,13 +237,6 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
       end
 
-      xit "doesn't display low-score posts" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:articles_require_approval).and_return(true)
-        get "/"
-        expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
-      end
-
       xit "doesn't display unapproved posts" do
         allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
         allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")

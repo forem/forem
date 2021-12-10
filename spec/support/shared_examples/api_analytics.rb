@@ -86,7 +86,7 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     end
   end
 
-  context "when viewing your own organizaiton's single article's analytics" do
+  context "when viewing your own organization's single article's analytics" do
     it "responds with status 200 OK" do
       org_param = "&organization_id=#{org_article.organization.id}"
 

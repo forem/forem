@@ -21,7 +21,7 @@ RSpec.describe Podcasts::GetMediaUrl, type: :service do
     expect(result.url).to eq(url)
   end
 
-  it "https, unrechable" do
+  it "https, unreachable" do
     stub_request(:head, https_url).to_return(status: 404)
     result = described_class.call(https_url)
     expect(result.https).to be true
