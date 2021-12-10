@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "/creator_settings/new", type: :request do
-  let!(:creator) { create(:user, :creator) }
+  let!(:current_user) { create(:user, :creator) }
   let!(:non_admin_user) { create(:user) }
   let(:params) do
     { creator_settings_form:
@@ -22,7 +22,7 @@ RSpec.describe "/creator_settings/new", type: :request do
 
   describe "GET /admin/creator_settings/new" do
     before do
-      sign_in creator
+      sign_in current_user
       get new_admin_creator_setting_path
     end
 
@@ -50,17 +50,17 @@ RSpec.describe "/creator_settings/new", type: :request do
 
     describe "POST /admin/creator_settings/new" do
       before do
-        sign_in creator
+        sign_in current_user
         get new_admin_creator_setting_path
       end
 
       it "allows a creator to successfully fill out the creator setup form", :aggregate_failures do
         post admin_creator_settings_path, params: params
-        expect(creator.saw_onboarding).to eq(true)
-        expect(creator.checked_code_of_conduct).to eq(true)
-        expect(creator.checked_terms_and_conditions).to eq(true)
-        # we redirect immadiately on success
-        expect(response).to have_http_status(:found)
+
+        expect(current_user.saw_onboarding).to eq(true)
+        expect(current_user.checked_code_of_conduct).to eq(true)
+        expect(current_user.checked_terms_and_conditions).to eq(true)
+        expect(response).to redirect_to(:root).and have_http_status(:found)
       end
     end
   end
