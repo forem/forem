@@ -723,7 +723,7 @@ var instantClick
   });
 
   Honeybadger.beforeNotify(function(notice) {
-    if (/MtPopUpList/.test(notice.message)) { return false; }
+    return !/MtPopUpList/.test(notice.message);
   });
 
 // INITIALIZE AHOY TRACKING
