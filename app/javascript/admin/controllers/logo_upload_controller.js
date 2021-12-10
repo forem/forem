@@ -43,10 +43,14 @@ export class LogoUploadController extends Controller {
             target: { width, height },
           } = event;
 
-          this.previewLogoTarget.replaceChild(
-            image,
-            this.previewLogoTarget.firstElementChild,
-          );
+          if (this.previewLogoTarget.firstElementChild) {
+            this.previewLogoTarget.replaceChild(
+              image,
+              this.previewLogoTarget.firstElementChild,
+            );
+          } else {
+            this.previewLogoTarget.appendChild(image);
+          }
 
           const maxLogoPreviewWidth = parseInt(
             getComputedStyle(image).getPropertyValue('--max-width'),
