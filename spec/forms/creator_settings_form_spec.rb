@@ -39,7 +39,6 @@ RSpec.describe CreatorSettingsForm, type: :model do
       # NOTE: override the profile migration hack from rails_helper.rb
       # TODO: remove this once we remove it in rails_helper.rb
       allow(Settings::UserExperience).to receive(:public).and_call_original
-
       creator_settings_form = described_class.new(
         checked_code_of_conduct: true,
         checked_terms_and_conditions: true,
