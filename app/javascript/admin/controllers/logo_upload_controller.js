@@ -45,7 +45,7 @@ export class LogoUploadController extends Controller {
 
           this.previewLogoTarget.replaceChild(
             image,
-            this.previewLogoTarget.firstChild,
+            this.previewLogoTarget.firstElementChild,
           );
 
           const maxLogoPreviewWidth = parseInt(
