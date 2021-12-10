@@ -475,7 +475,9 @@ function initializePodcastPlayback() {
 
   function handlePodcastMessages(event) {
     const message = JSON.parse(event.detail);
-    if (message.namespace !== 'podcast') { return }
+    if (message.namespace !== 'podcast') {
+      return;
+    }
 
     var currentState = currentAudioState();
     switch (message.action) {
@@ -506,7 +508,7 @@ function initializePodcastPlayback() {
     if (deviceType !== 'web') {
       Runtime.podcastMessage = (msg) => {
         window.ForemMobile.injectNativeMessage('podcast', msg);
-      }
+      };
     }
   }
 

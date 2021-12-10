@@ -593,10 +593,6 @@ class User < ApplicationRecord
 
     self.old_old_username = old_username
     self.old_username = username_was
-    articles.find_each do |article|
-      article.path = article.path.gsub(username_was, username)
-      article.save
-    end
   end
 
   def bust_cache

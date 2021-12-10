@@ -1,10 +1,10 @@
- <div class="crayons-field mt-6 align-left" data-controller="logo-upload">
-  <%= label_tag :logo, class: "crayons-field__label" do %>
+<div class="crayons-field mt-6 align-left" data-controller="logo-upload">
+  <%= f.label :logo, class: "crayons-field__label" do %>
     Logo
     <p id="logo-subtitle" class="crayons-field__description">Your logo will display in the upper left hand corner of your Forem. Upload a PNG or JPEG file.</p>
   <% end %>
   <div class="flex flex-1 gap-4">
-    <%= file_field_tag :logo, accept: allowed_types.to_s, aria_describedby: "logo-subtitle", data: { "max-file-size-mb": max_file_size.to_s, action: "change->logo-upload#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
+    <%= f.file_field :logo, accept: allowed_types.to_s, aria_describedby: "logo-subtitle", data: { "max-file-size-mb": max_file_size.to_s, action: "change->logo-upload#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
     <div data-logo-upload-target="previewLogo">
     </div>
   </div>

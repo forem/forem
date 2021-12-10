@@ -4,6 +4,14 @@ module Admin
                         invite_only_mode logo primary_brand_color_hex public].freeze
 
     def new
+      @creator_settings_form = CreatorSettingsForm.new(
+        community_name: ::Settings::Community.community_name,
+        public: ::Settings::UserExperience.public,
+        invite_only_mode: ::Settings::Authentication.invite_only_mode,
+        primary_brand_color_hex: ::Settings::UserExperience.primary_brand_color_hex,
+        checked_code_of_conduct: current_user.checked_code_of_conduct,
+        checked_terms_and_conditions: current_user.checked_terms_and_conditions,
+      )
       @max_file_size = LogoUploader::MAX_FILE_SIZE
       @logo_allowed_types = (LogoUploader::CONTENT_TYPE_ALLOWLIST +
         LogoUploader::EXTENSION_ALLOWLIST.map { |extension| ".#{extension}" }).join(",")
@@ -11,27 +19,21 @@ module Admin
 
     def create
       extra_authorization
-      ActiveRecord::Base.transaction do
-        ::Settings::Community.community_name = settings_params[:community_name]
-        ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]
-        ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]
-        ::Settings::UserExperience.public = settings_params[:public]
 
-        if settings_params[:logo]
-          logo_uploader = upload_logo(settings_params[:logo])
-          ::Settings::General.original_logo = logo_uploader.url
-          ::Settings::General.resized_logo = logo_uploader.resized_logo.url
-        end
-      end
+      @creator_settings_form = CreatorSettingsForm.new(settings_params)
       current_user.update!(
-        saw_onboarding: true,
-        checked_code_of_conduct: settings_params[:checked_code_of_conduct],
-        checked_terms_and_conditions: settings_params[:checked_terms_and_conditions],
+        checked_code_of_conduct: @creator_settings_form.checked_code_of_conduct,
+        checked_terms_and_conditions: @creator_settings_form.checked_terms_and_conditions,
       )
-      redirect_to root_path
-    rescue StandardError => e
-      flash.now[:error] = e.message
-      render new_admin_creator_setting_path
+      @creator_settings_form.save
+
+      if @creator_settings_form.success
+        current_user.update!(saw_onboarding: true)
+        redirect_to root_path
+      else
+        flash[:error] = @creator_settings_form.errors.full_messages
+        redirect_to new_admin_creator_setting_path
+      end
     end
 
     private
@@ -41,13 +43,7 @@ module Admin
     end
 
     def settings_params
-      params.permit(ALLOWED_PARAMS)
-    end
-
-    def upload_logo(image)
-      LogoUploader.new.tap do |uploader|
-        uploader.store!(image)
-      end
+      params.require(:creator_settings_form).permit(ALLOWED_PARAMS)
     end
   end
 end
