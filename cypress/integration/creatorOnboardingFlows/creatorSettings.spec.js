@@ -161,6 +161,7 @@ describe('Creator Settings Page', () => {
       );
 
       cy.findByRole('textbox', { name: /community name/i })
+        .clear()
         .focus()
         .type('Climbing Life')
         .should('have.css', 'border-color', rgbColor);

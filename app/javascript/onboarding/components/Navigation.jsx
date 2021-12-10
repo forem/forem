@@ -52,15 +52,8 @@ export class Navigation extends Component {
   }
 
   render() {
-    const {
-      next,
-      prev,
-      hideNext,
-      hidePrev,
-      disabled,
-      canSkip,
-      className,
-    } = this.props;
+    const { next, prev, hideNext, hidePrev, disabled, canSkip, className } =
+      this.props;
     return (
       <nav
         class={`onboarding-navigation${
