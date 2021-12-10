@@ -9,7 +9,7 @@ class LiquidTagPolicy
   end
 
   def initialize?
-    return true unless record.class.const_defined?("VALID_ROLES")
+    return true unless record.user_authorization_method_name
     raise Pundit::NotAuthorizedError, "No user found" unless user
     # Manually raise error to use a custom error message
     raise Pundit::NotAuthorizedError, "User is not permitted to use this liquid tag" unless user_allowed_to_use_tag?
@@ -20,11 +20,6 @@ class LiquidTagPolicy
   private
 
   def user_allowed_to_use_tag?
-    record.class::VALID_ROLES.any? { |valid_role| user_has_valid_role?(valid_role) }
-  end
-
-  def user_has_valid_role?(valid_role)
-    # Splat array for single resource roles
-    user.has_role?(*Array(valid_role))
+    user.public_send(record.user_authorization_method_name)
   end
 end

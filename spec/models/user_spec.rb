@@ -45,6 +45,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to delegate_method(:creator?).to(:authorizer) }
     it { is_expected.to delegate_method(:has_trusted_role?).to(:authorizer) }
     it { is_expected.to delegate_method(:podcast_admin_for?).to(:authorizer) }
+    it { is_expected.to delegate_method(:restricted_liquid_tag_available?).to(:authorizer) }
     it { is_expected.to delegate_method(:restricted_liquid_tag_for?).to(:authorizer) }
     it { is_expected.to delegate_method(:single_resource_admin_for?).to(:authorizer) }
     it { is_expected.to delegate_method(:super_admin?).to(:authorizer) }
@@ -58,25 +59,6 @@ RSpec.describe User, type: :model do
     it { is_expected.to delegate_method(:warned).to(:authorizer) }
     it { is_expected.to delegate_method(:warned?).to(:authorizer) }
     it { is_expected.to delegate_method(:workshop_eligible?).to(:authorizer) }
-  end
-
-  describe "#has_role?" do
-    it "is deprecated" do
-      allow(ActiveSupport::Deprecation).to receive(:warn).with("User#has_role?")
-      described_class.new.has_role?(:wonka)
-      expect(ActiveSupport::Deprecation).to have_received(:warn).with("User#has_role?")
-    end
-  end
-
-  describe "#has_any_role?" do
-    it "is deprecated" do
-      allow(ActiveSupport::Deprecation).to receive(:warn).with("User#has_any_role?")
-      # Due to an implementation detail in rolify, I'm using a
-      # persisted instance of user.  See:
-      # https://github.com/RolifyCommunity/rolify/blob/61d90f7ccae569fe18e54a7776e5d34270380898/lib/rolify/role.rb#L69-L75
-      user.has_any_role?(:wonka)
-      expect(ActiveSupport::Deprecation).to have_received(:warn).with("User#has_any_role?")
-    end
   end
 
   describe "validations" do

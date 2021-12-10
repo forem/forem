@@ -47,8 +47,14 @@ module Authorizer
       has_role?(:admin)
     end
 
+    def administrative_access_to?(resource:, name: :single_resource_admin)
+      roles = ANY_ADMIN_ROLES.clone
+      roles += [{ name: name, resource: resource }] if resource
+      has_any_role?(*roles)
+    end
+
     def any_admin?
-      @any_admin ||= user.roles.where(name: ANY_ADMIN_ROLES).any?
+      has_any_role?(*ANY_ADMIN_ROLES)
     end
 
     def auditable?
@@ -92,6 +98,15 @@ module Authorizer
       has_role?(:single_resource_admin, resource)
     end
 
+    def restricted_liquid_tag_available?
+      administrative_access_to?(name: :restricted_liquid_tag, resource: LiquidTags::UserSubscriptionTag)
+    end
+
+    # @note This is of "narrower" permissions than
+    #       `#restricted_liquid_tag_available?`, as it doesn't include
+    #       administrators.
+    #
+    # @todo Remove this?
     def restricted_liquid_tag_for?(liquid_tag)
       has_role?(:restricted_liquid_tag, liquid_tag)
     end
@@ -109,13 +124,13 @@ module Authorizer
     end
 
     def tag_moderator?(tag: nil)
-      return user.roles.where(name: "tag_moderator").any? unless tag
+      return has_role?(:tag_moderator) unless tag
 
       has_role?(:tag_moderator, tag)
     end
 
     def tech_admin?
-      has_role?(:tech_admin) || has_role?(:super_admin)
+      has_any_role?(:tech_admin, :super_admin)
     end
 
     def trusted
@@ -151,11 +166,11 @@ module Authorizer
     private
 
     def has_role?(*args)
-      user.__send__(:__has_role_without_warning?, *args)
+      user.__send__(:has_role?, *args)
     end
 
     def has_any_role?(*args)
-      user.__send__(:__has_any_role_without_warning?, *args)
+      user.__send__(:has_any_role?, *args)
     end
   end
 

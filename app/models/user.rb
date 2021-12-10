@@ -22,7 +22,7 @@ class User < ApplicationRecord
   end
 
   include StringAttributeCleaner.for(:email)
-  ANY_ADMIN_ROLES = %i[admin super_admin].freeze
+
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
   MESSAGES = {
@@ -357,28 +357,14 @@ class User < ApplicationRecord
   # these method calls in a single location so we can begin to analyze
   # the behavior.
 
-  alias __has_role_without_warning? has_role?
-  private :__has_role_without_warning?
-
   # @api private
   #
   # The method originally comes from the Rollify gem.  Please don't
   # call it from controllers or views.  Favor `user.tech_admin?` over
   # `user.has_role?(:tech_admin)`.
   #
-  # @see AuthorizationLayer for further discussion.
-  #
-  # @note Calling this method will issue a deprecation warning, which
-  #       is a bit of a misnomer.  [@jeremyf] I don't plan to remove
-  #       this method, I simply want to discourage it's public usage.
-  #       I'm contemplating "privatizing" this method.
-  def has_role?(*args)
-    ActiveSupport::Deprecation.warn("User#has_role?")
-    __has_role_without_warning?(*args)
-  end
-
-  alias __has_any_role_without_warning? has_any_role?
-  private :__has_any_role_without_warning?
+  # @see Authorizer for further discussion.
+  private :has_role?
 
   ##
   # @api private
@@ -387,16 +373,8 @@ class User < ApplicationRecord
   # call it from controllers or views.  Favor `user.admin?` over
   # `user.has_any_role?(:admin)`.
   #
-  # @see AuthorizationLayer for further discussion.
-  #
-  # @note Calling this method will issue a deprecation warning, which
-  #       is a bit of a misnomer.  [@jeremyf] I don't plan to remove
-  #       this method, I simply want to discourage it's public usage.
-  #       I'm contemplating "privatizing" this method.
-  def has_any_role?(*args)
-    ActiveSupport::Deprecation.warn("User#has_any_role?")
-    __has_any_role_without_warning?(*args)
-  end
+  # @see Authorizer for further discussion.
+  private :has_any_role?
 
   ##
   # @api private
@@ -416,6 +394,7 @@ class User < ApplicationRecord
   # calls to user.<role question>.
   delegate(
     :admin?,
+    :administrative_access_to?,
     :any_admin?,
     :auditable?,
     :banished?,
@@ -423,6 +402,7 @@ class User < ApplicationRecord
     :creator?,
     :has_trusted_role?,
     :podcast_admin_for?,
+    :restricted_liquid_tag_available?,
     :restricted_liquid_tag_for?,
     :single_resource_admin_for?,
     :super_admin?,

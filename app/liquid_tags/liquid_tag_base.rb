@@ -1,6 +1,15 @@
 class LiquidTagBase < Liquid::Tag
-  def self.script
-    ""
+  # The method name to send the user to ask whether or not they
+  # have access to the given liquid tag.
+  #
+  # @see LiquidTagPolicy
+  #
+  # @note My preference would be to use `class_attribute` as it keeps
+  #       things tidier, but that's not a hard preference.
+  #
+  # @note Should we verify that the user responds to this given method?
+  def self.user_authorization_method_name
+    nil
   end
 
   def initialize(_tag_name, _content, parse_context)
@@ -13,6 +22,16 @@ class LiquidTagBase < Liquid::Tag
       :initialize?,
       policy_class: LiquidTagPolicy,
     )
+  end
+
+  # A method to help collaborators not need to reach into the class
+  # implementation details.
+  def user_authorization_method_name
+    self.class.user_authorization_method_name
+  end
+
+  def self.script
+    ""
   end
 
   private

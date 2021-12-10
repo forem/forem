@@ -1,5 +1,6 @@
 require "rails_helper"
 
+# rubocop:disable RSpec/PredicateMatcher
 RSpec.describe Authorizer, type: :policy do
   subject(:authorizer) { described_class.for(user: user) }
 
@@ -18,10 +19,57 @@ RSpec.describe Authorizer, type: :policy do
   end
 
   describe "#any_admin?" do
+    # This test che
     it "queries the user's roles" do
       # I want to test `expect(authorizer.admin?)` but our rubocop
       # version squaks.
-      expect(authorizer).not_to be_any_admin
+      expect(authorizer.admin?).to be_falsey
+    end
+  end
+
+  describe "#administrative_access_to?" do
+    context "when not an admin or super admin and not given a resource" do
+      let(:user) { build(:user) }
+
+      it "is false" do
+        expect(authorizer.administrative_access_to?(resource: nil)).to be_falsey
+      end
+    end
+
+    context "when an admin and not given a resource" do
+      let(:user) { build(:user, :admin) }
+
+      it "is false" do
+        expect(authorizer.administrative_access_to?(resource: nil)).to be_truthy
+      end
+    end
+
+    context "when a super_admin and not given a resource" do
+      let(:user) { build(:user, :super_admin) }
+
+      it "is false" do
+        expect(authorizer.administrative_access_to?(resource: nil)).to be_truthy
+      end
+    end
+
+    context "when given a resource and the user is assigned singular administration" do
+      before do
+        user.add_role(:single_resource_admin, Article)
+      end
+
+      it "is true" do
+        expect(authorizer.administrative_access_to?(resource: Article)).to be_truthy
+      end
+    end
+
+    context "when given a resource and the user is assigned singular administration to another" do
+      before do
+        user.add_role(:single_resource_admin, Article)
+      end
+
+      it "is true" do
+        expect(authorizer.administrative_access_to?(resource: Comment)).to be_falsey
+      end
     end
   end
 
@@ -40,3 +88,4 @@ RSpec.describe Authorizer, type: :policy do
     end
   end
 end
+# rubocop:enable RSpec/PredicateMatcher
