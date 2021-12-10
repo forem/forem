@@ -191,8 +191,8 @@ RSpec.describe "Admin::Users", type: :request do
                params: { user_id: user.id, role: :single_resource_admin, resource_type: Comment }
       end.to change(user.roles, :count).by(-1)
 
-      expect(user.has_role?(:single_resource_admin, Comment)).to be false
-      expect(user.has_role?(:single_resource_admin, Broadcast)).to be true
+      expect(user.single_resource_admin_for?(Comment)).to be false
+      expect(user.single_resource_admin_for?(Broadcast)).to be true
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
 

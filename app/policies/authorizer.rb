@@ -1,4 +1,30 @@
-module AuthorizationLayer
+##
+# This module is providing a "crease in the code" for refactoring.
+# The initial purpose is to help move away sending `has_role?`
+# messages to User records.  Prior to this refactor, there were calls
+# to `user.has_role?(:tech_admin)` and `user.tech_admin?`; this
+# created leaks in abstraction (see
+# Authorizer::RoleBasedQueries#admin? for an example).
+#
+# By moving towards a single entry point and communicating that
+# deprecation, the hope is to make the next conversation about roles
+# easier.
+module Authorizer
+  # @api private
+  #
+  # @note This method introduces some indirection, the idea being that
+  #       the `Authorizer::RoleBasedQueries` is a refactor to convey
+  #       deprecations and provide guidance on sending things through
+  #       a common method pattern (e.g. favor `user.tech_admin?` over
+  #       `user.has_role?(:tech_admin)`).
+  #
+  # @param user [User] the user of whom we're curious about their
+  #        attributes and how the imply permissions.
+  #
+  def self.for(user:)
+    RoleBasedQueries.new(user: user)
+  end
+
   # @deprecated
   #
   # @api private
@@ -9,21 +35,16 @@ module AuthorizationLayer
   # point for our work.
   #
   # @see https://github.com/forem/forem/issues/15624
-  class DeprecatedImpliedQueries
+  class RoleBasedQueries
     ANY_ADMIN_ROLES = %i[admin super_admin].freeze
 
-    ##
-    # @param user [User] the user of whom we're curious about their
-    #        attributes and how the imply permissions.
     def initialize(user:)
       @user = user
     end
     attr_reader :user
 
     def admin?
-      # Yes, this is correct!  For historical reasons `user.admin?`
-      # in fact asked the question `has_role?(:super_admin)`
-      has_role?(:super_admin)
+      has_role?(:admin)
     end
 
     def any_admin?
@@ -31,7 +52,11 @@ module AuthorizationLayer
     end
 
     def auditable?
-      trusted || tag_moderator? || any_admin?
+      trusted? || tag_moderator? || any_admin?
+    end
+
+    def banished?
+      user.username.starts_with?("spam_")
     end
 
     def comment_suspended?
@@ -40,10 +65,6 @@ module AuthorizationLayer
 
     def creator?
       has_role?(:creator)
-    end
-
-    def banished?
-      username.starts_with?("spam_")
     end
 
     # When you need to know if we trust the user, but don't want to
@@ -61,6 +82,18 @@ module AuthorizationLayer
     # @todo Review whether we can use trusted? or if we even need to cache things.
     def has_trusted_role?
       has_role?(:trusted)
+    end
+
+    def podcast_admin_for?(podcast)
+      has_role?(:podcast_admin, podcast)
+    end
+
+    def single_resource_admin_for?(resource)
+      has_role?(:single_resource_admin, resource)
+    end
+
+    def restricted_liquid_tag_for?(liquid_tag)
+      has_role?(:restricted_liquid_tag, liquid_tag)
     end
 
     def super_admin?
@@ -125,4 +158,6 @@ module AuthorizationLayer
       user.__send__(:__has_any_role_without_warning?, *args)
     end
   end
+
+  private_constant :RoleBasedQueries
 end

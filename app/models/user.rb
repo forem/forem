@@ -363,7 +363,8 @@ class User < ApplicationRecord
   # @api private
   #
   # The method originally comes from the Rollify gem.  Please don't
-  # call it from controllers or views.
+  # call it from controllers or views.  Favor `user.tech_admin?` over
+  # `user.has_role?(:tech_admin)`.
   #
   # @see AuthorizationLayer for further discussion.
   #
@@ -376,11 +377,15 @@ class User < ApplicationRecord
     __has_role_without_warning?(*args)
   end
 
+  alias __has_any_role_without_warning? has_any_role?
+  private :__has_any_role_without_warning?
+
   ##
   # @api private
   #
   # The method originally comes from the Rollify gem.  Please don't
-  # call it from controllers or views.
+  # call it from controllers or views.  Favor `user.admin?` over
+  # `user.has_any_role?(:admin)`.
   #
   # @see AuthorizationLayer for further discussion.
   #
@@ -393,9 +398,6 @@ class User < ApplicationRecord
     __has_any_role_without_warning?(*args)
   end
 
-  alias __has_any_role_without_warning? has_any_role?
-  private :__has_role_without_warning?
-
   ##
   # @api private
   #
@@ -403,7 +405,7 @@ class User < ApplicationRecord
   #
   # @see https://github.com/forem/forem/issues/15624 for more discussion.
   def authorizer
-    @authorizer ||= AuthorizationLayer::DeprecatedImpliedQueries.new(user: self)
+    @authorizer ||= Authorizer.for(user: self)
   end
 
   # My preference is to go with:
@@ -419,16 +421,21 @@ class User < ApplicationRecord
     :banished?,
     :comment_suspended?,
     :creator?,
+    :has_trusted_role?,
+    :podcast_admin_for?,
+    :restricted_liquid_tag_for?,
+    :single_resource_admin_for?,
+    :super_admin?,
     :support_admin?,
     :suspended?,
     :tag_moderator?,
     :tech_admin?,
-    :trusted, # Remove this method from the code-base
+    :trusted, # TODO: Remove this method from the code-base
     :trusted?,
     :vomitted_on?,
     :warned, # TODO: Remove this method from the code-base
-    :workshop_eligible?,
     :warned?,
+    :workshop_eligible?,
     to: :authorizer,
   )
   ##############################################################################

@@ -61,7 +61,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user_params: { note_for_current_role: "Upgrading to tech admin", user_status: "Tech Admin" },
     )
     expect(user.tech_admin?).to be true
-    expect(user.has_role?(:single_resource_admin, DataUpdateScript)).to be true
+    expect(user.single_resource_admin_for?(DataUpdateScript)).to be true
   end
 
   it "updates user to single resource admin" do
@@ -70,7 +70,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Resource Admin: Article" },
     )
-    expect(user.has_role?(:single_resource_admin, Article)).to be true
+    expect(user.single_resource_admin_for?(Article)).to be true
   end
 
   it "updates negative role to positive role" do
