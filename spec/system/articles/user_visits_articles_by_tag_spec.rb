@@ -68,10 +68,10 @@ RSpec.describe "User visits articles by tag", type: :system do
       within("header.spec__tag-header") { expect(page).to have_button(I18n.t("core.following")) }
     end
 
-    it "shows time buttons" do
+    it "shows top level sort options" do
       within("#on-page-nav-controls") do
-        expect(page).to have_link("Week", href: "/t/functional/top/week")
-        expect(page).to have_link("Infinity", href: "/t/functional/top/infinity")
+        expect(page).to have_link("Relevant", href: "/t/functional/")
+        expect(page).to have_link("Top", href: "/t/functional/top/week")
         expect(page).to have_link("Latest", href: "/t/functional/latest")
       end
     end

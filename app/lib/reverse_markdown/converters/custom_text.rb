@@ -13,7 +13,7 @@ module ReverseMarkdown
 
       def treat_empty(node)
         parent = node.parent.name.to_sym
-        if %i[ol ul].include?(parent) # Otherwise the identation is broken
+        if %i[ol ul].include?(parent) # Otherwise the indentation is broken
           ""
         elsif node.text == " " # Regular whitespace text node
           " "

@@ -5,7 +5,7 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
   let(:recent_user) { create(:user) }
   let(:older_user) { create(:user, created_at: 3.months.ago) }
   let(:trusted_user) { create(:user, :trusted) }
-  let(:vomitted_user) do
+  let(:vomited_user) do
     user = create(:user, created_at: 3.months.ago)
     create(:vomit_reaction, category: "vomit", reactable: user, user: trusted_user, status: "confirmed")
     user
@@ -48,8 +48,8 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
       end
 
       it "marks ReCaptcha as enabled when user with vomits is logged in" do
-        sign_in vomitted_user
-        expect(described_class.call(vomitted_user)).to be(true)
+        sign_in vomited_user
+        expect(described_class.call(vomited_user)).to be(true)
       end
 
       it "marks ReCaptcha as enabled when a suspended user is logged in" do

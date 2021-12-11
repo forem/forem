@@ -22,7 +22,7 @@ FactoryBot.define do
   end
 
   factory :vomit_reaction, class: "Reaction" do
-    user
+    user { create(:user, :trusted) }
     association :reactable, factory: :article
     category { "vomit" }
 

@@ -26,7 +26,7 @@ RSpec.describe Users::Update, type: :service do
     end.to change { profile.data.key?("removed") }.to(false)
   end
 
-  it "propagates changes to user", :agregate_failures do
+  it "propagates changes to user", :aggregate_failures do
     new_name = "Sloan Doe"
     described_class.call(user, profile: {}, user: { name: new_name })
     expect(profile.user.name).to eq new_name
@@ -62,6 +62,43 @@ RSpec.describe Users::Update, type: :service do
 
     expect(service.success?).to be false
     expect(service.errors_as_sentence).to eq "filename too long - the max is 250 characters."
+  end
+
+  context "when changing username" do
+    let(:new_username) { "#{user.username}_changed" }
+
+    it "sets old_username and old_old_username when username was changed" do
+      old_username = user.username
+      old_old_username = user.old_username
+      described_class.call(user, user: { username: new_username })
+      user.reload
+      expect(user.username).to eq(new_username)
+      expect(user.old_username).to eq(old_username)
+      expect(user.old_old_username).to eq(old_old_username)
+    end
+
+    it "changes user's articles path" do
+      article = create(:article, user: user)
+      old_path = article.path
+      sidekiq_perform_enqueued_jobs do
+        described_class.call(user, user: { username: new_username })
+      end
+      article.reload
+      expect(article.path).not_to eq(old_path)
+      expect(article.path).to eq("/#{new_username}/#{article.slug}")
+    end
+
+    # testing against gsub'ing username
+    it "sets the correct article path when its slug contains username" do
+      article = create(:article, user: user, slug: "#{user.username}-hello")
+      old_path = article.path
+      sidekiq_perform_enqueued_jobs do
+        described_class.call(user, user: { username: new_username })
+      end
+      article.reload
+      expect(article.path).not_to eq(old_path)
+      expect(article.path).to eq("/#{new_username}/#{article.slug}")
+    end
   end
 
   context "when conditionally resaving articles" do

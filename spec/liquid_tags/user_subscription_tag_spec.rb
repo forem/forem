@@ -63,7 +63,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       expect(page).to have_css("#user-subscription-confirmation-modal", visible: :visible)
     end
 
-    it "displays a sucess message when a subscription is created" do
+    it "displays a success message when a subscription is created" do
       expect(page).to have_css("#subscription-signed-out", visible: :hidden)
       expect(page).to have_css("#subscriber-apple-auth", visible: :hidden)
       expect(page).to have_css("#response-message", visible: :hidden)

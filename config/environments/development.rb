@@ -126,7 +126,7 @@ Rails.application.configure do
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
-    # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
+    # Suppress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
@@ -135,9 +135,9 @@ Rails.application.configure do
 
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?
-      message = "Data update scripts need to be run before you can start the application. " \
-                "Please run 'rails data_updates:run'"
-      raise message
+      Rails.application.load_tasks
+      puts "Running data updates..." # rubocop:disable Rails/Output
+      Rake::Task["data_updates:run"].invoke
     end
   end
 end

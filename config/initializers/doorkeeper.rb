@@ -30,7 +30,7 @@ Doorkeeper.configure do
     # Example implementation:
 
     if current_user
-      head :forbidden unless current_user.admin?
+      head :forbidden unless current_user.super_admin?
     else
       warden.authenticate!(scope: :user)
     end

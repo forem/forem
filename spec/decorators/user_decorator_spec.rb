@@ -109,7 +109,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with defaults" do
       expected_result = %W[
         light-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
+        trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -118,7 +118,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_font = "sans_serif"
       expected_result = %W[
         light-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
+        trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -127,7 +127,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_theme = "dark_theme"
       expected_result = %W[
         dark-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.setting.config_navbar}-header
+        trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -136,7 +136,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_navbar = "static"
       expected_result = %W[
         light-theme sans-serif-article-body
-        trusted-status-#{user.trusted} static-header
+        trusted-status-#{user.trusted?} static-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -167,30 +167,13 @@ RSpec.describe UserDecorator, type: :decorator do
     end
   end
 
-  describe "#stackbit_integration?" do
-    it "returns false by default" do
-      expect(user.decorate.stackbit_integration?).to be(false)
-    end
-
-    it "returns true if the user has access tokens" do
-      user.access_tokens.build
-      expect(user.decorate.stackbit_integration?).to be(true)
-    end
-  end
-
   describe "#considered_new?" do
-    before do
-      allow(Settings::RateLimit).to receive(:user_considered_new_days).and_return(3)
-    end
+    let(:decorated_user) { user.decorate }
 
-    it "returns true for new users" do
-      user.created_at = 1.day.ago
-      expect(user.decorate.considered_new?).to be(true)
-    end
-
-    it "returns false for new users" do
-      user.created_at = 1.year.ago
-      expect(user.decorate.considered_new?).to be(false)
+    it "delegates to Settings::RateLimit.considered_new?" do
+      allow(Settings::RateLimit).to receive(:user_considered_new?).with(user: decorated_user).and_return(true)
+      expect(decorated_user.considered_new?).to be(true)
+      expect(Settings::RateLimit).to have_received(:user_considered_new?).with(user: decorated_user)
     end
   end
 end

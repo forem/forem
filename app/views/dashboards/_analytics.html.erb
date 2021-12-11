@@ -2,22 +2,22 @@
 
 <div class="grid grid-cols-2 m:grid-cols-4 gap-2 m:gap-4 pt-3">
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
-    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@reactions_count, delimeter: ",") %></strong>
-    <span class="color-base-60 block fs-base">Total post reactions</span>
+    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@reactions_count, delimiter: ",") %></strong>
+    <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.reactions") %></span>
   </div>
 
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
-    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= num_views > 500 ? number_with_delimiter(num_views, delimeter: ",") : "< 500" %></strong>
-    <span class="color-base-60 block fs-base">Total post views</span>
+    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= num_views > 500 ? number_with_delimiter(num_views, delimiter: ",") : t("views.dashboard.summary.lt_500") %></strong>
+    <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.views") %></span>
   </div>
 
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
     <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= @user.listings.size %></strong>
-    <span class="color-base-60 block fs-base">Listings created</span>
+    <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.listings") %></span>
   </div>
 
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
     <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= @user.unspent_credits_count %></strong>
-    <span class="color-base-60 block fs-base">Credits available</span>
+    <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.credits") %></span>
   </div>
 </div>

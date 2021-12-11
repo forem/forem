@@ -67,7 +67,7 @@ class Organization < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
-  validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
+  validates :slug, unique_cross_model_slug: true, if: :slug_changed?
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -149,16 +149,5 @@ class Organization < ApplicationRecord
 
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
-  end
-
-  def unique_slug_including_users_and_podcasts
-    slug_taken = (
-      User.exists?(username: slug) ||
-      Podcast.exists?(slug: slug) ||
-      Page.exists?(slug: slug) ||
-      slug&.include?("sitemap-")
-    )
-
-    errors.add(:slug, "is taken.") if slug_taken
   end
 end

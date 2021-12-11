@@ -1,5 +1,5 @@
 module ApplicationHelper
-  # rubocop:disable Performance/OpenStruct
+  # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
   USER_COLORS = ["#19063A", "#dce9f3"].freeze
 
   DELETED_USER = OpenStruct.new(
@@ -11,7 +11,7 @@ module ApplicationHelper
     twitter_username: nil,
     github_username: nil,
   )
-  # rubocop:enable Performance/OpenStruct
+  # rubocop:enable Style/OpenStructUse, Performance/OpenStruct
 
   LARGE_USERBASE_THRESHOLD = 1000
 
@@ -313,5 +313,13 @@ module ApplicationHelper
     }
 
     link_to(label, tag_path(tag), options)
+  end
+
+  def creator_settings_form?
+    return unless FeatureFlag.enabled?(:creator_onboarding)
+    return unless User.with_role(:creator).any?
+
+    creator = User.with_role(:creator).first
+    !creator.checked_code_of_conduct && !creator.checked_terms_and_conditions
   end
 end

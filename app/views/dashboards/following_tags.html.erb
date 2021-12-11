@@ -1,11 +1,11 @@
-<% title("Dashboard - #{community_name}") %>
+<% title t("views.dashboard.meta.title", site: community_name) %>
 
 <div id="index-container"
   data-params="<%= params.to_json(only: %i[action per_page]) %>"
   data-which="following">
   <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
     <header class="crayons-page-header block">
-      <h1 class="crayons-title">Dashboard &raquo; Following tags</h1>
+      <h1 class="crayons-title"><%= t("views.dashboard.following_tags.heading") %></h1>
       <%= render "actions_mobile" %>
     </header>
     <div class="crayons-layout__sidebar-left">
@@ -16,8 +16,8 @@
         <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
 
         <div class="crayons-notice crayons-notice--info p-4 mx-3 s:mx-0 mb-3" aria-live="polite">
-            Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
-            <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
+            <%= t("views.dashboard.following_tags.adjust") %>
+            <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3"><%= t("views.dashboard.following_tags.default") %></span>
         </div>
         <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-3 m:px-0">
           <% negative_follow_shown_once = false %>
@@ -28,7 +28,7 @@
                 <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
                   <%= render_tag_link(tag.name) %>
                   <% if follow.explicit_points < 0 %>
-                    <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
+                    <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="<%= t("views.dashboard.following_tags.anti.title") %>"><%= t("views.dashboard.following_tags.anti.text") %></span>
                   <% end %>
                 </h3>
 
@@ -38,7 +38,8 @@
 
                 <%= fields(follow) do |f| %>
                   <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form", id: "follow_id_#{follow.followable}") %>
-                  <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form", "aria-label": "#{follow.followable} tag weight", id: "explicit_points_#{follow.followable}") %>
+                  <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form", "aria-label": t("views.dashboard.following_tags.number.aria_label", name: follow.followable),
+                                                         id: "explicit_points_#{follow.followable}") %>
                 <% end %>
               </div>
             <% end %>
@@ -46,10 +47,10 @@
         </div>
 
         <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-10 pt-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px" }, id: "follows_update_form" do |f| %>
-          <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
+          <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit"><%= t("views.dashboard.following_tags.update") %></button>
         <% end %>
       <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">You don't follow any tags yet...</div>
+        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center"><%= t("views.dashboard.following_tags.empty") %></div>
       <% end %>
       <%= render "sublist" %>
     </div>

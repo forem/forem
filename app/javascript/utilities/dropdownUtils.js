@@ -190,7 +190,7 @@ export const initializeDropdown = ({
     document.removeEventListener('click', clickOutsideListener);
   };
 
-  // Add the main trigger button toggle funcationality
+  // Add the main trigger button toggle functionality
   triggerButton.addEventListener('click', () => {
     if (
       document

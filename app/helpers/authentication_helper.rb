@@ -71,16 +71,27 @@ module AuthenticationHelper
     request.referer&.include?(new_user_registration_path)
   end
 
-  def display_social_login?
+  # Returns true when a social authentication provider should be displayed in
+  # `/enter` page. This method serves the need to comply with platform specific
+  # restrictions, such as:
+  # - Within mobile apps we must hide social auth providers unless SIWA is enabled
+  # - Forem authentication doesn't need to comply with the above (it's the exception)
+  def display_social_login?(provider_name = nil)
     return true if Authentication::Providers.enabled.include?(:apple)
     return true if request.user_agent.to_s.match?(/Android/i)
+    return true if provider_name == :forem && Authentication::Providers.enabled.include?(:forem)
 
     # Don't display (return false) if UserAgent includes ForemWebview - iOS only
     request.user_agent.to_s.exclude?("ForemWebView")
   end
 
-  # Display the fallback message if we can't register with email and at the same time can't display the social options.
+  # Display the fallback message (return true) if there is no way to register
+  # (on mobile apps). This only happens when all of the following are true:
+  # - We're on the "Create account" page
+  # - Email+Password registration is disabled
+  # - There are no social options enabled
+  #    - This happens on mobile apps because of platform specific issues
   def display_registration_fallback?(state)
-    state == "new-user" && !Settings::Authentication.allow_email_password_registration && !display_social_login?
+    state == "new-user" && !Settings::Authentication.allow_email_password_registration && !display_social_login?(:forem)
   end
 end

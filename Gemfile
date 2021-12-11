@@ -17,13 +17,13 @@ gem "addressable", "~> 2.8" # A replacement for the URI implementation that is p
 gem "ahoy_email", "~> 2.1.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 4.0" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.4.7" # Allows admins to query data
+gem "blazer", "~> 2.4.8" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.21" # Client library for easily using the Cloudinary service
-gem "counter_culture", "~> 3.0" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.53.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "counter_culture", "~> 3.1" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "ddtrace", "~> 0.54.1" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.5" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -48,6 +48,7 @@ gem "honeycomb-beeline", "~> 2.7.1" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
+gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.0" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
@@ -74,7 +75,6 @@ gem "pg_search", "~> 2.3.5" # PgSearch builds Active Record named scopes that ta
 gem "pghero", "~> 2.8" # Dashboard for Postgres
 gem "puma", "~> 5.5.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
-gem "pusher", "~> 2.0" # Ruby library for Pusher Channels HTTP API
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
@@ -102,12 +102,12 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.3.1" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.1.8" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.1.12" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "store_attribute", "~> 0.9.2" # ActiveRecord extension which adds typecasting to store accessors.
+gem "store_attribute", "~> 0.9.3" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.41" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
@@ -116,7 +116,7 @@ gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
-gem "view_component", "~> 2.43", require: "view_component/engine" # View components for Rails
+gem "view_component", "~> 2.46" # View components for Rails
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails
 
@@ -133,7 +133,8 @@ group :development do
   gem "i18n-tasks", "~> 0.9.35" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
-  gem "web-console", "~> 4.1" # Rails Console on the Browser
+  gem "solargraph", "~> 0.44", require: false # For LSP support (such as symbol renaming, documentation lookup)
+  gem "web-console", "~> 4.2" # Rails Console on the Browser
 end
 
 group :development, :test do
@@ -141,6 +142,7 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.36.0" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", github: "forem/cypress-rails", branch: "enable-knapsack-pro-support" # For end to end tests (E2E)
+  gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 3.1.3" # Help parallelize Ruby spec builds
@@ -152,7 +154,7 @@ group :development, :test do
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.6", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
-  gem "spring", "~> 3.0" # Preloads your application so things like console, rake and tests run faster
+  gem "spring", "~> 4.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
 

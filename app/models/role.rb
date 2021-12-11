@@ -1,7 +1,6 @@
 class Role < ApplicationRecord
   ROLES = %w[
     admin
-    chatroom_beta_tester
     codeland_admin
     comment_suspended
     mod_relations_admin

@@ -36,7 +36,7 @@ export const CommentsList = ({ comments = [], articlePath, totalCount }) => {
     return (
       <div className="crayons-story__comments">
         {comments.slice(0, numberOfCommentsToShow).map((comment) => {
-          return <CommentListItem comment={comment} />;
+          return <CommentListItem key={comment.id} comment={comment} />;
         })}
 
         {moreCommentsButton(comments, articlePath, totalCount)}

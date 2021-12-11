@@ -6,17 +6,20 @@ module StringAttributeCleaner
   # validation happens.
   #
   # @param attributes [Array<Symbol|String>]
+  # @param on [Symbol] register the cleaning on the specified
+  #        ActiveRecord::Base callback
   #
   # @return [void]
   #
   # @example Defining a list of attributes to be cleaned
   #   include StringAttributeCleaner.for(:attribute1, :attribute2)
-  def self.for(*attributes)
+  #   include StringAttributeCleaner.for(:attribute1, :attribute2, on: :before_save)
+  def self.for(*attributes, on: :before_validation)
     Module.new do
       define_singleton_method(:included) do |klass|
         return unless klass < ActiveRecord::Base
 
-        klass.before_validation(:nullify_blank_attributes)
+        klass.public_send(on, :nullify_blank_attributes)
       end
 
       define_method(:nullify_blank_attributes) do

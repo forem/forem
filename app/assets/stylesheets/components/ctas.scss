@@ -1,0 +1,82 @@
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+// .c-cta //////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+.c-cta {
+  --border-width: 1px;
+  padding: calc(var(--su-2) - var(--border-width))
+    calc(var(--su-4) - var(--border-width));
+  border: var(--border-width) solid;
+  border-color: var(--border);
+  text-decoration: none;
+  border-radius: var(--radius);
+  font: inherit;
+  background-color: var(--bg);
+  color: var(--color);
+  outline: 0;
+  text-align: center;
+  display: inline-flex;
+  position: relative;
+  overflow-wrap: normal;
+
+  &:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+    text-decoration: underline;
+  }
+
+  // Both focus declarations below are the same but we unfortunately can't
+  // combine them because Safari doesn't recognize it properly.
+  //  • First declaration is for all browsers that support :focus-visible
+  //    which is basically almost all of them
+  //  • Second declaration is for browsers that do not support :focus-visible
+  //    which basically is only Safari right now.
+  &:focus-visible {
+    background-color: var(--bg-hover);
+    border-color: var(--border-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+    box-shadow: var(--focus-ring);
+    text-decoration: underline;
+  }
+
+  .js-focus-visible &.focus-visible:focus {
+    background-color: var(--bg-hover);
+    border-color: var(--border-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+    box-shadow: var(--focus-ring);
+    text-decoration: underline;
+  }
+}
+
+.c-cta {
+  --bg: var(--cta-bg);
+  --bg-hover: var(--cta-bg-hover);
+  --color: var(--cta-color);
+  --color-hover: var(--cta-color-hover);
+  --border: var(--cta-border);
+  --border-hover: var(--cta-border-hover);
+
+  &--branded {
+    --bg: var(--cta-branded-bg);
+    --bg-hover: var(--cta-branded-bg-hover);
+    --color: var(--cta-branded-color);
+    --color-hover: var(--cta-branded-color-hover);
+    --border: var(--cta-branded-border);
+    --border-hover: var(--cta-branded-border-hover);
+
+    font-weight: var(--fw-medium);
+  }
+}
+
+.c-cta--icon-left {
+  .c-cta__icon {
+    margin-right: var(--su-2);
+    margin-left: calc(var(--su-1) * -1);
+  }
+}

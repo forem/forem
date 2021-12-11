@@ -98,6 +98,8 @@ RSpec.describe AuthenticationHelper, type: :helper do
   end
 
   describe "#display_social_login?" do
+    let(:twitter_provider_name) { :twitter }
+    let(:forem_provider_name) { :forem }
     let(:mobile_browser_ua) { "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148" }
     let(:android_foremwebview_ua) do
       "Mozilla/5.0 (Linux; Android 10; SM-A217M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0 ForemWebView/1.0"
@@ -113,10 +115,10 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
       it "responds with true regardless if the Apple Auth is enabled" do
         allow(Authentication::Providers).to receive(:enabled).and_return(%i[apple twitter])
-        expect(helper.display_social_login?).to be true
+        expect(helper.display_social_login?(twitter_provider_name)).to be true
 
         allow(Authentication::Providers).to receive(:enabled).and_return([:twitter])
-        expect(helper.display_social_login?).to be true
+        expect(helper.display_social_login?(twitter_provider_name)).to be true
       end
     end
 
@@ -127,12 +129,17 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
       it "responds with true when Apple Auth is enabled" do
         allow(Authentication::Providers).to receive(:enabled).and_return(%i[apple twitter])
-        expect(helper.display_social_login?).to be true
+        expect(helper.display_social_login?(twitter_provider_name)).to be true
       end
 
       it "responds with false when Apple Auth isn't enabled" do
         allow(Authentication::Providers).to receive(:enabled).and_return([:twitter])
-        expect(helper.display_social_login?).to be false
+        expect(helper.display_social_login?(twitter_provider_name)).to be false
+      end
+
+      it "responds with true when Apple Auth isn't enabled but requested Forem Auth (the exception)" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(%i[twitter forem])
+        expect(helper.display_social_login?(forem_provider_name)).to be true
       end
     end
 
@@ -143,10 +150,10 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
       it "responds with true regardless of Apple Auth being enabled" do
         allow(Authentication::Providers).to receive(:enabled).and_return(%i[apple twitter])
-        expect(helper.display_social_login?).to be true
+        expect(helper.display_social_login?(twitter_provider_name)).to be true
 
         allow(Authentication::Providers).to receive(:enabled).and_return([:twitter])
-        expect(helper.display_social_login?).to be true
+        expect(helper.display_social_login?(twitter_provider_name)).to be true
       end
     end
   end

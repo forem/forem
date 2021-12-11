@@ -13,7 +13,7 @@ RSpec.describe "Devices", type: :request do
       it "increases device count" do
         post devices_path, params: {
           token: "123",
-          platform: "Android",
+          platform: "ios",
           app_bundle: consumer_app.app_bundle
         }
         expect(user.devices.count).to eq(1)

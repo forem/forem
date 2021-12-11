@@ -156,7 +156,7 @@ RSpec.describe "Registrations", type: :request do
 
       it "renders the creator onboarding form" do
         get root_path
-        expect(response.body).to include("Let's start your Forem journey!")
+        expect(response.body).to include(CGI.escapeHTML("Let's start your Forem journey!"))
         expect(response.body).to include("Create your admin account first")
       end
     end
@@ -231,7 +231,7 @@ RSpec.describe "Registrations", type: :request do
         expect(User.all.size).to be 1
       end
 
-      it "marks as registerd" do
+      it "marks as registered" do
         post "/users", params:
         { user: { name: "test #{rand(10)}",
                   username: "haha_#{rand(10)}",
