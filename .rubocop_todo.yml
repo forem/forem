@@ -18,6 +18,5 @@ require:
 Rails/HasManyOrHasOneDependent:
   Exclude:
     - 'app/models/article.rb'
-    - 'app/models/chat_channel.rb'
     - 'app/models/organization.rb'
     - 'app/models/user.rb'

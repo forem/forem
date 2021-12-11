@@ -1,27 +1,35 @@
-<div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto crayons-header__menu__dropdown inline-block m:-mr-2 top-100 -mt-1">
+<div class="crayons-dropdown left-2 right-2 s:left-auto crayons-header__menu__dropdown inline-block m:-mr-2 top-100">
   <ul class="m-0" id="crayons-header__menu__dropdown__list">
     <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 pb-2 mb-2">
-      <a id="first-nav-link" class="crayons-link crayons-link--block">
+      <a href="#" id="first-nav-link" class="c-link c-link--default c-link--block lh-tight">
         <div>
           <span class="fw-medium block"><%= t("views.main.nav.placeholder") %></span>
-          <small class="fs-s color-base-50"></small>
+          <small class="fs-s opacity-75"></small>
         </div>
       </a>
     </li>
 
     <li class="js-header-menu-admin-link hidden">
-      <a href="<%= admin_path %>" class="crayons-link crayons-link--block" data-no-instant><%= t("views.main.nav.admin") %></a>
+      <a href="<%= admin_path %>" class="c-link c-link--block" data-no-instant><%= t("views.main.nav.admin") %></a>
     </li>
-    <li><a href="<%= dashboard_path %>" class="crayons-link crayons-link--block"><%= t("views.main.nav.dashboard") %></a></li>
-    <li><a href="<%= mod_path %>" class="crayons-link crayons-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a></li>
-    <li><a href="<%= new_path %>" class="crayons-link crayons-link--block"><%= t("views.main.create_post") %></a></li>
-    <li><a href="<%= readinglist_path %>" class="crayons-link crayons-link--block"><%= t("views.main.nav.list") %></a></li>
+    <li>
+      <a href="<%= dashboard_path %>" class="c-link c-link--block"><%= t("views.main.nav.dashboard") %></a>
+    </li>
+    <li>
+      <a href="<%= mod_path %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
+    </li>
+    <li>
+      <a href="<%= new_path %>" class="c-link c-link--block"><%= t("views.main.create_post") %></a>
+    </li>
+    <li>
+      <a href="<%= readinglist_path %>" class="c-link c-link--block"><%= t("views.main.nav.list") %></a>
+    </li>
     <li class="border-0 border-b-1 border-solid border-base-20 pb-2">
-      <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block" id="second-last-nav-link"><%= t("views.main.nav.settings") %></a>
+      <a href="<%= user_settings_path %>" class="c-link c-link--block" id="second-last-nav-link"><%= t("views.main.nav.settings") %></a>
     </li>
 
     <li class="pt-2">
-      <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link"><%= t("views.main.signout") %></a>
+      <a href="<%= signout_confirm_path %>" class="c-link c-link--block" id="last-nav-link"><%= t("views.main.signout") %></a>
     </li>
   </ul>
 </div>

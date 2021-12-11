@@ -112,7 +112,7 @@ module Admin
 
     def articles_featured
       Article.published.or(Article.where(published_from_feed: true))
-        .where(featured: true)
+        .featured
         .where("featured_number > ?", Time.current.to_i)
         .includes(:user)
         .limited_columns_internal_select

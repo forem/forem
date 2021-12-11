@@ -113,18 +113,10 @@ RSpec.describe "/admin/customization/config", type: :request do
           expect(Settings::Authentication.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
         end
 
-        it "allows 2-character domains" do
-          proper_list = "dev.to, forem.com, 2u.com"
-          post admin_settings_authentications_path, params: {
-            settings_authentication: { allowed_registration_email_domains: proper_list }
-          }
-          expect(Settings::Authentication.allowed_registration_email_domains).to eq(%w[dev.to forem.com 2u.com])
-        end
-
         it "does not allow improper domain list" do
-          impproper_list = "dev.to, foremcom, forem.dev"
+          improper_list = "dev.to, foremcom, forem.dev"
           post admin_settings_authentications_path, params: {
-            settings_authentication: { allowed_registration_email_domains: impproper_list }
+            settings_authentication: { allowed_registration_email_domains: improper_list }
           }
           expect(Settings::Authentication.allowed_registration_email_domains).not_to eq(%w[dev.to foremcom forem.dev])
         end

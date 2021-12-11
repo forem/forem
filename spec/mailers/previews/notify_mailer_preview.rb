@@ -37,14 +37,8 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.with(badge_achievement: badge_achievement).new_badge_email
   end
 
-  def channel_invite_email
-    user = User.first
-    membership = ChatChannelMembership.last
-    NotifyMailer.with(membership: membership, inviter: user).channel_invite_email
-  end
-
   def tag_moderator_confirmation_email
-    NotifyMailer.with(user: User.first, tag: Tag.find(1), channel_slug: nil).tag_moderator_confirmation_email
+    NotifyMailer.with(user: User.first, tag: Tag.find(1)).tag_moderator_confirmation_email
   end
 
   def trusted_role_email

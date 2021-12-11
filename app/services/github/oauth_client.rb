@@ -1,5 +1,5 @@
 module Github
-  # Github OAuth2 client (uses ocktokit.rb as a backend)
+  # Github OAuth2 client (uses octokit.rb as a backend)
   class OauthClient
     APP_AUTH_CREDENTIALS = %i[client_id client_secret].freeze
     APP_AUTH_CREDENTIALS_PRESENT = proc { |key, value| APP_AUTH_CREDENTIALS.include?(key) && value.present? }.freeze

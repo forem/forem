@@ -11,9 +11,6 @@ export function addCloseListener() {
     articleDocument
       .getElementsByClassName('mod-actions-menu')[0]
       .classList.toggle('showing');
-    articleDocument
-      .getElementsByClassName('mod-actions-menu-btn')[0]
-      .classList.toggle('hidden');
   });
 }
 

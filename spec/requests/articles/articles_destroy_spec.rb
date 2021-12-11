@@ -8,7 +8,7 @@ RSpec.describe "ArticlesDestroy", type: :request do
     sign_in user
   end
 
-  it "destroyes an article" do
+  it "destroyed an article" do
     delete "/articles/#{article.id}"
     destroyed_article = Article.find_by(id: article.id)
     expect(destroyed_article).to be_nil

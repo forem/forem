@@ -19,25 +19,6 @@ RSpec.describe "User edits their extensions", type: :system, js: true do
       .to_return(status: 200, body: github_response_body.to_json, headers: { "Content-Type" => "application/json" })
   end
 
-  describe "Stackbit" do
-    before do
-      visit user_settings_path
-    end
-
-    it "has connect-to-stackbit prompt" do
-      click_link "Extensions"
-
-      expect(page).to have_text("Connect to Stackbit")
-    end
-
-    it "has connected-to-stackbit prompt if already integrated" do
-      create(:doorkeeper_access_token, resource_owner: user)
-
-      click_link "Extensions"
-      expect(page).to have_text("Connected to Stackbit")
-    end
-  end
-
   describe "Feed" do
     before do
       visit user_settings_path(:extensions)

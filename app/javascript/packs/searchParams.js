@@ -160,7 +160,7 @@ function search(query, filters, sortBy, sortDirection) {
     searchHash.search_fields = searchTerm;
   }
 
-  // Brute force copying code from a utlity for quick fix
+  // Brute force copying code from a utility for quick fix
   const searchParams = new URLSearchParams();
   Object.keys(searchHash).forEach((key) => {
     const value = searchHash[key];

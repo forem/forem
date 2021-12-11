@@ -1,4 +1,5 @@
-<% title t("views.search.meta.title") %>
+<% title t("views.search.meta.title", for: (params[:q].present? ? t("views.search.meta.for", query: params[:q]) : "")) %>
+
 <link rel="canonical" href="<%= app_url(search_path) %>" />
 <meta name="description" content="<%= Settings::Community.community_description %>">
 <%= meta_keywords_default %>

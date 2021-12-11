@@ -46,67 +46,67 @@ RSpec.describe CodesandboxTag, type: :liquid_tag do
       Liquid::Template.parse("{% codesandbox #{id} %}")
     end
 
-    it "accepts a vaild id" do
+    it "accepts a valid id" do
       liquid = generate_tag(valid_id)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath" do
+    it "accepts a valid id with initialpath" do
       liquid = generate_tag(valid_id_with_initialpath)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with module" do
+    it "accepts a valid id with module" do
       liquid = generate_tag(valid_id_with_module)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with view" do
+    it "accepts a valid id with view" do
       liquid = generate_tag(valid_id_with_view)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with runonclick" do
+    it "accepts a valid id with runonclick" do
       liquid = generate_tag(valid_id_with_runonclick)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and module" do
+    it "accepts a valid id with initialpath and module" do
       liquid = generate_tag(valid_id_with_initialpath_and_module)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and view" do
+    it "accepts a valid id with initialpath and view" do
       liquid = generate_tag(valid_id_with_initialpath_and_view)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and runonclick" do
+    it "accepts a valid id with initialpath and runonclick" do
       liquid = generate_tag(valid_id_with_initialpath_and_runonclick)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with runonclick and module" do
+    it "accepts a valid id with runonclick and module" do
       liquid = generate_tag(valid_id_with_runonclick_and_module)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with runonclick and view" do
+    it "accepts a valid id with runonclick and view" do
       liquid = generate_tag(valid_id_with_runonclick_and_view)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and module and runonclick" do
+    it "accepts a valid id with initialpath and module and runonclick" do
       liquid = generate_tag(valid_id_with_initialpath_and_module_and_runonclick)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and module and runonclick and view" do
+    it "accepts a valid id with initialpath and module and runonclick and view" do
       liquid = generate_tag(valid_id_with_initialpath_and_module_and_runonclick_and_view)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with special_characters of / . @ % _" do
+    it "accepts a valid id with special_characters of / . @ % _" do
       liquid = generate_tag(valid_id_with_special_characters)
       expect(liquid.render).to include("<iframe")
     end

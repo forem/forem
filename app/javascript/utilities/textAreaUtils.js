@@ -103,14 +103,14 @@ export const getMentionWordData = (textArea) => {
 };
 
 /**
- * Searches backwards through text content for the last occurence of the given character
+ * Searches backwards through text content for the last occurrence of the given character
  *
  * @param {Object} params
  * @param {string} content The chunk of text to search within
  * @param {number} selectionIndex The starting point to search from
  * @param {string} character The character to search for
  * @param {string[]} breakOnCharacters Any characters which should result in an immediate halt to the search
- * @returns {number} Index of the last occurence of the character, or -1 if it isn't found
+ * @returns {number} Index of the last occurrence of the character, or -1 if it isn't found
  */
 export const getLastIndexOfCharacter = ({
   content,
@@ -138,14 +138,14 @@ export const getLastIndexOfCharacter = ({
 };
 
 /**
- * Searches forwards through text content for the next occurence of the given character
+ * Searches forwards through text content for the next occurrence of the given character
  *
  * @param {Object} params
  * @param {string} content The chunk of text to search within
  * @param {number} selectionIndex The starting point to search from
  * @param {string} character The character to search for
  * @param {string[]} breakOnCharacters Any characters which should result in an immediate halt to the search
- * @returns {number} Index of the next occurence of the character, or -1 if it isn't found
+ * @returns {number} Index of the next occurrence of the character, or -1 if it isn't found
  */
 export const getNextIndexOfCharacter = ({
   content,
@@ -173,6 +173,61 @@ export const getNextIndexOfCharacter = ({
   }
 
   return -1;
+};
+
+/**
+ * Counts how many new lines come immediately before the user's current selection start
+ * @param {object} args
+ * @param {number} args.selectionStart The index of user's current selection start
+ * @param {string} args.value The value of the textarea
+ *
+ * @returns {number} Number of new lines directly before selection start
+ */
+export const getNumberOfNewLinesPrecedingSelection = ({
+  selectionStart,
+  value,
+}) => {
+  if (selectionStart === 0) {
+    return 0;
+  }
+
+  let count = 0;
+  let searchIndex = selectionStart - 1;
+
+  while (searchIndex >= 0 && value.charAt(searchIndex) === '\n') {
+    count++;
+    searchIndex--;
+  }
+
+  return count;
+};
+
+/**
+ * Counts how many new lines come immediately after the user's current selection end
+ *
+ * @param {object} args
+ * @param {number} args.selectionEnd The index of user's current selection end
+ * @param {string} args.value The value of the textarea
+ *
+ * @returns {number} the count of new line characters immediately following selection
+ */
+export const getNumberOfNewLinesFollowingSelection = ({
+  selectionEnd,
+  value,
+}) => {
+  if (selectionEnd === value.length) {
+    return 0;
+  }
+
+  let count = 0;
+  let searchIndex = selectionEnd;
+
+  while (searchIndex < value.length && value.charAt(searchIndex) === '\n') {
+    count++;
+    searchIndex++;
+  }
+
+  return count;
 };
 
 /**

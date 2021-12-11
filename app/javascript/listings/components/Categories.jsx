@@ -13,7 +13,11 @@ export class Categories extends Component {
           </option>
         );
       }
-      return <option value={value}>{text}</option>;
+      return (
+        <option key={value} value={value}>
+          {text}
+        </option>
+      );
     });
   };
 
@@ -25,7 +29,7 @@ export class Categories extends Component {
           <strong>{category.name}:</strong> {category.rules}
         </li>
       );
-      return <ul>{paragraphText}</ul>;
+      return <ul key={category.name}>{paragraphText}</ul>;
     });
 
     return (

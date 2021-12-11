@@ -8,6 +8,10 @@ export const dragAndUpload = (
 ) => {
   if (files.length > 0 && validateFileInputs()) {
     const payload = { image: files };
-    generateMainImage(payload, handleImageSuccess, handleImageFailure);
+    generateMainImage({
+      payload,
+      successCb: handleImageSuccess,
+      failureCb: handleImageFailure,
+    });
   }
 };

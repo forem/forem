@@ -50,7 +50,7 @@ class CommentsController < ApplicationController
     @comment.user_id = current_user.id
 
     authorize @comment
-    permit_commentor
+    permit_commenter
 
     if @comment.save
       checked_code_of_conduct = params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
@@ -106,7 +106,7 @@ class CommentsController < ApplicationController
     @comment.user_id = moderator.id
     @comment.body_markdown = response_template.content
     authorize @comment
-    permit_commentor
+    permit_commenter
 
     if @comment.save
       Notification.send_new_comment_notifications_without_delay(@comment)
@@ -224,10 +224,15 @@ class CommentsController < ApplicationController
   def hide
     @comment = Comment.find(params[:comment_id])
     authorize @comment
-    @comment.hidden_by_commentable_user = true
-    @comment&.commentable&.update_column(:any_comments_hidden, true)
+    success = @comment.update(hidden_by_commentable_user: true)
 
-    if @comment.save
+    if success
+      @comment&.commentable&.update_column(:any_comments_hidden, true)
+      if params[:hide_children] == "1"
+        @comment.descendants.includes(:user, :commentable).each do |c|
+          c.update(hidden_by_commentable_user: true)
+        end
+      end
       render json: { hidden: "true" }, status: :ok
     else
       render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
@@ -307,7 +312,7 @@ class CommentsController < ApplicationController
     end
   end
 
-  def permit_commentor
+  def permit_commenter
     return unless user_blocked?
 
     raise ModerationUnauthorizedError, "Not allowed due to moderation action"

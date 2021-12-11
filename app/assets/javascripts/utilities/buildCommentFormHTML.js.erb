@@ -18,7 +18,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
       <input value="${parentId}" type="hidden" name="comment[parent_id]" id="comment_parent_id" />
       <div class="comment-form__inner">
         <div class="comment-form__field">
-          <textarea id="textarea-for-${parentId}" class="crayons-textfield crayons-textfield--ghost comment-textarea" name="comment[body_markdown]" placeholder="Reply..." aria-label="Reply to a comment..." required="required" onkeydown="handleKeyDown(event)" onfocus="handleFocus(event)" oninput="handleChange(event)" onkeykup="handleKeyUp(event)"></textarea>
+          <textarea id="textarea-for-${parentId}" class="crayons-textfield crayons-textfield--ghost comment-textarea" name="comment[body_markdown]" placeholder="Reply..." aria-label="Reply to a comment..." required="required" onkeydown="handleKeyDown(event)" onfocus="handleFocus(event)" oninput="handleChange(event)" onkeyup="handleKeyUp(event)"></textarea>
           <div class="comment-form__toolbar">
             <div class="editor-image-upload">
               <input type="file" id="image-upload-${randomIdNumber}"  name="file" accept="image/*" style="display:none">
