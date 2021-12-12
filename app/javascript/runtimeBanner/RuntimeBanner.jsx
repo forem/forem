@@ -85,7 +85,6 @@ export const RuntimeBanner = () => {
   const targetURL = `https://udl.forem.com/${encodeURIComponent(targetPath)}`;
 
   return (
-    <div class="runtime-banner">
-    </div>
+    <div></div>
   );
 };
