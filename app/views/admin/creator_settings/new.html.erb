@@ -23,7 +23,7 @@
       <br>
       <%= render "form", creator_settings_form: @creator_settings_form, f: f %>
       <div class="crayons-field mt-6 align-left">
-        <%= f.submit "Finish", class: "crayons-btn btn--primary" %>
+        <%= f.submit "Finish", class: "crayons-btn btn--primary creator-settings-fields" %>
       </div>
       <% if @help_url %>
         <%= render "shared/help_icon" %>
