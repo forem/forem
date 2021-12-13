@@ -64,6 +64,12 @@ InlineBranded.args = {
   variant: 'branded',
 };
 
+export const InlineWithIcon = (args) => <Link block {...args} />;
+InlineWithIcon.args = {
+  ...Inline.args,
+  icon: CogIcon,
+};
+
 export const Block = (args) => <Link {...args} />;
 Block.args = {
   ...Inline.args,
@@ -78,8 +84,8 @@ BlockBranded.args = {
   variant: 'branded',
 };
 
-export const WithIcon = (args) => <Link block {...args} />;
-WithIcon.args = {
+export const BlockWithIcon = (args) => <Link block {...args} />;
+BlockWithIcon.args = {
   ...Block.args,
   icon: CogIcon,
 };

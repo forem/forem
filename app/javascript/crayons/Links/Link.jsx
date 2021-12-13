@@ -8,7 +8,7 @@ export const Link = (props) => {
   const {
     children,
     href = '#',
-    variant,
+    variant = 'default',
     block,
     icon,
     rounded,
@@ -17,7 +17,7 @@ export const Link = (props) => {
   } = props;
 
   const classes = classNames('c-link', {
-    [`c-link--${variant}`]: variant,
+    [`c-link--${variant}`]: variant && variant !== 'default',
     'c-link--icon-left': icon && children,
     'c-link--icon-alone': icon && !children,
     'c-link--block': block,

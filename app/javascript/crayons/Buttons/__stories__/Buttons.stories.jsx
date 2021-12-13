@@ -88,8 +88,22 @@ Destructive.args = {
   destructive: true,
 };
 
+export const WithTooltip = (args) => <Button {...args} />;
+WithTooltip.args = {
+  ...Default.args,
+  tooltip: 'Hello world',
+};
+
 export const WithIcon = (args) => <Button {...args} />;
 WithIcon.args = {
   ...Default.args,
   icon: CogIcon,
+};
+
+export const IconOnly = (args) => <Button {...args} />;
+IconOnly.args = {
+  ...Default.args,
+  icon: CogIcon,
+  tooltip: 'Button label',
+  children: undefined,
 };

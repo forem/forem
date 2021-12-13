@@ -8,7 +8,7 @@ import { Icon } from '@crayons';
 export const ButtonNew = (props) => {
   const {
     children,
-    variant,
+    variant = 'default',
     icon,
     rounded,
     destructive,
@@ -30,7 +30,7 @@ export const ButtonNew = (props) => {
   };
 
   const classes = classNames('c-btn', {
-    [`c-btn--${variant}`]: variant,
+    [`c-btn--${variant}`]: variant && variant !== 'default',
     'c-btn--destructive': destructive && variant !== 'secondary',
     'c-btn--icon-left': icon && children,
     'c-btn--icon-alone': icon && !children,

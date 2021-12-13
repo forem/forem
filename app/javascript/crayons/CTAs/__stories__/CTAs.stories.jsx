@@ -40,8 +40,14 @@ Branded.args = {
   variant: 'branded',
 };
 
-export const WithIcon = (args) => <CTA {...args} />;
-WithIcon.args = {
+export const DefaultWithIcon = (args) => <CTA {...args} />;
+DefaultWithIcon.args = {
   ...Default.args,
+  icon: CogIcon,
+};
+
+export const BrandedWithIcon = (args) => <CTA {...args} />;
+BrandedWithIcon.args = {
+  ...Branded.args,
   icon: CogIcon,
 };
