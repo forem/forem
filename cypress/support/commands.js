@@ -52,17 +52,23 @@ Cypress.Commands.add('loginAndVisit', (user, url) => {
  * Visits the given URL, waiting for all user-related network requests to complete.
  * This ensures that no user side effects bleed into subsequent tests.
  */
-Cypress.Commands.add('visitAndWaitForUserSideEffects', (url, options) => {
-  // If navigating directly to an admin route, no relevant network requests to intercept
-  const { baseUrl } = Cypress.config().baseUrl;
-  if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
-    cy.visit(url, options);
-  } else {
-    const intercepts = getInterceptsForLingeringUserRequests(url, true);
-    cy.visit(url, options);
-    cy.wait(intercepts);
-  }
-});
+Cypress.Commands.add(
+  'visitAndWaitForUserSideEffects',
+  (url, options, userLoggedIn = true) => {
+    // If navigating directly to an admin route, no relevant network requests to intercept
+    const { baseUrl } = Cypress.config().baseUrl;
+    if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
+      cy.visit(url, options);
+    } else {
+      const intercepts = getInterceptsForLingeringUserRequests(
+        url,
+        userLoggedIn,
+      );
+      cy.visit(url, options);
+      cy.wait(intercepts);
+    }
+  },
+);
 
 /**
  * Runs necessary test setup to run a clean test.
