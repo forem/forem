@@ -89,7 +89,7 @@
     "markdown-loader": "^6.0.0",
     "prettier": "^2.5.0",
     "sass": "1.44.0",
-    "sass-loader": "^12.3.0",
+    "sass-loader": "^12.4.0",
     "storybook-addon-jsx": "^7.3.14",
     "style-loader": "^2.0.0",
     "svgo": "2.8.0",
