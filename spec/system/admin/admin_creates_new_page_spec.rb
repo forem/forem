@@ -7,7 +7,6 @@ RSpec.describe "Admin creates new page", type: :system do
     before do
       allow(ForemInstance).to receive(:private?).and_return(true)
       sign_in admin
-      Settings::Community.clear_cache # in case community name had been modified
       visit new_admin_page_path(slug: "code-of-conduct")
     end
 
