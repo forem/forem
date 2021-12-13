@@ -1,4 +1,4 @@
-class AddTsvectorIndexOnSearchableColumnnsToPodcastEpisodes < ActiveRecord::Migration[6.1]
+class AddTsvectorIndexOnSearchableColumnsToPodcastEpisodes < ActiveRecord::Migration[6.1]
   disable_ddl_transaction!
 
   def up

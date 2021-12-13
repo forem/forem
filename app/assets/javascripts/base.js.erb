@@ -722,6 +722,10 @@ var instantClick
     ignorePatterns: [/ResizeObserver/i, /MetaMask/i],
   });
 
+  Honeybadger.beforeNotify(function(notice) {
+    return !/MtPopUpList/.test(notice.message);
+  });
+
 // INITIALIZE AHOY TRACKING
 // Setting cookies to false matches what we do in ahoy's initializer.
 // Setting trackVisits to false prevents ahoy from creating a visit on the server-side.
