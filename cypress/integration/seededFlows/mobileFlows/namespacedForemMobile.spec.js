@@ -22,7 +22,7 @@ describe('Namespaced ForemMobile functions', () => {
         cy.fixture('users/adminUser.json').as('user');
         cy.get('@user').then((user) => {
           cy.loginUser(user).then(() => {
-            cy.visit('/', runtimeStub);
+            cy.visitAndWaitForUserSideEffects('/', runtimeStub);
             cy.get('body').should('have.attr', 'data-user-status', 'logged-in');
             waitForBaseDataLoaded();
           });
