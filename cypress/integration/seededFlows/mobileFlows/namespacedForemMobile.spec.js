@@ -1,5 +1,3 @@
-import { getInterceptsForLingeringUserRequests } from '../../../util/networkUtils';
-
 // This E2E test focuses on ensuring the mobile bridge integration
 describe('Namespaced ForemMobile functions', () => {
   function waitForBaseDataLoaded() {
@@ -86,11 +84,7 @@ describe('Namespaced ForemMobile functions', () => {
     describe('when logged out', () => {
       it('should return empty user data when logged out', () => {
         cy.testSetup();
-        // visitAndWaitForUserSideEffects passes true to getIntercepts, waiting for notifications
-        // but we don't expect them here.
-        const intercepts = getInterceptsForLingeringUserRequests('/', false);
-        cy.visit('/', runtimeStub);
-        cy.wait(intercepts);
+        cy.visitAndWaitForUserSideEffects('/', runtimeStub, false);
         waitForBaseDataLoaded();
 
         cy.window().then((win) => {
