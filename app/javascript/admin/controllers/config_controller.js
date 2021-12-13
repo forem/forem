@@ -126,22 +126,24 @@ export default class ConfigController extends Controller {
     } finally {
       // Only update the site logo in the header if the new logo is uploaded successfully.
       if (!errored) {
-        this.updateHeaderLogo(event.target);
+        this.updateLogo(event.target);
       }
     }
   }
 
-  updateHeaderLogo(form) {
-    if (form.elements.settings_general_logo) {
-      const previewLogo = document.querySelector(
-        '#logo-upload-preview .site-logo',
-      );
+  updateLogo(form) {
+    if (!form.elements.settings_general_logo) {
+      return;
+    }
 
-      [...document.querySelectorAll('.site-logo')]
-        .filter((logo) => logo !== previewLogo)
-        .forEach((logo) => {
-          logo.src = previewLogo.src;
-        });
+    const previewLogo = document.querySelector(
+      '#logo-upload-preview .site-logo',
+    );
+
+    for (const logo of document.querySelectorAll('.site-logo')) {
+      if (logo !== previewLogo) {
+        logo.src = previewLogo.src;
+      }
     }
   }
 
