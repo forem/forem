@@ -87,6 +87,9 @@ describe('Namespaced ForemMobile functions', () => {
         cy.visitAndWaitForUserSideEffects('/', runtimeStub, false);
         waitForBaseDataLoaded();
 
+        // ensures the dynamic import had time to complete before
+        // referencing the attribute
+        cy.window().should('have.attr', 'ForemMobile');
         cy.window().then((win) => {
           assert.isUndefined(win.ForemMobile.getUserData());
         });
