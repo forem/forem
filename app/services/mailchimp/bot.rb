@@ -97,8 +97,7 @@ module Mailchimp
 
       success = false
 
-      tag_ids = user.roles.where(name: "tag_moderator").pluck(:resource_id)
-      tag_names = Tag.where(id: tag_ids).pluck(:name)
+      tag_names = user.moderator_for_tags_not_cached
 
       status = user.notification_setting.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
 
