@@ -3,8 +3,7 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed do
   subject(:unified_embed) { described_class }
 
-  let(:user) { create(:user) }
-  let(:article) { create(:article, user_id: user.id) }
+  let(:article) { create(:article) }
 
   describe ".find_liquid_tag_for" do
     valid_youtube_url_formats = [
