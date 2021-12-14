@@ -8,39 +8,16 @@ fr:
     add_comment: Ajouter un commentaire
     beta: bêta
     comment: Commentaire
-    comments: Commentaires
-    community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
-    create_account: Créer un profil
-    dashboard: Tableau de bord
     edit_profile: Editer le profil
     follow: Suivre
     follow_back: Suivre aussi
-    follower: Suiveur
     following: Abonné
-    joined: Rejoint
-    joined_on: Rejoint le
     like: Aime
-    listings: Annonces
     loading: Chargement en cours...
-    location: Lieu
-    log_in: Se connecter
-    more_from: Plus de la part de
-    pinned: Épinglé
-    post: Publication
     reaction: Réaction
-    reaction_pluralized:
-      one: réaction
-      other: réactions
-    reactions:
-      heart: Coeur
-      save: Sauver
-      unicorn: Licorne
-    reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
-    settings: Paramètres
-    trending_on: Populaire sur
   date:
     abbr_month_names:
     - 
