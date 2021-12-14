@@ -55,7 +55,7 @@ class UserDecorator < ApplicationDecorator
     body_class = [
       setting.config_theme.tr("_", "-"),
       "#{setting.resolved_font_name.tr('_', '-')}-article-body",
-      "trusted-status-#{trusted}",
+      "trusted-status-#{trusted?}",
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]
     body_class.join(" ")
@@ -95,10 +95,6 @@ class UserDecorator < ApplicationDecorator
   # returns true if the user has been suspended and has no content
   def fully_banished?
     articles_count.zero? && comments_count.zero? && suspended?
-  end
-
-  def stackbit_integration?
-    access_tokens.any?
   end
 
   def considered_new?

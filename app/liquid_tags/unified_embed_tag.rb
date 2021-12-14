@@ -34,7 +34,7 @@ class UnifiedEmbedTag < LiquidTagBase
   end
 
   def render(_context)
-    link, _options = ActionController::Base.helpers.strip_tags(@markup).split
+    link, _options = strip_tags(@markup)
     %(<a href="#{link}">#{link}</a>)
   end
 end

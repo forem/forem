@@ -483,7 +483,7 @@ class User < ApplicationRecord
   end
 
   def auditable?
-    trusted || tag_moderator? || any_admin?
+    trusted? || tag_moderator? || any_admin?
   end
 
   def tag_moderator?
@@ -534,6 +534,10 @@ class User < ApplicationRecord
 
   def subscribed_to_email_follower_notifications?
     notification_setting.email_follower_notifications
+  end
+
+  def reactions_to
+    Reaction.for_user(self)
   end
 
   protected
@@ -593,10 +597,6 @@ class User < ApplicationRecord
 
     self.old_old_username = old_username
     self.old_username = username_was
-    articles.find_each do |article|
-      article.path = article.path.gsub(username_was, username)
-      article.save
-    end
   end
 
   def bust_cache

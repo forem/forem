@@ -123,7 +123,7 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindex (0.8.1)
-    blazer (2.4.7)
+    blazer (2.4.8)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
@@ -164,7 +164,7 @@ GEM
       activesupport (>= 3.2.0)
       carrierwave
       fastimage
-    chartkick (4.0.5)
+    chartkick (4.1.2)
     childprocess (4.1.0)
     cloudinary (1.21.0)
       aws_cf_signer
@@ -526,7 +526,7 @@ GEM
     octokit (4.21.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
-    oj (3.13.9)
+    oj (3.13.10)
     omniauth (2.0.4)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -806,7 +806,7 @@ GEM
       thor (~> 1.0)
       tilt (~> 2.0)
       yard (~> 0.9, >= 0.9.24)
-    spring (3.1.1)
+    spring (4.0.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     sprockets (4.0.2)
@@ -928,7 +928,7 @@ DEPENDENCIES
   amazing_print (~> 1.4)
   ancestry (~> 4.1)
   better_errors (~> 2.9)
-  blazer (~> 2.4.7)
+  blazer (~> 2.4.8)
   bootsnap (>= 1.1.0)
   brakeman (~> 5.1)
   bullet (~> 6.1)
@@ -1048,7 +1048,7 @@ DEPENDENCIES
   simplecov (~> 0.21.2)
   slack-notifier (~> 2.4)
   solargraph (~> 0.44)
-  spring (~> 3.1)
+  spring (~> 4.0)
   spring-commands-rspec (~> 1.0)
   sprockets (~> 4.0)
   staccato (~> 0.5)

@@ -1,6 +1,11 @@
 class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
-  REGISTRY_REGEXP = %r{https?://(www\.)?youtube\.(com|be)/(embed|watch)?(\?v=)?(/)?[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,})?)?}
+  # rubocop:disable Layout/LineLength
+  REGISTRY_REGEXP = %r{https?://(?:www\.)?(?:youtube\.com|youtu\.be)/(?:embed/|watch\?v=)?(?<video_id>[a-zA-Z0-9_-]{11})(?:\?|&)?(?:t=|start=)?(?<time_parameter>(?:\d{1,}h?)?(?:\d{1,2}m)?(?:\d{1,2}s)?{5,11})?}
+  VALID_ID_REGEXP = /\A(?<video_id>[a-zA-Z0-9_-]{11})(?:\?|&)?(?:t=|start=)?(?<time_parameter>(?:\d{1,}h?)?(?:\d{1,2}m)?(?:\d{1,2}s)?{5,11})?\Z/
+  # rubocop:enable Layout/LineLength
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
+
   MARKER_TO_SECONDS_MAP = {
     "h" => 60 * 60,
     "m" => 60,
@@ -10,11 +15,9 @@ class YoutubeTag < LiquidTagBase
   def initialize(_tag_name, id, _parse_context)
     super
 
-    # for if id is an unstripped URL; doesn't appear to affect bare youtube ids
-    input = ActionController::Base.helpers.strip_tags(id).strip
-
-    @id = parse_id_or_url(input)
-    @width = 710
+    input   = CGI.unescape_html(strip_tags(id))
+    @id     = parse_id_or_url(input)
+    @width  = 710
     @height = 399
   end
 
@@ -32,42 +35,35 @@ class YoutubeTag < LiquidTagBase
   private
 
   def parse_id_or_url(input)
-    if (input =~ REGISTRY_REGEXP)&.zero?
-      extract_youtube_id(input)
-    else
-      input_no_space = input.delete(" ")
-      raise StandardError, "Invalid YouTube ID" unless valid_id?(input_no_space)
-      return translate_start_time(input_no_space) if input_no_space.include?("?t=")
+    match = pattern_match_for(input)
+    raise StandardError, "Invalid YouTube ID" unless match
 
-      input_no_space
-    end
+    video_id       = match[:video_id]
+    time_parameter = match[:time_parameter]
+
+    return video_id if time_parameter.blank?
+
+    translate_start_time(video_id, time_parameter)
   end
 
-  def extract_youtube_id(url)
-    url = url.gsub(/(>|<)/, "").split(%r{(vi/|v=|/v/|youtu\.be/|/embed/)})
-    raise StandardError, "Invalid YouTube URL" if url[2].nil?
-
-    id = url[2].split(/[^a-zA-Z0-9_-]/i) # tweak this to allow for time, fix youtube_tag_spec
-    id[0]
+  def pattern_match_for(input)
+    REGEXP_OPTIONS
+      .filter_map { |regex| input.match(regex) }
+      .first
   end
 
-  def valid_id?(id)
-    id.match?(/\A[a-zA-Z0-9_-]{11}((\?t=)?(\d{1,}h?)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/)
-  end
+  def translate_start_time(video_id, time_parameter)
+    return "#{video_id}?start=#{time_parameter}" if time_parameter.match?(/\A\d+\Z/)
 
-  def translate_start_time(id)
-    time = id.split("?t=")[-1]
-    return "#{id.split('?t=')[0]}?start=#{time}" if time.match?(/\A\d+\Z/)
-
-    time_elements = time.split(/[a-z]/)
-    time_markers = time.split(/\d+/)[1..]
+    time_elements = time_parameter.split(/[a-z]/)
+    time_markers = time_parameter.split(/\d+/)[1..]
 
     seconds = 0
     time_markers.each_with_index do |m, i|
       seconds += MARKER_TO_SECONDS_MAP.fetch(m, 0) * time_elements[i].to_i
     end
 
-    "#{id.split('?t=')[0]}?start=#{seconds}"
+    "#{video_id}?start=#{seconds}"
   end
 end
 

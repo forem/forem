@@ -9,9 +9,9 @@ RSpec.describe "User visits a homepage", type: :system do
     it "shows the sign-in block" do
       visit "/"
       within "#sidebar-wrapper-left" do
-        p I18n.t("create_account")
-        expect(page).to have_text(I18n.t("core.log_in"))
-        expect(page).to have_text(I18n.t("core.create_account"))
+        p I18n.t("views.main.header.create_account")
+        expect(page).to have_text(I18n.t("views.main.header.login"))
+        expect(page).to have_text(I18n.t("views.main.header.create_account"))
       end
     end
 

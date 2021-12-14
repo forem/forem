@@ -10,7 +10,6 @@
   border-radius: var(--radius);
   font: inherit;
   cursor: pointer;
-  transition: all var(--transition-props);
   outline: 0;
   text-decoration: none;
   color: var(--color);
@@ -31,7 +30,7 @@
     z-index: var(--z-elevate);
     text-decoration: underline;
   }
-  
+
   // Both focus declarations below are the same but we unfortunately can't
   // combine them because Safari doesn't recognize it properly.
   //  • First declaration is for all browsers that support :focus-visible
@@ -61,20 +60,26 @@
       background-color: var(--bg-hover);
     }
   }
+
+  &[aria-current='page'] {
+    --bg: var(--link-current-bg);
+    --color: var(--link-current-color);
+    font-weight: var(--fw-bold);
+  }
 }
 
 .c-link {
-  --bg: transparent;
-  --bg-hover: var(--base-20);
-  --color: var(--base-80);
-  --color-hover: var(--accent-brand-darker);
+  --bg: var(--link-bg);
+  --bg-hover: var(--link-bg-hover);
+  --color: var(--link-color);
+  --color-hover: var(--link-branded-color-hover);
 }
 
 .c-link--branded {
-  --bg: transparent;
-  --bg-hover: var(--accent-brand-a10);
-  --color: var(--accent-brand);
-  --color-hover: var(--accent-brand-darker);
+  --bg: var(--link-branded-bg);
+  --bg-hover: var(--link-branded-bg-hover);
+  --color: var(--link-branded-color);
+  --color-hover: var(--link-branded-color-hover);
 }
 
 .c-link--icon-alone {

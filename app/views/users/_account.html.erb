@@ -34,7 +34,7 @@
           <div class="flex pt-2">
             <div class="flex-1 pl-4">
               <p class="ff-monospace"><%= api_secret.secret %></p>
-              <p class="fs-s"><%= t("views.settings.account.api.active.created", time: tag.time(api_secret.created_at.to_s, datetime: api_secret.created_at.rfc3339)) %></p>
+              <p class="fs-s"><%== t("views.settings.account.api.active.created", time: tag.time(api_secret.created_at.to_s, datetime: api_secret.created_at.rfc3339)) %></p>
             </div>
             <%= form_tag users_api_secret_path(api_secret.id), class: "api__secret__revoke", method: :delete do %>
               <%= button_tag t("views.settings.account.api.revoke"), class: "crayons-btn crayons-btn--danger" %>

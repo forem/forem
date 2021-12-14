@@ -17,7 +17,7 @@ gem "addressable", "~> 2.8" # A replacement for the URI implementation that is p
 gem "ahoy_email", "~> 2.1.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 4.0" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.4.7" # Allows admins to query data
+gem "blazer", "~> 2.4.8" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
@@ -116,7 +116,7 @@ gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.3" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
-gem "view_component", "~> 2.46", require: "view_component/engine" # View components for Rails
+gem "view_component", "~> 2.46" # View components for Rails
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails
 
@@ -154,7 +154,7 @@ group :development, :test do
   gem "rubocop-rails", "~> 2.12", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.6", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
-  gem "spring", "~> 3.1" # Preloads your application so things like console, rake and tests run faster
+  gem "spring", "~> 4.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
 

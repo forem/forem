@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe YoutubeTag, type: :liquid_tag do
   describe "#id" do
-    let(:valid_id_no_time) { "dQw4w9WgXcQ" }
-    let(:valid_id_with_time) { "QASbw8_0meM?t=8h12m26s" }
+    let(:valid_id_no_time) { "fhH5xX_yW6U" }
+    let(:valid_id_with_time) { "fhH5xX_yW6U?t=0h5m0s" }
     let(:invalid_id) { Faker::Lorem.characters(number: rand(12..100)) }
 
     def generate_new_liquid(id)
@@ -16,28 +16,28 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
       liquid = generate_new_liquid(valid_id_no_time).render
 
       expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/dQw4w9WgXcQ"')
+      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U"')
     end
 
     it "accepts valid YouTube ID with starting times" do
       liquid = generate_new_liquid(valid_id_with_time).render
 
       expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/QASbw8_0meM?start=29546"')
+      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
     end
 
     it "accepts YouTube ID with no start time and an empty space" do
       liquid = generate_new_liquid("#{valid_id_no_time} ").render
 
       expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/dQw4w9WgXcQ"')
+      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U"')
     end
 
     it "accepts YouTube ID with start times and one empty space" do
       liquid = generate_new_liquid("#{valid_id_with_time} ").render
 
       expect(liquid).to include('<iframe')
-      expect(liquid).to include('src="https://www.youtube.com/embed/QASbw8_0meM?start=29546"')
+      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
     end
     # rubocop:enable Style/StringLiterals
 
