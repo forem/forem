@@ -12,20 +12,15 @@ export const TagsFollowed = ({ tags = [] }) => {
     <Fragment>
       {tags.map(({ name, id, points }) =>
         points >= 1 ? (
-          <div
+          <a
             key={id}
-            className="sidebar-nav-element"
-            id={`sidebar-element-${name}`}
+            title={`${name} tag`}
+            onClick={trackSidebarTagClick}
+            className="c-link c-link--block"
+            href={`/t/${name}`}
           >
-            <a
-              title={`${name} tag`}
-              onClick={trackSidebarTagClick}
-              className="crayons-link crayons-link--block"
-              href={`/t/${name}`}
-            >
-              {`#${name}`}
-            </a>
-          </div>
+            {`#${name}`}
+          </a>
         ) : null,
       )}
     </Fragment>
