@@ -8,6 +8,8 @@ class HtmlVariant < ApplicationRecord
   has_many :html_variant_successes, dependent: :destroy
   has_many :html_variant_trials, dependent: :destroy
 
+  before_validation :strip_whitespace
+
   validates :group, inclusion: { in: GROUP_NAMES }
   validates :html, presence: true
   validates :name, uniqueness: true
@@ -76,5 +78,9 @@ class HtmlVariant < ApplicationRecord
 
   def allowed_image_host?(src)
     src.start_with?("https://res.cloudinary.com/") || src.start_with?(Images::Optimizer.get_imgproxy_endpoint)
+  end
+
+  def strip_whitespace
+    name.strip!
   end
 end
