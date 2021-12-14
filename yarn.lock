@@ -1920,10 +1920,10 @@
     "@reach/utils" "0.16.0"
     tslib "^2.3.0"
 
-"@reach/combobox@^0.16.4":
-  version "0.16.4"
-  resolved "https://registry.yarnpkg.com/@reach/combobox/-/combobox-0.16.4.tgz#0a6ad32e383211ac089f8dfa084a0b527f02e4d5"
-  integrity sha512-j9TANKr72Q1/K1Ez7C0qJ2E/JRKrkwUYyxMUTRp9Jiegcx/aW7RGv58ogipAB3fi0WrVklJgCAXAqtVocZ8kvA==
+"@reach/combobox@^0.16.5":
+  version "0.16.5"
+  resolved "https://registry.yarnpkg.com/@reach/combobox/-/combobox-0.16.5.tgz#3493647950b4e0838d9442156fd5d6a52ea2f41d"
+  integrity sha512-Csm79qZN3aGpIHnqMYcDH0Y75Z0K8u3j1DzQiRa3w8aDwdmQFocBIo3p9veEytiKm28Dccj/wmmvrCpgVMVH9Q==
   dependencies:
     "@reach/auto-id" "0.16.0"
     "@reach/descendants" "0.16.1"
