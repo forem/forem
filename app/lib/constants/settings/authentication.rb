@@ -27,7 +27,8 @@ module Constants
           placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
         },
         blocked_registration_email_domains: {
-          description: "Block registration from specified domains?  (comma-separated list)",
+          description: "Block registration from specified domains? This will affect all authentication methods. " \
+                       "(comma-separated list)",
           placeholder: "seo-hunt.com"
         },
         display_email_domain_allow_list_publicly: {
