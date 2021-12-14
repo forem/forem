@@ -826,7 +826,7 @@ GEM
     storext (3.3.0)
       activerecord (>= 4.0, < 6.2)
       virtus
-    stripe (5.41.0)
+    stripe (5.42.0)
     stripe-ruby-mock (3.1.0.rc3)
       dante (>= 0.2.0)
       multi_json (~> 1.0)
@@ -1056,7 +1056,7 @@ DEPENDENCIES
   sterile (~> 1.0)
   store_attribute (~> 0.9.3)
   storext (~> 3.3)
-  stripe (~> 5.41)
+  stripe (~> 5.42)
   stripe-ruby-mock (= 3.1.0.rc3)
   strong_migrations (~> 0.7)
   test-prof (~> 1.0)
