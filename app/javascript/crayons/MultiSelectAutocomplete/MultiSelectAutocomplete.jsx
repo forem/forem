@@ -15,16 +15,29 @@ const KEYS = {
   SPACE: ' ',
 };
 
+const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9])/;
+
 export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [inputPosition, setInputPosition] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [activeDescendentIndex, setActiveDescendentIndex] = useState(null);
+  const [ignoreBlur, setIgnoreBlur] = useState(false);
 
   const inputRef = useRef(null);
   const inputSizerRef = useRef(null);
   const selectedItemsRef = useRef(null);
+
+  const handleInputBlur = () => {
+    // Since the input is sometimes removed and rendered in a new location on blur, it's possible that inputRef.current may be null when we complete this check.
+    const currentValue = inputRef.current ? inputRef.current.value : '';
+    // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
+    if (!ignoreBlur && currentValue !== '') {
+      selectItem({ selectedItem: currentValue, focusInput: false });
+    }
+    setIgnoreBlur(false);
+  };
 
   useEffect(() => {
     if (inputPosition !== null) {
@@ -70,7 +83,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     setSuggestions(results.filter((item) => !selectedItems.includes(item)));
   };
 
-  const handleKeyUp = (e) => {
+  const handleKeyDown = (e) => {
     const { selectionStart, value: currentValue } = inputRef.current;
 
     switch (e.key) {
@@ -98,7 +111,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
       case KEYS.ENTER:
         e.preventDefault();
         if (activeDescendentIndex !== null) {
-          selectItem(suggestions[activeDescendentIndex]);
+          selectItem({ selectedItem: suggestions[activeDescendentIndex] });
         }
         break;
       case KEYS.ESCAPE:
@@ -112,23 +125,23 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
         e.preventDefault();
         // Accept whatever is in the input before the comma or space.
         // If any text remains after the comma or space, the edit will continue separately
-
-        // If the user has only typed a space or a comma, remove it
-        if (currentValue === ' ' || currentValue === ',') {
-          inputRef.current.value = '';
-          setSuggestions([]);
-        } else {
-          selectItem(
-            currentValue.slice(0, selectionStart - 1),
-            currentValue.slice(selectionStart),
-          );
+        if (currentValue !== '') {
+          selectItem({
+            selectedItem: currentValue.slice(0, selectionStart),
+            nextInputValue: currentValue.slice(selectionStart),
+          });
         }
         break;
       case KEYS.DELETE:
         if (currentValue === '') {
+          e.preventDefault();
           editPreviousSelectionIfExists();
         }
         break;
+      default:
+        if (!ALLOWED_CHARS_REGEX.test(e.key)) {
+          e.preventDefault();
+        }
     }
   };
 
@@ -144,13 +157,11 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     }
   };
 
-  const acceptCurrentInput = ({ currentTarget: { value } }) => {
-    if (value !== '') {
-      selectItem(value);
-    }
-  };
-
-  const selectItem = (selectedItem, nextInputValue = '') => {
+  const selectItem = ({
+    selectedItem,
+    nextInputValue = '',
+    focusInput = true,
+  }) => {
     // If an item was edited, we want to keep it in the same position in the list
     const insertIndex = inputPosition ? inputPosition : selectedItems.length;
     const newSelections = [
@@ -172,7 +183,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     // Clear the text input
     const { current: input } = inputRef;
     input.value = nextInputValue;
-    input.focus();
+    focusInput && input.focus();
   };
 
   const deselectItem = (deselectedItem) => {
@@ -199,8 +210,8 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
   ));
 
   // TODO:
+
   // Should the text and the remove button be separate buttons within a shared group? This would make the feature accessible, but maybe confusing
-  // Are we happy with the a11y of this input being a list item??
 
   // When a user edits a tag, we need to move the input inside the selected items
   const splitSelectionsAt =
@@ -221,8 +232,8 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
       id="multi-select-combobox"
       type="text"
       onChange={handleInputChange}
-      onKeyUp={handleKeyUp}
-      onBlur={acceptCurrentInput}
+      onKeyDown={handleKeyDown}
+      onBlur={handleInputBlur}
     />
   );
 
@@ -278,7 +289,8 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
                 role="option"
                 aria-selected={index === activeDescendentIndex}
                 key={suggestion}
-                onClick={() => selectItem(suggestion)}
+                onClick={() => selectItem({ selectedItem: suggestion })}
+                onMouseDown={() => setIgnoreBlur(true)}
               >
                 {suggestion}
               </li>
