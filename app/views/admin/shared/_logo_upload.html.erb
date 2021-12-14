@@ -7,7 +7,7 @@
     <%= f.file_field :logo, accept: allowed_types.to_s, aria_describedby: "logo-subtitle", data: { "max-file-size-mb": max_file_size.to_s, action: "change->logo-upload#previewLogo" } %>
     <div data-logo-upload-target="previewLogo" id="logo-upload-preview">
       <% if logo.present? %>
-        <img class="site-logo" src="<%= logo %>" alt="<%= community_name %>">
+        <img class="site-logo__img" src="<%= logo %>" alt="<%= community_name %>">
       <% end %>
     </div>
   </div>
