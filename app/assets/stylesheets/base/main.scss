@@ -85,8 +85,7 @@ a {
     max-height: calc(
       var(--header-height) - var(--su-2) * 2
     ); // making calculations instead of setting fixed value so should be smooth change if we ever decide to change header's height.
-    height: auto;
-    width: auto;
+    object-fit: contain;
     vertical-align: middle;
     display: inline-block;
     outline: 0;
