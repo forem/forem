@@ -1,4 +1,4 @@
-class AddIntdexToRatingVotes < ActiveRecord::Migration[5.2]
+class AddIndexToRatingVotes < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def change

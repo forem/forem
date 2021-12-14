@@ -14,35 +14,50 @@ That is: `<CTA />` or `<Link />` should be used where navigation is elicited, an
 For example, a 'Submit' control on 'Sign in' view (form) would suit a `<Button />` because its job is to submit the form. 
 However, 'Register' call-to-action—taking the user to a different form, in a different page or screen—would benefit from `<CTA />` or `<Link />` semantics.
 
-Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) when the desired action is to take the user to a new page.
+Do not use `<Button />s` as navigational elements. Instead, use `<Link />s` (or `<CTA />s`) when the desired action is to take the user to a new page.
 
 ## Variants
 
-### Primary
-
-Primary button has special look: high contrast (against rest of the view/component) and it's filled with accent color. 
-
-Ideally there should be only one Primary button per entire component, or sometimes even per entire view.
-Primary buttons should be used for the principal call to action on the page.
-
 ### Default
 
-Default variant is less prominent, and therefore can be used for less prominent actions.
-Default buttons are visually light (greyish) and you can have as many of them as you want (within common sense :D). 
-They can (but don't have to) be used in conjunction with a Primary button. In that case, default variant should be used for any remaining actions.
+The _Default_ variant is not very prominent, and therefore can be used for less prominent actions.
+The _Default_ buttons are visually light (greyish) and you can have as many of them as you want (within common sense :D). 
+They can (but don't have to) be used in conjunction with a _Primary_ button and less often with _Secondary_ buttons (use your common sense again or ping your designer).
+When combined with the _Primary_ or the _Secondary_, the _Default_ variant should be used for any remaining actions.
+
+Whenever used, make sure it has sufficient color contrast against the background it's used on.
+
+### Primary
+
+The _Primary_ variant has a special look: high contrast (against rest of the view/component) and it's filled with accent color. 
+
+Ideally there should be only one _Primary_ button per entire component, or sometimes even per entire view.
+Primary buttons should be used for the principal action on the page.
+
+### Secondary
+
+The _Secondary_ variant is visually in between the _Primary_ and the _Default_ buttons. It's not as loud as the _Primary_ button but definitely stands out more than the _Default_ button.
+It's especially useful when you want your button to be more distinguishable from its surroundings without making it super loud (like _Primary_). 
+A good example would be a component with lots of text. The _Default_ button could be potentially missed there (as it uses similar colors as regular texts).
+
+Whenever you have doubts between using the _Secondary_ vs the _Default_ variants, the rule of thumb should be:
+
+> Use the _Default_ variant by default :D unless it's not distinguishable enough from its surroundings.
+
+When combined with the _Primary_ button, the _Secondary_ variant should be used for any remaining or alternative actions.
 
 ## Configuration
 
 ### Destructive actions
 
 For actions that could have destructive effects on the user’s data (for example, *delete* or *remove*) we have a special style.
-This style can be applied by using `destructive` prop and it will work for both: primary and default variants. Take care when using the default variant to ensure that the red text has sufficient color contrast against the background where you are using it.
+This style can be applied by using `destructive` prop and it will work with two variants: _Primary_ and _Default_ (as it doesn't really make sense to have _Secondary_ variant for destructive buttons).
 
 ### Icons
 
-Icon can be placed in front of a label to both clarify an action and call attention to a button. 
+Icon can be placed in front of a label to both clarify an action but also to make button stand out more.
 By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
-By default, the icon itself won't be customizable. Icons within buttons are hidden from assistive technology, so make sure your button has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
+By default, the icon itself within `<Button />` is **not** customizable. Icons within buttons are hidden from assistive technology, so make sure your button has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
 
 #### Icon-only
 

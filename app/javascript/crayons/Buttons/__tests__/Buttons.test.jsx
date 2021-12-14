@@ -13,9 +13,33 @@ describe('<Button />', () => {
     expect(results).toHaveNoViolations();
   });
 
+  it('has no accessibility errors in primary variant', async () => {
+    const { container } = render(
+      <Button variant="primary">Hello world!</Button>,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('has no accessibility errors in secondary variant', async () => {
+    const { container } = render(
+      <Button variant="secondary">Hello world!</Button>,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('has no accessibility errors when props provided', async () => {
     const { container } = render(
-      <Button primary rounded destructive icon={CogIcon} tooltip="tooltip">
+      <Button
+        variant="primary"
+        rounded
+        destructive
+        icon={CogIcon}
+        tooltip="tooltip"
+      >
         Hello world!
       </Button>,
     );
@@ -30,7 +54,16 @@ describe('<Button />', () => {
   });
 
   it('renders a primary button', () => {
-    const { container } = render(<Button primary>Hello world!</Button>);
+    const { container } = render(
+      <Button variant="primary">Hello world!</Button>,
+    );
+    expect(container.innerHTML).toMatchSnapshot();
+  });
+
+  it('renders a secondary button', () => {
+    const { container } = render(
+      <Button variant="secondary">Hello world!</Button>,
+    );
     expect(container.innerHTML).toMatchSnapshot();
   });
 

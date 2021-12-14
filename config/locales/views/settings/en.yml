@@ -31,7 +31,7 @@ en:
             Delete your profile, along with your authentication associations.
 
             This does not include applications permissions. You will have to remove them yourself:
-          desc1b: Delete any and all content you have, such as articles, comments, your reading list or chat messages.
+          desc1b: Delete any and all content you have, such as articles, comments, or your reading list.
           desc1c: Allow your username to become available to anyone.
           desc2_html: Please, %{provide} to fully delete your account.
           provide: provide an email
@@ -96,7 +96,7 @@ en:
         heading: Destroy your account
         desc: 'Deleting your account will:'
         desc_1_html: delete your profile, along with your Twitter and/or GitHub associations. This does not include app permissions. You will have to remove them yourself on %{twitter} and %{github}.
-        desc_2: delete any and all content you have, such as articles, comments, your reading list or chat messages.
+        desc_2: delete any and all content you have, such as articles, comments, or your reading list.
         desc_3: allow your username to become available to anyone.
         click: click here
         confirm_html: 'For confirmation, type the words: <code>%{word}</code>'
@@ -129,22 +129,14 @@ en:
           remove: Remove
           save: Save template
           saved: Saved templates
-        connect: Connect settings
         generate: Generate a personal blog from your %{community} posts
         github:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
           desc2: Repositories will be disappear from your profile if you remove the OAuth association with GitHub.
-        guidelines:
-          label: Open inbox guidelines/instructions
-          placeholder: Please allow a few days for a response.
         learn: Learn more
         micro: 'Receive micropayments for time spent reading your posts directly. '
         payment: Payment Pointer
-        privacy: Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows.
-        open: Open
-        optional: Optional
-        private: Private
         rss:
           heading: Publishing to %{community} from RSS
           desc1_html: Posts will land in your %{dashboard} <strong>as drafts</strong>, and then you can publish from there.
@@ -161,7 +153,6 @@ en:
           referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
           save: Save Feed Settings
           submit: Submit Feed Settings
-        save_connect: Save Connect Settings
         save_web: Save Web Monetization Settings
         web: Web monetization
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.

@@ -22,7 +22,7 @@ describe('Namespaced ForemMobile functions', () => {
         cy.fixture('users/adminUser.json').as('user');
         cy.get('@user').then((user) => {
           cy.loginUser(user).then(() => {
-            cy.visit('/', runtimeStub);
+            cy.visitAndWaitForUserSideEffects('/', runtimeStub);
             cy.get('body').should('have.attr', 'data-user-status', 'logged-in');
             waitForBaseDataLoaded();
           });
@@ -84,9 +84,12 @@ describe('Namespaced ForemMobile functions', () => {
     describe('when logged out', () => {
       it('should return empty user data when logged out', () => {
         cy.testSetup();
-        cy.visit('/', runtimeStub);
+        cy.visitAndWaitForUserSideEffects('/', runtimeStub, false);
         waitForBaseDataLoaded();
 
+        // ensures the dynamic import had time to complete before
+        // referencing the attribute
+        cy.window().should('have.attr', 'ForemMobile');
         cy.window().then((win) => {
           assert.isUndefined(win.ForemMobile.getUserData());
         });
