@@ -16,6 +16,8 @@ module Notifications
       end
 
       def call
+        return if mention.mentionable.score.negative?
+
         Notification.create(
           user_id: mention.user_id,
           notifiable_id: mention.id,
