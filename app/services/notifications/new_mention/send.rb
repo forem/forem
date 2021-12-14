@@ -25,6 +25,8 @@ module Notifications
         )
 
         # Send PNs using Rpush - respecting users' notificaton delivery settings
+        return unless Users::NotificationSetting.find_by(user_id: mention.user_id)&.mobile_mention_notifications?
+
         target = mention.user_id
         message_key, mentionable_title =
           if mention.mentionable.is_a?(Article)
