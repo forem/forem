@@ -1,7 +1,7 @@
 class LinkTag < LiquidTagBase
   include ActionView::Helpers
   PARTIAL = "articles/liquid".freeze
-  REGISTRY_REGEXP = %r{#{URL.url}/[a-zA-Z0-9_]+/[a-zA-Z0-9-]+(/)?}
+  REGISTRY_REGEXP = %r{#{URL.url}/\w]+/[a-zA-Z0-9-]+/?}
 
   def initialize(_tag_name, slug_or_path_or_url, _parse_context)
     super
@@ -17,7 +17,7 @@ class LinkTag < LiquidTagBase
   end
 
   def get_article(slug)
-    slug = strip_tags(slug).strip
+    slug = strip_tags(slug.strip)
     find_article_by_user(article_hash(slug)) || find_article_by_org(article_hash(slug))
   end
 
