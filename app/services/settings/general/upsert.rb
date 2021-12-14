@@ -5,12 +5,15 @@ module Settings
       TAG_PARAMS = %w[sidebar_tags suggested_tags].freeze
 
       def self.call(settings)
+        params_to_clean = settings.except(:logo)
+
         if settings[:logo].present?
-          logo_uploader = upload_logo(settings[:logo])
+          logo_uploader = private_upload_logo(settings[:logo])
           logo_settings = { original_logo: logo_uploader.url, resized_logo: logo_uploader.resized_logo.url }
+          params_to_clean = params_to_clean.merge(logo_settings)
         end
 
-        cleaned_params = clean_params((logo_settings.nil? ? settings : settings.merge(logo_settings)).except(:logo))
+        cleaned_params = clean_params(params_to_clean)
         result = ::Settings::Upsert.call(cleaned_params, ::Settings::General)
         return result unless result.success?
 
@@ -35,7 +38,7 @@ module Settings
         Tag.find_or_create_all_with_like_by_name(tags)
       end
 
-      def self.upload_logo(image)
+      def self.private_upload_logo(image)
         LogoUploader.new.tap do |uploader|
           uploader.store!(image)
         end
