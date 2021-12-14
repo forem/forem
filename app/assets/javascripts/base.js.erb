@@ -719,11 +719,11 @@ var instantClick
     apiKey: document.body.dataset.honeybadgerKey,
     environment: "<%= Rails.env %>",
     revision: document.body.dataset.releaseFootprint,
-    ignorePatterns: [/ResizeObserver/i, /MetaMask/i],
   });
 
   Honeybadger.beforeNotify(function(notice) {
-    return !/MtPopUpList/.test(notice.message);
+    const ignorePatterns = [/ResizeObserver/i, /MetaMask/i, /MtPopUpList/i]
+    return !(ignorePatterns.some((pattern) => pattern.test(notice.message)));
   });
 
 // INITIALIZE AHOY TRACKING
