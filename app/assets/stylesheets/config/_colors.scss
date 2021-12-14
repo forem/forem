@@ -257,19 +257,25 @@
   --btn-current-bg: var(--base-20);
   --btn-current-color: var(--base-100);
 
-  // Buttons: Default Destructive
-  --btn-destructive-bg: transparent;
-  --btn-destructive-bg-hover: var(--accent-danger-a10);
-  --btn-destructive-color: var(--accent-danger);
-  --btn-destructive-color-hover: var(--accent-danger-darker);
-
   // Buttons: Primary
   --btn-primary-bg: var(--accent-brand);
   --btn-primary-bg-hover: var(--accent-brand-darker);
   --btn-primary-color: var(--base-inverted);
   --btn-primary-color-hover: var(--base-inverted);
 
-  // Buttons: Primary Destructive
+  // Buttons: Secondary
+  --btn-secondary-bg: var(--accent-brand-a10);
+  --btn-secondary-bg-hover: var(--accent-brand);
+  --btn-secondary-color: var(--accent-brand);
+  --btn-secondary-color-hover: var(--base-inverted);
+
+  // Buttons: Destructive Default
+  --btn-destructive-bg: transparent;
+  --btn-destructive-bg-hover: var(--accent-danger-a10);
+  --btn-destructive-color: var(--accent-danger);
+  --btn-destructive-color-hover: var(--accent-danger-darker);
+
+  // Buttons: Destructive Primary
   --btn-primary-destructive-bg: var(--accent-danger);
   --btn-primary-destructive-bg-hover: var(--accent-danger-darker);
   --btn-primary-destructive-color: var(--base-inverted);

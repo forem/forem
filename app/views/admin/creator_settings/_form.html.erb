@@ -76,11 +76,15 @@
       <p class="crayons-field__description">You will have the opportunity to establish the Code of Conduct and Terms and Conditions for the users of your Forem during the setup process.</p>
       <div class="mb-2">
         <%= f.check_box :checked_code_of_conduct, class: "crayons-checkbox", required: true %>
-        <label for="checked_code_of_conduct">I agree to uphold our <a href="/code-of-conduct" target="code-of-conduct">Code of Conduct</a>.</label>
+        <%= f.label :checked_code_of_conduct do %>
+          I agree to uphold our <a href="/code-of-conduct" target="code-of-conduct">Code of Conduct</a>.
+        <% end %>
       </div>
       <div>
         <%= f.check_box :checked_terms_and_conditions, class: "crayons-checkbox", required: true %>
-        <label for="checked_terms_and_conditions">I agree to our <a href="/terms" target="terms-and-conditions">Terms and Conditions</a>.</label>
+        <%= f.label :checked_terms_and_conditions do %>
+          I agree to our <a href="/terms" target="terms-and-conditions">Terms and Conditions</a>.
+        <% end %>
       </div>
     </div>
   </fieldset>

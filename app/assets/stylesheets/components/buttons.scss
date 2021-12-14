@@ -513,6 +513,13 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   }
 }
 
+.c-btn--secondary {
+  --bg: var(--btn-secondary-bg);
+  --bg-hover: var(--btn-secondary-bg-hover);
+  --color: var(--btn-secondary-color);
+  --color-hover: var(--btn-secondary-color-hover);
+}
+
 .c-btn--icon-alone {
   padding: var(--su-2);
 }
