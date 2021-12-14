@@ -16,12 +16,11 @@ Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) 
 A CTA renders an anchor element, therefore standard link markup must be used,
 including a `href` attribute, otherwise, it is not focusable by the keyboard.
 
-
 ### Icons
 
-Icon can be placed in front of a label to both clarify an action and call attention to a CTA.
+Icon can be placed in front of a label to both clarify an action but also to make CTA stand out more.
 By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
-By default, the icon itself won't be customizable. Icons within CTAs are hidden from assistive technology, so make sure your button has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
+By default, the icon itself within `<CTA />` is **not** customizable. Icons within CTAs are hidden from assistive technology, so make sure your CTA has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
 
 #### Icon-only
 

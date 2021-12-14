@@ -27,10 +27,9 @@ It is recommended to always use `branded` variant for inline links, especially w
 
 ### Icons
 
-Icons are only supported in *block* links (`block`).
-Icon can be placed in front of a label to both clarify an action and call attention to a link.
-By passing an object in `src` prop, there will be automatically included `<Icon />` component.
-By default, the icon itself won't be customizable.
+Icon can be placed in front of a label to both clarify an action but also to make link stand out more.
+By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself within `<Link />` is **not** customizable. Icons within links are hidden from assistive technologies, so make sure your link has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
 
 #### Icon-only
 

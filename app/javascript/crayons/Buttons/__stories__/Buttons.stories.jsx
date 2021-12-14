@@ -12,11 +12,19 @@ export default {
     },
   },
   argTypes: {
-    primary: {
+    variant: {
+      control: {
+        type: 'select',
+        options: {
+          default: undefined,
+          primary: 'primary',
+          secondary: 'secondary',
+        },
+      },
       description:
-        'This prop defines whether or not your button will have *primary* style (in practice: high contrast, filled with accent color). Keep in mind ideally there should be only one primary button per entire component, or sometimes even per entire view.',
+        'There are three available variants (styles) to pick from: _default_, _primary_ and _secondary_. Please refer to the documentation to better understand the differences in usage.',
       table: {
-        defaultValue: { summary: false },
+        defaultValue: { summary: 'default' },
       },
     },
     rounded: {
@@ -28,7 +36,7 @@ export default {
     },
     destructive: {
       description:
-        'For various destructive actions we can have special styling for button which will add red-ish coloring.',
+        'For various destructive actions we can have special styling for button which will add red-ish coloring. Keep in mind we only have two variants available for destructive button: _default_ and _primary_',
       table: {
         defaultValue: { summary: false },
       },
@@ -56,7 +64,6 @@ export default {
 
 export const Default = (args) => <Button {...args} />;
 Default.args = {
-  primary: false,
   destructive: false,
   children: 'Button label',
   tooltip: undefined,
@@ -66,11 +73,37 @@ Default.args = {
 export const Primary = (args) => <Button {...args} />;
 Primary.args = {
   ...Default.args,
-  primary: true,
+  variant: 'primary',
+};
+
+export const Secondary = (args) => <Button {...args} />;
+Secondary.args = {
+  ...Default.args,
+  variant: 'secondary',
+};
+
+export const Destructive = (args) => <Button {...args} />;
+Destructive.args = {
+  ...Default.args,
+  destructive: true,
+};
+
+export const WithTooltip = (args) => <Button {...args} />;
+WithTooltip.args = {
+  ...Default.args,
+  tooltip: 'Hello world',
 };
 
 export const WithIcon = (args) => <Button {...args} />;
 WithIcon.args = {
   ...Default.args,
   icon: CogIcon,
+};
+
+export const IconOnly = (args) => <Button {...args} />;
+IconOnly.args = {
+  ...Default.args,
+  icon: CogIcon,
+  tooltip: 'Button label',
+  children: undefined,
 };
