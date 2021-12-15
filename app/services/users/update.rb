@@ -69,13 +69,6 @@ module Users
       attrs
     end
 
-    def prepare_for_username_change
-      return if @updated_user_attributes[:username] == @user.username
-
-      @updated_user_attributes[:old_username] = @user.username
-      @updated_user_attributes[:old_old_username] = @user.old_username
-    end
-
     def update_successful?
       return false unless verify_profile_image
 
