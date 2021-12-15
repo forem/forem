@@ -20,19 +20,14 @@ class Runtime {
   /**
    * This function returns a string that represents the current Medium where
    * the app is currently running. The currently supported mediums are Browser,
-   * ForemWebView and PWA.
+   * and ForemWebView.
    *
-   * @returns {String} One of the supported Mediums or 'Unsupported'
+   * @returns {String} One of the supported Mediums
    */
   static currentMedium() {
-    const pwaButtons = document.getElementById('pwa-nav-buttons');
-    if (/ForemWebView/i.test(navigator.userAgent)) {
-      return 'ForemWebView';
-    } else if (pwaButtons.classList.contains('pwa-nav-buttons--showing')) {
-      return 'PWA';
-    } else {
-      return 'Browser';
-    }
+    return /ForemWebView/i.test(navigator.userAgent)
+      ? 'ForemWebView'
+      : 'Browser';
   }
 
   /**

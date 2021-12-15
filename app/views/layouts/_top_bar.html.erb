@@ -10,18 +10,6 @@
     </span>
     <%= render "layouts/logo" %>
 
-    <div id="pwa-nav-buttons" class="pwa-nav-buttons">
-      <button type="button" id="app-back-button">
-        <%= inline_svg_tag("keyboard-left-arrow-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: t("views.hamburger.back")) %>
-      </button>
-      <button type="button" id="app-forward-button">
-        <%= inline_svg_tag("keyboard-right-arrow-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: t("views.hamburger.forward")) %>
-      </button>
-      <button type="button" id="app-refresh-button">
-        <%= inline_svg_tag("refresh-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: t("views.hamburger.refresh")) %>
-      </button>
-    </div>
-
     <div class="crayons-header--search js-search-form" id="header-search">
       <form accept-charset="UTF-8" method="get" action="<%= search_path %>" role="search">
         <div class="crayons-fields crayons-fields--horizontal">
