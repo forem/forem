@@ -22,14 +22,12 @@ class Runtime {
    * the app is currently running. The currently supported mediums are Browser,
    * and ForemWebView.
    *
-   * @returns {String} One of the supported Mediums 
+   * @returns {String} One of the supported Mediums
    */
   static currentMedium() {
-    if (/ForemWebView/i.test(navigator.userAgent)) {
-      return 'ForemWebView';
-    } else {
-      return 'Browser';
-    }
+    return /ForemWebView/i.test(navigator.userAgent)
+      ? 'ForemWebView'
+      : 'Browser';
   }
 
   /**
