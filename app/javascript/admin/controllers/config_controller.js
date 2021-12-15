@@ -141,7 +141,7 @@ export default class ConfigController extends Controller {
     );
 
     for (const logo of document.querySelectorAll('.site-logo__img')) {
-      if (logo !== previewLogo) {
+      if (previewLogo && logo !== previewLogo) {
         logo.src = previewLogo.src;
       }
     }
