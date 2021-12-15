@@ -392,11 +392,30 @@ class User < ApplicationRecord
     trusted?
   end
 
+  # The name of the tags moderated by the user.
+  #
+  # @note This caches a relatively expensive query
+  #
+  # @return [Array<String>] an array of tag names
+  #
+  # @see #moderator_for_tags_not_cached
   def moderator_for_tags
     Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
-      tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
-      Tag.where(id: tag_ids).pluck(:name)
+      moderator_for_tags_not_cached
     end
+  end
+
+  # When you need the "up to the moment" names of the tags moderated
+  # by this user.
+  #
+  # @note Favor #moderator_for_tags
+  #
+  # @return [Array<String>] an array of tag names
+  #
+  # @see #moderator_for_tags
+  def moderator_for_tags_not_cached
+    tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
+    Tag.where(id: tag_ids).pluck(:name)
   end
 
   def comment_suspended?
