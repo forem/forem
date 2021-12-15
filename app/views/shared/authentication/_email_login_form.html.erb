@@ -1,28 +1,38 @@
 <%= form_tag(session_path(:user), id: "login-form") do %>
-<%= form_for(User.new, as: :user, url: session_path(:user), data: { testid: "login-form" }) do |f| %>
-  <div class="crayons-field mb-3">
-    <%= f.label :email, class: "crayons-field__label" %>
-    <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
-  </div>
-
-  <div class="crayons-field mb-3">
-    <%= f.label :password, class: "crayons-field__label" %>
-    <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
-  </div>
-
-  <div class="crayons-field crayons-field--checkbox inline-flex flex-row items-center">
-    <%= f.check_box :remember_me, class: "crayons-checkbox" %>
-    <%= f.label :remember_me, class: "crayons-field__label fw-normal" %>
-  </div>
-
-<div class="actions pt-3">
-    <input type="button" id="algobtn" display="none" name="commit" value="Connect to MyAlgo" class="crayons-btn crayons-btn--l w-100" ><script src="/assets/script.a30b0004.js"></script>
+  <%= form_for(User.new, as: :user, url: session_path(:user), data: { testid: "login-form" }) do |f| %>
+    <div class="crayons-field mb-3">
+      <%= f.label :email, class: "crayons-field__label" %>
+      <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
     </div>
-
-<p class="pt-6 fs-s align-center">
-  <a href="<%= new_password_path(:user) %>">
-    I forgot my password
-  </a>
-</p>
-<% end %>
-<% end %>
+  
+    <div class="crayons-field mb-3">
+      <%= f.label :password, class: "crayons-field__label" %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
+    </div>
+  
+    <div class="crayons-field crayons-field--checkbox inline-flex flex-row items-center">
+      <%= f.check_box :remember_me, class: "crayons-checkbox" %>
+      <%= f.label :remember_me, class: "crayons-field__label fw-normal" %>
+    </div>
+  
+    <div class="registration__hr">
+                <span class="registration__hr-label">
+                  250 HDL required to access FORUM.
+                </span>
+              </div>
+  
+    <div id="walletswitch"></div>
+  
+  <div class="actions pt-3">
+  
+      <input type="button" id="algbtn" display="none" name="commit" value="Connect to Algorand" class="crayons-btn crayons-btn--l w-100" ><script src="https://unpkg.com/forum-login@0.1.0/dist/script.62ad9558.js"></script>
+      </div>
+  
+  <p class="pt-6 fs-s align-center">
+    <a href="<%= new_password_path(:user) %>">
+      I forgot my password
+    </a>
+  </p>
+  <% end %>
+  <% end %>
+  
