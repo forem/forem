@@ -12,7 +12,7 @@ RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --def
 RUN echo "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc
 
 # Install Node and Yarn
-ENV NODE_VERSION=14.17.6
+ENV NODE_VERSION=16.13.1
 RUN bash -c ". .nvm/nvm.sh && \
         nvm install ${NODE_VERSION} && \
         nvm alias default ${NODE_VERSION} && \
