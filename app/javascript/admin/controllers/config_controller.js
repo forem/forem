@@ -125,23 +125,26 @@ export default class ConfigController extends Controller {
       displaySnackbar(err.message);
     } finally {
       // Only update the site logo in the header if the new logo is uploaded successfully.
-      if (!errored) {
-        this.updateLogo(event.target);
+      if (!errored && event.target.elements.settings_general_logo) {
+        this.updateLogo();
       }
     }
   }
 
-  updateLogo(form) {
-    if (!form.elements.settings_general_logo) {
-      return;
-    }
-
+  /**
+   * Updates the site logo in the header with the same URL as the preview logo.
+   */
+  updateLogo() {
     const previewLogo = document.querySelector(
       '#logo-upload-preview .site-logo__img',
     );
 
+    if (!previewLogo) {
+      return;
+    }
+
     for (const logo of document.querySelectorAll('.site-logo__img')) {
-      if (previewLogo && logo !== previewLogo) {
+      if (logo !== previewLogo) {
         logo.src = previewLogo.src;
       }
     }
