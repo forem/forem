@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed do
   subject(:unified_embed) { described_class }
 
+  let(:article) { create(:article) }
+
   describe ".find_liquid_tag_for" do
     valid_youtube_url_formats = [
       "https://www.youtube.com/embed/dQw4w9WgXcQ",
@@ -34,6 +36,11 @@ RSpec.describe UnifiedEmbed do
     it "returns JsFiddle for a jsfiddle url" do
       expect(described_class.find_liquid_tag_for(link: "http://jsfiddle.net/link2twenty/v2kx9jcd"))
         .to eq(JsFiddleTag)
+    end
+
+    it "returns Forem Link for a forem url" do
+      expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
+        .to eq(LinkTag)
     end
 
     it "returns NextTechTag for a nexttech url" do

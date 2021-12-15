@@ -62,6 +62,12 @@ RSpec.describe "/creator_settings/new", type: :request do
         expect(current_user.checked_terms_and_conditions).to eq(true)
         expect(response).to redirect_to(:root).and have_http_status(:found)
       end
+
+      it "updates settings admin action taken" do
+        expect do
+          post admin_creator_settings_path, params: params
+        end.to change(Settings::General, :admin_action_taken_at)
+      end
     end
   end
 end

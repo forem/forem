@@ -1,5 +1,7 @@
 module Admin
   class CreatorSettingsController < Admin::ApplicationController
+    after_action :bust_content_change_caches, only: %i[create]
+
     ALLOWED_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions community_name
                         invite_only_mode logo primary_brand_color_hex public].freeze
 
