@@ -1,6 +1,7 @@
 import { h, Fragment } from 'preact';
 import ahoy from 'ahoy.js';
 import PropTypes from 'prop-types';
+import { Link } from '@crayons';
 
 export const TagsFollowed = ({ tags = [] }) => {
   const trackSidebarTagClick = (event) => {
@@ -12,15 +13,15 @@ export const TagsFollowed = ({ tags = [] }) => {
     <Fragment>
       {tags.map(({ name, id, points }) =>
         points >= 1 ? (
-          <a
+          <Link
             key={id}
             title={`${name} tag`}
             onClick={trackSidebarTagClick}
-            className="c-link c-link--block"
+            block
             href={`/t/${name}`}
           >
             {`#${name}`}
-          </a>
+          </Link>
         ) : null,
       )}
     </Fragment>

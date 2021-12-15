@@ -25,9 +25,9 @@
 
 <% if other_nav_links.any? %>
   <nav class="mb-4" aria-labelledby="other-nav-heading">
-    <h3 id="other-nav-heading" class="crayons-subtitle-3 py-2 pl-3">
+    <h2 id="other-nav-heading" class="crayons-subtitle-3 py-2 pl-3">
       <%= t("views.main.nav.other") %>
-    </h3>
+    </h2>
     <ul class="other-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
       <% other_nav_links.each do |link| %>
         <%= render "layouts/sidebar_nav_link", link: link %>
