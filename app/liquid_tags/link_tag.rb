@@ -1,6 +1,7 @@
 class LinkTag < LiquidTagBase
   include ActionView::Helpers
   PARTIAL = "articles/liquid".freeze
+  REGISTRY_REGEXP = %r{#{URL.url}/\w+/[a-zA-Z0-9-]+/?}
 
   def initialize(_tag_name, slug_or_path_or_url, _parse_context)
     super
@@ -16,7 +17,7 @@ class LinkTag < LiquidTagBase
   end
 
   def get_article(slug)
-    slug = ActionController::Base.helpers.strip_tags(slug).strip
+    slug = strip_tags(slug.strip)
     find_article_by_user(article_hash(slug)) || find_article_by_org(article_hash(slug))
   end
 
@@ -33,7 +34,7 @@ class LinkTag < LiquidTagBase
     path.slice!(0) if path.starts_with?("/") # remove leading slash if present
     path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
     extracted_hash = Addressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
-    raise StandardError, "The article you're looking for does not exist: {% link #{slug} %}" unless extracted_hash
+    raise StandardError, "The article you're looking for does not exist: #{slug}" unless extracted_hash
 
     extracted_hash
   end
@@ -55,3 +56,5 @@ end
 
 Liquid::Template.register_tag("link", LinkTag)
 Liquid::Template.register_tag("post", LinkTag)
+
+UnifiedEmbed.register(LinkTag, regexp: LinkTag::REGISTRY_REGEXP)

@@ -17,7 +17,7 @@ describe('<ButtonGroup /> component', () => {
 
   it('should have no a11y violations when rendered', async () => {
     const { container } = render(
-      <ButtonGroup>
+      <ButtonGroup labelText="Test button group">
         <Button>Hello World!</Button>
         <Button variant="secondary">Hello again!</Button>
       </ButtonGroup>,
@@ -29,7 +29,7 @@ describe('<ButtonGroup /> component', () => {
 
   it('should render', () => {
     const { container } = render(
-      <ButtonGroup>
+      <ButtonGroup labelText="Test button group">
         <Button>Hello World!</Button>
         <Button icon={Icon} />
       </ButtonGroup>,
