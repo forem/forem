@@ -38,7 +38,7 @@ module Settings
         Tag.find_or_create_all_with_like_by_name(tags)
       end
 
-      def self.private_upload_logo(image)
+      def self.upload_logo(image)
         LogoUploader.new.tap do |uploader|
           uploader.store!(image)
         end
