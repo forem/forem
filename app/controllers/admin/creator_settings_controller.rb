@@ -15,8 +15,7 @@ module Admin
         checked_terms_and_conditions: current_user.checked_terms_and_conditions,
       )
       @max_file_size = LogoUploader::MAX_FILE_SIZE
-      @logo_allowed_types = (LogoUploader::CONTENT_TYPE_ALLOWLIST +
-        LogoUploader::EXTENSION_ALLOWLIST.map { |extension| ".#{extension}" }).join(",")
+      @logo_allowed_types = LogoUploader::ALLOWED_TYPES
     end
 
     def create
