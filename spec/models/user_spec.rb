@@ -323,23 +323,6 @@ RSpec.describe User, type: :model do
         expect(user).not_to be_valid
       end
     end
-
-    context "when the past value is relevant" do
-      let(:user) { create(:user) }
-
-      it "changes old_username and old_old_username properly if username changes" do
-        old_username = user.username
-        random_new_username = "username_#{rand(100_000_000)}"
-        user.update(username: random_new_username)
-        expect(user.username).to eq(random_new_username)
-        expect(user.old_username).to eq(old_username)
-
-        new_username = user.username
-        user.update(username: "username_#{rand(100_000_000)}")
-        expect(user.old_username).to eq(new_username)
-        expect(user.old_old_username).to eq(old_username)
-      end
-    end
   end
 
   context "when callbacks are triggered before and after create" do

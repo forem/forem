@@ -27,7 +27,7 @@ module Users
       @profile = user.profile || user.create_profile
       @users_setting = user.setting
       @updated_profile_attributes = updated_attributes[:profile] || {}
-      @updated_user_attributes = updated_attributes[:user].to_h || {}
+      @updated_user_attributes = prepare_user_attributes(updated_attributes[:user], user)
       @updated_users_setting_attributes = updated_attributes[:users_setting].to_h || {}
       @errors = []
       @success = false
@@ -59,6 +59,22 @@ module Users
     private
 
     attr_reader :errors
+
+    def prepare_user_attributes(updated_user_attributes, user)
+      attrs = updated_user_attributes.to_h || {}
+      if attrs[:username] != user.username
+        attrs[:old_username] = user.username
+        attrs[:old_old_username] = user.old_username
+      end
+      attrs
+    end
+
+    def prepare_for_username_change
+      return if @updated_user_attributes[:username] == @user.username
+
+      @updated_user_attributes[:old_username] = @user.username
+      @updated_user_attributes[:old_old_username] = @user.old_username
+    end
 
     def update_successful?
       return false unless verify_profile_image
