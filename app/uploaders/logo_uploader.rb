@@ -4,6 +4,7 @@ class LogoUploader < BaseUploader
   EXTENSION_ALLOWLIST = %w[png jpg jpeg jpe].freeze
   IMAGE_TYPE_ALLOWLIST = %i[png jpg jpeg jpe].freeze
   CONTENT_TYPE_ALLOWLIST = %w[image/png image/jpg image/jpeg].freeze
+  ALLOWED_TYPES = (CONTENT_TYPE_ALLOWLIST + EXTENSION_ALLOWLIST.map { |extension| ".#{extension}" }).join(",")
 
   def store_dir
     STORE_DIRECTORY
