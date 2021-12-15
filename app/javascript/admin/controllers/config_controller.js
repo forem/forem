@@ -119,10 +119,11 @@ export default class ConfigController extends Controller {
 
       const outcome = await response.json();
 
+      errored = outcome.error != null;
       displaySnackbar(outcome.message ?? outcome.error);
     } catch (err) {
       errored = true;
-      displaySnackbar(err.message);
+      displaySnackbar('An error occurred. Please try again.');
     } finally {
       // Only update the site logo in the header if the new logo is uploaded successfully.
       if (!errored && event.target.elements.settings_general_logo) {
