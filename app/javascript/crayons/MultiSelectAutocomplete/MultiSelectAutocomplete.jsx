@@ -2,7 +2,7 @@
 // Disabled due to the linter being out of date for combobox role: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/789
 import { h, Fragment } from 'preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { Icon, ButtonGroup, ButtonNew as Button } from '@crayons';
+import { Icon, Button } from '@crayons';
 import { Close } from '@images/x.svg';
 
 const KEYS = {
@@ -200,7 +200,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
 
   const allSelectedItemElements = selectedItems.map((item, index) => (
     <li key={item} className="w-max">
-      <ButtonGroup labelText={item} className="mr-1 mb-1 w-max">
+      <div role="group" aria-label={item} className="flex mr-1 mb-1 w-max">
         <Button
           variant="secondary"
           className="c-autocomplete--multi__selected p-1 cursor-text"
@@ -217,7 +217,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
         >
           <Icon src={Close} />
         </Button>
-      </ButtonGroup>
+      </div>
     </li>
   ));
 
