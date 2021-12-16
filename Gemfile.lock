@@ -280,7 +280,7 @@ GEM
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
-    fastimage (2.2.5)
+    fastimage (2.2.6)
     fastly (3.0.2)
     feedjira (3.2.0)
       loofah (>= 2.3.1)
