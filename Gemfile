@@ -123,7 +123,7 @@ gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
 
-  gem "brakeman", "~> 5.1", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
+  gem "brakeman", "~> 5.2", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.9" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "easy_translate", "~> 0.5.1" # Google translate tie-in to be used with i18n tasks
