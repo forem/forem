@@ -1,7 +1,7 @@
 class CodesandboxTag < LiquidTagBase
   PARTIAL = "liquids/codesandbox".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(?:www|app\.)?(?:codesandbox\.io/embed/)(?<video_id>[a-zA-Z0-9-]{0,60})(?:\?)?(?<options>\S+)}
+  REGISTRY_REGEXP = %r{https?://(?:www|app\.)?(?:codesandbox\.io/embed/)(?<video_id>[a-zA-Z0-9-]{0,60})(?:\?)?(?<options>\S+)?}
   # rubocop:enable Layout/LineLength
   OPTIONS_REGEXP =
     %r{\A(initialpath=([a-zA-Z0-9\-_/.@%])+)\Z|
