@@ -385,10 +385,12 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
 .crayons-btn-group {
   display: flex;
 
-  .crayons-btn {
+  .crayons-btn,
+  .c-btn {
     border-radius: 0;
 
-    + .crayons-btn:not(.crayons-btn--outlined) {
+    + .crayons-btn:not(.crayons-btn--outlined),
+    + .c-btn:not(.crayons-btn--outlined) {
       box-shadow: var(--shadow), inset 1px 0 0 rgba(0, 0, 0, 0.1);
       margin-left: -1px;
 
@@ -397,7 +399,8 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
       }
     }
 
-    + .crayons-btn--outlined {
+    + .crayons-btn--outlined,
+    + .c-btn--outlined {
       margin-left: calc(-1 * var(--border-width));
     }
 

@@ -74,6 +74,11 @@
     background-color: var(--form-bg-focus);
   }
 
+  .crayons-btn.c-autocomplete--multi__selected:last-child:hover,
+  .crayons-btn.c-autocomplete--multi__selected:last-child:focus-visible {
+    color: var(--accent-danger);
+  }
+
   ul.c-autocomplete--multi__popover {
     padding: var(--su-1);
     z-index: var(--z-elevate);

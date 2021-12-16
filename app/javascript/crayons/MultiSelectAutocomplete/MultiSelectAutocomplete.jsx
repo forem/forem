@@ -2,7 +2,7 @@
 // Disabled due to the linter being out of date for combobox role: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/789
 import { h, Fragment } from 'preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { Icon } from '@crayons';
+import { Icon, ButtonGroup, ButtonNew as Button } from '@crayons';
 import { Close } from '@images/x.svg';
 
 const KEYS = {
@@ -57,6 +57,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
 
   const enterEditState = (editItem, editItemIndex) => {
     inputSizerRef.current.innerText = editItem;
+    deselectItem(editItem);
     setEditValue(editItem);
     setInputPosition(editItemIndex);
   };
@@ -199,42 +200,51 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
 
   const allSelectedItemElements = selectedItems.map((item, index) => (
     <li key={item} className="w-max">
-      <button className="mr-1 mb-1 w-max" onClick={() => deselectItem(item)}>
-        {/* The span intentionally does not have a keyboard click event */}
-        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-        <span onClick={() => enterEditState(item, index)}>{item}</span>
-        <span className="screen-reader-only"> (remove)</span>
-        <Icon src={Close} />
-      </button>
+      <ButtonGroup labelText={item} className="mr-1 mb-1 w-max">
+        <Button
+          variant="secondary"
+          className="c-autocomplete--multi__selected p-1 cursor-text"
+          aria-label={`Edit ${item}`}
+          onClick={() => enterEditState(item, index)}
+        >
+          {item}
+        </Button>
+        <Button
+          variant="secondary"
+          className="c-autocomplete--multi__selected p-1"
+          aria-label={`Remove ${item}`}
+          onClick={() => deselectItem(item)}
+        >
+          <Icon src={Close} />
+        </Button>
+      </ButtonGroup>
     </li>
   ));
-
-  // TODO:
-
-  // Should the text and the remove button be separate buttons within a shared group? This would make the feature accessible, but maybe confusing
 
   // When a user edits a tag, we need to move the input inside the selected items
   const splitSelectionsAt =
     inputPosition !== null ? inputPosition : selectedItems.length;
 
   const input = (
-    <input
-      ref={inputRef}
-      autocomplete="off"
-      className="c-autocomplete--multi__input"
-      aria-activedescendant={
-        activeDescendentIndex !== null
-          ? suggestions[activeDescendentIndex]
-          : null
-      }
-      aria-autocomplete="list"
-      aria-labelledby="multi-select-label selected-items-list"
-      id="multi-select-combobox"
-      type="text"
-      onChange={handleInputChange}
-      onKeyDown={handleKeyDown}
-      onBlur={handleInputBlur}
-    />
+    <li className="self-center">
+      <input
+        ref={inputRef}
+        autocomplete="off"
+        className="c-autocomplete--multi__input"
+        aria-activedescendant={
+          activeDescendentIndex !== null
+            ? suggestions[activeDescendentIndex]
+            : null
+        }
+        aria-autocomplete="list"
+        aria-labelledby="multi-select-label selected-items-list"
+        id="multi-select-combobox"
+        type="text"
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        onBlur={handleInputBlur}
+      />
+    </li>
   );
 
   return (
@@ -246,14 +256,17 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
       />
       <label id="multi-select-label">{labelText}</label>
 
-      <ul
-        id="selected-items-list"
-        ref={selectedItemsRef}
-        className="screen-reader-only"
-        aria-live="assertive"
-        aria-atomic="false"
-        aria-relevant="additions removals"
-      />
+      {/* A visually hidden list provides confirmation messages to screen reader users as an item is selected or removed */}
+      <div className="screen-reader-only">
+        <p>Selected items:</p>
+        <ul
+          ref={selectedItemsRef}
+          className="screen-reader-only list-none"
+          aria-live="assertive"
+          aria-atomic="false"
+          aria-relevant="additions removals"
+        />
+      </div>
 
       <div className="c-autocomplete--multi relative">
         {/* disabled as the inner input forms the tab stop (this click handler ensures _any_ click on the wrapper focuses the input which may be less wide) */}
