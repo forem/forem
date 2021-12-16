@@ -41,18 +41,32 @@ describe('Creator Settings Page', () => {
     cy.findByText(/^Brand color/).invoke('attr', 'value', '#ff0000');
 
     // should contain a 'Who can join this community?' radio selector field and allow selection upon click
-    cy.findByRole('group', { name: /^Who can join this community/i }).should(
-      'be.visible',
-    );
-    cy.findAllByRole('radio', { name: /everyone/i }).check();
-    cy.findAllByRole('radio').should('be.checked');
+    cy.findByRole('group', { name: /^Who can join this community/i })
+      .as('joinCommunity')
+      .should('be.visible');
+
+    cy.get('@joinCommunity').within(() => {
+      cy.findByRole('radio', { name: /everyone/i })
+        .check()
+        .should('be.checked');
+
+      cy.findByRole('radio', { name: /invite only/i }).should('not.be.checked');
+    });
 
     // should contain a 'Who can view content in this community?' radio selector field and allow selection upon click
     cy.findByRole('group', {
       name: /^Who can view content in this community/i,
-    }).should('be.visible');
-    cy.findAllByRole('radio', { name: /members only/i }).check();
-    cy.findAllByRole('radio').should('be.checked');
+    })
+      .as('viewCommunity')
+      .should('be.visible');
+
+    cy.get('@viewCommunity').within(() => {
+      cy.findByRole('radio', { name: /members only/i })
+        .check()
+        .should('be.checked');
+
+      cy.findByRole('radio', { name: /everyone/i }).should('not.be.checked');
+    });
 
     // should contain a 'I agree to uphold our Code of Conduct' checkbox field and allow selection upon click
     cy.findByRole('group', {
