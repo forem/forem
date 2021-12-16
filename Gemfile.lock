@@ -556,7 +556,7 @@ GEM
     pg_search (2.3.5)
       activerecord (>= 5.2)
       activesupport (>= 5.2)
-    pghero (2.8.1)
+    pghero (2.8.2)
       activerecord (>= 5)
     pry (0.14.1)
       coderay (~> 1.1)
