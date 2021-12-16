@@ -11,6 +11,12 @@ RSpec.describe UnifiedEmbed do
       "https://app.blogcast.host/embed/4942",
     ]
 
+    valid_codesandbox_url_formats = [
+      "https://codesandbox.io/embed/exciting-knuth-hywlv",
+      "https://app.codesandbox.io/embed/exciting-knuth-hywlv",
+      "https://app.codesandbox.io/embed/exciting-knuth-hywlv?file=/index.html&runonclick=0&view=editor",
+    ]
+
     valid_instagram_url_formats = [
       "https://www.instagram.com/p/CXgzXWXroHK/",
       "https://instagram.com/p/CXgzXWXroHK/",
@@ -35,6 +41,13 @@ RSpec.describe UnifiedEmbed do
       it "returns BlogcastTag for a valid blogcast url" do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(BlogcastTag)
+      end
+    end
+
+    valid_codesandbox_url_formats.each do |url|
+      it "returns CodesandboxTag for a valid codesandbox url" do
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(CodesandboxTag)
       end
     end
 
