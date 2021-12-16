@@ -164,7 +164,8 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     focusInput = true,
   }) => {
     // If an item was edited, we want to keep it in the same position in the list
-    const insertIndex = inputPosition ? inputPosition : selectedItems.length;
+    const insertIndex =
+      inputPosition !== null ? inputPosition : selectedItems.length;
     const newSelections = [
       ...selectedItems.slice(0, insertIndex),
       selectedItem,
