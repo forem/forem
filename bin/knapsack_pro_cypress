@@ -1,27 +1,10 @@
-#!/usr/bin/env ruby
-require "cypress-rails"
-require Pathname.new(CypressRails::Config.new.dir).join("config/environment")
-
-module CypressRails
-  class FindsBin
-    def call(dir = Dir.pwd)
-      "node_modules/.bin/knapsack-pro-cypress"
-    end
-  end
-end
-
-CypressRails::FindsBin
-
-def system!(*args)
-  system(*args) || abort("\n== Command #{args} failed ==")
-end
-
-ENV["E2E"]="true"
-if !!ENV["KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS"]
-  CypressRails::Run.new.call
+#!/bin/bash
+if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS" = "" ]; then
+  KNAPSACK_PRO_ENDPOINT=https://api-disabled-for-fork.knapsackpro.com \
+    KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
+    KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS=disabled-for-fork \
+    E2E=true bin/rails cypress:run
 else
-  ENV["KNAPSACK_PRO_ENDPOINT"] = "https://api-disabled-for-fork.knapsackpro.com"
-  ENV["KNAPSACK_PRO_MAX_REQUEST_RETRIES"] = "0"
-  ENV["KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS"] = "disabled-for-fork"
-  CypressRails::Run.new.call
-end
+  E2E=true bin/rails cypress:run
+fi
+
