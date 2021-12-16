@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 require "cypress-rails"
-# require "pathname"
 require Pathname.new(CypressRails::Config.new.dir).join("config/environment")
 
 module CypressRails
   class FindsBin
     def call(dir = Dir.pwd)
-      puts "yoooooooooooooooooooooooooooooooooooooooooooooooooooo"
       "node_modules/.bin/knapsack-pro-cypress"
     end
   end
