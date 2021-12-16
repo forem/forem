@@ -24,7 +24,7 @@ module Users
 
     def initialize(user, updated_attributes)
       @user = user
-      @profile = user.profile
+      @profile = user.profile || user.create_profile
       @users_setting = user.setting
       @updated_profile_attributes = updated_attributes[:profile] || {}
       @updated_user_attributes = updated_attributes[:user].to_h || {}

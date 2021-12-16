@@ -23,7 +23,7 @@ module Users
       delete_feedback_messages(user)
     end
 
-    # delete_all will nullify the corresponding foreign_key field bacause of the dependent: :nullify strategy
+    # delete_all will nullify the corresponding foreign_key field because of the dependent: :nullify strategy
     def delete_feedback_messages(user)
       user.offender_feedback_messages.delete_all
       user.reporter_feedback_messages.delete_all
@@ -37,6 +37,7 @@ module Users
     def delete_profile_info(user)
       user.notifications.delete_all
       user.reactions.delete_all
+      user.reactions_to.delete_all
       user.follows.delete_all
       Follow.followable_user(user.id).delete_all
       user.mentions.delete_all

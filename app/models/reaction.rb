@@ -42,6 +42,7 @@ class Reaction < ApplicationRecord
       .or(user_vomits.where(user_id: user.id))
   }
   scope :privileged_category, -> { where(category: PRIVILEGED_CATEGORIES) }
+  scope :for_user, ->(user) { where(reactable: user) }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }

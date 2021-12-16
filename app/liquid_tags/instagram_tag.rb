@@ -1,9 +1,13 @@
 class InstagramTag < LiquidTagBase
   PARTIAL = "liquids/instagram".freeze
+  REGISTRY_REGEXP = %r{(?:https?://)?(?:www\.)?(?:instagram.com/p/)(?<video_id>[a-zA-Z0-9_-]{11})/?}
+  VALID_ID_REGEXP = /\A(?<video_id>[a-zA-Z0-9_-]{11})\Z/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
   def initialize(_tag_name, id, _parse_context)
     super
-    @id = parse_id(id)
+    input   = CGI.unescape_html(strip_tags(id))
+    @id     = parse_id_or_url(input)
   end
 
   def render(_context)
@@ -17,16 +21,14 @@ class InstagramTag < LiquidTagBase
 
   private
 
-  def parse_id(input)
-    input_no_space = input.delete(" ")
-    raise StandardError, "Invalid Instagram Id" unless valid_id?(input_no_space)
+  def parse_id_or_url(input)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, "Invalid Instagram ID" unless match
 
-    input_no_space
-  end
-
-  def valid_id?(id)
-    id.length == 11 && id =~ /[a-zA-Z0-9_-]{11}/
+    match[:video_id]
   end
 end
 
 Liquid::Template.register_tag("instagram", InstagramTag)
+
+UnifiedEmbed.register(InstagramTag, regexp: InstagramTag::REGISTRY_REGEXP)

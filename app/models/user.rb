@@ -163,7 +163,7 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
-  validate :unique_including_orgs_and_podcasts, if: :username_changed?
+  validates :username, unique_cross_model_slug: true, if: :username_changed?
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -392,11 +392,30 @@ class User < ApplicationRecord
     trusted?
   end
 
+  # The name of the tags moderated by the user.
+  #
+  # @note This caches a relatively expensive query
+  #
+  # @return [Array<String>] an array of tag names
+  #
+  # @see #moderator_for_tags_not_cached
   def moderator_for_tags
     Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
-      tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
-      Tag.where(id: tag_ids).pluck(:name)
+      moderator_for_tags_not_cached
     end
+  end
+
+  # When you need the "up to the moment" names of the tags moderated
+  # by this user.
+  #
+  # @note Favor #moderator_for_tags
+  #
+  # @return [Array<String>] an array of tag names
+  #
+  # @see #moderator_for_tags
+  def moderator_for_tags_not_cached
+    tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
+    Tag.where(id: tag_ids).pluck(:name)
   end
 
   def comment_suspended?
@@ -437,16 +456,6 @@ class User < ApplicationRecord
 
   def blocked_by?(blocker_id)
     UserBlock.blocking?(blocker_id, id)
-  end
-
-  def unique_including_orgs_and_podcasts
-    username_taken = (
-      Organization.exists?(slug: username) ||
-      Podcast.exists?(slug: username) ||
-      Page.exists?(slug: username)
-    )
-
-    errors.add(:username, "is taken.") if username_taken
   end
 
   def non_banished_username
@@ -493,7 +502,7 @@ class User < ApplicationRecord
   end
 
   def auditable?
-    trusted || tag_moderator? || any_admin?
+    trusted? || tag_moderator? || any_admin?
   end
 
   def tag_moderator?
@@ -544,6 +553,10 @@ class User < ApplicationRecord
 
   def subscribed_to_email_follower_notifications?
     notification_setting.email_follower_notifications
+  end
+
+  def reactions_to
+    Reaction.for_user(self)
   end
 
   protected
@@ -603,10 +616,6 @@ class User < ApplicationRecord
 
     self.old_old_username = old_username
     self.old_username = username_was
-    articles.find_each do |article|
-      article.path = article.path.gsub(username_was, username)
-      article.save
-    end
   end
 
   def bust_cache

@@ -15,7 +15,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   context "when user is not trusted" do
     before { sign_in create(:user) }
 
-    it "does not grant acesss", proper_status: true do
+    it "does not grant access", proper_status: true do
       get path
       expect(response).to have_http_status(:not_found)
     end

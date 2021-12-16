@@ -114,7 +114,7 @@ sub vcl_recv {
     || req.http.user-agent == "RSurf15a 51"
     || req.http.user-agent == "RSurf15a 81"
     # Block Ruby bots unless they're interacting with the API
-    || (req.http.user-agent == "Ruby" && !(req.http.url ~ "^/api"))
+    || (req.http.user-agent == "Ruby" && !(req.url ~ "^/api"))
     || req.http.user-agent == "searchbot admin@google.com"
     || req.http.user-agent == "ShablastBot 1.0"
     || req.http.user-agent == "snap.com beta crawler v0"

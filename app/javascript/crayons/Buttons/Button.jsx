@@ -8,7 +8,7 @@ import { Icon } from '@crayons';
 export const ButtonNew = (props) => {
   const {
     children,
-    primary,
+    variant = 'default',
     icon,
     rounded,
     destructive,
@@ -30,8 +30,8 @@ export const ButtonNew = (props) => {
   };
 
   const classes = classNames('c-btn', {
-    'c-btn--primary': primary,
-    'c-btn--destructive': destructive,
+    [`c-btn--${variant}`]: variant && variant !== 'default',
+    'c-btn--destructive': destructive && variant !== 'secondary',
     'c-btn--icon-left': icon && children,
     'c-btn--icon-alone': icon && !children,
     'crayons-tooltip__activator': tooltip,
@@ -51,7 +51,7 @@ export const ButtonNew = (props) => {
           aria-hidden="true"
           focusable="false"
           src={icon}
-          className={classNames('c-btn__icon')}
+          className="c-btn__icon"
         />
       )}
       {children}
@@ -73,12 +73,12 @@ ButtonNew.displayName = 'ButtonNew';
 
 ButtonNew.propTypes = {
   children: defaultChildrenPropTypes,
-  primary: PropTypes.bool,
+  variant: PropTypes.oneOf(['default', 'primary', 'secondary']),
   rounded: PropTypes.bool,
   destructive: PropTypes.bool,
   type: PropTypes.oneOf(['button', 'submit']),
   className: PropTypes.string,
   tooltip: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   onKeyUp: PropTypes.func,
-  icon: PropTypes.ReactNode,
+  icon: PropTypes.elementType,
 };

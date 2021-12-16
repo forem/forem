@@ -2,8 +2,6 @@
 @import './skip-link';
 
 .crayons-header {
-  --indicator-outline: var(--header-bg);
-
   height: var(--header-height);
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
@@ -30,7 +28,7 @@
     position: absolute;
     top: calc(var(--su-1) * -1);
     right: 0;
-    box-shadow: 0 0 0 2px var(--indicator-outline);
+    box-shadow: 0 0 0 2px var(--header-bg);
   }
 }
 
@@ -45,64 +43,18 @@
     margin: 0 var(--su-4);
     display: block;
   }
-
-  .crayons-btn:focus {
-    outline: revert;
-  }
-}
-
-.crayons-header__link {
-  margin: 0 var(--su-1);
-
-  &:hover,
-  &:focus {
-    --indicator-outline: var(--header-bg-hover);
-
-    color: var(--header-icons-color-hover);
-    background: var(--header-bg-hover);
-  }
-
-  &--current {
-    --indicator-outline: var(--header-bg-current);
-
-    color: var(--header-icons-color-hover);
-    background: var(--header-bg-current) !important;
-
-    .crayons-indicator {
-      display: none;
-    }
-  }
 }
 
 // Dropdown under profile picture / hamburger icon
 .crayons-header__menu {
-  --trigger-color: var(--header-icons-color);
-  --trigger-border-color: transparent;
-  height: 100%;
-  display: flex;
-  align-items: center;
-
   @media (min-width: $breakpoint-s) {
     perspective: 1000px;
   }
 
-  &__trigger {
-    all: unset;
-    padding: calc(var(--su-1) / 2);
-    margin: 0 var(--su-2);
-    border-radius: 50%;
-    color: var(--trigger-color);
-    cursor: pointer;
-    // hold space for interaction style
-    border: 2px solid var(--trigger-border-color);
-  }
-
   &__dropdown {
     transform-style: preserve-3d;
-    top: var(--header-height);
     transform-origin: top right;
     transition: all var(--transition-props);
-    transition-delay: var(--dropdown-delay, 0.25s);
     transform: var(
       --dropdown-transform,
       translateY(calc(1 * var(--su-1))) rotateX(-10deg)
@@ -111,85 +63,10 @@
     visibility: var(--dropdown-visibility, hidden);
   }
 
-  &.showing,
-  &.desktop:hover {
-    --trigger-border-color: var(--header-bg-hover);
-    --trigger-color: var(--header-icons-color-hover);
+  &.showing {
     --dropdown-transform: translateY(0) rotateX(0);
-    --dropdown-delay: 0;
     --dropdown-opacity: 1;
     --dropdown-visibility: visible;
-  }
-
-  .focus-visible:focus {
-    --trigger-border-color: var(--header-button-focus-color);
-    --trigger-color: var(--header-button-focus-color);
-  }
-}
-
-.pwa-nav-buttons {
-  height: 100%;
-  display: none;
-  padding-left: var(--su-2);
-  button {
-    all: unset;
-    padding: 0 var(--su-2);
-    color: var(--header-icons-color);
-
-    &:hover {
-      color: var(--header-icons-color-hover);
-    }
-  }
-  @media (min-width: $breakpoint-m) {
-    &.pwa-nav-buttons--showing {
-      display: flex;
-    }
-  }
-}
-
-.authentication-header {
-  &__container {
-    padding: var(--su-6);
-  }
-
-  &__image-container {
-    width: var(--su-8);
-    height: var(--su-8);
-    margin-bottom: var(--su-2);
-  }
-
-  &__image {
-    border-radius: var(--radius);
-    transform: rotate(-10deg);
-    height: auto;
-    width: 100%;
-  }
-
-  &__title {
-    color: var(--card-color);
-    font-size: var(--fs-2xl);
-    line-height: var(--lh-tight);
-
-    @media (min-width: $breakpoint-s) {
-      font-size: var(--fs-3xl);
-    }
-  }
-
-  &__description {
-    color: var(--card-color-secondary);
-    margin-bottom: var(--su-4);
-  }
-
-  &__actions {
-    display: grid;
-    grid-gap: var(--su-1);
-
-    @media (min-width: $breakpoint-s) {
-      display: flex;
-      flex-direction: column;
-      width: max-content;
-      justify-self: center;
-    }
   }
 }
 

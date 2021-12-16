@@ -280,7 +280,7 @@ module Html
     def user_link_if_exists(mention)
       username = mention.delete("@").downcase
       if User.find_by(username: username)
-        <<~HTML
+        <<~HTML.chomp
           <a class='mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{Settings::General.app_domain}/#{username}'>@#{username}</a>
         HTML
       else

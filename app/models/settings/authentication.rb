@@ -27,7 +27,7 @@ module Settings
     setting :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
     setting :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
 
-    # Google ReCATPCHA keys
+    # Google ReCAPTCHA keys
     setting :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
     setting :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
@@ -46,7 +46,10 @@ module Settings
     #
     # @return [Boolean] do we allow this domain?
     def self.acceptable_domain?(domain:)
-      return false if blocked_registration_email_domains.include?(domain)
+      return false if blocked_registration_email_domains.detect do |blocked|
+        domain == blocked ||
+          domain.ends_with?(".#{blocked}")
+      end
       return true if allowed_registration_email_domains.empty?
       return true if allowed_registration_email_domains.include?(domain)
 

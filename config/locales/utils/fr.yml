@@ -1,0 +1,14 @@
+---
+fr:
+  xml:
+    opensearch:
+      short_name: "%{community} Search"
+      description: Find posts from %{community}.
+    user:
+      image: "%{user} profile image"
+  json:
+    author: Active %{community} author
+  mailer:
+    adjust: Adjust your email settings
+    adjust_only_html: Don't want to get emails like this? Adjust your email settings at %{path}
+    unsubscribe: Unsubscribe

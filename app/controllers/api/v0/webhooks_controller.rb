@@ -2,7 +2,6 @@ module Api
   module V0
     class WebhooksController < ApiController
       before_action :authenticate!
-      before_action -> { doorkeeper_authorize! :public }, if: -> { doorkeeper_token }
 
       skip_before_action :verify_authenticity_token, only: %w[create destroy]
 
@@ -15,7 +14,6 @@ module Api
 
       def create
         @webhook = @user.webhook_endpoints.new(webhook_params)
-        @webhook.oauth_application_id = doorkeeper_token.application_id if doorkeeper_token
         @webhook.save!
 
         render "show", status: :created
@@ -35,13 +33,7 @@ module Api
       private
 
       def webhooks_scope
-        relation = if doorkeeper_token
-                     @user.webhook_endpoints.for_app(doorkeeper_token.application_id)
-                   else
-                     @user.webhook_endpoints
-                   end
-
-        relation.select(ATTRIBUTES_FOR_SERIALIZATION)
+        @user.webhook_endpoints.select(ATTRIBUTES_FOR_SERIALIZATION)
       end
 
       def webhook_params
