@@ -1,4 +1,4 @@
-nrequire "rails_helper"
+require "rails_helper"
 
 RSpec.describe LiquidTagPolicy, type: :policy do
   let(:liquid_tag) { instance_double(LiquidTagBase, user_authorization_method_name: user_authorization_method_name) }
