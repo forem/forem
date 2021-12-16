@@ -2,6 +2,11 @@
 # running E2E tests. Otherwise this will run when system tests run.
 return unless Rails.env.test? && ENV["E2E"].present?
 
+# Explicitly requiring lib/cypress-rails to load monkey-patch
+Dir.glob(Rails.root.join("lib/cypress-rails/*.rb")).each do |filename|
+  require_dependency filename
+end
+
 # rubocop:disable Rails/Output
 
 CypressRails.hooks.before_server_start do
