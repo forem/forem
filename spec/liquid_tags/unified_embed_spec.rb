@@ -3,17 +3,27 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed do
   subject(:unified_embed) { described_class }
 
+  let(:article) { create(:article) }
+
   describe ".find_liquid_tag_for" do
-    valid_youtube_url_formats = [
-      "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      "https://www.youtube.com/watch?v=rc5AyncB_Xw&t=18s",
-      "https://youtu.be/rc5AyncB_Xw",
+    valid_instagram_url_formats = [
+      "https://www.instagram.com/p/CXgzXWXroHK/",
+      "https://instagram.com/p/CXgzXWXroHK/",
+      "http://www.instagram.com/p/CXgzXWXroHK/",
+      "www.instagram.com/p/CXgzXWXroHK/",
+      "instagram.com/p/CXgzXWXroHK/",
     ]
 
     valid_vimeo_url_formats = [
       "https://player.vimeo.com/video/652446985?h=a68f6ed1f5",
       "https://vimeo.com/ondemand/withchude/647355334",
       "https://vimeo.com/636725488",
+    ]
+
+    valid_youtube_url_formats = [
+      "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "https://www.youtube.com/watch?v=rc5AyncB_Xw&t=18s",
+      "https://youtu.be/rc5AyncB_Xw",
     ]
 
     it "returns GistTag for a gist url" do
@@ -31,9 +41,21 @@ RSpec.describe UnifiedEmbed do
         .to eq(CodepenTag)
     end
 
+    valid_instagram_url_formats.each do |url|
+      it "returns InstagramTag for a valid instagram url format" do
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(InstagramTag)
+      end
+    end
+
     it "returns JsFiddle for a jsfiddle url" do
       expect(described_class.find_liquid_tag_for(link: "http://jsfiddle.net/link2twenty/v2kx9jcd"))
         .to eq(JsFiddleTag)
+    end
+
+    it "returns Forem Link for a forem url" do
+      expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
+        .to eq(LinkTag)
     end
 
     it "returns NextTechTag for a nexttech url" do
@@ -61,17 +83,17 @@ RSpec.describe UnifiedEmbed do
         .to eq(WikipediaTag)
     end
 
-    valid_youtube_url_formats.each do |url|
-      it "returns YoutubeTag for a valid youtube url format" do
-        expect(described_class.find_liquid_tag_for(link: url))
-          .to eq(YoutubeTag)
-      end
-    end
-
     valid_vimeo_url_formats.each do |url|
       it "returns VimeoTag for a valid vimeo url format" do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(VimeoTag)
+      end
+    end
+
+    valid_youtube_url_formats.each do |url|
+      it "returns YoutubeTag for a valid youtube url format" do
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(YoutubeTag)
       end
     end
   end

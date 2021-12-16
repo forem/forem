@@ -8,14 +8,14 @@ export const CTA = (props) => {
   const {
     children,
     href = '#',
-    variant,
+    variant = 'default',
     icon,
     className,
     ...otherProps
   } = props;
 
   const classes = classNames('c-cta', {
-    [`c-cta--${variant}`]: variant,
+    [`c-cta--${variant}`]: variant && variant !== 'default',
     'c-cta--icon-left': icon && children,
     [className]: className,
   });
@@ -38,7 +38,7 @@ export const CTA = (props) => {
 CTA.displayName = 'CTA';
 
 CTA.propTypes = {
-  variant: PropTypes.oneOf([undefined, 'branded']),
+  variant: PropTypes.oneOf(['default', 'branded']),
   rounded: PropTypes.bool,
   href: PropTypes.string.isRequired,
   className: PropTypes.string,

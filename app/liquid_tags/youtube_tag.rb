@@ -35,7 +35,7 @@ class YoutubeTag < LiquidTagBase
   private
 
   def parse_id_or_url(input)
-    match = pattern_match_for(input)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
     raise StandardError, "Invalid YouTube ID" unless match
 
     video_id       = match[:video_id]
@@ -44,12 +44,6 @@ class YoutubeTag < LiquidTagBase
     return video_id if time_parameter.blank?
 
     translate_start_time(video_id, time_parameter)
-  end
-
-  def pattern_match_for(input)
-    REGEXP_OPTIONS
-      .filter_map { |regex| input.match(regex) }
-      .first
   end
 
   def translate_start_time(video_id, time_parameter)
