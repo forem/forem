@@ -13,6 +13,8 @@ ports:
 
 tasks:
   - name: Forem Server
+    env:
+      DISABLE_SPRING: 1
     before: >
       redis-server &
       gp await-port 5432 &&
