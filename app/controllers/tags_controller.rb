@@ -4,7 +4,7 @@ class TagsController < ApplicationController
   after_action :verify_authorized
 
   ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
-  INDEX_API_ATTRIBUTES = %i[name short_summary bg_color_hex badge_id].freeze
+  INDEX_API_ATTRIBUTES = %i[name rules_html short_summary bg_color_hex badge_id].freeze
 
   TAGS_ALLOWED_PARAMS = %i[
     wiki_body_markdown

@@ -30,6 +30,8 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       response_tag = JSON.parse(response.body).first
       expect(response_tag["name"]).to eq(tag.name)
       expect(response_tag).to have_key("rules_html")
+      expect(response_tag).to have_key("short_summary")
+      expect(response_tag).to have_key("bg_color_hex")
     end
   end
 
