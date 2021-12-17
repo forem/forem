@@ -1,8 +1,6 @@
 class CodesandboxTag < LiquidTagBase
   PARTIAL = "liquids/codesandbox".freeze
-  # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(?:www|app\.)?(?:codesandbox\.io/embed/)(?<video_id>[a-zA-Z0-9-]{0,60})(?:\?)?(?<options>\S+)?}
-  # rubocop:enable Layout/LineLength
+  REGISTRY_REGEXP = %r{https?://(?:www|app\.)?(?:codesandbox\.io/embed/)(?<video_id>[\w-]{,60})(?:\?)?(?<options>\S+)?}
   OPTIONS_REGEXP =
     %r{\A(initialpath=([a-zA-Z0-9\-_/.@%])+)\Z|
       \A(file=([a-zA-Z0-9\-_/.@%])+)\Z|
@@ -39,7 +37,7 @@ class CodesandboxTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id =~ /\A[a-zA-Z0-9\-]{0,60}\Z/
+    id =~ /\A[\w-]{,60}\Z/
   end
 
   def extract_options(input)
@@ -48,20 +46,13 @@ class CodesandboxTag < LiquidTagBase
   end
 
   def parse_options(options)
-    options.map { |option| valid_option(option) }.reject(&:nil?)
-
-    query = options.join("&")
+    query = options.filter_map { |option| option if valid_option(option) }.join("&")
 
     query.blank? ? query : "?#{query}"
   end
 
-  # Valid options must start with 'initialpath=' or 'module=' and a string of at least 1 length
-  # composed of letters, numbers, dashes, underscores, forward slashes, @ signs, periods/dots,
-  # and % symbols.  Invalid options will raise an exception
   def valid_option(option)
-    raise StandardError, "CodeSandbox Error: Invalid options" unless (option =~ OPTIONS_REGEXP)&.zero?
-
-    option
+    (option =~ OPTIONS_REGEXP)&.zero?
   end
 end
 

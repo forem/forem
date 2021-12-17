@@ -37,15 +37,15 @@ RSpec.describe UnifiedEmbed do
       "https://youtu.be/rc5AyncB_Xw",
     ]
 
-    valid_blogcast_url_formats.each do |url|
-      it "returns BlogcastTag for a valid blogcast url" do
+    it "returns BlogcastTag for a valid blogcast url" do
+      valid_blogcast_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(BlogcastTag)
       end
     end
 
-    valid_codesandbox_url_formats.each do |url|
-      it "returns CodesandboxTag for a valid codesandbox url" do
+    it "returns CodesandboxTag for a valid codesandbox url" do
+      valid_codesandbox_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(CodesandboxTag)
       end
@@ -66,8 +66,8 @@ RSpec.describe UnifiedEmbed do
         .to eq(CodepenTag)
     end
 
-    valid_instagram_url_formats.each do |url|
-      it "returns InstagramTag for a valid instagram url" do
+    it "returns InstagramTag for a valid instagram url" do
+      valid_instagram_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(InstagramTag)
       end
@@ -108,15 +108,15 @@ RSpec.describe UnifiedEmbed do
         .to eq(WikipediaTag)
     end
 
-    valid_vimeo_url_formats.each do |url|
-      it "returns VimeoTag for a valid vimeo url" do
+    it "returns VimeoTag for a valid vimeo url" do
+      valid_vimeo_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(VimeoTag)
       end
     end
 
-    valid_youtube_url_formats.each do |url|
-      it "returns YoutubeTag for a valid youtube url" do
+    it "returns YoutubeTag for a valid youtube url" do
+      valid_youtube_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(YoutubeTag)
       end
