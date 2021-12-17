@@ -42,6 +42,8 @@ const reducer = (state, action) => {
       return { ...state, activeDescendentIndex: action.payload };
     case 'setIgnoreBlur':
       return { ...state, ignoreBlur: action.payload };
+    default:
+      return state;
   }
 };
 

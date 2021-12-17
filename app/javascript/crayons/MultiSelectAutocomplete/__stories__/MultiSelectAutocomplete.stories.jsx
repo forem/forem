@@ -19,14 +19,14 @@ export const Default = () => {
     'ten',
   ];
 
-  const fetchSuggestions = (searchTerm) => {
+  const fetchSuggestions = async (searchTerm) => {
     const filteredSuggestions = options.filter((option) =>
       option.startsWith(searchTerm),
     );
 
-    return Promise.resolve(
-      filteredSuggestions.length === 0 ? [searchTerm] : filteredSuggestions,
-    );
+    return filteredSuggestions.length === 0
+      ? [searchTerm]
+      : filteredSuggestions;
   };
 
   return (
