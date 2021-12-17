@@ -1,8 +1,13 @@
 class BlogcastTag < LiquidTagBase
   PARTIAL = "liquids/blogcast".freeze
+  REGISTRY_REGEXP = %r{https?://(?:app\.)?(?:blogcast\.host/embed/)(?<video_id>\d{1,9})}
+  VALID_ID_REGEXP = /\A(?<video_id>\d{1,9})\Z/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
+
   def initialize(_tag_name, id, _parse_context)
     super
-    @id = parse_id(id)
+    input = strip_tags(id)
+    @id   = parse_id_or_url(input)
   end
 
   def render(_context)
@@ -16,16 +21,14 @@ class BlogcastTag < LiquidTagBase
 
   private
 
-  def parse_id(input)
-    input_no_space = input.delete(" ")
-    raise StandardError, "Invalid Blogcast Id" unless valid_id?(input_no_space)
+  def parse_id_or_url(input)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, "Invalid Blogcast ID" unless match
 
-    input_no_space
-  end
-
-  def valid_id?(id)
-    (id =~ /\A\d{1,9}\Z/i)&.zero?
+    match[:video_id]
   end
 end
 
 Liquid::Template.register_tag("blogcast", BlogcastTag)
+
+UnifiedEmbed.register(BlogcastTag, regexp: BlogcastTag::REGISTRY_REGEXP)

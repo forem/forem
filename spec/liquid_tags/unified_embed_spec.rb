@@ -6,6 +6,11 @@ RSpec.describe UnifiedEmbed do
   let(:article) { create(:article) }
 
   describe ".find_liquid_tag_for" do
+    valid_blogcast_url_formats = [
+      "https://blogcast.host/embed/4942",
+      "https://app.blogcast.host/embed/4942",
+    ]
+
     valid_instagram_url_formats = [
       "https://www.instagram.com/p/CXgzXWXroHK/",
       "https://instagram.com/p/CXgzXWXroHK/",
@@ -26,6 +31,13 @@ RSpec.describe UnifiedEmbed do
       "https://youtu.be/rc5AyncB_Xw",
     ]
 
+    valid_blogcast_url_formats.each do |url|
+      it "returns BlogcastTag for a valid blogcast url" do
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(BlogcastTag)
+      end
+    end
+
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
         .to eq(GistTag)
@@ -42,7 +54,7 @@ RSpec.describe UnifiedEmbed do
     end
 
     valid_instagram_url_formats.each do |url|
-      it "returns InstagramTag for a valid instagram url format" do
+      it "returns InstagramTag for a valid instagram url" do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(InstagramTag)
       end
@@ -84,14 +96,14 @@ RSpec.describe UnifiedEmbed do
     end
 
     valid_vimeo_url_formats.each do |url|
-      it "returns VimeoTag for a valid vimeo url format" do
+      it "returns VimeoTag for a valid vimeo url" do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(VimeoTag)
       end
     end
 
     valid_youtube_url_formats.each do |url|
-      it "returns YoutubeTag for a valid youtube url format" do
+      it "returns YoutubeTag for a valid youtube url" do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(YoutubeTag)
       end

@@ -5,6 +5,7 @@ module Api
 
       def show
         render json: {
+          comment_count: Comment.estimated_count,
           context: ApplicationConfig["FOREM_CONTEXT"],
           cover_image_url: Settings::General.main_social_image,
           description: Settings::Community.community_description,
@@ -12,6 +13,7 @@ module Api
           domain: Settings::General.app_domain,
           logo_image_url: Settings::General.logo_png,
           name: Settings::Community.community_name,
+          published_article_count: Article.published.estimated_count,
           registered_users_count: User.registered.estimated_count,
           tagline: Settings::Community.tagline,
           version: release_version,
