@@ -12,6 +12,6 @@ module AdminHelper
   end
 
   def dom_safe_name(group_name)
-    group_name.gsub(/\s+|\./, "_")
+    group_name.gsub(/\s+|\./, "_").gsub(/\A(\d)/, '_\1')
   end
 end
