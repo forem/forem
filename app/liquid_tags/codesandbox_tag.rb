@@ -1,6 +1,6 @@
 class CodesandboxTag < LiquidTagBase
   PARTIAL = "liquids/codesandbox".freeze
-  REGISTRY_REGEXP = %r{https?://(?:www|app\.)?(?:codesandbox\.io/embed/)(?<video_id>[\w-]{,60})(?:\?)?(?<options>\S+)?}
+  REGISTRY_REGEXP = %r{https?://(?:www|app\.)?(?:codesandbox\.io/embed/)(?<id>[\w-]{,60})(?:\?)?(?<options>\S+)?}
   OPTIONS_REGEXP =
     %r{\A(initialpath=([a-zA-Z0-9\-_/.@%])+)\Z|
       \A(file=([a-zA-Z0-9\-_/.@%])+)\Z|
@@ -28,7 +28,7 @@ class CodesandboxTag < LiquidTagBase
 
   def parse_id_or_url_and_options(input)
     match = pattern_match_for(input, [REGISTRY_REGEXP])
-    return [match[:video_id], parse_options(match[:options]&.split("&"))] if match
+    return [match[:id], parse_options(match[:options]&.split("&"))] if match
 
     id = input.split.first
     raise StandardError, "CodeSandbox Error: Invalid ID" unless valid_id?(id)
