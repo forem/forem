@@ -28,7 +28,7 @@ class CodesandboxTag < LiquidTagBase
 
   def parse_id_or_url_and_options(input)
     match = pattern_match_for(input, [REGISTRY_REGEXP])
-    return [match[:video_id], parse_options(match[:options].split("&"))] if match
+    return [match[:video_id], parse_options(match[:options]&.split("&"))] if match
 
     id = input.split.first
     raise StandardError, "CodeSandbox Error: Invalid ID" unless valid_id?(id)
@@ -46,6 +46,8 @@ class CodesandboxTag < LiquidTagBase
   end
 
   def parse_options(options)
+    return if options.blank?
+
     query = options.filter_map { |option| option if valid_option(option) }.join("&")
 
     query.blank? ? query : "?#{query}"
