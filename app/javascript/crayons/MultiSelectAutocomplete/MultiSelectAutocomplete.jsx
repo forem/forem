@@ -74,6 +74,8 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
     if (!ignoreBlur && currentValue !== '') {
       selectItem({ selectedItem: currentValue, focusInput: false });
+    } else {
+      dispatch({ type: 'setSuggestions', payload: [] });
     }
 
     dispatch({ type: 'setIgnoreBlur', payload: false });
