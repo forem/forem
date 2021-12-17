@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/interactive-supports-focus, jsx-a11y/role-has-required-aria-props */
 // Disabled due to the linter being out of date for combobox role: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/789
 import { h, Fragment } from 'preact';
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useReducer } from 'preact/hooks';
 import { Icon, Button } from '@crayons';
 import { Close } from '@images/x.svg';
 
@@ -17,13 +17,52 @@ const KEYS = {
 
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9])/;
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'setSelectedItems':
+      return {
+        ...state,
+        selectedItems: action.payload,
+        suggestions: [],
+        activeDescendentIndex: null,
+      };
+    case 'setSuggestions':
+      return {
+        ...state,
+        suggestions: action.payload,
+        activeDescendentIndex: null,
+      };
+    case 'updateEditState':
+      return {
+        ...state,
+        editValue: action.payload.editValue,
+        inputPosition: action.payload.inputPosition,
+      };
+    case 'setActiveDescendentIndex':
+      return { ...state, activeDescendentIndex: action.payload };
+    case 'setIgnoreBlur':
+      return { ...state, ignoreBlur: action.payload };
+  }
+};
+
 export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
-  const [suggestions, setSuggestions] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [inputPosition, setInputPosition] = useState(null);
-  const [editValue, setEditValue] = useState('');
-  const [activeDescendentIndex, setActiveDescendentIndex] = useState(null);
-  const [ignoreBlur, setIgnoreBlur] = useState(false);
+  const [state, dispatch] = useReducer(reducer, {
+    suggestions: [],
+    selectedItems: [],
+    inputPosition: null,
+    editValue: '',
+    activeDescendentIndex: null,
+    ignoreBlur: false,
+  });
+
+  const {
+    selectedItems,
+    suggestions,
+    inputPosition,
+    editValue,
+    activeDescendentIndex,
+    ignoreBlur,
+  } = state;
 
   const inputRef = useRef(null);
   const inputSizerRef = useRef(null);
@@ -36,36 +75,45 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     if (!ignoreBlur && currentValue !== '') {
       selectItem({ selectedItem: currentValue, focusInput: false });
     }
-    setIgnoreBlur(false);
+
+    dispatch({ type: 'setIgnoreBlur', payload: false });
   };
 
   useEffect(() => {
+    const { current: input } = inputRef;
     if (inputPosition !== null) {
       resizeInputToContentSize();
 
-      const { current: input } = inputRef;
       input.value = editValue;
       const { length: cursorPosition } = editValue;
       input.focus();
       input.setSelectionRange(cursorPosition, cursorPosition);
     } else {
       // Remove inline style added to size the input
-      inputRef.current.style.width = '';
-      inputRef.current.focus();
+      input.style.width = '';
+      input.focus();
     }
   }, [inputPosition, editValue]);
 
   const enterEditState = (editItem, editItemIndex) => {
     inputSizerRef.current.innerText = editItem;
     deselectItem(editItem);
-    setEditValue(editItem);
-    setInputPosition(editItemIndex);
+
+    dispatch({
+      type: 'updateEditState',
+      payload: { editValue: editItem, inputPosition: editItemIndex },
+    });
   };
 
   const exitEditState = (nextInputValue = '') => {
     inputSizerRef.current.innerText = nextInputValue;
-    setEditValue(nextInputValue);
-    setInputPosition(nextInputValue === '' ? null : inputPosition + 1);
+    dispatch({
+      type: 'updateEditState',
+      payload: {
+        editValue: nextInputValue,
+        inputPosition: nextInputValue === '' ? null : inputPosition + 1,
+      },
+    });
   };
 
   const resizeInputToContentSize = () => {
@@ -81,7 +129,15 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     }
 
     const results = await fetchSuggestions(value);
-    setSuggestions(results.filter((item) => !selectedItems.includes(item)));
+    dispatch({
+      type: 'setSuggestions',
+      payload: results.filter((item) => !selectedItems.includes(item)),
+    });
+  };
+
+  const clearInput = () => {
+    inputRef.current.value = '';
+    dispatch({ type: 'setSuggestions', payload: [] });
   };
 
   const handleKeyDown = (e) => {
@@ -95,19 +151,25 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
           activeDescendentIndex !== null &&
           activeDescendentIndex < suggestions.length - 1
         ) {
-          setActiveDescendentIndex(activeDescendentIndex + 1);
+          dispatch({
+            type: 'setActiveDescendentIndex',
+            payload: activeDescendentIndex + 1,
+          });
         } else {
-          setActiveDescendentIndex(0);
+          dispatch({ type: 'setActiveDescendentIndex', payload: 0 });
         }
         break;
       case KEYS.UP:
         e.preventDefault();
 
-        if (activeDescendentIndex >= 1) {
-          setActiveDescendentIndex(activeDescendentIndex - 1);
-        } else {
-          setActiveDescendentIndex(suggestions.length - 1);
-        }
+        dispatch({
+          type: 'setActiveDescendentIndex',
+          payload:
+            activeDescendentIndex >= 1
+              ? activeDescendentIndex - 1
+              : suggestions.length - 1,
+        });
+
         break;
       case KEYS.ENTER:
         e.preventDefault();
@@ -118,8 +180,7 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
       case KEYS.ESCAPE:
         e.preventDefault();
         // Clear the input and suggestions
-        inputRef.current.value = '';
-        setSuggestions([]);
+        clearInput();
         break;
       case KEYS.COMMA:
       case KEYS.SPACE:
@@ -163,6 +224,12 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     nextInputValue = '',
     focusInput = true,
   }) => {
+    // If a user has manually typed an item already selected, reset
+    if (selectedItems.includes(selectedItem)) {
+      clearInput();
+      return;
+    }
+
     // If an item was edited, we want to keep it in the same position in the list
     const insertIndex =
       inputPosition !== null ? inputPosition : selectedItems.length;
@@ -178,10 +245,8 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     selectedItemsRef.current.appendChild(listItem);
 
     exitEditState(nextInputValue);
-    setSelectedItems(newSelections);
-    // Clear the currently displayed suggestions & active index
-    setSuggestions([]);
-    setActiveDescendentIndex(null);
+    dispatch({ type: 'setSelectedItems', payload: newSelections });
+
     // Clear the text input
     const { current: input } = inputRef;
     input.value = nextInputValue;
@@ -189,7 +254,10 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
   };
 
   const deselectItem = (deselectedItem) => {
-    setSelectedItems(selectedItems.filter((item) => item !== deselectedItem));
+    dispatch({
+      type: 'setSelectedItems',
+      payload: selectedItems.filter((item) => item !== deselectedItem),
+    });
 
     // We also update the hidden selected items list, so removals are announced to screen reader users
     selectedItemsRef.current.querySelectorAll('li').forEach((selectionNode) => {
@@ -239,7 +307,6 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
         }
         aria-autocomplete="list"
         aria-labelledby="multi-select-label selected-items-list"
-        id="multi-select-combobox"
         type="text"
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
@@ -304,7 +371,9 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
                 aria-selected={index === activeDescendentIndex}
                 key={suggestion}
                 onClick={() => selectItem({ selectedItem: suggestion })}
-                onMouseDown={() => setIgnoreBlur(true)}
+                onMouseDown={() =>
+                  dispatch({ type: 'setIgnoreBlue', payload: true })
+                }
               >
                 {suggestion}
               </li>
