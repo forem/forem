@@ -20,6 +20,9 @@ RSpec.describe Moderator::BanishUser, type: :service do
     expect(user.profile.location).to be_blank
     expect(user.profile.website_url).to be_blank
     expect(user.profile.data).to be_empty
+    expect(user.github_username).to be_blank
+    expect(user.twitter_username).to be_blank
+    expect(user.facebook_username).to be_blank
   end
 
   it "removes all their articles" do
