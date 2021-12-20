@@ -16,13 +16,6 @@ class DisplayAd < ApplicationRecord
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
-  ALLOWED_TAGS = %w[
-    a abbr add b blockquote br center cite code col colgroup dd del dl dt em figcaption
-    h1 h2 h3 h4 h5 h6 hr img kbd li mark ol p pre q rp rt ruby small source span strong sub sup table
-    tbody td tfoot th thead time tr u ul video
-  ].freeze
-  ALLOWED_ATTRIBUTES = %w[href src alt height width].freeze
-
   def self.for_display(area)
     relation = approved_and_published.where(placement_area: area).order(success_rate: :desc)
 
@@ -44,8 +37,8 @@ class DisplayAd < ApplicationRecord
     markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
     initial_html = markdown.render(body_markdown)
     stripped_html = ActionController::Base.helpers.sanitize initial_html,
-                                                            tags: ALLOWED_TAGS,
-                                                            attributes: ALLOWED_ATTRIBUTES
+                                                            tags: MarkdownProcessor::AllowedTags::DISPLAY_AD,
+                                                            attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD
     html = stripped_html.delete("\n")
     self.processed_html = Html::Parser.new(html).prefix_all_images(350, synchronous_detail_detection: true).html
   end

@@ -85,6 +85,6 @@ class SitemapsController < ApplicationController
   end
 
   def offset
-    params[:sitemap].split("-")[2].to_i * RESULTS_LIMIT # elvaluates to 0 if not present or not a number
+    params[:sitemap].split("-")[2].to_i * RESULTS_LIMIT # evaluates to 0 if not present or not a number
   end
 end

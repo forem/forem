@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_04_161101) do
+ActiveRecord::Schema.define(version: 2021_12_09_225729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1346,6 +1346,7 @@ ActiveRecord::Schema.define(version: 2021_11_04_161101) do
     t.boolean "email_tag_mod_newsletter", default: false, null: false
     t.boolean "email_unread_notifications", default: true, null: false
     t.boolean "mobile_comment_notifications", default: true, null: false
+    t.boolean "mobile_mention_notifications", default: true, null: false
     t.boolean "mod_roundrobin_notifications", default: true, null: false
     t.boolean "reaction_notifications", default: true, null: false
     t.datetime "updated_at", precision: 6, null: false

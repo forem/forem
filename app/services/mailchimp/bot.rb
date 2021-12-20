@@ -45,7 +45,7 @@ module Mailchimp
         report_error(e)
       rescue Gibbon::MailChimpError => e
         # If user was previously subscribed, set their status to "pending"
-        return resubscribe_to_newsletter if previously_subcribed?(e)
+        return resubscribe_to_newsletter if previously_subscribed?(e)
 
         report_error(e)
       end
@@ -97,8 +97,7 @@ module Mailchimp
 
       success = false
 
-      tag_ids = user.roles.where(name: "tag_moderator").pluck(:resource_id)
-      tag_names = Tag.where(id: tag_ids).pluck(:name)
+      tag_names = user.moderator_for_tags_not_cached
 
       status = user.notification_setting.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
 
@@ -196,7 +195,7 @@ module Mailchimp
       md5_email(email)
     end
 
-    def previously_subcribed?(error)
+    def previously_subscribed?(error)
       error.title.include?("Member In Compliance State")
     end
   end

@@ -8,7 +8,7 @@ export const Link = (props) => {
   const {
     children,
     href = '#',
-    variant,
+    variant = 'default',
     block,
     icon,
     rounded,
@@ -17,7 +17,7 @@ export const Link = (props) => {
   } = props;
 
   const classes = classNames('c-link', {
-    [`c-link--${variant}`]: variant,
+    [`c-link--${variant}`]: variant && variant !== 'default',
     'c-link--icon-left': icon && children,
     'c-link--icon-alone': icon && !children,
     'c-link--block': block,
@@ -32,7 +32,7 @@ export const Link = (props) => {
           src={icon}
           aria-hidden="true"
           focusable="false"
-          className={classNames('c-link__icon')}
+          className="c-link__icon"
         />
       )}
       {children}
@@ -49,5 +49,5 @@ Link.propTypes = {
   href: PropTypes.string.isRequired,
   className: PropTypes.string,
   children: defaultChildrenPropTypes,
-  icon: PropTypes.ReactNode,
+  icon: PropTypes.elementType,
 };

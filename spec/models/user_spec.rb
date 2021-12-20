@@ -323,23 +323,6 @@ RSpec.describe User, type: :model do
         expect(user).not_to be_valid
       end
     end
-
-    context "when the past value is relevant" do
-      let(:user) { create(:user) }
-
-      it "changes old_username and old_old_username properly if username changes" do
-        old_username = user.username
-        random_new_username = "username_#{rand(100_000_000)}"
-        user.update(username: random_new_username)
-        expect(user.username).to eq(random_new_username)
-        expect(user.old_username).to eq(old_username)
-
-        new_username = user.username
-        user.update(username: "username_#{rand(100_000_000)}")
-        expect(user.old_username).to eq(new_username)
-        expect(user.old_old_username).to eq(old_username)
-      end
-    end
   end
 
   context "when callbacks are triggered before and after create" do
@@ -612,7 +595,7 @@ RSpec.describe User, type: :model do
 
     it "creates proper body class with defaults" do
       # rubocop:disable Layout/LineLength
-      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
@@ -621,7 +604,7 @@ RSpec.describe User, type: :model do
       user.setting.config_font = "sans_serif"
 
       # rubocop:disable Layout/LineLength
-      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
@@ -630,7 +613,7 @@ RSpec.describe User, type: :model do
       user.setting.config_font = "open_dyslexic"
 
       # rubocop:disable Layout/LineLength
-      classes = "light-theme open-dyslexic-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes = "light-theme open-dyslexic-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
@@ -638,7 +621,8 @@ RSpec.describe User, type: :model do
     it "creates proper body class with dark theme" do
       user.setting.config_theme = "dark_theme"
 
-      classes = "dark-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes =
+        "dark-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
@@ -801,7 +785,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#trusted" do
+  describe "#trusted?" do
     it "memoizes the result from rolify" do
       allow(Rails.cache)
         .to receive(:fetch)
@@ -809,7 +793,7 @@ RSpec.describe User, type: :model do
         .and_return(false)
         .once
 
-      2.times { user.trusted }
+      2.times { user.trusted? }
     end
   end
 

@@ -1,2 +1,0 @@
-class Compliment < ApplicationRecord
-end

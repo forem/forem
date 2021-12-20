@@ -45,22 +45,26 @@
           <% end %>
         </div>
 
-        <div class="crayons-field">
-          <%= admin_config_label :logo_svg %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:logo_svg][:description] %>
-          <%= f.text_area :logo_svg,
-                          class: "crayons-textfield",
-                          value: Settings::General.logo_svg,
-                          rows: 6,
-                          placeholder: Constants::Settings::General::DETAILS[:logo_svg][:placeholder] %>
-          <% if Settings::General.logo_svg.present? %>
-            <div class="site-logo">
-              <%= Settings::General.logo_svg.html_safe %>
-            </div>
-          <% end %>
-        </div>
+        <% if FeatureFlag.enabled?(:creator_onboarding) %>
+          <%= render partial: "admin/shared/logo_upload", locals: { f: f, allowed_types: logo_allowed_types, max_file_size: logo_max_file_size, logo: Settings::General.resized_logo } %>
+        <% else %>
+          <div class="crayons-field">
+            <%= admin_config_label :logo_svg %>
+            <%= admin_config_description Constants::Settings::General::DETAILS[:logo_svg][:description] %>
+            <%= f.text_area :logo_svg,
+                            class: "crayons-textfield",
+                            value: Settings::General.logo_svg,
+                            rows: 6,
+                            placeholder: Constants::Settings::General::DETAILS[:logo_svg][:placeholder] %>
+            <% if Settings::General.logo_svg.present? %>
+              <div class="site-logo">
+                <%= Settings::General.logo_svg.html_safe %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </fieldset>
-      <%= render "update_setting_button", f: f %>
+      <%= render "update_setting_button", f: f, aria_label: "Update image settings" %>
     </div>
   </div>
 <% end %>

@@ -1199,7 +1199,7 @@ RSpec.describe Article, type: :model do
     end
 
     context "when article does not have any comments" do
-      it "retrns empty set if there aren't any top comments" do
+      it "returns empty set if there aren't any top comments" do
         expect(article.top_comments).to be_empty
       end
     end

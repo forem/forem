@@ -36,7 +36,7 @@ module Constants
           placeholder: "a secure token"
         },
         logo_png: {
-          description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
+          description: "Used as a fallback to the SVG. Recommended minimum of 512x512px",
           placeholder: IMAGE_PLACEHOLDER
         },
         logo_svg: {
@@ -135,7 +135,7 @@ module Constants
           description: "Secret key used to allow AWS video encoding through the VideoStatesController",
           placeholder: ""
         }
-        # Dynamic values ommitted: configurable_rate_limits and social_media_handles
+        # Dynamic values omitted: configurable_rate_limits and social_media_handles
       }.freeze
     end
   end

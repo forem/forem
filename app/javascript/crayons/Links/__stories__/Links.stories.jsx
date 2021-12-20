@@ -15,7 +15,10 @@ export default {
     variant: {
       control: {
         type: 'select',
-        options: ['default', 'branded'],
+        options: {
+          default: undefined,
+          branded: 'branded',
+        },
       },
       description:
         'There are two available variants (styles) to pick from: _default_ and _branded_. The primary difference is color: _default_ uses grey color and _branded_ uses accent color.',
@@ -40,7 +43,7 @@ export default {
     icon: {
       control: false,
       description:
-        'Icons are only supported in *block* links (`block`). Even though the generated JSX code in this component will have an empty function as prop value (`<Link block icon={() => {}}>`), the actual value should be an icon object imported from `@images`. Read more about icons in their dedicated Storybook page.',
+        'Even though the generated JSX code in this component will have an empty function as prop value (`<Link icon={() => {}}>`), the actual value should be an icon object imported from `@images`. Read more about icons in their dedicated Storybook page.',
       table: {
         defaultValue: { summary: 'CogIcon' },
       },
@@ -50,22 +53,39 @@ export default {
 
 export const Inline = (args) => <Link {...args} />;
 Inline.args = {
-  variant: 'branded',
   block: false,
   rounded: false,
   children: 'Inline link',
+};
+
+export const InlineBranded = (args) => <Link {...args} />;
+InlineBranded.args = {
+  ...Inline.args,
+  variant: 'branded',
+};
+
+export const InlineWithIcon = (args) => <Link block {...args} />;
+InlineWithIcon.args = {
+  ...Inline.args,
+  icon: CogIcon,
 };
 
 export const Block = (args) => <Link {...args} />;
 Block.args = {
   ...Inline.args,
   block: true,
-  variant: 'default',
+  variant: undefined,
   children: 'Block link',
 };
 
-export const WithIcon = (args) => <Link block {...args} />;
-WithIcon.args = {
+export const BlockBranded = (args) => <Link {...args} />;
+BlockBranded.args = {
+  ...Block.args,
+  variant: 'branded',
+};
+
+export const BlockWithIcon = (args) => <Link block {...args} />;
+BlockWithIcon.args = {
   ...Block.args,
   icon: CogIcon,
 };

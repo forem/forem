@@ -1,10 +1,9 @@
 <% @grouped_profile_fields.each do |group| %>
-  <% group_name = group.name.gsub(/\s+/, "_") %>
   <article id="profile-field-group-<%= group.id %>" class="row my-3">
     <div class="card w-100">
       <div class="card-header">
         <div class="card-header__information">
-          <div class="fw-bold fs-l"><%= group_name %></div>
+          <div class="fw-bold fs-l"><%= group.name %></div>
           <div class="fw-bold fs-s">&nbsp;(<%= group.profile_fields.length %>)</div>
           <% if group.description %>
             <div class="fs-s group__description"><%= group.description %></div>
@@ -12,17 +11,17 @@
         </div>
 
         <div class="card-header__actions">
-          <%= render partial: "add_profile_field_modal", locals: { group: group, group_name: group_name } %>
-          <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
+          <%= render partial: "add_profile_field_modal", locals: { group: group, dom_safe_name: dom_safe_name(group.name) } %>
+          <%= render partial: "edit_group_modal", locals: { group: group, dom_safe_name: dom_safe_name(group.name) } %>
           <%= button_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "crayons-btn crayons-btn--danger mx-1" %>
-          <button id="<%= group_name %>Header" data-toggle="collapse" class="crayons-btn crayons-btn--secondary mx-1"
-                  data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">
+          <button id="<%= dom_safe_name(group.name) %>Header" data-toggle="collapse" class="crayons-btn crayons-btn--secondary mx-1"
+                  data-target="#<%= dom_safe_name(group.name) %>BodyContainer" aria-expanded="false" aria-controls="<%= dom_safe_name(group.name) %>BodyContainer">
             Toggle
           </button>
         </div>
       </div>
 
-      <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group_name %>Header">
+      <div id="<%= dom_safe_name(group.name) %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= dom_safe_name(group.name) %>Header">
         <% if group.profile_fields.empty? %>
           <div> There are no profile fields configured for this group. </div>
         <% else %>

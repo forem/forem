@@ -64,11 +64,12 @@ RSpec.describe "Api::V0::Users", type: :request do
     end
 
     context "when request is authenticated" do
-      let(:user)         { create(:user) }
-      let(:access_token) { create(:doorkeeper_access_token, resource_owner: user, scopes: "public") }
+      let(:user) { create(:user) }
+      let(:api_secret) { create(:api_secret, user: user) }
+      let(:headers) { { "api-key" => api_secret.secret } }
 
       it "returns the correct json representation of the user", :aggregate_failures do
-        get me_api_users_path, params: { access_token: access_token.token }
+        get me_api_users_path, headers: headers
 
         response_user = response.parsed_body
 
@@ -88,7 +89,7 @@ RSpec.describe "Api::V0::Users", type: :request do
 
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
-        get me_api_users_path, params: { access_token: access_token.token }
+        get me_api_users_path, headers: headers
 
         response_user = response.parsed_body
 

@@ -30,12 +30,6 @@ GreyWithNumber.story = {
   name: 'grey with number',
 };
 
-export const GreyBullet = () => (
-  <span className="crayons-indicator crayons-indicator--bullet" />
-);
-
-GreyBullet.story = { name: 'grey bullet' };
-
 export const Accent = () => (
   <span className="crayons-indicator crayons-indicator--accent">Label</span>
 );
@@ -59,12 +53,6 @@ export const AccentWithNumber = () => (
 AccentWithNumber.story = {
   name: 'accent with number',
 };
-
-export const AccentBullet = () => (
-  <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
-);
-
-AccentBullet.story = { name: 'accent bullet' };
 
 export const Critical = () => (
   <span className="crayons-indicator crayons-indicator--critical">Label</span>
@@ -92,14 +80,6 @@ CriticalWithNumber.story = {
   name: 'critical with number',
 };
 
-export const CriticalWithBullet = () => (
-  <span className="crayons-indicator crayons-indicator--critical crayons-indicator--bullet" />
-);
-
-CriticalWithBullet.story = {
-  name: 'critical bullet',
-};
-
 export const Inverted = () => (
   <span className="crayons-indicator crayons-indicator--inverted">Label</span>
 );
@@ -123,9 +103,3 @@ export const InvertedWithNumber = () => (
 InvertedWithNumber.story = {
   name: 'inverted with number',
 };
-
-export const InvertedBullet = () => (
-  <span className="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet" />
-);
-
-InvertedBullet.story = { name: 'inverted bullet' };

@@ -103,7 +103,7 @@ module Feeds
 
         [user_id, parsed_feed]
       rescue StandardError => e
-        # TODO: add better exception handling (eg. rescueing Feedjira::NoParserAvailable separately)
+        # TODO: add better exception handling (eg. rescuing Feedjira::NoParserAvailable separately)
         report_error(
           e,
           feeds_import_info: {

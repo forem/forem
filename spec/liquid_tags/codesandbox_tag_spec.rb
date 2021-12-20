@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe CodesandboxTag, type: :liquid_tag do
   describe "#id" do
     let(:valid_id) { "22qaa1wcxr" }
+    let(:valid_id_with_file) { "68jkdlsaie file=/file.js" }
     let(:valid_id_with_initialpath) { "68jkdlsaie initialpath=/initial/path/file.js" }
     let(:valid_id_with_module) { "28qvv1wvxr module=/path/to/module.html" }
     let(:valid_id_with_view) { "28qvv1wvxr view=editor" }
@@ -21,23 +22,17 @@ RSpec.describe CodesandboxTag, type: :liquid_tag do
       "43lkjfdauf initialpath=/initial-path/file.js module=/path/to/module.html runonclick=1 view=split"
     end
     let(:valid_id_with_special_characters) { "68jkfdsasa initialpath=/.@%_- module=-/%@._" }
+    let(:valid_id_with_valid_and_invalid_options) do
+      "43lkjfdauf initialpath=/initial-path/file.js fakeoption=/fakeoptionvalue runonclick=1"
+    end
+    let(:valid_id_with_only_invalid_options) do
+      "43lkjfdauf fakeoption1=/fakeoptionvalue fakeoption2=/fakeoptionvalue"
+    end
 
     let(:bad_ids) do
       [
-        "28qvv1wvxr initialpath=((",
-        "22qaa1wcxr module=",
-        "22qaa1wcxr runonclick=",
-        "22qaa1wcxr runonclick=42836",
-        "68jkdlsaie initialpath=uses-a-(",
-        "68jkfdsasa initialpath=/uses-a-semi-colon-;",
-        "43lkjfdauf module= initialpath=",
-        "89fadksjhe random=/stuff",
-        "initialpath=/initial/path/file.js",
-        "view=foobar",
-        "view=",
-        "54jfadslkj module=stuff \"onmouseover='alert(\"XSS\")'",
-        "42fadfdaf;",
-        "%&*($#@$&=",
+        Faker::Alphanumeric.alphanumeric(number: 70),
+        "%^$#@!",
       ]
     end
 
@@ -46,69 +41,88 @@ RSpec.describe CodesandboxTag, type: :liquid_tag do
       Liquid::Template.parse("{% codesandbox #{id} %}")
     end
 
-    it "accepts a vaild id" do
+    it "accepts a valid id" do
       liquid = generate_tag(valid_id)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath" do
+    it "accepts a valid id with file" do
+      liquid = generate_tag(valid_id_with_file)
+      expect(liquid.render).to include("<iframe")
+    end
+
+    it "accepts a valid id with initialpath" do
       liquid = generate_tag(valid_id_with_initialpath)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with module" do
+    it "accepts a valid id with module" do
       liquid = generate_tag(valid_id_with_module)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with view" do
+    it "accepts a valid id with view" do
       liquid = generate_tag(valid_id_with_view)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with runonclick" do
+    it "accepts a valid id with runonclick" do
       liquid = generate_tag(valid_id_with_runonclick)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and module" do
+    it "accepts a valid id with initialpath and module" do
       liquid = generate_tag(valid_id_with_initialpath_and_module)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and view" do
+    it "accepts a valid id with initialpath and view" do
       liquid = generate_tag(valid_id_with_initialpath_and_view)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and runonclick" do
+    it "accepts a valid id with initialpath and runonclick" do
       liquid = generate_tag(valid_id_with_initialpath_and_runonclick)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with runonclick and module" do
+    it "accepts a valid id with runonclick and module" do
       liquid = generate_tag(valid_id_with_runonclick_and_module)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with runonclick and view" do
+    it "accepts a valid id with runonclick and view" do
       liquid = generate_tag(valid_id_with_runonclick_and_view)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and module and runonclick" do
+    it "accepts a valid id with initialpath and module and runonclick" do
       liquid = generate_tag(valid_id_with_initialpath_and_module_and_runonclick)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with initialpath and module and runonclick and view" do
+    it "accepts a valid id with initialpath and module and runonclick and view" do
       liquid = generate_tag(valid_id_with_initialpath_and_module_and_runonclick_and_view)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "accepts a vaild id with special_characters of / . @ % _" do
+    it "accepts a valid id with special_characters of / . @ % _" do
       liquid = generate_tag(valid_id_with_special_characters)
       expect(liquid.render).to include("<iframe")
+    end
+
+    it "accepts a valid id with good and bad options, and filters bad options" do
+      liquid = generate_tag(valid_id_with_valid_and_invalid_options)
+      puts liquid.render
+      expect(liquid.render).to include("<iframe")
+      expect(liquid.render).not_to include("fakeoption=/fakeoptionvalue")
+    end
+
+    it "accepts a valid id with bad options, and filters bad options" do
+      liquid = generate_tag(valid_id_with_only_invalid_options)
+      expect(liquid.render).to include("<iframe")
+      expect(liquid.render).not_to include("fakeoption1=/fakeoptionvalue")
+      expect(liquid.render).not_to include("fakeoption2=/fakeoptionvalue")
     end
 
     it "rejects bad ids" do

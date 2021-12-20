@@ -12,6 +12,6 @@ class DropConnectTables < ActiveRecord::Migration[6.1]
   end
 
   def down
-    raise ActivRecord::IrreversibleMigratione
+    raise ActiveRecord::IrreversibleMigratione
   end
 end

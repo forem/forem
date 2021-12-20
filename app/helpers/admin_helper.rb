@@ -10,4 +10,8 @@ module AdminHelper
   def display_name(group_name)
     group_name.to_s.tr("_", " ").titleize
   end
+
+  def dom_safe_name(group_name)
+    group_name.gsub(/\s+|\./, "_").gsub(/\A(\d)/, '_\1')
+  end
 end

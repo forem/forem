@@ -102,6 +102,8 @@ export default class ConfigController extends Controller {
 
   async updateConfigurationSettings(event) {
     event.preventDefault();
+    let errored = false;
+
     try {
       const body = new FormData(event.target);
       const response = await fetch(event.target.action, {
@@ -117,9 +119,35 @@ export default class ConfigController extends Controller {
 
       const outcome = await response.json();
 
+      errored = outcome.error != null;
       displaySnackbar(outcome.message ?? outcome.error);
     } catch (err) {
-      displaySnackbar(err.message);
+      errored = true;
+      displaySnackbar('An error occurred. Please try again.');
+    } finally {
+      // Only update the site logo in the header if the new logo is uploaded successfully.
+      if (!errored && event.target.elements.settings_general_logo) {
+        this.updateLogo();
+      }
+    }
+  }
+
+  /**
+   * Updates the site logo in the header with the same URL as the preview logo.
+   */
+  updateLogo() {
+    const previewLogo = document.querySelector(
+      '#logo-upload-preview .site-logo__img',
+    );
+
+    if (!previewLogo) {
+      return;
+    }
+
+    for (const logo of document.querySelectorAll('.site-logo__img')) {
+      if (logo !== previewLogo) {
+        logo.src = previewLogo.src;
+      }
     }
   }
 

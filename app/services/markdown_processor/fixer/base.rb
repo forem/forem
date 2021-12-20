@@ -82,7 +82,7 @@ module MarkdownProcessor
             # either single or double quotes.
             match = captured_text.scan(/(^".*"$|^'.*'$)/)
             if match.empty?
-              # Double quotes that aren't already escaped will get esacped.
+              # Double quotes that aren't already escaped will get escaped.
               # Then the whole text get warped in double quotes.
               parsed_text = captured_text.gsub(/(?<!\\)"/, "\\\"")
               "#{section}: \"#{parsed_text}\"\n"

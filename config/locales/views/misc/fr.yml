@@ -22,6 +22,15 @@ fr:
         back: Take me back
         again: Try again
         install: Install the app
+    email_subscriptions:
+      unsubscribe:
+        heading: "You have been unsubscribed from %{type}. 😔"
+        description_html: You will no longer receive emails like this. If you'd like to re-subscribe or manage your full email preferences, please %{link}.
+        link: click here
+      invalid:
+        heading: Token expired or invalid
+        description_html: Please %{signin} to manage your email preferences.
+        signin: sign-in
     hamburger:
       icon: Navigation menu
       back: Back
@@ -100,6 +109,23 @@ fr:
     sponsor:
       icon: Love
       seek: Become a sponsor
+    stats:
+      meta:
+        title: Stats for Your Article
+      heading_html: Stats for "%{article}"
+      period:
+        aria_label: Analytics period
+        week: Week
+        month: Month
+        infinity: Infinity
+      readers: Readers Summary
+      followers: New Followers Summary
+      reactions: "Reactions Summary ❤🦄🔖"
+      comments: "Comments Summary 💬"
+      traffic:
+        text: "Traffic Source Summary 🚦"
+        source: Source
+        views: Views
     sticky:
       joined: Rejoint
       default_cta: Learn more

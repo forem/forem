@@ -23,14 +23,13 @@ Both variants are just fine and which one you gonna use is dependent on the cont
 ### Variants (styles)
 
 There are two available variants (styles) to pick from: _default_ and _branded_. The primary difference is color: _default_ uses grey color and _branded_ uses accent color.
-It is recommended to always use `branded` variant for inline links, epsecially when link is used alongside other text - making it `branded` will make it more distinguishable.
+It is recommended to always use `branded` variant for inline links, especially when link is used alongside other text - making it `branded` will make it more distinguishable.
 
 ### Icons
 
-Icons are only supported in *block* links (`block`).
-Icon can be placed in front of a label to both clarify an action and call attention to a link.
-By passing an object in `src` prop, there will be automatically included `<Icon />` component.
-By default, the icon itself won't be customizable.
+Icon can be placed in front of a label to both clarify an action but also to make link stand out more.
+By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself within `<Link />` is **not** customizable. Icons within links are hidden from assistive technologies, so make sure your link has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
 
 #### Icon-only
 

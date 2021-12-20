@@ -116,7 +116,7 @@ module ApplicationHelper
 
   def sanitized_sidebar(text)
     ActionController::Base.helpers.sanitize simple_format(text),
-                                            tags: %w[p b i em strike strong u br]
+                                            tags: MarkdownProcessor::AllowedTags::SIDEBAR
   end
 
   def follow_button(followable, style = "full", classes = "")
@@ -313,5 +313,13 @@ module ApplicationHelper
     }
 
     link_to(label, tag_path(tag), options)
+  end
+
+  def creator_settings_form?
+    return unless FeatureFlag.enabled?(:creator_onboarding)
+    return unless User.with_role(:creator).any?
+
+    creator = User.with_role(:creator).first
+    !creator.checked_code_of_conduct && !creator.checked_terms_and_conditions
   end
 end

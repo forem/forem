@@ -1,5 +1,5 @@
 /**
- * This script hunts for podcast's "Record" for both the podcast_episde's
+ * This script hunts for podcast's "Record" for both the podcast_episode's
  * show page and an article page containing podcast liquid tag. It handles
  * playback and makes sure the record will spin when the podcast is currently
  * playing.
@@ -268,7 +268,7 @@ function initializePodcastPlayback() {
         setPlaying(true);
         resolve();
       } else {
-        audio.currrentTime = currentState.currentTime;
+        audio.currentTime = currentState.currentTime;
         audio
           .play()
           .then(function () {
@@ -475,7 +475,9 @@ function initializePodcastPlayback() {
 
   function handlePodcastMessages(event) {
     const message = JSON.parse(event.detail);
-    if (message.namespace !== 'podcast') { return }
+    if (message.namespace !== 'podcast') {
+      return;
+    }
 
     var currentState = currentAudioState();
     switch (message.action) {
@@ -506,7 +508,7 @@ function initializePodcastPlayback() {
     if (deviceType !== 'web') {
       Runtime.podcastMessage = (msg) => {
         window.ForemMobile.injectNativeMessage('podcast', msg);
-      }
+      };
     }
   }
 

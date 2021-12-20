@@ -43,6 +43,8 @@ fr:
       mention:
         article_html: "%{user} mentioned you in a post%{if_org}"
         comment_html: "%{user} mentioned you in a comment"
+        article_mobile: "%{user} mentioned you in the post %{title}"
+        comment_mobile: "%{user} mentioned you in a comment on %{title}"
         if_org_html: " under %{org}"
       milestone:
         heading_html: Your post %{title} passed %{type}!
