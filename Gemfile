@@ -11,7 +11,7 @@ group :production do
 end
 
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
-gem "acts-as-taggable-on", "~> 8.1" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
+gem "acts-as-taggable-on", github: "mbleigh/acts-as-taggable-on", branch: "master" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 2.1.1" # Email analytics for Rails
@@ -41,7 +41,7 @@ gem "fog-aws", "~> 3.12" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
-gem "hairtrigger", "~> 0.2.24" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
+# gem "hairtrigger", "~> 0.2.24" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.9" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.8.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
@@ -77,7 +77,7 @@ gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "rack-attack", "~> 6.5.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 6.1.4" # Ruby on Rails
+gem "rails", "~> 7.0.0" # Ruby on Rails
 gem "ransack", "~> 2.5" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
@@ -89,10 +89,10 @@ gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 # NOTE: [@rhymes]: sign in doesn't work with the redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
 # We need to investigate why exactly, in the meantime we are hardcoding these two transitive dependencies
 # (added by redis-rails) to keep them at the latest working version
-gem "redis-actionpack", "5.1.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+# gem "redis-actionpack", "~> 5.2.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "redis-rack", "2.0.6" # Redis Store for Rack applications
 
-gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
+# gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
@@ -107,7 +107,7 @@ gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "store_attribute", "~> 0.9.3" # ActiveRecord extension which adds typecasting to store accessors.
-gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
+# gem "storext", "~> 3.3" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.42" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
@@ -128,7 +128,7 @@ group :development do
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.18", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
-  gem "i18n-tasks", "~> 0.9.37" # Helpers to find and manage missing and unused translations
+  # gem "i18n-tasks", "~> 0.9.35" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "solargraph", "~> 0.44", require: false # For LSP support (such as symbol renaming, documentation lookup)
