@@ -31,20 +31,6 @@ RSpec.describe MarkdownProcessor::Fixer::FixForComment, type: :service do
       expect(described_class.call(test_string2)).to eq(expected_result2)
     end
 
-    it "modifies hr tags" do
-      markdown =
-        <<~HEREDOC
-          #{front_matter(title: sample_text)}
-          ---
-          These hr tags should be converted to more dashes
-          ---
-        HEREDOC
-
-      result = described_class.call(markdown)
-      expect(result).to include("-------").twice
-      expect(result).to include("---").at_least(:twice)
-    end
-
     context "when markdown is nil" do
       it "doesn't raise an error" do
         expect { described_class.call(nil) }.not_to raise_error
