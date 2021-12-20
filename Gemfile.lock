@@ -187,7 +187,7 @@ GEM
       msgpack
     dead_end (1.1.7)
     debase-ruby_core_source (0.10.12)
-    debug (1.3.4)
+    debug (1.4.0)
       irb (>= 1.3.6)
       reline (>= 0.2.7)
     derailed_benchmarks (2.1.1)
