@@ -266,7 +266,7 @@
   &__tag-option:hover {
     // We try to avoid !important, but since the --tag-prefix color needs to be set inline, !important is required to temporarily change it
     --tag-prefix: var(--accent-brand-darker) !important;
-    background: var(--base-20);
+    background: var(--body-bg);
 
     .crayons-article-form__tag-option-title {
       color: var(--accent-brand-darker);
