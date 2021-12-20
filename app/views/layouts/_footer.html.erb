@@ -1,10 +1,7 @@
 <footer class="crayons-footer print-hidden">
   <div id="footer-container" class="crayons-footer__container">
     <p class="fs-s crayons-footer__description">
-      <a href="<%= root_path %>" aria-label="<%= t("views.main.aria_home", community: community_name) %>" class="c-link c-link--branded fw-medium">
-        <%= community_name %>
-      </a>
-      – <%= Settings::Community.community_description %>
+      <%= t("views.main.footer.desc_html", community: link_to(community_name, root_path, class: "c-link c-link--branded fw-medium", "aria-label": t("views.main.aria_home", community: community_name)), desc: Settings::Community.community_description) %>
     </p>
     <div class="fs-s">
       <%# The following copy is necessary for compatibility with the Forem AGPL licence which requires instances to link back to the source. %>
