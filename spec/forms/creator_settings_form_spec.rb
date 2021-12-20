@@ -34,6 +34,13 @@ RSpec.describe CreatorSettingsForm, type: :model do
   describe "#save" do
     let(:current_user) { create(:user) }
 
+    after do
+      # prevent changes here from leaking into other tests
+      Settings::Community.clear_cache
+      Settings::UserExperience.clear_cache
+      Settings::Authentication.clear_cache
+    end
+
     # rubocop:disable RSpec/ExampleLength
     it "saves the updated attributes to the correct Settings values", :aggregate_failures do
       # NOTE: override the profile migration hack from rails_helper.rb

@@ -400,6 +400,12 @@ RSpec.describe Html::Parser, type: :service do
       parsed_html = described_class.new(html).wrap_mentions_with_links.html
       expect(parsed_html).to include("<a")
     end
+
+    it "does not add an extra return" do
+      html = "@#{user.username}"
+      parsed_html = described_class.new(html).wrap_mentions_with_links.html
+      expect(parsed_html).not_to include("\n")
+    end
   end
 
   describe "#parse_emojis" do

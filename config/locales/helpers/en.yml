@@ -63,7 +63,8 @@ en:
         email_badge_notifications: Send me an email when I receive a badge
         email_connect_messages: Send me an email when I receive a direct message (while inactive)
         email_unread_notifications: Send me occasional reminders that I have unread notifications on %{community}
-        mobile_comment_notifications: Notify me when someone replies to me in a comment thread
+        mobile_mention_notifications: Send me a push notification when someone mentions me
+        mobile_comment_notifications: Send me a push notification when someone replies to me in a comment thread
         welcome_notifications: Send me occasional tips on how to enhance my %{community} experience
         reaction_notifications: Send notifications when someone reacts to my comments or posts
         mod_roundrobin_notifications: Send me occasional community-success mod notifications

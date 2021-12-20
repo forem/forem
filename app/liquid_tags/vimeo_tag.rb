@@ -27,7 +27,6 @@ class VimeoTag < LiquidTagBase
 
   def get_id(input)
     match = input.match(REGISTRY_REGEXP)
-    # binding.pry
     match ? match[:video_id] : input
   end
 end

@@ -7,7 +7,7 @@
   <%= f.text_field :community_name, placeholder: "Climbing Life", class: "crayons-textfield", required: true %>
 </div>
 
-<%= render partial: "admin/shared/logo_upload", locals: { allowed_types: @logo_allowed_types, max_file_size: @max_file_size, f: f } %>
+<%= render partial: "admin/shared/logo_upload", locals: { allowed_types: @logo_allowed_types, max_file_size: @max_file_size, f: f, logo: Settings::General.resized_logo } %>
 
 <div class="crayons-field mt-6 align-left">
   <%= f.label :primary_brand_color_hex, class: "crayons-field__label" do %>
@@ -47,7 +47,7 @@
       </div>
       <div>
         <%= f.radio_button :invite_only_mode, true, class: "crayons-radio", role: "radio" %>
-        <%= label_tag "creator_settings_form_invite_only_mode_true", "Members Only" %>
+        <%= label_tag "creator_settings_form_invite_only_mode_true", "Invite Only" %>
       </div>
     </div>
   </fieldset>

@@ -430,19 +430,6 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect(listing.cached_tag_list).to eq("discuss, javascript")
       end
     end
-
-    describe "with oauth token" do
-      include_context "when param list is valid"
-
-      it "fails with oauth token" do
-        user = create(:user)
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_listings_path, params: { listing: listing_params }.to_json, headers: headers
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
   end
 
   describe "PUT /api/listings/:id" do

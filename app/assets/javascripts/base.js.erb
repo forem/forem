@@ -3,7 +3,7 @@
 //= require lib/xss
 //= require initializePage
 //= require utilities/getImageForLink
-//= require honeybadger-js/dist/honeybadger.js
+//= require @honeybadger-io/js/dist/browser/honeybadger.js
 //= require i18n
 //= require ahoy.js/dist/ahoy.js
 
@@ -719,11 +719,11 @@ var instantClick
     apiKey: document.body.dataset.honeybadgerKey,
     environment: "<%= Rails.env %>",
     revision: document.body.dataset.releaseFootprint,
-    ignorePatterns: [/ResizeObserver/i, /MetaMask/i],
   });
 
   Honeybadger.beforeNotify(function(notice) {
-    return !/MtPopUpList/.test(notice.message);
+    const ignorePatterns = [/ResizeObserver/i, /MetaMask/i, /MtPopUpList/i]
+    return !(ignorePatterns.some((pattern) => pattern.test(notice.message)));
   });
 
 // INITIALIZE AHOY TRACKING

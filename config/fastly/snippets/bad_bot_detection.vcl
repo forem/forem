@@ -1,7 +1,8 @@
 sub vcl_recv {
   # Disallow bot traffic based on user-agent
   if (
-    req.http.user-agent ~ "^$"
+    req.http.user-agent ~ "^$" # Disallow empty User-Agent
+    || req.http.user-agent !~ "." # Disallow null User-Agent
     || req.http.user-agent ~ "^Java"
     || req.http.user-agent ~ "^Jakarta"
     || req.http.user-agent ~ "IDBot"
@@ -39,6 +40,9 @@ sub vcl_recv {
     # Spoofed user agent, Firefox 62 was released in Sep 2018, this line added
     # in Dec 2021.
     || (req.http.user-agent ~ "Firefox/62.0" && req.http.user-agent ~ "Win64")
+    # Spoofed user agent, Chrome 74 was released in April 2019, this line added
+    # in Dec 2021.
+    || req.http.user-agent ~ "Chrome/74"
     # DEV gets an order of magnitude more traffic from AhrefsBot than any other
     # search crawler.
     || req.http.user-agent ~ "AhrefsBot"

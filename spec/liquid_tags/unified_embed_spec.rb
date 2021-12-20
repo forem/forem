@@ -3,11 +3,26 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed do
   subject(:unified_embed) { described_class }
 
+  let(:article) { create(:article) }
+
   describe ".find_liquid_tag_for" do
-    valid_youtube_url_formats = [
-      "https://www.youtube.com/embed/dQw4w9WgXcQ",
-      "https://www.youtube.com/watch?v=rc5AyncB_Xw&t=18s",
-      "https://youtu.be/rc5AyncB_Xw",
+    valid_blogcast_url_formats = [
+      "https://blogcast.host/embed/4942",
+      "https://app.blogcast.host/embed/4942",
+    ]
+
+    valid_codesandbox_url_formats = [
+      "https://codesandbox.io/embed/exciting-knuth-hywlv",
+      "https://app.codesandbox.io/embed/exciting-knuth-hywlv",
+      "https://app.codesandbox.io/embed/exciting-knuth-hywlv?file=/index.html&runonclick=0&view=editor",
+    ]
+
+    valid_instagram_url_formats = [
+      "https://www.instagram.com/p/CXgzXWXroHK/",
+      "https://instagram.com/p/CXgzXWXroHK/",
+      "http://www.instagram.com/p/CXgzXWXroHK/",
+      "www.instagram.com/p/CXgzXWXroHK/",
+      "instagram.com/p/CXgzXWXroHK/",
     ]
 
     valid_vimeo_url_formats = [
@@ -15,6 +30,26 @@ RSpec.describe UnifiedEmbed do
       "https://vimeo.com/ondemand/withchude/647355334",
       "https://vimeo.com/636725488",
     ]
+
+    valid_youtube_url_formats = [
+      "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      "https://www.youtube.com/watch?v=rc5AyncB_Xw&t=18s",
+      "https://youtu.be/rc5AyncB_Xw",
+    ]
+
+    it "returns BlogcastTag for a valid blogcast url" do
+      valid_blogcast_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(BlogcastTag)
+      end
+    end
+
+    it "returns CodesandboxTag for a valid codesandbox url" do
+      valid_codesandbox_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(CodesandboxTag)
+      end
+    end
 
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
@@ -31,9 +66,21 @@ RSpec.describe UnifiedEmbed do
         .to eq(CodepenTag)
     end
 
+    it "returns InstagramTag for a valid instagram url" do
+      valid_instagram_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(InstagramTag)
+      end
+    end
+
     it "returns JsFiddle for a jsfiddle url" do
       expect(described_class.find_liquid_tag_for(link: "http://jsfiddle.net/link2twenty/v2kx9jcd"))
         .to eq(JsFiddleTag)
+    end
+
+    it "returns Forem Link for a forem url" do
+      expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
+        .to eq(LinkTag)
     end
 
     it "returns NextTechTag for a nexttech url" do
@@ -61,17 +108,17 @@ RSpec.describe UnifiedEmbed do
         .to eq(WikipediaTag)
     end
 
-    valid_youtube_url_formats.each do |url|
-      it "returns YoutubeTag for a valid youtube url format" do
+    it "returns VimeoTag for a valid vimeo url" do
+      valid_vimeo_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
-          .to eq(YoutubeTag)
+          .to eq(VimeoTag)
       end
     end
 
-    valid_vimeo_url_formats.each do |url|
-      it "returns VimeoTag for a valid vimeo url format" do
+    it "returns YoutubeTag for a valid youtube url" do
+      valid_youtube_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
-          .to eq(VimeoTag)
+          .to eq(YoutubeTag)
       end
     end
   end

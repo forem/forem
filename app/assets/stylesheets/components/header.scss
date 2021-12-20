@@ -70,26 +70,6 @@
   }
 }
 
-.pwa-nav-buttons {
-  height: 100%;
-  display: none;
-  padding-left: var(--su-2);
-  button {
-    all: unset;
-    padding: 0 var(--su-2);
-    color: var(--header-icons-color);
-
-    &:hover {
-      color: var(--header-icons-color-hover);
-    }
-  }
-  @media (min-width: $breakpoint-m) {
-    &.pwa-nav-buttons--showing {
-      display: flex;
-    }
-  }
-}
-
 .navigation-progress {
   --duration: 3600ms;
   --delay: 250ms;

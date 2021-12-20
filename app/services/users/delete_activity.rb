@@ -46,6 +46,11 @@ module Users
       user.credits.delete_all
       user.organization_memberships.delete_all
       user.profile_pins.delete_all
+      user.profile.update(summary: "", location: "", website_url: "", data: {})
+      user.github_username = ""
+      user.twitter_username = ""
+      user.facebook_username = ""
+      user.save
     end
   end
 end

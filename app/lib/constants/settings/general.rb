@@ -36,7 +36,7 @@ module Constants
           placeholder: "a secure token"
         },
         logo_png: {
-          description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
+          description: "Used as a fallback to the SVG. Recommended minimum of 512x512px",
           placeholder: IMAGE_PLACEHOLDER
         },
         logo_svg: {

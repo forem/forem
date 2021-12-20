@@ -70,4 +70,9 @@ RSpec.describe HtmlVariant, type: :model do
     html_variant.save
     expect(Images::Optimizer).not_to have_received(:call)
   end
+
+  it "strips whitespace from the name" do
+    variant = create(:html_variant, name: " hello world ")
+    variant.reload.name.should eq "hello world"
+  end
 end

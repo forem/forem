@@ -15,6 +15,7 @@ module Users
                         email_tag_mod_newsletter
                         email_unread_notifications
                         mobile_comment_notifications
+                        mobile_mention_notifications
                         mod_roundrobin_notifications
                         reaction_notifications
                         welcome_notifications].freeze

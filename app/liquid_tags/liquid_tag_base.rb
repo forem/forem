@@ -19,6 +19,12 @@ class LiquidTagBase < Liquid::Tag
     ActionController::Base.helpers.strip_tags(string).strip
   end
 
+  def pattern_match_for(input, regex_options)
+    regex_options
+      .filter_map { |regex| input.match(regex) }
+      .first
+  end
+
   private
 
   def validate_contexts

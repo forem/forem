@@ -31,7 +31,7 @@ export class LogoUploadController extends Controller {
       const imageURL = reader.result;
       const image = document.createElement('img');
       image.src = imageURL;
-      image.className = 'site-logo';
+      image.className = 'site-logo__img';
 
       // The logo preview image is purely visual so no need to communicate this to assistive technology.
       image.alt = 'preview of logo selected';
@@ -43,10 +43,14 @@ export class LogoUploadController extends Controller {
             target: { width, height },
           } = event;
 
-          this.previewLogoTarget.replaceChild(
-            image,
-            this.previewLogoTarget.firstChild,
-          );
+          if (this.previewLogoTarget.firstElementChild) {
+            this.previewLogoTarget.replaceChild(
+              image,
+              this.previewLogoTarget.firstElementChild,
+            );
+          } else {
+            this.previewLogoTarget.appendChild(image);
+          }
 
           const maxLogoPreviewWidth = parseInt(
             getComputedStyle(image).getPropertyValue('--max-width'),
