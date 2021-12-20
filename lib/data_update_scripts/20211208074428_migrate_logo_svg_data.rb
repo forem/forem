@@ -14,6 +14,12 @@ module DataUpdateScripts
 
       ::Settings::General.original_logo = logo_svg_uploader.url
       ::Settings::General.resized_logo = logo_svg_uploader.resized_logo.url
+    rescue StandardError => e
+      # If we can't convert the logo, then alert ourselves so that we can track the Forems
+      # whose logos could not be converted
+      Rails.logger.error("Could not convert logo_svg for #{Settings::Community.community_name} Forem to a PNG")
+      Honeybadger.notify(e)
+      ForemStatsClient.increment("logo_svg.conversion")
     end
   end
 end
