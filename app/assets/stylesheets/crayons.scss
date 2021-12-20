@@ -42,3 +42,43 @@
 @import 'components/drawer-navigation';
 
 @import 'config/generator';
+
+.bg-opacity-100 {
+  --bg-opacity: 1;
+}
+.bg-opacity-90 {
+  --bg-opacity: 0.9;
+}
+.bg-opacity-80 {
+  --bg-opacity: 0.8;
+}
+.bg-opacity-75 {
+  --bg-opacity: 0.75;
+}
+.bg-opacity-70 {
+  --bg-opacity: 0.7;
+}
+.bg-opacity-60 {
+  --bg-opacity: 0.6;
+}
+.bg-opacity-50 {
+  --bg-opacity: 0.5;
+}
+.bg-opacity-40 {
+  --bg-opacity: 0.4;
+}
+.bg-opacity-30 {
+  --bg-opacity: 0.3;
+}
+.bg-opacity-25 {
+  --bg-opacity: 0.25;
+}
+.bg-opacity-20 {
+  --bg-opacity: 0.2;
+}
+.bg-opacity-10 {
+  --bg-opacity: 0.1;
+}
+.bg-opacity-05 {
+  --bg-opacity: 0.05;
+}

@@ -14,21 +14,21 @@
     'color',
     'color',
     ('transparent': transparent, 'current': currentColor),
-    $colors,
+    $colorsNew,
     false
   ),
   (
     'bg',
     'background-color',
     ('transparent': transparent, 'current': currentColor),
-    $colors,
+    $colorsNew,
     false
   ),
   (
     'border',
     'border-color',
     ('transparent': transparent, 'current': currentColor),
-    $colors,
+    $colorsNew,
     false
   ),
   (

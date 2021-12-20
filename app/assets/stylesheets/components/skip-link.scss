@@ -21,6 +21,6 @@
   pointer-events: auto;
   transform: translate(-50%, 0);
   outline: none;
-  border: 2px solid var(--header-button-focus-color);
+  box-shadow: var(--focus-ring);
   opacity: var(--opacity-1);
 }

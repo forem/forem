@@ -79,13 +79,13 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Main colors
-  --body-bg: var(--base-10);
-  --body-color: var(--base-100);
-  --body-color-inverted: var(--base-inverted);
+  --body-bg: rgb(var(--grey-100));
+  --body-color: rgb(var(--grey-900));
+  --body-color-inverted: rgb(var(--white));
 
   // Main content containers
-  --card-bg: var(--base-inverted);
-  --card-color: var(--base-100);
+  --card-bg: rgb(var(--white));
+  --card-color: rgb(var(--grey-900));
   --card-color-secondary: var(--base-70);
   --card-color-tertiary: var(--base-60);
   --card-secondary-bg: var(--base-0);
@@ -97,23 +97,12 @@
   --card-selected-bg: var(--base-20);
 
   // Header
-  --header-bg: var(--base-inverted);
-  --header-bg-hover: var(--base-10);
-  --header-button-focus-color: var(--accent-brand);
-  --header-bg-current: var(--base-20);
-  --header-shadow: rgba(0, 0, 0, 0.1);
-  --header-icons-color: var(--base-70);
-  --header-icons-color-hover: var(--base-100);
-
-  // Logo
-  --logo-bg: var(--base-100);
-  --logo-color: var(--base-inverted);
+  --header-bg: rgb(var(--white));
+  --header-shadow: rgba(var(--black), 0.1);
 
   // Footer
-  --footer-bg: var(--base-20);
-  --footer-color: var(--base-70);
-  --footer-link-color: var(--base-80);
-  --footer-link-color-hover: var(--base-100);
+  --footer-bg: rgb(var(--grey-200));
+  --footer-color: rgb(var(--grey-700));
 
   // Links
   --link-bg-hover-alt: var(--base-inverted);
@@ -176,24 +165,20 @@
   --button-ghost-dimmed-inverted-color-hover: var(--base-100);
 
   // Forms
-  --form-bg: var(--base-inverted);
-  --form-bg-focus: var(--base-inverted);
-  --form-border: var(--base-20);
-  --form-border-hover: var(--base-40);
+  --form-bg: rgb(var(--white));
+  --form-bg-focus: rgb(var(--white));
+  --form-border: rgb(var(--grey-300));
+  --form-border-hover: rgb(var(--grey-400));
   --form-border-focus: var(--accent-brand);
-  --form-placeholder-color: var(--base-60);
+  --form-placeholder-color: rgb(var(--grey-600));
 
   // Form labels
   --label-primary: var(--base-90);
   --label-secondary: var(--base-60);
 
-  // Default box
-  --box: var(--base-90);
-  --box-darker: var(--base-100);
-
   // Snackbars
-  --snackbar-bg: var(--base-90);
-  --snackbar-color: var(--body-color-inverted);
+  --snackbar-bg: rgb(var(--grey-900));
+  --snackbar-color: rgb(var(--white));
 
   // Indicators
   --indicator-accent-bg: var(--accent-brand);
@@ -250,36 +235,36 @@
 
   // Buttons: Default
   --btn-bg: transparent;
-  --btn-bg-hover: var(--accent-brand-a10);
-  --btn-color: var(--base-80);
-  --btn-color-hover: var(--accent-brand-darker);
+  --btn-bg-hover: rgba(var(--indigo-600), 0.1);
+  --btn-color: rgb(var(--grey-800));
+  --btn-color-hover: rgb(var(--indigo-700));
 
-  --btn-current-bg: var(--base-20);
-  --btn-current-color: var(--base-100);
+  --btn-current-bg: rgb(var(--grey-200));
+  --btn-current-color: rgb(var(--grey-900));
 
   // Buttons: Primary
-  --btn-primary-bg: var(--accent-brand);
-  --btn-primary-bg-hover: var(--accent-brand-darker);
-  --btn-primary-color: var(--base-inverted);
-  --btn-primary-color-hover: var(--base-inverted);
+  --btn-primary-bg: rgb(var(--indigo-600));
+  --btn-primary-bg-hover: rgb(var(--indigo-700));
+  --btn-primary-color: rgb(var(--white));
+  --btn-primary-color-hover: rgb(var(--white));
 
   // Buttons: Secondary
-  --btn-secondary-bg: var(--accent-brand-a10);
-  --btn-secondary-bg-hover: var(--accent-brand);
-  --btn-secondary-color: var(--accent-brand);
-  --btn-secondary-color-hover: var(--base-inverted);
+  --btn-secondary-bg: rgba(var(--indigo-600), 0.1);
+  --btn-secondary-bg-hover: rgb(var(--indigo-600));
+  --btn-secondary-color: rgb(var(--indigo-600));
+  --btn-secondary-color-hover: rgb(var(--white));
 
   // Buttons: Destructive Default
   --btn-destructive-bg: transparent;
-  --btn-destructive-bg-hover: var(--accent-danger-a10);
-  --btn-destructive-color: var(--accent-danger);
-  --btn-destructive-color-hover: var(--accent-danger-darker);
+  --btn-destructive-bg-hover: rgba(var(--red-600), 0.1);
+  --btn-destructive-color: rgb(var(--red-700));
+  --btn-destructive-color-hover: rgb(var(--red-800));
 
   // Buttons: Destructive Primary
-  --btn-primary-destructive-bg: var(--accent-danger);
-  --btn-primary-destructive-bg-hover: var(--accent-danger-darker);
-  --btn-primary-destructive-color: var(--base-inverted);
-  --btn-primary-destructive-color-hover: var(--base-inverted);
+  --btn-primary-destructive-bg: var(--red-600);
+  --btn-primary-destructive-bg-hover: var(--red-700);
+  --btn-primary-destructive-color: rgb(var(--white));
+  --btn-primary-destructive-color-hover: rgb(var(--white));
 
   ////////////////////////////////////////////////
   // Links ///////////////////////////////////////
