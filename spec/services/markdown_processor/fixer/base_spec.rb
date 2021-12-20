@@ -143,20 +143,4 @@ RSpec.describe MarkdownProcessor::Fixer::Base, type: :service do
       expect(result).to include("@_no_escape_codeblock", "@_no_escape_code")
     end
   end
-
-  describe "::modify_hr_tags" do
-    it "modifies hr tags" do
-      markdown =
-        <<~HEREDOC
-          #{front_matter(title: sample_text)}
-          ---
-          These hr tags should be converted to more dashes
-          ---
-        HEREDOC
-
-      result = described_class.modify_hr_tags(markdown)
-      expect(result).to include("-------").twice
-      expect(result).to include("---").at_least(:twice)
-    end
-  end
 end
