@@ -219,7 +219,6 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
       ---
       title:  Notification article
       published: true
-      cover_image: #{Faker::Company.logo}
       ---
       #{Faker::Hipster.paragraph(sentence_count: 2)}
       #{Faker::Markdown.random}
