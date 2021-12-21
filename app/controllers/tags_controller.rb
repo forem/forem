@@ -56,7 +56,7 @@ class TagsController < ApplicationController
   def suggest
     skip_authorization
     tags = Tag.supported.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
-    render json: tags.as_json(only: INDEX_API_ATTRIBUTES)
+    render json: tags, only: INDEX_API_ATTRIBUTES, include: [badge: { only: [:badge_image] }]
   end
 
   private
