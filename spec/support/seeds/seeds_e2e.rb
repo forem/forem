@@ -199,6 +199,7 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
+
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
@@ -240,6 +241,7 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
     }
 
     parent_comment = Comment.create!(parent_comment_attributes)
+    Notification.send_new_comment_notifications_without_delay(parent_comment)
 
     reply_comment_attributes = {
       body_markdown: Faker::Hipster.paragraph(sentence_count: 1),

@@ -24,7 +24,7 @@ describe('Comment notifications', () => {
     });
   });
 
-  it('Shows the comment reply form', () => {
+  it('Replies to a comment', () => {
     cy.get('main').within(() => {
       // Check that comment form is initially hidden
       cy.findByRole('textbox', { name: 'Reply to a comment...' }).should(
@@ -33,9 +33,13 @@ describe('Comment notifications', () => {
 
       // Check the textbox appears and received immediate focus
       cy.findByRole('link', { name: 'Reply' }).click();
-      cy.findByRole('textbox', { name: 'Reply to a comment...' }).should(
-        'have.focus',
-      );
+      cy.findByRole('textbox', { name: 'Reply to a comment...' })
+        .should('have.focus')
+        .type('Example reply text');
+
+      cy.findByRole('button', { name: 'Submit' }).click();
+      // Check the confirmation is displayed on the page
+      cy.findByRole('link', { name: 'Check it out' });
     });
   });
 });
