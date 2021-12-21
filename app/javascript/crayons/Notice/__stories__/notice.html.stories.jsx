@@ -1,10 +1,13 @@
 import { h } from 'preact';
-import '../../storybook-utilities/designSystem.scss';
 import notes from './notices.md';
 
 export default {
-  title: 'Components/Notices/HTML',
-  parameters: { notes },
+  title: 'Components/Notices',
+  parameters: {
+    docs: {
+      page: notes,
+    },
+  },
 };
 
 export const Default = () => (

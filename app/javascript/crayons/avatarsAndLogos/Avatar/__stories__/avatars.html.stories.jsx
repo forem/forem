@@ -1,11 +1,12 @@
 import { h } from 'preact';
-import '../../../storybook-utilities/designSystem.scss';
 import notes from '../../avatars-and-logos.md';
 
 export default {
-  title: 'Components/Avatars & Logos/Avatars/HTML',
+  title: 'Components/Avatars & Logos/Avatars',
   parameters: {
-    notes,
+    docs: {
+      page: notes,
+    },
   },
 };
 

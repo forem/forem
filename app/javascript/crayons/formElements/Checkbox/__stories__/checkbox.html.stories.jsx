@@ -4,7 +4,7 @@ import '../../../storybook-utilities/designSystem.scss';
 import notes from '../../form-elements.md';
 
 export default {
-  title: 'Components/Form Components/Checkbox/HTML',
+  title: 'Components/Form Elements/Checkbox',
   parameters: { notes },
 };
 
