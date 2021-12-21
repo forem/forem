@@ -51,5 +51,9 @@ module Articles
       end
       Result.new(success: success, article: article.decorate)
     end
+
+    private
+
+    attr_reader :user, :article, :article_params
   end
 end
