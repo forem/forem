@@ -74,7 +74,9 @@ module Articles
       # - joins: [Optional] An SQL fragment that defines the join
       #          necessary to fulfill the clause of the scoring
       #          method.
-      # - disabled: [Optional] When true, we won't include this.
+      #
+      # - enabled: [Optional] When false, we won't include this.  By
+      #            default a scoring method is enabled.
       #
       # @note The group by clause appears necessary for postgres
       #       versions and Heroku configurations of current (as of
@@ -135,7 +137,7 @@ module Articles
           fallback: 0.93,
           requires_user: true,
           group_by: "articles.experience_level_rating",
-          disabled: true
+          enabled: false
         },
         # Weight to give for feature or unfeatured articles.
         featured_article_factor: {
@@ -144,7 +146,7 @@ module Articles
           fallback: 0.85,
           requires_user: false,
           group_by: "articles.featured",
-          disabled: true
+          enabled: false
         },
         # Weight to give when the given user follows the article's
         # author.
@@ -567,8 +569,8 @@ module Articles
         SCORING_METHOD_CONFIGURATIONS.each_pair do |valid_method_name, default_config|
           # Don't attempt to use this factor if we don't have user.
           next if default_config.fetch(:requires_user) && @user.nil?
-          # Don't proceed with this one if it's disabled.
-          next if default_config.fetch(:disabled, false)
+          # Don't proceed with this one if it's not enabled.
+          next unless default_config.fetch(:enabled, true)
 
           # Ensure that we're only using a scoring configuration that
           # the caller provided.
