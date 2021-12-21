@@ -1,9 +1,6 @@
 module Webhook
   class Endpoint < ApplicationRecord
     belongs_to :user, inverse_of: :webhook_endpoints
-    belongs_to :oauth_application, optional: true,
-                                   class_name: "Doorkeeper::Application",
-                                   inverse_of: :webhook_endpoints
 
     validates :events, presence: true
     validates :source, presence: true
