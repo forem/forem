@@ -201,6 +201,7 @@ export class ReadingList extends Component {
               onClick={(e) => this.toggleStatusView(e)}
               className="whitespace-nowrap ml-auto s:w-auto"
               url={READING_LIST_ARCHIVE_PATH}
+              block
               data-no-instant
             >
               {isStatusViewValid ? 'View archive' : 'View reading list'}
