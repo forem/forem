@@ -64,6 +64,7 @@ fr:
         make: Make primary
         primary: primary
         remove: Remove card
+      characters: "Available characters used: "
       complete:
         heading: Confirm your email to complete your profile.
         desc: While you're at it, go ahead and fill everything out.
