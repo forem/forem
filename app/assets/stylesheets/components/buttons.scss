@@ -465,7 +465,7 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   &[aria-pressed='true'] {
     --bg: var(--btn-current-bg);
     --color: var(--btn-current-color);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-medium);
   }
 
   &[disabled] {

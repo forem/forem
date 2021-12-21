@@ -1,21 +1,21 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
-import { Button } from '@crayons';
+import { Link } from '@crayons';
 
 export const ActionButtons = ({ isDraft, editUrl, deleteConfirmUrl }) => {
   return (
-    <div className="listing-row-actions crayons-btn-actions">
+    <div className="listing-row-actions flex">
       {isDraft && (
-        <Button tagName="a" url={editUrl}>
+        <Link block href={editUrl}>
           View draft
-        </Button>
+        </Link>
       )}
-      <Button tagName="a" url={editUrl}>
+      <Link block href={editUrl}>
         Edit
-      </Button>
-      <Button variant="danger" tagName="a" url={deleteConfirmUrl}>
+      </Link>
+      <Link block href={deleteConfirmUrl}>
         Delete
-      </Button>
+      </Link>
     </div>
   );
 };
