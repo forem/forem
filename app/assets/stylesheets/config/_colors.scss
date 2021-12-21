@@ -98,22 +98,11 @@
 
   // Header
   --header-bg: var(--base-inverted);
-  --header-bg-hover: var(--base-10);
-  --header-button-focus-color: var(--accent-brand);
-  --header-bg-current: var(--base-20);
   --header-shadow: rgba(0, 0, 0, 0.1);
-  --header-icons-color: var(--base-70);
-  --header-icons-color-hover: var(--base-100);
-
-  // Logo
-  --logo-bg: var(--base-100);
-  --logo-color: var(--base-inverted);
 
   // Footer
   --footer-bg: var(--base-20);
-  --footer-color: var(--base-70);
-  --footer-link-color: var(--base-80);
-  --footer-link-color-hover: var(--base-100);
+  --footer-color: var(--base-80);
 
   // Links
   --link-bg-hover-alt: var(--base-inverted);
@@ -186,10 +175,6 @@
   // Form labels
   --label-primary: var(--base-90);
   --label-secondary: var(--base-60);
-
-  // Default box
-  --box: var(--base-90);
-  --box-darker: var(--base-100);
 
   // Snackbars
   --snackbar-bg: var(--base-90);

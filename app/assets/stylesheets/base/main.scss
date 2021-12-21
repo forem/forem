@@ -82,7 +82,8 @@ a {
   &__img,
   svg {
     max-width: 100%;
-    max-height: calc(
+    width: auto;
+    height: calc(
       var(--header-height) - var(--su-2) * 2
     ); // making calculations instead of setting fixed value so should be smooth change if we ever decide to change header's height.
     object-fit: contain;

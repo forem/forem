@@ -3,8 +3,8 @@
     <header class="hamburger__content__header">
       <h2 class="fs-l fw-bold flex-1 break-word lh-tight"><%= community_name.to_s %></h2>
 
-      <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded js-hamburger-trigger shrink-0">
-        <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: t("views.hamburger.icon_close")) %>
+      <button class="c-btn c-btn--icon-alone js-hamburger-trigger shrink-0" aria-label="<%= t("views.hamburger.icon_close") %>">
+        <%= inline_svg_tag("x.svg", aria_hidden: true, class: "crayons-icon c-btn__icon", title: t("views.hamburger.icon_close")) %>
       </button>
     </header>
 

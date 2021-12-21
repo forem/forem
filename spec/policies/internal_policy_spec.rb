@@ -4,29 +4,21 @@ RSpec.describe InternalPolicy, type: :policy do
   let(:internal_policy) { described_class }
 
   permissions :access? do
-    it "does not allow someone without admin privileges to do continue" do
-      expect(internal_policy).not_to permit(build(:user))
-    end
+    let(:user) { instance_double(User) }
 
-    it "allow someone with admin privileges to continue" do
-      expect(internal_policy).to permit(build(:user, :admin))
-    end
+    context "when user does not have administrative access (to the record)" do
+      before { allow(user).to receive(:administrative_access_to?).and_return(false) }
 
-    it "allow someone with super_admin privileges to continue" do
-      expect(internal_policy).to permit(build(:user, :super_admin))
-    end
-
-    context "when tied to a resource" do
-      let(:user) { create(:user) }
-
-      it "grant access based on permitted resource" do
-        user.add_role(:single_resource_admin, Article)
-        expect(internal_policy).to permit(user, Article)
+      it "does not permit the user" do
+        expect(internal_policy).not_to permit(user)
       end
+    end
 
-      it "does not grant cross resource access" do
-        user.add_role(:single_resource_admin, Article)
-        expect(internal_policy).not_to permit(user, Comment)
+    context "when user has administrative access (to the record)" do
+      before { allow(user).to receive(:administrative_access_to?).and_return(true) }
+
+      it "does not permit the user" do
+        expect(internal_policy).to permit(user)
       end
     end
   end

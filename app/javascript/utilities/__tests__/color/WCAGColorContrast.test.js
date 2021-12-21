@@ -1,7 +1,7 @@
 import { WCAGColorContrast } from '@utilities/color/WCAGColorContrast';
 
 // Tests have been extracted from the original library https://github.com/doochik/wcag-color-contrast/blob/master/index.html
-describe('WCAGColorContrast.validRGB ', () => {
+describe('WCAGColorContrast.validRGB', () => {
   it('valid #FFFFFF', () => {
     expect(WCAGColorContrast.validRGB('FFFFFF')).toBeTruthy();
   });

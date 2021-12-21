@@ -85,9 +85,16 @@
   }
 }
 
-.sidebar-navigation-links .crayons-icon svg {
-  height: 24px;
-  width: 24px;
+.sidebar-navigation-link .c-link__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+
+  svg {
+    height: 24px;
+    width: 24px;
+    vertical-align: middle;
+    display: inline-block;
+  }
 }
 
 @keyframes fade-in {

@@ -5,8 +5,6 @@ module Users
     def call(user)
       delete_social_media(user)
       delete_profile_info(user)
-      user.access_grants.delete_all
-      user.access_tokens.delete_all
       user.api_secrets.delete_all
       user.created_podcasts.update_all(creator_id: nil)
       user.blocker_blocks.delete_all
@@ -46,6 +44,11 @@ module Users
       user.credits.delete_all
       user.organization_memberships.delete_all
       user.profile_pins.delete_all
+      user.profile.update(summary: "", location: "", website_url: "", data: {})
+      user.github_username = ""
+      user.twitter_username = ""
+      user.facebook_username = ""
+      user.save
     end
   end
 end

@@ -69,7 +69,7 @@ module Api
       end
 
       def update
-        articles_relation = @user.has_role?(:super_admin) ? Article.includes(:user) : @user.articles
+        articles_relation = @user.super_admin? ? Article.includes(:user) : @user.articles
         article = articles_relation.find(params[:id])
 
         result = Articles::Updater.call(@user, article, article_params)
