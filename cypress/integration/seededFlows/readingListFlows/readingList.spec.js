@@ -83,7 +83,7 @@ describe('Reading List Archive', () => {
     cy.get('@main')
       .contains('Test Article 1')
       .parents('article')
-      .findByLabelText(/^Archive item$/i)
+      .find('.spec__archive-button')
       .click();
 
     cy.wait('@archiveItem');

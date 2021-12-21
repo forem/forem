@@ -10,7 +10,9 @@ import PropTypes from 'prop-types';
 import { ButtonNew as Button } from '@crayons';
 
 export const ItemListItemArchiveButton = ({ text, onClick }) => (
-  <Button onClick={onClick}>{text}</Button>
+  <Button className="spec__archive-button" onClick={onClick}>
+    {text}
+  </Button>
 );
 
 ItemListItemArchiveButton.propTypes = {
