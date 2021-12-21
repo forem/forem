@@ -45,7 +45,11 @@ export const EditorActions = ({
       </Button>
 
       {!(published || isVersion1) && (
-        <Button className="mr-2 whitespace-nowrap" onClick={onSaveDraft}>
+        <Button
+          className="mr-2 whitespace-nowrap"
+          onClick={onSaveDraft}
+          title="Save draft"
+        >
           Save
         </Button>
       )}
