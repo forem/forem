@@ -22,7 +22,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
   describe "GET /tags/suggest" do
     it "returns a JSON representation of the top tags", :aggregate_failures do
       badge = create(:badge)
-      tag = create(:tag)
+      tag = create(:tag, badge: badge)
 
       get suggest_tags_path
 
