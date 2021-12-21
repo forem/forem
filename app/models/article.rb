@@ -298,6 +298,16 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
+  # @note This includes the `featured` scope, which may or may not be
+  #       something we expose going forward.  However, it was
+  #       something used in two of the three queries we had that
+  #       included the where `score > Settings::UserExperience.home_feed_minimum_score`
+  scope :with_at_least_home_feed_minimum_score, lambda {
+    featured.or(
+      where(score: Settings::UserExperience.home_feed_minimum_score..),
+    )
+  }
+
   scope :featured, -> { where(featured: true) }
 
   scope :feed, lambda {
