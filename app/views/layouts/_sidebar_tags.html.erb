@@ -1,24 +1,19 @@
 <nav class="mb-6" aria-label="Secondary sidebar nav">
   <% if user_signed_in? %>
-    <header class="p-2 pr-0 flex items-center justify-between">
-      <h3 class="crayons-subtitle-3"><%= t("views.main.tags.my_tags") %></h3>
-      <a id="tag-priority-link" href="/dashboard/following_tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="<%= t("views.main.tags.aria_label") %>" title="<%= t("views.main.tags.aria_label") %>">
+    <header class="pt-2 pl-3 pb-0 pr-0 flex items-center justify-between">
+      <h2 class="crayons-subtitle-3"><%= t("views.main.tags.my_tags") %></h2>
+      <a id="tag-priority-link" href="<%= dashboard_following_tags_path %>" class="c-link c-link--block c-link--icon-alone" aria-label="<%= t("views.main.tags.aria_label") %>" title="<%= t("views.main.tags.aria_label") %>">
         <%= inline_svg_tag("cog.svg", class: "crayons-icon") %>
       </a>
     </header>
-    <div id="sidebar-nav-followed-tags" class="overflow-y-auto mb-2 sidebar-nav-followed-tags" style="max-height: 42vh;"></div>
+    <div id="sidebar-nav-followed-tags" class="overflow-y-auto -m-1 p-1 mb-2 sidebar-nav-followed-tags" style="max-height: 42vh;"></div>
   <% else %>
     <h3 class="crayons-subtitle-3 p-2"><%= t("views.main.tags.popular_tags") %></h3>
     <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="max-height: 42vh">
       <% Tag.supported.order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
         <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-          <a class="crayons-link crayons-link--block py-2 px-2" href="<%= tag_path(tag_array.second) %>">
+          <a class="c-link c-link--block" href="<%= tag_path(tag_array.second) %>">
             #<%= tag_array.second %>
-          </a>
-          <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s"
-            href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
-            data-info='{"id":<%= tag_array.first %>,"className":"Tag", "name": "<%= tag_array.second %>"}'>
-            <%= t("views.main.tags.follow") %>
           </a>
         </div>
       <% end %>

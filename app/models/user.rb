@@ -47,10 +47,6 @@ class User < ApplicationRecord
   has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
   has_one :setting, class_name: "Users::Setting", dependent: :delete
 
-  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
-                           inverse_of: :resource_owner, dependent: :delete_all
-  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id,
-                           inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :delete_all
@@ -206,7 +202,6 @@ class User < ApplicationRecord
       ),
     )
   }
-  before_validation :check_for_username_change
   before_validation :downcase_email
 
   # make sure usernames are not empty, to be able to use the database unique index
@@ -608,13 +603,6 @@ class User < ApplicationRecord
 
   def downcase_email
     self.email = email.downcase if email
-  end
-
-  def check_for_username_change
-    return unless username_changed?
-
-    self.old_old_username = old_username
-    self.old_username = username_was
   end
 
   def bust_cache

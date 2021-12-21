@@ -288,58 +288,6 @@
   }
 }
 
-// Left Side bar navigation links
-// Pulling this out of context because Nick says so: https://github.com/thepracticaldev/dev.to/pull/5918/commits/f1642e62accbdaff72dc7762e1e1ffd4e40027b0
-.sidebar-nav-element {
-  display: block;
-  position: relative;
-
-  a {
-    display: block;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-  }
-
-  @media screen and (min-width: $breakpoint-m) {
-    .sidebar-nav-link-follow {
-      display: none;
-    }
-    &:hover {
-      .sidebar-nav-link-follow {
-        display: block;
-      }
-    }
-  }
-  img {
-    width: 30px;
-    height: 30px;
-    border: 0px;
-    vertical-align: -8px;
-    margin-right: 4px;
-  }
-  img.nav-emoji {
-    height: 19px;
-    width: 19px;
-    vertical-align: -2px;
-  }
-
-  a.sidebar-nav-link {
-    @include sidebar-link;
-    color: var(--link-color);
-    font-weight: 400;
-
-    &.sidebar-nav-link-tag {
-      color: var(--link-color);
-    }
-  }
-  a.sidebar-nav-link-follow {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-}
-
 // Todo: Not really sure what that is.. some sort of sponsorship widget...
 .sidebar-sponsorship-level {
   text-align: center;

@@ -44,8 +44,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_one(:notification_setting).dependent(:delete) }
       it { is_expected.to have_one(:setting).dependent(:delete) }
 
-      it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
-      it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
       it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:delete_all) }
       it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:delete_all) }
       it { is_expected.to have_many(:api_secrets).dependent(:delete_all) }
@@ -89,20 +87,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:tweets).dependent(:nullify) }
 
       # rubocop:disable RSpec/NamedSubject
-      it do
-        expect(subject).to have_many(:access_grants)
-          .class_name("Doorkeeper::AccessGrant")
-          .with_foreign_key("resource_owner_id")
-          .dependent(:delete_all)
-      end
-
-      it do
-        expect(subject).to have_many(:access_tokens)
-          .class_name("Doorkeeper::AccessToken")
-          .with_foreign_key("resource_owner_id")
-          .dependent(:delete_all)
-      end
-
       it do
         expect(subject).to have_many(:affected_feedback_messages)
           .class_name("FeedbackMessage")
@@ -320,23 +304,6 @@ RSpec.describe User, type: :model do
       it "does not allow to change to a username that is taken by an organization" do
         user.username = create(:organization).slug
         expect(user).not_to be_valid
-      end
-    end
-
-    context "when the past value is relevant" do
-      let(:user) { create(:user) }
-
-      it "changes old_username and old_old_username properly if username changes" do
-        old_username = user.username
-        random_new_username = "username_#{rand(100_000_000)}"
-        user.update(username: random_new_username)
-        expect(user.username).to eq(random_new_username)
-        expect(user.old_username).to eq(old_username)
-
-        new_username = user.username
-        user.update(username: "username_#{rand(100_000_000)}")
-        expect(user.old_username).to eq(new_username)
-        expect(user.old_old_username).to eq(old_username)
       end
     end
   end
