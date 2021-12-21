@@ -15,6 +15,12 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
     allow(author).to receive(:has_role?).with(:restricted_liquid_tag, LiquidTags::UserSubscriptionTag).and_return(true)
   end
 
+  describe ".user_authorization_method_name" do
+    subject(:result) { described_class.user_authorization_method_name }
+
+    it { is_expected.to eq(:user_subscription_tag_available?) }
+  end
+
   context "when rendering" do
     it "renders default data correctly" do
       source = create(:article, user: author)

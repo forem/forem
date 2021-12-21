@@ -40,7 +40,7 @@ module Admin
     private
 
     def extra_authorization
-      not_authorized unless current_user.has_role?(:creator)
+      not_authorized unless current_user.creator?
     end
 
     def settings_params
