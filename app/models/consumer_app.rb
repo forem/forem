@@ -51,9 +51,9 @@ class ConsumerApp < ApplicationRecord
   def clear_rpush_app
     case ConsumerApp.platforms[platform_was]
     when Device::IOS
-      Rpush::Apns2::App.destroy_by(name: app_bundle_was)
+      Rpush::Apns2::App.where(name: app_bundle_was).first&.destroy
     when Device::ANDROID
-      Rpush::Gcm::App.destroy_by(name: app_bundle_was)
+      Rpush::Gcm::App.where(name: app_bundle_was).first&.destroy
     end
 
     # This prevents the `destroy` method to return true or false in a callback
