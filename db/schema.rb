@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_09_225729) do
+ActiveRecord::Schema.define(version: 2021_12_22_040359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -675,48 +675,6 @@ ActiveRecord::Schema.define(version: 2021_12_09_225729) do
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
-  end
-
-  create_table "oauth_access_grants", force: :cascade do |t|
-    t.bigint "application_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "expires_in", null: false
-    t.text "redirect_uri", null: false
-    t.bigint "resource_owner_id", null: false
-    t.datetime "revoked_at"
-    t.string "scopes"
-    t.string "token", null: false
-    t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
-    t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
-    t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
-  end
-
-  create_table "oauth_access_tokens", force: :cascade do |t|
-    t.bigint "application_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "expires_in"
-    t.string "previous_refresh_token", default: "", null: false
-    t.string "refresh_token"
-    t.bigint "resource_owner_id"
-    t.datetime "revoked_at"
-    t.string "scopes"
-    t.string "token", null: false
-    t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
-    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
-    t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
-    t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
-  end
-
-  create_table "oauth_applications", force: :cascade do |t|
-    t.boolean "confidential", default: true, null: false
-    t.datetime "created_at", null: false
-    t.string "name", null: false
-    t.text "redirect_uri", null: false
-    t.string "scopes", default: "", null: false
-    t.string "secret", null: false
-    t.string "uid", null: false
-    t.datetime "updated_at", null: false
-    t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
   create_table "organization_memberships", force: :cascade do |t|
@@ -1392,20 +1350,6 @@ ActiveRecord::Schema.define(version: 2021_12_09_225729) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "webhook_endpoints", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "events", null: false, array: true
-    t.bigint "oauth_application_id"
-    t.string "source"
-    t.string "target_url", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["events"], name: "index_webhook_endpoints_on_events"
-    t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
-    t.index ["target_url"], name: "index_webhook_endpoints_on_target_url", unique: true
-    t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
-  end
-
   create_table "welcome_notifications", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -1456,10 +1400,6 @@ ActiveRecord::Schema.define(version: 2021_12_09_225729) do
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
-  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
-  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
@@ -1499,8 +1439,6 @@ ActiveRecord::Schema.define(version: 2021_12_09_225729) do
   add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "users_settings", "users"
-  add_foreign_key "webhook_endpoints", "oauth_applications"
-  add_foreign_key "webhook_endpoints", "users"
   create_trigger("update_reading_list_document", :generated => true, :compatibility => 1).
       on("articles").
       name("update_reading_list_document").
