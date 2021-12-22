@@ -218,7 +218,7 @@ function trackAdImpression(token, adBox) {
     },
     body: JSON.stringify(dataBody),
     credentials: 'same-origin',
-  })
+  }).catch((error) => console.error(error))
 }
 
 function trackAdClick(token, clickedElement) {
