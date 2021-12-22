@@ -5,7 +5,7 @@ require "exifr/jpeg"
 describe LogoSvgUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
-  let(:image_svg) { fixture_file_upload("300x100.svg") }
+  let(:image_svg) { fixture_file_upload("300x100.svg", "image/svg+xml") }
   let(:image_webp) { fixture_file_upload("800x600.webp", "image/webp") }
 
   # we need a new uploader before each test, and since the uploader is not a model
