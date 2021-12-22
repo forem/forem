@@ -2,17 +2,21 @@ import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 import { jsxDecorator } from 'storybook-addon-jsx';
+import cssVariablesTheme from '@etchteam/storybook-addon-css-variables-theme';
 import 'focus-visible';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/views.scss';
 import '../../assets/stylesheets/crayons.scss';
+import LightTheme from '!!style-loader?injectType=lazyStyleTag!css-loader!../../assets/stylesheets/config/_colors.css';
+import DarkTheme from '!!style-loader?injectType=lazyStyleTag!css-loader!../../assets/stylesheets/themes/dark.css';
 import '../../assets/javascripts/lib/xss';
 import '../../assets/javascripts/utilities/timeAgo';
 import './storybook.scss';
 
 addDecorator(jsxDecorator);
 addDecorator((Story) => <Story />);
+addDecorator(cssVariablesTheme);
 
 addParameters({
   options: {
@@ -39,6 +43,12 @@ export const parameters = {
   },
   html: {
     root: '#story-content',
+  },
+  cssVariables: {
+    files: {
+      LightTheme,
+      DarkTheme,
+    },
   },
   backgrounds: {
     default: 'Card',
