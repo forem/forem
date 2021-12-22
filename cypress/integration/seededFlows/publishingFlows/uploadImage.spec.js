@@ -18,7 +18,7 @@ describe('Upload image', () => {
       });
 
       // Confirm the UI has updated to show the uploaded state
-      cy.findByLabelText(/Copy.../, { selector: 'button' }).should('exist');
+      cy.findByLabelText('Copy...', { selector: 'button' }).should('exist');
     });
   });
 
