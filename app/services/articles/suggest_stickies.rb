@@ -1,6 +1,10 @@
 module Articles
   class SuggestStickies
+    # @todo Should we make this configurable in the admin interface?
     SUGGESTION_TAGS = %w[career productivity discuss explainlikeimfive].freeze
+
+    DEFAULT_TAG_ARTICLES_LIMIT = 3
+    DEFAULT_MORE_ARTICLES_LIMIT = 7
 
     # @api public
     #
@@ -10,6 +14,12 @@ module Articles
     # @param sample_size [Integer] How many Articles in the return set?
     #
     # @return [Array<Article>] An array Article records
+    #
+    # @note The resulting array of articles will be 30% articles that
+    #       share tags with the given article, and 70% of articles
+    #       that have tags in the SUGGESTION_TAGS constant.  These
+    #       percentages are related to the DEFAULT_TAG_ARTICLES_LIMIT
+    #       and DEFAULT_MORE_ARTICLES_LIMIT.
     def self.call(article, sample_size: 3)
       new(article, sample_size: sample_size).call
     end
@@ -34,7 +44,7 @@ module Articles
 
       scope = Article
         .where("public_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num)
-        .limit(3)
+        .limit(DEFAULT_TAG_ARTICLES_LIMIT)
 
       apply_common_scope(scope: scope, tags: article_tags)
     end
@@ -48,7 +58,7 @@ module Articles
     def more_articles
       scope = Article
         .where("comments_count > ?", comment_count_num)
-        .limit(7)
+        .limit(DEFAULT_MORE_ARTICLES_LIMIT)
 
       apply_common_scope(scope: scope, tags: SUGGESTION_TAGS)
     end
