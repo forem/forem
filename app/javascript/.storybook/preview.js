@@ -104,18 +104,18 @@ export const parameters = {
     root: '#story-content',
   },
   backgrounds: {
-    default: 'card',
+    default: 'Card',
     grid: {
       disable: true,
     },
     values: [
       {
-        name: 'card',
-        value: '#ffffff',
+        name: 'Card',
+        value: 'var(--card-bg)',
       },
       {
-        name: 'body',
-        value: '#efefef',
+        name: 'Body',
+        value: 'var(--body-bg)',
       },
     ],
   },
