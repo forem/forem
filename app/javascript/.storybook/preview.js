@@ -11,65 +11,7 @@ import '../../assets/javascripts/lib/xss';
 import '../../assets/javascripts/utilities/timeAgo';
 import './storybook.scss';
 
-function addStylesheet(theme = '') {
-  if (theme === '') {
-    return; // default theme
-  }
-
-  const head = document.head;
-  const link = document.createElement('link');
-
-  link.type = 'text/css';
-  link.rel = 'stylesheet';
-  link.href = `themes/${theme}.css`;
-  link.id = 'dev-theme';
-
-  head.appendChild(link);
-}
-
-function themeSwitcher(event) {
-  const themeNode = document.getElementById('dev-theme');
-  const theme = event.target.value;
-
-  if (themeNode) {
-    themeNode.parentElement.removeChild(themeNode);
-  }
-
-  localStorage.setItem('storybook-crayons-theme', theme);
-
-  addStylesheet(theme);
-}
-
-const THEMES = Object.freeze(['light', 'dark']);
-
-const themeSwitcherDecorator = (storyFn) => {
-  const lastThemeUsed = localStorage.getItem('storybook-crayons-theme') || '';
-
-  addStylesheet(lastThemeUsed);
-
-  return (
-    <div>
-      <label style={{ position: 'absolute', top: 0, left: 0, margin: '1rem' }}>
-        theme{' '}
-        <select onChange={themeSwitcher}>
-          {THEMES.map((theme) => (
-            <option
-              selected={lastThemeUsed === theme}
-              value={theme}
-              key={theme}
-            >
-              {theme}
-            </option>
-          ))}
-        </select>
-      </label>
-      <div id="story-content">{storyFn()}</div>
-    </div>
-  );
-};
-
 addDecorator(jsxDecorator);
-addDecorator(themeSwitcherDecorator);
 addDecorator((Story) => <Story />);
 
 addParameters({
@@ -85,11 +27,6 @@ addParameters({
     page: DocsPage,
   },
 });
-
-export const Foo = () => <Component />;
-Foo.parameters = {
-  previewTabs: { 'storybook/docs/panel': { index: -1 } },
-};
 
 export const parameters = {
   controls: { expanded: true },
