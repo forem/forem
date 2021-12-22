@@ -93,20 +93,6 @@ Foo.parameters = {
 
 export const parameters = {
   controls: { expanded: true },
-  options: {
-    storySort: {
-      order: [
-        'Introduction',
-        'Component Library',
-        'Utility-First CSS',
-        'Writing CSS',
-        'Fundamentals',
-        'Components',
-        'App Components',
-        'Utility-First Classes',
-      ],
-    },
-  },
   jsx: {
     filterProps: (val) => val !== undefined,
     functionValue: (fn) => {
@@ -116,5 +102,21 @@ export const parameters = {
   },
   html: {
     root: '#story-content',
+  },
+  backgrounds: {
+    default: 'card',
+    grid: {
+      disable: true,
+    },
+    values: [
+      {
+        name: 'card',
+        value: '#ffffff',
+      },
+      {
+        name: 'body',
+        value: '#efefef',
+      },
+    ],
   },
 };

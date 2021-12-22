@@ -2059,6 +2059,25 @@
     util-deprecate "^1.0.2"
     uuid-browser "^3.1.0"
 
+"@storybook/addon-backgrounds@^6.4.9":
+  version "6.4.9"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-backgrounds/-/addon-backgrounds-6.4.9.tgz#89033aed6f01d6a2dc134cbdb1ce0c46afd130ec"
+  integrity sha512-/jqUZvk+x8TpDedyFnJamSYC91w/e8prj42xtgLG4+yBlb0UmewX7BAq9i/lhowhUjuLKaOX9E8E0AHftg8L6A==
+  dependencies:
+    "@storybook/addons" "6.4.9"
+    "@storybook/api" "6.4.9"
+    "@storybook/client-logger" "6.4.9"
+    "@storybook/components" "6.4.9"
+    "@storybook/core-events" "6.4.9"
+    "@storybook/csf" "0.0.2--canary.87bc651.0"
+    "@storybook/theming" "6.4.9"
+    core-js "^3.8.2"
+    global "^4.4.0"
+    memoizerific "^1.11.3"
+    regenerator-runtime "^0.13.7"
+    ts-dedent "^2.0.0"
+    util-deprecate "^1.0.2"
+
 "@storybook/addon-controls@^6.4.9":
   version "6.4.9"
   resolved "https://registry.yarnpkg.com/@storybook/addon-controls/-/addon-controls-6.4.9.tgz#286a184336a80981fdd805f44a68f60fb6e38e73"
