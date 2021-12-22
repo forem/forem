@@ -56,7 +56,7 @@ class Campaign
   # @note [@jeremyf] My inclination was to extract a scoping method
   #       for this.  However, I've since consolidated the logic into a
   #       single location, so the scope is less necessary.
-  def scope
+  def the_scope
     the_scope = Article
       .tagged_with(featured_tags, any: true)
       .where("published_at > ? AND score > ?", articles_expiry_time.weeks.ago, 0)
