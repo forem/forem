@@ -18,6 +18,11 @@ GITHUB_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:scope] = "user:email"
 end
 
+GOOGLe_OMNIAUTH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.google_key
+  env["omniauth.strategy"].options[:client_secrete] = Settings::Authentication.google_secret
+end
+
 FACEBOOK_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.facebook_key
   env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.facebook_secret
