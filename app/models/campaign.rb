@@ -27,7 +27,7 @@ class Campaign
   end
 
   # @return [Integer] The total number of articles in the campaign.
-  delegate :count, to: :the_scope
+  delegate :count, to: :articles_scope
 
   # Get the "plucked" attribute information for the campaign's
   # articles.
@@ -48,7 +48,7 @@ class Campaign
   # @see `./app/views/articles/_widget_list_item.html.erb` for the
   #      importance of maintaining position of these parameters.
   def plucked_article_attributes(limit: 5, attributes: %i[path title comments_count created_at])
-    the_scope.limit(limit).pluck(*attributes)
+    articles_scope.limit(limit).pluck(*attributes)
   end
 
   private
@@ -56,13 +56,13 @@ class Campaign
   # @note [@jeremyf] My inclination was to extract a scoping method
   #       for this.  However, I've since consolidated the logic into a
   #       single location, so the scope is less necessary.
-  def the_scope
-    the_scope = Article
+  def articles_scope
+    articles_scope = Article
       .tagged_with(featured_tags, any: true)
       .where("published_at > ? AND score > ?", articles_expiry_time.weeks.ago, 0)
       .order(hotness_score: :desc)
-    the_scope = the_scope.approved if articles_require_approval?
+    articles_scope = articles_scope.approved if articles_require_approval?
 
-    the_scope
+    articles_scope
   end
 end
