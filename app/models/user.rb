@@ -186,6 +186,8 @@ class User < ApplicationRecord
   #
   scope :search_by_name_and_username, lambda { |term|
     term = term.delete("\\") # prevents syntax error in tsquery
+    return none if term.empty?
+
     where(
       sanitize_sql_array(
         [
