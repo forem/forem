@@ -15,6 +15,16 @@ RSpec.describe Users::Update, type: :service do
   end
   let(:user) { profile.user }
 
+  it "automatically creates a profile for a user if it does not exist" do
+    user = create(:user, _skip_creating_profile: true)
+
+    expect(user.profile).to be_nil
+
+    described_class.call user, profile: { location: "Over here" }
+
+    expect(user.profile).to be_a Profile
+  end
+
   it "correctly typecasts new attributes", :aggregate_failures do
     described_class.call(user, profile: { location: 123 })
     expect(user.profile.location).to eq "123"

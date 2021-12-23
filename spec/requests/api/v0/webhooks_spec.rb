@@ -11,38 +11,6 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook")
     end
 
-    context "when accessing with oauth" do
-      it "returns a 401 if unauthorized" do
-        get api_webhooks_path
-        expect(response).to have_http_status(:unauthorized)
-      end
-
-      it "returns a 403 if public scope is missing (oauth)" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        get api_webhooks_path, headers: headers
-        expect(response).to have_http_status(:forbidden)
-      end
-
-      it "returns a 200 if authorized" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
-        webhook = create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go2",
-                                            oauth_application_id: access_token.application_id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-        get api_webhooks_path, headers: headers
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.first).to eq(
-          "created_at" => webhook.created_at.rfc3339,
-          "events" => webhook.events,
-          "id" => webhook.id,
-          "source" => webhook.source,
-          "target_url" => webhook.target_url,
-          "type_of" => "webhook_endpoint",
-        )
-      end
-    end
-
     context "when accessing via cookie" do
       before do
         sign_in user
@@ -199,47 +167,6 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     it "returns 404 if another user webhook is accessed" do
       other_webhook = create(:webhook_endpoint, user: create(:user))
       delete api_webhook_path(other_webhook.id)
-      expect(response).to have_http_status(:not_found)
-    end
-  end
-
-  describe "authorized with doorkeeper" do
-    let!(:oauth_app) { create(:application) }
-    let!(:oauth_app2) { create(:application) }
-    let(:access_token) do
-      create :doorkeeper_access_token, resource_owner: user, application: oauth_app2, scopes: "public"
-    end
-
-    it "renders index successfully" do
-      get api_webhooks_path, params: { access_token: access_token.token }
-      expect(response.media_type).to eq("application/json")
-      expect(response).to have_http_status(:ok)
-    end
-
-    it "renders only corresponding webhooks" do
-      create(:webhook_endpoint, oauth_application_id: oauth_app.id, user: user)
-      webhook2 = create(:webhook_endpoint, oauth_application_id: oauth_app2.id, user: user)
-      get api_webhooks_path, params: { access_token: access_token.token }
-
-      json = JSON.parse(response.body)
-      ids = json.map { |item| item["id"] }
-      expect(ids).to eq([webhook2.id])
-    end
-
-    it "sets correct oauth app id for the webhook if needed" do
-      webhook_params = {
-        source: "stackbit",
-        target_url: Faker::Internet.url(scheme: "https"),
-        events: %w[article_created article_updated article_destroyed]
-      }
-      post api_webhooks_path, params: { access_token: access_token.token, webhook_endpoint: webhook_params }
-      webhook = user.webhook_endpoints.find_by(target_url: webhook_params[:target_url])
-      expect(webhook.oauth_application_id).to eq(oauth_app2.id)
-    end
-
-    it "doesn't allow destroying another app webhook" do
-      other_webhook = create(:webhook_endpoint, user: user)
-      delete api_webhook_path(other_webhook.id), params: { access_token: access_token.token }
       expect(response).to have_http_status(:not_found)
     end
   end

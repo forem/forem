@@ -1,5 +1,7 @@
 module Admin
   class CreatorSettingsController < Admin::ApplicationController
+    after_action :bust_content_change_caches, only: %i[create]
+
     ALLOWED_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions community_name
                         invite_only_mode logo primary_brand_color_hex public].freeze
 
@@ -13,8 +15,7 @@ module Admin
         checked_terms_and_conditions: current_user.checked_terms_and_conditions,
       )
       @max_file_size = LogoUploader::MAX_FILE_SIZE
-      @logo_allowed_types = (LogoUploader::CONTENT_TYPE_ALLOWLIST +
-        LogoUploader::EXTENSION_ALLOWLIST.map { |extension| ".#{extension}" }).join(",")
+      @logo_allowed_types = LogoUploader::ALLOWED_TYPES
     end
 
     def create
@@ -39,7 +40,7 @@ module Admin
     private
 
     def extra_authorization
-      not_authorized unless current_user.has_role?(:creator)
+      not_authorized unless current_user.creator?
     end
 
     def settings_params

@@ -453,7 +453,7 @@
     null
   ),
   ('object', 'object-fit', ('cover': cover), (), false),
-  ('aspect', 'aspect-ratio', ('16-9': 16 / 9), (), false),
+  ('aspect', 'aspect-ratio', ('16-9': calc(16 / 9)), (), false),
   ('break', 'word-break', ('word': break-word), (), false),
   ('resize', 'resize', ('y': vertical), (), false)
 );

@@ -2,8 +2,6 @@ module Api
   module V0
     class ArticlesController < ApiController
       before_action :authenticate!, only: %i[create update me]
-      before_action -> { doorkeeper_authorize! :public }, only: %w[index show show_by_slug], if: -> { doorkeeper_token }
-      before_action -> { doorkeeper_authorize! :write_articles }, only: %w[create update], if: -> { doorkeeper_token }
 
       before_action :validate_article_param_is_hash, only: %w[create update]
 
@@ -71,7 +69,7 @@ module Api
       end
 
       def update
-        articles_relation = @user.has_role?(:super_admin) ? Article.includes(:user) : @user.articles
+        articles_relation = @user.super_admin? ? Article.includes(:user) : @user.articles
         article = articles_relation.find(params[:id])
 
         result = Articles::Updater.call(@user, article, article_params)
@@ -87,9 +85,6 @@ module Api
       end
 
       def me
-        doorkeeper_scope = %w[unpublished all].include?(params[:status]) ? :read_articles : :public
-        doorkeeper_authorize! doorkeeper_scope if doorkeeper_token
-
         per_page = (params[:per_page] || 30).to_i
         num = [per_page, 1000].min
 

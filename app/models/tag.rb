@@ -91,12 +91,32 @@ class Tag < ActsAsTaggableOn::Tag
     self.wiki_body_html = MarkdownProcessor::Parser.new(wiki_body_markdown).evaluate_markdown
   end
 
+  # @note The following implementation echoes the past hotness score,
+  #       but favors expected values instead of random numbers for
+  #       each article (see SHA
+  #       98e97e7aa8e0fc163cd7d9b063f51f01ab10a189).
   def calculate_hotness_score
-    self.hotness_score = Article.tagged_with(name)
+    # SELECT
+    #     (SUM(comments_count) * 14 + SUM(score)) AS partial_score,
+    #     COUNT(id) AS article_count
+    #   FROM articles
+    #   WHERE
+    #     (cached_tag_list ~ '[[:<:]]javascript[[:>:]]')
+    #     AND (articles.featured_number > 1639594999)
+    #
+    # Due to the construction of the query, there will be one entry.
+    # Furthermore, we need to first convert to an array then call
+    # `.first`.  The ActiveRecord query handler is ill-prepared to
+    # call "first" on this.
+    score_attributes = Article.cached_tagged_with(name)
       .where("articles.featured_number > ?", 7.days.ago.to_i)
-      .sum do |article|
-        (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
-      end
+      .select("(SUM(comments_count) * 14 + SUM(score)) AS partial_score, COUNT(id) AS article_count")
+      .to_a
+      .first
+
+    self.hotness_score =
+      score_attributes.partial_score.to_i +
+      (score_attributes.article_count.to_i * ((taggings_count + 6) / 2))
   end
 
   def bust_cache

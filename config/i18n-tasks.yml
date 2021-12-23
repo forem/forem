@@ -98,10 +98,7 @@ ignore_missing:
   - date.*
 
   # TODO: add translations for these
-  - 'activerecord.attributes.doorkeeper/*'
-  - 'activerecord.errors.models.doorkeeper/*'
   - devise.*
-  - doorkeeper.*
 
   # these are loaded from kaminari default gem
   - views.*

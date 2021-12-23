@@ -66,11 +66,11 @@
     </button>
   </div>
 
-  <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
+  <% if current_user.super_admin? && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit"><%= t("views.moderations.actions.edit.post") %></a> |
       <a href="/resource_admin/articles/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.resource_admin") %></a> |
       <a href="<%= admin_article_path(@moderatable.id) %>" data-no-instant><%= t("views.moderations.actions.edit.article_admin") %></a></h3>
-  <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
+  <% elsif current_user.super_admin? && @moderatable.class.name == "Comment" %>
     <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.comment_admin") %></a> |
       <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant><%= t("views.moderations.actions.edit.user_admin") %></a></h3>
   <% end %>
@@ -148,7 +148,7 @@
             <%= f.label :adjustment_type, t("views.moderations.actions.tag.add"), value: "addition" %>
           </div>
         <% end %>
-        <% if current_user.has_role?(:super_admin) %>
+        <% if current_user.super_admin? %>
           <%= f.text_field :tag_name, placeholder: t("views.moderations.actions.tag.tag_name"), required: true %>
         <% else %>
           <%= f.select :tag_name, @tag_moderator_tags, { prompt: t("views.moderations.actions.tag.select") }, required: true %>

@@ -74,18 +74,31 @@ Cypress.Commands.add(
  * Runs necessary test setup to run a clean test.
  */
 Cypress.Commands.add('testSetup', () => {
+  const MAX_RETRIES = 3;
+
   // Required for the moment because of https://github.com/cypress-io/cypress/issues/781
   cy.clearCookies();
 
-  cy.getCookies().then((cookie) => {
-    if (cookie.length) {
+  function retryClearCookies(retryCount) {
+    if (retryCount > MAX_RETRIES) {
+      cy.log('Could not clear cookies');
+    }
+
+    cy.getCookies().then((cookie) => {
+      if (cookie.length === 0) {
+        return;
+      }
+
       // Instead of always waiting, only wait if the cookies aren't
       // cleared yet and attempt to clear again.
+      cy.log(`Cookies not cleared yet, retrying... (attempt ${retryCount})`);
       cy.wait(500); // eslint-disable-line cypress/no-unnecessary-waiting
       cy.clearCookies();
-    }
-  });
+      retryClearCookies(retryCount + 1);
+    });
+  }
 
+  retryClearCookies(1);
   cy.request('/cypress_rails_reset_state');
 });
 

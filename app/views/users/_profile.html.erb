@@ -70,7 +70,7 @@
                       aria: { describedby: "url-description" },
                       data: { character_span_id: "url-characters" } %>
       <p id="url-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
         <span id="url-characters"></span>/100
       </p>
     </div>
@@ -87,7 +87,7 @@
                        aria: { describedby: "location-description" },
                        data: { character_span_id: "location-characters" } %>
       <p id="location-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
         <span id="location-characters"></span>/100
       </p>
     </div>
@@ -104,7 +104,7 @@
                       aria: { describedby: "summary-description" },
                       data: { character_span_id: "summary-characters" } %>
       <p id="summary-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
         <span id="summary-characters"></span>/200
       </p>
     </div>
@@ -146,7 +146,7 @@
                               data: { character_span_id: "#{field.attribute_name}-characters" },
                               class: "crayons-textfield") %>
             <p id="<%= field.attribute_name %>-description" class="crayons-field__description align-right">
-              <span class="screen-reader-only">Available characters used: </span>
+              <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
               <span id="<%= field.attribute_name %>-characters"></span>/<%= character_count_denominator(field["input_type"]) %>
             </p>
           <% end %>

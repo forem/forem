@@ -85,8 +85,8 @@
           <%= simple_format((@episode.processed_html || @episode.body), sanitize: true) %>
         <% else %>
           <%= sanitize (@episode.processed_html || ""),
-                       tags: %w[strong br em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4 h5 h6 blockquote time div span i em u b ul ol li dd dl dt q code pre img sup cite center small],
-                       attributes: %w[href strong em class ref rel src title alt colspan height width size rowspan span value start data-conversation data-lang id] %>
+                       tags: MarkdownProcessor::AllowedTags::PODCAST_SHOW,
+                       attributes: MarkdownProcessor::AllowedAttributes::PODCAST_SHOW %>
         <% end %>
 
         <p><a href="<%= @episode.website_url %>"><%= t("views.podcasts.source") %></a></p>

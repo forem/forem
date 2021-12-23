@@ -67,7 +67,7 @@ module Mailchimp
     end
 
     def manage_community_moderator_list
-      return false unless Settings::General.mailchimp_community_moderators_id.present? && user.has_role?(:trusted)
+      return false unless Settings::General.mailchimp_community_moderators_id.present? && user.has_trusted_role?
 
       success = false
       status = user.notification_setting.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
@@ -97,8 +97,7 @@ module Mailchimp
 
       success = false
 
-      tag_ids = user.roles.where(name: "tag_moderator").pluck(:resource_id)
-      tag_names = Tag.where(id: tag_ids).pluck(:name)
+      tag_names = user.moderator_for_tags_not_cached
 
       status = user.notification_setting.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
 
