@@ -199,7 +199,7 @@ function trackFifteenSecondsOnPage(articleId, csrfToken) {
       'Content-Type': 'application/json',
     },
     credentials: 'same-origin',
-  })
+  }).catch((error) => console.error(error))
 }
 
 function trackAdImpression(token, adBox) {
