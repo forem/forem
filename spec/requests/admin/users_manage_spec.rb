@@ -109,6 +109,8 @@ RSpec.describe "Admin::Users", type: :request do
     end
 
     it "merges an identity on a single account into the other" do
+      omniauth_mock_twitter_payload
+      omniauth_mock_github_payload
       create(:identity, user: user, provider: "twitter")
       deleted_user_identity = create(:identity, user: user2)
 
