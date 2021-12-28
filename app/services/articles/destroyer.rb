@@ -12,9 +12,9 @@ module Articles
 
       Notification.remove_all_without_delay(notifiable_ids: article.id, notifiable_type: "Article")
 
-      if article_comments_ids.present?
-        Notification.remove_all(notifiable_ids: article_comments_ids, notifiable_type: "Comment")
-      end
+      return if article_comments_ids.blank?
+
+      Notification.remove_all(notifiable_ids: article_comments_ids, notifiable_type: "Comment")
     end
   end
 end
