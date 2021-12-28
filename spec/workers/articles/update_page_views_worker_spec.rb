@@ -4,7 +4,7 @@ RSpec.describe Articles::UpdatePageViewsWorker, type: :worker do
   let(:worker) { described_class.new }
 
   context "when the article id is invalid" do
-    let(:article_id) { (Article.maximum(:id) || 0) + 1 }
+    let(:article_id) { :no_article_with_this_id }
 
     it "exits gracefully" do
       expect { worker.perform(article_id: article_id) }.not_to raise_error
