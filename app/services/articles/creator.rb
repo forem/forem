@@ -1,9 +1,8 @@
 module Articles
   class Creator
-    def initialize(user, article_params, event_dispatcher = Webhook::DispatchEvent)
+    def initialize(user, article_params)
       @user = user
       @article_params = article_params
-      @event_dispatcher = event_dispatcher
     end
 
     def self.call(...)
@@ -22,7 +21,6 @@ module Articles
 
         # Send notifications to any mentioned users, followed by any users who follow the article's author.
         Notification.send_to_mentioned_users_and_followers(article) if article.published?
-        dispatch_event(article)
       end
 
       article
@@ -30,7 +28,7 @@ module Articles
 
     private
 
-    attr_reader :user, :article_params, :event_dispatcher
+    attr_reader :user, :article_params
 
     def rate_limit!
       rate_limit_to_use = if user.decorate.considered_new?
@@ -40,12 +38,6 @@ module Articles
                           end
 
       user.rate_limiter.check_limit!(rate_limit_to_use)
-    end
-
-    def dispatch_event(article)
-      return unless article.published?
-
-      event_dispatcher.call("article_created", article)
     end
 
     def save_article

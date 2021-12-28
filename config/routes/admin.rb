@@ -143,7 +143,6 @@ namespace :admin do
         post "bust_cache"
       end
     end
-    resources :webhook_endpoints, only: :index
 
     # We do not expose the Data Update Scripts to all Forems by default.
     constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do

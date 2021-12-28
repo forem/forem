@@ -853,7 +853,6 @@ GEM
       concurrent-ruby (~> 1.0)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
-    ulid (1.3.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8)
@@ -1059,7 +1058,6 @@ DEPENDENCIES
   timecop (~> 0.9)
   twitter (~> 7.0)
   uglifier (~> 4.2)
-  ulid (~> 1.3)
   validate_url (~> 1.0)
   vault (~> 0.16)
   vcr (~> 6.0)

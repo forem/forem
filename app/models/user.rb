@@ -111,7 +111,6 @@ class User < ApplicationRecord
                                               foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
-  has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
   has_many :devices, dependent: :delete_all
   has_many :sponsorships, dependent: :delete_all
 
