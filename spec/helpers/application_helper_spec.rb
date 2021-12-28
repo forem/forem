@@ -248,12 +248,21 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(icon_tag).to match(/class="crayons-icon"/)
     end
 
+    it "allows disabling color inheritance via the native attribute" do
+      icon_tag = helper.crayons_icon_tag(:twitter, native: true)
+      expect(icon_tag).to match(/class="crayons-icon crayons-icon--default"/)
+    end
+
     it "adds the correct ARIA role" do
       expect(icon_tag).to match(/role="img"/)
     end
 
     it "works when the .svg suffix is omitted" do
       expect(helper.crayons_icon_tag("twitter")).to eq(icon_tag)
+    end
+
+    it "accepts a symbol for the name parameter" do
+      expect(helper.crayons_icon_tag(:twitter)).to eq(icon_tag)
     end
 
     it "allows specifying additional CSS classes" do
