@@ -55,7 +55,10 @@ class EmailDigestArticleCollector
   end
 
   def last_email_sent_at
-    last_user_emails.last&.sent_at
+    @last_email_sent_at ||=
+      @user.email_messages
+        .where(mailer: "DigestMailer#digest_email")
+        .maximum(:sent_at)
   end
 
   def cutoff_date
@@ -69,9 +72,5 @@ class EmailDigestArticleCollector
     @user.following_users_count.positive? ||
       @user.cached_followed_tag_names.any? ||
       @user.cached_antifollowed_tag_names.any?
-  end
-
-  def last_user_emails
-    @last_user_emails ||= @user.email_messages.select(:sent_at).where(mailer: "DigestMailer#digest_email").limit(10)
   end
 end
