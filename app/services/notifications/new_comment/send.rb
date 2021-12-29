@@ -36,15 +36,15 @@ module Notifications
           )
         end
 
-        # Send PNs using Rpush - respecting users' notificaton delivery settings
+        # Send PNs using Rpush - respecting users' notification delivery settings
         targets = User.joins(:notification_setting)
           .where(id: user_ids, notification_setting: { mobile_comment_notifications: true }).ids
 
         PushNotifications::Send.call(
           user_ids: targets,
           title: "💬 New Comment",
-          body: "#{comment.user.username} commented on " \
-                "#{comment.commentable.title.strip}:\n" \
+          body: "#{I18n.t('views.notifications.comment.commented_html', user: comment.user.username,
+                                                                        title: comment.commentable.title.strip)}:\n" \
                 "#{strip_tags(comment.processed_html).strip}",
           payload: {
             url: URL.url(comment.path),

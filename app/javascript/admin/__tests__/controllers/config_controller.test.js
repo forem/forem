@@ -1,4 +1,4 @@
-import { Application } from 'stimulus';
+import { Application } from '@hotwired/stimulus';
 import ConfigController from '../../controllers/config_controller';
 
 describe('ConfigController', () => {

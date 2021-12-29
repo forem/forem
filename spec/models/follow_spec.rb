@@ -31,12 +31,6 @@ RSpec.describe Follow, type: :model do
   end
 
   context "when enqueuing jobs" do
-    it "enqueues create channel job" do
-      expect do
-        described_class.create(follower: user, followable: user_2)
-      end.to change(Follows::CreateChatChannelWorker.jobs, :size).by(1)
-    end
-
     it "enqueues send notification worker" do
       expect do
         described_class.create(follower: user, followable: user_2)
@@ -53,31 +47,6 @@ RSpec.describe Follow, type: :model do
       user.reload
       expect(user.updated_at).to be > timestamp
       expect(user.last_followed_at).to be > timestamp
-    end
-
-    it "doesn't create a channel when a followable is an org" do
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.create!(follower: user, followable: create(:organization))
-        end
-      end.not_to change(ChatChannel, :count)
-    end
-
-    it "doesn't create a chat channel when users don't follow mutually" do
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.create!(follower: user, followable: user_2)
-        end
-      end.not_to change(ChatChannel, :count)
-    end
-
-    it "creates a chat channel when users follow mutually" do
-      described_class.create!(follower: user_2, followable: user)
-      expect do
-        sidekiq_perform_enqueued_jobs do
-          described_class.create!(follower: user, followable: user_2)
-        end
-      end.to change(ChatChannel, :count).by(1)
     end
 
     it "sends an email notification" do

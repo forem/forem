@@ -1,7 +1,8 @@
 sub vcl_recv {
   # Disallow bot traffic based on user-agent
   if (
-    req.http.user-agent ~ "^$"
+    req.http.user-agent ~ "^$" # Disallow empty User-Agent
+    || req.http.user-agent !~ "." # Disallow null User-Agent
     || req.http.user-agent ~ "^Java"
     || req.http.user-agent ~ "^Jakarta"
     || req.http.user-agent ~ "IDBot"
@@ -36,6 +37,15 @@ sub vcl_recv {
     || req.http.user-agent ~ "Microsoft URL Control"
     || req.http.user-agent ~ "Indy Library"
     || req.http.user-agent ~ "Fuzz Faster"
+    # Spoofed user agent, Firefox 62 was released in Sep 2018, this line added
+    # in Dec 2021.
+    || (req.http.user-agent ~ "Firefox/62.0" && req.http.user-agent ~ "Win64")
+    # Spoofed user agent, Chrome 74 was released in April 2019, this line added
+    # in Dec 2021.
+    || req.http.user-agent ~ "Chrome/74"
+    # DEV gets an order of magnitude more traffic from AhrefsBot than any other
+    # search crawler.
+    || req.http.user-agent ~ "AhrefsBot"
     || req.http.user-agent == "8484 Boston Project v 1.0"
     || req.http.user-agent == "Atomic_Email_Hunter/4.0"
     || req.http.user-agent == "atSpider/1.0"
@@ -107,6 +117,8 @@ sub vcl_recv {
     || req.http.user-agent == "RSurf15a 41"
     || req.http.user-agent == "RSurf15a 51"
     || req.http.user-agent == "RSurf15a 81"
+    # Block Ruby bots unless they're interacting with the API
+    || (req.http.user-agent == "Ruby" && !(req.url ~ "^/api"))
     || req.http.user-agent == "searchbot admin@google.com"
     || req.http.user-agent == "ShablastBot 1.0"
     || req.http.user-agent == "snap.com beta crawler v0"

@@ -36,7 +36,6 @@
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
     padding: var(--su-7) var(--su-8);
-    height: 800px;
   }
 }
 
@@ -98,7 +97,7 @@
   align-self: flex-end;
   flex-shrink: 0;
   width: 100%;
-  border-bottom: 2px solid var(--box-darker);
+  border-bottom: 2px solid #000;
 
   &.intro-slide {
     border-bottom: none;
@@ -665,6 +664,21 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   @media screen and (max-height: 790px) {
     .onboarding-form-input--last {
       margin-bottom: 25px;
+    }
+  }
+}
+
+// Adjusting modals... This is naughty... Santa won't come.
+.onboarding-main {
+  --onboarding-modal-height: 800px;
+
+  &.introduction {
+    --onboarding-modal-height: unset;
+  }
+
+  .crayons-modal__box {
+    @media (min-width: $breakpoint-s) {
+      height: var(--onboarding-modal-height);
     }
   }
 }

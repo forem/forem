@@ -43,7 +43,7 @@ RSpec.describe "/admin/moderation/moderator_reactions", type: :request do
     it "renders the page with a user's audit log" do
       audit_log = create(
         :audit_log,
-        category: "moderator.audit.log",
+        category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
         user: admin,
         roles: admin.roles.pluck(:name),
       )
@@ -57,7 +57,7 @@ RSpec.describe "/admin/moderation/moderator_reactions", type: :request do
     it "renders the page with an audit log not belonging to a specific user" do
       audit_log = create(
         :audit_log,
-        category: "moderator.audit.log",
+        category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
         user: nil,
       )
 

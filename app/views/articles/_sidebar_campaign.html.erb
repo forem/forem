@@ -2,7 +2,7 @@
 <section class="crayons-card crayons-card--secondary">
   <%= campaign.sidebar_image(class: "block w-100 h-auto radius-default", width: 1000, height: 420) %>
   <header class="crayons-card__header">
-    <h3 class="crayons-subtitle-2"><%= link_to "Stories (#{@campaign_articles_count})", "/t/#{campaign.main_tag}", class: "crayons-link" %></h3>
+    <h3 class="crayons-subtitle-2"><%= link_to t("views.campaign.subtitle", count: @campaign_articles_count), "/t/#{campaign.main_tag}", class: "crayons-link" %></h3>
   </header>
   <div>
     <%= render partial: "articles/widget_list_item", collection: @latest_campaign_articles,
@@ -11,6 +11,6 @@
   </div>
   <div class="grid gap-2 p-4">
     <%= link_to Campaign.current.call_to_action, "/new/#{campaign.main_tag}", class: "crayons-btn" %>
-    <%= link_to "See all posts", "/t/#{campaign.main_tag}", class: "crayons-btn crayons-btn--secondary" %>
+    <%= link_to t("views.campaign.view"), "/t/#{campaign.main_tag}", class: "crayons-btn crayons-btn--secondary" %>
   </div>
 </section>

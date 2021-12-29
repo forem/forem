@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 import { jsxDecorator } from 'storybook-addon-jsx';
+import 'focus-visible';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/views.scss';
@@ -39,7 +40,7 @@ function themeSwitcher(event) {
   addStylesheet(theme);
 }
 
-const THEMES = Object.freeze(['default', 'night', 'minimal', 'pink', 'hacker']);
+const THEMES = Object.freeze(['light', 'dark']);
 
 const themeSwitcherDecorator = (storyFn) => {
   const lastThemeUsed = localStorage.getItem('storybook-crayons-theme') || '';
@@ -91,6 +92,7 @@ Foo.parameters = {
 };
 
 export const parameters = {
+  controls: { expanded: true },
   options: {
     storySort: {
       order: [

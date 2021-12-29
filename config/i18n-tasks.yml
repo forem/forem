@@ -19,6 +19,7 @@ data:
     - config/locales/%{locale}.yml
     ## More files:
     - config/locales/**/*.%{locale}.yml
+    - config/locales/**/%{locale}.yml
 
   # Locale files to write new keys to, based on a list of key pattern => file rules. Matched from top to bottom:
   # `i18n-tasks normalize -p` will force move the keys according to these rules
@@ -97,10 +98,7 @@ ignore_missing:
   - date.*
 
   # TODO: add translations for these
-  - 'activerecord.attributes.doorkeeper/*'
-  - 'activerecord.errors.models.doorkeeper/*'
   - devise.*
-  - doorkeeper.*
 
   # these are loaded from kaminari default gem
   - views.*

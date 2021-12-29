@@ -53,6 +53,23 @@ class ApplicationRecord < ActiveRecord::Base
     raise UninferrableDecoratorError, "Could not infer a decorator for #{called_on.class.name}."
   end
 
+  def self.statement_timeout
+    connection.execute("SELECT setting FROM pg_settings WHERE name = 'statement_timeout'")
+      .first["setting"]
+      .to_i
+      .seconds / 1000
+  end
+
+  def self.with_statement_timeout(duration, connection: self.connection)
+    original_timeout = statement_timeout
+    milliseconds = (duration.to_f * 1000).to_i
+    connection.execute "SET statement_timeout = #{milliseconds}"
+    yield
+  ensure
+    milliseconds = original_timeout.to_i * 1000
+    connection.execute "SET statement_timeout = #{milliseconds}"
+  end
+
   def errors_as_sentence
     errors.full_messages.to_sentence
   end

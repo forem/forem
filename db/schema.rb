@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_30_062627) do
+ActiveRecord::Schema.define(version: 2021_12_22_040359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -86,7 +86,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.boolean "archived", default: false
     t.text "body_html"
     t.text "body_markdown"
-    t.jsonb "boost_states", default: {}, null: false
     t.text "cached_organization"
     t.string "cached_tag_list"
     t.text "cached_user"
@@ -125,6 +124,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.integer "positive_reactions_count", default: 0, null: false
     t.integer "previous_positive_reactions_count", default: 0
     t.integer "previous_public_reactions_count", default: 0, null: false
+    t.integer "privileged_users_reaction_points_sum", default: 0
     t.text "processed_html"
     t.integer "public_reactions_count", default: 0, null: false
     t.boolean "published", default: false
@@ -154,7 +154,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.string "video_state"
     t.string "video_thumbnail_url"
     t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
-    t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
     t.index ["collection_id"], name: "index_articles_on_collection_id"
@@ -287,33 +286,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.datetime "updated_at"
     t.index ["broadcastable_type", "broadcastable_id"], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
     t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
-  end
-
-  create_table "chat_channel_memberships", force: :cascade do |t|
-    t.bigint "chat_channel_id", null: false
-    t.datetime "created_at", null: false
-    t.boolean "has_unopened_messages", default: false
-    t.datetime "last_opened_at", default: "2017-01-01 05:00:00"
-    t.string "role", default: "member"
-    t.boolean "show_global_badge_notification", default: true
-    t.string "status", default: "active"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["chat_channel_id", "user_id"], name: "index_chat_channel_memberships_on_chat_channel_id_and_user_id", unique: true
-    t.index ["user_id", "chat_channel_id"], name: "index_chat_channel_memberships_on_user_id_and_chat_channel_id"
-  end
-
-  create_table "chat_channels", force: :cascade do |t|
-    t.string "channel_name"
-    t.string "channel_type", null: false
-    t.datetime "created_at", null: false
-    t.string "description"
-    t.boolean "discoverable", default: false
-    t.datetime "last_message_at", default: "2017-01-01 05:00:00"
-    t.string "slug"
-    t.string "status", default: "active"
-    t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|
@@ -498,25 +470,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
-  create_table "events", force: :cascade do |t|
-    t.string "category"
-    t.string "cover_image"
-    t.datetime "created_at", null: false
-    t.text "description_html"
-    t.text "description_markdown"
-    t.datetime "ends_at"
-    t.string "host_name"
-    t.boolean "live_now", default: false
-    t.string "location_name"
-    t.string "location_url"
-    t.string "profile_image"
-    t.boolean "published"
-    t.string "slug"
-    t.datetime "starts_at"
-    t.string "title"
-    t.datetime "updated_at", null: false
-  end
-
   create_table "feedback_messages", force: :cascade do |t|
     t.bigint "affected_id"
     t.string "category"
@@ -669,19 +622,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.index ["user_id", "mentionable_id", "mentionable_type"], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
   end
 
-  create_table "messages", force: :cascade do |t|
-    t.string "chat_action"
-    t.bigint "chat_channel_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "edited_at"
-    t.string "message_html", null: false
-    t.string "message_markdown", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
-    t.index ["user_id"], name: "index_messages_on_user_id"
-  end
-
   create_table "navigation_links", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.boolean "display_only_when_signed_in", default: false
@@ -735,48 +675,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
-  end
-
-  create_table "oauth_access_grants", force: :cascade do |t|
-    t.bigint "application_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "expires_in", null: false
-    t.text "redirect_uri", null: false
-    t.bigint "resource_owner_id", null: false
-    t.datetime "revoked_at"
-    t.string "scopes"
-    t.string "token", null: false
-    t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
-    t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
-    t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
-  end
-
-  create_table "oauth_access_tokens", force: :cascade do |t|
-    t.bigint "application_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "expires_in"
-    t.string "previous_refresh_token", default: "", null: false
-    t.string "refresh_token"
-    t.bigint "resource_owner_id"
-    t.datetime "revoked_at"
-    t.string "scopes"
-    t.string "token", null: false
-    t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
-    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
-    t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
-    t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
-  end
-
-  create_table "oauth_applications", force: :cascade do |t|
-    t.boolean "confidential", default: true, null: false
-    t.datetime "created_at", null: false
-    t.string "name", null: false
-    t.text "redirect_uri", null: false
-    t.string "scopes", default: "", null: false
-    t.string "secret", null: false
-    t.string "uid", null: false
-    t.datetime "updated_at", null: false
-    t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
   create_table "organization_memberships", force: :cascade do |t|
@@ -860,6 +758,17 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
+  create_table "pghero_query_stats", force: :cascade do |t|
+    t.bigint "calls"
+    t.datetime "captured_at"
+    t.text "database"
+    t.text "query"
+    t.bigint "query_hash"
+    t.float "total_time"
+    t.text "user"
+    t.index ["database", "captured_at"], name: "index_pghero_query_stats_on_database_and_captured_at"
+  end
+
   create_table "podcast_episode_appearances", force: :cascade do |t|
     t.boolean "approved", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
@@ -916,6 +825,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.datetime "created_at", null: false
     t.bigint "creator_id"
     t.text "description"
+    t.boolean "featured", default: false
     t.string "feed_url", null: false
     t.string "image", null: false
     t.string "itunes_url"
@@ -1191,7 +1101,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.bigint "badge_id"
     t.string "bg_color_hex"
     t.string "category", default: "uncategorized", null: false
-    t.datetime "created_at"
+    t.datetime "created_at", null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.bigint "mod_chat_channel_id"
@@ -1208,7 +1118,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
-    t.datetime "updated_at"
+    t.datetime "updated_at", null: false
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
@@ -1394,6 +1304,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.boolean "email_tag_mod_newsletter", default: false, null: false
     t.boolean "email_unread_notifications", default: true, null: false
     t.boolean "mobile_comment_notifications", default: true, null: false
+    t.boolean "mobile_mention_notifications", default: true, null: false
     t.boolean "mod_roundrobin_notifications", default: true, null: false
     t.boolean "reaction_notifications", default: true, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -1412,6 +1323,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.string "brand_color1", default: "#000000"
     t.string "brand_color2", default: "#ffffff"
     t.integer "config_font", default: 0, null: false
+    t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
     t.integer "config_theme", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
@@ -1426,6 +1338,7 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
     t.string "inbox_guidelines"
     t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true
+    t.boolean "prefer_os_color_scheme", default: true
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.index ["feed_url"], name: "index_users_settings_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
@@ -1435,20 +1348,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
   create_table "users_suspended_usernames", primary_key: "username_hash", id: :string, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "webhook_endpoints", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "events", null: false, array: true
-    t.bigint "oauth_application_id"
-    t.string "source"
-    t.string "target_url", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["events"], name: "index_webhook_endpoints_on_events"
-    t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
-    t.index ["target_url"], name: "index_webhook_endpoints_on_target_url", unique: true
-    t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
   end
 
   create_table "welcome_notifications", force: :cascade do |t|
@@ -1470,8 +1369,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "badge_achievements", "users", column: "rewarder_id", on_delete: :nullify
   add_foreign_key "banished_users", "users", column: "banished_by_id", on_delete: :nullify
-  add_foreign_key "chat_channel_memberships", "chat_channels"
-  add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
@@ -1499,16 +1396,10 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "mentions", "users", on_delete: :cascade
-  add_foreign_key "messages", "chat_channels"
-  add_foreign_key "messages", "users"
   add_foreign_key "notes", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
-  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
-  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
@@ -1539,7 +1430,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "taggings", "tags", on_delete: :cascade
   add_foreign_key "tags", "badges", on_delete: :nullify
-  add_foreign_key "tags", "chat_channels", column: "mod_chat_channel_id", on_delete: :nullify
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
@@ -1549,8 +1439,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_062627) do
   add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "users_settings", "users"
-  add_foreign_key "webhook_endpoints", "oauth_applications"
-  add_foreign_key "webhook_endpoints", "users"
   create_trigger("update_reading_list_document", :generated => true, :compatibility => 1).
       on("articles").
       name("update_reading_list_document").

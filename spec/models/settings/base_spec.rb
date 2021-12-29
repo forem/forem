@@ -105,13 +105,13 @@ RSpec.describe Settings::Base, type: :model do
     end
 
     context "when coercing arrays" do
-      it "splits strings into arrays based on the specified seprator" do
+      it "splits strings into arrays based on the specified separator" do
         expect { TestSetting.default_tags = "test1:test2" }
           .to change(TestSetting, :default_tags)
           .from([]).to %w[test1 test2]
       end
 
-      it "splits strings into arrays based on the default seprator if no separator is specified" do
+      it "splits strings into arrays based on the default separator if no separator is specified" do
         expect { TestSetting.admin_emails = "test1@example.com,test2@example.com" }
           .to change(TestSetting, :admin_emails)
           .from(["admin@example.com"]).to %w[test1@example.com test2@example.com]

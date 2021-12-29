@@ -28,10 +28,10 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
     let(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
 
     it "returns articles with score above 0 sorted by user preference scores" do
-      allow(feed).to receive(:user_following_users_ids).and_return([old_story.user_id])
+      user.follow(old_story.user)
       old_story_tag = Tag.find_by(name: unique_tag_name)
       old_story_tag.update(points: 10)
-      allow(feed).to receive(:user_followed_tags).and_return([old_story_tag])
+      user.follow(old_story_tag)
 
       result = feed.feed
       expect(result.first).to eq old_story

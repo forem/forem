@@ -9,9 +9,9 @@ RSpec.describe "User visits a homepage", type: :system do
     it "shows the sign-in block" do
       visit "/"
       within "#sidebar-wrapper-left" do
-        p I18n.t("create_account")
-        expect(page).to have_text(I18n.t("core.log_in"))
-        expect(page).to have_text(I18n.t("core.create_account"))
+        p I18n.t("views.main.header.create_account")
+        expect(page).to have_text(I18n.t("views.main.header.login"))
+        expect(page).to have_text(I18n.t("views.main.header.create_account"))
       end
     end
 
@@ -156,7 +156,7 @@ RSpec.describe "User visits a homepage", type: :system do
         find("body")["data-user"]
 
         within("#sidebar-nav-followed-tags") do
-          expect(all(".crayons-link--block").map(&:text).sort).to eq(%w[#javascript #go #ruby].sort)
+          expect(all(".c-link--block").map(&:text).sort).to eq(%w[#javascript #go #ruby].sort)
         end
       end
     end

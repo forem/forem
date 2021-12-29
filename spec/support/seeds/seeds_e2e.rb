@@ -18,8 +18,8 @@ Settings::SMTP.password = "password"
 ##############################################################################
 
 # Some of our Cypress tests assume specific DEV profile fields to exist
-ProfileField.create!(label: "Work", display_area: :header)
-ProfileField.create!(label: "Education", display_area: :header)
+ProfileField.create_with(display_area: :header).find_or_create_by(label: "Work")
+ProfileField.create_with(display_area: :header).find_or_create_by(label: "Education")
 Profile.refresh_attributes!
 
 ##############################################################################
@@ -88,11 +88,11 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(Organization) do
+seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   organization = Organization.create!(
     name: "Bachmanity",
     summary: Faker::Company.bs,
-    remote_profile_image_url: logo = Faker::Company.logo,
+    profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     nav_image: logo,
     url: Faker::Internet.url,
     slug: "bachmanity",
@@ -133,7 +133,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.local") do
   user = User.create!(
     name: "Article Editor v1 User",
     email: "article-editor-v1-user@forem.local",
@@ -160,7 +160,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.local") do
   user = User.create!(
     name: "Article Editor v2 User",
     email: "article-editor-v2-user@forem.local",
@@ -186,58 +186,7 @@ end
 
 ##############################################################################
 
-chat_user_1 = seeder.create_if_doesnt_exist(User, "email", "chat-user-1@forem.local") do
-  user = User.create!(
-    name: "Chat user 1",
-    email: "chat-user-1@forem.local",
-    username: "chat_user_1",
-    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    confirmed_at: Time.current,
-    password: "password",
-    password_confirmation: "password",
-    saw_onboarding: true,
-    checked_code_of_conduct: true,
-    checked_terms_and_conditions: true,
-  )
-  user.notification_setting.update(
-    email_comment_notifications: false,
-    email_follower_notifications: false,
-  )
-  user.profile.update(
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
-    website_url: Faker::Internet.url,
-  )
-  user
-end
-
-##############################################################################
-
-chat_user_2 = seeder.create_if_doesnt_exist(User, "email", "chat-user-2@forem.local") do
-  user = User.create!(
-    name: "Chat user 2",
-    email: "chat-user-2@forem.local",
-    username: "chat_user_2",
-    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    confirmed_at: Time.current,
-    password: "password",
-    password_confirmation: "password",
-    saw_onboarding: true,
-    checked_code_of_conduct: true,
-    checked_terms_and_conditions: true,
-  )
-  user.notification_setting.update(
-    email_comment_notifications: false,
-    email_follower_notifications: false,
-  )
-  user.profile.update(
-    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
-    website_url: Faker::Internet.url,
-  )
-  user
-end
-
-##############################################################################
-seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") do
   user = User.create!(
     name: "Notifications User",
     email: "notifications-user@forem.local",
@@ -250,6 +199,7 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.com") do
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
+
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
@@ -259,13 +209,56 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.com") do
     website_url: Faker::Internet.url,
   )
 
+  # Create a follow notification to test against
   follow = admin_user.follows.create!(followable: user)
   Notification.send_new_follower_notification_without_delay(follow)
+
+  # Create an article comment notification to test against
+  seeder.create_if_doesnt_exist(Article, "slug", "notification-article-slug") do
+    markdown = <<~MARKDOWN
+      ---
+      title:  Notification article
+      published: true
+      ---
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+      #{Faker::Markdown.random}
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+    MARKDOWN
+    article = Article.create!(
+      body_markdown: markdown,
+      featured: true,
+      show_comments: true,
+      user_id: user.id,
+      slug: "notification-article-slug",
+    )
+
+    parent_comment_attributes = {
+      body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+      user_id: user.id,
+      commentable_id: article.id,
+      commentable_type: "Article"
+    }
+
+    parent_comment = Comment.create!(parent_comment_attributes)
+    Notification.send_new_comment_notifications_without_delay(parent_comment)
+
+    reply_comment_attributes = {
+      body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+      user_id: admin_user.id,
+      commentable_id: article.id,
+      commentable_type: "Article",
+      parent: parent_comment
+    }
+
+    reply = Comment.create!(reply_comment_attributes)
+
+    Notification.send_new_comment_notifications_without_delay(reply)
+  end
 end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.local") do
   liquid_tags_user = User.create!(
     name: "Liquid tags User",
     email: "liquid-tags-user@forem.local",
@@ -289,23 +282,6 @@ seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.com") do
 
   admin_user.follows.create!(followable: liquid_tags_user)
 end
-##############################################################################
-
-seeder.create_if_doesnt_exist(ChatChannel, "channel_name", "test chat channel") do
-  channel = ChatChannel.create(
-    channel_type: "open",
-    channel_name: "test chat channel",
-    slug: "test-chat-channel",
-    last_message_at: 1.week.ago,
-    status: "active",
-  )
-
-  channel.invite_users(users: [chat_user_1, chat_user_2])
-
-  Message.create(message_markdown: "Test message from chat_user_1", user_id: chat_user_1.id,
-                 chat_channel_id: channel.id)
-end
-
 ##############################################################################
 
 seeder.create_if_none(NavigationLink) do
@@ -344,7 +320,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(Article, "title", "Test article") do
+seeder.create_if_doesnt_exist(Article, "slug", "test-article-slug") do
   markdown = <<~MARKDOWN
     ---
     title:  Test article
@@ -355,7 +331,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
     #{Faker::Markdown.random}
     #{Faker::Hipster.paragraph(sentence_count: 2)}
   MARKDOWN
-  article = Article.create(
+  article = Article.create!(
     body_markdown: markdown,
     featured: true,
     show_comments: true,
@@ -371,6 +347,50 @@ seeder.create_if_doesnt_exist(Article, "title", "Test article") do
   }
 
   Comment.create!(comment_attributes)
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "slug", "test-article-with-hidden-comments-slug") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Test article with hidden comments
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  article = Article.create!(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: admin_user.id,
+    slug: "test-article-with-hidden-comments-slug",
+    any_comments_hidden: true,
+  )
+
+  comment_attributes = {
+    body_markdown: "#{Faker::Hipster.paragraph(sentence_count: 1)} I am hidden",
+    user_id: admin_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article",
+    hidden_by_commentable_user: true
+  }
+
+  comment = Comment.create!(comment_attributes)
+
+  child_comment_attributes = {
+    body_markdown: "Child of a hidden comment",
+    user_id: admin_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article",
+    parent: comment,
+    hidden_by_commentable_user: false
+  }
+
+  Comment.create!(child_comment_attributes)
 end
 
 ##############################################################################
@@ -392,12 +412,13 @@ seeder.create_if_doesnt_exist(Article, "title", "Organization test article") do
     show_comments: true,
     user_id: admin_user.id,
     organization_id: Organization.first.id,
+    slug: "test-organization-article-slug",
   )
 end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "series-user@forem.com") do
+seeder.create_if_doesnt_exist(User, "email", "series-user@forem.local") do
   series_user = User.create!(
     name: "Series User",
     email: "series-user@forem.local",
@@ -469,7 +490,6 @@ seeder.create_if_none(Listing) do
     location: Faker::Address.city,
     organization_id: admin_user.organizations.first&.id,
     listing_category_id: ListingCategory.first.id,
-    contact_via_connect: true,
     published: true,
     originally_published_at: Time.current,
     bumped_at: Time.current,
@@ -552,7 +572,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(Podcast, "title", "Test podcast") do
+seeder.create_if_doesnt_exist(Podcast, "title", "Developer on Fire") do
   podcast_attributes = {
     title: "Developer on Fire",
     description: "",
@@ -626,8 +646,9 @@ end
 ##############################################################################
 
 seeder.create_if_none(DisplayAd) do
+  org_id = Organization.find_by(slug: "bachmanity").id
   DisplayAd.create!(
-    organization_id: 1,
+    organization_id: org_id,
     body_markdown: "<h1>This is an add</h1>",
     placement_area: "sidebar_left",
     published: true,

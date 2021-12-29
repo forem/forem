@@ -79,6 +79,22 @@ RSpec.describe "Registrations", type: :request do
         expect(response.body).to include("Already have an account? <a href=\"/enter\">Log in</a>")
       end
 
+      it "persists uploaded image" do
+        name = "test"
+        image_path = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
+        post users_path, params: {
+          user: {
+            name: name,
+            username: "username",
+            email: "yo@whatup.com",
+            password: "password",
+            password_confirmation: "password",
+            profile_image: Rack::Test::UploadedFile.new(image_path, "image/jpeg")
+          }
+        }
+        expect(File.read(User.last.profile_image.file.file)).to eq(File.read(image_path))
+      end
+
       it "creates a user with a random profile image if none was uploaded" do
         name = "test"
         post users_path, params: {
@@ -140,7 +156,7 @@ RSpec.describe "Registrations", type: :request do
 
       it "renders the creator onboarding form" do
         get root_path
-        expect(response.body).to include("Let's start your Forem journey!")
+        expect(response.body).to include(CGI.escapeHTML("Let's start your Forem journey!"))
         expect(response.body).to include("Create your admin account first")
       end
     end
@@ -215,7 +231,7 @@ RSpec.describe "Registrations", type: :request do
         expect(User.all.size).to be 1
       end
 
-      it "marks as registerd" do
+      it "marks as registered" do
         post "/users", params:
         { user: { name: "test #{rand(10)}",
                   username: "haha_#{rand(10)}",
@@ -363,8 +379,8 @@ RSpec.describe "Registrations", type: :request do
                     email: "yoooo#{rand(100)}@yo.co",
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.first.has_role?(:super_admin)).to be true
-        expect(User.first.has_role?(:trusted)).to be true
+        expect(User.first.super_admin?).to be true
+        expect(User.first.trusted?).to be true
       end
 
       it "creates mascot user" do
@@ -391,7 +407,7 @@ RSpec.describe "Registrations", type: :request do
                     password: "PaSSw0rd_yo000",
                     forem_owner_secret: "test",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.super_admin?).to be true
       end
 
       it "does not authorize request in FOREM_OWNER_SECRET scenario if not passed correct value" do
@@ -406,6 +422,18 @@ RSpec.describe "Registrations", type: :request do
                       password_confirmation: "PaSSw0rd_yo000" } }
           expect(User.first).to be nil
         end.to raise_error Pundit::NotAuthorizedError
+      end
+
+      it "enqueues Discover::RegisterWorker" do
+        sidekiq_assert_enqueued_with(job: Discover::RegisterWorker) do
+          post "/users", params:
+            { user: { name: "test #{rand(10)}",
+                      username: "haha_#{rand(10)}",
+                      email: "yoooo#{rand(100)}@yo.co",
+                      password: "PaSSw0rd_yo000",
+                      forem_owner_secret: "test",
+                      password_confirmation: "PaSSw0rd_yo000" } }
+        end
       end
     end
 
@@ -437,7 +465,7 @@ RSpec.describe "Registrations", type: :request do
                     email: "yoooo#{rand(100)}@yo.co",
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.super_admin?).to be true
       end
     end
   end

@@ -41,9 +41,11 @@ module Mentions
       # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
       doc = Nokogiri::HTML(notifiable.processed_html)
 
-      # Remove any mentions that are embedded within a comment liquid tag
+      # Remove any mentions that are embedded within any liquid tags
       non_liquid_tag_mentions = doc.css(".mentioned-user").reject do |tag|
-        tag.ancestors(".liquid-comment").any?
+        tag.ancestors(".liquid-comment").any? ||
+          tag.ancestors("[class^=ltag]").any? ||
+          tag.ancestors("[class*=' ltag']").any?
       end
 
       non_liquid_tag_mentions.map { |link| link.text.delete("@").downcase }

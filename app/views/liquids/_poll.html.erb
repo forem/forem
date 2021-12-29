@@ -7,6 +7,6 @@
         <label for="d" id="poll_option_label_<%= option.id %>" data-option-id="<%= option.id %>"><%= option.processed_html.html_safe %></label>
       </li>
     <% end %>
-    <li class="ltag-polloption-justshowmetheresults" id="showmethemoney-<%= poll.id %>" data-poll-id="<%= poll.id %>"><button>Just show me the results</button>
+    <li class="ltag-polloption-justshowmetheresults" id="showmethemoney-<%= poll.id %>" data-poll-id="<%= poll.id %>"><button><%= t("views.liquids.poll.show_results") %></button>
   </ul>
 </div>

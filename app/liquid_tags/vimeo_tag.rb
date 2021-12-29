@@ -1,9 +1,13 @@
 class VimeoTag < LiquidTagBase
   PARTIAL = "liquids/vimeo".freeze
+  # rubocop:disable Layout/LineLength
+  REGISTRY_REGEXP = %r{(?:https?://)?(?:player\.|www\.)?vimeo\.com/(?:video/|embed/|watch)?(?:ondemand/\w+/)?(?<video_id>\d*)}
+  # rubocop:enable Layout/LineLength
 
   def initialize(_tag_name, token, _parse_context)
     super
-    @id     = id_for(token)
+    input   = strip_tags(token)
+    @id     = get_id(input)
     @width  = 710
     @height = 399
   end
@@ -21,14 +25,13 @@ class VimeoTag < LiquidTagBase
 
   private
 
-  def id_for(input)
-    # This was the original plan:
-    #   require "uri"
-    #   File.basename URI(input).path
-    # But the markdown turns the link into html. This is simple enough,
-    # works for all the use cases and isn't exploitable.
-    input.to_s.scan(/\d+/).max_by(&:length)
+  def get_id(input)
+    match = input.match(REGISTRY_REGEXP)
+    match ? match[:video_id] : input
   end
 end
 
 Liquid::Template.register_tag("vimeo", VimeoTag)
+
+# NOTE: this does not process Vimeo Showcase IDs; add to documentation
+UnifiedEmbed.register(VimeoTag, regexp: VimeoTag::REGISTRY_REGEXP)

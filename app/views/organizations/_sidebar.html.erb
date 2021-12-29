@@ -4,7 +4,7 @@
     <% if @organization.story.present? %>
       <div class="widget">
         <header>
-          <h4>our story</h4>
+          <h4><%= t("views.organizations.story") %></h4>
         </header>
         <div class="widget-body">
           <%= sanitized_sidebar @organization.story %>
@@ -14,7 +14,7 @@
     <% if @organization.tech_stack.present? %>
       <div class="widget">
         <header>
-          <h4>our stack</h4>
+          <h4><%= t("views.organizations.stack") %></h4>
         </header>
         <div class="widget-body">
           <%= sanitized_sidebar @organization.tech_stack %>

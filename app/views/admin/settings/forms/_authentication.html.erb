@@ -14,8 +14,16 @@
         <h3 class="crayons-subtitle-3 mb-3">
           General settings
         </h3>
+        <div class="crayons-field mb-6">
+          <%= admin_config_label :blocked_registration_email_domains, "Block email domains", model: Settings::Authentication %>
+          <%= admin_config_description Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:description] %>
+          <%= f.text_field :blocked_registration_email_domains,
+                           class: "crayons-textfield",
+                           value: Settings::Authentication.blocked_registration_email_domains.join(","),
+                           placeholder: Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:placeholder] %>
+        </div>
         <div
-            class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : "" %>"
+            class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-hover-tooltip" : "" %>"
             data-tooltip="Unchecking this will enable Email Registration">
             <%= f.check_box :invite_only_mode,
                             checked: invite_only_mode_or_no_enabled_auth_options,
@@ -161,7 +169,6 @@
                              readonly: true %>
           </div>
           <% authentication_available_providers.each do |provider| %>
-            <% next if provider.provider_name == :forem && !FeatureFlag.enabled?(:forem_passport) %>
             <section class="config-authentication__item mb-0">
               <figure class="config-authentication__item--icon">
                 <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>

@@ -74,12 +74,12 @@ class ApplicationController < ActionController::Base
   end
 
   def not_authorized
-    render json: "Error: not authorized", status: :unauthorized
+    render json: { error: "Error: not authorized" }, status: :unauthorized
     raise NotAuthorizedError, "Unauthorized"
   end
 
   def bad_request
-    render json: "Error: Bad Request", status: :bad_request
+    render json: { error: "Error: Bad Request" }, status: :bad_request
   end
 
   def error_too_many_requests(exc)
@@ -163,7 +163,7 @@ class ApplicationController < ActionController::Base
   end
 
   def anonymous_user
-    User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"])
+    User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"] || request.env["HTTP_X_FORWARDED_FOR"])
   end
 
   def api_action?

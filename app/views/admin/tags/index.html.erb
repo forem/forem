@@ -1,13 +1,13 @@
 <div class="flex items-center mb-6">
   <div class="crayons-tabs">
     <div class="nav-item">
-      <%= link_to "All", admin_tags_path("q[supported_not_null]": "true"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_not_null)}", "aria-label": "All Tags", data: {text: "All"} %>
+      <%= link_to "All", admin_tags_path("q[supported_not_null]": "true"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_not_null)}", "aria-label": "All Tags", data: { text: "All" } %>
     </div>
     <div class="nav-item">
-      <%= link_to "Supported", admin_tags_path("q[supported_eq": "true"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_eq) == 'true'}", "aria-label": "Supported Tags", data: {text: "Supported"} %>
+      <%= link_to "Supported", admin_tags_path("q[supported_eq": "true"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_eq) == 'true'}", "aria-label": "Supported Tags", data: { text: "Supported" } %>
     </div>
     <div class="nav-item">
-      <%= link_to "Unsupported", admin_tags_path("q[supported_eq": "false"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_eq) == 'false'}", "aria-label": "Unsupported Tags", data: {text: "Unsupported"} %>
+      <%= link_to "Unsupported", admin_tags_path("q[supported_eq": "false"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params.dig(:q, :supported_eq) == 'false'}", "aria-label": "Unsupported Tags", data: { text: "Unsupported" } %>
     </div>
   </div>
 
@@ -37,7 +37,6 @@
       <th scope="col"><%= sort_link(@q, :id, {}, { aria: { label: "Sort by ID" } }) %></th>
       <th scope="col"><%= sort_link(@q, :alias_for, {}, { aria: { label: "Sort by Alias For" } }) %></th>
       <th scope="col"><%= sort_link(@q, :taggings_count, {}, { aria: { label: "Sort by Taggings Count" } }) %></th>
-      <th scope="col"><%= sort_link(@q, :category, {}, { aria: { label: "Sort by Category" } }) %></th>
       <th scope="col">Is Moderated?</th>
     </tr>
   </thead>
@@ -48,7 +47,6 @@
         <td><%= tag.id %></td>
         <td><%= tag.alias_for %></td>
         <td><%= tag.taggings_count %></td>
-        <td><%= tag.category %></td>
         <td><%= tag.tag_moderator_ids.any? %></td>
       </tr>
     <% end %>

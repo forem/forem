@@ -1,6 +1,7 @@
+#  @note When we destroy the related user, it's using dependent:
+#        :delete for the relationship.  That means no before/after
+#        destroy callbacks will be called on this object.
 class BadgeAchievement < ApplicationRecord
-  CONTEXT_MESSAGE_ALLOWED_TAGS = %w[strong em i b u a code].freeze
-  CONTEXT_MESSAGE_ALLOWED_ATTRIBUTES = %w[href name].freeze
   resourcify
 
   belongs_to :user
@@ -29,8 +30,8 @@ class BadgeAchievement < ApplicationRecord
     html = parsed_markdown.finalize
     final_html = ActionController::Base.helpers.sanitize(
       html,
-      tags: CONTEXT_MESSAGE_ALLOWED_TAGS,
-      attributes: CONTEXT_MESSAGE_ALLOWED_ATTRIBUTES,
+      tags: MarkdownProcessor::AllowedTags::BADGE_ACHIEVEMENT_CONTEXT_MESSAGE,
+      attributes: MarkdownProcessor::AllowedAttributes::BADGE_ACHIEVEMENT_CONTEXT_MESSAGE,
     )
 
     self.rewarding_context_message = final_html

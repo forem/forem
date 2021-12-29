@@ -1,0 +1,59 @@
+@import '../config/import';
+
+.media-card {
+  background: var(--card-bg);
+  display: flex;
+  flex-direction: column;
+  color: var(--card-color);
+  transition: all var(--transition-props);
+
+  &__artwork {
+    position: relative;
+
+    img {
+      border-radius: var(--radius-auto);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &__badge {
+      position: absolute;
+      right: var(--su-2);
+      bottom: var(--su-2);
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.9);
+      color: #fff;
+      padding: var(--su-1);
+      line-height: var(--lh-tight);
+      font-size: var(--fs-s);
+    }
+  }
+
+  &__content {
+    padding: var(--su-4);
+    line-height: var(--lh-tight);
+
+    small {
+      opacity: 0.6;
+      transition: all var(--transition-props);
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px var(--base-a10);
+    color: var(--link-color-hover);
+
+    small {
+      opacity: 0.8;
+    }
+  }
+
+  &--all {
+    &:nth-child(6) {
+      @media (min-width: $breakpoint-m) {
+        display: none;
+      }
+    }
+  }
+}

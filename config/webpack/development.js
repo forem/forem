@@ -10,7 +10,7 @@ const config = environment.toWebpackConfig();
 config.devtool = 'eval-source-map';
 
 // Inject the preact/debug import into all the webpacker pack files (webpack entry points) that reference at least one Preact component
-// so that Preact compoonents can be debugged with the Preact DevTools.
+// so that Preact components can be debugged with the Preact DevTools.
 config.entry = Object.entries(config.entry).reduce(
   (previous, [entryPointName, entryPointFileName]) => {
     if (/\.jsx$/.test(entryPointFileName)) {

@@ -1,7 +1,7 @@
 module Articles
   module Feeds
     module Tag
-      def self.call(tag = nil, number_of_articles: 50, page: 1)
+      def self.call(tag = nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1)
         articles =
           if tag.present?
             if FeatureFlag.enabled?(:optimize_article_tag_query)

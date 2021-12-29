@@ -46,10 +46,10 @@ RSpec.describe DataUpdateWorker, type: :worker do
         worker.perform
       end.to change(DataUpdateScript, :count).by(2)
 
-      successsful_dus = DataUpdateScript.find_by(status: :succeeded)
-      expect(successsful_dus.finished_at).not_to be_nil
-      expect(successsful_dus.run_at).not_to be_nil
-      expect(successsful_dus.error).to be_nil
+      successful_dus = DataUpdateScript.find_by(status: :succeeded)
+      expect(successful_dus.finished_at).not_to be_nil
+      expect(successful_dus.run_at).not_to be_nil
+      expect(successful_dus.error).to be_nil
 
       failed_dus = DataUpdateScript.find_by(status: :failed)
       expect(failed_dus.finished_at).not_to be_nil

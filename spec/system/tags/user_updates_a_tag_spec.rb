@@ -9,7 +9,7 @@ RSpec.describe "User updates a tag", type: :system do
   describe "Update tag as a super_admin" do
     let(:tag) { create(:tag) }
 
-    context "when no colors have been choosen for the tag" do
+    context "when no colors have been chosen for the tag" do
       before do
         sign_in super_admin
         visit edit_tag_path(tag.name)
@@ -20,7 +20,7 @@ RSpec.describe "User updates a tag", type: :system do
       end
 
       it "defaults to black and white upon update", :aggregate_failures do
-        click_button("SAVE CHANGES")
+        click_button(I18n.t("views.tags.edit.form.submit"))
 
         tag.reload
 
@@ -29,7 +29,7 @@ RSpec.describe "User updates a tag", type: :system do
       end
     end
 
-    context "when colors have already been choosen for the tag" do
+    context "when colors have already been chosen for the tag" do
       let(:tag) { create(:tag, bg_color_hex: "#0000ff", text_color_hex: "#ff0000") }
 
       before do
@@ -41,7 +41,7 @@ RSpec.describe "User updates a tag", type: :system do
         old_bg_color_hex = tag.bg_color_hex
         old_text_color_hex = tag.text_color_hex
 
-        click_button("SAVE CHANGES")
+        click_button(I18n.t("views.tags.edit.form.submit"))
 
         expect(tag.reload.bg_color_hex).to eq(old_bg_color_hex)
         expect(tag.reload.text_color_hex).to eq(old_text_color_hex)
@@ -52,7 +52,7 @@ RSpec.describe "User updates a tag", type: :system do
   describe "Update tag as a tag_moderator" do
     let(:tag) { create(:tag) }
 
-    context "when no colors have been choosen for the tag" do
+    context "when no colors have been chosen for the tag" do
       before do
         tag_moderator.add_role(:tag_moderator, tag)
         sign_in tag_moderator
@@ -64,7 +64,7 @@ RSpec.describe "User updates a tag", type: :system do
       end
 
       it "defaults to black and white upon update", :aggregate_failures do
-        click_button("SAVE CHANGES")
+        click_button(I18n.t("views.tags.edit.form.submit"))
 
         tag.reload
 
@@ -73,7 +73,7 @@ RSpec.describe "User updates a tag", type: :system do
       end
     end
 
-    context "when colors have already been choosen for the tag" do
+    context "when colors have already been chosen for the tag" do
       let(:tag) { create(:tag, bg_color_hex: "#0000ff", text_color_hex: "#ff0000") }
 
       before do
@@ -86,7 +86,7 @@ RSpec.describe "User updates a tag", type: :system do
         old_bg_color_hex = tag.bg_color_hex
         old_text_color_hex = tag.text_color_hex
 
-        click_button("SAVE CHANGES")
+        click_button(I18n.t("views.tags.edit.form.submit"))
 
         expect(tag.reload.bg_color_hex).to eq(old_bg_color_hex)
         expect(tag.reload.text_color_hex).to eq(old_text_color_hex)

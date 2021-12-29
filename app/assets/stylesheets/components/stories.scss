@@ -14,15 +14,12 @@
   box-shadow: 0 0 0 1px var(--card-border);
   margin: 0 0 var(--su-2);
   position: relative;
+  border-radius: var(--radius-auto);
 
   &:focus-within {
     outline: none;
     --card-border: var(--accent-brand);
     box-shadow: 0 0 0 2px var(--card-border);
-  }
-
-  @media (min-width: $breakpoint-m) {
-    border-radius: var(--radius);
   }
 
   --story-padding: var(--su-4) var(--su-4) var(--su-3);
@@ -139,6 +136,11 @@
   &__tags {
     margin-bottom: var(--su-2);
     margin-left: calc(var(--su-1) * -1);
+    font-size: var(--fs-s);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    color: var(--base-80);
   }
 
   &__title {
@@ -150,7 +152,7 @@
     margin-bottom: var(--su-1);
 
     @media (min-width: $breakpoint-m) {
-      margin-bottom: var(--su-2);
+      margin-bottom: var(--su-1);
     }
 
     a {
@@ -193,7 +195,7 @@
 
   &__comments {
     cursor: default;
-    background: var(--story-comments-bg);
+    background: RGB(var(--story-comments-bg));
     border-radius: var(--radius);
     position: relative;
     bottom: var(--su-2);

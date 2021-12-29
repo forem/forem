@@ -26,7 +26,6 @@ RSpec.describe "Display users search spec", type: :system, js: true do
     visit "/search?q=jane&filters=class_name:User"
 
     expect(page).to have_content(found_user.name)
-    expect(find("span.crayons-story__flare-tag").text).to have_content("person")
     expect(find(:xpath, "//img[@alt='#{found_user.username} profile']")["src"]).to include(found_user.profile_image_90)
     expect(JSON.parse(find_button(I18n.t("core.follow"))["data-info"])["id"]).to eq(found_user.id)
   end

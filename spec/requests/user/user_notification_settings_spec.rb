@@ -36,13 +36,6 @@ RSpec.describe "UserNotificationSettings", type: :request do
           params: { users_notification_setting: { tab: "notifications", welcome_notifications: 1 } }
       expect(user.reload.subscribed_to_welcome_notifications?).to be(true)
     end
-
-    it "returns error message if settings can't be saved" do
-      put users_notification_settings_path(user.notification_setting.id),
-          params: { users_notification_setting: { tab: "notifications", email_digest_periodic: nil } }
-
-      expect(flash[:error]).not_to be_blank
-    end
   end
 
   describe "PATCH /onboarding_notifications_checkbox_update" do
@@ -80,14 +73,6 @@ RSpec.describe "UserNotificationSettings", type: :request do
         patch onboarding_notifications_checkbox_update_path(format: :json),
               params: { notifications: { tab: "notifications", email_digest_periodic: 0 } }
       end.to change { user.notification_setting.reload.email_digest_periodic }.from(true).to(false)
-    end
-
-    it "returns 422 status and errors if errors occur" do
-      patch onboarding_notifications_checkbox_update_path(format: :json),
-            params: { notifications: { tab: "notifications", email_digest_periodic: nil } }
-
-      expect(response.status).to eq(422)
-      expect(response.parsed_body["errors"]).not_to be_blank
     end
   end
 end

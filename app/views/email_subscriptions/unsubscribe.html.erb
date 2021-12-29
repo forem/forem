@@ -1,11 +1,10 @@
 <meta name="robots" content="noindex" />
 <div class="unsubscribed">
   <div class="unsubscribed__title">
-    You have been unsubscribed from <%= @email_type %>. 😔
+    <%= t("views.email_subscriptions.unsubscribe.heading", type: @email_type) %>
   </div>
   <br />
   <div class="unsubscribed__message">
-    You will no longer receive emails like this. If you'd like to re-subscribe or manage your full email preferences, please
-    <a href="<%= app_url(user_settings_path(:notifications)) %>">click here</a>.
+    <%= t("views.email_subscriptions.unsubscribe.description_html", link: tag.a(t("views.email_subscriptions.unsubscribe.link"), href: app_url(user_settings_path(:notifications)))) %>
   </div>
 </div>

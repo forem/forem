@@ -3,8 +3,19 @@ require "rails_helper"
 RSpec.describe "Tags", type: :request, proper_status: true do
   describe "GET /tags" do
     it "returns proper page" do
+      create(:tag, name: "ruby")
+      create(:tag, name: "javascript", alias_for: "")
+
       get tags_path
-      expect(response.body).to include("Top tags")
+      expect(response.body).to include("Top tags", "ruby", "javascript")
+    end
+
+    it "does not include tags with alias" do
+      create(:tag, name: "ruby")
+      create(:tag, name: "aliastag", alias_for: "ruby")
+
+      get tags_path
+      expect(response.body).not_to include("aliastag")
     end
   end
 
@@ -47,7 +58,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     it "allows super admins" do
       sign_in super_admin
       get "/t/#{tag}/edit"
-      expect(response.body).to include("Click here to see an example of attributes.")
+      expect(response.body).to include(I18n.t("views.tags.edit.help"))
     end
 
     context "when user is a tag moderator" do
@@ -58,7 +69,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
       it "allows authorized tag moderators" do
         get "/t/#{tag}/edit"
-        expect(response.body).to include("Click here to see an example of attributes.")
+        expect(response.body).to include(I18n.t("views.tags.edit.help"))
       end
 
       it "does not allow moderators of one tag to edit another tag" do

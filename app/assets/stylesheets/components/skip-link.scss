@@ -1,0 +1,25 @@
+.skip-content-link {
+  position: absolute;
+  left: 50%;
+  background: var(--body-color);
+  color: var(--body-color-inverted);
+  z-index: var(--z-popover);
+  padding: var(--su-3) var(--su-4);
+  pointer-events: none;
+  border-radius: var(--radius);
+  transform: translate(-50%, -200%);
+  transition: transform var(--transition-props);
+  opacity: var(--opacity-0);
+}
+
+.js-focus-visible .skip-content-link:focus:not(.focus-visible) {
+  visibility: hidden;
+}
+
+.js-focus-visible .skip-content-link:focus {
+  pointer-events: auto;
+  transform: translate(-50%, var(--su-1));
+  outline: none;
+  opacity: var(--opacity-1);
+  box-shadow: var(--focus-ring);
+}

@@ -42,7 +42,7 @@ describe('User Change Password', () => {
     });
 
     // We intercept these requests to make sure all async sign-in requests have completed before finishing the test.
-    // This ensures async responses do not intefere with subsequent test setup
+    // This ensures async responses do not interfere with subsequent test setup
     const loginNetworkRequests = getInterceptsForLingeringUserRequests(
       '/',
       true,

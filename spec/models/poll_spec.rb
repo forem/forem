@@ -9,9 +9,9 @@ RSpec.describe Poll, type: :model do
     describe "builtin validations" do
       subject { poll }
 
-      it { is_expected.to have_many(:poll_options).dependent(:destroy) }
-      it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
-      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_options).dependent(:delete_all) }
+      it { is_expected.to have_many(:poll_skips).dependent(:delete_all) }
+      it { is_expected.to have_many(:poll_votes).dependent(:delete_all) }
 
       it { is_expected.to validate_length_of(:poll_options_input_array).is_at_least(2).is_at_most(15) }
 
@@ -32,6 +32,33 @@ RSpec.describe Poll, type: :model do
         poll.prompt_markdown = "x" * 129
         expect(poll).not_to be_valid
       end
+    end
+  end
+
+  describe "#vote_previously_recorded_for?" do
+    subject(:registered) { poll.vote_previously_recorded_for?(user_id: user.id) }
+
+    let(:poll) {  create(:poll) }
+    let(:user) {  create(:user) }
+
+    context "when user has existing poll_votes" do
+      before do
+        create(:poll_vote, poll: poll, user: user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user has existing poll_skips" do
+      before do
+        create(:poll_skip, poll: poll, user: user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user has no poll_skips nor poll votes" do
+      it { is_expected.to be_falsey }
     end
   end
 

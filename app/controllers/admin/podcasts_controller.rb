@@ -17,6 +17,7 @@ module Admin
       main_color_hex
       slug
       image
+      featured
       reachable
       published
     ].freeze

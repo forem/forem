@@ -54,11 +54,14 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
+# rubocop:disable Metrics/BlockLength
 users_in_random_order = seeder.create_if_none(User, num_users) do
-  roles = %i[trusted chatroom_beta_tester workshop_pass]
+  roles = %i[trusted workshop_pass]
 
   num_users.times do |i|
-    name = Faker::Name.unique.name
+    fname = Faker::Name.unique.first_name
+    lname = Faker::Name.unique.last_name
+    name = [fname, lname].join(" ")
 
     user = User.create!(
       name: name,
@@ -87,18 +90,71 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       user.add_role(roles[role_index]) if role_index != roles.length # increases chance of more no-role users
     end
 
+    omniauth_info = OmniAuth::AuthHash::InfoHash.new(
+      first_name: fname,
+      last_name: lname,
+      location: "location,state,country",
+      name: name,
+      nickname: user.username,
+      email: user.email,
+      verified: true,
+    )
+
+    omniauth_extra_info = OmniAuth::AuthHash::InfoHash.new(
+      raw_info: OmniAuth::AuthHash::InfoHash.new(
+        email: user.email,
+        first_name: fname,
+        gender: "female",
+        id: "123456",
+        last_name: lname,
+        link: "http://www.facebook.com/url&#8221",
+        lang: "fr",
+        locale: "en_US",
+        name: name,
+        timezone: 5.5,
+        updated_time: "2012-06-08T13:09:47+0000",
+        username: user.username,
+        verified: true,
+        followers_count: 100,
+        friends_count: 1000,
+        created_at: "2017-06-08T13:09:47+0000",
+      ),
+    )
+
+    omniauth_basic_info = {
+      uid: SecureRandom.hex(3),
+      info: omniauth_info,
+      extra: omniauth_extra_info,
+      credentials: {
+        token: SecureRandom.hex,
+        secret: SecureRandom.hex
+      }
+    }.freeze
+
+    info = omniauth_basic_info[:info].merge(
+      image: "https://dummyimage.com/400x400_normal.jpg",
+      urls: { "Twitter" => "https://example.com" },
+    )
+
+    extra = omniauth_basic_info[:extra].merge(
+      access_token: "value",
+    )
+
+    auth_dump = OmniAuth::AuthHash.new(
+      omniauth_basic_info.merge(
+        provider: "twitter",
+        info: info,
+        extra: extra,
+      ),
+    )
+
     Identity.create!(
       provider: "twitter",
       uid: i.to_s,
       token: i.to_s,
       secret: i.to_s,
       user: user,
-      auth_data_dump: {
-        "extra" => {
-          "raw_info" => { "lang" => "en" }
-        },
-        "info" => { "nickname" => user.username }
-      },
+      auth_data_dump: auth_dump,
     )
   end
 
@@ -125,6 +181,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
+# rubocop:enable Metrics/BlockLength
 
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
@@ -143,6 +200,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   )
 
   user.add_role(:super_admin)
+  user.add_role(:trusted)
   user.add_role(:tech_admin)
 end
 
@@ -169,6 +227,9 @@ end
 num_articles = 25 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Article, num_articles) do
+  user_ids = User.all.ids
+  public_categories = %w[like unicorn]
+
   num_articles.times do |i|
     tags = []
     tags << "discuss" if (i % 3).zero?
@@ -187,12 +248,21 @@ seeder.create_if_none(Article, num_articles) do
       #{Faker::Hipster.paragraph(sentence_count: 2)}
     MARKDOWN
 
-    Article.create!(
+    article = Article.create!(
       body_markdown: markdown,
       featured: true,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
+
+    Random.random_number(10).times do |_t|
+      article.reactions.create(
+        user_id: user_ids.sample,
+        category: public_categories.sample,
+      )
+    end
+
+    article.sync_reactions_count
   end
 end
 
@@ -231,7 +301,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
       android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "CodingBlocks",
@@ -244,7 +315,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
       android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "Talk Python",
@@ -257,7 +329,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
       android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
     {
       title: "Developer on Fire",
@@ -271,7 +344,8 @@ seeder.create_if_none(Podcast) do
       overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
       android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
       image: Pathname.new(image_file).open,
-      published: true
+      published: true,
+      featured: true
     },
   ]
 
@@ -344,32 +418,6 @@ seeder.create_if_none(Broadcast) do
   Article.create!(
     body_markdown: welcome_thread_content,
     user: User.staff_account || User.first,
-  )
-end
-
-##############################################################################
-
-seeder.create_if_none(ChatChannel) do
-  %w[Workshop Meta General].each do |chan|
-    ChatChannel.create!(
-      channel_name: chan,
-      channel_type: "open",
-      slug: chan,
-    )
-  end
-
-  # This channel is hard-coded in a few places
-  ChatChannel.create!(
-    channel_name: "Tag Moderators",
-    channel_type: "open",
-    slug: "tag-moderators",
-  )
-
-  direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
-  Message.create!(
-    chat_channel: direct_channel,
-    user: User.last,
-    message_markdown: "This is **awesome**",
   )
 end
 
@@ -516,7 +564,6 @@ seeder.create_if_none(Listing) do
         location: Faker::Address.city,
         organization_id: user.organizations.first&.id,
         listing_category_id: category_id,
-        contact_via_connect: true,
         published: true,
         originally_published_at: Time.current,
         bumped_at: Time.current,

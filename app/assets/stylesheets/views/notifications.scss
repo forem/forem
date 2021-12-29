@@ -9,14 +9,12 @@
 
   display: flex;
   color: var(--base-80);
-  border-radius: 0;
 
   @media (min-width: $breakpoint-s) {
     --padding: var(--su-4);
   }
   @media (min-width: $breakpoint-m) {
     --padding: var(--su-5);
-    border-radius: var(--radius);
   }
 
   &--middle {

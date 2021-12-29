@@ -37,7 +37,7 @@
 
 <div class="crayons-card p-6 mb-6">
   <% current_credits = @organization.unspent_credits_count %>
-  <h3 class="mb-4">Credits (currrent: <%= current_credits %>)</h3>
+  <h3 class="mb-4">Credits (current: <%= current_credits %>)</h3>
   <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "form-inline justify-content-between mb-2" do %>
     <div class="form-group">
       <%= hidden_field_tag :credit_action, :add %>

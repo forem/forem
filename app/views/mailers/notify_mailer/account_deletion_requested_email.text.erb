@@ -1,6 +1,6 @@
 Hi <%= @name %>,
 Your account deletion was requested. Please, visit this page: <%= user_confirm_destroy_url(@token) %> to destroy your account. The link will expire in 12 hours.
-Contact us at <%= email_link %> if there is anything more we can help with.
+<%= t("contact_prompts.if_we_can_help_html") %>
 
 Thanks,
 The <%= community_name %> Team

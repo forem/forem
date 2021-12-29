@@ -1,30 +1,30 @@
-<% title "Comment Settings" %>
+<% title t("views.comments.settings.meta.title") %>
 
 <div class="crayons-layout crayons-layout--limited-m gap-0">
   <div class="crayons-card text-padding">
-    <h1 class="crayons-title mb-4">Comment Settings</h1>
+    <h1 class="crayons-title mb-4"><%= t("views.comments.settings.heading") %></h1>
 
     <div class="flex">
       <div class="pr-4 m:pr-8 flex-1">
         <% if @notification_subscription.persisted? %>
-          <p class="fw-bold">Showing thread notifications</p>
-          <p class="fs-s color-base-60">You will receive all notifications for this comment and any of your comments in this chain.</p>
+          <p class="fw-bold"><%= t("views.comments.settings.state.show.subtitle") %></p>
+          <p class="fs-s color-base-60"><%= t("views.comments.settings.state.show.desc") %></p>
         <% else %>
-          <p class="fw-bold">Muting thread notifications</p>
-          <p class="fs-s color-base-60">All notifications for this comment and any of your comments in the thread are currently muted.</p>
+          <p class="fw-bold"><%= t("views.comments.settings.state.mute.subtitle") %></p>
+          <p class="fs-s color-base-60"><%= t("views.comments.settings.state.mute.desc") %></p>
         <% end %>
       </div>
       <%= form_for(@notification_subscription, url: "/notification_subscriptions/Comment/#{@comment.id}", method: "post", html: { class: "mute-form shrink-0" }) do |f| %>
         <input type="hidden" name="config" value="<%= @notification_subscription.persisted? ? "not_subscribed" : "all_comments" %>">
-        <%= f.submit @notification_subscription.persisted? ? "Mute notifications" : "Unmute notifications", class: "crayons-btn crayons-btn--secondary #{@notification_subscription.persisted? ? 'mute' : 'unmute'}" %>
+        <%= f.submit t("views.comments.settings.subscribe.#{@notification_subscription.persisted? ? 'mute' : 'unmute'}"), class: "crayons-btn crayons-btn--secondary #{@notification_subscription.persisted? ? 'mute' : 'unmute'}" %>
       <% end %>
     </div>
 
     <% if NotificationSubscription.where(user_id: current_user, notifiable_type: "Article", notifiable_id: @comment.commentable_id, config: "all_comments").any? %>
       <div class="flex pt-6">
         <div class="pr-4 m:pr-8 flex-1">
-          <p class="fw-bold">Subscription</p>
-          <p class="fs-s color-base-60">You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.</p>
+          <p class="fw-bold"><%= t("views.comments.settings.subscribe.subtitle") %></p>
+          <p class="fs-s color-base-60"><%= t("views.comments.settings.subscribe.desc") %></p>
         </div>
         <%= form_for(@notification_subscription, url: "/notification_subscriptions/Article/#{@comment.commentable_id}", method: "post", html: { class: "mute-form" }) do |f| %>
           <input type="hidden" name="config" value="not_subscribed">

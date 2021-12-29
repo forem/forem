@@ -320,6 +320,16 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
+  describe "POST /admin/users/:id/unpublish_all_articles" do
+    let(:user) { create(:user) }
+
+    it "unpublishes all articles" do
+      allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
+      post unpublish_all_articles_admin_user_path(user.id)
+      expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(user.id)
+    end
+  end
+
   describe "DELETE /admin/users/:id/remove_identity" do
     let(:provider) { Authentication::Providers.available.first }
     let(:user) do

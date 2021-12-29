@@ -19,9 +19,8 @@ RSpec.describe Search::Listing, type: :service do
 
       it "returns the correct attributes for the result" do
         expected_keys = %i[
-          id body_markdown bumped_at category contact_via_connect expires_at
-          originally_published_at location processed_html published slug title
-          user_id tags author
+          id body_markdown bumped_at category expires_at originally_published_at location
+          processed_html published slug title user_id tags author
         ]
 
         expect(result.first.keys).to match_array(expected_keys)

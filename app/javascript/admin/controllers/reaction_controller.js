@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 export default class ReactionController extends Controller {
   static targets = ['invalid', 'confirmed'];

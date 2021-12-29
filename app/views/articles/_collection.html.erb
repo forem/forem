@@ -18,9 +18,9 @@
               data-preload-image="<%= cloud_cover_url(article.main_image) %>"
               id="collection-link-inbetween"
               data-no-instant
-              title="View more">
-              <span class="series-switcher__num">...</span>
-              <span class="series-switcher__title"><%= collection_size - 4 %> more <%= "part".pluralize(count: collection_size - 4) %>...</span>
+              title="<%= t("views.articles.series.inbetween.title") %>">
+              <span class="series-switcher__num"><%= t("views.articles.series.inbetween.num") %></span>
+              <span class="series-switcher__title"><%= t("views.articles.series.inbetween.text", count: collection_size - 4) %></span>
             </a>
         <% end %>
 
@@ -28,7 +28,7 @@
             href="<%= article.path %>"
             class="crayons-link crayons-link--contentful series-switcher__link <%= "series-switcher__link--active" if rendered_article.id == article.id %> <%= "series-switcher__link--hidden" if collection_size > 5 && (i > 1 && i < collection_size - 2) %>"
             data-preload-image="<%= cloud_cover_url(article.main_image) %>"
-            title="Published <%= article.readable_publish_date %>">
+            title="<%= t("views.articles.series.published", date: article.readable_publish_date) %>">
             <span class="series-switcher__num"><%= i + 1 %></span>
             <span class="series-switcher__title"><%= article.title %></span>
           </a>

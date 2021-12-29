@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 // Wraps the Preact Snackbar component into a Stimulus controller
 export default class SnackbarController extends Controller {

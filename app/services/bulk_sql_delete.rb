@@ -1,11 +1,15 @@
 class BulkSqlDelete
+  STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_BULK_DELETE", 10_000).to_i.seconds / 1_000.to_f
+
   def self.delete_in_batches(sql)
     ActiveRecord::Base.connection_pool.with_connection do |connection|
       perform_and_log(sql) do
         unless Rails.env.test?
           connection.begin_db_transaction
         end
-        result = connection.exec_delete(sql)
+        result = ApplicationRecord.with_statement_timeout STATEMENT_TIMEOUT, connection: connection do
+          connection.exec_delete(sql)
+        end
         connection.commit_db_transaction unless Rails.env.test?
 
         result

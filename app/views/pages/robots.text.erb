@@ -11,4 +11,4 @@ Disallow: /mod/*
 Disallow: /mod?*
 Disallow: /admin/*
 
-Sitemap: https://<%= ApplicationConfig["AWS_BUCKET_NAME"] %>.s3.amazonaws.com/sitemaps/sitemap.xml.gz
+Sitemap: <%= URL.url("sitemap-index.xml") %>

@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 // eslint-disable-next-line no-restricted-syntax
 export default class AjaxController extends Controller {

@@ -21,7 +21,7 @@ module ArticlesHelper
   end
 
   def image_tag_or_inline_svg_tag(service_name, width: nil, height: nil)
-    name = "#{service_name}-logo.svg"
+    name = "#{service_name}.svg"
 
     if internal_navigation?
       image_tag(name, class: "icon-img", alt: "#{service_name} logo", width: width, height: height)

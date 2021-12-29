@@ -55,4 +55,13 @@ describe('Add tags to article', () => {
       name: 'tagtwo',
     }).should('exist');
   });
+
+  // Regression test for #14867
+  it('keeps on suggesting a tag even if we typed in the whole name', () => {
+    cy.findByRole('textbox', { name: 'Post Tags' }).clear().type('tag1');
+
+    // Search is in progress, both tags should still be shown
+    cy.findByRole('button', { name: 'tag1' }).should('exist');
+    cy.findByRole('button', { name: 'tag2' }).should('not.exist');
+  });
 });

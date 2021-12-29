@@ -28,12 +28,6 @@ module MarkdownProcessor
         add_quotes_to_section(markdown, section: "description")
       end
 
-      # This turns --- into ------- after the first two,
-      # because --- messes with front matter
-      def self.modify_hr_tags(markdown)
-        markdown.gsub(/^---/).with_index { |match, i| i > 1 ? "#{match}-----" : match }
-      end
-
       def self.lowercase_published(markdown)
         markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
           front_matter.gsub(/^published: /i, "published: ")
@@ -82,7 +76,7 @@ module MarkdownProcessor
             # either single or double quotes.
             match = captured_text.scan(/(^".*"$|^'.*'$)/)
             if match.empty?
-              # Double quotes that aren't already escaped will get esacped.
+              # Double quotes that aren't already escaped will get escaped.
               # Then the whole text get warped in double quotes.
               parsed_text = captured_text.gsub(/(?<!\\)"/, "\\\"")
               "#{section}: \"#{parsed_text}\"\n"

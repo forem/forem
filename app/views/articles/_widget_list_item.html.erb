@@ -3,9 +3,9 @@
   <% if show_comment_count %>
     <div class="crayons-link__secondary">
       <% if plucked_article[2] > 0 %>
-        <%= pluralize(plucked_article[2], "comment") %>
+        <%= t("views.comments.count", count: plucked_article[2]) %>
       <% else %>
-        <span class="crayons-indicator crayons-indicator--accent">New</span>
+        <span class="crayons-indicator crayons-indicator--accent"><%= t("views.comments.empty") %></span>
       <% end %>
     </div>
   <% end %>

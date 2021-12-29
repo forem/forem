@@ -6,14 +6,14 @@
         <h1>
           <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" alt="">
             <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
-              <%= post_type == "question" ? "" : "<span class='title-flare'>answer</span> re: ".html_safe %> <%= CGI.unescapeHTML title %>
+              <%= post_type == "question" ? "" : t("views.liquids.stackexchange.answer.text_html", answer: tag.span(t("views.liquids.stackexchange.answer.answer"), class: "title-flare"), title: CGI.unescapeHTML(title)) %>
             </a>
         </h1>
         <div class="ltag__stackexchange--post-metadata">
-          <span><%= Time.zone.at(created_at).strftime("%b %e '%y") %></span>
+          <span><%= Time.zone.at(created_at).strftime(t("time.formats.stackexchange")) %></span>
           <% if post_type == "question" %>
-            <span>Comments: <%= comment_count %></span>
-            <span>Answers: <%= answer_count %></span>
+            <span><%= t("views.liquids.stackexchange.comments", count: comment_count) %></span>
+            <span><%= t("views.liquids.stackexchange.answers", count: answer_count) %></span>
           <% end %>
         </div>
       </div>
@@ -33,7 +33,7 @@
   </div>
   <div class="ltag__stackexchange--btn--container">
     <button class="ltag__stackexchange--btn" type="button">
-      <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">Open Full <%= post_type.capitalize %></a>
+      <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer"><%= t("views.liquids.stackexchange.open.#{post_type}") %></a>
     </button>
   </div>
 </div>

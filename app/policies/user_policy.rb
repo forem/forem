@@ -15,7 +15,6 @@ class UserPolicy < ApplicationPolicy
     email_badge_notifications
     email_comment_notifications
     email_community_mod_newsletter
-    email_connect_messages
     email_digest_periodic
     email_follower_notifications
     email_membership_newsletter
@@ -100,7 +99,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def moderation_routes?
-    (user.has_role?(:trusted) || minimal_admin?) && !user.suspended?
+    (user.has_trusted_role? || minimal_admin?) && !user.suspended?
   end
 
   def update_password?

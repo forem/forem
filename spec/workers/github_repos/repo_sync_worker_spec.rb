@@ -17,7 +17,7 @@ RSpec.describe GithubRepos::RepoSyncWorker, type: :worker do
     end
 
     let(:stubbed_github_repo) do
-      OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url)) # rubocop:disable Performance/OpenStruct
+      OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url)) # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
     end
     let(:github_client) { instance_double(fake_github_client, repository: stubbed_github_repo) }
 

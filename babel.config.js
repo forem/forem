@@ -69,6 +69,17 @@ module.exports = function (api) {
           pragma: 'h',
         },
       ],
+      'inline-react-svg',
+      [
+        'module-resolver',
+        {
+          // Only the @images webpack alias is here because it's being used by a
+          // Babel plugin before webpack runs in the frontend build pipeline.
+          alias: {
+            '@images': './app/assets/images/',
+          },
+        },
+      ],
     ].filter(Boolean),
   };
 };

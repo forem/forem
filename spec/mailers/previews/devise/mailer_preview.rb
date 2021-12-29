@@ -20,5 +20,9 @@ module Devise
     def unlock_instructions
       Devise::Mailer.unlock_instructions(User.last, "faketoken")
     end
+
+    def creator_confirmation_instructions
+      Devise::Mailer.confirmation_instructions(User.with_role(:creator).first, "faketoken")
+    end
   end
 end
