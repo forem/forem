@@ -242,16 +242,16 @@ RSpec.describe Article, type: :model do
       end
 
       it "sanitizes the title" do
-        test_article = build(:article, title: "\u200aThis starts with whitespace")
+        test_article = build(:article, title: "\u202dThis starts with BIDI override")
 
         test_article.validate
 
-        expect(test_article.title).not_to match(/\u200a/)
-        expect(test_article.title).to eq("This starts with whitespace")
+        expect(test_article.title).not_to match(/\u202d/)
+        expect(test_article.title).to eq("This starts with BIDI override")
       end
 
-      it "rejects empty titles" do
-        test_article = build(:article, title: "\u200a\u200a")
+      it "rejects empty titles after sanitizing" do
+        test_article = build(:article, title: "\u202a\u202b\u202c\u202d\u202e")
 
         test_article.validate
 

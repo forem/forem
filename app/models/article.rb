@@ -32,7 +32,7 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   UNIQUE_URL_ERROR = "has already been taken. " \
                      "Email #{ForemInstance.email} for further details.".freeze
-  PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\p{Space}&&[^ ]]/
+  PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
   has_one :discussion_lock, dependent: :delete
 
