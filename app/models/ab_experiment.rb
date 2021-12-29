@@ -18,6 +18,17 @@ class AbExperiment < SimpleDelegator
     feed_strategy_round_2: :feed_strategy
   }.freeze
 
+  # This method helps us leverage existing methods for different
+  # experiments.
+  #
+  # @param experiment [Symbol] the name of the experiment
+  # @return [Symbol] the method name associated with this experiment.
+  #
+  # @see EXPERIMENT_TO_METHOD_NAME_MAP
+  def self.method_name_for(experiment)
+    EXPERIMENT_TO_METHOD_NAME_MAP.fetch(experiment, experiment)
+  end
+
   # @api public
   #
   # A convenience method to insulate against the implementation
@@ -54,7 +65,7 @@ class AbExperiment < SimpleDelegator
   # @todo If we make heavy use of this class, consider guarding for
   #       valid experiment methods.
   def self.get(experiment:, controller:, user:, default_value:, config: ApplicationConfig)
-    method_name = EXPERIMENT_TO_METHOD_NAME_MAP.fetch(experiment, experiment)
+    method_name = method_name_for(experiment)
     new(controller: controller)
       .public_send(method_name, user: user, default_value: default_value, experiment: experiment, config: config)
   end
