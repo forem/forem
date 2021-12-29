@@ -81,7 +81,6 @@ class Article < ApplicationRecord
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
-  validates :title, presence: true, length: { maximum: 128 }
   validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
@@ -93,13 +92,15 @@ class Article < ApplicationRecord
   validate :canonical_url_must_not_have_spaces
   validate :past_or_present_date
   validate :validate_collection_permission
-  validate :validate_title
   validate :validate_tag
   validate :validate_video
   validate :user_mentions_in_markdown
   validate :validate_co_authors, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
+  # these two are order dependent since validate_title changes the input
+  validate :validate_title
+  validates :title, presence: true, length: { maximum: 128 }
 
   before_validation :evaluate_markdown, :create_slug
   before_save :update_cached_user
