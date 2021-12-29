@@ -670,7 +670,7 @@ class Article < ApplicationRecord
   end
 
   def validate_title
-    remove_prohibited_unicode_characters(str: title) if contains_prohibitted_unicode_characters?(str: title)
+    remove_prohibited_unicode_characters(str: title) if contains_prohibited_unicode_characters?(str: title)
   end
 
   def remove_tag_adjustments_from_tag_list
