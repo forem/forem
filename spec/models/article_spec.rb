@@ -47,7 +47,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_presence_of(:reactions_count) }
     it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_presence_of(:user_id) }
 
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
