@@ -148,7 +148,7 @@ group :development, :test do
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.24", require: false # Automatic Ruby code style checking tool
-  gem "rubocop-performance", "~> 1.12", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
+  gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.13", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.7", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
