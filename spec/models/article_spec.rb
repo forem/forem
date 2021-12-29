@@ -234,14 +234,28 @@ RSpec.describe Article, type: :model do
     end
 
     describe "title validation" do
-      let(:title) { "U+202D" }
-
-      let!(:test_article) { build(:article, title: title) }
-
-      before { test_article.validate }
-
       it "produces a proper title" do
-        expect(test_article.title).to eq(title)
+        test_article = build(:article, title: "An Article Title")
+
+        test_article.validate
+
+        expect(test_article.title).to eq("An Article Title")
+      end
+
+      it "sanitizes the title" do
+        test_article = build(:article, title: "\u202dThis starts with whitespace")
+
+        test_article.validate
+
+        expect(test_article.title).not_to match(/\u202d/)
+      end
+
+      it "rejects empty titles after sanitizing" do
+        test_article = build(:article, title: "\u202d\u202d") # only whitespace to be scrubbed
+
+        test_article.validate
+
+        expect(test_article).not_to be_valid
       end
     end
 
