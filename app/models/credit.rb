@@ -40,11 +40,11 @@ class Credit < ApplicationRecord
   #
   # @param user_or_org [#credits] the "owner" of the credits.
   # @param amount [Integer] the amount of credits to remove from the
+  #        owner.
   #
   # @note If you specify removing more credits than the owner has, it
   #       will remove all of their credits but not create a negative
   #       balance.
-  #        owner.
   def self.remove_from(user_or_org, amount)
     user_or_org.credits.unspent.limit(amount).delete_all
     update_cache_columns(user_or_org)
