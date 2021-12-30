@@ -48,14 +48,13 @@ class EmailDigestArticleCollector
   private
 
   def should_receive_email?
-    return true unless last_email_sent_at
+    return true unless last_email_sent
 
-    # Has it been at least x days since @user received an email?
-    last_email_sent_at < Settings::General.periodic_email_digest.days.ago
+    last_email_sent.before? Settings::General.periodic_email_digest.days.ago
   end
 
-  def last_email_sent_at
-    @last_email_sent_at ||=
+  def last_email_sent
+    @last_email_sent ||=
       @user.email_messages
         .where(mailer: "DigestMailer#digest_email")
         .maximum(:sent_at)
@@ -63,9 +62,9 @@ class EmailDigestArticleCollector
 
   def cutoff_date
     a_few_days_ago = 4.days.ago.utc
-    return a_few_days_ago unless last_email_sent_at
+    return a_few_days_ago unless last_email_sent
 
-    [a_few_days_ago, last_email_sent_at].max
+    [a_few_days_ago, last_email_sent].max
   end
 
   def user_has_followings?
