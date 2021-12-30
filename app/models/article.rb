@@ -1,7 +1,6 @@
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
-  include Storext.model
   include Reactable
   include UserSubscriptionSourceable
   include PgSearch::Model

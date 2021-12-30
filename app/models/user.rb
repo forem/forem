@@ -3,7 +3,6 @@ class User < ApplicationRecord
   rolify
 
   include CloudinaryHelper
-  include Storext.model
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
