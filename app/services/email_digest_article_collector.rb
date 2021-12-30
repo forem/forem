@@ -51,7 +51,7 @@ class EmailDigestArticleCollector
     return true unless last_email_sent_at
 
     # Has it been at least x days since @user received an email?
-    Time.current - last_email_sent_at >= Settings::General.periodic_email_digest.days
+    last_email_sent_at < Settings::General.periodic_email_digest.days.ago
   end
 
   def last_email_sent_at
