@@ -10,9 +10,15 @@ Here's an overview of your new abilities:
 - Quickly flag rule-breaking behavior with 🤢 to <%= community_name %> staff
 - Rate the experience level of a post
 
-You may occasionally receive notifications about optional moderation actions; please unsubscribe (<%= app_url(user_settings_path(:notifications)) %>) if you do not want to receive these updates.
-
 For details on all available features and how to access them, visit our <%= community_name %> Trusted User Guide: <%= app_url("/community-moderation") %>
+
+<% if ForemInstance.dev_to? %>
+  Also, we hope that you'll use this link (https://discord.com/invite/f5ARW5gxES) to join our moderator chat channels on DEV Discord!
+  Once inside, visit the #mod-verification channel and drop a link to your DEV profile so we can verify which set of privileges you have (Trusted User [<%= app_url("/community-moderation") %>]
+  and/or Tag Moderator [<%= app_url("/tag-moderation") %>]) and invite you to the correct moderator channels. We hope to see you there! 😀
+<% end %>
+
+You may occasionally receive notifications about optional moderation actions; please unsubscribe (<%= app_url(user_settings_path(:notifications)) %>) if you do not want to receive these updates.
 
 If you have any questions or feedback for us, please write to <%= ForemInstance.email %> and share your thoughts.
 
