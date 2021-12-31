@@ -850,7 +850,7 @@ class Article < ApplicationRecord
   end
 
   def remove_prohibited_unicode_characters
-    return unless title.match?(PROHIBITED_UNICODE_CHARACTERS_REGEX)
+    return unless title&.match?(PROHIBITED_UNICODE_CHARACTERS_REGEX)
 
     self.title = title.gsub(PROHIBITED_UNICODE_CHARACTERS_REGEX, "")
   end
