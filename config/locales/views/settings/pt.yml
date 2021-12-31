@@ -5,7 +5,7 @@ pt:
       meta:
         title: Configurações
       account:
-        connect:  Conectar a Conta de %{provider}
+        connect: Conectar a Conta de %{provider}
         emails: E-mails da conta
         primary: E-mail principal
         provider_email: "e-mail do %{provider}"
@@ -198,7 +198,7 @@ pt:
             unmet: Sua organização atualmente não atende aos requisitos acima. Por favor, remova todos os outros membros e artigos da organização primeiro.
           details: Detalhes da organização
           form:
-            slug: 'Your organization''s URL is: %{slug}'
+            slug: 'A URL da sua organização é: %{slug}'
             tag_line: Limite de 60 characteres
             summary: Limite de 250 characteres
             location: Limite de 64 caracteres
