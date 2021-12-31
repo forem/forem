@@ -1,0 +1,28 @@
+---
+pt:
+  views:
+    editor:
+      meta:
+        title: Editar Artigo
+      heading:
+        new: Novo Artigo
+      create: Criar Artigo
+      close:
+        icon: Fechar
+        title: Feche o editor
+      cover_image:
+        add: Adicionar uma imagem de capa
+        change: Mudar
+      edit: Editar
+      modes: Ver tipos de artigos
+      new_title: Novo título de artigo aqui...
+      preview: Prévia
+      video:
+        progress:
+          heading: "⏳ Transcodificação de vídeo em andamento ⏳"
+          notice_1: Você receberá um e-mail quando este processo terminar.
+          notice_2: Este é um artigo comum não publicado. Adicionar título / tags / corpo /etc, e então marque como publicado depois do processamento do vídeo.
+        submit_image:
+          button: Enviar mudança
+          text: 'Imagem prévia do URL: '
+          placeholder: Novo thumbnail do URL

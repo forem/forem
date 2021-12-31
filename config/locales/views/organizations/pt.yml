@@ -1,0 +1,32 @@
+---
+pt:
+  views:
+    organizations:
+      empty: 404 bio não encontrado
+      external:
+        icon: Ícone de link externo
+      follow: Seguir
+      github:
+        icon: Logo do GitHub
+      joined:
+        icon: Entrou
+        text_html: "Entrou em\_%{date}"
+      location:
+        icon: Localização
+      logo: Foto do perfil de "%{org}"
+      size: Funcionários
+      sponsor:
+        text: "%{level} Patrocinador da comunidade ❤️"
+        level:
+          gold: Ouro
+          silver: Prata
+          bronze: Bronze
+          tag: Tag
+          media: Mídia
+          devrel: Devrel
+      stack: nossa stack
+      story: nossa história
+      support: E-mail de suporte
+      team: encontrar o time
+      twitter:
+        icon: Logo do Twitter

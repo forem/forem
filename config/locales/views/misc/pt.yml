@@ -1,0 +1,118 @@
+---
+pt:
+  views:
+    badges:
+      meta:
+        title: Badges
+        name: "%{title} Badge"
+      all:
+        one: Mostrar um badge
+        other: Mostrar todos %{count} badges
+      heading: Badges
+      desc: Receber badges por ser incrível! Clique em um badge para ver como você pode ganhar.
+      name: "🏅 %{title} Badge 🏅"
+    campaign:
+      subtitle: Stories (%{count})
+      view: Ver todos os artigos
+    deep_links:
+      subtitle: Abrindo o aplicativo...
+      alert:
+        subtitle: Whoops! Você travou tentando abrir o aplicativo?
+        desc_html: Certifique-se de que esteja instalado e tente novamente. Se o problema persistir entre em contato com %{email}
+        back: Me leve de volta
+        again: Tente novamente
+        install: instale o aplicativo
+    hamburger:
+      icon: Menu de navegação
+      back: Para trás
+      forward: Para frente
+      refresh: Atualizar
+      icon_close: Fechar
+      icon_left: Menu à esquerda
+      icon_right: Menu à direita
+    logo:
+      color_1:
+        label: Cor da marca 1
+        description: Usado para fundos, bordas etc.
+        select:
+          aria_label: Cor da marca 1 seletor de cor
+          label: Cor da marca 1 seletor de cor
+      color_2:
+        label: Cor da marca 2
+        description_html: Usado para textos (geralmente colocado <em>Cor da marca 1</em>).
+        select:
+          aria_label: Cor da marca 2 seletor de cor
+          label: Cor da marca 2 seletor de cor
+      preview:
+        icon: Logo do App
+        text: 'Prévia:'
+    onboardings:
+      meta:
+        title: Bem vindo a %{community}
+      heading: Você agora pertence à comunidade!
+      subtitle: COISAS PARA VOCÊ FAZER
+      close: Fechar a Mensagem de BoasVvindas
+      settings_html: "<span class=\"emoji\">💅🏼</span>Personalize seu perfil"
+      welcome_html: "<span class=\"emoji\">😊</span>Compartilhe o tópico de boas-vindas"
+      write_html: "<span class=\"emoji\">✍🏾</span>Escreva seu primeiro artigo para %{community}"
+    pins:
+      article: Fixada
+      pinned: "📌 Fixada! (Artigos fixados são exibidos cronologicamente, máximo de 5)"
+      removed: "🗑 Pin removido"
+      error: Você só pode ter cinco pins
+    reading_list:
+      meta:
+        title: Lista de Leitura
+        description: Meus artigos salvos.
+        og:
+          title: Lista de Leitura - %{community}
+    search:
+      heading: Buscar resultados%{for}
+      for: " para %{query}"
+      placeholder: Buscar...
+      icon:
+        aria_label: Buscar
+        title: Buscar
+      nav:
+        posts: Artigos
+        podcasts: Podcasts
+        people: Pessoas
+        comments: Comentários
+        my_posts: Somente meus artigos
+      sort:
+        aria_label: Buscar opções de ordenação de resultados
+        relevance: Mais relevante
+        newest: Mais novo
+        oldest: Mais antigo
+      meta:
+        title: Buscar resultados
+        description: "%{site} => Buscar resultados"
+    series:
+      meta:
+        description: Ver %{title} em %{site}
+      heading: Séries do "%{user}"
+      empty: Este usuário não tem nenhuma série
+      list:
+        heading: Artigos da Série "%{series}"
+        back: De volta à Série de %{user}
+        empty: Esta série não possui artigos
+    sponsor:
+      icon: Amor
+      seek: Torne-se um patrocinador
+    sticky:
+      joined: Ingressou
+      default_cta: Saber mais
+      email: Email
+      hot: Hot
+      location: Localização
+      more_from_html: Mais de %{actor}
+      no_summary: Artigos nesta tag
+      trending_html: Trending on %{app}
+    videos:
+      meta:
+        title: Vídeos
+        og:
+          description: Todos os vídeos em %{community}
+      heading: "%{community} em Vídeo"
+      beta_html: "<strong>Vídeo é beta:</strong> %{contact}"
+      upload: "🎥 Carregar o Vídeo 🙌"

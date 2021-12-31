@@ -1,0 +1,85 @@
+---
+pt:
+  views:
+    notifications:
+      meta:
+        description: Caixa de entrada de notificações para %{community}
+        og:
+          title: Notificações - %{community}
+      heading: Notificações
+      badge:
+        heading_html: Você recebeu o badge %{badge}
+        awarded_html: "Você também recebe %{credits} para usar em %{listings} se você tem alguma coisa que gostaria de promover. 🎉"
+        credits:
+          one: "%{count} novos créditos"
+          other: "%{count} ovos créditos"
+        listings: listagens da comunidade
+        more: Mais informações sobre listagens
+        profile: Visite seu perfil
+      broadcast:
+        visit_html: Visite %{settings} para gerenciar suas notificações.
+        settings: Configurações
+      comment:
+        commented_html: "%{user} comentou sobre %{title}"
+        first_html: "%{user} escreveu seu primeiro comentário sobre %{title}"
+        first_reply: "Enviar a eles sua primeira resposta! 🎉"
+        left_html: "%{user} acabou de deixar um comentário sobre %{title}."
+        replied_html: "%{user} respondeu a um tópico em %{title}"
+        report: Todas as reações negativas são 100% privadas. Se este comentário violar o código de conduta, por favor vote/relate como impróprio.
+        welcome_html: Já que eles são novos na comunidade, você poderia deixar uma boa resposta para ajudá-los a se sentirem bem-vindos? <strong>Obrigado!</strong>
+      error:
+        subtitle: Ocorreu um erro!
+        desc: Isso foi registrado e estamos rastreando.
+      follow:
+        and_html: "%{first} e %{second} seguiu você!"
+        and_other_html:
+          one: "%{first} e %{others} seguiu você!"
+          other: "%{first} e %{others} seguiu você!"
+        others:
+          one: "%{count} outros"
+          other: "%{count} outros"
+        single_html: "%{name} seguiu você!"
+      load: Carreguar Mais
+      mention:
+        article_html: "%{user} mencionou você em um artigo%{if_org}"
+        comment_html: "%{user} mencionou  você em um comentário"
+        if_org_html: " sob %{org}"
+      milestone:
+        heading_html: Seu artigo %{title} passou %{type}!
+        check: Verifique seu painel
+        intro: "🎉🎉🎉🎉🎉🎉🎉🎉"
+        type:
+          View:
+            one: "%{count} vistas"
+            other: "%{count} vistas"
+          Reaction:
+            one: "%{count} reações."
+            other: "%{count} reações."
+      nav:
+        aria_label: Notificações
+        all: Tudo
+        comments: Comentários
+        posts: Artigos
+      new_post:
+        if_org_html: " sob %{org}"
+        verb_html: "%{user} fez um novo artigo%{if_org}"
+      reacted:
+        and_html: "%{first} e %{last}"
+        and_other_html:
+          one: "%{first} e %{count} outros"
+          other: "%{first} e %{count} outros"
+        verb_html:
+          one: "%{start}%{actors} reagiu a %{title} com%{end} %{reactions}"
+          other: "%{start}%{actors} reagiu a %{title} com%{end} %{reactions}"
+        your:
+          article: seu artigo
+          comment: seu comentário
+      settings: Configurações
+      tag:
+        heading: "Olá 👋"
+        add_html: Moderadores adicionaram o <strong>%{tag}</strong> tag ao seu artigo %{title}. Mods acharam que esse tag representou seu artigo.
+        check_html: Verifique %{other} que pode ser mais apropriado
+        other: outros tags populares
+        reason: 'Razão para a ação:'
+        remove_html: Moderadores removeram a <strong>%{tag}</strong> tag do seu artigo %{title}. Certas tags têm diretrizes especiais de envio, e moderadores precisam ajustar as tags para melhor adequação à comunidade.
+        support_html: "Obrigada por fazer parte de %{community}! %{email} 🤗"

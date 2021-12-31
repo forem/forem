@@ -1,0 +1,94 @@
+---
+pt:
+  views:
+    users:
+      meta:
+        og:
+          title: "Perfil de %{user} — %{community}"
+      comments:
+        all:
+          one: Todos os %{count} comentários
+          other: Todos os %{count} comentários
+        last:
+          one: Últimos %{count} comentários
+          other: Últimos %{count} comentários
+        recent: Comentários recentes
+        view: Ver toda a atividade
+        view_all:
+          one: Ver todos os %{count} comentários
+          other: Ver todos os %{count} comentários
+        view_last:
+          one: Ver 1 último comentário
+          other: Ver os %{count} últimos comentários
+      github:
+        heading: Repositórios do GitHub
+        fork: Fork
+        stars:
+          one: 1 estrela
+          other: "%{count} estrelas"
+      pin_icon: Pin
+      pinned: Fixado
+      profile_fields:
+        bio:
+          label: Bio
+          placeholder: Uma breve bio...
+        display_email_on_profile: Exibir e-mail no perfil
+        location:
+          label: Localização
+          placeholder: Halifax, Nova Scotia
+        website:
+          label: Website URL
+          placeholder: https://yoursite.com
+        education: Educação
+        currently_learning: Atualmente aprendendo
+        currently_hacking_on: Atualmente hackeando
+        available_for: Disponível para
+        skills_languages: Habilidades/Idiomas.
+        work: Trabalho
+      side:
+        comment:
+          icon: Comentário
+          text:
+            one: 1 comentário escrito
+            other: "%{count} comentários escritos"
+        org: Organizações
+        post:
+          icon: Artigo
+          text:
+            one: 1 artigo publicado
+            other: "%{count} artigos publicados"
+        tag:
+          icon: Tag
+          text:
+            one: 1 tag seguido
+            other: "%{count} tags seguidos"
+      signout:
+        meta:
+          title: Confirmar logout - %{community}
+        heading: Você tem certeza que deseja sair?
+        'yes': Sim, faça logout
+      block: Bloquear @%{user}
+      chat: Conversar
+      chat_with: Conversar com %{user}
+      close: Fechar modal
+      details: "Detalhes do perfil de %{user}"
+      dropdown: Ações do usuário
+      email_icon: Endereço de e-mail
+      empty: 404 perfil não encontrado
+      flag: Marcar @%{user}
+      follow: Seguir
+      guidelines: Regras de"%{user}:"
+      joined:
+        icon: Entrou
+        text_html: "Entrou em\_%{date}"
+      location_icon: Localização
+      logo: "%{user} foto do perfil"
+      more: Mais informações sobre @%{user}
+      send_pm:
+        code: código de conduta
+        notice_html: Todas as interações privadas <b>must</b> cumpridas pelo %{code}.
+        placeholder: Digite sua mensagem aqui...
+        submit: Enviar
+      social: "site %{service}"
+      unflag: Desmarcar @%{user}
+      website: Site pessoal

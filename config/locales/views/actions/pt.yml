@@ -1,0 +1,25 @@
+---
+pt:
+  views:
+    actions:
+      copy:
+        text: Copiado para a área de transferência
+        title: Copia o link do artigo para a área de transferência
+        button: Link de cópia
+      more:
+        title: Mais...
+        aria_label: Compartilhar opções de postagem
+      share:
+        facebook:
+          text: Compartilhar com Facebook
+        hackernews:
+          text: Compartilhar com Hacker News
+        linkedin:
+          text: Compartilhar com LinkedIn
+        reddit:
+          text: Compartilhar com Reddit
+        twitter:
+          text: Compartilhar com Twitter
+          query: '"%{article}" por %{author}'
+        link: Compartilhe Post via....
+        report: Denunciar abuso

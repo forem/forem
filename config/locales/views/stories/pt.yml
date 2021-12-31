@@ -1,0 +1,25 @@
+---
+pt:
+  views:
+    stories:
+      meta:
+        description_tagged: "%{tag} conteúdo em %{name}"
+        page: " Página %{page}"
+        rss: "%{name} RSS Feed"
+      heading: Artigos
+      discuss: "#discussão"
+      follow: Seguir
+      menu:
+        aria_left: nav-button-left
+        aria_right: nav-button-right
+      sort:
+        aria_label: Visualizar artigos de
+        aria_tagged: Visualizar artigos marcados por
+        feed: Alimentar
+        week: Semana
+        month: Mês
+        year: Ano
+        infinity: Infinidade
+        latest: Mais recente
+        signin_html: "👋 <a href=\"%{path}\">Entrar</a> para os artigos de classificação de habilidade de <strong>top</strong> e <strong>latest</strong>."
+        top: Top

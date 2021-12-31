@@ -1,0 +1,219 @@
+---
+pt:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Entre em contato conosco</a> se você tiver alguma dúvida.
+    if_continued_trouble_html: <a href="/contact">Entre em contato conosco</a> se você continuar tendo problemas.
+    if_we_can_help_html: <a href="/contact">Entre em contato conosco</a> se pudermos ajudar de alguma forma.
+  core:
+    add_comment: Acrescenta um comentário
+    analytics: Analytics
+    comment: Comentário
+    comments: Comentários
+    community_name_is_great: "%{community_name} é ótimo!"
+    copy_link: Link de cópia
+    create_account: Criar Conta
+    dashboard: Dashboard
+    edit_profile: Editar Perfil
+    follow: Seguir
+    follow_back: Seguir de volta
+    follower: Seguidor
+    followers: Seguidores
+    following: Seguindo
+    joined: Ingressou
+    joined_on: Juntou-se
+    like: Like
+    listings: Listagens
+    loading: carregando...
+    location: Localização
+    log_in: Login
+    more_from: Mais de
+    pinned: Fixada
+    post: Publicar
+    posts: Postagens
+    reaction: Reação
+    reaction_pluralized:
+      one: reação
+      other: Reações.
+    reactions:
+      heart: Coração
+      save: Salve
+      unicorn: Unicorn
+    reply: Responder
+    report_abuse: Denunciar abuso
+    search: Buscar
+    series: Séries
+    settings: Configurações
+    trending_on: Trending on
+  dashboard:
+    empty_follower: Você ainda não tem nenhum seguidor...
+    empty_post: É aqui que você pode gerenciar suas postagens, mas você ainda não escreveu nada.
+    following_users: Seguindo usuários
+    loading: carregando...
+    not_following_any_users: Você não segue nenhum usuário...
+    page_title: Dashboard
+    upload_a_video: Carregar um vídeo
+    write_new_post: Escreva seu primeiro artigo agora
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: por volta de 1 hora atrás
+        other: por volta de %{count} horas atrás
+      about_x_months:
+        one: por volta de 1 mês atrás
+        other: por volta de %{count} meses atrás
+      about_x_years:
+        one: por volta de 1 ano atrás
+        other: por volta de %{count} anos atrás
+      almost_x_years:
+        one: quase 1 ano atrás
+        other: quase %{count} anos atrás
+      half_a_minute: meio minuto atrás
+      less_than_x_seconds:
+        one: menos de um segundo atrás
+        other: menos de %{count} segundos atrás
+      less_than_x_minutes:
+        one: menos de um minuto atrás
+        other: menos de %{count} minutos atrás
+      over_x_years:
+        one: mais de 1 ano atrás
+        other: mais de %{count} anos atrás
+      x_seconds:
+        one: 1 segundo atrás
+        other: "%{count} segundos atrás"
+      x_minutes:
+        one: 1 minuto atrás
+        other: "%{count} minutos atrás"
+      x_days:
+        one: 1 dia atrás
+        other: "%{count} dias atrás"
+      x_months:
+        one: 1 mês atrás
+        other: "%{count} meses atrás"
+      x_years:
+        one: 1 ano atrás
+        other: "%{count} anos atrás"
+    expired_ago:
+      about_x_hours:
+        one: Expirou cerca de 1 hora atrás
+        other: Expirou cerca de %{count} horas atrás
+      about_x_months:
+        one: Expirou cerca de 1 mês atrás
+        other: Expirou cerca de %{count} meses atrás
+      about_x_years:
+        one: Expirou cerca de 1 ano atrás
+        other: Expirou cerca de %{count} anos atrás
+      almost_x_years:
+        one: Expirou quase 1 ano atrás
+        other: Expirou quase %{count} anos atrás
+      half_a_minute: Expirou meio minuto atrás
+      less_than_x_seconds:
+        one: Expirou menos de 1 segundo atrás
+        other: Expirou menos de %{count} segundos atrás
+      less_than_x_minutes:
+        one: Expirou menos de um minuto atrás
+        other: Expirou menos de %{count} minutos atrás
+      over_x_years:
+        one: Expirou há mais de 1 ano
+        other: Expirou há mais de %{count} anos atrás
+      x_seconds:
+        one: Expirou 1 segundo atrás
+        other: Expirou %{count} segundos atrás
+      x_minutes:
+        one: Expirou há 1 minuto
+        other: Expirou %{count} minutos atrás
+      x_days:
+        one: Expirou 1 dia atrás
+        other: Expirou %{count} dias atrás
+      x_months:
+        one: Expirou 1 mês atrás
+        other: Expirou %{count} meses atrás
+      x_years:
+        one: Expirou há 1 ano
+        other: Expirou %{count} anos atrás
+    expires_in:
+      about_x_hours:
+        one: Expira em cerca de 1 hora
+        other: Expira em cerca de %{count} horas
+      about_x_months:
+        one: Expira em cerca de 1 mês
+        other: Expira em cerca de %{count} meses
+      about_x_years:
+        one: Expira em cerca de 1 ano
+        other: Expira em cerca de %{count} anos
+      almost_x_years:
+        one: Expira em quase 1 ano
+        other: Expira em quase %{count} anos
+      half_a_minute: Expira em meio minuto
+      less_than_x_seconds:
+        one: Expira em menos de 1 segundo
+        other: Expira em menos de %{count} segundos
+      less_than_x_minutes:
+        one: Expira em menos de um minuto
+        other: Expira em menos de %{count} minutos
+      over_x_years:
+        one: Expira em mais de 1 ano
+        other: Expira em mais de %{count} anos
+      x_seconds:
+        one: Expira em 1 segundo
+        other: Expira em %{count} segundos
+      x_minutes:
+        one: Expira em 1 minuto
+        other: Expira em %{count} minutos
+      x_days:
+        one: Expira em 1 dia
+        other: Expira em %{count} dias
+      x_months:
+        one: Expira em 1 mês
+        other: Expira em %{count} meses
+      x_years:
+        one: Expira em 1 ano
+        other: Expira em %{count} anos
+  errors:
+    messages:
+      accepted: deve ser aceito
+      bad_protocol: deve começar com %{protocols}
+      bad_uri: é um url inválido
+      blank: Não pode ser em branco
+      confirmation: não corresponde a %{attribute}
+      empty: não pode ser vazio
+      equal_to: deve ser igual a %{count}
+      even: deve ser um número par
+      exclusion: está reservado
+      greater_than: deve ser maior que %{count}
+      greater_than_or_equal_to: deve ser maior ou igual a %{count}
+      inclusion: não está incluído na lista
+      invalid: é inválido
+      less_than: deve ser menor que %{count}
+      less_than_or_equal_to: deve ser menor ou igual a %{count}
+      model_invalid: 'Falha na validação: %{errors}'
+      not_a_number: não é um número
+      not_an_integer: deve ser um número inteiro
+      odd: deve ser um número ímpar
+      other_than: deve ser diferente de %{count}
+      present: deve estar em branco
+      required: deve existir
+      taken: acabou de ser tirada
+      too_long:
+        one: é muito longo (máximo é 1 caractere)
+        other: é muito longo (máximo é %{count} caracteres)
+      too_short:
+        one: é muito curto (mínimo é 1 caractere)
+        other: é muito curto (mínimo é %{count} caracteres)
+      wrong_length:
+        one:  comprimento errado (deve ser 1 caractere)
+        other: comprimento errado (deve ser %{count} caracteres)
+  settings_menu:
+    account: Conta
+    billing: Cobrança
+    customization: Customização
+    extensions: Extensões
+    notifications: Notificações
+    organization: Organização
+    profile: Perfil
+  time:
+    formats:
+      comment: "%B %d, %Y"
+      short: "%b %-e"
+      short_with_year: "%b %-e, %Y"
+      stackexchange: "%b %e '%y"
+      tweet: "%H:%M %p - %d %b %Y"

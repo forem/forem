@@ -1,0 +1,147 @@
+---
+pt:
+  views:
+    comments:
+      meta:
+        title_root: Discussão de %{title}
+        description: Um artigo da comunidade
+        og:
+          title: Discussão de %{title}
+          title_rel: "%{root} — %{site}"
+          title_root: "[Discussion] %{title} — %{site}"
+          description: "%{site} Comment"
+      messages:
+        create:
+          success: criado
+          failure: o comentário já existe
+        markdown: 'Houve um erro no seu markdown: %{error}'
+        markdown_html: "<p>😔 Houve um erro no seu markdown</p><hr><p>%{error}</p>"
+      parent:
+        subtitle_html: "%{start}Discussão de: %{end}%{title}"
+        metadata_html: "%{name}%{on}"
+        date: " em %{date}"
+        full: Discussão completa.
+        read: Ler o post todo
+        view: Ver postagem
+        view_full:
+          one: Ver discussão inteira (%{count} comment)
+          other: Ver discussão inteira (%{count} comments)
+        reply_html: "%{start}Respostas para:%{end} %{title}"
+      delete:
+        heading: Tem certeza de que deseja excluir este comentário?
+        desc_html: Você não pode desfazer esta ação, Talvez você só queira %{action} em vez disso?
+        action: Editar
+        error: Algo deu errado; Comnetário NÃO excluído.
+        notice: O comentário foi excluído com sucesso.
+        submit: Excluir
+        edit: Editar
+        cancel: Rejeitar
+      collapse: Collapse
+      edit: Editando comentário
+      edited:
+        text_html: "&bull; Editado %{on}"
+        on_html: em %{date}
+      expand: Expandir
+      hidden:
+        text_html: Alguns comentários foram escondidos pelo autor do post - %{info}
+        info: Descubra mais
+      locked: A discussão foi bloqueada. Novos comentários não podem ser adicionados.
+      orphan:
+        deleted: "[Comment from a deleted post]"
+      re:
+        text_html: "%{re}%{title}"
+        re: 'Re: '
+      settings:
+        meta:
+          title: Configurações do comentário
+        heading: Configurações do comentário
+        state:
+          show:
+            subtitle: Mostrando notificações de thread
+            desc: Você receberá todas as notificações para este comentário e qualquer um dos seus comentários nesta chain.
+          mute:
+            subtitle: Silenciando as notificações de thread
+            desc: Todas as notificações para este comentário e qualquer um dos seus comentários na thread estão atualmente silenciados.
+        subscribe:
+          subtitle: Inscrição
+          desc: Você ainda está inscrito para todos os comentários no thread mais amplo, que significará que você ainda receberá notificações para respostas a este comentário.
+          mute: Silenciar as notificações
+          unmute: Exibir notificações
+      quality:
+        low: Comentário marcado como baixa qualidade/não construtivo pela comunidade.
+        conduct: Ver Código de Conduta
+        hidden:
+          icon: Info
+          text:
+            visible_in_permalink: Comentário ocultado pelo autor do artigo - thread só visível neste permalink
+            accessible_via_permalink: Comentário ocultado pelo autor do artigo - thread somente acessível via permalink
+      write:
+        errors:
+          one: '1 erro não permitiu que esse comentário fosse salvo:'
+          other: "%{count} erros não permitiram que esse comentário fosse salvo:"
+        field:
+          aria_label: Adicione um comentário à discussão
+          placeholder: Adicionar à discussão
+          submit: Upload
+          templates: Templates
+          upload: Upload imagem
+          use: Use um modelo de resposta
+          guide:
+            title: Guia Markdown
+            icon: Guia de editor
+        template:
+          article: Este post vem com um modelo de comentário
+          create:
+            subtitle: Criar template
+            desc: Templates te permitem responder rapidamente às FAQs ou armazenar trechos para reutilização.
+          moderator: Moderador
+          personal: Pessoal
+        submit: Submeter
+        preview: Prévia
+        cancel: Cancelar
+      menu:
+        aria_label: Alternar menu suspenso.
+        icon: Menu suspenso
+        copy:
+          aria_label: Copiar link para o comentário de %{user}
+          text: Copiar link
+        settings:
+          aria_label: Vá para as configurações do comentário de %{user}
+        action:
+          aria_label: "%{action} comentário de %{user}"
+          hide: Ocultar
+          unhide: Exibir
+          hide_text: Ocultar
+          unhide_text: Exibir
+        moderate:
+          aria_label: Moderar o comentário de %{user}
+        report:
+          aria_label: Denuncie o comentário de %{user} como abusivo ou  como violação do nosso código de conduta e/ou dos termos e condições
+      footer:
+        heart:
+          title: coração
+          icon: 'Dar um like no comentário: '
+          count_html: "%{num}%{likes}"
+          text: Dar um like
+        reply:
+          aria_label: Responder a um comentário...
+          icon: Botão de comentário
+          done: Respondido
+          text: Resposta
+          placeholder: Resposta...
+        thread:
+          icon: Thread
+          text: Thread
+        view:
+          icon: Botão de visualização
+          text: Visualizar
+      count:
+        one: "%{count} comentário"
+        other: "%{count} comentários"
+      empty: Nova
+      add: "Adicionar\_Comentar"
+      summary:
+        count_html:
+          one: "%{count}%{start}\_comment%{end}"
+          other: "%{count}%{start}\_comments%{end}"
+        title: Comentários

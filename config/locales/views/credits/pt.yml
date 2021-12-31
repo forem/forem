@@ -1,0 +1,53 @@
+---
+pt:
+  views:
+    credits:
+      meta:
+        title: Créditos
+      ledger:
+        class:
+          listing: Listagem
+        category: Categoria
+        item: Item
+        cost: Custo (créditos)
+        date: Encontro
+        misc: Itens variados
+      listing:
+        create: Criar uma Listagem
+        dashboard: Vá para o Painel de Listagens
+      new:
+        meta:
+          title: Comprar créditos
+        heading: Comprar créditos para @%{name}
+        form:
+          amount:
+            label: Montante para comprar
+            placeholder: Digite qualquer quantia
+          method:
+            label: Forma de Pagamento
+            number: "**** **** **** %{last}"
+            exp: "%{mm}/%{yy}"
+            add: Adicionar Novo Cartão
+          submit: Completar a compra
+          submitting: Enviando...
+          note_org: "*Todos os administradores da organização têm acesso a créditos da organização"
+        switch:
+          org: Mudar para %{name}
+          user: Mudar para compra pessoal
+        status:
+          subtitle:
+            org: Quantos créditos %{name} tem?
+            user: Quantos créditos eu atualmente tenho?
+          desc:
+            org: "%{name} possui %{count} créditos."
+            user: Você possui %{count} créditos.
+        how:
+          subtitle: Como posso ganhar créditos??
+          desc_html: Membros recebem <strong>5 créditos</strong> para cada badge que você ganhar.
+      purchase: Comprar créditos adicionais
+      tag: 'Tag: %{name}'
+      status:
+        user:
+          other: Você possui %{count} créditos pessoais para usaar
+        org_html:
+          other: "%{name} possui %{num} créditos para usar"

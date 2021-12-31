@@ -1,0 +1,150 @@
+---
+pt:
+  views:
+    dashboard:
+      meta:
+        title: Painel - %{site}
+      heading: Painel
+      actions:
+        mobile:
+          posts: Artigos (%{num})
+          followers: Seguidores (%{num})
+          following_tags: Seguindo tags. (%{num})
+          following_users: Seguindo usuários (%{num})
+          following_orgs: Seguindo organizações (%{num})
+          following_pods: Seguindo podcasts (%{num})
+        posts: Postagens
+        series: Séries
+        followers: Seguidores
+        following_tags: Seguindo tags
+        following_users: Seguindo usuários
+        following_orgs: Seguindo organizações
+        following_pods: Seguindo podcasts
+        listings: Listagens
+        analytics: análise
+        for_org: Análise de %{org}
+        upload: Enviar um vídeo
+      analytics:
+        meta:
+          title: Análise
+        heading: Painel de Análise para %{name}
+        desc_1: Bem-vindo ao Painel de Análise, o local das métricas do usuário de forma que os autores possam tomar decisões com base em dados sobre o ecossistema dos %{members}.
+        desc_2: Este painel destaca insights profundos especialmente relevantes para relações entre %{members}, autores, e blogueiros sérios.
+        back: "👈 Voltar ao painel principal"
+        your: Seu painel
+        org: "%{org} Painel de Análise."
+      article:
+        heading:
+          text_html: "%{archived}%{title}"
+          archived: "[Arquivado] "
+        archived: Arquivado
+        published: 'Publicado:'
+        published_html: 'Publicado: %{date}'
+        edited: 'Editado:'
+        edited_html: 'Editado: %{date}'
+        series: 'Séries:'
+        series_html: "<strong>Series:</strong> %{series}"
+        draft: Rascunho
+        reactions:
+          title: Reações
+          icon: Reações
+          text_html:
+            one: "%{num} reação"
+            other: "%{num} reações"
+        comments:
+          title: Comentários
+          icon: Comentários
+          text_html:
+            one: "%{num} comentário"
+            other: "%{num} comentários"
+        views:
+          title: Visualizações
+          icon: Visualizações
+          lt_25: "< 25"
+          text_html:
+            one: "%{scale} visualização"
+            other: "%{scale} visualizações"
+          u_25: abaixo de 25
+        subscriptions:
+          title: Assinaturas
+          icon: Dados
+          number: (%{num}) assinaturas
+        delete: Excluir
+        unpin: Desafixar
+        pin:
+          title: Fixar no perfil
+          button: Fixar no perfil
+          text: Fixar
+        manage:
+          aria_label: 'Gerenciar o artigo: %{title}'
+          text: Gerenciar
+        lock: Bloquear discussão
+        unlock: Desbloquear discussão
+        edit:
+          aria_label: 'Editar artigo: %{title}'
+          text: Editar
+        more:
+          title: 'Mais opções para o artigo: %{title}'
+          icon: Mais...
+        stats: Estatísticas
+        archive: Arquivar o artigo
+        unarchive: Desarquivar o artigo
+        author: Autor
+        author_is: 'AUTOR: '
+        save: Salvar
+        submit: Enviar mudança de autor
+      followers:
+        heading: Painel » Seguidores
+        empty: Você ainda não possui seguidores...
+      following_orgs:
+        heading: Painel » Seguindo organizações
+        empty: Você ainda não segue nenhuma organização...
+      following_pods:
+        heading: Painel » Seguindo podcasts
+        empty: Você ainda não segue nenhum podcast...
+      following_tags:
+        heading: Painel » Seguindo tags
+        adjust: Ajuste o peso da tag para modificar o feed da página principal. Valores mais altos significam mais visibilidade para essa tag.
+        anti:
+          title: Esta tag tem peso de seguimento negativo
+          text: Deixar de seguir
+        default: Padrão 1.0
+        empty: Você ainda não segue nenhuma tag...
+        number:
+          aria_label: "peso da tag %{name}"
+        update: Atualizar Pesos
+      following_users:
+        heading: Painel » Seguindo usuários
+        empty: Você não segue nenhum usuário...
+      listings:
+        meta:
+          title: Painel de listagens
+      posts:
+        heading: Artigos
+        archived: Mostrar os arquivados
+        option:
+          creation-desc: Recentemente Criado
+          published-desc: Recentemente Publicado
+          views-desc: Maior Número de Visualizações
+          reactions-desc: Maior Número de Reações
+          comments-desc: Maior Número de Comentários
+          aria_label: Ordenar por
+        org: "%{name} (%{num})"
+        personal: Pessoal
+        empty:
+          desc: É aqui que você pode gerenciar suas postagens, mas você ainda não escreveu nada.
+          new: Escreva seu primeiro artigo agora
+      subscriptions:
+        meta:
+          title: Assinaturas %{title}
+        heading: Assinaturas
+        subhead:
+          text_html: "%{for} %{source}"
+          for: para
+        empty: Você ainda não tem nenhum assinante para %{kind}...
+      summary:
+        reactions: Total de reações do artigo.
+        views: Total de visualizações do artigo
+        listings: Listagens criadas
+        credits: Créditos disponíveis
+        lt_500: "< 500"

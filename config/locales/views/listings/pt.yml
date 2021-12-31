@@ -1,0 +1,83 @@
+---
+pt:
+  views:
+    listings:
+      meta:
+        description: Listagem "%{community}"
+      heading: Listagens
+      back: Back
+      delete:
+        subtitle: Tem certeza de que deseja excluir esta listagem?
+        description:
+          text_html: Você não pode desfazer esta ação, talvez, em vez disso, você só queira %{action}?
+          edit: editar
+          unpublish: cancelar publicação
+        edit: Editar
+        submit: Apagar
+        unpublish: Cancelar publicação
+      edit:
+        heading: Editar a listagem
+        bump:
+          subtitle: Dar um bump em sua listagem
+          button: Dar um bump na listagem
+          description: Você pode dar um bump em sua listagem pelo mesmo valor da listagem original
+          last: 'Última publicada/Com bump: %{date}'
+        notice: Você só pode editar título/corpo/tags de rascunhos ou dentro das primeiras 24 horas de listagem ou bater
+        not_published:
+          text_html: Esta listagem %{not} está publicada.
+          aside_html: Esta listagem %{not} está publicada
+          not:  não
+        publish: Publicar listagem
+        unpublish: Cancelar publicação da listagem
+        update: Atualizar listagem
+        update_draft: Atualizar rascunho
+      to_edit: Editar
+      errors:
+        one: '1 erro impediu esta listagem de ser salva:'
+        other: "%{count} erros impediram esta listagem de ser salva:"
+      expired: Esta listagem expirou.
+      form:
+        body_markdown:
+          description: máximo de 400 caracteres, máximo de 12 quebras de linha, nenhuma imagem permitida, *uso de markdown é incentivado*. Por favor inclua um meio de contato, se necessário.
+          placeholder: "..."
+        category:
+          label: Categoria
+          placeholder: Conference CFP (1 Credit)
+          summary: Detalhes/regras de categoria
+        connect:
+          subtitle: Conectar mensagens
+          description: Permitir que os Usuários me enviem mensagens via Connect.
+        expiry:
+          description: Se aplicável para eventos sensíveis ao tempo, prazos, etc.
+        location:
+          description: 32 characters max, plain text
+          label: Localização (Se aplicável para eventos, etc.)
+          placeholder: Nova York
+        no_credit: Você precisa de pelo menos um crédito para criar uma listagem.
+        organization:
+          description: A postagem em nome de uma organização gasta os créditos da organização.
+          none: Nenhum
+        publish: Publicar listagem
+        purchase: Comprar créditos
+        save: Salvar o rascunho
+        save_notice: Você não será cobrado para salvar um rascunhot.
+        tags:
+          placeholder: Adicionar até 8 tags...
+        title:
+          placeholder: 128 caracteres no máximo, texto simples
+      nav:
+        aria_label: Listagens
+        create: Criar
+        manage: Gerenciar
+      new:
+        meta:
+          title: Nova Litagem
+        heading: Criar uma Listagem da Comunidade
+        buy: Comprar mais
+        disclaimer:
+          subtitle: Termo de responsabilidade
+          description1: Administradores de "%{community} podem modificar tags e categorias para assegurar precisão. Podemos também derrubar e reembolsar listagens inadequadas."
+          description2: Listagens expiram em 30 dias após serem publicadas ou serem "bumped".
+        organization: Créditos da organização
+        personal: Créditos pessoais
+      preview_icon: Logo do DEV

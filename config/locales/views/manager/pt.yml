@@ -1,0 +1,25 @@
+---
+pt:
+  views:
+    manager:
+      meta:
+        title: Gerenciar %{title}
+      error:
+        pins: "Uh Oh! %{error} 😬"
+      tools:
+        heading: 'Ferramentas:'
+        subtitle: 'Nível de Experiência do Artigo:'
+        text_html: "Seu artigo é mais para um iniciante ou um público avançado? Ajuste este nível como um indicador <em>gentle</em> que fará com que o artigo chegue às pessoas que serão mais beneficiadas."
+      nav:
+        dashboard: Dashboard
+        text: "👉 Gerenciar Seu Artigo"
+      rating:
+        heading: Nível de Experiência do Artigo
+        text: Para quem este artigo é mais relevante?
+        lower: "👈 Principiante"
+        higher: "Especialista 👉"
+      tips:
+        heading: 'Dicas:'
+        text_1: Escreva seu próprio tweet sobre o artigo, ou por que ele pode ser útil. Nós podemos te retweetar.
+        text_2_html: 'Compartilhar para vincular agregadores como <a href="https://www.reddit.com">Reddit</a>. Tente escolher os subreddits de tópicos mais específicos, tais como <a href="https://www.reddit.com/r/javascript">/r/javascript</a> or <a href="https://www.reddit.com/r/python">/r/python</a>, etc. <em>Aviso: Jerks e Trolls podem estar à espreita.</em>'
+        text_3: Compartilhe com seus colegas de trabalho ou comunidades locais.Peça às pessoas que deixem perguntas para você nos comentários. É uma ótima maneira de desencadear discussões adicionais.

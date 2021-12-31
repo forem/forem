@@ -1,0 +1,44 @@
+---
+pt:
+  views:
+    liquids:
+      github:
+        view: Ver no GitHub
+      medium:
+        logo: Medium Logo
+      poll:
+        show_results: Basta me mostrar os resultados
+      reddit:
+        author: 'Autor: %{author}'
+        see: Ver o artigo completo
+      stackexchange:
+        answer:
+          text_html: "%{answer} re: %{title}"
+          answer: resposta
+        answers: 'Respostas: %{count}'
+        comments: 'Comentários: %{count}'
+        open:
+          answer: Abrir a resposta completa
+          article: Abrir o artigo completo
+          question: Abrir a pergunta completa
+      twitter:
+        view: Ver no Twitter
+      user_subscription:
+        confirm:
+          subtitle: Confirmar inscrição
+          button_text: Confirmar inscrição
+          cancel_text: Cancelar
+          text_html: Você vai compartilhar seu e-mail%{email}, usuário, nome, e DEV profile URL com %{username}. Depois de fazer isso, você não pode desfazer.
+        logged_out: Você deve primeiro entrar no DEV.
+        sign_in: Fazer login
+        subscribe:
+          apple:
+            button: Inscrever
+            desc_html: Ei! Parece que quando você criou sua conta no DEV você se inscreveu com a Apple usando um e-mail privado. Se você quer se inscrever, por favor %{update} primeiro para um e-mail diferente.
+            update: update your email address in Settings
+          button: Subscribe
+          desc_html: Você vai se inscrever com o e-mail associado à sua conta DEV %{email}. Para usar um e-mail diferente, você pode %{update}.
+          update: atualize seu e-mail em configurações
+      wikipedia:
+        logo: Logo do Wikipedia
+        view: Ver no Wikipedia

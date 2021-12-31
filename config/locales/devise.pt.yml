@@ -1,0 +1,64 @@
+---
+pt:
+  devise:
+    confirmations:
+      confirmed: Seu endereço de e-mail foi confirmado com sucesso.
+      send_instructions: Você receberá um e-mail com instruções sobre como confirmar seu endereço de e-mail em alguns minutos.
+      send_paranoid_instructions: Se o seu e-mail existir em nosso banco de dados, você receberá um email com instruções sobre como confirmá-lo em alguns minutos.
+    failure:
+      already_authenticated: Você já está logado.
+      inactive: Sua conta ainda não está ativa.
+      invalid: Inválido %{authentication_keys} ou senha.
+      last_attempt: Você tem mais uma tentativa antes que sua conta seja bloqueada.
+      locked: Sua conta está bloqueada.
+      not_found_in_database: Inválido %{authentication_keys} ou senha.
+      timeout: Sua sessão expirou. Por favor, faça login novamente para continuar.
+      unauthenticated: Você precisa entrar ou se inscrever antes de continuar.
+      unconfirmed: Você precisa confirmar seu e-mail antes de continuar.
+    mailer:
+      confirmation_instructions:
+        subject: Instruções de confirmação
+      email_changed:
+        subject: E-mail alterado
+      password_change:
+        subject: Senha alterada
+      reset_password_instructions:
+        subject: Redefinir as instruções da senha.
+      unlock_instructions:
+        subject: Desbloquear instruções
+    omniauth_callbacks:
+      failure: Você não pode autenticar de %{kind} porque "%{reason}".
+      success: Autenticado com sucesso pela conta %{kind}.
+    passwords:
+      no_token: Você não pode acessar esta página sem senha redefinida por e-mail. Se você não entrar com um e-mail de redefinição de senha, por favor, certifique-se de usar a URL completa fornecida.
+      send_instructions: Você receberá um e-mail com instruções sobre como redefinir sua senha em alguns minutos.
+      send_paranoid_instructions: Se o seu e-mail existir em nosso banco de dados, você receberá um link de recuperação de senha no seu e-mail em poucos minutos.
+      updated: Sua senha foi alterada com sucesso. Você está conectado agora.
+      updated_not_active: Sua senha foi alterada com sucesso.
+    registrations:
+      destroyed: Bye! Sua conta foi cancelada com sucesso. Esperamos te ver novamente em breve.
+      signed_up: Bem vindo! Você se inscreveu com sucesso.
+      signed_up_but_inactive: Você se inscreveu com sucesso. No entanto, não podemos fazer seu login porque sua conta ainda não está ativada.
+      signed_up_but_locked: Você se inscreveu com sucesso. No entanto, não podemos fazer seu login porque sua conta está bloqueada.
+      signed_up_but_unconfirmed: Uma mensagem com um link de confirmação foi enviada ao seu e-mail. Por favor, siga o link para ativar sua conta.
+      update_needs_confirmation: Você atualizou sua conta com sucesso, mas precisamos verificar seu novo e-mail. Siga o link de confirmação para confirmar seu novo e-mail.
+      updated: Sua conta foi atualizada com sucesso.
+      updated_but_not_signed_in: Sua conta foi atualizada com sucesso, mas como sua senha foi alterada, você precisa fazer login novamente.
+    sessions:
+      already_signed_out: Logoff feito com sucesso.
+      signed_in: Assinado com sucesso.
+      signed_out: Logoff feito com sucesso.
+    unlocks:
+      send_instructions: Você receberá um email com instruções sobre como desbloquear sua conta em alguns minutos.
+      send_paranoid_instructions: Se sua conta existe, você receberá um email com instruções sobre como desbloqueá-la em alguns minutos.
+      unlocked: Sua conta foi desbloqueada com sucesso. Por favor, faça o login para continuar.
+  errors:
+    messages:
+      already_confirmed: já foi confirmado, por favor tente fazer o login
+      confirmation_period_expired: precisa ser confirmado em %{period}, por favor, solicite um novo
+      expired: expirou, por favor solicite um novo
+      not_found: não encontrado
+      not_locked: não foi bloqueado
+      not_saved:
+        one: '1 erro não permitiu que esse %{resource} fosse salvo:'
+        other: "%{count} erros não permitiram que esse %{resource} fosse salvo:"

@@ -1,0 +1,140 @@
+---
+pt:
+  activerecord:
+    attributes:
+      doorkeeper/application:
+        name: Nome
+        redirect_uri: Redirecione URI
+    errors:
+      models:
+        doorkeeper/application:
+          attributes:
+            redirect_uri:
+              forbidden_uri: é proibido pelo servidor.
+              fragment_present: não pode conter um fragmento.
+              invalid_uri: deve ser um URI válido.
+              relative_uri: deve ser um URI absoluto.
+              secured_uri: deve ser um HTTPS/SSL URI.
+              unspecified_scheme: deve especificar um esquema.
+            scopes:
+              not_match_configured: não corresponde ao configurado no servidor.
+  doorkeeper:
+    applications:
+      buttons:
+        authorize: Autorizar
+        cancel: Cancelar
+        destroy: Destruir
+        edit: Editar
+        submit: Submeter
+      confirmations:
+        destroy: Tem certeza?
+      edit:
+        title: Editar aplicativo
+      form:
+        error: Opa! Verifique seu formulário para possíveis erros
+      help:
+        blank_redirect_uri: Deixe em branco se você configurou seu provedor para usar Credenciais do Cliente, Credenciais de Acesso do Dono do Recurso ou qualquer outro tipo de concessão que não requeira redirecionamento URI.
+        confidential: Aplicativo será usado onde o client secret pode ser mantido confidencial. Native mobile apps and Single Page Apps são considerados não confidenciais.
+        redirect_uri: Use uma linha por URI
+        scopes: Separe escopos com espaços. Deixe espaço em branco para escopos padrão.
+      index:
+        actions: Ações
+        callback_url: Callback URL
+        confidential: Confidencial?
+        confidentiality:
+          'no': 'Não'
+          'yes': 'Sim'
+        name: Nome
+        new: Novo Aplicativo
+        title: Seus Aplicativos
+      new:
+        title: Novo Aplicativo
+      show:
+        actions: Ações
+        application_id: UID
+        callback_urls: Callback urls
+        confidential: Confidencial
+        not_defined: Não definido
+        scopes: Escopos
+        secret: Secreto
+        secret_hashed: Secret hashed
+        title: 'Aplicativo: %{name}'
+    authorizations:
+      buttons:
+        authorize: Autorizar
+        deny: Recusar
+      error:
+        title: Ocorreu um erro
+      form_post:
+        title: Submeter esse formulário
+      new:
+        able_to: Com esses aplicativos você pode
+        prompt: Autorizar %{client_name} a usar sua conta?
+        title: Necessária a autorização
+      show:
+        title: Código de autorização
+    authorized_applications:
+      buttons:
+        revoke: Revogar
+      confirmations:
+        revoke: Tem certeza?
+      index:
+        application: Aplicativo
+        created_at: Criado Em
+        date_format: "%Y-%m-%d %H:%M:%S"
+        title: Seus aplicativos autorizados
+    errors:
+      messages:
+        access_denied: O proprietário do recurso ou servidor de autorização negou o pedido.
+        admin_authenticator_not_configured: O acesso ao painel de administração é proibido porque o Doorkeeper.configure.admin_authenticator não está configurado.
+        credential_flow_not_configured: O fluxo de Credenciais de Acesso do Dono do Recurso falhou devido ao Doorkeeper.configure.resource_owner_from_credentials não estar configurado.
+        forbidden_token:
+          missing_scope: O acesso a este recurso requer escopo "%{oauth_scopes}".
+        invalid_client: A autenticação do cliente falhou, cliente desconhecido, nenhuma autenticação do cliente incluída, ou método de autenticação não suportado.
+        invalid_code_challenge_method: O método de desafio de código deve ser claro ou S256.
+        invalid_grant: A autorização de garantia fornecida é inválida, expirou, foi negada, não corresponde ao redirecionamento URI usado no pedido de autorização, ou foi emitida para outro cliente.
+        invalid_redirect_uri: O redirecionamento uri solicitado está malformado ou não corresponde ao redirecionamento URI do cliente.
+        invalid_request:
+          missing_param: 'Faltando parâmetro necessário: %{value}.'
+          request_not_authorized: Solicitação precisa ser autorizada. O parâmetro requerido para autorização é ausente ou inválido.
+          unknown: Está faltando um parâmetro obrigatório na solicitação, inclui um valor de parâmetro não suportado, ou é malformado.
+        invalid_scope: O escopo solicitado é inválido, desconhecido ou malformado
+        invalid_token:
+          expired: O token de acesso expirou
+          revoked: O token de acesso foi revogado
+          unknown: O token de acesso é inválido
+        resource_owner_authenticator_not_configured: Resource Owner não encontrado devido a Doorkeeper.configure.resource_owner_authenticator não estar configurado.
+        revoke:
+          unauthorized: Você não está autorizado a revogar este token
+        server_error: O servidor de autorização encontrou uma condição inesperada que impediu atender à solicitação.
+        temporarily_unavailable: O servidor de autorização no momento está impedido de atender à solicitação devido a sobrecarga temporária ou manutenção do servidor.
+        unauthorized_client: O cliente não está autorizado a realizar esta solicitação usando este método.
+        unsupported_grant_type: O tipo de garantia de autorização não é suportado pelo servidor de autorização.
+        unsupported_response_mode: O servidor de autorização não suporta este modo de resposta.
+        unsupported_response_type: O servidor de autorização não suporta este tipo de resposta.
+    flash:
+      applications:
+        create:
+          notice: Aplicativo criado.
+        destroy:
+          notice: Aplicativo excluído.
+        update:
+          notice: Aplicativo atualizado.
+      authorized_applications:
+        destroy:
+          notice: Aplicativo revogado.
+    layouts:
+      admin:
+        nav:
+          applications: Aplicativos
+          home: Home
+          oauth2_provider: Provedor OAuth2
+        title: Doorkeeper
+      application:
+        title: OAuth authorization required
+    pre_authorization:
+      status: Pré-autorização
+    scopes:
+      public: Acesso a dados do perfil público e artigos publicados
+      read_articles: Acesso a todos os artigos, incluindo rascunhos
+      write_articles: Acesso à criação e atualização de artigos

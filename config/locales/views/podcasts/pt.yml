@@ -1,0 +1,36 @@
+---
+pt:
+  views:
+    podcasts:
+      meta:
+        title: Podcasts
+        description: Encontrar podcasts técnicos para %{member}
+        og:
+          title: Podcasts em %{community}
+      browse: Navegar
+      heading: Podcasts
+      close: "×"
+      form:
+        heading: Sugerir um Podcast
+        errors:
+          one: '1 erro criando um podcast:'
+          other: "%{count} erros criando um podcast:"
+        owner: Eu sou o dono deste podcast
+        return: "< retornar a podcasts."
+        suggest: Sugerir
+      list: podcasts
+      listen: Clica aqui para fazer download/ouvir
+      source: Fonte de episódio
+      statuses:
+        ssl_failed: Certificado SSL verifica falha enquanto pega o feed_url do podcast
+        unparsable: O rss do Podcast não pode ser processado
+        unplayable: Este podcast não pode reproduzido no navegador
+        unreachable: Feed_url do podcast não está acessível
+      speed: 1x
+      tag: podcast
+      initializing: inicializando...
+      unsupported: Seu navegador não suporta áudio.
+      featured_shows: Shows em destaque
+      latest_episodes: Últimos episódios
+      suggest_a_podcast: Sugerir um Podcast
+      view_all_podcasts: Ver todos os podcasts

@@ -1,0 +1,25 @@
+---
+pt:
+  helpers:
+    label:
+      listing:
+        body_markdown: Markdown do corpo
+        expires_at: Data de expiração personalizada
+        location: Localização
+        organization_id: Post under an organization
+        tag_list: Tags
+        title: Título
+      podcast:
+        android_url: Android url
+        description: Descrição
+        feed_url: Alimenta o url
+        image: Imagem
+        itunes_url: Itunes url
+        main_color_hex: Cor principal hexadecimal.
+        overcast_url: Overcast url
+        pattern_image: Imagem padrão.
+        slug: Slug
+        soundcloud_url: Soundcloud url
+        title: Título
+        twitter_username: nome de usuário do Twitter
+        website_url: Website url

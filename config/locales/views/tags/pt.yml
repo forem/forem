@@ -1,0 +1,58 @@
+---
+pt:
+  views:
+    tags:
+      meta:
+        title: Tags
+        description: Tags para serem seguidas %{community}
+        og:
+          description: "%{community} é ótimo!"
+      heading: Top tags
+      edit:
+        meta:
+          title: Editar %{tag}
+        heading_html: " Editando: %{tag}"
+        admin: "Admin"
+        help: "Help"
+        view: "View"
+        form:
+          pretty_name:
+            label: Nome bonito
+            placeholder: Este é o nome no topo da página de exibição.
+          bg_color_hex:
+            label: Cor Bg hexadecimal
+          text_color_hex:
+            label: Cor de texto Hexhexadecimal
+          short_summary:
+            label: Pequeno resumo
+            placeholder: Breve visão geral sobre esta tag.
+          wiki_body_markdown:
+            label: Wiki body markdown
+            placeholder: Esta é uma seção 'sobre'. Sinta-se à vontade para adicionar um FAQ, recursos adicionais etc.
+          rules_markdown:
+            label: Regras Markdown.
+            placeholder: Opcional - Pode ser usado para desafios, i.e. regras de envio.
+          submit: Salvar
+      follow: Seguir
+      following_tags: Seguindo tags
+      moderator:
+        text_html: "separado por vírgula, espaço é opcional. Exemplo: %{code}"
+        code: 123
+        placeholder: "separado por vírgula, espaço é opcional. Exemplo: 1,2,3"
+      published:
+        one: 1 artigo publicado
+        other: "%{count} artigos publicados"
+      sidebar:
+        about: 'sobre #%{tag}'
+        admin: Admin
+        edit: Editar
+        guidelines: regras para envio
+        moderate: Moderar
+        mods: moderadores de tag
+        new: Criar Artigo
+        older: 'Artigos mais antigos #%{tag}'
+        published:
+          one: 1 Artigo Publicado
+          other: "%{count} Artigos Publicados"
+        sponsor: "%{tag} é patrocinado por"
+      sponsor: "| Patrocinado por %{org} ❤️"
