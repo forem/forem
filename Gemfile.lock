@@ -932,7 +932,7 @@ DEPENDENCIES
   httpclient (~> 2.8.3)
   hypershield (~> 0.2.2)
   i18n-js (~> 3.9.0)
-  i18n-tasks (~> 0.9.35)
+  i18n-tasks (~> 0.9.37)
   imgproxy (~> 2.0)
   inline_svg (~> 1.7)
   jbuilder (~> 2.11)
