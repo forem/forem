@@ -1,5 +1,5 @@
 module ApplicationHelper
-  # rubocop:disable Performance/OpenStruct
+  # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
   USER_COLORS = ["#19063A", "#dce9f3"].freeze
 
   DELETED_USER = OpenStruct.new(
@@ -11,7 +11,7 @@ module ApplicationHelper
     twitter_username: nil,
     github_username: nil,
   )
-  # rubocop:enable Performance/OpenStruct
+  # rubocop:enable Style/OpenStructUse, Performance/OpenStruct
 
   LARGE_USERBASE_THRESHOLD = 1000
 
@@ -116,26 +116,35 @@ module ApplicationHelper
 
   def sanitized_sidebar(text)
     ActionController::Base.helpers.sanitize simple_format(text),
-                                            tags: %w[p b i em strike strong u br]
+                                            tags: MarkdownProcessor::AllowedTags::SIDEBAR
   end
 
   def follow_button(followable, style = "full", classes = "")
     return if followable == DELETED_USER
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
+    followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
+                        followable.object.class.name
+                      else
+                        followable.class.name
+                      end
+
+    followable_name = followable.name
 
     tag.button(
-      "Follow",
+      I18n.t("core.follow"),
       name: :button,
       type: :button,
       data: {
         info: {
           id: followable.id,
-          className: followable.class.name,
+          className: followable_type,
+          name: followable_name,
           style: style
         }
       },
       class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
+      aria: { label: "Follow #{followable_type}: #{followable_name}", pressed: "false" },
     )
   end
 
@@ -260,11 +269,6 @@ module ApplicationHelper
     URL.organization(organization)
   end
 
-  def sanitize_and_decode(str)
-    # using to_str instead of to_s to prevent removal of html entity code
-    HTMLEntities.new.decode(sanitize(str).to_str)
-  end
-
   def estimated_user_count
     User.registered.estimated_count
   end
@@ -290,8 +294,32 @@ module ApplicationHelper
   end
 
   def role_display_name(role)
-    # TODO: [@jacobherrington] After all Forems have successfully deployed and the banned role
-    # has been deleted, removed this ternary.
-    role.name == "banned" ? "Suspended" : role.name.titlecase
+    role.name.titlecase
+  end
+
+  def render_tag_link(tag, filled: false, monochrome: false, classes: "")
+    color = tag_colors(tag)[:background].presence || Settings::UserExperience.primary_brand_color_hex
+    color_faded = Color::CompareHex.new([color]).opacity(0.1)
+    label = safe_join([content_tag(:span, "#", class: "crayons-tag__prefix"), tag])
+
+    options = {
+      class: "crayons-tag #{'crayons-tag--filled' if filled} #{'crayons-tag--monochrome' if monochrome} #{classes}",
+      style: "
+        --tag-bg: #{color_faded};
+        --tag-prefix: #{color};
+        --tag-bg-hover: #{color_faded};
+        --tag-prefix-hover: #{color};
+      "
+    }
+
+    link_to(label, tag_path(tag), options)
+  end
+
+  def creator_settings_form?
+    return unless FeatureFlag.enabled?(:creator_onboarding)
+    return unless User.with_role(:creator).any?
+
+    creator = User.with_role(:creator).first
+    !creator.checked_code_of_conduct && !creator.checked_terms_and_conditions
   end
 end

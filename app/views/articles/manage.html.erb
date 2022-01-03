@@ -1,13 +1,13 @@
-<% title "Manage #{@article.title}" %>
+<% title t("views.manager.meta.title", title: @article.title) %>
 <main id="main-content">
   <div class="dashboard-manage-header">
     <div class="dashboard-manage-header-inner-container">
       <div class="dashboard-manage-nav">
-        <a href="/dashboard">Dashboard</a> 👉 Manage Your Post
+        <a href="/dashboard"><%= t("views.manager.nav.dashboard") %></a><%= t("views.manager.nav.text") %>
       </div>
       <% if flash[:error] %>
         <div role="alert">
-          <h3 class="manage-page-error">Uh Oh! <%= flash[:error] %> 😬</h3>
+          <h3 class="manage-page-error"><%= t("views.manager.error.pins", error: flash[:pins_error]) %></h3>
         </div>
       <% end %>
       <% if flash[:success] %>
@@ -15,18 +15,18 @@
           <h3 class="manage-page-success"><%= flash[:success] %></h3>
         </div>
       <% end %>
-      <h2>Tools:</h2>
-      <p><strong>Experience Level of Post:</strong> Is your post written more for a beginner or an advanced audience?  Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most.
-      <h2>Tips:</h2>
+      <h2><%= t("views.manager.tools.heading") %></h2>
+      <p><strong><%= t("views.manager.tools.subtitle") %></strong><%= t("views.manager.tools.text_html") %>
+      <h2><%= t("views.manager.tips.heading") %></h2>
       <ol>
         <li>
-          Write your own tweet about the post, describing personally why you wrote it or why people might find it useful. We may retweet you.
+          <%= t("views.manager.tips.text_1") %>
         </li>
         <li>
-          Share to link aggregators such as <a href="https://www.reddit.com">Reddit</a>. Try to choose the most topic-specific subreddits, such as <a href="https://www.reddit.com/r/javascript">/r/javascript</a> or <a href="https://www.reddit.com/r/python">/r/python</a>, etc. <em>Warning: jerks and trolls may be lurking.</em>
+          <%= t("views.manager.tips.text_2_html") %>
         </li>
         <li>
-          Share with your co-workers or local communities. Ask people to leave questions for you in the comments. It's a great way to spark additional discussion.
+          <%= t("views.manager.tips.text_3") %>
         </li>
       </ol>
     </div>
@@ -36,7 +36,7 @@
     <%= render "dashboards/dashboard_article", article: @article, discussion_lock: @discussion_lock, organization: @article.organization, org_admin: @user.org_admin?(@article.organization), manage_view: true %>
     <div class="single-article single-article-manage-form-wrapper">
       <%= form_for(RatingVote.new) do |f| %>
-        <h2>Experience Level of Post</h2>
+        <h2><%= t("views.manager.rating.heading") %></h2>
         <%= f.hidden_field :article_id, value: @article.id %>
         <%= f.hidden_field :group, value: "experience_level" %>
         <span class="button-section button-section-newbie">
@@ -55,8 +55,8 @@
           <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 9.0.to_d %>">9</button>
           <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating.to_d == 10.0.to_d %>">10</button>
         </span>
-        <p>Who is this post most relevant for?</p>
-        <p><span class="scale-pod">👈 Beginner</span><span class="scale-pod">Expert 👉</span></p>
+        <p><%= t("views.manager.rating.text") %></p>
+        <p><span class="scale-pod"><%= t("views.manager.rating.lower") %></span><span class="scale-pod"><%= t("views.manager.rating.higher") %></span></p>
       <% end %>
     </div>
   </div>

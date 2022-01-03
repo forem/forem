@@ -268,6 +268,14 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/analytics"
         expect(response.body).to include("Analytics")
       end
+
+      it "page always contain back to dashboard button" do
+        sign_in user
+        get "/dashboard/analytics"
+        within "nav" do
+          expect(page).to have_selector("a[href='/dashboard']")
+        end
+      end
     end
 
     context "when user is an org admin" do
@@ -322,7 +330,7 @@ RSpec.describe "Dashboards", type: :request do
 
     it "displays a message if no subscriptions are found" do
       get "/dashboard/subscriptions", params: params
-      expect(response.body).to include("You don't have any subscribers for this")
+      expect(response.body).to include(CGI.escapeHTML("You don't have any subscribers for this"))
     end
 
     it "raises unauthorized when trying to access a source the user doesn't own" do
@@ -347,9 +355,9 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     it "raises an error when the source can't be found" do
-      nonexistant_article_params = { source_type: article.class.name, source_id: article.id + 999 }
+      nonexistent_article_params = { source_type: article.class.name, source_id: article.id + 999 }
       expect do
-        get "/dashboard/subscriptions", params: nonexistant_article_params
+        get "/dashboard/subscriptions", params: nonexistent_article_params
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 

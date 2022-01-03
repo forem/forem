@@ -1,14 +1,14 @@
 import { h } from 'preact';
-import {
-  articlePropTypes,
-  organizationPropType,
-} from '../../common-prop-types';
+import PropTypes from 'prop-types';
+import { articlePropTypes } from '../../common-prop-types';
+import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
 
 export const Meta = ({ article, organization }) => {
   const orgArticleIndexClassAbsent = !document.getElementById(
     'organization-article-index',
   );
+
   return (
     <div className="crayons-story__meta">
       <div className="crayons-story__author-pic">
@@ -42,10 +42,10 @@ export const Meta = ({ article, organization }) => {
         </a>
       </div>
       <div>
-        <p>
+        <div>
           <a
             href={`/${article.user.username}`}
-            className="crayons-story__secondary fw-medium"
+            className="crayons-story__secondary fw-medium m:hidden"
           >
             {filterXSS(
               article.class_name === 'User'
@@ -53,6 +53,15 @@ export const Meta = ({ article, organization }) => {
                 : article.user.name,
             )}
           </a>
+
+          <MinimalProfilePreviewCard
+            triggerId={`story-author-preview-trigger-${article.id}`}
+            contentId={`story-author-preview-content-${article.id}`}
+            username={article.user.username}
+            name={article.user.name}
+            profileImage={article.user.profile_image_90}
+            userId={article.user_id}
+          />
           {organization &&
             !document.getElementById('organization-article-index') && (
               <span>
@@ -67,11 +76,11 @@ export const Meta = ({ article, organization }) => {
                 </a>
               </span>
             )}
-        </p>
+        </div>
         <a href={article.path} className="crayons-story__tertiary fs-xs">
           <PublishDate
             readablePublishDate={article.readable_publish_date}
-            publishedTimestap={article.published_timestamp}
+            publishedTimestamp={article.published_timestamp}
             publishedAtInt={article.published_at_int}
           />
         </a>
@@ -86,7 +95,11 @@ Meta.defaultProps = {
 
 Meta.propTypes = {
   article: articlePropTypes.isRequired,
-  organization: organizationPropType,
+  organization: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    profile_image_90: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+  }),
 };
 
 Meta.displayName = 'Meta';

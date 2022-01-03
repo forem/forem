@@ -1,4 +1,6 @@
-<%= form_for(Settings::Community.new, url: admin_settings_communities_path) do |f| %>
+<%= form_for(Settings::Community.new,
+             url: admin_settings_communities_path,
+             html: { data: { action: "submit->config#updateConfigurationSettings" } }) do |f| %>
   <div class="card mt-3">
     <%= render partial: "admin/shared/card_header",
                locals: {
@@ -71,8 +73,8 @@
                            value: Settings::Community.staff_user_id,
                            placeholder: Constants::Settings::Community::DETAILS[:staff_user_id][:placeholder] %>
         </div>
-        <%= render "form_submission", f: f %>
       </fieldset>
+      <%= render "update_setting_button", f: f %>
     </div>
   </div>
 <% end %>

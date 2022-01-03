@@ -116,11 +116,7 @@
       </style>
       <% font_size *= 0.9 %>
       <div class="preview-info-header">
-        <% if @article.comments_count > 0 %>
-          #discuss <img src="<%= asset_path "comments-bubble.png" %>" /><%= @article.comments_count %>
-        <% else %>
-          New Discussion!
-        <% end %>
+        <%= t("views.articles.preview_discuss_html", image: asset_path("comments-bubble.png"), count: @article.comments_count) %>
       </div>
     <% end %>
     <div class="title-area">

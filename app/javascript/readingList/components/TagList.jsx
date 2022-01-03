@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
   return (
     <nav aria-label="Filter by tag">
-      <ul className="list-none grid grid-cols-1 gap-2">
+      <ul className="list-none">
         <li>
           <a
             className={`crayons-link crayons-link--block${
@@ -14,7 +14,7 @@ function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
             onClick={onSelectTag}
             href="/t"
           >
-            all tags
+            All tags
           </a>
         </li>
         {availableTags.map((tag) => (
@@ -26,7 +26,6 @@ function LargeScreenTagList({ availableTags, selectedTag, onSelectTag }) {
               data-no-instant
               data-tag={tag}
               onClick={onSelectTag}
-              key={tag}
               href={`t/${tag}`}
             >
               #{tag}
@@ -63,6 +62,7 @@ export function TagList({
         <option
           key={tag}
           selected={tag === selectedTag}
+          key={tag}
           className={`crayons-link crayons-link--block ${
             tag === selectedTag ? 'crayons-link--current' : ''
           }`}

@@ -1,12 +1,16 @@
 <% if decorated_comment.low_quality %>
   <div class="crayons-notice crayons-notice--warning low-quality-comment-marker">
-    Comment marked as low quality/non-constructive by the community. <a href="/code-of-conduct"><strong>View Code of Conduct</strong></a>
+    <%= t("views.comments.quality.low") %> <a href="/code-of-conduct"><strong><%= t("views.comments.quality.conduct") %></strong></a>
   </div>
 <% end %>
 
 <% if comment.hidden_by_commentable_user %>
-  <div class="low-quality-comment-marker comment__quality-marker">
-    <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon mr-2", title: "Info") %>
-    Comment hidden by post author - thread only visible in this permalink
+  <div class="low-quality-comment-marker comment__quality-marker <%= should_be_hidden?(comment, @root_comment) ? "element-hidden-by-commentable-user" : "" %>">
+    <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon mr-2", title: t("views.comments.quality.hidden.icon")) %>
+    <% if @root_comment %>
+      <%= t("views.comments.quality.hidden.text.visible_in_permalink") %>
+    <% else %>
+      <%= t("views.comments.quality.hidden.text.accessible_via_permalink") %>
+    <% end %>
   </div>
 <% end %>

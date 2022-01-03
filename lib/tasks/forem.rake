@@ -3,8 +3,7 @@ namespace :forem do
   # Since we execute this tasks in bin/setup as well as app_initializer:setup
   # everything happening here needs to be idempotent.
   task setup: :environment do
-    # NOTE: There are currently no tasks here. This will change as soon as we
-    # add/update the task for seeding navigation links to support RFC #237.
+    Rake::Task["navigation_links:create"].invoke
   end
 
   task health_check_token: :environment do

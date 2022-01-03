@@ -37,12 +37,12 @@ export const noDefaultAltTextRule = {
         children.forEach((contentChild) => {
           if (
             contentChild.type === 'image' &&
-            contentChild.line.toLowerCase().includes('![alt text]')
+            contentChild.line.toLowerCase().includes('![image description]')
           ) {
             onError({
               lineNumber: contentChild.lineNumber,
               detail: '/p/editor_guide#alt-text-for-images',
-              context: `Consider replacing the 'alt text' in square brackets at ${getImageTextString(
+              context: `Consider replacing the 'Image description' in square brackets at ${getImageTextString(
                 contentChild.line,
               )} with a description of the image`,
             });

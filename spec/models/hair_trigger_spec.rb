@@ -5,6 +5,12 @@ require "rails_helper"
 RSpec.describe HairTrigger, type: :model do
   describe ".migrations_current?" do
     it "is always true" do
+      # work-around empty AR::Base descendants array caused by with_model cleanup
+      # HairTrigger uses AR::Base to get database triggers (and compare against the schema)
+      if ActiveRecord::Base.descendants.blank?
+        ActiveSupport::DescendantsTracker.store_inherited(ActiveRecord::Base, ApplicationRecord)
+      end
+
       expect(described_class.migrations_current?).to be(true)
     end
   end

@@ -44,7 +44,7 @@ function processPayload(payload) {
   return neededPayload;
 }
 
-export function submitArticle(payload, clearStorage, errorCb, failureCb) {
+export function submitArticle({ payload, onSuccess, onError }) {
   const method = payload.id ? 'PUT' : 'POST';
   const url = payload.id ? `/articles/${payload.id}` : '/articles';
   fetch(url, {
@@ -62,14 +62,13 @@ export function submitArticle(payload, clearStorage, errorCb, failureCb) {
     .then((response) => response.json())
     .then((response) => {
       if (response.current_state_path) {
-        clearStorage();
+        onSuccess();
         window.location.replace(response.current_state_path);
       } else {
-        // If there is an error and the method is POST, we know they are trying to publish.
-        errorCb(response, method === 'POST');
+        onError(response);
       }
     })
-    .catch(failureCb);
+    .catch(onError);
 }
 
 function generateUploadFormdata(payload) {
@@ -84,7 +83,7 @@ function generateUploadFormdata(payload) {
   return formData;
 }
 
-export function generateMainImage(payload, successCb, failureCb) {
+export function generateMainImage({ payload, successCb, failureCb, signal }) {
   fetch('/image_uploads', {
     method: 'POST',
     headers: {
@@ -92,6 +91,7 @@ export function generateMainImage(payload, successCb, failureCb) {
     },
     body: generateUploadFormdata(payload),
     credentials: 'same-origin',
+    signal,
   })
     .then((response) => response.json())
     .then((json) => {
@@ -121,6 +121,10 @@ export function processImageUpload(
   if (images.length > 0 && validateFileInputs()) {
     const payload = { image: images };
 
-    generateMainImage(payload, handleImageSuccess, handleImageFailure);
+    generateMainImage({
+      payload,
+      successCb: handleImageSuccess,
+      failureCb: handleImageFailure,
+    });
   }
 }

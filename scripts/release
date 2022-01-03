@@ -69,6 +69,9 @@ begin
   puts "Merged #{source} into #{channel}"
 
   begin
+    File.write ".release-version", tag
+    run "git add .release-version"
+    run "git commit --message 'Version #{tag}'"
     run "git tag #{tag}"
     puts "Tagged #{tag}"
   rescue StandardError

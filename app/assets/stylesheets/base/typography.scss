@@ -43,6 +43,9 @@
 
 // Content fonts
 body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   &.serif-article-body {
     --content-font-family: var(--ff-serif);
   }
@@ -146,6 +149,23 @@ body {
 
   p {
     margin: 0 0 var(--content-rhythm) 0;
+  }
+
+  dl {
+    margin: 0 0 var(--content-rhythm) 0;
+
+    dt,
+    dd {
+      display: block;
+    }
+
+    dt {
+      font-weight: var(--fw-medium);
+    }
+
+    dd {
+      margin-inline-start: var(--su-7);
+    }
   }
 
   ul,

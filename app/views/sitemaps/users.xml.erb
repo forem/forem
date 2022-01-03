@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <% @users.each do |username, updated_at| %>
+    <url>
+        <loc><%= app_url(username) %></loc>
+        <lastmod><%= updated_at.strftime("%F") %></lastmod>
+    </url>
+  <% end %>
+</urlset>

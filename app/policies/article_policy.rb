@@ -36,7 +36,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def stats?
-    user_author? || user_admin?
+    user_author? || user_admin? || user_org_admin?
   end
 
   def permitted_attributes

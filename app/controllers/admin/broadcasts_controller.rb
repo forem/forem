@@ -50,11 +50,9 @@ module Admin
       @broadcast = Broadcast.find(params[:id])
 
       if @broadcast.destroy
-        flash[:success] = "Broadcast has been deleted!"
-        redirect_to admin_broadcasts_path
+        render json: { message: "Broadcast has been deleted!" }, status: :ok
       else
-        flash[:danger] = "Something went wrong with deleting the broadcast."
-        render :edit
+        render json: { error: "Something went wrong with deleting the broadcast." }, status: :unprocessable_entity
       end
     end
 

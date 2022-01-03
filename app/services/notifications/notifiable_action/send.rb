@@ -33,6 +33,9 @@ module Notifications
         article_followers = notifiable.followers.reject do |follower|
           user_ids_with_article_mentions.include?(follower.id)
         end
+        # We don't want to notify authors about their own articles, e.g. when
+        # they post under an organization.
+        article_followers -= [notifiable.user]
 
         article_followers.sort_by(&:updated_at).last(10_000).reverse_each do |follower|
           now = Time.current

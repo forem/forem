@@ -55,18 +55,29 @@ module.exports = function (api) {
         '@babel/plugin-proposal-private-property-in-object',
         {
           loose: true,
-        }
+        },
       ],
       [
         '@babel/plugin-proposal-private-methods',
         {
           loose: true,
-        }
+        },
       ],
       [
         '@babel/plugin-transform-react-jsx',
         {
           pragma: 'h',
+        },
+      ],
+      'inline-react-svg',
+      [
+        'module-resolver',
+        {
+          // Only the @images webpack alias is here because it's being used by a
+          // Babel plugin before webpack runs in the frontend build pipeline.
+          alias: {
+            '@images': './app/assets/images/',
+          },
         },
       ],
     ].filter(Boolean),

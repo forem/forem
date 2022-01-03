@@ -37,7 +37,7 @@ PublishDate.defaultProps = {
 PublishDate.propTypes = {
   readablePublishDate: PropTypes.string.isRequired,
   publishedTimestamp: PropTypes.string,
-  publishedAtInt: PropTypes.string,
+  publishedAtInt: PropTypes.number,
 };
 
 PublishDate.displayName = 'PublishDate';

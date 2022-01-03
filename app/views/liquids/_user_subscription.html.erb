@@ -22,34 +22,26 @@
       <div class="ltag__user-subscription-tag__subscription-area align-center" id="subscription-area">
         <div class="ltag__user-subscription-tag__signed-out" id="subscription-signed-out">
           <div class="fs-base mb-2" id="logged-out-text">
-            You must first sign in to DEV.
+            <%= t("views.liquids.user_subscription.logged_out") %>
           </div>
           <button class="crayons-btn" id="sign-in-btn">
-            Sign In
+            <%= t("views.liquids.user_subscription.sign_in") %>
           </button>
         </div>
 
         <div class="ltag__user-subscription-tag__signed-in hidden" id="subscription-signed-in">
           <button class="crayons-btn mb-4" id="subscribe-btn">
-            Subscribe
+            <%= t("views.liquids.user_subscription.subscribe.button") %>
           </button>
           <div class="fs-s mb-3" id="logged-in-text">
-            You'll subscribe with
-            <span class="ltag__user-subscription-tag__subscriber-email"></span>
-            the email address associated with your DEV account. To use a
-            different email address, you can
-            <a href="/settings">update your email address in Settings</a>.
+            <%= t("views.liquids.user_subscription.subscribe.desc_html", email: tag.span(class: "ltag__user-subscription-tag__subscriber-email"), update: link_to(t("views.liquids.user_subscription.subscribe.update"), "/settings")) %>
           </div>
         </div>
 
         <div class="ltag__user-subscription-tag__apple-auth fs-s hidden" id="subscriber-apple-auth">
-          <button disabled class="crayons-btn" id="apple-subscribe-btn">Subscribe</button>
+          <button disabled class="crayons-btn" id="apple-subscribe-btn"><%= t("views.liquids.user_subscription.subscribe.apple.button") %></button>
           <div class="fs-s" id="apple-auth-message">
-            Hey, there! It looks like when you created your DEV account you signed
-            up with Apple using a private relay email address. If you'd like to
-            subscribe, please
-            <a href="/settings">update your email address in Settings</a>
-            first to a different email address.
+            <%= t("views.liquids.user_subscription.subscribe.apple.desc_html", update: link_to(t("views.liquids.user_subscription.subscribe.apple.update"), "/settings")) %>
           </div>
         </div>
 
@@ -61,7 +53,7 @@
         <div class="crayons-modal__box">
           <header class="crayons-modal__box__header">
             <h2 class="fs-l fw-bold mt-0 mb-0">
-              Confirm subscribe
+              <%= t("views.liquids.user_subscription.confirm.subtitle") %>
             </h2>
             <button type="button" class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" id="close-confirmation-modal">
               <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
@@ -71,17 +63,14 @@
           </header>
           <div class="crayons-modal__box__body">
             <p id="confirmation-text" class="fs-base mb-4 mt-0">
-              You'll share your email address<span class="ltag__user-subscription-tag__subscriber-email"></span>,
-              username, name, and DEV profile URL with
-              <span class="ltag__user-subscription-tag__author-username fw-medium"><%= author_username %></span>.
-              Once you do this, you cannot undo this.
+              <%= t("views.liquids.user_subscription.confirm.text_html", email: tag.span(class: "ltag__user-subscription-tag__subscriber-email"), username: tag.span(author_username, class: "ltag__user-subscription-tag__author-username fw-medium")) %>
             <p>
             <div class="ltag__user-subscription-tag__confirmation-buttons">
               <button class="crayons-btn mr-1" id="confirmation-btn">
-                Confirm subscription
+                <%= t("views.liquids.user_subscription.confirm.button_text") %>
               </button>
               <button class="crayons-btn crayons-btn--secondary" id="cancel-btn">
-                Cancel
+                <%= t("views.liquids.user_subscription.confirm.cancel_text") %>
               </button>
             </div>
           </div>

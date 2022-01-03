@@ -68,6 +68,33 @@ module OmniauthHelpers
     },
   ).freeze
 
+  OMNIAUTH_PAYLOAD_FOREM = OmniAuth::AuthHash::InfoHash.new(
+    {
+      provider: "forem",
+      uid: SecureRandom.hex,
+      info: {
+        email: "sloan@dev.to",
+        name: "Sloan",
+        image: "https://dummyimage.com/400x400.jpg",
+        user_nickname: "sloan"
+      },
+      credentials: {
+        token: SecureRandom.hex,
+        refresh_token: SecureRandom.hex,
+        expires_at: 1_589_475_606,
+        expires: true
+      },
+      extra: {
+        raw_info: {
+          email: "slaon@dev.to",
+          id: "31047",
+          name: "Sloan",
+          remote_profile_image_url: "https://dummyimage.com/400x400.jpg"
+        }
+      }
+    },
+  ).freeze
+
   OMNIAUTH_PAYLOAD_APPLE = OmniAuth::AuthHash::InfoHash.new(
     {
       provider: "apple",
@@ -161,6 +188,10 @@ module OmniauthHelpers
 
   def omniauth_mock_facebook_payload
     OmniAuth.config.mock_auth[:facebook] = OMNIAUTH_PAYLOAD_FACEBOOK.dup
+  end
+
+  def omniauth_mock_forem_payload
+    OmniAuth.config.mock_auth[:forem] = OMNIAUTH_PAYLOAD_FOREM.dup
   end
 
   def omniauth_mock_apple_payload

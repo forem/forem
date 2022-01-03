@@ -32,7 +32,8 @@ class EmailDigestArticleCollector
                    Article.select(:title, :description, :path)
                      .published
                      .where("published_at > ?", cutoff_date)
-                     .where(featured: true, email_digest_eligible: true)
+                     .featured
+                     .where(email_digest_eligible: true)
                      .where.not(user_id: @user.id)
                      .where("score > ?", 25)
                      .order(score: :desc)
@@ -65,7 +66,9 @@ class EmailDigestArticleCollector
   end
 
   def user_has_followings?
-    @user.following_users_count.positive? || @user.cached_followed_tag_names.any?
+    @user.following_users_count.positive? ||
+      @user.cached_followed_tag_names.any? ||
+      @user.cached_antifollowed_tag_names.any?
   end
 
   def last_user_emails

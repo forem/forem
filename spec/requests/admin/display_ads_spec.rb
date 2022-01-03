@@ -68,6 +68,11 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
           end.to change { display_ad.reload.approved }.from(false).to(true)
         end
       end
+
+      it "redirects back to edit path" do
+        put admin_display_ad_path(display_ad.id), params: params
+        expect(response.body).to redirect_to edit_admin_display_ad_path(display_ad.id)
+      end
     end
 
     describe "DELETE /admin/display_ads/:id" do
@@ -77,7 +82,6 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
         expect do
           delete admin_display_ad_path(display_ad.id)
         end.to change { DisplayAd.all.count }.by(-1)
-        expect(response.body).to redirect_to admin_display_ads_path
       end
     end
   end
@@ -121,7 +125,6 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
         expect do
           delete admin_display_ad_path(display_ad.id)
         end.to change { DisplayAd.all.count }.by(-1)
-        expect(response.body).to redirect_to admin_display_ads_path
       end
     end
   end

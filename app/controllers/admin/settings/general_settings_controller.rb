@@ -6,15 +6,16 @@ module Admin
       SPECIAL_PARAMS_TO_ADD = %w[
         credit_prices_in_cents
         meta_keywords
+        logo
       ].freeze
 
       def create
         result = ::Settings::General::Upsert.call(settings_params)
         if result.success?
           Audit::Logger.log(:internal, current_user, params.dup)
-          redirect_to admin_config_path, notice: "Successfully updated settings."
+          render json: { message: "Successfully updated settings." }, status: :ok
         else
-          redirect_to admin_config_path, alert: "😭 #{result.errors.to_sentence}"
+          render json: { error: result.errors.to_sentence }, status: :unprocessable_entity
         end
       end
 

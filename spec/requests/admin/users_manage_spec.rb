@@ -49,7 +49,6 @@ RSpec.describe "Admin::Users", type: :request do
       badge_id: badge.id,
       rewarding_context_message_markdown: "message",
     )
-    ChatChannels::CreateWithUsers.call(users: [user2, user3], channel_type: "direct")
     user2.follow(user3)
     user.follow(super_admin)
     user3.follow(user2)
@@ -87,14 +86,12 @@ RSpec.describe "Admin::Users", type: :request do
 
     it "merges all relationships" do
       expected_follows_count = user.follows.count + user2.follows.count
-      expected_channel_memberships_count = user.chat_channel_memberships.count + user2.chat_channel_memberships.count
       expected_mentions_count = user.mentions.count + user2.mentions.count
 
       post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
 
       expect(user.follows.count).to eq(expected_follows_count)
       expect(Follow.followable_user(user.id).count).to eq(1)
-      expect(user.chat_channel_memberships.count).to eq(expected_channel_memberships_count)
       expect(user.mentions.count).to eq(expected_mentions_count)
     end
 
@@ -109,6 +106,16 @@ RSpec.describe "Admin::Users", type: :request do
       post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
 
       expect(user.reload.twitter_username).to eq("Twitter")
+    end
+
+    it "merges an identity on a single account into the other" do
+      create(:identity, user: user, provider: "twitter")
+      deleted_user_identity = create(:identity, user: user2)
+
+      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
+
+      expect(user.identities.count).to eq 2
+      expect(user.identity_ids).to include deleted_user_identity.id
     end
   end
 
@@ -139,8 +146,7 @@ RSpec.describe "Admin::Users", type: :request do
       params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
       patch user_status_admin_user_path(user.id), params: params
 
-      expect(user.roles.count).to eq(1)
-      expect(user.roles.last.name).to eq("super_admin")
+      expect(user.super_admin?).to be(true)
     end
 
     it "does not allow non-super-admin to doll out admin" do
@@ -151,7 +157,7 @@ RSpec.describe "Admin::Users", type: :request do
       params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
       patch user_status_admin_user_path(user.id), params: params
 
-      expect(user.has_role?(:super_admin)).not_to be false
+      expect(user.super_admin?).not_to be false
     end
 
     it "creates a general note on the user" do
@@ -172,7 +178,7 @@ RSpec.describe "Admin::Users", type: :request do
         delete admin_user_path(user.id), params: { user_id: user.id, role: :trusted }
       end.to change(user.roles, :count).by(-1)
 
-      expect(user.has_role?(:trusted)).to be false
+      expect(user.has_trusted_role?).to be false
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
 
@@ -185,8 +191,8 @@ RSpec.describe "Admin::Users", type: :request do
                params: { user_id: user.id, role: :single_resource_admin, resource_type: Comment }
       end.to change(user.roles, :count).by(-1)
 
-      expect(user.has_role?(:single_resource_admin, Comment)).to be false
-      expect(user.has_role?(:single_resource_admin, Broadcast)).to be true
+      expect(user.single_resource_admin_for?(Comment)).to be false
+      expect(user.single_resource_admin_for?(Broadcast)).to be true
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
 
@@ -197,7 +203,7 @@ RSpec.describe "Admin::Users", type: :request do
         delete admin_user_path(user.id), params: { user_id: user.id, role: :super_admin }
       end.not_to change(user.roles, :count)
 
-      expect(user.has_role?(:super_admin)).to be true
+      expect(user.super_admin?).to be true
       expect(request.flash["danger"]).to include("cannot be removed.")
     end
 
@@ -208,7 +214,7 @@ RSpec.describe "Admin::Users", type: :request do
         delete admin_user_path(super_admin.id), params: { user_id: super_admin.id, role: :trusted }
       end.not_to change(super_admin.roles, :count)
 
-      expect(super_admin.has_role?(:trusted)).to be true
+      expect(super_admin.trusted?).to be true
       expect(request.flash["danger"]).to include("cannot remove roles")
     end
   end

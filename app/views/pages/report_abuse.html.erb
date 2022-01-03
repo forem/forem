@@ -1,21 +1,21 @@
-<% title "Report abuse" %>
+<% title t("core.report_abuse") %>
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/report-abuse") %>" />
-  <meta name="description" content="Report Abuse">
+  <meta name="description" content="<%= t("core.report_abuse") %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/report-abuse") %>" />
-  <meta property="og:title" content="Report Abuse" />
+  <meta property="og:title" content="<%= t("core.report_abuse") %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="Report Abuse">
+  <meta name="twitter:title" content="<%= t("core.report_abuse") %>">
 <% end %>
 
 <div class="crayons-layout crayons-layout--limited-l">
   <div class="crayons-card text-styles text-padding">
-    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Report Abuse</h1>
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= t("core.report_abuse") %></h1>
 
     <p>
       Thank you for reporting any abuse that violates our <a href="/code-of-conduct">code of conduct</a> or

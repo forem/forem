@@ -16,7 +16,7 @@ export const ListingFilters = ({
   query,
 }) => {
   return (
-    <div className="crayons-layout__sidebar-left">
+    <div className="crayons-layout__sidebar-left pb-3">
       <ListingFiltersTags
         message={message}
         onKeyUp={onKeyUp}
@@ -36,10 +36,12 @@ export const ListingFilters = ({
 };
 
 ListingFilters.propTypes = {
-  categories: PropTypes.shape({
-    slug: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  }).isRequired,
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      slug: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   category: PropTypes.string.isRequired,
   onSelectCategory: PropTypes.func.isRequired,
   message: PropTypes.isRequired,

@@ -2,7 +2,6 @@ module Api
   module V0
     class ReadinglistController < ApiController
       before_action :authenticate!
-      before_action -> { doorkeeper_authorize! :public }, only: %w[index], if: -> { doorkeeper_token }
 
       INDEX_REACTIONS_ATTRIBUTES_FOR_SERIALIZATION = %i[id reactable_id created_at status].freeze
       private_constant :INDEX_REACTIONS_ATTRIBUTES_FOR_SERIALIZATION
@@ -30,6 +29,7 @@ module Api
           .decorate
 
         @users_by_id = User
+          .joins(:profile)
           .select(UsersController::SHOW_ATTRIBUTES_FOR_SERIALIZATION)
           .find(articles.map(&:user_id))
           .index_by(&:id)

@@ -21,7 +21,8 @@ read -t 10 -p "Choose yes to setup a test database or if you're running the scri
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   printf "\n\nSetting up the E2E database before running E2E tests...\n\n"
-  RAILS_ENV=test E2E=true bin/e2e-setup
+  # Spring is disabled only for E2E tests run locally. Otherwise, there are all kinds of errors.
+  DISABLE_SPRING=1 RAILS_ENV=test E2E=true bin/e2e-setup
 else
    printf "\n\nSkipping database setup...\n\n"
 fi
@@ -30,7 +31,7 @@ printf "Starting the test runner...\n\n"
 
 bundle exec rails assets:precompile;
 
-if [ $1 = "--creator-onboarding-seed" ]; then
+if [ "$1" = "--creator-onboarding-seed" ]; then
    echo "Running E2E tests with creator onboarding seed data"
    CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test E2E=true CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows bundle exec rake cypress:open
 else

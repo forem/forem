@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import '../../../storybook-utilities/designSystem.scss';
+import { useState } from 'preact/hooks';
 import notes from './navigation-tab.md';
 
 export default {
@@ -7,32 +8,67 @@ export default {
   parameters: { notes },
 };
 
-export const Default = () => (
-  <nav className="crayons-tabs" aria-label="View feed options">
-    <ul className="crayons-tabs__list">
-      <li>
-        <a
-          data-text="Feed"
-          href="/"
-          className="crayons-tabs__item crayons-tabs__item--current"
-          aria-current="page"
-        >
-          Feed
-        </a>
-      </li>
-      <li>
-        <a data-text="Popular" href="/" className="crayons-tabs__item">
-          Popular
-        </a>
-      </li>
-      <li>
-        <a data-text="Latest" href="/" className="crayons-tabs__item">
-          Latest
-        </a>
-      </li>
-    </ul>
-  </nav>
-);
+const tabs = {
+  feed: 'Feed',
+  popular: 'Popular',
+  latest: 'Latest',
+};
+
+export const Default = () => {
+  const [currentTab, setCurrentTab] = useState(
+    window.location.hash.substr(1) || tabs.feed,
+  );
+
+  const tabOnClick = (tabId) => {
+    setCurrentTab(tabId);
+  };
+
+  return (
+    <nav className="crayons-tabs" aria-label="View feed options">
+      <ul className="crayons-tabs__list">
+        <li>
+          <a
+            data-text={tabs.feed}
+            className={`crayons-tabs__item ${
+              currentTab === tabs.feed ? 'crayons-tabs__item--current' : ''
+            }`}
+            aria-current={currentTab === tabs.feed ? 'page' : null}
+            onClick={() => tabOnClick(tabs.feed)}
+            href={`#${tabs.feed}`}
+          >
+            {tabs.feed}
+          </a>
+        </li>
+        <li>
+          <a
+            data-text={tabs.popular}
+            className={`crayons-tabs__item ${
+              currentTab === tabs.popular ? 'crayons-tabs__item--current' : ''
+            }`}
+            aria-current={currentTab === tabs.popular ? 'page' : null}
+            onClick={() => tabOnClick(tabs.popular)}
+            href={`#${tabs.popular}`}
+          >
+            {tabs.popular}
+          </a>
+        </li>
+        <li>
+          <a
+            data-text={tabs.latest}
+            className={`crayons-tabs__item ${
+              currentTab === tabs.latest ? 'crayons-tabs__item--current' : ''
+            }`}
+            aria-current={currentTab === tabs.latest ? 'page' : null}
+            onClick={() => tabOnClick(tabs.latest)}
+            href={`#${tabs.latest}`}
+          >
+            {tabs.latest}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  );
+};
 
 Default.story = {
   name: 'default',

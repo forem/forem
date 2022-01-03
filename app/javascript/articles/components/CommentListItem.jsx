@@ -32,7 +32,7 @@ export const CommentListItem = ({ comment }) => (
           <img
             src={comment.profile_image_90}
             className="crayons-avatar__image"
-            alt={`{comment.username} avatar`}
+            alt="{comment.username} avatar"
           />
         </span>
         {comment.name}

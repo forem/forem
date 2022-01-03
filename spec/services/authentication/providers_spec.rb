@@ -28,7 +28,7 @@ RSpec.describe Authentication::Providers, type: :service do
 
   describe ".available" do
     it "lists the available providers" do
-      available_providers = %i[apple facebook github twitter]
+      available_providers = %i[apple facebook forem github twitter]
       expect(described_class.available).to eq(available_providers)
     end
   end

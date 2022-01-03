@@ -36,6 +36,16 @@ module ListingsToolkit
     @listing = Listing.find(params[:id])
   end
 
+  def rate_limit?
+    begin
+      rate_limit!(:listing_creation)
+    rescue StandardError => e
+      @listing.errors.add(:listing_creation, e.message)
+      return true
+    end
+    false
+  end
+
   def create
     @listing = Listing.new(listing_params)
     organization_id = @listing.organization_id
@@ -51,7 +61,7 @@ module ListingsToolkit
       return
     end
 
-    unless @listing.valid?
+    if !@listing.valid? || rate_limit?
       @credits = current_user.credits.unspent
       process_unsuccessful_creation
       return
@@ -70,7 +80,7 @@ module ListingsToolkit
 
   ALLOWED_PARAMS = %i[
     title body_markdown listing_category_id tag_list
-    expires_at contact_via_connect location organization_id action
+    expires_at location organization_id action
   ].freeze
 
   # Filter for a set of known safe params

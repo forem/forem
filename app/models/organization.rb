@@ -1,9 +1,9 @@
 class Organization < ApplicationRecord
   include CloudinaryHelper
 
-  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
-  INTEGER_REGEXP = /\A\d+\z/.freeze
-  SLUG_REGEXP = /\A[a-zA-Z0-9\-_]+\z/.freeze
+  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  INTEGER_REGEXP = /\A\d+\z/
+  SLUG_REGEXP = /\A[a-zA-Z0-9\-_]+\z/
   MESSAGES = {
     integer_only: "Integer only. No sign allowed.",
     reserved_word: "%<value>s is a reserved word. Contact site admins for help registering your organization."
@@ -67,7 +67,7 @@ class Organization < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
-  validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
+  validates :slug, unique_cross_model_slug: true, if: :slug_changed?
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -110,12 +110,6 @@ class Organization < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
-  def suspended?
-    # Hacky, yuck!
-    # TODO: [@jacobherrington] Remove this method
-    false
-  end
-
   def destroyable?
     organization_memberships.count == 1 && articles.count.zero? && credits.count.zero?
   end
@@ -155,16 +149,5 @@ class Organization < ApplicationRecord
 
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
-  end
-
-  def unique_slug_including_users_and_podcasts
-    slug_taken = (
-      User.exists?(username: slug) ||
-      Podcast.exists?(slug: slug) ||
-      Page.exists?(slug: slug) ||
-      slug&.include?("sitemap-")
-    )
-
-    errors.add(:slug, "is taken.") if slug_taken
   end
 end

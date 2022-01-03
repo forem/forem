@@ -75,7 +75,7 @@ RSpec.describe "/admin/customization/profile_fields", type: :request do
 
   describe "DELETE /admin/profile_fields/:id" do
     let!(:profile_field) do
-      create(:profile_field).tap { Profile.refresh_attributes! }
+      create(:profile_field)
     end
 
     it "redirects successfully" do

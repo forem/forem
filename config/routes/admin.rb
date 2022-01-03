@@ -4,16 +4,30 @@ namespace :admin do
 
   authenticate :user, ->(user) { user.tech_admin? } do
     mount Blazer::Engine, at: "blazer"
+    require "sidekiq/web"
+    require "sidekiq_unique_jobs/web"
+    require "sidekiq/cron/web"
+
+    Sidekiq::Web.class_eval do
+      use Rack::Protection, permitted_origins: [URL.url] # resolve Rack Protection HttpOrigin
+    end
+
+    mount Sidekiq::Web => "sidekiq"
+    mount FieldTest::Engine, at: "abtests"
 
     flipper_ui = Flipper::UI.app(Flipper,
                                  { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                  remote_token http_origin session_hijacking] } })
     mount flipper_ui, at: "feature_flags"
+    mount PgHero::Engine, at: "pghero"
   end
+
   resources :invitations, only: %i[index new create destroy]
   resources :organization_memberships, only: %i[update destroy create]
   resources :permissions, only: %i[index]
-  resources :reactions, only: [:update]
+  resources :reactions, only: %i[update]
+  resources :creator_settings, only: %i[create new]
+
   namespace :settings do
     resources :authentications, only: [:create]
     resources :campaigns, only: [:create]
@@ -24,11 +38,27 @@ namespace :admin do
     resources :smtp_settings, only: [:create]
     resources :user_experiences, only: [:create]
   end
+
   namespace :users do
     resources :gdpr_delete_requests, only: %i[index destroy]
   end
+
   resources :users, only: %i[index show edit update destroy] do
+    scope module: "users" do
+      resource :tools, only: :show
+
+      namespace :tools do
+        resource :credits, only: %i[show create destroy]
+        resource :emails, only: :show
+        resource :notes, only: %i[show create]
+        resource :organizations, only: %i[show]
+        resource :reports, only: %i[show]
+        resource :reactions, only: %i[show]
+      end
+    end
+
     resources :email_messages, only: :show
+
     member do
       post "banish"
       post "export_data"
@@ -39,6 +69,7 @@ namespace :admin do
       post "send_email"
       post "verify_email_ownership"
       patch "unlock_access"
+      post "unpublish_all_articles"
     end
   end
 
@@ -46,6 +77,7 @@ namespace :admin do
     resources :articles, only: %i[index show update] do
       member do
         delete :unpin
+        post :pin
       end
     end
 
@@ -111,7 +143,6 @@ namespace :admin do
         post "bust_cache"
       end
     end
-    resources :webhook_endpoints, only: :index
 
     # We do not expose the Data Update Scripts to all Forems by default.
     constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
@@ -124,13 +155,7 @@ namespace :admin do
   end
 
   scope :apps do
-    resources :chat_channels, only: %i[index create update destroy] do
-      member do
-        delete :remove_user
-      end
-    end
     resources :consumer_apps, only: %i[index new create edit update destroy]
-    resources :events, only: %i[index create update new edit]
     resources :listings, only: %i[index edit update destroy]
     resources :listing_categories, only: %i[index edit update new create
                                             destroy], path: "listings/categories"

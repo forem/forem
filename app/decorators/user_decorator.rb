@@ -18,6 +18,8 @@ class UserDecorator < ApplicationDecorator
     },
   ].freeze
 
+  DEFAULT_PROFILE_SUMMARY = "404 bio not found".freeze
+
   def cached_followed_tags
     follows_map = Rails.cache.fetch("user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tags",
                                     expires_in: 20.hours) do
@@ -53,14 +55,10 @@ class UserDecorator < ApplicationDecorator
     body_class = [
       setting.config_theme.tr("_", "-"),
       "#{setting.resolved_font_name.tr('_', '-')}-article-body",
-      "trusted-status-#{trusted}",
+      "trusted-status-#{trusted?}",
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]
     body_class.join(" ")
-  end
-
-  def dark_theme?
-    setting.config_theme == "night_theme" || setting.config_theme == "ten_x_hacker_theme"
   end
 
   def assigned_color
@@ -99,15 +97,21 @@ class UserDecorator < ApplicationDecorator
     articles_count.zero? && comments_count.zero? && suspended?
   end
 
-  def stackbit_integration?
-    access_tokens.any?
+  def considered_new?
+    Settings::RateLimit.user_considered_new?(user: self)
   end
 
-  def considered_new?
-    min_days = Settings::RateLimit.user_considered_new_days
-    return false unless min_days.positive?
+  # Returns the user's public email if it is set and the display_email_on_profile
+  # settings is set to true.
+  def profile_email
+    return unless setting.display_email_on_profile?
 
-    created_at.after?(min_days.days.ago)
+    email
+  end
+
+  # Returns the users profile summary or a placeholder text
+  def profile_summary
+    profile.summary.presence || DEFAULT_PROFILE_SUMMARY
   end
 
   delegate :display_sponsors, to: :setting

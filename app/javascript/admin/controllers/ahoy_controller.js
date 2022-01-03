@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 import ahoy from 'ahoy.js';
 
 ahoy.configure({

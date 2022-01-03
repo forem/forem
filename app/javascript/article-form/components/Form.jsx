@@ -54,10 +54,10 @@ Form.propTypes = {
   bodyOnChange: PropTypes.func.isRequired,
   bodyHasFocus: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
-  mainImage: PropTypes.string.isRequired,
+  mainImage: PropTypes.string,
   onMainImageUrlChange: PropTypes.func.isRequired,
   switchHelpContext: PropTypes.func.isRequired,
-  errors: PropTypes.func.isRequired,
+  errors: PropTypes.object,
 };
 
 Form.displayName = 'Form';

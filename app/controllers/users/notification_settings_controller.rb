@@ -7,7 +7,6 @@ module Users
     ALLOWED_PARAMS = %i[email_badge_notifications
                         email_comment_notifications
                         email_community_mod_newsletter
-                        email_connect_messages
                         email_digest_periodic
                         email_follower_notifications
                         email_membership_newsletter
@@ -16,9 +15,11 @@ module Users
                         email_tag_mod_newsletter
                         email_unread_notifications
                         mobile_comment_notifications
+                        mobile_mention_notifications
                         mod_roundrobin_notifications
                         reaction_notifications
                         welcome_notifications].freeze
+    ONBOARDING_ALLOWED_PARAMS = %i[email_newsletter email_digest_periodic].freeze
 
     def update
       authorize current_user, policy_class: UserPolicy
@@ -37,8 +38,7 @@ module Users
       authorize User
 
       if params[:notifications]
-        permitted_params = %i[email_newsletter email_digest_periodic]
-        current_user.notification_setting.assign_attributes(params[:notifications].permit(permitted_params))
+        current_user.notification_setting.assign_attributes(params[:notifications].permit(ONBOARDING_ALLOWED_PARAMS))
       end
 
       current_user.saw_onboarding = true

@@ -29,8 +29,7 @@ export const SearchSnippet = ({ highlightText }) => {
 };
 
 SearchSnippet.propTypes = {
-  // eslint-disable-next-line no-underscore-dangle
-  highlightText: articleSnippetResultPropTypes.isRequired,
+  highlightText: articleSnippetResultPropTypes,
 };
 
 SearchSnippet.displayName = 'SearchSnippet';

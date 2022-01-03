@@ -18,11 +18,6 @@ describe('Set a landing page from the admin portal', () => {
           .uncheck();
 
         cy.get('@userExperienceSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${user.username} and this action is 100% safe and appropriate.`,
-          );
-        cy.get('@userExperienceSectionForm')
           .findByRole('button', { name: 'Update Settings' })
           .click();
 

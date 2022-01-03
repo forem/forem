@@ -37,6 +37,7 @@ $colors: (
 // List of breakpoints for our responsiveness.
 
 // If you modify these breakpoints, ensure you update them in @components/useMediaQuery.js
+$breakpoint-xs: 480px;
 $breakpoint-s: 640px;
 $breakpoint-m: 768px;
 $breakpoint-l: 1024px;
@@ -95,22 +96,6 @@ $z-indexes: (
 //
 // Generators & functions utilized in other SCSS files. They are meant to simplify the
 // process of creating styles, etc.
-
-// pow() - Raise number to the nth power
-//
-// @param {number} $base      The base number
-// @param {number} $exponents The exponent to which to raise $base
-
-@function pow($base, $exponents) {
-  $raised: 1;
-
-  @for $i from 1 through $exponents {
-    $raised: $raised * $base;
-  }
-
-  @return $raised;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////
 
 // replace-nth() - Replace n-th list item with another item
@@ -204,31 +189,4 @@ $z-indexes: (
       }
     }
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-
-// generate-box() - generating classes for different style
-//
-// This mixin automates process of generating styles for different
-// types of boxes used across Crayons.
-//
-// @param {integer} $level    Visual elevation level: 0-4
-// @param {color} $bg         Background color
-// @param {color} $border     Border and shadow colors
-// @param {color} $color      Content color
-
-@mixin generate-box(
-  $level: 1,
-  $bg: var(--card-bg),
-  $border: var(--base-100),
-  $color: var(--card-color)
-) {
-  background: $bg;
-  border: 2px solid $border;
-  @if $level > 0 {
-    box-shadow: #{pow(2, $level) + px} #{pow(2, $level) + px} 0 $border;
-  }
-  color: $color;
-  border-radius: var(--radius);
 }

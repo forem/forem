@@ -1,17 +1,16 @@
-<% title "Edit Post" %>
+<% title t("views.editor.meta.title") %>
 
 <% if @article.video.present? %>
   <div class="article-form-video-preview">
     <% if @article.video_state == "PROGRESSING" %>
-      <h1 style="color:#062144;margin-top:1.1em">⏳ Video Transcoding In Progress ⏳</h1>
+      <h1 style="color:#062144;margin-top:1.1em"><%= t("views.editor.video.progress.heading") %></h1>
       <img src="https://media.giphy.com/media/tXL4FHPSnVJ0A/giphy.gif" style="border-radius:12px;height:317px" alt="Bored kid incessantly tapping his fingers">
       <div style="max-width:500px;margin:18px auto 0px;font-size:0.8em;">
         <p>
-          <strong>You'll get an email when this process finishes.</strong>
+          <strong><%= t("views.editor.video.progress.notice_1") %></strong>
         </p>
         <p>
-          <em>This is an ordinary unpublished post. Add title/tags/body/etc, and then mark as published after the video
-            is done processing.</em>
+          <em><%= t("views.editor.video.progress.notice_2") %></em>
         </p>
       </div>
     <% elsif @article.video_state == "COMPLETED" %>
@@ -19,8 +18,8 @@
       <%= render "articles/video_player", meta_tags: false, article: @article %>
       <div class="article-form-video-image-url">
         <%= form_for(@article) do |f| %>
-          Preview Image URL: <%= f.text_field :video_thumbnail_url, placeholder: "New Thumbnail URL" %>
-          <%= f.submit "Submit Change", class: "crayons-btn" %>
+          <%= t("views.editor.video.submit_image.text") %><%= f.text_field :video_thumbnail_url, placeholder: t("views.editor.video.submit_image.placeholder") %>
+          <%= f.submit t("views.editor.video.submit_image.button"), class: "crayons-btn" %>
         <% end %>
       </div>
     <% end %>

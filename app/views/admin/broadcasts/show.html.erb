@@ -1,47 +1,61 @@
-<header class="flex">
-  <h2 class="crayons-title mb-6"><%= @broadcast.title %></h2>
-  <div class="ml-auto">
-    <%= link_to "Destroy", admin_broadcast_path(@broadcast), class: "btn btn-danger", method: :delete, data: { confirm: "Are you sure?" } %>
-    <%= link_to "Edit", edit_admin_broadcast_path, class: "btn btn-primary" %>
-  </div>
-</header>
+<div
+  data-controller="confirmation-modal"
+  data-confirmation-modal-root-selector-value="#confirmation-modal-root"
+  data-confirmation-modal-content-selector-value="#confirmation-modal"
+  data-confirmation-modal-title-value="Confirm changes"
+  data-confirmation-modal-size-value="m">
+  <header class="flex">
+    <h2 class="crayons-title mb-6"><%= @broadcast.title %></h2>
+    <div class="ml-auto">
+      <%= link_to "Edit", edit_admin_broadcast_path, class: "crayons-btn" %>
+      <button
+        class="crayons-btn crayons-btn--danger"
+        data-item-id="<%= @broadcast.id %>"
+        data-endpoint="/admin/advanced/broadcasts"
+        data-username="<%= current_user.username %>"
+        data-action="click->confirmation-modal#openModal">Destroy</button>
+    </div>
+  </header>
 
-<div class="crayons-card p-6 grid gap-4 mb-6">
-  <div>
-    <p class="fw-bold">Type</p>
-    <p><%= @broadcast.type_of %></p>
+  <div class="crayons-card p-6 grid gap-4 mb-6">
+    <div>
+      <p class="fw-bold">Type</p>
+      <p><%= @broadcast.type_of %></p>
+    </div>
+
+    <div>
+      <p class="fw-bold">Content</p>
+      <p><%= @broadcast.processed_html %></p>
+    </div>
+
+    <div>
+      <p class="fw-bold">Last active</p>
+      <p><%= @broadcast.active_status_updated_at&.strftime("%b %d, %Y %H:%M UTC") %></p>
+    </div>
+
+    <div>
+      <p class="fw-bold">Status</p>
+      <p>
+        <span class="badge badge-<%= @broadcast.active? ? "success" : "warning" %>">
+          <%= @broadcast.active? ? "Active" : "Inactive" %>
+        </span>
+      </p>
+    </div>
   </div>
 
-  <div>
-    <p class="fw-bold">Content</p>
-    <p><%= @broadcast.processed_html %></p>
-  </div>
+  <% if @broadcast.processed_html %>
+    <div class="crayons-card p-6">
+      <p><strong>Preview</strong></p>
+      <div class="broadcast-wrapper visible <%= banner_class(@broadcast) %>">
+        <div class="broadcast-data">
+          <%= sanitize @broadcast.processed_html, attributes: %w[href style src] %>
+        </div>
+      </div>
+      <p><em>Please note: announcement broadcasts will render directly below the nav bar once activated.</em></p>
+    </div>
+  <% end %>
 
-  <div>
-    <p class="fw-bold">Last active</p>
-    <p><%= @broadcast.active_status_updated_at&.strftime("%b %d, %Y %H:%M UTC") %></p>
-  </div>
-
-  <div>
-    <p class="fw-bold">Status</p>
-    <p>
-      <span class="badge badge-<%= @broadcast.active? ? "success" : "warning" %>">
-        <%= @broadcast.active? ? "Active" : "Inactive" %>
-      </span>
-    </p>
-  </div>
+  <%= render partial: "admin/shared/destroy_confirmation_modal" %>
 </div>
-
-<% if @broadcast.processed_html %>
-  <div class="crayons-card p-6">
-    <p><strong>Preview</strong></p>
-    <div class="broadcast-wrapper visible <%= banner_class(@broadcast) %>">
-    <div class="broadcast-data">
-      <%= sanitize @broadcast.processed_html, attributes: %w[href style src] %>
-    </div>
-    </div>
-  <p><em>Please note: announcement broadcasts will render directly below the nav bar once activated.</em></p>
-  <div>
-<% end %>
 
 <%= csrf_meta_tags %>

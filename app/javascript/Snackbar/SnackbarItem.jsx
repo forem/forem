@@ -15,7 +15,7 @@ export const snackbarItemProps = {
 };
 
 export const SnackbarItem = ({ message, actions = [] }) => (
-  <div className="crayons-snackbar__item flex">
+  <div className="crayons-snackbar__item flex" data-testid="snackbar">
     <div className="crayons-snackbar__body" role="alert">
       {message}
     </div>

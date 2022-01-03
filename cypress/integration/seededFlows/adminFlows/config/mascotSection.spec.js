@@ -10,7 +10,7 @@ describe('Mascot Section', () => {
 
   describe('mascot image setting', () => {
     it('rejects an invalid image URL', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
@@ -20,24 +20,21 @@ describe('Mascot Section', () => {
           .clear()
           .type('notanimage');
 
-        cy.get('@mascotSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
-
         cy.get('@mascotSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText(
-          '😭 Validation failed: Mascot image url is not a valid URL',
-        ).should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Validation failed: Mascot image url is not a valid URL',
+          );
+        });
       });
     });
 
     it('accepts a valid image URL', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
@@ -47,17 +44,16 @@ describe('Mascot Section', () => {
           .clear()
           .type('https://example.com/image.png');
 
-        cy.get('@mascotSectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
-
         cy.get('@mascotSectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Successfully updated settings.',
+          );
+        });
 
         // Page reloaded so need to get a new reference to the form.
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');

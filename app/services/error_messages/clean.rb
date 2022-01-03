@@ -1,6 +1,6 @@
 module ErrorMessages
   class Clean
-    FRONTMATTER_ERROR = /expected key while parsing a block mapping at line/.freeze
+    FRONTMATTER_ERROR = /expected key while parsing a block mapping at line/
 
     REPLACEMENT_ERROR = "There was a problem parsing the front-matter YAML. " \
                         "Perhaps you need to escape a quote or a colon or something. " \

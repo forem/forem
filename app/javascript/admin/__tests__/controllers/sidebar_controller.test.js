@@ -1,4 +1,4 @@
-import { Application } from 'stimulus';
+import { Application } from '@hotwired/stimulus';
 import SidebarController from '../../controllers/sidebar_controller';
 
 describe('SidebarController', () => {

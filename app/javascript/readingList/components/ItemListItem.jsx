@@ -1,5 +1,4 @@
 // Item list item
-import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 export const ItemListItem = ({ item, children }) => {
@@ -15,11 +14,11 @@ export const ItemListItem = ({ item, children }) => {
   // update readingTime to 1 min if the reading time is less than 1 min
   adaptedItem.readingTime = Math.max(1, adaptedItem.readingTime || null);
   return (
-    <article className="flex px-6 py-4">
+    <article className="flex p-4 m:p-6 pb-0 m:pb-2 pr-2 m:pr-6">
       <a
+        className="crayons-avatar crayons-avatar--l"
         href={`/${adaptedItem.user.username}`}
         datatestid="item-user"
-        className="crayons-avatar crayons-avatar--l shrink-0"
       >
         <img
           src={adaptedItem.user.profile_image_90}
@@ -28,10 +27,10 @@ export const ItemListItem = ({ item, children }) => {
         />
       </a>
 
-      <div className="flex-1 pl-4">
+      <div className="flex-1 pl-2 m:pl-4">
         <a href={adaptedItem.path} class="flex crayons-link">
           <h2
-            className="fs-l fw-bold m-0 break-word"
+            className="fs-base lh-tight m:fs-l fw-bold break-word"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: filterXSS(adaptedItem.title) }}
           />
@@ -53,7 +52,11 @@ export const ItemListItem = ({ item, children }) => {
             <span datatestid="item-tags">
               <span class="color-base-30"> • </span>
               {adaptedItem.tags.map((tag) => (
-                <a key={tag.id} className="crayons-tag" href={`/t/${tag.name}`}>
+                <a
+                  className="crayons-tag crayons-tag--monochrome"
+                  key={tag}
+                  href={`/t/${tag.name}`}
+                >
                   {`#${tag.name}`}
                 </a>
               ))}
@@ -63,8 +66,7 @@ export const ItemListItem = ({ item, children }) => {
           )}
         </p>
       </div>
-
-      <div className="self-center">{children}</div>
+      <div className="m:self-center">{children}</div>
     </article>
   );
 };

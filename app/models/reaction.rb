@@ -5,8 +5,14 @@ class Reaction < ApplicationRecord
     "thumbsdown" => -10.0
   }.freeze
 
+  # The union of public and privileged categories
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
+
+  # These are the general category of reactions that anyone can choose
   PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
+
+  # These are categories of reactions that administrators can select
+  PRIVILEGED_CATEGORIES = %w[thumbsup thumbsdown vomit].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -20,11 +26,23 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
+
+  # Be wary, this is all things on the reading list, but for an end
+  # user they might only see readinglist items that are published.
+  # See https://github.com/forem/forem/issues/14796
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
   scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
   scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
+  scope :user_vomits, -> { where(category: "vomit", reactable_type: "User") }
+  scope :related_negative_reactions_for_user, lambda { |user|
+    article_vomits.where(reactable_id: user.article_ids)
+      .or(comment_vomits.where(reactable_id: user.comment_ids))
+      .or(user_vomits.where(user_id: user.id))
+  }
+  scope :privileged_category, -> { where(category: PRIVILEGED_CATEGORIES) }
+  scope :for_user, ->(user) { where(reactable: user) }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -59,6 +77,22 @@ class Reaction < ApplicationRecord
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
     end
+
+    # @param user [User] the user who might be spamming the system
+    #
+    # @return [TrueClass] yup, they're spamming the system.
+    # @return [FalseClass] they're not (yet) spamming the system
+    def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2)
+      article_vomits.where(reactable_id: user.articles.ids).size > threshold
+    end
+
+    # @param user [User] the user who might be spamming the system
+    #
+    # @return [TrueClass] yup, they're spamming the system.
+    # @return [FalseClass] they're not (yet) spamming the system
+    def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2)
+      comment_vomits.where(reactable_id: user.comments.ids).size > threshold
+    end
   end
 
   # no need to send notification if:
@@ -66,7 +100,14 @@ class Reaction < ApplicationRecord
   # - receiver is the same user as the one who reacted
   # - receive_notification is disabled
   def skip_notification_for?(_receiver)
-    points.negative? || (user_id == reactable.user_id)
+    reactor_id = case reactable
+                 when User
+                   reactable.id
+                 else
+                   reactable.user_id
+                 end
+
+    points.negative? || (user_id == reactor_id)
   end
 
   def vomit_on_user?
@@ -132,7 +173,7 @@ class Reaction < ApplicationRecord
   def negative_reaction_from_untrusted_user?
     return if user&.any_admin? || user&.id == Settings::General.mascot_user_id
 
-    negative? && !user.trusted
+    negative? && !user.trusted?
   end
 
   def notify_slack_channel_about_vomit_reaction

@@ -19,6 +19,9 @@
     background-color: $background;
     width: var(--su-6);
     height: var(--su-6);
+    overflow: hidden;
+    vertical-align: middle;
+    flex-shrink: 0;
 
     &__image {
       border-radius: $radius;

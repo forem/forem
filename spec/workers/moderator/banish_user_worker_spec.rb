@@ -9,11 +9,11 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
     let(:admin) { create(:user, :super_admin) }
 
     before do
-      user.profile.update!(currently_hacking_on: "text is here")
+      create(:profile_field, label: "Test field")
+      user.profile.update!(test_field: "text is here")
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
       create(:listing, user: user)
-      ChatChannels::CreateWithUsers.call(users: [user, user2])
       user.follow(user2)
       described_class.new.perform(admin.id, user.id)
       user.reload
@@ -21,20 +21,19 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
 
     it "makes user suspended and username spam" do
       expect(user.username).to include("spam")
-      expect(user.has_role?(:suspended)).to be true
+      expect(user.suspended?).to be true
     end
 
     it "deletes user content" do
       expect(user.reactions.count).to eq(0)
       expect(user.comments.count).to eq(0)
       expect(user.articles.count).to eq(0)
-      expect(user.chat_channels.count).to eq(0)
       expect(user.follows.count).to eq(0)
       expect(user.listings.count).to eq(0)
     end
 
     it "reassigns profile info" do
-      expect(user.profile.currently_hacking_on).to be_blank
+      expect(user.profile.test_field).to be_blank
     end
 
     it "creates an entry in the BanishedUsers table" do

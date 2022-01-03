@@ -9,7 +9,7 @@ class StackexchangeTag < LiquidTagBase
     "question" => "!*1SgQGDOL9bPBHULz9sKS.y6qv7V9fYNszvdhDuv5",
     "site" => "!mWxO_PNa4i"
   }.freeze
-  ID_REGEXP = /\A\d{1,20}\z/.freeze
+  ID_REGEXP = /\A\d{1,20}\z/
 
   attr_reader :site, :post_type
 

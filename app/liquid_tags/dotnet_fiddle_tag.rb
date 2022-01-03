@@ -2,7 +2,7 @@ require "uri"
 
 class DotnetFiddleTag < LiquidTagBase
   PARTIAL = "liquids/dotnetfiddle".freeze
-  LINK_REGEXP = %r{\A(https)://(dotnetfiddle\.net)/(Widget)/[a-zA-Z0-9\-/]*\z}.freeze
+  LINK_REGEXP = %r{\A(https)://(dotnetfiddle\.net)/(Widget)/[a-zA-Z0-9\-/]*\z}
 
   def initialize(_tag_name, link, _parse_context)
     super

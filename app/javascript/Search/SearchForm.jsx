@@ -1,33 +1,43 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 import { forwardRef } from 'preact/compat';
+import { locale } from '../utilities/locale';
+import { ButtonNew as Button } from '@crayons';
+import SearchIcon from '@images/search.svg';
 
-export const SearchForm = forwardRef(
-  ({ searchTerm, onSearch, onSubmitSearch }, ref) => (
-    <form
-      action="/search"
-      acceptCharset="UTF-8"
-      method="get"
-      onSubmit={onSubmitSearch}
-    >
-      <input name="utf8" type="hidden" value="✓" />
-      <input
-        ref={ref}
-        className="crayons-header--search-input crayons-textfield"
-        type="text"
-        name="q"
-        placeholder="Search..."
-        autoComplete="off"
-        aria-label="search"
-        onKeyDown={onSearch}
-        value={searchTerm}
-      />
-    </form>
-  ),
-);
+export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch }, ref) => (
+  <form
+    action="/search"
+    acceptCharset="UTF-8"
+    method="get"
+    onSubmit={onSubmitSearch}
+    role="search"
+  >
+    <input name="utf8" type="hidden" value="✓" />
+    <div class="crayons-fields crayons-fields--horizontal">
+      <div class="crayons-field flex-1 relative">
+        <input
+          ref={ref}
+          className="crayons-header--search-input crayons-textfield"
+          type="text"
+          name="q"
+          placeholder={`${locale('core.search')}...`}
+          autoComplete="off"
+          aria-label="Search term"
+          value={searchTerm}
+        />
+        <Button
+          type="submit"
+          icon={SearchIcon}
+          className="absolute inset-px left-auto mt-0 py-0"
+          aria-label="Search"
+        />
+      </div>
+    </div>
+  </form>
+));
 
 SearchForm.propTypes = {
   searchTerm: PropTypes.string.isRequired,
-  onSearch: PropTypes.func.isRequired,
   onSubmitSearch: PropTypes.func.isRequired,
 };

@@ -2,9 +2,9 @@ class GlitchTag < LiquidTagBase
   attr_accessor :uri
 
   PARTIAL = "liquids/glitch".freeze
-  ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/.freeze
-  TILDE_PREFIX_REGEXP = /\A~/.freeze
-  OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file=\w(\.\w)?)/.freeze
+  ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/
+  TILDE_PREFIX_REGEXP = /\A~/
+  OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file=\w(\.\w)?)/
   OPTIONS_TO_QUERY_PAIR = {
     "app" => %w[previewSize 100],
     "code" => %w[previewSize 0],

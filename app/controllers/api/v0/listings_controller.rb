@@ -18,14 +18,14 @@ module Api
       # actual column name for the listing category, prefixed with classified_.
       ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
-        classified_listing_category_id processed_html published
+        classified_listing_category_id processed_html published created_at
       ].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       def index
         @listings = Listing.published
           .select(ATTRIBUTES_FOR_SERIALIZATION)
-          .includes(:user, :organization, :taggings, :listing_category)
+          .includes([{ user: :profile }, :organization, :taggings, :listing_category])
 
         if params[:category].present?
           @listings = @listings.in_category(params[:category])

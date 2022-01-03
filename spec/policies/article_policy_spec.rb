@@ -51,4 +51,15 @@ RSpec.describe ArticlePolicy do
     it { is_expected.to permit_actions(%i[update new edit manage create delete_confirm destroy preview]) }
     it { is_expected.to permit_actions(%i[admin_unpublish]) }
   end
+
+  context "when user is an article's org_admin" do
+    let(:user) { create(:user, :org_admin) }
+    let(:org) { user.organizations.first }
+    let(:user2) { create(:user) }
+    let(:article) { build_stubbed(:article, organization_id: org.id, user: user2) }
+
+    before { create(:organization_membership, user: user2, organization: org) }
+
+    it { is_expected.to permit_actions(%i[update new edit stats create delete_confirm destroy preview]) }
+  end
 end

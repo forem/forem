@@ -1,6 +1,7 @@
 /* global jQuery */
-import { Controller } from 'stimulus';
+import { Controller } from '@hotwired/stimulus';
 import { adminModal } from '../adminModal';
+import { displaySnackbar } from '../messageUtilities';
 
 const recaptchaFields = document.getElementById('recaptchaContainer');
 const emailRegistrationCheckbox = document.getElementById(
@@ -10,11 +11,10 @@ const emailAuthSettingsSection = document.getElementById(
   'email-auth-settings-section',
 );
 const emailAuthModalTitle = 'Disable Email address registration';
-// TODO: Remove the "You mut confirm..." warning once we build more robust flow for Admin/Config
+
 const emailAuthModalBody = `
   <p>If you disable Email address as a registration option, people cannot create an account with their email address.</p>
-  <p>However, people who have already created an account using their email address can continue to login.</p>
-  <p><strong>You must confirm and update the settings below to complete this action.</strong></p>`;
+  <p>However, people who have already created an account using their email address can continue to login.</p>`;
 
 export default class ConfigController extends Controller {
   static targets = [
@@ -27,6 +27,13 @@ export default class ConfigController extends Controller {
     'inviteOnlyMode',
     'requireCaptchaForEmailPasswordRegistration',
   ];
+
+  connect() {
+    const element = document.querySelector(
+      `${window.location.hash} .card-body`,
+    );
+    element?.classList.add('show');
+  }
 
   // GENERAL FUNCTIONS START
 
@@ -93,6 +100,57 @@ export default class ConfigController extends Controller {
     }
   }
 
+  async updateConfigurationSettings(event) {
+    event.preventDefault();
+    let errored = false;
+
+    try {
+      const body = new FormData(event.target);
+      const response = await fetch(event.target.action, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
+            ?.content,
+        },
+        body,
+        credentials: 'same-origin',
+      });
+
+      const outcome = await response.json();
+
+      errored = outcome.error != null;
+      displaySnackbar(outcome.message ?? outcome.error);
+    } catch (err) {
+      errored = true;
+      displaySnackbar('An error occurred. Please try again.');
+    } finally {
+      // Only update the site logo in the header if the new logo is uploaded successfully.
+      if (!errored && event.target.elements.settings_general_logo) {
+        this.updateLogo();
+      }
+    }
+  }
+
+  /**
+   * Updates the site logo in the header with the same URL as the preview logo.
+   */
+  updateLogo() {
+    const previewLogo = document.querySelector(
+      '#logo-upload-preview .site-logo__img',
+    );
+
+    if (!previewLogo) {
+      return;
+    }
+
+    for (const logo of document.querySelectorAll('.site-logo__img')) {
+      if (logo !== previewLogo) {
+        logo.src = previewLogo.src;
+      }
+    }
+  }
+
   // GENERAL FUNCTIONS END
 
   // EMAIL AUTH FUNCTIONS START
@@ -126,6 +184,8 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: emailAuthModalTitle,
+      controllerName: 'config',
+      closeModalFunction: 'closeAdminModal',
       body: emailAuthModalBody,
       leftBtnText: 'Confirm disable',
       leftBtnAction: 'disableEmailAuthFromModal',
@@ -158,7 +218,7 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -177,7 +237,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProvider(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const enabledIndicator = document.getElementById(
       `${providerName}-enabled-indicator`,
     );
@@ -200,10 +260,12 @@ export default class ConfigController extends Controller {
 
   activateAuthProviderModal(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
-    const {providerOfficialName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
+    const { providerOfficialName } = event.target.dataset;
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: this.authProviderModalTitle(providerOfficialName),
+      controllerName: 'config',
+      closeModalFunction: 'closeAdminModal',
       body: this.authProviderModalBody(providerOfficialName),
       leftBtnText: 'Confirm disable',
       leftBtnAction: 'disableAuthProviderFromModal',
@@ -218,7 +280,7 @@ export default class ConfigController extends Controller {
 
   disableAuthProviderFromModal(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     const authEnableButton = document.getElementById(
       `${providerName}-auth-btn`,
     );
@@ -243,7 +305,7 @@ export default class ConfigController extends Controller {
       const targetAuthDisableBtn = document.querySelector(
         '[data-enable-auth="true"]',
       );
-      targetAuthDisableBtn.parentElement.classList.add('crayons-tooltip');
+      targetAuthDisableBtn.parentElement.classList.add('crayons-hover-tooltip');
       targetAuthDisableBtn.parentElement.setAttribute(
         'data-tooltip',
         'To edit this, you must first enable Email address as a registration option',
@@ -254,7 +316,7 @@ export default class ConfigController extends Controller {
 
   hideAuthProviderSettings(event) {
     event.preventDefault();
-    const {providerName} = event.target.dataset;
+    const { providerName } = event.target.dataset;
     document
       .getElementById(`${providerName}-auth-settings`)
       .classList.add('hidden');
@@ -290,7 +352,20 @@ export default class ConfigController extends Controller {
       .querySelectorAll('[data-enable-auth="true"]')
       .forEach((provider) => {
         const { providerName } = provider.dataset;
-        if (
+        if (providerName == 'apple') {
+          if (
+            !document.getElementById('settings_authentication_apple_client_id')
+              .value ||
+            !document.getElementById('settings_authentication_apple_key_id')
+              .value ||
+            !document.getElementById('settings_authentication_apple_pem')
+              .value ||
+            !document.getElementById('settings_authentication_apple_team_id')
+              .value
+          ) {
+            providersWithMissingKeys.push(providerName);
+          }
+        } else if (
           !document.getElementById(
             `settings_authentication_${providerName}_key`,
           ).value ||
@@ -328,6 +403,8 @@ export default class ConfigController extends Controller {
   activateMissingKeysModal(providers) {
     this.configModalAnchorTarget.innerHTML = adminModal({
       title: 'Setup not complete',
+      controllerName: 'config',
+      closeModalFunction: 'closeAdminModal',
       body: this.missingAuthKeysModalBody(providers),
       leftBtnText: 'Continue editing',
       leftBtnAction: 'closeAdminModal',
@@ -342,7 +419,7 @@ export default class ConfigController extends Controller {
       event.preventDefault();
       this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
     } else {
-      event.target.submit();
+      this.updateConfigurationSettings(event);
     }
   }
 

@@ -1,8 +1,6 @@
-# TODO: @citizen428 - We shouldn't use education and work directly here, since
-# we can't guarantee that these profile fields will exist on all Forems.
 json.extract!(
   @user.profile,
-  :summary, :location, :education, :work
+  :summary, :location
 )
 
 json.card_color(
@@ -12,3 +10,9 @@ json.card_color(
 json.email @user.email if @user.setting.display_email_on_profile
 
 json.created_at utc_iso_timestamp(@user.created_at)
+
+# Dynamically add the information for the header fields (maximum of 3 fields)
+header_fields = @user.profile.decorate.ui_attributes_for(area: :header)
+header_fields.each do |title, value|
+  json.set! title, value
+end

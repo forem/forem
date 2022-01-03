@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MobileDrawer /> should render correctly 1`] = `"<div class=\\"crayons-mobile-drawer\\"><div class=\\"crayons-mobile-drawer__overlay\\"></div><div class=\\"crayons-mobile-drawer__content\\" role=\\"dialog\\" aria-modal=\\"true\\" aria-label=\\"Example MobileDrawer\\"><button>Click me</button></div></div>"`;

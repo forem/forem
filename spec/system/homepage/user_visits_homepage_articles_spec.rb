@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe "User visits a homepage", type: :system do
   let!(:article) { create(:article, reactions_count: 12, featured: true, user: create(:user, profile_image: nil)) }
   let!(:article2) { create(:article, reactions_count: 20, featured: true, user: create(:user, profile_image: nil)) }
-  let!(:timestamp) { "2019-03-04T10:00:00Z" }
+  # Let's use yesterday's date for this instead of relying on a magic date.
+  let!(:timestamp) { "#{Date.yesterday.to_s('%Y-%M-%d')}T10:00:00Z" }
   let(:published_datetime) { Time.zone.parse(timestamp) }
   let(:published_date) { published_datetime.strftime("%b %e").gsub("  ", " ") }
 
@@ -22,10 +23,10 @@ RSpec.describe "User visits a homepage", type: :system do
       # Regression test for https://github.com/forem/forem/pull/12724
       it "does not display a comment count of 0", js: true do
         expect(page).to have_text("Add Comment")
-        expect(page).not_to have_text("0 comments")
+        expect(page).not_to have_text("0 #{I18n.t('core.comment').downcase}s")
         article.update_column(:comments_count, 50)
         visit "/"
-        expect(page).to have_text(/50\s*comments/)
+        expect(page).to have_text(/50\s*#{I18n.t("core.comment").downcase}s/)
       end
 
       it "shows the main article readable date and time", js: true do
@@ -42,7 +43,7 @@ RSpec.describe "User visits a homepage", type: :system do
         visit "/"
       end
 
-      it "shows correct articles " do
+      it "shows correct articles" do
         expect(page).to have_selector(".crayons-story", count: 2)
         expect(page).to have_text(article.title)
         expect(page).to have_text(article2.title)

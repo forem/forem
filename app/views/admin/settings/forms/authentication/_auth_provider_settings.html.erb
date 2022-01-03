@@ -20,6 +20,13 @@
                      placeholder: Constants::Settings::Authentication::DETAILS[:"#{provider.provider_name}_secret"][:placeholder] %>
   </div>
   <div class="crayons-btn-actions">
+    <% if provider.provider_name == :forem && !authentication_provider_enabled?(provider) %>
+      <div class="crayons-field">
+        <a href="https://developers.forem.com/backend/auth-forem" class="crayons-btn" target="_blank">
+          Get started here
+        </a>
+      </div>
+    <% end %>
     <% if authentication_provider_enabled?(provider) %>
       <button
         class="crayons-btn crayons-btn--danger"

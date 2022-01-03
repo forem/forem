@@ -21,7 +21,7 @@ RSpec.describe Podcasts::GetMediaUrl, type: :service do
     expect(result.url).to eq(url)
   end
 
-  it "https, unrechable" do
+  it "https, unreachable" do
     stub_request(:head, https_url).to_return(status: 404)
     result = described_class.call(https_url)
     expect(result.https).to be true
@@ -72,6 +72,16 @@ RSpec.describe Podcasts::GetMediaUrl, type: :service do
     result = described_class.call(http_url)
     expect(result.https).to be false
     expect(result.reachable).to be false
+    expect(result.url).to eq(http_url)
+  end
+
+  it "http, https unreachable with openssl error" do
+    httparty_result = instance_double(HTTParty::Response, code: 200)
+    allow(HTTParty).to receive(:head).with(https_url).and_raise(OpenSSL::SSL::SSLError)
+    allow(HTTParty).to receive(:head).with(http_url).and_return(httparty_result)
+    result = described_class.call(http_url)
+    expect(result.https).to be false
+    expect(result.reachable).to be true
     expect(result.url).to eq(http_url)
   end
 

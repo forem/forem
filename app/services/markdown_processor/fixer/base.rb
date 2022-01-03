@@ -8,7 +8,7 @@ module MarkdownProcessor
     # For example
     # METHODS = %i[add_quotes_to_tile add_quotes_to_description]
     class Base
-      FRONT_MATTER_DETECTOR = /-{3}.*?-{3}/m.freeze
+      FRONT_MATTER_DETECTOR = /-{3}.*?-{3}/m
 
       def self.call(markdown)
         return unless markdown
@@ -26,12 +26,6 @@ module MarkdownProcessor
 
       def self.add_quotes_to_description(markdown)
         add_quotes_to_section(markdown, section: "description")
-      end
-
-      # This turns --- into ------- after the first two,
-      # because --- messes with front matter
-      def self.modify_hr_tags(markdown)
-        markdown.gsub(/^---/).with_index { |match, i| i > 1 ? "#{match}-----" : match }
       end
 
       def self.lowercase_published(markdown)
@@ -62,7 +56,7 @@ module MarkdownProcessor
       end
 
       # Match @_username_ that is not preceded by backtick
-      USERNAME_WITH_UNDERSCORE_REGEXP = /(?<!`)@_\w+_/.freeze
+      USERNAME_WITH_UNDERSCORE_REGEXP = /(?<!`)@_\w+_/
 
       # Escapes underscored username that is not in code
       def self.escape_underscored_username_in_line!(line)
@@ -82,7 +76,7 @@ module MarkdownProcessor
             # either single or double quotes.
             match = captured_text.scan(/(^".*"$|^'.*'$)/)
             if match.empty?
-              # Double quotes that aren't already escaped will get esacped.
+              # Double quotes that aren't already escaped will get escaped.
               # Then the whole text get warped in double quotes.
               parsed_text = captured_text.gsub(/(?<!\\)"/, "\\\"")
               "#{section}: \"#{parsed_text}\"\n"

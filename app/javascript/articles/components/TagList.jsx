@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { tagPropTypes } from '../../common-prop-types';
+import PropTypes from 'prop-types';
 
 export const TagList = ({ tags = [], flare_tag }) => {
   let tagsToDisplay = tags;
@@ -10,11 +10,13 @@ export const TagList = ({ tags = [], flare_tag }) => {
     <div className="crayons-story__tags">
       {flare_tag && (
         <a
-          className="crayons-tag"
+          className="crayons-tag crayons-tag--filled"
           href={`/t/${flare_tag.name}`}
           style={{
-            background: flare_tag.bg_color_hex,
-            color: flare_tag.text_color_hex,
+            '--tag-bg': `${flare_tag.bg_color_hex}1a`,
+            '--tag-prefix': flare_tag.bg_color_hex,
+            '--tag-bg-hover': `${flare_tag.bg_color_hex}1a`,
+            '--tag-prefix-hover': flare_tag.bg_color_hex,
           }}
         >
           <span className="crayons-tag__prefix">#</span>
@@ -22,7 +24,7 @@ export const TagList = ({ tags = [], flare_tag }) => {
         </a>
       )}
       {tagsToDisplay.map((tag) => (
-        <a key={tag} className="crayons-tag" href={`/t/${tag}`}>
+        <a key={`tag-${tag}`} className="crayons-tag" href={`/t/${tag}`}>
           <span className="crayons-tag__prefix">#</span>
           {tag}
         </a>
@@ -32,7 +34,7 @@ export const TagList = ({ tags = [], flare_tag }) => {
 };
 
 TagList.propTypes = {
-  tags: tagPropTypes.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 TagList.displayName = 'TagList';

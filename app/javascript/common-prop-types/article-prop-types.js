@@ -1,6 +1,4 @@
 import PropTypes from 'prop-types';
-import { tagPropTypes } from './tag-prop-types';
-import { organizationPropType } from './organization-prop-type';
 
 export const articleSnippetResultPropTypes = PropTypes.shape({
   body_text: PropTypes.arrayOf(PropTypes.string),
@@ -11,10 +9,14 @@ export const articlePropTypes = PropTypes.shape({
   title: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   cloudinary_video_url: PropTypes.string,
-  video_duration_in_minutes: PropTypes.number,
+  video_duration_in_minutes: PropTypes.string,
   type_of: PropTypes.oneOf(['podcast_episodes']),
   class_name: PropTypes.oneOf(['PodcastEpisode', 'User', 'Article']),
-  flare_tag: tagPropTypes,
+  flare_tag: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    bg_color_hex: PropTypes.string,
+    text_color_hex: PropTypes.string,
+  }),
   tag_list: PropTypes.arrayOf(PropTypes.string),
   cached_tag_list_array: PropTypes.arrayOf(PropTypes.string),
   podcast: PropTypes.shape({
@@ -22,12 +24,16 @@ export const articlePropTypes = PropTypes.shape({
     title: PropTypes.string.isRequired,
     image_url: PropTypes.string.isRequired,
   }),
-  user_id: PropTypes.string.isRequired,
+  user_id: PropTypes.number.isRequired,
   user: PropTypes.shape({
     username: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   }),
-  organization: organizationPropType,
+  organization: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    profile_image_90: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
+  }),
   highlight: articleSnippetResultPropTypes,
   public_reactions_count: PropTypes.number,
   reactions_count: PropTypes.number,

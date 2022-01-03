@@ -5,6 +5,8 @@ class StripeActiveCardsController < ApplicationController
   AUDIT_LOG_CATEGORY = "user.credit_card.edit".freeze
   private_constant :AUDIT_LOG_CATEGORY
 
+  STRIPE_PERMITTED_PARAMS = %i[stripe_token].freeze
+
   def create
     authorize :stripe_active_card
 
@@ -87,7 +89,7 @@ class StripeActiveCardsController < ApplicationController
   end
 
   def stripe_params
-    params.permit(%i[stripe_token])
+    params.permit(STRIPE_PERMITTED_PARAMS)
   end
 
   def audit_log(user_action)

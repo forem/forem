@@ -1,4 +1,4 @@
-/* global checkUserLoggedIn, instantClick, InstantClick, sendHapticMessage */
+/* global checkUserLoggedIn, instantClick, InstantClick, sendHapticMessage, showModalAfterError */
 
 function initNotifications() {
   fetchNotificationsCount();
@@ -70,6 +70,8 @@ function initReactions() {
 
       for (var i = 0; i < butts.length; i++) {
         var butt = butts[i];
+        butt.setAttribute('aria-pressed', butt.classList.contains('reacted'));
+
         butt.onclick = function (event) {
           event.preventDefault();
           sendHapticMessage('medium');
@@ -79,8 +81,10 @@ function initReactions() {
           function successCb(response) {
             if (response.result === 'create') {
               thisButt.classList.add('reacted');
+              thisButt.setAttribute('aria-pressed', true);
             } else {
               thisButt.classList.remove('reacted');
+              thisButt.setAttribute('aria-pressed', false);
             }
           }
 
@@ -94,6 +98,13 @@ function initReactions() {
             .then(function (response) {
               if (response.status === 200) {
                 response.json().then(successCb);
+              } else {
+                showModalAfterError({
+                  response,
+                  element: 'reaction',
+                  action_ing: 'updating',
+                  action_past: 'updated',
+                });
               }
             });
         };

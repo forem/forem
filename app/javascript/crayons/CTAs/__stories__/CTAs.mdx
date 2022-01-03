@@ -1,0 +1,32 @@
+# CTAs (Call To Actions)
+
+CTA is meant to be more prominent and visually heavy than regular links and should deliver clear... well... *call to action* :).
+
+## CTAs vs Links vs Buttons
+
+The most important of these rules is that the `<CTA />` (or `<Link />`) and `<Button />` elements are assigned to appropriate respective tasks. 
+That is: `<CTA />` or `<Link />` should be used where navigation is elicited, and `<Button />` where a non-navigational action is being invoked.
+For example, a 'Submit' control on 'Sign in' view (form) would suit a `<Button />` because its job is to submit the form. 
+However, 'Register' call-to-action—taking the user to a different form, in a different page or screen—would benefit from `<CTA />` or `<Link />` semantics.
+
+Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) when the desired action is to take the user to a new page.
+
+## Usage
+
+A CTA renders an anchor element, therefore standard link markup must be used,
+including a `href` attribute, otherwise, it is not focusable by the keyboard.
+
+### Icons
+
+Icon can be placed in front of a label to both clarify an action but also to make CTA stand out more.
+By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself within `<CTA />` is **not** customizable. Icons within CTAs are hidden from assistive technology, so make sure your CTA has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
+
+#### Icon-only
+
+A call to action requires a label, therefore it is forbidden to create a CTA with an icon only.
+For such a scenario, use a `<Link />` or `<Button />` component (depending on the use case).
+
+## Design
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FgHpwugeu9jFGW4d9u3ReuR%2FCrayons%3Fnode-id%3D1%253A29" allowfullscreen></iframe>

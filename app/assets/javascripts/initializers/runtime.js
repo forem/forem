@@ -20,19 +20,14 @@ class Runtime {
   /**
    * This function returns a string that represents the current Medium where
    * the app is currently running. The currently supported mediums are Browser,
-   * ForemWebView and PWA.
+   * and ForemWebView.
    *
-   * @returns {String} One of the supported Mediums or 'Unsupported'
+   * @returns {String} One of the supported Mediums
    */
   static currentMedium() {
-    const pwaButtons = document.getElementById('pwa-nav-buttons');
-    if (/ForemWebView/i.test(navigator.userAgent)) {
-      return 'ForemWebView';
-    } else if (pwaButtons.classList.contains('pwa-nav-buttons--showing')) {
-      return 'PWA';
-    } else {
-      return 'Browser';
-    }
+    return /ForemWebView/i.test(navigator.userAgent)
+      ? 'ForemWebView'
+      : 'Browser';
   }
 
   /**
@@ -132,5 +127,38 @@ class Runtime {
         reject('Unable to copy the text. Try reloading the page');
       }
     });
+  }
+
+  /**
+   * Returns true if the supplied KeyboardEvent includes the OS-specific
+   * modifier key. For example, the Cmd key on Apple platforms or the Ctrl key
+   * on others.
+   *
+   * @param {KeyboardEvent} The event to check for the OS-specific modifier key
+   *
+   * @returns {Boolean} true if the event was fired with the OS-specific
+   *                    modifier key, false otherwise. Also returns false if
+   *                    the event is not a KeyboardEvent.
+   */
+  static hasOSSpecificModifier(event) {
+    if (!(event instanceof KeyboardEvent)) {
+      return false;
+    }
+
+    if (navigator.userAgent.indexOf('Mac OS X') >= 0) {
+      return event.metaKey;
+    } else {
+      return event.ctrlKey;
+    }
+  }
+
+  /**
+   * Returns a string representation of the expected modifier key for the current OS.
+   * This allows us to display correct shortcut key hints to users in the UI, and set up correct shortcut key bindings.
+   *
+   * @returns {string} either 'cmd' if on macOS, or 'ctrl' otherwise
+   */
+  static getOSKeyboardModifierKeyString() {
+    return Runtime.currentOS() === 'macOS' ? 'cmd' : 'ctrl';
   }
 }

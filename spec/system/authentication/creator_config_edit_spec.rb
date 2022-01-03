@@ -3,9 +3,6 @@ require "rails_helper"
 RSpec.describe "Creator config edit", type: :system, js: true do
   let(:admin) { create(:user, :super_admin) }
 
-  # Apple auth is in Beta so we need to enable the Feature Flag to test it
-  before { Flipper.enable(:apple_auth) }
-
   context "when a creator browses /admin/customization/config" do
     before do
       sign_in admin

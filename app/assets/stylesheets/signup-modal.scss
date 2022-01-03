@@ -8,13 +8,9 @@
     margin-right: var(--su-4);
     height: auto;
     width: auto;
-
-    @include generate-box(
-      $level: 2,
-      $bg: var(--base-inverted),
-      $border: var(--base),
-      $color: var(--card-color)
-    );
+    background: var(--card-bg);
+    color: var(--card-color);
+    border-radius: var(--radius);
 
     @media (min-width: $breakpoint-s) {
       margin: inherit;

@@ -10,7 +10,7 @@ class ModerationsController < ApplicationController
 
   def index
     skip_authorization
-    return unless current_user&.trusted
+    return unless current_user&.trusted?
 
     articles = Article.published
       .order(published_at: :desc).limit(70)
@@ -22,7 +22,6 @@ class ModerationsController < ApplicationController
     @articles = articles.includes(:user).to_json(JSON_OPTIONS)
     @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?
     @current_user_tags = current_user.moderator_for_tags
-    @community_mod_channel = current_user.chat_channels.find_by("channel_name LIKE ?", "Community Mods: Team%")
   end
 
   def article
@@ -62,7 +61,7 @@ class ModerationsController < ApplicationController
     @adjustments = TagAdjustment.where(article_id: @moderatable.id)
     @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
     @allowed_to_adjust = @moderatable.instance_of?(Article) && (
-      current_user.has_role?(:super_admin) || @tag_moderator_tags.any?)
+      current_user.super_admin? || @tag_moderator_tags.any?)
     @hidden_comments = @moderatable.comments.where(hidden_by_commentable_user: true)
   end
 end

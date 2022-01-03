@@ -29,6 +29,9 @@ module ConsumerApps
     attr_reader :app_bundle, :consumer_app
 
     def recreate_ios_app!
+      # If the ConsumerApp doesn't have credentials there's no need to create it
+      return if consumer_app.auth_credentials.blank?
+
       app = Rpush::Apns2::App.new
       app.name = app_bundle
       app.certificate = consumer_app.auth_credentials.to_s.gsub("\\n", "\n")
@@ -41,6 +44,9 @@ module ConsumerApps
     end
 
     def recreate_android_app!
+      # If the ConsumerApp doesn't have credentials there's no need to create it
+      return if consumer_app.auth_credentials.blank?
+
       app = Rpush::Gcm::App.new
       app.name = app_bundle
       app.auth_key = consumer_app.auth_credentials.to_s

@@ -53,7 +53,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include("Email notifications", "Mobile notifications", "General notifications")
       end
 
-      it "displays moderator notifications secons on Notifications tab if trusted" do
+      it "displays moderator notifications second on Notifications tab if trusted" do
         user.add_role(:trusted)
 
         get user_settings_path(:notifications)
@@ -83,9 +83,13 @@ RSpec.describe "UserSettings", type: :request do
         get user_settings_path(:extensions)
 
         feed_section = "Publishing to #{Settings::Community.community_name} from RSS"
-        stackbit_section = "Generate a personal blog from your #{Settings::Community.community_name} posts"
-        titles = ["Comment templates", "Connect settings", feed_section, "Web monetization", stackbit_section]
+        titles = ["Comment templates", feed_section, "Web monetization"]
         expect(response.body).to include(*titles)
+      end
+
+      it "includes contact us on RSS page properly" do
+        get user_settings_path(:extensions)
+        expect(response.body).to include(I18n.t("contact_prompts.if_any_questions_html"))
       end
 
       it "renders heads up dupe account message with proper param" do
@@ -180,6 +184,17 @@ RSpec.describe "UserSettings", type: :request do
 
         expect(response.body).to include("Connect GitHub Account")
       end
+
+      it "does not allow to connect an Apple Account to an existing user" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:twitter])
+
+        sign_in user
+        get user_settings_path
+
+        expect(response.body).to include("Connect GitHub Account")
+        expect(response.body).not_to include("Connect Apple Account")
+      end
     end
 
     describe "GitHub repositories" do
@@ -227,14 +242,9 @@ RSpec.describe "UserSettings", type: :request do
   describe "PUT /update/:id" do
     before { sign_in user }
 
-    it "updates summary" do
-      put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
-      expect(user.summary).to eq("Hello new summary")
-    end
-
     it "updates profile_updated_at" do
       user.update_column(:profile_updated_at, 2.weeks.ago)
-      put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
+      put "/users/#{user.id}", params: { user: { tab: "profile", username: "new_username" } }
       expect(user.reload.profile_updated_at).to be > 2.minutes.ago
     end
 

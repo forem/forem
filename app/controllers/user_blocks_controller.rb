@@ -19,7 +19,6 @@ class UserBlocksController < ApplicationController
     @user_block.config = "default"
 
     if @user_block.save
-      UserBlocks::ChannelHandler.new(@user_block).block_chat_channel
       current_user.stop_following(@user_block.blocked)
       @user_block.blocked.stop_following(current_user)
       render json: { result: "blocked" }
@@ -39,7 +38,6 @@ class UserBlocksController < ApplicationController
     authorize @user_block
 
     if @user_block.destroy
-      UserBlocks::ChannelHandler.new(@user_block).unblock_chat_channel
       render json: { result: "unblocked" }
     else
       render json: { error: @user_block.errors_as_sentence, status: 422 }, status: :unprocessable_entity

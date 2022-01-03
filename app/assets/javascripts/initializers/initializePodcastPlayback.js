@@ -1,5 +1,5 @@
 /**
- * This script hunts for podcast's "Record" for both the podcast_episde's
+ * This script hunts for podcast's "Record" for both the podcast_episode's
  * show page and an article page containing podcast liquid tag. It handles
  * playback and makes sure the record will spin when the podcast is currently
  * playing.
@@ -82,14 +82,18 @@ function initializePodcastPlayback() {
 
   function spinPodcastRecord(customMessage) {
     if (audioExistAndIsPlaying() && recordExist()) {
-      getById(`record-${window.activeEpisode}`).classList.add('playing');
+      var podcastPlaybackButton = getById(`record-${window.activeEpisode}`);
+      podcastPlaybackButton.classList.add('playing');
+      podcastPlaybackButton.setAttribute('aria-pressed', 'true');
       changeStatusMessage(customMessage);
     }
   }
 
   function stopRotatingActivePodcastIfExist() {
     if (window.activeEpisode && getById(`record-${window.activeEpisode}`)) {
-      getById(`record-${window.activeEpisode}`).classList.remove('playing');
+      var podcastPlaybackButton = getById(`record-${window.activeEpisode}`);
+      podcastPlaybackButton.classList.remove('playing');
+      podcastPlaybackButton.setAttribute('aria-pressed', 'false');
       window.activeEpisode = undefined;
     }
   }
@@ -183,7 +187,8 @@ function initializePodcastPlayback() {
     Array.prototype.forEach.call(records, function (record) {
       var episodeSlug = record.getAttribute('data-episode');
       var podcastSlug = record.getAttribute('data-podcast');
-      record.onclick = function () {
+
+      var togglePodcastState = function (e) {
         if (podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug)) {
           var audio = getById('audio');
           if (audio) {
@@ -194,6 +199,7 @@ function initializePodcastPlayback() {
           loadAndPlayNewPodcast(episodeSlug);
         }
       };
+      record.addEventListener('click', togglePodcastState);
     });
   }
 
@@ -262,7 +268,7 @@ function initializePodcastPlayback() {
         setPlaying(true);
         resolve();
       } else {
-        audio.currrentTime = currentState.currentTime;
+        audio.currentTime = currentState.currentTime;
         audio
           .play()
           .then(function () {
@@ -467,17 +473,9 @@ function initializePodcastPlayback() {
     }
   }
 
-  function handlePodcastMessages(mutation) {
-    if (mutation.type !== 'attributes') {
-      return;
-    }
-
-    var message = {};
-    try {
-      var messageData = getById('audiocontent').dataset.podcast;
-      message = JSON.parse(messageData);
-    } catch (e) {
-      console.log(e); // eslint-disable-line no-console
+  function handlePodcastMessages(event) {
+    const message = JSON.parse(event.detail);
+    if (message.namespace !== 'podcast') {
       return;
     }
 
@@ -493,40 +491,23 @@ function initializePodcastPlayback() {
         updateProgress(currentState.currentTime, currentState.duration, 100);
         break;
       default:
-        console.log('Unrecognized podcast message: ', message); // eslint-disable-line no-console
+        console.log('Unrecognized message: ', message); // eslint-disable-line no-console
     }
 
     saveMediaState(currentState);
-  }
-
-  function addMutationObserver() {
-    var mutationObserver = new MutationObserver(function (mutations) {
-      mutations.forEach(function (mutation) {
-        handlePodcastMessages(mutation);
-      });
-    });
-    mutationObserver.observe(getById('audiocontent'), { attributes: true });
   }
 
   // When Runtime.podcastMessage is undefined we need to execute web logic
   function initRuntime() {
     if (Runtime.isNativeIOS('podcast')) {
       deviceType = 'iOS';
-      Runtime.podcastMessage = function (message) {
-        try {
-          window.webkit.messageHandlers.podcast.postMessage(message);
-        } catch (err) {
-          console.log(err.message); // eslint-disable-line no-console
-        }
-      };
     } else if (Runtime.isNativeAndroid('podcastMessage')) {
       deviceType = 'Android';
-      Runtime.podcastMessage = function (message) {
-        try {
-          AndroidBridge.podcastMessage(JSON.stringify(message));
-        } catch (err) {
-          console.log(err.message); // eslint-disable-line no-console
-        }
+    }
+
+    if (deviceType !== 'web') {
+      Runtime.podcastMessage = (msg) => {
+        window.ForemMobile.injectNativeMessage('podcast', msg);
       };
     }
   }
@@ -554,7 +535,7 @@ function initializePodcastPlayback() {
         updateProgressListener(audio),
         false,
       );
-      addMutationObserver();
+      document.addEventListener('ForemMobile', handlePodcastMessages);
     }, 500);
     applyOnclickToPodcastBar(audio);
   }

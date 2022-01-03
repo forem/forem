@@ -1,5 +1,9 @@
 module RpushHelpers
-  def mock_rpush(consumer_app)
+  # This method creates the mocks necessary to test RPush related features since
+  # we use the fakeredis gem and don't have a working Redis server in CI.
+  # The param `empty` allows us to conditionally mock if the app exists or not
+  # Example: Rpush::Apns2::App.where(...).first => nil/app (empty true/false)
+  def mock_rpush(consumer_app, empty: false)
     if consumer_app.android?
       rpush_class = Rpush::Gcm::App
       rpush_notification_class = Rpush::Gcm::Notification
@@ -21,7 +25,7 @@ module RpushHelpers
     allow(rpush_notification_class).to receive(:new).and_return(rpush_notification)
 
     relation = double
-    allow(relation).to receive(:first).and_return(rpush_app)
+    allow(relation).to receive(:first).and_return(empty ? nil : rpush_app)
     allow(rpush_class).to receive(:where).and_return(relation)
 
     original = consumer_app.method(:save)

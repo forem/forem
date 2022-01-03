@@ -10,7 +10,7 @@ describe('Community Content Section', () => {
 
   describe('community emoji setting', () => {
     it('rejects invalid input (no emoji)', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
@@ -20,24 +20,21 @@ describe('Community Content Section', () => {
           .clear()
           .type('X');
 
-        cy.get('@communitySectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
-
         cy.get('@communitySectionForm').findByText('Update Settings').click();
 
-        cy.url().should('contains', '/admin/customization/config');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Validation failed: Community emoji contains non-emoji characters or invalid emoji',
+          );
+        });
 
-        cy.findByText(
-          '😭 Validation failed: Community emoji contains non-emoji characters or invalid emoji',
-        ).should('be.visible');
+        cy.url().should('contains', '/admin/customization/config');
       });
     });
 
     it('accepts a valid emoji', () => {
-      cy.get('@user').then(({ username }) => {
+      cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
@@ -47,17 +44,16 @@ describe('Community Content Section', () => {
           .clear()
           .type('🌱');
 
-        cy.get('@communitySectionForm')
-          .findByPlaceholderText('Confirmation text')
-          .type(
-            `My username is @${username} and this action is 100% safe and appropriate.`,
-          );
-
         cy.get('@communitySectionForm').findByText('Update Settings').click();
 
         cy.url().should('contains', '/admin/customization/config');
 
-        cy.findByText('Successfully updated settings.').should('be.visible');
+        cy.findByTestId('snackbar').within(() => {
+          cy.findByRole('alert').should(
+            'have.text',
+            'Successfully updated settings.',
+          );
+        });
 
         // Page reloaded so need to get a new reference to the form.
         cy.get('#new_settings_community').as('communitySectionForm');

@@ -3,7 +3,7 @@
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
     <% @organization.sponsorships.live.find_each do |sponsorship| %>
       <div class="sidebar-sponsorship-level">
-        <%= sponsorship.level.capitalize %> Community Sponsor ❤️
+        <%= t("views.organizations.sponsor.text", level: t("views.organizations.sponsor.level.#{sponsorship.level}")) %>
       </div>
     <% end %>
 
@@ -13,7 +13,7 @@
     <% if @organization.users.any? %>
       <div class="widget">
         <div class="widget-suggested-follows-container">
-          <header><h4>meet the team</h4></header>
+          <header><h4><%= t("views.organizations.team") %></h4></header>
           <div class="widget-body">
             <% @organization.users.find_each do |user| %>
               <div class="widget-user-pic">

@@ -10,6 +10,45 @@ import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 
+const NativeIosImageUpload = ({
+  extraProps,
+  uploadLabel,
+  isUploadingImage,
+}) => (
+  <Fragment>
+    {isUploadingImage ? null : (
+      <Button
+        variant="outlined"
+        className="mr-2 whitespace-nowrap"
+        {...extraProps}
+      >
+        {uploadLabel}
+      </Button>
+    )}
+  </Fragment>
+);
+
+const StandardImageUpload = ({
+  uploadLabel,
+  handleImageUpload,
+  isUploadingImage,
+}) =>
+  isUploadingImage ? null : (
+    <Fragment>
+      <label className="cursor-pointer crayons-btn crayons-btn--outlined">
+        {uploadLabel}
+        <input
+          id="cover-image-input"
+          type="file"
+          onChange={handleImageUpload}
+          accept="image/*"
+          className="screen-reader-only"
+          data-max-file-size-mb="25"
+        />
+      </label>
+    </Fragment>
+  );
+
 export class ArticleCoverImage extends Component {
   state = {
     uploadError: false,
@@ -32,7 +71,11 @@ export class ArticleCoverImage extends Component {
       const { files: image } = event.dataTransfer || event.target;
       const payload = { image };
 
-      generateMainImage(payload, this.onImageUploadSuccess, this.onUploadError);
+      generateMainImage({
+        payload,
+        successCb: this.onImageUploadSuccess,
+        failureCb: this.onUploadError,
+      });
     }
   };
 
@@ -52,20 +95,27 @@ export class ArticleCoverImage extends Component {
   };
 
   useNativeUpload = () => {
-    return Runtime.isNativeIOS('imageUpload');
+    // This namespace is not implemented in the native side. This allows us to
+    // deploy our refactor and wait until our iOS app is approved by AppStore
+    // review. The old web implementation will be the fallback until then.
+    return Runtime.isNativeIOS('imageUpload_disabled');
   };
 
   initNativeImagePicker = (e) => {
     e.preventDefault();
-    window.webkit.messageHandlers.imageUpload.postMessage({
-      id: 'native-cover-image-upload-message',
+    window.ForemMobile?.injectNativeMessage('coverUpload', {
+      action: 'coverImageUpload',
       ratio: `${100.0 / 42.0}`,
     });
   };
 
   handleNativeMessage = (e) => {
-    const message = JSON.parse(e.target.value);
+    const message = JSON.parse(e.detail);
+    if (message.namespace !== 'coverUpload') {
+      return;
+    }
 
+    /* eslint-disable no-case-declarations */
     switch (message.action) {
       case 'uploading':
         this.setState({ uploadingImage: true });
@@ -79,10 +129,14 @@ export class ArticleCoverImage extends Component {
         });
         break;
       case 'success':
-        this.props.onMainImageUrlChange({ links: [message.link] });
+        const { onMainImageUrlChange } = this.props;
+        onMainImageUrlChange({
+          links: [message.link],
+        });
         this.setState({ uploadingImage: false });
         break;
     }
+    /* eslint-enable no-case-declarations */
   };
 
   triggerMainImageRemoval = (e) => {
@@ -123,6 +177,9 @@ export class ArticleCoverImage extends Component {
         }
       : {};
 
+    // Native Bridge messages come through ForemMobile events
+    document.addEventListener('ForemMobile', this.handleNativeMessage);
+
     return (
       <DragAndDropZone
         onDragOver={onDragOver}
@@ -140,47 +197,36 @@ export class ArticleCoverImage extends Component {
             />
           )}
           <div className="flex items-center">
-            {uploadingImage ? (
+            {uploadingImage && (
               <span class="lh-base pl-1 border-0 py-2 inline-block">
                 <Spinner /> Uploading...
               </span>
-            ) : (
-              <Fragment>
+            )}
+
+            <Fragment>
+              {this.useNativeUpload() ? (
+                <NativeIosImageUpload
+                  isUploadingImage={uploadingImage}
+                  extraProps={extraProps}
+                  uploadLabel={uploadLabel}
+                />
+              ) : (
+                <StandardImageUpload
+                  isUploadingImage={uploadingImage}
+                  uploadLabel={uploadLabel}
+                  handleImageUpload={this.handleMainImageUpload}
+                />
+              )}
+
+              {mainImage && !uploadingImage && (
                 <Button
-                  variant="outlined"
-                  className="mr-2 whitespace-nowrap"
-                  {...extraProps}
+                  variant="ghost-danger"
+                  onClick={this.triggerMainImageRemoval}
                 >
-                  <label htmlFor="cover-image-input">{uploadLabel}</label>
-                  {!this.useNativeUpload() && (
-                    <input
-                      id="cover-image-input"
-                      type="file"
-                      onChange={this.handleMainImageUpload}
-                      accept="image/*"
-                      className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-                      data-max-file-size-mb="25"
-                    />
-                  )}
+                  Remove
                 </Button>
-                {mainImage && (
-                  <Button
-                    variant="ghost-danger"
-                    onClick={this.triggerMainImageRemoval}
-                  >
-                    Remove
-                  </Button>
-                )}
-              </Fragment>
-            )}
-            {this.useNativeUpload() && (
-              <input
-                type="hidden"
-                id="native-cover-image-upload-message"
-                value=""
-                onChange={this.handleNativeMessage}
-              />
-            )}
+              )}
+            </Fragment>
           </div>
           {uploadError && (
             <p className="articleform__uploaderror">{uploadErrorMessage}</p>
@@ -192,7 +238,7 @@ export class ArticleCoverImage extends Component {
 }
 
 ArticleCoverImage.propTypes = {
-  mainImage: PropTypes.string.isRequired,
+  mainImage: PropTypes.string,
   onMainImageUrlChange: PropTypes.func.isRequired,
 };
 

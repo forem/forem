@@ -11,8 +11,11 @@ RSpec.describe User, type: :model do
   end
 
   def mock_username(provider_name, username)
-    if provider_name == :apple
+    case provider_name
+    when :apple
       OmniAuth.config.mock_auth[provider_name].info.first_name = username
+    when :forem
+      OmniAuth.config.mock_auth[provider_name].info.user_nickname = username
     else
       OmniAuth.config.mock_auth[provider_name].info.nickname = username
     end
@@ -33,77 +36,82 @@ RSpec.describe User, type: :model do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
+  describe "delegations" do
+    it { is_expected.to delegate_method(:admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:any_admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:auditable?).to(:authorizer) }
+    it { is_expected.to delegate_method(:banished?).to(:authorizer) }
+    it { is_expected.to delegate_method(:comment_suspended?).to(:authorizer) }
+    it { is_expected.to delegate_method(:creator?).to(:authorizer) }
+    it { is_expected.to delegate_method(:has_trusted_role?).to(:authorizer) }
+    it { is_expected.to delegate_method(:podcast_admin_for?).to(:authorizer) }
+    it { is_expected.to delegate_method(:restricted_liquid_tag_for?).to(:authorizer) }
+    it { is_expected.to delegate_method(:single_resource_admin_for?).to(:authorizer) }
+    it { is_expected.to delegate_method(:super_admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:support_admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:suspended?).to(:authorizer) }
+    it { is_expected.to delegate_method(:tag_moderator?).to(:authorizer) }
+    it { is_expected.to delegate_method(:tech_admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:trusted).to(:authorizer) }
+    it { is_expected.to delegate_method(:trusted?).to(:authorizer) }
+    it { is_expected.to delegate_method(:user_subscription_tag_available?).to(:authorizer) }
+    it { is_expected.to delegate_method(:vomited_on?).to(:authorizer) }
+    it { is_expected.to delegate_method(:warned).to(:authorizer) }
+    it { is_expected.to delegate_method(:warned?).to(:authorizer) }
+    it { is_expected.to delegate_method(:workshop_eligible?).to(:authorizer) }
+  end
+
   describe "validations" do
     describe "builtin validations" do
       subject { user }
 
-      it { is_expected.to have_one(:profile).dependent(:destroy) }
-      it { is_expected.to have_one(:notification_setting).dependent(:destroy) }
-      it { is_expected.to have_one(:setting).dependent(:destroy) }
+      it { is_expected.to have_one(:profile).dependent(:delete) }
+      it { is_expected.to have_one(:notification_setting).dependent(:delete) }
+      it { is_expected.to have_one(:setting).dependent(:delete) }
 
-      it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
-      it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
-      it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:destroy) }
-      it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:destroy) }
-      it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
+      it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:delete_all) }
+      it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:delete_all) }
+      it { is_expected.to have_many(:api_secrets).dependent(:delete_all) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
-      it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
+      it { is_expected.to have_many(:badge_achievements).dependent(:delete_all) }
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
-      it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
-      it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
-      it { is_expected.to have_many(:discussion_locks).dependent(:destroy) }
-      it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
+      it { is_expected.to have_many(:discussion_locks).dependent(:delete_all) }
+      it { is_expected.to have_many(:display_ad_events).dependent(:delete_all) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
-      it { is_expected.to have_many(:identities).dependent(:destroy) }
+      it { is_expected.to have_many(:identities).dependent(:delete_all) }
       it { is_expected.to have_many(:identities_enabled) }
       it { is_expected.to have_many(:listings).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
-      it { is_expected.to have_many(:messages).dependent(:destroy) }
-      it { is_expected.to have_many(:notes).dependent(:destroy) }
-      it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
-      it { is_expected.to have_many(:notifications).dependent(:destroy) }
-      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:delete_all) }
+      it { is_expected.to have_many(:notes).dependent(:delete_all) }
+      it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
+      it { is_expected.to have_many(:notifications).dependent(:delete_all) }
+      it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
       it { is_expected.to have_many(:page_views).dependent(:nullify) }
-      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:delete_all) }
       it { is_expected.to have_many(:podcast_episodes).through(:podcast_episode_appearances).source(:podcast_episode) }
-      it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_ownerships).dependent(:delete_all) }
       it { is_expected.to have_many(:podcasts_owned).through(:podcast_ownerships).source(:podcast) }
-      it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
-      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_skips).dependent(:delete_all) }
+      it { is_expected.to have_many(:poll_votes).dependent(:delete_all) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
       it { is_expected.to have_many(:rating_votes).dependent(:nullify) }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:response_templates).dependent(:destroy) }
+      it { is_expected.to have_many(:response_templates).dependent(:delete_all) }
       it { is_expected.to have_many(:source_authored_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribers).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:nullify) }
-      it { is_expected.to have_many(:webhook_endpoints).class_name("Webhook::Endpoint").dependent(:delete_all) }
 
       # rubocop:disable RSpec/NamedSubject
-      it do
-        expect(subject).to have_many(:access_grants)
-          .class_name("Doorkeeper::AccessGrant")
-          .with_foreign_key("resource_owner_id")
-          .dependent(:delete_all)
-      end
-
-      it do
-        expect(subject).to have_many(:access_tokens)
-          .class_name("Doorkeeper::AccessToken")
-          .with_foreign_key("resource_owner_id")
-          .dependent(:delete_all)
-      end
-
       it do
         expect(subject).to have_many(:affected_feedback_messages)
           .class_name("FeedbackMessage")
@@ -323,23 +331,6 @@ RSpec.describe User, type: :model do
         expect(user).not_to be_valid
       end
     end
-
-    context "when the past value is relevant" do
-      let(:user) { create(:user) }
-
-      it "changes old_username and old_old_username properly if username changes" do
-        old_username = user.username
-        random_new_username = "username_#{rand(100_000_000)}"
-        user.update(username: random_new_username)
-        expect(user.username).to eq(random_new_username)
-        expect(user.old_username).to eq(old_username)
-
-        new_username = user.username
-        user.update(username: "username_#{rand(100_000_000)}")
-        expect(user.old_username).to eq(new_username)
-        expect(user.old_old_username).to eq(old_username)
-      end
-    end
   end
 
   context "when callbacks are triggered before and after create" do
@@ -413,7 +404,7 @@ RSpec.describe User, type: :model do
         user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
 
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
-          user.update(website_url: "http://example.com")
+          user.update(credits_count: 100)
         end
       end
     end
@@ -422,7 +413,9 @@ RSpec.describe User, type: :model do
   describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
-    before { omniauth_mock_providers_payload }
+    before do
+      omniauth_mock_providers_payload
+    end
 
     Authentication::Providers.available.each do |provider_name|
       it "finds user by email and assigns identity to that if exists for #{provider_name}" do
@@ -535,6 +528,14 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "spam" do
+    it "delegates spam handling to Spam::Handler.handle_user!" do
+      allow(Spam::Handler).to receive(:handle_user!).with(user: user).and_call_original
+
+      user.save
+    end
+  end
+
   describe "#suspended?" do
     subject { user.suspended? }
 
@@ -601,62 +602,45 @@ RSpec.describe User, type: :model do
     end
 
     it "creates proper body class with defaults" do
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
-    end
-
-    it "determines dark theme if night theme" do
-      user.setting.config_theme = "night_theme"
-      expect(user.decorate.dark_theme?).to eq(true)
-    end
-
-    it "determines dark theme if ten x hacker" do
-      user.setting.config_theme = "ten_x_hacker_theme"
-      expect(user.decorate.dark_theme?).to eq(true)
-    end
-
-    it "determines not dark theme if not one of the dark themes" do
-      user.setting.config_theme = "default"
-      expect(user.decorate.dark_theme?).to eq(false)
     end
 
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.setting.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
-      expect(user.decorate.config_body_class).to eq(classes)
-    end
-
-    it "creates proper body class with night theme" do
-      user.setting.config_theme = "night_theme"
-
       # rubocop:disable Layout/LineLength
-      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes = "light-theme open-dyslexic-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
-    it "creates proper body class with pink theme" do
-      user.setting.config_theme = "pink_theme"
+    it "creates proper body class with dark theme" do
+      user.setting.config_theme = "dark_theme"
 
-      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.setting.config_navbar}-header"
+      classes =
+        "dark-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
 
   describe "#calculate_score" do
     it "calculates a score" do
-      create(:article, featured: true, user: user)
+      user.update_column(:badge_achievements_count, 3)
 
       user.calculate_score
-      expect(user.score).to be_positive
+      expect(user.score).to eq(30)
     end
   end
 
@@ -809,32 +793,11 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#trusted" do
-    it "memoizes the result from rolify" do
-      allow(Rails.cache)
-        .to receive(:fetch)
-        .with("user-#{user.id}/has_trusted_role", expires_in: 200.hours)
-        .and_return(false)
-        .once
-
-      2.times { user.trusted }
-    end
-  end
-
   describe "profiles" do
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)
       expect(user.profile).to be_present
-      expect(user.profile).to respond_to(:available_for)
-    end
-
-    it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
-      expect do
-        user.update(available_for: "profile migrations")
-      end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
-
-      # Changes were also persisted in the users table
-      expect(user.reload.available_for).to eq "profile migrations"
+      expect(user.profile).to respond_to(:location)
     end
   end
 end

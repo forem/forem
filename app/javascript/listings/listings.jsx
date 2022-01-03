@@ -22,7 +22,6 @@ export class Listings extends Component {
     initialFetch: true,
     currentUserId: null,
     openedListing: null,
-    message: '',
     slug: null,
     page: 0,
     showNextPageButton: false,
@@ -119,7 +118,12 @@ export class Listings extends Component {
   selectCategory = (e, cat = '') => {
     e.preventDefault();
     const { query, tags } = this.state;
-    this.setState({ category: cat, page: 0 });
+    this.setState((prevState) => {
+      if (prevState.isModalOpen) {
+        return { category: cat, page: 0, isModalOpen: false };
+      }
+      return { category: cat, page: 0 };
+    });
     this.listingSearch(query, tags, cat, null);
   };
 
@@ -138,41 +142,6 @@ export class Listings extends Component {
       `/listings/${listing.category}/${listing.slug}`,
     );
     this.setLocation(null, null, listing.category, listing.slug);
-  };
-
-  handleDraftingMessage = (e) => {
-    e.preventDefault();
-    this.setState({ message: e.target.value });
-  };
-
-  handleSubmitMessage = (e) => {
-    e.preventDefault();
-    const { message, openedListing } = this.state;
-    if (message.replace(/\s/g, '').length === 0) {
-      return;
-    }
-    const formData = new FormData();
-    formData.append('user_id', openedListing.user_id);
-    formData.append('message', `**re: ${openedListing.title}** ${message}`);
-    formData.append('controller', 'chat_channels');
-
-    const destination = `/connect/@${openedListing.author.username}`;
-    const metaTag = document.querySelector("meta[name='csrf-token']");
-    window
-      .fetch('/chat_channels/create_chat', {
-        method: 'POST',
-        headers: {
-          'X-CSRF-Token': metaTag.getAttribute('content'),
-        },
-        body: formData,
-        credentials: 'same-origin',
-      })
-      .then(() => {
-        window.location.href = destination;
-      })
-      .catch((error) => {
-        Honeybadger.notify(error);
-      });
   };
 
   handleQuery = (e) => {
@@ -259,7 +228,6 @@ export class Listings extends Component {
       openedListing,
       showNextPageButton,
       initialFetch,
-      message,
       isModalOpen,
     } = this.state;
 
@@ -275,7 +243,6 @@ export class Listings extends Component {
           categories={allCategories}
           category={category}
           onSelectCategory={this.selectCategory}
-          message={message}
           onKeyUp={this.debouncedListingSearch}
           onClearQuery={this.clearQuery}
           onRemoveTag={this.removeTag}
@@ -296,13 +263,10 @@ export class Listings extends Component {
           <Modal
             currentUserId={currentUserId}
             onAddTag={this.addTag}
-            onChangeDraftingMessage={this.handleDraftingMessage}
             onClick={this.handleCloseModal}
             onChangeCategory={this.selectCategory}
             onOpenModal={this.handleOpenModal}
-            onSubmit={this.handleSubmitMessage}
             listing={openedListing}
-            message={message}
           />
         )}
       </div>

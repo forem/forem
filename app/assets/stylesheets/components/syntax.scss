@@ -23,6 +23,11 @@ blockquote pre.highlight {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   overflow-wrap: initial;
+  padding: var(--su-2);
+
+  @media (min-width: $breakpoint-m) {
+    padding: var(--su-6);
+  }
 
   code {
     font-size: 100%;
@@ -36,12 +41,6 @@ div.highlight {
   // this a way to separate scroll of long code & icons in panel
   .highlight {
     overflow: auto;
-
-    padding: var(--su-2);
-
-    @media (min-width: $breakpoint-m) {
-      padding: var(--su-6);
-    }
   }
 }
 

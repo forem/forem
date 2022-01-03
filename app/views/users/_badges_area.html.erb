@@ -1,6 +1,6 @@
 <div class="crayons-card crayons-card--secondary">
   <header class="crayons-card__header">
-    <h3 class="crayons-subtitle-3">Badges</h3>
+    <h3 class="crayons-subtitle-3"><%= t("views.badges.heading") %></h3>
   </header>
 
   <div class="crayons-card__body">
@@ -21,7 +21,7 @@
     <% if limit > 1 && count > limit %>
       <button type="button"
               class="crayons-btn crayons-btn--ghost-brand crayons-btn--s w-100 js-profile-badges-trigger">
-        Show all <%= count %> badges
+        <%= t("views.badges.all", count: count) %>
       </button>
     <% end %>
   </div>

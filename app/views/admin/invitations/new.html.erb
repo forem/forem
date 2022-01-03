@@ -1,13 +1,44 @@
-<div class="row">
-  <div class="col-12">
-    <%= form_for(User.new, url: admin_invitations_path) do |f| %>
-      <div class="field">
-        <%= f.label "Email:" %>
-        <%= f.text_field :email, required: true, class: "form-control", placeholder: "Email of invitee" %>
-        <%= f.label "Name:" %>
-        <%= f.text_field :name, required: true, class: "form-control", placeholder: "Name of invitee" %>
+<% smtp_enabled = ForemInstance.smtp_enabled? %>
+
+<% unless smtp_enabled %>
+  <div class="crayons-card">
+    <div class="crayons-card__body p-4">
+      <h1 class="fw-heavy fs-3xl">Setup SMTP to invite users</h1>
+      <div class="my-4">
+        SMTP settings are required so that your Forem can send emails.
+        If you wish to send invites, email digests and activity notifications you will need to
+        specify which email host will relay those messages for you. You can
+        <a href="https://admin.forem.com/docs/advanced-customization/config/smtp-settings" target="_blank">read more about SMTP Settings in our admin guide</a>.
       </div>
-        <%= f.submit class: "btn btn-primary" %>
-    <% end %>
+      <div class="my-4">
+        Please note that you will need to reload this page after configuring your SMTP Settings.
+      </div>
+      <div class="fw-bold">
+        <%= link_to "Configure your SMTP Settings here.", admin_config_path(anchor: "smtp-section"), target: "_blank", rel: :noopener %>
+      </div>
+    </div>
   </div>
-</div>
+<% end %>
+
+<% if smtp_enabled %>
+  <h1 class="fw-heavy fs-3xl">Invite Users</h1>
+  <%= form_for(User.new, url: admin_invitations_path) do |f| %>
+    <div class="crayons-field mt-6">
+      <%= f.label :email, class: "crayons-field__label" %>
+      <%= f.text_field :email,
+                       class: "crayons-textfield",
+                       placeholder: "Email of invitee",
+                       required: true %>
+    </div>
+    <div class="crayons-field mt-6">
+      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.text_field :name,
+                       class: "crayons-textfield",
+                       placeholder: "Name of invitee",
+                       required: true %>
+    </div>
+    <div class="mt-6">
+      <%= f.submit "Invite User", class: "crayons-btn" %>
+    </div>
+  <% end %>
+<% end %>

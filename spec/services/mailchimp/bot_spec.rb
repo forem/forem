@@ -90,6 +90,15 @@ RSpec.describe Mailchimp::Bot, type: :service do
 
       expect(mailchimp_bot).to have_received(:resubscribe_to_newsletter)
     end
+
+    it "handles GibbonError" do
+      mailchimp_bot = described_class.new(user)
+      gibbon_error =
+        Gibbon::GibbonError.new("You must set an api_key prior to making a call")
+      allow(mailchimp_bot.gibbon).to receive(:upsert).and_raise(gibbon_error)
+
+      expect { mailchimp_bot.upsert_to_newsletter }.not_to raise_error
+    end
   end
 
   describe "manage community moderator list" do

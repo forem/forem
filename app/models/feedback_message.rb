@@ -14,6 +14,11 @@ class FeedbackMessage < ApplicationRecord
   STATUSES = %w[Open Invalid Resolved].freeze
 
   scope :open_abuse_reports, -> { where(status: "Open", feedback_type: "abuse-reports") }
+  scope :all_user_reports, lambda { |user|
+    user.reporter_feedback_messages
+      .or(user.affected_feedback_messages)
+      .or(user.offender_feedback_messages)
+  }
 
   validates :feedback_type, :message, presence: true
   validates :reported_url, :category, presence: { if: :abuse_report? }, length: { maximum: 250 }

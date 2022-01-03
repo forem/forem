@@ -1,0 +1,21 @@
+.tools-component .box {
+  cursor: pointer;
+  text-decoration: none;
+  background-color: var(--base-10);
+  padding: var(--su-4);
+}
+
+.tools-component .box,
+.backlink {
+  &:focus {
+    outline: 2px auto blue;
+  }
+
+  &:focus-visible {
+    outline: 2px auto blue;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+}

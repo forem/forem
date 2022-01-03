@@ -5,7 +5,7 @@ class Comment < ApplicationRecord
   include PgSearch::Model
   include Reactable
 
-  BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
+  BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
@@ -18,7 +18,7 @@ class Comment < ApplicationRecord
     .+?             # host
     (?::\d+)?       # optional port
     \z
-  }x.freeze
+  }x
 
   # The date that we began limiting the number of user mentions in a comment.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 3, 12).freeze
@@ -91,7 +91,11 @@ class Comment < ApplicationRecord
   alias touch_by_reaction save
 
   def self.tree_for(commentable, limit = 0)
-    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+    commentable.comments
+      .includes(user: %i[setting profile])
+      .arrange(order: "score DESC")
+      .to_a[0..limit - 1]
+      .to_h
   end
 
   def search_id
@@ -278,34 +282,13 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_spam_score_check
-    return unless
-      Settings::RateLimit.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+    return unless Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
 
     self.score = -1 # ensure notification is not sent if possibly spammy
   end
 
   def create_conditional_autovomits
-    return unless
-      Settings::RateLimit.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
-        user.registered_at > 5.days.ago
-
-    Reaction.create(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "Comment",
-      category: "vomit",
-    )
-
-    return unless Reaction.comment_vomits.where(reactable_id: user.comments.pluck(:id)).size > 2
-
-    user.add_role(:suspended)
-    Note.create(
-      author_id: Settings::General.mascot_user_id,
-      noteable_id: user_id,
-      noteable_type: "User",
-      reason: "automatic_suspend",
-      content: "User suspended for too many spammy articles, triggered by autovomit.",
-    )
+    Spam::Handler.handle_comment!(comment: self)
   end
 
   def should_send_email_notification?

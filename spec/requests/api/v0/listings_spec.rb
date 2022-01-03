@@ -106,6 +106,13 @@ RSpec.describe "Api::V0::Listings", type: :request do
       get api_listings_path
       expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
     end
+
+    # Regression test for https://github.com/forem/forem/issues/14436
+    it "includes the created at timestamp for listings" do
+      get api_listings_path
+      listing = response.parsed_body.first
+      expect(listing["created_at"]).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
+    end
   end
 
   describe "GET /api/listings/category/:category" do
@@ -411,8 +418,8 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect(Listing.find(response.parsed_body["id"]).location).to eq("Frejus")
       end
 
-      it "creates a listing with a list of tags and a contact" do
-        params = listing_params.merge(tags: %w[discuss javascript], contact_via_connect: true)
+      it "creates a listing with a list of tags" do
+        params = listing_params.merge(tags: %w[discuss javascript])
         expect do
           post_listing(**params)
           expect(response).to have_http_status(:created)
@@ -421,20 +428,6 @@ RSpec.describe "Api::V0::Listings", type: :request do
         listing = Listing.find(response.parsed_body["id"])
 
         expect(listing.cached_tag_list).to eq("discuss, javascript")
-        expect(listing.contact_via_connect).to be(true)
-      end
-    end
-
-    describe "with oauth token" do
-      include_context "when param list is valid"
-
-      it "fails with oauth token" do
-        user = create(:user)
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_listings_path, params: { listing: listing_params }.to_json, headers: headers
-        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

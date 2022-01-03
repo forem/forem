@@ -15,12 +15,12 @@ class UserPolicy < ApplicationPolicy
     email_badge_notifications
     email_comment_notifications
     email_community_mod_newsletter
-    email_connect_messages
     email_digest_periodic
     email_follower_notifications
     email_membership_newsletter
     email_mention_notifications
-    email_newsletter email_public
+    email_newsletter
+    email_public
     email_tag_mod_newsletter
     email_unread_notifications
     employer_name
@@ -33,21 +33,17 @@ class UserPolicy < ApplicationPolicy
     feed_url
     inbox_guidelines
     inbox_type
-    location
     mobile_comment_notifications
     mod_roundrobin_notifications
     welcome_notifications
-    mostly_work_with
     name
     password
     password_confirmation
     payment_pointer
     permit_adjacent_sponsors
     profile_image
-    summary
     text_color_hex
     username
-    website_url
   ].freeze
 
   def edit?
@@ -103,7 +99,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def moderation_routes?
-    (user.has_role?(:trusted) || minimal_admin?) && !user.suspended?
+    (user.has_trusted_role? || minimal_admin?) && !user.suspended?
   end
 
   def update_password?

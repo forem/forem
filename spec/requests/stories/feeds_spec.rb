@@ -131,20 +131,20 @@ RSpec.describe "Stories::Feeds", type: :request do
 
       it "calls the feed service for a timeframe" do
         allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(feed_service)
-        allow(feed_service).to receive(:top_articles_by_timeframe).with(timeframe: "week").and_call_original
+        allow(Articles::Feeds::Timeframe).to receive(:call).and_call_original
 
         get timeframe_stories_feed_path(:week)
 
-        expect(feed_service).to have_received(:top_articles_by_timeframe).with(timeframe: "week")
+        expect(Articles::Feeds::Timeframe).to have_received(:call).with("week", page: 1, tag: nil)
       end
 
       it "calls the feed service for latest" do
         allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(feed_service)
-        allow(feed_service).to receive(:latest_feed).and_call_original
+        allow(Articles::Feeds::Latest).to receive(:call).and_call_original
 
         get timeframe_stories_feed_path(:latest)
 
-        expect(feed_service).to have_received(:latest_feed)
+        expect(Articles::Feeds::Latest).to have_received(:call)
       end
     end
 
@@ -183,14 +183,6 @@ RSpec.describe "Stories::Feeds", type: :request do
           "organization" => hash_including("name" => organization.name),
           "tag_list" => article.decorate.cached_tag_list_array,
         )
-      end
-    end
-
-    context "when there are no params passed (base feed) and user is not signed in" do
-      it "does not set a field test" do
-        expect do
-          get stories_feed_path
-        end.not_to change(FieldTest::Membership, :count)
       end
     end
 

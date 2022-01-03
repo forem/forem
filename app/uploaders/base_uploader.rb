@@ -2,6 +2,7 @@ class BaseUploader < CarrierWave::Uploader::Base
   include CarrierWave::BombShelter # limits size to 4096x4096
   include CarrierWave::MiniMagick # adds processing operations
 
+  EXTENSION_ALLOWLIST = %w[jpg jpeg jpe gif png ico bmp dng].freeze
   FRAME_MAX = 500
   FRAME_STRIP_MAX = 150
 
@@ -14,11 +15,11 @@ class BaseUploader < CarrierWave::Uploader::Base
   end
 
   def extension_allowlist
-    %w[jpg jpeg jpe gif png ico bmp dng]
+    EXTENSION_ALLOWLIST
   end
 
   def size_range
-    1..25.megabytes
+    1..(25.megabytes)
   end
 
   protected

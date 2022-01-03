@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
+import { jsxDecorator } from 'storybook-addon-jsx';
+import 'focus-visible';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/views.scss';
@@ -38,7 +40,7 @@ function themeSwitcher(event) {
   addStylesheet(theme);
 }
 
-const THEMES = Object.freeze(['default', 'night', 'minimal', 'pink', 'hacker']);
+const THEMES = Object.freeze(['light', 'dark']);
 
 const themeSwitcherDecorator = (storyFn) => {
   const lastThemeUsed = localStorage.getItem('storybook-crayons-theme') || '';
@@ -61,11 +63,12 @@ const themeSwitcherDecorator = (storyFn) => {
           ))}
         </select>
       </label>
-      {storyFn()}
+      <div id="story-content">{storyFn()}</div>
     </div>
   );
 };
 
+addDecorator(jsxDecorator);
 addDecorator(themeSwitcherDecorator);
 addDecorator((Story) => <Story />);
 
@@ -89,6 +92,7 @@ Foo.parameters = {
 };
 
 export const parameters = {
+  controls: { expanded: true },
   options: {
     storySort: {
       order: [
@@ -102,5 +106,15 @@ export const parameters = {
         'Utility-First Classes',
       ],
     },
+  },
+  jsx: {
+    filterProps: (val) => val !== undefined,
+    functionValue: (fn) => {
+      fn.toString = () => '() => {}';
+      return fn;
+    },
+  },
+  html: {
+    root: '#story-content',
   },
 };

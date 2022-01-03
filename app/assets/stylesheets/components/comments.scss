@@ -51,8 +51,8 @@
       left: 0;
       top: 0;
       background: linear-gradient(
-        rgba(255, 255, 255, 0) 250px,
-        var(--story-comments-bg)
+        var(--story-comments-bg-top) 250px,
+        var(--story-comments-bg-bottom)
       );
     }
   }

@@ -52,7 +52,7 @@ describe('<Button /> component', () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 
-  it('should render a button with addtional CSS classes when className is set', () => {
+  it('should render a button with additional CSS classes when className is set', () => {
     const { container } = render(
       <Button disabled className="some-additional-class-name">
         Hello world!
@@ -180,5 +180,12 @@ describe('<Button /> component', () => {
     button.blur();
 
     expect(someEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('should render with a tooltip', () => {
+    const { container } = render(
+      <Button tooltip="tooltip text">Hello world!</Button>,
+    );
+    expect(container.innerHTML).toMatchSnapshot();
   });
 });

@@ -77,4 +77,24 @@ RSpec.describe "Creating an article with the editor", type: :system do
       expect_runkit_tag_to_be_active
     end
   end
+
+  context "when user creates too many articles" do
+    let(:rate_limit_checker) { RateLimitChecker.new(user) }
+
+    before do
+      # avoid hitting new user rate limit check
+      allow(user).to receive(:created_at).and_return(1.week.ago)
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+      allow(rate_limit_checker).to receive(:limit_by_action)
+        .with(:published_article_creation)
+        .and_return(true)
+    end
+
+    it "displays a rate limit warning", :flaky, js: true do
+      visit new_path
+      fill_in "article_body_markdown", with: template
+      click_button "Save changes"
+      expect(page).to have_text("Rate limit reached")
+    end
+  end
 end

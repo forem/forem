@@ -13,31 +13,42 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Base
-  --base: #08090a;
-
-  --base-a90: #{rgba(#08090a, 0.9)};
-  --base-a80: #{rgba(#08090a, 0.8)};
-  --base-a70: #{rgba(#08090a, 0.7)};
-  --base-a60: #{rgba(#08090a, 0.6)};
-  --base-a50: #{rgba(#08090a, 0.5)};
-  --base-a40: #{rgba(#08090a, 0.4)};
-  --base-a30: #{rgba(#08090a, 0.3)};
-  --base-a20: #{rgba(#08090a, 0.2)};
-  --base-a10: #{rgba(#08090a, 0.1)};
-  --base-a5: #{rgba(#08090a, 0.05)};
+  --base: #090909;
+  --base-inverted: #fff;
 
   --base-100: var(--base);
-  --base-90: #202428;
-  --base-80: #363d44;
-  --base-70: #4d5760;
-  --base-60: #64707d;
-  --base-50: #7d8a97;
-  --base-40: #99a3ad;
-  --base-30: #b5bdc4;
-  --base-20: #d2d6db;
-  --base-10: #eef0f1;
-  --base-0: #f9fafa;
-  --base-inverted: #fff;
+  --base-90: #242424;
+  --base-80: #3d3d3d;
+  --base-70: #575757;
+  --base-60: #717171;
+  --base-50: #8a8a8a;
+  --base-40: #a3a3a3;
+  --base-30: #bdbdbd;
+  --base-20: #d6d6d7;
+  --base-10: #efefef;
+  --base-0: #f9f9f9;
+
+  --base-a90: #{rgba(#090909, 0.9)};
+  --base-a80: #{rgba(#090909, 0.8)};
+  --base-a70: #{rgba(#090909, 0.7)};
+  --base-a60: #{rgba(#090909, 0.6)};
+  --base-a50: #{rgba(#090909, 0.5)};
+  --base-a40: #{rgba(#090909, 0.4)};
+  --base-a30: #{rgba(#090909, 0.3)};
+  --base-a20: #{rgba(#090909, 0.2)};
+  --base-a10: #{rgba(#090909, 0.1)};
+  --base-a5: #{rgba(#090909, 0.05)};
+
+  --base-inverted-a90: #{rgba(#fff, 0.9)};
+  --base-inverted-a80: #{rgba(#fff, 0.8)};
+  --base-inverted-a70: #{rgba(#fff, 0.7)};
+  --base-inverted-a60: #{rgba(#fff, 0.6)};
+  --base-inverted-a50: #{rgba(#fff, 0.5)};
+  --base-inverted-a40: #{rgba(#fff, 0.4)};
+  --base-inverted-a30: #{rgba(#fff, 0.3)};
+  --base-inverted-a20: #{rgba(#fff, 0.2)};
+  --base-inverted-a10: #{rgba(#fff, 0.1)};
+  --base-inverted-a5: #{rgba(#fff, 0.05)};
 
   // Accent colors
   --accent-brand: #3b49df;
@@ -58,9 +69,9 @@
   --accent-warning-a10: #{rgba(#ffcf4c, 0.1)};
 
   // Danger
-  --accent-danger: #dc1818;
-  --accent-danger-darker: #c20a0a;
-  --accent-danger-lighter: #ec5050;
+  --accent-danger: #d31616;
+  --accent-danger-darker: #b90909;
+  --accent-danger-lighter: #ec4646;
   --accent-danger-a10: #{rgba(#dc1818, 0.1)};
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -87,27 +98,13 @@
 
   // Header
   --header-bg: var(--base-inverted);
-  --header-bg-hover: var(--base-10);
-  --header-button-focus-color: var(--accent-brand);
-  --header-bg-current: var(--base-20);
   --header-shadow: rgba(0, 0, 0, 0.1);
-  --header-icons-color: var(--base-70);
-  --header-icons-color-hover: var(--base-100);
-
-  // Logo
-  --logo-bg: var(--base-100);
-  --logo-color: var(--base-inverted);
 
   // Footer
   --footer-bg: var(--base-20);
-  --footer-color: var(--base-70);
-  --footer-link-color: var(--base-80);
-  --footer-link-color-hover: var(--base-100);
+  --footer-color: var(--base-80);
 
   // Links
-  --link-color: var(--base-90);
-  --link-color-hover: var(--accent-brand-darker);
-  --link-bg-hover: var(--base-a5);
   --link-bg-hover-alt: var(--base-inverted);
   --link-brand-color: var(--accent-brand);
   --link-color-current: var(--base-100);
@@ -168,9 +165,9 @@
   --button-ghost-dimmed-inverted-color-hover: var(--base-100);
 
   // Forms
-  --form-bg: var(--base-0);
+  --form-bg: var(--base-inverted);
   --form-bg-focus: var(--base-inverted);
-  --form-border: var(--base-30);
+  --form-border: var(--base-20);
   --form-border-hover: var(--base-40);
   --form-border-focus: var(--accent-brand);
   --form-placeholder-color: var(--base-60);
@@ -179,13 +176,8 @@
   --label-primary: var(--base-90);
   --label-secondary: var(--base-60);
 
-  // Default box
-  --box: var(--base-90);
-  --box-darker: var(--base-100);
-
   // Snackbars
   --snackbar-bg: var(--base-90);
-  --snackbar-border: var(--base-100);
   --snackbar-color: var(--body-color-inverted);
 
   // Indicators
@@ -214,7 +206,9 @@
   --tag-color-hover: var(--base-100);
 
   // Story
-  --story-comments-bg: var(--base-0);
+  --story-comments-bg: 249, 249, 249;
+  --story-comments-bg-top: rgba(var(--story-comments-bg), 0);
+  --story-comments-bg-bottom: rgba(var(--story-comments-bg), 1);
 
   // Select icon
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMDgwOTBBIi8+Cjwvc3ZnPg==);
@@ -228,4 +222,92 @@
   --reaction-save-bg: var(--accent-brand-a10);
   --reaction-comment-color: var(--accent-warning);
   --reaction-comment-bg: var(--accent-warning-a10);
+}
+
+:root {
+  // Separating some variables here as these are the results
+  // of broader Crayons refactoring (see #15311) and I didn't
+  // want to mix everything together.
+
+  ////////////////////////////////////////////////
+  // Buttons /////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Buttons: Default
+  --btn-bg: transparent;
+  --btn-bg-hover: var(--accent-brand-a10);
+  --btn-color: var(--base-80);
+  --btn-color-hover: var(--accent-brand-darker);
+
+  --btn-current-bg: var(--base-20);
+  --btn-current-color: var(--base-100);
+
+  // Buttons: Primary
+  --btn-primary-bg: var(--accent-brand);
+  --btn-primary-bg-hover: var(--accent-brand-darker);
+  --btn-primary-color: var(--base-inverted);
+  --btn-primary-color-hover: var(--base-inverted);
+
+  // Buttons: Secondary
+  --btn-secondary-bg: var(--accent-brand-a10);
+  --btn-secondary-bg-hover: var(--accent-brand);
+  --btn-secondary-color: var(--accent-brand);
+  --btn-secondary-color-hover: var(--base-inverted);
+
+  // Buttons: Destructive Default
+  --btn-destructive-bg: transparent;
+  --btn-destructive-bg-hover: var(--accent-danger-a10);
+  --btn-destructive-color: var(--accent-danger);
+  --btn-destructive-color-hover: var(--accent-danger-darker);
+
+  // Buttons: Destructive Primary
+  --btn-primary-destructive-bg: var(--accent-danger);
+  --btn-primary-destructive-bg-hover: var(--accent-danger-darker);
+  --btn-primary-destructive-color: var(--base-inverted);
+  --btn-primary-destructive-color-hover: var(--base-inverted);
+
+  ////////////////////////////////////////////////
+  // Links ///////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Links: Default
+  --link-bg: transparent;
+  --link-bg-hover: var(--accent-brand-a10);
+  --link-color: var(--base-80);
+  --link-color-hover: var(--accent-brand-darker);
+
+  --link-current-bg: var(--base-20);
+  --link-current-color: var(--base-100);
+
+  // Links: Branded
+  --link-branded-bg: transparent;
+  --link-branded-bg-hover: var(--accent-brand-a10);
+  --link-branded-color: var(--accent-brand);
+  --link-branded-color-hover: var(--accent-brand-darker);
+
+  ////////////////////////////////////////////////
+  // CTAs ////////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // CTAs: Default
+  --cta-bg: transparent;
+  --cta-bg-hover: var(--accent-brand-a10);
+  --cta-color: var(--base-80);
+  --cta-color-hover: var(--accent-brand-darker);
+  --cta-border: var(--base-60);
+  --cta-border-hover: var(--accent-brand-darker);
+
+  // CTAs: Branded
+  --cta-branded-bg: transparent;
+  --cta-branded-bg-hover: var(--accent-brand);
+  --cta-branded-color: var(--accent-brand);
+  --cta-branded-color-hover: var(--base-inverted);
+  --cta-branded-border: var(--accent-brand);
+  --cta-branded-border-hover: var(--accent-brand-darker);
+
+  ////////////////////////////////////////////////
+  // Utilities ///////////////////////////////////
+  ////////////////////////////////////////////////
+
+  --focus: var(--accent-brand);
 }

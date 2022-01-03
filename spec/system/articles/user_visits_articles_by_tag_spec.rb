@@ -23,13 +23,13 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the follow button", js: true do
-        within("header.tag-header") { expect(page).to have_button("Follow") }
+        within("header.spec__tag-header") { expect(page).to have_button(I18n.t("core.follow")) }
       end
 
       # Regression test for https://github.com/forem/forem/pull/12724
       it "does not display a comment count of 0", js: true do
         expect(page).to have_text("Add Comment")
-        expect(page).not_to have_text("0 comments")
+        expect(page).not_to have_text("0 #{I18n.t('core.comment').downcase}s")
       end
 
       it "shows correct articles count" do
@@ -65,13 +65,13 @@ RSpec.describe "User visits articles by tag", type: :system do
     it "shows the following button", js: true do
       wait_for_javascript
 
-      within("header.tag-header") { expect(page).to have_button("Following") }
+      within("header.spec__tag-header") { expect(page).to have_button(I18n.t("core.following")) }
     end
 
-    it "shows time buttons" do
+    it "shows top level sort options" do
       within("#on-page-nav-controls") do
-        expect(page).to have_link("Week", href: "/t/functional/top/week")
-        expect(page).to have_link("Infinity", href: "/t/functional/top/infinity")
+        expect(page).to have_link("Relevant", href: "/t/functional/")
+        expect(page).to have_link("Top", href: "/t/functional/top/week")
         expect(page).to have_link("Latest", href: "/t/functional/latest")
       end
     end

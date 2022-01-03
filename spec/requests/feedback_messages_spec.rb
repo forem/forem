@@ -63,26 +63,6 @@ RSpec.describe "feedback_messages", type: :request do
       end
     end
 
-    context "when feedback is created by chat" do
-      before do
-        sign_in user
-        post "/feedback_messages", params: {
-          feedback_message: {
-            message: "Test Message",
-            feedback_type: "connect",
-            category: "rude or vulgar",
-            offender_id: user.id
-          }
-        }, as: :json
-      end
-
-      it "creates a feedback message" do
-        expect(response.status).to eq(200)
-        expect(response.parsed_body["success"]).to eq(true)
-        expect(FeedbackMessage.where(offender_id: user.id).count).to eq(1)
-      end
-    end
-
     context "with valid params and recaptcha not configured" do
       before do
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return(nil)
@@ -108,8 +88,8 @@ RSpec.describe "feedback_messages", type: :request do
         allow(RateLimitChecker).to receive(:new) { limiter }
         allow(limiter).to receive(:limit_by_action).and_return(true)
 
-        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
-        expect(response.status).to eq(429)
+        post "/feedback_messages.json", params: valid_abuse_report_params, headers: headers
+        expect(response.parsed_body["status"]).to eq("bad_request")
       end
     end
 

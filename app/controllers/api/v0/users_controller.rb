@@ -2,7 +2,6 @@ module Api
   module V0
     class UsersController < ApiController
       before_action :authenticate!, only: %i[me]
-      before_action -> { doorkeeper_authorize! :public }, only: :me, if: -> { doorkeeper_token }
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id username name summary twitter_username github_username website_url
@@ -10,7 +9,7 @@ module Api
       ].freeze
 
       def show
-        relation = User.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+        relation = User.joins(:profile).select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
 
         @user = if params[:id] == "by_username"
                   relation.find_by!(username: params[:url])

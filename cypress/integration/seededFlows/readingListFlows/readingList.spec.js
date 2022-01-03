@@ -58,6 +58,42 @@ describe('Reading List Archive', () => {
     cy.get('@main').findByText('Test Article 3');
   });
 
+  it('should be disappeared after click on archive', () => {
+    cy.intercept(
+      Cypress.config().baseUrl +
+        'search/reactions?page=0&per_page=80&status%5B%5D=valid&status%5B%5D=confirmed',
+      { fixture: 'search/readingList.json' },
+    ).as('readingList');
+
+    cy.intercept(
+      { method: 'put', url: '/reading_list_items/**' },
+      { body: { current_status: 'valid,confirmed' } },
+    ).as('archiveItem');
+
+    cy.visit('/readinglist');
+    cy.wait('@readingList');
+
+    cy.findByRole('main').as('main');
+
+    cy.get('@main').findByText('Reading list (3)');
+    cy.get('@main').findByText('Test Article 1');
+    cy.get('@main').findByText('Test Article 2');
+    cy.get('@main').findByText('Test Article 3');
+
+    cy.get('@main')
+      .contains('Test Article 1')
+      .parents('article')
+      .findByLabelText(/^Archive item$/i)
+      .click();
+
+    cy.wait('@archiveItem');
+
+    cy.get('@main').findByText('Reading list (2)');
+    cy.get('@main').findByText('Test Article 1').should('not.exist');
+    cy.get('@main').findByText('Test Article 2');
+    cy.get('@main').findByText('Test Article 3');
+  });
+
   describe('small screens', () => {
     beforeEach(() => {
       cy.intercept(

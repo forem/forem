@@ -11,9 +11,9 @@ class ProfileValidator < ActiveModel::Validator
   }.with_indifferent_access.freeze
 
   def validate(record)
-    # NOTE: @citizen428 The summary is a base profile field, which we add to all
-    # new Forem instances, so it should be safe to validate. The method itself
-    # also guards against the field's absence.
+    # NOTE: The summary is a base profile field, which we add to all new Forem
+    # instances, so it should be safe to validate. The method itself also guards
+    # against the field's absence.
     record.errors.add(:summary, "is too long") if summary_too_long?(record)
 
     ProfileField.all.each do |field|

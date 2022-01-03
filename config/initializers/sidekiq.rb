@@ -17,7 +17,7 @@ module Sidekiq
 end
 
 Rails.application.config.to_prepare do
-  Dir.glob(Rails.root.join("lib/sidekiq/*.rb")).sort.each do |filename|
+  Dir.glob(Rails.root.join("lib/sidekiq/*.rb")).each do |filename|
     require_dependency filename
   end
 end

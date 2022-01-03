@@ -10,7 +10,7 @@ module Notifications
         # we explicitly symbolize_keys because FollowData.new will fail otherwise with an error of
         # ":followable_id is missing in Hash input". FollowData expects a symbol, not a string.
         follow_data.symbolize_keys!
-        follow_data = follow_data.is_a?(FollowData) ? follow_data : FollowData.new(follow_data)
+        follow_data = FollowData.new(follow_data) unless follow_data.is_a?(FollowData)
         @followable_id = follow_data.followable_id # fetch(:followable_id)
         @followable_type = follow_data.followable_type # fetch(:followable_type)
         @follower_id = follow_data.follower_id # fetch(:follower_id)

@@ -36,7 +36,10 @@ export const Header = ({
           {title}
         </a>
       </h2>
-      <DateTime dateTime={listingDate} className="single-listing__date" />
+      <DateTime
+        dateTime={new Date(listingDate)}
+        className="single-listing__date"
+      />
       <TagLinks tags={listing.tags || listing.tag_list} onClick={onAddTag} />
 
       <DropdownMenu

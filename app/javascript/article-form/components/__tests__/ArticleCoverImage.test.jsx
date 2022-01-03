@@ -3,6 +3,7 @@ import {
   render,
   fireEvent,
   waitForElementToBeRemoved,
+  createEvent,
 } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
@@ -21,19 +22,13 @@ describe('<ArticleCoverImage />', () => {
   });
 
   it('should have no a11y violations', async () => {
-    // TODO: The axe custom rules here should be removed when the below issue is fixed
-    // https://github.com/forem/forem/issues/13947
-    const customAxeRules = {
-      'nested-interactive': { enabled: false },
-    };
-
     const { container } = render(
       <ArticleCoverImage
         mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
         onMainImageUrlChange={jest.fn()}
       />,
     );
-    const results = await axe(container, { rules: customAxeRules });
+    const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
@@ -49,7 +44,7 @@ describe('<ArticleCoverImage />', () => {
     it('shows the uploaded image', () => {
       const { getByAltText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={jest.fn()}
         />,
       );
@@ -60,7 +55,7 @@ describe('<ArticleCoverImage />', () => {
     it('shows the change and remove buttons', () => {
       const { queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={jest.fn()}
         />,
       );
@@ -72,7 +67,7 @@ describe('<ArticleCoverImage />', () => {
       const onMainImageUrlChange = jest.fn();
       const { getByText, queryByLabelText, queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
@@ -102,7 +97,7 @@ describe('<ArticleCoverImage />', () => {
       const onMainImageUrlChange = jest.fn();
       const { getByLabelText, queryByLabelText, queryByText } = render(
         <ArticleCoverImage
-          mainImage={'/some-fake-image.jpg'}
+          mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
@@ -138,7 +133,7 @@ describe('<ArticleCoverImage />', () => {
     const onMainImageUrlChange = jest.fn();
     const { getByLabelText, findByText } = render(
       <ArticleCoverImage
-        mainImage={'/some-fake-image.jpg'}
+        mainImage="/some-fake-image.jpg"
         onMainImageUrlChange={onMainImageUrlChange}
       />,
     );
@@ -160,16 +155,16 @@ describe('<ArticleCoverImage />', () => {
     await findByText(/some fake error/i);
   });
 
-  describe('when rendered in native iOS with imageUpload support', () => {
+  describe('when rendered in native iOS with imageUpload_disabled support', () => {
     beforeEach(() => {
       global.Runtime = {
         isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload';
+          return namespace === 'imageUpload_disabled';
         }),
       };
     });
 
-    it('should have no a11y violations when native iOS imageUpload support is available', async () => {
+    it('should have no a11y violations when native iOS imageUpload_disabled support is available', async () => {
       const { container } = render(
         <ArticleCoverImage
           mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
@@ -188,63 +183,71 @@ describe('<ArticleCoverImage />', () => {
     });
 
     it('triggers a webkit messageHandler call when isNativeIOS', async () => {
-      global.window.webkit = {
-        messageHandlers: {
-          imageUpload: {
-            postMessage: jest.fn(),
-          },
-        },
-      };
+      global.window.ForemMobile = { injectNativeMessage: jest.fn() };
 
-      const { queryByLabelText } = render(<ArticleCoverImage mainImage="" />);
+      const { queryByLabelText } = render(
+        <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
+      );
       const uploadButton = queryByLabelText(/Upload cover image/i);
       uploadButton.click();
       expect(
-        window.webkit.messageHandlers.imageUpload.postMessage,
+        global.window.ForemMobile.injectNativeMessage,
       ).toHaveBeenCalledTimes(1);
     });
 
     describe('when an image is uploaded', () => {
       it('successfully uploads an image', async () => {
-        const onMainImageUrlChange = jest.fn();
-        const { container } = render(
+        const onMainImageUrlChangeSpy = jest.fn();
+        render(
           <ArticleCoverImage
             mainImage=""
-            onMainImageUrlChange={onMainImageUrlChange}
+            onMainImageUrlChange={onMainImageUrlChangeSpy}
           />,
-        );
-        const nativeInput = container.querySelector(
-          '#native-cover-image-upload-message',
         );
 
         // Fire a change event in the hidden input with JSON payload for success
-        const fakeSuccessMessage = `{ "action": "success", "link": "/some-fake-image.jpg" }`;
-        fireEvent.change(nativeInput, {
-          target: { value: fakeSuccessMessage },
+        const fakeSuccessMessage = JSON.stringify({
+          action: 'success',
+          link: '/some-fake-image.jpg',
+          namespace: 'coverUpload',
         });
+        const event = createEvent(
+          'ForemMobile',
+          document,
+          { detail: fakeSuccessMessage },
+          { EventType: 'CustomEvent' },
+        );
+        fireEvent(document, event);
 
-        expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
+        expect(onMainImageUrlChangeSpy).toHaveBeenCalledTimes(1);
       });
 
       it('displays an upload error when necessary', async () => {
         const onMainImageUrlChange = jest.fn();
+        /* eslint-disable no-unused-vars  */
         const { container, findByText } = render(
           <ArticleCoverImage
             mainImage=""
             onMainImageUrlChange={onMainImageUrlChange}
           />,
         );
-        const nativeInput = container.querySelector(
-          '#native-cover-image-upload-message',
-        );
+        /* eslint-enable no-unused-vars  */
 
         const error = 'oh no!';
 
         // Fire a change event in the hidden input with JSON payload for an error
-        const fakeErrorMessage = JSON.stringify({ action: 'error', error });
-        fireEvent.change(nativeInput, {
-          target: { value: fakeErrorMessage },
+        const fakeErrorMessage = JSON.stringify({
+          action: 'error',
+          error,
+          namespace: 'coverUpload',
         });
+        const event = createEvent(
+          'ForemMobile',
+          document,
+          { detail: fakeErrorMessage },
+          { EventType: 'CustomEvent' },
+        );
+        fireEvent(document, event);
 
         await findByText(error);
 
@@ -253,21 +256,27 @@ describe('<ArticleCoverImage />', () => {
 
       it('displays an uploading message', async () => {
         const onMainImageUrlChange = jest.fn();
+        /* eslint-disable no-unused-vars  */
         const { container, findByText } = render(
           <ArticleCoverImage
             mainImage=""
             onMainImageUrlChange={onMainImageUrlChange}
           />,
         );
-        const nativeInput = container.querySelector(
-          '#native-cover-image-upload-message',
-        );
+        /* eslint-enable no-unused-vars  */
 
         // Fire a change event in the hidden input with JSON payload for an error
-        const fakeUploadingMessage = JSON.stringify({ action: 'uploading' });
-        fireEvent.change(nativeInput, {
-          target: { value: fakeUploadingMessage },
+        const fakeUploadingMessage = JSON.stringify({
+          action: 'uploading',
+          namespace: 'coverUpload',
         });
+        const event = createEvent(
+          'ForemMobile',
+          document,
+          { detail: fakeUploadingMessage },
+          { EventType: 'CustomEvent' },
+        );
+        fireEvent(document, event);
 
         await findByText(/Uploading.../i);
 

@@ -69,7 +69,7 @@ describe('V2 Editor Post options', () => {
       });
 
       // Verify that the canonical URL is used
-      cy.findByText('Originally published at').should('exist');
+      cy.findByText(/Originally published at/).should('exist');
       cy.findByRole('link', { name: 'exampleurl.com' });
     });
 

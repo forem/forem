@@ -1,6 +1,5 @@
 class AsyncInfoController < ApplicationController
   # No pundit policy. All actions are unrestricted.
-  before_action :set_cache_control_headers, only: %i[shell_version]
 
   def base_data
     flash.discard(:notice)
@@ -19,20 +18,12 @@ class AsyncInfoController < ApplicationController
           broadcast: broadcast_data,
           param: request_forgery_protection_token,
           token: form_authenticity_token,
-          user: user_data
+          user: user_data,
+          creator: user_is_a_creator,
+          creator_onboarding: use_creator_onboarding
         }
       end
     end
-  end
-
-  # TODO: Remove these "shell_version", because they are for service worker functionality we no longer need.
-  # We are keeping these around mid-March 2021 because previously-installed service workers may still expect them.
-  def shell_version
-    set_surrogate_key_header "shell-version-endpoint"
-    # shell_version will change on every deploy.
-    # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ForemInstance.deployed_at.to_s + Settings::General.admin_action_taken_at.to_s
-    render json: { version: shell_version }.to_json
   end
 
   def broadcast_data
@@ -63,7 +54,7 @@ class AsyncInfoController < ApplicationController
         checked_terms_and_conditions: @user.checked_terms_and_conditions,
         display_sponsors: @user.display_sponsors,
         display_announcements: @user.display_announcements,
-        trusted: @user.trusted,
+        trusted: @user.trusted?,
         moderator_for_tags: @user.moderator_for_tags,
         config_body_class: @user.config_body_class,
         feed_style: feed_style_preference,
@@ -71,6 +62,14 @@ class AsyncInfoController < ApplicationController
         admin: @user.any_admin?
       }
     end.to_json
+  end
+
+  def user_is_a_creator
+    @user.creator?
+  end
+
+  def use_creator_onboarding
+    FeatureFlag.enabled?(:creator_onboarding) && user_is_a_creator
   end
 
   def user_cache_key

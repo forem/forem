@@ -1,10 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  use_doorkeeper do
-    controllers tokens: "oauth/tokens"
-  end
-
   # Devise does not support scoping omniauth callbacks under a dynamic segment
   # so this lives outside our i18n scope.
   devise_for :users, controllers: {
@@ -28,17 +24,6 @@ Rails.application.routes.draw do
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
     get "/locale/:locale", to: "stories#index"
-    require "sidekiq/web"
-    require "sidekiq_unique_jobs/web"
-    require "sidekiq/cron/web"
-
-    authenticated :user, ->(user) { user.tech_admin? } do
-      Sidekiq::Web.class_eval do
-        use Rack::Protection, permitted_origins: [URL.url] # resolve Rack Protection HttpOrigin
-      end
-      mount Sidekiq::Web => "/sidekiq"
-      mount FieldTest::Engine, at: "abtests"
-    end
 
     draw :admin
 
@@ -79,7 +64,6 @@ Rails.application.routes.draw do
           get :organizations
         end
         resources :readinglist, only: [:index]
-        resources :webhooks, only: %i[index create show destroy]
 
         resources :listings, only: %i[index show create update]
         get "/listings/category/:category", to: "listings#index", as: :listings_category
@@ -117,8 +101,6 @@ Rails.application.routes.draw do
     end
 
     resources :messages, only: [:create]
-    resources :chat_channels, only: %i[index show create update]
-    resources :chat_channel_memberships, only: %i[index create edit update destroy]
     resources :articles, only: %i[update create destroy] do
       patch "/admin_unpublish", to: "articles#admin_unpublish"
     end
@@ -146,7 +128,6 @@ Rails.application.routes.draw do
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
-    resources :followed_articles, only: [:index]
     resources :follows, only: %i[show create] do
       collection do
         get "/bulk_show", to: "follows#bulk_show"
@@ -158,6 +139,7 @@ Rails.application.routes.draw do
     resources :tags, only: [:index] do
       collection do
         get "/onboarding", to: "tags#onboarding"
+        get "/suggest", to: "tags#suggest", defaults: { format: :json }
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]
@@ -166,7 +148,6 @@ Rails.application.routes.draw do
         post "/update_or_create", to: "github_repos#update_or_create"
       end
     end
-    resources :events, only: %i[index show]
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
@@ -188,7 +169,6 @@ Rails.application.routes.draw do
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
     resources :article_approvals, only: %i[create]
-    resources :video_chats, only: %i[show]
     resources :sidebars, only: %i[show]
     resources :profile_preview_cards, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
@@ -213,12 +193,10 @@ Rails.application.routes.draw do
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags", to: "search#tags"
-    get "/search/chat_channels", to: "search#chat_channels"
     get "/search/listings", to: "search#listings"
     get "/search/usernames", to: "search#usernames"
     get "/search/feed_content", to: "search#feed_content"
     get "/search/reactions", to: "search#reactions"
-    get "/chat_channel_memberships/find_by_chat_channel_id", to: "chat_channel_memberships#find_by_chat_channel_id"
     get "/listings/dashboard", to: "listings#dashboard"
     get "/listings/:category", to: "listings#index", as: :listing_category
     get "/listings/:category/:slug", to: "listings#index", as: :listing_slug
@@ -226,8 +204,8 @@ Rails.application.routes.draw do
                                            constraints: { view: /moderate/ }
     get "/listings/:category/:slug/delete_confirm", to: "listings#delete_confirm"
     delete "/listings/:category/:slug", to: "listings#destroy"
-    get "/notifications/:filter", to: "notifications#index"
-    get "/notifications/:filter/:org_id", to: "notifications#index"
+    get "/notifications/:filter", to: "notifications#index", as: :notifications_filter
+    get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     patch "/onboarding_update", to: "users#onboarding_update"
@@ -235,36 +213,9 @@ Rails.application.routes.draw do
     patch "/onboarding_notifications_checkbox_update",
           to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
-    post "/chat_channels/:id/moderate", to: "chat_channels#moderate"
-    post "/chat_channels/:id/open", to: "chat_channels#open"
-    get "/connect", to: "chat_channels#index"
-    get "/connect/:slug", to: "chat_channels#index"
-    get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
-    post "/chat_channels/create_chat", to: "chat_channels#create_chat"
-    post "/chat_channels/block_chat", to: "chat_channels#block_chat"
-    post "/chat_channel_memberships/remove_membership", to: "chat_channel_memberships#remove_membership"
-    post "/chat_channel_memberships/add_membership", to: "chat_channel_memberships#add_membership"
-    post "/join_chat_channel", to: "chat_channel_memberships#join_channel"
-    delete "/messages/:id", to: "messages#destroy"
-    patch "/messages/:id", to: "messages#update"
+
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
-
-    post "/pusher/auth", to: "pusher#auth"
-
-    # Chat channel
-    patch "/chat_channels/update_channel/:id", to: "chat_channels#update_channel"
-    post "/create_channel", to: "chat_channels#create_channel"
-
-    # Chat Channel Membership json response
-    get "/chat_channel_memberships/chat_channel_info/:id", to: "chat_channel_memberships#chat_channel_info"
-    post "/chat_channel_memberships/create_membership_request", to: "chat_channel_memberships#create_membership_request"
-    patch "/chat_channel_memberships/leave_membership/:id", to: "chat_channel_memberships#leave_membership"
-    patch "/chat_channel_memberships/update_membership/:id", to: "chat_channel_memberships#update_membership"
-    get "/channel_request_info/", to: "chat_channel_memberships#request_details"
-    patch "/chat_channel_memberships/update_membership_role/:id", to: "chat_channel_memberships#update_membership_role"
-    get "/join_channel_invitation/:channel_slug", to: "chat_channel_memberships#join_channel_invitation"
-    post "/joining_invitation_response", to: "chat_channel_memberships#joining_invitation_response"
 
     get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
     get "/social_previews/user/:id", to: "social_previews#user", as: :user_social_preview
@@ -274,7 +225,6 @@ Rails.application.routes.draw do
     get "/social_previews/comment/:id", to: "social_previews#comment", as: :comment_social_preview
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
-    get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     # Settings
     post "users/join_org", to: "users#join_org"
@@ -296,7 +246,7 @@ Rails.application.routes.draw do
 
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
-    get "/api", to: redirect("https://docs.forem.com/api")
+    get "/api", to: redirect("https://developers.forem.com/api")
     get "/privacy", to: "pages#privacy"
     get "/terms", to: "pages#terms"
     get "/contact", to: "pages#contact"
@@ -308,8 +258,6 @@ Rails.application.routes.draw do
     get "/badge", to: "pages#badge", as: :pages_badge
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-    get "/events", to: "events#index"
-    get "/workshops", to: redirect("events")
     get "/sponsors", to: "pages#sponsors"
     get "/search", to: "stories/articles_search#index"
     post "articles/preview", to: "articles#preview"

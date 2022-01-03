@@ -8,8 +8,8 @@
     </h2>
     <ul class="ml-0">
       <% @default_nav_links.each_with_index do |link, index| %>
-        <li class="flex <% index.zero? ? "pt-4" : "pt-5" %> items-center">
-          <div class="mr-5"><%= link[:position] %></div>
+        <li class="flex pt-4 items-center">
+          <div class="mr-5 navigation-link-position"><%= link[:position] %></div>
           <div class="admin-navigation-links">
             <a href="<%= link[:url] %>" class="crayons-link crayons-link--block bg-base-20">
               <div class="crayons-icon crayons-icon--default">
@@ -38,8 +38,8 @@
     </h2>
     <ul class="ml-0">
       <% @other_nav_links.each_with_index do |link, index| %>
-        <li class="flex <% if index == 0 %>pt-4<% else %>pt-5<% end %> items-center">
-          <div class="mr-5"><%= link[:position] %></div>
+        <li class="flex pt-4 items-center">
+          <div class="mr-5 navigation-link-position"><%= link[:position] %></div>
           <div class="admin-navigation-links">
             <a href="<%= link[:url] %>" class="crayons-link crayons-link--block bg-base-20">
               <div class="crayons-icon crayons-icon--default">

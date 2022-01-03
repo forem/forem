@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { h, Component, createRef } from 'preact';
 import { listingPropTypes } from './listingPropTypes';
 import { Button, Dropdown } from '@crayons';
+import { locale } from '@utilities/locale';
 
 const Icon = () => (
   <svg
@@ -62,7 +63,7 @@ export class DropdownMenu extends Component {
               </a>
             ) : (
               <a href={reportUrl} className="crayons-link crayons-link--block">
-                Report Abuse
+                {locale('core.report_abuse')}
               </a>
             )}
           </div>

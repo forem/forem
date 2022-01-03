@@ -1,3 +1,6 @@
+# @note When we destroy the related article (via pinnable), it's using
+#       dependent: :delete for the relationship.  That means no
+#       before/after destroy callbacks will be called on this object.
 class ProfilePin < ApplicationRecord
   belongs_to :pinnable, polymorphic: true
   belongs_to :profile, polymorphic: true

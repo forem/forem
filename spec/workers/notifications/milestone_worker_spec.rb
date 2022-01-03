@@ -10,7 +10,7 @@ RSpec.describe Notifications::MilestoneWorker, type: :worker do
       allow(Notifications::Milestone::Send).to receive(:call)
     end
 
-    specify "fetch article id only if :article_id key in hash " do
+    specify "fetch article id only if :article_id key in hash" do
       allow(Article).to receive(:find_by)
       worker.perform("Reaction", 456)
       expect(Article).to have_received(:find_by).with(id: 456)

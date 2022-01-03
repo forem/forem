@@ -1,0 +1,9 @@
+<%# Used to announce to the screen reader client side which section the user is in %>
+<div id="section-title" class="hidden"><%= title %> section</div>
+
+<h3>
+  <%= link_to "← Tools", admin_user_tools_path(user),
+              remote: true,
+              data: { action: "ajax:success@document->user#replacePartial" },
+              class: "crayons-title fs-l backlink" %>
+</h3>

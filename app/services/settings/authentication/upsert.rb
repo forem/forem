@@ -11,9 +11,7 @@ module Settings
       end
 
       def self.update_enabled_providers(value)
-        return if value.blank?
-
-        enabled_providers = value.split(",").filter_map do |entry|
+        enabled_providers = value.to_s.split(",").filter_map do |entry|
           entry unless invalid_provider_entry(entry)
         end
         return if email_login_disabled_with_one_or_less_auth_providers(enabled_providers)

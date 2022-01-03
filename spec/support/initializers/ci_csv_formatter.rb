@@ -64,7 +64,7 @@ class CSVFormatter
     suite_runtime = (Time.zone.now - @suite_start_time).round(3)
 
     with_headers = { write_headers: true, headers: HEADERS }
-    CSV.open(csv_filename, "w", with_headers) do |csv|
+    CSV.open(csv_filename, "w", **with_headers) do |csv|
       (@rows + RSpecRetryFormatterHelper.instance.rows).each do |row|
         row += [@suite_status, suite_runtime, ENV["TRAVIS_BUILD_WEB_URL"], ENV["TRAVIS_BRANCH"]]
         csv << row

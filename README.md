@@ -5,41 +5,15 @@
 </div>
 <br>
 <p align="center">
-  <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.7.2-green.svg" alt="ruby version">
-  </a>
-  <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v6.0.3-brightgreen.svg" alt="rails version">
-  </a>
   <a href="https://travis-ci.com/forem/forem">
     <img src="https://travis-ci.com/forem/forem.svg?branch=main" alt="Travis Status for forem/forem">
   </a>
-  <a href="https://codeclimate.com/github/forem/forem/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" alt="Code Climate maintainability">
-  </a>
-  <a href="https://codeclimate.com/github/forem/forem/trends/technical_debt">
-    <img src="https://img.shields.io/codeclimate/tech-debt/forem/forem" alt="Code Climate technical debt">
-  </a>
-  <a href="https://www.codetriage.com/forem/forem">
-    <img src="https://www.codetriage.com/forem/forem/badges/users.svg" alt="CodeTriage badge">
-  </a>
-  <img src="https://badgen.net/dependabot/forem/forem?icon=dependabot" alt="Dependabot Badge">
-  <a href="https://gitpod.io/from-referrer/">
-    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
-  </a>
-  <a href="https://app.netlify.com/sites/docsdevto/deploys">
-    <img src="https://api.netlify.com/api/v1/badges/e5dbe779-7bca-4390-80b9-6e678b4806a3/deploy-status" alt="Netlify badge">
-  </a>
-  <img src="https://img.shields.io/github/languages/code-size/forem/forem" alt="GitHub code size in bytes">
   <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
     <img src="https://img.shields.io/github/issues/forem/forem/ready for dev" alt="GitHub issues ready for dev">
   </a>
-  <a href="https://app.honeybadger.io/project/Pl5JzZB5ax">
-    <img src="https://img.shields.io/badge/honeybadger-active-informational" alt="Honeybadger badge">
-  </a>
-  <a href="https://knapsackpro.com/dashboard/organizations/1142/projects/1022/test_suites/1434/builds">
-    <img src="https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20dev.to-%230074ff" alt="Knapsack Pro Parallel CI builds for dev.to" style="max-width:100%;">
+  <a href="https://gitpod.io/from-referrer/">
+    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
   </a>
 </p>
 
@@ -93,15 +67,17 @@ proceed.
 
 ## Getting Started
 
-This section provides a high-level quick start guide. If you're looking for the
-[installation guide](https://docs.forem.com/installation/), you'll want to refer
-to our complete [Developer Documentation](https://docs.forem.com/).
+This section provides a high-level quick start guide. If you're looking for a
+more thorough installation guide (for example
+[with macOS](https://developers.forem.com/getting-started/installation/mac),
+you'll want to refer to our complete
+[Developer Documentation](https://developers.forem.com/).
 
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
 A more complete overview of our stack is available in
-[our docs](https://docs.forem.com/technical-overview/).
+[our docs](https://developers.forem.com/technical-overview/stack).
 
 ### Prerequisites
 
@@ -130,11 +106,12 @@ A more complete overview of our stack is available in
 
 ### Installation Documentation
 
-[View Full Installation Documentation](https://docs.forem.com/installation/).
+Please see our installation guides, such as the
+[one for macOS](https://developers.forem.com/getting-started/installation/mac).
 
 ## Developer Documentation
 
-[Check out our dedicated docs page for more technical documentation](https://docs.forem.com).
+[Check out our dedicated docs page for more technical documentation](https://developers.forem.com).
 
 ## Core team
 
@@ -144,8 +121,6 @@ A more complete overview of our stack is available in
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
-- [@rhymes](https://dev.to/rhymes)
-- [@mstruve](https://dev.to/molly_struve)
 - [@atsmith813](https://dev.to/atsmith813)
 - [@citizen428](https://dev.to/citizen428)
 - [@nickytonline](https://dev.to/nickytonline)
@@ -162,6 +137,8 @@ A more complete overview of our stack is available in
 - [@jgaskins](https://dev.to/jgaskins)
 - [@djuber](https://dev.to/djuber)
 - [@rt4914](https://dev.to/rt4914)
+- [@jeremyf](https://dev.to/jeremyf)
+- [@dscottS3](https://dev.to/dscottS3)
 
 ## Vulnerability disclosure
 
@@ -192,7 +169,7 @@ Agreement, which they generously made available to the public domain under
 Creative Commons CC0 1.0 Universal.
 
 Any questions, please refer to our
-[license FAQ](https://docs.forem.com/licensing/) doc or email yo@dev.to.
+[license FAQ](https://developers.forem.com/licensing/) doc or email yo@dev.to.
 
 <br>
 

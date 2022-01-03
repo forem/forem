@@ -211,20 +211,41 @@ RSpec.describe "Reactions", type: :request do
       before do
         user.setting.update_column(:experience_level, 8)
         sign_in user
+      end
+
+      it "creates reaction" do
         post "/reactions", params: {
           reactable_id: article.id,
           reactable_type: "Article",
           category: "readinglist"
         }
-      end
 
-      it "creates reaction" do
         expect(Reaction.last.reactable_id).to eq(article.id)
       end
 
       it "creates rating vote" do
-        expect(RatingVote.last.context).to eq("readinglist_reaction")
-        expect(RatingVote.last.rating).to be(8.0)
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "readinglist"
+        }
+
+        rating_vote = RatingVote.last
+        expect(rating_vote.context).to eq("readinglist_reaction")
+        expect(rating_vote.rating).to be(8.0)
+      end
+
+      it "does not attempt to create a rating vote when the user's experience level is unset" do
+        user.setting.update_column(:experience_level, nil)
+        allow(RatingVote).to receive(:create)
+
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "readinglist"
+        }
+
+        expect(RatingVote).not_to have_received(:create)
       end
     end
 

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "ProfilePreviewCards", type: :request do
-  let(:user) { create(:profile).user }
+  let(:user) { create(:profile, :with_DEV_info).user }
 
   describe "GET /:id" do
     context "when signed out" do
@@ -44,6 +44,11 @@ RSpec.describe "ProfilePreviewCards", type: :request do
   end
 
   describe "GET /:id as JSON" do
+    before do
+      create(:profile_field, label: "Education", display_area: :header)
+      create(:profile_field, label: "Work", display_area: :header)
+    end
+
     let(:profile) { user.profile }
 
     context "when signed out" do
@@ -65,7 +70,7 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         expect(preview_card["work"]).to eq(profile.work)
         expect(preview_card["location"]).to eq(profile.location)
         expect(preview_card["education"]).to eq(profile.education)
-        expect(preview_card["created_at"]).to eq(profile.created_at.utc.iso8601)
+        expect(preview_card["created_at"]).to eq(user.created_at.utc.iso8601)
       end
 
       it "has the correct card color" do
@@ -117,7 +122,7 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         expect(preview_card["work"]).to eq(profile.work)
         expect(preview_card["location"]).to eq(profile.location)
         expect(preview_card["education"]).to eq(profile.education)
-        expect(preview_card["created_at"]).to eq(profile.created_at.utc.iso8601)
+        expect(preview_card["created_at"]).to eq(user.created_at.utc.iso8601)
       end
 
       it "has the correct card color" do

@@ -18,7 +18,7 @@ RSpec.describe "User uses response templates settings", type: :system do
         expect(page).to have_current_path "/settings/response-templates/#{response_template.id}", ignore_query: true
       end
 
-      it "shows the proper message when deleting a reponse template", js: true do
+      it "shows the proper message when deleting a response template", js: true do
         visit "/settings/extensions"
         expect(page).to have_text(response_template.title)
 

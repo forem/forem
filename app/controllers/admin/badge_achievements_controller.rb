@@ -15,11 +15,10 @@ module Admin
       @badge_achievement = BadgeAchievement.find(params[:id])
 
       if @badge_achievement.destroy
-        flash[:success] = "Badge achievement has been deleted!"
+        render json: { message: "Badge achievement has been deleted!" }, status: :ok
       else
-        flash[:danger] = @badge_achievement.errors_as_sentence
+        render json: { error: "Something went wrong." }, status: :unprocessable_entity
       end
-      redirect_to admin_badge_achievements_path
     end
 
     def award

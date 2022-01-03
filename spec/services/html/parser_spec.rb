@@ -70,6 +70,13 @@ RSpec.describe Html::Parser, type: :service do
         parsed_html = described_class.new(html).prefix_all_images.html
         expect(parsed_html).to include("https://res.cloudinary.com")
       end
+
+      it "detects height and width" do
+        allow(FastImage).to receive(:size).and_return([100, 200])
+        html = "<img src='https://image.com/image.jpg'>"
+        parsed_html = described_class.new(html).prefix_all_images(350, synchronous_detail_detection: true).html
+        expect(parsed_html).to include("height=\"200\"")
+      end
     end
   end
 
@@ -392,6 +399,12 @@ RSpec.describe Html::Parser, type: :service do
       html = "@#{user.username}"
       parsed_html = described_class.new(html).wrap_mentions_with_links.html
       expect(parsed_html).to include("<a")
+    end
+
+    it "does not add an extra return" do
+      html = "@#{user.username}"
+      parsed_html = described_class.new(html).wrap_mentions_with_links.html
+      expect(parsed_html).not_to include("\n")
     end
   end
 

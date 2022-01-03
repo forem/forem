@@ -1,0 +1,41 @@
+@import '../config/import';
+
+.crayons-mobile-drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+
+  &__overlay {
+    background: var(--base-100);
+    opacity: 0.5;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  &__content {
+    width: 100%;
+    max-width: 500px;
+    background: var(--card-bg);
+    opacity: 1;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    right: 0;
+    padding: var(--su-4);
+    border-radius: var(--radius) var(--radius) 0 0;
+    transform: translateY(100%) translateX(-50%);
+    animation: slideIn 0.3s ease-in-out forwards;
+
+    @keyframes slideIn {
+      100% {
+        transform: translateY(0) translateX(-50%);
+      }
+    }
+  }
+}
