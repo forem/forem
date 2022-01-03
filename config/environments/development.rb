@@ -14,6 +14,9 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  # Enable server timing
+  config.server_timing = true
+
   config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: 1.hour.to_i }
 
   # Enable/disable caching. By default caching is disabled.
@@ -27,6 +30,8 @@ Rails.application.configure do
     }
   else
     config.action_controller.perform_caching = false
+
+    config.cache_store = :null_store
   end
 
   # Don't care if the mailer can't send.
