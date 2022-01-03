@@ -1002,7 +1002,7 @@ DEPENDENCIES
   solargraph (~> 0.44)
   spring (~> 4.0)
   spring-commands-rspec (~> 1.0)
-  sprockets (~> 4.0)
+  sprockets-rails (~> 3.4)
   staccato (~> 0.5)
   stackprof (~> 0.2)
   sterile (~> 1.0)

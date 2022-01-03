@@ -103,7 +103,7 @@ gem "sidekiq", "~> 6.3.1" # Sidekiq is used to process background jobs with the 
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.1.12" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
-gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
+gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "store_attribute", "~> 0.9.3" # ActiveRecord extension which adds typecasting to store accessors.
