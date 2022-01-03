@@ -1,5 +1,4 @@
-FROM quay.io/forem/ruby:3.0.2 as base
-
+FROM quay.io/forem/ruby:3.0.2-testing as base
 
 FROM base as builder
 
@@ -58,7 +57,7 @@ USER root
 
 RUN dnf install --setopt install_weak_deps=false -y bash curl ImageMagick \
                 iproute jemalloc less libcurl \
-                postgresql tzdata nodejs \
+                postgresql tzdata nodejs libpq \
                 && dnf -y clean all \
                 && rm -rf /var/cache/yum
 
