@@ -54,11 +54,14 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
+# rubocop:disable Metrics/BlockLength
 users_in_random_order = seeder.create_if_none(User, num_users) do
   roles = %i[trusted workshop_pass]
 
   num_users.times do |i|
-    name = Faker::Name.unique.name
+    fname = Faker::Name.unique.first_name
+    lname = Faker::Name.unique.last_name
+    name = [fname, lname].join(" ")
 
     user = User.create!(
       name: name,
@@ -87,18 +90,71 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       user.add_role(roles[role_index]) if role_index != roles.length # increases chance of more no-role users
     end
 
+    omniauth_info = OmniAuth::AuthHash::InfoHash.new(
+      first_name: fname,
+      last_name: lname,
+      location: "location,state,country",
+      name: name,
+      nickname: user.username,
+      email: user.email,
+      verified: true,
+    )
+
+    omniauth_extra_info = OmniAuth::AuthHash::InfoHash.new(
+      raw_info: OmniAuth::AuthHash::InfoHash.new(
+        email: user.email,
+        first_name: fname,
+        gender: "female",
+        id: "123456",
+        last_name: lname,
+        link: "http://www.facebook.com/url&#8221",
+        lang: "fr",
+        locale: "en_US",
+        name: name,
+        timezone: 5.5,
+        updated_time: "2012-06-08T13:09:47+0000",
+        username: user.username,
+        verified: true,
+        followers_count: 100,
+        friends_count: 1000,
+        created_at: "2017-06-08T13:09:47+0000",
+      ),
+    )
+
+    omniauth_basic_info = {
+      uid: SecureRandom.hex(3),
+      info: omniauth_info,
+      extra: omniauth_extra_info,
+      credentials: {
+        token: SecureRandom.hex,
+        secret: SecureRandom.hex
+      }
+    }.freeze
+
+    info = omniauth_basic_info[:info].merge(
+      image: "https://dummyimage.com/400x400_normal.jpg",
+      urls: { "Twitter" => "https://example.com" },
+    )
+
+    extra = omniauth_basic_info[:extra].merge(
+      access_token: "value",
+    )
+
+    auth_dump = OmniAuth::AuthHash.new(
+      omniauth_basic_info.merge(
+        provider: "twitter",
+        info: info,
+        extra: extra,
+      ),
+    )
+
     Identity.create!(
       provider: "twitter",
       uid: i.to_s,
       token: i.to_s,
       secret: i.to_s,
       user: user,
-      auth_data_dump: {
-        "extra" => {
-          "raw_info" => { "lang" => "en" }
-        },
-        "info" => { "nickname" => user.username }
-      },
+      auth_data_dump: auth_dump,
     )
   end
 
@@ -125,6 +181,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
+# rubocop:enable Metrics/BlockLength
 
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(

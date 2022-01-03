@@ -36,16 +36,28 @@ class Credit < ApplicationRecord
     update_cache_columns(user_or_org)
   end
 
+  # Remove an :amount of credits from the given :user_or_org.
+  #
+  # @param user_or_org [#credits] the "owner" of the credits.
+  # @param amount [Integer] the amount of credits to remove from the
+  #        owner.
+  #
+  # @note If you specify removing more credits than the owner has, it
+  #       will remove all of their credits but not create a negative
+  #       balance.
   def self.remove_from(user_or_org, amount)
-    user_or_org.credits.where(spent: false).limit(amount).delete_all
+    user_or_org.credits.unspent.limit(amount).delete_all
     update_cache_columns(user_or_org)
   end
 
+  # Update the given :user_or_org's cached information.
+  #
+  # @param user_or_org [#credits] the "owner" of the credits.
   def self.update_cache_columns(user_or_org)
     user_or_org.update(
       credits_count: user_or_org.credits.size,
-      spent_credits_count: user_or_org.credits.where(spent: true).size,
-      unspent_credits_count: user_or_org.credits.where(spent: false).size,
+      spent_credits_count: user_or_org.credits.spent.size,
+      unspent_credits_count: user_or_org.credits.unspent.size,
     )
   end
 end

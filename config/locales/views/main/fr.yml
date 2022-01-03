@@ -5,9 +5,6 @@ fr:
       aria_home: "%{community} Home"
       header:
         create_account: Créer un profil
-        connect:
-          aria_label: Connect
-          icon: Connect
         login: Se connecter
         nav:
           aria_label: Navigation menu
@@ -25,7 +22,6 @@ fr:
         login:
           aria_label: Log in
           text: Se connecter
-        footer: We strive for transparency and don't collect excess data.
       nav:
         admin: Admin
         dashboard: Tableau de bord
@@ -60,7 +56,6 @@ fr:
         my_tags: Mes sujets
         popular_tags: Sujets populaires
       footer:
-        aria_label: Site information
         built:
           text_html: Built on %{forem} — the %{opensource} software that powers %{dev} and other inclusive communities.
           forem: Forem
