@@ -161,6 +161,7 @@ class Reaction < ApplicationRecord
     base_points = 0 if status == "invalid"
     base_points /= 2 if reactable_type == "User"
     base_points *= 2 if status == "confirmed"
+    base_points += 5.0 if positive_reaction_to_comment_on_own_article? # Post author's comment reaction counts for more
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 
@@ -178,5 +179,11 @@ class Reaction < ApplicationRecord
 
   def notify_slack_channel_about_vomit_reaction
     Slack::Messengers::ReactionVomit.call(reaction: self)
+  end
+
+  def positive_reaction_to_comment_on_own_article?
+    BASE_POINTS.fetch(category, 1.0).positive? &&
+      reactable_type == "Comment" &&
+      reactable&.commentable&.user_id == user_id
   end
 end

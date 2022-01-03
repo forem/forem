@@ -74,6 +74,20 @@ RSpec.describe Reaction, type: :model do
       expect(reaction.points).to eq(0)
     end
 
+    it "assigns extra 5 points if reaction is to comment on author's post" do
+      comment = create(:comment, commentable: article)
+      comment_reaction = create(:reaction, reactable: comment, user: user)
+      expect(comment_reaction.points).to eq(6)
+    end
+
+    it "does not extra 5 points if reaction is to comment on author's post" do
+      second_user = create(:user)
+      second_article = create(:article, user: second_user)
+      comment = create(:comment, commentable: second_article)
+      comment_reaction = create(:reaction, reactable: comment, user: user)
+      expect(comment_reaction.points).to eq(1)
+    end
+
     it "assigns the correct points if reaction is confirmed" do
       reaction_points = reaction.points
       reaction.update(status: "confirmed")
