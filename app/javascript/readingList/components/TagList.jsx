@@ -60,7 +60,6 @@ export function TagList({
       <option>all tags</option>
       {availableTags.map((tag) => (
         <option
-          key={tag}
           selected={tag === selectedTag}
           key={tag}
           className={`crayons-link crayons-link--block ${

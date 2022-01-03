@@ -1,4 +1,5 @@
 // Item list item
+import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 export const ItemListItem = ({ item, children }) => {
