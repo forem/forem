@@ -137,7 +137,7 @@
     "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
     "preact": "^10.6.4",
-    "prop-types": "^15.7.2",
+    "prop-types": "^15.8.0",
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
     "web-share-wrapper": "^0.2.2"
