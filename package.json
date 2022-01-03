@@ -89,13 +89,13 @@
     "lint-staged": "^12.1.4",
     "markdown-loader": "^6.0.0",
     "prettier": "^2.5.1",
-    "sass": "1.45.1",
+    "sass": "1.45.2",
     "sass-loader": "^12.4.0",
     "storybook-addon-jsx": "^7.3.14",
     "style-loader": "^2.0.0",
     "svgo": "2.8.0",
     "webpack-bundle-analyzer": "^4.5.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^4.7.2"
   },
   "dependencies": {
     "@babel/core": "^7.16.7",
