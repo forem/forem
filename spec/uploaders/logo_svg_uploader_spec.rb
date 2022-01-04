@@ -2,7 +2,7 @@ require "rails_helper"
 require "carrierwave/test/matchers"
 require "exifr/jpeg"
 
-fdescribe LogoSvgUploader, type: :uploader do
+describe LogoSvgUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
   let(:image_svg) { fixture_file_upload("300x100.svg", "image/svg+xml") }
