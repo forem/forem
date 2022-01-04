@@ -86,12 +86,6 @@ gem "rpush", "~> 6.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 
-# NOTE: [@rhymes, @citizen428]: sign in doesn't work with redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
-# We need to investigate why exactly, in the meantime we are hardcoding these two dependencies
-# to keep them at the latest working version
-gem "redis-actionpack", "5.1.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
-gem "redis-rack", "2.0.6" # Redis Store for Rack applications
-
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
