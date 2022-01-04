@@ -9,14 +9,6 @@
         <%= t("views.main.home") %>
       </a>
     </li>
-    <li>
-      <% unless user_signed_in? %>
-        <a href="<%= sign_up_path %>" class="c-link c-link--block c-link--icon-left fw-bold">
-          <%= inline_svg_tag("twemoji/handshake.svg", class: "crayons-icon crayons-icon--default c-link__icon", aria_hidden: true) %>
-          <%= t("views.main.signup") %>
-        </a>
-      <% end %>
-    </li>
     <% default_nav_links.each do |link| %>
       <%= render "layouts/sidebar_nav_link", link: link %>
     <% end %>

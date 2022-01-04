@@ -77,7 +77,7 @@ class Tag < ActsAsTaggableOn::Tag
     # [:alnum:] is not used here because it supports diacritical characters.
     # If we decide to allow diacritics in the future, we should replace the
     # following regex with [:alnum:].
-    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/i)
+    errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
   end
 
   def errors_as_sentence

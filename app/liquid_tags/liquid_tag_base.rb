@@ -1,3 +1,16 @@
+# @abstract
+#
+# We created this class as a wrapper to `Liquid::Tag`.  This follows
+# Forem's aspirational architectural decision to create
+# wrapping/insulating classes around our gem dependencies.
+#
+# This pattern is analogous to creating ApplicationRecord models that
+# inherit from ActiveRecord::Base.
+#
+# @note When making a new Liquid tag, inherit from this class instead
+#       of `Liquid::Base`.
+#
+# @see https://github.com/Shopify/liquid
 class LiquidTagBase < Liquid::Tag
   # The method name to send the user to ask whether or not they
   # have access to the given liquid tag.
@@ -47,7 +60,7 @@ class LiquidTagBase < Liquid::Tag
   private
 
   def validate_contexts
-    return unless self.class.const_defined? "VALID_CONTEXTS"
+    return unless self.class.const_defined? :VALID_CONTEXTS
 
     source = parse_context.partial_options[:source]
     raise LiquidTags::Errors::InvalidParseContext, "No source found" unless source

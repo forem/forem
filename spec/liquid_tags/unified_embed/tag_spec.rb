@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UnifiedEmbedTag, type: :liquid_tag do
+RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
   it "delegates parsing to the link-matching class" do
     link = "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"
 

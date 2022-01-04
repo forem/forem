@@ -157,6 +157,7 @@ fr:
       blank: ne peut pas être vide
       confirmation: ne correspond pas à %{attribute}
       confirmation_period_expired: doit être confirmé dans %{period}, veuillez en demander un nouveau
+      contains_prohibited_characters: contient des caractères unicode non alphanumériques ou interdits
       empty: ne peut pas être vide
       equal_to: doit être égal à %{count}
       even: doit être pair
