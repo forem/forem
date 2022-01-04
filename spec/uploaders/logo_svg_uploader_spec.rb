@@ -2,11 +2,10 @@ require "rails_helper"
 require "carrierwave/test/matchers"
 require "exifr/jpeg"
 
-describe LogoSvgUploader, type: :uploader do
+fdescribe LogoSvgUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
   let(:image_svg) { fixture_file_upload("300x100.svg", "image/svg+xml") }
-  let(:image_webp) { fixture_file_upload("800x600.webp", "image/webp") }
 
   # we need a new uploader before each test, and since the uploader is not a model
   # we can recreate it quickly in memory with `let!`
@@ -24,6 +23,13 @@ describe LogoSvgUploader, type: :uploader do
 
   it "stores files in the correct directory" do
     expect(uploader.store_dir).to eq("uploads/logos/")
+  end
+
+  describe "formats" do
+    it "permits svg, and converts to png" do
+      uploader.store!(image_svg)
+      expect(uploader).to be_format("PNG")
+    end
   end
 
   describe "error handling" do
