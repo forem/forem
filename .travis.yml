@@ -133,7 +133,8 @@ jobs:
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
-      install: skip
+      install:
+        -  rvm $(travis_internal_ruby) --fuzzy do ruby -S gem install faraday:"<2.0" dpl
       script: skip
       after_script: skip
       deploy:
@@ -146,7 +147,8 @@ jobs:
     - stage: Deploy
       name: Deploy BenHalpern
       if: type != pull_request
-      install: skip
+      install:
+        -  rvm $(travis_internal_ruby) --fuzzy do ruby -S gem install faraday:"<2.0" dpl
       script: skip
       after_script: skip
       deploy:
