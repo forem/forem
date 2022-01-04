@@ -47,7 +47,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_presence_of(:reactions_count) }
     it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_presence_of(:user_id) }
 
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
@@ -230,6 +229,34 @@ RSpec.describe Article, type: :model do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
         end
+      end
+    end
+
+    describe "title validation" do
+      it "produces a proper title" do
+        test_article = build(:article, title: "An Article Title")
+
+        test_article.validate
+
+        expect(test_article.title).to eq("An Article Title")
+      end
+
+      it "sanitizes the title" do
+        test_article = build(:article, title: "\u202dThis starts with BIDI override")
+
+        test_article.validate
+
+        expect(test_article.title).not_to match(/\u202d/)
+        expect(test_article.title).to eq("This starts with BIDI override")
+      end
+
+      it "rejects empty titles after sanitizing" do
+        test_article = build(:article, title: "\u202a\u202b\u202c\u202d\u202e")
+
+        test_article.validate
+
+        expect(test_article).not_to be_valid
+        expect(test_article.errors_as_sentence).to match("Title can't be blank")
       end
     end
 

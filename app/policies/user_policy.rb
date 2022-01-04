@@ -99,7 +99,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def moderation_routes?
-    (user.has_role?(:trusted) || minimal_admin?) && !user.suspended?
+    (user.has_trusted_role? || minimal_admin?) && !user.suspended?
   end
 
   def update_password?

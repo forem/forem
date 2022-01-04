@@ -8,12 +8,30 @@ module Articles
 
     MINIMUM_SCORE = -4
 
+    # Get the "plucked" attribute information for the article thread.
+    #
+    # @param relation [ActiveRecord::Relation] the original Article scope
+    # @param options [Hash]
+    # @option options [Array<String>] :tags which tags to select
+    # @option options [NilClass, String, ActiveSupport::TimeWithZone] :time_ago
+    # @option options [Integer] :count the number of records to pluck
+    #
+    # @return [Array<Array>] The inner array is the plucked attribute
+    #         values for the selected articles.  Which means be mindful
+    #         of the order you pass for attributes.
+    #
+    # @note The order of attributes and behavior of this method is from
+    #       past implementations.  A refactor to consider would be to
+    #       create a data structure.
+    #
+    # @see `./app/views/articles/_widget_list_item.html.erb` for the
+    #      importance of maintaining position of these parameters.
     def self.call(relation: Article.published, **options)
       options = DEFAULT_OPTIONS.merge(options)
       tags, time_ago, count = options.values_at(:tags, :time_ago, :count)
 
       relation = relation.limit(count)
-      relation = tags.size == 1 ? relation.cached_tagged_with(tags.first) : relation.tagged_with(tags)
+      relation = relation.cached_tagged_with(tags)
       relation = if time_ago == "latest"
                    relation = relation.where(score: MINIMUM_SCORE..).presence || relation
                    relation.order(published_at: :desc)

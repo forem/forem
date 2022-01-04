@@ -5,7 +5,7 @@ RSpec.describe Users::SubscribeToMailchimpNewsletterWorker, type: :worker do
 
   describe "#perform_now" do
     let(:worker) { subject }
-    let(:user) { FactoryBot.create(:user) }
+    let(:user) { create(:user) }
 
     it "subscribes user to mailchimp newsletter" do
       mailchimp_bot = double

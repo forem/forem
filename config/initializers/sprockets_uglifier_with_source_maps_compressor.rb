@@ -25,7 +25,7 @@ module Sprockets
       sourcemap_url  = filename_to_url(sourcemap_filename)
 
       FileUtils.mkdir_p File.dirname(sourcemap_path)
-      File.open(sourcemap_path, "w") { |f| f.write sourcemap_json }
+      File.write(sourcemap_path, sourcemap_json)
 
       # Add the source map URL to the compressed JS file.
       compressed_data.concat "\n//# sourceMappingURL=#{sourcemap_url}\n"
