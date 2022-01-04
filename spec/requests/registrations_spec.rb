@@ -379,8 +379,8 @@ RSpec.describe "Registrations", type: :request do
                     email: "yoooo#{rand(100)}@yo.co",
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.first.has_role?(:super_admin)).to be true
-        expect(User.first.has_role?(:trusted)).to be true
+        expect(User.first.super_admin?).to be true
+        expect(User.first.trusted?).to be true
       end
 
       it "creates mascot user" do
@@ -407,7 +407,7 @@ RSpec.describe "Registrations", type: :request do
                     password: "PaSSw0rd_yo000",
                     forem_owner_secret: "test",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.super_admin?).to be true
       end
 
       it "does not authorize request in FOREM_OWNER_SECRET scenario if not passed correct value" do
@@ -465,7 +465,7 @@ RSpec.describe "Registrations", type: :request do
                     email: "yoooo#{rand(100)}@yo.co",
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.super_admin?).to be true
       end
     end
   end

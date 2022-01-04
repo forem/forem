@@ -44,9 +44,6 @@ en:
           label: Category
           placeholder: Conference CFP (1 Credit)
           summary: Category details/rules
-        connect:
-          subtitle: Connect messaging
-          description: Allow Users to message me via Connect.
         expiry:
           description: If applicable for time sensitive events, deadlines, etc.
         location:

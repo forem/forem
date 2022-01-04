@@ -10,7 +10,7 @@
       <% end %>
     </h1>
     <div class="flex">
-      <% if current_user.has_role?(:super_admin) || current_user.has_role?(:admin) %>
+      <% if current_user.any_admin? %>
         <a href="<%= edit_admin_tag_path(@tag.id) %>" class="crayons-btn crayons-btn--ghost" data-no-instant><%= t("views.tags.edit.admin") %></a>
       <% end %>
       <a target="_blank" rel="noopener" href="https://admin.forem.com/docs/forem-basics/tags#editing-a-tag" class="crayons-btn crayons-btn--ghost"><%= t("views.tags.edit.help") %></a>

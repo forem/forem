@@ -1,10 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  use_doorkeeper do
-    controllers tokens: "oauth/tokens"
-  end
-
   # Devise does not support scoping omniauth callbacks under a dynamic segment
   # so this lives outside our i18n scope.
   devise_for :users, controllers: {
@@ -68,7 +64,6 @@ Rails.application.routes.draw do
           get :organizations
         end
         resources :readinglist, only: [:index]
-        resources :webhooks, only: %i[index create show destroy]
 
         resources :listings, only: %i[index show create update]
         get "/listings/category/:category", to: "listings#index", as: :listings_category
