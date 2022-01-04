@@ -114,7 +114,10 @@
                 <div class="pl-3 flex-1">
                   <a href="/<%= @user.username %>" class="crayons-link fw-bold"><%= @user.name %></a>
                   <% if @organization %>
-                    <span class="color-base-60">for</span> <a href="<%= @organization.path %>" class="crayons-link"><%= @organization.name %></a>
+                    <%= t("views.articles.for_org_html",
+                          start: tag("span", { class: "color-base-60" }, true),
+                          end: "</span>".html_safe,
+                          org: tag.a(@organization.name, href: @organization.path, class: "crayons-link")) %>
                   <% end %>
                   <p class="fs-xs color-base-60">
                     <% if @article.published_timestamp.present? %>

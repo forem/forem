@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UnifiedEmbed do
+RSpec.describe UnifiedEmbed::Registry do
   subject(:unified_embed) { described_class }
 
   let(:article) { create(:article) }
