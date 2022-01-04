@@ -1,0 +1,6 @@
+Gemfile.lock
+gemfiles/*.lock
+*.gem
+tmp/
+stdout
+gemfiles/vendor

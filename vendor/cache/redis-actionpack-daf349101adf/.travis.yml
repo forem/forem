@@ -1,0 +1,33 @@
+language: ruby
+before_install: gem install bundler
+script: bundle exec rake
+rvm:
+  - 2.3
+  - 2.4
+  - 2.5
+  - 2.6
+  - 2.7
+  - ruby-head
+  - jruby-head
+gemfile:
+  - gemfiles/rails_5.0.x.gemfile
+  - gemfiles/rails_5.1.x.gemfile
+  - gemfiles/rails_5.2.x.gemfile
+  - gemfiles/rails_6.0.x.gemfile
+matrix:
+  exclude:
+    - rvm: 2.3
+      gemfile: gemfiles/rails_6.0.x.gemfile
+    - rvm: 2.4
+      gemfile: gemfiles/rails_6.0.x.gemfile
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-head
+deploy:
+  provider: rubygems
+  api_key:
+    secure: edRiCZPzp3pqBQn3hjeG5WqUNf0eEb8/Ea2VY0jJfQfOHxOYJSATkpdZ5xxOL1YIefk7ERUURY3dKwS/qdSIF2h954QPeOChLTlSaWtFjSNAZIAhH7Ks4vN/q1i7JAWtJRCBOtHlAe9AJj7CvHpUsry3+oHsJ+gXaaA9lntbheE=
+  gem: redis-actionpack
+  on:
+    tags: true
+    repo: redis-store/redis-actionpack
