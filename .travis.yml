@@ -62,7 +62,7 @@ install:
   - yarn install --frozen-lockfile
 script:
   - bundle exec rails db:create db:schema:load webpacker:compile
-  - bin/knapsack_pro_rspec
+  - KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC='' bin/knapsack_pro_rspec
 notifications:
   slack:
     if: branch = main
