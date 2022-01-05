@@ -1,6 +1,6 @@
 require "rails_helper"
 require Rails.root.join(
-  "lib/data_update_scripts/20211208074428_migrate_logo_svg_data.rb",
+  "lib/data_update_scripts/20220105112823_migrate_logo_svg_data.rb",
 )
 
 describe DataUpdateScripts::MigrateLogoSvgData do
