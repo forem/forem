@@ -8,7 +8,7 @@
 #
 # Sometimes we need to consolidate tags (e.g. rubyonrails and rails).
 # In this case, we mark one of those tags as an alias for the other
-# (via `alias_for`).  The concrete tags if the "preferred" tag
+# (via `alias_for`).  The direct tags is the "preferred" tag
 # (e.g. not the alias).
 #
 # @note models with `acts_as_taggable_on` declarations (e.g., Article and Listing)
@@ -73,7 +73,7 @@ class Tag < ActsAsTaggableOn::Tag
   #       however, prior to adding this scope, we didn't have a name
   #       for a non-aliased tag (aside from "not an alias").  With
   #       this scope we have a name.
-  scope :concrete, -> { where(alias_for: [nil, ""]) }
+  scope :direct, -> { where(alias_for: [nil, ""]) }
 
   pg_search_scope :search_by_name,
                   against: :name,
