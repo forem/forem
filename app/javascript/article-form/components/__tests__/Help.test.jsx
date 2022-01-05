@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { Help } from '../Help';
+import { locale , localeArray } from '../../../utilities/locale';
 
 describe('<Help />', () => {
   it('should have no a11y violations', async () => {
@@ -37,17 +38,11 @@ describe('<Help />', () => {
     const titleHelp = getByTestId('title-help');
 
     getByTestId('article-form__help-section');
-    getByText(/writing a great post title/i);
+    getByText(locale('views.editor.help.title.title'));
 
     expect(
       titleHelp.textContent.includes(
-        'Think of your post title as a super short (but compelling!) description — like an overview of the actual post in one short sentence.',
-      ),
-    ).toEqual(true);
-
-    expect(
-      titleHelp.textContent.includes(
-        'Use keywords where appropriate to help ensure people can find your post by search.',
+        localeArray('views.editor.help.title.itens'),
       ),
     ).toEqual(true);
   });

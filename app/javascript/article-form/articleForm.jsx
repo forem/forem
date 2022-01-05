@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { locale } from '../utilities/locale';
 import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
@@ -445,19 +446,16 @@ export class ArticleForm extends Component {
         {this.state.isModalOpen && (
           <Modal
             size="s"
-            title="You have unsaved changes"
+            title={locale('views.editor.close.unsaved_changes')}
             onClose={() => this.showModal(false)}
           >
-            <p>
-              You've made changes to your post. Do you want to navigate to leave
-              this page?
-            </p>
+            <p>{locale('views.editor.close.made_changes')}</p>
             <div className="pt-4">
               <Button className="mr-2" variant="danger" url="/" tagName="a">
-                Yes, leave the page
+                {locale('views.editor.close.yes_leave')}
               </Button>
               <Button variant="secondary" onClick={() => this.showModal(false)}>
-                No, keep editing
+                {locale('views.editor.close.no_keep')}
               </Button>
             </div>
           </Modal>

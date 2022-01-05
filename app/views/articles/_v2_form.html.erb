@@ -103,6 +103,7 @@
   <%= render "pages/editor_liquid_help" %>
   <%= render "pages/editor_frontmatter_help" %>
 </div>
+<div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { views: { editor: I18n::JS.translations[I18n.locale.to_sym][:views][:editor] } } }.to_json %>"></div>
 
 <script>
   <%== RunkitTag.script %>

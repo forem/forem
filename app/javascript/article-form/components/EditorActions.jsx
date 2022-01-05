@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { locale } from '../../utilities/locale';
 import { Options } from './Options';
 import { Button } from '@crayons';
 
@@ -22,8 +23,10 @@ export const EditorActions = ({
       <div className="crayons-article-form__footer">
         <Button className="mr-2 whitespace-nowrap" onClick={onPublish} disabled>
           {published && isVersion2
-            ? 'Publishing...'
-            : `Saving ${isVersion2 ? 'draft' : ''}...`}
+            ? locale('views.editor.actions.publishing')
+            : `${locale('views.editor.actions.saving')} ${
+                isVersion2 ? locale('views.editor.actions.draft') : ''
+              }...`}
         </Button>
       </div>
     );
@@ -32,7 +35,9 @@ export const EditorActions = ({
   return (
     <div className="crayons-article-form__footer">
       <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
-        {published || isVersion1 ? 'Save changes' : 'Publish'}
+        {published || isVersion1
+          ? locale('views.editor.actions.save')
+          : locale('views.editor.actions.publish')}
       </Button>
 
       {!(published || isVersion1) && (
@@ -41,7 +46,10 @@ export const EditorActions = ({
           className="mr-2 whitespace-nowrap"
           onClick={onSaveDraft}
         >
-          Save <span className="hidden s:inline">draft</span>
+          {locale('views.editor.actions.save')}{' '}
+          <span className="hidden s:inline">
+            {locale('views.editor.actions.draft')}
+          </span>
         </Button>
       )}
 
@@ -60,7 +68,10 @@ export const EditorActions = ({
           className="whitespace-nowrap fw-normal"
           size="s"
         >
-          Revert <span className="hidden s:inline">new changes</span>
+          {locale('views.editor.actions.revert')}{' '}
+          <span className="hidden s:inline">
+            {locale('views.editor.actions.changes')}
+          </span>
         </Button>
       )}
     </div>

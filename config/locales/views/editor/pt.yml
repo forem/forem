@@ -2,6 +2,16 @@
 pt:
   views:
     editor:
+      actions: 
+        publish: Publicar
+        save: Salvar
+        draft: Rascunho
+        revert: Desfazer
+        changes: mudanças
+        saving: Salvando
+        publishing: Publicando
+      errors:
+        something_wrong: Oops, algo deu errado
       meta:
         title: Editar Artigo
       heading:
@@ -10,13 +20,40 @@ pt:
       close:
         icon: Fechar
         title: Feche o editor
+        made_changes: Você fez mudanças no artigo. Tem certeza que deseja sair sem salvar?
+        yes_leave: Sim, sair da página
+        no_keep: Não, continue editando
+        unsaved_changes: Você tem mudanças não salvas
       cover_image:
         add: Adicionar uma imagem de capa
         change: Mudar
       edit: Editar
       modes: Ver tipos de artigos
       new_title: Novo título de artigo aqui...
-      preview: Prévia
+      textarea_placeholder: Escreva o conteúdo do artigo aqui...
+      preview: Visualizar
+      help:
+        title:
+          title: Escrevendo um Título de Artigo Atrativo
+          itens:
+            - Pense no título da sua postagem como uma descrição super curta (mas atraente!)
+            - Como uma visão geral da postagem real em uma frase curta. Use palavras-chave quando apropriado para ajudar a garantir que as pessoas possam encontrar sua postagem por pesquisa.
+        editor:
+          title: Edição Básica
+          use: Use 
+          to_write: para escrever e formatar artigos.
+          common: Sintaxes mais usadas
+          can_use: Você pode usar
+          rich_content: para adicionar conteúdo como Tweets, YouTube vídeos, etc.
+          in_addition: Além de imagens para o conteúdo do artigo, você pode arrastar e colar a imagem de capa
+        tags:
+          title: Guia para Tags
+          itens:
+            - As tags ajudam as pessoas a encontrar sua postagem.
+            - Pense em tags como os tópicos ou categorias que melhor descrevem sua postagem.
+            - Adicione até quatro tags separadas por vírgula por postagem. Combine tags para alcançar as subcomunidades apropriadas.
+            - Use tags existentes sempre que possível.
+            - Algumas tags, como “help” ou “healthydebate”, têm diretrizes de postagem especiais.
       video:
         progress:
           heading: "⏳ Transcodificação de vídeo em andamento ⏳"

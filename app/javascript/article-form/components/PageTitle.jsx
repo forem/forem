@@ -1,12 +1,13 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { OrganizationPicker } from '../../organization/OrganizationPicker';
+import { locale } from '../../utilities/locale';
 
 export const PageTitle = ({ organizations, organizationId, onToggle }) => {
   return (
     <div className="crayons-field__label flex items-center flex-1">
       <span className="hidden s:inline-block mr-2 whitespace-nowrap">
-        Create Post
+        {locale('views.editor.create')}
       </span>
       {organizations && organizations.length > 0 && (
         <div>

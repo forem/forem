@@ -1,20 +1,16 @@
 import { h } from 'preact';
+import { localeArray , locale } from '../../../utilities/locale';
 
 export const ArticleFormTitle = () => (
   <div
     data-testid="title-help"
     className="crayons-article-form__help crayons-article-form__help--title"
   >
-    <h4 className="mb-2 fs-l">Writing a Great Post Title</h4>
+    <h4 className="mb-2 fs-l">{locale('views.editor.help.title.title')}</h4>
     <ul className="list-disc pl-6 color-base-70">
-      <li>
-        Think of your post title as a super short (but compelling!) description
-        — like an overview of the actual post in one short sentence.
-      </li>
-      <li>
-        Use keywords where appropriate to help ensure people can find your post
-        by search.
-      </li>
+      {localeArray('views.editor.help.title.itens').map((i) => {
+        return <li key={i}>{i}</li>;
+      })}
     </ul>
   </div>
 );

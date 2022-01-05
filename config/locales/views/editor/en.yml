@@ -10,13 +10,40 @@ en:
       close:
         icon: Close
         title: Close the editor
+        made_changes: You've made changes to your post. Do you want to navigate to leave this page?
+        yes_leave: Yes, leave the page
+        no_keep: No, keep editing
+        unsaved_changes: You have unsaved changes
       cover_image:
         add: Add a cover image
         change: Change
       edit: Edit
       modes: View post modes
       new_title: New post title here...
+      textarea_placeholder: Write your post content here...
       preview: Preview
+      help:
+        title:
+          title: Writing a Great Post Title
+          itens:
+            - Think of your post title as a super short (but compelling!) description — like an overview of the actual post in one short sentence.
+            - Use keywords where appropriate to help ensure people can find your post by search.
+        editor:
+          title: Editor Basics
+          use: use
+          to_write: to write and format posts.
+          common: Commonly used syntax
+          can_use: You can use
+          rich_content: to add rich content such as Tweets, YouTube videos, etc.
+          in_addition: In addition to images for the post's content, you can also drag and drop a cover image
+        tags:
+          title: Tagging Guidelines
+          itens:
+            - Tags help people find your post.
+            - Think of tags as the topics or categories that best describe your post.
+            - Add up to four comma-separated tags per post. Combine tags to reach the appropriate subcommunities.
+            - Use existing tags whenever possible.
+            - Some tags, such as “help” or “healthydebate”, have special posting guidelines.
       video:
         progress:
           heading: "⏳ Video Transcoding In Progress ⏳"

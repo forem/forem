@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { locale } from '../../utilities/locale';
 
 export const Tabs = ({ onPreview, previewShowing }) => {
   return (
@@ -10,7 +11,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
       <ul className="crayons-tabs__list">
         <li>
           <button
-            data-text="Edit"
+            data-text={locale('views.editor.edit')}
             className={`crayons-tabs__item ${
               previewShowing ? '' : 'crayons-tabs__item--current'
             }`}
@@ -20,12 +21,12 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             type="button"
             aria-current={previewShowing ? null : 'page'}
           >
-            Edit
+            {locale('views.editor.edit')}
           </button>
         </li>
         <li>
           <button
-            data-text="Preview"
+            data-text={locale('views.editor.preview')}
             className={`crayons-tabs__item ${
               previewShowing ? 'crayons-tabs__item--current' : ''
             }`}
@@ -35,7 +36,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             type="button"
             aria-current={previewShowing ? 'page' : null}
           >
-            Preview
+            {locale('views.editor.preview')}
           </button>
         </li>
       </ul>

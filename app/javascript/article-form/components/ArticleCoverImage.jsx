@@ -2,6 +2,7 @@
 
 import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
+import { locale } from '../../utilities/locale';
 import { addSnackbarItem } from '../../Snackbar';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
@@ -164,7 +165,9 @@ export class ArticleCoverImage extends Component {
   render() {
     const { mainImage } = this.props;
     const { uploadError, uploadErrorMessage, uploadingImage } = this.state;
-    const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
+    const uploadLabel = mainImage
+      ? locale('views.editor.cover_image.change')
+      : locale('views.editor.cover_image.add');
 
     // When the component is rendered in an environment that supports a native
     // image picker for image upload we want to add the aria-label attr and the
