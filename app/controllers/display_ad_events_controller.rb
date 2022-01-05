@@ -18,8 +18,8 @@ class DisplayAdEventsController < ApplicationMetalController
     ThrottledCall.perform(:display_ads_data_update, throttle_for: 15.minutes) do
       @display_ad = DisplayAd.find(display_ad_event_params[:display_ad_id])
 
-      num_impressions = @display_ad.display_ad_events.where(category: "impression").size
-      num_clicks = @display_ad.display_ad_events.where(category: "click").size
+      num_impressions = @display_ad.display_ad_events.impressions.size
+      num_clicks = @display_ad.display_ad_events.clicks.size
       rate = num_clicks.to_f / num_impressions
 
       @display_ad.update_columns(
