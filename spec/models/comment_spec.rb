@@ -329,6 +329,14 @@ RSpec.describe Comment, type: :model do
       comment.validate!
       expect(comment.title).not_to include("&#39;")
     end
+
+    # NOTE: example string taken from https://github.com/threedaymonk/htmlentities
+    # as this is the gem we're removing.
+    it "correctly decodes HTML entities" do
+      comment.body_markdown = "&eacute;lan"
+      comment.validate!
+      expect(comment.title).to eq("élan")
+    end
   end
 
   describe "#custom_css" do
