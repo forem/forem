@@ -41,7 +41,7 @@ gem "fog-aws", "~> 3.12" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
-# gem "hairtrigger", "~> 0.2.24" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
+gem "hairtrigger", github: "citizen428/hair_trigger", branch: "master" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.9" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.8.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
@@ -82,14 +82,10 @@ gem "ransack", "~> 2.5" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.5.1" # Redis ruby client
+gem "redis-actionpack", github: "redis-store/redis-actionpack", branch: "master" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "rpush", "~> 6.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
-
-# NOTE: [@rhymes]: sign in doesn't work with the redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
-# We need to investigate why exactly, in the meantime we are hardcoding these two transitive dependencies
-# (added by redis-rails) to keep them at the latest working version
-gem "redis-actionpack", github: "redis-store/redis-actionpack", branch: "master" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown

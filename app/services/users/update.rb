@@ -105,8 +105,7 @@ module Users
     end
 
     def update_profile
-      # We don't update `data` directly. This uses the defined store_attributes
-      # so we can make use of their typecasting.
+      # We don't update `data` directly. This uses the store_accessors instead.
       @profile.assign_attributes(@updated_profile_attributes)
 
       # Before saving, filter out obsolete profile fields

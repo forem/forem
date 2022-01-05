@@ -1,0 +1,50 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: hairtrigger_schema_test
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      mysql:
+        image: mysql
+        env:
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+          - 3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 5s
+          --health-timeout 2s
+          --health-retries 3
+    strategy:
+      matrix:
+        ruby: ['2.5', '2.7']
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - env:
+          DB_CONFIG: github-actions
+          PGPORT: ${{ job.services.postgres.ports[5432] }}
+          MYSQLPORT: ${{ job.services.mysql.ports[3306] }}
+        run: |
+          sudo apt-get -yqq install libpq-dev libmysqlclient-dev
+          gem install bundler
+          bundle install
+          bundle exec appraisal install
+          bundle exec appraisal rspec

@@ -59,6 +59,7 @@ exclude:
 
 # Dashboard performance
 cache: true
+precision: 2
 
 # For logged-in users we'll explicitly pass participant.
 # If we experiment on non-logged in, we don't want to collect cookies anyway.
