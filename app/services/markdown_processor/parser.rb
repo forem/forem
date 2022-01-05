@@ -8,7 +8,6 @@ module MarkdownProcessor
     ].freeze
 
     WORDS_READ_PER_MINUTE = 275.0
-    ALLOWED_ATTRIBUTES = %w[href src alt].freeze
 
     def initialize(content, source: nil, user: nil)
       @content = content
@@ -46,50 +45,28 @@ module MarkdownProcessor
       (word_count / WORDS_READ_PER_MINUTE).ceil
     end
 
-    def evaluate_markdown
+    def evaluate_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_DEFAULT)
       return if @content.blank?
 
       renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-      allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
-                        br ul ol li small sup sub img a span hr blockquote kbd]
       ActionController::Base.helpers.sanitize(markdown.render(@content),
                                               tags: allowed_tags,
-                                              attributes: ALLOWED_ATTRIBUTES)
+                                              attributes: MarkdownProcessor::AllowedAttributes::MARKDOWN_PROCESSOR)
     end
 
-    def evaluate_limited_markdown
-      return if @content.blank?
-
-      renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-      markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-      allowed_tags = %w[strong i u b em p br code]
-      ActionController::Base.helpers.sanitize(markdown.render(@content),
-                                              tags: allowed_tags,
-                                              attributes: ALLOWED_ATTRIBUTES)
+    def evaluate_limited_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_LIMITED)
+      evaluate_markdown(allowed_tags: allowed_tags)
     end
 
-    def evaluate_inline_limited_markdown
-      return if @content.blank?
-
-      renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-      markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-      allowed_tags = %w[strong i u b em code]
-      ActionController::Base.helpers.sanitize(markdown.render(@content),
-                                              tags: allowed_tags,
-                                              attributes: ALLOWED_ATTRIBUTES)
+    # rubocop:disable Layout/LineLength
+    def evaluate_inline_limited_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_INLINE_LIMITED)
+      evaluate_markdown(allowed_tags: allowed_tags)
     end
+    # rubocop:enable Layout/LineLength
 
-    def evaluate_listings_markdown
-      return if @content.blank?
-
-      renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-      markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-      allowed_tags = %w[strong abbr aside em p h4 h5 h6 i u b code pre
-                        br ul ol li small sup sub a span hr blockquote kbd]
-      ActionController::Base.helpers.sanitize(markdown.render(@content),
-                                              tags: allowed_tags,
-                                              attributes: ALLOWED_ATTRIBUTES)
+    def evaluate_listings_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_LISTINGS)
+      evaluate_markdown(allowed_tags: allowed_tags)
     end
 
     def tags_used

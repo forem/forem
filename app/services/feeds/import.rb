@@ -71,7 +71,9 @@ module Feeds
         next if cleaned_url.blank?
 
         response = ForemStatsClient.time("feeds::import::fetch_feed", tags: ["user_id:#{user_id}", "url:#{url}"]) do
-          HTTParty.get(cleaned_url, timeout: 10)
+          HTTParty.get(cleaned_url,
+                       timeout: 10,
+                       headers: { "User-Agent" => "Forem Feeds Importer" })
         end
 
         [user_id, response.body]
@@ -103,7 +105,7 @@ module Feeds
 
         [user_id, parsed_feed]
       rescue StandardError => e
-        # TODO: add better exception handling (eg. rescueing Feedjira::NoParserAvailable separately)
+        # TODO: add better exception handling (eg. rescuing Feedjira::NoParserAvailable separately)
         report_error(
           e,
           feeds_import_info: {

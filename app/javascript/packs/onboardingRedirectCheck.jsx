@@ -10,11 +10,18 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 
 // If localStorage.getItem('shouldRedirectToOnboarding') is not set, i.e. null, that means we should redirect.
 function redirectableLocation() {
+  return ![
+    '/onboarding',
+    '/signout_confirm',
+    '/privacy',
+    '/admin/creator_settings/new',
+  ].includes(window.location.pathname);
+}
+
+function redirectableCreatorOnboardingLocation() {
   return (
-    window.location.pathname !== '/onboarding' &&
-    window.location.pathname !== '/signout_confirm' &&
-    window.location.pathname !== '/privacy' &&
-    window.location.pathname !== '/admin/creator_settings/new'
+    redirectableLocation() &&
+    !['/code-of-conduct', '/terms'].includes(window.location.pathname)
   );
 }
 
@@ -40,8 +47,10 @@ document.ready.then(
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
 
-      if (redirectableLocation() && onboardCreator(currentUser)) {
-        window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;
+      if (onboardCreator(currentUser)) {
+        if (redirectableCreatorOnboardingLocation()) {
+          window.location = `${window.location.origin}/admin/creator_settings/new?referrer=${window.location}`;
+        }
       } else if (redirectableLocation() && !onboardingSkippable(currentUser)) {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
       }
@@ -56,7 +65,7 @@ window.InstantClick.on('change', () => {
   getUserDataAndCsrfToken()
     .then(({ currentUser }) => {
       if (
-        redirectableLocation() &&
+        redirectableCreatorOnboardingLocation() &&
         localStorage.getItem('shouldRedirectToOnboarding') === null &&
         onboardCreator(currentUser)
       ) {

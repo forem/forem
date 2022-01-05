@@ -5,7 +5,7 @@
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeSettings,
   initializeCommentPreview, initializeRuntimeBanner,
-  initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
+  initializeTimeFixer, initializeDashboardSort,
   initializeArchivedPostFilter, initializeCreditsPage,
   initializeProfileInfoToggle, initializePodcastPlayback,
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
@@ -27,13 +27,10 @@ function callInitializers() {
   initializeCommentPreview();
   initializeTimeFixer();
   initializeDashboardSort();
-  initializePWAFunctionality();
   initializeArchivedPostFilter();
   initializeCreditsPage();
   initializeProfileInfoToggle();
   initializeProfileBadgesToggle();
-  initializePodcastPlayback();
-  initializeVideoPlayback();
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
@@ -58,6 +55,8 @@ function initializePage() {
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
+      initializePodcastPlayback();
+      initializeVideoPlayback();
     }
   }, 1);
 

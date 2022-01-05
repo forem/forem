@@ -55,7 +55,7 @@ class UserDecorator < ApplicationDecorator
     body_class = [
       setting.config_theme.tr("_", "-"),
       "#{setting.resolved_font_name.tr('_', '-')}-article-body",
-      "trusted-status-#{trusted}",
+      "trusted-status-#{trusted?}",
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]
     body_class.join(" ")
@@ -97,15 +97,8 @@ class UserDecorator < ApplicationDecorator
     articles_count.zero? && comments_count.zero? && suspended?
   end
 
-  def stackbit_integration?
-    access_tokens.any?
-  end
-
   def considered_new?
-    min_days = Settings::RateLimit.user_considered_new_days
-    return false unless min_days.positive?
-
-    created_at.after?(min_days.days.ago)
+    Settings::RateLimit.user_considered_new?(user: self)
   end
 
   # Returns the user's public email if it is set and the display_email_on_profile

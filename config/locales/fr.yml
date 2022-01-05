@@ -6,53 +6,18 @@ fr:
     if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
   core:
     add_comment: Ajouter un commentaire
-    analytics: Analytique
+    beta: bêta
     comment: Commentaire
-    comments: Commentaires
-    community_name_is_great: "%{community_name} est super"
     copy_link: Copier le lien
-    create_account: Créer un profil
-    dashboard: Tableau de bord
     edit_profile: Editer le profil
     follow: Suivre
     follow_back: Suivre aussi
-    follower: Suiveur
-    followers: Suiveurs
     following: Abonné
-    joined: Rejoint
-    joined_on: Rejoint le
     like: Aime
-    listings: Annonces
     loading: Chargement en cours...
-    location: Lieu
-    log_in: Se connecter
-    more_from: Plus de la part de
-    pinned: Épinglé
-    post: Publication
-    posts: Publications
     reaction: Réaction
-    reaction_pluralized:
-      one: réaction
-      other: réactions
-    reactions:
-      heart: Coeur
-      save: Sauver
-      unicorn: Licorne
-    reply: Répondre
     report_abuse: Signaler un abus
     search: Recherche
-    series: Séries
-    settings: Paramètres
-    trending_on: Populaire sur
-  dashboard:
-    empty_follower: Vous n'avez pas encore d'abonnés...
-    empty_post: C'est ici que vous pouvez gérer vos messages, mais vous n'avez encore rien écrit
-    following_users: Utilisateurs suivis
-    loading: Chargement en cours...
-    not_following_any_users: Vous ne suivez aucun utilisateur...
-    page_title: Tableau de bord
-    upload_a_video: Charger une vidéo
-    write_new_post: Écrivez votre premier message maintenant
   date:
     abbr_month_names:
     - 
@@ -192,6 +157,7 @@ fr:
       blank: ne peut pas être vide
       confirmation: ne correspond pas à %{attribute}
       confirmation_period_expired: doit être confirmé dans %{period}, veuillez en demander un nouveau
+      contains_prohibited_characters: contient des caractères unicode non alphanumériques ou interdits
       empty: ne peut pas être vide
       equal_to: doit être égal à %{count}
       even: doit être pair
@@ -225,16 +191,9 @@ fr:
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
-  settings_menu:
-    account: Compte
-    billing: Facturation
-    customization: Personnalisation
-    extensions: Extensions
-    notifications: Notifications
-    organization: Organisation
-    profile: Profil
   time:
     formats:
+      json: "%b %e, %Y"
       comment: "%B %d, %Y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"

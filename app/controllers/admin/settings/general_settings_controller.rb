@@ -6,6 +6,7 @@ module Admin
       SPECIAL_PARAMS_TO_ADD = %w[
         credit_prices_in_cents
         meta_keywords
+        logo
       ].freeze
 
       def create

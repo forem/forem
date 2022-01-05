@@ -24,10 +24,10 @@ module Users
 
     def initialize(user, updated_attributes)
       @user = user
-      @profile = user.profile
+      @profile = user.profile || user.create_profile
       @users_setting = user.setting
       @updated_profile_attributes = updated_attributes[:profile] || {}
-      @updated_user_attributes = updated_attributes[:user].to_h || {}
+      @updated_user_attributes = prepare_user_attributes(updated_attributes[:user], user)
       @updated_users_setting_attributes = updated_attributes[:users_setting].to_h || {}
       @errors = []
       @success = false
@@ -59,6 +59,15 @@ module Users
     private
 
     attr_reader :errors
+
+    def prepare_user_attributes(updated_user_attributes, user)
+      attrs = updated_user_attributes.to_h || {}
+      if attrs[:username] != user.username
+        attrs[:old_username] = user.username
+        attrs[:old_old_username] = user.old_username
+      end
+      attrs
+    end
 
     def update_successful?
       return false unless verify_profile_image
@@ -96,8 +105,7 @@ module Users
     end
 
     def update_profile
-      # We don't update `data` directly. This uses the defined store_attributes
-      # so we can make use of their typecasting.
+      # We don't update `data` directly. This uses the store_accessors instead.
       @profile.assign_attributes(@updated_profile_attributes)
 
       # Before saving, filter out obsolete profile fields

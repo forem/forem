@@ -129,7 +129,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
 
           it "shows tags and renders properly", :aggregate_failures do
             get "/t/#{tag.name}"
-            expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+            expect(response.body).to include("crayons-navigation__item crayons-navigation__item--current")
             has_mod_action_button
             does_not_paginate
             sets_remember_token
@@ -150,7 +150,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           it "renders properly even if site config is private" do
             allow(Settings::UserExperience).to receive(:public).and_return(false)
             get "/t/#{tag.name}"
-            expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+            expect(response.body).to include("crayons-navigation__item crayons-navigation__item--current")
           end
 
           it "does not render pagination even with many posts" do
@@ -174,7 +174,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def shows_sign_in_notice
-            expect(response.body).not_to include("crayons-tabs__item crayons-tabs__item--current")
+            expect(response.body).not_to include("crayons-navigation__item crayons-navigation__item--current")
             expect(response.body).to include("for the ability sort posts by")
           end
 

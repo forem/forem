@@ -9,7 +9,7 @@ RSpec.describe "DiscussionLocks", type: :request do
   describe "POST /discussion_locks - DiscussionLocks#create" do
     it "creates a DiscussionLock" do
       article = create(:article, user: user)
-      reason = "Unproductice comments."
+      reason = "Unproductive comments."
       notes = "Hostile comment from user @user"
       valid_attributes = { article_id: article.id, locking_user_id: user.id, notes: notes, reason: reason }
       expect do
@@ -50,7 +50,7 @@ RSpec.describe "DiscussionLocks", type: :request do
       sign_out user
       sign_in other_user
 
-      reason = "Unproductice comments."
+      reason = "Unproductive comments."
       notes = "Hostile comment from user @user"
       valid_attributes = { article_id: article.id, locking_user_id: other_user.id, notes: notes, reason: reason }
       expect do

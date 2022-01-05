@@ -1,5 +1,6 @@
 class SoundcloudTag < LiquidTagBase
   PARTIAL = "liquids/soundcloud".freeze
+  REGISTRY_REGEXP = %r{https?://soundcloud.com}
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -41,3 +42,5 @@ class SoundcloudTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("soundcloud", SoundcloudTag)
+
+UnifiedEmbed.register(SoundcloudTag, regexp: SoundcloudTag::REGISTRY_REGEXP)

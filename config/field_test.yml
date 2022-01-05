@@ -25,12 +25,42 @@ experiments:
   #     - user_views_article_four_hours_in_day
   #     - user_views_article_nine_days_in_two_week
   #     - user_views_article_twelve_hours_in_five_days
+  # feed_strategy:
+  #   winner: original
+  #   variants:
+  #     - original
+  #     - weighted_query_strategy
+  #   weights:
+  #     - 80
+  #     - 20
+  #   goals:
+  #     - user_creates_comment
+  #     - user_creates_comment_four_days_in_week
+  #     - user_views_article_four_days_in_week
+  #     - user_views_article_four_hours_in_day
+  #     - user_views_article_nine_days_in_two_week
+  #     - user_views_article_twelve_hours_in_five_days
+  feed_strategy_round_2:
+    variants:
+      - original
+      - weighted_query_strategy
+    weights:
+      - 80
+      - 20
+    goals:
+      - user_creates_comment
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
 exclude:
   bots: true
 
 # Dashboard performance
 cache: true
+precision: 2
 
-# For logged-in users we'll explicitely pass participant.
+# For logged-in users we'll explicitly pass participant.
 # If we experiment on non-logged in, we don't want to collect cookies anyway.
 cookies: false

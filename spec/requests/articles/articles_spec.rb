@@ -286,7 +286,7 @@ RSpec.describe "Articles", type: :request do
       expect(response.body).to include('<link rel="canonical" href="http://localhost:3000/new" />')
     end
 
-    it "sets canonical url with prefil" do
+    it "sets canonical url with prefill" do
       get "/new?prefill=dsdweewewew"
       expect(response.body).to include('<link rel="canonical" href="http://localhost:3000/new" />')
     end

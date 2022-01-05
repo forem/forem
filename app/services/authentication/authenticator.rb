@@ -88,7 +88,8 @@ module Authentication
       return unless domain
       return if Settings::Authentication.acceptable_domain?(domain: domain)
 
-      message = "This #{identity.provider} email address #{identity.email} has been marked as spam"
+      message = "Sorry, but the domain for your email address is not allowed. This Forem may have limited signup to only
+       specified email domains or blocked this specific domain from joining."
 
       raise Authentication::Errors::SpammyEmailDomain, message
     end
@@ -151,7 +152,16 @@ module Authentication
     def update_user(user)
       user.tap do |model|
         model.unlock_access! if model.access_locked?
-        model.assign_attributes(provider.existing_user_data)
+
+        if model.confirmed?
+          # We don't want to update users' email or any other fields if they're
+          # connecting an existing account that already has a confirmed email.
+          model.assign_attributes(provider.existing_user_data.except(:email))
+        else
+          # If the user doesn't have a confirmed email we can update their email
+          # and trust it because the auth provider confirmed email ownership
+          model.assign_attributes(provider.existing_user_data)
+        end
 
         update_profile_updated_at(model)
 

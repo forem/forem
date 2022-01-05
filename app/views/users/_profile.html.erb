@@ -5,23 +5,23 @@
 <%= form_with(url: profile_path(@user.profile_id), method: "put", html: { class: "sticky-footer-form", id: "user-profile-form" }) do |f| %>
 
   <div class="crayons-card crayons-card--content-rows">
-    <h2>User</h2>
+    <h2><%= t("views.settings.group.user") %></h2>
 
     <div class="crayons-field">
-      <%= f.label :name, for: "user[name]", class: "crayons-field__label" %>
+      <%= f.label :name, t("helpers.label.user.name"), for: "user[name]", class: "crayons-field__label" %>
       <%= f.text_field "user[name]",
                        maxlength: 30,
                        class: "crayons-textfield",
-                       placeholder: "John Doe",
+                       placeholder: t("helpers.placeholder.user.name"),
                        value: @user.name %>
     </div>
 
     <div class="crayons-field">
-      <%= f.label :email, for: "user[email]", class: "crayons-field__label" %>
+      <%= f.label :email, t("helpers.label.user.email"), for: "user[email]", class: "crayons-field__label" %>
       <%= f.text_field "user[email]",
                        maxlength: 50,
                        class: "crayons-textfield",
-                       placeholder: "john.doe@example.com",
+                       placeholder: t("helpers.placeholder.user.email"),
                        value: @user.email %>
     </div>
 
@@ -31,16 +31,16 @@
     </div>
 
     <div class="crayons-field">
-      <%= f.label :username, for: "user[username]", class: "crayons-field__label" %>
+      <%= f.label :username, t("helpers.label.user.username"), for: "user[username]", class: "crayons-field__label" %>
       <%= f.text_field "user[username]",
                        maxlength: 30,
                        class: "crayons-textfield",
-                       placeholder: "johndoe",
+                       placeholder: t("helpers.placeholder.user.username"),
                        value: @user.username %>
     </div>
 
     <div class="crayons-field">
-      <%= f.label :profile_image, for: "user[profile_image]", class: "crayons-field__label" %>
+      <%= f.label :profile_image, t("helpers.label.user.profile_image"), for: "user[profile_image]", class: "crayons-field__label" %>
 
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
@@ -56,7 +56,7 @@
   <% profile = @user.profile %>
 
   <div class="crayons-card crayons-card--content-rows">
-    <h2>Basic</h2>
+    <h2><%= t("views.settings.group.Basic") %></h2>
 
     <div class="crayons-field">
       <label class="crayons-field__label" for="profile[website_url]">
@@ -70,7 +70,7 @@
                       aria: { describedby: "url-description" },
                       data: { character_span_id: "url-characters" } %>
       <p id="url-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
         <span id="url-characters"></span>/100
       </p>
     </div>
@@ -87,7 +87,7 @@
                        aria: { describedby: "location-description" },
                        data: { character_span_id: "location-characters" } %>
       <p id="location-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
         <span id="location-characters"></span>/100
       </p>
     </div>
@@ -104,7 +104,7 @@
                       aria: { describedby: "summary-description" },
                       data: { character_span_id: "summary-characters" } %>
       <p id="summary-description" class="crayons-field__description align-right">
-        <span class="screen-reader-only">Available characters used: </span>
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
         <span id="summary-characters"></span>/200
       </p>
     </div>
@@ -112,7 +112,7 @@
 
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
     <div class="crayons-card crayons-card--content-rows">
-      <h2><%= group.name %></h2>
+      <h2><%= t("views.settings.group.#{group.name}", default: group.name) %></h2>
       <% if group.description.present? %>
         <div class="color-base-60"><%= group.description %></div>
       <% end %>
@@ -146,7 +146,7 @@
                               data: { character_span_id: "#{field.attribute_name}-characters" },
                               class: "crayons-textfield") %>
             <p id="<%= field.attribute_name %>-description" class="crayons-field__description align-right">
-              <span class="screen-reader-only">Available characters used: </span>
+              <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
               <span id="<%= field.attribute_name %>-characters"></span>/<%= character_count_denominator(field["input_type"]) %>
             </p>
           <% end %>
@@ -157,7 +157,7 @@
 
   <% users_setting = @user.setting %>
   <div class="crayons-card crayons-card--content-rows">
-    <h2>Branding</h2>
+    <h2><%= t("views.settings.group.Branding") %></h2>
     <div class="crayons-field ">
       <label class="crayons-field__label" for="users_setting[brand_color1]">
         <%= t("views.logo.color_1.label") %>
@@ -194,6 +194,6 @@
   </div>
 
   <div class="save-footer crayons-card crayons-card--content-rows">
-    <button type="submit" class="crayons-btn">Save Profile Information</button>
+    <button type="submit" class="crayons-btn"><%= t("views.settings.save_profile") %></button>
   </div>
 <% end %>

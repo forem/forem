@@ -4,11 +4,14 @@ import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { Tags } from '../tags';
 
+fetch.enableMocks();
+
 describe('<Tags />', () => {
   beforeAll(() => {
     const environment = document.createElement('meta');
     environment.setAttribute('name', 'environment');
     document.body.appendChild(environment);
+    fetch.resetMocks();
     window.fetch = fetch;
   });
 
@@ -21,6 +24,10 @@ describe('<Tags />', () => {
 
   describe('handleKeyDown', () => {
     it('does not call preventDefault on used keyCode', () => {
+      // Only one call is being made to /tags/suggest when the comma key is pressed
+      // It didn't seem worth it to inspect the whole mock object to ensure the right URL etc.
+      fetch.mockResponseOnce('[]');
+
       const { getByTestId } = render(
         <Tags defaultValue="defaultValue" listing />,
       );
@@ -34,8 +41,10 @@ describe('<Tags />', () => {
         { key: 'Enter', code: '13' },
       ];
 
+      const input = getByTestId('tag-input');
+
       tests.forEach((eventPayload) => {
-        fireEvent.keyDown(getByTestId('tag-input'), eventPayload);
+        fireEvent.keyDown(input, eventPayload);
       });
 
       expect(Event.prototype.preventDefault).not.toHaveBeenCalled();

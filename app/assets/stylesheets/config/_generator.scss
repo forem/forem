@@ -185,6 +185,13 @@
     false
   ),
   (
+    'inset',
+    ('top', 'left', 'right', 'bottom'),
+    ('px': 1px, 'unset': unset, '0': 0),
+    (),
+    false
+  ),
+  (
     'top',
     'top',
     ('auto': auto, 'unset': unset, '0': 0, '100': 100%),
@@ -446,7 +453,7 @@
     null
   ),
   ('object', 'object-fit', ('cover': cover), (), false),
-  ('aspect', 'aspect-ratio', ('16-9': 16 / 9), (), false),
+  ('aspect', 'aspect-ratio', ('16-9': calc(16 / 9)), (), false),
   ('break', 'word-break', ('word': break-word), (), false),
   ('resize', 'resize', ('y': vertical), (), false)
 );

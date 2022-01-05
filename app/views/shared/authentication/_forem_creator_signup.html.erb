@@ -26,7 +26,7 @@
         <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger my-8" role="alert" data-testid="signup-errors">
           <div class="crayons-card__header">
             <h3 class="crayons-card__headline">
-              Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
+              <%= t("views.auth.register.errors", count: resource.errors.size) %>
             </h3>
           </div>
           <div class="crayons-card__body">
@@ -40,48 +40,50 @@
       <% end %>
 
       <div class="align-center">
-        <p class="pb-4 fs-2xl m:fs-3xl lh-tight fw-bold">Let's start your Forem journey!</p>
-        <p class="color-base-70 fs-l m:fs-xl">Create your admin account first.</p>
-        <p class="color-base-70 fs-l m:fs-xl">Then we'll walk you through your Forem setup.</p>
+        <p class="pb-4 fs-2xl m:fs-3xl lh-tight fw-bold"><%= t("views.auth.creator.text1") %></p>
+        <p class="color-base-70 fs-l m:fs-xl"><%= t("views.auth.creator.text2") %></p>
+        <p class="color-base-70 fs-l m:fs-xl"><%= t("views.auth.creator.text3") %></p>
       </div>
 
       <div class="crayons-field mt-6">
-        <%= f.label :name, "Name", for: "name", class: "crayons-field__label" %>
+        <%= f.label :name, t("views.auth.register.field.name.label"), for: "name", class: "crayons-field__label" %>
         <%= f.text_field :name, id: "name", placeholder: "John Doe", class: "crayons-textfield js-creator-signup-name", required: true %>
 
         <div class="js-creator-signup-username-hint-row hidden">
           <div class="fs-xs color-base-60 flex">
-            <span>Your username will be&nbsp;</span>
-            <button type="button" aria-label="Edit username" class="cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90" role="button">
-              <span class="js-creator-signup-username-hint"></span>
-              <%= inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: "Edit username") %>
-            </button>
+            <%= t("views.auth.creator.hint.text_html", start: tag("span", nil, true), end: "</span>".html_safe,
+                                                       button: tag.button(
+                                                         tag.span(class: "js-creator-signup-username-hint") + inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: t("views.auth.creator.hint.icon")),
+                                                         class: "cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90",
+                                                         role: "button", type: "button",
+                                                         aria: { label: t("views.auth.creator.hint.aria_label") },
+                                                       )) %>
           </div>
           </div>
       </div>
 
       <div class="crayons-field mt-6 <%= "hidden" unless any_errors %> js-creator-signup-username-row">
-        <%= f.label :username, "Username", for: "username", class: "crayons-field__label" %>
-        <%= f.text_field :username, pattern: "[A-Za-z0-9_]+", maxlength: "30", title: "A username can only contain letters, numbers and underscores. The maximum username length can be 30 characters.", id: "username", class: "js-creator-signup-username crayons-textfield",
+        <%= f.label :username, t("views.auth.register.field.username.label"), for: "username", class: "crayons-field__label" %>
+        <%= f.text_field :username, pattern: "[A-Za-z0-9_]+", maxlength: "30", title: t("views.auth.register.field.username.desc"), id: "username", class: "js-creator-signup-username crayons-textfield",
                                     aria: { describedby: "username-helper-text" } %>
-        <p id="username-helper-text" class="fs-xs color-base-60 mt-1">It can only contain letters, numbers and underscores. The maximum username length can be 30 characters.</p>
+        <p id="username-helper-text" class="fs-xs color-base-60 mt-1"><%= t("views.auth.register.field.username.desc") %></p>
       </div>
 
       <div class="crayons-field mt-6">
-        <%= f.label :email, "Email", for: "email", class: "crayons-field__label" %>
-        <%= f.email_field :email, placeholder: "john@example.com", autocomplete: "email", id: "email", class: "crayons-textfield", required: true %>
+        <%= f.label :email, t("views.auth.register.field.email.label"), for: "email", class: "crayons-field__label" %>
+        <%= f.email_field :email, placeholder: t("views.auth.register.field.email.placeholder"), autocomplete: "email", id: "email", class: "crayons-textfield", required: true %>
       </div>
 
       <div class="crayons-field mt-6">
-        <%= f.label :password, "Password", class: "crayons-field__label" %>
+        <%= f.label :password, t("views.auth.register.field.password.label"), class: "crayons-field__label" %>
         <div class="relative">
-          <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: "••••••••", required: true, aria: { describedby: "password-helper-text" } %>
-          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="Show password" aria-pressed="false">
-            <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: "Show password") %>
-            <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: "Hide password") %>
+          <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: t("views.auth.register.field.password.placeholder"), required: true, aria: { describedby: "password-helper-text" } %>
+          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="<%= t("views.auth.register.field.password.show") %>" aria-pressed="false">
+            <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.show")) %>
+            <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.hide")) %>
           </button>
         </div>
-        <p id="password-helper-text" class="fs-xs color-base-60 mt-1">Minimum 8 characters</p>
+        <p id="password-helper-text" class="fs-xs color-base-60 mt-1"><%= t("views.auth.register.field.password.desc") %></p>
       </div>
 
       <% if ForemInstance.needs_owner_secret? %>
@@ -89,16 +91,16 @@
           <%= f.hidden_field :forem_owner_secret, value: params[:forem_owner_secret] %>
         <% else %>
           <div class="crayons-field mt-6">
-            <%= f.label :forem_owner_secret, "New Forem Secret", class: "crayons-field__label" %>
-            <%= f.password_field :forem_owner_secret, class: "crayons-textfield", required: ForemInstance.needs_owner_secret?, placeholder: "As provided by your Forem host" %>
+            <%= f.label :forem_owner_secret, t("views.auth.register.secret.label"), class: "crayons-field__label" %>
+            <%= f.password_field :forem_owner_secret, class: "crayons-textfield", required: ForemInstance.needs_owner_secret?, placeholder: t("views.auth.register.secret.placeholder") %>
           </div>
         <% end %>
       <% end %>
 
       <div class="flex flex-col pt-6">
-        <%= f.submit "Create my account", class: "crayons-btn" %>
+        <%= f.submit t("views.auth.creator.submit"), class: "crayons-btn" %>
       </div>
     <% end %>
   </div>
-  <%= inline_svg_tag("forem-background.svg", aria: true, title: "forem background", class: "forem-background absolute bottom-0 right-0 hidden m:block") %>
+  <%= inline_svg_tag("forem-background.svg", aria: true, title: t("views.auth.background"), class: "forem-background absolute bottom-0 right-0 hidden m:block") %>
 </main>

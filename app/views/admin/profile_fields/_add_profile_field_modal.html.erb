@@ -1,16 +1,16 @@
-<span data-controller="modal" data-modal-root-selector-value="#add-<%= group_name %>-profile-field-modal-root" data-modal-content-selector-value="#add-<%= group_name %>-profile-field-modal" data-modal-title-value="Add Profile Field" data-modal-size-value="s" class="mx-1">
+<span data-controller="modal" data-modal-root-selector-value="#add-<%= dom_safe_name %>-profile-field-modal-root" data-modal-content-selector-value="#add-<%= dom_safe_name %>-profile-field-modal" data-modal-title-value="Add Profile Field" data-modal-size-value="s" class="mx-1">
   <button data-action="modal#toggleModal" class="crayons-btn">
     Add Field
   </button>
 
-  <div id="add-<%= group_name %>-profile-field-modal" class="hidden">
+  <div id="add-<%= dom_safe_name %>-profile-field-modal" class="hidden">
     <div class="form-group grid p-6 mb-6 gap-1">
       <%= form_for [:admin, ProfileField.new] do |form| %>
-        <%= render "profile_field_form", form: form, group: group, group_name: group_name %>
+        <%= render "profile_field_form", form: form, group: group, group_name: dom_safe_name %>
         <%= form.submit class: "btn btn-primary" %>
       <% end %>
     </div>
   </div>
 
-  <div id="add-<%= group_name %>-profile-field-modal-root"></div>
+  <div id="add-<%= dom_safe_name %>-profile-field-modal-root"></div>
 </span>

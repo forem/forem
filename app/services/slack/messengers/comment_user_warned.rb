@@ -18,7 +18,7 @@ module Slack
       end
 
       def call
-        return unless user.warned
+        return unless user.warned?
 
         internal_user_url = URL.url(
           Rails.application.routes.url_helpers.admin_user_path(user),

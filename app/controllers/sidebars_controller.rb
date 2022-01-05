@@ -10,14 +10,7 @@ class SidebarsController < ApplicationController
   private
 
   def get_latest_campaign_articles
-    campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true)
-      .where("published_at > ? AND score > ?", Settings::Campaign.articles_expiry_time.weeks.ago, 0)
-      .order(hotness_score: :desc)
-
-    requires_approval = Campaign.current.articles_require_approval?
-    campaign_articles_scope = campaign_articles_scope.where(approved: true) if requires_approval
-
-    @campaign_articles_count = campaign_articles_scope.count
-    @latest_campaign_articles = campaign_articles_scope.limit(5).pluck(:path, :title, :comments_count, :created_at)
+    @campaign_articles_count = Campaign.current.count
+    @latest_campaign_articles = Campaign.current.plucked_article_attributes
   end
 end

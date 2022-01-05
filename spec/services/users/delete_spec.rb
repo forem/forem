@@ -68,6 +68,14 @@ RSpec.describe Users::Delete, type: :service do
     end.to change(FieldTest::Membership, :count).by(-1)
   end
 
+  it "deletes reactions to the user" do
+    create(:vomit_reaction, reactable: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(Reaction, :count).by(-1)
+  end
+
   # check that all the associated records are being destroyed,
   # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do

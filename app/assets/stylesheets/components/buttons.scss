@@ -412,3 +412,121 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
     }
   }
 }
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+// .c-btn //////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+.c-btn {
+  position: relative;
+  display: inline-block;
+  padding: var(--su-2) var(--su-4);
+  border-radius: var(--radius);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  overflow-wrap: normal;
+  outline: 0;
+  background-color: var(--bg);
+  color: var(--color);
+
+  &:hover:enabled {
+    background-color: var(--bg-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+  }
+
+  // Both focus declarations below are the same but we unfortunately can't
+  // combine them because Safari doesn't handle it properly.
+  //  • First declaration is for all browsers that support :focus-visible
+  //    which is basically almost all of them.
+  //  • Second declaration is for browsers that do not support :focus-visible
+  //    which basically is only Safari right now :shrug:
+  &:focus-visible {
+    background-color: var(--bg-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+    box-shadow: var(--focus-ring);
+    outline: 0;
+  }
+
+  .js-focus-visible &.focus-visible:focus {
+    background-color: var(--bg-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+    box-shadow: var(--focus-ring);
+    outline: 0;
+  }
+
+  &[aria-expanded='true'],
+  &[aria-pressed='true'] {
+    --bg: var(--btn-current-bg);
+    --color: var(--btn-current-color);
+    font-weight: var(--fw-bold);
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  // This makes sure icons inside buttons don't cause problems with click handlers
+  // See: https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
+  & > * {
+    pointer-events: none;
+    + input {
+      pointer-events: revert;
+    }
+  }
+}
+
+.c-btn {
+  --bg: var(--btn-bg);
+  --bg-hover: var(--btn-bg-hover);
+  --color: var(--btn-color);
+  --color-hover: var(--btn-color-hover);
+
+  &.c-btn--destructive {
+    --bg: var(--btn-destructive-bg);
+    --bg-hover: var(--btn-destructive-bg-hover);
+    --color: var(--btn-destructive-color);
+    --color-hover: var(--btn-destructive-color-hover);
+  }
+}
+
+.c-btn--primary {
+  --bg: var(--btn-primary-bg);
+  --bg-hover: var(--btn-primary-bg-hover);
+  --color: var(--btn-primary-color);
+  --color-hover: var(--btn-primary-color-hover);
+
+  font-weight: var(--fw-medium);
+
+  &.c-btn--destructive {
+    --bg: var(--btn-primary-destructive-bg);
+    --bg-hover: var(--btn-primary-destructive-bg-hover);
+    --color: var(--btn-primary-destructive-color);
+    --color-hover: var(--btn-primary-destructive-color-hover);
+  }
+}
+
+.c-btn--secondary {
+  --bg: var(--btn-secondary-bg);
+  --bg-hover: var(--btn-secondary-bg-hover);
+  --color: var(--btn-secondary-color);
+  --color-hover: var(--btn-secondary-color-hover);
+}
+
+.c-btn--icon-alone {
+  padding: var(--su-2);
+}
+
+.c-btn--icon-left {
+  .c-btn__icon {
+    margin-right: var(--su-2);
+    margin-left: calc(var(--su-1) * -1);
+  }
+}

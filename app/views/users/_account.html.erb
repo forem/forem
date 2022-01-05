@@ -6,27 +6,27 @@
 
 <div class="crayons-card crayons-card--content-rows">
   <header>
-    <h2 class="mb-2"><%= community_name %> API Keys</h2>
-    <p>You can generate personal API keys to use for authentication with the <%= community_name %> API.  The API is still in its beta stage. The <a href="https://developers.forem.com/api">documentation</a> contains further information.</a></p>
+    <h2 class="mb-2"><%= t("views.settings.account.api.heading", community: community_name) %></h2>
+    <p><%= t("views.settings.account.api.desc_html", community: community_name, doc: link_to(t("views.settings.account.api.doc"), "https://developers.forem.com/api")) %></p>
   </header>
 
   <div>
-    <h3 class="mb-2">Generate a new Key</h3>
+    <h3 class="mb-2"><%= t("views.settings.account.api.gen.heading") %></h3>
     <%= form_tag users_api_secrets_path, method: :post do %>
       <%= fields_for :api_secret do |api_secret| %>
         <div class="crayons-field mb-6">
-          <%= api_secret.label(:description, "Description", class: "crayons-field__label") %>
-          <p class="crayons-field__description">What's this API key for?</p>
-          <%= api_secret.text_field(:description, placeholder: "My Project Name", required: true, class: "crayons-textfield") %>
+          <%= api_secret.label(:description, t("views.settings.account.api.gen.label"), class: "crayons-field__label") %>
+          <p class="crayons-field__description"><% t("views.settings.account.api.gen.text") %></p>
+          <%= api_secret.text_field(:description, placeholder: t("views.settings.account.api.gen.placeholder"), required: true, class: "crayons-textfield") %>
         </div>
       <% end %>
-      <button class="crayons-btn crayon-btn--secondary" type="submit">Generate API Key</button>
+      <button class="crayons-btn crayon-btn--secondary" type="submit"><%= t("views.settings.account.api.gen.submit") %></button>
     <% end %>
   </div>
 
   <% unless @user.api_secrets.empty? %>
     <div>
-      <h3>Active API keys (never share these!)</h3>
+      <h3><%= t("views.settings.account.api.active.heading") %></h3>
 
       <% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
         <details class="p-4 mt-2 crayons-card crayons-card--secondary">
@@ -34,10 +34,10 @@
           <div class="flex pt-2">
             <div class="flex-1 pl-4">
               <p class="ff-monospace"><%= api_secret.secret %></p>
-              <p class="fs-s">Created: <time datetime="<%= api_secret.created_at.rfc3339 %>"><%= api_secret.created_at.to_s %></time></p>
+              <p class="fs-s"><%== t("views.settings.account.api.active.created", time: tag.time(api_secret.created_at.to_s, datetime: api_secret.created_at.rfc3339)) %></p>
             </div>
             <%= form_tag users_api_secret_path(api_secret.id), class: "api__secret__revoke", method: :delete do %>
-              <%= button_tag "Revoke", class: "crayons-btn crayons-btn--danger" %>
+              <%= button_tag t("views.settings.account.api.revoke"), class: "crayons-btn crayons-btn--danger" %>
             <% end %>
           </div>
         </details>
@@ -48,84 +48,79 @@
 
 <div class="crayons-card crayons-card--content-rows">
   <h2 class="crayons-subtitle-1">
-    Export content
+    <%= t("views.settings.account.export.heading") %>
   </h2>
 
   <% if @user.export_requested? %>
     <div class="crayons-notice crayons-notice--warning" aria-live="polite">
-      <p>You have recently requested an export of your content. Please check your email.</p>
+      <p><%= t("views.settings.account.export.requested") %></p>
     </div>
   <% else %>
-    <p class="-mt-2">You can request an export of all your content. Currently we only support the export of your posts and comments. They will be emailed to your inbox.</p>
+    <p class="-mt-2"><%= t("views.settings.account.export.desc") %></p>
 
     <%= form_for(@user, html: { id: nil }) do |f| %>
       <div class="crayons-field crayons-field--checkbox mb-6">
         <%= f.check_box :export_requested, class: "crayons-checkbox" %>
-        <%= f.label :export_requested, "Request an export of your content", class: "crayons-field__label" %>
+        <%= f.label :export_requested, t("views.settings.account.export.label"), class: "crayons-field__label" %>
       </div>
       <%= f.hidden_field :tab, value: @tab, id: nil %>
-      <div><button type="submit" class="crayons-btn">Submit Data Request</button></div>
+      <div><button type="submit" class="crayons-btn"><%= t("views.settings.account.export.submit") %></button></div>
     <% end %>
   <% end %>
 </div>
 
 <div class="crayons-card crayons-card--content-rows">
   <h2 class="crayons-subtitle-1 color-accent-danger">
-    Danger Zone
+    <%= t("views.settings.danger") %>
   </h2>
 
   <% if @user.identities.enabled.size > 1 %>
     <div class="grid gap-2">
-      <h3>Remove OAuth Associations</h3>
-      <p>You can remove one of your authentication methods. We'll still need one to authenticate you.</p>
-      <p>Removing an OAuth association will:</p>
+      <h3><%= t("views.settings.account.remove.heading") %></h3>
+      <p><%= t("views.settings.account.remove.desc1") %></p>
+      <p><%= t("views.settings.account.remove.desc2") %></p>
       <ul class="list-disc pl-6">
-        <li>remove your ability to sign in with that account</li>
-        <li>remove the associated URL from your profile</li>
+        <li><%= t("views.settings.account.remove.desc2a") %></li>
+        <li><%= t("views.settings.account.remove.desc2b") %></li>
       </ul>
       <p>
-        Note that this does not revoke our OAuth app access;
-        you will have to do so in your settings for the specific provider:
-
+        <%= t("views.settings.account.remove.desc3") %>
         <%= render partial: "users/account_providers_settings" %>
       </p>
     </div>
 
     <% authentication_enabled_providers_for_user.each do |provider| %>
-      <% onsubmit = "return confirm('Are you absolutely sure you want to remove your #{provider.official_name} account?');" %>
+      <% onsubmit = "return confirm('#{t('views.settings.account.remove.confirm', provider: provider.official_name)}');" %>
       <%= form_tag users_remove_identity_path, method: :delete, onsubmit: onsubmit do %>
         <%= hidden_field_tag :provider, provider.provider_name %>
 
         <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
           <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.official_name) %>
-          Remove <%= provider.official_name %>
+          <%= t("views.settings.account.remove.submit", provider: provider.official_name) %>
         </button>
       <% end %>
     <% end %>
   <% end %>
 
   <div class="grid gap-2">
-    <h3>Delete account</h3>
+    <h3><%= t("views.settings.account.delete.heading") %></h3>
 
     <% if current_user.email? %>
       <%= form_tag user_request_destroy_path, method: :post, autocomplete: "off", id: "delete__account", class: "grid gap-2" do %>
-        <p>Deleting your account will:</p>
+        <p><%= t("views.settings.account.delete.desc1") %></p>
         <ul class="list-disc pl-6">
-          <li>Delete your profile, along with your authentication associations.
-
-            This does not include applications permissions. You will have to remove them yourself:
-
+          <li><%= t("views.settings.account.delete.desc1a") %>
             <%= render partial: "users/account_providers_settings" %>
           </li>
 
           <%# TODO: expand the delete messaging later %>
-          <li>Delete any and all content you have, such as articles, comments, or your reading list.</li>
-          <li>Allow your username to become available to anyone.</li>
+          <li><%= t("views.settings.account.delete.desc1b") %></li>
+          <li><%= t("views.settings.account.delete.desc1c") %></li>
         </ul>
-        <div><button class="crayons-btn crayons-btn--danger" id="delete__account__btn" type="submit">Delete Account</button></div>
+        <div><button class="crayons-btn crayons-btn--danger" id="delete__account__btn" type="submit"><%= t("views.settings.account.delete.submit") %></button></div>
       <% end %>
     <% else %>
-      <p>Please, <%= link_to "provide an email", "/settings/profile" %> to fully delete your account.</p>
+      <p><%= t("views.settings.account.delete.desc2_html", provide: link_to(t("views.settings.account.delete.provide"), "/settings/profile")) %></p>
     <% end %>
   </div>
 

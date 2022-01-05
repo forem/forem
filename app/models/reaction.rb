@@ -42,6 +42,7 @@ class Reaction < ApplicationRecord
       .or(user_vomits.where(user_id: user.id))
   }
   scope :privileged_category, -> { where(category: PRIVILEGED_CATEGORIES) }
+  scope :for_user, ->(user) { where(reactable: user) }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -81,8 +82,16 @@ class Reaction < ApplicationRecord
     #
     # @return [TrueClass] yup, they're spamming the system.
     # @return [FalseClass] they're not (yet) spamming the system
-    def user_has_been_given_too_many_spammy_reactions?(user:)
-      article_vomits.where(reactable_type: "Article", reactable_id: user.articles.pluck(:id)).size > 2
+    def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2)
+      article_vomits.where(reactable_id: user.articles.ids).size > threshold
+    end
+
+    # @param user [User] the user who might be spamming the system
+    #
+    # @return [TrueClass] yup, they're spamming the system.
+    # @return [FalseClass] they're not (yet) spamming the system
+    def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2)
+      comment_vomits.where(reactable_id: user.comments.ids).size > threshold
     end
   end
 
@@ -164,7 +173,7 @@ class Reaction < ApplicationRecord
   def negative_reaction_from_untrusted_user?
     return if user&.any_admin? || user&.id == Settings::General.mascot_user_id
 
-    negative? && !user.trusted
+    negative? && !user.trusted?
   end
 
   def notify_slack_channel_about_vomit_reaction

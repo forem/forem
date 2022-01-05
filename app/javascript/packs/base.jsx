@@ -1,4 +1,5 @@
 /* global Runtime */
+import 'focus-visible';
 import {
   initializeMobileMenu,
   setCurrentPageIconLink,
@@ -113,7 +114,7 @@ function getPageEntries() {
   return Object.entries({
     'notifications-index': document.getElementById('notifications-link'),
     'moderations-index': document.getElementById('moderation-link'),
-    'stories-search': document.getElementById('search-link'),
+    'articles_search-index': document.getElementById('search-link'),
   });
 }
 
@@ -162,13 +163,19 @@ initializeNav();
 
 async function loadCreatorSettings() {
   try {
-    const [{ CreatorSettingsController }, { Application }] = await Promise.all([
+    const [
+      { CreatorSettingsController },
+      { LogoUploadController },
+      { Application },
+    ] = await Promise.all([
       import('@admin-controllers/creator_settings_controller'),
+      import('@admin-controllers/logo_upload_controller'),
       import('@hotwired/stimulus'),
     ]);
 
     const application = Application.start();
     application.register('creator-settings', CreatorSettingsController);
+    application.register('logo-upload', LogoUploadController);
   } catch (error) {
     Honeybadger.notify(
       `Error loading the creator settings controller: ${error.message}`,

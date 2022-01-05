@@ -1,5 +1,7 @@
-<a href="/" class="site-logo" aria-label="<%= t("views.main.aria_home") %>">
-  <% if Settings::General.logo_svg.present? %>
+<a href="<%= root_path %>" class="site-logo" aria-label="<%= t("views.main.aria_home", community: community_name) %>">
+  <% if FeatureFlag.enabled?(:creator_onboarding) %>
+    <img class="site-logo__img" src="<%= Settings::General.resized_logo %>" alt="<%= community_name %>">
+  <% elsif Settings::General.logo_svg.present? %>
     <%= logo_svg %>
   <% else %>
     <span class="truncate-at-2">

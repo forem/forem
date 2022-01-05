@@ -150,6 +150,24 @@ RSpec.describe Authentication::Authenticator, type: :service do
         end.to change { user.reload.apple_username }.to("newname")
       end
 
+      # rubocop:disable RSpec/AnyInstance
+      it "avoids overriding the email when a provider has a different one" do
+        existing_email = user.email
+
+        # The following mocks the behavior of `current_user` being available
+        # which means we're connecting an existing account with the new identity
+        allow_any_instance_of(described_class).to receive(:proper_user).and_return(user)
+        forem_auth_payload = OmniAuth.config.mock_auth[:forem].merge(email: "different+email@example.com")
+
+        described_class.call(forem_auth_payload)
+
+        # We want to keep the previous email the user had instead of overriding
+        # with the new (different) email given by the OAuth provider
+        expect(user.reload.email).to eq(existing_email)
+        expect(user.reload.unconfirmed_email).to be_nil
+      end
+      # rubocop:enable RSpec/AnyInstance
+
       it "sets remember_me for the existing user" do
         user.update_columns(remember_token: nil, remember_created_at: nil)
 
@@ -184,12 +202,12 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "does not update the username when the first_name is nil" do
-        previos_username = user.apple_username
+        previous_username = user.apple_username
         auth_payload.info.first_name = nil
 
         user = described_class.call(auth_payload)
 
-        expect(user.apple_username).to eq(previos_username)
+        expect(user.apple_username).to eq(previous_username)
       end
 
       it "updates profile_updated_at when the username is changed" do

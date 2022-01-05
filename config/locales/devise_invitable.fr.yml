@@ -21,11 +21,12 @@ fr:
       updated_not_active: Votre mot de passe a été défini avec succès.
     mailer:
       invitation_instructions:
+        accept_instructions: Vous pouvez accepter l'invitation en cliquant sur ce lien
         accept: Accepter l'invitation
-        accept_until: Cette invitation sera valable jusqu'au %{due_date}.
-        hello: Bonjour %{email}
+        accept_until: Cette invitation expirera après %{due_date}.
+        hello: Bonjour %{name}
         ignore: Si vous ne souhaitez pas accepter cette invitation, veuillez ignorer cet e-mail.<br />Votre compte ne sera pas créé tant que vous n'accéderez pas au lien ci-dessous et que vous ayez défini votre mot de passe.
-        someone_invited_you: Vous avez été invité à rejoindre %{url}, vous pouvez accepter cette invitation via le lien ci-dessous.
+        someone_invited_you: Vous avez été invité à rejoindre la communauté %{community_name} sur %{url}.
         subject: Vous avez reçu une invitation
   time:
     formats:

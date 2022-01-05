@@ -2,6 +2,26 @@
 en:
   helpers:
     label:
+      organization:
+        name: Name
+        slug: Username
+        profile_image: Profile image
+        nav_image: Logo for light themes
+        dark_nav_image: Logo for dark themes
+        twitter_username: Twitter username
+        github_username: GitHub username
+        url: Website url
+        tag_line: Tag line
+        summary: Summary
+        location: Location
+        email: Support email
+        company_size: Organization size
+        story: Our story
+        tech_stack: Our stack
+        cta_body_markdown: Body text
+        cta_button_text: Link text
+        cta_button_url: Link url
+        proof: Proof
       listing:
         body_markdown: Body Markdown
         expires_at: Custom Expire Date
@@ -23,3 +43,51 @@ en:
         title: Title
         twitter_username: Twitter username
         website_url: Website url
+      response_template:
+        title: Title
+        content: Comment body (Markdown)
+      user:
+        name: Name
+        email: Email
+        username: Username
+        profile_image: Profile image
+      users_notification_setting:
+        email_newsletter: Send me weekly newsletter emails
+        email_digest_periodic: Send me a periodic digest of top posts from my tags
+        email_membership_newsletter: Send me sustaining membership newsletter emails
+        email_tag_mod_newsletter: Send me tag moderator newsletter emails
+        email_community_mod_newsletter: Send me community moderator newsletter emails
+        email_comment_notifications: Send me an email when someone replies to me in a comment thread
+        email_follower_notifications: Send me an email when someone new follows me
+        email_mention_notifications: Send me an email when someone mentions me
+        email_badge_notifications: Send me an email when I receive a badge
+        email_connect_messages: Send me an email when I receive a direct message (while inactive)
+        email_unread_notifications: Send me occasional reminders that I have unread notifications on %{community}
+        mobile_mention_notifications: Send me a push notification when someone mentions me
+        mobile_comment_notifications: Send me a push notification when someone replies to me in a comment thread
+        welcome_notifications: Send me occasional tips on how to enhance my %{community} experience
+        reaction_notifications: Send notifications when someone reacts to my comments or posts
+        mod_roundrobin_notifications: Send me occasional community-success mod notifications
+      users_setting:
+        feed_url: RSS Feed URL
+    placeholder:
+      organization:
+        name: Acme Inc.
+        slug: acmeinc
+        url: https://yoursite.com
+        location: Halifax, Nova Scotia
+        email: mail@example.com
+        company_size: "..."
+        story: "..."
+        tech_stack: "..."
+        cta_body_markdown: "..."
+        cta_button_text: Visit Acme Site
+        cta_button_url: https://example.com
+        proof: "..."
+      response_template:
+        title: "..."
+      user:
+        name: John Doe
+        email: john.doe@example.com
+        username: johndoe
+        feed_url: https://yoursite.com/feed

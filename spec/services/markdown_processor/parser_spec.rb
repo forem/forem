@@ -224,7 +224,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       # rubocop:disable Layout/LineLength
       expected_result = "<p><code>@#{user.username}</code> one two, <a class=\"mentioned-user\" " \
                         "href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">" \
-                        "@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n"
+                        "@#{user.username}</a> three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n"
       # rubocop:enable Layout/LineLength
       expect(result).to eq(expected_result)
     end

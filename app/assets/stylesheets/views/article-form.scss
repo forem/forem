@@ -122,16 +122,6 @@
     @media (min-width: $breakpoint-s) {
       margin-right: var(--layout-gap);
     }
-
-    .logo {
-      width: 50px;
-      height: 40px;
-      padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
-      background: var(--logo-bg);
-      fill: var(--logo-color);
-      border-radius: var(--radius);
-      display: block;
-    }
   }
 
   &__close {
@@ -168,12 +158,27 @@
     top: 0;
     background: var(--base-0);
     padding: var(--su-2) var(--content-padding-x);
+    padding-right: var(--toolbar-padding-right, 0);
+    overflow-x: auto;
+    flex-shrink: 0;
     margin: calc(var(--content-padding-y) * -1)
       calc(var(--content-padding-x) * -1) var(--su-6)
       calc(var(--content-padding-x) * -1);
 
     > :first-child {
-      margin-left: calc(var(--su-2) * -1);
+      @media (min-width: $breakpoint-m) {
+        margin-left: calc(var(--su-2) * -1);
+      }
+    }
+
+    &::-webkit-scrollbar {
+      background: transparent;
+      height: 0;
+    }
+
+    @media (min-width: $breakpoint-m) {
+      --toolbar-padding-right: var(--content-padding-x);
+      overflow: visible;
     }
   }
 
@@ -233,6 +238,37 @@
 }
 
 .crayons-article-form {
+  &__tag-option {
+    background: var(--card-bg);
+    color: var(--card-color);
+    padding: var(--su-3);
+    border-radius: var(--radius);
+  }
+
+  &__tag-option-title {
+    font-weight: var(--fw-medium);
+  }
+
+  &__tag-option-name {
+    text-overflow: ellipsis;
+  }
+
+  &__tag-option:hover {
+    // We try to avoid !important, but since the --tag-prefix color needs to be set inline, !important is required to temporarily change it
+    --tag-prefix: var(--accent-brand-darker) !important;
+    background: var(--body-bg);
+
+    .crayons-article-form__tag-option-title {
+      color: var(--accent-brand-darker);
+    }
+  }
+
+  &__tag-option-image {
+    height: 1rem;
+    margin-left: var(--su-1);
+  }
+
+  // TODO: Clean up these old styles when Autocomplete component is added
   &__tagsoptions {
     background: var(--card-bg);
     color: var(--card-color);

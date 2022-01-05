@@ -3,29 +3,19 @@
   <span id="route-change-target" tabindex="-1"></span>
   <a href="#main-content" class="skip-content-link"><%= t("views.main.header.skip") %></a>
   <div class="crayons-header__container">
-    <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded js-hamburger-trigger inline-block m:hidden mx-2">
-      <%= inline_svg_tag("hamburger.svg", aria: true, class: "crayons-icon", title: t("views.hamburger.icon")) %>
-    </button>
+    <span class="inline-block m:hidden ">
+      <button class="c-btn c-btn--icon-alone js-hamburger-trigger mx-2">
+        <%= inline_svg_tag("hamburger.svg", aria: true, class: "crayons-icon", title: t("views.hamburger.icon")) %>
+      </button>
+    </span>
     <%= render "layouts/logo" %>
-
-    <div id="pwa-nav-buttons" class="pwa-nav-buttons">
-      <button type="button" id="app-back-button">
-        <%= inline_svg_tag("keyboard-left-arrow-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: t("views.hamburger.back")) %>
-      </button>
-      <button type="button" id="app-forward-button">
-        <%= inline_svg_tag("keyboard-right-arrow-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: t("views.hamburger.forward")) %>
-      </button>
-      <button type="button" id="app-refresh-button">
-        <%= inline_svg_tag("refresh-button.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: t("views.hamburger.refresh")) %>
-      </button>
-    </div>
 
     <div class="crayons-header--search js-search-form" id="header-search">
       <form accept-charset="UTF-8" method="get" action="<%= search_path %>" role="search">
         <div class="crayons-fields crayons-fields--horizontal">
           <div class="crayons-field flex-1 relative">
             <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="off" />
-            <button type="submit" aria-label="<%= t("views.search.icon.aria_label") %>" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
+            <button type="submit" aria-label="<%= t("views.search.icon.aria_label") %>" class="c-btn c-btn--icon-alone absolute inset-px left-auto mt-0 py-0">
               <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: t("views.search.icon.title")) %>
             </button>
           </div>
@@ -34,35 +24,39 @@
     </div>
 
     <div class="flex items-center h-100 ml-auto">
-      <a class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded m:hidden <% unless user_signed_in? %>mx-2<% end %>" id="search-link" aria-label="<%= t("views.search.icon.aria_label") %>" href="<%= search_path %>">
+      <a class="c-link c-link--icon-alone c-link--block m:hidden <% unless user_signed_in? %>mx-1<% end %>" id="search-link" aria-label="<%= t("views.search.icon.aria_label") %>" href="<%= search_path %>">
         <%= inline_svg_tag("search.svg", aria: true, class: "crayons-icon", title: t("views.search.icon.title")) %>
       </a>
       <% if user_signed_in? %>
-        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto"><%= t("views.main.create_post") %></a>
+        <span class="hidden m:flex ml-auto">
+          <a href="<%= new_path %>" class="c-cta c-cta--branded mr-2 whitespace-nowrap"><%= t("views.main.create_post") %></a>
 
-        <span class="trusted-visible-block">
-          <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded m:flex hidden" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= mod_path %>">
-            <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: t("views.main.header.moderation.icon")) %>
-          </a>
+          <span class="trusted-visible-block">
+            <a id="moderation-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= mod_path %>">
+              <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: t("views.main.header.moderation.icon")) %>
+            </a>
+          </span>
         </span>
 
-        <a href="<%= notifications_path %>" id="notifications-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="<%= t("views.main.header.notifications.aria_label") %>">
+        <a href="<%= notifications_path %>" id="notifications-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.notifications.aria_label") %>">
           <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: t("views.main.header.notifications.icon")) %>
           <span class="crayons-indicator crayons-indicator--critical hidden" id="notifications-number"></span>
         </a>
 
-        <div class="crayons-header__menu" id="crayons-header__menu">
-          <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-label="<%= t("views.main.header.nav.aria_label") %>" aria-expanded="false">
+        <div class="crayons-header__menu mx-1" id="crayons-header__menu">
+          <button type="button" class="c-btn c-btn--icon-alone radius-full p-1" id="member-menu-button" aria-label="<%= t("views.main.header.nav.aria_label") %>" aria-expanded="false">
             <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>
           </button>
           <%= render "layouts/nav_menu" %>
         </div>
       <% else %>
-        <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand mr-2 hidden m:block whitespace-nowrap ml-auto" data-no-instant>
-          <%= t("views.main.header.login") %>
-        </a>
+        <span class="hidden m:block">
+          <a href="<%= sign_up_path %>" class="c-link c-link--block mr-2 whitespace-nowrap ml-auto" data-no-instant>
+            <%= t("views.main.header.login") %>
+          </a>
+        </span>
 
-        <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn mr-2 whitespace-nowrap fs-s s:fs-base" data-no-instant>
+        <a href="<%= sign_up_path(state: "new-user") %>" class="c-cta c-cta--branded whitespace-nowrap mr-2" data-no-instant>
           <%= t("views.main.header.create_account") %>
         </a>
       <% end %>

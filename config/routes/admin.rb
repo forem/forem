@@ -4,6 +4,16 @@ namespace :admin do
 
   authenticate :user, ->(user) { user.tech_admin? } do
     mount Blazer::Engine, at: "blazer"
+    require "sidekiq/web"
+    require "sidekiq_unique_jobs/web"
+    require "sidekiq/cron/web"
+
+    Sidekiq::Web.class_eval do
+      use Rack::Protection, permitted_origins: [URL.url] # resolve Rack Protection HttpOrigin
+    end
+
+    mount Sidekiq::Web => "sidekiq"
+    mount FieldTest::Engine, at: "abtests"
 
     flipper_ui = Flipper::UI.app(Flipper,
                                  { rack_protection: { except: %i[authenticity_token form_token json_csrf
@@ -11,6 +21,7 @@ namespace :admin do
     mount flipper_ui, at: "feature_flags"
     mount PgHero::Engine, at: "pghero"
   end
+
   resources :invitations, only: %i[index new create destroy]
   resources :organization_memberships, only: %i[update destroy create]
   resources :permissions, only: %i[index]
@@ -132,7 +143,6 @@ namespace :admin do
         post "bust_cache"
       end
     end
-    resources :webhook_endpoints, only: :index
 
     # We do not expose the Data Update Scripts to all Forems by default.
     constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do

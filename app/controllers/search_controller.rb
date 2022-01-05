@@ -140,7 +140,7 @@ class SearchController < ApplicationController
   end
 
   def reactions
-    # [@rhymes] we're recyling the existing params as we want to change the frontend as
+    # [@rhymes] we're recycling the existing params as we want to change the frontend as
     # little as possible, we might simplify in the future
     result = Search::ReadingList.search_documents(
       current_user,

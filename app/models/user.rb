@@ -3,7 +3,6 @@ class User < ApplicationRecord
   rolify
 
   include CloudinaryHelper
-  include Storext.model
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -21,7 +20,8 @@ class User < ApplicationRecord
     end
   end
 
-  ANY_ADMIN_ROLES = %i[admin super_admin].freeze
+  include StringAttributeCleaner.for(:email)
+
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
   MESSAGES = {
@@ -46,10 +46,6 @@ class User < ApplicationRecord
   has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
   has_one :setting, class_name: "Users::Setting", dependent: :delete
 
-  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
-                           inverse_of: :resource_owner, dependent: :delete_all
-  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id,
-                           inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :delete_all
@@ -114,7 +110,6 @@ class User < ApplicationRecord
                                               foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
-  has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
   has_many :devices, dependent: :delete_all
   has_many :sponsorships, dependent: :delete_all
 
@@ -162,7 +157,7 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
-  validate :unique_including_orgs_and_podcasts, if: :username_changed?
+  validates :username, unique_cross_model_slug: true, if: :username_changed?
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -188,6 +183,9 @@ class User < ApplicationRecord
   # => https://stackoverflow.com/a/11007216/4186181
   #
   scope :search_by_name_and_username, lambda { |term|
+    term = term&.delete("\\") # prevents syntax error in tsquery
+    return none if term.blank?
+
     where(
       sanitize_sql_array(
         [
@@ -206,10 +204,9 @@ class User < ApplicationRecord
       ),
     )
   }
-  before_validation :check_for_username_change
   before_validation :downcase_email
+
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_email
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
@@ -345,73 +342,126 @@ class User < ApplicationRecord
     end
   end
 
-  def suspended?
-    has_role?(:suspended)
+  ##############################################################################
+  #
+  # Heads Up: Start Authorization Refactor
+  #
+  ##############################################################################
+  #
+  # What's going on here?  First, I'm wanting to encourage folks to
+  # not call these methods directly.  Instead I want to get all of
+  # these method calls in a single location so we can begin to analyze
+  # the behavior.
+
+  # @api private
+  #
+  # The method originally comes from the Rollify gem.  Please don't
+  # call it from controllers or views.  Favor `user.tech_admin?` over
+  # `user.has_role?(:tech_admin)`.
+  #
+  # @see Authorizer for further discussion.
+  private :has_role?
+
+  ##
+  # @api private
+  #
+  # The method originally comes from the Rollify gem.  Please don't
+  # call it from controllers or views.  Favor `user.admin?` over
+  # `user.has_any_role?(:admin)`.
+  #
+  # @see Authorizer for further discussion.
+  private :has_any_role?
+
+  ##
+  # @api private
+  #
+  # This is a refactoring step to help move the role questions out of the user object.
+  #
+  # @see https://github.com/forem/forem/issues/15624 for more discussion.
+  def authorizer
+    @authorizer ||= Authorizer.for(user: self)
   end
 
-  def warned
-    has_role?(:warned)
-  end
+  # My preference is to go with:
+  #
+  #   `Authorize.for(user: user, to: <action>, on: <subject>)`
+  #
+  # However, this is a refactor, and its goal is to reduce the direct
+  # calls to user.<role question>.
+  delegate(
+    :admin?,
+    :administrative_access_to?,
+    :any_admin?,
+    :auditable?,
+    :banished?,
+    :comment_suspended?,
+    :creator?,
+    :has_trusted_role?,
+    :podcast_admin_for?,
+    :restricted_liquid_tag_for?,
+    :single_resource_admin_for?,
+    :super_admin?,
+    :support_admin?,
+    :suspended?,
+    :tag_moderator?,
+    :tech_admin?,
+    :trusted, # TODO: Remove this method from the code-base
+    :trusted?,
+    :user_subscription_tag_available?,
+    :vomited_on?,
+    :warned, # TODO: Remove this method from the code-base
+    :warned?,
+    :workshop_eligible?,
+    to: :authorizer,
+  )
+  ##############################################################################
+  #
+  # End Authorization Refactor
+  #
+  ##############################################################################
 
-  def admin?
-    has_role?(:super_admin)
-  end
-
-  def creator?
-    has_role?(:creator)
-  end
-
-  def any_admin?
-    @any_admin ||= roles.where(name: ANY_ADMIN_ROLES).any?
-  end
-
-  def tech_admin?
-    has_role?(:tech_admin) || has_role?(:super_admin)
-  end
-
-  def vomitted_on?
-    Reaction.exists?(reactable_id: id, reactable_type: "User", category: "vomit", status: "confirmed")
-  end
-
-  def trusted
-    return @trusted if defined? @trusted
-
-    @trusted = Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
-      has_role?(:trusted)
-    end
-  end
-
+  # The name of the tags moderated by the user.
+  #
+  # @note This caches a relatively expensive query
+  #
+  # @return [Array<String>] an array of tag names
+  #
+  # @see #moderator_for_tags_not_cached
   def moderator_for_tags
     Rails.cache.fetch("user-#{id}/tag_moderators_list", expires_in: 200.hours) do
-      tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
-      Tag.where(id: tag_ids).pluck(:name)
+      moderator_for_tags_not_cached
     end
   end
 
-  def comment_suspended?
-    has_role?(:comment_suspended)
-  end
-
-  def workshop_eligible?
-    has_any_role?(:workshop_pass)
+  # When you need the "up to the moment" names of the tags moderated
+  # by this user.
+  #
+  # @note Favor #moderator_for_tags
+  #
+  # @return [Array<String>] an array of tag names
+  #
+  # @see #moderator_for_tags
+  def moderator_for_tags_not_cached
+    tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
+    Tag.where(id: tag_ids).pluck(:name)
   end
 
   def admin_organizations
-    org_ids = organization_memberships.where(type_of_user: "admin").pluck(:organization_id)
+    org_ids = organization_memberships.admin.pluck(:organization_id)
     organizations.where(id: org_ids)
   end
 
   def member_organizations
-    org_ids = organization_memberships.where(type_of_user: %w[admin member]).pluck(:organization_id)
+    org_ids = organization_memberships.member.pluck(:organization_id)
     organizations.where(id: org_ids)
   end
 
   def org_member?(organization)
-    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: %w[admin member])
+    organization_memberships.member.exists?(organization: organization)
   end
 
   def org_admin?(organization)
-    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: "admin")
+    organization_memberships.admin.exists?(organization: organization)
   end
 
   def block; end
@@ -428,22 +478,8 @@ class User < ApplicationRecord
     UserBlock.blocking?(blocker_id, id)
   end
 
-  def unique_including_orgs_and_podcasts
-    username_taken = (
-      Organization.exists?(slug: username) ||
-      Podcast.exists?(slug: username) ||
-      Page.exists?(slug: username)
-    )
-
-    errors.add(:username, "is taken.") if username_taken
-  end
-
   def non_banished_username
     errors.add(:username, "has been banished.") if BanishedUser.exists?(username: username)
-  end
-
-  def banished?
-    username.starts_with?("spam_")
   end
 
   def subscribe_to_mailchimp_newsletter
@@ -479,14 +515,6 @@ class User < ApplicationRecord
     return if Settings::General.mailchimp_api_key.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
-  end
-
-  def auditable?
-    trusted || tag_moderator? || any_admin?
-  end
-
-  def tag_moderator?
-    roles.where(name: "tag_moderator").any?
   end
 
   def enough_credits?(num_credits_needed)
@@ -535,6 +563,10 @@ class User < ApplicationRecord
     notification_setting.email_follower_notifications
   end
 
+  def reactions_to
+    Reaction.for_user(self)
+  end
+
   protected
 
   # Send emails asynchronously
@@ -555,10 +587,6 @@ class User < ApplicationRecord
     return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
 
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
-  end
-
-  def verify_email
-    self.email = nil if email == ""
   end
 
   def set_username
@@ -591,32 +619,12 @@ class User < ApplicationRecord
     self.email = email.downcase if email
   end
 
-  def check_for_username_change
-    return unless username_changed?
-
-    self.old_old_username = old_username
-    self.old_username = username_was
-    articles.find_each do |article|
-      article.path = article.path.gsub(username_was, username)
-      article.save
-    end
-  end
-
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
   end
 
   def create_conditional_autovomits
-    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
-      name.match?(/#{term}/i)
-    end
-
-    Reaction.create!(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "User",
-      category: "vomit",
-    )
+    Spam::Handler.handle_user!(user: self)
   end
 
   # TODO: @citizen428 I don't want to completely remove this method yet, as we

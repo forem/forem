@@ -32,7 +32,8 @@ class EmailDigestArticleCollector
                    Article.select(:title, :description, :path)
                      .published
                      .where("published_at > ?", cutoff_date)
-                     .where(featured: true, email_digest_eligible: true)
+                     .featured
+                     .where(email_digest_eligible: true)
                      .where.not(user_id: @user.id)
                      .where("score > ?", 25)
                      .order(score: :desc)
@@ -47,30 +48,28 @@ class EmailDigestArticleCollector
   private
 
   def should_receive_email?
-    return true unless last_email_sent_at
+    return true unless last_email_sent
 
-    # Has it been at least x days since @user received an email?
-    Time.current - last_email_sent_at >= Settings::General.periodic_email_digest
+    last_email_sent.before? Settings::General.periodic_email_digest.days.ago
   end
 
-  def last_email_sent_at
-    last_user_emails.last&.sent_at
+  def last_email_sent
+    @last_email_sent ||=
+      @user.email_messages
+        .where(mailer: "DigestMailer#digest_email")
+        .maximum(:sent_at)
   end
 
   def cutoff_date
     a_few_days_ago = 4.days.ago.utc
-    return a_few_days_ago unless last_email_sent_at
+    return a_few_days_ago unless last_email_sent
 
-    [a_few_days_ago, last_email_sent_at].max
+    [a_few_days_ago, last_email_sent].max
   end
 
   def user_has_followings?
     @user.following_users_count.positive? ||
       @user.cached_followed_tag_names.any? ||
       @user.cached_antifollowed_tag_names.any?
-  end
-
-  def last_user_emails
-    @last_user_emails ||= @user.email_messages.select(:sent_at).where(mailer: "DigestMailer#digest_email").limit(10)
   end
 end

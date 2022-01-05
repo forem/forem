@@ -3,8 +3,8 @@
   <a
     href="<%= "https://#{social_media_type}.com/#{handle}" %>"
     target="_blank"
-    class="crayons-link crayons-link--secondary mx-2"
+    class="c-link c-link--icon-alone c-link--block mx-1"
     rel="noopener">
-    <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: social_media_type.capitalize, class: "crayons-icon") %>
+    <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: social_media_type.capitalize, class: "crayons-icon c-link__icon") %>
   </a>
 <% end %>

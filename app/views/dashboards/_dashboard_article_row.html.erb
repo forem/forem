@@ -2,7 +2,7 @@
   <div class="dashboard-story__title">
     <h3 class="flex items-center">
       <% if article.archived %>
-        <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal whitespace-nowrap">Archived</span>
+        <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal whitespace-nowrap"><%= t("views.dashboard.article.archived") %></span>
       <% end %>
       <a href="<%= article.current_state_path %>" class="inline-flex items-center">
         <% if article.organization_id %>
@@ -15,14 +15,14 @@
     </h3>
     <% if article.published %>
       <p class="fs-s color-base-60 js-dashboard-story-details">
-        <strong class="fw-medium">Published:</strong>
+        <strong class="fw-medium"><%= t("views.dashboard.article.published") %></strong>
         <%= local_date(article.published_timestamp, show_year: article.displayable_published_at.year != Time.current.year) %>
         <% if article.edited? %>
-          <strong class="fw-medium pl-2">Edited:</strong>
+          <strong class="fw-medium pl-2"><%= t("views.dashboard.article.edited") %></strong>
           <%= local_date(article.edited_at, show_year: article.edited_at.year != Time.current.year) %>
         <% end %>
         <% if article.collection_id %>
-          <strong class="fw-medium pl-2">Series:</strong> <%= article.series %>
+          <strong class="fw-medium pl-2"><%= t("views.dashboard.article.series") %></strong> <%= article.series %>
         <% end %>
       </p>
     <% end %>
@@ -30,11 +30,11 @@
 
   <div class="fs-s color-base-60">
     <% if !article.published? %>
-      <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent">Draft</a>
+      <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent"><%= t("views.dashboard.article.draft") %></a>
     <% else %>
       <div class="flex flex-nowrap whitespace-nowrap" data-analytics-pageviews data-article-id="<%= article.id %>">
-        <span class="flex items-center p-1" title="Reactions">
-          <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon mr-1", title: "Reactions") %>
+        <span class="flex items-center p-1" title="<%= t("views.dashboard.article.reactions.title") %>">
+          <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon mr-1", title: t("views.dashboard.article.reactions.icon")) %>
           <% if article.published %>
             <%= article.public_reactions_count %>
           <% else %>
@@ -42,20 +42,20 @@
           <% end %>
         </span>
 
-        <span class="flex items-center p-1 ml-1" title="Comments">
-          <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon mr-1", title: "Comments") %>
+        <span class="flex items-center p-1 ml-1" title="<%= t("views.dashboard.article.comments.title") %>">
+          <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon mr-1", title: t("views.dashboard.article.comments.icon")) %>
           <span class="spec__comments-count">
             <%= article.comments_count %>
           </span>
         </span>
 
-        <span class="flex items-center p-1 ml-1" title="Views">
-          <%= inline_svg_tag("small-eye.svg", aria: true, class: "crayons-icon mr-1", title: "Views") %>
+        <span class="flex items-center p-1 ml-1" title="<%= t("views.dashboard.article.views.title") %>">
+          <%= inline_svg_tag("small-eye.svg", aria: true, class: "crayons-icon mr-1", title: t("views.dashboard.article.views.icon")) %>
           <% if article.published %>
             <% if article.page_views_count > 25 %>
               <%= article.page_views_count %>
             <% else %>
-              &lt; 25
+              <%= t("views.dashboard.article.views.lt_25") %>
             <% end %>
           <% else %>
             0
@@ -63,8 +63,8 @@
         </span>
 
         <% if article.user_subscriptions_count > 0 %>
-          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="flex items-center crayons-btn crayons-btn--ghost-dimmed crayons-btn--s" title="Subscriptions">
-            <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: "Data") %>
+          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="flex items-center crayons-btn crayons-btn--ghost-dimmed crayons-btn--s" title="<%= t("views.dashboard.article.subscriptions.title") %>">
+            <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: t("views.dashboard.article.subscriptions.icon")) %>
             <%= article.user_subscriptions_count %>
           </a>
         <% end %>
@@ -74,40 +74,40 @@
 
   <div class="dashboard-story__actions">
     <% if manage_view %>
-      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
+      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s"><%= t("views.dashboard.article.delete") %></a>
 
       <% if article.profile_pins.any? %>
         <%= form_for(article.profile_pins.first) do |f| %>
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--s">Unpin</button>
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--s"><%= t("views.dashboard.article.unpin") %></button>
         <% end %>
       <% else %>
         <%= form_for(ProfilePin.new) do |f| %>
           <%= f.hidden_field :pinnable_id, value: article.id %>
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--s" title="Pin to profile">Pin</button>
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--s" title="<%= t("views.dashboard.article.pin.title") %>"><%= t("views.dashboard.article.pin.text") %></button>
         <% end %>
       <% end %>
     <% elsif article.published %>
-      <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Manage post: <%= article.title %>">Manage</a>
+      <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="<%= t("views.dashboard.article.manage.aria_label", title: article.title) %>"><%= t("views.dashboard.article.manage.text") %></a>
     <% elsif @user == article.user %>
-      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
+      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s"><%= t("views.dashboard.article.delete") %></a>
     <% end %>
-    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="Edit post: <%= article.title %>">Edit</a>
+    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="<%= t("views.dashboard.article.edit.aria_label", title: article.title) %>"><%= t("views.dashboard.article.edit.text") %></a>
 
     <div class="js-ellipsis-menu relative inline-block">
       <button id="ellipsis-menu-trigger-<%= article.id %>" aria-controls="ellipsis-menu-dropdown-<%= article.id %>" aria-expanded="false" aria-haspopup="true" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon">
-        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More options for post: #{article.title}") %>
+        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: t("views.dashboard.article.more.title", title: article.title)) %>
       </button>
 
       <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 align-left js-ellipsis-menu-dropdown">
         <% if article.user_subscriptions_count > 0 %>
-          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="crayons-link crayons-link--block w-100"><%= "Subscriptions (#{article.user_subscriptions_count})" %></a>
+          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="crayons-link crayons-link--block w-100"><%= t("views.dashboard.article.subscriptions.number", num: article.user_subscriptions_count) %></a>
         <% end %>
-        <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100">Stats</a>
+        <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100"><%= t("views.dashboard.article.stats") %></a>
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived, id: "article_archived_#{article.id}" %>
 
           <button type="submit" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">
-            <%= article.archived ? "Unarchive post" : "Archive post" %>
+            <%= t("views.dashboard.article.#{article.archived ? 'unarchive' : 'archive'}") %>
           </button>
         <% end %>
 
@@ -115,11 +115,11 @@
           <%= form_for(article, html: { class: "mt-4 pt-4 border-0 border-t-1 border-color-base-10 border-solid" }) do |f| %>
             <input type="hidden" name="destination" value="/dashboard/organization/<%= organization.id %>" />
             <div class="crayons-field mb-4">
-              <label for="user_id" class="crayons-field__label">Author</label>
+              <label for="user_id" class="crayons-field__label"><%= t("views.dashboard.article.author") %></label>
               <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, { class: "crayons-select" } %>
 
             </div>
-            <button type="submit" class="crayons-btn">Save</button>
+            <button type="submit" class="crayons-btn"><%= t("views.dashboard.article.save") %></button>
           <% end %>
         <% end %>
       </div>

@@ -68,16 +68,12 @@ fr:
         heading: Are you sure you want to sign out?
         'yes': Yes, sign out
       block: Block @%{user}
-      chat: Chat
-      chat_with: Chat with %{user}
-      close: Close modal
       details: "%{user} profile details"
       dropdown: User actions
       email_icon: Email address
       empty: 404 bio not found
       flag: Flag @%{user}
       follow: Suivre
-      guidelines: "%{user}'s guidelines:"
       joined:
         icon: Rejoint
         text_html: "Rejoint le\_%{date}"

@@ -6,53 +6,18 @@ en:
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   core:
     add_comment: Add comment
-    analytics: Analytics
+    beta: beta
     comment: Comment
-    comments: Comments
-    community_name_is_great: "%{community_name} is great!"
     copy_link: Copy link
-    create_account: Create account
-    dashboard: Dashboard
     edit_profile: Edit profile
     follow: Follow
     follow_back: Follow back
-    follower: Follower
-    followers: Followers
     following: Following
-    joined: Joined
-    joined_on: Joined on
     like: Like
-    listings: Listings
     loading: loading...
-    location: Location
-    log_in: Log in
-    more_from: More from
-    pinned: Pinned
-    post: Post
-    posts: Posts
     reaction: Reaction
-    reaction_pluralized:
-      one: reaction
-      other: reactions
-    reactions:
-      heart: Heart
-      save: Save
-      unicorn: Unicorn
-    reply: Reply
     report_abuse: Report abuse
     search: Search
-    series: Series
-    settings: Settings
-    trending_on: Trending on
-  dashboard:
-    empty_follower: You don't have any followers yet...
-    empty_post: This is where you can manage your posts, but you haven't written anything yet.
-    following_users: Following users
-    loading: loading...
-    not_following_any_users: You don't follow any users...
-    page_title: Dashboard
-    upload_a_video: Upload a video
-    write_new_post: Write your first post now
   datetime:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:
@@ -175,6 +140,7 @@ en:
       bad_uri: is an invalid url
       blank: can't be blank
       confirmation: doesn't match %{attribute}
+      contains_prohibited_characters: contains non-alphanumeric or prohibited unicode characters
       empty: can't be empty
       equal_to: must be equal to %{count}
       even: must be even
@@ -202,16 +168,9 @@ en:
       wrong_length:
         one: is the wrong length (should be 1 character)
         other: is the wrong length (should be %{count} characters)
-  settings_menu:
-    account: Account
-    billing: Billing
-    customization: Customization
-    extensions: Extensions
-    notifications: Notifications
-    organization: Organization
-    profile: Profile
   time:
     formats:
+      json: "%b %e, %Y"
       comment: "%B %d, %Y"
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"

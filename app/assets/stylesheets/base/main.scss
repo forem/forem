@@ -69,14 +69,28 @@ a {
 
   display: inline-flex;
   flex-shrink: 0;
-  align-self: stretch;
+  align-self: center;
   align-items: center;
   vertical-align: middle;
   color: var(--base-100);
   text-decoration: none;
-  letter-spacing: -0.01em;
-  line-height: var(--lh-tight);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  outline: 0;
   overflow-wrap: anywhere;
+
+  &__img,
+  svg {
+    max-width: 100%;
+    width: auto;
+    height: calc(
+      var(--header-height) - var(--su-2) * 2
+    ); // making calculations instead of setting fixed value so should be smooth change if we ever decide to change header's height.
+    object-fit: contain;
+    vertical-align: middle;
+    display: inline-block;
+    outline: 0;
+  }
 
   @media (min-width: $breakpoint-s) {
     --max-width: 150px;
@@ -95,14 +109,24 @@ a {
 
   &:hover {
     color: var(--base-80);
-    text-decoration: none;
+    text-decoration: underline;
   }
 
-  svg {
-    max-width: 100%;
-    width: auto;
-    height: calc(var(--header-height) - var(--su-2) * 2);
-    vertical-align: middle;
-    display: inline-block;
+  // Both focus declarations below are the same but we unfortunately can't
+  // combine them because Safari doesn't recognize it properly.
+  //  • First declaration is for all browsers that support :focus-visible
+  //    which is basically almost all of them
+  //  • Second declaration is for browsers that do not support :focus-visible
+  //    which basically is only Safari right now.
+  &:focus-visible {
+    z-index: var(--z-elevate);
+    box-shadow: var(--focus-ring);
+    text-decoration: underline;
+  }
+
+  .js-focus-visible &.focus-visible:focus {
+    z-index: var(--z-elevate);
+    box-shadow: var(--focus-ring);
+    text-decoration: underline;
   }
 }

@@ -85,7 +85,7 @@ module Articles
         else
           hot_stories = Article.published.limited_column_select
             .page(@page).per(@number_of_articles)
-            .where("score >= ? OR featured = ?", Settings::UserExperience.home_feed_minimum_score, true)
+            .with_at_least_home_feed_minimum_score
             .order(hotness_score: :desc)
           featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
         end
@@ -101,7 +101,7 @@ module Articles
       end
 
       def experimental_hot_story_grab
-        start_time = [(@user.page_views.second_to_last&.created_at || 7.days.ago) - 18.hours, 7.days.ago].max
+        start_time = Articles::Feeds.oldest_published_at_to_consider_for(user: @user)
         Article.published.limited_column_select.includes(top_comments: :user)
           .where("published_at > ?", start_time)
           .page(@page).per(@number_of_articles)

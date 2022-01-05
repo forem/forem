@@ -18,7 +18,7 @@
                        key: "video-upload__#{SecureRandom.hex}",
                        key_starts_with: "video-upload__",
                        acl: "public-read",
-                       max_file_size: (current_user.has_role?(:super_admin) ? 20_000 : 6000).megabytes,
+                       max_file_size: (current_user.super_admin? ? 20_000 : 6000).megabytes,
                        id: "s3-uploader",
                        class: "upload-form",
                        data: { key: :val } do %>

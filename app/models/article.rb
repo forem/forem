@@ -1,7 +1,6 @@
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
-  include Storext.model
   include Reactable
   include UserSubscriptionSourceable
   include PgSearch::Model
@@ -9,6 +8,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
+  include StringAttributeCleaner.for(:canonical_url, on: :before_save)
   DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
 
   attr_accessor :publish_under_org
@@ -31,6 +31,7 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   UNIQUE_URL_ERROR = "has already been taken. " \
                      "Email #{ForemInstance.email} for further details.".freeze
+  PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
   has_one :discussion_lock, dependent: :delete
 
@@ -80,7 +81,6 @@ class Article < ApplicationRecord
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
   validates :title, presence: true, length: { maximum: 128 }
-  validates :user_id, presence: true
   validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
@@ -100,9 +100,10 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
   before_validation :evaluate_markdown, :create_slug
+  before_validation :remove_prohibited_unicode_characters
   before_save :update_cached_user
   before_save :set_all_dates
-  before_save :clean_data
+
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
@@ -186,6 +187,11 @@ class Article < ApplicationRecord
       .where("published_at <= ?", Time.current)
   }
   scope :unpublished, -> { where(published: false) }
+
+  # [@jeremyf] For approved articles is there always an assumption of
+  #            published?  Regardless, the scope helps us deal with
+  #            that in the future.
+  scope :approved, -> { where(approved: true) }
 
   scope :admin_published_with, lambda { |tag_name|
     published
@@ -291,6 +297,18 @@ class Article < ApplicationRecord
 
     order(column => dir.to_sym)
   }
+
+  # @note This includes the `featured` scope, which may or may not be
+  #       something we expose going forward.  However, it was
+  #       something used in two of the three queries we had that
+  #       included the where `score > Settings::UserExperience.home_feed_minimum_score`
+  scope :with_at_least_home_feed_minimum_score, lambda {
+    featured.or(
+      where(score: Settings::UserExperience.home_feed_minimum_score..),
+    )
+  }
+
+  scope :featured, -> { where(featured: true) }
 
   scope :feed, lambda {
                  published.includes(:taggings)
@@ -786,10 +804,6 @@ class Article < ApplicationRecord
     "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
   end
 
-  def clean_data
-    self.canonical_url = nil if canonical_url == ""
-  end
-
   def touch_actor_latest_article_updated_at(destroying: false)
     return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
 
@@ -812,7 +826,7 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    Spam::ArticleHandler.handle!(article: self)
+    Spam::Handler.handle_article!(article: self)
   end
 
   def async_bust
@@ -832,5 +846,11 @@ class Article < ApplicationRecord
     return unless saved_change_to_attribute?(:processed_html)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
+  end
+
+  def remove_prohibited_unicode_characters
+    return unless title&.match?(PROHIBITED_UNICODE_CHARACTERS_REGEX)
+
+    self.title = title.gsub(PROHIBITED_UNICODE_CHARACTERS_REGEX, "")
   end
 end

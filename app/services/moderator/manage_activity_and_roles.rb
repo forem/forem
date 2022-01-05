@@ -95,7 +95,7 @@ module Moderator
     end
 
     def check_super_admin
-      raise "You need super admin status to take this action" unless @admin.has_role?(:super_admin)
+      raise "You need super admin status to take this action" unless @admin.super_admin?
     end
 
     def comment_suspended
@@ -117,13 +117,13 @@ module Moderator
 
     def remove_negative_roles
       user.remove_role(:suspended) if user.suspended?
-      user.remove_role(:warned) if user.warned
+      user.remove_role(:warned) if user.warned?
       user.remove_role(:comment_suspended) if user.comment_suspended?
     end
 
     def update_trusted_cache
       Rails.cache.delete("user-#{@user.id}/has_trusted_role")
-      @user.trusted
+      @user.trusted?
     end
 
     def update_roles

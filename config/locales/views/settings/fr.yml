@@ -1,0 +1,275 @@
+---
+fr:
+  views:
+    settings:
+      meta:
+        title: Settings
+      account:
+        connect: Connect %{provider} Account
+        emails: Account emails
+        primary: Primary email
+        provider_email: "%{provider} email"
+        provider_profile: "%{provider} profile settings"
+        api:
+          heading: "%{community} API Keys"
+          desc_html: You can generate personal API keys to use for authentication with the %{community} API.  The API is still in its beta stage. The %{doc} contains further information.
+          active:
+            heading: Active API keys (never share these!)
+            created: 'Created: %{time}'
+          doc: documentation
+          gen:
+            heading: Generate a new Key
+            label: Description
+            text: What's this API key for?
+            placeholder: My Project Name
+            submit: Generate API Key
+          revoke: Revoke
+        delete:
+          heading: Delete account
+          desc1: 'Deleting your account will:'
+          desc1a: |
+            Delete your profile, along with your authentication associations.
+
+            This does not include applications permissions. You will have to remove them yourself:
+          desc1b: Delete any and all content you have, such as articles, comments, or your reading list.
+          desc1c: Allow your username to become available to anyone.
+          desc2_html: Please, %{provide} to fully delete your account.
+          provide: provide an email
+          submit: Delete Account
+        export:
+          heading: Export content
+          desc: You can request an export of all your content. Currently we only support the export of your posts and comments. They will be emailed to your inbox.
+          label: Request an export of your content
+          requested: You have recently requested an export of your content. Please check your email.
+          submit: Submit Data Request
+        remove:
+          heading: Remove OAuth Associations
+          desc1: You can remove one of your authentication methods. We'll still need one to authenticate you.
+          desc2: 'Removing an OAuth association will:'
+          desc2a: remove your ability to sign in with that account
+          desc2b: remove the associated URL from your profile
+          desc3: |
+            Note that this does not revoke our OAuth app access;
+            you will have to do so in your settings for the specific provider:
+          confirm: Are you absolutely sure you want to remove your %{provider} account?
+          submit: Remove %{provider}
+      billing:
+        heading: Billing
+        add: Add Credit Card
+        another: "+ Add Another Credit Card"
+        cards: Your Credit Cards
+        exp: Expires %{month} / %{year}
+        label: Add Card
+        number: "%{brand} ending in %{last}"
+        make: Make primary
+        primary: primary
+        remove: Remove card
+      characters: "Available characters used: "
+      complete:
+        heading: Confirm your email to complete your profile.
+        desc: While you're at it, go ahead and fill everything out.
+        github: Connect your github account as well to complete your identity.
+        twitter: Connect your twitter account as well to complete your identity.
+      custom:
+        adjacent: Permit Nearby Sponsors (When publishing)
+        announce: Announcements
+        announce_desc: Announcements inform you on important site-wide information, like updates and events.
+        announce_field: Display Announcements (When browsing)
+        appearance: Appearance
+        basic: Basic markdown
+        content: Content
+        editor: Editor Version
+        fixed: Fixed to window
+        font: Base Reading Font
+        level: What is your approximate experience level (1-5)?
+        level_desc: This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.
+        navbar: Site Navbar
+        rich: Rich + markdown
+        save: Save
+        sponsor: Sponsors
+        sponsor_desc: You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence constructive to the community, but feel free to use this setting if you wish.
+        sponsor_field: Display Sponsors (When browsing)
+        static: Static top of page
+        theme: Site Theme
+        writing: Writing
+      danger: Danger Zone
+      destroy:
+        heading: Destroy your account
+        desc: 'Deleting your account will:'
+        desc_1_html: delete your profile, along with your Twitter and/or GitHub associations. This does not include app permissions. You will have to remove them yourself on %{twitter} and %{github}.
+        desc_2: delete any and all content you have, such as articles, comments, or your reading list.
+        desc_3: allow your username to become available to anyone.
+        click: click here
+        confirm_html: 'For confirmation, type the words: <code>%{word}</code>'
+        ghost_html: If you would like to keep your content under the %{ghost} account, please %{click}
+        github: GitHub profile settings
+        submit: Delete account
+        to_delete: 'To delete your account:'
+        twitter: Twitter profile settings
+        type: Type in your username
+        username: username
+        word: delete my account
+      email: Email verification.
+      errors:
+        org:
+          one: '1 error prohibited your organization profile from being saved:'
+          other: "%{count} errors prohibited your organization profile from being saved:"
+        profile:
+          one: '1 error prohibited your profile from being saved:'
+          other: "%{count} errors prohibited your profile from being saved:"
+      extensions:
+        comment:
+          heading: Comment templates
+          desc_html: Create and save <strong>comment templates</strong> that you can reuse.
+          add: Add new comment template
+          confirm: 'Are you sure you want to delete: %{template}?'
+          create: Create a new response template
+          cue: Memorable cue for template
+          edit: Edit
+          edit_template: Edit comment template
+          remove: Remove
+          save: Save template
+          saved: Saved templates
+        generate: Generate a personal blog from your %{community} posts
+        github:
+          heading: GitHub
+          desc1: Pin your GitHub repositories to your profile.
+          desc2: Repositories will be disappear from your profile if you remove the OAuth association with GitHub.
+        learn: Learn more
+        micro: 'Receive micropayments for time spent reading your posts directly. '
+        payment: Payment Pointer
+        rss:
+          heading: Publishing to %{community} from RSS
+          desc1_html: Posts will land in your %{dashboard} <strong>as drafts</strong>, and then you can publish from there.
+          desc2: Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
+          desc3_html: To find out more about how drafts are created from your feed, read this %{guide}.
+          desc4: Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter.
+          desc5_html: 'FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em>'
+          desc6: By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.
+          dashboard: dashboard
+          fetch: Fetch feed now
+          guide: guide
+          last_html: 'Last Fetched: %{time}'
+          mark_canonical_html: Mark the RSS source as canonical URL by default <p class='crayons-field__description'>If you check this box, the post will automatically mark the feed source as the canonical URL.</p>
+          referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
+          save: Save Feed Settings
+          submit: Submit Feed Settings
+        save_web: Save Web Monetization Settings
+        web: Web monetization
+      finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
+      for_html: Settings for %{name}
+      group:
+        user: User
+        Basic: Basic
+        Branding: Branding
+        Coding: Coding
+        Work: Work
+      new_org: New Organization
+      notifications:
+        email: Email notifications
+        general: General notifications
+        general_desc_html: Notifications that only appear on the %{page}.
+        mobile: Mobile notifications
+        moderator: Moderator notifications
+        page: notifications page
+        save: Save
+      org:
+        admin:
+          admin: Admin
+          copy:
+            aria_label: Organization secret (to be rotated regularly)
+            icon: Copy to clipboard
+            text: Copied to clipboard!
+          cta: Call-to-action box
+          cta_desc: Customizable text that appears to the right of every post for your organization.
+          delete:
+            heading: Delete Organization
+            confirm: 'Are you absolutely sure you want to delete your organization: %{name}?'
+            desc_html: |-
+              You can delete your organization if you:
+              <ul>
+                <li>are the only member in the organization</li>
+                <li>are an admin of the organization</li>
+                <li>the organization has no posts</li>
+                <li>and the organization has no credits</li>
+              </ul>
+            submit: Delete "%{name}"
+            questions_html: Questions? Email us at %{email} for help.
+            unmet: Your organization currently does not meet the above requirements. Please remove all other members and organization posts first.
+          details: Organization details
+          form:
+            slug: 'Your organization''s URL is: %{slug}'
+            tag_line: Limit of 60 characters
+            summary: Limit of 250 characters
+            location: Limit of 64 characters
+            email: Limit of 64 characters
+            company_size: Enter a number
+            story: Limit of 640 characters
+            tech_stack: Limit of 640 characters
+            cta_body_markdown: 'Limited markdown: _italic_ and **bold** is okay. Links, and headers etc. will not show up. 256 character limit.'
+            cta_button_text: Limit of 20 characters
+            submit: Save
+          gen:
+            confirm: Are you sure you want to generate a new secret? All outstanding secrets will be invalid.
+            text: You should rotate this regularly!
+            submit: Generate new secret
+          grow: Grow the team
+          invite: 'Invite teammates by sending them the secret and the following instructions:'
+          inst1_html: Sign up at %{url}
+          inst2_html: Navigate to %{url}
+          inst3_html: Paste the secret code below and click <b>Join Organization</b>
+          make:
+            confirm: Are you sure you want to give %{user} admin status?
+            title: Make admin
+            text: Make admin
+          members: Organization Members
+          remove:
+            confirm: Are you sure you want remove %{user} from the organization?
+            title: Remove from org
+            text: Remove from org
+          revoke:
+            confirm: Are you sure you want to take away admin status from %{user}?
+            title: Revoke admin status
+            text: Revoke admin status
+          secret_code: 'Your secret code is:'
+          you: You
+        create:
+          heading: Create An Organization
+          notice: You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.
+          proof: This is just a quick blurb indicating or link that shows that you clearly are associated with this organization.
+          required: Starred fields are required
+          slug: Your organization URL will be %{url}/{username}
+          submit: Create Organization
+        join:
+          heading: Join An Organization
+          desc: Provided to you by an org admin
+          label: Secret code
+          placeholder: "..."
+          submit: Join Organization
+        leave:
+          confirm: Are you sure you want to leave this organization?
+          submit: Leave Organization
+        divider: OR
+      password:
+        heading: Set new password
+        desc_html: |-
+          If your account was created using social account authentication, you may prefer to add an email
+          log in. If you signed up with a social media account, <a href="%{path}">
+          please reset the password</a> for your primary email address (%{email}) in
+          order to enable this. Please note that email login is in addition to social login rather than
+          a replacement for it, so your authenticated social account will continue to be linked to your
+          account.
+        current: Current password
+        confirm: Confirm new password
+        new: Password
+        submit: Set New Password
+      previous: There is an existing account authorized with that social account.
+      tab:
+        profile: Profil
+        customization: Personnalisation
+        notifications: Notifications
+        account: Compte
+        billing: Facturation
+        organization: Organisation
+        extensions: Extensions
+      save_profile: Save Profile Information

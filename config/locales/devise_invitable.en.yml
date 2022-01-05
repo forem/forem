@@ -18,11 +18,12 @@ en:
       updated_not_active: Your password was set successfully.
     mailer:
       invitation_instructions:
-        accept: Accept invitation
-        accept_until: This invitation will be due in %{due_date}.
-        hello: Hello %{email}
+        accept_instructions: You can accept the invitation by clicking this link
+        accept: Accept Invitation
+        accept_until: This invitation will expire after %{due_date}.
+        hello: Hello %{name}
         ignore: If you don't want to accept the invitation, please ignore this email. Your account won't be created until you access the link above and set your password.
-        someone_invited_you: Someone has invited you to %{url}, you can accept it through the link below.
+        someone_invited_you: You’ve been invited to join the %{community_name} community at %{url}.
         subject: Invitation instructions
   time:
     formats:

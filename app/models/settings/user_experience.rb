@@ -1,5 +1,5 @@
 module Settings
-  # Basic UX settings that can be overriden by individual user preferences.
+  # Basic UX settings that can be overridden by individual user preferences.
   class UserExperience < Base
     self.table_name = :settings_user_experiences
 
@@ -21,7 +21,7 @@ module Settings
     }
     # a non-public forem will redirect all unauthenticated pages to the registration page.
     # a public forem could have more fine-grained authentication (listings ar private etc.) in future
-    setting :public, type: :boolean, default: 0
+    setting :public, type: :boolean, default: true
     setting :tag_feed_minimum_score, type: :integer, default: 0
     setting :default_locale, type: :string, default: "en"
     setting :display_in_directory, type: :boolean, default: true

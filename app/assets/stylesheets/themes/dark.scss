@@ -65,10 +65,10 @@
   --accent-warning-a10: #{rgba(#ffcf4c, 0.1)};
 
   // Danger
-  --accent-danger: #dc1818;
-  --accent-danger-darker: #c20a0a;
-  --accent-danger-lighter: #ec5050;
-  --accent-danger-a10: #{rgba(#dc1818, 0.1)};
+  --accent-danger: #ed3434;
+  --accent-danger-darker: #e40a0a;
+  --accent-danger-lighter: #f15555;
+  --accent-danger-a10: #{rgba(#ed3434, 0.1)};
 
   // Main colors
   --body-bg: var(--base-0);
@@ -90,28 +90,13 @@
 
   // Header
   --header-bg: var(--base-10);
-  --header-bg-hover: var(--base-0);
-  --header-bg-current: var(--base-20);
-  --header-button-focus-color: var(--accent-brand);
   --header-shadow: rgba(0, 0, 0, 0.3);
-  --header-icons-color: rgba(255, 255, 255, 0.8);
-  --header-icons-color-hover: #fff;
-
-  // Logo
-  --logo-bg: #0a0a0a;
-  --logo-color: #fff;
 
   // Footer
   --footer-bg: var(--base-inverted);
-  --footer-copy-color: var(--base-80);
-  --footer-copy-secondary-color: var(--base-60);
-  --footer-link-color: var(--base-80);
-  --footer-link-color-hover: var(--base-100);
+  --footer-color: var(--base-60);
 
   // Links
-  --link-color: var(--base-90);
-  --link-color-hover: var(--accent-brand-lighter);
-  --link-bg-hover: var(--base-a5);
   --link-bg-hover-alt: var(--base-inverted);
   --link-brand-color: #17a1f6;
   --link-color-current: var(--base-100);
@@ -181,10 +166,6 @@
   --label-primary: var(--base-90);
   --label-secondary: var(--base-60);
 
-  // Default box
-  --box: var(--base-0);
-  --box-darker: var(--base-inverted);
-
   // Snackbars
   --snackbar-bg: var(--base-10);
   --snackbar-color: var(--card-color);
@@ -229,4 +210,51 @@
   --reaction-custom-bg: var(--accent-success-a10);
   --reaction-save-color: var(--accent-brand);
   --reaction-save-bg: var(--accent-brand-a10);
+}
+
+:root {
+  // Separating some variables here as these are the results
+  // of broader Crayons refactoring (see #15311) and I didn't
+  // want to mix everything together.
+
+  ////////////////////////////////////////////////
+  // Buttons /////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Buttons: Default
+  --btn-color-hover: var(--accent-brand-lighter);
+
+  // Buttons: Primary
+  --btn-primary-bg-hover: var(--accent-brand-lighter);
+
+  // Buttons: Primary Destructive
+  --btn-primary-destructive-bg-hover: var(--accent-danger-lighter);
+
+  ////////////////////////////////////////////////
+  // Links ///////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // Links: Default
+  --link-color-hover: var(--accent-brand-lighter);
+
+  // Links: Branded
+  --link-branded-color-hover: var(--accent-brand-lighter);
+
+  ////////////////////////////////////////////////
+  // CTAs ////////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  // CTAs: Default
+  --cta-color-hover: var(--accent-brand-lighter);
+  --cta-border-hover: var(--accent-brand-lighter);
+
+  // CTAs: Branded
+  --cta-branded-bg-hover: var(--accent-brand);
+  --cta-branded-border: var(--accent-brand);
+  --cta-branded-border-hover: var(--accent-brand-lighter);
+
+  ////////////////////////////////////////////////
+  // Utilities ///////////////////////////////////
+  ////////////////////////////////////////////////
+  --focus: var(--accent-brand-lighter);
 }
