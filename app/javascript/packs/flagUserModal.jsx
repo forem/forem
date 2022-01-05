@@ -90,7 +90,6 @@ export function initializeFlagUserModal(authorId) {
  *
  * @param {string} props.modCenterUrl (optional) The article URL loaded when in the moderation center.
  * @param {number} props.authorId The author ID associated to the content being moderated.
- * @param {string} props.communityName The specif forem name
  */
 export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
