@@ -6,7 +6,7 @@ module PushNotifications
                     retry: 10,
                     lock: :until_expired,
                     lock_ttl: 30,
-                    on_conflict: :reject
+                    on_conflict: :log
 
     def perform
       # Deliver all pending Push Notifications
