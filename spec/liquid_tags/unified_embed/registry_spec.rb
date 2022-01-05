@@ -25,6 +25,14 @@ RSpec.describe UnifiedEmbed::Registry do
       "instagram.com/p/CXgzXWXroHK/",
     ]
 
+    valid_twitch_url_formats = [
+      "https://clips.twitch.tv/embed?clip=SpeedyVivaciousDolphinKappaRoss-IQl5YslMAGKbMOGM&parent=www.example.com",
+      "https://player.twitch.tv/?video=1222841752&parent=www.example.com",
+      "https://player.twitch.tv/?video=1222841752",
+      "https://www.twitch.tv/videos/1250164963",
+      "https://www.twitch.tv/monchi_tv/clip/CrepuscularSparklingGalagoBudBlast-ij3jvc4r437D4L4L",
+    ]
+
     valid_vimeo_url_formats = [
       "https://player.vimeo.com/video/652446985?h=a68f6ed1f5",
       "https://vimeo.com/ondemand/withchude/647355334",
@@ -96,6 +104,13 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns SoundcloudTag for a soundcloud url" do
       expect(described_class.find_liquid_tag_for(link: "https://soundcloud.com/before-30-tv/stranger-moni-lati-lo-1"))
         .to eq(SoundcloudTag)
+    end
+
+    it "returns Twitch for a valid twitch url" do
+      valid_twitch_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(TwitchTag)
+      end
     end
 
     it "returns TwitterTimelineTag for a twitter timeline url" do
