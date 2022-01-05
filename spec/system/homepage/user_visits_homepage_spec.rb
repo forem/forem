@@ -97,8 +97,8 @@ RSpec.describe "User visits a homepage", type: :system do
         visit "/"
 
         within("#main-navigation", match: :first) do
-          expect(page).to have_selector(".default-navigation-links li:nth-child(3)", text: "Shop")
-          expect(page).to have_selector(".default-navigation-links li:nth-child(4)", text: "Mock")
+          expect(page).to have_selector(".default-navigation-links li:nth-child(2)", text: "Shop")
+          expect(page).to have_selector(".default-navigation-links li:nth-child(3)", text: "Mock")
         end
       end
     end
@@ -156,7 +156,7 @@ RSpec.describe "User visits a homepage", type: :system do
         find("body")["data-user"]
 
         within("#sidebar-nav-followed-tags") do
-          expect(all(".crayons-link--block").map(&:text).sort).to eq(%w[#javascript #go #ruby].sort)
+          expect(all(".c-link--block").map(&:text).sort).to eq(%w[#javascript #go #ruby].sort)
         end
       end
     end
@@ -220,7 +220,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "shows link when display_only_when_signed_in is true" do
         within("#main-navigation", match: :first) do
-          expect(page).to have_selector(".default-navigation-links li:nth-child(4)", text: "Beauty")
+          expect(page).to have_selector(".default-navigation-links li:nth-child(3)", text: "Beauty")
         end
       end
     end

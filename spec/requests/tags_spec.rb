@@ -21,7 +21,8 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
   describe "GET /tags/suggest" do
     it "returns a JSON representation of the top tags", :aggregate_failures do
-      tag = create(:tag)
+      badge = create(:badge)
+      tag = create(:tag, badge: badge)
 
       get suggest_tags_path
 
@@ -30,6 +31,10 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       response_tag = JSON.parse(response.body).first
       expect(response_tag["name"]).to eq(tag.name)
       expect(response_tag).to have_key("rules_html")
+      expect(response_tag).to have_key("short_summary")
+      expect(response_tag).to have_key("bg_color_hex")
+      expect(response_tag).to have_key("badge")
+      expect(response_tag["badge"]).to have_key("badge_image")
     end
   end
 

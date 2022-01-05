@@ -17,7 +17,7 @@ RSpec.describe PodcastEpisodes::BustCacheWorker, type: :worker do
 
     context "when a path is not provided" do
       let(:podcast) { create(:podcast) }
-      let(:podcast_episode) { FactoryBot.create(:podcast_episode, podcast_id: podcast.id) }
+      let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
 
       it "does not call the service" do
         worker.perform(podcast_episode.id, nil, "SlUg")
@@ -27,7 +27,7 @@ RSpec.describe PodcastEpisodes::BustCacheWorker, type: :worker do
 
     context "when a slug is not provided" do
       let(:podcast) { create(:podcast) }
-      let(:podcast_episode) { FactoryBot.create(:podcast_episode, podcast_id: podcast.id) }
+      let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
 
       it "does not call the service" do
         worker.perform(podcast_episode.id, "/PodCAst/SlUg", nil)
@@ -37,7 +37,7 @@ RSpec.describe PodcastEpisodes::BustCacheWorker, type: :worker do
 
     context "when podcast episode is found" do
       let(:podcast) { create(:podcast) }
-      let(:podcast_episode) { FactoryBot.create(:podcast_episode, podcast_id: podcast.id) }
+      let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
 
       it "busts cache" do
         worker.perform(podcast_episode.id, "/PodCAst/SlUg", "SlUg")

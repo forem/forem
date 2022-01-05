@@ -1,21 +1,13 @@
 <% default_nav_links = NavigationLink.default_section.ordered.to_a %>
 <% other_nav_links = NavigationLink.other_section.ordered.to_a %>
 
-<nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" id="main-navigation" aria-label="<%= community_name %>">
+<nav class="mb-4 <% unless user_signed_in? %>mt-4<% end %>" id="main-navigation" aria-label="<%= community_name %>">
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
     <li>
-      <a href="<%= root_path %>" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/house.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
+      <a href="<%= root_path %>" class="c-link c-link--block c-link--icon-left">
+        <%= inline_svg_tag("twemoji/house.svg", class: "crayons-icon crayons-icon--default c-link__icon", aria_hidden: true) %>
         <%= t("views.main.home") %>
       </a>
-    </li>
-    <li>
-      <% unless user_signed_in? %>
-        <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
-          <%= inline_svg_tag("twemoji/handshake.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
-          <%= t("views.main.signup") %>
-        </a>
-      <% end %>
     </li>
     <% default_nav_links.each do |link| %>
       <%= render "layouts/sidebar_nav_link", link: link %>
@@ -24,8 +16,8 @@
 </nav>
 
 <% if other_nav_links.any? %>
-  <nav class="mb-6 <%= "mt-4" if user_signed_in? %>" aria-labelledby="other-nav-heading">
-    <h2 id="other-nav-heading" class="mt-6 mb-2 fs-base">
+  <nav class="mb-4" aria-labelledby="other-nav-heading">
+    <h2 id="other-nav-heading" class="crayons-subtitle-3 py-2 pl-3">
       <%= t("views.main.nav.other") %>
     </h2>
     <ul class="other-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
@@ -36,6 +28,6 @@
   </nav>
 <% end %>
 
-<div class="flex justify-start mb-6">
+<div class="flex justify-start mb-4">
   <%= render partial: "layouts/social_media" %>
 </div>

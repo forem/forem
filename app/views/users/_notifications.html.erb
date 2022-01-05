@@ -25,7 +25,7 @@
         <%= f.label :email_tag_mod_newsletter, "Send me tag moderator newsletter emails", class: "crayons-field__label" %>
       </div>
     <% end %>
-    <% if current_user.has_role?(:trusted) %>
+    <% if current_user.has_trusted_role? %>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :email_community_mod_newsletter, class: "crayons-checkbox" %>
         <%= f.label :email_community_mod_newsletter, "Send me community moderator newsletter emails", class: "crayons-field__label" %>
@@ -61,7 +61,11 @@
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :mobile_comment_notifications, class: "crayons-checkbox" %>
-      <%= f.label :mobile_comment_notifications, "Notify me when someone replies to me in a comment thread", class: "crayons-field__label" %>
+      <%= f.label :mobile_comment_notifications, t("helpers.label.users_notification_setting.mobile_comment_notifications"), class: "crayons-field__label" %>
+    </div>
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :mobile_mention_notifications, class: "crayons-checkbox" %>
+      <%= f.label :mobile_mention_notifications, t("helpers.label.users_notification_setting.mobile_mention_notifications"), class: "crayons-field__label" %>
     </div>
   </div>
 

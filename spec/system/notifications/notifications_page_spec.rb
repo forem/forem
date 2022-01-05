@@ -25,36 +25,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
     expect(page).not_to have_css("span#notifications-number", text: "1")
   end
 
-  it "allows user to interact with replies" do
-    sidekiq_perform_enqueued_jobs do
-      article = create(:article, user: alex)
-      comment = create(:comment, commentable: article, user: alex)
-      reply = create(:comment, commentable: article, user: leslie, parent: comment)
-      Notification.send_new_comment_notifications_without_delay(reply)
-    end
-
-    visit "/notifications"
-
-    expect(page).to have_css("div.spec-notification")
-    click_button("heart")
-
-    expect(page).to have_css(".reacted")
-
-    click_link("Reply")
-
-    validate_reply(leslie.comments.first.id)
-  end
-
-  it "allows user to follow other users back" do
-    follow = leslie.follow(alex)
-    Notification.send_new_follower_notification_without_delay(follow, is_read: true)
-    visit "/notifications"
-    expect(page).to have_css("div.spec-notification")
-    click_button(I18n.t("core.follow_back"))
-    expect(page).to have_text(I18n.t("core.following"))
-  end
-
-  context "when user is trusted" do
+  xcontext "when user is trusted" do
     before do
       dev_user = create(:user)
       allow(User).to receive(:staff_account).and_return(dev_user)

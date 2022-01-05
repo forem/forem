@@ -50,7 +50,6 @@ class AdminMenu
       item(name: "developer tools", controller: "tools", children: [
              item(name: "tools"),
              item(name: "vault secrets", controller: "secrets"),
-             item(name: "webhooks", controller: "webhook_endpoints"),
              item(name: "data update scripts", visible: false),
            ]),
     ]

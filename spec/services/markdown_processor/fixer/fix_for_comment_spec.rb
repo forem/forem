@@ -15,7 +15,7 @@ RSpec.describe MarkdownProcessor::Fixer::FixForComment, type: :service do
 
   describe "defining constants" do
     it "defines METHODS" do
-      methods = %i[modify_hr_tags underscores_in_usernames]
+      methods = %i[underscores_in_usernames]
       expect(described_class::METHODS).to eq methods
     end
   end
@@ -29,20 +29,6 @@ RSpec.describe MarkdownProcessor::Fixer::FixForComment, type: :service do
 
       expect(described_class.call(test_string1)).to eq(expected_result1)
       expect(described_class.call(test_string2)).to eq(expected_result2)
-    end
-
-    it "modifies hr tags" do
-      markdown =
-        <<~HEREDOC
-          #{front_matter(title: sample_text)}
-          ---
-          These hr tags should be converted to more dashes
-          ---
-        HEREDOC
-
-      result = described_class.call(markdown)
-      expect(result).to include("-------").twice
-      expect(result).to include("---").at_least(:twice)
     end
 
     context "when markdown is nil" do

@@ -454,47 +454,29 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles/me(/:status)" do
+    let(:api_secret) { create(:api_secret, user: user) }
+    let(:headers) { { "api-key" => api_secret.secret } }
+
     context "when request is unauthenticated" do
       let(:user) { create(:user) }
-      let(:public_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public" }
 
       it "return unauthorized" do
         get me_api_articles_path
         expect(response).to have_http_status(:unauthorized)
       end
-
-      it "returns forbidden when requesting for all with only public scope" do
-        get me_api_articles_path(status: :all), params: { access_token: public_token.token }
-        expect(response).to have_http_status(:forbidden)
-      end
-
-      it "returns forbidden status when requesting unpublished with public scope" do
-        get me_api_articles_path(status: :unpublished), params: { access_token: public_token.token }
-        expect(response).to have_http_status(:forbidden)
-      end
     end
 
     context "when request is authenticated" do
       let(:user) { create(:user) }
-      let(:access_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public read_articles" }
 
-      it "works with bearer authorization" do
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
+      it "returns proper response specification" do
         get me_api_articles_path, headers: headers
         expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns proper response specification" do
-        get me_api_articles_path, params: { access_token: access_token.token }
-        expect(response.media_type).to eq("application/json")
-        expect(response).to have_http_status(:ok)
-      end
-
       it "returns success when requesting published articles with public token" do
-        public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
-        get me_api_articles_path(status: :published), params: { access_token: public_token.token }
+        get me_api_articles_path(status: :published), headers: headers
         expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
@@ -502,14 +484,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "return only user's articles including markdown" do
         create(:article, user: user)
         create(:article)
-        get me_api_articles_path, params: { access_token: access_token.token }
+        get me_api_articles_path, headers: headers
         expect(response.parsed_body.length).to eq(1)
         expect(response.parsed_body[0]["body_markdown"]).not_to be_nil
       end
 
       it "supports pagination" do
         create_list(:article, 3, user: user)
-        get me_api_articles_path, params: { access_token: access_token.token, page: 2, per_page: 2 }
+        get me_api_articles_path, headers: headers, params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
       end
 
@@ -517,7 +499,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         article = create(:article, user: user)
         article.update_columns(organization_id: organization.id)
 
-        get me_api_articles_path, params: { access_token: access_token.token }
+        get me_api_articles_path, headers: headers
 
         keys = %w[
           type_of id title description published published_at slug path url
@@ -531,19 +513,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "only includes published articles by default" do
         create(:article, published: false, published_at: nil, user: user)
-        get me_api_articles_path, params: { access_token: access_token.token }
+        get me_api_articles_path, headers: headers
         expect(response.parsed_body.length).to eq(0)
       end
 
       it "only includes published articles when asking for published articles" do
         create(:article, published: false, published_at: nil, user: user)
-        get me_api_articles_path(status: :published), params: { access_token: access_token.token }
+        get me_api_articles_path(status: :published), headers: headers
         expect(response.parsed_body.length).to eq(0)
       end
 
       it "only includes unpublished articles when asking for unpublished articles" do
         create(:article, published: false, published_at: nil, user: user)
-        get me_api_articles_path(status: :unpublished), params: { access_token: access_token.token }
+        get me_api_articles_path(status: :unpublished), headers: headers
         expect(response.parsed_body.length).to eq(1)
       end
 
@@ -553,7 +535,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         Timecop.travel(1.day.from_now) do
           newer = create(:article, published: false, published_at: nil, user: user)
         end
-        get me_api_articles_path(status: :unpublished), params: { access_token: access_token.token }
+        get me_api_articles_path(status: :unpublished), headers: headers
         expected_order = response.parsed_body.map { |resp| resp["id"] }
         expect(expected_order).to eq([newer.id, older.id])
       end
@@ -561,7 +543,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "puts unpublished articles at the top when asking for all articles" do
         create(:article, user: user)
         create(:article, published: false, published_at: nil, user: user)
-        get me_api_articles_path(status: :all), params: { access_token: access_token.token }
+        get me_api_articles_path(status: :all), headers: headers
         expected_order = response.parsed_body.map { |resp| resp["published"] }
         expect(expected_order).to eq([false, true])
       end
@@ -569,7 +551,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "correctly returns reading time in minutes" do
         create(:article, user: user)
 
-        get me_api_articles_path, params: { access_token: access_token.token }
+        get me_api_articles_path, headers: headers
         expect(response.parsed_body.first["reading_time_minutes"]).to eq(article.reading_time)
       end
     end
@@ -611,23 +593,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
-      end
-
-      it "returns a 403 if :write_articles scope is missing (oauth)" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
-        expect(response).to have_http_status(:forbidden)
-      end
-
-      it "returns a 201 if :write_articles scope is provided (oauth)" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_articles_path, params: { article: { title: Faker::Book.title,
-                                                     body_markdown: "" } }.to_json, headers: headers
-        expect(response).to have_http_status(:created)
       end
 
       it "returns a 429 status code if the rate limit is reached" do
@@ -930,28 +895,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def put_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         put path, params: { article: params }.to_json, headers: headers
-      end
-
-      it "returns a 403 if :write_articles scope is missing (oauth)" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        title = Faker::Book.title
-        body_markdown = "foobar"
-        params = { title: title, body_markdown: body_markdown }
-        put path, params: { article: params }.to_json, headers: headers
-        expect(response).to have_http_status(:forbidden)
-      end
-
-      it "returns a 200 if :write_articles scope is provided (oauth)" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        title = Faker::Book.title
-        body_markdown = "foobar"
-        params = { title: title, body_markdown: body_markdown }
-        put path, params: { article: params }.to_json, headers: headers
-        expect(response).to have_http_status(:ok)
       end
 
       it "returns a 429 status code if the rate limit is reached" do
