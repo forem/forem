@@ -70,7 +70,7 @@ export function toggleFlagUserModal() {
  *
  * @param {number} authorId
  */
-export function initializeFlagUserModal(authorId, communityName) {
+export function initializeFlagUserModal(authorId) {
   // Check whether context is ModCenter or Friday-Night-Mode
   const modContainer = document.getElementById('mod-container');
 
@@ -79,7 +79,7 @@ export function initializeFlagUserModal(authorId, communityName) {
   }
 
   render(
-    <FlagUserModal authorId={authorId} communityName={communityName} />,
+    <FlagUserModal authorId={authorId} />,
     document.getElementsByClassName('flag-user-modal-container')[0],
   );
 }
@@ -92,13 +92,12 @@ export function initializeFlagUserModal(authorId, communityName) {
  * @param {number} props.authorId The author ID associated to the content being moderated.
  * @param {string} props.communityName The specif forem name
  */
-export function FlagUserModal({
-  modCenterArticleUrl,
-  authorId,
-  communityName,
-}) {
+export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
   const vomitAllRef = useRef(null);
+
+  const { communityName } = document.body.dataset;
+
   return (
     <div
       data-testid="flag-user-modal"
@@ -207,5 +206,4 @@ FlagUserModal.displayName = 'FlagUserModal';
 FlagUserModal.propTypes = {
   moderationUrl: PropTypes.string,
   authorId: PropTypes.number.isRequired,
-  communityName: PropTypes.string.isRequired,
 };

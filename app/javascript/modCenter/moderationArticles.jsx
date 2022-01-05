@@ -6,9 +6,6 @@ export class ModerationArticles extends Component {
     articles: JSON.parse(
       document.getElementById('mod-index-list').dataset.articles,
     ),
-    communityName:
-      document.getElementsByClassName('site-logo')[0]?.firstElementChild
-        .innerText,
     prevSelectedArticleId: undefined,
   };
 
@@ -50,7 +47,8 @@ export class ModerationArticles extends Component {
   };
 
   render() {
-    const { articles, prevSelectedArticleId, communityName } = this.state;
+    const { articles, prevSelectedArticleId } = this.state;
+
     return (
       <div className="moderation-articles-list">
         {articles.map((article) => {
@@ -73,7 +71,6 @@ export class ModerationArticles extends Component {
               user={user}
               articleOpened={id === prevSelectedArticleId}
               toggleArticle={this.toggleArticle}
-              communityName={communityName}
             />
           );
         })}

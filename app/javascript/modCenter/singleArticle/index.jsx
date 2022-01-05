@@ -32,7 +32,6 @@ export class SingleArticle extends Component {
       key,
       articleOpened,
       path,
-      communityName,
     } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       this.tagsFormat(tag, key);
@@ -47,11 +46,7 @@ export class SingleArticle extends Component {
       <Fragment>
         {modContainer &&
           createPortal(
-            <FlagUserModal
-              moderationUrl={path}
-              authorId={user.id}
-              communityName={communityName}
-            />,
+            <FlagUserModal moderationUrl={path} authorId={user.id} />,
             document.getElementsByClassName('flag-user-modal-container')[0],
           )}
         <details
@@ -99,5 +94,4 @@ SingleArticle.propTypes = {
   cachedTagList: PropTypes.isRequired,
   user: PropTypes.isRequired,
   key: PropTypes.number.isRequired,
-  communityName: PropTypes.string.isRequired,
 };

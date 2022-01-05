@@ -3,11 +3,9 @@ import { isModerationPage } from '@utilities/moderation';
 
 getCsrfToken().then(() => {
   const user = userData();
-  const {
-    authorId: articleAuthorId,
-    path,
-    communityName,
-  } = document.getElementById('article-show-container').dataset;
+  const { authorId: articleAuthorId, path } = document.getElementById(
+    'article-show-container',
+  ).dataset;
 
   const initializeModerationsTools = async () => {
     const { initializeActionsPanel } = await import(
@@ -19,11 +17,11 @@ getCsrfToken().then(() => {
     if (user?.trusted) {
       if (user?.id !== articleAuthorId && !isModerationPage()) {
         initializeActionsPanel(user, path);
-        initializeFlagUserModal(articleAuthorId, communityName);
+        initializeFlagUserModal(articleAuthorId);
         // dev.to/mod
       } else if (isModerationPage()) {
         initializeActionsPanel(user, path);
-        initializeFlagUserModal(articleAuthorId, communityName);
+        initializeFlagUserModal(articleAuthorId);
       }
     }
   };
