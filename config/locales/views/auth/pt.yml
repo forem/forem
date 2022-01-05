@@ -73,5 +73,5 @@ pt:
         step_5: "Para capacitar a comunidade 🌱"
       tagline: Faça o login para personalizar sua experiência e participar.
       title:
-        text_html: <a href="/" class="c-link c-link--branded">%{name}</a> é uma comunidade de %{maybe_size}amazing %{label}
+        text_html: <a href="/" class="c-link c-link--branded">%{name}</a> é uma comunidade de %{maybe_size} incríveis %{label}
         size: "%{num} "
