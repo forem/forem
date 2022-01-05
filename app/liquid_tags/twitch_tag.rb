@@ -25,8 +25,30 @@ class TwitchTag < LiquidTagBase
 
   private
 
-  def parent_url
-    Settings::General.app_domain.split(":")[0]
+  # The `parsed_input` method handles two Twitch Liquid Tag use-cases:
+  # `{% twitch <video_id or clip_slug> %}`
+  # `{% embed <url> %}`
+  #
+  # The iframe src for a video is different from that for a clip.
+  #
+  # In the case of a video_id or clip_slug, this method validates the input
+  # and then returns the appropriate src.
+  #
+  # In the case of a url, this method validates the input, then determines
+  # whether the id contained in the url is a video_id or clip_slug.
+  #
+  # Seeing as the clip_slug regexp would match a video_id, the check
+  # against the video_id regexp occurs first 😅
+
+  def parsed_input(input)
+    input = input.split("&")[0] # prevent param injection
+
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, "Invalid Twitch ID, Slug or URL" unless match
+
+    return player_url(match[:video_id]) if match.names.include?("video_id")
+    return clip_url(match[:clip_slug]) if match.names.include?("clip_slug")
+    return player_or_clip_url(match) if match.names.include?("id")
   end
 
   def clip_url(id)
@@ -42,15 +64,8 @@ class TwitchTag < LiquidTagBase
     return clip_url(match[:id]) if match[:id].match?(VALID_CLIP_REGEXP)
   end
 
-  def parsed_input(input)
-    input = input.split("&")[0] # prevent param injection
-
-    match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid Twitch ID, Slug or URL" unless match
-
-    return player_url(match[:video_id]) if match.names.include?("video_id")
-    return clip_url(match[:clip_slug]) if match.names.include?("clip_slug")
-    return player_or_clip_url(match) if match.names.include?("id")
+  def parent_url
+    Settings::General.app_domain.split(":")[0]
   end
 end
 
