@@ -25,6 +25,15 @@ RSpec.describe ArticleDecorator, type: :decorator do
     end
   end
 
+  describe "#data_info_as_json" do
+    it "returns an escaped JSON string" do
+      user = build(:user, name: '\: Hello')
+      allow(article).to receive(:cached_user).and_return(user)
+      decorated = article.decorate
+      expect(JSON.parse(decorated.data_info_as_json)).to be_a(Hash)
+    end
+  end
+
   describe "#current_state_path" do
     it "returns the path /:username/:slug when published" do
       article = published_article

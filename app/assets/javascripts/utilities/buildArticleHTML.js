@@ -171,20 +171,30 @@ function buildArticleHTML(article) {
     var isArticle = article.class_name === 'Article';
 
     var previewCardContent = `
-      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+      <div id="story-author-preview-content-${
+        article.id
+      }" class="profile-preview-card__content crayons-dropdown p-4" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
           <div class="-mt-4">
             <a href="/${profileUsername}" class="flex">
               <span class="crayons-avatar crayons-avatar--xl mr-2 shrink-0">
                 <img src="${picUrl}" class="crayons-avatar__image" alt="" loading="lazy" />
               </span>
-              <span class="crayons-link crayons-subtitle-2 mt-5">${article.user.name}</span>
+              <span class="crayons-link crayons-subtitle-2 mt-5">${
+                article.user.name
+              }</span>
             </a>
           </div>
           <div class="print-hidden">
-            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full", "name": "${article.user.name}"}'>Follow</button>
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${
+              article.user_id
+            }, "className": "User", "style": "full", "name": "${JSON.stringify(
+      article.user.name,
+    )}"}'>Follow</button>
           </div>
-          <div class="author-preview-metadata-container" data-author-id="${article.user_id}"></div>
+          <div class="author-preview-metadata-container" data-author-id="${
+            article.user_id
+          }"></div>
         </div>
       </div>
     `;
@@ -260,7 +270,9 @@ function buildArticleHTML(article) {
       saveButton = `
         <button type="button"
           class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s bookmark-button article-engagement-count engage-button follow-action-button follow-user"
-          data-info='{"id": ${article.id},"className":"User", "name": "${article.user.name}"}'
+          data-info='{"id": ${
+            article.id
+          },"className":"User", "name": "${JSON.stringify(article.user.name)}"}'
         data-follow-action-button>
           &nbsp;
         </button>`;

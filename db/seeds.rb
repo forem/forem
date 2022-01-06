@@ -60,7 +60,9 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   num_users.times do |i|
     fname = Faker::Name.unique.first_name
-    lname = Faker::Name.unique.last_name
+    # Including "\\:/" to help with identifying local issues with
+    # character escaping.
+    lname = Faker::Name.unique.last_name + "\\:/"
     name = [fname, lname].join(" ")
 
     user = User.create!(

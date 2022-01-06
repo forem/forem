@@ -1,6 +1,15 @@
 class ArticleDecorator < ApplicationDecorator
   LONG_MARKDOWN_THRESHOLD = 900
 
+  def data_info_as_json(style: "full")
+    {
+      id: user_id,
+      className: "User",
+      style: style,
+      name: cached_user.name
+    }.to_json
+  end
+
   def current_state_path
     published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end
