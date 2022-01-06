@@ -265,12 +265,13 @@ module Articles
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
-      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, **config)
+      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: "original", **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
         @page = (page || 1).to_i
         # TODO: The tag parameter is vestigial, there's no logic around this value.
         @tag = tag
+        @strategy = strategy
         @default_user_experience_level = config.fetch(:default_user_experience_level) { DEFAULT_USER_EXPERIENCE_LEVEL }
         @negative_reaction_threshold = config.fetch(:negative_reaction_threshold, DEFAULT_NEGATIVE_REACTION_THRESHOLD)
         @positive_reaction_threshold = config.fetch(:positive_reaction_threshold, DEFAULT_POSITIVE_REACTION_THRESHOLD)

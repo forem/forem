@@ -35,14 +35,20 @@ module Stories
     end
 
     def signed_in_base_feed
-      strategy = AbExperiment.get(experiment: :feed_strategy_round_2, controller: self, user: current_user,
-                                  default_value: "original")
-      feed = if strategy.weighted_query_strategy?
-               Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
-             elsif Settings::UserExperience.feed_strategy == "basic"
+      feed = if Settings::UserExperience.feed_strategy == "basic"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              else
-               Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+               strategy = AbExperiment.get(
+                 experiment: :feed_strategy_round_2,
+                 controller: self, user: current_user,
+                 default_value: "original"
+                )
+               Articles::Feeds::WeightedQueryStrategy.new(
+                 user: current_user,
+                 page: @page,
+                 tags: params[:tag],
+                 strategy: strategy,
+               )
              end
       Datadog.tracer.trace("feed.query",
                            span_type: "db",
