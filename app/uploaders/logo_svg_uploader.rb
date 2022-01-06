@@ -44,6 +44,7 @@ class LogoSvgUploader < BaseUploader
 
       # https://github.com/minimagick/minimagick/issues/332
       file.instance_variable_set(:@file, temp_png_file)
+      file.instance_variable_set(:@content_type, "image/png")
     ensure
       temp_png_file.close
     end
