@@ -51,7 +51,6 @@ before_install:
     /etc/postgresql/12/main/pg_hba.conf
   - sudo service postgresql@12-main restart
   - gem install bundler:"<2.3"
-  - gem install faraday:"<2.0"
 install:
   - date --rfc-3339=seconds
   - nvm install
