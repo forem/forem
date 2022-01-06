@@ -56,6 +56,7 @@ export const MultiSelectAutocomplete = ({
   labelText,
   fetchSuggestions,
   placeholder = 'Add...',
+  customSelectionStyles = {},
 }) => {
   const [state, dispatch] = useReducer(reducer, {
     suggestions: [],
@@ -301,28 +302,33 @@ export const MultiSelectAutocomplete = ({
     });
   };
 
-  const allSelectedItemElements = selectedItems.map((item, index) => (
-    <li key={item} className="w-max">
-      <div role="group" aria-label={item} className="flex mr-1 mb-1 w-max">
-        <Button
-          variant="secondary"
-          className="c-autocomplete--multi__selected p-1 cursor-text"
-          aria-label={`Edit ${item}`}
-          onClick={() => enterEditState(item, index)}
-        >
-          {item}
-        </Button>
-        <Button
-          variant="secondary"
-          className="c-autocomplete--multi__selected p-1"
-          aria-label={`Remove ${item}`}
-          onClick={() => deselectItem(item)}
-        >
-          <Icon src={Close} />
-        </Button>
-      </div>
-    </li>
-  ));
+  const allSelectedItemElements = selectedItems.map((item, index) => {
+    const customStyles = customSelectionStyles[item];
+    return (
+      <li key={item} className="w-max">
+        <div role="group" aria-label={item} className="flex mr-1 mb-1 w-max">
+          <Button
+            style={customStyles ? customStyles : null}
+            variant="secondary"
+            className="c-autocomplete--multi__selected p-1 cursor-text"
+            aria-label={`Edit ${item}`}
+            onClick={() => enterEditState(item, index)}
+          >
+            {item}
+          </Button>
+          <Button
+            style={customStyles ? customStyles : null}
+            variant="secondary"
+            className="c-autocomplete--multi__selected p-1"
+            aria-label={`Remove ${item}`}
+            onClick={() => deselectItem(item)}
+          >
+            <Icon src={Close} />
+          </Button>
+        </div>
+      </li>
+    );
+  });
 
   // When a user edits a tag, we need to move the input inside the selected items
   const splitSelectionsAt =
