@@ -39,11 +39,14 @@ const reducer = (state, action) => {
         ...state,
         editValue: action.payload.editValue,
         inputPosition: action.payload.inputPosition,
+        forceInputFocus: action.payload.forceInputFocus,
       };
     case 'setActiveDescendentIndex':
       return { ...state, activeDescendentIndex: action.payload };
     case 'setIgnoreBlur':
       return { ...state, ignoreBlur: action.payload };
+    case 'setForceInputFocus':
+      return { ...state, forceInputFocus: action.payload };
     default:
       return state;
   }
@@ -58,9 +61,10 @@ export const MultiSelectAutocomplete = ({
     suggestions: [],
     selectedItems: [],
     inputPosition: null,
-    editValue: '',
+    editValue: null,
     activeDescendentIndex: null,
     ignoreBlur: false,
+    forceInputFocus: false,
   });
 
   const {
@@ -70,6 +74,7 @@ export const MultiSelectAutocomplete = ({
     editValue,
     activeDescendentIndex,
     ignoreBlur,
+    forceInputFocus,
   } = state;
 
   const inputRef = useRef(null);
@@ -90,19 +95,32 @@ export const MultiSelectAutocomplete = ({
   };
 
   useEffect(() => {
+    // editValue defaults to null when component is first rendered.
+    // This ensures we do not autofocus the input before the user has started interacting with the component.
+    if (editValue === null) return;
+
     const { current: input } = inputRef;
     if (inputPosition !== null) {
+      // Entering 'edit' mode
       resizeInputToContentSize();
 
       input.value = editValue;
       const { length: cursorPosition } = editValue;
       input.focus();
       input.setSelectionRange(cursorPosition, cursorPosition);
-    } else {
-      // Remove inline style added to size the input
-      input.style.width = '';
+      return;
     }
+
+    // Exiting 'edit' mode, return focus to default input position
+    input.focus();
   }, [inputPosition, editValue]);
+
+  useEffect(() => {
+    if (forceInputFocus) {
+      inputRef.current.focus();
+      dispatch({ type: 'setForceInputFocus', payload: false });
+    }
+  }, [forceInputFocus]);
 
   const enterEditState = (editItem, editItemIndex) => {
     inputSizerRef.current.innerText = editItem;
@@ -110,7 +128,11 @@ export const MultiSelectAutocomplete = ({
 
     dispatch({
       type: 'updateEditState',
-      payload: { editValue: editItem, inputPosition: editItemIndex },
+      payload: {
+        editValue: editItem,
+        inputPosition: editItemIndex,
+        forceInputFocus: false,
+      },
     });
   };
 
@@ -121,6 +143,7 @@ export const MultiSelectAutocomplete = ({
       payload: {
         editValue: nextInputValue,
         inputPosition: nextInputValue === '' ? null : inputPosition + 1,
+        forceInputFocus: true,
       },
     });
   };
@@ -259,7 +282,9 @@ export const MultiSelectAutocomplete = ({
     // Clear the text input
     const { current: input } = inputRef;
     input.value = nextInputValue;
-    focusInput && input.focus();
+    if (focusInput) {
+      dispatch({ type: 'setForceInputFocus', payload: true });
+    }
   };
 
   const deselectItem = (deselectedItem) => {
@@ -375,17 +400,15 @@ export const MultiSelectAutocomplete = ({
             id="listbox1"
           >
             {suggestions.map((suggestion, index) => (
-              // Focus remains in the input during keyboard use, and event handler is attached to that input
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events
               <li
                 id={suggestion}
                 role="option"
                 aria-selected={index === activeDescendentIndex}
                 key={suggestion}
-                onClick={() => selectItem({ selectedItem: suggestion })}
-                onMouseDown={() =>
-                  dispatch({ type: 'setIgnoreBlue', payload: true })
-                }
+                onMouseDown={() => {
+                  selectItem({ selectedItem: suggestion });
+                  dispatch({ type: 'setIgnoreBlur', payload: true });
+                }}
               >
                 {suggestion}
               </li>
