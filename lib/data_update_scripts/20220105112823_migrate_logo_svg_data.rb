@@ -4,8 +4,16 @@ module DataUpdateScripts
       return if ::Settings::General.try(:logo_svg).blank? ||
         (::Settings::General.try(:original_logo).present? && ::Settings::General.try(:resized_logo).present?)
 
+      logo_svg = Settings::General.logo_svg
+
+      # We do our best effort here: These are some (possibly not all) of the css variables that we may see in Forem
+      # logos. Hence, we try and replace them before converting.
+      logo_svg.gsub! "currentColor", "#090909"
+      logo_svg.gsub! "var(--base-inverted)", "#fff"
+      logo_svg.gsub! "var(--link-color)", "#3d3d3d"
+
       Tempfile.create(["logo", ".svg"]) do |file|
-        file.write(::Settings::General.logo_svg)
+        file.write(logo_svg)
 
         logo_svg_uploader = LogoSvgUploader.new.tap do |uploader|
           uploader.store!(file)
