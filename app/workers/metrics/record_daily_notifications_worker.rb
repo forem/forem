@@ -9,6 +9,7 @@ module Metrics
       welcome_notification_customize_feed
       welcome_notification_twitter_connect
       welcome_notification_github_connect
+      welcome_notification_google_connect
       welcome_notification_customize_experience
       welcome_notification_discuss_and_ask
       welcome_notification_download_app

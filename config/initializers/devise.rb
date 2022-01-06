@@ -18,9 +18,9 @@ GITHUB_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:scope] = "user:email"
 end
 
-GOOGLe_OMNIAUTH_SETUP = lambda do |env|
-  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.google_key
-  env["omniauth.strategy"].options[:client_secrete] = Settings::Authentication.google_secret
+GOOGLE_OAUTH2_OMNIAUTH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.google_oauth2_key
+  env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.google_oauth2_secret
 end
 
 FACEBOOK_OMNIAUTH_SETUP = lambda do |env|
@@ -326,6 +326,7 @@ Devise.setup do |config|
   # Fun fact, unless Twitter is last, it doesn't work for some reason.
   config.omniauth :facebook, setup: FACEBOOK_OMNIAUTH_SETUP
   config.omniauth :github, setup: GITHUB_OMNIAUTH_SETUP
+  config.omniauth :google_oauth2, setup: GOOGLE_OAUTH2_OMNIAUTH_SETUP
   config.omniauth :apple, setup: APPLE_OMNIAUTH_SETUP
   config.omniauth :forem, setup: FOREM_OMNIAUTH_SETUP, strategy_class: OmniAuth::Strategies::Forem
   config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
