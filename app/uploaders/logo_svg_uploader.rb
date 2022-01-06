@@ -8,7 +8,7 @@ class LogoSvgUploader < BaseUploader
   IMAGE_TYPE_ALLOWLIST = %i[svg png].freeze
   CONTENT_TYPE_ALLOWLIST = %w[image/svg+xml image/png].freeze
 
-  process convert: "png"
+  process :convert_to_png
 
   def store_dir
     STORE_DIRECTORY
@@ -30,6 +30,23 @@ class LogoSvgUploader < BaseUploader
   def filename
     # random_string in the filename to avoid caching issues
     "original_logo_#{random_string}.png"
+  end
+
+  def convert_to_png
+    temp_png_file = Tempfile.new ["output", ".png"]
+
+    begin
+      MiniMagick::Tool::Convert.new do |convert|
+        convert.background("none")
+        convert << file.path
+        convert << temp_png_file.path
+      end
+
+      # https://github.com/minimagick/minimagick/issues/332
+      file.instance_variable_set(:@file, temp_png_file)
+    ensure
+      temp_png_file.close
+    end
   end
 
   version :resized_logo do
