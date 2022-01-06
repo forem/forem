@@ -46,7 +46,7 @@ module Users
     end
 
     def comment_goal(time_start, group_value, min_count, goal_name)
-      comment_counts = User.first.comments.where("created_at > ?", time_start)
+      comment_counts = @user.comments.where("created_at > ?", time_start)
         .group(group_value).count.values
       comment_counts.delete(0)
       return unless comment_counts.size >= min_count
