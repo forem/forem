@@ -17,6 +17,8 @@ const KEYS = {
 
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9])/;
 
+const PLACEHOLDER_SELECTIONS_MADE = 'Add another...';
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'setSelectedItems':
@@ -47,7 +49,11 @@ const reducer = (state, action) => {
   }
 };
 
-export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
+export const MultiSelectAutocomplete = ({
+  labelText,
+  fetchSuggestions,
+  placeholder = 'Add...',
+}) => {
   const [state, dispatch] = useReducer(reducer, {
     suggestions: [],
     selectedItems: [],
@@ -95,7 +101,6 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     } else {
       // Remove inline style added to size the input
       input.style.width = '';
-      input.focus();
     }
   }, [inputPosition, editValue]);
 
@@ -315,6 +320,9 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onBlur={handleInputBlur}
+        placeholder={
+          selectedItems.length > 0 ? PLACEHOLDER_SELECTIONS_MADE : placeholder
+        }
       />
     </li>
   );
