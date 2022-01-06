@@ -28,11 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
         redirect_to confirm_email_path(email: resource.email)
       else
         sign_in(resource)
-        if FeatureFlag.enabled?(:creator_onboarding)
-          redirect_to new_admin_creator_setting_path
-        else
-          redirect_to root_path
-        end
+        redirect_to new_admin_creator_setting_path
       end
     else
       render action: "by_email"
@@ -78,9 +74,7 @@ class RegistrationsController < Devise::RegistrationsController
     resource.registered_at = Time.current
     resource.build_setting(editor_version: "v2")
     resource.remote_profile_image_url = Users::ProfileImageGenerator.call if resource.profile_image.blank?
-    if FeatureFlag.enabled?(:creator_onboarding)
-      resource.password_confirmation = resource.password
-    end
+    resource.password_confirmation = resource.password
     check_allowed_email(resource) if resource.email.present?
     resource.save if resource.email.present?
   end

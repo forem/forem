@@ -69,7 +69,7 @@ class AsyncInfoController < ApplicationController
   end
 
   def use_creator_onboarding
-    FeatureFlag.enabled?(:creator_onboarding) && user_is_a_creator
+    user_is_a_creator
   end
 
   def user_cache_key

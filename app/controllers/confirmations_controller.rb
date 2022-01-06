@@ -11,11 +11,7 @@ class ConfirmationsController < Devise::ConfirmationsController
       set_flash_message!(:notice, :confirmed)
       if resource.creator?
         sign_in(resource)
-        if FeatureFlag.enabled?(:creator_onboarding)
-          redirect_to new_admin_creator_setting_path
-        else
-          redirect_to root_path
-        end
+        redirect_to new_admin_creator_setting_path
       else
         respond_with_navigational(resource) { redirect_to after_confirmation_path_for(resource_name, resource) }
       end

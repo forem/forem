@@ -316,7 +316,6 @@ module ApplicationHelper
   end
 
   def creator_settings_form?
-    return unless FeatureFlag.enabled?(:creator_onboarding)
     return unless User.with_role(:creator).any?
 
     creator = User.with_role(:creator).first
