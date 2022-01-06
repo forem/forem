@@ -439,7 +439,6 @@ RSpec.describe "Registrations", type: :request do
     context "when going through the Creator Onboarding flow" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
-        allow(FeatureFlag).to receive(:enabled?).with(:runtime_banner).and_return(false)
         allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
       end
 
