@@ -7,7 +7,7 @@ module ConsumerApps
     def initialize(app_bundle:, platform:)
       @app_bundle = app_bundle
       @platform = platform
-      @app_name ||= "#{app_bundle}.#{platform}"
+      @app_name = "#{app_bundle}.#{platform}"
 
       @consumer_app = ConsumerApps::FindOrCreateByQuery.call(
         app_bundle: @app_bundle,
