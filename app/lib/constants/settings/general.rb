@@ -36,12 +36,12 @@ module Constants
           placeholder: "a secure token"
         },
         logo_png: {
-          description: "Used as a secondary logo in places like the sign in modals, onboarding, apple touch icons." \
+          description: "Used as a secondary logo in places like the sign in modals, onboarding, apple touch icons. " \
                        "Recommended minimum of 512x512px",
           placeholder: IMAGE_PLACEHOLDER
         },
         logo_svg: {
-          description: "Currently being used on the upper left hand corner of your Forem," \
+          description: "Currently being used on the upper left hand corner of your Forem, " \
                        "however it will be deprecated soon in favour of Logo above.",
           placeholder: SVG_PLACEHOLDER
         },
