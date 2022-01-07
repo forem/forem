@@ -2,8 +2,7 @@
 // Disabled due to the linter being out of date for combobox role: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/789
 import { h, Fragment } from 'preact';
 import { useEffect, useRef, useReducer } from 'preact/hooks';
-import { Icon, Button } from '@crayons';
-import { Close } from '@images/x.svg';
+import { DefaultSelectionTemplate } from './DefaultSelectionTemplate';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -52,10 +51,16 @@ const reducer = (state, action) => {
   }
 };
 
+// TODO: accept template for selected items, use current UI by default
+// TODO: accept template for suggestions, use current UI by default
 export const MultiSelectAutocomplete = ({
   labelText,
   fetchSuggestions,
+  border = true,
   placeholder = 'Add...',
+  onSelectionsChanged = () => {},
+  SuggestionTemplate,
+  SelectionTemplate = DefaultSelectionTemplate,
 }) => {
   const [state, dispatch] = useReducer(reducer, {
     suggestions: [],
@@ -179,7 +184,7 @@ export const MultiSelectAutocomplete = ({
 
     const results = await fetchSuggestions(value);
     // If no results, display current search term as an option
-    if (results.length === 0) {
+    if (results.length === 0 && value !== '') {
       results.push({ name: value });
     }
 
@@ -305,6 +310,7 @@ export const MultiSelectAutocomplete = ({
 
     exitEditState(nextInputValue);
     dispatch({ type: 'setSelectedItems', payload: newSelections });
+    onSelectionsChanged(newSelections);
 
     // Clear the text input
     const { current: input } = inputRef;
@@ -315,12 +321,15 @@ export const MultiSelectAutocomplete = ({
   };
 
   const deselectItem = (deselectedItem) => {
+    const newSelections = selectedItems.filter(
+      (item) => item.name !== deselectedItem.name,
+    );
     dispatch({
       type: 'setSelectedItems',
-      payload: selectedItems.filter(
-        (item) => item.name !== deselectedItem.name,
-      ),
+      payload: newSelections,
     });
+
+    onSelectionsChanged(newSelections);
 
     // We also update the hidden selected items list, so removals are announced to screen reader users
     selectedItemsRef.current.querySelectorAll('li').forEach((selectionNode) => {
@@ -334,28 +343,11 @@ export const MultiSelectAutocomplete = ({
     const { name: displayName } = item;
     return (
       <li key={displayName} className="w-max">
-        <div
-          role="group"
-          aria-label={displayName}
-          className="flex mr-1 mb-1 w-max"
-        >
-          <Button
-            variant="secondary"
-            className="c-autocomplete--multi__selected p-1 cursor-text"
-            aria-label={`Edit ${displayName}`}
-            onClick={() => enterEditState(item, index)}
-          >
-            {displayName}
-          </Button>
-          <Button
-            variant="secondary"
-            className="c-autocomplete--multi__selected p-1"
-            aria-label={`Remove ${displayName}`}
-            onClick={() => deselectItem(item)}
-          >
-            <Icon src={Close} />
-          </Button>
-        </div>
+        <SelectionTemplate
+          {...item}
+          onEdit={() => enterEditState(item, index)}
+          onDeselect={() => deselectItem(item)}
+        />
       </li>
     );
   });
@@ -417,7 +409,9 @@ export const MultiSelectAutocomplete = ({
           aria-haspopup="listbox"
           aria-expanded={suggestions.length > 0}
           aria-owns="listbox1"
-          className="c-autocomplete--multi__wrapper flex items-center crayons-textfield cursor-text"
+          className={`c-autocomplete--multi__wrapper${
+            border ? '-border' : ' border-none'
+          } flex items-center crayons-textfield cursor-text `}
           onClick={() => inputRef.current.focus()}
         >
           <ul id="combo-selected" className="list-none flex flex-wrap w-100">
@@ -448,7 +442,11 @@ export const MultiSelectAutocomplete = ({
                     dispatch({ type: 'setIgnoreBlur', payload: true });
                   }}
                 >
-                  {suggestionDisplayName}
+                  {SuggestionTemplate ? (
+                    <SuggestionTemplate {...suggestion} />
+                  ) : (
+                    suggestionDisplayName
+                  )}
                 </li>
               );
             })}

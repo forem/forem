@@ -3,9 +3,20 @@ import { MultiSelectAutocomplete } from '../MultiSelectAutocomplete';
 
 export default {
   title: 'BETA/MultiSelectAutocomplete',
+  argTypes: {
+    border: {
+      table: {
+        defaultValue: { summary: false },
+      },
+      description: 'Display as a standard bordered input',
+    },
+    labelText: {
+      description: 'The label for the input',
+    },
+  },
 };
 
-export const Default = () => {
+export const Default = (args) => {
   const options = [
     { name: 'one' },
     { name: 'two' },
@@ -23,11 +34,13 @@ export const Default = () => {
     options.filter((option) => option.name.startsWith(searchTerm));
 
   return (
-    <MultiSelectAutocomplete
-      labelText="Example multi select autocomplete"
-      fetchSuggestions={fetchSuggestions}
-    />
+    <MultiSelectAutocomplete {...args} fetchSuggestions={fetchSuggestions} />
   );
+};
+
+Default.args = {
+  border: true,
+  labelText: 'Example multi select autocomplete',
 };
 
 Default.story = {

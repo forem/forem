@@ -1,11 +1,25 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { Tags } from '../../shared/components/tags';
+import { TagAutocompleteOption } from './TagAutocompleteOption';
+import { TagAutocompleteSelection } from './TagAutocompleteSelection';
 import { MultiSelectAutocomplete } from '@crayons';
 import { fetchSearch } from '@utilities/search';
 
-export const TagsField = () => {
+//TODO:
+
+// Default value - need to fetch tags details to display correctly
+// Limit number that can be added
+// Switch help context
+
+export const TagsField = ({ onInput, defaultValue }) => {
+  const syncSelections = (selections = []) => {
+    const selectionsString = selections
+      .map((selection) => selection.name)
+      .join(', ');
+    onInput(selectionsString);
+  };
+
   const fetchSuggestions = (searchTerm) =>
     fetchSearch('tags', { name: searchTerm }).then(
       (response) => response.result,
@@ -15,6 +29,10 @@ export const TagsField = () => {
     <MultiSelectAutocomplete
       fetchSuggestions={fetchSuggestions}
       placeholder="Add tags..."
+      border={false}
+      SuggestionTemplate={TagAutocompleteOption}
+      SelectionTemplate={TagAutocompleteSelection}
+      onSelectionsChanged={syncSelections}
     />
   );
 };

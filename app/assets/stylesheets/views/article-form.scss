@@ -238,6 +238,10 @@
 }
 
 .crayons-article-form {
+  &__tag-prefix {
+    color: var(--tag-prefix);
+  }
+
   &__tag-option {
     background: var(--card-bg);
     color: var(--card-color);
@@ -260,6 +264,17 @@
 
     .crayons-article-form__tag-option-title {
       color: var(--accent-brand-darker);
+    }
+  }
+
+  [aria-selected='true'] {
+    .crayons-article-form__tag-option {
+      --tag-prefix: var(--accent-brand-darker) !important;
+      background: var(--body-bg);
+
+      .crayons-article-form__tag-option-title {
+        color: var(--accent-brand-darker);
+      }
     }
   }
 

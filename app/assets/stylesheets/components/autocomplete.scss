@@ -60,7 +60,7 @@
 }
 
 .c-autocomplete--multi {
-  &__wrapper:focus-within {
+  &__wrapper-border:focus-within {
     @extend %form-styling-focus;
 
     .c-autocomplete--multi__input {
@@ -92,6 +92,8 @@
   }
 
   ul.c-autocomplete--multi__popover {
+    position: absolute;
+    width: 100%;
     padding: var(--su-1);
     z-index: var(--z-elevate);
     background: var(--card-bg);
