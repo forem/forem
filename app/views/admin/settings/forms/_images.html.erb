@@ -33,6 +33,18 @@
           <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>" width="32" height="32" loading="lazy" />
         </div>
 
+        <div class="crayons-field">
+          <%= admin_config_label :logo_png %>
+          <%= admin_config_description Constants::Settings::General::DETAILS[:logo_png][:description] %>
+          <%= f.text_field :logo_png,
+                           class: "crayons-textfield",
+                           value: Settings::General.logo_png,
+                           placeholder: Constants::Settings::General::DETAILS[:logo_png][:placeholder] %>
+          <% if Settings::General.logo_png.present? %>
+            <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 128) %>" width="128" height="128" loading="lazy" />
+          <% end %>
+        </div>
+
         <%= render partial: "admin/shared/logo_upload", locals: { f: f, allowed_types: logo_allowed_types, max_file_size: logo_max_file_size, logo: Settings::General.resized_logo } %>
       </fieldset>
       <%= render "update_setting_button", f: f, aria_label: "Update image settings" %>
