@@ -38,7 +38,7 @@ module Search
         name: article.organization.name,
         id: article.organization.id,
         profile_image_90: article.organization.profile_image_90
-      }
+      }.to_json
     end
   end
 end
