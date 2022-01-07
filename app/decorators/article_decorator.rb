@@ -7,7 +7,7 @@ class ArticleDecorator < ApplicationDecorator
   #   > Article.last.decorate.user_data_info_to_json
   #   => "{\"user_id\":1,\"className\":\"User\",\"style\":\"full\",\"name\":\"Duane \\\"The Rock\\\" Johnson\"}"
   def user_data_info_to_json
-    Follows::DataInfo.to_json(object: cached_user, class_name: "User", id: user_id, style: "full")
+    DataInfo.to_json(object: cached_user, class_name: "User", id: user_id, style: "full")
   end
 
   def current_state_path
