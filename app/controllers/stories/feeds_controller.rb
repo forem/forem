@@ -42,7 +42,7 @@ module Stories
                  experiment: :feed_strategy_round_2,
                  controller: self, user: current_user,
                  default_value: "original"
-                )
+               )
                Articles::Feeds::WeightedQueryStrategy.new(
                  user: current_user,
                  page: @page,

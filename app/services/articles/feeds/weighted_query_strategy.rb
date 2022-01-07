@@ -249,6 +249,7 @@ module Articles
       # @param page [Integer] what is the pagination page
       # @param tag [String, nil] this isn't implemented in other feeds
       #   so we'll see
+      # @param strategy [String, "original"] pass a current a/b test in
       # @param config [Hash<Symbol, Object>] a list of configurations,
       #   see {#initialize} implementation details.
       # @option config [Array<Symbol>] :scoring_configs
@@ -583,6 +584,9 @@ module Articles
           # then we'll use the default configuration.
           scoring_config = default_config unless scoring_config.is_a?(Hash)
 
+          # Change an alement of config via a/b test strategy
+          scoring_config = inject_config_ab_test(valid_method_name, scoring_config)
+
           # This scoring method requires a group by clause.
           @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)
 
@@ -605,6 +609,15 @@ module Articles
             @days_since_published = scoring_config.fetch(:cases).count + 1
           end
         end
+      end
+
+      def inject_config_ab_test(valid_method_name, scoring_config)
+        # Change a value if the strategy is not original
+        return scoring_config unless valid_method_name == :comments_count_factor && @strategy != "original"
+
+        # Rewards comment count with slightly more weight up to 10 comments.
+        scoring_config[:cases] = (0..9).map { |n| [n, 0.8 + (n / 50.0)] }
+        scoring_config
       end
 
       # Responsible for transforming the :clause, :cases, and
