@@ -8,12 +8,12 @@ import { fetchSearch } from '@utilities/search';
 
 //TODO:
 
-// Switch help context
-// Label the field properly
-
 // Check how listings tags are affected
+// Docs
+// Styles clean up
+// Storybook updates
 
-export const TagsField = ({ onInput, defaultValue }) => {
+export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
   const [defaultSelections, setDefaultSelections] = useState([]);
 
   useEffect(() => {
@@ -51,12 +51,16 @@ export const TagsField = ({ onInput, defaultValue }) => {
     <MultiSelectAutocomplete
       defaultValue={defaultSelections}
       fetchSuggestions={fetchSuggestions}
+      labelText="Add up to 4 tags"
+      showLabel={false}
       placeholder="Add up to 4 tags..."
       border={false}
       maxSelections={4}
       SuggestionTemplate={TagAutocompleteOption}
       SelectionTemplate={TagAutocompleteSelection}
       onSelectionsChanged={syncSelections}
+      onFocus={switchHelpContext}
+      inputId="tag-input"
     />
   );
 };

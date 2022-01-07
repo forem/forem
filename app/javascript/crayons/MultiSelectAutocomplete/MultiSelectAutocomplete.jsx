@@ -58,9 +58,12 @@ export const MultiSelectAutocomplete = ({
   fetchSuggestions,
   defaultValue = [],
   border = true,
+  showLabel = true,
   placeholder = 'Add...',
+  inputId,
   maxSelections,
-  onSelectionsChanged = () => {},
+  onSelectionsChanged,
+  onFocus,
   SuggestionTemplate,
   SelectionTemplate = DefaultSelectionTemplate,
 }) => {
@@ -330,7 +333,7 @@ export const MultiSelectAutocomplete = ({
 
     exitEditState(nextInputValue);
     dispatch({ type: 'setSelectedItems', payload: newSelections });
-    onSelectionsChanged(newSelections);
+    onSelectionsChanged?.(newSelections);
 
     // Clear the text input
     const { current: input } = inputRef;
@@ -349,7 +352,7 @@ export const MultiSelectAutocomplete = ({
       payload: newSelections,
     });
 
-    onSelectionsChanged(newSelections);
+    onSelectionsChanged?.(newSelections);
 
     // We also update the hidden selected items list, so removals are announced to screen reader users
     selectedItemsRef.current.querySelectorAll('li').forEach((selectionNode) => {
@@ -382,6 +385,7 @@ export const MultiSelectAutocomplete = ({
   const input = allowSelections ? (
     <li className="self-center">
       <input
+        id={inputId}
         ref={inputRef}
         autocomplete="off"
         className="c-autocomplete--multi__input"
@@ -392,10 +396,12 @@ export const MultiSelectAutocomplete = ({
         }
         aria-autocomplete="list"
         aria-labelledby="multi-select-label selected-items-list"
+        aria-describedby="input-description"
         type="text"
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onBlur={handleInputBlur}
+        onFocus={onFocus}
         placeholder={
           selectedItems.length > 0 ? PLACEHOLDER_SELECTIONS_MADE : placeholder
         }
@@ -410,7 +416,15 @@ export const MultiSelectAutocomplete = ({
         aria-hidden="true"
         className="absolute pointer-events-none opacity-0 p-2"
       />
-      <label id="multi-select-label">{labelText}</label>
+      <label
+        id="multi-select-label"
+        className={showLabel ? '' : 'screen-reader-only'}
+      >
+        {labelText}
+      </label>
+      <span id="input-description" className="screen-reader-only">
+        {maxSelections ? `Maximum ${maxSelections} selections` : ''}
+      </span>
 
       {/* A visually hidden list provides confirmation messages to screen reader users as an item is selected or removed */}
       <div className="screen-reader-only">
