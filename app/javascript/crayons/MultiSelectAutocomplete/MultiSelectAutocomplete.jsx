@@ -56,7 +56,6 @@ export const MultiSelectAutocomplete = ({
   labelText,
   fetchSuggestions,
   placeholder = 'Add...',
-  customSelectionStyles = {},
 }) => {
   const [state, dispatch] = useReducer(reducer, {
     suggestions: [],
@@ -87,7 +86,7 @@ export const MultiSelectAutocomplete = ({
     const currentValue = inputRef.current ? inputRef.current.value : '';
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
     if (!ignoreBlur && currentValue !== '') {
-      selectItem({ selectedItem: currentValue, focusInput: false });
+      selectByText({ textValue: currentValue, focusInput: false });
     } else {
       dispatch({ type: 'setSuggestions', payload: [] });
     }
@@ -123,14 +122,31 @@ export const MultiSelectAutocomplete = ({
     }
   }, [forceInputFocus]);
 
+  const selectByText = ({
+    textValue,
+    nextInputValue = '',
+    focusInput = true,
+  }) => {
+    const matchingSuggestion = suggestions.find(
+      (suggestion) => suggestion.name === textValue,
+    );
+    selectItem({
+      selectedItem: matchingSuggestion
+        ? matchingSuggestion
+        : { name: textValue },
+      nextInputValue,
+      focusInput,
+    });
+  };
+
   const enterEditState = (editItem, editItemIndex) => {
-    inputSizerRef.current.innerText = editItem;
+    inputSizerRef.current.innerText = editItem.name;
     deselectItem(editItem);
 
     dispatch({
       type: 'updateEditState',
       payload: {
-        editValue: editItem,
+        editValue: editItem.name,
         inputPosition: editItemIndex,
         forceInputFocus: false,
       },
@@ -162,9 +178,19 @@ export const MultiSelectAutocomplete = ({
     }
 
     const results = await fetchSuggestions(value);
+    // If no results, display current search term as an option
+    if (results.length === 0) {
+      results.push({ name: value });
+    }
+
     dispatch({
       type: 'setSuggestions',
-      payload: results.filter((item) => !selectedItems.includes(item)),
+      payload: results.filter(
+        (item) =>
+          !selectedItems.some(
+            (selectedItem) => selectedItem.name === item.name,
+          ),
+      ),
     });
   };
 
@@ -221,8 +247,8 @@ export const MultiSelectAutocomplete = ({
         // Accept whatever is in the input before the comma or space.
         // If any text remains after the comma or space, the edit will continue separately
         if (currentValue !== '') {
-          selectItem({
-            selectedItem: currentValue.slice(0, selectionStart),
+          selectByText({
+            textValue: currentValue.slice(0, selectionStart),
             nextInputValue: currentValue.slice(selectionStart),
           });
         }
@@ -258,7 +284,7 @@ export const MultiSelectAutocomplete = ({
     focusInput = true,
   }) => {
     // If a user has manually typed an item already selected, reset
-    if (selectedItems.includes(selectedItem)) {
+    if (selectedItems.some((item) => item.name === selectedItem.name)) {
       clearInput();
       return;
     }
@@ -274,7 +300,7 @@ export const MultiSelectAutocomplete = ({
 
     // We update the hidden selected items list, so additions are announced to screen reader users
     const listItem = document.createElement('li');
-    listItem.innerText = selectedItem;
+    listItem.innerText = selectedItem.name;
     selectedItemsRef.current.appendChild(listItem);
 
     exitEditState(nextInputValue);
@@ -291,36 +317,40 @@ export const MultiSelectAutocomplete = ({
   const deselectItem = (deselectedItem) => {
     dispatch({
       type: 'setSelectedItems',
-      payload: selectedItems.filter((item) => item !== deselectedItem),
+      payload: selectedItems.filter(
+        (item) => item.name !== deselectedItem.name,
+      ),
     });
 
     // We also update the hidden selected items list, so removals are announced to screen reader users
     selectedItemsRef.current.querySelectorAll('li').forEach((selectionNode) => {
-      if (selectionNode.innerText === deselectedItem) {
+      if (selectionNode.innerText === deselectedItem.name) {
         selectionNode.remove();
       }
     });
   };
 
   const allSelectedItemElements = selectedItems.map((item, index) => {
-    const customStyles = customSelectionStyles[item];
+    const { name: displayName } = item;
     return (
-      <li key={item} className="w-max">
-        <div role="group" aria-label={item} className="flex mr-1 mb-1 w-max">
+      <li key={displayName} className="w-max">
+        <div
+          role="group"
+          aria-label={displayName}
+          className="flex mr-1 mb-1 w-max"
+        >
           <Button
-            style={customStyles ? customStyles : null}
             variant="secondary"
             className="c-autocomplete--multi__selected p-1 cursor-text"
-            aria-label={`Edit ${item}`}
+            aria-label={`Edit ${displayName}`}
             onClick={() => enterEditState(item, index)}
           >
-            {item}
+            {displayName}
           </Button>
           <Button
-            style={customStyles ? customStyles : null}
             variant="secondary"
             className="c-autocomplete--multi__selected p-1"
-            aria-label={`Remove ${item}`}
+            aria-label={`Remove ${displayName}`}
             onClick={() => deselectItem(item)}
           >
             <Icon src={Close} />
@@ -405,20 +435,23 @@ export const MultiSelectAutocomplete = ({
             aria-multiselectable="true"
             id="listbox1"
           >
-            {suggestions.map((suggestion, index) => (
-              <li
-                id={suggestion}
-                role="option"
-                aria-selected={index === activeDescendentIndex}
-                key={suggestion}
-                onMouseDown={() => {
-                  selectItem({ selectedItem: suggestion });
-                  dispatch({ type: 'setIgnoreBlur', payload: true });
-                }}
-              >
-                {suggestion}
-              </li>
-            ))}
+            {suggestions.map((suggestion, index) => {
+              const { name: suggestionDisplayName } = suggestion;
+              return (
+                <li
+                  id={suggestionDisplayName}
+                  role="option"
+                  aria-selected={index === activeDescendentIndex}
+                  key={suggestionDisplayName}
+                  onMouseDown={() => {
+                    selectItem({ selectedItem: suggestion });
+                    dispatch({ type: 'setIgnoreBlur', payload: true });
+                  }}
+                >
+                  {suggestionDisplayName}
+                </li>
+              );
+            })}
           </ul>
         ) : null}
       </div>

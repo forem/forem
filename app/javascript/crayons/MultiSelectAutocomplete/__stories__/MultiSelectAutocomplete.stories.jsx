@@ -7,27 +7,20 @@ export default {
 
 export const Default = () => {
   const options = [
-    'one',
-    'two',
-    'three',
-    'four',
-    'five',
-    'six',
-    'seven',
-    'eight',
-    'nine',
-    'ten',
+    { name: 'one' },
+    { name: 'two' },
+    { name: 'three' },
+    { name: 'four' },
+    { name: 'five' },
+    { name: 'six' },
+    { name: 'seven' },
+    { name: 'eight' },
+    { name: 'nine' },
+    { name: 'ten' },
   ];
 
-  const fetchSuggestions = async (searchTerm) => {
-    const filteredSuggestions = options.filter((option) =>
-      option.startsWith(searchTerm),
-    );
-
-    return filteredSuggestions.length === 0
-      ? [searchTerm]
-      : filteredSuggestions;
-  };
+  const fetchSuggestions = async (searchTerm) =>
+    options.filter((option) => option.name.startsWith(searchTerm));
 
   return (
     <MultiSelectAutocomplete
