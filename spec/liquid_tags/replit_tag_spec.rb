@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ReplitTag, type: :liquid_tag do
   describe "#id" do
     let(:replit_id) { "@WigWog/PositiveFineOpensource" }
-    let(:invalid_replit_id) { "@Wig-Wog/PositiveFineOpensource" }
+    let(:invalid_replit_id) { "@Cant-Have-Dashes/PositiveFineOpensource" }
 
     def generate_new_liquid(id)
       Liquid::Template.register_tag("replit", ReplitTag)
