@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { TagAutocompleteOption } from './TagAutocompleteOption';
 import { TagAutocompleteSelection } from './TagAutocompleteSelection';
@@ -8,11 +8,33 @@ import { fetchSearch } from '@utilities/search';
 
 //TODO:
 
-// Default value - need to fetch tags details to display correctly
-// Limit number that can be added
 // Switch help context
+// Label the field properly
+
+// Check how listings tags are affected
 
 export const TagsField = ({ onInput, defaultValue }) => {
+  const [defaultSelections, setDefaultSelections] = useState([]);
+
+  useEffect(() => {
+    // If the default selections have not already been populated, fetch the tag data
+    if (defaultValue && defaultValue !== '' && defaultSelections.length === 0) {
+      // The article stores tags as a comma separated string
+      const tagNames = defaultValue.split(', ');
+
+      // We need to fetch the full tag data to display the rich UI
+      const tagRequests = tagNames.map((tagName) =>
+        fetchSearch('tags', { name: tagName }).then(
+          ({ result }) => result[0] || { name: tagName },
+        ),
+      );
+
+      Promise.all(tagRequests).then((data) => {
+        setDefaultSelections(data);
+      });
+    }
+  }, [defaultValue, defaultSelections.length]);
+
   const syncSelections = (selections = []) => {
     const selectionsString = selections
       .map((selection) => selection.name)
@@ -27,9 +49,11 @@ export const TagsField = ({ onInput, defaultValue }) => {
 
   return (
     <MultiSelectAutocomplete
+      defaultValue={defaultSelections}
       fetchSuggestions={fetchSuggestions}
-      placeholder="Add tags..."
+      placeholder="Add up to 4 tags..."
       border={false}
+      maxSelections={4}
       SuggestionTemplate={TagAutocompleteOption}
       SelectionTemplate={TagAutocompleteSelection}
       onSelectionsChanged={syncSelections}

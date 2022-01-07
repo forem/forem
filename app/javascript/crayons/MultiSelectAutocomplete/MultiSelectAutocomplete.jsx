@@ -56,15 +56,17 @@ const reducer = (state, action) => {
 export const MultiSelectAutocomplete = ({
   labelText,
   fetchSuggestions,
+  defaultValue = [],
   border = true,
   placeholder = 'Add...',
+  maxSelections,
   onSelectionsChanged = () => {},
   SuggestionTemplate,
   SelectionTemplate = DefaultSelectionTemplate,
 }) => {
   const [state, dispatch] = useReducer(reducer, {
     suggestions: [],
-    selectedItems: [],
+    selectedItems: defaultValue,
     inputPosition: null,
     editValue: null,
     activeDescendentIndex: null,
@@ -86,6 +88,12 @@ export const MultiSelectAutocomplete = ({
   const inputSizerRef = useRef(null);
   const selectedItemsRef = useRef(null);
 
+  useEffect(() => {
+    if (defaultValue.length > 0) {
+      dispatch({ type: 'setSelectedItems', payload: defaultValue });
+    }
+  }, [defaultValue]);
+
   const handleInputBlur = () => {
     // Since the input is sometimes removed and rendered in a new location on blur, it's possible that inputRef.current may be null when we complete this check.
     const currentValue = inputRef.current ? inputRef.current.value : '';
@@ -105,7 +113,7 @@ export const MultiSelectAutocomplete = ({
     if (editValue === null) return;
 
     const { current: input } = inputRef;
-    if (inputPosition !== null) {
+    if (input && inputPosition !== null) {
       // Entering 'edit' mode
       resizeInputToContentSize();
 
@@ -117,12 +125,12 @@ export const MultiSelectAutocomplete = ({
     }
 
     // Exiting 'edit' mode, return focus to default input position
-    input.focus();
+    input?.focus();
   }, [inputPosition, editValue]);
 
   useEffect(() => {
     if (forceInputFocus) {
-      inputRef.current.focus();
+      inputRef.current?.focus();
       dispatch({ type: 'setForceInputFocus', payload: false });
     }
   }, [forceInputFocus]);
@@ -160,18 +168,30 @@ export const MultiSelectAutocomplete = ({
 
   const exitEditState = (nextInputValue = '') => {
     inputSizerRef.current.innerText = nextInputValue;
+
+    // When a user has 'split' the value they were editing (e.g. by entering a space or comma), the remaining portion of the text
+    // may now be edited if they have not exceeded the max selections
+    const canEditNextInputValue =
+      !maxSelections || selectedItems.length + 1 < maxSelections;
+
     dispatch({
       type: 'updateEditState',
       payload: {
-        editValue: nextInputValue,
-        inputPosition: nextInputValue === '' ? null : inputPosition + 1,
+        editValue: canEditNextInputValue ? nextInputValue : '',
+        inputPosition:
+          nextInputValue === '' || !canEditNextInputValue
+            ? null
+            : inputPosition + 1,
         forceInputFocus: true,
       },
     });
   };
 
   const resizeInputToContentSize = () => {
-    inputRef.current.style.width = `${inputSizerRef.current.clientWidth}px`;
+    const { current: input } = inputRef;
+    if (input) {
+      input.style.width = `${inputSizerRef.current.clientWidth}px`;
+    }
   };
 
   const handleInputChange = async ({ target: { value } }) => {
@@ -356,7 +376,10 @@ export const MultiSelectAutocomplete = ({
   const splitSelectionsAt =
     inputPosition !== null ? inputPosition : selectedItems.length;
 
-  const input = (
+  const allowSelections =
+    !maxSelections || selectedItems.length < maxSelections;
+
+  const input = allowSelections ? (
     <li className="self-center">
       <input
         ref={inputRef}
@@ -378,7 +401,7 @@ export const MultiSelectAutocomplete = ({
         }
       />
     </li>
-  );
+  ) : null;
 
   return (
     <Fragment>
@@ -405,14 +428,14 @@ export const MultiSelectAutocomplete = ({
         {/* disabled as the inner input forms the tab stop (this click handler ensures _any_ click on the wrapper focuses the input which may be less wide) */}
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
         <div
-          role="combobox"
-          aria-haspopup="listbox"
-          aria-expanded={suggestions.length > 0}
-          aria-owns="listbox1"
+          role={allowSelections ? 'combobox' : null}
+          aria-haspopup={allowSelections ? 'listbox' : null}
+          aria-expanded={allowSelections ? suggestions.length > 0 : null}
+          aria-owns={allowSelections ? 'listbox1' : null}
           className={`c-autocomplete--multi__wrapper${
             border ? '-border' : ' border-none'
           } flex items-center crayons-textfield cursor-text `}
-          onClick={() => inputRef.current.focus()}
+          onClick={() => inputRef.current?.focus()}
         >
           <ul id="combo-selected" className="list-none flex flex-wrap w-100">
             {allSelectedItemElements.slice(0, splitSelectionsAt)}
