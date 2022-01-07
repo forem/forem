@@ -49,7 +49,7 @@ module PracticalDeveloper
     # key into the cache version to support recycling cache key.
     config.active_record.collection_cache_versioning = false
 
-    # Enables writing cookies with the purpose metadata embedded. It defaults to true.
+    # Enables writing cookies with the purpose metadata embedded.
     config.action_dispatch.use_cookies_with_metadata = false
 
     ## Rails 6.1
