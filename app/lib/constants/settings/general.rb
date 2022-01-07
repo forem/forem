@@ -41,8 +41,8 @@ module Constants
           placeholder: IMAGE_PLACEHOLDER
         },
         logo_svg: {
-          description: "Currently being used on the upper left hand corner of your Forem, " \
-                       "however it will be deprecated soon in favour of Logo above.",
+          description: "This is the logo currently used on the upper left hand corner of your Forem. " \
+                       "However, after the release it will be deprecated in favor of the Logo above.",
           placeholder: SVG_PLACEHOLDER
         },
         main_social_image: {
