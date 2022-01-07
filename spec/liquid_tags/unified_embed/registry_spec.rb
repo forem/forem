@@ -25,6 +25,11 @@ RSpec.describe UnifiedEmbed::Registry do
       "instagram.com/p/CXgzXWXroHK/",
     ]
 
+    valid_replit_url_formats = [
+      "https://replit.com/@msarit/Shell-Challenge#index.html",
+      "https://replit.com/@msarit/Shell-Challenge",
+    ]
+
     valid_twitch_url_formats = [
       "https://clips.twitch.tv/embed?clip=SpeedyVivaciousDolphinKappaRoss-IQl5YslMAGKbMOGM&parent=www.example.com",
       "https://player.twitch.tv/?video=1222841752&parent=www.example.com",
@@ -101,12 +106,19 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(RedditTag)
     end
 
+    it "returns ReplitTag for a valid replit url" do
+      valid_replit_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(ReplitTag)
+      end
+    end
+
     it "returns SoundcloudTag for a soundcloud url" do
       expect(described_class.find_liquid_tag_for(link: "https://soundcloud.com/before-30-tv/stranger-moni-lati-lo-1"))
         .to eq(SoundcloudTag)
     end
 
-    it "returns Twitch for a valid twitch url" do
+    it "returns TwitchTag for a valid twitch url" do
       valid_twitch_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(TwitchTag)

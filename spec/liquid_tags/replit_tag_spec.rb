@@ -17,6 +17,7 @@ RSpec.describe ReplitTag, type: :liquid_tag do
     it "renders iframe" do
       liquid = generate_new_liquid(replit_id)
       expect(liquid.render).to include("<iframe")
+      expect(liquid.render).to include("https://repl.it/#{replit_id}?lite=true")
     end
   end
 end
