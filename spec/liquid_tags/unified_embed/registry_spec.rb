@@ -25,6 +25,11 @@ RSpec.describe UnifiedEmbed::Registry do
       "instagram.com/p/CXgzXWXroHK/",
     ]
 
+    valid_replit_url_formats = [
+      "https://replit.com/@msarit/Shell-Challenge#index.html",
+      "https://replit.com/@msarit/Shell-Challenge",
+    ]
+
     valid_spotify_url_formats = [
       "https://open.spotify.com/track/64csu9GsP563GpjaSvU17w?si=eaac508fe9394a93",
       "https://open.spotify.com/track/64csu9GsP563GpjaSvU17w",
@@ -109,6 +114,13 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns RedditTag for a reddit url" do
       expect(described_class.find_liquid_tag_for(link: "https://www.reddit.com/r/Cricket/comments/qrkwol/match_thread_2nd_semifinal_australia_vs_pakistan/"))
         .to eq(RedditTag)
+    end
+
+    it "returns ReplitTag for a valid replit url" do
+      valid_replit_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(ReplitTag)
+      end
     end
 
     it "returns SoundcloudTag for a soundcloud url" do
