@@ -616,7 +616,12 @@ module Articles
         return scoring_config unless valid_method_name == :comments_count_factor && @strategy != "original"
 
         # Rewards comment count with slightly more weight up to 10 comments.
-        scoring_config[:cases] = (0..9).map { |n| [n, 0.8 + (n / 50.0)] }
+        # Testing two case weights beyond what we currently have
+        scoring_config[:cases] = if @strategy == "slightly_more_comments_count_case_weight"
+                                   (0..9).map { |n| [n, 0.8 + (n / 50.0)] }
+                                 else # much_more_comments_count_case_weight
+                                   (0..19).map { |n| [n, 0.6 + (n / 50.0)] }
+                                 end
         scoring_config
       end
 
