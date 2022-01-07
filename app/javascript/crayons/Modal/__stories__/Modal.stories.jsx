@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import notes from './modals.md';
+import notes from './modals.mdx';
 import { Modal, ButtonNew as Button } from '@crayons';
 
 export default {

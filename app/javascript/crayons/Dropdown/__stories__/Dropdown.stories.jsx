@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import './dropdown-css-helper.scss';
-import notes from './dropdowns.md';
+import notes from './dropdowns.mdx';
 import { Dropdown, ButtonNew as Button } from '@crayons';
 
 export default {

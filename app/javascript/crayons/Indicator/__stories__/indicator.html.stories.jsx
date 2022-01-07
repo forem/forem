@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import notes from './indicators.md';
+import notes from './indicators.mdx';
 
 export default {
   title: 'Components/Indicators',
