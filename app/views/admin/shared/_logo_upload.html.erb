@@ -2,7 +2,7 @@
   <%= f.label :logo, class: "crayons-field__label" do %>
     Logo
   <% end %>
-  <p id="logo-subtitle" class="crayons-field__description">Your logo will display in the upper left hand corner of your Forem. Upload a PNG or JPEG file.</p>
+  <p id="logo-subtitle" class="crayons-field__description">Your logo will display in the upper left hand corner of your Forem. Upload a PNG or JPEG with a maximum size of 4096x4096px.</p>
   <div class="flex flex-1 gap-4">
     <%= f.file_field :logo, accept: allowed_types.to_s, aria_describedby: "logo-subtitle", data: { "max-file-size-mb": max_file_size.to_s, action: "change->logo-upload#previewLogo" } %>
     <div data-logo-upload-target="previewLogo" id="logo-upload-preview">
