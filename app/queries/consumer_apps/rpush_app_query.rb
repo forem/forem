@@ -27,7 +27,7 @@ module ConsumerApps
 
     private
 
-    attr_reader :app_bundle, :platform, :app_name, :consumer_app
+    attr_reader :app_bundle, :app_name, :consumer_app, :platform
 
     def recreate_ios_app!
       # If the ConsumerApp doesn't have credentials there's no need to create it
