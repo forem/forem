@@ -95,6 +95,8 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
   const vomitAllRef = useRef(null);
 
+  const { communityName } = document.body.dataset;
+
   return (
     <div
       data-testid="flag-user-modal"
@@ -122,8 +124,8 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
         <div class="crayons-modal__box__body">
           <div class="grid gap-4">
             <p>
-              Thanks for keeping DEV safe. Here is what you can do to flag this
-              user:
+              {`Thanks for keeping ${communityName} safe. Here is what you can do to flag this
+              user:`}
             </p>
             <div class="crayons-field crayons-field--radio">
               <input

@@ -11,6 +11,24 @@ class AbExperiment < SimpleDelegator
   # public
   private_class_method :new
 
+  # Sometimes we might want to repurpose the same AbExperiment logic
+  # for different experiments.  This provides the tooling for that
+  # exact thing.
+  EXPERIMENT_TO_METHOD_NAME_MAP = {
+    feed_strategy_round_2: :feed_strategy
+  }.freeze
+
+  # This method helps us leverage existing methods for different
+  # experiments.
+  #
+  # @param experiment [Symbol] the name of the experiment
+  # @return [Symbol] the method name associated with this experiment.
+  #
+  # @see EXPERIMENT_TO_METHOD_NAME_MAP
+  def self.method_name_for(experiment)
+    EXPERIMENT_TO_METHOD_NAME_MAP.fetch(experiment, experiment)
+  end
+
   # @api public
   #
   # A convenience method to insulate against the implementation
@@ -47,8 +65,9 @@ class AbExperiment < SimpleDelegator
   # @todo If we make heavy use of this class, consider guarding for
   #       valid experiment methods.
   def self.get(experiment:, controller:, user:, default_value:, config: ApplicationConfig)
+    method_name = method_name_for(experiment)
     new(controller: controller)
-      .public_send(experiment, user: user, default_value: default_value, config: config)
+      .public_send(method_name, user: user, default_value: default_value, experiment: experiment, config: config)
   end
 
   # @api private
@@ -60,14 +79,14 @@ class AbExperiment < SimpleDelegator
 
   # @api private
   # @note Called via AbExperiment.get
-  def feed_strategy(user:, config:, default_value:)
+  def feed_strategy(user:, config:, default_value:, experiment: :feed_strategy)
     return default_value.inquiry unless FeatureFlag.accessible?(:ab_experiment_feed_strategy)
 
-    (config["AB_EXPERIMENT_FEED_STRATEGY"] || field_test(:feed_strategy, participant: user)).inquiry
+    (config["AB_EXPERIMENT_FEED_STRATEGY"] || field_test(experiment, participant: user)).inquiry
   rescue FieldTest::ExperimentNotFound
     # rubocop:disable Layout/LineLength
     Rails.logger.warn do
-      "Upstream request :feed_strategy experiment.  There are no registered :feed_strategy experiments.  Using the default value of #{default_value.inspect} for :feed_strategy experiment."
+      "Upstream request #{experiment.inspect} experiment.  There are no registered #{experiment.inspect} experiments.  Using the default value of #{default_value.inspect} for #{experiment.inspect} experiment."
     end
     # rubocop:enable Layout/LineLength
 

@@ -3,7 +3,6 @@ class User < ApplicationRecord
   rolify
 
   include CloudinaryHelper
-  include Storext.model
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -111,7 +110,6 @@ class User < ApplicationRecord
                                               foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
-  has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
   has_many :devices, dependent: :delete_all
   has_many :sponsorships, dependent: :delete_all
 
@@ -185,6 +183,9 @@ class User < ApplicationRecord
   # => https://stackoverflow.com/a/11007216/4186181
   #
   scope :search_by_name_and_username, lambda { |term|
+    term = term&.delete("\\") # prevents syntax error in tsquery
+    return none if term.blank?
+
     where(
       sanitize_sql_array(
         [

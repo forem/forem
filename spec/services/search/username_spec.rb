@@ -80,5 +80,9 @@ RSpec.describe Search::Username, type: :service do
       expect(results.size).to eq(max_results)
       expect([alex.username, alexsmith.username]).to include(results.first[:username])
     end
+
+    it "sanitizes the input when given slashes" do
+      expect(described_class.search_documents("\\")).to eq([])
+    end
   end
 end

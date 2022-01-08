@@ -42,9 +42,9 @@ module Color
     private
 
     def hex_to_rgb_hash(hex)
-      hex.match(RGB_REGEX).named_captures.map do |key, color|
+      hex.match(RGB_REGEX).named_captures.to_h do |key, color|
         [key.to_sym, color.hex]
-      end.to_h
+      end
     end
 
     attr_accessor :hexes

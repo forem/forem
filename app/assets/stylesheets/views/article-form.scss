@@ -238,6 +238,37 @@
 }
 
 .crayons-article-form {
+  &__tag-option {
+    background: var(--card-bg);
+    color: var(--card-color);
+    padding: var(--su-3);
+    border-radius: var(--radius);
+  }
+
+  &__tag-option-title {
+    font-weight: var(--fw-medium);
+  }
+
+  &__tag-option-name {
+    text-overflow: ellipsis;
+  }
+
+  &__tag-option:hover {
+    // We try to avoid !important, but since the --tag-prefix color needs to be set inline, !important is required to temporarily change it
+    --tag-prefix: var(--accent-brand-darker) !important;
+    background: var(--body-bg);
+
+    .crayons-article-form__tag-option-title {
+      color: var(--accent-brand-darker);
+    }
+  }
+
+  &__tag-option-image {
+    height: 1rem;
+    margin-left: var(--su-1);
+  }
+
+  // TODO: Clean up these old styles when Autocomplete component is added
   &__tagsoptions {
     background: var(--card-bg);
     color: var(--card-color);
