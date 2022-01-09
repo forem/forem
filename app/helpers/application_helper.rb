@@ -19,11 +19,11 @@ module ApplicationHelper
 
   def subtitles
     {
-      "week" => I18n.t("helpers.application_helper.top_posts_this_week"),
-      "month" => I18n.t("helpers.application_helper.top_posts_this_month"),
-      "year" => I18n.t("helpers.application_helper.top_posts_this_year"),
-      "infinity" => I18n.t("helpers.application_helper.all_posts"),
-      "latest" => I18n.t("helpers.application_helper.latest_posts")
+      "week" => I18n.t("helpers.application_helper.subtitle.week"),
+      "month" => I18n.t("helpers.application_helper.subtitle.month"),
+      "year" => I18n.t("helpers.application_helper.subtitle.year"),
+      "infinity" => I18n.t("helpers.application_helper.subtitle.infinity"),
+      "latest" => I18n.t("helpers.application_helper.subtitle.latest")
     }
   end
 

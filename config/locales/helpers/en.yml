@@ -91,7 +91,6 @@ en:
         username: johndoe
         feed_url: https://yoursite.com/feed
     application_helper:
-      all_posts: All posts
       app_logo: App logo
       deleted_user: "[Deleted User]"
       follow:
@@ -105,12 +104,14 @@ en:
           Tag: Follow
           User: Follow
           default: Follow
-      latest_posts: Latest posts
       required: Required
+      subtitle:
+        week: Top posts this week
+        month: Top posts this month
+        year: Top posts this year
+        infinity: All posts
+        latest: Latest posts
       title_text: "%{title} - %{timeframe}"
-      top_posts_this_month: Top posts this month
-      top_posts_this_week: Top posts this week
-      top_posts_this_year: Top posts this year
     articles_helper:
       logo: "%{service_name} logo"
       most_comments: Most Comments
@@ -121,10 +122,11 @@ en:
     authentication_helper:
       any_of_those: any of those
       email_password: Email & Password
-      reminder_you_used_to_authe: 'Reminder: you used %{auth_method} to authenticate your account, so please use %{verb} to sign in if prompted.'
+      reminder: 'Reminder: you used %{method} to authenticate your account, so please use %{dem} to sign in if prompted.'
       that: that
-      you_cannot_do_this_until_y: You cannot do this until you disable Invite Only Mode
+      invite_only: You cannot do this until you disable Invite Only Mode
     comments_helper:
+      ama: ama
       ask_me_anything: Ask Me Anything
       author: Author
       like: Like
@@ -132,34 +134,37 @@ en:
         one: "&nbsp;like"
         other: "&nbsp;likes"
     feedback_messages_helper:
-      code_of_conduct_violation: "%{community} Code of Conduct Violation"
-      courtesy_notice_from: Courtesy Notice from %{community}
-      offender: |
-        Hello,
+      offender:
+        body: |
+          Hello,
 
-        It has been brought to our attention that you have violated the %{community} Code of Conduct and/or Terms of Use.
+          It has been brought to our attention that you have violated the %{community} Code of Conduct and/or Terms of Use.
 
-        If this behavior continues, we may need to suspend your %{community} account.
+          If this behavior continues, we may need to suspend your %{community} account.
 
-        If you think that there's been a mistake, please reply to this email and we will take another look.
+          If you think that there's been a mistake, please reply to this email and we will take another look.
 
-        %{community} Team
-      reporter: |
-        Hi there,
-        Thank you for flagging content that may be in violation of the %{community} Code of Conduct and/or our Terms of Use. We are looking into your report and will take appropriate
-        action.
-        We appreciate your help as we work to foster a positive and inclusive environment for all!
-        %{community} Team
-      affected: |
-        Hi there,
+          %{community} Team
+        subject: "%{community} Code of Conduct Violation"
+      reporter:
+        body: |
+          Hi there,
+          Thank you for flagging content that may be in violation of the %{community} Code of Conduct and/or our Terms of Use. We are looking into your report and will take appropriate
+          action.
+          We appreciate your help as we work to foster a positive and inclusive environment for all!
+          %{community} Team
+        subject: "%{community} Report"
+      affected:
+        body: |
+          Hi there,
 
-        We noticed some comments (made by others) on your post that violate the %{community} Code of Conduct and/or our Terms of Use. We have zero tolerance for such behavior and are
-        taking appropriate action.
+          We noticed some comments (made by others) on your post that violate the %{community} Code of Conduct and/or our Terms of Use. We have zero tolerance for such behavior and are
+          taking appropriate action.
 
-        Thanks for being awesome, and please don't hesitate to email us with any questions! We welcome all feedback and ideas as we continue working to foster an open and inclusive community.
+          Thanks for being awesome, and please don't hesitate to email us with any questions! We welcome all feedback and ideas as we continue working to foster an open and inclusive community.
 
-        %{community} Team
-      report: "%{community} Report"
+          %{community} Team
+        subject: Courtesy Notice from %{community}
     listing_helper:
       option:
         one: "%{cl_name} (%{count} Credit)"
@@ -167,37 +172,56 @@ en:
     organization_helper:
       option: "%{org_name} (%{unspent})"
     rate_limit_checker_helper:
-      how_many_changes_can_someo: How many changes can someone make to their user account within any 30 second period?
-      how_many_comments_can_some: How many comments can someone create within any 30 second period?
-      how_many_emails_can_we_sen: How many emails can we send to someone within any 2 minute period?
-      how_many_images_can_someon: How many images can someone upload within any 30 second period?
-      how_many_listings_can_some: How many listings can someone create within any 1 minute period?
-      how_many_organizations_can: How many organizations can someone create within any 5 minute period?
-      how_many_people_can_someon: How many people can someone follow in a day?
-      how_many_posts_can_someone: How many posts can someone create within any 30 second period?
-      how_many_thing_s_can_a_new: How many %{thing} can a new member (%{timeframe} or less) create within any 5 minute period?
-      how_many_times_can_someone: How many times can someone react to a post or comment within any 30 second period?
-      how_many_times_can_someone2: How many times can someone report abuse within any 5 minute period?
-      how_many_times_can_someone3: How many times can someone @-mention other users in a post or comment?
-      how_many_times_can_someone4: How many times can someone subscribe to a mailing list within any 30 second period?
-      how_many_times_can_we_send: How many times can we send a confirmation email to someone within a 2 minute period?
-      how_many_updates_can_someo: How many updates can someone make within any 30 second period? Update API docs when changed.
-      limit_number_of_changes_so: Limit number of changes someone can make to their account
-      limit_number_of_comments_c: Limit number of comments created
-      limit_number_of_comments_c2: Limit number of comments created by a new member
-      limit_number_of_confirmati: Limit number of confirmation emails we send
-      limit_number_of_followers: Limit number of followers someone can follow daily
-      limit_number_of_general_em: Limit number of general emails we send
-      limit_number_of_images_upl: Limit number of images uploaded
-      limit_number_of_listings_c: Limit number of listings created
-      limit_number_of_mentions_i: Limit number of @-mentions in a post or comment
-      limit_number_of_organizati: Limit number of organizations created
-      limit_number_of_posts_crea: Limit number of posts created
-      limit_number_of_posts_crea2: Limit number of posts created by a new member
-      limit_number_of_reactions: Limit number of reactions to a post or comment
-      limit_number_of_times_some: Limit number of times someone can report abuse
-      limit_number_of_times_some2: Limit number of times someone can subscribe to mailing list liquid tag
-      limit_number_of_updates_to: Limit number of updates to a post
+      day:
+        one: day
+        other: days
+      general: How many %{thing} can a new member (%{timeframe} or less) create within any 5 minute period?
+      published:
+        title: Limit number of posts created
+        description: How many posts can someone create within any 30 second period?
+      antispam:
+        title: Limit number of posts created by a new member
+      update:
+        title: Limit number of updates to a post
+        description: How many updates can someone make within any 30 second period? Update API docs when changed.
+      upload:
+        title: Limit number of images uploaded
+        description: How many images can someone upload within any 30 second period?
+      user:
+        title: Limit number of changes someone can make to their account
+        description: How many changes can someone make to their user account within any 30 second period?
+      follow:
+        title: Limit number of followers someone can follow daily
+        description: How many people can someone follow in a day?
+      reaction:
+        title: Limit number of reactions to a post or comment
+        description: How many times can someone react to a post or comment within any 30 second period?
+      feedback:
+        title: Limit number of times someone can report abuse
+        description: How many times can someone report abuse within any 5 minute period?
+      comment:
+        title: Limit number of comments created
+        description: How many comments can someone create within any 30 second period?
+      comment_antispam:
+        title: Limit number of comments created by a new member
+      mention:
+        title: Limit number of @-mentions in a post or comment
+        description: How many times can someone @-mention other users in a post or comment?
+      listing:
+        title: Limit number of listings created
+        description: How many listings can someone create within any 1 minute period?
+      organization:
+        title: Limit number of organizations created
+        description: How many organizations can someone create within any 5 minute period?
+      subscription:
+        title: Limit number of times someone can subscribe to mailing list liquid tag
+        description: How many times can someone subscribe to a mailing list within any 30 second period?
+      recipient:
+        title: Limit number of general emails we send
+        description: How many emails can we send to someone within any 2 minute period?
+      confirmation:
+        title: Limit number of confirmation emails we send
+        description: How many times can we send a confirmation email to someone within a 2 minute period?
       thing:
         posts: posts
         comments: comments
