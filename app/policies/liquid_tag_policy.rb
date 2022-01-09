@@ -31,7 +31,7 @@ class LiquidTagPolicy
     # Manually raise error to use a custom error message
     unless user_allowed_to_use_tag?
       raise Pundit::NotAuthorizedError,
-            I18n.t("policies.liquid_tag_policy.user_is_not_permitted_to_u")
+            I18n.t("policies.liquid_tag_policy.not_permitted")
     end
 
     true
