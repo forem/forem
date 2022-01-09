@@ -137,8 +137,8 @@ module ApplicationHelper
     followable_name = followable.name
 
     tag.button(
-      I18n.t("helpers.application_helper.follow.#{followable_type}",
-             default: I18n.t("helpers.application_helper.follow.default")),
+      I18n.t("helpers.application_helper.follow.text.#{followable_type}",
+             default: I18n.t("helpers.application_helper.follow.text.default")),
       name: :button,
       type: :button,
       data: {
