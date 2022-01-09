@@ -1,0 +1,19 @@
+---
+en:
+  api:
+    v0:
+      analytics_controller:
+        date_parameters_start_or_e: Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'
+        required_start_parameter_i: Required 'start' parameter is missing
+      articles_controller:
+        article_param_must_be_a_js: article param must be a JSON object. You provided article as a %{params_article_class_name}
+      follows_controller:
+        followed_users: followed %{user_ids_count} users
+      health_checks_controller:
+        app_is_up: App is up!
+        database_connected: Database connected
+        database_not_connected: Database NOT connected!
+        redis_connected: Redis connected
+        redis_not_connected: Redis NOT connected!
+      listings_controller:
+        not_enough_available_credi: Not enough available credits

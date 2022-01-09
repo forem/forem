@@ -59,7 +59,7 @@ module Api
       alias current_user user
 
       def process_no_credit_left
-        msg = "Not enough available credits"
+        msg = I18n.t("api.v0.listings_controller.not_enough_available_credi")
         render json: { error: msg, status: 402 }, status: :payment_required
       end
 
