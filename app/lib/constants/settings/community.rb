@@ -1,36 +1,38 @@
 module Constants
   module Settings
     module Community
-      DETAILS = {
-        community_description: {
-          description: "Used in meta description tags etc.",
-          placeholder: "A fabulous community of kind and welcoming people."
-        },
-        community_emoji: {
-          description: "Used in the title tags across the site alongside the community name",
-          placeholder: ""
-        },
-        community_name: {
-          description: "Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.",
-          placeholder: "New Forem"
-        },
-        copyright_start_year: {
-          description: "Used to mark the year this forem was started.",
-          placeholder: Time.zone.today.year.to_s
-        },
-        member_label: {
-          description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
-          placeholder: "user"
-        },
-        staff_user_id: {
-          description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
-          placeholder: ""
-        },
-        tagline: {
-          description: "Used in signup modal.",
-          placeholder: "We're a place where coders share, stay up-to-date and grow their careers."
+      def self.details
+        {
+          community_description: {
+            description: I18n.t("lib.constants.settings.community.used_in_meta_description_t"),
+            placeholder: I18n.t("lib.constants.settings.community.a_fabulous_community_of_ki")
+          },
+          community_emoji: {
+            description: I18n.t("lib.constants.settings.community.used_in_the_title_tags_acr"),
+            placeholder: ""
+          },
+          community_name: {
+            description: I18n.t("lib.constants.settings.community.used_as_the_primary_name_f"),
+            placeholder: I18n.t("lib.constants.settings.community.new_forem")
+          },
+          copyright_start_year: {
+            description: I18n.t("lib.constants.settings.community.used_to_mark_the_year_this"),
+            placeholder: Time.zone.today.year.to_s
+          },
+          member_label: {
+            description: I18n.t("lib.constants.settings.community.used_to_determine_what_a_m"),
+            placeholder: I18n.t("lib.constants.settings.community.user")
+          },
+          staff_user_id: {
+            description: I18n.t("lib.constants.settings.community.account_id_which_acts_as_a"),
+            placeholder: ""
+          },
+          tagline: {
+            description: I18n.t("lib.constants.settings.community.used_in_signup_modal"),
+            placeholder: I18n.t("lib.constants.settings.community.we_re_a_place_where_coders")
+          }
         }
-      }.freeze
+      end
     end
   end
 end

@@ -1,33 +1,34 @@
 module Constants
   module Settings
     module SMTP
-      DETAILS = {
-        address: {
-          description: "Address of the remote mail server",
-          placeholder: "ie. smtp.gmail.com"
-        },
-        port: {
-          description: "The port that your mail server runs on",
-          placeholder: "25"
-        },
-        authentication: {
-          description: " If your mail server requires authentication, " \
-                       "you need to specify the authentication type here",
-          placeholder: "ie. plain, login, or cram_md5"
-        },
-        user_name: {
-          description: "If your mail server requires authentication, copy the username from your server",
-          placeholder: ""
-        },
-        password: {
-          description: "If your mail server requires authentication, copy the password from your server",
-          placeholder: ""
-        },
-        domain: {
-          description: "If you need to specify a HELO domain, you can do it here",
-          placeholder: ""
+      def self.details
+        {
+          address: {
+            description: I18n.t("lib.constants.settings.smtp.address.description"),
+            placeholder: I18n.t("lib.constants.settings.smtp.address.placeholder")
+          },
+          port: {
+            description: I18n.t("lib.constants.settings.smtp.port.description"),
+            placeholder: I18n.t("lib.constants.settings.smtp.port.placeholder")
+          },
+          authentication: {
+            description: I18n.t("lib.constants.settings.smtp.authentication.description"),
+            placeholder: I18n.t("lib.constants.settings.smtp.authentication.placeholder")
+          },
+          user_name: {
+            description: I18n.t("lib.constants.settings.smtp.user_name.description"),
+            placeholder: ""
+          },
+          password: {
+            description: I18n.t("lib.constants.settings.smtp.password.description"),
+            placeholder: ""
+          },
+          domain: {
+            description: I18n.t("lib.constants.settings.smtp.domain.description"),
+            placeholder: ""
+          }
         }
-      }.freeze
+      end
     end
   end
 end

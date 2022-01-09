@@ -1,0 +1,130 @@
+---
+fr:
+  lib:
+    constants:
+      settings:
+        authentication:
+          add_the_secret_key_for_goo: Add the secret key for Google reCAPTCHA, which is used for reporting abuse
+          add_the_site_key_for_googl: Add the site key for Google reCAPTCHA, which is used for reporting abuse
+          blocked_registration: Block registration from specified domains?  (comma-separated list)
+          dev_to_forem_com_codenewbi: dev.to, forem.com, codenewbie.org
+          do_you_want_to_display_the: Do you want to display the list of allowed domains, or keep it private?
+          how_can_users_sign_in: How can users sign in?
+          only_users_invited_by_emai: Only users invited by email can join this community.
+          people_will_be_required_to: |-
+            People will be required to fill out a captcha when
+                      they're creating a new account in your community
+          restrict_registration_to_o: Restrict registration to only certain emails? (comma-separated list)
+          the_api_key_portion_of_con: The "API key" portion of consumer keys in the Twitter developer portal.
+          the_api_secret_key_portion: The "API secret key" portion of consumer keys in the Twitter developer portal.
+          the_app_bundle_code_for_th: The "App Bundle" code for the Authentication Service configured in the Apple Developer Portal
+          the_app_id_portion_of_the: The "App ID" portion of the Basic Settings section of the App page on the Facebook Developer Portal
+          the_app_secret_portion_of: The "App Secret" portion of the Basic Settings section of the App page on the Facebook Developer Portal
+          the_client_id_portion_of_t: The "Client ID" portion of the GitHub Oauth Apps portal
+          the_client_secret_portion: The "Client Secret" portion of the GitHub Oauth Apps portal
+          the_key_id_from_the_authen: The "Key ID" from the Authentication Service configured in the Apple Developer Portal
+          the_pem_key_from_the_authe: The "PEM" key from the Authentication Service configured in the Apple Developer Portal
+          the_team_id_of_your_apple: The "Team ID" of your Apple Developer Account
+          what_is_the_google_recaptc: What is the Google reCAPTCHA site key?
+          what_is_the_google_recaptc2: What is the Google reCAPTCHA secret key?
+          forem_key:
+            description: Forem key
+          forem_secret:
+            description: Forem secret
+        campaign:
+          campaign_sidebar_enabled_o: Campaign sidebar enabled or not
+          campaign_stories_show_up_o: Campaign stories show up on sidebar with approval?
+          hero_htmlvariant_name: Hero HtmlVariant name
+          https_url_com_lander: https://url.com/lander
+          list_of_campaign_tags_comm: 'List of campaign tags: comma separated, letters only e.g. shecoded,theycoded'
+          posts_with_which_tags_will: Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)
+          sets_the_expiry_time_for_a: Sets the expiry time for articles (in weeks) to be displayed in campaign sidebar
+          share_your_project: Share your project
+          this_text_populates_the_ca: This text populates the call to action button on the campaign sidebar
+          url_campaign_sidebar_image: URL campaign sidebar image will link to
+          used_at_the_top_of_the_cam: Used at the top of the campaign sidebar
+        community:
+          used_in_meta_description_t: Used in meta description tags etc.
+          a_fabulous_community_of_ki: A fabulous community of kind and welcoming people.
+          used_in_the_title_tags_acr: Used in the title tags across the site alongside the community name
+          used_as_the_primary_name_f: Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.
+          new_forem: New Forem
+          used_to_mark_the_year_this: Used to mark the year this forem was started.
+          used_to_determine_what_a_m: Used to determine what a member will be called e.g developer, hobbyist etc.
+          user: user
+          account_id_which_acts_as_a: Account ID which acts as automated 'staff'— used principally for welcome thread.
+          used_in_signup_modal: Used in signup modal.
+          we_re_a_place_where_coders: We're a place where coders share, stay up-to-date and grow their careers.
+        general:
+          a_secure_token: a secure token
+          always_show_suggested_user: Always show suggested users as suggested people to follow even when auto-suggestion is available
+          api_key_used_to_connect_ma: API key used to connect Mailchimp account. Found in Mailchimp backend
+          background_for_onboarding: Background for onboarding splash page
+          community_moderators_newsl: Community Moderators Newsletter ID
+          community_sponsors: Community Sponsors
+          determines_how_often_perio: Determines how often periodic email digests are sent (in days)
+          determines_the_heading_tex: Determines the heading text of the main sponsors sidebar above the list of sponsors.
+          determines_which_tags_are: Determines which tags are shown on the homepage righthand sidebar
+          determines_which_tags_are2: |-
+            Determines which tags are suggested to new users during onboarding (comma
+                      separated, letters only)
+          determines_which_users_are: Determines which users are suggested to follow to new users during onboarding (comma separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested
+          devcommunity: "#DEVCommunity"
+          google_analytics_tracking: Google Analytics Tracking ID, e.g. UA-71991000-1
+          list_of_valid_comma_separa: List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta
+          list_of_valid_keywords_com: 'List of valid keywords: comma separated, letters only e.g. engineering, development'
+          list_of_valid_tags_comma_s: 'List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin'
+          list_of_valid_usernames_co: 'List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana'
+          main_newsletter_id_also_kn: Main Newsletter ID, also known as Audience ID
+          price_for_extra_large_cred: Price for extra large credit purchase (1000 credits or more).
+          price_for_large_credit_pur: Price for large credit purchase (100 - 999 credits).
+          price_for_medium_credit_pu: Price for medium credit purchase (10 - 99 credits).
+          price_for_small_credit_pur: Price for small credit purchase (<10 credits).
+          public_stripe_key_for_rece: 'Public Stripe key for receiving payments. See: https://stripe.com/docs/keys'
+          secret_key_used_to_allow_a: Secret key used to allow AWS video encoding through the VideoStatesController
+          secret_stripe_key_for_rece: 'Secret Stripe key for receiving payments. See: https://stripe.com/docs/keys'
+          sustaining_members_newslet: Sustaining Members Newsletter ID
+          tag_moderators_newsletter: Tag Moderators Newsletter ID
+          used_as_a_fallback_to_the: Used as a fallback to the SVG. Recommended minimum of 512x512px
+          used_as_the_main_image_in: Used as the main image in social networks and OpenGraph. Recommended aspect ratio of 16:9 (600x337px,1200x675px)
+          used_as_the_mascot_image: Used as the mascot image.
+          used_as_the_site_favicon: Used as the site favicon
+          used_as_the_svg_logo_of_th: Used as the SVG logo of the community
+          used_as_the_twitter_hashta: Used as the twitter hashtag of the community
+          used_for_site_wide_web_mon: 'Used for site-wide web monetization. See: https://github.com/thepracticaldev/dev.to/pull/6345'
+          used_to_authenticate_with: Used to authenticate with your health check endpoints.
+          user_id_of_the_mascot_acco: User ID of the Mascot account
+        smtp:
+          address:
+            description: Address of the remote mail server
+            placeholder: ie. smtp.gmail.com
+          port:
+            description: The port that your mail server runs on
+            placeholder: '25'
+          authentication:
+            description: If your mail server requires authentication, you need to specify the authentication type here
+            placeholder: ie. plain, login, or cram_md5
+          user_name:
+            description: If your mail server requires authentication, copy the username from your server
+          password:
+            description: If your mail server requires authentication, copy the password from your server
+          domain:
+            description: If you need to specify a HELO domain, you can do it here
+        rate_limit:
+          individual_case_insensitiv: Individual (case insensitive) phrases that trigger spam alerts, comma separated.
+          the_number_of_days_a_user: The number of days a user is considered new. The default is 3 days, but you can disable this entirely by inputting 0.
+          used_cars_near_you_pokemon: used cars near you, pokemon go hack
+        user_experience:
+          basic_rich_or_compact: basic, rich, or compact
+          default_locale:
+            description: Determines the default language and localization for the Forem (currently in experimental beta)
+          feed_strategy:
+            description: 'Determines the main feed algorithm approach the app takes: basic or large_forem_experimental (which should only be used for 10k+ member communities)'
+            placeholder: basic
+          determines_background_bord: Determines background/border of buttons etc. Must be dark enough to contrast with white text.
+          determines_the_default_rea: Determines the default reading font (registered users can change this in their UX settings)
+          determines_which_default_f: Determines which default feed the users sees (rich content, more minimal, etc.)
+          minimum_score_needed_for_a: Minimum score needed for a post to show up on the unauthenticated home page.
+          index_minimum_score:
+            description: Minimum score needed for a post to be indexed by search engines.
+          minimum_score_needed_for_a2: Minimum score needed for a post to show up on default tag page.
