@@ -3,8 +3,6 @@
 module EdgeCacheSafetyCheck
   extend ActiveSupport::Concern
 
-  CANNOT_USE_CURRENT_USER = "You may not use current_user in this cached code path.".freeze
-
   def current_user
     # In production, current_user will cause a cache leak if it's placed within an edge-cached code path.
     # More information here:
@@ -13,6 +11,6 @@ module EdgeCacheSafetyCheck
 
     return if session_current_user_id.blank?
 
-    CANNOT_USE_CURRENT_USER
+    I18n.t("concerns.edge_cache_safety_checks.cannot_use")
   end
 end

@@ -188,6 +188,7 @@ fr:
       too_short:
         one: est trop court (au moins 1 caractère)
         other: est trop court (le minimum est de %{count} caractères)
+      try_again_email: 'An error occurred. Please try again or send an email to: %{email}'
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)

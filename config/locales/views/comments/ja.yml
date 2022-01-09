@@ -1,0 +1,137 @@
+---
+ja:
+  views:
+    comments:
+      meta:
+        title_root: "%{title} への声"
+        description: このコミュニティに投稿された記事
+        og:
+          title: "%{title} への声"
+          title_rel: "%{root} — %{site}"
+          title_root: "[コメント] %{title} — %{site}"
+          description: "%{site} に投稿されたコメント"
+      parent:
+        subtitle_html: "%{start}元記事: %{end}%{title}"
+        metadata_html: "%{name}%{on}"
+        date: " が %{date}に投稿"
+        full: コメント欄全体
+        read: 完全な記事へ
+        view: 記事へ
+        view_full: すべてのコメントを見る（%{count} 件）
+        reply_html: "%{start}返信元:%{end} %{title}"
+      delete:
+        heading: このコメントを削除してもよろしいですか？
+        desc_html: この操作は取り消せません。それとも%{action}しますか？
+        action: 編集
+        submit: 削除する
+        edit: 編集する
+        cancel: やめる
+      collapse: たたむ
+      edit: コメント編集中
+      edited:
+        text_html: "&bull; %{on}修正"
+        on_html: "%{date}に"
+      expand: 展開する
+      hidden:
+        text_html: 非表示にされているコメントがあります（%{info}）
+        info: 詳細
+      hider:
+        description_html: Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's %{permalink}.
+        hide_child: Hide child comments as well
+        note_html: For further actions, you may consider blocking this person and/or %{reporting}
+        permalink: permalink
+        reporting: reporting abuse
+        submit: Confirm
+      locked: コメント欄は凍結中です。新しいコメントは書き込めません。
+      orphan:
+        deleted: "[削除された投稿へのコメント]"
+      re:
+        text_html: "「%{title}」%{re}"
+        re: への返信
+      settings:
+        meta:
+          title: コメント設定
+        heading: コメント設定
+        state:
+          show:
+            subtitle: Showing thread notifications
+            desc: You will receive all notifications for this comment and any of your comments in this chain.
+          mute:
+            subtitle: Muting thread notifications
+            desc: All notifications for this comment and any of your comments in the thread are currently muted.
+        subscribe:
+          subtitle: Subscription
+          desc: You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.
+          mute: Mute notifications
+          unmute: Unmute notifications
+      quality:
+        low: Comment marked as low quality/non-constructive by the community.
+        conduct: View Code of Conduct
+        hidden:
+          icon: Info
+          text: Comment hidden by post author - thread only visible in this permalink
+      write:
+        errors:
+          one: エラーが発生したためコメントは保存されませんでした。
+          other: "%{count} 件のエラーが発生したためコメントは保存されませんでした。"
+        field:
+          aria_label: 新しいコメントを追加する
+          placeholder: 議論に参加する
+          submit: アップロード
+          templates: 定型文
+          upload: 画像をアップロード
+          use: 定型の返信を使用
+          guide:
+            title: Markdown ガイド
+            icon: エディタガイド
+        template:
+          article: この記事には返信の定型文があります
+          create:
+            subtitle: 定型文を作成
+            desc: 定型文はよくある質問への回答やよく使う文例の保存に役立ちます。
+          moderator: 審査用
+          personal: 個人用
+        submit: 送信
+        preview: プレビュー
+        cancel: やめる
+      menu:
+        aria_label: ドロップダウンメニューの表示切り替え
+        icon: ドロップダウンメニュー
+        copy:
+          aria_label: "%{user} のコメントのリンクをコピーする"
+          text: リンクをコピー
+        settings:
+          aria_label: "%{user} のコメント設定へ"
+        action:
+          aria_label: "%{user} のコメントを%{action}"
+          hide: 隠す
+          unhide: 再表示する
+          hide_text: 隠す
+          unhide_text: 再表示
+        moderate:
+          aria_label: "%{user} のコメントを審査"
+        report:
+          aria_label: "%{user} のコメントに悪意がある、もしくはサイトのルールに違反しているとして報告する"
+      footer:
+        heart:
+          title: ハート
+          icon: コメントにいいね
+          count_html: "%{likes}%{num}"
+          text: いいね
+        reply:
+          aria_label: コメントに返信する
+          icon: コメントボタン
+          done: 返信完了
+          text: 返信
+          placeholder: 返信を書く
+        thread:
+          icon: スレッド
+          text: スレッド
+        view:
+          icon: 表示するボタン
+          text: 表示
+      count: コメント %{count}
+      empty: 新着
+      add: 書く
+      summary:
+        title: コメント

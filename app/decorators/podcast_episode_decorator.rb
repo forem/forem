@@ -1,6 +1,6 @@
 class PodcastEpisodeDecorator < ApplicationDecorator
   def comments_to_show_count
-    cached_tag_list_array.include?("discuss") ? 75 : 25
+    cached_tag_list_array.include?(I18n.t("decorators.podcast_episode_decorator.discuss")) ? 75 : 25
   end
 
   # this method exists because podcast episodes are "commentables"
@@ -14,9 +14,9 @@ class PodcastEpisodeDecorator < ApplicationDecorator
     return "" unless published_at
 
     if published_at.year == Time.current.year
-      published_at.strftime("%b %-e")
+      I18n.l(published_at, format: :short)
     else
-      published_at.strftime("%b %-e '%y")
+      I18n.l(published_at, format: :short_with_yy)
     end
   end
 

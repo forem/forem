@@ -21,8 +21,12 @@ module VerifySetupCompleted
   private
 
   def missing_configs_text
-    display_missing = missing_configs.size > 3 ? missing_configs.first(3) + ["others"] : missing_configs
-    display_missing.map { |config| config.to_s.tr("_", " ") }.to_sentence
+    display_missing = if missing_configs.size > 3
+                        missing_configs.first(3) + [I18n.t("concerns.verify_setup_completed.others")]
+                      else
+                        missing_configs
+                      end
+    display_missing.map { |config| config.to_s.tr("_", " ") }.to_sentence(locale: I18n.locale)
   end
 
   def verify_setup_completed
@@ -31,11 +35,11 @@ module VerifySetupCompleted
     return if flash[:global_notice].present?
     return if config_path? || setup_completed? || Settings::General.waiting_on_first_user
 
-    link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })
+    link = helpers.tag.a(I18n.t("concerns.verify_setup_completed.link"), href: admin_config_path,
+                                                                         data: { "no-instant" => true })
 
-    flash[:global_notice] = helpers.safe_join(["Setup not completed yet, missing ",
-                                               missing_configs_text,
-                                               ". Please visit ", link, "."])
+    flash[:global_notice] =
+      I18n.t("concerns.verify_setup_completed.notice_html", missing: missing_configs_text, link: link)
   end
 
   def config_path?

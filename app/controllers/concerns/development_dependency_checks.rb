@@ -12,7 +12,6 @@ module DevelopmentDependencyChecks
   def verify_sidekiq_running
     return if Sidekiq::ProcessSet.new.size.positive?
 
-    flash[:global_notice] = "Sidekiq is not running and is needed for the app to function properly. \
-                           Use bin/startup to start the application properly.".html_safe
+    flash[:global_notice] = I18n.t("concerns.development_dependency_checks.sidekiq_is_not_running_and")
   end
 end

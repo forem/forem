@@ -119,7 +119,7 @@ class PagesController < ApplicationController
 
   def redirect_daily_thread_request(daily_thread)
     if daily_thread
-      redirect_to(URI.parse(daily_thread.path).path)
+      redirect_to(Addressable::URI.parse(daily_thread.path).path)
     else
       redirect_to(notifications_path)
     end
