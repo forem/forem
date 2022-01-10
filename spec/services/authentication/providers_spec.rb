@@ -41,6 +41,18 @@ RSpec.describe Authentication::Providers, type: :service do
     end
   end
 
+  describe ".availble_providers" do
+    it "lists the available providers" do
+      available_providers = [Authentication::Providers::Forem,
+                             Authentication::Providers::Facebook,
+                             Authentication::Providers::Apple,
+                             Authentication::Providers::Twitter,
+                             Authentication::Providers::GoogleOauth2,
+                             Authentication::Providers::Github]
+      expect(described_class.available_providers).to eq(available_providers)
+    end
+  end
+
   describe ".enabled" do
     context "when one of the available providers is disabled" do
       it "only lists those that remain enabled" do

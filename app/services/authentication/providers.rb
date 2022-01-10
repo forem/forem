@@ -36,6 +36,10 @@ module Authentication
       end.sort
     end
 
+    def self.available_providers
+      Authentication::Providers::Provider.subclasses
+    end
+
     def self.available?(provider_name)
       Authentication::Providers.const_defined?(provider_name.to_s.camelize)
     end
