@@ -1,7 +1,5 @@
 module Authentication
   module Errors
-    PREVIOUSLY_SUSPENDED_MESSAGE = "".freeze
-
     class Error < StandardError
     end
 

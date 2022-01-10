@@ -1,14 +1,13 @@
 module Articles
+  # TODO: [yheuhtozr] possible future tag name i18n: see https://github.com/forem/forem/pull/16004#discussion_r780879507
   class ActiveThreadsQuery
-    MINIMUM_SCORE = -4
+    DEFAULT_OPTIONS = {
+      tags: ["discuss"],
+      time_ago: nil,
+      count: 10
+    }.with_indifferent_access.freeze
 
-    def self.default_options
-      {
-        tags: I18n.t("queries.articles.active_threads_query.default_tags").split(","),
-        time_ago: nil,
-        count: 10
-      }.with_indifferent_access
-    end
+    MINIMUM_SCORE = -4
 
     # Get the "plucked" attribute information for the article thread.
     #
@@ -29,7 +28,7 @@ module Articles
     # @see `./app/views/articles/_widget_list_item.html.erb` for the
     #      importance of maintaining position of these parameters.
     def self.call(relation: Article.published, **options)
-      options = default_options.merge(options)
+      options = DEFAULT_OPTIONS.merge(options)
       tags, time_ago, count = options.values_at(:tags, :time_ago, :count)
 
       relation = relation.limit(count)

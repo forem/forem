@@ -17,10 +17,6 @@ fr:
     liquid_tag_policy:
       no_user_found: No user found
       not_permitted: User is not permitted to use this liquid tag
-  queries:
-    articles:
-      active_threads_query:
-        default_tags: discuss
   uploaders:
     base_uploader:
       too_many_frames: GIF contains too many frames. Max frame count allowed is %{frame_max}.
