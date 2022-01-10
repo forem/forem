@@ -41,7 +41,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.5",
     "@knapsack-pro/cypress": "^4.5.0",
-    "@storybook/addon-a11y": "^6.4.9",
+    "@storybook/addon-a11y": "^6.4.10",
     "@storybook/addon-actions": "^6.4.10",
     "@storybook/addon-docs": "^6.4.10",
     "@storybook/addon-knobs": "^6.4.0",
