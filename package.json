@@ -114,7 +114,7 @@
     "@reach/combobox": "^0.16.5",
     "@storybook/addon-controls": "^6.4.9",
     "ahoy.js": "^0.4.0",
-    "autoprefixer": "^10.4.1",
+    "autoprefixer": "^10.4.2",
     "babel-plugin-inline-react-svg": "^2.0.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-preset-preact": "^2.0.0",
