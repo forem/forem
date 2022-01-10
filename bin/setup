@@ -22,15 +22,6 @@ FileUtils.chdir APP_ROOT do
 
   system! "gem list \"^foreman$\" -i --silent || gem install foreman"
 
-  # TODO: temporary fix for node 16 upgrade, remove after release as this triggers reinstallation
-  # of the canvas library (with its extension compiled against the versioned node symbol)
-  if File.exist?("node_modules/canvas/")
-    FileUtils.rm_rf("node_modules/canvas/")
-    # having removed the module ourselves,
-    # we need to coerce yarn, or remove the .yarn-integrity file
-    system("yarn install --check-files")
-  end
-
   # Install JavaScript dependencies if using Yarn
   system("bin/yarn")
 

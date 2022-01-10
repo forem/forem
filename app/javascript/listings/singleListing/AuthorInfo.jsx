@@ -9,8 +9,7 @@ const LocationText = ({ location }) => {
       className="crayons-link crayons-link--secondary"
       href={`/listings/?q=${location}`}
     >
-      {'・'}
-      {location}
+      ・{location}
     </a>
   ) : (
     ''

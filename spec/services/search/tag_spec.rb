@@ -14,7 +14,7 @@ RSpec.describe Search::Tag, type: :service do
       result = described_class.search_documents(tag.name)
 
       expect(result.first.keys).to match_array(
-        %i[id name hotness_score rules_html supported short_summary],
+        %i[id name hotness_score rules_html supported short_summary badge bg_color_hex],
       )
     end
 

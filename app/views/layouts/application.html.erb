@@ -47,6 +47,7 @@
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
       <body
         data-user-status="<%= user_logged_in_status %>"
+        data-community-name="<%= community_name %>"
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
         data-locale="<%= I18n.locale %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"

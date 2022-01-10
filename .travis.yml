@@ -51,7 +51,6 @@ before_install:
     /etc/postgresql/12/main/pg_hba.conf
   - sudo service postgresql@12-main restart
   - gem install bundler:"<2.3"
-  - gem install faraday:"<2.0"
 install:
   - date --rfc-3339=seconds
   - nvm install
@@ -131,8 +130,7 @@ jobs:
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
-      install:
-        -  rvm $(travis_internal_ruby) --fuzzy do ruby -S gem install faraday:"<2.0" dpl
+      install: skip
       script: skip
       after_script: skip
       deploy:
@@ -145,8 +143,7 @@ jobs:
     - stage: Deploy
       name: Deploy BenHalpern
       if: type != pull_request
-      install:
-        -  rvm $(travis_internal_ruby) --fuzzy do ruby -S gem install faraday:"<2.0" dpl
+      install: skip
       script: skip
       after_script: skip
       deploy:

@@ -33,13 +33,13 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         expect(FieldTest::Event.last.name).to eq("user_creates_comment")
       end
 
-      it "records user_creates_comment_on_at_lest_four_different_days_within_a_week field test conversion if qualifies" do
+      it "records user_creates_comment_on_at_least_four_different_days_within_a_week field test conversion if qualifies" do
         7.times do |n|
           create(:comment, user_id: user.id, created_at: n.days.ago)
         end
         worker.perform(user.id, "user_creates_comment")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.last.name).to eq("user_creates_comment_on_at_lest_four_different_days_within_a_week")
+        expect(FieldTest::Event.last.name).to eq("user_creates_comment_on_at_least_four_different_days_within_a_week")
       end
 
       it "records user_views_pages_on_at_least_four_different_days_within_a_week field test conversion if qualifies" do
