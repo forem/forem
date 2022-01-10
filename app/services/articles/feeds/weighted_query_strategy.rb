@@ -266,7 +266,7 @@ module Articles
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
-      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: "original", **config)
+      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
         @page = (page || 1).to_i
@@ -612,8 +612,8 @@ module Articles
       end
 
       def inject_config_ab_test(valid_method_name, scoring_config)
-        # Change a value if the strategy is not original
-        return scoring_config unless valid_method_name == :comments_count_factor && @strategy != "original"
+        return scoring_config unless valid_method_name == :comments_count_factor # Only proceed on this one factor
+        return scoring_config if @strategy == AbExperiment::ORIGINAL_VARIANT # Don't proceed if not testing new strategy
 
         # Rewards comment count with slightly more weight up to 10 comments.
         # Testing two case weights beyond what we currently have
