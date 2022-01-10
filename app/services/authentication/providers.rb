@@ -37,7 +37,7 @@ module Authentication
     end
 
     def self.available_providers
-      Authentication::Providers::Provider.subclasses
+      Authentication::Providers::Provider.subclasses.sort_by(&:name)
     end
 
     def self.available?(provider_name)

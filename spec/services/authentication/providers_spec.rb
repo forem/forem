@@ -48,7 +48,7 @@ RSpec.describe Authentication::Providers, type: :service do
                              Authentication::Providers::Apple,
                              Authentication::Providers::Twitter,
                              Authentication::Providers::GoogleOauth2,
-                             Authentication::Providers::Github]
+                             Authentication::Providers::Github].sort_by(&:name)
       expect(described_class.available_providers).to eq(available_providers)
     end
   end
