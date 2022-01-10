@@ -49,11 +49,12 @@ class ConsumerApp < ApplicationRecord
   # [@forem/backend] `.where().first` is necessary because we use Redis data storage
   # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
   def clear_rpush_app
+    app_name = "#{app_bundle_was}.#{platform}"
     case ConsumerApp.platforms[platform_was]
     when Device::IOS
-      Rpush::Apns2::App.where(name: app_bundle_was).first&.destroy
+      Rpush::Apns2::App.where(name: app_name).first&.destroy
     when Device::ANDROID
-      Rpush::Gcm::App.where(name: app_bundle_was).first&.destroy
+      Rpush::Gcm::App.where(name: app_name).first&.destroy
     end
 
     # This prevents the `destroy` method to return true or false in a callback
