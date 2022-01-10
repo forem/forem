@@ -3,7 +3,7 @@ en:
   api:
     v0:
       analytics_controller:
-        date_format: Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'
+        invalid_date_format: Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'
         start_missing: Required 'start' parameter is missing
       articles_controller:
         must_be_json: article param must be a JSON object. You provided article as a %{type}

@@ -1,5 +1,5 @@
 ---
-fr:
+ja:
   api:
     v0:
       analytics_controller:
@@ -8,9 +8,7 @@ fr:
       articles_controller:
         must_be_json: article param must be a JSON object. You provided article as a %{type}
       follows_controller:
-        followed:
-          one: followed %{count} user
-          other: followed %{count} users
+        followed: followed %{count} users
       health_checks_controller:
         app_is_up: App is up!
         database_connected: Database connected
