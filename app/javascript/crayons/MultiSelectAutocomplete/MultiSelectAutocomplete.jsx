@@ -126,6 +126,10 @@ export const MultiSelectAutocomplete = ({
 
       input.focus();
       input.setSelectionRange(cursorPosition, cursorPosition);
+
+      // Trigger the input event to make sure suggestion UI updates correctly
+      const changeEvent = new Event('input');
+      input.dispatchEvent(changeEvent);
     }
   }, [inputPosition, editValue]);
 
@@ -177,8 +181,6 @@ export const MultiSelectAutocomplete = ({
         forceInputFocus: false,
       },
     });
-
-    dispatch({ type: 'setSuggestions', payload: [editItem] });
   };
 
   const exitEditState = ({ nextInputValue = '', focusInput = true }) => {
