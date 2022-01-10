@@ -400,20 +400,6 @@ export default class ConfigController extends Controller {
     this.authSectionFormTarget.submit();
   }
 
-  activateMissingKeysModal(providers) {
-    this.configModalAnchorTarget.innerHTML = adminModal({
-      title: 'Getting started',
-      controllerName: 'config',
-      closeModalFunction: 'closeAdminModal',
-      body: this.missingAuthKeysModalBody(providers),
-      leftBtnText: 'Continue editing',
-      leftBtnAction: 'closeAdminModal',
-      rightBtnText: 'Cancel',
-      rightBtnAction: 'cancelAuthProviderEnable',
-      rightBtnClasses: 'crayons-btn--secondary',
-    });
-  }
-
   configUpdatePrecheck(event) {
     if (this.enabledProvidersWithMissingKeys().length > 0) {
       event.preventDefault();
