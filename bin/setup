@@ -30,6 +30,10 @@ FileUtils.chdir APP_ROOT do
     FileUtils.cp "config/database.yml.sample", "config/database.yml"
   end
 
+  unless File.exists?(".env")
+    FileUtils.cp ".env_sample", ".env"
+  end
+
   puts "\n== Initializing the application =="
   system! "bin/rails app_initializer:setup forem:setup"
 
