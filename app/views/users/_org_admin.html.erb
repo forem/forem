@@ -59,7 +59,7 @@
       <%= t("views.settings.org.admin.secret_code") %>
       <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
         <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.aria_label") %>">
-        <%= inline_svg_tag("copy.svg", aria: true, class: "crayons-icon", title: t("views.settings.org.admin.copy.icon")) %>
+        <%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon")) %>
       </clipboard-copy>
       <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden><%= t("views.settings.org.admin.copy.text") %></span>
   </div>
