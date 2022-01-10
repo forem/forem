@@ -36,11 +36,13 @@ module Constants
           placeholder: "a secure token"
         },
         logo_png: {
-          description: "Used as a fallback to the SVG. Recommended minimum of 512x512px",
+          description: "Used as a secondary logo in places like the sign in modals, onboarding, apple touch icons. " \
+                       "Recommended minimum of 512x512px",
           placeholder: IMAGE_PLACEHOLDER
         },
         logo_svg: {
-          description: "Used as the SVG logo of the community",
+          description: "This is the logo currently used on the upper left hand corner of your Forem. " \
+                       "However, after the release it will be deprecated in favor of the Logo above.",
           placeholder: SVG_PLACEHOLDER
         },
         main_social_image: {
