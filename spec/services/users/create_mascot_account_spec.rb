@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Users::CreateMascotAccount, type: :service do
   it "defines MASCOT_PARMS" do
-    expect(described_class.method_defined?(:mascot)).to be true
+    expect(described_class).to respond_to(:mascot)
   end
 
   context "when a mascot user doesn't exist" do
