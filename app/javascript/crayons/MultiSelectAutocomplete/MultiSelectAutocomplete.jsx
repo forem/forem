@@ -51,12 +51,12 @@ const reducer = (state, action) => {
   }
 };
 
-// TODO: accept template for selected items, use current UI by default
-// TODO: accept template for suggestions, use current UI by default
 export const MultiSelectAutocomplete = ({
   labelText,
   fetchSuggestions,
   defaultValue = [],
+  staticSuggestions = [],
+  staticSuggestionsHeading,
   border = true,
   showLabel = true,
   placeholder = 'Add...',
@@ -98,16 +98,17 @@ export const MultiSelectAutocomplete = ({
   }, [defaultValue]);
 
   const handleInputBlur = () => {
-    // Since the input is sometimes removed and rendered in a new location on blur, it's possible that inputRef.current may be null when we complete this check.
+    // If user has reached their max selections, the inputRef may not be defined
     const currentValue = inputRef.current ? inputRef.current.value : '';
+
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
     if (!ignoreBlur && currentValue !== '') {
       selectByText({ textValue: currentValue, focusInput: false });
     } else {
+      exitEditState({ focusInput: false });
       dispatch({ type: 'setSuggestions', payload: [] });
+      dispatch({ type: 'setIgnoreBlur', payload: false });
     }
-
-    dispatch({ type: 'setIgnoreBlur', payload: false });
   };
 
   useEffect(() => {
@@ -122,21 +123,30 @@ export const MultiSelectAutocomplete = ({
 
       input.value = editValue;
       const { length: cursorPosition } = editValue;
+
       input.focus();
       input.setSelectionRange(cursorPosition, cursorPosition);
-      return;
     }
-
-    // Exiting 'edit' mode, return focus to default input position
-    input?.focus();
   }, [inputPosition, editValue]);
 
   useEffect(() => {
     if (forceInputFocus) {
-      inputRef.current?.focus();
+      // If the user has reached their max selections, it's possible the input will not be available to focus.
+      // In this case, the last 'deselect' button in the widget is focused as a fallback.
+      const isInputAvailable = inputRef.current;
+
+      if (isInputAvailable) {
+        inputRef.current?.focus();
+      } else {
+        const selectionButtons = document
+          .getElementById('combo-selected')
+          .querySelectorAll('button');
+        selectionButtons[selectionButtons.length - 1].focus();
+      }
+
       dispatch({ type: 'setForceInputFocus', payload: false });
     }
-  }, [forceInputFocus]);
+  }, [forceInputFocus, maxSelections, selectedItems.length]);
 
   const selectByText = ({
     textValue,
@@ -167,9 +177,13 @@ export const MultiSelectAutocomplete = ({
         forceInputFocus: false,
       },
     });
+
+    dispatch({ type: 'setSuggestions', payload: [editItem] });
   };
 
-  const exitEditState = (nextInputValue = '') => {
+  const exitEditState = ({ nextInputValue = '', focusInput = true }) => {
+    // Reset 'edit mode' input resizing
+    inputRef.current?.style?.removeProperty('width');
     inputSizerRef.current.innerText = nextInputValue;
 
     // When a user has 'split' the value they were editing (e.g. by entering a space or comma), the remaining portion of the text
@@ -185,24 +199,62 @@ export const MultiSelectAutocomplete = ({
           nextInputValue === '' || !canEditNextInputValue
             ? null
             : inputPosition + 1,
-        forceInputFocus: true,
+        forceInputFocus: focusInput,
       },
     });
   };
 
   const resizeInputToContentSize = () => {
     const { current: input } = inputRef;
+
     if (input) {
       input.style.width = `${inputSizerRef.current.clientWidth}px`;
     }
   };
 
+  const handleInputFocus = (e) => {
+    // Only show static suggestions when not in edit mode
+    if (inputPosition !== null) {
+      return;
+    }
+
+    const shouldShowStaticSuggestions =
+      staticSuggestions.length > 0 && inputRef.current?.value === '';
+    if (shouldShowStaticSuggestions) {
+      dispatch({
+        type: 'setSuggestions',
+        payload: staticSuggestions.filter(
+          (item) =>
+            !selectedItems.some(
+              (selectedItem) => selectedItem.name === item.name,
+            ),
+        ),
+      });
+    }
+    onFocus?.(e);
+  };
+
   const handleInputChange = async ({ target: { value } }) => {
     // When the input appears inline in "edit" mode, we need to dynamically calculate the width to ensure it occupies the right space
     // (an input cannot resize based on its text content). We use a hidden <span> to track the size.
+
     inputSizerRef.current.innerText = value;
+
     if (inputPosition !== null) {
       resizeInputToContentSize();
+    }
+
+    if (value === '') {
+      dispatch({
+        type: 'setSuggestions',
+        payload: staticSuggestions.filter(
+          (item) =>
+            !selectedItems.some(
+              (selectedItem) => selectedItem.name === item.name,
+            ),
+        ),
+      });
+      return;
     }
 
     const results = await fetchSuggestions(value);
@@ -331,13 +383,14 @@ export const MultiSelectAutocomplete = ({
     listItem.innerText = selectedItem.name;
     selectedItemsRef.current.appendChild(listItem);
 
-    exitEditState(nextInputValue);
+    exitEditState({ nextInputValue, focusInput });
     dispatch({ type: 'setSelectedItems', payload: newSelections });
     onSelectionsChanged?.(newSelections);
 
     // Clear the text input
     const { current: input } = inputRef;
     input.value = nextInputValue;
+
     if (focusInput) {
       dispatch({ type: 'setForceInputFocus', payload: true });
     }
@@ -363,9 +416,18 @@ export const MultiSelectAutocomplete = ({
   };
 
   const allSelectedItemElements = selectedItems.map((item, index) => {
+    // When we are in "edit mode" we visually display the input between the other selections
+    const defaultPosition = index + 1;
+    const appearsBeforeInput = inputPosition === null || index < inputPosition;
+    const position = appearsBeforeInput ? defaultPosition : defaultPosition + 1;
+
     const { name: displayName } = item;
     return (
-      <li key={displayName} className="w-max">
+      <li
+        key={displayName}
+        className="c-autocomplete--multi__selection-list-item w-max"
+        style={{ order: position }}
+      >
         <SelectionTemplate
           {...item}
           onEdit={() => enterEditState(item, index)}
@@ -375,39 +437,11 @@ export const MultiSelectAutocomplete = ({
     );
   });
 
-  // When a user edits a tag, we need to move the input inside the selected items
-  const splitSelectionsAt =
-    inputPosition !== null ? inputPosition : selectedItems.length;
-
   const allowSelections =
     !maxSelections || selectedItems.length < maxSelections;
 
-  const input = allowSelections ? (
-    <li className="self-center">
-      <input
-        id={inputId}
-        ref={inputRef}
-        autocomplete="off"
-        className="c-autocomplete--multi__input"
-        aria-activedescendant={
-          activeDescendentIndex !== null
-            ? suggestions[activeDescendentIndex]
-            : null
-        }
-        aria-autocomplete="list"
-        aria-labelledby="multi-select-label selected-items-list"
-        aria-describedby="input-description"
-        type="text"
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        onBlur={handleInputBlur}
-        onFocus={onFocus}
-        placeholder={
-          selectedItems.length > 0 ? PLACEHOLDER_SELECTIONS_MADE : placeholder
-        }
-      />
-    </li>
-  ) : null;
+  const inputPlaceholder =
+    selectedItems.length > 0 ? PLACEHOLDER_SELECTIONS_MADE : placeholder;
 
   return (
     <Fragment>
@@ -448,46 +482,78 @@ export const MultiSelectAutocomplete = ({
           aria-owns={allowSelections ? 'listbox1' : null}
           className={`c-autocomplete--multi__wrapper${
             border ? '-border' : ' border-none'
-          } flex items-center crayons-textfield cursor-text `}
+          } flex items-center crayons-textfield cursor-text p-0`}
           onClick={() => inputRef.current?.focus()}
         >
           <ul id="combo-selected" className="list-none flex flex-wrap w-100">
-            {allSelectedItemElements.slice(0, splitSelectionsAt)}
-            {inputPosition !== null && input}
-            {allSelectedItemElements.slice(splitSelectionsAt)}
-            {inputPosition === null && input}
+            {allSelectedItemElements}
+            {allowSelections ? (
+              <li
+                className="self-center"
+                style={{
+                  order:
+                    inputPosition === null
+                      ? selectedItems.length + 1
+                      : inputPosition + 1,
+                }}
+              >
+                <input
+                  id={inputId}
+                  ref={inputRef}
+                  autocomplete="off"
+                  className="c-autocomplete--multi__input"
+                  aria-activedescendant={
+                    activeDescendentIndex !== null
+                      ? suggestions[activeDescendentIndex]
+                      : null
+                  }
+                  aria-autocomplete="list"
+                  aria-labelledby="multi-select-label selected-items-list"
+                  aria-describedby="input-description"
+                  type="text"
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  onBlur={handleInputBlur}
+                  onFocus={handleInputFocus}
+                  placeholder={inputPosition === null ? inputPlaceholder : null}
+                />
+              </li>
+            ) : null}
           </ul>
         </div>
         {suggestions.length > 0 ? (
-          <ul
-            className="c-autocomplete--multi__popover"
-            aria-labelledby="multi-select-label"
-            role="listbox"
-            aria-multiselectable="true"
-            id="listbox1"
-          >
-            {suggestions.map((suggestion, index) => {
-              const { name: suggestionDisplayName } = suggestion;
-              return (
-                <li
-                  id={suggestionDisplayName}
-                  role="option"
-                  aria-selected={index === activeDescendentIndex}
-                  key={suggestionDisplayName}
-                  onMouseDown={() => {
-                    selectItem({ selectedItem: suggestion });
-                    dispatch({ type: 'setIgnoreBlur', payload: true });
-                  }}
-                >
-                  {SuggestionTemplate ? (
-                    <SuggestionTemplate {...suggestion} />
-                  ) : (
-                    suggestionDisplayName
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+          <div className="c-autocomplete--multi__popover">
+            {inputRef.current?.value === '' ? staticSuggestionsHeading : null}
+            <ul
+              className="list-none"
+              aria-labelledby="multi-select-label"
+              role="listbox"
+              aria-multiselectable="true"
+              id="listbox1"
+            >
+              {suggestions.map((suggestion, index) => {
+                const { name: suggestionDisplayName } = suggestion;
+                return (
+                  <li
+                    id={suggestionDisplayName}
+                    role="option"
+                    aria-selected={index === activeDescendentIndex}
+                    key={suggestionDisplayName}
+                    onMouseDown={() => {
+                      selectItem({ selectedItem: suggestion });
+                      dispatch({ type: 'setIgnoreBlur', payload: true });
+                    }}
+                  >
+                    {SuggestionTemplate ? (
+                      <SuggestionTemplate {...suggestion} />
+                    ) : (
+                      suggestionDisplayName
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         ) : null}
       </div>
     </Fragment>

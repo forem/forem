@@ -238,6 +238,12 @@
 }
 
 .crayons-article-form {
+  &__top-tags-heading {
+    padding: var(--su-3);
+    font-size: var(--fs-l);
+    border-bottom: 1px solid var(--base-20);
+  }
+
   &__tag-prefix {
     color: var(--tag-prefix);
   }

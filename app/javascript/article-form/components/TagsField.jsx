@@ -15,6 +15,7 @@ import { fetchSearch } from '@utilities/search';
 
 export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
   const [defaultSelections, setDefaultSelections] = useState([]);
+  const [topTags, setTopTags] = useState([]);
 
   useEffect(() => {
     // If the default selections have not already been populated, fetch the tag data
@@ -35,6 +36,13 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
     }
   }, [defaultValue, defaultSelections.length]);
 
+  useEffect(() => {
+    window
+      .fetch('/tags/suggest')
+      .then((res) => res.json())
+      .then((results) => setTopTags(results));
+  }, []);
+
   const syncSelections = (selections = []) => {
     const selectionsString = selections
       .map((selection) => selection.name)
@@ -51,6 +59,10 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
     <MultiSelectAutocomplete
       defaultValue={defaultSelections}
       fetchSuggestions={fetchSuggestions}
+      staticSuggestions={topTags}
+      staticSuggestionsHeading={
+        <h2 className="crayons-article-form__top-tags-heading">Top tags</h2>
+      }
       labelText="Add up to 4 tags"
       showLabel={false}
       placeholder="Add up to 4 tags..."
