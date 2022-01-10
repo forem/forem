@@ -872,7 +872,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    with_model (2.1.5)
+    with_model (2.1.6)
       activerecord (>= 5.2)
     xpath (3.2.0)
       nokogiri (~> 1.8)
@@ -1036,7 +1036,7 @@ DEPENDENCIES
   webdrivers (~> 5.0)
   webmock (~> 3.14)
   webpacker (~> 5.4.3)
-  with_model (~> 2.1.5)
+  with_model (~> 2.1.6)
   zonebie (~> 0.6.1)
 
 RUBY VERSION
