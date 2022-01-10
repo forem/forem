@@ -9,7 +9,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "defines DELETED_USER" do
-      user = described_class::DELETED_USER
+      user = Class.new.include(described_class).new.deleted_user
       expect(user).not_to be_nil
       expect(user.darker_color).to eq Color::CompareHex.new(described_class::USER_COLORS).brightness
       expect(user.username).to eq "[deleted user]"
@@ -24,6 +24,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "defines SUBTITLES" do
+      subject(:dummy) { Class.new.include(described_class).new }
       subtitles = {
         "week" => "Top posts this week",
         "month" => "Top posts this month",
@@ -32,7 +33,7 @@ RSpec.describe ApplicationHelper, type: :helper do
         "latest" => "Latest posts"
       }
 
-      expect(described_class::SUBTITLES).to eq subtitles
+      expect(dummy.subtitles).to eq subtitles
     end
   end
 
