@@ -36,12 +36,12 @@ module Constants
           placeholder: "a secure token"
         },
         logo_png: {
-          description: "Used as a secondary logo in places like the sign in modals, onboarding, apple touch icons. " \
+          description: "Used as a secondary logo in places like the sign in modals, onboarding, Apple touch icons. " \
                        "Recommended minimum of 512x512px",
           placeholder: IMAGE_PLACEHOLDER
         },
         logo_svg: {
-          description: "This is the logo currently used on the upper left hand corner of your Forem. " \
+          description: "This is the logo currently used on the upper left-hand corner of your Forem. " \
                        "However, after the release it will be deprecated in favor of the Logo above.",
           placeholder: SVG_PLACEHOLDER
         },
@@ -96,7 +96,7 @@ module Constants
           placeholder: 2
         },
         sidebar_tags: {
-          description: "Determines which tags are shown on the homepage righthand sidebar",
+          description: "Determines which tags are shown on the homepage right-hand sidebar",
           placeholder: "List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta"
         },
         sponsor_headline: {
