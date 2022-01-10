@@ -394,8 +394,9 @@ RSpec.describe "Registrations", type: :request do
         expect(Settings::General.mascot_user_id).to eq User.last.id
 
         mascot_account = User.mascot_account
-        expect(mascot_account.username).to eq Users::CreateMascotAccount.mascot_params[:username]
-        expect(mascot_account.email).to eq Users::CreateMascotAccount.mascot_params[:email]
+        new_instance = Users::CreateMascotAccount.new
+        expect(mascot_account.username).to eq new_instance.mascot_params[:username]
+        expect(mascot_account.email).to eq new_instance.mascot_params[:email]
       end
 
       it "creates super admin with valid params in FOREM_OWNER_SECRET scenario" do

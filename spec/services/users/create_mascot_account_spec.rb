@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Users::CreateMascotAccount, type: :service do
   it "defines MASCOT_PARMS" do
-    expect(described_class).to respond_to(:mascot_params)
+    expect(described_class.method_defined?(:mascot)).to be true
   end
 
   context "when a mascot user doesn't exist" do
@@ -14,8 +14,9 @@ RSpec.describe Users::CreateMascotAccount, type: :service do
       end.to change(User, :count).by(1)
 
       mascot_account = User.last
-      expect(mascot_account.username).to eq described_class.mascot_params[:username]
-      expect(mascot_account.email).to eq described_class.mascot_params[:email]
+      new_instance = described_class.new
+      expect(mascot_account.username).to eq new_instance.mascot_params[:username]
+      expect(mascot_account.email).to eq new_instance.mascot_params[:email]
     end
   end
 
