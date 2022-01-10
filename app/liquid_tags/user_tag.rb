@@ -29,11 +29,11 @@ class UserTag < LiquidTagBase
   end
 
   def path_to_profile(user)
-    user == DELETED_USER ? nil : user.path
+    user == deleted_user ? nil : user.path
   end
 
   def user_object_for_partial(user)
-    user == DELETED_USER ? user : user.decorate
+    user == deleted_user ? user : user.decorate
   end
 end
 

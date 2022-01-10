@@ -24,7 +24,6 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "defines SUBTITLES" do
-      subject(:dummy) { Class.new.include(described_class).new }
       subtitles = {
         "week" => "Top posts this week",
         "month" => "Top posts this month",
@@ -33,7 +32,7 @@ RSpec.describe ApplicationHelper, type: :helper do
         "latest" => "Latest posts"
       }
 
-      expect(dummy.subtitles).to eq subtitles
+      expect(Class.new.include(described_class).new.subtitles).to eq subtitles
     end
   end
 
