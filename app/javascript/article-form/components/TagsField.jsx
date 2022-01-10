@@ -6,16 +6,23 @@ import { TagAutocompleteSelection } from './TagAutocompleteSelection';
 import { MultiSelectAutocomplete } from '@crayons';
 import { fetchSearch } from '@utilities/search';
 
-//TODO:
-
-// Check how listings tags are affected
-// Docs
-// Styles clean up
-// Storybook updates
-
+/**
+ * TagsField for the article form. Allows users to search and select up to 4 tags.
+ *
+ * @param {Function} onInput Callback to sync selections to article form state
+ * @param {string} defaultValue Comma separated list of any currently selected tags
+ * @param {Function} switchHelpContext Callback to switch the help context when the field is focused
+ */
 export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
   const [defaultSelections, setDefaultSelections] = useState([]);
   const [topTags, setTopTags] = useState([]);
+
+  useEffect(() => {
+    window
+      .fetch('/tags/suggest')
+      .then((res) => res.json())
+      .then((results) => setTopTags(results));
+  }, []);
 
   useEffect(() => {
     // If the default selections have not already been populated, fetch the tag data
@@ -36,13 +43,7 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
     }
   }, [defaultValue, defaultSelections.length]);
 
-  useEffect(() => {
-    window
-      .fetch('/tags/suggest')
-      .then((res) => res.json())
-      .then((results) => setTopTags(results));
-  }, []);
-
+  // Converts the array of selected items into a plain string to be saved in the article form
   const syncSelections = (selections = []) => {
     const selectionsString = selections
       .map((selection) => selection.name)
@@ -77,34 +78,8 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
   );
 };
 
-// TODO: needed by other components (move)
-export const DEFAULT_TAG_FORMAT = '[0-9A-Za-z, ]+';
-
-// export const TagsField = ({
-//   defaultValue,
-//   onInput,
-//   switchHelpContext,
-//   tagFormat = DEFAULT_TAG_FORMAT,
-// }) => {
-//   return (
-//     <div className="crayons-article-form__tagsfield">
-//       <Tags
-//         defaultValue={defaultValue}
-//         maxTags={4}
-//         onInput={onInput}
-//         onFocus={switchHelpContext}
-//         classPrefix="crayons-article-form"
-//         fieldClassName="crayons-textfield crayons-textfield--ghost ff-monospace"
-//         pattern={tagFormat}
-//       />
-//     </div>
-//   );
-// };
-
-// TagsField.propTypes = {
-//   onInput: PropTypes.func.isRequired,
-//   defaultValue: PropTypes.string.isRequired,
-//   switchHelpContext: PropTypes.func.isRequired,
-// };
-
-// TagsField.displayName = 'TagsField';
+TagsField.propTypes = {
+  onInput: PropTypes.func.isRequired,
+  defaultValue: PropTypes.string,
+  switchHelpContext: PropTypes.func,
+};

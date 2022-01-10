@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/interactive-supports-focus, jsx-a11y/role-has-required-aria-props */
 // Disabled due to the linter being out of date for combobox role: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/789
 import { h, Fragment } from 'preact';
+import PropTypes from 'prop-types';
 import { useEffect, useRef, useReducer } from 'preact/hooks';
 import { DefaultSelectionTemplate } from './DefaultSelectionTemplate';
 
@@ -15,7 +16,6 @@ const KEYS = {
 };
 
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9])/;
-
 const PLACEHOLDER_SELECTIONS_MADE = 'Add another...';
 
 const reducer = (state, action) => {
@@ -51,14 +51,33 @@ const reducer = (state, action) => {
   }
 };
 
+/**
+ * Component allowing users to search and select multiple values
+ *
+ * @param {Object} props
+ * @param {string} props.labelText The text for the input's label
+ * @param {boolean} props.showLabel Whether the label text should be visible or hidden (for assistive tech users only)
+ * @param {Function} props.fetchSuggestions Callback function which accepts the search term string and returns an array of suggestions
+ * @param {Array} props.defaultValue Array of items which should be selected by default
+ * @param {Array} props.staticSuggestions Array of items which should be suggested if no search term has been entered yet
+ * @param {string} props.staticSuggestionsHeading Optional heading to display when static suggestions are rendered
+ * @param {boolean} props.border Whether to show a bordered input
+ * @param {string} props.placeholder Input placeholder text
+ * @param {string} props.inputId ID to be applied to the input element
+ * @param {number} props.maxSelections Optional maximum number of allowed selections
+ * @param {Function} props.onSelectionsChanged Callback for when selections are added or removed
+ * @param {Function} props.onFocus Callback for when the component receives focus
+ * @param {Function} props.SuggestionTemplate Optional Preact component to render suggestion items
+ * @param {Function} props.SelectionTemplate Optional Preact component to render selected items
+ */
 export const MultiSelectAutocomplete = ({
   labelText,
+  showLabel = true,
   fetchSuggestions,
   defaultValue = [],
   staticSuggestions = [],
   staticSuggestionsHeading,
   border = true,
-  showLabel = true,
   placeholder = 'Add...',
   inputId,
   maxSelections,
@@ -483,8 +502,8 @@ export const MultiSelectAutocomplete = ({
           aria-expanded={allowSelections ? suggestions.length > 0 : null}
           aria-owns={allowSelections ? 'listbox1' : null}
           className={`c-autocomplete--multi__wrapper${
-            border ? '-border' : ' border-none'
-          } flex items-center crayons-textfield cursor-text p-0`}
+            border ? '-border' : ' border-none p-0'
+          } flex items-center crayons-textfield cursor-text`}
           onClick={() => inputRef.current?.focus()}
         >
           <ul id="combo-selected" className="list-none flex flex-wrap w-100">
@@ -560,4 +579,26 @@ export const MultiSelectAutocomplete = ({
       </div>
     </Fragment>
   );
+};
+
+const optionPropType = PropTypes.shape({ name: PropTypes.string });
+
+MultiSelectAutocomplete.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  showLabel: PropTypes.bool,
+  fetchSuggestions: PropTypes.func.isRequired,
+  defaultValue: PropTypes.arrayOf(optionPropType),
+  staticSuggestions: PropTypes.arrayOf(optionPropType),
+  staticSuggestionsHeading: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.string,
+  ]),
+  border: PropTypes.bool,
+  placeholder: PropTypes.string,
+  inputId: PropTypes.string,
+  maxSelections: PropTypes.number,
+  onSelectionsChanged: PropTypes.func,
+  onFocus: PropTypes.func,
+  SuggestionTemplate: PropTypes.func,
+  SelectionTemplate: PropTypes.func,
 };
