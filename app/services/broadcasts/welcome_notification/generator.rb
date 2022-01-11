@@ -106,8 +106,7 @@ module Broadcasts
       end
 
       def authenticated_with_all_providers?
-        enabled_providers = identities.pluck(:provider).map(&:to_sym)
-        (ga_providers - enabled_providers).empty?
+        ga_providers.all? { |sym| identities.exists?(provider: sym) }
       end
 
       def user_following_tags?
