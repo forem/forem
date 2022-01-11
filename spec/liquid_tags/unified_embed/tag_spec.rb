@@ -13,6 +13,6 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
   it "renders an A-tag when no link-matching class is found" do
     link = "https://takeonrules.com/about"
     parsed_tag = Liquid::Template.parse("{% embed #{link} %}")
-    expect(parsed_tag.render).to eq(%(<a href="#{link}">#{link}</a>))
+    expect { parsed_tag.render }.to raise_error(StandardError, "Embed URL not valid")
   end
 end
