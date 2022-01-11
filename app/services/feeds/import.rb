@@ -71,7 +71,9 @@ module Feeds
         next if cleaned_url.blank?
 
         response = ForemStatsClient.time("feeds::import::fetch_feed", tags: ["user_id:#{user_id}", "url:#{url}"]) do
-          HTTParty.get(cleaned_url, timeout: 10)
+          HTTParty.get(cleaned_url,
+                       timeout: 10,
+                       headers: { "User-Agent" => "Forem Feeds Importer" })
         end
 
         [user_id, response.body]

@@ -75,6 +75,9 @@ module Articles
       #          necessary to fulfill the clause of the scoring
       #          method.
       #
+      # - enabled: [Optional] When false, we won't include this.  By
+      #            default a scoring method is enabled.
+      #
       # @note The group by clause appears necessary for postgres
       #       versions and Heroku configurations of current (as of
       #       <2021-11-16 Tue>) DEV.to installations.
@@ -83,13 +86,13 @@ module Articles
         daily_decay_factor: {
           clause: "(current_date - articles.published_at::date)",
           cases: [
-            [0, 1], [1, 0.95], [2, 0.9],
-            [3, 0.85], [4, 0.8], [5, 0.75],
-            [6, 0.7], [7, 0.65], [8, 0.6],
-            [9, 0.55], [10, 0.5], [11, 0.4],
-            [12, 0.3], [13, 0.2], [14, 0.1]
+            [0, 1], [1, 0.99], [2, 0.985],
+            [3, 0.98], [4, 0.975], [5, 0.97],
+            [6, 0.965], [7, 0.96], [8, 0.955],
+            [9, 0.95], [10, 0.945], [11, 0.94],
+            [12, 0.935], [13, 0.93], [14, 0.925]
           ],
-          fallback: 0.001,
+          fallback: 0.9,
           requires_user: false,
           group_by: "articles.published_at"
         },
@@ -116,7 +119,7 @@ module Articles
         # Weight to give to the number of comments on the article.
         comments_count_factor: {
           clause: "articles.comments_count",
-          cases: [[0, 0.9], [1, 0.94], [2, 0.95], [3, 0.98], [4, 0.999]],
+          cases: [[0, 0.9], [1, 0.92], [2, 0.94], [3, 0.96], [4, 0.98]],
           fallback: 1,
           requires_user: false,
           group_by: "articles.comments_count"
@@ -133,7 +136,8 @@ module Articles
           cases: [[0, 1], [1, 0.98], [2, 0.97], [3, 0.96], [4, 0.95], [5, 0.94]],
           fallback: 0.93,
           requires_user: true,
-          group_by: "articles.experience_level_rating"
+          group_by: "articles.experience_level_rating",
+          enabled: false
         },
         # Weight to give for feature or unfeatured articles.
         featured_article_factor: {
@@ -141,7 +145,8 @@ module Articles
           cases: [[1, 1]],
           fallback: 0.85,
           requires_user: false,
-          group_by: "articles.featured"
+          group_by: "articles.featured",
+          enabled: false
         },
         # Weight to give when the given user follows the article's
         # author.
@@ -185,7 +190,7 @@ module Articles
         # user follows and the article has.
         matching_tags_factor: {
           clause: "COUNT(followed_tags.follower_id)",
-          cases: [[0, 0.4], [1, 0.9]],
+          cases: [[0, 0.75], [1, 0.9]],
           fallback: 1,
           requires_user: true,
           joins: ["LEFT OUTER JOIN taggings
@@ -215,7 +220,10 @@ module Articles
         # Weight to give for the number of reactions on the article.
         reactions_factor: {
           clause: "articles.reactions_count",
-          cases: [[0, 0.9988], [1, 0.9988], [2, 0.9988], [3, 0.9988]],
+          cases: [
+            [0, 0.9988], [1, 0.9988], [2, 0.9988],
+            [3, 0.9988]
+          ],
           fallback: 1,
           requires_user: false,
           group_by: "articles.reactions_count"
@@ -241,6 +249,7 @@ module Articles
       # @param page [Integer] what is the pagination page
       # @param tag [String, nil] this isn't implemented in other feeds
       #   so we'll see
+      # @param strategy [String, "original"] pass a current a/b test in
       # @param config [Hash<Symbol, Object>] a list of configurations,
       #   see {#initialize} implementation details.
       # @option config [Array<Symbol>] :scoring_configs
@@ -257,12 +266,13 @@ module Articles
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
-      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, **config)
+      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
         @page = (page || 1).to_i
         # TODO: The tag parameter is vestigial, there's no logic around this value.
         @tag = tag
+        @strategy = strategy
         @default_user_experience_level = config.fetch(:default_user_experience_level) { DEFAULT_USER_EXPERIENCE_LEVEL }
         @negative_reaction_threshold = config.fetch(:negative_reaction_threshold, DEFAULT_NEGATIVE_REACTION_THRESHOLD)
         @positive_reaction_threshold = config.fetch(:positive_reaction_threshold, DEFAULT_POSITIVE_REACTION_THRESHOLD)
@@ -355,7 +365,7 @@ module Articles
               Article.sanitize_sql(unsanitized_sub_sql),
             ),
           ),
-        ).limited_column_select.includes(top_comments: :user).order(published_at: :desc)
+        ).limited_column_select.includes(top_comments: :user)
       end
       # rubocop:enable Layout/LineLength
 
@@ -561,6 +571,8 @@ module Articles
         SCORING_METHOD_CONFIGURATIONS.each_pair do |valid_method_name, default_config|
           # Don't attempt to use this factor if we don't have user.
           next if default_config.fetch(:requires_user) && @user.nil?
+          # Don't proceed with this one if it's not enabled.
+          next unless default_config.fetch(:enabled, true)
 
           # Ensure that we're only using a scoring configuration that
           # the caller provided.
@@ -571,6 +583,9 @@ module Articles
           # If the caller didn't provide a hash for this scoring configuration,
           # then we'll use the default configuration.
           scoring_config = default_config unless scoring_config.is_a?(Hash)
+
+          # Change an alement of config via a/b test strategy
+          scoring_config = inject_config_ab_test(valid_method_name, scoring_config)
 
           # This scoring method requires a group by clause.
           @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)
@@ -594,6 +609,20 @@ module Articles
             @days_since_published = scoring_config.fetch(:cases).count + 1
           end
         end
+      end
+
+      def inject_config_ab_test(valid_method_name, scoring_config)
+        return scoring_config unless valid_method_name == :comments_count_factor # Only proceed on this one factor
+        return scoring_config if @strategy == AbExperiment::ORIGINAL_VARIANT # Don't proceed if not testing new strategy
+
+        # Rewards comment count with slightly more weight up to 10 comments.
+        # Testing two case weights beyond what we currently have
+        scoring_config[:cases] = if @strategy == "slightly_more_comments_count_case_weight"
+                                   (0..9).map { |n| [n, 0.8 + (n / 50.0)] }
+                                 else # much_more_comments_count_case_weight
+                                   (0..19).map { |n| [n, 0.6 + (n / 50.0)] }
+                                 end
+        scoring_config
       end
 
       # Responsible for transforming the :clause, :cases, and

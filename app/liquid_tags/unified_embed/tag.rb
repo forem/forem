@@ -21,22 +21,20 @@ module UnifiedEmbed
     # @return [LiquidTagBase]
     def self.new(tag_name, link, parse_context)
       klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: link)
+      # If we can't find a registered "embed" tag, let's raise an exception.
+      # This exception will give the user an opportunity to adjust their approach.
+      #
+      # In a prior implementation, we chose to render an A-tag using the given URL.
+      # With that prior implementation, a user expecting a "rich embed" might not
+      # notice that they didn't have a rich embed and instead published a basic
+      # A-tag. In addition, said A-tag would goes nowhere; which may confuse
+      # users and/or Forem readers.
+      raise StandardError, "Embed URL not valid" unless klass
 
-      if klass
-        # Why the __send__?  Because a LiquidTagBase class "privatizes"
-        # the `.new` method.  And we want to instantiate the specific
-        # liquid tag for the given link.
-        klass.__send__(:new, tag_name, link, parse_context)
-      else
-        # If we don't know how to handle the embed, let's just give the
-        # user an A-tag.
-        super
-      end
-    end
-
-    def render(_context)
-      link, _options = strip_tags(@markup)
-      %(<a href="#{link}">#{link}</a>)
+      # Why the __send__?  Because a LiquidTagBase class "privatizes"
+      # the `.new` method.  And we want to instantiate the specific
+      # liquid tag for the given link.
+      klass.__send__(:new, tag_name, link, parse_context)
     end
   end
 end

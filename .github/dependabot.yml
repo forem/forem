@@ -9,11 +9,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    ignore:
-      # Ignoring binding_of_caller 1.0 temporarily until we find a solution for it breaking Docker
-      # see <https://github.com/forem/forem/issues/12068>
-      - dependency-name: "binding_of_caller"
-        versions: [">= 1.0"]
     labels: []
 
   # Set update schedule for Yarn/NPM
@@ -21,6 +16,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # Ignoring the update to 4.x for now as it involves a lot of manual work
+      - dependency-name: "webpack-dev-server"
+        versions: ["4.x"]
     labels: []
 
   # Set update schedule for GitHub Actions
