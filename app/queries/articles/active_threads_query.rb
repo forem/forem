@@ -1,4 +1,5 @@
 module Articles
+  # TODO: [yheuhtozr] possible future tag name i18n: see https://github.com/forem/forem/pull/16004#discussion_r780879507
   class ActiveThreadsQuery
     DEFAULT_OPTIONS = {
       tags: ["discuss"],

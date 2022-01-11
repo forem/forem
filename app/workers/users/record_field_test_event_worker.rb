@@ -27,7 +27,7 @@ module Users
         when "user_creates_comment" # comments goal. Only page views and comments are currently active.
           field_test_converted(@experiment, participant: @user, goal: goal) # base single comment goal.
           comment_goal(7.days.ago, "DATE(created_at)", 4,
-                       "user_creates_comment_on_at_lest_four_different_days_within_a_week")
+                       "user_creates_comment_on_at_least_four_different_days_within_a_week")
         else
           field_test_converted(@experiment, participant: @user, goal: goal) # base single comment goal.
         end

@@ -1,31 +1,33 @@
 class ReplitTag < LiquidTagBase
   PARTIAL = "liquids/replit".freeze
-  def initialize(_tag_name, id, _parse_context)
+  REGISTRY_REGEXP = %r{https?://replit.com/(?<address>@\w{2,15}/[a-zA-Z0-9\-]{0,60})(?:#[\w.]+)?}
+  VALID_ADDRESS = %r{(?<address>@\w{2,15}/[a-zA-Z0-9\-]{0,60})(?:#[\w.]+)?}
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ADDRESS].freeze
+
+  def initialize(_tag_name, input, _parse_context)
     super
-    @id = parse_id(id)
+    @address = parse_input(strip_tags(input))
   end
 
   def render(_context)
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
-        id: @id
+        address: @address
       },
     )
   end
 
   private
 
-  def parse_id(input)
-    input_no_space = input.delete(" ")
-    raise StandardError, "Invalid replit Id" unless valid_id?(input_no_space)
+  def parse_input(input)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, "Invalid Replit URL or @user/slug" unless match
 
-    input_no_space
-  end
-
-  def valid_id?(id)
-    id =~ %r{\A@\w{2,15}/[a-zA-Z0-9\-]{0,60}\Z}
+    match[:address]
   end
 end
 
 Liquid::Template.register_tag("replit", ReplitTag)
+
+UnifiedEmbed.register(ReplitTag, regexp: ReplitTag::REGISTRY_REGEXP)

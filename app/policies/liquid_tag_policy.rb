@@ -26,9 +26,13 @@ class LiquidTagPolicy
     # the user given the liquid tag?  My inclination is ask the user (and by
     # extension the Authorizer).  But that is a future refactor.
     return true unless liquid_tag.user_authorization_method_name
-    raise Pundit::NotAuthorizedError, "No user found" unless user
+    raise Pundit::NotAuthorizedError, I18n.t("policies.liquid_tag_policy.no_user_found") unless user
+
     # Manually raise error to use a custom error message
-    raise Pundit::NotAuthorizedError, "User is not permitted to use this liquid tag" unless user_allowed_to_use_tag?
+    unless user_allowed_to_use_tag?
+      raise Pundit::NotAuthorizedError,
+            I18n.t("policies.liquid_tag_policy.not_permitted")
+    end
 
     true
   end
