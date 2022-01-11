@@ -258,6 +258,28 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(getByRole('button', { name: 'Remove example' })).toBeInTheDocument();
   });
 
+  it("doesn't select manual text entry if already selected", async () => {
+    const { getByLabelText, getByRole, getAllByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        defaultValue={[{ name: 'example' }]}
+        fetchSuggestions={() => []}
+      />,
+    );
+
+    // Item should already be selected, as passed as a default value
+    expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument();
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    // Try to select the same value by manually typing
+    userEvent.type(input, 'example,');
+
+    expect(input).toHaveValue('');
+    // Verify there is still only one selected 'example'
+    expect(getAllByRole('button', { name: 'Edit example' })).toHaveLength(1);
+  });
+
   it('displays selections in a custom template, if provided', async () => {
     const Selection = ({ name }) => <button>Selected: {name}</button>;
 
@@ -386,6 +408,102 @@ describe('<MultiSelectAutocomplete />', () => {
 
     // Input is re-focused
     expect(getByLabelText('Example label')).toHaveFocus();
+  });
+
+  it('closes dropdown and selects current input value on blur', async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
+    const { getByLabelText, getByRole, queryByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={mockFetchSuggestions}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    userEvent.type(input, 'a');
+
+    await waitFor(() =>
+      expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
+    );
+
+    input.blur();
+
+    // Dropdown should no longer be visible
+    await waitFor(() =>
+      expect(queryByRole('option', { name: 'option1' })).toBeNull(),
+    );
+
+    // Text value should be selected
+    expect(getByRole('button', { name: 'Edit a' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Remove a' })).toBeInTheDocument();
+  });
+
+  it('clears the input on Escape press', async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
+    const { getByLabelText, getByRole, queryByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={mockFetchSuggestions}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    userEvent.type(input, 'a');
+
+    await waitFor(() =>
+      expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
+    );
+
+    userEvent.type(input, '{esc}');
+
+    await waitFor(() =>
+      expect(queryByRole('option', { name: 'option1' })).toBeNull(),
+    );
+
+    expect(input).toHaveValue('');
+  });
+
+  it('Edits previous selection (if exists) on backspace press in empty input', async () => {
+    const { getByLabelText, getByRole, queryByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        defaultValue={[{ name: 'example' }]}
+        fetchSuggestions={() => []}
+      />,
+    );
+
+    // Selection should be present as passed as a default value
+    expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument();
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    userEvent.type(input, '{backspace}');
+
+    await waitFor(() => expect(input).toHaveValue('example'));
+    expect(queryByRole('button', { name: 'Edit example' })).toBeNull();
+  });
+
+  it('Prohibits entering special characters', () => {
+    const { getByLabelText } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={() => []}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    userEvent.type(input, '!@£$%^&*()a1');
+    expect(input).toHaveValue('a1');
   });
 
   // TODO: Clarify UI/behaviour when max is reached
