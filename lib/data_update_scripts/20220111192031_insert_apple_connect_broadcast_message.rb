@@ -1,9 +1,18 @@
 module DataUpdateScripts
   class InsertAppleConnectBroadcastMessage
     def run
-      # Place your data update logic here
-      # Make sure your code is idempotent and can be run safely
-      # multiple times at any time
+      title = "Welcome Notification: apple_connect"
+      return if Broadcast.find_by title: title
+
+      message = "You're on a roll! 🎉  Do you have an Apple account? " \
+                "Consider <a href='/settings'>connecting it</a>."
+
+      Broadcast.create!(
+        title: title,
+        processed_html: message,
+        type_of: "Welcome",
+        active: true,
+      )
     end
   end
 end
