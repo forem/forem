@@ -13,19 +13,27 @@ module Broadcasts
       def call
         return unless user.subscribed_to_welcome_notifications?
 
-        send_welcome_notification unless notification_enqueued
-        send_authentication_notification unless notification_enqueued
-        send_feed_customization_notification unless notification_enqueued
-        send_ux_customization_notification unless notification_enqueued
-        send_discuss_and_ask_notification unless notification_enqueued
-        send_download_app_notification unless notification_enqueued
-      rescue ActiveRecord::RecordNotFound => e
-        Honeybadger.notify(e)
+        notification_methods.each do |method|
+          send method unless notification_enqueued # rubocop:disable Style/Send
+        rescue ActiveRecord::RecordNotFound => e
+          Honeybadger.notify(e)
+        end
       end
 
       private
 
       attr_reader :user, :notification_enqueued
+
+      def notification_methods
+        %i[
+          send_welcome_notification
+          send_authentication_notification
+          send_feed_customization_notification
+          send_ux_customization_notification
+          send_discuss_and_ask_notification
+          send_download_app_notification
+        ]
+      end
 
       def send_welcome_notification
         return if
