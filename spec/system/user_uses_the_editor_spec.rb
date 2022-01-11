@@ -26,9 +26,7 @@ RSpec.describe "Using the editor", type: :system do
     it "renders the logo or Community name as expected" do
       visit "/new"
       expect(page).to have_css(".site-logo")
-      within(".truncate-at-2") do
-        expect(page).to have_text("DEV(local)")
-      end
+      expect(page).to have_text("DEV(local)")
     end
   end
 
