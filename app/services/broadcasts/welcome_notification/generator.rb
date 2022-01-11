@@ -99,9 +99,13 @@ module Broadcasts
         Comment.where(commentable: welcome_thread, user: user).any?
       end
 
-      def authenticated_with_all_providers?
+      def ga_providers
         # ga_providers refers to Generally Available (not in beta)
-        ga_providers = Authentication::Providers.enabled.reject { |sym| sym == :apple }
+        @ga_providers ||=
+          Authentication::Providers.enabled.reject { |sym| sym == :apple }
+      end
+
+      def authenticated_with_all_providers?
         enabled_providers = identities.pluck(:provider).map(&:to_sym)
         (ga_providers - enabled_providers).empty?
       end
@@ -139,7 +143,7 @@ module Broadcasts
       end
 
       def find_auth_broadcast
-        missing_identities = Authentication::Providers.enabled.filter_map do |provider|
+        missing_identities = ga_providers.filter_map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end
 
