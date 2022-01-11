@@ -4,5 +4,16 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::InsertAppleConnectBroadcastMessage do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "works without a broadcast" do
+    expect do
+      described_class.new.run
+    end.to change(Broadcast, :count).by(1)
+  end
+
+  it "works when a Broadcast already exists" do
+    create(:apple_connect_broadcast)
+    expect do
+      described_class.new.run
+    end.not_to change(Broadcast, :count)
+  end
 end
