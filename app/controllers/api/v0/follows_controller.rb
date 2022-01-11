@@ -8,7 +8,7 @@ module Api
         user_ids.each do |user_id|
           Users::FollowWorker.perform_async(current_user.id, user_id, "User")
         end
-        render json: { outcome: "followed #{user_ids.count} users" }
+        render json: { outcome: I18n.t("api.v0.follows_controller.followed", count: user_ids.count) }
       end
 
       def tags

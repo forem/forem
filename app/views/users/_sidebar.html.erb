@@ -50,7 +50,7 @@
   <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}", expires_in: 10.days do %>
     <div class="crayons-card crayons-card--secondary p-4">
       <div class="flex items-center mb-4">
-        <%= inline_svg_tag("post.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.post.icon")) %>
+        <%= crayons_icon_tag(:post, css_class: "mr-3 color-base-50", title: t("views.users.side.post.icon")) %>
         <%= t "views.users.side.post.text", count: @user.articles.published.size %>
       </div>
       <div class="flex items-center mb-4">
