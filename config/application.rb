@@ -44,11 +44,6 @@ module PracticalDeveloper
     # Explorer to submit forms encoded in UTF-8
     config.action_view.default_enforce_utf8 = true
 
-    # Enables the same cache key to be reused when the object being cached of type ActiveRecord::Relation
-    # changes by moving the volatile information (max updated at and count) of the relation's cache
-    # key into the cache version to support recycling cache key.
-    config.active_record.collection_cache_versioning = false
-
     # Enables writing cookies with the purpose metadata embedded.
     config.action_dispatch.use_cookies_with_metadata = false
 
