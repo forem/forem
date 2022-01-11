@@ -29,7 +29,7 @@ module Broadcasts
 
       def send_welcome_notification
         return if
-          user.created_at > 3.hours.ago ||
+          user.created_at.after?(3.hours.ago) ||
             received_notification?(welcome_broadcast) ||
             commented_on_welcome_thread?
 
@@ -40,7 +40,7 @@ module Broadcasts
 
       def send_authentication_notification
         return if
-          user.created_at > 1.day.ago ||
+          user.created_at.after?(1.day.ago) ||
             authenticated_with_all_providers? ||
             received_notification?(authentication_broadcast)
 
@@ -50,7 +50,7 @@ module Broadcasts
 
       def send_feed_customization_notification
         return if
-          user.created_at > 3.days.ago ||
+          user.created_at.after?(3.days.ago) ||
             user_following_tags? ||
             received_notification?(customize_feed_broadcast)
 
@@ -59,7 +59,7 @@ module Broadcasts
       end
 
       def send_ux_customization_notification
-        return if user.created_at > 5.days.ago || received_notification?(customize_ux_broadcast)
+        return if user.created_at.after?(5.days.ago) || received_notification?(customize_ux_broadcast)
 
         Notification.send_welcome_notification(user.id, customize_ux_broadcast.id)
         @notification_enqueued = true
@@ -67,7 +67,7 @@ module Broadcasts
 
       def send_discuss_and_ask_notification
         return if
-          user.created_at > 6.days.ago ||
+          user.created_at.after?(6.days.ago) ||
             (asked_a_question && started_a_discussion) ||
             received_notification?(discuss_and_ask_broadcast)
 
@@ -76,7 +76,7 @@ module Broadcasts
       end
 
       def send_download_app_notification
-        return if user.created_at > 7.days.ago || received_notification?(download_app_broadcast)
+        return if user.created_at.after?(7.days.ago) || received_notification?(download_app_broadcast)
 
         Notification.send_welcome_notification(user.id, download_app_broadcast.id)
         @notification_enqueued = true
