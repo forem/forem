@@ -22,14 +22,6 @@ RSpec.describe "Using the editor", type: :system do
     within("#article-form") { fill_in "article_body_markdown", with: content }
   end
 
-  describe "Viewing the editor", js: true do
-    it "renders the logo or Community name as expected" do
-      visit "/new"
-      expect(page).to have_css(".site-logo")
-      expect(page).to have_text("DEV(local)")
-    end
-  end
-
   describe "Previewing an article", js: true do
     before do
       fill_markdown_with(read_from_file(raw_text))
