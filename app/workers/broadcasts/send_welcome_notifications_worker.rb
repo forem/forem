@@ -18,5 +18,6 @@ module Broadcasts
     def created_after
       [Settings::General.welcome_notifications_live_at, 7.days.ago].max
     end
+    private :created_after
   end
 end
