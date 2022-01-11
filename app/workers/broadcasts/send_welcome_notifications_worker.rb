@@ -10,12 +10,14 @@ module Broadcasts
       # and will ultimately be superseded by 7.days.ago when it's larger than feature_live_date.
       return unless Settings::General.welcome_notifications_live_at
 
-      notifications_live_at = Settings::General.welcome_notifications_live_at
-      week_ago = 7.days.ago
-      latest_date = notifications_live_at > week_ago ? notifications_live_at : week_ago
-      User.select(:id).where("created_at > ?", latest_date).find_each do |user|
+      User.select(:id).where("created_at > ?", created_after).find_each do |user|
         Broadcasts::WelcomeNotification::Generator.call(user.id)
       end
     end
+
+    def created_after
+      [Settings::General.welcome_notifications_live_at, 7.days.ago].max
+    end
+    private :created_after
   end
 end
