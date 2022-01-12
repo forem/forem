@@ -26,6 +26,13 @@ class ApplicationMailer < ActionMailer::Base
     "#{community_name} <#{ForemInstance.email}>"
   end
 
+  # @return [String]
+  #
+  # @see ApplicationRecord#polymorphic_type_name for discussion.
+  def polymorphic_type_name
+    self.class.name
+  end
+
   def generate_unsubscribe_token(id, email_type)
     Rails.application.message_verifier(:unsubscribe).generate({
                                                                 user_id: id,
