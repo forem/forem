@@ -21,7 +21,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Callback for third party failures (shared by all providers)
   def failure
     error = request.env["omniauth.error"]
-    class_name = error.present? ? error.polymorphic_type_name : ""
+    class_name = error.present? ? error.class.name : ""
 
     ForemStatsClient.increment(
       "omniauth.failure",
