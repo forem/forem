@@ -3,7 +3,10 @@ class VideosController < ApplicationController
   before_action :set_cache_control_headers, only: %i[index]
   before_action :authorize_video, only: %i[new create]
 
-  def new; end
+  def new
+    @uploader = Video.new.file
+    @uploader.success.action_redirect = videos_path
+  end
 
   def index
     @video_articles = Article.with_video
