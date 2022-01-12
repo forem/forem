@@ -13,7 +13,7 @@
     <header class="profile-header crayons-card mt-2">
       <div class="relative profile-header__top">
         <span class="crayons-logo crayons-logo--3xl">
-          <img src="<%= Images::Profile.call(@user.profile_image_url, length: 320) %>" alt="<%= @user.name %> logo" width="128" height="128" title="<%= t("views.organizations.logo", org: @user.name) %>" class="crayons-logo__image">
+          <img src="<%= @user.profile_image_url_for(length: 320) %>" alt="<%= @user.name %> logo" width="128" height="128" title="<%= t("views.organizations.logo", org: @user.name) %>" class="crayons-logo__image">
         </span>
 
         <div class="profile-header__actions">

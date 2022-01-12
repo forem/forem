@@ -14,4 +14,4 @@ Profile.static_fields.each do |attr|
 end
 
 json.joined_at     I18n.l(user.created_at, format: :json)
-json.profile_image Images::Profile.call(user.profile_image_url, length: 320)
+json.profile_image user.profile_image_url_for(length: 320)

@@ -50,7 +50,7 @@ module Broadcasts
         return if
           user.created_at.after?(1.day.ago) ||
             authenticated_with_all_providers? ||
-            received_notification?(authentication_broadcast)
+            received_notification?(authentication_broadcasts)
 
         Notification.send_welcome_notification(user.id, authentication_broadcast.id)
         @notification_enqueued = true
@@ -99,11 +99,24 @@ module Broadcasts
         Comment.where(commentable: welcome_thread, user: user).any?
       end
 
+      def authentication_broadcasts
+        Broadcast.active.where(type_of: "Welcome").where("title like '%_connect'")
+      end
+
+      def providers
+        # we filter the providers to suggest based on the following two criteria
+        # - provider is enabled
+        # - an acive provider Broadcast message exists
+        # Disabling/deactivating a provider_connect broadcast removes
+        # the provider from suggestions sent to users
+        @providers ||=
+          Authentication::Providers.enabled.select do |provider|
+            authentication_broadcasts.exists?(title: "Welcome Notification: #{provider}_connect")
+          end
+      end
+
       def authenticated_with_all_providers?
-        # ga_providers refers to Generally Available (not in beta)
-        ga_providers = Authentication::Providers.enabled.reject { |sym| sym == :apple }
-        enabled_providers = identities.pluck(:provider).map(&:to_sym)
-        (ga_providers - enabled_providers).empty?
+        providers.all? { |sym| identities.exists?(provider: sym) }
       end
 
       def user_following_tags?
@@ -139,11 +152,11 @@ module Broadcasts
       end
 
       def find_auth_broadcast
-        missing_identities = Authentication::Providers.enabled.filter_map do |provider|
+        missing_identities = providers.filter_map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end
 
-        Broadcast.active.find_by!(title: "Welcome Notification: #{missing_identities.first}")
+        authentication_broadcasts.find_by!(title: "Welcome Notification: #{missing_identities.sample}")
       end
 
       def find_discuss_ask_broadcast
