@@ -3,7 +3,11 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed::Registry do
   subject(:unified_embed) { described_class }
 
+  let(:user) { create(:user) }
   let(:article) { create(:article) }
+  let(:comment) do
+    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
+  end
 
   describe ".find_liquid_tag_for" do
     valid_blogcast_url_formats = [
@@ -72,6 +76,11 @@ RSpec.describe UnifiedEmbed::Registry do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(CodesandboxTag)
       end
+    end
+
+    it "returns CommentTag for a Forem comment url" do
+      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{user.username}/comment/#{comment.id_code}"))
+        .to eq(CommentTag)
     end
 
     it "returns GistTag for a gist url" do
