@@ -30,7 +30,7 @@
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
             <%= t("views.sticky.trending_html", app: link_to(community_name, app_url)) %>
-            <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: t("views.sticky.hot")) %>
+            <%= crayons_icon_tag("twemoji/fire", native: true, title: t("views.sticky.hot")) %>
           </h3>
         </header>
         <div>
