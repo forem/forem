@@ -45,10 +45,6 @@ module Authentication
         )
       end
 
-      # def self.provider_name
-      #   "google"
-      # end
-
       protected
 
       def cleanup_payload(auth_payload)
