@@ -45,6 +45,7 @@ module Stories
                )
                Articles::Feeds::WeightedQueryStrategy.new(
                  user: current_user,
+                 number_of_articles: 25,
                  page: @page,
                  tags: params[:tag],
                  strategy: strategy,
