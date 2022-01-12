@@ -107,7 +107,8 @@ RSpec.describe Notification, type: :model do
 
         notification = user2.notifications.last
         notifiable_data = { notifiable_id: notification.notifiable_id, notifiable_type: notification.notifiable_type }
-        follow_data = { notifiable_id: user_follows_user2.id, notifiable_type: user_follows_user2.class.name }
+        follow_data = { notifiable_id: user_follows_user2.id,
+                        notifiable_type: user_follows_user2.polymorphic_type_name }
         expect(notifiable_data).to eq(follow_data)
       end
     end
@@ -139,7 +140,7 @@ RSpec.describe Notification, type: :model do
         notifiable_data = { notifiable_id: notification.notifiable_id, notifiable_type: notification.notifiable_type }
         follow_data = {
           notifiable_id: user_follows_organization.id,
-          notifiable_type: user_follows_organization.class.name
+          notifiable_type: user_follows_organization.polymorphic_type_name
         }
         expect(notifiable_data).to eq(follow_data)
       end

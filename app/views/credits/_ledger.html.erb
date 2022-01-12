@@ -20,12 +20,12 @@
         <% end %>
           <td>
             <% if item.purchase %>
-              <%= item.purchase.instance_of?(Listing) ? t("views.credits.ledger.class.listing") : item.purchase.class.name.titleize %>
+              <%= item.purchase.instance_of?(Listing) ? t("views.credits.ledger.class.listing") : item.purchase.polymorphic_type_name.titleize %>
             <% end %>
           </td>
           <td>
             <% if item.purchase %>
-              <%= render "ledger_#{item.purchase.class.name.underscore}", purchase: item.purchase %>
+              <%= render "ledger_#{item.purchase.polymorphic_type_name.underscore}", purchase: item.purchase %>
             <% else %>
               <span><%= t("views.credits.ledger.misc") %></span>
             <% end %>

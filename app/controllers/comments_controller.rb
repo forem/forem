@@ -26,7 +26,7 @@ class CommentsController < ApplicationController
       not_found unless comment_should_be_visible?
     end
 
-    @commentable_type = @commentable.class.name if @commentable
+    @commentable_type = @commentable.polymorphic_type_name if @commentable
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
   end

@@ -135,7 +135,7 @@ module Notifications
               path: recent_reaction.reactable.path,
               title: recent_reaction.reactable.title,
               class: {
-                name: recent_reaction.reactable.class.name
+                name: recent_reaction.reactable.polymorphic_type_name
               }
             },
             aggregated_siblings: siblings,

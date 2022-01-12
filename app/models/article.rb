@@ -412,7 +412,7 @@ class Article < ApplicationRecord
   end
 
   def class_name
-    self.class.name
+    polymorphic_type_name
   end
 
   def flare_tag

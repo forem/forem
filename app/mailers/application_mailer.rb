@@ -12,7 +12,7 @@ class ApplicationMailer < ActionMailer::Base
 
   default(
     from: -> { email_from },
-    template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
+    template_path: ->(mailer) { "mailers/#{mailer.polymorphic_type_name.underscore}" },
     reply_to: -> { ForemInstance.email },
   )
 

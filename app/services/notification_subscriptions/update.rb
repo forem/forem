@@ -13,7 +13,7 @@ module NotificationSubscriptions
 
       notification_subscriptions = NotificationSubscription.where(
         notifiable_id: notifiable.id,
-        notifiable_type: notifiable.class.name,
+        notifiable_type: notifiable.polymorphic_type_name,
       )
 
       return if notification_subscriptions.none?

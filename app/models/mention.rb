@@ -9,15 +9,14 @@ class Mention < ApplicationRecord
   belongs_to :user
   belongs_to :mentionable, polymorphic: true
 
-  validates :user_id, presence: true, uniqueness: { scope: %i[mentionable_id mentionable_type] }
-  validates :mentionable_id, presence: true
+  validates :user_id, uniqueness: { scope: %i[mentionable_id mentionable_type] }
   validates :mentionable_type, presence: true
   validate :permission
 
   after_create_commit :send_email_notification
 
   def self.create_all(notifiable)
-    Mentions::CreateAllWorker.perform_async(notifiable.id, notifiable.class.name)
+    Mentions::CreateAllWorker.perform_async(notifiable.id, notifiable.polymorphic_type_name)
   end
 
   private

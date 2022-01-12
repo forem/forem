@@ -5,7 +5,7 @@ RSpec.describe UserSubscriptions::CreateFromControllerParams, type: :service do
 
   it "returns an error for an invalid source type" do
     source = create(:comment)
-    user_subscription_params = { source_type: source.class.name, source_id: source.id,
+    user_subscription_params = { source_type: source.polymorphic_type_name, source_id: source.id,
                                  subscriber_email: subscriber.email }
     user_subscription = described_class.call(subscriber, user_subscription_params)
 
@@ -16,7 +16,7 @@ RSpec.describe UserSubscriptions::CreateFromControllerParams, type: :service do
 
   it "returns an error for an invalid source" do
     source = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
-    user_subscription_params = { source_type: source.class.name, source_id: source.id + 999,
+    user_subscription_params = { source_type: source.polymorphic_type_name, source_id: source.id + 999,
                                  subscriber_email: subscriber.email }
     user_subscription = described_class.call(subscriber, user_subscription_params)
 
@@ -28,7 +28,7 @@ RSpec.describe UserSubscriptions::CreateFromControllerParams, type: :service do
   # TODO: [@forem/delightful]: re-enable this once email confirmation is re-enabled
   xit "returns an error for an email mismatch" do
     source = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
-    user_subscription_params = { source_type: source.class.name, source_id: source.id,
+    user_subscription_params = { source_type: source.polymorphic_type_name, source_id: source.id,
                                  subscriber_email: "old@email.com" }
     user_subscription = described_class.call(subscriber, user_subscription_params)
 
@@ -39,7 +39,7 @@ RSpec.describe UserSubscriptions::CreateFromControllerParams, type: :service do
 
   it "returns an error if a UserSubscription can't be created" do
     source = create(:article, :with_user_subscription_tag_role_user)
-    user_subscription_params = { source_type: source.class.name, source_id: source.id,
+    user_subscription_params = { source_type: source.polymorphic_type_name, source_id: source.id,
                                  subscriber_email: subscriber.email }
     user_subscription = described_class.call(subscriber, user_subscription_params)
 
@@ -50,12 +50,12 @@ RSpec.describe UserSubscriptions::CreateFromControllerParams, type: :service do
 
   it "creates a UserSubscription" do
     source = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
-    user_subscription_params = { source_type: source.class.name, source_id: source.id,
+    user_subscription_params = { source_type: source.polymorphic_type_name, source_id: source.id,
                                  subscriber_email: subscriber.email }
     user_subscription = described_class.call(subscriber, user_subscription_params)
 
     expect(user_subscription.data).to be_an_instance_of UserSubscription
-    expect(user_subscription.data.user_subscription_sourceable_type).to eq source.class.name
+    expect(user_subscription.data.user_subscription_sourceable_type).to eq source.polymorphic_type_name
     expect(user_subscription.data.user_subscription_sourceable_id).to eq source.id
     expect(user_subscription.data.subscriber_email).to eq subscriber.email
     expect(user_subscription.data.subscriber_id).to eq subscriber.id

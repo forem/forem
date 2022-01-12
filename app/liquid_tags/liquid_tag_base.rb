@@ -65,7 +65,7 @@ class LiquidTagBase < Liquid::Tag
     source = parse_context.partial_options[:source]
     raise LiquidTags::Errors::InvalidParseContext, "No source found" unless source
 
-    is_valid_source = self.class::VALID_CONTEXTS.include? source.class.name
+    is_valid_source = self.class::VALID_CONTEXTS.include? source.polymorphic_type_name
     return if is_valid_source
 
     valid_contexts = self.class::VALID_CONTEXTS.map(&:pluralize).join(", ")

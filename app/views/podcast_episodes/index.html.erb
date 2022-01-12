@@ -20,7 +20,7 @@
               id="user-follow-butt"
               class="crayons-btn crayons-btn--inverted follow-action-button"
               style="min-width: 100px;"
-              data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>", "name": "<%= @podcast.name %>"}'>
+              data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.polymorphic_type_name %>", "name": "<%= @podcast.name %>"}'>
                 &nbsp;
             </button>
           </p>

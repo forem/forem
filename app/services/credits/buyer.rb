@@ -16,7 +16,7 @@ module Credits
       purchaser.credits.unspent.limit(cost).update_all(
         spent: true,
         spent_at: Time.current,
-        purchase_type: purchase.class.name,
+        purchase_type: purchase.polymorphic_type_name,
         purchase_id: purchase.id,
       )
       purchaser.save

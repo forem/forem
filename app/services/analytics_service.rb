@@ -25,7 +25,7 @@ class AnalyticsService
     return {} unless start_date && end_date
 
     # cache all stats in the date range for the requested user or organization
-    cache_key = "analytics-for-dates-#{start_date}-#{end_date}-#{user_or_org.class.name}-#{user_or_org.id}"
+    cache_key = "analytics-for-dates-#{start_date}-#{end_date}-#{user_or_org.polymorphic_type_name}-#{user_or_org.id}"
     cache_key = "#{cache_key}-article-#{article_id}" if article_id
 
     Rails.cache.fetch(cache_key, expires_in: 7.days) do
@@ -73,7 +73,7 @@ class AnalyticsService
   )
 
   def load_data
-    @article_data = Article.published.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
+    @article_data = Article.published.where("#{user_or_org.polymorphic_type_name.downcase}_id" => user_or_org.id)
     if @article_id
       @article_data = @article_data.where(id: @article_id)
 
@@ -90,7 +90,7 @@ class AnalyticsService
       .where(commentable_id: article_ids, commentable_type: "Article")
       .where("score > 0")
     @follow_data = Follow
-      .where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
+      .where(followable_type: user_or_org.polymorphic_type_name, followable_id: user_or_org.id)
     @reaction_data = Reaction.public_category
       .where(reactable_id: article_ids, reactable_type: "Article")
     @page_view_data = PageView.where(article_id: article_ids)

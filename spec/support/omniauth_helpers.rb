@@ -158,7 +158,7 @@ module OmniauthHelpers
   end
 
   def omniauth_failure_args(error, provider, params)
-    class_name = error.present? ? error.class.name : ""
+    class_name = error.present? ? error.polymorphic_type_name : ""
 
     [
       { tags: [

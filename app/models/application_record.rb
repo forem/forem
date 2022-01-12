@@ -26,6 +26,29 @@ class ApplicationRecord < ActiveRecord::Base
     count
   end
 
+  # Throughout the code base we make use of a lot of polymorphic relations (e.g. acts_as_follower,
+  # acts_as_taggable, etc.).  Which means we often want to know the name of the relationship.
+  #
+  # Furthermore in our views and controllers we've often relied on using `object.class.name` for
+  # branching logic.
+  #
+  # However, with the sometimes transparent usage of the ApplicationDecorator, we can get unexpected
+  # results.
+  #
+  # This method is here to help us move past the somewhat fragile method chain of
+  # `object.class.name`.
+  #
+  # @return [String]
+  #
+  # @see ApplicationDecorator
+  # @see #decorate
+  #
+  # @todo We may want to consider adding a class method that is polymorphic_type_name; but for now
+  #       we'll use an instance variable.
+  def polymorphic_type_name
+    self.class.name
+  end
+
   # Decorate object with appropriate decorator
   def decorate
     self.class.decorator_class.new(self)
@@ -50,7 +73,7 @@ class ApplicationRecord < ActiveRecord::Base
 
     return superclass.decorator_class(called_on) if superclass.respond_to?(:decorator_class)
 
-    raise UninferrableDecoratorError, "Could not infer a decorator for #{called_on.class.name}."
+    raise UninferrableDecoratorError, "Could not infer a decorator for #{called_on.polymorphic_type_name}."
   end
 
   def self.statement_timeout

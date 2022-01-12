@@ -16,7 +16,7 @@ module Notifications
 
       notifications = Notification.where(
         notifiable_id: notifiable.id,
-        notifiable_type: notifiable.class.name,
+        notifiable_type: notifiable.polymorphic_type_name,
         action: action,
       )
       # as we only select the first notification right after, there is no need
@@ -24,7 +24,8 @@ module Notifications
       return if notifications.none?
 
       new_json_data = {}
-      new_json_data[notifiable.class.name.downcase] = public_send("#{notifiable.class.name.downcase}_data", notifiable)
+      new_json_data[notifiable.polymorphic_type_name.downcase] =
+        public_send("#{notifiable.polymorphic_type_name.downcase}_data", notifiable)
       new_json_data[:user] = user_data(notifiable.user)
       add_organization_data = notifiable.is_a?(Article) && notifiable.organization
       new_json_data[:organization] = organization_data(notifiable.organization) if add_organization_data

@@ -32,7 +32,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
       result = notification.decorate.mocked_object("user")
 
       expect(result.class).to be_a(Struct)
-      expect(result.class.name).to be_empty
+      expect(result.polymorphic_type_name).to be_empty
     end
 
     it "returns class name and id for the reactable in a struct" do
@@ -48,7 +48,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
       result = notification.decorate.mocked_object("user")
 
       expect(result.class).to be_a(Struct)
-      expect(result.class.name).to eq("User")
+      expect(result.polymorphic_type_name).to eq("User")
     end
   end
 

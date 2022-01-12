@@ -17,7 +17,7 @@
 <div class="container mod-container" style="text-align: center">
   <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
   <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
-  <% if @moderatable.class.name == "Article" &&
+  <% if @moderatable.polymorphic_type_name == "Article" &&
        (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? &&
        (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) }) %>
     <%= form_tag "/article_approvals", method: "post" do %>
@@ -37,7 +37,7 @@
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
           data-reactable-id="<%= @moderatable.id %>"
           data-category="thumbsup"
-          data-reactable-type="<%= @moderatable.class.name %>">
+          data-reactable-type="<%= @moderatable.polymorphic_type_name %>">
     <div class="reaction-button-circle">
       <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_up")) %>
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
@@ -47,7 +47,7 @@
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.id %>"
             data-category="thumbsdown"
-            data-reactable-type="<%= @moderatable.class.name %>">
+            data-reactable-type="<%= @moderatable.polymorphic_type_name %>">
       <div class="reaction-button-circle">
         <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_down")) %>
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
@@ -57,7 +57,7 @@
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.id %>"
             data-category="vomit"
-            data-reactable-type="<%= @moderatable.class.name %>">
+            data-reactable-type="<%= @moderatable.polymorphic_type_name %>">
       <div class="reaction-button-circle">
         <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.suspicious")) %>
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
@@ -66,11 +66,11 @@
     </button>
   </div>
 
-  <% if current_user.super_admin? && @moderatable.class.name == "Article" %>
+  <% if current_user.super_admin? && @moderatable.polymorphic_type_name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit"><%= t("views.moderations.actions.edit.post") %></a> |
       <a href="/resource_admin/articles/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.resource_admin") %></a> |
       <a href="<%= admin_article_path(@moderatable.id) %>" data-no-instant><%= t("views.moderations.actions.edit.article_admin") %></a></h3>
-  <% elsif current_user.super_admin? && @moderatable.class.name == "Comment" %>
+  <% elsif current_user.super_admin? && @moderatable.polymorphic_type_name == "Comment" %>
     <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.comment_admin") %></a> |
       <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant><%= t("views.moderations.actions.edit.user_admin") %></a></h3>
   <% end %>
@@ -85,7 +85,7 @@
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.user.id %>"
             data-category="vomit"
-            data-reactable-type="<%= @moderatable.user.class.name %>">
+            data-reactable-type="<%= @moderatable.user.polymorphic_type_name %>">
       <div class="reaction-button-circle">
         <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.suspicious")) %>
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
@@ -96,7 +96,7 @@
       <%= t("views.moderations.actions.abusive.desc_html") %>
     </p>
   </div>
-  <% if current_user.any_admin? && @moderatable.class.name == "Comment" && !@moderatable.deleted %>
+  <% if current_user.any_admin? && @moderatable.polymorphic_type_name == "Comment" && !@moderatable.deleted %>
     <div class="crayons-card crayons-card--secondary p-4 flex items-center">
       <div class="fw-medium flex-1" style="text-align: left;">
         <p class="fw-bold fs-xl"><%= t("views.moderations.actions.delete.subtitle") %></p>
@@ -170,7 +170,7 @@
     </div>
   <% end %>
 
-  <% if @moderatable.class.name == "Article" %>
+  <% if @moderatable.polymorphic_type_name == "Article" %>
     <div class="tag-mod-form">
       <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
       <% rating_hash = { "Novice" => 1, "Beginner" => 2, "Mid-level" => 3, "Advanced" => 4, "Expert" => 5 } %>

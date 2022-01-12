@@ -56,7 +56,7 @@ class Notification < ApplicationRecord
     end
 
     def send_to_followers(notifiable, action = nil)
-      Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
+      Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.polymorphic_type_name, action)
     end
 
     def send_new_comment_notifications_without_delay(comment)
@@ -135,7 +135,7 @@ class Notification < ApplicationRecord
     end
 
     def update_notifications(notifiable, action = nil)
-      Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.class.name, action)
+      Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.polymorphic_type_name, action)
     end
 
     def fast_destroy_old_notifications(destroy_before_timestamp = 3.months.ago)
@@ -162,7 +162,7 @@ class Notification < ApplicationRecord
         reactable_type: reaction.reactable_type,
         reactable_user_id: reaction.reactable.user_id
       }
-      receiver_data = { klass: receiver.class.name, id: receiver.id }
+      receiver_data = { klass: receiver.polymorphic_type_name, id: receiver.id }
       [reactable_data, receiver_data]
     end
   end

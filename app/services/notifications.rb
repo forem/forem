@@ -28,7 +28,7 @@ module Notifications
         title: comment.commentable.title,
         path: comment.commentable.path,
         class: {
-          name: comment.commentable.class.name
+          name: comment.commentable.polymorphic_type_name
         }
       }
     }

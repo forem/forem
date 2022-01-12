@@ -36,7 +36,7 @@
     <meta property="og:url" content="<%= app_url("#{@commentable.path}/comments") %>" />
     <meta property="og:title" content="<%= t("views.comments.meta.og.title_root", title: @commentable.title, site: community_name) %>" />
     <meta name="twitter:title" content="<%= t("views.comments.meta.og.title_root", title: @commentable.title, site: community_name) %>">
-    <% if @commentable.class.name == "Article" && @commentable.published %>
+    <% if @commentable.polymorphic_type_name == "Article" && @commentable.published %>
       <meta property="og:image" content="<%= article_social_image_url(@commentable) %>" />
       <meta name="twitter:image" content="<%= article_social_image_url(@commentable) %>">
     <% end %>
@@ -47,7 +47,7 @@
 <%= javascript_packs_with_chunks_tag "commentDropdowns", "followButtons", defer: true %>
 
 <div class="crayons-layout crayons-layout--limited-l gap-0" data-follow-button-container="true">
-  <% if @commentable && @commentable.class.name == "Article" %>
+  <% if @commentable && @commentable.polymorphic_type_name == "Article" %>
     <%= render "shared/payment_pointer", user: @commentable.user %>
     <span id="comment-article-indicator" data-article-id="<%= @commentable.id %>"></span>
   <% end %>

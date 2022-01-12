@@ -20,13 +20,13 @@ module Images
     end
 
     def call
-      if resource.class.name.include?("Article")
+      if resource.polymorphic_type_name.include?("Article")
         article_image
       elsif resource.instance_of?(User)
         optimize_image "/user/#{resource.id}?bust=#{resource.profile_image_url}"
       elsif resource.instance_of?(Organization)
         optimize_image "/organization/#{resource.id}?bust=#{resource.profile_image_url}"
-      elsif resource.class.name.include?("Tag")
+      elsif resource.polymorphic_type_name.include?("Tag")
         optimize_image "/tag/#{@resource.id}?bust=#{@resource.pretty_name}"
       end
     end

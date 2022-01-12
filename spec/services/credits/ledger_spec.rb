@@ -11,7 +11,7 @@ RSpec.describe Credits::Ledger, type: :service do
     params = {
       spent: true,
       spent_at: Time.current,
-      purchase_type: purchase.class.name,
+      purchase_type: purchase.polymorphic_type_name,
       purchase_id: purchase.id
     }
     params.merge!((

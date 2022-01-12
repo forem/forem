@@ -62,7 +62,7 @@ class FollowsController < ApplicationController
 
     followable = followable_klass.find(params[:followable_id])
 
-    need_notification = Follow.need_new_follower_notification_for?(followable.class.name)
+    need_notification = Follow.need_new_follower_notification_for?(followable.polymorphic_type_name)
 
     @result = if params[:verb] == "unfollow"
                 unfollow(followable, params[:followable_type], need_notification: need_notification)

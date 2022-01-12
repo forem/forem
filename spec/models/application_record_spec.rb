@@ -8,6 +8,20 @@ RSpec.describe ApplicationRecord, type: :model do
     end
   end
 
+  describe "#polymorphic_type_name" do
+    it "is the class's name" do
+      article = Article.new
+      expect(article.polymorphic_type_name).to eq("Article")
+    end
+
+    context "when using a decorator" do
+      it "is the decorated object's polymorphic_type_name" do
+        article = Article.new
+        expect(article.decorate.polymorphic_type_name).to eq(article.polymorphic_type_name)
+      end
+    end
+  end
+
   describe "#decorate" do
     it "decorates an object that has a decorator" do
       sponsorship = build(:sponsorship)

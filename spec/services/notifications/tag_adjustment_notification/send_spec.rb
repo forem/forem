@@ -32,7 +32,7 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
   specify "notification to have valid attributes", :aggregate_failures do
     expect(notification.user_id).to eq(article.user_id)
     expect(notification.notifiable_id).to eq(tag_adjustment.id)
-    expect(notification.notifiable_type).to eq(tag_adjustment.class.name)
+    expect(notification.notifiable_type).to eq(tag_adjustment.polymorphic_type_name)
   end
 
   it "tests JSON data" do

@@ -186,7 +186,7 @@ RSpec.describe "NotificationsIndex", type: :request do
             :reaction,
             user_id: user.id,
             reactable_id: reactable.id,
-            reactable_type: reactable.class.name,
+            reactable_type: reactable.polymorphic_type_name,
             category: categories.sample,
           )
         end

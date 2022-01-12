@@ -22,7 +22,7 @@ class Credit < ApplicationRecord
     return unless amount.positive?
 
     now = Time.current
-    association_id = "#{user_or_org.class.name.underscore}_id"
+    association_id = "#{user_or_org.polymorphic_type_name.underscore}_id"
     attributes = Array.new(amount) do
       {
         association_id => user_or_org.id,

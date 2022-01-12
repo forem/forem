@@ -109,12 +109,7 @@ module ApplicationHelper
     return if followable == Users::DeletedUser
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
-    followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
-                        followable.object.class.name
-                      else
-                        followable.class.name
-                      end
-
+    followable_type = followable.object.polymorphic_type_name
     followable_name = followable.name
 
     tag.button(
@@ -135,8 +130,9 @@ module ApplicationHelper
   end
 
   def user_colors_style(user)
-    "border: 2px solid #{user.decorate.darker_color}; \
-    box-shadow: 5px 6px 0px #{user.decorate.darker_color}"
+    darker_color = user.decorate.darker_color
+    "border: 2px solid #{darker_color}; \
+    box-shadow: 5px 6px 0px #{darker_color}"
   end
 
   def user_colors(user)

@@ -27,7 +27,7 @@ module TwitterClient
       end
 
       def record_error(exception)
-        class_name = exception.class.name.demodulize
+        class_name = exception.polymorphic_type_name.demodulize
 
         Honeycomb.add_field("twitter.result", "error")
         Honeycomb.add_field("twitter.error", class_name)
@@ -38,7 +38,7 @@ module TwitterClient
       end
 
       def handle_error(exception)
-        class_name = exception.class.name.demodulize
+        class_name = exception.polymorphic_type_name.demodulize
 
         # raise specific error if known, generic one if unknown
         error_class = "::TwitterClient::Errors::#{class_name}".safe_constantize

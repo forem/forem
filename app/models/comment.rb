@@ -116,7 +116,7 @@ class Comment < ApplicationRecord
   end
 
   def parent_type
-    parent_or_root_article.class.name.downcase
+    parent_or_root_article.polymorphic_type_name.downcase
       .gsub("article", "post")
       .gsub("podcastepisode", "episode")
   end
@@ -292,7 +292,7 @@ class Comment < ApplicationRecord
 
   def should_send_email_notification?
     parent_exists? &&
-      parent_user.class.name != "Podcast" &&
+      parent_user.polymorphic_type_name != "Podcast" &&
       parent_user != user &&
       parent_user.notification_setting.email_comment_notifications &&
       parent_user.email &&

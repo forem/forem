@@ -22,7 +22,7 @@ module Notifications
         Notification.create(
           user_id: article.user_id,
           notifiable_id: tag_adjustment.id,
-          notifiable_type: tag_adjustment.class.name,
+          notifiable_type: tag_adjustment.polymorphic_type_name,
           json_data: json_data,
         )
       end

@@ -42,7 +42,7 @@ module Notifications
           notifications_attributes.push(
             user_id: follower.id,
             notifiable_id: notifiable.id,
-            notifiable_type: notifiable.class.name,
+            notifiable_type: notifiable.polymorphic_type_name,
             action: action,
             json_data: json_data,
             created_at: now,

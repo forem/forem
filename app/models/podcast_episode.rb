@@ -80,7 +80,7 @@ class PodcastEpisode < ApplicationRecord
   alias public_reactions_count zero_method
 
   def class_name
-    self.class.name
+    polymorphic_type_name
   end
 
   def tag_keywords_for_search

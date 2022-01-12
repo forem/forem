@@ -305,7 +305,8 @@ RSpec.describe "Dashboards", type: :request do
     let(:author) { create(:user) }
     let(:article_with_user_subscription_tag) { create(:article, user: author, with_user_subscription_tag: true) }
     let(:params) do
-      { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+      { source_type: article_with_user_subscription_tag.polymorphic_type_name,
+        source_id: article_with_user_subscription_tag.id }
     end
 
     before do
@@ -340,7 +341,8 @@ RSpec.describe "Dashboards", type: :request do
              subscriber_email: second_user.email,
              author_id: unauthorized_article.user_id,
              user_subscription_sourceable: unauthorized_article)
-      unauthorized_article_params = { source_type: unauthorized_article.class.name, source_id: unauthorized_article.id }
+      unauthorized_article_params = { source_type: unauthorized_article.polymorphic_type_name,
+                                      source_id: unauthorized_article.id }
 
       expect do
         get "/dashboard/subscriptions", params: unauthorized_article_params
@@ -355,7 +357,7 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     it "raises an error when the source can't be found" do
-      nonexistent_article_params = { source_type: article.class.name, source_id: article.id + 999 }
+      nonexistent_article_params = { source_type: article.polymorphic_type_name, source_id: article.id + 999 }
       expect do
         get "/dashboard/subscriptions", params: nonexistent_article_params
       end.to raise_error(ActiveRecord::RecordNotFound)

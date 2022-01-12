@@ -20,7 +20,7 @@ module Github
 
     # Hides private credentials when printed
     def inspect
-      "#<#{self.class.name}:#{object_id}>"
+      "#<#{polymorphic_type_name}:#{object_id}>"
     end
 
     private
@@ -69,7 +69,7 @@ module Github
     end
 
     def record_error(exception)
-      class_name = exception.class.name.demodulize
+      class_name = exception.polymorphic_type_name.demodulize
 
       Honeycomb.add_field("github.result", "error")
       Honeycomb.add_field("github.error", class_name)
@@ -80,7 +80,7 @@ module Github
     end
 
     def handle_error(exception)
-      class_name = exception.class.name.demodulize
+      class_name = exception.polymorphic_type_name.demodulize
 
       # raise specific error if known, generic one if unknown
       error_class = "::Github::Errors::#{class_name}".safe_constantize

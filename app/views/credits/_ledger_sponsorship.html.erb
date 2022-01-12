@@ -1,4 +1,4 @@
-<% if purchase.sponsorable && purchase.sponsorable.class.name.include?("Tag") %>
+<% if purchase.sponsorable && purchase.sponsorable.polymorphic_type_name.include?("Tag") %>
   <a href="<%= tag_path(purchase.sponsorable.name) %>">
     <%= t("views.credits.tag", name: purchase.sponsorable.name) %>
   </a>

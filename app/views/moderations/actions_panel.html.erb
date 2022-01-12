@@ -22,7 +22,7 @@
       <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
               data-reactable-id="<%= @moderatable.id %>"
               data-category="thumbsup"
-              data-reactable-type="<%= @moderatable.class.name %>">
+              data-reactable-type="<%= @moderatable.polymorphic_type_name %>">
         <div class="reaction-button-circle">
           <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_up")) %>
           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
@@ -32,7 +32,7 @@
       <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
               data-reactable-id="<%= @moderatable.id %>"
               data-category="thumbsdown"
-              data-reactable-type="<%= @moderatable.class.name %>">
+              data-reactable-type="<%= @moderatable.polymorphic_type_name %>">
         <div class="reaction-button-circle">
           <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_down")) %>
           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
@@ -43,7 +43,7 @@
     <button class="reaction-vomit-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.id %>"
             data-category="vomit"
-            data-reactable-type="<%= @moderatable.class.name %>">
+            data-reactable-type="<%= @moderatable.polymorphic_type_name %>">
       <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default mr-1", title: "Suspicious...") %>
       <span></span>
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>

@@ -32,7 +32,7 @@ RSpec.describe "Credits", type: :request do
 
       it "shows listing purchases" do
         listing = create(:listing, user: user, title: "Awesome opportunity")
-        purchase_params = { user: user, purchase_type: listing.class.name, purchase_id: listing.id }
+        purchase_params = { user: user, purchase_type: listing.polymorphic_type_name, purchase_id: listing.id }
         create(:credit, params.merge(purchase_params))
 
         sign_in user
@@ -46,7 +46,8 @@ RSpec.describe "Credits", type: :request do
       it "does not show sponsorship purchases to org members" do
         org = org_member.organizations.first
         sponsorship = create(:sponsorship, organization: org, user: org_admin)
-        purchase_params = { organization: org, purchase_type: sponsorship.class.name, purchase_id: sponsorship.id }
+        purchase_params = { organization: org, purchase_type: sponsorship.polymorphic_type_name,
+                            purchase_id: sponsorship.id }
         create(:credit, params.merge(purchase_params))
 
         sign_in org_member
@@ -60,7 +61,8 @@ RSpec.describe "Credits", type: :request do
       it "shows sponsorship purchases to org admins" do
         org = org_admin.organizations.first
         sponsorship = create(:sponsorship, organization: org, user: org_admin)
-        purchase_params = { organization: org, purchase_type: sponsorship.class.name, purchase_id: sponsorship.id }
+        purchase_params = { organization: org, purchase_type: sponsorship.polymorphic_type_name,
+                            purchase_id: sponsorship.id }
         create(:credit, params.merge(purchase_params))
 
         sign_in org_admin
@@ -75,7 +77,8 @@ RSpec.describe "Credits", type: :request do
         org = org_admin.organizations.first
         tag = create(:tag)
         sponsorship = create(:sponsorship, organization: org, user: org_admin, level: :tag, sponsorable: tag)
-        purchase_params = { organization: org, purchase_type: sponsorship.class.name, purchase_id: sponsorship.id }
+        purchase_params = { organization: org, purchase_type: sponsorship.polymorphic_type_name,
+                            purchase_id: sponsorship.id }
         create(:credit, params.merge(purchase_params))
 
         sign_in org_admin

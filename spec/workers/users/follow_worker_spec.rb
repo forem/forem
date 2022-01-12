@@ -10,7 +10,7 @@ RSpec.describe Users::FollowWorker, type: :worker do
     context "when followable doesn't exist" do
       it "doesn't follow user" do
         expect do
-          worker.perform(user.id, invalid_id, followable.class.name)
+          worker.perform(user.id, invalid_id, followable.polymorphic_type_name)
         end.not_to change(Follow, :count)
       end
     end
@@ -18,7 +18,7 @@ RSpec.describe Users::FollowWorker, type: :worker do
     context "when user doesn't exist" do
       it "doesn't follow user" do
         expect do
-          worker.perform(invalid_id, followable.id, followable.class.name)
+          worker.perform(invalid_id, followable.id, followable.polymorphic_type_name)
         end.not_to change(Follow, :count)
       end
     end
@@ -32,7 +32,7 @@ RSpec.describe Users::FollowWorker, type: :worker do
 
       it "follows user" do
         expect do
-          worker.perform(user.id, followable.id, followable.class.name)
+          worker.perform(user.id, followable.id, followable.polymorphic_type_name)
         end.to change(Follow, :count).by(1)
       end
     end

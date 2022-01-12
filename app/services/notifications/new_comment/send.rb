@@ -30,7 +30,7 @@ module Notifications
           Notification.create(
             user_id: user_id,
             notifiable_id: comment.id,
-            notifiable_type: comment.class.name,
+            notifiable_type: comment.polymorphic_type_name,
             action: nil,
             json_data: json_data,
           )
@@ -57,7 +57,7 @@ module Notifications
         Notification.create(
           organization_id: comment.commentable.organization_id,
           notifiable_id: comment.id,
-          notifiable_type: comment.class.name,
+          notifiable_type: comment.polymorphic_type_name,
           action: nil,
           json_data: json_data,
         )

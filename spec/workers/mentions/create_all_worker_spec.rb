@@ -13,7 +13,7 @@ RSpec.describe Mentions::CreateAllWorker, type: :worker do
 
     context "when comment is valid" do
       it "calls on Mentions::CreateAll" do
-        worker.perform(comment.id, comment.class.name)
+        worker.perform(comment.id, comment.polymorphic_type_name)
 
         expect(Mentions::CreateAll).to have_received(:call).with(comment)
       end

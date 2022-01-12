@@ -76,7 +76,7 @@ module Mentions
 
       # The mentionable_type is the model that created the mention, the user is the user to be mentioned.
       mention = Mention.create(user_id: user.id, mentionable_id: notifiable.id,
-                               mentionable_type: notifiable.class.name)
+                               mentionable_type: notifiable.polymorphic_type_name)
 
       # If notifiable is an Article, we need to create the notification for the mention immediately so
       # that the notification exists in the database before we attempt to create other Article-related notifications.
