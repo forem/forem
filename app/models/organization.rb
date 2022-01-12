@@ -1,6 +1,8 @@
 class Organization < ApplicationRecord
   include CloudinaryHelper
 
+  include Images::Profile.for(:profile_image_url)
+
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   INTEGER_REGEXP = /\A\d+\z/
   SLUG_REGEXP = /\A[a-zA-Z0-9\-_]+\z/
@@ -103,7 +105,7 @@ class Organization < ApplicationRecord
   end
 
   def profile_image_90
-    Images::Profile.call(profile_image_url, length: 90)
+    profile_image_url_for(length: 90)
   end
 
   def enough_credits?(num_credits_needed)
