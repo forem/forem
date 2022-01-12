@@ -624,7 +624,7 @@ class Article < ApplicationRecord
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parse_date(front_matter["date"]) if published
-    self.main_image = determine_image(front_matter)
+    set_image(front_matter)
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
 
     update_description = front_matter["description"].present? || front_matter["title"].present?
@@ -634,16 +634,16 @@ class Article < ApplicationRecord
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
   end
 
-  def determine_image(front_matter)
-    # In order to clear out the cover_image, we check for the key in the front_matter.
-    # If the key exists, we use the value from it (a url or `nil`).
-    # Otherwise, we fall back to the main_image on the article.
-    has_cover_image = front_matter.include?("cover_image")
-
-    if has_cover_image && (front_matter["cover_image"].present? || main_image)
-      front_matter["cover_image"]
+  def set_image(front_matter)
+    if front_matter.include?("cover_image")
+      self.main_image = front_matter["cover_image"]
+      self.main_image_from_frontmatter = true
+    elsif main_image_from_frontmatter
+      # If we do not receive an image from frontmatter but image was earlier set from frontmatter then clear image
+      self.main_image = nil
+      self.main_image_from_frontmatter = true
     else
-      main_image
+      self.main_image_from_frontmatter = false
     end
   end
 

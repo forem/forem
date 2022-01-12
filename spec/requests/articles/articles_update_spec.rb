@@ -167,4 +167,43 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(response).to redirect_to "#{article.path}/edit"
     expect(article.reload.video_thumbnail_url).to include "https://i.imgur.com/HPiu7N4.jpg"
   end
+
+  context "when main_image_from_frontmatter is false" do
+    it "does not remove main image" do
+      expect(article.main_image).not_to be_nil
+      put "/articles/#{article.id}", params: {
+        article: {
+          body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
+          tag_list: "yo"
+        }
+      }
+      expect(article.reload.main_image).not_to be_nil
+    end
+
+    it "does remove main image when its passed as empty" do
+      expect(article.main_image).not_to be_nil
+      put "/articles/#{article.id}", params: {
+        article: {
+          body_markdown: "---\ntitle: hey hey hahuu\npublished: false\ncover_image: \n---\nYo ho ho#{rand(100)}",
+          tag_list: "yo"
+        }
+      }
+      expect(article.reload.main_image).to be_nil
+    end
+  end
+
+  context "when main_image_from_frontmatter is true" do
+    let(:article) { create(:article, main_image_from_frontmatter: true, user_id: user.id) }
+
+    it "removes main image when cover_image not provided" do
+      expect(article.main_image).not_to be_nil
+      put "/articles/#{article.id}", params: {
+        article: {
+          body_markdown: "---\ntitle: hey hey hahuu\npublished: false\ncover_image: \n---\nYo ho ho#{rand(100)}",
+          tag_list: "yo"
+        }
+      }
+      expect(article.reload.main_image).to be_nil
+    end
+  end
 end

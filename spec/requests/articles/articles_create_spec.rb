@@ -113,5 +113,15 @@ RSpec.describe "ArticlesCreate", type: :request do
       expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
       expect(response.headers["Retry-After"]).to eq(expected_retry_after)
     end
+
+    it "sets main_image_from_frontmatter to true if markdown has cover_image" do
+      post "/articles", params: {
+        article: {
+          body_markdown: "---\ntitle: hey hahuu\npublished: false\ncover_image: #{Faker::Avatar.image}\n---\nYo",
+          tag_list: "yo"
+        }
+      }
+      expect(Article.last.main_image_from_frontmatter).to be true
+    end
   end
 end
