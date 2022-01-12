@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe Tag, type: :model do
   let(:tag) { build(:tag) }
 
+  describe "#polymorphic_type_name" do
+    it "is the class name" do
+      expect(tag.polymorphic_type_name).to eq("Tag")
+    end
+  end
+
   describe "validations" do
     describe "builtin validations" do
       subject { tag }

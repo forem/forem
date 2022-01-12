@@ -87,6 +87,13 @@ class Tag < ActsAsTaggableOn::Tag
     Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
   end
 
+  # @return [String]
+  #
+  # @see ApplicationRecord#polymorphic_type_name for discussion.
+  def polymorphic_type_name
+    self.class.name
+  end
+
   def submission_template_customized(param_0 = nil)
     submission_template&.gsub("PARAM_0", param_0)
   end
