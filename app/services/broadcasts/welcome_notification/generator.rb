@@ -107,8 +107,8 @@ module Broadcasts
         # we filter the providers to suggest based on the following two criteria
         # - provider is enabled
         # - an acive provider Broadcast message exists
-        # Disabling/deactivating a provider_connect welcome message removes
-        # the provider from suggestions, while you could
+        # Disabling/deactivating a provider_connect broadcast removes
+        # the provider from suggestions sent to users
         @providers ||=
           Authentication::Providers.enabled.select do |provider|
             authentication_broadcasts.exists?(title: "Welcome Notification: #{provider}_connect")
