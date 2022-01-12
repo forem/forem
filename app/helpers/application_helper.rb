@@ -109,7 +109,7 @@ module ApplicationHelper
     return if followable == Users::DeletedUser
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
-    followable_type = followable.object.polymorphic_type_name
+    followable_type = followable.polymorphic_type_name
     followable_name = followable.name
 
     tag.button(
