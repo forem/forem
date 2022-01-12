@@ -24,7 +24,7 @@ class ApplicationDecorator
   # @return [ApplicationDecorator]
   #
   # @note Without this method, the @object will handle the `decorate` message; which will go through
-  #       the logic of determining the decorator class, and isntantiating a new decorator.
+  #       the logic of determining the decorator class, and instantiating a new decorator.
   def decorate
     self
   end
