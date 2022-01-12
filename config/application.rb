@@ -40,10 +40,6 @@ module PracticalDeveloper
     config.action_controller.per_form_csrf_tokens = false
 
     ## Rails 6.0
-    # Determines whether forms are generated with a hidden tag that forces older versions of Internet
-    # Explorer to submit forms encoded in UTF-8
-    config.action_view.default_enforce_utf8 = true
-
     # Enables writing cookies with the purpose metadata embedded.
     config.action_dispatch.use_cookies_with_metadata = false
 
