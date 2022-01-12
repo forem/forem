@@ -25,7 +25,7 @@ module Admin
     protected
 
     def authorization_resource
-      polymorphic_type_name.sub("Admin::", "").sub("Controller", "").singularize.constantize
+      self.class.name.sub("Admin::", "").sub("Controller", "").singularize.constantize
     end
 
     def authorize_admin

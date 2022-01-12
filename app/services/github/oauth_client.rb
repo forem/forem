@@ -20,7 +20,7 @@ module Github
 
     # Hides private credentials when printed
     def inspect
-      "#<#{polymorphic_type_name}:#{object_id}>"
+      "#<#{self.class.name}:#{object_id}>"
     end
 
     private
