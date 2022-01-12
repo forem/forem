@@ -21,6 +21,7 @@ gem "blazer", "~> 2.5.0" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
+gem "carrierwave_direct", "~> 0.0.15" # Process your uploads in the background by uploading directly to S3
 gem "cloudinary", "~> 1.21" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 3.1" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.54.1" # ddtrace is Datadog’s tracing client for Ruby.
@@ -96,7 +97,6 @@ gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 3.27" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
-gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.3.1" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.1.12" # Ensures that Sidekiq jobs are unique when enqueued
