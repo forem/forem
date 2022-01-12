@@ -23,7 +23,7 @@ class UserTag < LiquidTagBase
   private
 
   def parse_username_to_user(user)
-    User.find_by(username: user, registered: true) || User::DeletedUser
+    User.find_by(username: user, registered: true) || Users::DeletedUser
   end
 end
 
