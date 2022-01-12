@@ -41,6 +41,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
       result = notification.decorate.mocked_object("user")
       expect(result.name).to eq("User")
       expect(result.id).to eq(comment.user.id)
+      expect(result.polymorphic_type_name).to eq("User")
     end
 
     it "returns struct class and its name" do
