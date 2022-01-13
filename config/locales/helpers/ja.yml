@@ -1,5 +1,5 @@
 ---
-fr:
+ja:
   helpers:
     label:
       listing:
@@ -10,25 +10,25 @@ fr:
         tag_list: Tags
         title: Title
       organization:
-        name: Name
-        slug: Username
-        profile_image: Profile image
-        nav_image: Logo for light themes
-        dark_nav_image: Logo for dark themes
-        twitter_username: Twitter username
-        github_username: GitHub username
-        url: Website url
-        tag_line: Tag line
-        summary: Summary
-        location: Location
-        email: Support email
+        name: 名前
+        slug: ユーザー名
+        profile_image: プロフィール画像
+        nav_image: 明るい配色用のロゴ
+        dark_nav_image: 暗い配色用のロゴ
+        twitter_username: Twitter ユーザー名
+        github_username: GitHub ユーザー名
+        url: サイト URL
+        tag_line: キャッチコピー
+        summary: 紹介文
+        location: 場所
+        email: 問い合わせメールアドレス
         company_size: Organization size
         story: Our story
         tech_stack: Our stack
-        cta_body_markdown: Body text
-        cta_button_text: Link text
-        cta_button_url: Link url
-        proof: Proof
+        cta_body_markdown: 本文
+        cta_button_text: リンクの文言
+        cta_button_url: リンク URL
+        proof: 保証
       podcast:
         android_url: Android url
         description: Description
@@ -44,13 +44,13 @@ fr:
         twitter_username: Twitter username
         website_url: Website url
       response_template:
-        title: Title
-        content: Comment body (Markdown)
+        title: タイトル
+        content: コメント本文 (Markdown)
       user:
-        name: Name
-        email: Email
-        username: Username
-        profile_image: Profile image
+        name: 名前
+        email: メールアドレス
+        username: ユーザー名
+        profile_image: プロフィール画像
       users_notification_setting:
         email_newsletter: Send me weekly newsletter emails
         email_digest_periodic: Send me a periodic digest of top posts from my tags
@@ -94,15 +94,15 @@ fr:
       app_logo: App logo
       follow:
         aria_label:
-          Organization: 'Follow organization: %{name}'
-          Tag: 'Follow tag: %{name}'
-          User: 'Follow user: %{name}'
-          default: 'Follow %{type}: %{name}'
+          Organization: 'グループ「%{name}」をフォロー'
+          Tag: 'タグ「%{name}」をフォロー'
+          User: '「 %{name}」さんをフォロー'
+          default: '%{type}「%{name}」をフォロー'
         text:
-          Organization: Suivre
-          Tag: Suivre
-          User: Suivre
-          default: Suivre
+          Organization: フォロー
+          Tag: フォロー
+          User: フォロー
+          default: フォロー
       required: Required
       subtitle:
         week: Top posts this week
@@ -128,10 +128,8 @@ fr:
       ama: ama
       ask_me_anything: Ask Me Anything
       author: Author
-      like: Aime
-      nbsp_likes_html:
-        one: "&nbsp;like"
-        other: "&nbsp;likes"
+      like: いいね
+      nbsp_likes_html: いいね&nbsp;
     feedback_messages_helper:
       offender:
         body: |
@@ -171,9 +169,7 @@ fr:
     organization_helper:
       option: "%{org_name} (%{unspent})"
     rate_limit_checker_helper:
-      day:
-        one: day
-        other: days
+      day: days
       general: How many %{thing} can a new member (%{timeframe} or less) create within any 5 minute period?
       published:
         title: Limit number of posts created
@@ -225,10 +221,10 @@ fr:
         posts: posts
         comments: comments
     settings_helper:
-      advanced: Advanced
-      beginner: Beginner
-      expert: Expert
-      mid_level: Mid-level
-      novice: Novice
+      advanced: 上級
+      beginner: 初級
+      expert: 専門家
+      mid_level: 中級
+      novice: 未経験
     social_link_helper:
-      n_a: N/A
+      n_a: なし

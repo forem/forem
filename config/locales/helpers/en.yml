@@ -92,7 +92,6 @@ en:
         feed_url: https://yoursite.com/feed
     application_helper:
       app_logo: App logo
-      deleted_user: "[Deleted User]"
       follow:
         aria_label:
           Organization: 'Follow organization: %{name}'
