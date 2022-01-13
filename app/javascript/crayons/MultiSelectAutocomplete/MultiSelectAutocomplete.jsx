@@ -522,10 +522,10 @@ export const MultiSelectAutocomplete = ({
         {/* disabled as the inner input forms the tab stop (this click handler ensures _any_ click on the wrapper focuses the input which may be less wide) */}
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
         <div
-          role={allowSelections ? 'combobox' : null}
-          aria-haspopup={allowSelections ? 'listbox' : null}
-          aria-expanded={allowSelections ? suggestions.length > 0 : null}
-          aria-owns={allowSelections ? 'listbox1' : null}
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-expanded={suggestions.length > 0}
+          aria-owns="listbox1"
           className={`c-autocomplete--multi__wrapper${
             border ? '-border' : ' border-none p-0'
           } flex items-center crayons-textfield cursor-text`}
