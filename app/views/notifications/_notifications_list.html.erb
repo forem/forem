@@ -6,6 +6,7 @@
   </div>
 
   <% rescue => e %>
+
   <% Honeybadger.notify(e, context: { notification_id: notification.id }) %>
 
   <div class="align-center p-9 py-10 color-base-80 crayons-card mb-2">

@@ -3,7 +3,7 @@ require_relative "boot"
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
-require "active_job/railtie"
+# require "active_job/railtie"
 require "active_record/railtie"
 # require "active_storage/engine"
 require "action_controller/railtie"
@@ -40,15 +40,6 @@ module PracticalDeveloper
     config.action_controller.per_form_csrf_tokens = false
 
     ## Rails 6.0
-    # Determines whether forms are generated with a hidden tag that forces older versions of Internet
-    # Explorer to submit forms encoded in UTF-8
-    config.action_view.default_enforce_utf8 = true
-
-    # Enables the same cache key to be reused when the object being cached of type ActiveRecord::Relation
-    # changes by moving the volatile information (max updated at and count) of the relation's cache
-    # key into the cache version to support recycling cache key.
-    config.active_record.collection_cache_versioning = false
-
     # Enables writing cookies with the purpose metadata embedded.
     config.action_dispatch.use_cookies_with_metadata = false
 
@@ -80,8 +71,6 @@ module PracticalDeveloper
     Dir["#{config.root}/app/middlewares/**/*.rb"].each do |file|
       require_dependency(file)
     end
-
-    config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Deflater
 
