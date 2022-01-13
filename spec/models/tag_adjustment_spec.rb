@@ -12,9 +12,6 @@ RSpec.describe TagAdjustment, type: :model do
   let(:mod_user) { create(:user) }
   let(:regular_user) { create(:user) }
 
-  it { is_expected.to validate_presence_of(:user_id) }
-  it { is_expected.to validate_presence_of(:article_id) }
-  it { is_expected.to validate_presence_of(:tag_id) }
   it { is_expected.to validate_presence_of(:tag_name) }
   it { is_expected.to validate_presence_of(:adjustment_type) }
   it { is_expected.to validate_presence_of(:status) }

@@ -11,10 +11,8 @@ class UserSubscription < ApplicationRecord
   belongs_to :subscriber, class_name: "User", inverse_of: :subscribed_to_user_subscriptions
   belongs_to :user_subscription_sourceable, polymorphic: true, optional: true
 
-  validates :author_id, presence: true
-
   validates :subscriber_email, presence: true
-  validates :subscriber_id, presence: true, uniqueness: {
+  validates :subscriber_id, uniqueness: {
     scope: %i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id]
   }
 
