@@ -67,7 +67,12 @@ export const Options = ({
   }
   return (
     <div className="s:relative">
-      <Button id="post-options-btn" icon={CogIcon} title="Post options" />
+      <Button
+        id="post-options-btn"
+        icon={CogIcon}
+        title="Post options"
+        aria-label="Post options"
+      />
 
       <Dropdown
         triggerButtonId="post-options-btn"
