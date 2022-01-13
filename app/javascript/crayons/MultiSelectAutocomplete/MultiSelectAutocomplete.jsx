@@ -572,7 +572,7 @@ export const MultiSelectAutocomplete = ({
             <span className="p-3">Only {maxSelections} selections allowed</span>
           </div>
         ) : null}
-        {suggestions.length > 0 ? (
+        {suggestions.length > 0 && allowSelections ? (
           <div className="c-autocomplete--multi__popover">
             {inputRef.current?.value === '' ? staticSuggestionsHeading : null}
             <ul

@@ -506,6 +506,52 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(input).toHaveValue('a1');
   });
 
-  // TODO: Clarify UI/behaviour when max is reached
-  it.todo('sets a maximum number of selections');
+  it('shows a message and prevents selections when maximum is reached', async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
+    const {
+      getByLabelText,
+      getByRole,
+      queryByText,
+      getByText,
+      queryAllByRole,
+    } = render(
+      <MultiSelectAutocomplete
+        maxSelections={2}
+        defaultValue={[{ name: 'defaultSelection' }]}
+        labelText="Example label"
+        fetchSuggestions={mockFetchSuggestions}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+
+    // Max selections not yet reached
+    expect(queryByText('Only 2 selections allowed')).toBeNull();
+    expect(input).toHaveAttribute('aria-disabled', 'false');
+
+    userEvent.type(input, 'example,');
+
+    // Make sure option has been selected
+    await waitFor(() => getByRole('button', { name: 'Edit example' }));
+
+    // Check input is in the max reached state
+    expect(input).toHaveAttribute('placeholder', '');
+    expect(getByText('Only 2 selections allowed')).toBeInTheDocument();
+    expect(input).toHaveAttribute('aria-disabled', 'true');
+
+    // Start typing and make sure further options not shown
+    userEvent.type(input, 'a');
+    expect(queryAllByRole('option')).toHaveLength(0);
+    expect(getByText('Only 2 selections allowed')).toBeInTheDocument();
+
+    // Try to select a value by typing a comma
+    userEvent.type(input, 'b,');
+    // Verify the selection wasn't made, and the text is still in the input
+    expect(input).toHaveValue('ab');
+  });
 });
