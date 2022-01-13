@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import notes from './notices.md';
+import notes from './notices.mdx';
 
 export default {
   title: 'Components/Notices',

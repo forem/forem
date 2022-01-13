@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { Fieldset } from '../../../storybook-utilities/Fieldset';
 import '../../../storybook-utilities/designSystem.scss';
-import notes from '../../form-elements.md';
+import notes from '../../form-elements.mdx';
 
 export default {
   title: 'Components/Form Elements/Checkbox',

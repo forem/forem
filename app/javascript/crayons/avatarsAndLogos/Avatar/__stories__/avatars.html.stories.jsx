@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import notes from '../../avatars-and-logos.md';
+import notes from '../../avatars-and-logos.mdx';
 
 export default {
   title: 'Components/Avatars & Logos/Avatars',
