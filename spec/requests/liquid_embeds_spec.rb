@@ -17,7 +17,7 @@ RSpec.describe "LiquidEmbeds", type: :request, vcr: { cassette_name: "twitter_cl
     it "renders 404 if improper tweet" do
       expect do
         get liquid_embed_path("tweet", args: "improper")
-      end.to raise_error(ActionView::Template::Error)
+      end.to raise_error(ActionController::RoutingError)
     end
 
     it "contains base target parent" do

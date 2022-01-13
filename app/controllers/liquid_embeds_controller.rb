@@ -7,7 +7,12 @@ class LiquidEmbedsController < ApplicationController
     set_surrogate_key_header params.to_s
 
     begin
-      @liquid_node = Liquid::Template.parse("{% #{params[:embeddable]} #{params[:args]} %}").root.nodelist.first
+      @rendered_node = Liquid::Template
+        .parse("{% #{params[:embeddable]} #{params[:args]} %}")
+        .root
+        .nodelist
+        .first
+        .render({})
     rescue StandardError
       raise ActionController::RoutingError, "Not Found"
     end
