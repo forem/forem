@@ -19,7 +19,6 @@ class Listing < ApplicationRecord
   acts_as_taggable_on :tags
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
 
-  validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
 
   validates :title, presence: true, length: { maximum: 128 }

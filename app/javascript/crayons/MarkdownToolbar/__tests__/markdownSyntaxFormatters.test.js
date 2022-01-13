@@ -1636,7 +1636,7 @@ describe('markdownSyntaxFormatters', () => {
         );
       });
 
-      it('unformats a single line of text if no selection is given, and current line start contains 1. ', () => {
+      it('unformats a single line of text if no selection is given, and current line start contains 1.', () => {
         const textAreaValue = 'one\n\n1. two\nthree';
         const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
 
@@ -1985,7 +1985,7 @@ describe('markdownSyntaxFormatters', () => {
         );
       });
 
-      it('unformats a single line of text if no selection is given, and current line only contains - ', () => {
+      it('unformats a single line of text if no selection is given, and current line only contains -', () => {
         const textAreaValue = 'one\n\n- \ntwo';
         const expectedNewTextAreaValue = 'one\n\n\ntwo';
 
@@ -2705,7 +2705,7 @@ describe('markdownSyntaxFormatters', () => {
         );
       });
 
-      it('unformats a single line of text if no selection is given, and current line only contains > ', () => {
+      it('unformats a single line of text if no selection is given, and current line only contains >', () => {
         const textAreaValue = 'one\n\n> \ntwo';
         const expectedNewTextAreaValue = 'one\n\n\ntwo';
 

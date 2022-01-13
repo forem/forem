@@ -402,7 +402,7 @@ export default class ConfigController extends Controller {
 
   activateMissingKeysModal(providers) {
     this.configModalAnchorTarget.innerHTML = adminModal({
-      title: 'Setup not complete',
+      title: 'Getting started',
       controllerName: 'config',
       closeModalFunction: 'closeAdminModal',
       body: this.missingAuthKeysModalBody(providers),

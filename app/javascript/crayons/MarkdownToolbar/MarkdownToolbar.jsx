@@ -77,7 +77,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       )
       .map((syntaxName) => {
         const { command } =
-          markdownSyntaxFormatters[syntaxName].getKeyboardShortcut?.();
+          markdownSyntaxFormatters[syntaxName].getKeyboardShortcut();
         return [
           command,
           (e) => {

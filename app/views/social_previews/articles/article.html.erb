@@ -123,7 +123,7 @@
       <h1 style="font-size:<%= font_size %>vw;"><%= @article.title %></h1>
     </div>
     <div class="preview-user">
-      <img src="<%= Images::Profile.call(@article.user.profile_image_url, length: 90) %>" />
+      <img src="<%= @article.user.profile_image_url_for(length: 90) %>" />
       <%= truncate @article.user.name, length: 28 %>・<%= @article.readable_publish_date %>
     </div>
     <div class="badge-images">

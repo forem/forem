@@ -1,6 +1,12 @@
 class PollTag < LiquidTagBase
   PARTIAL = "liquids/poll".freeze
   VALID_CONTEXTS = %w[Article].freeze
+
+  # @see LiquidTagBase.user_authorization_method_name for discussion
+  def self.user_authorization_method_name
+    :any_admin?
+  end
+
   VALID_ROLES = %i[
     admin
     super_admin
