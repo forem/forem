@@ -8,7 +8,7 @@ import {
 } from './markdownSyntaxFormatters';
 import OverflowIcon from '@images/overflow-vertical.svg';
 import HelpIcon from '@images/help.svg';
-import { ButtonNew as Button } from '@crayons';
+import { ButtonNew as Button, Link } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
@@ -396,10 +396,10 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           className="crayons-dropdown flex p-2 min-w-unset right-0 top-100"
         >
           {getSecondaryFormatterButtons(true)}
-          <Button
-            tagName="a"
+          <Link
+            block
             role="menuitem"
-            url="/p/editor_guide"
+            href="/p/editor_guide"
             target="_blank"
             rel="noopener noreferrer"
             icon={HelpIcon}
