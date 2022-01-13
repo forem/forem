@@ -48,11 +48,6 @@ module PracticalDeveloper
     config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
     ### END FRAMEWORK DEFAULT OVERIDES
 
-    # Zeitwerk is the new autoloader in Rails 6+
-    # As we don't have `load_defaults 6.0` yet, it has to be enabled manually
-    # See <https://guides.rubyonrails.org/autoloading_and_reloading_constants.html>
-    config.autoloader = :zeitwerk
-
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when
     # resolving require calls with relative paths, and saves Bootsnap work and
@@ -66,11 +61,6 @@ module PracticalDeveloper
     # the framework and any gems in your application.
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
-
-    # Middlewares folder is not otherwise autorequired.
-    Dir["#{config.root}/app/middlewares/**/*.rb"].each do |file|
-      require_dependency(file)
-    end
 
     config.middleware.use Rack::Deflater
 
