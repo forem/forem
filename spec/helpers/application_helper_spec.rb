@@ -17,7 +17,7 @@ RSpec.describe ApplicationHelper, type: :helper do
         "latest" => "Latest posts"
       }
 
-      expect(described_class::SUBTITLES).to eq subtitles
+      expect(Class.new.include(described_class).new.subtitles).to eq subtitles
     end
   end
 
