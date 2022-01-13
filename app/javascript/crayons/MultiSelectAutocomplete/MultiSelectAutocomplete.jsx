@@ -195,6 +195,11 @@ export const MultiSelectAutocomplete = ({
       nextInputValue,
       focusInput,
     });
+
+    // Start the next search
+    if (focusInput) {
+      handleAutocompleteStart();
+    }
   };
 
   const enterEditState = (editItem, editItemIndex) => {
@@ -239,7 +244,7 @@ export const MultiSelectAutocomplete = ({
     }
   };
 
-  const handleInputFocus = (e) => {
+  const handleAutocompleteStart = () => {
     // Only show static suggestions when not in edit mode
     if (inputPosition !== null) {
       return;
@@ -264,7 +269,6 @@ export const MultiSelectAutocomplete = ({
         ),
       });
     }
-    onFocus?.(e);
   };
 
   const handleInputChange = async ({ target: { value } }) => {
@@ -352,6 +356,7 @@ export const MultiSelectAutocomplete = ({
         e.preventDefault();
         if (activeDescendentIndex !== null) {
           selectItem({ selectedItem: suggestions[activeDescendentIndex] });
+          handleAutocompleteStart();
         }
         break;
       case KEYS.ESCAPE:
@@ -561,7 +566,10 @@ export const MultiSelectAutocomplete = ({
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 onBlur={handleInputBlur}
-                onFocus={handleInputFocus}
+                onFocus={(e) => {
+                  onFocus?.(e);
+                  handleAutocompleteStart();
+                }}
                 placeholder={inputPosition === null ? inputPlaceholder : null}
               />
             </li>
