@@ -15,6 +15,7 @@ import { fetchSearch } from '@utilities/search';
  */
 export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
   const [defaultSelections, setDefaultSelections] = useState([]);
+  const [defaultsLoaded, setDefaultsLoaded] = useState(false);
   const [topTags, setTopTags] = useState([]);
 
   useEffect(() => {
@@ -25,12 +26,12 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
   }, []);
 
   useEffect(() => {
-    // If the default selections have not already been populated, fetch the tag data
-    if (defaultValue && defaultValue !== '' && defaultSelections.length === 0) {
-      // The article stores tags as a comma separated string
+    // Previously selected tags are passed as a plain comma separated string
+    // Fetching furher tag data allows us to display a richer UI
+    // This fetch only happens once on first component load
+    if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
       const tagNames = defaultValue.split(', ');
 
-      // We need to fetch the full tag data to display the rich UI
       const tagRequests = tagNames.map((tagName) =>
         fetchSearch('tags', { name: tagName }).then(
           ({ result }) => result[0] || { name: tagName },
@@ -41,7 +42,8 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
         setDefaultSelections(data);
       });
     }
-  }, [defaultValue, defaultSelections.length]);
+    setDefaultsLoaded(true);
+  }, [defaultValue, defaultsLoaded]);
 
   // Converts the array of selected items into a plain string to be saved in the article form
   const syncSelections = (selections = []) => {

@@ -46,6 +46,8 @@ const reducer = (state, action) => {
       return { ...state, ignoreBlur: action.payload };
     case 'setForceInputFocus':
       return { ...state, forceInputFocus: action.payload };
+    case 'setShowMaxSelectionsReached':
+      return { ...state, showMaxSelectionsReached: action.payload };
     default:
       return state;
   }
@@ -94,6 +96,7 @@ export const MultiSelectAutocomplete = ({
     activeDescendentIndex: null,
     ignoreBlur: false,
     forceInputFocus: false,
+    showMaxSelectionsReached: false,
   });
 
   const {
@@ -104,11 +107,15 @@ export const MultiSelectAutocomplete = ({
     activeDescendentIndex,
     ignoreBlur,
     forceInputFocus,
+    showMaxSelectionsReached,
   } = state;
 
   const inputRef = useRef(null);
   const inputSizerRef = useRef(null);
   const selectedItemsRef = useRef(null);
+
+  const allowSelections =
+    !maxSelections || selectedItems.length < maxSelections;
 
   useEffect(() => {
     if (defaultValue.length > 0) {
@@ -117,11 +124,13 @@ export const MultiSelectAutocomplete = ({
   }, [defaultValue]);
 
   const handleInputBlur = () => {
+    dispatch({ type: 'setShowMaxSelectionsReached', payload: false });
+
     // If user has reached their max selections, the inputRef may not be defined
     const currentValue = inputRef.current ? inputRef.current.value : '';
 
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
-    if (!ignoreBlur && currentValue !== '') {
+    if (!ignoreBlur && allowSelections && currentValue !== '') {
       selectByText({ textValue: currentValue, focusInput: false });
     } else {
       exitEditState({ focusInput: false });
@@ -207,22 +216,19 @@ export const MultiSelectAutocomplete = ({
     inputRef.current?.style?.removeProperty('width');
     inputSizerRef.current.innerText = nextInputValue;
 
-    // When a user has 'split' the value they were editing (e.g. by entering a space or comma), the remaining portion of the text
-    // may now be edited if they have not exceeded the max selections
-    const canEditNextInputValue =
-      !maxSelections || selectedItems.length + 1 < maxSelections;
-
     dispatch({
       type: 'updateEditState',
       payload: {
-        editValue: canEditNextInputValue ? nextInputValue : '',
-        inputPosition:
-          nextInputValue === '' || !canEditNextInputValue
-            ? null
-            : inputPosition + 1,
+        editValue: nextInputValue,
+        inputPosition: nextInputValue === '' ? null : inputPosition + 1,
         forceInputFocus: focusInput,
       },
     });
+
+    // Blurring away while clearing the input
+    if (!focusInput && nextInputValue === '') {
+      inputRef.current.value = '';
+    }
   };
 
   const resizeInputToContentSize = () => {
@@ -236,6 +242,12 @@ export const MultiSelectAutocomplete = ({
   const handleInputFocus = (e) => {
     // Only show static suggestions when not in edit mode
     if (inputPosition !== null) {
+      return;
+    }
+
+    // If we've already reached max selections, show the message rather than static suggestions
+    if (!allowSelections) {
+      dispatch({ type: 'setShowMaxSelectionsReached', payload: true });
       return;
     }
 
@@ -263,6 +275,11 @@ export const MultiSelectAutocomplete = ({
 
     if (inputPosition !== null) {
       resizeInputToContentSize();
+    }
+
+    // If max selections have already been reached, no need to fetch further suggestions
+    if (!allowSelections) {
+      return;
     }
 
     if (value === '') {
@@ -347,7 +364,7 @@ export const MultiSelectAutocomplete = ({
         e.preventDefault();
         // Accept whatever is in the input before the comma or space.
         // If any text remains after the comma or space, the edit will continue separately
-        if (currentValue !== '') {
+        if (currentValue !== '' && allowSelections) {
           selectByText({
             textValue: currentValue.slice(0, selectionStart),
             nextInputValue: currentValue.slice(selectionStart),
@@ -413,6 +430,10 @@ export const MultiSelectAutocomplete = ({
     input.value = nextInputValue;
 
     if (focusInput) {
+      dispatch({
+        type: 'setShowMaxSelectionsReached',
+        payload: maxSelections && newSelections.length >= maxSelections,
+      });
       dispatch({ type: 'setForceInputFocus', payload: true });
     }
   };
@@ -424,6 +445,11 @@ export const MultiSelectAutocomplete = ({
     dispatch({
       type: 'setSelectedItems',
       payload: newSelections,
+    });
+
+    dispatch({
+      type: 'setShowMaxSelectionsReached',
+      payload: maxSelections && newSelections.length >= maxSelections,
     });
 
     onSelectionsChanged?.(newSelections);
@@ -458,11 +484,10 @@ export const MultiSelectAutocomplete = ({
     );
   });
 
-  const allowSelections =
-    !maxSelections || selectedItems.length < maxSelections;
-
-  const inputPlaceholder =
+  const selectionsPlaceholder =
     selectedItems.length > 0 ? PLACEHOLDER_SELECTIONS_MADE : placeholder;
+
+  const inputPlaceholder = allowSelections ? selectionsPlaceholder : null;
 
   return (
     <Fragment>
@@ -508,40 +533,45 @@ export const MultiSelectAutocomplete = ({
         >
           <ul id="combo-selected" className="list-none flex flex-wrap w-100">
             {allSelectedItemElements}
-            {allowSelections ? (
-              <li
-                className="self-center"
-                style={{
-                  order:
-                    inputPosition === null
-                      ? selectedItems.length + 1
-                      : inputPosition + 1,
-                }}
-              >
-                <input
-                  id={inputId}
-                  ref={inputRef}
-                  autocomplete="off"
-                  className="c-autocomplete--multi__input"
-                  aria-activedescendant={
-                    activeDescendentIndex !== null
-                      ? suggestions[activeDescendentIndex]
-                      : null
-                  }
-                  aria-autocomplete="list"
-                  aria-labelledby="multi-select-label selected-items-list"
-                  aria-describedby="input-description"
-                  type="text"
-                  onChange={handleInputChange}
-                  onKeyDown={handleKeyDown}
-                  onBlur={handleInputBlur}
-                  onFocus={handleInputFocus}
-                  placeholder={inputPosition === null ? inputPlaceholder : null}
-                />
-              </li>
-            ) : null}
+
+            <li
+              className="self-center"
+              style={{
+                order:
+                  inputPosition === null
+                    ? selectedItems.length + 1
+                    : inputPosition + 1,
+              }}
+            >
+              <input
+                id={inputId}
+                ref={inputRef}
+                autocomplete="off"
+                className="c-autocomplete--multi__input"
+                aria-activedescendant={
+                  activeDescendentIndex !== null
+                    ? suggestions[activeDescendentIndex]
+                    : null
+                }
+                aria-autocomplete="list"
+                aria-labelledby="multi-select-label selected-items-list"
+                aria-describedby="input-description"
+                aria-disabled={!allowSelections}
+                type="text"
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                onBlur={handleInputBlur}
+                onFocus={handleInputFocus}
+                placeholder={inputPosition === null ? inputPlaceholder : null}
+              />
+            </li>
           </ul>
         </div>
+        {showMaxSelectionsReached ? (
+          <div className="c-autocomplete--multi__popover">
+            <span className="p-3">Only {maxSelections} selections allowed</span>
+          </div>
+        ) : null}
         {suggestions.length > 0 ? (
           <div className="c-autocomplete--multi__popover">
             {inputRef.current?.value === '' ? staticSuggestionsHeading : null}
