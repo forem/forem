@@ -369,6 +369,8 @@ seeder.create_if_none(Broadcast) do
                       "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
                     "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
+    google_oauth2_connect: "You're on a roll! 🎉  Do you have a Google account? " \
+                    "Consider <a href='/settings'>connecting it</a>.",
     apple_connect: "You're on a roll! 🎉  Do you have an Apple account? " \
                    "Consider <a href='/settings'>connecting it</a>.",
     customize_feed:

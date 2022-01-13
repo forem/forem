@@ -24,6 +24,10 @@
   --brand-email-bg: #24292e;
   --brand-email-color: #fff;
   --brand-email-bg-hover: #000;
+
+  --brand-google_oauth2-bg: #1da1f2;
+  --brand-google_oauth2-color: #fff;
+  --brand-google_oauth2-bg-hover: #0096f2;
 }
 
 // Basic styling
@@ -323,6 +327,17 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   --bg-inverted-hover: var(--brand-email-bg-hover);
   --color-inverted: var(--brand-email-color);
   --color-inverted-hover: var(--brand-email-color);
+}
+
+.crayons-btn--brand-google_oauth2 {
+  --bg: var(--brand-google_oauth2-bg);
+  --bg-hover: var(--brand-google_oauth2-bg-hover);
+  --color: var(--brand-google_oauth2-color);
+  --color-hover: var(--brand-google_oauth2-color);
+  --bg-inverted: var(--brand-google_oauth2-bg);
+  --bg-inverted-hover: var(--brand-google_oauth2-bg-hover);
+  --color-inverted: var(--brand-google_oauth2-color);
+  --color-inverted-hover: var(--brand-google_oauth2-color);
 }
 
 // Icon alone

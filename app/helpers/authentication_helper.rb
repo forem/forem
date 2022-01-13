@@ -4,9 +4,7 @@ module AuthenticationHelper
   end
 
   def authentication_available_providers
-    Authentication::Providers.available.map do |provider_name|
-      Authentication::Providers.const_get(provider_name.to_s.titleize)
-    end
+    Authentication::Providers.available_providers
   end
 
   def authentication_enabled_providers

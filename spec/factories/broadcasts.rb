@@ -39,6 +39,15 @@ FactoryBot.define do
       end
     end
 
+    factory :google_oauth2_connect_broadcast do
+      title          { "Welcome Notification: google_oauth2_connect" }
+      type_of        { "Welcome" }
+      processed_html do
+        "You're on a roll! 🎉  Do you have a Google account? Consider " \
+          "<a href='/settings'>connecting it</a>."
+      end
+    end
+
     factory :facebook_connect_broadcast do
       title          { "Welcome Notification: facebook_connect" }
       type_of        { "Welcome" }
