@@ -29,6 +29,7 @@ export const Default = () => (
         Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet,
         consectetur adipisicing elit.
       </p>
+      <a href="/">Sequi ea voluptates</a>
     </Dropdown>
   </div>
 );
