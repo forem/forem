@@ -3,7 +3,7 @@ require_relative "boot"
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
-require "active_job/railtie"
+# require "active_job/railtie"
 require "active_record/railtie"
 # require "active_storage/engine"
 require "action_controller/railtie"
@@ -23,10 +23,32 @@ Dotenv::Railtie.load if Rails.env.test? || Rails.env.development?
 
 module PracticalDeveloper
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1 # NOTE: [Rails 6] we should at least work towards updating this to 5.2
+    # Specify the default Rails settings version we're targetting
+    # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
+    config.load_defaults 6.0
 
-    # [Rails 6] Zeitwerk is the new autoloader
+    ### FRAMEWORK DEFAULT OVERRIDES
+    # Override new framework defaults to keep existing behavior.
+    #
+    # NOTE: For booleans the new default is the opposite of what we're setting here. For other
+    # options, the new default is mentioned in a comment. Once we're ready to enable a new default
+    # setting we can remove the line here.
+
+    ## Rails 5.0
+    # There is no easy way to use per-form tokens and view caching at the same time.
+    # Therefore we disable "per_form_csrf_tokens" for the time being.
+    config.action_controller.per_form_csrf_tokens = false
+
+    ## Rails 6.0
+    # Enables writing cookies with the purpose metadata embedded.
+    config.action_dispatch.use_cookies_with_metadata = false
+
+    ## Rails 6.1
+    # This replaces the old config.active_support.use_sha1_digests from Rails 5.2
+    config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
+    ### END FRAMEWORK DEFAULT OVERIDES
+
+    # Zeitwerk is the new autoloader in Rails 6+
     # As we don't have `load_defaults 6.0` yet, it has to be enabled manually
     # See <https://guides.rubyonrails.org/autoloading_and_reloading_constants.html>
     config.autoloader = :zeitwerk
@@ -42,7 +64,6 @@ module PracticalDeveloper
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
-
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
@@ -50,8 +71,6 @@ module PracticalDeveloper
     Dir["#{config.root}/app/middlewares/**/*.rb"].each do |file|
       require_dependency(file)
     end
-
-    config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Deflater
 
@@ -61,15 +80,6 @@ module PracticalDeveloper
 
     # Globally handle Pundit::NotAuthorizedError by serving 404
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
-
-    # Rails 5.1 introduced CSRF tokens that change per-form.
-    # Unfortunately there isn't an easy way to use them and use view caching at the same time.
-    # Therefore we disable "per_form_csrf_tokens" for the time being.
-    config.action_controller.per_form_csrf_tokens = false
-
-    # NOTE: [Rails 6]
-    # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
-    config.action_dispatch.use_cookies_with_metadata = false
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do

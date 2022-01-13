@@ -1,7 +1,11 @@
 class SpotifyTag < LiquidTagBase
   PARTIAL = "liquids/spotify".freeze
-  URI_REGEXP = /spotify:(track|artist|playlist|album|episode|show):\w{22}/
-  URI_PLAYLIST_REGEXP = /spotify:(user):([a-zA-Z0-9]+):playlist:\w{22}/ # legacy support
+  # rubocop:disable Layout/LineLength
+  REGISTRY_REGEXP = %r{https?://(?:open.spotify.com/)(?<type>track|artist|playlist|album|episode|show)/(?<id>\w{,22})(?:\?si=[\w-]+)?}
+  # rubocop:enable Layout/LineLength
+  URI_REGEXP = /\A(?:spotify):(?<type>track|artist|playlist|album|episode|show):(?<id>\w{22})\Z/
+  URI_PLAYLIST_REGEXP = /\A(?:spotify):(?:user):(?<type>[a-zA-Z0-9]+):(?:playlist):(?<id>\w{22})\Z/ # legacy support
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, URI_REGEXP, URI_PLAYLIST_REGEXP].freeze
   TYPE_HEIGHT = {
     track: 80,
     user: 380,
@@ -12,11 +16,9 @@ class SpotifyTag < LiquidTagBase
     show: 232
   }.freeze
 
-  def initialize(_tag_name, uri, _parse_context)
+  def initialize(_tag_name, input, _parse_context)
     super
-    @parsed_uri = parse_uri(uri)
-    @embed_link = generate_embed_link(@parsed_uri[0])
-    @type = @parsed_uri[1] || @parsed_uri[2]
+    @type, @id = parse_input(strip_tags(input))
     @height = TYPE_HEIGHT[@type.to_sym]
   end
 
@@ -24,7 +26,8 @@ class SpotifyTag < LiquidTagBase
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
-        embed_link: @embed_link,
+        type: @type,
+        id: @id,
         height: @height
       },
     )
@@ -32,19 +35,14 @@ class SpotifyTag < LiquidTagBase
 
   private
 
-  def parse_uri(uri)
-    Regexp.union(URI_REGEXP, URI_PLAYLIST_REGEXP).match(uri) || raise_error
-  end
+  def parse_input(input)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, "Invalid Spotify URI or URL." unless match
 
-  def generate_embed_link(parsed_uri)
-    parsed_uri.split(":")[1..].unshift("https://open.spotify.com/embed").join("/")
-  end
-
-  def raise_error
-    msg = "Invalid Spotify Link - Be sure you're using the uri of a specific track, " \
-          "album, artist, playlist, or podcast episode."
-    raise StandardError, msg
+    [match[:type], match[:id]]
   end
 end
 
 Liquid::Template.register_tag("spotify", SpotifyTag)
+
+UnifiedEmbed.register(SpotifyTag, regexp: SpotifyTag::REGISTRY_REGEXP)

@@ -38,21 +38,6 @@ RSpec.describe Articles::Creator, type: :service do
         described_class.call(user, valid_attributes)
       end.to change(NotificationSubscription, :count).by(1)
     end
-
-    it "calls an event dispatcher" do
-      event_dispatcher = double
-      allow(event_dispatcher).to receive(:call)
-      article = described_class.call(user, valid_attributes, event_dispatcher)
-      expect(event_dispatcher).to have_received(:call).with("article_created", article)
-    end
-
-    it "doesn't call an event dispatcher when an article is unpublished" do
-      attributes = attributes_for(:article, published: false)
-      event_dispatcher = double
-      allow(event_dispatcher).to receive(:call)
-      article = described_class.call(user, attributes, event_dispatcher)
-      expect(event_dispatcher).not_to have_received(:call).with("article_created", article)
-    end
   end
 
   context "when invalid attributes" do
@@ -93,13 +78,6 @@ RSpec.describe Articles::Creator, type: :service do
       expect do
         described_class.call(user, invalid_body_attributes)
       end.not_to change(NotificationSubscription, :count)
-    end
-
-    it "doesn't call an event dispatcher" do
-      event_dispatcher = double
-      allow(event_dispatcher).to receive(:call)
-      described_class.call(user, invalid_body_attributes, event_dispatcher)
-      expect(event_dispatcher).not_to have_received(:call)
     end
   end
 end

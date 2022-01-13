@@ -4,7 +4,6 @@ fr:
     actions:
       copy:
         text: Copied to Clipboard
-        title: Copy article link to the clipboard
         button: Copier le lien
       more:
         title: More...

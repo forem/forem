@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Users::BustCacheWorker, type: :worker do
   describe "#perform" do
-    let(:user) { FactoryBot.create(:user) }
+    let(:user) { create(:user) }
     let(:worker) { subject }
 
     it "busts cache" do

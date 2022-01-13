@@ -15,8 +15,8 @@ RSpec.describe "DisplayAdEvents", type: :request do
         post "/display_ad_events", params: {
           display_ad_event: {
             display_ad_id: display_ad.id,
-            context_type: "home",
-            category: "click"
+            context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
+            category: DisplayAdEvent::CATEGORY_CLICK
           }
         }
         expect(display_ad.reload.clicks_count).to eq(1)
@@ -26,19 +26,22 @@ RSpec.describe "DisplayAdEvents", type: :request do
         post "/display_ad_events", params: {
           display_ad_event: {
             display_ad_id: display_ad.id,
-            context_type: "home",
-            category: "impression"
+            context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
+            category: DisplayAdEvent::CATEGORY_IMPRESSION
           }
         }
         expect(display_ad.reload.impressions_count).to eq(1)
       end
 
       it "creates a display ad success rate" do
-        ad_event_params = { display_ad_id: display_ad.id, context_type: "home" }
-        impression_params = ad_event_params.merge(category: "impression", user: user)
+        ad_event_params = { display_ad_id: display_ad.id, context_type: DisplayAdEvent::CONTEXT_TYPE_HOME }
+        impression_params = ad_event_params.merge(category: DisplayAdEvent::CATEGORY_IMPRESSION, user: user)
         create_list(:display_ad_event, 4, impression_params)
 
-        post "/display_ad_events", params: { display_ad_event: ad_event_params.merge(category: "click") }
+        post(
+          "/display_ad_events",
+          params: { display_ad_event: ad_event_params.merge(category: DisplayAdEvent::CATEGORY_CLICK) },
+        )
 
         expect(display_ad.reload.success_rate).to eq(0.25)
       end
@@ -47,8 +50,8 @@ RSpec.describe "DisplayAdEvents", type: :request do
         post "/display_ad_events", params: {
           display_ad_event: {
             display_ad_id: display_ad.id,
-            context_type: "home",
-            category: "impression"
+            context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
+            category: DisplayAdEvent::CATEGORY_IMPRESSION
           }
         }
         expect(DisplayAdEvent.last.user_id).to eq(user.id)
@@ -58,8 +61,8 @@ RSpec.describe "DisplayAdEvents", type: :request do
         post "/display_ad_events", params: {
           display_ad_event: {
             display_ad_id: display_ad.id,
-            context_type: "home",
-            category: "impression"
+            context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
+            category: DisplayAdEvent::CATEGORY_IMPRESSION
           }
         }
 

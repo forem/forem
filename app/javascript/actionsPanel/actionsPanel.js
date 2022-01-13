@@ -345,18 +345,16 @@ export function addAdjustTagListeners() {
     },
   );
 
-  const adjustTagSubmitBtn = document.getElementById('tag-adjust-submit');
-  if (adjustTagSubmitBtn) {
-    adjustTagSubmitBtn.addEventListener('click', (e) => {
+  const form = document.getElementById('tag-adjust-submit')?.form;
+  if (form) {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const textArea = document.getElementById('tag-adjustment-reason');
+
       const dataSource =
-        document.querySelector('button.adjustable-tag.active') ||
+        document.querySelector('button.adjustable-tag.active') ??
         document.getElementById('admin-add-tag');
 
-      if (textArea.checkValidity()) {
-        adjustTag(dataSource);
-      }
+      adjustTag(dataSource);
     });
 
     handleAdminInput();

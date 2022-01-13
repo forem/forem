@@ -42,7 +42,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response_follower["name"]).to eq(follower.name)
         expect(response_follower["path"]).to eq(follower.path)
         expect(response_follower["username"]).to eq(follower.username)
-        expect(response_follower["profile_image"]).to eq(Images::Profile.call(follower.profile_image_url, length: 60))
+        expect(response_follower["profile_image"]).to eq(follower.profile_image_url_for(length: 60))
         expect(response_follower["created_at"]).to be_an_instance_of(String)
       end
 

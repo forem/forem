@@ -42,7 +42,7 @@ module Notifications
           title: "🗣️ New Mention",
           body: "#{I18n.t(
             message_key,
-            user: mention.user.username,
+            user: mention.mentionable.user.username,
             title: mentionable_title, # For an article this should be title, for comment should be article's title
           )}:\n" \
               "#{strip_tags(mention.mentionable.processed_html).strip}",
