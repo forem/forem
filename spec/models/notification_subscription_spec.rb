@@ -19,7 +19,6 @@ RSpec.describe NotificationSubscription, type: :model do
       end
 
       it { is_expected.to validate_presence_of(:config) }
-      it { is_expected.to validate_presence_of(:notifiable_id) }
       it { is_expected.to validate_presence_of(:notifiable_type) }
 
       it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[notifiable_type notifiable_id]) }
