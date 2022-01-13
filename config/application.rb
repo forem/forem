@@ -39,10 +39,6 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
-    ## Rails 6.0
-    # Enables writing cookies with the purpose metadata embedded.
-    config.action_dispatch.use_cookies_with_metadata = false
-
     ## Rails 6.1
     # This replaces the old config.active_support.use_sha1_digests from Rails 5.2
     config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
