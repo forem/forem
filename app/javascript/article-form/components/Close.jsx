@@ -9,6 +9,7 @@ export const Close = ({ displayModal = () => {} }) => {
         icon={CloseIcon}
         onClick={() => displayModal()}
         title="Close the editor"
+        aria-label="Close the editor"
       />
     </div>
   );
