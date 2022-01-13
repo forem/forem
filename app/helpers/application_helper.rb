@@ -1,21 +1,5 @@
 module ApplicationHelper
-  USER_COLORS = ["#19063A", "#dce9f3"].freeze
-
   LARGE_USERBASE_THRESHOLD = 1000
-
-  def deleted_user
-    # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
-    OpenStruct.new(
-      id: nil,
-      darker_color: Color::CompareHex.new(USER_COLORS).brightness,
-      username: "[deleted user]",
-      name: I18n.t("helpers.application_helper.deleted_user"),
-      summary: nil,
-      twitter_username: nil,
-      github_username: nil,
-    )
-    # rubocop:enable Style/OpenStructUse, Performance/OpenStruct
-  end
 
   def subtitles
     {
@@ -125,7 +109,7 @@ module ApplicationHelper
   end
 
   def follow_button(followable, style = "full", classes = "")
-    return if followable == deleted_user
+    return if followable == Users::DeletedUser
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
     followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
@@ -166,8 +150,6 @@ module ApplicationHelper
   end
 
   def user_colors(user)
-    return { bg: "#19063A", text: "#dce9f3" } if user == deleted_user
-
     user.decorate.enriched_colors
   end
 

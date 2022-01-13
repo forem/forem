@@ -95,7 +95,7 @@
         <%= hidden_field_tag :provider, provider.provider_name %>
 
         <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
-          <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.official_name) %>
+          <%= crayons_icon_tag(provider.provider_name, title: provider.official_name) %>
           <%= t("views.settings.account.remove.submit", provider: provider.official_name) %>
         </button>
       <% end %>

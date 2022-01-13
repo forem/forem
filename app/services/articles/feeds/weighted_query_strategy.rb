@@ -249,6 +249,7 @@ module Articles
       # @param page [Integer] what is the pagination page
       # @param tag [String, nil] this isn't implemented in other feeds
       #   so we'll see
+      # @param strategy [String, "original"] pass a current a/b test in
       # @param config [Hash<Symbol, Object>] a list of configurations,
       #   see {#initialize} implementation details.
       # @option config [Array<Symbol>] :scoring_configs
@@ -265,12 +266,13 @@ module Articles
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
-      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, **config)
+      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
         @page = (page || 1).to_i
         # TODO: The tag parameter is vestigial, there's no logic around this value.
         @tag = tag
+        @strategy = strategy
         @default_user_experience_level = config.fetch(:default_user_experience_level) { DEFAULT_USER_EXPERIENCE_LEVEL }
         @negative_reaction_threshold = config.fetch(:negative_reaction_threshold, DEFAULT_NEGATIVE_REACTION_THRESHOLD)
         @positive_reaction_threshold = config.fetch(:positive_reaction_threshold, DEFAULT_POSITIVE_REACTION_THRESHOLD)
@@ -582,6 +584,9 @@ module Articles
           # then we'll use the default configuration.
           scoring_config = default_config unless scoring_config.is_a?(Hash)
 
+          # Change an alement of config via a/b test strategy
+          scoring_config = inject_config_ab_test(valid_method_name, scoring_config)
+
           # This scoring method requires a group by clause.
           @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)
 
@@ -604,6 +609,20 @@ module Articles
             @days_since_published = scoring_config.fetch(:cases).count + 1
           end
         end
+      end
+
+      def inject_config_ab_test(valid_method_name, scoring_config)
+        return scoring_config unless valid_method_name == :comments_count_factor # Only proceed on this one factor
+        return scoring_config if @strategy == AbExperiment::ORIGINAL_VARIANT # Don't proceed if not testing new strategy
+
+        # Rewards comment count with slightly more weight up to 10 comments.
+        # Testing two case weights beyond what we currently have
+        scoring_config[:cases] = if @strategy == "slightly_more_comments_count_case_weight"
+                                   (0..9).map { |n| [n, 0.8 + (n / 50.0)] }
+                                 else # much_more_comments_count_case_weight
+                                   (0..19).map { |n| [n, 0.6 + (n / 50.0)] }
+                                 end
+        scoring_config
       end
 
       # Responsible for transforming the :clause, :cases, and
