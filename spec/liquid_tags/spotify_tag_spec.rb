@@ -12,23 +12,23 @@ RSpec.describe SpotifyTag, type: :liquid_tag do
       Liquid::Template.parse("{% spotify #{link} %}")
     end
 
-    def generate_iframe(embed_path, height)
+    def generate_iframe(type, id, height)
       <<~HTML
         <iframe
+          src="https://open.spotify.com/embed/#{type}/#{id}"
           width="100%"
           height="#{height}px"
-          scrolling="no"
           frameborder="0"
+          scrolling="no"
           allowtransparency="true"
           allow="encrypted-media"
-          src="https://open.spotify.com/embed/#{embed_path}"
           loading="lazy">
         </iframe>
       HTML
     end
 
-    it "generals the proper iframe if the uri is valid" do
-      expect(generate_tag(valid_uri).render).to eq(generate_iframe("track/0K1UpnetfCKtcNu37rJmCg", 80))
+    it "generates the proper iframe if the uri is valid" do
+      expect(generate_tag(valid_uri).render).to eq(generate_iframe("track", "0K1UpnetfCKtcNu37rJmCg", 80))
     end
 
     it "does not raise an error if the uri is valid" do
@@ -44,8 +44,7 @@ RSpec.describe SpotifyTag, type: :liquid_tag do
     end
 
     it "raises an error if the uri is invalid" do
-      message = "Invalid Spotify Link - Be sure you're using the uri of a specific track, " \
-                "album, artist, playlist, or podcast episode."
+      message = "Invalid Spotify URI or URL."
       expect do
         generate_tag(invalid_uri)
       end.to raise_error(StandardError, message)

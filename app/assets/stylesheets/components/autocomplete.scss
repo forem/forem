@@ -1,4 +1,5 @@
 @import '../config/import';
+@import './forms';
 @import '@reach/combobox/styles';
 
 .crayons-autocomplete {
@@ -55,5 +56,59 @@
     margin: var(--su-2);
     color: var(--base-60);
     font-size: var(--fs-s);
+  }
+}
+
+.c-autocomplete--multi {
+  &__wrapper:focus-within {
+    @extend %form-styling-focus;
+
+    .c-autocomplete--multi__input {
+      background-color: var(--form-bg-focus);
+    }
+  }
+
+  &__input {
+    background-color: var(--form-bg);
+    color: var(--body-color);
+    border: none;
+  }
+
+  .crayons-btn.c-autocomplete--multi__selected {
+    &:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &:last-child:hover,
+    &:last-child:focus-visible {
+      color: var(--accent-danger);
+    }
+  }
+
+  ul.c-autocomplete--multi__popover {
+    padding: var(--su-1);
+    z-index: var(--z-elevate);
+    background: var(--card-bg);
+    color: var(--card-color);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    border: none;
+
+    [role='option'] {
+      cursor: pointer;
+
+      &:hover,
+      &[aria-selected='true'] {
+        background: var(--link-bg-hover);
+        color: var(--link-color-hover);
+      }
+    }
   }
 }

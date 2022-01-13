@@ -4,6 +4,10 @@ RSpec.describe Identity, type: :model do
   let(:identity) { create(:identity, user: create(:user), uid: SecureRandom.hex) }
 
   describe "validations" do
+    before do
+      omniauth_mock_providers_payload
+    end
+
     describe "builtin validations" do
       subject { identity }
 

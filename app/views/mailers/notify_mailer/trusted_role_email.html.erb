@@ -18,6 +18,13 @@
 <p>
   <b>For details on all available features and how to access them, visit our <a href="<%= app_url("/community-moderation") %>"><%= community_name %> Trusted User Guide</a>.</b>
 </p>
+<% if ForemInstance.dev_to? %>
+  <p>
+    Also, we hope that you'll use <a href="https://discord.com/invite/f5ARW5gxES">this link</a> to join our moderator chat channels on DEV Discord!
+    Once inside, visit the #mod-verification channel and drop a link to your DEV profile so we can verify which set of privileges you have (<a href="<%= app_url("/community-moderation") %>">Trusted User</a>
+    and/or <a href="<%= app_url("/tag-moderation") %>">Tag Moderator</a>) and invite you to the correct moderator channels. We hope to see you there! 😀
+  </p>
+<% end %>
 <p>
   You may occasionally receive notifications about optional moderation actions; please <a href="<%= app_url(user_settings_path(:notifications)) %>">unsubscribe</a> if you do not want to receive these updates.
 </p>

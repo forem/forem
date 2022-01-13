@@ -31,7 +31,7 @@ class CodepenTag < LiquidTagBase
     _, *options = stripped_link.split
 
     # Validation
-    validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
+    validated_options = options.filter_map { |option| valid_option(option) }
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     option = validated_options.join("&")

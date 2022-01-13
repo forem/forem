@@ -26,7 +26,7 @@ RSpec.describe "Admin bans user", type: :system do
   end
 
   def add_tag_moderator_role
-    tag = FactoryBot.create(:tag)
+    tag = create(:tag)
     user.add_role(:tag_moderator, tag)
   end
 

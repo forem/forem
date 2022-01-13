@@ -8,6 +8,15 @@ RSpec.describe ApplicationDecorator, type: :decorator do
     end
   end
 
+  describe "#decorate" do
+    it "returns itself" do
+      obj = User.new
+      decorated = described_class.new(obj)
+
+      expect(decorated.object_id).to eq(decorated.decorate.object_id)
+    end
+  end
+
   describe "#decorated?" do
     it "returns true" do
       obj = Object.new

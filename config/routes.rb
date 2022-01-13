@@ -64,7 +64,6 @@ Rails.application.routes.draw do
           get :organizations
         end
         resources :readinglist, only: [:index]
-        resources :webhooks, only: %i[index create show destroy]
 
         resources :listings, only: %i[index show create update]
         get "/listings/category/:category", to: "listings#index", as: :listings_category

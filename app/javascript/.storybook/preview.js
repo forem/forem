@@ -41,9 +41,6 @@ export const parameters = {
       return fn;
     },
   },
-  html: {
-    root: '#story-content',
-  },
   cssVariables: {
     files: {
       LightTheme,
