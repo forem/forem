@@ -1,12 +1,14 @@
 class CodepenTag < LiquidTagBase
   PARTIAL = "liquids/codepen".freeze
   REGISTRY_REGEXP =
-    %r{\A(http|https)://(codepen\.io|codepen\.io/team)/[a-zA-Z0-9_\-]{1,30}/pen/([a-zA-Z0-9]{5,32})/{0,1}\z}
+    %r{\A(http|https)://(codepen\.io|codepen\.io/team)/[a-zA-Z0-9_\-]{1,30}/(pen|pen/preview)/([a-zA-Z0-9]{5,32})/{0,1}\z}
 
   def initialize(_tag_name, link, _parse_context)
     super
     @link = parse_link(link)
-    @build_options = parse_options(link)
+    valid_options = parse_options(link)
+    @build_options = valid_options.gsub(/height=\d{3,4}&(amp;)?/, '')
+    @height = (valid_options[/height=(\d{3,4})/, 1] || '600').to_i
   end
 
   def render(_context)
@@ -14,7 +16,7 @@ class CodepenTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         link: @link,
-        height: 600,
+        height: @height,
         build_options: @build_options
       },
     )
@@ -23,7 +25,10 @@ class CodepenTag < LiquidTagBase
   private
 
   def valid_option(option)
-    option.match(/(default-tab=\w+(,\w+)?)/)
+    option.match(/(default-tab=\w+(,\w+)?)/) ||
+    option.match(/(theme-id=\d{1,7})/) ||
+    option.match(/(editable=true)/) ||
+    option.match(/(height=\d{3,4})/)
   end
 
   def parse_options(input)
