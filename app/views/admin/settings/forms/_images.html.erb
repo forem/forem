@@ -12,9 +12,9 @@
     <div id="imagesBodyContainer" class="card-body collapse hide" aria-labelledby="imagesBodyContainer">
       <fieldset class="grid gap-4">
 
-        <%= render partial: "admin/shared/logo_upload", locals: { f: f, allowed_types: logo_allowed_types, max_file_size: logo_max_file_size, logo: Settings::General.resized_logo } %>
-
-        <%= if FeatureFlag.enabled?(:creator_onboarding) %>
+        <% if FeatureFlag.enabled?(:creator_onboarding) %>
+          <%= render partial: "admin/shared/logo_upload", locals: { f: f, allowed_types: logo_allowed_types, max_file_size: logo_max_file_size, logo: Settings::General.resized_logo } %>
+        <% else %>
           <div class="crayons-field">
             <%= admin_config_label :logo_svg, "SVG logo (soon to be deprecated)" %>
             <%= admin_config_description Constants::Settings::General::DETAILS[:logo_svg][:description] %>
