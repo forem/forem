@@ -36,6 +36,31 @@ RSpec.describe User, type: :model do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
+  describe "delegations" do
+    it { is_expected.to delegate_method(:admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:any_admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:auditable?).to(:authorizer) }
+    it { is_expected.to delegate_method(:banished?).to(:authorizer) }
+    it { is_expected.to delegate_method(:comment_suspended?).to(:authorizer) }
+    it { is_expected.to delegate_method(:creator?).to(:authorizer) }
+    it { is_expected.to delegate_method(:has_trusted_role?).to(:authorizer) }
+    it { is_expected.to delegate_method(:podcast_admin_for?).to(:authorizer) }
+    it { is_expected.to delegate_method(:restricted_liquid_tag_for?).to(:authorizer) }
+    it { is_expected.to delegate_method(:single_resource_admin_for?).to(:authorizer) }
+    it { is_expected.to delegate_method(:super_admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:support_admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:suspended?).to(:authorizer) }
+    it { is_expected.to delegate_method(:tag_moderator?).to(:authorizer) }
+    it { is_expected.to delegate_method(:tech_admin?).to(:authorizer) }
+    it { is_expected.to delegate_method(:trusted).to(:authorizer) }
+    it { is_expected.to delegate_method(:trusted?).to(:authorizer) }
+    it { is_expected.to delegate_method(:user_subscription_tag_available?).to(:authorizer) }
+    it { is_expected.to delegate_method(:vomited_on?).to(:authorizer) }
+    it { is_expected.to delegate_method(:warned).to(:authorizer) }
+    it { is_expected.to delegate_method(:warned?).to(:authorizer) }
+    it { is_expected.to delegate_method(:workshop_eligible?).to(:authorizer) }
+  end
+
   describe "validations" do
     describe "builtin validations" do
       subject { user }
@@ -44,8 +69,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_one(:notification_setting).dependent(:delete) }
       it { is_expected.to have_one(:setting).dependent(:delete) }
 
-      it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
-      it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
       it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:delete_all) }
       it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:delete_all) }
       it { is_expected.to have_many(:api_secrets).dependent(:delete_all) }
@@ -87,23 +110,8 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribers).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:nullify) }
-      it { is_expected.to have_many(:webhook_endpoints).class_name("Webhook::Endpoint").dependent(:delete_all) }
 
       # rubocop:disable RSpec/NamedSubject
-      it do
-        expect(subject).to have_many(:access_grants)
-          .class_name("Doorkeeper::AccessGrant")
-          .with_foreign_key("resource_owner_id")
-          .dependent(:delete_all)
-      end
-
-      it do
-        expect(subject).to have_many(:access_tokens)
-          .class_name("Doorkeeper::AccessToken")
-          .with_foreign_key("resource_owner_id")
-          .dependent(:delete_all)
-      end
-
       it do
         expect(subject).to have_many(:affected_feedback_messages)
           .class_name("FeedbackMessage")
@@ -445,7 +453,7 @@ RSpec.describe User, type: :model do
         case provider_name
         when :apple
           expect(new_user.username).to match(/valid_username_\w+/)
-        when :facebook
+        when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("valid_username")
@@ -464,7 +472,7 @@ RSpec.describe User, type: :model do
         case provider_name
         when :apple
           expect(new_user.username).to match(/invalidusername_\w+/)
-        when :facebook
+        when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("invalidusername")
@@ -782,18 +790,6 @@ RSpec.describe User, type: :model do
       user = create(:user, :with_identity)
 
       expect(user.authenticated_with_all_providers?).to be(true)
-    end
-  end
-
-  describe "#trusted?" do
-    it "memoizes the result from rolify" do
-      allow(Rails.cache)
-        .to receive(:fetch)
-        .with("user-#{user.id}/has_trusted_role", expires_in: 200.hours)
-        .and_return(false)
-        .once
-
-      2.times { user.trusted? }
     end
   end
 

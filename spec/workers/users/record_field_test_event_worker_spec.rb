@@ -33,44 +33,44 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         expect(FieldTest::Event.last.name).to eq("user_creates_comment")
       end
 
-      it "records user_creates_comment_four_days_in_week field test conversion if qualifies" do
+      it "records user_creates_comment_on_at_least_four_different_days_within_a_week field test conversion if qualifies" do
         7.times do |n|
           create(:comment, user_id: user.id, created_at: n.days.ago)
         end
         worker.perform(user.id, "user_creates_comment")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.last.name).to eq("user_creates_comment_four_days_in_week")
+        expect(FieldTest::Event.last.name).to eq("user_creates_comment_on_at_least_four_different_days_within_a_week")
       end
 
-      it "records user_views_article_four_days_in_week field test conversion if qualifies" do
+      it "records user_views_pages_on_at_least_four_different_days_within_a_week field test conversion if qualifies" do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
         worker.perform(user.id, "user_creates_pageview")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name)).to include("user_views_article_four_days_in_week")
+        expect(FieldTest::Event.pluck(:name)).to include("user_views_pages_on_at_least_four_different_days_within_a_week")
       end
 
-      it "records user_views_article_nine_days_in_two_week field test conversion if qualifies" do
+      it "records user_views_pages_on_at_least_nine_different_days_within_two_weeks field test conversion if qualifies" do
         10.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
         worker.perform(user.id, "user_creates_pageview")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name)).to include("user_views_article_nine_days_in_two_week")
+        expect(FieldTest::Event.pluck(:name)).to include("user_views_pages_on_at_least_nine_different_days_within_two_weeks")
       end
 
-      it "records user_views_article_twelve_hours_in_five_days field test conversion if qualifies" do
+      it "records user_views_pages_on_at_least_twelve_different_hours_within_five_days field test conversion if qualifies" do
         15.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
 
         worker.perform(user.id, "user_creates_pageview")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name)).to include("user_views_article_twelve_hours_in_five_days")
+        expect(FieldTest::Event.pluck(:name)).to include("user_views_pages_on_at_least_twelve_different_hours_within_five_days")
       end
 
-      it "does not record user_views_article_four_days_in_week field test conversion if not qualifying" do
+      it "does not record field test conversion if not qualifying" do
         2.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
@@ -78,13 +78,13 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         expect(FieldTest::Event.all.size).to be(0)
       end
 
-      it "records user_views_article_four_hours_in_day field test conversion if qualifies" do
+      it "records user_views_pages_on_at_least_four_different_hours_within_a_day field test conversion if qualifies" do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
         worker.perform(user.id, "user_creates_pageview")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name)).to include("user_views_article_four_hours_in_day")
+        expect(FieldTest::Event.pluck(:name)).to include("user_views_pages_on_at_least_four_different_hours_within_a_day")
       end
 
       it "does not record user_views_article_four_hours_in_day field test conversion if not qualifying" do

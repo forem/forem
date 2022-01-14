@@ -2,7 +2,7 @@ class ApplicationPolicy
   attr_reader :user, :record
 
   def initialize(user, record)
-    raise Pundit::NotAuthorizedError, "You must be logged in" unless user
+    raise Pundit::NotAuthorizedError, I18n.t("policies.application_policy.you_must_be_logged_in") unless user
 
     @user = user
     @record = record
@@ -48,7 +48,7 @@ class ApplicationPolicy
     attr_reader :user, :scope
 
     def initialize(user, scope)
-      raise Pundit::NotAuthorizedError, "must be logged in" unless user
+      raise Pundit::NotAuthorizedError, I18n.t("policies.application_policy.must_be_logged_in") unless user
 
       @user = user
       @scope = scope
@@ -60,20 +60,18 @@ class ApplicationPolicy
   end
 
   def minimal_admin?
-    user.has_role?(:super_admin) || user.has_role?(:admin)
+    user.any_admin?
   end
 
   def user_admin?
-    user.has_role?(:super_admin)
+    user.super_admin?
   end
 
-  def support_admin?
-    user.has_role?(:support_admin)
-  end
+  delegate :support_admin?, to: :user
 
   delegate :suspended?, to: :user, prefix: true
 
   def user_trusted?
-    user.has_role?(:trusted)
+    user.has_trusted_role?
   end
 end

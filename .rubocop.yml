@@ -103,6 +103,7 @@ Layout/LineLength:
   Exclude:
     - Gemfile
     - app/lib/constants/site_config.rb
+    - spec/workers/users/record_field_test_event_worker_spec.rb
 
 # Layout/MultilineArrayLineBreaks:
 #   Description: >-

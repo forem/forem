@@ -68,6 +68,9 @@
     <%= render "articles/fitvids" %>
   </main>
   <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+  <script>
+    <%== RunkitTag.script %>
+  </script>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>

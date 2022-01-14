@@ -74,7 +74,7 @@
       <%= render partial: "landing_page_modal", locals: { page: @landing_page } %>
     <% end %>
 
-    <% if current_user.has_role?(:tech_admin) %>
+    <% if current_user.tech_admin? %>
       <div class="form-group">
         <p>
           <b><%= link_to "Feature Flag", "/admin/feature_flags" %></b>

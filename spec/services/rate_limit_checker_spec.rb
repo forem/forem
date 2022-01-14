@@ -6,7 +6,7 @@ RSpec.describe RateLimitChecker, type: :service do
   let(:rate_limit_checker) { described_class.new(user) }
 
   def cache_key(action)
-    rate_limit_checker.__send__("limit_cache_key", action)
+    rate_limit_checker.__send__(:limit_cache_key, action)
   end
 
   describe "#limit_by_action" do

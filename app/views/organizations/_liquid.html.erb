@@ -8,7 +8,7 @@
   </style>
   <a href="<%= organization.path %>" class="ltag__user__link profile-image-link">
     <div class="ltag__user__pic">
-      <img src="<%= Images::Profile.call(organization.profile_image_url, length: 150) %>" alt="<%= "#{organization.slug} image" %>" />
+      <img src="<%= organization.profile_image_url_for(length: 150) %>" alt="<%= "#{organization.slug} image" %>" />
     </div>
   </a>
   <div class="ltag__user__content">

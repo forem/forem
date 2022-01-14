@@ -1,9 +1,5 @@
 class InternalPolicy < ApplicationPolicy
   def access?
-    user.has_any_role?(
-      { name: :single_resource_admin, resource: record },
-      :super_admin,
-      :admin,
-    )
+    user.administrative_access_to?(resource: record)
   end
 end

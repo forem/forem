@@ -57,7 +57,6 @@ class Comment < ApplicationRecord
   validates :positive_reactions_count, presence: true
   validates :public_reactions_count, presence: true
   validates :reactions_count, presence: true
-  validates :user_id, presence: true
   validates :commentable, on: :create, presence: {
     message: lambda do |object, _data|
       "#{object.commentable_type.presence || 'item'} has been deleted."
@@ -140,7 +139,7 @@ class Comment < ApplicationRecord
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
-    HTMLEntities.new.decode(truncated_text)
+    Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
   end
 
   def video

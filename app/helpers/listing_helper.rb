@@ -1,7 +1,7 @@
 module ListingHelper
   def select_options_for_categories
     ListingCategory.select(:id, :name, :cost).map do |cl|
-      ["#{cl.name} (#{cl.cost} #{'Credit'.pluralize(cl.cost)})", cl.id]
+      [I18n.t("helpers.listing_helper.option", cl_name: cl.name, count: cl.cost), cl.id]
     end
   end
 

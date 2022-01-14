@@ -44,6 +44,8 @@ env:
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
     - DISABLE_SPRING=true
 before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install gsfonts
   - >-
     sudo sed -i
     -e '/local.*peer/s/postgres/all/'

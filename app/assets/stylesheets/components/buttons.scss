@@ -24,6 +24,10 @@
   --brand-email-bg: #24292e;
   --brand-email-color: #fff;
   --brand-email-bg-hover: #000;
+
+  --brand-google_oauth2-bg: #1da1f2;
+  --brand-google_oauth2-color: #fff;
+  --brand-google_oauth2-bg-hover: #0096f2;
 }
 
 // Basic styling
@@ -325,6 +329,17 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   --color-inverted-hover: var(--brand-email-color);
 }
 
+.crayons-btn--brand-google_oauth2 {
+  --bg: var(--brand-google_oauth2-bg);
+  --bg-hover: var(--brand-google_oauth2-bg-hover);
+  --color: var(--brand-google_oauth2-color);
+  --color-hover: var(--brand-google_oauth2-color);
+  --bg-inverted: var(--brand-google_oauth2-bg);
+  --bg-inverted-hover: var(--brand-google_oauth2-bg-hover);
+  --color-inverted: var(--brand-google_oauth2-color);
+  --color-inverted-hover: var(--brand-google_oauth2-color);
+}
+
 // Icon alone
 .crayons-btn--icon,
 .crayons-btn--icon-rounded {
@@ -445,7 +460,9 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   //    which is basically almost all of them.
   //  • Second declaration is for browsers that do not support :focus-visible
   //    which basically is only Safari right now :shrug:
-  &:focus-visible {
+  &:focus-visible,
+  &:is(label):focus-within {
+    // label for input[type="file"] made to look like a button as the browse... button can't be styled.
     background-color: var(--bg-hover);
     color: var(--color-hover);
     z-index: var(--z-elevate);

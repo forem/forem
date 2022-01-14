@@ -18,7 +18,7 @@ class ProfilePinsController < ApplicationController
 
   def update
     # for removing pinnable
-    current_user.profile_pins.where(id: params[:id]).first&.destroy
+    current_user.profile_pins.destroy_by(id: params[:id])
     bust_user_profile
     flash[:pins_success] = "🗑 Pin removed"
     redirect_back(fallback_location: "/dashboard")

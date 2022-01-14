@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { ButtonNew as Button } from '@crayons';
 
 export const MinimalProfilePreviewCard = ({
   triggerId,
@@ -40,8 +41,9 @@ export const MinimalProfilePreviewCard = ({
           </a>
         </div>
         <div class="print-hidden">
-          <button
-            class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+          <Button
+            variant="primary"
+            className="follow-action-button follow-user w-100"
             data-info={JSON.stringify({
               id: userId,
               className: 'User',
@@ -50,7 +52,7 @@ export const MinimalProfilePreviewCard = ({
             })}
           >
             Follow
-          </button>
+          </Button>
         </div>
         <div
           class="author-preview-metadata-container"

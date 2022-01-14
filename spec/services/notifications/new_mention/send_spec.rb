@@ -26,6 +26,7 @@ end
 RSpec.describe Notifications::NewMention::Send, type: :service do
   let(:user) { create(:user) }
   let!(:article) { create(:article) }
+  let(:article_author) { article.user }
   let!(:mention) { create(:mention, mentionable: article, user: user) }
 
   it "creates users notifications" do
@@ -45,6 +46,18 @@ RSpec.describe Notifications::NewMention::Send, type: :service do
     expect(notification.action).to be_nil
     expect(notification.json_data["user"]["id"]).to eq(article.user.id)
     expect(notification.json_data["user"]["username"]).to eq(article.user.username)
+  end
+
+  it "creates a mobile notification with name of the mentionable author" do
+    user.notification_setting.update(mobile_mention_notifications: true)
+    allow(PushNotifications::Send).to receive(:call)
+    allow(I18n).to receive(:t).with("views.notifications.mention.article_mobile",
+                                    user: mention.mentionable.user.username,
+                                    title: anything).and_call_original
+
+    described_class.call(mention)
+    expect(PushNotifications::Send).to have_received(:call)
+    expect(I18n).to have_received(:t)
   end
 
   it "does not send if the article has negative score already" do
