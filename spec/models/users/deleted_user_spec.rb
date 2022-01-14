@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe Users::DeletedUser, type: :model do
   subject(:deleted_user) { described_class }
 
+  describe "#class_name" do
+    subject(:class_name) { described_class.class_name }
+
+    it { is_expected.to eq(User.name) }
+  end
+
   it { is_expected.to respond_to(:id) }
   it { is_expected.to respond_to(:deleted?) }
   it { is_expected.to respond_to(:darker_color) }

@@ -20,7 +20,7 @@
           <button
             id="user-follow-butt"
             class="crayons-btn whitespace-nowrap follow-action-button"
-            data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'>
+            data-info='<%= DataInfo.to_json(object: @user) %>'>
             <%= t("views.organizations.follow") %>
           </button>
         </div>

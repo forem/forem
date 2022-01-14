@@ -59,8 +59,10 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   num_users.times do |i|
     fname = Faker::Name.unique.first_name
-    lname = Faker::Name.unique.last_name
-    name = [fname, lname].join(" ")
+    # Including "\\:/" to help with identifying local issues with
+    # character escaping.
+    lname = Faker::Name.unique.last_name + "\\:/"
+    name = [fname, "\"The #{fname}\"", lname].join(" ")
 
     user = User.create!(
       name: name,
@@ -182,7 +184,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 end
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
-    name: "Admin McAdmin",
+    name: "Admin \"The \\:/ Administrator\" McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
