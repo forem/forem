@@ -38,14 +38,11 @@ const reducer = (state, action) => {
         ...state,
         editValue: action.payload.editValue,
         inputPosition: action.payload.inputPosition,
-        forceInputFocus: action.payload.forceInputFocus,
       };
     case 'setActiveDescendentIndex':
       return { ...state, activeDescendentIndex: action.payload };
     case 'setIgnoreBlur':
       return { ...state, ignoreBlur: action.payload };
-    case 'setForceInputFocus':
-      return { ...state, forceInputFocus: action.payload };
     case 'setShowMaxSelectionsReached':
       return { ...state, showMaxSelectionsReached: action.payload };
     default:
@@ -95,7 +92,6 @@ export const MultiSelectAutocomplete = ({
     editValue: null,
     activeDescendentIndex: null,
     ignoreBlur: false,
-    forceInputFocus: false,
     showMaxSelectionsReached: false,
   });
 
@@ -106,7 +102,6 @@ export const MultiSelectAutocomplete = ({
     editValue,
     activeDescendentIndex,
     ignoreBlur,
-    forceInputFocus,
     showMaxSelectionsReached,
   } = state;
 
@@ -161,25 +156,6 @@ export const MultiSelectAutocomplete = ({
     }
   }, [inputPosition, editValue]);
 
-  useEffect(() => {
-    if (forceInputFocus) {
-      // If the user has reached their max selections, it's possible the input will not be available to focus.
-      // In this case, the last 'deselect' button in the widget is focused as a fallback.
-      const isInputAvailable = inputRef.current;
-
-      if (isInputAvailable) {
-        inputRef.current?.focus();
-      } else {
-        const selectionButtons = document
-          .getElementById('combo-selected')
-          .querySelectorAll('button');
-        selectionButtons[selectionButtons.length - 1].focus();
-      }
-
-      dispatch({ type: 'setForceInputFocus', payload: false });
-    }
-  }, [forceInputFocus, maxSelections, selectedItems.length]);
-
   const selectByText = ({
     textValue,
     nextInputValue = '',
@@ -211,7 +187,6 @@ export const MultiSelectAutocomplete = ({
       payload: {
         editValue: editItem.name,
         inputPosition: editItemIndex,
-        forceInputFocus: false,
       },
     });
   };
@@ -226,7 +201,6 @@ export const MultiSelectAutocomplete = ({
       payload: {
         editValue: nextInputValue,
         inputPosition: nextInputValue === '' ? null : inputPosition + 1,
-        forceInputFocus: focusInput,
       },
     });
 
@@ -258,6 +232,7 @@ export const MultiSelectAutocomplete = ({
 
     const shouldShowStaticSuggestions =
       staticSuggestions.length > 0 && inputRef.current?.value === '';
+
     if (shouldShowStaticSuggestions) {
       dispatch({
         type: 'setSuggestions',
@@ -428,6 +403,7 @@ export const MultiSelectAutocomplete = ({
 
     exitEditState({ nextInputValue, focusInput });
     dispatch({ type: 'setSelectedItems', payload: newSelections });
+
     onSelectionsChanged?.(newSelections);
 
     // Clear the text input
@@ -439,7 +415,14 @@ export const MultiSelectAutocomplete = ({
         type: 'setShowMaxSelectionsReached',
         payload: maxSelections && newSelections.length >= maxSelections,
       });
-      dispatch({ type: 'setForceInputFocus', payload: true });
+
+      // setTimeout is used with no delay here to make sure this focus event is executed in the next event cycle.
+      // selectItem() happens on mousedown rather than click, because mousedown is handled before the blur event, and we
+      // want to ignore some blur events (i.e. when input blurs because user has clicked a dropdown option).
+      // By using setTimeout, we make sure that the normal blur event is handled before we try to refocus the input.
+      setTimeout(() => {
+        input.focus();
+      });
     }
   };
 
