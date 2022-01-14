@@ -38,9 +38,9 @@ Additionally, if you would like explanatory text to be displayed at the top of t
 
 ### Maximum selections
 
-A maximum can be set on the number of selections a user can make, by passing the `maxSuggestions` prop (the default is unlimited). When a user has reached the maximum number of selections, the input will no longer appear until a selection has been deleted.
+A maximum can be set on the number of selections a user can make, by passing the `maxSuggestions` prop (the default is unlimited). When a user has reached the maximum number of selections, a message will be displayed, and the input's `aria-disabled` property will be set to 'true'.
 
-When using this option, bear in mind that it may not be clear to users why the input is not available to them and consider adding helper text by way of explanation (NB: for screen reader users, an `aria-describedby` is used to convey the max limit of the field, but this is only useful when the input is still on the page).
+The maximum number of selections possible is also added to the accessible input description via a hidden span and `aria-describedby`.
 
 ### Styling
 

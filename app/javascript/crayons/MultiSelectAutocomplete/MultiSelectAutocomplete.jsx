@@ -121,14 +121,15 @@ export const MultiSelectAutocomplete = ({
   const handleInputBlur = () => {
     dispatch({ type: 'setShowMaxSelectionsReached', payload: false });
 
-    // If user has reached their max selections, the inputRef may not be defined
-    const currentValue = inputRef.current ? inputRef.current.value : '';
+    const {
+      current: { value: currentValue },
+    } = inputRef;
 
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
     if (!ignoreBlur && allowSelections && currentValue !== '') {
-      selectByText({ textValue: currentValue, focusInput: false });
+      selectByText({ textValue: currentValue, keepSelecting: false });
     } else {
-      exitEditState({ focusInput: false });
+      exitEditState({ keepSelecting: false });
       dispatch({ type: 'setSuggestions', payload: [] });
       dispatch({ type: 'setIgnoreBlur', payload: false });
     }
@@ -159,7 +160,7 @@ export const MultiSelectAutocomplete = ({
   const selectByText = ({
     textValue,
     nextInputValue = '',
-    focusInput = true,
+    keepSelecting = true,
   }) => {
     const matchingSuggestion = suggestions.find(
       (suggestion) => suggestion.name === textValue,
@@ -169,11 +170,11 @@ export const MultiSelectAutocomplete = ({
         ? matchingSuggestion
         : { name: textValue },
       nextInputValue,
-      focusInput,
+      keepSelecting,
     });
 
     // Start the next search
-    if (focusInput) {
+    if (keepSelecting) {
       handleAutocompleteStart();
     }
   };
@@ -191,7 +192,7 @@ export const MultiSelectAutocomplete = ({
     });
   };
 
-  const exitEditState = ({ nextInputValue = '', focusInput = true }) => {
+  const exitEditState = ({ nextInputValue = '', keepSelecting = true }) => {
     // Reset 'edit mode' input resizing
     inputRef.current?.style?.removeProperty('width');
     inputSizerRef.current.innerText = nextInputValue;
@@ -205,7 +206,7 @@ export const MultiSelectAutocomplete = ({
     });
 
     // Blurring away while clearing the input
-    if (!focusInput && nextInputValue === '') {
+    if (!keepSelecting && nextInputValue === '') {
       inputRef.current.value = '';
     }
   };
@@ -249,7 +250,6 @@ export const MultiSelectAutocomplete = ({
   const handleInputChange = async ({ target: { value } }) => {
     // When the input appears inline in "edit" mode, we need to dynamically calculate the width to ensure it occupies the right space
     // (an input cannot resize based on its text content). We use a hidden <span> to track the size.
-
     inputSizerRef.current.innerText = value;
 
     if (inputPosition !== null) {
@@ -379,7 +379,7 @@ export const MultiSelectAutocomplete = ({
   const selectItem = ({
     selectedItem,
     nextInputValue = '',
-    focusInput = true,
+    keepSelecting = true,
   }) => {
     // If a user has manually typed an item already selected, reset
     if (selectedItems.some((item) => item.name === selectedItem.name)) {
@@ -401,7 +401,7 @@ export const MultiSelectAutocomplete = ({
     listItem.innerText = selectedItem.name;
     selectedItemsRef.current.appendChild(listItem);
 
-    exitEditState({ nextInputValue, focusInput });
+    exitEditState({ nextInputValue, keepSelecting });
     dispatch({ type: 'setSelectedItems', payload: newSelections });
 
     onSelectionsChanged?.(newSelections);
@@ -410,7 +410,7 @@ export const MultiSelectAutocomplete = ({
     const { current: input } = inputRef;
     input.value = nextInputValue;
 
-    if (focusInput) {
+    if (keepSelecting) {
       dispatch({
         type: 'setShowMaxSelectionsReached',
         payload: maxSelections && newSelections.length >= maxSelections,
