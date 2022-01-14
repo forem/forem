@@ -1,12 +1,6 @@
 @import '../config/import';
 
 .crayons-tag {
-  --tag-bg: var(--base-a5);
-  --tag-prefix: var(--base-a60);
-
-  --tag-bg-hover: var(--base-a5);
-  --tag-prefix-hover: var(--base);
-
   background: transparent;
   color: var(--tag-color);
   border-radius: var(--radius);

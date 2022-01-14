@@ -28,18 +28,6 @@
   --base-10: #efefef;
   --base-0: #f9f9f9;
 
-  --base-a90: #{rgba(#090909, 0.9)};
-  --base-a60: #{rgba(#090909, 0.6)};
-  --base-a10: #{rgba(#090909, 0.1)};
-  --base-a5: #{rgba(#090909, 0.05)};
-
-  --base-inverted-a50: rgb(var(--white), 0.5);
-
-  // Accent colors
-  --accent-brand-lighter: var(--indigo-500);
-  --accent-brand: var(--indigo-600);
-  --accent-brand-darker: var(--indigo-700);
-
   // Success
   --accent-success: rgb(var(--green-600));
   --accent-success-darker: rgb(var(--green-700));
@@ -87,20 +75,20 @@
 
   // Links
   --link-bg-hover-alt: var(--base-inverted);
-  --link-brand-color: rgb(var(--accent-brand));
+  --link-brand-color: var(--accent-brand);
   --link-color-current: var(--base-100);
   --link-color-secondary: var(--base-60);
   --link-color-secondary-hover: var(--base-70);
   --link-bg-current: var(--base-inverted);
 
   // Primary buttons
-  --button-primary-bg: rgb(var(--accent-brand));
-  --button-primary-bg-hover: rgb(var(--accent-brand-darker));
+  --button-primary-bg: var(--accent-brand);
+  --button-primary-bg-hover: var(--accent-brand-darker);
   --button-primary-color: var(--base-0);
   --button-primary-color-hover: var(--base-0);
   //-- Inverted
-  --button-primary-inverted-bg: rgb(var(--accent-brand));
-  --button-primary-inverted-bg-hover: rgb(var(--accent-brand-darker));
+  --button-primary-inverted-bg: var(--accent-brand);
+  --button-primary-inverted-bg-hover: var(--accent-brand-darker);
   --button-primary-inverted-color: var(--base-0);
   --button-primary-inverted-color-hover: var(--base-0);
 
@@ -162,7 +150,7 @@
   --snackbar-color: rgb(var(--white));
 
   // Indicators
-  --indicator-accent-bg: rgb(var(--accent-brand));
+  --indicator-accent-bg: var(--accent-brand);
   --indicator-accent-color: rgb(var(--white));
   --indicator-critical-bg: rgb(var(--red-600));
   --indicator-critical-color: rgb(var(--white));
@@ -171,13 +159,13 @@
 
   // Tabs
   --tab-color: rgb(var(--grey-700));
-  --tab-color-hover: rgb(var(--accent-brand));
+  --tab-color-hover: var(--accent-brand);
   --tab-color-current: rgb(var(--grey-900));
-  --tab-bg-hover: rgba(var(--accent-brand), 0.1);
+  --tab-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
   --tab-bg-current: rgb(var(--accent-brand));
 
   // Tags
-  --tag-color: rgb(var(--grey-800));
+  --tag-color: rgb(var(--grey-700));
   --tag-bg: rgba(var(--grey-900), 0.05);
   --tag-prefix: rgba(var(--grey-900), 0.6);
 
@@ -215,23 +203,23 @@
 
   // Buttons: Default
   --btn-bg: transparent;
-  --btn-bg-hover: rgba(var(--accent-brand), 0.1);
+  --btn-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
   --btn-color: rgb(var(--grey-800));
-  --btn-color-hover: rgb(var(--accent-brand-darker));
+  --btn-color-hover: var(--accent-brand-darker);
 
   --btn-current-bg: rgb(var(--grey-200));
   --btn-current-color: rgb(var(--grey-900));
 
   // Buttons: Primary
   --btn-primary-bg: rgb(var(--indigo-600));
-  --btn-primary-bg-hover: rgb(var(--accent-brand-darker));
+  --btn-primary-bg-hover: var(--accent-brand-darker);
   --btn-primary-color: rgb(var(--white));
   --btn-primary-color-hover: rgb(var(--white));
 
   // Buttons: Secondary
-  --btn-secondary-bg: rgba(var(--accent-brand), 0.1);
-  --btn-secondary-bg-hover: rgb(var(--accent-brand));
-  --btn-secondary-color: rgb(var(--accent-brand));
+  --btn-secondary-bg: rgba(var(--accent-brand-rgb), 0.1);
+  --btn-secondary-bg-hover: var(--accent-brand);
+  --btn-secondary-color: var(--accent-brand);
   --btn-secondary-color-hover: rgb(var(--white));
 
   // Buttons: Destructive Default
@@ -252,18 +240,18 @@
 
   // Links: Default
   --link-bg: transparent;
-  --link-bg-hover: rgba(var(--accent-brand), 0.1);
+  --link-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
   --link-color: rgb(var(--grey-700));
-  --link-color-hover: rgb(var(--accent-brand-darker));
+  --link-color-hover: var(--accent-brand-darker);
 
   --link-current-bg: rgb(var(--grey-200));
   --link-current-color: rgb(var(--grey-900));
 
   // Links: Branded
   --link-branded-bg: transparent;
-  --link-branded-bg-hover: rgba(var(--accent-brand), 0.1);
-  --link-branded-color: rgb(var(--accent-brand));
-  --link-branded-color-hover: rgb(var(--accent-brand-darker));
+  --link-branded-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --link-branded-color: var(--accent-brand);
+  --link-branded-color-hover: var(--accent-brand-darker);
 
   ////////////////////////////////////////////////
   // CTAs ////////////////////////////////////////
@@ -271,23 +259,37 @@
 
   // CTAs: Default
   --cta-bg: transparent;
-  --cta-bg-hover: rgba(var(--accent-brand), 0.1);
+  --cta-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
   --cta-color: rgb(var(--grey-800));
-  --cta-color-hover: rgb(var(--accent-brand-darker));
+  --cta-color-hover: var(--accent-brand-darker);
   --cta-border: rgb(var(--grey-600));
-  --cta-border-hover: rgb(var(--accent-brand-darker));
+  --cta-border-hover: var(--accent-brand-darker);
 
   // CTAs: Branded
   --cta-branded-bg: transparent;
-  --cta-branded-bg-hover: rgb(var(--accent-brand));
-  --cta-branded-color: rgb(var(--accent-brand));
+  --cta-branded-bg-hover: var(--accent-brand);
+  --cta-branded-color: var(--accent-brand);
   --cta-branded-color-hover: rgb(var(--white));
-  --cta-branded-border: rgb(var(--accent-brand));
-  --cta-branded-border-hover: rgb(var(--accent-brand-darker));
+  --cta-branded-border: var(--accent-brand);
+  --cta-branded-border-hover: var(--accent-brand-darker);
+
+  ////////////////////////////////////////////////
+  // Tooltips ////////////////////////////////////
+  ////////////////////////////////////////////////
+
+  --tooltip-bg: rgba(var(--grey-900), 0.9);
+  --tooltip-color: rgb(var(--white));
 
   ////////////////////////////////////////////////
   // Utilities ///////////////////////////////////
   ////////////////////////////////////////////////
 
-  --focus: rgb(var(--accent-brand));
+  // Focus
+  --focus: var(--accent-brand);
+
+  // Shadow
+  --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.1),
+    0 4px 6px -2px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
+  --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.1),
+    0 10px 10px -5px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
 }

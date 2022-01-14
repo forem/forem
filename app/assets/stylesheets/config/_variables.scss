@@ -137,6 +137,10 @@
   --white: 255, 255, 255;
   --black: 0, 0, 0;
 
+  --accent-brand-lighter: rgb(var(--accent-brand-lighter-rgb));
+  --accent-brand: rgb(var(--accent-brand-rgb));
+  --accent-brand-darker: rgb(var(--accent-brand-darker-rgb));
+
   --grey-50: 250, 250, 250;
   --grey-100: 245, 245, 245;
   --grey-200: 229, 229, 229;
