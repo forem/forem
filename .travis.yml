@@ -14,6 +14,7 @@ addons:
   apt:
     packages:
       - postgresql-13
+      - postgresql-client-13
   chrome: 'stable'
   artifacts:
     paths:
