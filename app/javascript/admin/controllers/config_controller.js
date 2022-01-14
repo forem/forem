@@ -148,7 +148,7 @@ export default class ConfigController extends Controller {
     }
 
     // if we are showing the community name because this is the first time that the
-    // creator is uploading a logo, then we want it to replace the community name
+    // creator is uploading a logo, then we want the logo to replace the community name
     if (communityName) {
       const newLogo = document.createElement('img');
       newLogo.src = previewLogo.src;
