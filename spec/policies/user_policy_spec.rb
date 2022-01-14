@@ -23,7 +23,7 @@ RSpec.describe UserPolicy, type: :policy do
     context "with suspended status" do
       before { user.add_role(:suspended) }
 
-      it { is_expected.to forbid_actions(%i[join_org moderation_routes]) }
+      it { is_expected.to forbid_actions(%i[join_org moderation_routes update]) }
     end
   end
 
