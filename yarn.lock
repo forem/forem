@@ -1448,6 +1448,22 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@etchteam/storybook-addon-css-variables-theme@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@etchteam/storybook-addon-css-variables-theme/-/storybook-addon-css-variables-theme-1.1.0.tgz#7803e09759d40eb1bdb6fa2fbf19cea717324f08"
+  integrity sha512-HDW1QRsSXYnNxTX4YKOKFPmC9XeK+ODAap/C6mk9d0wkaSGJGUj2yfSzbYOnfgx5tWR82iszkvvyupZKbxDjWg==
+  dependencies:
+    "@storybook/addons" "^6.2.9"
+    "@storybook/api" "^6.2.9"
+    "@storybook/client-logger" "^6.2.9"
+    "@storybook/components" "^6.2.9"
+    "@storybook/core-events" "^6.2.9"
+    "@storybook/theming" "^6.2.9"
+    core-js "^3.0.1"
+    lodash "^4.17.21"
+    memoizerific "^1.11.3"
+    util-deprecate "^1.0.2"
+
 "@faker-js/faker@^5.5.3":
   version "5.5.3"
   resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-5.5.3.tgz#18e3af6b8eae7984072bbeb0c0858474d7c4cefe"
@@ -2096,6 +2112,25 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
     uuid-browser "^3.1.0"
+
+"@storybook/addon-backgrounds@^6.4.9":
+  version "6.4.9"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-backgrounds/-/addon-backgrounds-6.4.9.tgz#89033aed6f01d6a2dc134cbdb1ce0c46afd130ec"
+  integrity sha512-/jqUZvk+x8TpDedyFnJamSYC91w/e8prj42xtgLG4+yBlb0UmewX7BAq9i/lhowhUjuLKaOX9E8E0AHftg8L6A==
+  dependencies:
+    "@storybook/addons" "6.4.9"
+    "@storybook/api" "6.4.9"
+    "@storybook/client-logger" "6.4.9"
+    "@storybook/components" "6.4.9"
+    "@storybook/core-events" "6.4.9"
+    "@storybook/csf" "0.0.2--canary.87bc651.0"
+    "@storybook/theming" "6.4.9"
+    core-js "^3.8.2"
+    global "^4.4.0"
+    memoizerific "^1.11.3"
+    regenerator-runtime "^0.13.7"
+    ts-dedent "^2.0.0"
+    util-deprecate "^1.0.2"
 
 "@storybook/addon-controls@^6.4.10":
   version "6.4.10"
