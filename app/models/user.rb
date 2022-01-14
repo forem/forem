@@ -596,6 +596,10 @@ class User < ApplicationRecord
     self.username = username&.downcase
   end
 
+  # @todo Should we do something to ensure that we don't create a username that violates our
+  # USERNAME_MAX_LENGTH constant?
+  #
+  # @see USERNAME_MAX_LENGTH
   def set_temp_username
     self.username = if temp_name_exists?
                       "#{temp_username}_#{rand(100)}"
