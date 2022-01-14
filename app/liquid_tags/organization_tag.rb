@@ -23,7 +23,8 @@ class OrganizationTag < LiquidTagBase
   end
 
   def parse_slug_to_organization(organization)
-    if organization.include?(URL.url.to_s)
+    forem_domain = URL.url.to_s
+    if organization.include?(forem_domain)
       match = pattern_match_for(organization, [REGISTRY_REGEXP])
       raise StandardError, "Invalid Organization URL" unless match
 
