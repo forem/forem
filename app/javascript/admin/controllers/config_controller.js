@@ -153,7 +153,7 @@ export default class ConfigController extends Controller {
       const newLogo = document.createElement('img');
       newLogo.src = previewLogo.src;
       newLogo.className = 'site-logo__img';
-      newLogo.alt = communityName.innerHTML;
+      newLogo.alt = communityName.innerText;
 
       communityName.parentNode.replaceChild(newLogo, communityName);
     } else {
