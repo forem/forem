@@ -98,6 +98,11 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(CodepenTag)
     end
 
+    it "returns DotnetFiddleTag for a dotnetfiddle url" do
+      expect(described_class.find_liquid_tag_for(link: "https://dotnetfiddle.net/PmoDip"))
+        .to eq(DotnetFiddleTag)
+    end
+
     it "returns InstagramTag for a valid instagram url" do
       valid_instagram_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))

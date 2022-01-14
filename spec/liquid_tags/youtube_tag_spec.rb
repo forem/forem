@@ -41,8 +41,8 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
     end
     # rubocop:enable Style/StringLiterals
 
-    it "raises an error for invalid IDs" do
-      expect { generate_new_liquid(invalid_id).render }.to raise_error("Invalid YouTube ID")
+    it "raises an error for invalid IDs or URLs" do
+      expect { generate_new_liquid(invalid_id).render }.to raise_error("Invalid YouTube ID or URL")
     end
   end
 end
