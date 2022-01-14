@@ -36,13 +36,13 @@
         <div class="profile-header__meta">
           <% if @organization.location.present? %>
             <span class="profile-header__meta__item">
-              <%= crayons_icon_tag(:location, css_class: "mr-2 shrink-0", title: t("views.organizations.location.icon")) %>
+              <%= crayons_icon_tag(:location, class: "mr-2 shrink-0", title: t("views.organizations.location.icon")) %>
               <%= sanitize @organization.location %>
             </span>
           <% end %>
 
           <span class="profile-header__meta__item">
-            <%= crayons_icon_tag(:cake, css_class: "mr-2 shrink-0", title: t("views.organizations.joined.icon")) %>
+            <%= crayons_icon_tag(:cake, class: "mr-2 shrink-0", title: t("views.organizations.joined.icon")) %>
             <%= t("views.organizations.joined.text_html", date: local_date(@user.created_at)) %>
           </span>
 
