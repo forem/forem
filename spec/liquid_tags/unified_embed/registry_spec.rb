@@ -8,6 +8,7 @@ RSpec.describe UnifiedEmbed::Registry do
   let(:comment) do
     create(:comment, commentable: article, user: user, body_markdown: "TheComment")
   end
+  let(:organization) { create(:organization) }
 
   describe ".find_liquid_tag_for" do
     valid_blogcast_url_formats = [
@@ -123,6 +124,11 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns NextTechTag for a nexttech url" do
       expect(described_class.find_liquid_tag_for(link: "https://nt.dev/s/6ba1fffbd09e"))
         .to eq(NextTechTag)
+    end
+
+    it "returns OrganizationTag for a Forem organization url" do
+      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{organization.slug}"))
+        .to eq(OrganizationTag)
     end
 
     it "returns RedditTag for a reddit url" do
