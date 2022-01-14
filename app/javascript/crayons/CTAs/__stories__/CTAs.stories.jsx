@@ -5,7 +5,7 @@ import CogIcon from '@images/cog.svg';
 
 export default {
   component: CTA,
-  title: 'BETA/Navigation/CTAs',
+  title: 'Components/Navigation/CTAs',
   parameters: {
     docs: {
       page: CTAsDoc,
