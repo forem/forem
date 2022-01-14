@@ -39,7 +39,7 @@ RSpec.describe CrayonsHelper, type: :helper do
       expect(icon_tag).to match(%r{<title.*>Test</title>})
     end
 
-    it "mixing extra classes and the native option" do
+    it "allows mixing extra classes and the native option" do
       icon_tag = helper.crayons_icon_tag(:twitter, class: "test", native: true)
       expect(icon_tag).to match(/class="crayons-icon crayons-icon--default test"/)
     end
