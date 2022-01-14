@@ -6,8 +6,9 @@ import {
   secondarySyntaxFormatters,
   getNewTextAreaValueWithEdits,
 } from './markdownSyntaxFormatters';
-import { Overflow, Help } from './icons';
-import { Button } from '@crayons';
+import OverflowIcon from '@images/overflow-vertical.svg';
+import HelpIcon from '@images/help.svg';
+import { ButtonNew as Button, Link } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
@@ -286,8 +287,6 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         <Button
           key={`${controlName}-btn`}
           role={isOverflow ? 'menuitem' : 'button'}
-          variant="ghost"
-          contentType="icon"
           icon={icon}
           className={
             isOverflow
@@ -332,8 +331,6 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         return (
           <Button
             key={`${controlName}-btn`}
-            variant="ghost"
-            contentType="icon"
             icon={icon}
             className="toolbar-btn mr-1"
             tabindex={index === 0 ? '0' : '-1'}
@@ -371,8 +368,6 @@ export const MarkdownToolbar = ({ textAreaId }) => {
             <span aria-hidden="true">Upload image</span>
           ),
           key: 'image-btn',
-          variant: 'ghost',
-          contentType: 'icon',
           className: 'toolbar-btn formatter-btn mr-1',
           tabindex: '-1',
         }}
@@ -387,9 +382,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
           aria-expanded={overflowMenuOpen ? 'true' : 'false'}
           aria-haspopup="true"
-          variant="ghost"
-          contentType="icon"
-          icon={Overflow}
+          icon={OverflowIcon}
           className="toolbar-btn ml-auto hidden m:block"
           tabindex="-1"
           aria-label="More options"
@@ -403,15 +396,13 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           className="crayons-dropdown flex p-2 min-w-unset right-0 top-100"
         >
           {getSecondaryFormatterButtons(true)}
-          <Button
-            tagName="a"
+          <Link
+            block
             role="menuitem"
-            url="/p/editor_guide"
+            href="/p/editor_guide"
             target="_blank"
             rel="noopener noreferrer"
-            variant="ghost"
-            contentType="icon"
-            icon={Help}
+            icon={HelpIcon}
             className="overflow-menu-btn"
             tabindex="-1"
             aria-label="Help"

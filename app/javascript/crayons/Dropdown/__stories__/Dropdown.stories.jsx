@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { withKnobs, text } from '@storybook/addon-knobs';
 import './dropdown-css-helper.scss';
 import notes from './dropdowns.md';
-import { Dropdown } from '@crayons';
+import { ButtonNew as Button, Dropdown } from '@crayons';
 
 export default {
   title: 'Components/Dropdowns',
@@ -12,13 +12,9 @@ export default {
 
 export const Default = () => (
   <div className="dropdown-trigger-container">
-    <button
-      id="storybook-dropdown-trigger"
-      className="crayons-btn dropdown-trigger"
-      aria-haspopup="true"
-    >
+    <Button id="storybook-dropdown-trigger" aria-haspopup="true">
       Click to trigger dropdown
-    </button>
+    </Button>
     <Dropdown
       triggerButtonId="storybook-dropdown-trigger"
       dropdownContentId="storybook-dropdown"
