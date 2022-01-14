@@ -59,10 +59,9 @@
         <div id="body-styles">
           <style>
             :root {
-              --accent-brand: <%= Settings::UserExperience.primary_brand_color_hex %>;
-              --accent-brand-darker: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.85) %>;
-              --accent-brand-lighter: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.1) %>;
-              --accent-brand-a10: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).opacity(0.1) %>;
+              --accent-brand-lighter: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.25, only_values: true) %>;
+              --accent-brand: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1, only_values: true) %>;
+              --accent-brand-darker: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.85, only_values: true) %>;
             }
           </style>
         </div>
