@@ -10,11 +10,10 @@ cache:
 rvm:
   - 3.0.2
 addons:
-  postgresql: '12'
+  postgresql: '13'
   apt:
     packages:
-      - postgresql-12
-      - postgresql-client-12
+      - postgresql-13
   chrome: 'stable'
   artifacts:
     paths:
@@ -50,8 +49,8 @@ before_install:
     sudo sed -i
     -e '/local.*peer/s/postgres/all/'
     -e 's/peer\|md5/trust/g'
-    /etc/postgresql/12/main/pg_hba.conf
-  - sudo service postgresql@12-main restart
+    /etc/postgresql/13/main/pg_hba.conf
+  - sudo service postgresql@13-main restart
   - gem install bundler:"<2.3"
 install:
   - date --rfc-3339=seconds
