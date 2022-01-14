@@ -121,7 +121,7 @@
         <div class="crayons-story__details">
           <% if story.public_reactions_count > 0 %>
             <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title, num: story.public_reactions_count) %>">
-              <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: t("views.reactions.summary.title")) %>
+              <%= crayons_icon_tag("small-heart", title: t("views.reactions.summary.title")) %>
               <%= t("views.reactions.summary.count_html",
                     count: story.public_reactions_count,
                     start: tag("span", { class: %w[hidden s:inline] }, true),
@@ -130,7 +130,7 @@
           <% end %>
           <% if story.comments_count > 0 %>
             <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" aria-label="<%= t("views.articles.comments.aria_label", title: story.title, num: story.public_reactions_count) %>">
-              <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: t("views.comments.summary.title")) %>
+              <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <%= t("views.comments.summary.count_html",
                     count: story.comments_count,
                     start: tag("span", { class: %w[hidden s:inline] }, true),
@@ -138,7 +138,7 @@
             </a>
           <% else %>
             <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" aria-label="<%= t("views.articles.comments.aria_label", title: story.title, num: story.public_reactions_count) %>">
-              <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: t("views.comments.summary.title")) %>
+              <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <span class="hidden s:inline"><%= t("views.comments.add") %></span>
             </a>
           <% end %>
