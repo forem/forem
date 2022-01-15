@@ -15,7 +15,7 @@
                 <%= a_field.text_field key,
                                        class: "crayons-textfield",
                                        value: settings_model.public_send(config_key)[key],
-                                       placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
+                                       placeholder: placeholder_module.details[config_key][:placeholder] %>
               </div>
             <% end %>
           <% end %>
@@ -23,20 +23,20 @@
       <% elsif settings_model.public_send(config_key).is_a?(Array) %>
         <div class="crayons-field">
           <%= admin_config_label config_key %>
-          <%= admin_config_description placeholder_module::DETAILS[config_key][:description] %>
+          <%= admin_config_description placeholder_module.details[config_key][:description] %>
           <%= f.text_field config_key,
                            class: "crayons-textfield",
                            value: settings_model.public_send(config_key).join(","),
-                           placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
+                           placeholder: placeholder_module.details[config_key][:placeholder] %>
         </div>
       <% else %>
         <div class="crayons-field">
           <%= admin_config_label config_key %>
-          <%= admin_config_description placeholder_module::DETAILS[config_key][:description] %>
+          <%= admin_config_description placeholder_module.details[config_key][:description] %>
           <%= f.text_field config_key,
                            class: "form-control",
                            value: settings_model.public_send(config_key),
-                           placeholder: placeholder_module::DETAILS[config_key][:placeholder] %>
+                           placeholder: placeholder_module.details[config_key][:placeholder] %>
         </div>
       <% end %>
     <% end %>

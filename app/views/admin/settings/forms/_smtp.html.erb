@@ -9,11 +9,11 @@
         <% Settings::SMTP::OPTIONS.each do |config_key| %>
           <div class="crayons-field">
             <%= admin_config_label config_key %>
-            <%= admin_config_description Constants::Settings::SMTP::DETAILS[config_key][:description] %>
+            <%= admin_config_description Constants::Settings::SMTP.details[config_key][:description] %>
             <%= f.text_field config_key,
                              class: "crayons-textfield",
                              value: Settings::SMTP.public_send(config_key),
-                             placeholder: Constants::Settings::SMTP::DETAILS[config_key][:placeholder] %>
+                             placeholder: Constants::Settings::SMTP.details[config_key][:placeholder] %>
 
           </div>
         <% end %>
