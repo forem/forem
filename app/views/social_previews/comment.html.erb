@@ -120,7 +120,7 @@
       <h1 style="font-size:<%= font_size %>vw;"><%= @comment.title %></h1>
     </div>
     <div class="preview-user">
-      <img src="<%= Images::Profile.call(@comment.user.profile_image_url, length: 90) %>" />
+      <img src="<%= @comment.user.profile_image_url_for(length: 90) %>" />
       <%= truncate @comment.user.name, length: 28 %>・<%= @comment.readable_publish_date %>
     </div>
     <div class="badge-images">

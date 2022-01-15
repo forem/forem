@@ -43,26 +43,27 @@ gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard a
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 0.2.24" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.9" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 2.8.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.8.1" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.0" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your images
-gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
+gem "inline_svg", "~> 1.8" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
 gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.1" # A secure, non-evaling end user template engine with aesthetic markup
-gem "nokogiri", "~> 1.12" # HTML, XML, SAX, and Reader parser
-gem "octokit", "~> 4.21" # Simple wrapper for the GitHub API
+gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
+gem "octokit", "~> 4.22" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
 gem "omniauth", "~> 2.0" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 9.0" # OmniAuth strategy for Facebook
 gem "omniauth-github", "~> 2.0" # OmniAuth strategy for GitHub
+gem "omniauth-google-oauth2", "~> 1.0"
 gem "omniauth-rails_csrf_protection", "~> 1.0" # Provides CSRF protection on OmniAuth request endpoint on Rails application.
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.21" # Run any kind of code in parallel processes
@@ -80,21 +81,17 @@ gem "rails", "~> 6.1.4" # Ruby on Rails
 gem "ransack", "~> 2.5" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
+
 gem "redis", "~> 4.5.1" # Redis ruby client
+gem "redis-actionpack", "5.2.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "rpush", "~> 6.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
-gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
-
-# NOTE: [@rhymes, @citizen428]: sign in doesn't work with redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
-# We need to investigate why exactly, in the meantime we are hardcoding these two dependencies
-# to keep them at the latest working version
-gem "redis-actionpack", "5.1.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
-gem "redis-rack", "2.0.6" # Redis Store for Rack applications
 
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
 gem "rouge", "~> 3.27" # A pure-ruby code highlighter
+gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.3.1" # Sidekiq is used to process background jobs with the help of Redis
@@ -169,6 +166,6 @@ group :test do
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 5.0" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.14", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
-  gem "with_model", "~> 2.1.5" # Dynamically build a model within an RSpec context
+  gem "with_model", "~> 2.1.6" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

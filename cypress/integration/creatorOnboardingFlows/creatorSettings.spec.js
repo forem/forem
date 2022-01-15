@@ -17,9 +17,6 @@ describe('Creator Settings Page', () => {
     cy.findByText('No stress, you can always change it later.').should(
       'be.visible',
     );
-    cy.findByText(
-      /Setup not completed yet, missing community description, suggested tags, and suggested users./i,
-    ).should('not.be.visible');
 
     // should contain a community name and update the field properly
     cy.findByRole('textbox', { name: /community name/i })

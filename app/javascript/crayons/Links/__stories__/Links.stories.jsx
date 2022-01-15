@@ -5,7 +5,7 @@ import CogIcon from '@images/cog.svg';
 
 export default {
   component: Link,
-  title: 'BETA/Navigation/Links',
+  title: 'Components/Navigation/Links',
   parameters: {
     docs: {
       page: LinksDoc,

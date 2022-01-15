@@ -2,7 +2,7 @@ class UserBlock < ApplicationRecord
   belongs_to :blocker, class_name: "User", inverse_of: :blocker_blocks
   belongs_to :blocked, class_name: "User", inverse_of: :blocked_blocks
 
-  validates :blocked_id, :blocker_id, :config, presence: true
+  validates :config, presence: true
   validates :blocked_id, uniqueness: { scope: %i[blocker_id] }
   validates :config, inclusion: { in: %w[default] }
   validate :blocker_cannot_be_same_as_blocked

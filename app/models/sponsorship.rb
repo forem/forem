@@ -19,7 +19,7 @@ class Sponsorship < ApplicationRecord
   validates :level, presence: true, inclusion: { in: LEVELS }
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
-  validates :user, :organization, :featured_number, presence: true
+  validates :featured_number, presence: true
   validates :sponsorable_type, inclusion: {
     in: SPONSORABLE_TYPES,
     allow_blank: true,

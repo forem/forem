@@ -127,7 +127,6 @@ module Constants
             description: I18n.t("lib.constants.settings.general.secret_key_used_to_allow_a"),
             placeholder: ""
           }
-          # Dynamic values omitted: configurable_rate_limits and social_media_handles
         }
       end
     end

@@ -64,7 +64,7 @@ fr:
           community_sponsors: Community Sponsors
           determines_how_often_perio: Determines how often periodic email digests are sent (in days)
           determines_the_heading_tex: Determines the heading text of the main sponsors sidebar above the list of sponsors.
-          determines_which_tags_are: Determines which tags are shown on the homepage righthand sidebar
+          determines_which_tags_are: Determines which tags are shown on the homepage right-hand sidebar
           determines_which_tags_are2: |-
             Determines which tags are suggested to new users during onboarding (comma
                       separated, letters only)
@@ -85,11 +85,11 @@ fr:
           secret_stripe_key_for_rece: 'Secret Stripe key for receiving payments. See: https://stripe.com/docs/keys'
           sustaining_members_newslet: Sustaining Members Newsletter ID
           tag_moderators_newsletter: Tag Moderators Newsletter ID
-          used_as_a_fallback_to_the: Used as a fallback to the SVG. Recommended minimum of 512x512px
+          used_as_a_fallback_to_the: Used as a secondary logo in places like the sign in modals, onboarding, Apple touch icons. Recommended minimum of 512x512px
           used_as_the_main_image_in: Used as the main image in social networks and OpenGraph. Recommended aspect ratio of 16:9 (600x337px,1200x675px)
           used_as_the_mascot_image: Used as the mascot image.
           used_as_the_site_favicon: Used as the site favicon
-          used_as_the_svg_logo_of_th: Used as the SVG logo of the community
+          used_as_the_svg_logo_of_th: This is the logo currently used on the upper left-hand corner of your Forem. However, after the release it will be deprecated in favor of the Logo above.
           used_as_the_twitter_hashta: Used as the twitter hashtag of the community
           used_for_site_wide_web_mon: 'Used for site-wide web monetization. See: https://github.com/thepracticaldev/dev.to/pull/6345'
           used_to_authenticate_with: Used to authenticate with your health check endpoints.

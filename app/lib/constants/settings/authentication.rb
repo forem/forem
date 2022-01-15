@@ -54,6 +54,14 @@ module Constants
             description: I18n.t("lib.constants.settings.authentication.the_client_secret_portion"),
             placeholder: ""
           },
+          google_oauth2_key: {
+            description: "The \"Client ID\" portion of the OAuth 2.0 page on the Google Cloud Platform portal",
+            placeholder: ""
+          },
+          google_oauth2_secret: {
+            description: "The \"Client Secret\" portion of the OAuth 2.0 page on the Google Cloud Platform portal",
+            placeholder: ""
+          },
           invite_only_mode: {
             description: I18n.t("lib.constants.settings.authentication.only_users_invited_by_emai"),
             placeholder: ""

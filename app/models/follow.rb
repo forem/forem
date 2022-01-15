@@ -33,9 +33,7 @@ class Follow < ApplicationRecord
   after_save :touch_follower
 
   validates :blocked, inclusion: { in: [true, false] }
-  validates :followable_id, presence: true
   validates :followable_type, presence: true
-  validates :follower_id, presence: true
   validates :follower_type, presence: true
   validates :subscription_status, presence: true, inclusion: { in: %w[all_articles none] }
 

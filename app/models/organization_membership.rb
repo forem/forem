@@ -7,7 +7,7 @@ class OrganizationMembership < ApplicationRecord
 
   USER_TYPES = %w[admin member guest].freeze
 
-  validates :user_id, :organization_id, :type_of_user, presence: true
+  validates :type_of_user, presence: true
   validates :user_id, uniqueness: { scope: :organization_id }
   validates :type_of_user, inclusion: { in: USER_TYPES }
 
