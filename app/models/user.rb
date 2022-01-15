@@ -26,9 +26,6 @@ class User < ApplicationRecord
 
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
-  MESSAGES = {
-    reserved_username: "username is reserved"
-  }.freeze
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
   PAYMENT_POINTER_REGEXP = %r{
     \A                # start
@@ -141,9 +138,9 @@ class User < ApplicationRecord
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
-  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
+  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: :invalid_username }
   validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
-    "#{data[:value]} is taken."
+    I18n.t("models.user.is_taken", data_value: (data[:value]))
   end }, if: :username_changed?
 
   # add validators for provider related usernames
@@ -220,6 +217,10 @@ class User < ApplicationRecord
   after_save :create_conditional_autovomits
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
+
+  def self.reserved_username
+    I18n.t("models.user.username_is_reserved")
+  end
 
   def self.staff_account
     find_by(id: Settings::Community.staff_user_id)
@@ -481,7 +482,7 @@ class User < ApplicationRecord
   end
 
   def non_banished_username
-    errors.add(:username, "has been banished.") if BanishedUser.exists?(username: username)
+    errors.add(:username, I18n.t("models.user.has_been_banished")) if BanishedUser.exists?(username: username)
   end
 
   def subscribe_to_mailchimp_newsletter
@@ -656,7 +657,7 @@ class User < ApplicationRecord
     rate_limiter.track_limit_by_action(:send_email_confirmation)
     rate_limiter.check_limit!(:send_email_confirmation)
   rescue RateLimitChecker::LimitReached => e
-    errors.add(:email, "confirmation could not be sent. #{e.message}")
+    errors.add(:email, I18n.t("models.user.could_not_send", e_message: e.message))
   end
 
   def update_rate_limit
@@ -665,13 +666,13 @@ class User < ApplicationRecord
     rate_limiter.track_limit_by_action(:user_update)
     rate_limiter.check_limit!(:user_update)
   rescue RateLimitChecker::LimitReached => e
-    errors.add(:base, "User could not be saved. #{e.message}")
+    errors.add(:base, I18n.t("models.user.user_could_not_be_saved", e_message: e.message))
   end
 
   def password_matches_confirmation
     return true if password == password_confirmation
 
-    errors.add(:password, "doesn't match password confirmation")
+    errors.add(:password, I18n.t("models.user.password_not_matched"))
   end
 
   def strip_payment_pointer

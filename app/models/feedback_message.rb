@@ -9,7 +9,6 @@ class FeedbackMessage < ApplicationRecord
   has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy
 
   REPORTER_UNIQUENESS_SCOPE = %i[reported_url feedback_type].freeze
-  REPORTER_UNIQUENESS_MSG = "(you) previously reported this URL.".freeze
   CATEGORIES = ["spam", "other", "rude or vulgar", "harassment", "bug", "listings"].freeze
   STATUSES = %w[Open Invalid Resolved].freeze
 
@@ -31,7 +30,7 @@ class FeedbackMessage < ApplicationRecord
             inclusion: {
               in: STATUSES
             }
-  validates :reporter_id, uniqueness: { scope: REPORTER_UNIQUENESS_SCOPE, message: REPORTER_UNIQUENESS_MSG },
+  validates :reporter_id, uniqueness: { scope: REPORTER_UNIQUENESS_SCOPE, message: :reporter_uniqueness_msg },
                           if: :abuse_report? && :reporter_id
 
   def abuse_report?
@@ -44,5 +43,9 @@ class FeedbackMessage < ApplicationRecord
     types << "Offender" if user_id == offender_id
     types << "Reporter" if user_id == reporter_id
     types
+  end
+
+  def reporter_uniqueness_msg
+    I18n.t("models.feedback_message.reported")
   end
 end

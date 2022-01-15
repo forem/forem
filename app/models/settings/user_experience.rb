@@ -21,13 +21,13 @@ module Settings
     setting :primary_brand_color_hex, type: :string, default: "#3b49df", validates: {
       format: {
         with: HEX_COLOR_REGEX,
-        message: "must be be a 3 or 6 character hex (starting with #)"
+        message: -> { I18n.t("models.settings.user_experience.message") }
       },
       color_contrast: true
     }
     # a non-public forem will redirect all unauthenticated pages to the registration page.
     # a public forem could have more fine-grained authentication (listings ar private etc.) in future
-    setting :public, type: :boolean, default: true
+    setting :public, type: :boolean, default: 0
     setting :tag_feed_minimum_score, type: :integer, default: 0
     setting :default_locale, type: :string, default: "en"
     setting :display_in_directory, type: :boolean, default: true

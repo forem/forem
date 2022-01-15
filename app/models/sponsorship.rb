@@ -23,7 +23,7 @@ class Sponsorship < ApplicationRecord
   validates :sponsorable_type, inclusion: {
     in: SPONSORABLE_TYPES,
     allow_blank: true,
-    message: "is not a sponsorable type"
+    message: I18n.t("models.sponsorship.invalid_type")
   }
 
   validate :validate_tag_uniqueness, if: proc { level.to_s == "tag" }
@@ -44,13 +44,16 @@ class Sponsorship < ApplicationRecord
     return unless self.class.where(sponsorable: sponsorable, level: :tag)
       .exists?(["expires_at > ? AND id != ?", Time.current, id.to_i])
 
-    errors.add(:level, "The tag is already sponsored")
+    errors.add(:level, I18n.t("models.sponsorship.already_sponsored"))
   end
 
   def validate_level_uniqueness
     return unless self.class.where(organization: organization)
       .exists?(["level IN (?) AND expires_at > ? AND id != ?", METAL_LEVELS, Time.current, id.to_i])
 
-    errors.add(:level, "You can have only one sponsorship of #{METAL_LEVELS.join(', ')}")
+    errors.add(:level,
+               I18n.t("models.sponsorship.only_one_level", levels: METAL_LEVELS.map do |l|
+                                                                     I18n.t("models.sponsorship.level.#{l}")
+                                                                   end.to_sentence(locale: I18n.locale)))
   end
 end
