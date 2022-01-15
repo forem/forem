@@ -97,7 +97,7 @@ class UserSubscriptionTag < LiquidTagBase
 
         if (noticeType === 'danger') {
           // Allow users to try resubscribing if they see an error message.
-          subscribeBtn.textContent = "Submit";
+          subscribeBtn.textContent = "#{I18n.t('liquid_tags.user_subscription_tag.submit')}";
           subscribeBtn.disabled = false;
         }
       }
@@ -120,7 +120,7 @@ class UserSubscriptionTag < LiquidTagBase
       hideSubscriptionSignedIn();
       updateSubscriberData();
       const authorUsername = document.getElementById('user-subscription-tag')?.dataset.authorUsername;
-      const alreadySubscribedMsg = `You are already subscribed.`;
+      const alreadySubscribedMsg = `#{I18n.t('liquid_tags.user_subscription_tag.subscribed')}`;
       showResponseMessage('success', alreadySubscribedMsg);
     }
 
@@ -221,7 +221,7 @@ class UserSubscriptionTag < LiquidTagBase
       // Hide any error messages previously rendered.
       hideResponseMessage();
 
-      subscribeBtn.textContent = "Submitting...";
+      subscribeBtn.textContent = "#{I18n.t('liquid_tags.user_subscription_tag.submitting')}";
       subscribeBtn.disabled = true;
 
       const headers = {
@@ -291,6 +291,7 @@ class UserSubscriptionTag < LiquidTagBase
         if (response.success) {
           const userSubscriptionTag = document.getElementById('user-subscription-tag');
           const authorUsername = (userSubscriptionTag ? userSubscriptionTag.dataset.authorUsername : null);
+          // TODO: [yheuhtozr] currently no way of i18n via Ruby
           const successMsg = `You are now subscribed and may receive emails from ${authorUsername}`;
           showResponseMessage('success', successMsg);
           hideSubscriptionSignedIn();
