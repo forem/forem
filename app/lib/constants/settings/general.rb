@@ -8,123 +8,123 @@ module Constants
         {
           credit_prices_in_cents: {
             small: {
-              description: I18n.t("lib.constants.settings.general.price_for_small_credit_pur"),
+              description: I18n.t("lib.constants.settings.general.credit.small.description"),
               placeholder: ""
             },
             medium: {
-              description: I18n.t("lib.constants.settings.general.price_for_medium_credit_pu"),
+              description: I18n.t("lib.constants.settings.general.credit.medium.description"),
               placeholder: ""
             },
             large: {
-              description: I18n.t("lib.constants.settings.general.price_for_large_credit_pur"),
+              description: I18n.t("lib.constants.settings.general.credit.large.description"),
               placeholder: ""
             },
             xlarge: {
-              description: I18n.t("lib.constants.settings.general.price_for_extra_large_cred"),
+              description: I18n.t("lib.constants.settings.general.credit.xlarge.description"),
               placeholder: ""
             }
           },
           favicon_url: {
-            description: I18n.t("lib.constants.settings.general.used_as_the_site_favicon"),
+            description: I18n.t("lib.constants.settings.general.favicon.description"),
             placeholder: IMAGE_PLACEHOLDER
           },
           ga_tracking_id: {
-            description: I18n.t("lib.constants.settings.general.google_analytics_tracking"),
+            description: I18n.t("lib.constants.settings.general.ga_tracking.description"),
             placeholder: ""
           },
           health_check_token: {
-            description: I18n.t("lib.constants.settings.general.used_to_authenticate_with"),
-            placeholder: I18n.t("lib.constants.settings.general.a_secure_token")
+            description: I18n.t("lib.constants.settings.general.health.description"),
+            placeholder: I18n.t("lib.constants.settings.general.health.placeholder")
           },
           logo_png: {
-            description: I18n.t("lib.constants.settings.general.used_as_a_fallback_to_the"),
+            description: I18n.t("lib.constants.settings.general.logo_png.description"),
             placeholder: IMAGE_PLACEHOLDER
           },
           logo_svg: {
-            description: I18n.t("lib.constants.settings.general.used_as_the_svg_logo_of_th"),
+            description: I18n.t("lib.constants.settings.general.logo_svg.description"),
             placeholder: SVG_PLACEHOLDER
           },
           main_social_image: {
-            description: I18n.t("lib.constants.settings.general.used_as_the_main_image_in"),
+            description: I18n.t("lib.constants.settings.general.main_social.description"),
             placeholder: IMAGE_PLACEHOLDER
           },
           mailchimp_api_key: {
-            description: I18n.t("lib.constants.settings.general.api_key_used_to_connect_ma"),
+            description: I18n.t("lib.constants.settings.general.mailchimp_api.description"),
             placeholder: ""
           },
           mailchimp_newsletter_id: {
-            description: I18n.t("lib.constants.settings.general.main_newsletter_id_also_kn"),
+            description: I18n.t("lib.constants.settings.general.mailchimp_news.description"),
             placeholder: ""
           },
           mailchimp_sustaining_members_id: {
-            description: I18n.t("lib.constants.settings.general.sustaining_members_newslet"),
+            description: I18n.t("lib.constants.settings.general.mailchimp_sustaining.description"),
             placeholder: ""
           },
           mailchimp_tag_moderators_id: {
-            description: I18n.t("lib.constants.settings.general.tag_moderators_newsletter"),
+            description: I18n.t("lib.constants.settings.general.mailchimp_tag_mod.description"),
             placeholder: ""
           },
           mailchimp_community_moderators_id: {
-            description: I18n.t("lib.constants.settings.general.community_moderators_newsl"),
+            description: I18n.t("lib.constants.settings.general.mailchimp_mod.description"),
             placeholder: ""
           },
           mascot_image_url: {
-            description: I18n.t("lib.constants.settings.general.used_as_the_mascot_image"),
+            description: I18n.t("lib.constants.settings.general.mascot_image.description"),
             placeholder: IMAGE_PLACEHOLDER
           },
           mascot_user_id: {
-            description: I18n.t("lib.constants.settings.general.user_id_of_the_mascot_acco"),
+            description: I18n.t("lib.constants.settings.general.mascot_user.description"),
             placeholder: "1"
           },
           meta_keywords: {
             description: "",
-            placeholder: I18n.t("lib.constants.settings.general.list_of_valid_keywords_com")
+            placeholder: I18n.t("lib.constants.settings.general.meta_keywords.description")
           },
           onboarding_background_image: {
-            description: I18n.t("lib.constants.settings.general.background_for_onboarding"),
+            description: I18n.t("lib.constants.settings.general.onboarding.description"),
             placeholder: IMAGE_PLACEHOLDER
           },
           payment_pointer: {
-            description: I18n.t("lib.constants.settings.general.used_for_site_wide_web_mon"),
+            description: I18n.t("lib.constants.settings.general.payment.description"),
             placeholder: "$pay.somethinglikethis.co/value"
           },
           periodic_email_digest: {
-            description: I18n.t("lib.constants.settings.general.determines_how_often_perio"),
+            description: I18n.t("lib.constants.settings.general.periodic.description"),
             placeholder: 2
           },
           sidebar_tags: {
-            description: I18n.t("lib.constants.settings.general.determines_which_tags_are"),
-            placeholder: I18n.t("lib.constants.settings.general.list_of_valid_comma_separa")
+            description: I18n.t("lib.constants.settings.general.sidebar.description"),
+            placeholder: I18n.t("lib.constants.settings.general.sidebar.placeholder")
           },
           sponsor_headline: {
-            description: I18n.t("lib.constants.settings.general.determines_the_heading_tex"),
-            placeholder: I18n.t("lib.constants.settings.general.community_sponsors")
+            description: I18n.t("lib.constants.settings.general.sponsor.description"),
+            placeholder: I18n.t("lib.constants.settings.general.sponsor.placeholder")
           },
           stripe_api_key: {
-            description: I18n.t("lib.constants.settings.general.secret_stripe_key_for_rece"),
+            description: I18n.t("lib.constants.settings.general.stripe_api.description"),
             placeholder: "sk_live_...."
           },
           stripe_publishable_key: {
-            description: I18n.t("lib.constants.settings.general.public_stripe_key_for_rece"),
+            description: I18n.t("lib.constants.settings.general.stripe_key.description"),
             placeholder: "pk_live_...."
           },
           suggested_tags: {
-            description: I18n.t("lib.constants.settings.general.determines_which_tags_are2"),
-            placeholder: I18n.t("lib.constants.settings.general.list_of_valid_tags_comma_s")
+            description: I18n.t("lib.constants.settings.general.tags.description"),
+            placeholder: I18n.t("lib.constants.settings.general.tags.placeholder")
           },
           suggested_users: {
-            description: I18n.t("lib.constants.settings.general.determines_which_users_are"),
-            placeholder: I18n.t("lib.constants.settings.general.list_of_valid_usernames_co")
+            description: I18n.t("lib.constants.settings.general.users.description"),
+            placeholder: I18n.t("lib.constants.settings.general.users.placeholder")
           },
           prefer_manual_suggested_users: {
-            description: I18n.t("lib.constants.settings.general.always_show_suggested_user")
+            description: I18n.t("lib.constants.settings.general.prefer_manual.description")
           },
           twitter_hashtag: {
-            description: I18n.t("lib.constants.settings.general.used_as_the_twitter_hashta"),
-            placeholder: I18n.t("lib.constants.settings.general.devcommunity")
+            description: I18n.t("lib.constants.settings.general.hashtag.description"),
+            placeholder: I18n.t("lib.constants.settings.general.hashtag.placeholder")
           },
           video_encoder_key: {
-            description: I18n.t("lib.constants.settings.general.secret_key_used_to_allow_a"),
+            description: I18n.t("lib.constants.settings.general.video.description"),
             placeholder: ""
           }
         }

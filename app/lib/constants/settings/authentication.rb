@@ -4,38 +4,38 @@ module Constants
       def self.details
         {
           allowed_registration_email_domains: {
-            description: I18n.t("lib.constants.settings.authentication.restrict_registration_to_o"),
-            placeholder: I18n.t("lib.constants.settings.authentication.dev_to_forem_com_codenewbi")
+            description: I18n.t("lib.constants.settings.authentication.allowed.description"),
+            placeholder: I18n.t("lib.constants.settings.authentication.allowed.placeholder")
           },
           apple_client_id: {
-            description: I18n.t("lib.constants.settings.authentication.the_app_bundle_code_for_th"),
+            description: I18n.t("lib.constants.settings.authentication.apple_client.description"),
             placeholder: "com.example.app"
           },
           apple_team_id: {
-            description: I18n.t("lib.constants.settings.authentication.the_team_id_of_your_apple"),
+            description: I18n.t("lib.constants.settings.authentication.apple_team.description"),
             placeholder: ""
           },
           apple_key_id: {
-            description: I18n.t("lib.constants.settings.authentication.the_key_id_from_the_authen"),
+            description: I18n.t("lib.constants.settings.authentication.apple_key.description"),
             placeholder: ""
           },
           apple_pem: {
-            description: I18n.t("lib.constants.settings.authentication.the_pem_key_from_the_authe"),
+            description: I18n.t("lib.constants.settings.authentication.apple_pem.description"),
             placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
           },
           blocked_registration_email_domains: {
-            description: I18n.t("lib.constants.settings.authentication.blocked_registration"),
+            description: I18n.t("lib.constants.settings.authentication.blocked.description"),
             placeholder: "seo-hunt.com"
           },
           display_email_domain_allow_list_publicly: {
-            description: I18n.t("lib.constants.settings.authentication.do_you_want_to_display_the")
+            description: I18n.t("lib.constants.settings.authentication.display_list.description")
           },
           facebook_key: {
-            description: I18n.t("lib.constants.settings.authentication.the_app_id_portion_of_the"),
+            description: I18n.t("lib.constants.settings.authentication.facebook_key.description"),
             placeholder: ""
           },
           facebook_secret: {
-            description: I18n.t("lib.constants.settings.authentication.the_app_secret_portion_of"),
+            description: I18n.t("lib.constants.settings.authentication.facebook_secret.description"),
             placeholder: ""
           },
           forem_key: {
@@ -47,47 +47,47 @@ module Constants
             placeholder: ""
           },
           github_key: {
-            description: I18n.t("lib.constants.settings.authentication.the_client_id_portion_of_t"),
+            description: I18n.t("lib.constants.settings.authentication.github_key.description"),
             placeholder: ""
           },
           github_secret: {
-            description: I18n.t("lib.constants.settings.authentication.the_client_secret_portion"),
+            description: I18n.t("lib.constants.settings.authentication.github_secret.description"),
             placeholder: ""
           },
           google_oauth2_key: {
-            description: "The \"Client ID\" portion of the OAuth 2.0 page on the Google Cloud Platform portal",
+            description: I18n.t("lib.constants.settings.authentication.google_key.description"),
             placeholder: ""
           },
           google_oauth2_secret: {
-            description: "The \"Client Secret\" portion of the OAuth 2.0 page on the Google Cloud Platform portal",
+            description: I18n.t("lib.constants.settings.authentication.google_secret.description"),
             placeholder: ""
           },
           invite_only_mode: {
-            description: I18n.t("lib.constants.settings.authentication.only_users_invited_by_emai"),
+            description: I18n.t("lib.constants.settings.authentication.invite_only.description"),
             placeholder: ""
           },
           recaptcha_site_key: {
-            description: I18n.t("lib.constants.settings.authentication.add_the_site_key_for_googl"),
-            placeholder: I18n.t("lib.constants.settings.authentication.what_is_the_google_recaptc")
+            description: I18n.t("lib.constants.settings.authentication.recaptcha_site.description"),
+            placeholder: I18n.t("lib.constants.settings.authentication.recaptcha_site.placeholder")
           },
           recaptcha_secret_key: {
-            description: I18n.t("lib.constants.settings.authentication.add_the_secret_key_for_goo"),
-            placeholder: I18n.t("lib.constants.settings.authentication.what_is_the_google_recaptc2")
+            description: I18n.t("lib.constants.settings.authentication.recaptcha_secret.description"),
+            placeholder: I18n.t("lib.constants.settings.authentication.recaptcha_secret.placeholder")
           },
           require_captcha_for_email_password_registration: {
-            description: I18n.t("lib.constants.settings.authentication.people_will_be_required_to"),
+            description: I18n.t("lib.constants.settings.authentication.require_recaptcha.description"),
             placeholder: ""
           },
           twitter_key: {
-            description: I18n.t("lib.constants.settings.authentication.the_api_key_portion_of_con"),
+            description: I18n.t("lib.constants.settings.authentication.twitter_key.description"),
             placeholder: ""
           },
           twitter_secret: {
-            description: I18n.t("lib.constants.settings.authentication.the_api_secret_key_portion"),
+            description: I18n.t("lib.constants.settings.authentication.twitter_secret.description"),
             placeholder: ""
           },
           providers: {
-            description: I18n.t("lib.constants.settings.authentication.how_can_users_sign_in"),
+            description: I18n.t("lib.constants.settings.authentication.providers.description"),
             placeholder: ""
           }
         }

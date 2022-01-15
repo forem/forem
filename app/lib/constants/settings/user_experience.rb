@@ -4,7 +4,7 @@ module Constants
       def self.details
         {
           default_font: {
-            description: I18n.t("lib.constants.settings.user_experience.determines_the_default_rea")
+            description: I18n.t("lib.constants.settings.user_experience.default_font.description")
           },
           default_locale: {
             description: I18n.t("lib.constants.settings.user_experience.default_locale.description")
@@ -14,11 +14,11 @@ module Constants
             placeholder: I18n.t("lib.constants.settings.user_experience.feed_strategy.placeholder")
           },
           feed_style: {
-            description: I18n.t("lib.constants.settings.user_experience.determines_which_default_f"),
-            placeholder: I18n.t("lib.constants.settings.user_experience.basic_rich_or_compact")
+            description: I18n.t("lib.constants.settings.user_experience.feed_style.description"),
+            placeholder: I18n.t("lib.constants.settings.user_experience.feed_style.placeholder")
           },
           home_feed_minimum_score: {
-            description: I18n.t("lib.constants.settings.user_experience.minimum_score_needed_for_a"),
+            description: I18n.t("lib.constants.settings.user_experience.home_feed.description"),
             placeholder: "0"
           },
           index_minimum_score: {
@@ -26,11 +26,11 @@ module Constants
             placeholder: "0"
           },
           primary_brand_color_hex: {
-            description: I18n.t("lib.constants.settings.user_experience.determines_background_bord"),
+            description: I18n.t("lib.constants.settings.user_experience.primary_hex.description"),
             placeholder: "#0a0a0a"
           },
           tag_feed_minimum_score: {
-            description: I18n.t("lib.constants.settings.user_experience.minimum_score_needed_for_a2"),
+            description: I18n.t("lib.constants.settings.user_experience.tag_feed.description"),
             placeholder: "0"
           }
         }

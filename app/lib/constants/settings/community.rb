@@ -4,32 +4,32 @@ module Constants
       def self.details
         {
           community_description: {
-            description: I18n.t("lib.constants.settings.community.used_in_meta_description_t"),
-            placeholder: I18n.t("lib.constants.settings.community.a_fabulous_community_of_ki")
+            description: I18n.t("lib.constants.settings.community.description.description"),
+            placeholder: I18n.t("lib.constants.settings.community.description.placeholder")
           },
           community_emoji: {
-            description: I18n.t("lib.constants.settings.community.used_in_the_title_tags_acr"),
+            description: I18n.t("lib.constants.settings.community.emoji.description"),
             placeholder: ""
           },
           community_name: {
-            description: I18n.t("lib.constants.settings.community.used_as_the_primary_name_f"),
-            placeholder: I18n.t("lib.constants.settings.community.new_forem")
+            description: I18n.t("lib.constants.settings.community.name.description"),
+            placeholder: I18n.t("lib.constants.settings.community.name.placeholder")
           },
           copyright_start_year: {
-            description: I18n.t("lib.constants.settings.community.used_to_mark_the_year_this"),
+            description: I18n.t("lib.constants.settings.community.copyright.description"),
             placeholder: Time.zone.today.year.to_s
           },
           member_label: {
-            description: I18n.t("lib.constants.settings.community.used_to_determine_what_a_m"),
-            placeholder: I18n.t("lib.constants.settings.community.user")
+            description: I18n.t("lib.constants.settings.community.member.description"),
+            placeholder: I18n.t("lib.constants.settings.community.member.placeholder")
           },
           staff_user_id: {
-            description: I18n.t("lib.constants.settings.community.account_id_which_acts_as_a"),
+            description: I18n.t("lib.constants.settings.community.staff.description"),
             placeholder: ""
           },
           tagline: {
-            description: I18n.t("lib.constants.settings.community.used_in_signup_modal"),
-            placeholder: I18n.t("lib.constants.settings.community.we_re_a_place_where_coders")
+            description: I18n.t("lib.constants.settings.community.tagline.description"),
+            placeholder: I18n.t("lib.constants.settings.community.tagline.placeholder")
           }
         }
       end

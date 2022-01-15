@@ -4,11 +4,11 @@ module Constants
       def self.details
         {
           spam_trigger_terms: {
-            description: I18n.t("lib.constants.settings.rate_limit.individual_case_insensitiv"),
-            placeholder: I18n.t("lib.constants.settings.rate_limit.used_cars_near_you_pokemon")
+            description: I18n.t("lib.constants.settings.rate_limit.spam.description"),
+            placeholder: I18n.t("lib.constants.settings.rate_limit.spam.placeholder")
           },
           user_considered_new_days: {
-            description: I18n.t("lib.constants.settings.rate_limit.the_number_of_days_a_user"),
+            description: I18n.t("lib.constants.settings.rate_limit.new_days.description"),
             placeholder: ::Settings::RateLimit.user_considered_new_days
           }
         }
