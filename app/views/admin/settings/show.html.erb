@@ -23,14 +23,13 @@
           class="crayons-btn crayons-btn--secondary float-right"
           type="button"
           data-action="click->config#toggleAccordionButtonLabel">
-
-          <%= VerifySetupCompleted.setup_completed? ? "Show Getting Started" : "Hide Getting Started" %>
+          Hide Getting Started
         </button>
       </div>
 
       <div
         id="getStartedBodyContainer"
-        class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3"
+        class="show expand p-3"
         aria-labelledby="getStartedHeader">
         <%= render partial: "forms/mandatory" %>
       </div>

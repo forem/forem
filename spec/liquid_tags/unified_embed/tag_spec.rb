@@ -10,9 +10,11 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     expect(GistTag).to have_received(:new)
   end
 
-  it "renders an A-tag when no link-matching class is found" do
+  it "raises an error when no link-matching class is found" do
     link = "https://takeonrules.com/about"
-    parsed_tag = Liquid::Template.parse("{% embed #{link} %}")
-    expect(parsed_tag.render).to eq(%(<a href="#{link}">#{link}</a>))
+
+    expect do
+      Liquid::Template.parse("{% embed #{link} %}")
+    end.to raise_error(StandardError, "Embed URL not valid")
   end
 end

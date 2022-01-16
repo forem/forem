@@ -17,8 +17,8 @@ RSpec.describe "Api::V0::ProfileImages", type: :request do
         expect(response.parsed_body).to eq(
           "type_of" => "profile_image",
           "image_of" => "user",
-          "profile_image" => profile_image(user.profile_image_url, 640),
-          "profile_image_90" => profile_image(user.profile_image_url, 90),
+          "profile_image" => user.profile_image_url_for(length: 640),
+          "profile_image_90" => user.profile_image_url_for(length: 90),
         )
       end
     end
@@ -42,14 +42,10 @@ RSpec.describe "Api::V0::ProfileImages", type: :request do
         expect(response.parsed_body).to eq(
           "type_of" => "profile_image",
           "image_of" => "organization",
-          "profile_image" => profile_image(organization.profile_image_url, 640),
-          "profile_image_90" => profile_image(organization.profile_image_url, 90),
+          "profile_image" => organization.profile_image_url_for(length: 640),
+          "profile_image_90" => organization.profile_image_url_for(length: 90),
         )
       end
     end
-  end
-
-  def profile_image(url, length)
-    Images::Profile.call(url, length: length)
   end
 end

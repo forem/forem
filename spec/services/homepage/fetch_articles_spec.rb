@@ -4,10 +4,10 @@ RSpec.describe Homepage::FetchArticles, type: :service do
   describe ".call" do
     # rubocop:disable RSpec/ExampleLength
     it "returns results in the correct format", :aggregate_failures do
-      article = create(
-        :article, video_thumbnail_url: "https://example.com", tags: Constants::Tags::FLARE_TAG_NAMES.first
-      )
-      create(:comment, commentable: article)
+      tag = create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc")
+      article = create(:article, video_thumbnail_url: "https://example.com", tags: tag.name)
+
+      stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "ama" => tag.id })
 
       result = described_class.call.first
 

@@ -4,7 +4,7 @@
   publish = "storybook-static"
   ignore = "git diff --quiet HEAD^ HEAD ./ && git diff --quiet HEAD^ HEAD ../assets/stylesheets/config/"
 [build.environment]
-  NODE_VERSION = "14"
+  NODE_VERSION = "16"
 
 # See <https://docs.netlify.com/routing/redirects/redirect-options/> for more options
 [[redirects]]

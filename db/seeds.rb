@@ -54,14 +54,15 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
-# rubocop:disable Metrics/BlockLength
 users_in_random_order = seeder.create_if_none(User, num_users) do
   roles = %i[trusted workshop_pass]
 
   num_users.times do |i|
     fname = Faker::Name.unique.first_name
-    lname = Faker::Name.unique.last_name
-    name = [fname, lname].join(" ")
+    # Including "\\:/" to help with identifying local issues with
+    # character escaping.
+    lname = Faker::Name.unique.last_name + "\\:/"
+    name = [fname, "\"The #{fname}\"", lname].join(" ")
 
     user = User.create!(
       name: name,
@@ -181,11 +182,9 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
-# rubocop:enable Metrics/BlockLength
-
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
-    name: "Admin McAdmin",
+    name: "Admin \"The \\:/ Administrator\" McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
@@ -369,6 +368,10 @@ seeder.create_if_none(Broadcast) do
                       "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
                     "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
+    google_oauth2_connect: "You're on a roll! 🎉  Do you have a Google account? " \
+                           "Consider <a href='/settings'>connecting it</a>.",
+    apple_connect: "You're on a roll! 🎉  Do you have an Apple account? " \
+                   "Consider <a href='/settings'>connecting it</a>.",
     customize_feed:
       "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
       "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",

@@ -1,6 +1,15 @@
 class ArticleDecorator < ApplicationDecorator
   LONG_MARKDOWN_THRESHOLD = 900
 
+  # @return [String] JSON formatted string.
+  #
+  # @example
+  #   > Article.last.decorate.user_data_info_to_json
+  #   => "{\"user_id\":1,\"className\":\"User\",\"style\":\"full\",\"name\":\"Duane \\\"The Rock\\\" Johnson\"}"
+  def user_data_info_to_json
+    DataInfo.to_json(object: cached_user, class_name: "User", id: user_id, style: "full")
+  end
+
   def current_state_path
     published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end

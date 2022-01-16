@@ -1,6 +1,8 @@
 class Podcast < ApplicationRecord
   resourcify
 
+  include Images::Profile.for(:profile_image_url)
+
   belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, optional: true
 
   has_many :podcast_episodes, dependent: :destroy
@@ -50,7 +52,7 @@ class Podcast < ApplicationRecord
   end
 
   def image_90
-    Images::Profile.call(profile_image_url, length: 90)
+    profile_image_url_for(length: 90)
   end
 
   private

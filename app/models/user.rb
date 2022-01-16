@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   include CloudinaryHelper
 
+  include Images::Profile.for(:profile_image_url)
+
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
     included do
@@ -507,7 +509,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    Images::Profile.call(profile_image_url, length: 90)
+    profile_image_url_for(length: 90)
   end
 
   def unsubscribe_from_newsletters

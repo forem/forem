@@ -5,7 +5,6 @@ RSpec.describe Tweet, type: :model, vcr: true do
   let(:tweet_reply_id) { "1242938461784608770" }
   let(:retweet_id) { "1262395854469677058" }
 
-  it { is_expected.to validate_presence_of(:twitter_id_code) }
   it { is_expected.to validate_presence_of(:full_fetched_object_serialized) }
 
   describe ".find_or_fetch" do

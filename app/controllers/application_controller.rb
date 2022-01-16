@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
   include Pundit
   include CachingHeaders
   include ImageUploads
-  include VerifySetupCompleted
   include DevelopmentDependencyChecks if Rails.env.development?
   include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable

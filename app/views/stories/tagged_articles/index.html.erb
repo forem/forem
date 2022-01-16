@@ -24,7 +24,7 @@
               <button
                 id="user-follow-butt"
                 class="crayons-btn follow-action-button"
-                data-info='{"id":<%= @tag.id %>,"className":"Tag", "name": "<%= @tag.pretty_name || @tag.name %>"}'>
+                data-info='<%= DataInfo.to_json(object: @tag, class_name: "Tag", name: @tag.pretty_name || @tag.name) %>'>
                 <%= t("views.stories.follow") %>
               </button>
             <% end %>

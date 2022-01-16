@@ -134,7 +134,7 @@ module Api
       def validate_article_param_is_hash
         return if params.to_unsafe_h[:article].is_a?(Hash)
 
-        message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
+        message = I18n.t("api.v0.articles_controller.must_be_json", type: params[:article].class.name)
         render json: { error: message, status: 422 }, status: :unprocessable_entity
       end
     end
