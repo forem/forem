@@ -49,9 +49,9 @@ class UsersController < ApplicationController
       # explicitly requested "Feed fetch now" or simply updated any other field
       import_articles_from_feed(@user)
 
-      notice = I18n.t("users_controller.your_profile_was_successfu")
+      notice = I18n.t("users_controller.updated_profile")
       if @user.export_requested?
-        notice += I18n.t("users_controller.the_export_will_be_emailed")
+        notice += I18n.t("users_controller.send_export")
         ExportContentWorker.perform_async(@user.id, @user.email)
       end
       if @user.setting.experience_level.present?
@@ -77,16 +77,16 @@ class UsersController < ApplicationController
     set_current_tab("account")
 
     if destroy_request_in_progress?
-      notice = I18n.t("users_controller.you_have_already_requested")
+      notice = I18n.t("users_controller.deletion_in_progress")
       flash[:settings_notice] = notice
       redirect_to user_settings_path(@tab)
     elsif @user.email?
       Users::RequestDestroy.call(@user)
-      notice = I18n.t("users_controller.you_have_requested_account")
+      notice = I18n.t("users_controller.deletion_requested")
       flash[:settings_notice] = notice
       redirect_to user_settings_path(@tab)
     else
-      flash[:settings_notice] = I18n.t("users_controller.please_provide_an_email_to")
+      flash[:settings_notice] = I18n.t("users_controller.provide_email")
       redirect_to user_settings_path("account")
     end
   end
@@ -97,14 +97,14 @@ class UsersController < ApplicationController
     if @user
       authorize @user
     else
-      flash[:alert] = I18n.t("users_controller.you_must_be_logged_in_to_p")
+      flash[:alert] = I18n.t("users_controller.log_in_to_delete")
       redirect_to sign_up_path and return
     end
 
     destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
 
     if destroy_token.blank?
-      flash[:settings_notice] = I18n.t("users_controller.your_token_has_expired_ple")
+      flash[:settings_notice] = I18n.t("users_controller.token_expired")
       redirect_to user_settings_path("account")
     elsif destroy_token != params[:token]
       Honeycomb.add_field("destroy_token", destroy_token)
@@ -119,10 +119,10 @@ class UsersController < ApplicationController
     if @user.email?
       Users::DeleteWorker.perform_async(@user.id)
       sign_out @user
-      flash[:global_notice] = I18n.t("users_controller.your_account_deletion_is_s")
+      flash[:global_notice] = I18n.t("users_controller.deletion_scheduled")
       redirect_to new_user_registration_path
     else
-      flash[:settings_notice] = I18n.t("users_controller.please_provide_an_email_to2")
+      flash[:settings_notice] = I18n.t("users_controller.provide_email_delete")
       redirect_to user_settings_path("account")
     end
   end
@@ -155,7 +155,7 @@ class UsersController < ApplicationController
       @user.github_repos.destroy_all if provider.provider_name == :github
 
       flash[:settings_notice] =
-        I18n.t("users_controller.your_account_was_successfu", provider_official_name: provider.official_name)
+        I18n.t("users_controller.removed_identity", provider: provider.official_name)
     else
       flash[:error] = error_message
     end
@@ -170,7 +170,7 @@ class UsersController < ApplicationController
 
     if params[:user]
       if params.dig(:user, :username).blank?
-        return render_update_response(false, I18n.t("users_controller.username_cannot_be_blank"))
+        return render_update_response(false, I18n.t("users_controller.username_blank"))
       end
 
       sanitize_user_params
@@ -196,10 +196,10 @@ class UsersController < ApplicationController
     if (@organization = Organization.find_by(secret: params[:org_secret].strip))
       OrganizationMembership.create(user_id: current_user.id, organization_id: @organization.id, type_of_user: "member")
       flash[:settings_notice] =
-        I18n.t("users_controller.you_have_joined_the_organi", organization_name: @organization.name)
+        I18n.t("users_controller.joined_org", organization_name: @organization.name)
       redirect_to "/settings/organization/#{@organization.id}"
     else
-      flash[:error] = I18n.t("users_controller.the_given_organization_sec")
+      flash[:error] = I18n.t("users_controller.invalid_secret")
       redirect_to "/settings/organization/new"
     end
   end
@@ -208,7 +208,7 @@ class UsersController < ApplicationController
     org = Organization.find_by(id: params[:organization_id])
     authorize org
     OrganizationMembership.find_by(organization_id: org.id, user_id: current_user.id)&.delete
-    flash[:settings_notice] = I18n.t("users_controller.you_have_left_your_organiz")
+    flash[:settings_notice] = I18n.t("users_controller.left_org")
     redirect_to "/settings/organization/new"
   end
 
@@ -220,7 +220,7 @@ class UsersController < ApplicationController
                                                                                          organization: org)
 
     OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
-    flash[:settings_notice] = I18n.t("users_controller.is_now_an_admin", adminable_name: adminable.name)
+    flash[:settings_notice] = I18n.t("users_controller.added_admin", name: adminable.name)
     redirect_to "/settings/organization/#{org.id}"
   end
 
@@ -231,7 +231,7 @@ class UsersController < ApplicationController
     not_authorized unless current_user.org_admin?(org) && unadminable.org_admin?(org)
 
     OrganizationMembership.find_by(user_id: unadminable.id, organization_id: org.id).update(type_of_user: "member")
-    flash[:settings_notice] = I18n.t("users_controller.is_no_longer_an_admin", unadminable_name: unadminable.name)
+    flash[:settings_notice] = I18n.t("users_controller.removed_admin", name: unadminable.name)
     redirect_to "/settings/organization/#{org.id}"
   end
 
@@ -243,7 +243,7 @@ class UsersController < ApplicationController
     not_authorized unless current_user.org_admin?(org) && removable_org_membership
 
     removable_org_membership.delete
-    flash[:settings_notice] = I18n.t("users_controller.is_no_longer_part_of_your", removable_name: removable.name)
+    flash[:settings_notice] = I18n.t("users_controller.removed_member", name: removable.name)
     redirect_to "/settings/organization/#{org.id}"
   end
 

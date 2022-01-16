@@ -43,7 +43,7 @@ class OrganizationsController < ApplicationController
       rate_limiter.track_limit_by_action(:organization_creation)
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id,
                                                                 user_id: current_user.id, type_of_user: "admin")
-      flash[:settings_notice] = I18n.t("organizations_controller.your_organization_was_succ")
+      flash[:settings_notice] = I18n.t("organizations_controller.created")
       redirect_to "/settings/organization/#{@organization.id}"
     else
       render template: "users/edit"
@@ -62,7 +62,7 @@ class OrganizationsController < ApplicationController
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       @organization.users.touch_all(:organization_info_updated_at)
-      flash[:settings_notice] = I18n.t("organizations_controller.your_organization_was_succ2")
+      flash[:settings_notice] = I18n.t("organizations_controller.updated")
       redirect_to "/settings/organization"
     else
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
@@ -79,11 +79,11 @@ class OrganizationsController < ApplicationController
 
     Organizations::DeleteWorker.perform_async(organization.id, current_user.id)
     flash[:settings_notice] =
-      I18n.t("organizations_controller.your_organization_deletion", organization_name: organization.name)
+      I18n.t("organizations_controller.deletion_scheduled", organization_name: organization.name)
 
     redirect_to user_settings_path(:organization)
   rescue Pundit::NotAuthorizedError
-    flash[:error] = I18n.t("organizations_controller.your_organization_was_not")
+    flash[:error] = I18n.t("organizations_controller.not_deleted")
     redirect_to user_settings_path(:organization, id: organization.id)
   end
 
@@ -91,7 +91,7 @@ class OrganizationsController < ApplicationController
     set_organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
-    flash[:settings_notice] = I18n.t("organizations_controller.your_org_secret_was_update")
+    flash[:settings_notice] = I18n.t("organizations_controller.secret_updated")
     redirect_to user_settings_path(:organization)
   end
 

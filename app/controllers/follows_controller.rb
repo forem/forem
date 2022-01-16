@@ -68,7 +68,7 @@ class FollowsController < ApplicationController
                 unfollow(followable, params[:followable_type], need_notification: need_notification)
               else
                 if rate_limiter.limit_by_action("follow_account")
-                  render json: { error: I18n.t("follows_controller.daily_account_follow_limit") },
+                  render json: { error: I18n.t("follows_controller.daily_limit") },
                          status: :too_many_requests
                   return
                 end

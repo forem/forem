@@ -21,7 +21,7 @@ class GithubReposController < ApplicationController
 
     fetched_repo = fetch_repository_from_github(repo_params[:github_id_code])
     unless fetched_repo
-      render json: { error: I18n.t("github_repos_controller.github_repository_not_foun"), status: 404 },
+      render json: { error: I18n.t("github_repos_controller.repo_not_found"), status: 404 },
              status: :not_found
       return
     end

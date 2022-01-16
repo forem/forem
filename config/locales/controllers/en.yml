@@ -1,14 +1,14 @@
 ---
 en:
   api_secrets_controller:
-    your_api_key_has_been_gene: 'Your API Key has been generated: %{secret_secret}'
-    your_api_key_has_been_revo: Your API Key has been revoked.
+    generated: 'Your API Key has been generated: %{secret}'
+    revoked: Your API Key has been revoked.
   application_controller:
-    error_bad_request: 'Error: Bad Request'
-    error_not_authorized: 'Error: not authorized'
+    bad_request: 'Error: Bad Request'
+    not_authorized: 'Error: not authorized'
     please_sign_in: Please sign in
   articles_controller:
-    article_was_successfully_d: Article was successfully deleted.
+    deleted: Article was successfully deleted.
   comments_controller:
     create:
       success: created
@@ -41,33 +41,33 @@ en:
   feedback_messages_controller:
     error_fill: "Make sure the forms are filled. 🤖 Other possible errors: %{errors}"
     n_a: N/A
-    your_report_is_submitted: Your report is submitted
+    submitted: Your report is submitted
   follows_controller:
     already_followed: already followed
-    daily_account_follow_limit: Daily account follow limit reached!
+    daily_limit: Daily account follow limit reached!
     followed: followed
     unfollowed: unfollowed
   github_repos_controller:
-    github_repository_not_foun: GitHub repository not found
+    repo_not_found: GitHub repository not found
     github_unauthorized: 'GitHub Unauthorized: %{e_message}'
   image_uploads_controller:
-    a_server_error_has_occurre: A server error has occurred!
+    server_error: A server error has occurred!
   listings_controller:
-    listing_was_successfully_d: Listing was successfully deleted.
-    not_enough_available_credi: Not enough available credits
+    deleted: Listing was successfully deleted.
+    no_credit: Not enough available credits
   omniauth_callbacks_controller:
     log_in_error: 'Log in error: %{e}'
     username_taken: username has already been taken
   organizations_controller:
-    your_org_secret_was_update: Your org secret was updated
-    your_organization_deletion: 'Your organization: "%{organization_name}" deletion is scheduled. You''ll be notified when it''s deleted.'
-    your_organization_was_not: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
-    your_organization_was_succ: Your organization was successfully created and you are an admin.
-    your_organization_was_succ2: Your organization was successfully updated.
+    secret_updated: Your org secret was updated
+    deletion_scheduled: 'Your organization: "%{organization_name}" deletion is scheduled. You''ll be notified when it''s deleted.'
+    not_deleted: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
+    created: Your organization was successfully created and you are an admin.
+    updated: Your organization was successfully updated.
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:
-    your_profile_has_been_upda: Your profile has been updated
+    updated: Your profile has been updated
   rating_votes_controller:
     not_upserted_successfully: Not Upserted Successfully
   registrations_controller:
@@ -75,10 +75,10 @@ en:
       recaptcha: You must complete the recaptcha ✅
       domain: is not included in allowed domains.
   response_templates_controller:
-    response_template_error: 'Response template error: %{response_template_errors_a}'
-    your_response_template_was: Your response template "%{response_template_title}" was created.
-    your_response_template_was2: Your response template "%{response_template_title}" was deleted.
-    your_response_template_was3: Your response template "%{response_template_title}" was updated.
+    response_template_error: 'Response template error: %{errors}'
+    created: Your response template "%{title}" was created.
+    deleted: Your response template "%{title}" was deleted.
+    updated: Your response template "%{title}" was updated.
   social_previews_controller:
     fonts: Roboto|Roboto+Condensed
   stories:
@@ -88,34 +88,34 @@ en:
     404_bio_not_found: 404 bio not found
     searching: "...searching"
   stripe_active_cards_controller:
-    can_t_remove_card_if_you_h: Can't remove card if you have an active membership. Please cancel your membership first.
-    there_was_a_problem_updati: There was a problem updating your billing info.
-    your_billing_information_h: Your billing information has been updated
-    your_card_has_been_success: Your card has been successfully removed.
+    cannot_remove: Can't remove card if you have an active membership. Please cancel your membership first.
+    cannot_update: There was a problem updating your billing info.
+    updated: Your billing information has been updated
+    removed: Your card has been successfully removed.
   tag_adjustments_controller:
-    failure: 'Failure: %{tag_adjustment_errors_full}'
-    tag_adjustment_destroyed: Tag adjustment destroyed
+    failure: 'Failure: %{errors}'
+    destroyed: Tag adjustment destroyed
   tags_controller:
     tag_successfully_updated: "Tag successfully updated! 👍 "
   users_controller:
-    is_no_longer_an_admin: "%{unadminable_name} is no longer an admin."
-    is_no_longer_part_of_your: "%{removable_name} is no longer part of your organization."
-    is_now_an_admin: "%{adminable_name} is now an admin."
-    please_provide_an_email_to: Please, provide an email to delete your account.
-    please_provide_an_email_to2: Please, provide an email to delete your account
-    the_export_will_be_emailed: " The export will be emailed to you shortly."
-    the_given_organization_sec: The given organization secret was invalid.
-    username_cannot_be_blank: Username cannot be blank
-    you_have_already_requested: You have already requested account deletion. Please, check your email for further instructions.
-    you_have_joined_the_organi: You have joined the %{organization_name} organization.
-    you_have_left_your_organiz: You have left your organization.
-    you_have_requested_account: You have requested account deletion. Please, check your email for further instructions.
-    you_must_be_logged_in_to_p: You must be logged in to proceed with account deletion.
-    your_account_deletion_is_s: Your account deletion is scheduled. You'll be notified when it's deleted.
-    your_account_was_successfu: Your %{provider_official_name} account was successfully removed.
-    your_config_has_been_updat: Your config has been updated. Refresh to see all changes.
-    your_profile_was_successfu: Your profile was successfully updated.
-    your_token_has_expired_ple: Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated.
+    removed_admin: "%{name} is no longer an admin."
+    removed_member: "%{name} is no longer part of your organization."
+    added_admin: "%{name} is now an admin."
+    provide_email: Please, provide an email to delete your account.
+    provide_email_delete: Please, provide an email to delete your account
+    send_export: " The export will be emailed to you shortly."
+    invalid_secret: The given organization secret was invalid.
+    username_blank: Username cannot be blank
+    deletion_in_progress: You have already requested account deletion. Please, check your email for further instructions.
+    joined_org: You have joined the %{organization_name} organization.
+    left_org: You have left your organization.
+    deletion_requested: You have requested account deletion. Please, check your email for further instructions.
+    log_in_to_delete: You must be logged in to proceed with account deletion.
+    deletion_scheduled: Your account deletion is scheduled. You'll be notified when it's deleted.
+    removed_identity: Your %{provider} account was successfully removed.
+    updated_config: Your config has been updated. Refresh to see all changes.
+    updated_profile: Your profile was successfully updated.
+    token_expired: Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated.
   video_states_controller:
     related_article_not_found: Related article not found
     video_state_updated: Video state updated

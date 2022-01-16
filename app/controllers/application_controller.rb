@@ -74,12 +74,12 @@ class ApplicationController < ActionController::Base
   end
 
   def not_authorized
-    render json: { error: I18n.t("application_controller.error_not_authorized") }, status: :unauthorized
+    render json: { error: I18n.t("application_controller.not_authorized") }, status: :unauthorized
     raise NotAuthorizedError, "Unauthorized"
   end
 
   def bad_request
-    render json: { error: I18n.t("application_controller.error_bad_request") }, status: :bad_request
+    render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
   end
 
   def error_too_many_requests(exc)

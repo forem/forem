@@ -30,7 +30,7 @@ class FeedbackMessagesController < ApplicationController
       respond_to do |format|
         format.html { redirect_to feedback_messages_path }
         format.json do
-          render json: { success: true, message: I18n.t("feedback_messages_controller.your_report_is_submitted") }
+          render json: { success: true, message: I18n.t("feedback_messages_controller.submitted") }
         end
       end
     else

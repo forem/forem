@@ -33,13 +33,11 @@ class ResponseTemplatesController < ApplicationController
 
     if response_template.save
       flash[:settings_notice] =
-        I18n.t("response_templates_controller.your_response_template_was",
-               response_template_title: response_template.title)
+        I18n.t("response_templates_controller.created", title: response_template.title)
       redirect_to user_settings_path(tab: "response-templates", id: response_template.id)
     else
       flash[:error] =
-        I18n.t("response_templates_controller.response_template_error",
-               response_template_errors_a: response_template.errors_as_sentence)
+        I18n.t("response_templates_controller.response_template_error", errors: response_template.errors_as_sentence)
       attributes = permitted_attributes(ResponseTemplate)
       redirect_to user_settings_path(
         tab: "response-templates",
@@ -55,8 +53,7 @@ class ResponseTemplatesController < ApplicationController
 
     if response_template.destroy
       flash[:settings_notice] =
-        I18n.t("response_templates_controller.your_response_template_was2",
-               response_template_title: response_template.title)
+        I18n.t("response_templates_controller.deleted", title: response_template.title)
     else
       flash[:error] = response_template.errors_as_sentence # this will probably never fail
     end
@@ -70,13 +67,11 @@ class ResponseTemplatesController < ApplicationController
     attributes = permitted_attributes(ResponseTemplate)
     if response_template.update(attributes)
       flash[:settings_notice] =
-        I18n.t("response_templates_controller.your_response_template_was3",
-               response_template_title: response_template.title)
+        I18n.t("response_templates_controller.updated", title: response_template.title)
       redirect_to user_settings_path(tab: "response-templates", id: response_template.id)
     else
       flash[:error] =
-        I18n.t("response_templates_controller.response_template_error",
-               response_template_errors_a: response_template.errors_as_sentence)
+        I18n.t("response_templates_controller.response_template_error", errors: response_template.errors_as_sentence)
       redirect_to user_settings_path(
         tab: "response-templates",
         id: response_template.id,

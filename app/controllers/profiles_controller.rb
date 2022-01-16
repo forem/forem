@@ -7,7 +7,7 @@ class ProfilesController < ApplicationController
   def update
     update_result = Users::Update.call(current_user, update_params)
     if update_result.success?
-      flash[:settings_notice] = I18n.t("profiles_controller.your_profile_has_been_upda")
+      flash[:settings_notice] = I18n.t("profiles_controller.updated")
       redirect_to user_settings_path
     else
       @user = current_user

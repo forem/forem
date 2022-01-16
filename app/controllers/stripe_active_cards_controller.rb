@@ -13,12 +13,12 @@ class StripeActiveCardsController < ApplicationController
     customer = find_or_create_customer
 
     if Payments::Customer.create_source(customer.id, stripe_params[:stripe_token])
-      flash[:settings_notice] = I18n.t("stripe_active_cards_controller.your_billing_information_h")
+      flash[:settings_notice] = I18n.t("stripe_active_cards_controller.updated")
       audit_log("add")
     else
       ForemStatsClient.increment("stripe.errors", tags: ["action:create_card", "user_id:#{current_user.id}"])
 
-      flash[:error] = I18n.t("stripe_active_cards_controller.there_was_a_problem_updati")
+      flash[:error] = I18n.t("stripe_active_cards_controller.cannot_update")
     end
     redirect_to user_settings_path(:billing)
   rescue Payments::CardError, Payments::InvalidRequestError => e
@@ -35,11 +35,11 @@ class StripeActiveCardsController < ApplicationController
     customer.default_source = card.id
 
     if Payments::Customer.save(customer)
-      flash[:settings_notice] = I18n.t("stripe_active_cards_controller.your_billing_information_h")
+      flash[:settings_notice] = I18n.t("stripe_active_cards_controller.updated")
       audit_log("update")
     else
       ForemStatsClient.increment("stripe.errors", tags: ["action:update_card", "user_id:#{current_user.id}"])
-      flash[:error] = I18n.t("stripe_active_cards_controller.there_was_a_problem_updati")
+      flash[:error] = I18n.t("stripe_active_cards_controller.cannot_update")
     end
 
     redirect_to user_settings_path(:billing)
@@ -55,13 +55,13 @@ class StripeActiveCardsController < ApplicationController
     customer = find_customer
 
     if customer.subscriptions.count.positive?
-      flash[:error] = I18n.t("stripe_active_cards_controller.can_t_remove_card_if_you_h")
+      flash[:error] = I18n.t("stripe_active_cards_controller.cannot_remove")
     else
       source = Payments::Customer.get_source(customer, params[:id])
       Payments::Customer.detach_source(customer.id, source.id)
       Payments::Customer.save(customer)
 
-      flash[:settings_notice] = I18n.t("stripe_active_cards_controller.your_card_has_been_success")
+      flash[:settings_notice] = I18n.t("stripe_active_cards_controller.removed")
       audit_log("remove")
     end
 

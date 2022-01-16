@@ -92,13 +92,13 @@ class ListingsController < ApplicationController
   def destroy
     authorize @listing
     @listing.destroy!
-    redirect_to "/listings/dashboard", notice: I18n.t("listings_controller.listing_was_successfully_d")
+    redirect_to "/listings/dashboard", notice: I18n.t("listings_controller.deleted")
   end
 
   private
 
   def process_no_credit_left
-    redirect_to credits_path, notice: I18n.t("listings_controller.not_enough_available_credi")
+    redirect_to credits_path, notice: I18n.t("listings_controller.no_credit")
   end
 
   def process_successful_draft

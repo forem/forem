@@ -37,7 +37,7 @@ class TagAdjustmentsController < ApplicationController
       respond_to do |format|
         format.json do
           render json: { error: I18n.t("tag_adjustments_controller.failure",
-                                       tag_adjustment_errors_full: tag_adjustment.errors.full_messages.to_sentence) }
+                                       errors: tag_adjustment.errors.full_messages.to_sentence) }
         end
         format.html { render template: "moderations/mod" }
       end
@@ -60,7 +60,7 @@ class TagAdjustmentsController < ApplicationController
 
     respond_to do |format|
       # TODO: add tag adjustment removal async route in actions panel
-      format.json { render json: { result: I18n.t("tag_adjustments_controller.tag_adjustment_destroyed") } }
+      format.json { render json: { result: I18n.t("tag_adjustments_controller.destroyed") } }
       format.html { redirect_to "#{Addressable::URI.parse(@article.path).path}/mod" }
     end
   end
