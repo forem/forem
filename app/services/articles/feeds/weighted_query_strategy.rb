@@ -359,13 +359,14 @@ module Articles
         # can use to help ensure that we can use all of the
         # ActiveRecord goodness of scopes (e.g.,
         # limited_column_select) and eager includes.
-        Article.where(
-          Article.arel_table[:id].in(
-            Arel.sql(
-              Article.sanitize_sql(unsanitized_sub_sql),
-            ),
-          ),
-        ).limited_column_select.includes(top_comments: :user)
+        finalized_results = Article.where(
+                              Article.arel_table[:id].in(
+                                Arel.sql(
+                                  Article.sanitize_sql(unsanitized_sub_sql),
+                                ),
+                              ),
+                            ).limited_column_select.includes(top_comments: :user)
+        finalized_results = final_order_logic(finalized_results)
       end
       # rubocop:enable Layout/LineLength
 
@@ -440,6 +441,27 @@ module Articles
       end
 
       private
+
+      def final_order_logic(articles)
+        case @strategy
+        when "final_order_by_score"
+          articles.order("score DESC")
+        when "final_order_by_comment_score"
+          articles.order("comment_score DESC").pluck(:comment_score)
+        when "final_order_by_last_comment_at"
+          articles.order("last_comment_at DESC")
+        when "final_order_by_random"
+          articles.order("RANDOM()")
+        when "final_order_by_random_weighted_to_score"
+          articles.order(Arel.sql("RANDOM() ^ (1.0 / (score + 1)) DESC"))
+        when "final_order_by_random_weighted_to_comment_score"
+          articles.order(Arel.sql("RANDOM() ^ (1.0 / (comment_score + 1)) DESC"))
+        when "final_order_by_random_weighted_to_last_comment_at"
+          articles.order(Arel.sql("RANDOM() ^ (1.0 / extract(epoch from now() - last_comment_at)::integer) ASC"))
+        else # original
+          articles
+        end
+      end
 
       # Concatenate the required group by clauses.
       #
