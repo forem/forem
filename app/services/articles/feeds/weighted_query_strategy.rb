@@ -608,7 +608,7 @@ module Articles
           scoring_config = default_config unless scoring_config.is_a?(Hash)
 
           # Change an alement of config via a/b test strategy
-          scoring_config = inject_config_ab_test(valid_method_name, scoring_config)
+          # scoring_config = inject_config_ab_test(valid_method_name, scoring_config) # Not currently in use.
 
           # This scoring method requires a group by clause.
           @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)
