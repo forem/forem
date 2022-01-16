@@ -65,7 +65,7 @@ class GithubTag
       if uri.fragment&.start_with?("issuecomment-")
         uri.path = uri.path.gsub(%r{(issues|pulls)/\d+}, "issues/comments/")
         comment_id = uri.fragment.split("-").last
-        uri.merge!(comment_id)
+        uri.join!(comment_id)
       end
 
       # fragments and query params are not needed in the API call
@@ -75,7 +75,7 @@ class GithubTag
       # remove leading forward slash in the path
       path = uri.path.delete_prefix("/")
 
-      Addressable::URI.parse(API_BASE_ENDPOINT).merge(path).to_s
+      Addressable::URI.parse(API_BASE_ENDPOINT).join(path).to_s
     end
 
     def valid_link?(link)

@@ -7,7 +7,7 @@ class GistTag < LiquidTagBase
   def initialize(_tag_name, link, _parse_context)
     super
 
-    raise StandardError, I18n.t("liquid_tags.gist_tag.invalid_gist_link_you_must") if link.blank?
+    raise StandardError, I18n.t("liquid_tags.gist_tag.invalid_gist_link") if link.blank?
 
     @uri = build_uri(link)
   end

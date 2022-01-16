@@ -68,7 +68,7 @@ class RedditTag < LiquidTagBase
 
   def valid_url?(url)
     url = Addressable::URI.parse(url)
-    url.is_a?(URI::HTTP)
+    %w[http https].include? url.scheme
   end
 end
 
