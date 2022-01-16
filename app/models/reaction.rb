@@ -158,10 +158,17 @@ class Reaction < ApplicationRecord
 
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
+
+    # Ajust for certain states
     base_points = 0 if status == "invalid"
     base_points /= 2 if reactable_type == "User"
     base_points *= 2 if status == "confirmed"
-    base_points += 5.0 if positive_reaction_to_comment_on_own_article? # Post author's comment reaction counts for more
+
+    # Post author's comment reaction counts for more weight on comments to their own posts.
+    base_points += 5.0 if positive_reaction_to_comment_on_own_article?
+
+    # New users will have their reaction weight gradually ramp to a 1.0 baseline.
+    base_points *= new_user_adjusted_points if new_untrusted_user # New users get minimal reaction weight
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 
@@ -185,5 +192,13 @@ class Reaction < ApplicationRecord
     BASE_POINTS.fetch(category, 1.0).positive? &&
       reactable_type == "Comment" &&
       reactable&.commentable&.user_id == user_id
+  end
+
+  def new_user_adjusted_points
+    ((Time.current - user.registered_at).seconds.in_days / 10)
+  end
+
+  def new_untrusted_user
+    user.registered_at > 10.days.ago && !user.trusted?
   end
 end

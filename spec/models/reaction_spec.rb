@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Reaction, type: :model do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
-  let(:reaction) { build(:reaction, reactable: article) }
+  let(:reaction) { build(:reaction, reactable: article, user: user) }
 
   describe "builtin validations" do
     subject { build(:reaction, reactable: article, user: user) }
@@ -90,8 +90,31 @@ RSpec.describe Reaction, type: :model do
 
     it "assigns the correct points if reaction is confirmed" do
       reaction_points = reaction.points
+      p reaction.points
+      p reaction.points
       reaction.update(status: "confirmed")
+      p reaction.points
+      p reaction.user.registered_at
       expect(reaction.points).to eq(reaction_points * 2)
+    end
+
+    it "assigns fractional points to new users" do
+      newish_user = create(:user, registered_at: 3.days.ago)
+      create(:reaction, reactable: article, user: newish_user)
+      p reaction.user.registered_at
+      p reaction.user.trusted
+      p Time.current
+      expect(reaction.points.round(1)).to eq(0.3)
+    end
+
+    it "assigns full points to new users who is also trusted" do
+      newish_user = create(:user, registered_at: 3.days.ago)
+      newish_user.add_role(:trusted)
+      create(:reaction, reactable: article, user: newish_user)
+      p reaction.user.registered_at
+      p reaction.user.trusted
+      p Time.current
+      expect(reaction.points.round(1)).to eq(1.0)
     end
 
     context "when user is trusted" do
