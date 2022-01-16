@@ -8,7 +8,3 @@ fr:
     image_uploads:
       too_long: filename too long - the max is %{max} characters.
       is_not_file: invalid file type. Please upload a valid image.
-    verify_setup_completed:
-      link: the configuration page
-      notice_html: Setup not completed yet, missing %{missing}. Please visit %{link}.
-      others: others
