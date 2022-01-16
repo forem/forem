@@ -449,15 +449,16 @@ module Articles
         when "final_order_by_comment_score"
           articles.order("comment_score DESC")
         when "final_order_by_last_comment_at"
-          articles.order("last_comment_at DESC")
+          articles.order("articles.last_comment_at DESC")
         when "final_order_by_random"
           articles.order("RANDOM()")
         when "final_order_by_random_weighted_to_score"
-          articles.order(Arel.sql("RANDOM() ^ (1.0 / (score + 1)) DESC"))
+          articles.order(Arel.sql("RANDOM() ^ (1.0 / (articles.score + 1)) DESC"))
         when "final_order_by_random_weighted_to_comment_score"
-          articles.order(Arel.sql("RANDOM() ^ (1.0 / (comment_score + 1)) DESC"))
+          articles.order(Arel.sql("RANDOM() ^ (1.0 / (articles.comment_score + 1)) DESC"))
         when "final_order_by_random_weighted_to_last_comment_at"
-          articles.order(Arel.sql("RANDOM() ^ (1.0 / extract(epoch from now() - last_comment_at)::integer) ASC"))
+          articles
+            .order(Arel.sql("RANDOM() ^ (1.0 / extract(epoch from now() - articles.last_comment_at)::integer) ASC"))
         else # original
           articles
         end
