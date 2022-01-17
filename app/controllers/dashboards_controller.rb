@@ -67,6 +67,10 @@ class DashboardsController < ApplicationController
       .includes(:subscriber).order(created_at: :desc).page(params[:page]).per(100)
   end
 
+  def series_count
+    @series_count = @user.collections.joins(:articles).distinct.count
+  end
+
   private
 
   def set_source
