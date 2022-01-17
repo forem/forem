@@ -25,6 +25,7 @@ class DashboardsController < ApplicationController
 
     @articles = @articles.includes(:collection).sorting(params[:sort]).decorate
     @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(50)
+    @series_count = target.collections.non_empty.count
   end
 
   def following_tags
@@ -65,10 +66,6 @@ class DashboardsController < ApplicationController
     authorize @source
     @subscriptions = @source.user_subscriptions
       .includes(:subscriber).order(created_at: :desc).page(params[:page]).per(100)
-  end
-
-  def series_count
-    @series_count = @user.collections.joins(:articles).distinct.count
   end
 
   private
