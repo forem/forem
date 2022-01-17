@@ -1,28 +1,29 @@
 import { h } from 'preact';
-import { withKnobs, text } from '@storybook/addon-knobs';
 import './dropdown-css-helper.scss';
-import notes from './dropdowns.md';
-import { Dropdown } from '@crayons';
+import notes from './dropdowns.mdx';
+import { Dropdown, ButtonNew as Button } from '@crayons';
 
 export default {
   title: 'Components/Dropdowns',
-  decorators: [withKnobs],
-  parameters: { notes },
+  parameters: {
+    docs: {
+      page: notes,
+    },
+  },
 };
 
 export const Default = () => (
   <div className="dropdown-trigger-container">
-    <button
+    <Button
       id="storybook-dropdown-trigger"
-      className="crayons-btn dropdown-trigger"
+      className="dropdown-trigger"
       aria-haspopup="true"
     >
       Click to trigger dropdown
-    </button>
+    </Button>
     <Dropdown
       triggerButtonId="storybook-dropdown-trigger"
       dropdownContentId="storybook-dropdown"
-      className={text('className', 'mb-2')}
     >
       <p>
         Hey, I&apos;m a dropdown content! Lorem ipsum dolor sit amet,

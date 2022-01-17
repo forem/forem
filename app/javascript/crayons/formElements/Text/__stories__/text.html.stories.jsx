@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import '../../../storybook-utilities/designSystem.scss';
 
-export default { title: 'Components/Form Components/Text Field/HTML' };
+export default { title: 'Components/Form Elements/Text Field' };
 
 export const Default = () => (
   <input

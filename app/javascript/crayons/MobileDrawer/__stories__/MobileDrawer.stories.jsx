@@ -1,11 +1,15 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import notes from './drawers.md';
-import { MobileDrawer, Button } from '@crayons';
+import Notes from './drawers.mdx';
+import { MobileDrawer, ButtonNew as Button } from '@crayons';
 
 export default {
-  title: 'Components/MobileDrawer',
-  parameters: { notes },
+  title: 'BETA/MobileDrawer',
+  parameters: {
+    docs: {
+      page: Notes,
+    },
+  },
 };
 
 export const Default = () => {

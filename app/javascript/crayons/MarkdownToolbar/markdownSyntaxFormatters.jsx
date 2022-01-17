@@ -1,4 +1,5 @@
 /* global Runtime */
+import { h } from 'preact';
 import {
   getLastIndexOfCharacter,
   getNextIndexOfCharacter,
@@ -6,20 +7,19 @@ import {
   getNumberOfNewLinesPrecedingSelection,
   getSelectionData,
 } from '../../utilities/textAreaUtils';
-import {
-  Bold,
-  Italic,
-  Link,
-  OrderedList,
-  UnorderedList,
-  Heading,
-  Quote,
-  Code,
-  CodeBlock,
-  Underline,
-  Strikethrough,
-  Divider,
-} from './icons';
+import BoldIcon from '@images/bold.svg';
+import ItalicIcon from '@images/italic.svg';
+import LinkIcon from '@images/link.svg';
+import OrderedListIcon from '@images/list-ordered.svg';
+import UnorderedListIcon from '@images/list-unordered.svg';
+import HeadingIcon from '@images/heading.svg';
+import QuoteIcon from '@images/quote.svg';
+import CodeIcon from '@images/code.svg';
+import CodeBlockIcon from '@images/codeblock.svg';
+import UnderlineIcon from '@images/underline.svg';
+import StrikethroughIcon from '@images/strikethrough.svg';
+import DividerIcon from '@images/divider.svg';
+import { Icon } from '@crayons';
 
 const ORDERED_LIST_ITEM_REGEX = /^\d+\.\s+.*/;
 const MARKDOWN_LINK_REGEX =
@@ -405,7 +405,7 @@ export const getNewTextAreaValueWithEdits = ({
 
 export const coreSyntaxFormatters = {
   bold: {
-    icon: Bold,
+    icon: () => <Icon src={BoldIcon} />,
     label: 'Bold',
     getKeyboardShortcut: () => {
       const modifier = Runtime.getOSKeyboardModifierKeyString();
@@ -425,7 +425,7 @@ export const coreSyntaxFormatters = {
     },
   },
   italic: {
-    icon: Italic,
+    icon: () => <Icon src={ItalicIcon} />,
     label: 'Italic',
     getKeyboardShortcut: () => {
       const modifier = Runtime.getOSKeyboardModifierKeyString();
@@ -445,7 +445,7 @@ export const coreSyntaxFormatters = {
     },
   },
   link: {
-    icon: Link,
+    icon: () => <Icon src={LinkIcon} />,
     label: 'Link',
     getKeyboardShortcut: () => {
       const modifier = Runtime.getOSKeyboardModifierKeyString();
@@ -504,7 +504,7 @@ export const coreSyntaxFormatters = {
     },
   },
   orderedList: {
-    icon: OrderedList,
+    icon: () => <Icon src={OrderedListIcon} />,
     label: 'Ordered list',
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       const { selectedText, textBeforeSelection } = getSelectionData({
@@ -600,7 +600,7 @@ export const coreSyntaxFormatters = {
     },
   },
   unorderedList: {
-    icon: UnorderedList,
+    icon: () => <Icon src={UnorderedListIcon} />,
     label: 'Unordered list',
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       return undoOrAddFormattingForMultilineSyntax({
@@ -612,7 +612,7 @@ export const coreSyntaxFormatters = {
     },
   },
   heading: {
-    icon: Heading,
+    icon: () => <Icon src={HeadingIcon} />,
     label: 'Heading',
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       let currentLineSelectionStart = selectionStart;
@@ -680,7 +680,7 @@ export const coreSyntaxFormatters = {
     },
   },
   quote: {
-    icon: Quote,
+    icon: () => <Icon src={QuoteIcon} />,
     label: 'Quote',
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForMultilineSyntax({
@@ -691,7 +691,7 @@ export const coreSyntaxFormatters = {
       }),
   },
   code: {
-    icon: Code,
+    icon: () => <Icon src={CodeIcon} />,
     label: 'Code',
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForInlineSyntax({
@@ -703,7 +703,7 @@ export const coreSyntaxFormatters = {
       }),
   },
   codeBlock: {
-    icon: CodeBlock,
+    icon: () => <Icon src={CodeBlockIcon} />,
     label: 'Code block',
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForMultilineSyntax({
@@ -718,7 +718,7 @@ export const coreSyntaxFormatters = {
 
 export const secondarySyntaxFormatters = {
   underline: {
-    icon: Underline,
+    icon: () => <Icon src={UnderlineIcon} />,
     label: 'Underline',
     getKeyboardShortcut: () => {
       const modifier = Runtime.getOSKeyboardModifierKeyString();
@@ -737,7 +737,7 @@ export const secondarySyntaxFormatters = {
       }),
   },
   strikethrough: {
-    icon: Strikethrough,
+    icon: () => <Icon src={StrikethroughIcon} />,
     label: 'Strikethrough',
     getKeyboardShortcut: () => {
       const modifier = Runtime.getOSKeyboardModifierKeyString();
@@ -756,7 +756,7 @@ export const secondarySyntaxFormatters = {
       }),
   },
   divider: {
-    icon: Divider,
+    icon: () => <Icon src={DividerIcon} />,
     label: 'Line divider',
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForMultilineSyntax({

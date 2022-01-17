@@ -1,8 +1,12 @@
+<mark>Please disregard generated HTML output in one of the tabs in the panel below. This one is a special snowflake for which you should use the below rails helper instead.</mark>
+
 # Icons
 
-This component is supposed to make it easy to add icons to your JSX code.
+This component is supposed to make it easy to add icons to the user interface.
 
 ## How?
+
+### JSX
 
 You can pass an object as `src` prop:
 
@@ -11,19 +15,41 @@ import Twitter from '@images/twitter.svg';
 <Icon src={Twitter} />
 ```
 
-Yes, we have an alias `@images` that should make it easier to access `/app/assets/images` folder. 
+Yes, we have an alias `@images` that should make it easier to access `/app/assets/images` folder while importing. 
+
+### Rails
+
+For Rails world, we have a helper which injects our icons similarly:
+
+```
+crayons_icon_tag(file_name, css_class: nil, native: false, **opts)
+```
+
+Keep in mind there's no need to provide the folder path - the helper handles that.
+
+#### Parameters:
+
+- **`name`** (String|Symbol) - The icon name from `/app/assets/images` folder. The `.svg` file extensions will be added automatically if missing.
+- **`css_class`** (String) - additional CSS classes.
+- **`native`** (Boolean) - when set to true, icon will not inherit its parent's color.
+- **`opts`** - additional keyword arguments to be passed through to the [`inline_svg_tag` helper](https://github.com/jamesmartin/inline_svg).
 
 ## Colors
 
-If asset (SVG file) was exported correctly (see Rules section below) and `<Icon />` component was used correctly, 
+If asset (SVG file) was exported correctly (see Rules section below) and the component was used correctly, 
 icon should inherit some Crayons styling that will, for example, automatically apply container's color to the icon itself. 
 For example, icon will automatically inherit link color whenever it's placed inside a link element.
 
 ### Native colors
 
-By adding `native` prop we tell icon to NOT inherit its parent color.
+By adding `native` prop/parameter we tell icon to NOT inherit its parent color.
 Instead it will keep whatever colors were defined in the SVG code. 
 This is helpful for branded icons that come with their own specific color (logos like Twitter, Facebook, etc.) or for multicolor icons.
+
+```
+JSX: <Icon src={Twitter} native />
+Rails: <%= crayons_icon_tag("twitter", native: true) %>
+```
 
 ## Rules
 

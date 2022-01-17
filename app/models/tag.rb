@@ -82,6 +82,13 @@ class Tag < ActsAsTaggableOn::Tag
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
 
+  # @return [String]
+  #
+  # @see ApplicationRecord#class_name
+  def class_name
+    self.class.name
+  end
+
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
     Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
