@@ -33,9 +33,12 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
       const tagNames = defaultValue.split(', ');
 
       const tagRequests = tagNames.map((tagName) =>
-        fetchSearch('tags', { name: tagName }).then(
-          ({ result }) => result[0] || { name: tagName },
-        ),
+        fetchSearch('tags', { name: tagName }).then(({ result }) => {
+          const potentialMatch = result[0];
+          return potentialMatch.name === tagName
+            ? potentialMatch
+            : { name: tagName };
+        }),
       );
 
       Promise.all(tagRequests).then((data) => {
