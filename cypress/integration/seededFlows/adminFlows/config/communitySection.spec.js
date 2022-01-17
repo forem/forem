@@ -8,41 +8,17 @@ describe('Community Content Section', () => {
     });
   });
 
-  describe('community emoji setting', () => {
-    it('rejects invalid input (no emoji)', () => {
+  describe('member label setting', () => {
+    it('accepts valid input', () => {
       cy.get('@user').then(() => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
         cy.get('@communitySectionForm').findByText('Community Content').click();
         cy.get('@communitySectionForm')
-          .get('#settings_community_community_emoji')
+          .get('#settings_community_member_label')
           .clear()
-          .type('X');
-
-        cy.get('@communitySectionForm').findByText('Update Settings').click();
-
-        cy.findByTestId('snackbar').within(() => {
-          cy.findByRole('alert').should(
-            'have.text',
-            'Validation failed: Community emoji contains non-emoji characters or invalid emoji',
-          );
-        });
-
-        cy.url().should('contains', '/admin/customization/config');
-      });
-    });
-
-    it('accepts a valid emoji', () => {
-      cy.get('@user').then(() => {
-        cy.visit('/admin/customization/config');
-        cy.get('#new_settings_community').as('communitySectionForm');
-
-        cy.get('@communitySectionForm').findByText('Community Content').click();
-        cy.get('@communitySectionForm')
-          .get('#settings_community_community_emoji')
-          .clear()
-          .type('🌱');
+          .type('devs');
 
         cy.get('@communitySectionForm').findByText('Update Settings').click();
 
@@ -57,10 +33,7 @@ describe('Community Content Section', () => {
 
         // Page reloaded so need to get a new reference to the form.
         cy.get('#new_settings_community').as('communitySectionForm');
-        cy.get('#settings_community_community_emoji').should(
-          'have.value',
-          '🌱',
-        );
+        cy.get('#settings_community_member_label').should('have.value', 'devs');
       });
     });
   });
