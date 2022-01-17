@@ -178,25 +178,6 @@ RSpec.describe "/admin/customization/config", type: :request do
           expect(Settings::Community.community_description).to eq(description)
         end
 
-        it "updates the community_emoji if valid" do
-          allow(Settings::Community).to receive(:community_emoji).and_call_original
-          emoji = "🥐"
-          post admin_settings_communities_path, params: {
-            settings_community: { community_emoji: emoji }
-          }
-          expect(Settings::Community.community_emoji).to eq(emoji)
-        end
-
-        it "does not update the community_emoji if invalid" do
-          Settings::Community.community_emoji = "🥐"
-          not_an_emoji = "i love croissants"
-          expect do
-            post admin_settings_communities_path, params: {
-              settings_community: { community_emoji: not_an_emoji }
-            }
-          end.not_to change(Settings::Community, :community_emoji)
-        end
-
         it "updates the community_name" do
           name_magoo = "Hey hey #{rand(100)}"
           post admin_settings_communities_path, params: {
