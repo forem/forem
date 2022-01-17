@@ -108,6 +108,7 @@ export const MultiSelectAutocomplete = ({
   const inputRef = useRef(null);
   const inputSizerRef = useRef(null);
   const selectedItemsRef = useRef(null);
+  const popoverRef = useRef(null);
 
   const allowSelections =
     !maxSelections || selectedItems.length < maxSelections;
@@ -156,6 +157,28 @@ export const MultiSelectAutocomplete = ({
       input.dispatchEvent(changeEvent);
     }
   }, [inputPosition, editValue]);
+
+  useEffect(() => {
+    if (activeDescendentIndex !== null) {
+      const activeItem = document.querySelector('[aria-selected="true"]');
+      const { current: popover } = popoverRef;
+      if (!popover || !activeItem) return;
+
+      // Make sure that the active item is scrolled into view, if need be
+      const { offsetHeight, offsetTop } = activeItem;
+      const { offsetHeight: popoverOffsetHeight, scrollTop } = popover;
+
+      const isAbove = offsetTop < scrollTop;
+      const isBelow =
+        offsetTop + offsetHeight > scrollTop + popoverOffsetHeight;
+
+      if (isAbove) {
+        popover.scrollTo(0, offsetTop);
+      } else if (isBelow) {
+        popover.scrollTo(0, offsetTop - popoverOffsetHeight + offsetHeight);
+      }
+    }
+  }, [activeDescendentIndex]);
 
   const selectByText = ({
     textValue,
@@ -564,7 +587,7 @@ export const MultiSelectAutocomplete = ({
           </div>
         ) : null}
         {suggestions.length > 0 && allowSelections ? (
-          <div className="c-autocomplete--multi__popover">
+          <div className="c-autocomplete--multi__popover" ref={popoverRef}>
             {inputRef.current?.value === '' ? staticSuggestionsHeading : null}
             <ul
               className="list-none"

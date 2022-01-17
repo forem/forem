@@ -99,6 +99,8 @@
 
   .c-autocomplete--multi__popover {
     position: absolute;
+    max-height: 50vh;
+    overflow: auto;
     width: 100%;
     padding: var(--su-1);
     z-index: var(--z-elevate);
