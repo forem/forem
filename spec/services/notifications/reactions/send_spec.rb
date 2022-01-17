@@ -50,7 +50,7 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
 
   context "when a reaction is persisted and has siblings" do
     before do
-      create(:reaction, reactable: article, user: user3, created_at: Time.current - 1.day)
+      create(:reaction, reactable: article, user: user3, created_at: 1.day.ago)
     end
 
     it "creates a notification" do

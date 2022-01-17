@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { Icon } from '..';
 import IconsDoc from './Icons.mdx';
-import CogIcon from '@images/twitter.svg';
+import TwitterIcon from '@images/twitter.svg';
 
 export default {
   component: Icon,
-  title: 'BETA/Icons',
+  title: 'Components/Icons',
   parameters: {
     docs: {
       page: IconsDoc,
@@ -22,12 +22,12 @@ export default {
   },
 };
 
-export const Default = (args) => <Icon src={CogIcon} {...args} />;
+export const Default = (args) => <Icon src={TwitterIcon} {...args} />;
 Default.args = {
   native: false,
 };
 
-export const NativeColors = (args) => <Icon src={CogIcon} {...args} />;
+export const NativeColors = (args) => <Icon src={TwitterIcon} {...args} />;
 NativeColors.args = {
   native: true,
 };

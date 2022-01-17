@@ -15,7 +15,6 @@ RSpec.describe GithubRepo, type: :model do
     describe "builtin validations" do
       subject { repo }
 
-      it { is_expected.to validate_presence_of(:github_id_code) }
       it { is_expected.to validate_presence_of(:name) }
       it { is_expected.to validate_presence_of(:url) }
       it { is_expected.to validate_uniqueness_of(:github_id_code) }

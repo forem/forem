@@ -734,7 +734,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "updates the feed_strategy" do
-          feed_strategy = "optimized"
+          feed_strategy = "large_forem_experimental"
           post admin_settings_user_experiences_path, params: {
             settings_user_experience: { feed_strategy: feed_strategy }
           }

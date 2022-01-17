@@ -18,10 +18,10 @@ GIT
 
 GIT
   remote: https://github.com/redis-store/redis-actionpack.git
-  revision: daf349101adfb395654be687d46c0f5c0c734e99
+  revision: aa27fdbd8e1ee28cdba840ee87cc06608c582ef7
   branch: master
   specs:
-    redis-actionpack (5.2.0)
+    redis-actionpack (5.3.0)
       actionpack (>= 5, < 8)
       redis-rack (>= 2.1.0, < 3)
       redis-store (>= 1.1.0, < 2)
@@ -105,7 +105,7 @@ GEM
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.1.1)
-    ahoy_matey (4.0.2)
+    ahoy_matey (4.0.3)
       activesupport (>= 5.2)
       device_detector
       safely_block (>= 0.2.1)
@@ -150,7 +150,7 @@ GEM
       redis (>= 1.0, <= 5.0)
     buftok (0.2.0)
     builder (3.2.4)
-    bullet (7.0.0)
+    bullet (7.0.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bundler-audit (0.9.0.1)
@@ -177,7 +177,7 @@ GEM
       activesupport (>= 3.2.0)
       carrierwave
       fastimage
-    chartkick (4.1.2)
+    chartkick (4.1.3)
     childprocess (4.1.0)
     cloudinary (1.21.0)
       aws_cf_signer
@@ -266,7 +266,7 @@ GEM
     et-orbi (1.2.6)
       tzinfo
     eventmachine (1.2.7)
-    excon (0.89.0)
+    excon (0.90.0)
     execjs (2.8.1)
     exifr (1.3.9)
     factory_bot (6.2.0)
@@ -357,8 +357,7 @@ GEM
       multi_json (>= 1.11.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    google-protobuf (3.19.2)
-    google-protobuf (3.19.2-x86_64-linux)
+    google-protobuf (3.19.3)
     guard (2.18.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -473,7 +472,7 @@ GEM
       excon
       http (>= 2.0, < 6.0)
     liquid (5.1.0)
-    listen (3.7.0)
+    listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.13.0)
@@ -529,9 +528,7 @@ GEM
       timeout
     netrc (0.11.0)
     nio4r (2.5.8)
-    nokogiri (1.13.0-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.13.0-x86_64-linux)
+    nokogiri (1.13.1-arm64-darwin)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -543,7 +540,7 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
-    octokit (4.21.0)
+    octokit (4.22.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     oj (3.13.11)
@@ -557,6 +554,11 @@ GEM
     omniauth-facebook (9.0.0)
       omniauth-oauth2 (~> 1.2)
     omniauth-github (2.0.0)
+      omniauth (~> 2.0)
+      omniauth-oauth2 (~> 1.7.1)
+    omniauth-google-oauth2 (1.0.0)
+      jwt (>= 2.0)
+      oauth2 (~> 1.1)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.7.1)
     omniauth-oauth (1.2.0)
@@ -641,7 +643,7 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0)
       zeitwerk (~> 2.5)
-    rainbow (3.0.0)
+    rainbow (3.1.1)
     rake (13.0.6)
     ransack (2.5.0)
       activerecord (>= 5.2.4)
@@ -675,7 +677,7 @@ GEM
     reverse_markdown (2.1.1)
       nokogiri
     rexml (3.2.5)
-    rice (4.0.2)
+    rice (4.0.3)
     rolify (6.0.0)
     rouge (3.27.0)
     rpush (6.0.1)
@@ -692,7 +694,7 @@ GEM
       modis (>= 3.0, < 5.0)
     rspec-core (3.10.1)
       rspec-support (~> 3.10.0)
-    rspec-expectations (3.10.1)
+    rspec-expectations (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-mocks (3.10.2)
@@ -722,10 +724,10 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.15.1)
       parser (>= 3.0.1.1)
-    rubocop-performance (1.13.1)
+    rubocop-performance (1.13.2)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.13.1)
+    rubocop-rails (2.13.2)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.7.0, < 2.0)
@@ -876,7 +878,7 @@ GEM
     vault (0.16.0)
       aws-sigv4
     vcr (6.0.0)
-    view_component (2.47.0)
+    view_component (2.48.0)
       activesupport (>= 5.0.0, < 8.0)
       method_source (~> 1.0)
     warden (1.2.9)
@@ -918,7 +920,6 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
-  x86_64-linux
 
 DEPENDENCIES
   active_record_union (~> 1.3)
@@ -993,12 +994,13 @@ DEPENDENCIES
   memory_profiler (~> 1.0)
   nakayoshi_fork (~> 0.0.4)
   nokogiri (~> 1.13)
-  octokit (~> 4.21)
+  octokit (~> 4.22)
   oj (~> 3.13)
   omniauth (~> 2.0)
   omniauth-apple (~> 1.0)
   omniauth-facebook (~> 9.0)
   omniauth-github (~> 2.0)
+  omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   omniauth-twitter (~> 1.4)
   parallel (~> 1.21)

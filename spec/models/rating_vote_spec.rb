@@ -16,7 +16,6 @@ RSpec.describe RatingVote, type: :model do
       it { is_expected.to validate_inclusion_of(:context).in_array(%w[explicit readinglist_reaction comment]) }
       it { is_expected.to validate_inclusion_of(:group).in_array(%w[experience_level]) }
       it { is_expected.to validate_numericality_of(:rating).is_greater_than(0.0).is_less_than_or_equal_to(10.0) }
-      it { is_expected.to validate_presence_of(:user_id).on(:create) }
       it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[article_id context]) }
     end
   end

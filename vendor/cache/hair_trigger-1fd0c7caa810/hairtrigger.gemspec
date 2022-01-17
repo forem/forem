@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Jon Jensen".freeze]
-  s.date = "2022-01-10"
+  s.date = "2022-01-17"
   s.description = "allows you to declare database triggers in ruby in your models, and then generate appropriate migrations as they change".freeze
   s.email = "jenseng@gmail.com".freeze
   s.files = ["LICENSE.txt".freeze, "README.md".freeze, "Rakefile".freeze, "lib/hair_trigger.rb".freeze, "lib/hair_trigger/adapter.rb".freeze, "lib/hair_trigger/base.rb".freeze, "lib/hair_trigger/builder.rb".freeze, "lib/hair_trigger/migration_reader.rb".freeze, "lib/hair_trigger/migrator.rb".freeze, "lib/hair_trigger/railtie.rb".freeze, "lib/hair_trigger/schema_dumper.rb".freeze, "lib/hair_trigger/version.rb".freeze, "lib/hairtrigger.rb".freeze, "lib/tasks/hair_trigger.rake".freeze]

@@ -39,19 +39,10 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
-    ## Rails 6.0
-    # Enables writing cookies with the purpose metadata embedded.
-    config.action_dispatch.use_cookies_with_metadata = false
-
     ## Rails 6.1
     # This replaces the old config.active_support.use_sha1_digests from Rails 5.2
     config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
     ### END FRAMEWORK DEFAULT OVERIDES
-
-    # Zeitwerk is the new autoloader in Rails 6+
-    # As we don't have `load_defaults 6.0` yet, it has to be enabled manually
-    # See <https://guides.rubyonrails.org/autoloading_and_reloading_constants.html>
-    config.autoloader = :zeitwerk
 
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when
@@ -66,11 +57,6 @@ module PracticalDeveloper
     # the framework and any gems in your application.
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
-
-    # Middlewares folder is not otherwise autorequired.
-    Dir["#{config.root}/app/middlewares/**/*.rb"].each do |file|
-      require_dependency(file)
-    end
 
     config.middleware.use Rack::Deflater
 

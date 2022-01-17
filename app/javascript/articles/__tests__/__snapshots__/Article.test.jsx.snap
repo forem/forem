@@ -113,8 +113,9 @@ Object {
                             class="print-hidden"
                           >
                             <button
-                              class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+                              class="c-btn c-btn--primary follow-action-button follow-user w-100"
                               data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
+                              type="button"
                             >
                               Follow
                             </button>
@@ -362,8 +363,9 @@ Object {
                           class="print-hidden"
                         >
                           <button
-                            class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+                            class="c-btn c-btn--primary follow-action-button follow-user w-100"
                             data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
+                            type="button"
                           >
                             Follow
                           </button>
