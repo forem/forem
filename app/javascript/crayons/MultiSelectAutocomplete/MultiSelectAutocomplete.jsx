@@ -515,8 +515,8 @@ export const MultiSelectAutocomplete = ({
           aria-expanded={suggestions.length > 0}
           aria-owns="listbox1"
           className={`c-autocomplete--multi__wrapper${
-            border ? '-border' : ' border-none p-0'
-          } flex items-center crayons-textfield cursor-text`}
+            border ? '-border crayons-textfield' : ' border-none p-0'
+          } flex items-center  cursor-text`}
           onClick={() => inputRef.current?.focus()}
         >
           <ul id="combo-selected" className="list-none flex flex-wrap w-100">

@@ -69,9 +69,15 @@
   }
 
   &__input {
-    background-color: var(--form-bg);
+    background-color: var(--bg-color);
     color: var(--body-color);
     border: none;
+  }
+
+  &__wrapper-border {
+    .c-autocomplete--multi__input {
+      background-color: var(--form-bg);
+    }
   }
 
   .crayons-btn.c-autocomplete--multi__selected {

@@ -34,7 +34,7 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
 
       const tagRequests = tagNames.map((tagName) =>
         fetchSearch('tags', { name: tagName }).then(({ result }) => {
-          const potentialMatch = result[0];
+          const potentialMatch = result[0] || {};
           return potentialMatch.name === tagName
             ? potentialMatch
             : { name: tagName };
