@@ -11,42 +11,21 @@ function create_pr_containers {
 
   # Pull images if available for caching
   echo "Pulling pull request #${PULL_REQUEST} containers from registry..."
-  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder ||:
-  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" ||:
-  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" ||:
-  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" ||:
+  # docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder ||:
+  # docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" ||:
+  # docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" ||:
+  # docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" ||:
 
   # Build the builder image
   echo "Building builder-${PULL_REQUEST} container..."
   docker build --target builder \
-               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
-               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
                --label quay.expires-after=8w \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" .
 
-  # Build the pull request image
-  echo "Building pr-${PULL_REQUEST} container..."
-  docker build --target production \
-               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
-               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" \
-               --label quay.expires-after=8w \
-               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" .
-
-  # Build the testing image
-  echo "Building testing-$"${PULL_REQUEST}" container..."
-  docker build --target testing \
-               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
-               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" \
-               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" \
-               --label quay.expires-after=8w \
-               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" .
 
   # Push images to Quay
   echo "Pushing pull request #${PULL_REQUEST} containers to registry..."
-  docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}"
-  docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}"
-  docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}"
-
+  docker push --debug "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}"
 }
 
 function create_production_containers {
