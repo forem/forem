@@ -39,14 +39,14 @@
                 <%= fields(follow) do |f| %>
                   <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form", id: "follow_id_#{follow.followable}") %>
                   <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form", "aria-label": t("views.dashboard.following_tags.number.aria_label", name: follow.followable),
-                                                         id: "explicit_points_#{follow.followable}") %>
+                                                       id: "explicit_points_#{follow.followable}") %>
                 <% end %>
               </div>
             <% end %>
           <% end %>
         </div>
 
-        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-10 pt-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px" }, id: "follows_update_form" do |f| %>
+        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-inverted pt-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px" }, id: "follows_update_form" do |f| %>
           <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit"><%= t("views.dashboard.following_tags.update") %></button>
         <% end %>
       <% else %>

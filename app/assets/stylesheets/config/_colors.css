@@ -145,11 +145,10 @@
 
   /* Tags */
   --tag-color: rgb(var(--grey-700));
-  --tag-bg: rgba(var(--grey-900), 0.05);
-  --tag-prefix: rgba(var(--grey-900), 0.6);
-
   --tag-color-hover: rgb(var(--grey-900));
+  --tag-bg: rgba(var(--grey-900), 0.05);
   --tag-bg-hover: rgba(var(--grey-900), 0.05);
+  --tag-prefix: rgba(var(--grey-900), 0.6);
   --tag-prefix-hover: rgb(var(--grey-900));
 
   /* Story */
