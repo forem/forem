@@ -5,15 +5,25 @@ experiments:
   # Do not change the goals unless you intend to also change the corresponding code in
   # app/workers/users/record_field_test_event_worker.rb
 
-  feed_strategy_round_3:
+  feed_strategy_round_4:
     variants:
       - original
-      - slightly_more_comments_count_case_weight
-      - much_more_comments_count_case_weight
+      - final_order_by_score
+      - final_order_by_comment_score
+      - final_order_by_last_comment_at
+      - final_order_by_random
+      - final_order_by_random_weighted_to_score
+      - final_order_by_random_weighted_to_comment_score
+      - final_order_by_random_weighted_to_last_comment_at
     weights:
-      - 70
-      - 20
-      - 10
+      - 51
+      - 7
+      - 7
+      - 7
+      - 7
+      - 7
+      - 7
+      - 7
     goals:
       - user_creates_comment
       - user_creates_comment_on_at_least_four_different_days_within_a_week
