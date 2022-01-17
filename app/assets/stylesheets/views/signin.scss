@@ -209,6 +209,10 @@
     padding: var(--su-2);
     margin: var(--su-2);
 
+    & ul {
+      color: $black;
+    }
+
     @media (min-width: $breakpoint-s) {
       margin: var(--su-4) auto 0;
       width: $breakpoint-s;
