@@ -614,7 +614,7 @@ GEM
       method_source
       rake (>= 0.13)
       thor (~> 1.0)
-    rainbow (3.0.0)
+    rainbow (3.1.1)
     rake (13.0.6)
     ransack (2.5.0)
       activerecord (>= 5.2.4)
@@ -699,7 +699,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.15.1)
       parser (>= 3.0.1.1)
-    rubocop-performance (1.13.1)
+    rubocop-performance (1.13.2)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     rubocop-rails (2.13.1)
