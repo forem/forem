@@ -2,7 +2,12 @@ class OrganizationTag < LiquidTagBase
   include ApplicationHelper
   include ActionView::Helpers::TagHelper
   PARTIAL = "organizations/liquid".freeze
-  REGISTRY_REGEXP = %r{#{URL.url}/(?<org_slug>[\w-]+)(?:/)?(?:[\w-]+)?}
+
+  # @todo What if someone provides https://dev.to/terms-of-service.  That will meet this criteria.
+  #       How do we want to consider handling that situation?  My assumption is that we might want
+  #       to test if the org_slug is a valid organization before we even let the OrganizationTag say
+  #       there's a match.
+  REGISTRY_REGEXP = %r{#{URL.url}/(?<org_slug>[\w-]+)/?}
 
   def initialize(_tag_name, organization, _parse_context)
     super
