@@ -1,12 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////////
-// Colors. /////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-//
-// All --base-* and --accent-* color variables will be used to generate
-// Utility-First Classes/ (see config/import.scss & base/colors.scss for
-// reference). Other color variables are more functional and define usage
-// of particular colors in components and views.
-
 :root {
   ////////////////////////////////////////////////////////////////////////////////////
   // Fundamental color variables. ///////////////////////////////////////////////////
@@ -35,10 +26,10 @@
   --accent-success-a10: rgba(var(--green-600), 0.1);
 
   // Warning
-  --accent-warning: rgb(var(--orange-500));
-  --accent-warning-darker: rgb(var(--orange-600));
-  --accent-warning-lighter: rgb(var(--orange-400));
-  --accent-warning-a10: rgba(var(--orange-500), 0.1);
+  --accent-warning: rgb(var(--yellow-500));
+  --accent-warning-darker: rgb(var(--yellow-600));
+  --accent-warning-lighter: rgb(var(--yellow-400));
+  --accent-warning-a10: rgba(var(--yellow-500), 0.1);
 
   // Danger
   --accent-danger: rgb(var(--red-600));
@@ -75,7 +66,6 @@
 
   // Links
   --link-bg-hover-alt: var(--base-inverted);
-  --link-brand-color: var(--accent-brand);
   --link-color-current: var(--base-100);
   --link-color-secondary: var(--base-60);
   --link-color-secondary-hover: var(--base-70);
@@ -97,11 +87,6 @@
   --button-secondary-bg-hover: var(--base-30);
   --button-secondary-color: var(--base-80);
   --button-secondary-color-hover: var(--base-100);
-  //-- Inverted
-  --button-secondary-inverted-bg: var(--base-70);
-  --button-secondary-inverted-bg-hover: var(--base-60);
-  --button-secondary-inverted-color: var(--base-10);
-  --button-secondary-inverted-color-hover: var(--base-0);
 
   // Outlined buttons
   --button-outlined-bg: transparent;
@@ -110,13 +95,6 @@
   --button-outlined-border-hover: var(--base-40);
   --button-outlined-color: var(--base-80);
   --button-outlined-color-hover: var(--base-100);
-  //-- Inverted
-  --button-outlined-inverted-bg: transparent;
-  --button-outlined-inverted-bg-hover: rgba(255, 255, 255, 0.15);
-  --button-outlined-inverted-border: var(--base-60);
-  --button-outlined-inverted-border-hover: var(--base-40);
-  --button-outlined-inverted-color: var(--base-30);
-  --button-outlined-inverted-color-hover: var(--base-10);
 
   // Ghost buttons
   --button-ghost-bg: transparent;
@@ -188,8 +166,8 @@
   --reaction-custom-bg: rgb(var(--green-600), 0.1);
   --reaction-save-color: rgb(var(--indigo-600));
   --reaction-save-bg: rgba(var(--indigo-600), 0.1);
-  --reaction-comment-color: rgb(var(--orange-500));
-  --reaction-comment-bg: rgba(var(--orange-500), 0.1);
+  --reaction-comment-color: rgb(var(--yellow-500));
+  --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
 }
 
 :root {
