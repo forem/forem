@@ -15,6 +15,11 @@
   --base-10: #efefef;
   --base-0: #f9f9f9;
 
+  /* Brand */
+  --accent-brand-lighter: rgb(var(--accent-brand-lighter-rgb));
+  --accent-brand: rgb(var(--accent-brand-rgb));
+  --accent-brand-darker: rgb(var(--accent-brand-darker-rgb));
+
   /* Success */
   --accent-success: rgb(var(--green-600));
   --accent-success-darker: rgb(var(--green-700));
@@ -187,7 +192,7 @@
   --btn-current-color: rgb(var(--grey-900));
 
   /* Buttons: Primary */
-  --btn-primary-bg: rgb(var(--indigo-600));
+  --btn-primary-bg: var(--accent-brand);
   --btn-primary-bg-hover: var(--accent-brand-darker);
   --btn-primary-color: rgb(var(--white));
   --btn-primary-color-hover: rgb(var(--white));
