@@ -10,7 +10,7 @@ class PageViewsController < ApplicationMetalController
   # @note Yes, this is a very verbose constant name.  Apologies, don't type it.  But I [@jeremyf]
   #       want it here to explain a magic number.
   #
-  # @see https://github.com/forem/forem/blob/05413f101ab92eb7e25cf5b098919e21179be602/app/assets/javascripts/initializers/initializeBaseTracking.js.erb#L113-L117
+  # @see https://github.com/forem/forem/blob/main/app/assets/javascripts/initializers/initializeBaseTracking.js.erb#L113-L117
   # @see https://github.com/forem/forem/pull/12686#discussion_r577271589 for further discussion.
   VISITOR_IMPRESSIONS_AGGREGATE_COUNTS_FOR_NUMBER_OF_VIEWS = 10
 

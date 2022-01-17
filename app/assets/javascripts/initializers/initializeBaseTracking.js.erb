@@ -111,7 +111,7 @@ function trackCustomImpressions() {
 
     // page view
     if (ArticleElement && tokenMeta && !isBot) {
-      // See https://github.com/forem/forem/blob/05413f101ab92eb7e25cf5b098919e21179be602/app/controllers/page_views_controller.rb
+      // See https://github.com/forem/forem/blob/main/app/controllers/page_views_controller.rb
       //
       // If you change the 10, you should look at the PageViewsController as well.
       var randomNumber = Math.floor(Math.random() * 10); // 1 in 10; Only track 1 in 10 impressions
