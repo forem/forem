@@ -42,7 +42,7 @@ function create_pr_containers {
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" .
 
   # Push images to Quay
-  echo "Pushing pull request #${PULL_REQUEST} containers to registry...."
+  echo "Pushing pull request #${PULL_REQUEST} containers to registry..."
   docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}"
   docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}"
   docker push "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}"
