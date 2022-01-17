@@ -6,10 +6,6 @@ module Constants
           description: "Used in meta description tags etc.",
           placeholder: "A fabulous community of kind and welcoming people."
         },
-        community_emoji: {
-          description: "Used in the title tags across the site alongside the community name",
-          placeholder: ""
-        },
         community_name: {
           description: "Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.",
           placeholder: "New Forem"

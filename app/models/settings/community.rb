@@ -6,7 +6,6 @@ module Settings
             type: :integer,
             default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] || Time.zone.today.year
     setting :community_description, type: :string
-    setting :community_emoji, type: :string, default: "🌱", validates: { emoji_only: true }
     setting(
       :community_name,
       type: :string,
