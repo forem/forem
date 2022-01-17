@@ -266,6 +266,8 @@ module Articles
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
+      #
+      # rubocop:disable Layout/LineLength
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
@@ -284,6 +286,7 @@ module Articles
           days_since_published: @days_since_published,
         )
       end
+      # rubocop:enable Layout/LineLength
 
       # The goal of this query is to generate a list of articles that
       # are relevant to the user's interest.
