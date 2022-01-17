@@ -80,7 +80,7 @@
           <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: t("views.auth.register.field.password.placeholder"), required: true, aria: { describedby: "password-helper-text" } %>
           <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="<%= t("views.auth.register.field.password.show") %>" aria-pressed="false">
             <%= crayons_icon_tag(:eye, class: "js-eye", data: { testid: "mask-icon" }, title: t("views.auth.register.field.password.show")) %>
-            <%= crayons_icon_tag(:eye - off, class: "hidden js-eye-off", data: { testid: "unmask-icon" }, title: t("views.auth.register.field.password.hide")) %>
+            <%= crayons_icon_tag("eye-off", class: "hidden js-eye-off", data: { testid: "unmask-icon" }, title: t("views.auth.register.field.password.hide")) %>
           </button>
         </div>
         <p id="password-helper-text" class="fs-xs color-base-60 mt-1"><%= t("views.auth.register.field.password.desc") %></p>
