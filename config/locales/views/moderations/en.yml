@@ -11,7 +11,7 @@ en:
         subtitle: Rate the quality of this post
         abusive:
           subtitle_html: Flag %{user} as Abusive
-          desc_html: This is the equivalent of vomiting on <b>all</b> of this user's articles and will lower their article scores.
+          desc_html: This is the equivalent of vomiting on <b>all</b> of this user's posts and will lower their post scores.
         adjust:
           heading: Adjust tags
           subtitle: Add or remove tags
@@ -45,6 +45,20 @@ en:
           subtitle: Curate the most appropriate audience for this post
           aria_label: Open experience level section
           icon: Book
+          desc_html: Who <em>might</em> find this post most valuable, based on overall experience level?
+          from: "%{lvl} - "
+          level:
+            Advanced: Advanced
+            Beginner: Beginner
+            Expert: Expert
+            Mid-level: Mid-level
+            Novice: Novice
+        admin:
+          heading: Admin actions
+          heading2: Higher permission post options
+          subtitle: Higher permission post options
+          aria_label: Open admin actions
+          icon: Crown
           desc_html: Who <em>might</em> find this post most valuable, based on overall experience level?
           from: "%{lvl} - "
           level:
@@ -89,7 +103,7 @@ en:
         thumb_down: Thumb down
         thumb_up: Thumb up
         toggle: Toggle section
-        unpublish: Unpublish Article
+        unpublish: Unpublish Post
         vote_down: Low Quality
         flag_to_admins: Flag to Admins
         vote_up: High Quality
