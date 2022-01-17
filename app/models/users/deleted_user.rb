@@ -24,6 +24,13 @@ module Users
     def self.path() = nil
     def self.tag_line() = nil
 
+    # @return [String]
+    #
+    # @see ApplicationRecord#class_name
+    def self.class_name
+      User.name
+    end
+
     def self.decorate
       self
     end

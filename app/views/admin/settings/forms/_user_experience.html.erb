@@ -14,18 +14,18 @@
         <div class="crayons-fieldx">
           <%= admin_config_label :feed_style, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:feed_style][:description] %>
-          <%= f.text_field :feed_style,
-                           class: "crayons-textfield",
-                           value: Settings::UserExperience.feed_style,
-                           placeholder: Constants::Settings::UserExperience::DETAILS[:feed_style][:placeholder] %>
+          <%= select_tag "settings_user_experience[feed_style]",
+                         options_for_select(Settings::UserExperience::FEED_STYLES, Settings::UserExperience.feed_style),
+                         multiple: false,
+                         class: "crayons-select" %>
         </div>
         <div class="crayons-field">
           <%= admin_config_label :feed_strategy, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:feed_strategy][:description] %>
-          <%= f.text_field :feed_strategy,
-                           class: "crayons-textfield",
-                           value: Settings::UserExperience.feed_strategy,
-                           placeholder: Constants::Settings::UserExperience::DETAILS[:feed_strategy][:placeholder] %>
+          <%= select_tag "settings_user_experience[feed_strategy]",
+                         options_for_select(Settings::UserExperience::FEED_STRATEGIES, Settings::UserExperience.feed_strategy),
+                         multiple: false,
+                         class: "crayons-select" %>
         </div>
         <div class="crayons-field">
           <%= admin_config_label :tag_feed_minimum_score, model: Settings::UserExperience %>
@@ -60,7 +60,7 @@
                            Settings::UserExperience.default_font,
                          ),
                          multiple: false,
-                         class: "selectpicker" %>
+                         class: "crayons-select" %>
         </div>
         <div class="crayons-field">
           <%= admin_config_label :default_locale, model: Settings::UserExperience %>
@@ -71,7 +71,7 @@
                            Settings::UserExperience.default_locale,
                          ),
                          multiple: false,
-                         class: "selectpicker" %>
+                         class: "crayons-select" %>
         </div>
         <div class="crayons-field">
           <%= admin_config_label :primary_brand_color_hex, model: Settings::UserExperience %>

@@ -1,11 +1,12 @@
 import { h } from 'preact';
-import '../../storybook-utilities/designSystem.scss';
-import notes from './indicators.md';
+import notes from './indicators.mdx';
 
 export default {
-  title: 'Components/Indicators/HTML',
+  title: 'Components/Indicators',
   parameters: {
-    notes,
+    docs: {
+      page: notes,
+    },
   },
 };
 

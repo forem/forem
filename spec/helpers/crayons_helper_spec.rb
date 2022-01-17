@@ -30,13 +30,18 @@ RSpec.describe CrayonsHelper, type: :helper do
     end
 
     it "allows specifying additional CSS classes" do
-      icon_tag = helper.crayons_icon_tag("twitter", css_class: "pointer-events-none")
+      icon_tag = helper.crayons_icon_tag("twitter", class: "pointer-events-none")
       expect(icon_tag).to match(/class="crayons-icon pointer-events-none"/)
     end
 
     it "passes additional keyword arguments to the wrapped tag" do
       icon_tag = helper.crayons_icon_tag("twitter", title: "Test")
       expect(icon_tag).to match(%r{<title.*>Test</title>})
+    end
+
+    it "allows mixing extra classes and the native option" do
+      icon_tag = helper.crayons_icon_tag(:twitter, class: "test", native: true)
+      expect(icon_tag).to match(/class="crayons-icon crayons-icon--default test"/)
     end
   end
 end

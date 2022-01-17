@@ -12,7 +12,7 @@ export const Select = () => (
 
 export default {
   component: Select,
-  title: 'Components/Select',
+  title: 'Components/Form Elements/Select',
 };
 
 export const Default = () => {

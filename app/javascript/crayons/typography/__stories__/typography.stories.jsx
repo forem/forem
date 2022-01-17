@@ -3,7 +3,7 @@ import { h } from 'preact';
 import '../../storybook-utilities/designSystem.scss';
 import './typography.scss';
 
-import notes from './typography.md';
+import notes from './typography.mdx';
 
 export default {
   title: 'Fundamentals/Typography/1_Main',

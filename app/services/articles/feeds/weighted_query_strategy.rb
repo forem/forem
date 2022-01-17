@@ -146,7 +146,7 @@ module Articles
           fallback: 0.85,
           requires_user: false,
           group_by: "articles.featured",
-          enabled: false
+          enabled: true
         },
         # Weight to give when the given user follows the article's
         # author.

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Options } from './Options';
-import { Button } from '@crayons';
+import { ButtonNew as Button } from '@crayons';
 
 export const EditorActions = ({
   onSaveDraft,
@@ -20,7 +20,12 @@ export const EditorActions = ({
   if (submitting) {
     return (
       <div className="crayons-article-form__footer">
-        <Button className="mr-2 whitespace-nowrap" onClick={onPublish} disabled>
+        <Button
+          variant="primary"
+          className="mr-2 whitespace-nowrap"
+          onClick={onPublish}
+          disabled
+        >
           {published && isVersion2
             ? 'Publishing...'
             : `Saving ${isVersion2 ? 'draft' : ''}...`}
@@ -31,16 +36,16 @@ export const EditorActions = ({
 
   return (
     <div className="crayons-article-form__footer">
-      <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
+      <Button
+        variant="primary"
+        className="mr-2 whitespace-nowrap"
+        onClick={onPublish}
+      >
         {published || isVersion1 ? 'Save changes' : 'Publish'}
       </Button>
 
       {!(published || isVersion1) && (
-        <Button
-          variant="secondary"
-          className="mr-2 whitespace-nowrap"
-          onClick={onSaveDraft}
-        >
+        <Button className="mr-2 whitespace-nowrap" onClick={onSaveDraft}>
           Save <span className="hidden s:inline">draft</span>
         </Button>
       )}
@@ -55,10 +60,8 @@ export const EditorActions = ({
 
       {edited && (
         <Button
-          variant="ghost"
           onClick={onClearChanges}
-          className="whitespace-nowrap fw-normal"
-          size="s"
+          className="whitespace-nowrap fw-normal fs-s"
         >
           Revert <span className="hidden s:inline">new changes</span>
         </Button>
