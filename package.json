@@ -53,7 +53,7 @@
     "@storybook/manager-webpack5": "^6.4.10",
     "@storybook/preact": "^6.4.10",
     "@testing-library/cypress": "^7.0.7",
-    "@testing-library/dom": "^8.11.1",
+    "@testing-library/dom": "^8.11.2",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
