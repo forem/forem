@@ -1,0 +1,30 @@
+<section class="crayons-card mb-7 p-2 m:flex">
+  <div class="flex flex-1">
+    <div class="align-center flex-1">
+      <strong class="fs-2xl fw-heavy"><%= @user.comments_count %></strong>
+      <p class="opacity-50">Comments</p>
+    </div>
+    <div class="align-center flex-1">
+      <strong class="fs-2xl fw-heavy"><%= @user.articles_count %></strong>
+      <p class="opacity-50">Posts</p>
+    </div>
+    <div class="align-center flex-1">
+      <strong class="fs-2xl fw-heavy"><%= @user.reactions_count %></strong>
+      <p class="opacity-50">Reactions</p>
+    </div>
+  </div>
+  <div class="flex flex-1">
+    <div class="align-center flex-1">
+      <strong class="fs-2xl fw-heavy"><%= @user.followers_count %></strong>
+      <p class="opacity-50">Followers</p>
+    </div>
+    <div class="align-center flex-1">
+      <strong class="fs-2xl fw-heavy"><%= @user.following_users_count %></strong>
+      <p class="opacity-50">Following</p>
+    </div>
+    <div class="align-center flex-1">
+      <strong class="fs-2xl fw-heavy"><%= @user.badge_achievements_count %></strong>
+      <p class="opacity-50">Badges</p>
+    </div>
+  </div>
+</section>

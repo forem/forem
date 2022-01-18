@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <div class="fs-s">
+      <div class="fs-s color-base-60 mb-1">
         @<%= @user.username %> &bull; <%= @user.id %> &bull;
         <% if @user.registered? %>
           Member since <%= @user.created_at.strftime("%b %e '%y") %>
@@ -79,36 +79,7 @@
   </nav>
 
   <div class="crayons-card p-7">
-    <section class="crayons-card mb-7 p-2 m:flex">
-      <div class="flex flex-1">
-        <div class="align-center flex-1">
-          <strong class="fs-2xl fw-heavy">16</strong>
-          <p class="opacity-50">Comments</p>
-        </div>
-        <div class="align-center flex-1">
-          <strong class="fs-2xl fw-heavy">16</strong>
-          <p class="opacity-50">Comments</p>
-        </div>
-        <div class="align-center flex-1">
-          <strong class="fs-2xl fw-heavy">16</strong>
-          <p class="opacity-50">Comments</p>
-        </div>
-      </div>
-      <div class="flex flex-1">
-        <div class="align-center flex-1">
-          <strong class="fs-2xl fw-heavy">16</strong>
-          <p class="opacity-50">Comments</p>
-        </div>
-        <div class="align-center flex-1">
-          <strong class="fs-2xl fw-heavy">16</strong>
-          <p class="opacity-50">Comments</p>
-        </div>
-        <div class="align-center flex-1">
-          <strong class="fs-2xl fw-heavy">16</strong>
-          <p class="opacity-50">Comments</p>
-        </div>
-      </div>
-    </section>
+    <%= render "activity_new" if @user.registered %>
 
     <div class="m:grid gap-8 grid-cols-2">
       <div>
@@ -175,7 +146,7 @@
 <% else %>
 
   <% if @user.registered? %>
-    <%= render "activity" %>
+
     <%= render "credits" %>
     <%= render "notes" %>
     <%= render "user_organizations" %>
