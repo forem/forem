@@ -199,6 +199,6 @@ class Reaction < ApplicationRecord
   end
 
   def new_untrusted_user
-    user.registered_at > 10.days.ago && !user.trusted?
+    user.registered_at > 10.days.ago && !user.trusted? && !user.any_admin?
   end
 end

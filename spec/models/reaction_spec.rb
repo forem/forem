@@ -107,6 +107,13 @@ RSpec.describe Reaction, type: :model do
       expect(reaction.points.round(1)).to eq(1.0)
     end
 
+    it "assigns full points to new users who is admin" do
+      newish_user = create(:user, registered_at: 3.days.ago)
+      newish_user.add_role(:admin)
+      create(:reaction, reactable: article, user: newish_user)
+      expect(reaction.points.round(1)).to eq(1.0)
+    end
+
     context "when user is trusted" do
       before { reaction.user.add_role(:trusted) }
 
