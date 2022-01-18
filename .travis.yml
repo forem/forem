@@ -48,7 +48,6 @@ before_install:
   - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
   - sudo service postgresql restart
   - gem install bundler:"<2.3"
-  - postgres --version
 install:
   - date --rfc-3339=seconds
   - nvm install
