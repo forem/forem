@@ -1,4 +1,24 @@
-<%= direct_upload_form_for @uploader do |f| %>
-  <%= f.file_field :file %>
-  <%= f.submit %>
-<% end %>
+<style>
+form.new_video_uploader {
+  background: #fdf9f3;
+  background: var(--theme-container-accent-background, #fdf9f3);
+  max-width: 590px;
+  margin: 20px auto;
+  padding: 40px 10px;
+  border: 2px solid #4e57ef;
+  box-shadow: 4px 5px 0px #4e57ef;
+}
+</style>
+<center style="margin-top:200px">
+  <h1><%= t("views.videos.upload") %></h1>
+  <%= direct_upload_form_for @uploader do |f| %>
+    <%= f.file_field :file,
+                     accept: "video/mp4,video/x-m4v,video/*",
+                     onchange: "javascript:this.form.submit()" %>
+  <% end %>
+  <div style="margin:50px auto;max-width:80%;font-size:0.86em;">
+    <p>
+    <%= t("views.videos.beta_html", contact: t("contact_prompts.if_any_questions_html")) %>
+    </p>
+  </div>
+</center>
