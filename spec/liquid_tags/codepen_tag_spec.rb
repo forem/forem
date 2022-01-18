@@ -9,6 +9,8 @@ RSpec.describe CodepenTag, type: :liquid_tag do
     let(:codepen_link_with_default_tab) { "https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result" }
     let(:codepen_link_with_theme_id) { "https://codepen.io/propjockey/pen/dyVMgBg theme-id=40148" }
     let(:codepen_link_with_preview_indicator) { "https://codepen.io/propjockey/pen/preview/dyVMgBg" }
+    let(:codepen_link_with_embed_path) { "https://codepen.io/propjockey/embed/dyVMgBg" }
+    let(:codepen_link_with_embed_preview_path) { "https://codepen.io/propjockey/embed/preview/dyVMgBg" }
     let(:codepen_link_with_height_param) { "https://codepen.io/propjockey/pen/dyVMgBg height=300" }
     let(:codepen_link_with_editable_true) { "https://codepen.io/propjockey/pen/dyVMgBg editable=true" }
     let(:codepen_link_with_multiple_params) do
@@ -16,6 +18,9 @@ RSpec.describe CodepenTag, type: :liquid_tag do
     end
     let(:codepen_link_with_preview_and_params) do
       "https://codepen.io/propjockey/pen/preview/dyVMgBg theme-id=40148 default-tab=js,result"
+    end
+    let(:codepen_link_with_embed_path_and_params) do
+      "https://codepen.io/propjockey/embed/dyVMgBg theme-id=40148 default-tab=js,result"
     end
 
     xss_links = %w(
@@ -116,6 +121,28 @@ RSpec.describe CodepenTag, type: :liquid_tag do
         .and include('src="https://codepen.io/propjockey/embed/preview/dyVMgBg')
     end
 
+    it "accepts codepen link with embed path in the url" do
+      expect do
+        generate_new_liquid(codepen_link_with_embed_path)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_embed_path)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('src="https://codepen.io/propjockey/embed/dyVMgBg')
+    end
+
+    it "accepts codepen link with embed/preview in the url" do
+      expect do
+        generate_new_liquid(codepen_link_with_embed_preview_path)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_embed_preview_path)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('src="https://codepen.io/propjockey/embed/preview/dyVMgBg')
+    end
+
     it "accepts codepen link with a height parameter" do
       expect do
         generate_new_liquid(codepen_link_with_height_param)
@@ -163,6 +190,19 @@ RSpec.describe CodepenTag, type: :liquid_tag do
       expect(liquid.render).to include("<iframe")
         .and include(
           'src="https://codepen.io/propjockey/embed/preview/dyVMgBg?height=600&theme-id=40148&amp;default-tab=js,result',
+        )
+    end
+
+    it "accepts codepen link with embed and params" do
+      expect do
+        generate_new_liquid(codepen_link_with_embed_path_and_params)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_embed_path_and_params)
+
+      expect(liquid.render).to include("<iframe")
+        .and include(
+          'src="https://codepen.io/propjockey/embed/dyVMgBg?height=600&theme-id=40148&amp;default-tab=js,result',
         )
     end
 
