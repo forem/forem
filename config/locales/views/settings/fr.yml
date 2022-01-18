@@ -134,7 +134,7 @@ fr:
         github:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
-          desc2: Repositories will be disappear from your profile if you remove the OAuth association with GitHub.
+          desc2: Repositories will disappear from your profile if you remove the OAuth association with GitHub.
         learn: Learn more
         micro: 'Receive micropayments for time spent reading your posts directly. '
         payment: Payment Pointer

@@ -193,6 +193,8 @@ class Article < ApplicationRecord
   }
   scope :unpublished, -> { where(published: false) }
 
+  scope :not_authored_by, ->(user_id) { where.not(user_id: user_id) }
+
   # [@jeremyf] For approved articles is there always an assumption of
   #            published?  Regardless, the scope helps us deal with
   #            that in the future.
