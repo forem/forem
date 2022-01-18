@@ -462,7 +462,7 @@ module Articles
         when "final_order_by_random_weighted_to_last_comment_at"
           # rubocop:disable Layout/LineLength
           articles
-            .order(Arel.sql("RANDOM() ^ (1.0 / (max(1, (extract(epoch from now() - articles.last_comment_at)::integer)) ASC"))
+            .order(Arel.sql("RANDOM() ^ (1.0 / greatest( 1, (extract(epoch from now() - articles.last_comment_at)::integer))) ASC"))
           # rubocop:enable Layout/LineLength
         else # original
           articles
