@@ -14,7 +14,7 @@
         href="<%= user_series_path(current_user.username) %>"
         <%= params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.series") %>
-        <span class="crayons-indicator"><%= @user.collections.count %></span>
+        <span class="crayons-indicator"><%= @collections_count %></span>
       </a>
     </li>
 
