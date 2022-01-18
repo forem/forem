@@ -13,8 +13,12 @@ form.new_video_uploader {
   <h1><%= t("views.videos.upload") %></h1>
   <%= direct_upload_form_for @uploader do |f| %>
     <%= f.file_field :file,
-                     accept: "video/mp4,video/x-m4v,video/*",
-                     onchange: "javascript:this.form.submit()" %>
+                     accept: VideoUploader.allowed_content_types.join(", "),
+                     onchange: "javascript:this.form.submit()",
+                     data: {
+                       max_file_size_mb: current_user.super_admin? ? 20_000 : 6_000,
+                       permitted_file_types: ["video"]
+                     } %>
   <% end %>
   <div style="margin:50px auto;max-width:80%;font-size:0.86em;">
     <p>

@@ -12,6 +12,10 @@ class VideoUploader < CarrierWave::Uploader::Base
   default_content_type  "video/mpeg"
   allowed_content_types %w[video/mpeg video/mp4 video/ogg]
 
+  def content_type_allowlist
+    %w[video/mpeg video/mp4 video/ogg]
+  end
+
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
