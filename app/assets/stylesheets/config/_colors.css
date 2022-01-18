@@ -16,11 +16,9 @@
   --base-0: #f9f9f9;
 
   /* Brand */
-  /* --accent-brand-lightest: rgb(var(--accent-brand-lightest-rgb)); */
   --accent-brand-lighter: rgb(var(--accent-brand-lighter-rgb));
   --accent-brand: rgb(var(--accent-brand-rgb));
   --accent-brand-darker: rgb(var(--accent-brand-darker-rgb));
-  /* --accent-brand-darkest: rgb(var(--accent-brand-darkest-rgb)); */
 
   /* Success */
   --accent-success: rgb(var(--green-600));
