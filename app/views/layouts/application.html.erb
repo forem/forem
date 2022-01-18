@@ -44,9 +44,7 @@
     <% end %>
   </head>
   <% unless internal_navigation? %>
-  <!-- adding the Feature Flag status to the top bar is temporary to show the logo from the correct place,
-      it will be removed by latest 24/10/2021 -->
-    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}--#{FeatureFlag.enabled?(:creator_onboarding)}")) do %>
+    <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
       <body
         data-user-status="<%= user_logged_in_status %>"
         data-community-name="<%= community_name %>"
