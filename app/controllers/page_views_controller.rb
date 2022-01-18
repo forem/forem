@@ -31,7 +31,9 @@ class PageViewsController < ApplicationMetalController
   end
 
   def update
-    Articles::PageViewUpdater.call(article_id: params[:id], user_id: session_current_user_id) if session_current_user_id
+    if session_current_user_id
+      Articles::PageViewUpdater.call(article_id: params[:id], user_id: session_current_user_id)
+    end
 
     head :ok
   end
