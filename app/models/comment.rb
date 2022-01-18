@@ -95,14 +95,6 @@ class Comment < ApplicationRecord
       .to_h
   end
 
-  def self.title_deleted
-    I18n.t("models.comment.deleted")
-  end
-
-  def self.title_hidden
-    I18n.t("models.comment.hidden")
-  end
-
   def search_id
     "comment_#{id}"
   end
@@ -140,8 +132,8 @@ class Comment < ApplicationRecord
   end
 
   def title(length = 80)
-    return self.class.title_deleted if deleted
-    return self.class.title_hidden if hidden_by_commentable_user
+    return I18n.t("models.comment.deleted") if deleted
+    return I18n.t("models.comment.hidden") if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")

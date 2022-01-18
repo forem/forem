@@ -51,9 +51,7 @@ class Sponsorship < ApplicationRecord
     return unless self.class.where(organization: organization)
       .exists?(["level IN (?) AND expires_at > ? AND id != ?", METAL_LEVELS, Time.current, id.to_i])
 
-    errors.add(:level,
-               I18n.t("models.sponsorship.only_one_level", levels: METAL_LEVELS.map do |l|
-                                                                     I18n.t("models.sponsorship.level.#{l}")
-                                                                   end.to_sentence(locale: I18n.locale)))
+    levels = METAL_LEVELS.map { |l| I18n.t("models.sponsorship.level.#{l}") }.to_sentence(locale: I18n.locale)
+    errors.add(:level, I18n.t("models.sponsorship.only_one_level", levels: levels))
   end
 end

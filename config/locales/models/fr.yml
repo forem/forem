@@ -114,7 +114,7 @@ en:
       could_not_send: confirmation could not be sent. %{e_message}
       password_not_matched: doesn't match password confirmation
       has_been_banished: has been banished.
-      is_taken: "%{data_value} is taken."
+      is_taken: "%{username} is taken."
       user_could_not_be_saved: User could not be saved. %{e_message}
       username_is_reserved: username is reserved
     user_subscription:

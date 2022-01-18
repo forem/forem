@@ -140,7 +140,7 @@ class User < ApplicationRecord
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: :invalid_username }
   validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
-    I18n.t("models.user.is_taken", data_value: (data[:value]))
+    I18n.t("models.user.is_taken", username: (data[:value]))
   end }, if: :username_changed?
 
   # add validators for provider related usernames

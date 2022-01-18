@@ -1,45 +1,41 @@
 ---
-en:
+ja:
   models:
     api_secret:
       api_limit_reached: API secret limit of 20 per user has been reached
     application_record:
       uninferrable: Could not infer a decorator for %{class}.
     article:
-      a_post_by: A post by %{user_name}
-      video_unpermitted: cannot be added by member without permission
-      video_processing: cannot be set to true if video is still processing
-      cannot_search_tags_for: 'Cannot search tags for: %{tag}'
-      cannot_search_tags_for_tags: 'Cannot search tags for: %{tags}'
-      unique_coauthor: co-author IDs must be unique
-      too_many_tags: exceed the maximum of 4 tags
-      is_too_long: is too long.
-      invalid_date: must be entered in DD/MM/YYYY format with current or past date
-      series_unpermitted: must be one you have permission to post to
-      invalid_coauthor: must be valid user IDs
-      same_author: must not be the same user as the author
-      must_not_have_spaces: must not have spaces
-      published: Published
-      unique_url: has already been taken. Email %{email} for further details.
-      mention_too_many:
-        one: You cannot mention more than %{count} users in a post!
-        other: You cannot mention more than %{count} users in a post!
+      a_post_by: "%{user_name} の投稿記事"
+      video_unpermitted: は許可のないメンバーが追加できません
+      video_processing: は動画が処理中のため有効にできません
+      cannot_search_tags_for: '該当するタグが見つかりません: %{tag}'
+      cannot_search_tags_for_tags: '該当するタグが見つかりません: %{tags}'
+      unique_coauthor: 共著者の ID が重複しています
+      too_many_tags: が 4 つまでの上限を超過しています
+      is_too_long: が長すぎます
+      invalid_date: は現在または過去の日付を DD/MM/YYYY 形式で入力してください
+      series_unpermitted: はあなたが投稿する権限があるものを指定してください
+      invalid_coauthor: は有効なユーザー ID を入れてください
+      same_author: は作者と異なるユーザーを入れてください
+      must_not_have_spaces: はスペースを入れないでください
+      published: 公開しました
+      unique_url: はすでに取られています。詳しくは %{email} にご連絡ください。
+      mention_too_many: 1 つの記事内で %{count} 人より多く呼びかけることはできません！
     broadcast:
       single_active: You can only have one active announcement broadcast
     comment:
-      deleted: "[deleted]"
-      has_been_deleted: "%{type} has been deleted."
-      hidden: "[hidden by post author]"
-      is_not_valid: is not valid.
-      locked: the discussion is locked on this Post
+      deleted: "[削除]"
+      has_been_deleted: "%{type}は削除されました"
+      hidden: "[記事作者により非表示]"
+      is_not_valid: は無効です
+      locked: 記事のコメント欄は凍結されています
       type:
-        Article: Article
-        item: item
-        PodcastEpisode: Podcast episode
-      suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.
-      mention_too_many:
-        one: You cannot mention more than %{count} users in a comment!
-        other: You cannot mention more than %{count} users in a comment!
+        Article: 記事
+        item: 項目
+        PodcastEpisode: 配信
+      suspended_too_many: ユーザーはスパム書き込みを大量に行ったため、自動検出により凍結されました。
+      mention_too_many: 1 つのコメント内で %{count} 人より多く呼びかけることはできません！
     feedback_message:
       reported: "(you) previously reported this URL."
     github_issue:
@@ -48,7 +44,7 @@ en:
     html_variant:
       no_edits: cannot change once published and approved
     identity:
-      no_email_msg: No email found. Please relink your %{provider} account to avoid errors.
+      no_email_msg: メールアドレスがありません。エラーの際は %{provider} と再度連携してください。
     listing:
       too_many_tags: exceed the maximum of 8 tags
       too_many_linebreaks: has too many linebreaks. No more than 12 allowed.
@@ -111,12 +107,14 @@ en:
     tweet:
       tweet_not_found: Tweet not found
     user:
-      could_not_send: confirmation could not be sent. %{e_message}
-      password_not_matched: doesn't match password confirmation
-      has_been_banished: has been banished.
-      is_taken: "%{username} is taken."
-      user_could_not_be_saved: User could not be saved. %{e_message}
-      username_is_reserved: username is reserved
+      could_not_send: 確認メールが送信できませんでした。%{e_message}
+      password_not_matched: が確認用パスワードと一致しません
+      has_been_banished: は追放されました
+      is_taken: "%{username} は取られています"
+      user_could_not_be_saved: ユーザーを保存できませんでした。%{e_message}
+      username_is_reserved: ユーザー名は予約されています
+    user_block:
+      cant_be_the_same: can't be the same as the blocked_id
     user_subscription:
       non_apple: Can't subscribe with an Apple private relay. Please update email.
       source_not_found: Source not found. Please make sure your %{source} is active!
