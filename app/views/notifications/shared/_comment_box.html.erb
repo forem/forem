@@ -23,7 +23,7 @@
             <%= crayons_icon_tag("twemoji/thumb-down", native: true, class: "reaction-icon", title: "Thumb down") %>
           </button>
           <button
-            class="crayons-btn crayons-btn--icon crayons-btn--icon-rounded crayons-btn--ghost inline-flex crayons-btn--s reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "vomit" ? "reacted" : "" %>"
+            class="crayons-btn crayons-btn--icon crayons-btn--icon-rounded crayons-btn--ghost inline-flex crayons-btn--s reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= json_data["comment"]["id"] %>"
             data-category="vomit"
             data-reactable-type="Comment"
