@@ -363,13 +363,13 @@ module Articles
         # ActiveRecord goodness of scopes (e.g.,
         # limited_column_select) and eager includes.
         finalized_results = Article.where(
-                              Article.arel_table[:id].in(
-                                Arel.sql(
-                                  Article.sanitize_sql(unsanitized_sub_sql),
-                                ),
-                              ),
-                            ).limited_column_select.includes(top_comments: :user)
-        finalized_results = final_order_logic(finalized_results)
+          Article.arel_table[:id].in(
+            Arel.sql(
+              Article.sanitize_sql(unsanitized_sub_sql),
+            ),
+          ),
+        ).limited_column_select.includes(top_comments: :user)
+        final_order_logic(finalized_results)
       end
       # rubocop:enable Layout/LineLength
 
