@@ -12,7 +12,7 @@ class ProfilesController < ApplicationController
     else
       @user = current_user
       @tab = "profile"
-      flash[:error] = I18n.t("core.error", errors: update_result.errors_as_sentence)
+      flash[:error] = I18n.t("errors.messages.general", errors: update_result.errors_as_sentence)
       render template: "users/edit", locals: {
         user: update_params[:user],
         profile: update_params[:profile],

@@ -145,6 +145,7 @@ en:
       equal_to: must be equal to %{count}
       even: must be even
       exclusion: is reserved
+      general: 'Error: %{errors}'
       greater_than: must be greater than %{count}
       greater_than_or_equal_to: must be greater than or equal to %{count}
       inclusion: is not included in the list
@@ -174,6 +175,7 @@ en:
       json: "%b %e, %Y"
       comment: "%B %d, %Y"
       short: "%b %-e"
+      short_with_yy: "%b %-d '%y"
       short_with_year: "%b %-e, %Y"
       stackexchange: "%b %e '%y"
       tweet: "%H:%M %p - %d %b %Y"

@@ -5,8 +5,8 @@ class EmailSubscriptionsController < ApplicationController
     if verified_params[:expires_at] > Time.current
       user = User.find(verified_params[:user_id])
       user.notification_setting.update(verified_params[:email_type] => false)
-      @email_type = preferred_email_name.fetch(verified_params[:email_type].call,
-                                               I18n.t("email_subscriptions_controller.this_list"))
+      @email_type = preferred_email_name.fetch(verified_params[:email_type],
+                                               I18n.t("email_subscriptions_controller.this_list")).call
     else
       render "invalid_token"
     end

@@ -15,7 +15,7 @@ class DiscussionLocksController < ApplicationController
 
       flash[:success] = I18n.t("discussion_locks_controller.locked")
     else
-      flash[:error] = I18n.t("core.error", errors: @discussion_lock.errors_as_sentence)
+      flash[:error] = I18n.t("errors.messages.general", errors: @discussion_lock.errors_as_sentence)
     end
 
     redirect_to "#{article.path}/manage"
@@ -32,7 +32,7 @@ class DiscussionLocksController < ApplicationController
 
       flash[:success] = I18n.t("discussion_locks_controller.unlocked")
     else
-      flash[:error] = I18n.t("core.error", errors: @discussion_lock.errors_as_sentence)
+      flash[:error] = I18n.t("errors.messages.general", errors: @discussion_lock.errors_as_sentence)
     end
 
     redirect_to "#{article.path}/manage"

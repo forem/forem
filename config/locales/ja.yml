@@ -2,7 +2,6 @@
 ja:
   core:
     beta: ベータ
-    error: 'Error: %{errors}'
     follow: フォロー
     follow_back: フォローを返す
     following: フォロー中
@@ -25,6 +24,7 @@ ja:
       equal_to: は%{count}にしてください
       even: は偶数にしてください
       exclusion: は予約されています
+      general: 'Error: %{errors}'
       greater_than: は%{count}より大きい値にしてください
       greater_than_or_equal_to: は%{count}以上の値にしてください
       inclusion: は一覧にありません
