@@ -428,6 +428,15 @@ RSpec.describe Authentication::Authenticator, type: :service do
         tags = hash_including(tags: array_including("error:StandardError"))
         expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags)
       end
+
+      it "does not update their github_username if the user is suspended" do
+        new_username = "new_username#{rand(1000)}"
+        auth_payload.info.nickname = new_username
+        user.add_role :suspended
+
+        user = described_class.call(auth_payload)
+        expect(user.github_username).not_to eq(new_username)
+      end
     end
 
     describe "user already logged in" do
@@ -706,6 +715,15 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(
           user.profile_updated_at.to_i > original_profile_updated_at.to_i,
         ).to be(true)
+      end
+
+      it "does not update their twitter_username if the user is suspended" do
+        new_username = "new_username#{rand(1000)}"
+        auth_payload.info.nickname = new_username
+        user.add_role :suspended
+
+        user = described_class.call(auth_payload)
+        expect(user.github_username).not_to eq(new_username)
       end
     end
 

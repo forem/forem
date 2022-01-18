@@ -3,7 +3,7 @@
   <% user = User.find_by(id: json_data["user"]["id"]) %>
   <% cache "broadcast-html-#{notification.json_data['broadcast']['title']}" do %>
     <a href="<%= json_data["user"]["path"] %>" class="crayons-avatar crayons-avatar--2xl m:crayons-avatar--3xl shrink-0 mb-4 m:mb-6">
-      <img src="<%= Images::Profile.call(user.profile_image_url) %>" class="crayons-avatar__image" alt="link to <%= json_data["user"]["username"] %>'s profile" width="128" height="128">
+      <img src="<%= user.profile_image_url %>" class="crayons-avatar__image" alt="link to <%= json_data["user"]["username"] %>'s profile" width="128" height="128">
     </a>
     <div class="fs-base m:fs-l broadcast-content" id="<%= sanitized_broadcast_id(json_data["broadcast"]["title"]) %>">
       <%= json_data["broadcast"]["processed_html"].html_safe %>

@@ -58,8 +58,6 @@ Rails.application.configure do
   # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []
 
-  config.active_job.queue_adapter = :test
-
   # Debug is the default log_level, but can be changed per environment.
   config.log_level = :debug
 

@@ -17,9 +17,6 @@ describe('Creator Settings Page', () => {
     cy.findByText('No stress, you can always change it later.').should(
       'be.visible',
     );
-    cy.findByText(
-      /Setup not completed yet, missing community description, suggested tags, and suggested users./i,
-    ).should('not.be.visible');
 
     // should contain a community name and update the field properly
     cy.findByRole('textbox', { name: /community name/i })
@@ -237,14 +234,13 @@ describe('Admin -> Customization -> Config -> Images', () => {
       'not.exist',
     );
 
-    cy.findAllByRole('img', { name: /DEV\(local\)/i }).then((images) => {
-      // Some images being picked up are SVGs which we don't want to check
-      const logoImages = [...images].filter((image) => image.tagName === 'IMG');
+    cy.findAllByRole('img', { name: /DEV\(local\)/i }).should(
+      'not.exist',
+    )
 
-      // Ensure that the logo URL hasn't been changed.
-      for (const image of logoImages) {
-        cy.get(image).should('have.attr', 'src', '');
-      }
-    });
+    // we should see the community name instead of a logo
+    cy.get('.site-logo__community-name')
+      .findByText(/DEV\(local\)/i)
+      .should('be.visible');
   });
 });

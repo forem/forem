@@ -3,12 +3,23 @@ class PageViewsController < ApplicationMetalController
   # It should help performance.
   include ActionController::Head
 
+  # Each time we have a non-authenticated visitor, we have a 10% chance that we will record that
+  # specific impression as a page view.  When we do record that specific impression as a page view,
+  # we want to give credit for all likely page views that we didn't record (e.g., the 90% or so).
+  #
+  # @note Yes, this is a very verbose constant name.  Apologies, don't type it.  But I [@jeremyf]
+  #       want it here to explain a magic number.
+  #
+  # @see https://github.com/forem/forem/blob/main/app/assets/javascripts/initializers/initializeBaseTracking.js.erb#L113-L117
+  # @see https://github.com/forem/forem/pull/12686#discussion_r577271589 for further discussion.
+  VISITOR_IMPRESSIONS_AGGREGATE_COUNTS_FOR_NUMBER_OF_VIEWS = 10
+
   def create
     page_view_create_params = params.slice(:article_id, :referrer, :user_agent)
     if session_current_user_id
       page_view_create_params[:user_id] = session_current_user_id
     else
-      page_view_create_params[:counts_for_number_of_views] = 10
+      page_view_create_params[:counts_for_number_of_views] = VISITOR_IMPRESSIONS_AGGREGATE_COUNTS_FOR_NUMBER_OF_VIEWS
     end
 
     Articles::UpdatePageViewsWorker.perform_at(

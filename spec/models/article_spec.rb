@@ -1008,6 +1008,7 @@ RSpec.describe Article, type: :model do
     end
 
     it "assigns cached_user on save" do
+      expect(article.cached_user).to be_a(Articles::CachedEntity)
       expect(article.cached_user.name).to eq(article.user.name)
       expect(article.cached_user.username).to eq(article.user.username)
       expect(article.cached_user.slug).to eq(article.user.username)
@@ -1017,6 +1018,7 @@ RSpec.describe Article, type: :model do
 
     it "assigns cached_organization on save" do
       article = create(:article, user: user, organization: create(:organization))
+      expect(article.cached_organization).to be_a(Articles::CachedEntity)
       expect(article.cached_organization.name).to eq(article.organization.name)
       expect(article.cached_organization.username).to eq(article.organization.username)
       expect(article.cached_organization.slug).to eq(article.organization.slug)

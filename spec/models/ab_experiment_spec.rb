@@ -6,12 +6,12 @@ RSpec.describe AbExperiment do
 
   describe ".get" do
     before do
-      allow(controller).to receive(:field_test).with(:feed_strategy_round_2, participant: user).and_return("special")
+      allow(controller).to receive(:field_test).with(:feed_strategy_round_4, participant: user).and_return("special")
     end
 
-    context "with :feed_strategy_round_2 experiment" do
+    context "with :feed_strategy_round_3 experiment" do
       it "repurposes the :feed_strategy experiment" do
-        expect(described_class.get(experiment: :feed_strategy_round_2,
+        expect(described_class.get(experiment: :feed_strategy_round_4,
                                    user: user,
                                    controller: controller,
                                    default_value: "default")).to eq("special")

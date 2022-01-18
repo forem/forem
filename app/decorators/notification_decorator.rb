@@ -3,6 +3,9 @@ class NotificationDecorator < ApplicationDecorator
     def class
       Struct.new(:name).new(name)
     end
+
+    # @see ApplicationRecord#class_name
+    alias_method :class_name, :name
   end.freeze
 
   # returns a stub notifiable object with name and id

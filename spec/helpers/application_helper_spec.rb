@@ -4,21 +4,6 @@ RSpec.describe ApplicationHelper, type: :helper do
   include CloudinaryHelper
 
   describe "constant definitions" do
-    it "defines USER_COLORS" do
-      expect(described_class::USER_COLORS).to eq ["#19063A", "#dce9f3"]
-    end
-
-    it "defines DELETED_USER" do
-      user = described_class::DELETED_USER
-      expect(user).not_to be_nil
-      expect(user.darker_color).to eq Color::CompareHex.new(described_class::USER_COLORS).brightness
-      expect(user.username).to eq "[deleted user]"
-      expect(user.name).to eq "[Deleted User]"
-      expect(user.tag_line).to be_nil
-      expect(user.twitter_username).to be_nil
-      expect(user.github_username).to be_nil
-    end
-
     it "defines LARGE_USERBASE_THRESHOLD" do
       expect(described_class::LARGE_USERBASE_THRESHOLD).to eq 1000
     end
@@ -32,7 +17,7 @@ RSpec.describe ApplicationHelper, type: :helper do
         "latest" => "Latest posts"
       }
 
-      expect(described_class::SUBTITLES).to eq subtitles
+      expect(Class.new.include(described_class).new.subtitles).to eq subtitles
     end
   end
 

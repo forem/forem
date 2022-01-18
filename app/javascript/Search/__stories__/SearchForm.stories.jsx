@@ -25,7 +25,7 @@ class FocusedForm extends Component {
 
 export default {
   component: SearchForm,
-  title: 'App Components/Search/Search Form',
+  title: 'App Components/Search',
 };
 
 export const NoSearchTerm = () => <SearchForm {...commonProps} searchTerm="" />;

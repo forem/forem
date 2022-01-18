@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
+import { ButtonNew as Button } from '@crayons';
 
 export class SingleRepo extends Component {
   constructor(props) {
@@ -73,7 +73,6 @@ export class SingleRepo extends Component {
             {this.forkLabel()}
           </div>
           <Button
-            className="crayons-btn"
             id={`github-repo-button-${githubIdCode}`}
             onClick={this.submitRepo}
           >

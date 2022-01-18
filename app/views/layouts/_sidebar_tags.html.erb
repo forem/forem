@@ -3,7 +3,7 @@
     <header class="pt-2 pl-3 pb-0 pr-0 flex items-center justify-between">
       <h2 class="crayons-subtitle-3"><%= t("views.main.tags.my_tags") %></h2>
       <a id="tag-priority-link" href="<%= dashboard_following_tags_path %>" class="c-link c-link--block c-link--icon-alone" aria-label="<%= t("views.main.tags.aria_label") %>" title="<%= t("views.main.tags.aria_label") %>">
-        <%= inline_svg_tag("cog.svg", class: "crayons-icon") %>
+        <%= crayons_icon_tag(:cog) %>
       </a>
     </header>
     <div id="sidebar-nav-followed-tags" class="overflow-y-auto -m-1 p-1 mb-2 sidebar-nav-followed-tags" style="max-height: 42vh;"></div>

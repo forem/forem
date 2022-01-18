@@ -453,7 +453,7 @@ RSpec.describe User, type: :model do
         case provider_name
         when :apple
           expect(new_user.username).to match(/valid_username_\w+/)
-        when :facebook
+        when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("valid_username")
@@ -472,7 +472,7 @@ RSpec.describe User, type: :model do
         case provider_name
         when :apple
           expect(new_user.username).to match(/invalidusername_\w+/)
-        when :facebook
+        when :facebook, :google_oauth2
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("invalidusername")

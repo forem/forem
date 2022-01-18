@@ -3,7 +3,12 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed::Registry do
   subject(:unified_embed) { described_class }
 
+  let(:user) { create(:user) }
   let(:article) { create(:article) }
+  let(:comment) do
+    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
+  end
+  let(:organization) { create(:organization) }
 
   describe ".find_liquid_tag_for" do
     valid_blogcast_url_formats = [
@@ -74,6 +79,11 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
+    it "returns CommentTag for a Forem comment url" do
+      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{user.username}/comment/#{comment.id_code}"))
+        .to eq(CommentTag)
+    end
+
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
         .to eq(GistTag)
@@ -87,6 +97,11 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns CodepenTag for a codepen url" do
       expect(described_class.find_liquid_tag_for(link: "https://codepen.io/elisavetTriant/pen/KKvRRyE"))
         .to eq(CodepenTag)
+    end
+
+    it "returns DotnetFiddleTag for a dotnetfiddle url" do
+      expect(described_class.find_liquid_tag_for(link: "https://dotnetfiddle.net/PmoDip"))
+        .to eq(DotnetFiddleTag)
     end
 
     it "returns InstagramTag for a valid instagram url" do
@@ -109,6 +124,11 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns NextTechTag for a nexttech url" do
       expect(described_class.find_liquid_tag_for(link: "https://nt.dev/s/6ba1fffbd09e"))
         .to eq(NextTechTag)
+    end
+
+    it "returns OrganizationTag for a Forem organization url" do
+      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{organization.slug}"))
+        .to eq(OrganizationTag)
     end
 
     it "returns RedditTag for a reddit url" do

@@ -40,4 +40,24 @@ describe('Moderation Tools for Posts', () => {
       cy.findByRole('button', { name: 'Moderation' }).should('not.exist');
     });
   });
+
+  it('should not alter tags from a post if a reason is not specified', () => {
+    cy.fixture('users/adminUser.json').as('user');
+    cy.get('@user').then((user) => {
+      cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article').then(() => {
+        cy.findByRole('button', { name: 'Moderation' }).click();
+
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open adjust tags section' }).click({
+            force: true,
+          });
+
+          cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
+          cy.findByRole('button', { name: 'Submit' }).click();
+        });
+
+        cy.findByTestId('snackbar').should('not.exist');
+      });
+    });
+  });
 });
