@@ -5,7 +5,7 @@
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
     <li>
       <a href="<%= root_path %>" class="c-link c-link--block c-link--icon-left">
-        <%= inline_svg_tag("twemoji/house.svg", class: "crayons-icon crayons-icon--default c-link__icon", aria_hidden: true) %>
+        <%= crayons_icon_tag("twemoji/house", class: "c-link__icon", native: true, aria_hidden: true) %>
         <%= t("views.main.home") %>
       </a>
     </li>
