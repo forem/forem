@@ -16,16 +16,6 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
-GIT
-  remote: https://github.com/redis-store/redis-actionpack.git
-  revision: aa27fdbd8e1ee28cdba840ee87cc06608c582ef7
-  branch: master
-  specs:
-    redis-actionpack (5.3.0)
-      actionpack (>= 5, < 8)
-      redis-rack (>= 2.1.0, < 3)
-      redis-store (>= 1.1.0, < 2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -656,6 +646,10 @@ GEM
       json
     redcarpet (3.5.1)
     redis (4.5.1)
+    redis-actionpack (5.3.0)
+      actionpack (>= 5, < 8)
+      redis-rack (>= 2.1.0, < 3)
+      redis-store (>= 1.1.0, < 2)
     redis-rack (2.1.3)
       rack (>= 2.0.8, < 3)
       redis-store (>= 1.2, < 2)
@@ -1023,7 +1017,7 @@ DEPENDENCIES
   recaptcha (~> 5.8)
   redcarpet (~> 3.5)
   redis (~> 4.5.1)
-  redis-actionpack!
+  redis-actionpack (~> 5.3.0)
   request_store (~> 1.5)
   reverse_markdown (~> 2.1)
   rolify (~> 6.0)
