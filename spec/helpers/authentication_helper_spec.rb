@@ -34,7 +34,7 @@ RSpec.describe AuthenticationHelper, type: :helper do
       allow(Authentication::Providers).to receive(:enabled).and_return(providers)
       allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
 
-      expect(helper.signed_up_with(user)).to match(/GitHub and Twitter/)
+      expect(helper.signed_up_with(user)).to match(/Google and Twitter/)
       expect(helper.signed_up_with(user)).to match(/use any of those/)
     end
 

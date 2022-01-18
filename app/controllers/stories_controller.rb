@@ -337,11 +337,11 @@ class StoriesController < ApplicationController
       },
       url: URL.user(@user),
       sameAs: user_same_as,
-      image: Images::Profile.call(@user.profile_image_url, length: 320),
+      image: @user.profile_image_url_for(length: 320),
       name: @user.name,
       email: decorated_user.profile_email,
       description: decorated_user.profile_summary
-    }.reject { |_, v| v.blank? }
+    }.compact_blank
   end
 
   def set_article_json_ld
@@ -399,7 +399,7 @@ class StoriesController < ApplicationController
         "@id": URL.organization(@organization)
       },
       url: URL.organization(@organization),
-      image: Images::Profile.call(@organization.profile_image_url, length: 320),
+      image: @organization.profile_image_url_for(length: 320),
       name: @organization.name,
       description: @organization.summary.presence || "404 bio not found"
     }
@@ -412,6 +412,6 @@ class StoriesController < ApplicationController
       @user.twitter_username.present? ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
       @user.profile.website_url,
-    ].reject(&:blank?)
+    ].compact_blank
   end
 end

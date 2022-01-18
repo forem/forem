@@ -7,16 +7,10 @@
 // handler or `e.stopPropagation` are just ignored
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
+import { ButtonNew as Button } from '@crayons';
 
 export const ItemListItemArchiveButton = ({ text, onClick }) => (
-  <Button
-    onClick={onClick}
-    aria-label="Archive item"
-    role="button"
-    variant="ghost"
-    size="s"
-  >
+  <Button className="spec__archive-button" onClick={onClick}>
     {text}
   </Button>
 );

@@ -7,11 +7,8 @@ RSpec.describe UserSubscription, type: :model do
   let(:source) { create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
 
   describe "validations" do
-    it { is_expected.to validate_presence_of(:user_subscription_sourceable_id) }
     it { is_expected.to validate_presence_of(:user_subscription_sourceable_type) }
-    it { is_expected.to validate_presence_of(:subscriber_id) }
     it { is_expected.to validate_presence_of(:subscriber_email) }
-    it { is_expected.to validate_presence_of(:author_id) }
     it { is_expected.to validate_inclusion_of(:user_subscription_sourceable_type).in_array(%w[Article]) }
 
     # rubocop:disable RSpec/NamedSubject

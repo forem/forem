@@ -8,6 +8,23 @@ RSpec.describe ApplicationDecorator, type: :decorator do
     end
   end
 
+  describe "#class_name" do
+    it "delegates to the underlying object" do
+      obj = User.new
+      decorated = described_class.new(obj)
+      expect(decorated.class_name).to eq(obj.class_name)
+    end
+  end
+
+  describe "#decorate" do
+    it "returns itself" do
+      obj = User.new
+      decorated = described_class.new(obj)
+
+      expect(decorated.object_id).to eq(decorated.decorate.object_id)
+    end
+  end
+
   describe "#decorated?" do
     it "returns true" do
       obj = Object.new

@@ -1209,6 +1209,8 @@ ActiveRecord::Schema.define(version: 2021_12_22_040359) do
     t.string "forem_username"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
+    t.datetime "google_oauth2_created_at"
+    t.string "google_oauth2_username"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_created_at"
     t.integer "invitation_limit"
@@ -1270,6 +1272,7 @@ ActiveRecord::Schema.define(version: 2021_12_22_040359) do
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
+    t.index ["google_oauth2_username"], name: "index_users_on_google_oauth2_username"
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"

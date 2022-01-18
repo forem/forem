@@ -3,7 +3,7 @@ require_relative "boot"
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
-require "active_job/railtie"
+# require "active_job/railtie"
 require "active_record/railtie"
 # require "active_storage/engine"
 require "action_controller/railtie"
@@ -39,28 +39,10 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
-    ## Rails 6.0
-    # Determines whether forms are generated with a hidden tag that forces older versions of Internet
-    # Explorer to submit forms encoded in UTF-8
-    config.action_view.default_enforce_utf8 = true
-
-    # Enables the same cache key to be reused when the object being cached of type ActiveRecord::Relation
-    # changes by moving the volatile information (max updated at and count) of the relation's cache
-    # key into the cache version to support recycling cache key.
-    config.active_record.collection_cache_versioning = false
-
-    # Enables writing cookies with the purpose metadata embedded.
-    config.action_dispatch.use_cookies_with_metadata = false
-
     ## Rails 6.1
     # This replaces the old config.active_support.use_sha1_digests from Rails 5.2
     config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
     ### END FRAMEWORK DEFAULT OVERIDES
-
-    # Zeitwerk is the new autoloader in Rails 6+
-    # As we don't have `load_defaults 6.0` yet, it has to be enabled manually
-    # See <https://guides.rubyonrails.org/autoloading_and_reloading_constants.html>
-    config.autoloader = :zeitwerk
 
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when
@@ -75,13 +57,6 @@ module PracticalDeveloper
     # the framework and any gems in your application.
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
-
-    # Middlewares folder is not otherwise autorequired.
-    Dir["#{config.root}/app/middlewares/**/*.rb"].each do |file|
-      require_dependency(file)
-    end
-
-    config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Deflater
 

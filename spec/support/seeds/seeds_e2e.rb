@@ -65,7 +65,7 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user = User.create!(
-    name: "Trusted User 1",
+    name: "Trusted User 1 \\:/",
     email: "trusted-user-1@forem.local",
     username: "trusted_user_1",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
@@ -188,7 +188,7 @@ end
 
 seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") do
   user = User.create!(
-    name: "Notifications User",
+    name: "Notifications User \\:/",
     email: "notifications-user@forem.local",
     username: "notifications_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),

@@ -95,7 +95,7 @@ RSpec.describe "Authenticating with Forem" do
       end
 
       after do
-        OmniAuth.config.on_failure = OmniauthHelpers.const_get("OMNIAUTH_DEFAULT_FAILURE_HANDLER")
+        OmniAuth.config.on_failure = OmniauthHelpers.const_get(:OMNIAUTH_DEFAULT_FAILURE_HANDLER)
       end
 
       it "does not create a new user" do

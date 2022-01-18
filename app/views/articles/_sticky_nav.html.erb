@@ -30,14 +30,14 @@
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
             <%= t("views.sticky.trending_html", app: link_to(community_name, app_url)) %>
-            <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: t("views.sticky.hot")) %>
+            <%= crayons_icon_tag("twemoji/fire", native: true, title: t("views.sticky.hot")) %>
           </h3>
         </header>
         <div>
           <% sticky_articles.each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful flex" href="<%= article.path %>">
               <span class="crayons-avatar mr-2 shrink-0">
-                <img src="<%= Images::Profile.call(article.cached_user.profile_image_url, length: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.cached_user.name %> profile image">
+                <img src="<%= article.cached_user.profile_image_url_for(length: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.cached_user.name %> profile image">
               </span>
               <div>
                 <%= article.title %>

@@ -2,7 +2,8 @@ import { h, render } from 'preact';
 import { useState, useRef } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
-import { Button } from '@crayons/Button/Button';
+import { ButtonNew as Button, Link } from '@crayons';
+import RemoveIcon from '@images/x.svg';
 
 async function confirmFlagUser({ reactableType, category, reactableId }) {
   const body = JSON.stringify({
@@ -105,21 +106,11 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header flag-user-modal-header">
           <h2 class="crayons-modal__box__header__title">Flag User</h2>
-          <button
-            type="button"
-            class="crayons-btn crayons-btn--icon crayons-btn--ghost modal-header-close-icon"
+          <Button
+            icon={RemoveIcon}
+            className="inline-flex"
             onClick={toggleFlagUserModal}
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              class="crayons-icon"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-            </svg>
-          </button>
+          />
         </header>
         <div class="crayons-modal__box__body">
           <div class="grid gap-4">
@@ -153,20 +144,22 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
               </label>
             </div>
             <p>
-              <a
+              <Link
+                variant="branded"
                 href={`/report-abuse?url=${
                   modCenterArticleUrl
                     ? `${document.location.origin}${modCenterArticleUrl}`
                     : document.location
                 }`}
-                className="crayons-link crayons-link--brand"
               >
                 Report other inappropriate conduct
-              </a>
+              </Link>
             </p>
             <div>
               <Button
-                class="crayons-btn crayons-btn--danger mr-2"
+                destructive
+                variant="primary"
+                className="mr-2"
                 id="confirm-flag-user-action"
                 onClick={(_event) => {
                   const {
@@ -181,7 +174,6 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
                 Confirm action
               </Button>
               <Button
-                class="crayons-btn crayons-btn--secondary"
                 id="cancel-flag-user-action"
                 onClick={toggleFlagUserModal}
               >
