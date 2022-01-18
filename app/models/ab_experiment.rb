@@ -11,11 +11,13 @@ class AbExperiment < SimpleDelegator
   # public
   private_class_method :new
 
+  ORIGINAL_VARIANT = "original".freeze
+
   # Sometimes we might want to repurpose the same AbExperiment logic
   # for different experiments.  This provides the tooling for that
   # exact thing.
   EXPERIMENT_TO_METHOD_NAME_MAP = {
-    feed_strategy_round_2: :feed_strategy
+    feed_strategy_round_4: :feed_strategy
   }.freeze
 
   # This method helps us leverage existing methods for different

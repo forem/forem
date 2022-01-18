@@ -45,7 +45,7 @@
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
           <span class="crayons-avatar crayons-avatar--xl mr-2">
-            <img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" loading="lazy" />
+            <img alt="<%= @user.username %> profile image" src="<%= @user.profile_image_url_for(length: 50) %>" class="crayons-avatar__image" loading="lazy" />
           </span>
         <% end %>
         <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
@@ -164,13 +164,13 @@
       </label>
       <p class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
       <div class="flex items-center w-100 m:w-50">
-        <%= f.public_send("text_field", "users_setting[brand_color1]",
-                          value: users_setting.public_send("brand_color1"),
+        <%= f.public_send(:text_field, "users_setting[brand_color1]",
+                          value: users_setting.public_send(:brand_color1),
                           placeholder: "#000000",
                           class: "crayons-textfield js-color-field") %>
-        <%= f.public_send("color_field",
+        <%= f.public_send(:color_field,
                           "users_setting[brand_color1]",
-                          value: users_setting.public_send("brand_color1"),
+                          value: users_setting.public_send(:brand_color1),
                           class: "crayons-color-selector js-color-field ml-2") %>
       </div>
     </div>
@@ -181,13 +181,13 @@
       </label>
       <p class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
       <div class="flex items-center w-100 m:w-50">
-        <%= f.public_send("text_field", "users_setting[brand_color2]",
-                          value: users_setting.public_send("brand_color2"),
+        <%= f.public_send(:text_field, "users_setting[brand_color2]",
+                          value: users_setting.public_send(:brand_color2),
                           placeholder: "#000000",
                           class: "crayons-textfield js-color-field") %>
-        <%= f.public_send("color_field",
+        <%= f.public_send(:color_field,
                           "users_setting[brand_color2]",
-                          value: users_setting.public_send("brand_color2"),
+                          value: users_setting.public_send(:brand_color2),
                           class: "crayons-color-selector js-color-field ml-2") %>
       </div>
     </div>

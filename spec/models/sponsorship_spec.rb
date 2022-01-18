@@ -52,9 +52,7 @@ RSpec.describe Sponsorship, type: :model do
       it { is_expected.to validate_inclusion_of(:status).in_array(Sponsorship::STATUSES) }
 
       it { is_expected.to validate_presence_of(:level) }
-      it { is_expected.to validate_presence_of(:organization) }
       it { is_expected.to validate_presence_of(:status) }
-      it { is_expected.to validate_presence_of(:user) }
 
       it { is_expected.not_to allow_values(nil).for(:featured_number) }
       it { is_expected.to allow_values(nil).for(:expires_at) }

@@ -4,14 +4,15 @@ module FastlyConfig
     end
 
     class InvalidConfigsFormat < Error
-      def initialize(msg = "configs: must be an Array of Strings")
+      def initialize(msg = I18n.t("errors.fastly_config.must_be_array"))
         super(msg)
       end
     end
 
     class InvalidConfig < Error
       def initialize(invalid_config, valid_configs)
-        msg = "Invalid Fastly config - #{invalid_config}. Only #{valid_configs.join(', ')} are valid."
+        msg = I18n.t("errors.fastly_config.invalid_config", invalid_config: invalid_config,
+                                                            valid_configs_join: valid_configs.join(", "))
         super(msg)
       end
     end

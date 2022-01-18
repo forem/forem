@@ -63,7 +63,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    current_user?
+    current_user? && !user_suspended?
   end
 
   def destroy?

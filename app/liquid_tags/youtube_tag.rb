@@ -36,7 +36,7 @@ class YoutubeTag < LiquidTagBase
 
   def parse_id_or_url(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid YouTube ID" unless match
+    raise StandardError, I18n.t("liquid_tags.youtube_tag.invalid_youtube_id") unless match
 
     video_id       = match[:video_id]
     time_parameter = match[:time_parameter]

@@ -1,0 +1,23 @@
+---
+en:
+  create_mascot:
+    name: Mascot
+    error: Mascot already set
+  errors:
+    authentication:
+      errors:
+        suspended: It appears that your previous %{community_name} account was suspended. As such, we've taken measures to prevent you from creating a new account with %{community_name} and its community. If you think that there has been a mistake, please email us at %{community_email}, and we will take another look.
+    fastly_config:
+      must_be_array: 'configs: must be an Array of Strings'
+      invalid_config: Invalid Fastly config - %{invalid_config}. Only %{valid_configs_join} are valid.
+  policies:
+    application_policy:
+      must_be_logged_in: must be logged in
+      you_must_be_logged_in: You must be logged in
+    liquid_tag_policy:
+      no_user_found: No user found
+      not_permitted: User is not permitted to use this liquid tag
+  uploaders:
+    base_uploader:
+      too_many_frames: GIF contains too many frames. Max frame count allowed is %{frame_max}.
+      timeout: Image processing timed out.

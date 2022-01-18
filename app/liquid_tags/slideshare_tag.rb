@@ -19,7 +19,10 @@ class SlideshareTag < LiquidTagBase
   private
 
   def validate(key)
-    raise StandardError, "Invalid Slideshare Key" unless key.match?(/\A[a-zA-Z0-9]{12,14}\Z/)
+    unless key.match?(/\A[a-zA-Z0-9]{12,14}\Z/)
+      raise StandardError,
+            I18n.t("liquid_tags.slideshare_tag.invalid_slideshare_key")
+    end
 
     key
   end

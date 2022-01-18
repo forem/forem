@@ -1,38 +1,53 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
-import notes from './modals.md';
-import { Modal, Button } from '@crayons';
-import '../../storybook-utilities/designSystem.scss';
+import notes from './modals.mdx';
+import { Modal, ButtonNew as Button } from '@crayons';
 
 export default {
   title: 'Components/Modals',
-  decorator: [withKnobs],
-  parameters: { notes },
+  parameters: {
+    docs: {
+      page: notes,
+    },
+  },
+  argTypes: {
+    size: {
+      control: {
+        type: 'select',
+        options: {
+          default: 'default',
+          small: 's',
+          medium: 'm',
+        },
+      },
+      table: {
+        defaultValue: { summary: 'default' },
+      },
+    },
+    overlay: {
+      table: {
+        defaultValue: { summary: true },
+      },
+    },
+    title: {
+      control: {
+        type: 'text',
+      },
+      table: {
+        defaultValue: { summary: 'Modal title' },
+      },
+    },
+  },
 };
 
-export const Default = () => {
+export const Default = (args) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div>
       <Button onClick={() => setIsModalOpen(true)}>Open modal</Button>
       {isModalOpen && (
-        <Modal
-          onClose={() => setIsModalOpen(false)}
-          size={select(
-            'size',
-            {
-              Small: 's',
-              Medium: 'm',
-              Default: 'default',
-            },
-            'default',
-          )}
-          className={text('className')}
-          title={text('title', 'This is my Modal title')}
-          overlay={boolean('overlay', true)}
-        >
+        <Modal onClose={() => setIsModalOpen(false)} {...args}>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
             odio est, ultricies vel euismod ut, fringilla quis tellus. Sed at
@@ -44,6 +59,8 @@ export const Default = () => {
   );
 };
 
-Default.story = {
-  name: 'Modals',
+Default.args = {
+  size: 'default',
+  title: 'My modal',
+  overlay: true,
 };

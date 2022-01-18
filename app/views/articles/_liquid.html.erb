@@ -10,9 +10,9 @@
   <% if article.organization %>
   <a href='<%= article.organization.path %>' class='ltag__link__link'>
     <div class='ltag__link__org__pic'>
-      <img src='<%= Images::Profile.call(article.organization.profile_image_url, length: 150) %>' alt='<%= article.organization.name.to_s %>'>
+      <img src='<%= article.organization.profile_image_url_for(length: 150) %>' alt='<%= article.organization.name.to_s %>'>
       <div class='ltag__link__user__pic'>
-        <img src='<%= Images::Profile.call(article.user.profile_image_url, length: 150) %>' alt=''>
+        <img src='<%= article.user.profile_image_url_for(length: 150) %>' alt=''>
       </div>
     </div>
   </a>
@@ -30,7 +30,7 @@
   <% else %>
   <a href='<%= article.user.path %>' class='ltag__link__link'>
     <div class='ltag__link__pic'>
-      <img src='<%= Images::Profile.call(article.user.profile_image_url, length: 150) %>' alt='<%= article.user.username.to_s %>'>
+      <img src='<%= article.user.profile_image_url_for(length: 150) %>' alt='<%= article.user.username.to_s %>'>
     </div>
   </a>
   <a href='<%= article.path %>' class='ltag__link__link'>

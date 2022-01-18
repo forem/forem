@@ -139,14 +139,29 @@ export default class ConfigController extends Controller {
     const previewLogo = document.querySelector(
       '#logo-upload-preview .site-logo__img',
     );
+    const communityName = document.querySelector(
+      '.site-logo .site-logo__community-name',
+    );
 
     if (!previewLogo) {
       return;
     }
 
-    for (const logo of document.querySelectorAll('.site-logo__img')) {
-      if (logo !== previewLogo) {
-        logo.src = previewLogo.src;
+    // if we are showing the community name because this is the first time that the
+    // creator is uploading a logo, then we want the logo to replace the community name
+    if (communityName) {
+      const newLogo = document.createElement('img');
+      newLogo.src = previewLogo.src;
+      newLogo.className = 'site-logo__img';
+      newLogo.alt = communityName.innerText;
+
+      communityName.parentNode.replaceChild(newLogo, communityName);
+    } else {
+      for (const logo of document.querySelectorAll('.site-logo__img')) {
+
+        if (logo !== previewLogo) {
+          logo.src = previewLogo.src;
+        }
       }
     }
   }

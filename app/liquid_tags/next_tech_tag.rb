@@ -21,7 +21,9 @@ class NextTechTag < LiquidTagBase
   # Returns the share token from the end of the share URL.
   def parse_share_url(share_url)
     clean_share_url = ActionController::Base.helpers.strip_tags(share_url).delete(" ").gsub(/\?.*/, "")
-    raise StandardError, "Invalid Next Tech share URL" unless valid_share_url?(clean_share_url)
+    unless valid_share_url?(clean_share_url)
+      raise StandardError, I18n.t("liquid_tags.next_tech_tag.invalid_url")
+    end
 
     clean_share_url.split("/").last
   end

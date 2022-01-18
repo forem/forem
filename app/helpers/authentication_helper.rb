@@ -4,9 +4,7 @@ module AuthenticationHelper
   end
 
   def authentication_available_providers
-    Authentication::Providers.available.map do |provider_name|
-      Authentication::Providers.const_get(provider_name.to_s.titleize)
-    end
+    Authentication::Providers.available_providers
   end
 
   def authentication_enabled_providers
@@ -27,10 +25,12 @@ module AuthenticationHelper
     providers = Authentication::Providers.enabled_for_user(user)
 
     # If the user did not authenticate with any provider, they signed up with an email.
-    auth_method = providers.any? ? providers.map(&:official_name).to_sentence : "Email & Password"
-    verb = providers.size > 1 ? "any of those" : "that"
+    # rubocop:disable Layout/LineLength
+    auth_method = providers.any? ? providers.map(&:official_name).to_sentence : I18n.t("helpers.authentication_helper.email_password")
+    demonstrative = providers.size > 1 ? I18n.t("helpers.authentication_helper.any_of_those") : I18n.t("helpers.authentication_helper.that")
+    # rubocop:enable Layout/LineLength
 
-    "Reminder: you used #{auth_method} to authenticate your account, so please use #{verb} to sign in if prompted."
+    I18n.t("helpers.authentication_helper.reminder", method: auth_method, dem: demonstrative)
   end
 
   def available_providers_array
@@ -61,7 +61,7 @@ module AuthenticationHelper
 
   def tooltip_text_email_or_auth_provider_btns
     if invite_only_mode_or_no_enabled_auth_options
-      "You cannot do this until you disable Invite Only Mode"
+      I18n.t("helpers.authentication_helper.invite_only")
     else
       ""
     end

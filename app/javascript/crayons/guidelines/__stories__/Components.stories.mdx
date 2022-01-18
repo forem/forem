@@ -19,15 +19,18 @@ Preact.
 The entire design system uses the [BEM](http://getbem.com/naming) methodology
 for naming CSS classes. Even Preact components under the hood use it.
 
-### `crayons-*`
+### `crayons-*` or `c-*`
 
 Crayons is the name of our design system. All Crayons components use the
-`crayons-` prefix. It's useful because we can easily identify what **IS** and
+`crayons-` or `c-` prefix. It's useful because we can easily identify what **IS** and
 what **IS NOT** a Crayons component. It's also practical because Crayons was
 implemented when we already had tons of other frontend classes in the codebase.
 It prevents overwriting styles by other CSS and it's very unlikely someone has
-ever created a `.crayons-btn` style BUT it's very likely someone has created
+ever created a `.c-btn` style BUT it's very likely someone has created
 `.btn` style...
+
+`crayons-*` prefix will eventually be superseded by the `c-*` prefix. The `c-` prefix
+is just shorter, faster to type and it keep the markup a tiny bit cleaner. Plus we save some bytes :).
 
 ## HTML & CSS Components
 
@@ -35,24 +38,25 @@ You'll need to copy piece of html code responsible for rendering a component and
 that's it. Imagine a simple button component. The code below will render a
 **primary button** with specific styling:
 
-`<button class="crayons-btn">Hello</button>`
+`<button class="c-btn c-btn--primary">Hello</button>`
 
 Crayons offers different variants for a button. A button can be one of the
-following variants: primary, secondary, outlined, danger, ghost, with icon, and
+following variants: default, primary, secondary, with icon, and
 so on. All of the components and its variations are described in the Components
-section.
+section in the Storybook.
 
-Imagine you need a small (size **s** ), **secondary** type. In this case you
-will need to apply specific modifier class for that:
-
-`<button class="crayons-btn crayons-btn--secondary crayons-btn--s">Hello</button>`
+`<button class="c-btn c-btn--primary c-btn--destructive">Hello</button>`
 
 ## Preact Components
 
 The same button above that was created with pure HTML using modifying classes is
 also a Preact component.
 
-`import { Button } from '@crayons'; //... <Button size="s" variant="secondary">Hello<Button>`
+```
+import { Button } from '@crayons'; 
+...
+<Button variant="primary" destructive>Hello<Button>
+```
 
 To import a design system component, e.g. `<Button />`, import it from
 `@crayons`. Instead of modifying CSS classes, modify props, e.g.

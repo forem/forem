@@ -5,8 +5,8 @@
                     <%= should_be_hidden?(comment, @root_comment) ? "details-comment-hidden-by-commentable-user" : "" %>" open>
       <summary>
         <span class="<% if comment.depth > 0 %>mx-0<% else %>m:mx-1<% end %> inline-block align-middle">
-          <%= inline_svg_tag("collapse.svg", aria: true, class: "crayons-icon expanded", title: t("views.comments.collapse")) %>
-          <%= inline_svg_tag("expand.svg", aria: true, class: "crayons-icon collapsed", title: t("views.comments.expand")) %>
+          <%= crayons_icon_tag(:collapse, class: "expanded", title: t("views.comments.collapse")) %>
+          <%= crayons_icon_tag(:expand, class: "collapsed", title: t("views.comments.expand")) %>
         </span>
         <span class="js-collapse-comment-content inline-block align-middle"></span>
       </summary>
