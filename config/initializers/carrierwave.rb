@@ -27,8 +27,7 @@ module CarrierWaveInitializer
         provider: "AWS",
         aws_access_key_id: ApplicationConfig["AWS_ID"],
         aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
-        region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"],
-        endpoint: ApplicationConfig["AWS_S3_ENDPOINT"],
+        region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
       }
     end
   end
