@@ -5,6 +5,25 @@ RSpec.describe "Feedback report", type: :system do
   let(:message) { Faker::Lorem.paragraph }
   let(:url) { Faker::Lorem.sentence }
 
+  context "when user create a report abuse feedback message" do
+    before do
+      sign_in user
+    end
+
+    it "feedback message should increase by one", js: true do
+      expect do
+        post "/feedback_messages", params: {
+          feedback_message: {
+            message: message,
+            feedback_type: "abuse-reports",
+            category: "rude or vulgar",
+            reported_url: url
+          }
+        }, as: :json
+      end.to change(FeedbackMessage, :count).by(1)
+    end
+  end
+
   context "when user creates too many report abuse feedback messages" do
     let(:rate_limit_checker) { RateLimitChecker.new(user) }
 
