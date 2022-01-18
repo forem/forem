@@ -1,10 +1,6 @@
 ---
 fr:
   concerns:
-    development_dependency_checks:
-      sidekiq_is_not_running_and: Sidekiq is not running and is needed for the app to function properly.                            Use bin/startup to start the application properly.
-    edge_cache_safety_checks:
-      cannot_use: You may not use current_user in this cached code path.
     image_uploads:
       too_long: filename too long - the max is %{max} characters.
       is_not_file: invalid file type. Please upload a valid image.

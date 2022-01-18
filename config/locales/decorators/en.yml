@@ -2,7 +2,4 @@
 en:
   decorators:
     article_decorator:
-      discuss: discuss
       tagged_with: " Tagged with %{cached_tag_list}."
-    podcast_episode_decorator:
-      discuss: discuss
