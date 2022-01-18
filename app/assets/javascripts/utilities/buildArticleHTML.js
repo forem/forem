@@ -3,6 +3,23 @@
 /* eslint-disable no-multi-str */
 
 function buildArticleHTML(article) {
+  if (article && article.class_name === 'Tag') {
+    return `<article class="crayons-story crayons-podcast-episode mb-2">
+        <div class="crayons-story__body flex flex-start">
+          <div class="crayons-story__indention">
+            <h3 class="crayons-story__title">
+              <a href="/t/${article.name}" id="article-link-${article.id}">
+                # ${article.name}
+              </a>
+            </h3>\
+            <div class="crayons-story__snippet mb-1">
+              ${article.short_summary || ''}
+            </div>
+          </div>
+        </div>
+      </article>`;
+  }
+
   if (article && article.class_name === 'PodcastEpisode') {
     return `<article class="crayons-story crayons-podcast-episode mb-2">
         <div class="crayons-story__body flex flex-start">
