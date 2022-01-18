@@ -1,28 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Feedback report by chat channel messages", type: :system do
+RSpec.describe "Feedback report", type: :system do
   let(:user) { create(:user) }
   let(:message) { Faker::Lorem.paragraph }
   let(:url) { Faker::Lorem.sentence }
-
-  context "when user create a report abuse feedback message" do
-    before do
-      sign_in user
-    end
-
-    it "feedback message should increase by one", js: true do
-      expect do
-        post "/feedback_messages", params: {
-          feedback_message: {
-            message: "Test Message",
-            feedback_type: "connect",
-            category: "rude or vulgar",
-            offender_id: user.id
-          }
-        }, as: :json
-      end.to change(FeedbackMessage, :count).by(1)
-    end
-  end
 
   context "when user creates too many report abuse feedback messages" do
     let(:rate_limit_checker) { RateLimitChecker.new(user) }
