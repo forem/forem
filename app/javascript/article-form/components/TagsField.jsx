@@ -27,7 +27,7 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
 
   useEffect(() => {
     // Previously selected tags are passed as a plain comma separated string
-    // Fetching furher tag data allows us to display a richer UI
+    // Fetching further tag data allows us to display a richer UI
     // This fetch only happens once on first component load
     if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
       const tagNames = defaultValue.split(', ');
