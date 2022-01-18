@@ -1,5 +1,6 @@
 class EmojiOnlyValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
+    return unless value
     return if value.gsub(EmojiRegex::RGIEmoji, "").blank?
 
     record.errors.add(attribute,
