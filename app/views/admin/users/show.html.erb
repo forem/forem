@@ -1,152 +1,34 @@
 <% if true %>
-  <section class="crayons-card flex gap-6 mb-2 m:mb-3 m:p-7">
-    <img src="<%= @user.profile_image_url_for(length: 192) %>" width="96" height="96" alt="<%= @user.name %> profile picture" class="radius-full">
-    <div class="grid gap-2 flex-1">
-      <div class="flex items-center">
-        <div class="flex flex-1 items-center">
-          <h1 class="crayons-title lh-tight">
-            <%= @user.name %>
-          </h1>
-          <% if !@user.access_locked? %>
-            <%= crayons_icon_tag(:lock, title: "Access locked", class: "ml-3") %>
-          <% end %>
-          <span class="crayons-indicator ml-3">Trusted</span>
-        </div>
-        <div class="flex gap-2">
-          <%= link_to "Visit profile", @user.path, class: "c-cta", target: "_blank", rel: "noopener" %>
-          <div class="relative">
-            <button type="button" class="c-btn c-btn--icon-alone">
-              <%= crayons_icon_tag("overflow-vertical", title: "Options") %>
-            </button>
-            <div class="crayons-dropdown block right-0">
-              <ul class="p-0">
-                <li><button type="button" class="c-btn w-100 align-left">Export data</button></li>
-                <li><button type="button" class="c-btn w-100 align-left">Merge accounts</button></li>
-                <li><button type="button" class="c-btn w-100 align-left">Unpublish all posts</button></li>
-                <li><button type="button" class="c-btn w-100 align-left">Remove social account</button></li>
-                <li><button type="button" class="c-btn c-btn--destructive w-100 align-left">Banish for spam</button></li>
-                <li><button type="button" class="c-btn c-btn--destructive w-100 align-left">Delete user</button></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="fs-s color-base-60 mb-1">
-        @<%= @user.username %> &bull; <%= @user.id %> &bull;
-        <% if @user.registered? %>
-          Member since <%= @user.created_at.strftime("%b %e '%y") %>
-        <% else %>
-          @<%= @user.username %> has not accepted their invitation yet.
-        <% end %>
-      </div>
-      <div>
-        <ul class="flex gap-7 flex-wrap">
-          <li>
-            <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-flex" target="_blank">
-              <%= crayons_icon_tag(:email, title: "Email", class: "c-link__icon") %>
-              <%= @user.email %>
-            </a>
-          </li>
-          <% if @user.github_username %>
-            <li>
-              <a href="https://github.com/<%= @user.github_username %>" class="c-link c-link--icon-left inline-flex" target="_blank">
-                <%= @user.github_username %>
-                <%= crayons_icon_tag(:github, title: "GitHub") %>
-              </a>
-            </li>
-          <% end %>
-          <% if @user.twitter_username %>
-            <li>
-              <a href="https://twitter.com/<%= @user.twitter_username %>" class="c-link c-link--icon-left inline-flex" target="_blank">
-                <%= @user.twitter_username %>
-                <%= crayons_icon_tag(:twitter, title: "GitHub") %>
-              </a>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-    </div>
-  </section>
+  <%= render "header" %>
+  <%= render "navigation" %>
 
-  <nav class="mb-2">
-    <ul class="crayons-navigation crayons-navigation--horizontal">
-      <li><a href="#" class="crayons-navigation__item crayons-navigation__item--current" aria-current="page">Overview</a></li>
-      <li><a href="#" class="crayons-navigation__item">Notes</a></li>
-      <li><a href="#" class="crayons-navigation__item">Emails</a></li>
-      <li><a href="#" class="crayons-navigation__item">Reports</a></li>
-      <li><a href="#" class="crayons-navigation__item">Flags</a></li>
-    </ul>
-  </nav>
-
-  <div class="crayons-card p-7">
+  <div class="crayons-card p-7"><%# This container could be considered as wrapper for tab's content %>
     <%= render "activity_new" if @user.registered %>
 
     <div class="m:grid gap-8 grid-cols-2">
       <div>
         <div class="mb-7">
-          <header class="mb-4">
-            <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-              <%= crayons_icon_tag(:badge, title: "Assigned roles", class: "mr-2") %>
-              Assigned roles
-            </h2>
-            <p class="color-base-60">Assign a roles to this member based on permissions. <a href="#" class="c-link c-link--branded">Learn more</a></p>
-          </header>
-          <div class="flex justify-between items-center">
-            <p>No special role assigned yet.</p>
-            <button class="c-btn c-btn--secondary whitespace-nowrap" type="button">Add role</button>
-          </div>
+          <%= render "admin/users/widgets/roles" %>
         </div>
 
         <div class="mb-7">
-          <header class="mb-4">
-            <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-              <%= crayons_icon_tag("mod-filled", title: "Mod", class: "mr-2") %>
-              Tag moderation
-            </h2>
-            <p class="color-base-60">Added tags will be moderated by this member. <a href="#" class="c-link c-link--branded">Learn more</a></p>
-          </header>
-          <div class="flex justify-between items-center">
-            <p>Not moderating any tags yet.</p>
-            <button class="c-btn c-btn--secondary whitespace-nowrap" type="button">Add tag</button>
-          </div>
+          <%= render "admin/users/widgets/tag_moderation" %>
         </div>
       </div>
 
       <div>
         <div class="mb-7">
-          <header class="mb-4">
-            <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-              <%= crayons_icon_tag(:team, title: "Organizations", class: "mr-2") %>
-              Organizations
-            </h2>
-            <p class="color-base-60">Assign a roles to this member based on permissions. <a href="#" class="c-link c-link--branded">Learn more</a></p>
-          </header>
-          <div class="flex justify-between items-center">
-            <p>Not moderating any tags yet.</p>
-            <button class="c-btn c-btn--secondary whitespace-nowrap" type="button">Add tag</button>
-          </div>
+          <%= render "admin/users/widgets/organizations" %>
         </div>
 
         <div class="mb-7">
-          <header class="mb-4">
-            <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-              <%= crayons_icon_tag(:wallet, title: "Wallet", class: "mr-2") %>
-              Credits
-            </h2>
-            <p class="color-base-60">Credits enable users to purchase classified listings from your site. <a href="#" class="c-link c-link--branded">Learn more</a></p>
-          </header>
-          <div class="flex justify-between items-center">
-            <p class="fs-2xl fw-heavy"><%= @user.unspent_credits_count %></p>
-            <button class="c-btn c-btn--secondary whitespace-nowrap" type="button">Adjust balance</button>
-          </div>
+          <%= render "admin/users/widgets/credits" %>
         </div>
       </div>
     </div>
   </div>
 <% else %>
-
   <% if @user.registered? %>
-
     <%= render "credits" %>
     <%= render "notes" %>
     <%= render "user_organizations" %>

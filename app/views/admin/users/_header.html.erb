@@ -1,0 +1,68 @@
+<section class="crayons-card flex gap-6 mb-2 m:mb-3 m:p-7">
+  <img src="<%= @user.profile_image_url_for(length: 192) %>" width="96" height="96" alt="<%= @user.name %> profile picture" class="radius-full">
+  <div class="grid gap-2 flex-1">
+    <div class="flex items-center">
+      <div class="flex flex-1 items-center">
+        <h1 class="crayons-title lh-tight">
+          <%= @user.name %>
+        </h1>
+        <% if !@user.access_locked? %>
+          <%= crayons_icon_tag(:lock, title: "Access locked", class: "ml-3") %>
+        <% end %>
+        <span class="crayons-indicator ml-3">Trusted</span>
+      </div>
+      <div class="flex gap-2">
+        <%= link_to "Visit profile", @user.path, class: "c-cta", target: "_blank", rel: "noopener" %>
+        <div class="relative">
+          <button type="button" class="c-btn c-btn--icon-alone">
+            <%= crayons_icon_tag("overflow-vertical", title: "Options") %>
+          </button>
+          <div class="crayons-dropdown block right-0">
+            <ul class="p-0">
+              <li><button type="button" class="c-btn w-100 align-left">Export data</button></li>
+              <li><button type="button" class="c-btn w-100 align-left">Merge accounts</button></li>
+              <li><button type="button" class="c-btn w-100 align-left">Unpublish all posts</button></li>
+              <li><button type="button" class="c-btn w-100 align-left">Remove social account</button></li>
+              <li><button type="button" class="c-btn c-btn--destructive w-100 align-left">Banish for spam</button></li>
+              <li><button type="button" class="c-btn c-btn--destructive w-100 align-left">Delete user</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fs-s color-base-60 mb-1">
+      @<%= @user.username %> &bull; <%= @user.id %> &bull;
+      <% if @user.registered? %>
+        Member since <%= @user.created_at.strftime("%b %e '%y") %>
+      <% else %>
+        @<%= @user.username %> has not accepted their invitation yet.
+      <% end %>
+    </div>
+    <div>
+      <ul class="flex gap-7 flex-wrap">
+        <li>
+          <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-flex" target="_blank">
+            <%= crayons_icon_tag(:email, title: "Email", class: "c-link__icon") %>
+            <%= @user.email %>
+          </a>
+        </li>
+        <% if @user.github_username %>
+          <li>
+            <a href="https://github.com/<%= @user.github_username %>" class="c-link c-link--icon-left inline-flex" target="_blank">
+              <%= @user.github_username %>
+              <%= crayons_icon_tag(:github, title: "GitHub") %>
+            </a>
+          </li>
+        <% end %>
+        <% if @user.twitter_username %>
+          <li>
+            <a href="https://twitter.com/<%= @user.twitter_username %>" class="c-link c-link--icon-left inline-flex" target="_blank">
+              <%= @user.twitter_username %>
+              <%= crayons_icon_tag(:twitter, title: "GitHub") %>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</section>
