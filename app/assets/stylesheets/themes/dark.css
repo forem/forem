@@ -25,11 +25,9 @@
   --base-0: #090909;
 
   /* Brand */
-  --accent-brand-lightest: rgb(var(--accent-brand-lightest-rgb));
-  --accent-brand-lighter: rgb(var(--accent-brand-lighter-rgb));
-  --accent-brand: rgb(var(--accent-brand-rgb));
-  --accent-brand-darker: rgb(var(--accent-brand-darker-rgb));
-  --accent-brand-darkest: rgb(var(--accent-brand-darkest-rgb));
+  --accent-brand-lighter: rgb(var(--indigo-400));
+  --accent-brand: rgb(var(--indigo-500));
+  --accent-brand-darker: rgb(var(--indigo-600));
 
   /* Success */
   --accent-success: rgb(var(--green-600));
@@ -192,28 +190,28 @@
 
   /* Buttons: Default */
   --btn-bg: transparent;
-  --btn-bg-hover: rgba(var(--accent-brand-lightest-rgb), 0.2);
-  --btn-color: rgb(var(--grey-200));
-  --btn-color-hover: var(--accent-brand-lightest);
+  --btn-bg-hover: rgba(var(--indigo-900), 0.75);
+  --btn-color: rgb(var(--grey-300));
+  --btn-color-hover: rgb(var(--indigo-300));
 
   --btn-current-bg: rgb(var(--grey-700));
   --btn-current-color: rgb(var(--grey-50));
 
   /* Buttons: Primary */
-  --btn-primary-bg: var(--accent-brand-darker);
-  --btn-primary-bg-hover: var(--accent-brand);
-  --btn-primary-color: rgb(var(--white));
+  --btn-primary-bg: rgb(var(--indigo-700));
+  --btn-primary-bg-hover: rgb(var(--indigo-600));
+  --btn-primary-color: rgba(var(--white), 0.9);
   --btn-primary-color-hover: rgb(var(--white));
 
   /* Buttons: Secondary */
-  --btn-secondary-bg: rgba(var(--accent-brand-lighter-rgb), 0.2);
-  --btn-secondary-bg-hover: var(--accent-brand-darkest);
-  --btn-secondary-color: var(--accent-brand-lightest);
+  --btn-secondary-bg: rgba(var(--indigo-600), 0.4);
+  --btn-secondary-bg-hover: rgb(var(--indigo-700));
+  --btn-secondary-color: rgb(var(--indigo-200));
   --btn-secondary-color-hover: rgb(var(--white));
 
   /* Buttons: Destructive Default */
   --btn-destructive-bg: transparent;
-  --btn-destructive-bg-hover: rgba(var(--red-500), 0.2);
+  --btn-destructive-bg-hover: rgba(var(--red-500), 0.3);
   --btn-destructive-color: rgb(var(--red-400));
   --btn-destructive-color-hover: rgb(var(--red-300));
 
@@ -229,18 +227,18 @@
 
   /* Links: Default */
   --link-bg: transparent;
-  --link-bg-hover: rgba(var(--accent-brand-lighter-rgb), 0.2);
+  --link-bg-hover: rgba(var(--indigo-900), 0.75);
   --link-color: rgb(var(--grey-300));
-  --link-color-hover: var(--accent-brand-lightest);
+  --link-color-hover: rgb(var(--indigo-300));
 
-  --link-current-bg: rgb(var(--grey-800));
-  --link-current-color: rgb(var(--grey-200));
+  --link-current-bg: rgb(var(--grey-700));
+  --link-current-color: rgb(var(--grey-50));
 
   /* Links: Branded */
   --link-branded-bg: transparent;
-  --link-branded-bg-hover: rgba(var(--accent-brand-lightest-rgb), 0.2);
-  --link-branded-color: var(--accent-brand-lightest);
-  --link-branded-color-hover: var(--accent-brand-lightest);
+  --link-branded-bg-hover: rgba(var(--indigo-900), 0.75);
+  --link-branded-color: rgb(var(--indigo-400));
+  --link-branded-color-hover: rgb(var(--indigo-300));
 
   /***********************************************
   ** CTAs ****************************************
@@ -248,19 +246,20 @@
 
   /* CTAs: Default */
   --cta-bg: transparent;
-  --cta-bg-hover: rgba(var(--accent-brand-lighter-rgb), 0.2);
-  --cta-color: rgb(var(--grey-100));
-  --cta-color-hover: var(--accent-brand-lightest);
+  --cta-bg-hover: rgba(var(--indigo-900), 0.75);
+  --cta-color: rgb(var(--grey-300));
+  --cta-color-hover: rgb(var(--indigo-300));
   --cta-border: rgb(var(--grey-500));
-  --cta-border-hover: var(--accent-brand-lighter);
+  --cta-border-hover: rgb(var(--indigo-400));
 
   /* CTAs: Branded */
   --cta-branded-bg: transparent;
-  --cta-branded-bg-hover: var(--accent-brand-lighter);
-  --cta-branded-color: var(--accent-brand-lightest);
+  --cta-branded-bg-hover: rgb(var(--indigo-600));
+  --cta-branded-color: rgb(var(--indigo-400));
   --cta-branded-color-hover: rgb(var(--white));
-  --cta-branded-border: var(--accent-brand-lighter);
-  --cta-branded-border-hover: var(--accent-brand-lightest);
+  --cta-branded-border: rgb(var(--indigo-400));
+  --cta-branded-border-hover: rgb(var(--indigo-500));
+
 
   /***********************************************
   ** Tooltips ************************************
