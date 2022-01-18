@@ -73,6 +73,7 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
+    registered_at: Time.current,
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
