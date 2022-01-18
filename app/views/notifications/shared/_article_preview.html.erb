@@ -15,7 +15,7 @@
         data-reactable-id="<%= json_data["article"]["id"] %>"
         data-category="like"
         data-reactable-type="Article">
-        <%= crayons_icon_tag("small-heart, class: "reaction-icon not-reacted", title: t("views.reactions.like.icon")) %>
+        <%= crayons_icon_tag("small-heart", class: "reaction-icon not-reacted", title: t("views.reactions.like.icon")) %>
         <%= crayons_icon_tag("small-heart-filled", class: "reaction-icon--like reaction-icon reacted", title: t("views.reactions.like.icon")) %>
         <span class="hidden m:inline-block"><%= t("views.reactions.like.text") %></span>
       </button>

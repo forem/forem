@@ -23,7 +23,7 @@
             <%= crayons_icon_tag("twemoji/thumb-down", native: true, class: "reaction-icon", title: "Thumb down") %>
           </button>
           <button
-            class="crayons-btn crayons-btn--icon crayons-btn--icon-rounded crayons-btn--ghost inline-flex crayons-btn--s reaction-button <%= Reaction"comment"), current_user, "vomit") ? "reacted" : "" %>"
+            class="crayons-btn crayons-btn--icon crayons-btn--icon-rounded crayons-btn--ghost inline-flex crayons-btn--s reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "vomit" ? "reacted" : "" %>"
             data-reactable-id="<%= json_data["comment"]["id"] %>"
             data-category="vomit"
             data-reactable-type="Comment"
@@ -42,8 +42,8 @@
             data-reactable-type="Comment"
             aria-label="<%= t("views.reactions.like.aria_label") %>"
             title="heart">
-            <%= crayons_icon_tag("small-heart", class: "reaction-icon not-reacted", title: t("views.comments.footer.heart.icon")) %>
-            <%= crayons_icon_tag("small-heart-filled", class: "reaction-icon--like reaction-icon reacted", title: t("views.comments.footer.heart.icon")) %>
+            <%= crayons_icon_tag("small-heart", class: "reaction-icon not-reacted", aria_hidden: true, title: t("views.comments.footer.heart.icon")) %>
+            <%= crayons_icon_tag("small-heart-filled", class: "reaction-icon--like reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.heart.icon")) %>
             <span class="hidden m:inline-block"><%= t("views.comments.footer.heart.text") %></span>
           </button>
 
@@ -51,13 +51,13 @@
             <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"])&.children&.find_by(user_id: current_user.id) %>
             <% if reply %>
               <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left mr-1 inline-flex reaction-comment reacted" href="<%= reply.path %>" aria-label="<%= t("views.comments.footer.reply.done") %>">
-                <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", title: t("views.comments.footer.reply.icon")) %>
+                <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
                 <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.done") %></span>
               </a>
             <% else %>
               <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>" aria-label="<%= t("views.comments.footer.reply.text") %>">
-                <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", title: t("views.comments.footer.reply.icon")) %>
-                <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", title: t("views.comments.footer.reply.icon")) %>
+                <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
+                <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
                 <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>
               </a>
             <% end %>
