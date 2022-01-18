@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "Logo behaviour with creator_onboarding Feature Flag", type: :system do
   let!(:user) { create(:user) }
-  let(:logo_svg) { "<svg>Some svg</svg>" }
   let(:resized_logo) { "default.png" }
 
   before do
