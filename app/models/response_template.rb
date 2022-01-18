@@ -18,11 +18,11 @@ class ResponseTemplate < ApplicationRecord
   validates :content_type, inclusion: { in: CONTENT_TYPES }
   validates :content_type,
             inclusion: { in: COMMENT_CONTENT_TYPE,
-                         message: I18n.t("models.response_template.comment_markdown") },
+                         message: proc { I18n.t("models.response_template.comment_markdown") } },
             if: -> { type_of&.include?("comment") }
   validates :content_type,
             inclusion: { in: EMAIL_CONTENT_TYPES,
-                         message: I18n.t("models.response_template.email_text") },
+                         message: proc { I18n.t("models.response_template.email_text") } },
             if: -> { type_of&.include?("email") }
   validate :user_nil_only_for_user_nil_types
   validate :template_count

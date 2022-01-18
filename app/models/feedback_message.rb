@@ -12,6 +12,10 @@ class FeedbackMessage < ApplicationRecord
   CATEGORIES = ["spam", "other", "rude or vulgar", "harassment", "bug", "listings"].freeze
   STATUSES = %w[Open Invalid Resolved].freeze
 
+  def self.reporter_uniqueness_msg
+    I18n.t("models.feedback_message.reported")
+  end
+
   scope :open_abuse_reports, -> { where(status: "Open", feedback_type: "abuse-reports") }
   scope :all_user_reports, lambda { |user|
     user.reporter_feedback_messages
@@ -30,7 +34,7 @@ class FeedbackMessage < ApplicationRecord
             inclusion: {
               in: STATUSES
             }
-  validates :reporter_id, uniqueness: { scope: REPORTER_UNIQUENESS_SCOPE, message: :reporter_uniqueness_msg },
+  validates :reporter_id, uniqueness: { scope: REPORTER_UNIQUENESS_SCOPE, message: reporter_uniqueness_msg },
                           if: :abuse_report? && :reporter_id
 
   def abuse_report?
@@ -43,9 +47,5 @@ class FeedbackMessage < ApplicationRecord
     types << "Offender" if user_id == offender_id
     types << "Reporter" if user_id == reporter_id
     types
-  end
-
-  def reporter_uniqueness_msg
-    I18n.t("models.feedback_message.reported")
   end
 end

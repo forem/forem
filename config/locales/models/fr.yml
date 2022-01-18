@@ -117,6 +117,8 @@ en:
       is_taken: "%{username} is taken."
       user_could_not_be_saved: User could not be saved. %{e_message}
       username_is_reserved: username is reserved
+    user_block:
+      cant_be_the_same: can't be the same as the blocked_id
     user_subscription:
       non_apple: Can't subscribe with an Apple private relay. Please update email.
       source_not_found: Source not found. Please make sure your %{source} is active!

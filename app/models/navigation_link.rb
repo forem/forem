@@ -21,7 +21,7 @@ class NavigationLink < ApplicationRecord
     parsed_url = Addressable::URI.parse(url)
     return unless parsed_url.relative? && url.starts_with?("/")
 
-    self.url = Addressable::URI.parse(URL.url).merge(parsed_url).to_s
+    self.url = Addressable::URI.parse(URL.url).join(parsed_url).to_s
   end
 
   # When persisting to the database we store local links as relative URLs which

@@ -138,7 +138,10 @@ class User < ApplicationRecord
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
-  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: :invalid_username }
+  validates :username, presence: true, exclusion: {
+    in: ReservedWords.all,
+    message: proc { I18n.t("models.user.username_is_reserved") }
+  }
   validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
     I18n.t("models.user.is_taken", username: (data[:value]))
   end }, if: :username_changed?
@@ -217,10 +220,6 @@ class User < ApplicationRecord
   after_save :create_conditional_autovomits
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
-
-  def self.reserved_username
-    I18n.t("models.user.username_is_reserved")
-  end
 
   def self.staff_account
     find_by(id: Settings::Community.staff_user_id)
