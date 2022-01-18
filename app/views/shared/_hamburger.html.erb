@@ -4,7 +4,7 @@
       <h2 class="fs-l fw-bold flex-1 break-word lh-tight"><%= community_name.to_s %></h2>
 
       <button class="c-btn c-btn--icon-alone js-hamburger-trigger shrink-0" aria-label="<%= t("views.hamburger.icon_close") %>">
-        <%= inline_svg_tag("x.svg", aria_hidden: true, class: "crayons-icon c-btn__icon", title: t("views.hamburger.icon_close")) %>
+        <%= crayons_icon_tag(:x, class: "c-btn__icon", aria_hidden: true, title: t("views.hamburger.icon_close")) %>
       </button>
     </header>
 

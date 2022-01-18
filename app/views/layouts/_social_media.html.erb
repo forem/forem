@@ -5,6 +5,6 @@
     target="_blank"
     class="c-link c-link--icon-alone c-link--block mx-1"
     rel="noopener">
-    <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: social_media_type.capitalize, class: "crayons-icon c-link__icon") %>
+    <%= crayons_icon_tag(social_media_type, class: "c-link__icon", title: social_media_type.capitalize) %>
   </a>
 <% end %>

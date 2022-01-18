@@ -24,6 +24,6 @@
           # title is blank when it's a comment with only an image, for example
           title: title_link,
           end: "",
-          reactions: tag.span(inline_svg_tag(reaction_image(category), class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: t("views.reactions.category.#{category}")))) %>
+          reactions: tag.span(crayons_icon_tag(reaction_image(category), class: "reaction-image mx-1 reaction-icon--#{category}", title: t("views.reactions.category.#{category}")))) %>
   </div>
 </div>

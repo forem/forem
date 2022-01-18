@@ -19,7 +19,7 @@ class SpeakerdeckTag < LiquidTagBase
 
   def parse_id(input)
     input_no_space = input.delete(" ")
-    raise StandardError, "Invalid Speakerdeck Id" unless valid_id?(input_no_space)
+    raise StandardError, I18n.t("liquid_tags.speakerdeck_tag.invalid_speakerdeck_id") unless valid_id?(input_no_space)
 
     input_no_space
   end
