@@ -16,7 +16,7 @@
 class Tag < ActsAsTaggableOn::Tag
   self.ignored_columns = %w[mod_chat_channel_id].freeze
 
-  attr_accessor :points, :tag_moderator_id, :remove_moderator_id
+  attr_accessor :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
   resourcify
@@ -127,6 +127,48 @@ class Tag < ActsAsTaggableOn::Tag
 
   def errors_as_sentence
     errors.full_messages.to_sentence
+  end
+
+  # @param follower [#id, #class_name] An object who's class "acts_as_follower" (e.g. a User).
+  # @return [ActiveRecord::Relation<Tag>] with the "points" method added.
+  #
+  # @note This method will also add the follower's "points" for the given tag.  In the
+  #       ActiveRecord::Base implementation, we can add "virtual" attributes by including them in
+  #       the select statement (as shown in the method implementation).  Doing this can sometimes
+  #       result in a surprise, so you may want to consider casting the results into a well-defined
+  #       data structure.  But then you might be looking at implementing the DataMapper pattern.
+  #
+  #
+  # @example
+  #   Below is the SQL generated:
+  #
+  #   ```sql
+  #     SELECT tags.*, "followings"."points"
+  #       FROM "tags"
+  #         INNER JOIN "follows" "followings"
+  #           ON "followings"."followable_type" = 'ActsAsTaggableOn::Tag'
+  #           AND "followings"."followable_id" = "tags"."id"
+  #       WHERE "followings"."follower_id" = 1
+  #          AND "followings"."follower_type" = 'User'
+  #     ORDER BY "tags"."hotness_score" DESC
+  #   ```
+  #
+  # @see Tag#points
+  #
+  # @todo should we sort by hotness score?  Wouldn't the user's points make more sense?
+  def self.cached_followed_tags_for(follower:)
+    Tag
+      .select("tags.*", "followings.points")
+      .joins(:followings)
+      .where("followings.follower_id" => follower.id, "followings.follower_type" => follower.class_name)
+      .order(hotness_score: :desc)
+  end
+
+  # What's going on here?  There are times where we want our "Tag" object
+  #
+  # @see Tag.cached_followed_tags_for
+  def points
+    (attributes["points"] || 0)
   end
 
   private

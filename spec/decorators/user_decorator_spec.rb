@@ -20,35 +20,11 @@ RSpec.describe UserDecorator, type: :decorator do
   end
 
   describe "#cached_followed_tags" do
-    let(:tag1)  { create(:tag) }
-    let(:tag2)  { create(:tag) }
-    let(:tag3)  { create(:tag) }
+    it "forward delegates to Tag.cached_followed_tags_for" do
+      allow(Tag).to receive(:cached_followed_tags_for).with(follower: user)
+      user.decorate.cached_followed_tags
 
-    it "returns empty if no tags followed" do
-      expect(saved_user.decorate.cached_followed_tags.size).to eq(0)
-    end
-
-    it "returns array of tags if user follows them" do
-      saved_user.follow(tag1)
-      saved_user.follow(tag2)
-      saved_user.follow(tag3)
-      expect(saved_user.decorate.cached_followed_tags.size).to eq(3)
-    end
-
-    it "returns tag object with name" do
-      saved_user.follow(tag1)
-      expect(saved_user.decorate.cached_followed_tags.first.name).to eq(tag1.name)
-    end
-
-    it "returns follow points for tag" do
-      saved_user.follow(tag1)
-      expect(saved_user.decorate.cached_followed_tags.first.points).to eq(1.0)
-    end
-
-    it "returns adjusted points for tag" do
-      follow = saved_user.follow(tag1)
-      follow.update(explicit_points: 0.1)
-      expect(saved_user.decorate.cached_followed_tags.first.points).to eq(0.1)
+      expect(Tag).to have_received(:cached_followed_tags_for).with(follower: user)
     end
   end
 

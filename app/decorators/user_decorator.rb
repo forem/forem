@@ -21,16 +21,12 @@ class UserDecorator < ApplicationDecorator
   DEFAULT_PROFILE_SUMMARY = "404 bio not found".freeze
 
   def cached_followed_tags
-    follows_map = Rails.cache.fetch("user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tags",
-                                    expires_in: 20.hours) do
-      Follow.follower_tag(id).pluck(:followable_id, :points).to_h
+    Rails.cache.fetch(
+      "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tags",
+      expires_in: 20.hours,
+    ) do
+      Tag.cached_followed_tags_for(follower: object)
     end
-
-    tags = Tag.where(id: follows_map.keys).order(hotness_score: :desc)
-    tags.each do |tag|
-      tag.points = follows_map[tag.id]
-    end
-    tags
   end
 
   def darker_color(adjustment = 0.88)
