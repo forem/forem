@@ -639,7 +639,7 @@ GEM
     regexp_parser (2.2.0)
     reline (0.2.7)
       io-console (~> 0.5)
-    request_store (1.5.0)
+    request_store (1.5.1)
       rack (>= 1.4)
     responders (3.0.1)
       actionpack (>= 5.0)
