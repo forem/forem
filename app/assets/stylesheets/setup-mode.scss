@@ -20,12 +20,4 @@ body.default-header {
 
 [data-creator-settings-target='previewLogo'] {
   max-height: 80px;
-  height: 80px;
-}
-
-// This ID is tied the global "Setup not complete" banner
-// and is necessary for the removal of the banner on the
-// Creator Settings page
-#setup-banner {
-  display: none;
 }

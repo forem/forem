@@ -57,7 +57,6 @@ class Comment < ApplicationRecord
   validates :positive_reactions_count, presence: true
   validates :public_reactions_count, presence: true
   validates :reactions_count, presence: true
-  validates :user_id, presence: true
   validates :commentable, on: :create, presence: {
     message: lambda do |object, _data|
       "#{object.commentable_type.presence || 'item'} has been deleted."
@@ -140,7 +139,7 @@ class Comment < ApplicationRecord
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
-    HTMLEntities.new.decode(truncated_text)
+    Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
   end
 
   def video
@@ -282,34 +281,13 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_spam_score_check
-    return unless
-      Settings::RateLimit.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+    return unless Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
 
     self.score = -1 # ensure notification is not sent if possibly spammy
   end
 
   def create_conditional_autovomits
-    return unless
-      Settings::RateLimit.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
-        user.registered_at > 5.days.ago
-
-    Reaction.create(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "Comment",
-      category: "vomit",
-    )
-
-    return unless Reaction.comment_vomits.where(reactable_id: user.comments.pluck(:id)).size > 2
-
-    user.add_role(:suspended)
-    Note.create(
-      author_id: Settings::General.mascot_user_id,
-      noteable_id: user_id,
-      noteable_type: "User",
-      reason: "automatic_suspend",
-      content: "User suspended for too many spammy articles, triggered by autovomit.",
-    )
+    Spam::Handler.handle_comment!(comment: self)
   end
 
   def should_send_email_notification?

@@ -21,7 +21,7 @@ RSpec.describe TwitterTimelineTag, type: :lyquid_tag do
       Liquid::Template.parse("{% twitter_timeline #{link} %}")
     end
 
-    it "accepts a vaild link" do
+    it "accepts a valid link" do
       valid_twitter_timeline_links.each do |valid_link|
         liquid = generate_new_liquid(valid_link)
         expect(liquid.render).to include("<a class=\"twitter-timeline")

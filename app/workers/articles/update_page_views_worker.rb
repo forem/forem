@@ -7,10 +7,14 @@ module Articles
                     on_conflict: :replace,
                     retry: false
 
+    # @todo Should we ever record a PageView for an article in draft status?  (e.g., a preview)
+    # @todo Should we ever record a PageView for the author of the article?
     def perform(create_params)
+      article = Article.find_by(id: create_params["article_id"])
+      return unless article
+
       PageView.create!(create_params)
 
-      article = Article.find(create_params["article_id"])
       updated_count = article.page_views.sum(:counts_for_number_of_views)
       if updated_count > article.page_views_count
         article.update_column(:page_views_count, updated_count)

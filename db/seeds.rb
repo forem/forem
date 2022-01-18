@@ -58,14 +58,19 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
   roles = %i[trusted workshop_pass]
 
   num_users.times do |i|
-    name = Faker::Name.unique.name
+    fname = Faker::Name.unique.first_name
+    # Including "\\:/" to help with identifying local issues with
+    # character escaping.
+    lname = Faker::Name.unique.last_name
+    name = [fname, "\"The #{fname}\"", lname, " \\:/"].join(" ")
+    username = "#{fname} #{lname}"
 
     user = User.create!(
       name: name,
       profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-      twitter_username: Faker::Internet.username(specifier: name),
+      twitter_username: Faker::Internet.username(specifier: username),
       # Emails limited to 50 characters
-      email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
+      email: Faker::Internet.email(name: username, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
       registered_at: Time.current,
       registered: true,
@@ -87,18 +92,71 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       user.add_role(roles[role_index]) if role_index != roles.length # increases chance of more no-role users
     end
 
+    omniauth_info = OmniAuth::AuthHash::InfoHash.new(
+      first_name: fname,
+      last_name: lname,
+      location: "location,state,country",
+      name: name,
+      nickname: user.username,
+      email: user.email,
+      verified: true,
+    )
+
+    omniauth_extra_info = OmniAuth::AuthHash::InfoHash.new(
+      raw_info: OmniAuth::AuthHash::InfoHash.new(
+        email: user.email,
+        first_name: fname,
+        gender: "female",
+        id: "123456",
+        last_name: lname,
+        link: "http://www.facebook.com/url&#8221",
+        lang: "fr",
+        locale: "en_US",
+        name: name,
+        timezone: 5.5,
+        updated_time: "2012-06-08T13:09:47+0000",
+        username: user.username,
+        verified: true,
+        followers_count: 100,
+        friends_count: 1000,
+        created_at: "2017-06-08T13:09:47+0000",
+      ),
+    )
+
+    omniauth_basic_info = {
+      uid: SecureRandom.hex(3),
+      info: omniauth_info,
+      extra: omniauth_extra_info,
+      credentials: {
+        token: SecureRandom.hex,
+        secret: SecureRandom.hex
+      }
+    }.freeze
+
+    info = omniauth_basic_info[:info].merge(
+      image: "https://dummyimage.com/400x400_normal.jpg",
+      urls: { "Twitter" => "https://example.com" },
+    )
+
+    extra = omniauth_basic_info[:extra].merge(
+      access_token: "value",
+    )
+
+    auth_dump = OmniAuth::AuthHash.new(
+      omniauth_basic_info.merge(
+        provider: "twitter",
+        info: info,
+        extra: extra,
+      ),
+    )
+
     Identity.create!(
       provider: "twitter",
       uid: i.to_s,
       token: i.to_s,
       secret: i.to_s,
       user: user,
-      auth_data_dump: {
-        "extra" => {
-          "raw_info" => { "lang" => "en" }
-        },
-        "info" => { "nickname" => user.username }
-      },
+      auth_data_dump: auth_dump,
     )
   end
 
@@ -125,10 +183,9 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
-
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
-    name: "Admin McAdmin",
+    name: "Admin \"The \\:/ Administrator\" McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
@@ -312,6 +369,10 @@ seeder.create_if_none(Broadcast) do
                       "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
                     "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
+    google_oauth2_connect: "You're on a roll! 🎉  Do you have a Google account? " \
+                           "Consider <a href='/settings'>connecting it</a>.",
+    apple_connect: "You're on a roll! 🎉  Do you have an Apple account? " \
+                   "Consider <a href='/settings'>connecting it</a>.",
     customize_feed:
       "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
       "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",

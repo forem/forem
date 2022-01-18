@@ -62,14 +62,14 @@
           <ul>
             <li>
               <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-current "<%= "page" if controller.controller_name == "overview" %>">
-                <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon") %>
+                <%= crayons_icon_tag("stack-line", class: "dropdown-icon") %>
                 Overview
               </a>
             </li>
             <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
             <li class="block s:hidden">
               <a class="crayons-link crayons-link--block" href="/">
-                <%= inline_svg_tag("external-link.svg", aria: true, class: "dropdown-icon crayons-icon") %>
+                <%= crayons_icon_tag("external-link", class: "dropdown-icon") %>
                 Go to <%= community_name %> home page
               </a>
             </li>

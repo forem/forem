@@ -65,7 +65,7 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user = User.create!(
-    name: "Trusted User 1",
+    name: "Trusted User 1 \\:/",
     email: "trusted-user-1@forem.local",
     username: "trusted_user_1",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
@@ -188,7 +188,7 @@ end
 
 seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") do
   user = User.create!(
-    name: "Notifications User",
+    name: "Notifications User \\:/",
     email: "notifications-user@forem.local",
     username: "notifications_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
@@ -199,6 +199,7 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
     checked_code_of_conduct: true,
     checked_terms_and_conditions: true,
   )
+
   user.notification_setting.update(
     email_comment_notifications: false,
     email_follower_notifications: false,
@@ -208,8 +209,51 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
     website_url: Faker::Internet.url,
   )
 
+  # Create a follow notification to test against
   follow = admin_user.follows.create!(followable: user)
   Notification.send_new_follower_notification_without_delay(follow)
+
+  # Create an article comment notification to test against
+  seeder.create_if_doesnt_exist(Article, "slug", "notification-article-slug") do
+    markdown = <<~MARKDOWN
+      ---
+      title:  Notification article
+      published: true
+      ---
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+      #{Faker::Markdown.random}
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+    MARKDOWN
+    article = Article.create!(
+      body_markdown: markdown,
+      featured: true,
+      show_comments: true,
+      user_id: user.id,
+      slug: "notification-article-slug",
+    )
+
+    parent_comment_attributes = {
+      body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+      user_id: user.id,
+      commentable_id: article.id,
+      commentable_type: "Article"
+    }
+
+    parent_comment = Comment.create!(parent_comment_attributes)
+    Notification.send_new_comment_notifications_without_delay(parent_comment)
+
+    reply_comment_attributes = {
+      body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+      user_id: admin_user.id,
+      commentable_id: article.id,
+      commentable_type: "Article",
+      parent: parent_comment
+    }
+
+    reply = Comment.create!(reply_comment_attributes)
+
+    Notification.send_new_comment_notifications_without_delay(reply)
+  end
 end
 
 ##############################################################################

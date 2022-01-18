@@ -7,7 +7,7 @@
  *  "attribute_name": "website_url",
  *  "description": null,
  *  "input_type": "text_input",
- *  "label": "Webiste URL",
+ *  "label": "Website URL",
  *  "placeholder_text": ""
  *}
  *

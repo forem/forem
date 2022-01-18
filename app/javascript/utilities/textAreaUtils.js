@@ -103,14 +103,14 @@ export const getMentionWordData = (textArea) => {
 };
 
 /**
- * Searches backwards through text content for the last occurence of the given character
+ * Searches backwards through text content for the last occurrence of the given character
  *
  * @param {Object} params
  * @param {string} content The chunk of text to search within
  * @param {number} selectionIndex The starting point to search from
  * @param {string} character The character to search for
  * @param {string[]} breakOnCharacters Any characters which should result in an immediate halt to the search
- * @returns {number} Index of the last occurence of the character, or -1 if it isn't found
+ * @returns {number} Index of the last occurrence of the character, or -1 if it isn't found
  */
 export const getLastIndexOfCharacter = ({
   content,
@@ -138,14 +138,14 @@ export const getLastIndexOfCharacter = ({
 };
 
 /**
- * Searches forwards through text content for the next occurence of the given character
+ * Searches forwards through text content for the next occurrence of the given character
  *
  * @param {Object} params
  * @param {string} content The chunk of text to search within
  * @param {number} selectionIndex The starting point to search from
  * @param {string} character The character to search for
  * @param {string[]} breakOnCharacters Any characters which should result in an immediate halt to the search
- * @returns {number} Index of the next occurence of the character, or -1 if it isn't found
+ * @returns {number} Index of the next occurrence of the character, or -1 if it isn't found
  */
 export const getNextIndexOfCharacter = ({
   content,

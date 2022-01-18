@@ -31,15 +31,18 @@ RSpec.describe "UserProfiles", type: :request do
 
     it "renders profile page of user after changed username" do
       old_username = user.username
-      user.update(username: "new_username_yo_#{rand(10_000)}")
+      user.update_columns(username: "new_username_yo_#{rand(10_000)}", old_username: old_username,
+                          old_old_username: user.old_username)
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
     end
 
     it "renders profile page of user after two changed usernames" do
       old_username = user.username
-      user.update(username: "new_hotness_#{rand(10_000)}")
-      user.update(username: "new_new_username_#{rand(10_000)}")
+      user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
+                          old_old_username: user.old_username)
+      user.update_columns(username: "new_new_username_#{rand(10_000)}", old_username: user.username,
+                          old_old_username: user.old_username)
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
     end

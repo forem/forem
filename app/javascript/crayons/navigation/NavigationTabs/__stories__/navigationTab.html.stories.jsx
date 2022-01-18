@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import '../../../storybook-utilities/designSystem.scss';
 import { useState } from 'preact/hooks';
-import notes from './navigation-tab.md';
+import notes from './navigation-tab.mdx';
 
 export default {
   title: 'Components/Navigation/Tabs/HTML',

@@ -22,7 +22,6 @@ RSpec.describe Comment, type: :model do
       it { is_expected.to validate_presence_of(:positive_reactions_count) }
       it { is_expected.to validate_presence_of(:public_reactions_count) }
       it { is_expected.to validate_presence_of(:reactions_count) }
-      it { is_expected.to validate_presence_of(:user_id) }
     end
 
     it do
@@ -176,7 +175,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?("/#{user.username}")).to be(true)
       end
 
-      it "does case insentive mention recognition" do
+      it "does case incentive mention recognition" do
         comment.body_markdown = "Hello @#{user.username.titleize}, you are cool."
         comment.validate!
         expect(comment.processed_html.include?("/#{user.username}")).to be(true)
@@ -329,6 +328,14 @@ RSpec.describe Comment, type: :model do
       comment.validate!
       expect(comment.title).not_to include("&#39;")
     end
+
+    # NOTE: example string taken from https://github.com/threedaymonk/htmlentities
+    # as this is the gem we're removing.
+    it "correctly decodes HTML entities" do
+      comment.body_markdown = "&eacute;lan"
+      comment.validate!
+      expect(comment.title).to eq("élan")
+    end
   end
 
   describe "#custom_css" do
@@ -438,46 +445,10 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "spam" do
-    before do
-      allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
-      allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(["yahoomagoo gogo", "anothertestterm"])
-    end
-
-    it "creates vomit reaction if possible spam" do
-      comment.body_markdown = "This post is about Yahoomagoo gogo"
+    it "delegates spam handling to Spam::Handler.handle_comment!" do
+      allow(Spam::Handler).to receive(:handle_comment!).with(comment: comment).and_call_original
       comment.save
-      expect(Reaction.last.category).to eq("vomit")
-      expect(Reaction.last.user_id).to eq(user.id)
-    end
-
-    it "does no suspend user if only single vomit" do
-      comment.body_markdown = "This post is about Yahoomagoo gogo"
-      comment.save
-      expect(comment.user.suspended?).to be false
-    end
-
-    it "suspends user with 3 comment vomits" do
-      comment.body_markdown = "This post is about Yahoomagoo gogo"
-      second_comment = create(:comment, user: comment.user, body_markdown: "This post is about Yahoomagoo gogo")
-      third_comment = create(:comment, user: comment.user, body_markdown: "This post is about Yahoomagoo gogo")
-
-      comment.save
-      second_comment.save
-      third_comment.save
-      expect(comment.user.suspended?).to be true
-      expect(Note.last.reason).to eq "automatic_suspend"
-    end
-
-    it "does not create vomit reaction if user is established in this context" do
-      user.update_column(:registered_at, 10.days.ago)
-      comment.body_markdown = "This post is about Yahoomagoo gogo"
-      comment.save
-      expect(Reaction.last).to be nil
-    end
-
-    it "does not create vomit reaction if does not have matching title" do
-      comment.save
-      expect(Reaction.last).to be nil
+      expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
     end
   end
 

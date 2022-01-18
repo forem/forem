@@ -15,7 +15,7 @@ RSpec.describe MarkdownProcessor::Fixer::FixForPreview, type: :service do
 
   describe "defining constants" do
     it "defines METHODS" do
-      methods = %i[add_quotes_to_title add_quotes_to_description modify_hr_tags underscores_in_usernames]
+      methods = %i[add_quotes_to_title add_quotes_to_description underscores_in_usernames]
       expect(described_class::METHODS).to eq methods
     end
   end

@@ -1,6 +1,6 @@
 class CodepenTag < LiquidTagBase
   PARTIAL = "liquids/codepen".freeze
-  URL_REGEXP =
+  REGISTRY_REGEXP =
     %r{\A(http|https)://(codepen\.io|codepen\.io/team)/[a-zA-Z0-9_\-]{1,30}/pen/([a-zA-Z0-9]{5,32})/{0,1}\z}
 
   def initialize(_tag_name, link, _parse_context)
@@ -31,7 +31,7 @@ class CodepenTag < LiquidTagBase
     _, *options = stripped_link.split
 
     # Validation
-    validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
+    validated_options = options.filter_map { |option| valid_option(option) }
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     option = validated_options.join("&")
@@ -48,7 +48,7 @@ class CodepenTag < LiquidTagBase
 
   def valid_link?(link)
     link_no_space = link.delete(" ")
-    (link_no_space =~ URL_REGEXP)&.zero?
+    (link_no_space =~ REGISTRY_REGEXP)&.zero?
   end
 
   def raise_error
@@ -57,3 +57,5 @@ class CodepenTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("codepen", CodepenTag)
+
+UnifiedEmbed.register(CodepenTag, regexp: CodepenTag::REGISTRY_REGEXP)

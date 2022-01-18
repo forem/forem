@@ -34,6 +34,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(svg|png|css)$': '<rootDir>/empty-module.js',
     '^@crayons(.*)$': '<rootDir>/app/javascript/crayons$1',
+    '^@images(.*)$': '<rootDir>/app/assets/images$1',
     '^@utilities(.*)$': '<rootDir>/app/javascript/utilities$1',
     '^@components(.*)$': '<rootDir>/app/javascript/shared/components$1',
     '^react$': 'preact/compat',

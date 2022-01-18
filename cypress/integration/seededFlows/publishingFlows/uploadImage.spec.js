@@ -18,8 +18,8 @@ describe('Upload image', () => {
       });
 
       // Confirm the UI has updated to show the uploaded state
-      cy.findByRole('button', {
-        name: 'Copy Markdown for imageCopy...',
+     cy.findByRole('button', {
+        name: 'Copy markdown for image',
       }).should('exist');
     });
   });
@@ -96,6 +96,28 @@ describe('Upload image', () => {
         .trigger('mouseover')
         .findByRole('alert')
         .should('have.text', 'Error message');
+    });
+
+    it('maintains writing position when image is uploaded', () => {
+      cy.intercept('/image_uploads', { delay: 2000 });
+
+      cy.findByLabelText('Post Content').as('editorBody');
+      // Type some text and place the cursor between one & two
+      cy.get('@editorBody')
+        .clear()
+        .type('one two{leftarrow}{leftarrow}{leftarrow}');
+
+      cy.findByLabelText(/Upload image/, { selector: 'button' }).click();
+      cy.findByLabelText(/Upload image/, { selector: 'input' }).attachFile(
+        '/images/admin-image.png',
+      );
+
+      // Check that when we continue typing after selecting an image, my cursor is after the placeholder text, which was inserted at my cursor position
+      cy.get('@editorBody').should('have.focus').type(' more text ');
+      cy.get('@editorBody').should(
+        'have.value',
+        'one \n![Uploading image](...) more text two',
+      );
     });
 
     it('Uploads a cover image in the editor', () => {

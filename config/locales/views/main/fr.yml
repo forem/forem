@@ -5,9 +5,6 @@ fr:
       aria_home: "%{community} Home"
       header:
         create_account: Créer un profil
-        connect:
-          aria_label: Connect
-          icon: Connect
         login: Se connecter
         nav:
           aria_label: Navigation menu
@@ -25,7 +22,6 @@ fr:
         login:
           aria_label: Log in
           text: Se connecter
-        footer: We strive for transparency and don't collect excess data.
       nav:
         admin: Admin
         dashboard: Tableau de bord
@@ -33,7 +29,7 @@ fr:
         list: Liste de lecture
         moderator_center: Centre de modération
         other: Other
-        settings: Settings
+        settings: Paramètres
       nav_name:
         About: About
         Code of Conduct: Code of Conduct
@@ -60,13 +56,12 @@ fr:
         my_tags: Mes sujets
         popular_tags: Sujets populaires
       footer:
-        aria_label: Site information
         built:
           text_html: Built on %{forem} — the %{opensource} software that powers %{dev} and other inclusive communities.
           forem: Forem
           opensource: open source
           dev: DEV
-        desc: "%{community} – %{desc}"
+        desc_html: "%{community} — %{desc}"
         logo: Forem logo
         powered:
           text_html: Made with love and %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
@@ -74,4 +69,3 @@ fr:
       home: Page D'Accueil
       create_post: Créer une publication
       signout: Se déconnecter
-      signup: Sign In/Up

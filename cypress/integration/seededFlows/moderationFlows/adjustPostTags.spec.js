@@ -47,6 +47,22 @@ describe('Adjust post tags', () => {
         cy.findByRole('link', { name: /# tag1/ }).should('not.exist');
       });
     });
+
+    it('should not alter tags from a post if a reason is not specified', () => {
+      cy.findByRole('heading', { name: 'Tag test article' }).click();
+      cy.getIframeBody('.article-iframe').findByRole('link', {
+        name: /# tag1/,
+      });
+
+      cy.getIframeBody('.actions-panel-iframe').within(() => {
+        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
+        cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
+
+        cy.findByRole('button', { name: 'Submit' }).click();
+      });
+
+      cy.findByTestId('snackbar').should('not.exist');
+    });
   });
 
   describe('from /mod/tagname page', () => {
@@ -100,6 +116,9 @@ describe('Adjust post tags', () => {
   });
 
   describe('from article page', () => {
+    // Helper function for pipe command
+    const click = ($el) => $el.click();
+
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
@@ -117,7 +136,13 @@ describe('Adjust post tags', () => {
 
       cy.findByRole('button', { name: 'Moderation' }).click();
       cy.getIframeBody('#mod-container').within(() => {
-        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
+        // Click listeners are attached async so we use pipe() to retry click until condition met
+        cy.findByRole('button', {
+          name: 'Open adjust tags section',
+        })
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
         cy.findByPlaceholderText('Add a tag').type('tag2');
         cy.findByPlaceholderText('Reason for tag adjustment').type('testing');
         cy.findByRole('button', { name: 'Submit' }).click();
@@ -136,7 +161,13 @@ describe('Adjust post tags', () => {
       cy.findByRole('button', { name: 'Moderation' }).click();
 
       cy.getIframeBody('#mod-container').within(() => {
-        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
+        // Click listeners are attached async so we use pipe() to retry click until condition met
+        cy.findByRole('button', {
+          name: 'Open adjust tags section',
+        })
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
         cy.findByPlaceholderText('Reason for tag adjustment').type('testing');
         cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
 

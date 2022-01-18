@@ -1,10 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  use_doorkeeper do
-    controllers tokens: "oauth/tokens"
-  end
-
   # Devise does not support scoping omniauth callbacks under a dynamic segment
   # so this lives outside our i18n scope.
   devise_for :users, controllers: {
@@ -28,17 +24,6 @@ Rails.application.routes.draw do
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
     get "/locale/:locale", to: "stories#index"
-    require "sidekiq/web"
-    require "sidekiq_unique_jobs/web"
-    require "sidekiq/cron/web"
-
-    authenticated :user, ->(user) { user.tech_admin? } do
-      Sidekiq::Web.class_eval do
-        use Rack::Protection, permitted_origins: [URL.url] # resolve Rack Protection HttpOrigin
-      end
-      mount Sidekiq::Web => "/sidekiq"
-      mount FieldTest::Engine, at: "abtests"
-    end
 
     draw :admin
 
@@ -79,7 +64,6 @@ Rails.application.routes.draw do
           get :organizations
         end
         resources :readinglist, only: [:index]
-        resources :webhooks, only: %i[index create show destroy]
 
         resources :listings, only: %i[index show create update]
         get "/listings/category/:category", to: "listings#index", as: :listings_category

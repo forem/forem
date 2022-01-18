@@ -1,6 +1,6 @@
 class WikipediaTag < LiquidTagBase
   PARTIAL = "liquids/wikipedia".freeze
-  WIKI_REGEXP = %r{\Ahttps?://([a-z-]+)\.wikipedia.org/wiki/(\S+)\z}
+  REGISTRY_REGEXP = %r{\Ahttps?://([a-z-]+)\.wikipedia.org/wiki/(\S+)\z}
   TEXT_CLEANUP_XPATH = "//div[contains(@class, 'noprint') or contains(@class, 'hatnote')] | " \
                        "//span[@class='mw-ref'] | //figure | //sup".freeze
 
@@ -23,7 +23,7 @@ class WikipediaTag < LiquidTagBase
   private
 
   def valid_url?(input)
-    input.match?(WIKI_REGEXP)
+    input.match?(REGISTRY_REGEXP)
   end
 
   def get_data(input)
@@ -100,3 +100,5 @@ class WikipediaTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("wikipedia", WikipediaTag)
+
+UnifiedEmbed.register(WikipediaTag, regexp: WikipediaTag::REGISTRY_REGEXP)

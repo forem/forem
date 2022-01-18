@@ -38,7 +38,7 @@ RSpec.describe Color::CompareHex, type: :service do
     expect(hc.accent).to eq("#d8eafc")
   end
 
-  it "generates an rgba value with opactity" do
+  it "generates an rgba value with opacity" do
     rgba = described_class.new(["#123456"]).opacity(0.5)
     expect(rgba).to eq("rgba(18, 52, 86, 0.50)")
   end

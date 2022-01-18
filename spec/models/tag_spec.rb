@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe Tag, type: :model do
   let(:tag) { build(:tag) }
 
+  describe "#class_name" do
+    subject(:class_name) { tag.class_name }
+
+    it { is_expected.to eq("Tag") }
+  end
+
   describe "validations" do
     describe "builtin validations" do
       subject { tag }
@@ -84,6 +90,11 @@ RSpec.describe Tag, type: :model do
         tag.name = "Test™"
         expect(tag).not_to be_valid
       end
+    end
+
+    it "fails validation if name is a prohibited (whitespace) unicode character" do
+      tag.name = "U+202D"
+      expect(tag).not_to be_valid
     end
 
     describe "alias_for" do

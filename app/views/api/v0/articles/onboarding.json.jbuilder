@@ -13,6 +13,6 @@ json.array! @articles do |article|
 
   json.user do
     json.name              article.user.name
-    json.profile_image_url Images::Profile.call(article.user.profile_image_url, length: 90)
+    json.profile_image_url article.user.profile_image_url_for(length: 90)
   end
 end

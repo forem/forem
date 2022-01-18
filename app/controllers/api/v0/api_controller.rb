@@ -39,7 +39,7 @@ module Api
       end
 
       def authorize_super_admin
-        error_unauthorized unless @user.has_role?(:super_admin)
+        error_unauthorized unless @user.super_admin?
       end
 
       # Checks if the user is authenticated, sets @user to nil otherwise
@@ -70,9 +70,7 @@ module Api
       end
 
       def authenticated_user
-        if doorkeeper_token
-          User.find(doorkeeper_token.resource_owner_id)
-        elsif request.headers["api-key"]
+        if request.headers["api-key"]
           authenticate_with_api_key
         elsif current_user
           current_user

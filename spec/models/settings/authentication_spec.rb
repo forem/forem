@@ -14,6 +14,22 @@ RSpec.describe Settings::Authentication, type: :model do
       it { is_expected.to be_falsey }
     end
 
+    context "when given a subdomain of a blocked domain" do
+      subject { described_class.acceptable_domain?(domain: "world.#{domain}") }
+
+      before { allow(described_class).to receive(:blocked_registration_email_domains).and_return([domain]) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when the given domain has a suffix of the blocked domain" do
+      subject { described_class.acceptable_domain?(domain: "world#{domain}") }
+
+      before { allow(described_class).to receive(:blocked_registration_email_domains).and_return([domain]) }
+
+      it { is_expected.to be_truthy }
+    end
+
     context "with allowed domain" do
       before do
         allow(described_class).to receive(:allowed_registration_email_domains).and_return([domain])

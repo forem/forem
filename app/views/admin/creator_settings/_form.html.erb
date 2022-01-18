@@ -1,66 +1,53 @@
 <div class="crayons-field mt-6 align-left">
-  <%= label_tag :community_name, class: "crayons-field__label" do %>
+  <%= f.label :community_name, class: "crayons-field__label" do %>
     Community name
     <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the primary name for your Forem" aria-describedby="community-name-subtitle"></span>
     <p id="community-name-subtitle" class="crayons-field__description">Used as the primary name for your Forem.</p>
   <% end %>
-  <%= text_field_tag :community_name, "", placeholder: "Climbing Life", class: "crayons-textfield fs-italic", required: true %>
+  <%= f.text_field :community_name, placeholder: "Climbing Life", class: "crayons-textfield", required: true %>
 </div>
 
-<div class="crayons-field mt-6 align-left">
-  <%= label_tag :logo_svg, class: "crayons-field__label" do %>
-    Logo
-    <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the logo for your Forem" aria-describedby="logo-subtitle"></span>
-    <p id="logo-subtitle" class="crayons-field__description">Ideally SVG, but PNG or JPEG will work, too.</p>
-  <% end %>
-  <div class="flex flex-1 gap-4">
-    <%= file_field_tag :logo_svg, required: true, accept: ".svg,.png,.jpg,image/svg+xml,image/png,image/jpg", data: { "max-file-size-mb": "25", action: "change->creator-settings#previewLogo" }, aria: { describedby: "logo-subtitle" } %>
-    <div data-creator-settings-target="previewLogo">
-      <% if ::Settings::General.logo_svg.present? %>
-        <%= ::Settings::General.logo_svg.html_safe %>
-      <% end %>
-    </div>
-  </div>
-</div>
+<%= render partial: "admin/shared/logo_upload", locals: { allowed_types: @logo_allowed_types, max_file_size: @max_file_size, f: f, logo: Settings::General.resized_logo } %>
 
 <div class="crayons-field mt-6 align-left">
-  <%= label_tag :primary_brand_color_hex, class: "crayons-field__label" do %>
+  <%= f.label :primary_brand_color_hex, class: "crayons-field__label" do %>
     Brand color
     <span class="crayons-field__required crayons-tooltip" data-tooltip="This will set the accent color for buttons, links, etc. on your Forem" aria-describedby="color-selector-subtitle"></span>
     <p id="color-selector-subtitle" class="crayons-field__description">This will be the "accent" color used for buttons, links, etc.</p>
   <% end %>
 
-  <div class="flex w-100 m:w-50 crayons-field">
+  <div class="crayons-field">
     <div class="flex">
-      <%= text_field_tag :primary_brand_color_hex,
-                         ::Settings::UserExperience.primary_brand_color_hex,
-                         pattern: "^#+([a-fA-F0-9]{6})$",
-                         title: "Provide a valid HEX Color or pick your color from the color picker.",
-                         placeholder: ::Settings::UserExperience.primary_brand_color_hex,
-                         class: "crayons-textfield js-color-field",
-                         "data-action": "change->creator-settings#updateBranding" %>
-      <%= color_field_tag :primary_brand_color_hex,
-                          ::Settings::UserExperience.primary_brand_color_hex,
-                          pattern: "^#+([a-fA-F0-9]{6})$",
-                          placeholder: ::Settings::UserExperience.primary_brand_color_hex,
-                          class: "crayons-color-selector js-color-field ml-2",
-                          "data-action": "change->creator-settings#updateBranding",
-                          required: true %>
+      <%= f.text_field :primary_brand_color_hex,
+                       pattern: "^#+([a-fA-F0-9]{6})$",
+                       title: "Provide a valid HEX Color or pick your color from the color picker.",
+                       placeholder: ::Settings::UserExperience.primary_brand_color_hex,
+                       class: "crayons-textfield js-color-field",
+                       "data-action": "change->creator-settings#handleValidationsAndUpdates",
+                       "data-creator-settings-target": "brandColor",
+                       "aria-describedby": "color-contrast-error" %>
+      <%= f.color_field :primary_brand_color_hex,
+                        pattern: "^#+([a-fA-F0-9]{6})$",
+                        placeholder: ::Settings::UserExperience.primary_brand_color_hex,
+                        class: "crayons-color-selector js-color-field ml-2",
+                        required: true,
+                        "data-action": "change->creator-settings#handleValidationsAndUpdates" %>
     </div>
   </div>
+  <div id="color-contrast-error" data-creator-settings-target="colorContrastError" aria-live="polite" class="mt-1 color-accent-danger"></div>
 </div>
 
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
     <legend class="crayons-field__label mb-2">Who can join this community?</legend>
-    <div>
-      <div class="mb-2">
-        <%= radio_button_tag :invite_only_mode, "0", false, class: "crayons-radio" %>
-        <label for="invite_only_mode_0">Everyone</label>
+    <div class="flex gap-3">
+      <div>
+        <%= f.radio_button :invite_only_mode, false, class: "crayons-radio", role: "radio" %>
+        <%= label_tag "creator_settings_form_invite_only_mode_false", "Everyone" %>
       </div>
       <div>
-        <%= radio_button_tag :invite_only_mode, "1", true, class: "crayons-radio" %>
-        <label for="invite_only_mode_1">Only people who are invited</label>
+        <%= f.radio_button :invite_only_mode, true, class: "crayons-radio", role: "radio" %>
+        <%= label_tag "creator_settings_form_invite_only_mode_true", "Invite Only" %>
       </div>
     </div>
   </fieldset>
@@ -69,14 +56,14 @@
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
     <legend class="crayons-field__label mb-2">Who can view content in this community?</legend>
-    <div>
-      <div class="mb-2">
-        <%= radio_button_tag :public, "1", true, class: "crayons-radio" %>
-        <label for="public_0">Everyone</label>
+    <div class="flex gap-3">
+      <div>
+        <%= f.radio_button :public, true, class: "crayons-radio", role: "radio" %>
+        <%= label_tag "creator_settings_form_public_true", "Everyone" %>
       </div>
       <div>
-        <%= radio_button_tag :public, "0", false, class: "crayons-radio" %>
-        <label for="public_1">Members only</label>
+        <%= f.radio_button :public, false, class: "crayons-radio", role: "radio" %>
+        <%= label_tag "creator_settings_form_public_false", "Members Only" %>
       </div>
     </div>
   </fieldset>
@@ -84,19 +71,21 @@
 
 <div class="crayons-field mt-6 align-left">
   <fieldset aria-describedby="section-description">
-    <legend class="crayons-field__label mb-2">Finally, please agree to the following:</legend>
+    <legend class="crayons-field__label">Finally, please agree to the following:</legend>
     <div>
+      <p class="crayons-field__description">You will have the opportunity to establish the Code of Conduct and Terms and Conditions for the users of your Forem during the setup process.</p>
       <div class="mb-2">
-        <%= hidden_field_tag :checked_code_of_conduct, "0" %>
-        <%= check_box_tag :checked_code_of_conduct, "1", false, class: "crayons-checkbox", required: true %>
-        <label for="checked_code_of_conduct">I agree to uphold our <a href="/code-of-conduct">Code of Conduct</a>.</label>
+        <%= f.check_box :checked_code_of_conduct, class: "crayons-checkbox", required: true %>
+        <%= f.label :checked_code_of_conduct do %>
+          I agree to uphold our <a href="/code-of-conduct" target="code-of-conduct">Code of Conduct</a>.
+        <% end %>
       </div>
       <div>
-        <%= hidden_field_tag :checked_terms_and_conditions, "0" %>
-        <%= check_box_tag :checked_terms_and_conditions, "1", false, class: "crayons-checkbox", required: true %>
-        <label for="checked_terms_and_conditions">I agree to our <a href="/terms">Terms and Conditions</a>.</label>
+        <%= f.check_box :checked_terms_and_conditions, class: "crayons-checkbox", required: true %>
+        <%= f.label :checked_terms_and_conditions do %>
+          I agree to our <a href="/terms" target="terms-and-conditions">Terms and Conditions</a>.
+        <% end %>
       </div>
     </div>
-    <p class="crayons-field__description fs-italic p-2">You will have the opportunity to establish the Code of Conduct and Terms and Conditions for the users of your Forem during the setup process.</p>
   </fieldset>
 </div>

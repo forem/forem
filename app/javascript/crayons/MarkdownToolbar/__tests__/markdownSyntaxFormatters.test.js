@@ -1,6 +1,7 @@
 import {
   coreSyntaxFormatters,
   secondarySyntaxFormatters,
+  getNewTextAreaValueWithEdits,
 } from '../markdownSyntaxFormatters';
 
 describe('markdownSyntaxFormatters', () => {
@@ -10,31 +11,55 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one **two** three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['bold'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['bold'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats an empty selection as bold, keeping cursor inside formatting', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one ****two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['bold'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['bold'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(6);
         expect(newCursorEnd).toEqual(6);
       });
@@ -43,102 +68,174 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one **two** three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['bold'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 11,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['bold'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 11,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as bold, when only the start of the selection already has bold formatting', () => {
         const textAreaValue = 'one **two three';
         const expectedNewTextAreaValue = 'one ****two** three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['bold'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['bold'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('**two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '**two',
+        );
       });
 
       it('Formats a selection as bold, when only the end of the selection already has bold formatting', () => {
         const textAreaValue = 'one two** three';
         const expectedNewTextAreaValue = 'one **two**** three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['bold'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['bold'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two**');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two**',
+        );
       });
 
       it('Unformats a selection when text immediately before and after have bold formatting', () => {
         const textAreaValue = 'one **two** three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['bold'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 11,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['bold'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 11,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as bold, when only the text immediately before already has bold formatting', () => {
         const textAreaValue = 'one **two three';
         const expectedNewTextAreaValue = 'one ****two** three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['bold'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 6,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['bold'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 6,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as bold, when only the text immediately after already has bold formatting', () => {
         const textAreaValue = 'one two** three';
         const expectedNewTextAreaValue = 'one **two**** three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['bold'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['bold'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
     });
 
@@ -147,31 +244,55 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one _two_ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['italic'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['italic'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats an empty selection as italic, keeping cursor inside formatting', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one __two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['italic'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['italic'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(5);
         expect(newCursorEnd).toEqual(5);
       });
@@ -180,102 +301,174 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one _two_ three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['italic'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['italic'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as italic, when only the start of the selection already has italic formatting', () => {
         const textAreaValue = 'one _two three';
         const expectedNewTextAreaValue = 'one __two_ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['italic'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['italic'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('_two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '_two',
+        );
       });
 
       it('Formats a selection as italic, when only the end of the selection already has italic formatting', () => {
         const textAreaValue = 'one two_ three';
         const expectedNewTextAreaValue = 'one _two__ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['italic'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['italic'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two_');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two_',
+        );
       });
 
       it('Unformats a selection when text immediately before and after have italic formatting', () => {
         const textAreaValue = 'one _two_ three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['italic'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 5,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['italic'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 5,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as italic, when only the text immediately before already has italic formatting', () => {
         const textAreaValue = 'one _two three';
         const expectedNewTextAreaValue = 'one __two_ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['italic'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 5,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['italic'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 5,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as italic, when only the text immediately after already has italic formatting', () => {
         const textAreaValue = 'one two_ three';
         const expectedNewTextAreaValue = 'one _two__ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['italic'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['italic'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
     });
 
@@ -284,31 +477,55 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one `two` three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['code'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['code'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats an empty selection as code, keeping cursor inside formatting', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one ``two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['code'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['code'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(5);
         expect(newCursorEnd).toEqual(5);
       });
@@ -317,102 +534,174 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one `two` three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['code'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['code'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as code, when only the start of the selection already has code formatting', () => {
         const textAreaValue = 'one `two three';
         const expectedNewTextAreaValue = 'one ``two` three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['code'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['code'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('`two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '`two',
+        );
       });
 
       it('Formats a selection as code, when only the end of the selection already has code formatting', () => {
         const textAreaValue = 'one two` three';
         const expectedNewTextAreaValue = 'one `two`` three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['code'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['code'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two`');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two`',
+        );
       });
 
       it('Unformats a selection when text immediately before and after have code formatting', () => {
         const textAreaValue = 'one `two` three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['code'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 5,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['code'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 5,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as code, when only the text immediately before already has italic formatting', () => {
         const textAreaValue = 'one `two three';
         const expectedNewTextAreaValue = 'one ``two` three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['code'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 5,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['code'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 5,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as code, when only the text immediately after already has code formatting', () => {
         const textAreaValue = 'one two` three';
         const expectedNewTextAreaValue = 'one `two`` three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['code'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['code'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
     });
 
@@ -421,31 +710,55 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one <u>two</u> three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['underline'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['underline'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats an empty selection as underline, keeping cursor inside formatting', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one <u></u>two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['underline'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['underline'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(7);
         expect(newCursorEnd).toEqual(7);
       });
@@ -454,102 +767,174 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one <u>two</u> three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['underline'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 14,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['underline'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 14,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as underline, when only the start of the selection already has underline formatting', () => {
         const textAreaValue = 'one <u>two three';
         const expectedNewTextAreaValue = 'one <u><u>two</u> three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['underline'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 10,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['underline'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 10,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('<u>two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '<u>two',
+        );
       });
 
       it('Formats a selection as underline, when only the end of the selection already has underline formatting', () => {
         const textAreaValue = 'one two</u> three';
         const expectedNewTextAreaValue = 'one <u>two</u></u> three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['underline'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 11,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['underline'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 11,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two</u>');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two</u>',
+        );
       });
 
       it('Unformats a selection when text immediately before and after have underline formatting', () => {
         const textAreaValue = 'one <u>two</u> three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['underline'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 7,
-            selectionEnd: 10,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['underline'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 7,
+          selectionEnd: 10,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as underline, when only the text immediately before already has underline formatting', () => {
         const textAreaValue = 'one <u>two three';
         const expectedNewTextAreaValue = 'one <u><u>two</u> three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['underline'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 7,
-            selectionEnd: 10,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['underline'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 7,
+          selectionEnd: 10,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as underline, when only the text immediately after already has underline formatting', () => {
         const textAreaValue = 'one two</u> three';
         const expectedNewTextAreaValue = 'one <u>two</u></u> three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['underline'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['underline'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
     });
 
@@ -558,31 +943,55 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one ~~two~~ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['strikethrough'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats an empty selection as strikethrough, keeping cursor inside formatting', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one ~~~~two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['strikethrough'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(6);
         expect(newCursorEnd).toEqual(6);
       });
@@ -591,102 +1000,174 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one ~~two~~ three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['strikethrough'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 11,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 11,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as strikethrough, when only the start of the selection already has strikethrough formatting', () => {
         const textAreaValue = 'one ~~two three';
         const expectedNewTextAreaValue = 'one ~~~~two~~ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['strikethrough'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('~~two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '~~two',
+        );
       });
 
       it('Formats a selection as strikethrough, when only the end of the selection already has strikethrough formatting', () => {
         const textAreaValue = 'one two~~ three';
         const expectedNewTextAreaValue = 'one ~~two~~~~ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['strikethrough'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two~~');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two~~',
+        );
       });
 
       it('Unformats a selection when text immediately before and after have strikethrough formatting', () => {
         const textAreaValue = 'one ~~two~~ three';
         const expectedNewTextAreaValue = 'one two three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['strikethrough'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 6,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 6,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as strikethrough, when only the text immediately before already has strikethrough formatting', () => {
         const textAreaValue = 'one ~~two three';
         const expectedNewTextAreaValue = 'one ~~~~two~~ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['strikethrough'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 6,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 6,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('Formats a selection as strikethrough, when only the text immediately after already has strikethrough formatting', () => {
         const textAreaValue = 'one two~~ three';
         const expectedNewTextAreaValue = 'one ~~two~~~~ three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['strikethrough'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
     });
 
@@ -695,48 +1176,84 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one two [](url)three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 8,
-            selectionEnd: 8,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 8,
+          selectionEnd: 8,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('url');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'url',
+        );
       });
 
       it('inserts link markdown, and highlights url when selected text does not begin with http:// or https://', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one [two](url) three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('url');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'url',
+        );
       });
 
       it('inserts link markdown, and places cursor inside [], when selected text begins with http://', () => {
         const textAreaValue = 'one http://something.com three';
         const expectedNewTextAreaValue = 'one [](http://something.com) three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 24,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 24,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(5);
         expect(newCursorEnd).toEqual(5);
       });
@@ -745,14 +1262,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one https://something.com three';
         const expectedNewTextAreaValue = 'one [](https://something.com) three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 25,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 25,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(5);
         expect(newCursorEnd).toEqual(5);
       });
@@ -761,14 +1290,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one [](url) three';
         const expectedNewTextAreaValue = 'one  three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 5,
-            selectionEnd: 5,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 5,
+          selectionEnd: 5,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(4);
         expect(newCursorEnd).toEqual(4);
       });
@@ -777,14 +1318,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one [](url) three';
         const expectedNewTextAreaValue = 'one  three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 7,
-            selectionEnd: 10,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 7,
+          selectionEnd: 10,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(4);
         expect(newCursorEnd).toEqual(4);
       });
@@ -793,51 +1346,87 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one [something](url) three';
         const expectedNewTextAreaValue = 'one something three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 16,
-            selectionEnd: 19,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 16,
+          selectionEnd: 19,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('something');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'something',
+        );
       });
 
       it('removes link markdown when selected text is a url and full markdown formatting present, no link description', () => {
         const textAreaValue = 'one [](http://example.com) three';
         const expectedNewTextAreaValue = 'one http://example.com three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 7,
-            selectionEnd: 25,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 7,
+          selectionEnd: 25,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('http://example.com');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'http://example.com',
+        );
       });
 
       it('removes link markdown when url is selected, and full markdown formatting present, link description present', () => {
         const textAreaValue = 'one [something](http://example.com) three';
         const expectedNewTextAreaValue = 'one something three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 16,
-            selectionEnd: 34,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 16,
+          selectionEnd: 34,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('something');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'something',
+        );
       });
 
       it('removes link markdown when full markdown syntax is selected, preserving link description', () => {
@@ -845,48 +1434,84 @@ describe('markdownSyntaxFormatters', () => {
           'one [text description](http://example.com) three';
         const expectedNewTextAreaValue = 'one text description three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 42,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 42,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('text description');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'text description',
+        );
       });
 
       it('removes link markdown when full markdown syntax is selected, preserving URL if link description does not exist', () => {
         const textAreaValue = 'one [](http://example.com) three';
         const expectedNewTextAreaValue = 'one http://example.com three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 26,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 26,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('http://example.com');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'http://example.com',
+        );
       });
 
       it('removes link markdown when full markdown syntax is selected, preserving no content if no link description exists, and URL is placeholder', () => {
         const textAreaValue = 'one [](url) three';
         const expectedNewTextAreaValue = 'one  three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['link'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 11,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['link'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 11,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(4);
         expect(newCursorEnd).toEqual(4);
       });
@@ -899,82 +1524,142 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n1. two\n three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('1. two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '1. two',
+        );
       });
 
       it('formats multiple lines of text as an ordered list', () => {
         const textAreaValue = 'one\ntwo\nthree';
         const expectedNewTextAreaValue = '1. one\n2. two\n3. three\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 13,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 13,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('1. one\n2. two\n3. three');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '1. one\n2. two\n3. three',
+        );
       });
 
       it('inserts an empty list when no selection is provided', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n1. \ntwo three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
       });
 
       it('unformats a single line of text if selection starts with ordered list format', () => {
         const textAreaValue = 'one\n1. two\nthree';
         const expectedNewTextAreaValue = 'one\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 10,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 10,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
-      it('unformats a single line of text if no selection is given, and current line start contains 1. ', () => {
+      it('unformats a single line of text if no selection is given, and current line start contains 1.', () => {
         const textAreaValue = 'one\n\n1. two\nthree';
         const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 9,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(6);
         expect(newCursorEnd).toEqual(6);
       });
@@ -983,119 +1668,203 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = '1. one\n2. two\n3. three';
         const expectedNewTextAreaValue = 'one\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 22,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 22,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          expectedNewTextAreaValue,
+        );
       });
 
       it("formats as an ordered list if at least one line of selection doesn't match ordered list format", () => {
         const textAreaValue = '1. one\ntwo\n3. three';
         const expectedNewTextAreaValue = '1. 1. one\n2. two\n3. 3. three\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 19,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 19,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('1. 1. one\n2. two\n3. 3. three');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '1. 1. one\n2. two\n3. 3. three',
+        );
       });
 
       it("doesn't add new lines before list, if at the beginning of text area", () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '1. one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('1. one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '1. one',
+        );
       });
 
       it('adds one new line before list, if directly preceded by a single new line', () => {
         const textAreaValue = '\none';
         const expectedNewTextAreaValue = '\n\n1. one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 1,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 1,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('1. one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '1. one',
+        );
       });
 
       it('adds two new lines before list, if no new lines already exist before it', () => {
         const textAreaValue = 'one two';
         const expectedNewTextAreaValue = 'one \n\n1. two\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('1. two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '1. two',
+        );
       });
 
       it("doesn't add a new line after list if one already exists", () => {
         const textAreaValue = 'one\n';
         const expectedNewTextAreaValue = '1. one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('1. one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '1. one',
+        );
       });
 
       it('adds a new line after list if none exists', () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '1. one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['orderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['orderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('1. one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '1. one',
+        );
       });
     });
 
@@ -1104,203 +1873,347 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n- two\n three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('- two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '- two',
+        );
       });
 
       it('formats multiple lines of text as an unordered list', () => {
         const textAreaValue = 'one\ntwo\nthree';
         const expectedNewTextAreaValue = '- one\n- two\n- three\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 13,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 13,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('- one\n- two\n- three');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '- one\n- two\n- three',
+        );
       });
 
       it('inserts an empty list when no selection is provided', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n- \ntwo three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
       });
 
       it('unformats a single line of text if selection starts with unordered list format', () => {
         const textAreaValue = 'one\n- two\nthree';
         const expectedNewTextAreaValue = 'one\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
-      it('unformats a single line of text if no selection is given, and current line only contains - ', () => {
-        const textAreaValue = 'one\n\n- two\nthree';
-        const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
+      it('unformats a single line of text if no selection is given, and current line only contains -', () => {
+        const textAreaValue = 'one\n\n- \ntwo';
+        const expectedNewTextAreaValue = 'one\n\n\ntwo';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 7,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(newCursorStart).toEqual(7);
-        expect(newCursorEnd).toEqual(7);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(5);
+        expect(newCursorEnd).toEqual(5);
       });
 
       it('unformats multiple lines of text if every line starts with unordered list format', () => {
         const textAreaValue = '- one\n- two\n- three';
         const expectedNewTextAreaValue = 'one\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 20,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 20,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual(newTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          expectedNewTextAreaValue,
+        );
       });
 
       it("formats as an unordered list if at least one line of selection doesn't match unordered list format", () => {
         const textAreaValue = '- one\ntwo\n- three';
         const expectedNewTextAreaValue = '- - one\n- two\n- - three\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 17,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 17,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('- - one\n- two\n- - three');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '- - one\n- two\n- - three',
+        );
       });
 
       it("doesn't add new lines before list, if at the beginning of text area", () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '- one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('- one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '- one',
+        );
       });
 
       it('adds one new line before list, if directly preceded by a single new line', () => {
         const textAreaValue = '\none';
         const expectedNewTextAreaValue = '\n\n- one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 1,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 1,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('- one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '- one',
+        );
       });
 
       it('adds two new lines before list, if no new lines already exist before it', () => {
         const textAreaValue = 'one two';
         const expectedNewTextAreaValue = 'one \n\n- two\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('- two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '- two',
+        );
       });
 
       it("doesn't add a new line after list if one already exists", () => {
         const textAreaValue = 'one\n';
         const expectedNewTextAreaValue = '- one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('- one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '- one',
+        );
       });
 
       it('adds a new line after list if none exists', () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '- one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['unorderedList'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('- one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '- one',
+        );
       });
     });
 
@@ -1309,14 +2222,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n## \ntwo three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(9);
         expect(newCursorEnd).toEqual(9);
       });
@@ -1325,14 +2250,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n## two\n three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(9);
         expect(newCursorEnd).toEqual(12);
       });
@@ -1341,14 +2278,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one\n\n## two\nthree';
         const expectedNewTextAreaValue = 'one\n\n### two\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 11,
-            selectionEnd: 11,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 11,
+          selectionEnd: 11,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(12);
         expect(newCursorEnd).toEqual(12);
       });
@@ -1357,14 +2306,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one\n\n## two\nthree';
         const expectedNewTextAreaValue = 'one\n\n### two\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 8,
-            selectionEnd: 11,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 8,
+          selectionEnd: 11,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(9);
         expect(newCursorEnd).toEqual(12);
       });
@@ -1373,14 +2334,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one\n\n### two\nthree';
         const expectedNewTextAreaValue = 'one\n\n#### two\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 12,
-            selectionEnd: 12,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 12,
+          selectionEnd: 12,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(13);
         expect(newCursorEnd).toEqual(13);
       });
@@ -1389,14 +2362,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one\n\n### two\nthree';
         const expectedNewTextAreaValue = 'one\n\n#### two\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 12,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 9,
+          selectionEnd: 12,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(10);
         expect(newCursorEnd).toEqual(13);
       });
@@ -1405,14 +2390,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one\n\n#### two\nthree';
         const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 13,
-            selectionEnd: 13,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 13,
+          selectionEnd: 13,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(8);
         expect(newCursorEnd).toEqual(8);
       });
@@ -1421,14 +2418,26 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one\n\n#### two\nthree';
         const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 10,
-            selectionEnd: 13,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 10,
+          selectionEnd: 13,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(5);
         expect(newCursorEnd).toEqual(8);
       });
@@ -1437,85 +2446,145 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '## one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
 
       it('adds one new line before heading, if directly preceded by a single new line', () => {
         const textAreaValue = '\none';
         const expectedNewTextAreaValue = '\n\n## one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 1,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 1,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
 
       it('adds two new lines before heading, if no new lines already exist before it', () => {
         const textAreaValue = 'one two';
         const expectedNewTextAreaValue = 'one \n\n## two\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it("doesn't add a new line after heading if one already exists", () => {
         const textAreaValue = 'one\n';
         const expectedNewTextAreaValue = '## one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
 
       it('adds a new line after heading if none exists', () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '## one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['heading'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['heading'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
     });
 
@@ -1524,203 +2593,347 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n> two\n three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('> two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '> two',
+        );
       });
 
       it('formats multiple lines of text as a quote', () => {
         const textAreaValue = 'one\ntwo\nthree';
         const expectedNewTextAreaValue = '> one\n> two\n> three\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 13,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 13,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('> one\n> two\n> three');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '> one\n> two\n> three',
+        );
       });
 
       it('inserts an empty quote when no selection is provided', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n> \ntwo three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
       });
 
       it('unformats a single line of text if selection starts with quote format', () => {
         const textAreaValue = 'one\n> two\nthree';
         const expectedNewTextAreaValue = 'one\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
-      it('unformats a single line of text if no selection is given, and current line only contains > ', () => {
-        const textAreaValue = 'one\n\n> two\nthree';
-        const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
+      it('unformats a single line of text if no selection is given, and current line only contains >', () => {
+        const textAreaValue = 'one\n\n> \ntwo';
+        const expectedNewTextAreaValue = 'one\n\n\ntwo';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 7,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(newCursorStart).toEqual(7);
-        expect(newCursorEnd).toEqual(7);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(5);
+        expect(newCursorEnd).toEqual(5);
       });
 
       it('unformats multiple lines of text if every line starts with quote format', () => {
         const textAreaValue = '> one\n> two\n> three';
         const expectedNewTextAreaValue = 'one\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 20,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 20,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual(newTextAreaValue);
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          expectedNewTextAreaValue,
+        );
       });
 
       it("formats as a quote if at least one line of selection doesn't match quote format", () => {
         const textAreaValue = '> one\ntwo\n> three';
         const expectedNewTextAreaValue = '> > one\n> two\n> > three\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 17,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 17,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('> > one\n> two\n> > three');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '> > one\n> two\n> > three',
+        );
       });
 
       it("doesn't add new lines before quote, if at the beginning of text area", () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '> one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('> one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '> one',
+        );
       });
 
       it('adds one new line before quote, if directly preceded by a single new line', () => {
         const textAreaValue = '\none';
         const expectedNewTextAreaValue = '\n\n> one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 1,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 1,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('> one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '> one',
+        );
       });
 
       it('adds two new lines before quote, if no new lines already exist before it', () => {
         const textAreaValue = 'one two';
         const expectedNewTextAreaValue = 'one \n\n> two\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('> two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '> two',
+        );
       });
 
       it("doesn't add a new line after quote if one already exists", () => {
         const textAreaValue = 'one\n';
         const expectedNewTextAreaValue = '> one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('> one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '> one',
+        );
       });
 
       it('adds a new line after quote if none exists', () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '> one\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['quote'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['quote'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('> one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '> one',
+        );
       });
     });
 
@@ -1729,204 +2942,348 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n```\ntwo\n```\n three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('formats multiple lines of text as a code block', () => {
         const textAreaValue = 'one\ntwo\nthree';
         const expectedNewTextAreaValue = '```\none\ntwo\nthree\n```\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 13,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 13,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one\ntwo\nthree');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one\ntwo\nthree',
+        );
       });
 
       it('inserts an empty code block when no selection is provided', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n```\n\n```\ntwo three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
       });
 
       it('unformats a single line of text if selection is wrapped in a code block', () => {
         const textAreaValue = 'one\n\n```\ntwo\n```\nthree';
         const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 12,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 9,
+          selectionEnd: 12,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('unformats multiple lines of text if selection is wrapped in a code block', () => {
         const textAreaValue = 'one\n\n```\ntwo\nthree\n```\nfour';
         const expectedNewTextAreaValue = 'one\n\ntwo\nthree\nfour';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 18,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 9,
+          selectionEnd: 18,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two\nthree');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two\nthree',
+        );
       });
 
       it('unformats if no selection is given, but cursor is wrapped in a code block', () => {
         const textAreaValue = 'one\n\n```\n\n```\ntwo';
         const expectedNewTextAreaValue = 'one\n\n\ntwo';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 9,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
       });
 
       it('unformats if selection starts and ends with code block formatting', () => {
         const textAreaValue = 'one\n\n```\ntwo\n```\nthree';
         const expectedNewTextAreaValue = 'one\n\ntwo\nthree';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 5,
-            selectionEnd: 16,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 5,
+          selectionEnd: 16,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it("doesn't add new lines before code block, if at the beginning of text area", () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '```\none\n```\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
 
       it('adds one new line before code block, if directly preceded by a single new line', () => {
         const textAreaValue = '\none';
         const expectedNewTextAreaValue = '\n\n```\none\n```\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 1,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 1,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
 
       it('adds two new lines before code block, if no new lines already exist before it', () => {
         const textAreaValue = 'one two';
         const expectedNewTextAreaValue = 'one \n\n```\ntwo\n```\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it("doesn't add a new line after code block if one already exists", () => {
         const textAreaValue = 'one\n';
         const expectedNewTextAreaValue = '```\none\n```\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
 
       it('adds a new line after code block if none exists', () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '```\none\n```\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          coreSyntaxFormatters['codeBlock'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
     });
 
@@ -1935,134 +3292,230 @@ describe('markdownSyntaxFormatters', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n---\n\ntwo three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['divider'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['divider'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
       });
 
       it('inserts any selected text after the divider', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one \n\n---\ntwo\n three';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['divider'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['divider'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it('removes the divider if no selected text, and cursor directly preceded by line formatting', () => {
         const textAreaValue = 'one\n\n---\ntwo';
         const expectedNewTextAreaValue = 'one\n\ntwo';
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['divider'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 9,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['divider'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 9,
+          selectionEnd: 9,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
       });
 
       it('removes the divider if selected text is directly preceded by line formatting', () => {
         const textAreaValue = 'one\n\n---\ntwo three';
         const expectedNewTextAreaValue = 'one\n\ntwo three';
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['divider'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 9,
-            selectionEnd: 12,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['divider'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 9,
+          selectionEnd: 12,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it("doesn't add new lines before divider, if at the beginning of text area", () => {
         const textAreaValue = 'one';
         const expectedNewTextAreaValue = '---\none\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['divider'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['divider'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
 
       it('adds one new line before divider, if directly preceded by a single new line', () => {
         const textAreaValue = '\none';
         const expectedNewTextAreaValue = '\n\n---\none\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['divider'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 1,
-            selectionEnd: 4,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['divider'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 1,
+          selectionEnd: 4,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
 
       it('adds two new lines before divider, if no new lines already exist before it', () => {
         const textAreaValue = 'one two';
         const expectedNewTextAreaValue = 'one \n\n---\ntwo\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['divider'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 4,
-            selectionEnd: 7,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['divider'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('two');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
       });
 
       it("doesn't add a new line after divider if one already exists", () => {
         const textAreaValue = 'one\n';
         const expectedNewTextAreaValue = '---\none\n';
 
-        const { newTextAreaValue, newCursorStart, newCursorEnd } =
-          secondarySyntaxFormatters['divider'].getFormatting({
-            value: textAreaValue,
-            selectionStart: 0,
-            selectionEnd: 3,
-          });
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = secondarySyntaxFormatters['divider'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 0,
+          selectionEnd: 3,
+        });
 
-        expect(newTextAreaValue).toEqual(expectedNewTextAreaValue);
-        expect(
-          newTextAreaValue.substring(newCursorStart, newCursorEnd),
-        ).toEqual('one');
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'one',
+        );
       });
     });
   });

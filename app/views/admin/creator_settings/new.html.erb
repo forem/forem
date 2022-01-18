@@ -7,44 +7,30 @@
     <div aria-live="assertive">
       <% if flash[:error] %>
         <div class="crayons-notice crayons-notice--danger mb-6" role="alert">
-          <%= flash[:error] %>
+          <% flash[:error].each do |message| %>
+            <div><%= message %></div>
+          <% end %>
         </div>
       <% end %>
     </div>
 
-    <%= form_tag(admin_creator_settings_path, method: "post", class: "relative z-elevate p-4") do %>
-      <% if defined?(resource) && resource&.errors&.any? %>
-        <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger" role="alert" data-testid="signup-errors">
-          <div class="crayons-card__header">
-            <h1 class="crayons-card__headline">
-              Whoops, we found <%= pluralize(resource.errors.size, "problem") %>
-            </h1>
-          </div>
-          <div class="crayons-card__body">
-            <ul>
-              <% resource.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
-        </div>
-      <% end %>
+    <%= form_with url: admin_creator_settings_path, model: @creator_settings_form, local: true, method: "post", multipart: true, class: "relative z-elevate p-4", "data-action": "submit->creator-settings#formValidations" do |f| %>
 
       <div class="align-center">
-        <p class="pb-4 fs-3xl fw-bold">Lovely! Let's set up your Forem.</p>
+        <p class="fs-3xl fw-bold">Lovely! Let's set up your Forem.</p>
         <p class="color-base-70 fs-xl">No stress, you can always change it later.</p>
       </div>
       <br>
-      <%= render "form" %>
+      <%= render "form", creator_settings_form: @creator_settings_form, f: f %>
       <div class="crayons-field mt-6 align-left">
-        <%= submit_tag "Finish", class: "crayons-btn btn--primary" %>
+        <%= f.submit "Finish", class: "crayons-btn btn--primary" %>
       </div>
       <% if @help_url %>
         <%= render "shared/help_icon" %>
       <% end %>
     <% end %>
 
-    <%= inline_svg_tag("forem-background.svg", aria_hidden: true, class: "forem-background absolute bottom-0 right-0 hidden m:block") %>
+    <%= inline_svg_tag("forem-background.svg", aria_hidden: true, class: "forem-background fixed bottom-0 right-0 hidden m:block") %>
   </main>
 
 <% end %>

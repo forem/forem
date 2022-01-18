@@ -81,7 +81,7 @@ http_interactions:
         properly when the colours are related.\r\n\r\nSee the pictures below or visit
         my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To Reproduce**\r\n\r\n1.
         Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected behavior**\r\n\r\nMy
-        name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Additional
         information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
         do you recommend to fix the issue? If you have any recommendations, I''m happy
         to pick the issue.\r\n","closed_by":null}'
@@ -97,7 +97,7 @@ http_interactions:
         when the profile page doesn''t work properly when the colours are related.\r\n\r\nSee
         the pictures below or visit my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To
         Reproduce**\r\n\r\n1. Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected
-        behavior**\r\n\r\nMy name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        behavior**\r\n\r\nMy name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Additional
         information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
         do you recommend to fix the issue? If you have any recommendations, I''m happy
         to pick the issue.\r\n"}'
@@ -172,7 +172,7 @@ http_interactions:
         <p>My name and other information should be visible.</p>
         <p><strong>Screenshots</strong></p>
         <p><a href="https://camo.githubusercontent.com/92af1284df38dd307a8b30ccafbea9f832a82d61/68747470733a2f2f692e696d6775722e636f6d2f414a794d3774482e706e67" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/92af1284df38dd307a8b30ccafbea9f832a82d61/68747470733a2f2f692e696d6775722e636f6d2f414a794d3774482e706e67" alt="broken-profile-page" data-canonical-src="https://i.imgur.com/AJyM7tH.png" style="max-width:100%;"></a></p>
-        <p><strong>Aditional information</strong></p>
+        <p><strong>Additional information</strong></p>
         <p>Played around with the settings and I've done this:</p>
         <p><a href="https://camo.githubusercontent.com/b2d23465b39fd003c0121c1b87177673d4d96336/68747470733a2f2f692e696d6775722e636f6d2f444c69505846542e706e67" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/b2d23465b39fd003c0121c1b87177673d4d96336/68747470733a2f2f692e696d6775722e636f6d2f444c69505846542e706e67" alt="profile-page-ok" data-canonical-src="https://i.imgur.com/DLiPXFT.png" style="max-width:100%;"></a></p>
         <p><strong>Question</strong></p>

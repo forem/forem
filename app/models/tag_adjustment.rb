@@ -1,7 +1,4 @@
 class TagAdjustment < ApplicationRecord
-  validates :user_id, presence: true
-  validates :article_id, presence: true
-  validates :tag_id, presence: true
   validates :tag_name, presence: true, uniqueness: { scope: :article_id, message: "can't be an already adjusted tag" }
   validates :reason_for_adjustment, presence: true
   validates :adjustment_type, inclusion: { in: %w[removal addition] }, presence: true
@@ -23,9 +20,7 @@ class TagAdjustment < ApplicationRecord
   def has_privilege_to_adjust?
     return false unless user
 
-    user.has_role?(:tag_moderator, tag) ||
-      user.has_role?(:admin) ||
-      user.has_role?(:super_admin)
+    user.tag_moderator?(tag: tag) || user.any_admin?
   end
 
   def article_tag_list

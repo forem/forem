@@ -2,7 +2,7 @@
   <div class="crayons-card crayons-card--content-rows">
     <header>
       <h2 class="crayons-subtitle-1">
-        Email notifications
+        <%= t("views.settings.notifications.email") %>
       </h2>
     </header>
     <div class="crayons-field crayons-field--checkbox">
@@ -25,7 +25,7 @@
         <%= f.label :email_tag_mod_newsletter, "Send me tag moderator newsletter emails", class: "crayons-field__label" %>
       </div>
     <% end %>
-    <% if current_user.has_role?(:trusted) %>
+    <% if current_user.has_trusted_role? %>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :email_community_mod_newsletter, class: "crayons-checkbox" %>
         <%= f.label :email_community_mod_newsletter, "Send me community moderator newsletter emails", class: "crayons-field__label" %>
@@ -49,38 +49,38 @@
     </div>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_unread_notifications, class: "crayons-checkbox" %>
-      <%= f.label :email_unread_notifications, "Send me occasional reminders that I have unread notifications on #{community_name}", class: "crayons-field__label" %>
+      <%= f.label :email_unread_notifications, t("helpers.label.users_notification_setting.email_unread_notifications", community: community_name), class: "crayons-field__label" %>
     </div>
   </div>
 
   <div class="crayons-card crayons-card--content-rows">
     <header>
       <h2 class="crayons-subtitle-1 flex items-center">
-        Mobile notifications
-        <span class="ml-2 crayons-indicator crayons-indicator--accent">beta</span>
+        <%= t("views.settings.notifications.mobile") %>
       </h2>
-      <p class="color-base-70">
-        Additional settings will be rolled out as new notification features are made available.
-      </p>
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :mobile_comment_notifications, class: "crayons-checkbox" %>
-      <%= f.label :mobile_comment_notifications, "Notify me when someone replies to me in a comment thread", class: "crayons-field__label" %>
+      <%= f.label :mobile_comment_notifications, t("helpers.label.users_notification_setting.mobile_comment_notifications"), class: "crayons-field__label" %>
+    </div>
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :mobile_mention_notifications, class: "crayons-checkbox" %>
+      <%= f.label :mobile_mention_notifications, t("helpers.label.users_notification_setting.mobile_mention_notifications"), class: "crayons-field__label" %>
     </div>
   </div>
 
   <div class="crayons-card crayons-card--content-rows">
     <header>
       <h2 class="crayons-subtitle-1">
-        General notifications
+        <%= t("views.settings.notifications.general") %>
       </h2>
       <p class="color-base-70">
-        Notifications that only appear on the <a href="<%= notifications_path %>">notifications page</a>.
+        <%= t("views.settings.notifications.general_desc_html", page: link_to(t("views.settings.notifications.page"), notifications_path)) %>
       </p>
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :welcome_notifications, class: "crayons-checkbox" %>
-      <%= f.label :welcome_notifications, "Send me occasional tips on how to enhance my #{community_name} experience", class: "crayons-field__label" %>
+      <%= f.label :welcome_notifications, t("helpers.label.users_notification_setting.welcome_notifications", community: community_name), class: "crayons-field__label" %>
     </div>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :reaction_notifications, class: "crayons-checkbox" %>
@@ -88,10 +88,10 @@
     </div>
   </div>
 
-  <% if current_user.trusted %>
+  <% if current_user.trusted? %>
     <div class="crayons-card crayons-card--content-rows">
       <h2 class="crayons-subtitle-1">
-        Moderator notifications
+        <%= t("views.settings.notifications.moderator") %>
       </h2>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :mod_roundrobin_notifications, class: "crayons-checkbox" %>
@@ -101,7 +101,7 @@
   <% end %>
 
   <div class="crayons-card crayons-card--content-rows">
-    <button type="submit" class="crayons-btn">Save</button>
+    <button type="submit" class="crayons-btn"><%= t("views.settings.notifications.save") %></button>
   </div>
 
 <% end %>

@@ -64,7 +64,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       end
 
       after do
-        OmniAuth.config.on_failure = OmniauthHelpers.const_get("OMNIAUTH_DEFAULT_FAILURE_HANDLER")
+        OmniAuth.config.on_failure = OmniauthHelpers.const_get(:OMNIAUTH_DEFAULT_FAILURE_HANDLER)
       end
 
       it "does not create a new user" do
@@ -120,7 +120,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       end
     end
 
-    context "when a validation failure occurrs" do
+    context "when a validation failure occurs" do
       before do
         # A User is invalid if their name is more than 100 chars long
         OmniAuth.config.mock_auth[:apple].info.first_name = "X" * 101

@@ -21,7 +21,7 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
 
     it "makes user suspended and username spam" do
       expect(user.username).to include("spam")
-      expect(user.has_role?(:suspended)).to be true
+      expect(user.suspended?).to be true
     end
 
     it "deletes user content" do

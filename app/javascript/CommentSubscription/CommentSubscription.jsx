@@ -70,6 +70,7 @@ export class CommentSubscription extends Component {
     return (
       <div className={positionType}>
         <ButtonGroup
+          labelText="Comment subscription options"
           ref={(element) => {
             this.buttonGroupElement = element;
           }}

@@ -7,12 +7,15 @@ class OrganizationMembership < ApplicationRecord
 
   USER_TYPES = %w[admin member guest].freeze
 
-  validates :user_id, :organization_id, :type_of_user, presence: true
+  validates :type_of_user, presence: true
   validates :user_id, uniqueness: { scope: :organization_id }
   validates :type_of_user, inclusion: { in: USER_TYPES }
 
   after_create  :update_user_organization_info_updated_at
   after_destroy :update_user_organization_info_updated_at
+
+  scope :admin, -> { where(type_of_user: "admin") }
+  scope :member, -> { where(type_of_user: %w[admin member]) }
 
   # @note In the case where we delete the user, we don't need to worry
   #       about updating the user.  Hence the the `user has_many

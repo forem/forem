@@ -1,5 +1,5 @@
 <div class="grid gap-6" data-controller="config">
-  <% unless current_user.has_role?(:super_admin) %>
+  <% unless current_user.super_admin? %>
     <div class="crayons-notice crayons-notice--info" role="alert">
       <p class="mb-1">
         Only users with <strong>Super Admin</strong> privileges may edit this page.
@@ -23,14 +23,13 @@
           class="crayons-btn crayons-btn--secondary float-right"
           type="button"
           data-action="click->config#toggleAccordionButtonLabel">
-
-          <%= VerifySetupCompleted.setup_completed? ? "Show Getting Started" : "Hide Getting Started" %>
+          Hide Getting Started
         </button>
       </div>
 
       <div
         id="getStartedBodyContainer"
-        class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3"
+        class="show expand p-3"
         aria-labelledby="getStartedHeader">
         <%= render partial: "forms/mandatory" %>
       </div>
@@ -66,7 +65,7 @@
         <%= render partial: "forms/emails" %>
         <%= render partial: "forms/email_digest_frequency" %>
         <%= render partial: "forms/google_analytics" %>
-        <%= render partial: "forms/images" %>
+        <%= render partial: "forms/images", locals: { logo_allowed_types: @logo_allowed_types, logo_max_file_size: @logo_max_file_size } %>
         <%= render partial: "forms/mascot" %>
         <%= render partial: "forms/meta_keywords" %>
         <%= render partial: "forms/monetization" %>
