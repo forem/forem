@@ -19,8 +19,7 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
   const [topTags, setTopTags] = useState([]);
 
   useEffect(() => {
-    window
-      .fetch('/tags/suggest')
+    fetch('/tags/suggest')
       .then((res) => res.json())
       .then((results) => setTopTags(results));
   }, []);
@@ -33,8 +32,8 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
       const tagNames = defaultValue.split(', ');
 
       const tagRequests = tagNames.map((tagName) =>
-        fetchSearch('tags', { name: tagName }).then(({ result }) => {
-          const potentialMatch = result[0] || {};
+        fetchSearch('tags', { name: tagName }).then(({ result = [] }) => {
+          const [potentialMatch = {}] = result;
           return potentialMatch.name === tagName
             ? potentialMatch
             : { name: tagName };

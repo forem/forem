@@ -139,7 +139,9 @@ export const MultiSelectAutocomplete = ({
   useEffect(() => {
     // editValue defaults to null when component is first rendered.
     // This ensures we do not autofocus the input before the user has started interacting with the component.
-    if (editValue === null) return;
+    if (editValue === null) {
+      return;
+    }
 
     const { current: input } = inputRef;
     if (input && inputPosition !== null) {
@@ -160,9 +162,11 @@ export const MultiSelectAutocomplete = ({
 
   useEffect(() => {
     if (activeDescendentIndex !== null) {
-      const activeItem = document.querySelector('[aria-selected="true"]');
       const { current: popover } = popoverRef;
-      if (!popover || !activeItem) return;
+      const activeItem = popover?.querySelector('[aria-selected="true"]');
+      if (!popover || !activeItem) {
+        return;
+      }
 
       // Make sure that the active item is scrolled into view, if need be
       const { offsetHeight, offsetTop } = activeItem;
@@ -254,10 +258,8 @@ export const MultiSelectAutocomplete = ({
       return;
     }
 
-    const shouldShowStaticSuggestions =
-      staticSuggestions.length > 0 && inputRef.current?.value === '';
-
-    if (shouldShowStaticSuggestions) {
+    // If we have static suggestions, and no search term, show the static suggestions
+    if (staticSuggestions.length > 0 && inputRef.current?.value === '') {
       dispatch({
         type: 'setSuggestions',
         payload: staticSuggestions.filter(
