@@ -167,9 +167,15 @@ class Tag < ActsAsTaggableOn::Tag
   # What's going on here?  There are times where we want our "Tag" object
   #
   # @see Tag.cached_followed_tags_for
+  #
+  # @note The @points can be removed when we remove `attr_writer :points`
   def points
-    (attributes["points"] || 0)
+    (attributes["points"] || @points || 0)
   end
+
+  # @deprecated [@jeremyf] in moving towards adding the :points attribute via ActiveRecord query
+  #             instantiation, this is not needed.  But it's here for later removal
+  attr_writer :points
 
   private
 
