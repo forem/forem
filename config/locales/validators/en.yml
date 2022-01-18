@@ -2,20 +2,17 @@
 en:
   validators:
     bytesize_validator:
-      maximum_must_be_a_non_neg: ":maximum must be a non-negative Integer"
+      non_negative: ":maximum must be a non-negative Integer"
       specify_the_maximum_option: Specify the :maximum option.
     color_contrast_validator:
-      must_be_darker_for_accessi: must be darker for accessibility
+      must_be_darker: must be darker for accessibility
     emoji_only_validator:
-      contains_non_emoji_charact: contains non-emoji characters or invalid emoji
+      invalid_emoji: contains non-emoji characters or invalid emoji
     existing_published_article_id_validator:
       default: must be a valid published Article identifier
     profile_validator:
-      is_not_a_valid_hex_color: is not a valid hex color
-      is_too_long: is too long
-      maximum:
-        other: is too long (maximum is %{count} characters)
+      too_long: is too long
     unique_cross_model_slug_validator:
       is_taken: is taken
     valid_domain_csv_validator:
-      must_be_a_comma_separated: must be a comma-separated list of valid domains
+      invalid_list_format: must be a comma-separated list of valid domains

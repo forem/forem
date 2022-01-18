@@ -16,7 +16,7 @@ class BytesizeValidator < ActiveModel::EachValidator
     maximum = options[:maximum]
     return if maximum.is_a?(Integer) && maximum >= 0
 
-    raise ArgumentError, I18n.t("validators.bytesize_validator.maximum_must_be_a_non_neg")
+    raise ArgumentError, I18n.t("validators.bytesize_validator.non_negative")
   end
 
   def validate_each(record, attribute, value)

@@ -3,6 +3,6 @@ class EmojiOnlyValidator < ActiveModel::EachValidator
     return if value.gsub(EmojiRegex::RGIEmoji, "").blank?
 
     record.errors.add(attribute,
-                      options[:message] || I18n.t("validators.emoji_only_validator.contains_non_emoji_charact"))
+                      options[:message] || I18n.t("validators.emoji_only_validator.invalid_emoji"))
   end
 end

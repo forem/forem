@@ -11,6 +11,6 @@ class ValidDomainCsvValidator < ActiveModel::EachValidator
     return if value.all? { |domain| domain.match?(VALID_DOMAIN) }
 
     record.errors.add(attribute,
-                      options[:message] || I18n.t("validators.valid_domain_csv_validator.must_be_a_comma_separated"))
+                      options[:message] || I18n.t("validators.valid_domain_csv_validator.invalid_list_format"))
   end
 end
