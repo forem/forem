@@ -172,7 +172,7 @@ class UsersController < ApplicationController
     user_params = {}
 
     if params[:user]
-      if params.dig(:user, :username).blank?
+      if params[:user].key?(:username) && params[:user][:username].blank?
         return render_update_response(false, "Username cannot be blank")
       end
 
