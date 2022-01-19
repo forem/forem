@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Button, Icon } from '@crayons';
+import { ButtonNew as Button, Icon } from '@crayons';
 import { Close } from '@images/x.svg';
 
 /**
@@ -19,13 +19,17 @@ export const TagAutocompleteSelection = ({
 }) => {
   const baseColorStyles = bgColorHex
     ? {
-        '--bg': `${bgColorHex}1a`,
-        '--bg-hover': `${bgColorHex}1a`,
+        '--tag-bg': `${bgColorHex}1a`,
+        '--tag-bg-hover': `${bgColorHex}1a`,
         '--tag-prefix': bgColorHex,
       }
     : {};
   return (
-    <div role="group" aria-label={name} className="flex mr-1 mb-1 w-max">
+    <div
+      role="group"
+      aria-label={name}
+      className="crayons-article-form__tag-selection flex mr-1 mb-1 w-max"
+    >
       <Button
         style={baseColorStyles}
         variant="secondary"

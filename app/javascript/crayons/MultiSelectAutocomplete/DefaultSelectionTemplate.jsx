@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { Icon, Button } from '@crayons';
+import { Icon, ButtonNew as Button } from '@crayons';
 import { Close } from '@images/x.svg';
 
 export const DefaultSelectionTemplate = ({ name, onEdit, onDeselect }) => (
