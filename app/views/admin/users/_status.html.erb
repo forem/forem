@@ -1,0 +1,13 @@
+<span class="ml-3 fs-s fw-medium" aria-label="Current status" title="Current status">
+  <% if @user.suspended? %>
+    <span class="c-badge c-badge--danger">Suspended</span>
+  <% elsif @user.warned? %>
+    <span class="c-badge c-badge--warning">Warned</span>
+  <% elsif @user.comment_suspended? %>
+    <span class="c-badge c-badge--warning">Comment suspended</span>
+  <% elsif @user.trusted? %>
+    <span class="c-badge c-badge--success">Trusted</span>
+  <% else %>
+    <span class="c-badge c-badge--info">Good standing</span>
+  <% end %>
+</span>
