@@ -7,8 +7,6 @@ class BytesizeValidator < ActiveModel::EachValidator
   CHECKS = { maximum: :<= }.freeze
   RESERVED_OPTIONS = %i[maximum too_long].freeze
 
-  # seemingly unused value?
-  # ERROR_MISSING_OPTIONS_MESSAGE = I18n.t("validators.bytesize_validator.specify_the_maximum_option").freeze
 
   def check_validity!
     raise ArgumentError, ERROR_MESSAGE unless options.key?(:maximum)
