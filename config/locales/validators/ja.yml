@@ -1,5 +1,5 @@
 ---
-fr:
+ja:
   validators:
     bytesize_validator:
       non_negative: ":maximum must be a non-negative Integer"
@@ -12,6 +12,6 @@ fr:
     profile_validator:
       too_long: is too long
     unique_cross_model_slug_validator:
-      is_taken: is taken
+      is_taken: は取られています
     valid_domain_csv_validator:
       invalid_list_format: must be a comma-separated list of valid domains

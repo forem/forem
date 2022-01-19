@@ -3,7 +3,6 @@ en:
   validators:
     bytesize_validator:
       non_negative: ":maximum must be a non-negative Integer"
-      specify_the_maximum_option: Specify the :maximum option.
     color_contrast_validator:
       must_be_darker: must be darker for accessibility
     emoji_only_validator:
