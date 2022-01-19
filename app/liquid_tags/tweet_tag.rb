@@ -1,7 +1,9 @@
 class TweetTag < LiquidTagBase
   include ActionView::Helpers::AssetTagHelper
   PARTIAL = "liquids/tweet".freeze
-  ID_REGEXP = /\A\d{10,20}\z/ # id must be all numbers between 10 and 20 chars
+  REGISTRY_REGEXP = %r{https://twitter.com/(?<username>\w{1,15})/status/(?<id>\d{10,20})}
+  VALID_ID_REGEXP = /\A(?<id>\d{10,20})\Z/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
     var videoPreviews = document.getElementsByClassName("ltag__twitter-tweet__media__video-wrapper");
@@ -50,14 +52,10 @@ class TweetTag < LiquidTagBase
   private
 
   def parse_id(input)
-    input_no_space = input.delete(" ")
-    raise StandardError, I18n.t("liquid_tags.tweet_tag.invalid_twitter_id") unless valid_id?(input_no_space)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, I18n.t("liquid_tags.youtube_tag.invalid_youtube_id") unless match
 
-    input_no_space
-  end
-
-  def valid_id?(id)
-    ID_REGEXP.match?(id)
+    match[:id]
   end
 end
 
