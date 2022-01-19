@@ -1,14 +1,12 @@
 module Slack
   module Messengers
     class Sponsorship
-      MESSAGE_TEMPLATE =
-
-        def initialize(user:, organization:, level:, tag: nil)
-          @user = user
-          @organization = organization
-          @level = level
-          @tag = tag
-        end
+      def initialize(user:, organization:, level:, tag: nil)
+        @user = user
+        @organization = organization
+        @level = level
+        @tag = tag
+      end
 
       def self.call(...)
         new(...).call
