@@ -12,12 +12,10 @@ class UniqueCrossModelSlugValidator < ActiveModel::EachValidator
     User => :username
   }
 
-  DEFAULT_MESSAGE = "is taken".freeze
-
   def validate_each(record, attribute, value)
     return unless already_exists?(value: value, record: record)
 
-    record.errors.add(attribute, options[:message] || DEFAULT_MESSAGE)
+    record.errors.add(attribute, options[:message] || I18n.t("validators.unique_cross_model_slug_validator.is_taken"))
   end
 
   private
