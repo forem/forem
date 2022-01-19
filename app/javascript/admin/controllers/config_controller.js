@@ -158,7 +158,6 @@ export default class ConfigController extends Controller {
       communityName.parentNode.replaceChild(newLogo, communityName);
     } else {
       for (const logo of document.querySelectorAll('.site-logo__img')) {
-
         if (logo !== previewLogo) {
           logo.src = previewLogo.src;
         }
@@ -413,6 +412,20 @@ export default class ConfigController extends Controller {
 
   submitForm() {
     this.authSectionFormTarget.submit();
+  }
+
+  activateMissingKeysModal(providers) {
+    this.configModalAnchorTarget.innerHTML = adminModal({
+      title: 'Setup not complete',
+      controllerName: 'config',
+      closeModalFunction: 'closeAdminModal',
+      body: this.missingAuthKeysModalBody(providers),
+      leftBtnText: 'Continue editing',
+      leftBtnAction: 'closeAdminModal',
+      rightBtnText: 'Cancel',
+      rightBtnAction: 'cancelAuthProviderEnable',
+      rightBtnClasses: 'crayons-btn--secondary',
+    });
   }
 
   configUpdatePrecheck(event) {
