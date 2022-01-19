@@ -177,7 +177,7 @@ class UsersController < ApplicationController
       end
 
       sanitize_user_params
-      user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
+      user_params = params[:user].permit(ALLOWED_USER_PARAMS)
     end
 
     update_result = Users::Update.call(current_user, user: user_params, profile: profile_params)
