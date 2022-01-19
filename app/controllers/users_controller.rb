@@ -169,7 +169,7 @@ class UsersController < ApplicationController
   def onboarding_update
     authorize User
 
-    user_params = { saw_onboarding: true }
+    user_params = {}
 
     if params[:user]
       if params.dig(:user, :username).blank?
