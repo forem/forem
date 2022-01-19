@@ -2,18 +2,16 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 
-export const Indicator = (props) => {
-  const {
-    children,
-    variant = 'default',
-    relaxed,
-    className,
-    ...otherProps
-  } = props;
-
+export const Indicator = ({
+  children,
+  variant = 'default',
+  extraPadding,
+  className,
+  ...otherProps
+}) => {
   const classes = classNames('c-indicator', {
     [`c-indicator--${variant}`]: variant && variant !== 'default',
-    'c-indicator--relaxed': relaxed,
+    'p-2': extraPadding,
     [className]: className,
   });
 
@@ -29,5 +27,5 @@ Indicator.displayName = 'Indicator';
 Indicator.propTypes = {
   variant: PropTypes.oneOf(['default', 'info', 'success', 'warning', 'danger']),
   className: PropTypes.string,
-  relaxed: PropTypes.bool,
+  extraPadding: PropTypes.bool,
 };

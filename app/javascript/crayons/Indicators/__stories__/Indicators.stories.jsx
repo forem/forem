@@ -28,7 +28,7 @@ export default {
         defaultValue: { summary: 'default' },
       },
     },
-    relaxed: {
+    extraPadding: {
       description:
         'Indicators are "tight" by default which means they have very little padding. This will gently increase the padding so it looks more loose.',
       table: {
@@ -67,9 +67,9 @@ VariantDanger.args = {
   variant: 'danger',
 };
 
-export const Relaxed = (args) => <Indicator {...args} />;
-Relaxed.args = {
+export const ExtraPadding = (args) => <Indicator {...args} />;
+ExtraPadding.args = {
   ...Default.args,
-  relaxed: true,
+  extraPadding: true,
   children: 'Hello world',
 };
