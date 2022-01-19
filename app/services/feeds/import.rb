@@ -172,7 +172,7 @@ module Feeds
     def item_count_error(feed)
       return "NIL FEED, INVALID URL" unless feed
 
-      feed.entries ? feed.entries.length : I18n.t("services.feeds.import.no_count")
+      feed.entries ? feed.entries.length : "no count"
     end
 
     def subscribe_author_to_comments(user, article)

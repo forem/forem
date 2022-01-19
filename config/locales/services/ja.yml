@@ -2,27 +2,25 @@
 ja:
   services:
     analytics_service:
-      you_can_t_view_this_articl: You can't view this article's stats
+      no_stats: You can't view this article's stats
     article_with_video_creation_service:
-      unpublished_video: Unpublished Video ~ %{rand_100_000_to_s_26}
+      unpublished_video: Unpublished Video ~ %{rand}
     authentication:
       authenticator:
         not_allowed: Sorry, but the domain for your email address is not allowed. This Forem may have limited signup to only specified email domains or blocked this specific domain from joining.
       providers:
         apple:
           name: "%{first} %{last}"
-        provider_is_not_available: Provider %{name} is not available!
-        provider_is_not_enabled: Provider %{name} is not enabled!
+        not_available: Provider %{name} is not available!
+        not_enabled: Provider %{name} is not enabled!
     badges:
       award_beloved_comment:
-        you_re_famous_this_is_the: "You're famous! [This is the comment](%{comment}) for which you're being recognized. 😄"
+        message: "You're famous! [This is the comment](%{comment}) for which you're being recognized. 😄"
       award_streak:
-        16_weeks_you_ve_achieved_t: 16 weeks! You've achieved the longest writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!
-        congrats_on_achieving_this: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{weeks} Week Badge. 😉"
+        longest: 16 weeks! You've achieved the longest writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!
+        message: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
       award_yearly_club:
-        message:
-          one: Happy %{community} birthday! Can you believe it's been %{count} year already?!
-          other: Happy %{community} birthday! Can you believe it's been %{count} years already?!
+        message: Happy %{community} birthday! Can you believe it's been %{count} years already?!
       congrats: Congrats!!!
       thank_you: Thank you so much for your contributions!
     broadcasts:
@@ -31,10 +29,7 @@ ja:
           welcome: 'Welcome Notification: %{key}'
     error_messages:
       clean:
-        there_was_a_problem_parsin: There was a problem parsing the front-matter YAML. Perhaps you need to escape a quote or a colon or something. Email %{s} if you are having trouble.
-    feeds:
-      import:
-        no_count: no count
+        parse_error: There was a problem parsing the front-matter YAML. Perhaps you need to escape a quote or a colon or something. Email %{email} if you are having trouble.
     html:
       parser:
         enter_fullscreen_mode: Enter fullscreen mode
@@ -45,8 +40,6 @@ ja:
     markdown_processor:
       parser:
         invalid_markdown_detected: Invalid markdown detected!
-    medium_article_retrieval_service:
-      is_not_a_valid_date: "%{published_time} is not a valid date: %{e}"
     moderator:
       banish_user:
         spam_account: spam account
@@ -69,16 +62,16 @@ ja:
       process_credit_purchase:
         charge: Purchase of %{count} credits.
     rate_limit_checker:
-      invalid_cache_key_no_uniqu: 'Invalid Cache Key: no unique component present'
-      rate_limit_reached_try_aga: Rate limit reached, try again in %{retry_after} seconds
+      invalid_key: 'Invalid Cache Key: no unique component present'
+      limit_reached: Rate limit reached, try again in %{count} seconds
     slack:
       messengers:
         article_fetched_feed:
-          new_article_retrieved_via: |
+          body: |
             New Article Retrieved via RSS: %{title}
             %{url}
         article_published:
-          new_article_published_titl: |
+          body: |
             New Article Published: %{title}
             %{url}
         feedback:
@@ -90,22 +83,22 @@ ja:
             *_ Reported URL: %{reported_url} _*
             -----
             *Message:* %{message}
-          logged_in_user_reporter_u: |
+          body: |
             *Logged in user:*
             reporter: %{username} - %{url}
             email: <mailto:%{email}|%{email}>
         potential_spammer:
-          potential_spam_user_url_s: 'Potential spam user! %{url}
+          body: 'Potential spam user! %{url}
 
             '
         sponsorship:
-          user_s_bought_a_type_s_sp: "%{user} bought a %{type} sponsorship for %{organization}\n"
+          body: "%{user} bought a %{type} sponsorship for %{organization}\n"
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Source not found.
-        subscriber_email_mismatch: Subscriber email mismatch.
+        email_mismatch: Subscriber email mismatch.
     users:
       remove_role:
-        admins_cannot_remove_roles: Admins cannot remove roles from themselves.
-        super_admin_roles_cannot_b: Super Admin roles cannot be removed.
-        there_was_an_issue_removin: There was an issue removing this role. %{e_message}
+        remove_self: Admins cannot remove roles from themselves.
+        remove_super: Super Admin roles cannot be removed.
+        error: There was an issue removing this role. %{e_message}

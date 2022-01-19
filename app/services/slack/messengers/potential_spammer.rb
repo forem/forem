@@ -11,7 +11,7 @@ module Slack
 
       def call
         message = I18n.t(
-          "services.slack.messengers.potential_spammer.potential_spam_user_url_s",
+          "services.slack.messengers.potential_spammer.body",
           url: URL.user(user),
         )
 

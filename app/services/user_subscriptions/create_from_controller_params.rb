@@ -64,7 +64,7 @@ module UserSubscriptions
       # consented to share their old email address instead of the current one.
       return false if user.email == subscriber_email
 
-      response.error = I18n.t("services.user_subscriptions.create_from_controller_params.subscriber_email_mismatch")
+      response.error = I18n.t("services.user_subscriptions.create_from_controller_params.email_mismatch")
       true
     end
   end

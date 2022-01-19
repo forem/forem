@@ -13,7 +13,7 @@ module Slack
         return unless article.published && article.published_at > 30.seconds.ago
 
         message = I18n.t(
-          "services.slack.messengers.article_published.new_article_published_titl",
+          "services.slack.messengers.article_published.body",
           title: article.title,
           url: URL.article(article),
         )

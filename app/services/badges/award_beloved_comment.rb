@@ -28,7 +28,7 @@ module Badges
     attr_reader :comment_count
 
     def generate_message(comment)
-      I18n.t("services.badges.award_beloved_comment.you_re_famous_this_is_the", comment: URL.comment(comment))
+      I18n.t("services.badges.award_beloved_comment.message", comment: URL.comment(comment))
     end
   end
 end

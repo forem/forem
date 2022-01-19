@@ -17,7 +17,7 @@ module Slack
       def call
         type = tag.present? ? "##{tag.name}" : level
         message = I18n.t(
-          "services.slack.messengers.sponsorship.user_s_bought_a_type_s_sp",
+          "services.slack.messengers.sponsorship.body",
           user: user.username,
           type: type,
           organization: organization.username,

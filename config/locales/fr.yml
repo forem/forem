@@ -195,6 +195,7 @@ fr:
     formats:
       json: "%b %e, %Y"
       comment: "%B %d, %Y"
+      medium: "%b %-d, %Y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"
       stackexchange: "%b %e '%y"

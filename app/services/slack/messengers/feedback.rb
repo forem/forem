@@ -43,7 +43,7 @@ module Slack
         return I18n.t("services.slack.messengers.feedback.anonymous_report") unless user
 
         I18n.t(
-          "services.slack.messengers.feedback.logged_in_user_reporter_u",
+          "services.slack.messengers.feedback.body",
           username: user.username,
           url: URL.user(user),
           email: user.email,

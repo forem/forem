@@ -172,6 +172,7 @@ en:
     formats:
       json: "%b %e, %Y"
       comment: "%B %d, %Y"
+      medium: "%b %-d, %Y"
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"
       stackexchange: "%b %e '%y"

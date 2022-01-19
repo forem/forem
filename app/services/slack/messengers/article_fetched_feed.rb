@@ -13,7 +13,7 @@ module Slack
         return unless article.published_from_feed?
 
         message = I18n.t(
-          "services.slack.messengers.article_fetched_feed.new_article_retrieved_via",
+          "services.slack.messengers.article_fetched_feed.body",
           title: article.title,
           url: URL.article(article),
         )

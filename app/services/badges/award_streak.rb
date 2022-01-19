@@ -46,9 +46,9 @@ module Badges
     end
 
     def generate_message
-      return I18n.t("services.badges.award_streak.16_weeks_you_ve_achieved_t") if weeks == LONGEST_STREAK_WEEKS
+      return I18n.t("services.badges.award_streak.longest") if weeks == LONGEST_STREAK_WEEKS
 
-      I18n.t("services.badges.award_streak.congrats_on_achieving_this", weeks: weeks * 2)
+      I18n.t("services.badges.award_streak.message", count: weeks * 2)
     end
   end
 end
