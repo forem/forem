@@ -20,11 +20,13 @@ module Listings
     def call
       ActiveRecord::Base.transaction do
         # Subtract credits
-        Credits::Buyer.call(
+        enough_credits = Credits::Buyer.call(
           purchaser: @purchaser,
           purchase: @listing,
           cost: @cost,
         )
+
+        raise ActiveRecord::Rollback unless enough_credits
 
         # Update the listing
         @listing.bumped_at = Time.current
