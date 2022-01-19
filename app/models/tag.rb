@@ -169,9 +169,27 @@ class Tag < ActsAsTaggableOn::Tag
   # @see Tag.cached_followed_tags_for
   #
   # @note The @points can be removed when we remove `attr_writer :points`
+  #
+  # @see Follows::UpdatePointsWorker for details on how :points are calculated from the :explicit_points
+  # @see Tag#explicit_points
+  # @see Tag#implicit_points
   def points
     (attributes["points"] || @points || 0)
   end
+
+  # @!attribute [rw] explicit_points
+  #
+  #   These values are set by the user.  The `Follows::UpdatePointsWorker` runs calculations on the
+  #   points to determine the explicit points.
+  #
+  #   @see ./app/views/dashboards/following_tags.html.erb
+
+  # @!attribute [rw] implicit_points
+  #
+  #   This value is calculated.  The `Follows::UpdatePointsWorker` runs calculations on the points
+  #   to determine the explicit points.
+  #
+  #   @see ./app/views/dashboards/following_tags.html.erb
 
   # @deprecated [@jeremyf] in moving towards adding the :points attribute via ActiveRecord query
   #             instantiation, this is not needed.  But it's here for later removal
