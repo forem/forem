@@ -32,7 +32,6 @@ export const TagAutocompleteSelection = ({
     >
       <Button
         style={baseColorStyles}
-        variant="secondary"
         className="c-autocomplete--multi__selected p-1 cursor-text"
         aria-label={`Edit ${name}`}
         onClick={onEdit}
@@ -42,7 +41,6 @@ export const TagAutocompleteSelection = ({
       </Button>
       <Button
         style={baseColorStyles}
-        variant="secondary"
         className="c-autocomplete--multi__selected p-1"
         aria-label={`Remove ${name}`}
         onClick={onDeselect}
