@@ -257,6 +257,18 @@
   --cta-branded-border-hover: var(--accent-brand-lighter);
 
   /***********************************************
+  ** Badges **************************************
+  ***********************************************/
+
+  /* Badges: Danger */
+  --badge-danger-bg: var(--accent-danger-darker);
+  --badge-danger-color: rgb(255,255,255);
+
+  /* Badges: Info */
+  --badge-info-bg: var(--accent-brand-darker);
+  --badge-info-color: rgb(255,255,255);
+
+  /***********************************************
   ** Utilities ***********************************
   ***********************************************/
   --focus: var(--accent-brand-lighter);

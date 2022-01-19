@@ -272,7 +272,7 @@ module ApplicationHelper
 
     if method.to_sym.in?(Settings::Mandatory.keys)
       required = tag.span(I18n.t("helpers.application_helper.required"),
-                          class: "crayons-indicator crayons-indicator--critical")
+                          class: "c-indicator c-indicator--danger")
       content = safe_join([content, required])
     end
 
