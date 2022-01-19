@@ -28,7 +28,11 @@ class RegistrationsController < Devise::RegistrationsController
         redirect_to confirm_email_path(email: resource.email)
       else
         sign_in(resource)
-        redirect_to new_admin_creator_setting_path
+        if resource.roles.includes(:creator).any?
+          redirect_to new_admin_creator_setting_path
+        else
+          redirect_to root_path
+        end
       end
     else
       render action: "by_email"
