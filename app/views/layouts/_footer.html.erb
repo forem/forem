@@ -14,7 +14,9 @@
                community: community_name,
                copyright: copyright_notice) %></p>
     </div>
-    <a href="https://www.forem.com" target="_blank" rel="noopener" class="c-link c-link c-link--block c-link--icon-alone self-center"><%= inline_svg_tag("logo-forem.svg", aria: true, class: "c-link__icon crayons-icon crayons-icon--default", title: t("views.main.footer.logo")) %></a>
+    <a href="https://www.forem.com" target="_blank" rel="noopener" class="c-link c-link c-link--block c-link--icon-alone self-center">
+      <%= crayons_icon_tag("logo-forem", class: "c-link__icon", native: true, title: t("views.main.footer.logo")) %>
+    </a>
   </div>
 </footer>
 <div id="snack-zone"></div>

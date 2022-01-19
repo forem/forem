@@ -41,7 +41,7 @@ class TwitterTimelineTag < LiquidTagBase
   end
 
   def raise_error
-    raise StandardError, "Invalid Twitter Timeline URL"
+    raise StandardError, I18n.t("liquid_tags.twitter_timeline_tag.invalid_url")
   end
 end
 

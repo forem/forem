@@ -149,6 +149,8 @@ module Authentication
     end
 
     def update_user(user)
+      return user if user.suspended?
+
       user.tap do |model|
         model.unlock_access! if model.access_locked?
 
