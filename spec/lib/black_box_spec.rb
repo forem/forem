@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BlackBox, type: :black_box do
+RSpec.describe BlackBox, type: :lib do
   describe "#article_hotness_score" do
     it "returns higher value for higher score" do
       article = build_stubbed(:article, score: 99, published_at: Time.current)
