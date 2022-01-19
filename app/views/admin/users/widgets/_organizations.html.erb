@@ -28,9 +28,9 @@
         <button type="button" class="c-btn c-btn--icon-alone">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon") %>
         </button>
-        <button type="button" class="c-btn c-btn--destructive c-btn--icon-alone">
-          <%= crayons_icon_tag(:x, class: "c-btn__icon") %>
-        </button>
+        <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
+          <%= f.button crayons_icon_tag(:x, class: "c-btn__icon"), class: "c-btn c-btn--destructive c-btn--icon-alone", data: { confirm: "Are you sure you want to remove them from #{org_membership.organization.name}?" } %>
+        <% end %>
       </div>
     </div>
   <% end %>
