@@ -43,3 +43,25 @@
     padding: var(--su-4);
   }
 }
+
+.c-card {
+  --revealable-display: none;
+
+  border-radius: var(--radius-auto);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 1px var(--card-border);
+  overflow-wrap: anywhere;
+
+  &__revealable {
+    display: var(--revealable-display);
+  }
+
+  &--interactive {
+    &:hover,
+    &:focus-visible,
+    &:focus-within {
+      --card-border: var(--base-90);
+      --revealable-display: block;
+    }
+  }
+}
