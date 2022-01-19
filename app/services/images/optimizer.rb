@@ -24,7 +24,7 @@ module Images
     }.freeze
 
     def self.cloudinary(img_src, **kwargs)
-      options = DEFAULT_CL_OPTIONS.merge(kwargs).reject { |_, v| v.blank? }
+      options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
 
       if img_src&.include?(".gif")
         options[:quality] = 66
@@ -43,7 +43,7 @@ module Images
 
     def self.imgproxy(img_src, **kwargs)
       translated_options = translate_cloudinary_options(kwargs)
-      options = DEFAULT_IMGPROXY_OPTIONS.merge(translated_options).reject { |_, v| v.blank? }
+      options = DEFAULT_IMGPROXY_OPTIONS.merge(translated_options).compact_blank
       Imgproxy.config.endpoint ||= get_imgproxy_endpoint
       Imgproxy.url_for(img_src, options)
     end

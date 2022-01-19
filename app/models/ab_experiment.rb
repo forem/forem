@@ -17,7 +17,7 @@ class AbExperiment < SimpleDelegator
   # for different experiments.  This provides the tooling for that
   # exact thing.
   EXPERIMENT_TO_METHOD_NAME_MAP = {
-    feed_strategy_round_3: :feed_strategy
+    feed_strategy_round_4: :feed_strategy
   }.freeze
 
   # This method helps us leverage existing methods for different

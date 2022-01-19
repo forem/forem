@@ -61,15 +61,16 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
     fname = Faker::Name.unique.first_name
     # Including "\\:/" to help with identifying local issues with
     # character escaping.
-    lname = Faker::Name.unique.last_name + "\\:/"
-    name = [fname, "\"The #{fname}\"", lname].join(" ")
+    lname = Faker::Name.unique.last_name
+    name = [fname, "\"The #{fname}\"", lname, " \\:/"].join(" ")
+    username = "#{fname} #{lname}"
 
     user = User.create!(
       name: name,
       profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-      twitter_username: Faker::Internet.username(specifier: name),
+      twitter_username: Faker::Internet.username(specifier: username),
       # Emails limited to 50 characters
-      email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
+      email: Faker::Internet.email(name: username, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
       registered_at: Time.current,
       registered: true,
