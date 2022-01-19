@@ -156,7 +156,8 @@ module Broadcasts
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end
 
-        authentication_broadcasts.find_by!(title: "Welcome Notification: #{missing_identities.sample}")
+        Broadcast.active.find_by!(title: I18n.t("services.broadcasts.welcome_notification.generator.welcome",
+                                                key: missing_identities.first))
       end
 
       def find_discuss_ask_broadcast
@@ -167,7 +168,8 @@ module Broadcasts
                else
                  "discuss_and_ask"
                end
-        Broadcast.active.find_by!(title: "Welcome Notification: #{type}")
+        Broadcast.active.find_by!(title: I18n.t("services.broadcasts.welcome_notification.generator.welcome",
+                                                key: type))
       end
 
       def asked_a_question

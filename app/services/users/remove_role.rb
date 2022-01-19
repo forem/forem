@@ -25,7 +25,7 @@ module Users
       end
       response
     rescue StandardError => e
-      response.error_message = "There was an issue removing this role. #{e.message}"
+      response.error_message = I18n.t("services.users.remove_role.there_was_an_issue_removin", e_message: e.message)
       response
     end
 
@@ -36,14 +36,14 @@ module Users
     def super_admin_role?(role)
       return false if role != :super_admin
 
-      response.error_message = "Super Admin roles cannot be removed."
+      response.error_message = I18n.t("services.users.remove_role.super_admin_roles_cannot_b")
       true
     end
 
     def user_current_user?(user)
       return false if user.id != admin.id
 
-      response.error_message = "Admins cannot remove roles from themselves."
+      response.error_message = I18n.t("services.users.remove_role.admins_cannot_remove_roles")
       true
     end
   end

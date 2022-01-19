@@ -33,8 +33,9 @@ class MediumArticleRetrievalService
   private
 
   def publication_date(published_time)
-    Time.zone.parse(published_time).strftime("%b %-d, %Y")
+    I18n.l(Time.zone.parse(published_time), format: :medium)
   rescue ArgumentError, NoMethodError => e
-    Rails.logger.error("#{published_time} is not a valid date: #{e}")
+    Rails.logger.error(I18n.t("services.medium_article_retrieval_service.is_not_a_valid_date",
+                              published_time: published_time, e: e))
   end
 end
