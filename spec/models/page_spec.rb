@@ -8,6 +8,14 @@ RSpec.describe Page, type: :model do
       specify { expect { |b| described_class.render_safe_html_for(slug: slug, &b) }.to yield_control }
     end
 
+    context "when no matching slug and the caller didn't pass a block" do
+      # Instead of raising an exception we could "silently" do nothing.  That too might be
+      # reasonable.  But this seems like a good enough test.
+      it "raises an exception" do
+        expect { described_class.render_safe_html_for(slug: slug) }.to raise_error(LocalJumpError)
+      end
+    end
+
     context "when there's a matching slug" do
       subject(:rendered_html) { described_class.render_safe_html_for(slug: page.slug) }
 

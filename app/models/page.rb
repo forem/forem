@@ -27,6 +27,8 @@ class Page < ApplicationRecord
   #
   # @yield Yield to the calling context if there's no Page match for slug.
   #
+  # @raise LocalJumpError when no matching slug nor block given.
+  #
   # @note Yes, treating this value as HTML safe is risky.  But we already opened that vector by
   #       letting the administrator of pages write HTML.
   #
