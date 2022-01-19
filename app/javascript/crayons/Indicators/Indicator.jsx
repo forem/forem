@@ -24,11 +24,10 @@ export const Indicator = (props) => {
   );
 };
 
-Indicator.displayName = 'CTA';
+Indicator.displayName = 'Indicator';
 
 Indicator.propTypes = {
   variant: PropTypes.oneOf(['default', 'info', 'success', 'warning', 'danger']),
-  href: PropTypes.string.isRequired,
   className: PropTypes.string,
   relaxed: PropTypes.bool,
 };
