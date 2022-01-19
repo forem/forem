@@ -101,6 +101,9 @@ fr:
             '
         sponsorship:
           body: "%{user} bought a %{type} sponsorship for %{organization}\n"
+    spam:
+      article_handler:
+        suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Source not found.

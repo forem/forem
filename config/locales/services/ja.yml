@@ -1,5 +1,5 @@
 ---
-en:
+ja:
   services:
     analytics_service:
       no_stats: You can't view this article's stats
@@ -18,13 +18,9 @@ en:
         message: "You're famous! [This is the comment](%{comment}) for which you're being recognized. 😄"
       award_streak:
         longest: 16 weeks! You've achieved the longest writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!
-        message:
-          one: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
-          other: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
+        message: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
       award_yearly_club:
-        message:
-          one: Happy %{community} birthday! Can you believe it's been %{count} year already?!
-          other: Happy %{community} birthday! Can you believe it's been %{count} years already?!
+        message: Happy %{community} birthday! Can you believe it's been %{count} years already?!
       congrats: Congrats!!!
       thank_you: Thank you so much for your contributions!
     broadcasts:
@@ -64,14 +60,10 @@ en:
       errors:
         select_payment_method: "Please select a payment method"
       process_credit_purchase:
-        charge:
-          one: Purchase of %{count} credits.
-          other: Purchase of %{count} credits.
+        charge: Purchase of %{count} credits.
     rate_limit_checker:
       invalid_key: 'Invalid Cache Key: no unique component present'
-      limit_reached:
-        one: Rate limit reached, try again in %{count} seconds
-        other: Rate limit reached, try again in %{count} seconds
+      limit_reached: Rate limit reached, try again in %{count} seconds
     slack:
       messengers:
         article_fetched_feed:
@@ -103,7 +95,7 @@ en:
           body: "%{user} bought a %{type} sponsorship for %{organization}\n"
     spam:
       article_handler:
-        suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.
+        suspended_too_many: ユーザーはスパム記事を大量に投稿したため、自動検出により凍結されました。
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Source not found.

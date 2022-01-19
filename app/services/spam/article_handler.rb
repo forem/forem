@@ -35,7 +35,7 @@ module Spam
         author_id: Settings::General.mascot_user_id,
         noteable: article.user,
         reason: "automatic_suspend",
-        content: I18n.t("models.article.user_suspended_for_too_man"),
+        content: I18n.t("services.spam.article_handler.suspended_too_many"),
       )
     end
   end

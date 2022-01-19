@@ -51,13 +51,14 @@ RSpec.describe Notifications::NewMention::Send, type: :service do
   it "creates a mobile notification with name of the mentionable author" do
     user.notification_setting.update(mobile_mention_notifications: true)
     allow(PushNotifications::Send).to receive(:call)
+    allow(I18n).to receive(:t).with("services.notifications.new_mention.new")
     allow(I18n).to receive(:t).with("views.notifications.mention.article_mobile",
                                     user: mention.mentionable.user.username,
                                     title: anything).and_call_original
 
     described_class.call(mention)
     expect(PushNotifications::Send).to have_received(:call)
-    expect(I18n).to have_received(:t)
+    expect(I18n).to have_received(:t).twice
   end
 
   it "does not send if the article has negative score already" do
