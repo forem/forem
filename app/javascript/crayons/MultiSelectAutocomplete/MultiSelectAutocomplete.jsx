@@ -23,8 +23,8 @@ const reducer = (state, action) => {
     case 'setSelectedItems':
       return {
         ...state,
-        selectedItems: action.payload,
-        suggestions: [],
+        selectedItems: action.payload.selectedItems,
+        suggestions: action.payload.suggestions ?? state.suggestions,
         activeDescendentIndex: null,
       };
     case 'setSuggestions':
@@ -115,7 +115,12 @@ export const MultiSelectAutocomplete = ({
 
   useEffect(() => {
     if (defaultValue.length > 0) {
-      dispatch({ type: 'setSelectedItems', payload: defaultValue });
+      dispatch({
+        type: 'setSelectedItems',
+        payload: {
+          selectedItems: defaultValue,
+        },
+      });
     }
   }, [defaultValue]);
 
@@ -129,11 +134,14 @@ export const MultiSelectAutocomplete = ({
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
     if (!ignoreBlur && allowSelections && currentValue !== '') {
       selectByText({ textValue: currentValue, keepSelecting: false });
-    } else {
-      exitEditState({ keepSelecting: false });
-      dispatch({ type: 'setSuggestions', payload: [] });
-      dispatch({ type: 'setIgnoreBlur', payload: false });
+      return;
     }
+    if (!ignoreBlur) {
+      // Clear the suggestions if a genuine blur event
+      dispatch({ type: 'setSuggestions', payload: [] });
+    }
+    exitEditState({ keepSelecting: false });
+    dispatch({ type: 'setIgnoreBlur', payload: false });
   };
 
   useEffect(() => {
@@ -199,11 +207,6 @@ export const MultiSelectAutocomplete = ({
       nextInputValue,
       keepSelecting,
     });
-
-    // Start the next search
-    if (keepSelecting) {
-      handleAutocompleteStart();
-    }
   };
 
   const enterEditState = (editItem, editItemIndex) => {
@@ -356,7 +359,6 @@ export const MultiSelectAutocomplete = ({
         e.preventDefault();
         if (activeDescendentIndex !== null) {
           selectItem({ selectedItem: suggestions[activeDescendentIndex] });
-          handleAutocompleteStart();
         }
         break;
       case KEYS.ESCAPE:
@@ -401,6 +403,19 @@ export const MultiSelectAutocomplete = ({
     }
   };
 
+  const getEmptyInputSuggestions = ({ currentSelections = selectedItems }) => {
+    if (staticSuggestions.length > 0) {
+      return staticSuggestions.filter(
+        (suggestion) =>
+          !currentSelections.some(
+            (selection) => selection.name === suggestion.name,
+          ),
+      );
+    }
+
+    return [];
+  };
+
   const selectItem = ({
     selectedItem,
     nextInputValue = '',
@@ -427,7 +442,18 @@ export const MultiSelectAutocomplete = ({
     selectedItemsRef.current.appendChild(listItem);
 
     exitEditState({ nextInputValue, keepSelecting });
-    dispatch({ type: 'setSelectedItems', payload: newSelections });
+
+    dispatch({
+      type: 'setSelectedItems',
+      payload: {
+        selectedItems: newSelections,
+        suggestions: keepSelecting
+          ? getEmptyInputSuggestions({
+              currentSelections: newSelections,
+            })
+          : [],
+      },
+    });
 
     onSelectionsChanged?.(newSelections);
 
@@ -457,7 +483,10 @@ export const MultiSelectAutocomplete = ({
     );
     dispatch({
       type: 'setSelectedItems',
-      payload: newSelections,
+      payload: {
+        selectedItems: newSelections,
+        suggestions,
+      },
     });
 
     dispatch({
