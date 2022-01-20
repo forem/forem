@@ -28,11 +28,11 @@ module Constants
           placeholder: ""
         },
         from_email_address: {
-          description: "The email address that emails should be sent from",
+          description: "The email address that emails will be sent from",
           placeholder: ""
         },
         reply_to_email_address: {
-          description: "The email address that emails can be replied to",
+          description: "The email address that will users will be able to reply to",
           placeholder: ""
         }
       }.freeze
