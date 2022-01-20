@@ -59,8 +59,8 @@
   /* Main content containers */
   --card-bg: rgb(var(--grey-900));
   --card-color: rgb(var(--grey-50));
-  --card-color-secondary: rgb(var(--grey-400));
-  --card-color-tertiary: rgb(var(--grey-600));
+  --card-color-secondary: rgb(var(--grey-300));
+  --card-color-tertiary: rgb(var(--grey-400));
   --card-secondary-bg: rgb(var(--grey-900));
   --card-secondary-color: rgb(var(--grey-200));
   --card-border: rgba(var(--white), 0.15);
@@ -134,14 +134,6 @@
   /* Snackbars */
   --snackbar-bg: rgb(var(--grey-50));
   --snackbar-color: rgb(var(--grey-900));
-
-  /* Indicators */
-  --indicator-accent-bg: var(--accent-brand);
-  --indicator-accent-color: rgb(var(--white));
-  --indicator-critical-bg: rgb(var(--red-500));
-  --indicator-critical-color: rgb(var(--grey-900));
-  --indicator-default-bg: rgb(var(--grey-500));
-  --indicator-default-color: rgb(var(--grey-900));
 
   /* Tabs */
   --tab-color: rgb(var(--grey-100));
@@ -269,16 +261,28 @@
   --tooltip-color: rgb(var(--grey-800));
 
   /***********************************************
-  ** Badges **************************************
+  ** Indicators **********************************
   ***********************************************/
 
-  /* Badges: Danger */
-  --badge-danger-bg: var(--accent-danger-darker);
-  --badge-danger-color: rgb(255,255,255);
+  /* Indicators: Default */
+  --indicator-bg: rgb(var(--grey-600));
+  --indicator-color: rgb(var(--grey-200));
 
-  /* Badges: Info */
-  --badge-info-bg: var(--accent-brand-darker);
-  --badge-info-color: rgb(255,255,255);
+  /* Indicators: Success */
+  --indicator-success-bg: rgb(var(--green-700));
+  --indicator-success-color: rgb(var(--green-50));
+
+  /* Indicators: Warning */
+  --indicator-warning-bg: rgb(var(--yellow-400));
+  --indicator-warning-color: rgb(var(--yellow-900));
+
+  /* Indicators: Danger */
+  --indicator-danger-bg: rgb(var(--red-700));
+  --indicator-danger-color: rgb(var(--red-50));
+
+  /* Indicators: Info */
+  --indicator-info-bg: rgb(var(--indigo-700));
+  --indicator-info-color: rgb(var(--indigo-100));
 
   /***********************************************
   ** Utilities ***********************************

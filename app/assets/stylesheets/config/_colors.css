@@ -128,14 +128,6 @@
   --snackbar-bg: rgb(var(--grey-900));
   --snackbar-color: rgb(var(--white));
 
-  /* Indicators */
-  --indicator-accent-bg: var(--accent-brand);
-  --indicator-accent-color: rgb(var(--white));
-  --indicator-critical-bg: rgb(var(--red-600));
-  --indicator-critical-color: rgb(var(--white));
-  --indicator-default-bg: rgb(var(--grey-200));
-  --indicator-default-color: rgb(var(--grey-700));
-
   /* Tabs */
   --tab-color: rgb(var(--grey-700));
   --tab-color-hover: var(--accent-brand);
@@ -265,24 +257,24 @@
   ***********************************************/
 
   /* Indicators: Default */
-  --badge-bg: var(--base-30);
-  --badge-color: var(--base-80);
+  --indicator-bg: rgb(var(--grey-300));
+  --indicator-color: rgb(var(--grey-700));
 
   /* Indicators: Success */
-  --badge-success-bg: var(--accent-success);
-  --badge-success-color: rgb(0,0,0);
+  --indicator-success-bg: rgb(var(--green-400));
+  --indicator-success-color: rgb(var(--green-900));
 
   /* Indicators: Warning */
-  --badge-warning-bg: var(--accent-warning);
-  --badge-warning-color: rgb(0,0,0);
+  --indicator-warning-bg: rgb(var(--yellow-300));
+  --indicator-warning-color: rgb(var(--yellow-900));
 
   /* Indicators: Danger */
-  --badge-danger-bg: var(--accent-danger);
-  --badge-danger-color: rgb(255,255,255);
+  --indicator-danger-bg: rgb(var(--red-600));
+  --indicator-danger-color: rgb(var(--white));
 
   /* Indicators: Info */
-  --badge-info-bg: var(--accent-brand);
-  --badge-info-color: rgb(255,255,255);
+  --indicator-info-bg: var(--accent-brand);
+  --indicator-info-color: rgb(var(--white));
 
   /***********************************************
   ** Utilities ***********************************

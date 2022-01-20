@@ -41,6 +41,7 @@ export default {
 export const Default = (args) => <Indicator {...args} />;
 Default.args = {
   children: 'Hello world',
+  extraPadding: false,
 };
 
 export const VariantInfo = (args) => <Indicator {...args} />;

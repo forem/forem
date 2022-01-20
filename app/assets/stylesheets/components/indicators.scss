@@ -1,6 +1,6 @@
 .c-indicator {
-  --bg: var(--badge-bg);
-  --color: var(--badge-color);
+  --bg: var(--indicator-bg);
+  --color: var(--indicator-color);
   padding: var(--su-1);
   text-align: center;
   line-height: 1;
@@ -12,23 +12,23 @@
   min-width: var(--su-2);
 
   &--success {
-    --bg: var(--badge-success-bg);
-    --color: var(--badge-success-color);
+    --bg: var(--indicator-success-bg);
+    --color: var(--indicator-success-color);
   }
 
   &--warning {
-    --bg: var(--badge-warning-bg);
-    --color: var(--badge-warning-color);
+    --bg: var(--indicator-warning-bg);
+    --color: var(--indicator-warning-color);
   }
 
   &--danger {
-    --bg: var(--badge-danger-bg);
-    --color: var(--badge-danger-color);
+    --bg: var(--indicator-danger-bg);
+    --color: var(--indicator-danger-color);
   }
 
   &--info {
-    --bg: var(--badge-info-bg);
-    --color: var(--badge-info-color);
+    --bg: var(--indicator-info-bg);
+    --color: var(--indicator-info-color);
   }
 
   &--relaxed {
