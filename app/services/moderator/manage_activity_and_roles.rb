@@ -95,7 +95,7 @@ module Moderator
     end
 
     def check_super_admin
-      raise "You need super admin status to take this action" unless @admin.super_admin?
+      raise I18n.t("services.moderator.manage_activity_and_roles.need_super") unless @admin.super_admin?
     end
 
     def comment_suspended
