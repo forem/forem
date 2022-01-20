@@ -19,7 +19,7 @@ class VideosController < ApplicationController
   end
 
   def create
-    @article = ArticleWithVideoCreationService.new(article_params, current_user).create!
+    @article = Articles::CreateWithVideo.call(params[:key], current_user)
 
     redirect_to "#{@article.path}/edit"
   end
@@ -28,9 +28,5 @@ class VideosController < ApplicationController
 
   def authorize_video
     authorize :video
-  end
-
-  def article_params
-    params.require(:article).permit(:video)
   end
 end
