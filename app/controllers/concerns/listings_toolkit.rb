@@ -4,27 +4,6 @@ module ListingsToolkit
 
   MANDATORY_FIELDS_FOR_UPDATE = %i[body_markdown title tag_list].freeze
 
-  def unpublish_listing
-    @listing.update(published: false)
-  end
-
-  def publish_listing
-    @listing.update(published: true)
-  end
-
-  def update_listing_details
-    # [@forem/oss] Not entirely sure what the intention behind the
-    # original code was, but at least this is more compact.
-
-    filtered_params = listing_params.compact
-
-    @listing.update(filtered_params)
-  end
-
-  def bump_listing_success
-    @listing.update(bumped_at: Time.current)
-  end
-
   def clear_listings_cache
     Listings::BustCacheWorker.perform_async(@listing.id)
   end
@@ -125,7 +104,7 @@ module ListingsToolkit
     return bump_listing(cost) if listing_params[:action] == "bump"
 
     if listing_params[:action] == "unpublish"
-      unpublish_listing
+      @listing.unpublish
       process_after_unpublish
       return
     elsif listing_params[:action] == "publish"
@@ -134,9 +113,9 @@ module ListingsToolkit
         return
       end
 
-      publish_listing
+      @listing.publish
     elsif listing_updatable?
-      saved = update_listing_details
+      saved = @listing.update(listing_params.compact)
       return process_unsuccessful_update unless saved
     end
 
@@ -158,13 +137,15 @@ module ListingsToolkit
 
   def charge_credits_before_bump(purchaser, cost)
     ActiveRecord::Base.transaction do
-      Credits::Buy.call(
+      enough_credits = Credits::Buy.call(
         purchaser: purchaser,
         purchase: @listing,
         cost: cost,
       )
 
-      raise ActiveRecord::Rollback unless bump_listing_success
+      unless enough_credits && @listing.update(bumped_at: Time.current)
+        raise ActiveRecord::Rollback
+      end
     end
   end
 
