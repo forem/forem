@@ -59,7 +59,7 @@ Rpush.reflect do |on|
       tags: [
         "app_bundle:#{notification.app&.bundle_id}",
         "type:#{JSON.parse(notification.payload).dig('data', 'type') || 'unknown'}",
-        { host: ENV["APP_DOMAIN"] },
+        "host:#{ENV['APP_DOMAIN']}",
       ],
     )
   end
@@ -82,7 +82,7 @@ Rpush.reflect do |on|
         "app_bundle:#{notification.app&.bundle_id}",
         "error_code:#{notification.error_code}",
         "error_description:#{notification.error_description}",
-        { host: ENV["APP_DOMAIN"] },
+        "host:#{ENV['APP_DOMAIN']}",
       ],
     )
   end
