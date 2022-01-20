@@ -43,4 +43,20 @@ RSpec.describe Settings::SMTP do
                                              })
     end
   end
+
+  describe "::provided_minimum_settings?" do
+    it "returns true if addess, user_name, and password are provided" do
+      described_class.address = "smtp.google.com"
+      described_class.user_name = "username"
+      described_class.password = "password"
+
+      expect(described_class.provided_minimum_settings?).to be true
+    end
+
+    it "returns false if one of addess, user_name, or password is missing" do
+      described_class.address = "smtp.google.com"
+
+      expect(described_class.provided_minimum_settings?).to be false
+    end
+  end
 end
