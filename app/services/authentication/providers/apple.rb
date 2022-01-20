@@ -9,7 +9,7 @@ module Authentication
 
       def new_user_data
         # Apple sends `first_name` and `last_name` as separate fields
-        name = "#{info.first_name} #{info.last_name}"
+        name = I18n.t("services.authentication.providers.apple.name", first: info.first_name, last: info.last_name)
 
         user_data = {
           email: info.email,

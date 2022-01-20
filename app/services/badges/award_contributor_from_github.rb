@@ -9,7 +9,7 @@ module Badges
       "forem/DEV-ios",
     ].freeze
 
-    def self.call(since = 1.day.ago, msg = "Thank you so much for your contributions!")
+    def self.call(since = 1.day.ago, msg = I18n.t("services.badges.thank_you"))
       return unless (badge_id = Badge.id_for_slug(BADGE_SLUG))
 
       REPOSITORIES.each do |repo|
