@@ -709,6 +709,8 @@ RSpec.describe Article, type: :model do
   end
 
   describe "#main_image_from_frontmatter" do
+    let(:article) { create(:article, user: user, main_image_from_frontmatter: false) }
+
     it "set to true if markdown has cover_image" do
       article = create(
         :article,

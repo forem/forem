@@ -624,7 +624,7 @@ class Article < ApplicationRecord
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parse_date(front_matter["date"]) if published
-    set_image(front_matter)
+    set_main_image(front_matter)
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
 
     update_description = front_matter["description"].present? || front_matter["title"].present?
@@ -634,16 +634,14 @@ class Article < ApplicationRecord
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
   end
 
-  def set_image(front_matter)
-    if front_matter.include?("cover_image")
+  def set_main_image(front_matter)
+    # At one point, we have set the main)image based on the front matter. Forever will that now dictate the behavior.
+    if main_image_from_frontmatter?
+      self.main_image = front_matter["cover_image"]
+    elsif front_matter.key?("cover_image")
+      # They've chosen the set cover image in the front matter, so we'll proceed with that assumption.
       self.main_image = front_matter["cover_image"]
       self.main_image_from_frontmatter = true
-    elsif main_image_from_frontmatter
-      # If we do not receive an image from frontmatter but image was earlier set from frontmatter then clear image
-      self.main_image = nil
-      self.main_image_from_frontmatter = true
-    else
-      self.main_image_from_frontmatter = false
     end
   end
 
