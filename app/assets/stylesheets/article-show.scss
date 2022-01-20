@@ -551,3 +551,28 @@ article {
     }
   }
 }
+
+// Align styles of freezeframed animated images with normal image styles
+.ff-container {
+  left: 50%;
+  transform: translateX(-50%);
+
+  canvas {
+    border-radius: var(--radius);
+  }
+
+  img[data-animated='true'] {
+    margin: 0;
+    cursor: unset;
+  }
+
+  .ff-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: var(--su-1);
+    z-index: 5;
+    background-color: black;
+    color: white;
+  }
+}
