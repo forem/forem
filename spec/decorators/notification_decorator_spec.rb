@@ -49,6 +49,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
       expect(result.class).to be_a(Struct)
       expect(result.class.name).to eq("User")
+      expect(result.class_name).to eq("User")
     end
   end
 

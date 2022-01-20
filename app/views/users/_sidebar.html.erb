@@ -11,7 +11,7 @@
           <% @user.organizations.each do |organization| %>
             <a href="/<%= organization.slug %>" class="flex items-center crayons-link crayons-link--contentful">
               <span class="crayons-logo crayons-logo--l mr-2 shrink-0">
-                <img src="<%= Images::Profile.call(organization.profile_image_url, length: 90) %>" alt="<%= organization.name %> profile image" class="crayons-logo__image" loading="lazy" />
+                <img src="<%= organization.profile_image_url_for(length: 90) %>" alt="<%= organization.name %> profile image" class="crayons-logo__image" loading="lazy" />
               </span>
               <h4 class="fs-base fw-medium"><%= organization.name %></h4>
             </a>
@@ -50,15 +50,15 @@
   <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}", expires_in: 10.days do %>
     <div class="crayons-card crayons-card--secondary p-4">
       <div class="flex items-center mb-4">
-        <%= inline_svg_tag("post.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.post.icon")) %>
+        <%= crayons_icon_tag(:post, class: "mr-3 color-base-50", title: t("views.users.side.post.icon")) %>
         <%= t "views.users.side.post.text", count: @user.articles.published.size %>
       </div>
       <div class="flex items-center mb-4">
-        <%= inline_svg_tag("comment.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.comment.icon")) %>
+        <%= crayons_icon_tag(:comment, class: "mr-3 color-base-50", title: t("views.users.side.comment.icon")) %>
         <%= t "views.users.side.comment.text", count: @user.comments.where(deleted: false).size %>
       </div>
       <div class="flex items-center">
-        <%= inline_svg_tag("tag.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.tag.icon")) %>
+        <%= crayons_icon_tag(:tag, class: "mr-3 color-base-50", title: t("views.users.side.tag.icon")) %>
         <%= t("views.users.side.tag.text", count: @user.decorate.cached_followed_tags.size) %>
       </div>
     </div>

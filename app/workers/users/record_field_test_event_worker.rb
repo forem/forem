@@ -16,13 +16,18 @@ module Users
         # We have special conditional goals for some where we look for past events for commulative wins
         # Otherwise we convert the goal as given.
         when "user_creates_pageview"
-          pageview_goal(7.days.ago, "DATE(created_at)", 4, "user_views_article_four_days_in_week")
-          pageview_goal(24.hours.ago, "DATE_PART('hour', created_at)", 4, "user_views_article_four_hours_in_day")
-          pageview_goal(14.days.ago, "DATE(created_at)", 9, "user_views_article_nine_days_in_two_week")
-          pageview_goal(5.days.ago, "DATE_PART('hour', created_at)", 12, "user_views_article_twelve_hours_in_five_days")
+          pageview_goal(7.days.ago, "DATE(created_at)", 4,
+                        "user_views_pages_on_at_least_four_different_days_within_a_week")
+          pageview_goal(24.hours.ago, "DATE_PART('hour', created_at)", 4,
+                        "user_views_pages_on_at_least_four_different_hours_within_a_day")
+          pageview_goal(14.days.ago, "DATE(created_at)", 9,
+                        "user_views_pages_on_at_least_nine_different_days_within_two_weeks")
+          pageview_goal(5.days.ago, "DATE_PART('hour', created_at)", 12,
+                        "user_views_pages_on_at_least_twelve_different_hours_within_five_days")
         when "user_creates_comment" # comments goal. Only page views and comments are currently active.
           field_test_converted(@experiment, participant: @user, goal: goal) # base single comment goal.
-          comment_goal(7.days.ago, "DATE(created_at)", 4, "user_creates_comment_four_days_in_week")
+          comment_goal(7.days.ago, "DATE(created_at)", 4,
+                       "user_creates_comment_on_at_least_four_different_days_within_a_week")
         else
           field_test_converted(@experiment, participant: @user, goal: goal) # base single comment goal.
         end

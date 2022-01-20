@@ -45,7 +45,7 @@
           <div class="mt-auto">
             <button
               class="crayons-btn crayons-btn--secondary follow-action-button"
-              data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary", "name": "<%= tag.name %>"}'>
+              data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "secondary") %>'>
               <%= t("views.tags.follow") %>
             </button>
           </div>

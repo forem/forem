@@ -22,7 +22,7 @@ RSpec.describe CommentTag, type: :liquid_tag do
     end
 
     it "renders 'Comment Not Found' message if comment ID does not exist" do
-      liquid = generate_comment_tag("nonexistent ID")
+      liquid = generate_comment_tag("nonexistentid")
 
       expect(liquid.render).to include("Comment Not Found")
     end
@@ -50,6 +50,14 @@ RSpec.describe CommentTag, type: :liquid_tag do
 
       expect(liquid.render).to include(comment.body_markdown)
       expect(liquid.render).to include(user.name)
+    end
+  end
+
+  context "when given invalid id_code" do
+    it "raises an error" do
+      expect do
+        generate_comment_tag("Invalid%ID").render
+      end.to raise_error(StandardError, "Invalid Comment ID or URL")
     end
   end
 end

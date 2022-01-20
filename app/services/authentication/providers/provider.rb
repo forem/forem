@@ -34,7 +34,7 @@ module Authentication
       end
 
       def self.provider_name
-        name.demodulize.downcase.to_sym
+        name.demodulize.underscore.to_sym
       end
 
       def self.user_username_field

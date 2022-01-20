@@ -1,7 +1,6 @@
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
-  include Storext.model
   include Reactable
   include UserSubscriptionSourceable
   include PgSearch::Model
@@ -32,6 +31,7 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   UNIQUE_URL_ERROR = "has already been taken. " \
                      "Email #{ForemInstance.email} for further details.".freeze
+  PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
   has_one :discussion_lock, dependent: :delete
 
@@ -81,7 +81,6 @@ class Article < ApplicationRecord
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
   validates :title, presence: true, length: { maximum: 128 }
-  validates :user_id, presence: true
   validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
@@ -101,6 +100,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
   before_validation :evaluate_markdown, :create_slug
+  before_validation :remove_prohibited_unicode_characters
   before_save :update_cached_user
   before_save :set_all_dates
 
@@ -160,7 +160,12 @@ class Article < ApplicationRecord
     SQL
   end
 
+  # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
+  # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
   serialize :cached_user
+
+  # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
+  # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
   serialize :cached_organization
 
   # TODO: [@rhymes] Rename the article column and the trigger name.
@@ -187,6 +192,8 @@ class Article < ApplicationRecord
       .where("published_at <= ?", Time.current)
   }
   scope :unpublished, -> { where(published: false) }
+
+  scope :not_authored_by, ->(user_id) { where.not(user_id: user_id) }
 
   # [@jeremyf] For approved articles is there always an assumption of
   #            published?  Regardless, the scope helps us deal with
@@ -296,6 +303,16 @@ class Article < ApplicationRecord
       end
 
     order(column => dir.to_sym)
+  }
+
+  # @note This includes the `featured` scope, which may or may not be
+  #       something we expose going forward.  However, it was
+  #       something used in two of the three queries we had that
+  #       included the where `score > Settings::UserExperience.home_feed_minimum_score`
+  scope :with_at_least_home_feed_minimum_score, lambda {
+    featured.or(
+      where(score: Settings::UserExperience.home_feed_minimum_score..),
+    )
   }
 
   scope :featured, -> { where(featured: true) }
@@ -836,5 +853,11 @@ class Article < ApplicationRecord
     return unless saved_change_to_attribute?(:processed_html)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
+  end
+
+  def remove_prohibited_unicode_characters
+    return unless title&.match?(PROHIBITED_UNICODE_CHARACTERS_REGEX)
+
+    self.title = title.gsub(PROHIBITED_UNICODE_CHARACTERS_REGEX, "")
   end
 end

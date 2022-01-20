@@ -88,8 +88,7 @@ module Authentication
       return unless domain
       return if Settings::Authentication.acceptable_domain?(domain: domain)
 
-      message = "Sorry, but the domain for your email address is not allowed. This Forem may have limited signup to only
-       specified email domains or blocked this specific domain from joining."
+      message = I18n.t("services.authentication.authenticator.not_allowed")
 
       raise Authentication::Errors::SpammyEmailDomain, message
     end
@@ -150,6 +149,8 @@ module Authentication
     end
 
     def update_user(user)
+      return user if user.suspended?
+
       user.tap do |model|
         model.unlock_access! if model.access_locked?
 

@@ -2,11 +2,11 @@ require "uri"
 
 class DotnetFiddleTag < LiquidTagBase
   PARTIAL = "liquids/dotnetfiddle".freeze
-  LINK_REGEXP = %r{\A(https)://(dotnetfiddle\.net)/(Widget)/[a-zA-Z0-9\-/]*\z}
+  REGISTRY_REGEXP = %r{https://dotnetfiddle.net(?:/Widget)?/(?<id>[\w\-]+)}
 
   def initialize(_tag_name, link, _parse_context)
     super
-    @link = parse_link(link)
+    @link = parse_link(strip_tags(link))
   end
 
   def render(_context)
@@ -22,28 +22,20 @@ class DotnetFiddleTag < LiquidTagBase
   private
 
   def parse_link(link)
-    stripped_link = ActionController::Base.helpers.strip_tags(link)
-    the_link = stripped_link.split.first
-    raise StandardError, "Invalid DotnetFiddle URL" unless valid_link?(the_link)
+    match = pattern_match_for(link, [REGISTRY_REGEXP])
+    raise StandardError, I18n.t("liquid_tags.dotnet_fiddle_tag.invalid_dotnetfiddle_url") unless match
 
-    insert_widget(the_link)
+    insert_widget(link, match)
   end
 
-  def insert_widget(link)
+  def insert_widget(link, match)
     uri = URI(link)
-    if "Widget".in? uri.path
-      link
-    else
-      # URI.path gives us strings like "/abcde", use substring to get rid of forward slash
-      # otherwise join won't work
-      URI.join("https://dotnetfiddle.net", "/Widget/", uri.path[1..]).to_s
-    end
-  end
+    return link if uri.path.include?("Widget")
 
-  def valid_link?(link)
-    link_no_space = link.delete(" ")
-    link_no_space.match?(LINK_REGEXP)
+    "https://dotnetfiddle.net/Widget/#{match[:id]}"
   end
 end
 
 Liquid::Template.register_tag("dotnetfiddle", DotnetFiddleTag)
+
+UnifiedEmbed.register(DotnetFiddleTag, regexp: DotnetFiddleTag::REGISTRY_REGEXP)

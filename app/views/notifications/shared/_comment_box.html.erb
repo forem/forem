@@ -20,7 +20,7 @@
             data-category="thumbsdown"
             data-reactable-type="Comment"
             title="thumbsdown">
-            <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default reaction-icon", width: 24, height: 24, title: "Thumb down") %>
+            <%= crayons_icon_tag("twemoji/thumb-down", native: true, class: "reaction-icon", title: "Thumb down") %>
           </button>
           <button
             class="crayons-btn crayons-btn--icon crayons-btn--icon-rounded crayons-btn--ghost inline-flex crayons-btn--s reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "vomit") ? "reacted" : "" %>"
@@ -28,7 +28,7 @@
             data-category="vomit"
             data-reactable-type="Comment"
             title="vomit">
-            <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default reaction-icon", width: 24, height: 24, title: "Suspicious") %>
+            <%= crayons_icon_tag("twemoji/suspicious", native: true, class: "reaction-icon", title: "Suspicious") %>
           </button>
         </div>
       <% end %>
@@ -42,8 +42,8 @@
             data-reactable-type="Comment"
             aria-label="<%= t("views.reactions.like.aria_label") %>"
             title="heart">
-            <%= inline_svg_tag("small-heart.svg", aria_hidden: true, class: "crayons-icon reaction-icon not-reacted", title: t("views.comments.footer.heart.icon")) %>
-            <%= inline_svg_tag("small-heart-filled.svg", aria_hidden: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: t("views.comments.footer.heart.icon")) %>
+            <%= crayons_icon_tag("small-heart", class: "reaction-icon not-reacted", aria_hidden: true, title: t("views.comments.footer.heart.icon")) %>
+            <%= crayons_icon_tag("small-heart-filled", class: "reaction-icon--like reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.heart.icon")) %>
             <span class="hidden m:inline-block"><%= t("views.comments.footer.heart.text") %></span>
           </button>
 
@@ -51,19 +51,19 @@
             <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"])&.children&.find_by(user_id: current_user.id) %>
             <% if reply %>
               <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left mr-1 inline-flex reaction-comment reacted" href="<%= reply.path %>" aria-label="<%= t("views.comments.footer.reply.done") %>">
-                <%= inline_svg_tag("small-comment-filled.svg", aria_hidden: true, class: "crayons-icon reaction-icon--comment reaction-icon reacted", title: t("views.comments.footer.reply.icon")) %>
+                <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
                 <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.done") %></span>
               </a>
             <% else %>
               <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>" aria-label="<%= t("views.comments.footer.reply.text") %>">
-                <%= inline_svg_tag("small-comment.svg", aria_hidden: true, class: "crayons-icon reaction-icon not-reacted", title: t("views.comments.footer.reply.icon")) %>
-                <%= inline_svg_tag("small-comment-filled.svg", aria_hidden: true, class: "crayons-icon reaction-icon--comment reaction-icon reacted", title: t("views.comments.footer.reply.icon")) %>
+                <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
+                <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
                 <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>
               </a>
             <% end %>
           <% end %>
           <a href="<%= json_data["comment"]["path"] %>" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s inline-flex">
-            <%= inline_svg_tag("small-link.svg", aria: true, class: "crayons-icon", title: t("views.comments.footer.view.icon")) %><span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
+            <%= crayons_icon_tag("small-link", title: t("views.comments.footer.view.icon")) %><span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
           </a>
         </div>
 

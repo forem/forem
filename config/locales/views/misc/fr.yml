@@ -33,9 +33,6 @@ fr:
         signin: sign-in
     hamburger:
       icon: Navigation menu
-      back: Back
-      forward: Forward
-      refresh: Refresh
       icon_close: Close
       icon_left: Left menu
       icon_right: Right menu
@@ -107,7 +104,6 @@ fr:
         back: Back to %{user}'s Series
         empty: This series doesn't have any articles
     sponsor:
-      icon: Love
       seek: Become a sponsor
     stats:
       meta:

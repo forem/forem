@@ -68,7 +68,7 @@ RSpec.describe "Api::V0::Organizations", type: :request do
       end
 
       expect(response_org_users["joined_at"]).to eq(org_user.created_at.strftime("%b %e, %Y"))
-      expect(response_org_users["profile_image"]).to eq(Images::Profile.call(org_user.profile_image_url, length: 320))
+      expect(response_org_users["profile_image"]).to eq(org_user.profile_image_url_for(length: 320))
     end
   end
 

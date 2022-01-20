@@ -3,7 +3,8 @@ class User < ApplicationRecord
   rolify
 
   include CloudinaryHelper
-  include Storext.model
+
+  include Images::Profile.for(:profile_image_url)
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -111,7 +112,6 @@ class User < ApplicationRecord
                                               foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
-  has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
   has_many :devices, dependent: :delete_all
   has_many :sponsorships, dependent: :delete_all
 
@@ -185,6 +185,9 @@ class User < ApplicationRecord
   # => https://stackoverflow.com/a/11007216/4186181
   #
   scope :search_by_name_and_username, lambda { |term|
+    term = term&.delete("\\") # prevents syntax error in tsquery
+    return none if term.blank?
+
     where(
       sanitize_sql_array(
         [
@@ -506,7 +509,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    Images::Profile.call(profile_image_url, length: 90)
+    profile_image_url_for(length: 90)
   end
 
   def unsubscribe_from_newsletters
@@ -593,6 +596,10 @@ class User < ApplicationRecord
     self.username = username&.downcase
   end
 
+  # @todo Should we do something to ensure that we don't create a username that violates our
+  # USERNAME_MAX_LENGTH constant?
+  #
+  # @see USERNAME_MAX_LENGTH
   def set_temp_username
     self.username = if temp_name_exists?
                       "#{temp_username}_#{rand(100)}"

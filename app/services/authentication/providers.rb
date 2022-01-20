@@ -11,19 +11,19 @@ module Authentication
   module Providers
     # Retrieves a provider that is both available and enabled
     def self.get!(provider_name)
-      name = provider_name.to_s.titleize
+      name = provider_name.to_s.camelize
 
       unless available?(provider_name)
         raise(
           ::Authentication::Errors::ProviderNotFound,
-          "Provider #{name} is not available!",
+          I18n.t("services.authentication.providers.not_available", name: name),
         )
       end
 
       unless enabled?(provider_name)
         raise(
           ::Authentication::Errors::ProviderNotEnabled,
-          "Provider #{name} is not enabled!",
+          I18n.t("services.authentication.providers.not_enabled", name: name),
         )
       end
 
@@ -32,12 +32,16 @@ module Authentication
 
     def self.available
       Authentication::Providers::Provider.subclasses.map do |subclass|
-        subclass.name.demodulize.downcase.to_sym
+        subclass.name.demodulize.underscore.downcase.to_sym
       end.sort
     end
 
+    def self.available_providers
+      Authentication::Providers::Provider.subclasses.sort_by(&:name)
+    end
+
     def self.available?(provider_name)
-      Authentication::Providers.const_defined?(provider_name.to_s.titleize)
+      Authentication::Providers.const_defined?(provider_name.to_s.camelize)
     end
 
     # Returns enabled providers

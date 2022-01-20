@@ -59,7 +59,9 @@ module Stories
     end
 
     def not_found_if_not_established(stories:, tag:)
-      not_found if stories.none? && !tag.supported?
+      return if tag.supported?
+
+      not_found unless stories.any?(&:published?)
     end
 
     def stories_by_timeframe(stories:)
@@ -69,7 +71,7 @@ module Stories
       elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
         stories.where(score: -20..).order(published_at: :desc)
       else
-        stories.order(hotness_score: :desc).where(score: Settings::UserExperience.home_feed_minimum_score..)
+        stories.order(hotness_score: :desc).with_at_least_home_feed_minimum_score
       end
     end
   end

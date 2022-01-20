@@ -24,7 +24,7 @@
               <button
                 id="user-follow-butt"
                 class="crayons-btn follow-action-button"
-                data-info='{"id":<%= @tag.id %>,"className":"Tag", "name": "<%= @tag.pretty_name || @tag.name %>"}'>
+                data-info='<%= DataInfo.to_json(object: @tag, class_name: "Tag", name: @tag.pretty_name || @tag.name) %>'>
                 <%= t("views.stories.follow") %>
               </button>
             <% end %>
@@ -53,7 +53,7 @@
         <h1 class="screen-reader-only"><%= t("views.stories.heading") %></h1>
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden mb-auto" id="on-page-nav-butt-left" aria-label="<%= t("views.stories.menu.aria_left") %>">
           <div class="crayons-icon nav-icon ">
-            <%= inline_svg_tag("hamburger.svg", aria: true, title: t("views.hamburger.icon_left")) %>
+            <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon_left")) %>
           </div>
         </button>
         <% if user_signed_in? %>
@@ -111,7 +111,7 @@
 
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon ml-2 inline-block l:hidden mb-auto" id="on-page-nav-butt-right" aria-label="<%= t("views.stories.menu.aria_right") %>">
           <div class="crayons-icon nav-icon ">
-            <%= inline_svg_tag("hamburger.svg", aria: true, title: t("views.hamburger.icon_right")) %>
+            <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon_right")) %>
           </div>
         </button>
       </header>

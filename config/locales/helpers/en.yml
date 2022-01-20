@@ -2,6 +2,13 @@
 en:
   helpers:
     label:
+      listing:
+        body_markdown: Body Markdown
+        expires_at: Custom Expire Date
+        location: Location
+        organization_id: Post under an organization
+        tag_list: Tags
+        title: Title
       organization:
         name: Name
         slug: Username
@@ -22,13 +29,6 @@ en:
         cta_button_text: Link text
         cta_button_url: Link url
         proof: Proof
-      listing:
-        body_markdown: Body Markdown
-        expires_at: Custom Expire Date
-        location: Location
-        organization_id: Post under an organization
-        tag_list: Tags
-        title: Title
       podcast:
         android_url: Android url
         description: Description
@@ -61,7 +61,6 @@ en:
         email_follower_notifications: Send me an email when someone new follows me
         email_mention_notifications: Send me an email when someone mentions me
         email_badge_notifications: Send me an email when I receive a badge
-        email_connect_messages: Send me an email when I receive a direct message (while inactive)
         email_unread_notifications: Send me occasional reminders that I have unread notifications on %{community}
         mobile_mention_notifications: Send me a push notification when someone mentions me
         mobile_comment_notifications: Send me a push notification when someone replies to me in a comment thread
@@ -91,3 +90,145 @@ en:
         email: john.doe@example.com
         username: johndoe
         feed_url: https://yoursite.com/feed
+    application_helper:
+      app_logo: App logo
+      follow:
+        aria_label:
+          Organization: 'Follow organization: %{name}'
+          Tag: 'Follow tag: %{name}'
+          User: 'Follow user: %{name}'
+          default: 'Follow %{type}: %{name}'
+        text:
+          Organization: Follow
+          Tag: Follow
+          User: Follow
+          default: Follow
+      required: Required
+      subtitle:
+        week: Top posts this week
+        month: Top posts this month
+        year: Top posts this year
+        infinity: All posts
+        latest: Latest posts
+      title_text: "%{title} - %{timeframe}"
+    articles_helper:
+      logo: "%{service_name} logo"
+      most_comments: Most Comments
+      most_reactions: Most Reactions
+      most_views: Most Views
+      recently_created: Recently Created
+      recently_published: Recently Published
+    authentication_helper:
+      any_of_those: any of those
+      email_password: Email & Password
+      reminder: 'Reminder: you used %{method} to authenticate your account, so please use %{dem} to sign in if prompted.'
+      that: that
+      invite_only: You cannot do this until you disable Invite Only Mode
+    comments_helper:
+      ama: ama
+      ask_me_anything: Ask Me Anything
+      author: Author
+      like: Like
+      nbsp_likes_html:
+        one: "&nbsp;like"
+        other: "&nbsp;likes"
+    feedback_messages_helper:
+      offender:
+        body: |
+          Hello,
+
+          It has been brought to our attention that you have violated the %{community} Code of Conduct and/or Terms of Use.
+
+          If this behavior continues, we may need to suspend your %{community} account.
+
+          If you think that there's been a mistake, please reply to this email and we will take another look.
+
+          %{community} Team
+        subject: "%{community} Code of Conduct Violation"
+      reporter:
+        body: |
+          Hi there,
+          Thank you for flagging content that may be in violation of the %{community} Code of Conduct and/or our Terms of Use. We are looking into your report and will take appropriate
+          action.
+          We appreciate your help as we work to foster a positive and inclusive environment for all!
+          %{community} Team
+        subject: "%{community} Report"
+      affected:
+        body: |
+          Hi there,
+
+          We noticed some comments (made by others) on your post that violate the %{community} Code of Conduct and/or our Terms of Use. We have zero tolerance for such behavior and are
+          taking appropriate action.
+
+          Thanks for being awesome, and please don't hesitate to email us with any questions! We welcome all feedback and ideas as we continue working to foster an open and inclusive community.
+
+          %{community} Team
+        subject: Courtesy Notice from %{community}
+    listing_helper:
+      option:
+        one: "%{cl_name} (%{count} Credit)"
+        other: "%{cl_name} (%{count} Credits)"
+    organization_helper:
+      option: "%{org_name} (%{unspent})"
+    rate_limit_checker_helper:
+      day:
+        one: day
+        other: days
+      general: How many %{thing} can a new member (%{timeframe} or less) create within any 5 minute period?
+      published:
+        title: Limit number of posts created
+        description: How many posts can someone create within any 30 second period?
+      antispam:
+        title: Limit number of posts created by a new member
+      update:
+        title: Limit number of updates to a post
+        description: How many updates can someone make within any 30 second period? Update API docs when changed.
+      upload:
+        title: Limit number of images uploaded
+        description: How many images can someone upload within any 30 second period?
+      user:
+        title: Limit number of changes someone can make to their account
+        description: How many changes can someone make to their user account within any 30 second period?
+      follow:
+        title: Limit number of followers someone can follow daily
+        description: How many people can someone follow in a day?
+      reaction:
+        title: Limit number of reactions to a post or comment
+        description: How many times can someone react to a post or comment within any 30 second period?
+      feedback:
+        title: Limit number of times someone can report abuse
+        description: How many times can someone report abuse within any 5 minute period?
+      comment:
+        title: Limit number of comments created
+        description: How many comments can someone create within any 30 second period?
+      comment_antispam:
+        title: Limit number of comments created by a new member
+      mention:
+        title: Limit number of @-mentions in a post or comment
+        description: How many times can someone @-mention other users in a post or comment?
+      listing:
+        title: Limit number of listings created
+        description: How many listings can someone create within any 1 minute period?
+      organization:
+        title: Limit number of organizations created
+        description: How many organizations can someone create within any 5 minute period?
+      subscription:
+        title: Limit number of times someone can subscribe to mailing list liquid tag
+        description: How many times can someone subscribe to a mailing list within any 30 second period?
+      recipient:
+        title: Limit number of general emails we send
+        description: How many emails can we send to someone within any 2 minute period?
+      confirmation:
+        title: Limit number of confirmation emails we send
+        description: How many times can we send a confirmation email to someone within a 2 minute period?
+      thing:
+        posts: posts
+        comments: comments
+    settings_helper:
+      advanced: Advanced
+      beginner: Beginner
+      expert: Expert
+      mid_level: Mid-level
+      novice: Novice
+    social_link_helper:
+      n_a: N/A

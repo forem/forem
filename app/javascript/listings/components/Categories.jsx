@@ -8,7 +8,7 @@ export class Categories extends Component {
       // array example: ["Education/Courses (1 Credit)", "education"]
       if (category === value) {
         return (
-          <option value={value} selected>
+          <option key={value} value={value} selected>
             {text}
           </option>
         );

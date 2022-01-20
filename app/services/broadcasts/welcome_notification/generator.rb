@@ -13,23 +13,31 @@ module Broadcasts
       def call
         return unless user.subscribed_to_welcome_notifications?
 
-        send_welcome_notification unless notification_enqueued
-        send_authentication_notification unless notification_enqueued
-        send_feed_customization_notification unless notification_enqueued
-        send_ux_customization_notification unless notification_enqueued
-        send_discuss_and_ask_notification unless notification_enqueued
-        send_download_app_notification unless notification_enqueued
-      rescue ActiveRecord::RecordNotFound => e
-        Honeybadger.notify(e)
+        notification_methods.each do |method|
+          send method unless notification_enqueued # rubocop:disable Style/Send
+        rescue ActiveRecord::RecordNotFound => e
+          Honeybadger.notify(e)
+        end
       end
 
       private
 
       attr_reader :user, :notification_enqueued
 
+      def notification_methods
+        %i[
+          send_welcome_notification
+          send_authentication_notification
+          send_feed_customization_notification
+          send_ux_customization_notification
+          send_discuss_and_ask_notification
+          send_download_app_notification
+        ]
+      end
+
       def send_welcome_notification
         return if
-          user.created_at > 3.hours.ago ||
+          user.created_at.after?(3.hours.ago) ||
             received_notification?(welcome_broadcast) ||
             commented_on_welcome_thread?
 
@@ -40,9 +48,9 @@ module Broadcasts
 
       def send_authentication_notification
         return if
-          user.created_at > 1.day.ago ||
+          user.created_at.after?(1.day.ago) ||
             authenticated_with_all_providers? ||
-            received_notification?(authentication_broadcast)
+            received_notification?(authentication_broadcasts)
 
         Notification.send_welcome_notification(user.id, authentication_broadcast.id)
         @notification_enqueued = true
@@ -50,7 +58,7 @@ module Broadcasts
 
       def send_feed_customization_notification
         return if
-          user.created_at > 3.days.ago ||
+          user.created_at.after?(3.days.ago) ||
             user_following_tags? ||
             received_notification?(customize_feed_broadcast)
 
@@ -59,7 +67,7 @@ module Broadcasts
       end
 
       def send_ux_customization_notification
-        return if user.created_at > 5.days.ago || received_notification?(customize_ux_broadcast)
+        return if user.created_at.after?(5.days.ago) || received_notification?(customize_ux_broadcast)
 
         Notification.send_welcome_notification(user.id, customize_ux_broadcast.id)
         @notification_enqueued = true
@@ -67,7 +75,7 @@ module Broadcasts
 
       def send_discuss_and_ask_notification
         return if
-          user.created_at > 6.days.ago ||
+          user.created_at.after?(6.days.ago) ||
             (asked_a_question && started_a_discussion) ||
             received_notification?(discuss_and_ask_broadcast)
 
@@ -76,7 +84,7 @@ module Broadcasts
       end
 
       def send_download_app_notification
-        return if user.created_at > 7.days.ago || received_notification?(download_app_broadcast)
+        return if user.created_at.after?(7.days.ago) || received_notification?(download_app_broadcast)
 
         Notification.send_welcome_notification(user.id, download_app_broadcast.id)
         @notification_enqueued = true
@@ -91,11 +99,26 @@ module Broadcasts
         Comment.where(commentable: welcome_thread, user: user).any?
       end
 
+      def authentication_broadcasts
+        Broadcast.active.where(type_of: "Welcome").where("title like '%_connect'")
+      end
+
+      def providers
+        # we filter the providers to suggest based on the following two criteria
+        # - provider is enabled
+        # - an acive provider Broadcast message exists
+        # Disabling/deactivating a provider_connect broadcast removes
+        # the provider from suggestions sent to users
+        @providers ||=
+          Authentication::Providers.enabled.select do |provider|
+            authentication_broadcasts.exists?(title: I18n.t(
+              "services.broadcasts.welcome_notification.generator.welcome", key: "#{provider}_connect"
+            ))
+          end
+      end
+
       def authenticated_with_all_providers?
-        # ga_providers refers to Generally Available (not in beta)
-        ga_providers = Authentication::Providers.enabled.reject { |sym| sym == :apple }
-        enabled_providers = identities.pluck(:provider).map(&:to_sym)
-        (ga_providers - enabled_providers).empty?
+        providers.all? { |sym| identities.exists?(provider: sym) }
       end
 
       def user_following_tags?
@@ -103,15 +126,21 @@ module Broadcasts
       end
 
       def welcome_broadcast
-        @welcome_broadcast ||= Broadcast.active.find_by!(title: "Welcome Notification: welcome_thread")
+        @welcome_broadcast ||= Broadcast.active.find_by!(title: I18n.t(
+          "services.broadcasts.welcome_notification.generator.welcome", key: "welcome_thread"
+        ))
       end
 
       def customize_ux_broadcast
-        @customize_ux_broadcast ||= Broadcast.active.find_by!(title: "Welcome Notification: customize_experience")
+        @customize_ux_broadcast ||= Broadcast.active.find_by!(title: I18n.t(
+          "services.broadcasts.welcome_notification.generator.welcome", key: "customize_experience"
+        ))
       end
 
       def customize_feed_broadcast
-        @customize_feed_broadcast ||= Broadcast.active.find_by!(title: "Welcome Notification: customize_feed")
+        @customize_feed_broadcast ||= Broadcast.active.find_by!(title: I18n.t(
+          "services.broadcasts.welcome_notification.generator.welcome", key: "customize_feed"
+        ))
       end
 
       def authentication_broadcast
@@ -123,7 +152,9 @@ module Broadcasts
       end
 
       def download_app_broadcast
-        @download_app_broadcast ||= Broadcast.active.find_by!(title: "Welcome Notification: download_app")
+        @download_app_broadcast ||= Broadcast.active.find_by!(title: I18n.t(
+          "services.broadcasts.welcome_notification.generator.welcome", key: "download_app"
+        ))
       end
 
       def identities
@@ -131,11 +162,12 @@ module Broadcasts
       end
 
       def find_auth_broadcast
-        missing_identities = Authentication::Providers.enabled.filter_map do |provider|
+        missing_identities = providers.filter_map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end
 
-        Broadcast.active.find_by!(title: "Welcome Notification: #{missing_identities.first}")
+        Broadcast.active.find_by!(title: I18n.t("services.broadcasts.welcome_notification.generator.welcome",
+                                                key: missing_identities.first))
       end
 
       def find_discuss_ask_broadcast
@@ -146,7 +178,8 @@ module Broadcasts
                else
                  "discuss_and_ask"
                end
-        Broadcast.active.find_by!(title: "Welcome Notification: #{type}")
+        Broadcast.active.find_by!(title: I18n.t("services.broadcasts.welcome_notification.generator.welcome",
+                                                key: type))
       end
 
       def asked_a_question

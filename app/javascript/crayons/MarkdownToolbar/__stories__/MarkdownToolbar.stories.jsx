@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { MarkdownToolbar } from '@crayons';
 
 export default {
-  title: 'App Components/MarkdownToolbar',
+  title: 'App Components/Markdown Toolbar',
 };
 
 export const Default = () => {

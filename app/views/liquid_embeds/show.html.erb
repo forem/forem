@@ -2,11 +2,7 @@
 <% cache "liquid_tag_styles_#{ForemInstance.deployed_at}", expires_in: 8.hours do #TODO: Render specific ltag class instead of everything %>
   <style><%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %></style>
 <% end %>
-<% begin %>
-  <% @liquid_node = Liquid::Template.parse("{% #{params[:embeddable]} #{params[:args]} %}").root.nodelist.first %>
-  <%= @liquid_node.render({}) %>
-<% rescue %>
-  <% raise ActionController::RoutingError, "Not Found" %>
-<% end %>
+
+<%= @rendered_node %>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.1.1/iframeResizer.contentWindow.min.js" integrity="sha384-G6tHzK74z1pvDJPpiekQQg/Ad3+gDzJkLvIheIjfKjYVFG7Wpsot40rOJkXT92B2" crossorigin="anonymous" defer="defer"></script>

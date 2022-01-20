@@ -77,24 +77,6 @@ RSpec.describe "ArticlesCreate", type: :request do
       }
     end
 
-    before do
-      create(:webhook_endpoint, events: %w[article_created article_updated], target_url: url, user: user)
-    end
-
-    it "doesn't schedule a dispatching event job (unpublished)" do
-      sidekiq_assert_no_enqueued_jobs(only: Webhook::DispatchEventWorker) do
-        post "/articles", params: article_params
-      end
-    end
-
-    it "schedules a dispatching event job (published)" do
-      body_markdown = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
-      article_params[:article][:body_markdown] = body_markdown
-      sidekiq_assert_enqueued_jobs(1, only: Webhook::DispatchEventWorker) do
-        post "/articles", params: article_params
-      end
-    end
-
     it "doesn't fail when executing jobs" do
       stub_request(:post, url).to_return(status: 200)
       sidekiq_perform_enqueued_jobs do

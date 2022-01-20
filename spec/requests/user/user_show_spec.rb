@@ -35,7 +35,7 @@ RSpec.describe "UserShow", type: :request do
           "https://github.com/#{user.github_username}",
           "http://example.com",
         ],
-        "image" => Images::Profile.call(user.profile_image_url, length: 320),
+        "image" => user.profile_image_url_for(length: 320),
         "name" => user.name,
         "email" => user.email,
         "description" => user.tag_line,

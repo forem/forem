@@ -5,7 +5,7 @@
         href="<%= dashboard_path %>"
         <%= params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.posts") %>
-        <span class="crayons-indicator"><%= @user.articles_count %></span>
+        <span class="c-indicator"><%= @user.articles_count %></span>
       </a>
     </li>
 
@@ -14,7 +14,7 @@
         href="<%= user_series_path(current_user.username) %>"
         <%= params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.series") %>
-        <span class="crayons-indicator"><%= @user.collections.count %></span>
+        <span class="c-indicator"><%= @collections_count %></span>
       </a>
     </li>
 
@@ -23,7 +23,7 @@
         href="/dashboard/user_followers"
         <%= params[:action] == "followers" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.followers") %>
-        <span class="crayons-indicator"><%= @user.followers_count %></span>
+        <span class="c-indicator"><%= @user.followers_count %></span>
       </a>
     </li>
 
@@ -32,7 +32,7 @@
         href="<%= dashboard_following_tags_path %>"
         <%= params[:action] == "following_tags" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.following_tags") %>
-        <span class="crayons-indicator"><%= @user.following_tags_count %></span>
+        <span class="c-indicator"><%= @user.following_tags_count %></span>
       </a>
     </li>
 
@@ -41,7 +41,7 @@
         href="<%= dashboard_following_users_path %>"
         <%= params[:action] == "following_users" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.following_users") %>
-        <span class="crayons-indicator"><%= @user.following_users_count %></span>
+        <span class="c-indicator"><%= @user.following_users_count %></span>
       </a>
     </li>
 
@@ -50,7 +50,7 @@
         href="<%= dashboard_following_organizations_path %>"
         <%= params[:action] == "following_organizations" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.following_orgs") %>
-        <span class="crayons-indicator"><%= @user.following_organizations_count %></span>
+        <span class="c-indicator"><%= @user.following_organizations_count %></span>
       </a>
     </li>
 
@@ -59,14 +59,14 @@
         href="<%= dashboard_following_podcasts_path %>"
         <%= params[:action] == "following_podcasts" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.following_pods") %>
-        <span class="crayons-indicator"><%= @user.following_podcasts_count %></span>
+        <span class="c-indicator"><%= @user.following_podcasts_count %></span>
       </a>
     </li>
 
     <li>
       <a class="crayons-link crayons-link--block" href="/listings/dashboard" data-no-instant>
         <%= t("views.dashboard.actions.listings") %>
-        <%= inline_svg_tag("external-link.svg", aria_hidden: true, class: "crayons-icon ml-1") %>
+        <%= crayons_icon_tag("external-link", class: "ml-1") %>
       </a>
     </li>
 

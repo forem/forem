@@ -13,14 +13,14 @@
     <header class="profile-header crayons-card mt-2">
       <div class="relative profile-header__top">
         <span class="crayons-logo crayons-logo--3xl">
-          <img src="<%= Images::Profile.call(@user.profile_image_url, length: 320) %>" alt="<%= @user.name %> logo" width="128" height="128" title="<%= t("views.organizations.logo", org: @user.name) %>" class="crayons-logo__image">
+          <img src="<%= @user.profile_image_url_for(length: 320) %>" alt="<%= @user.name %> logo" width="128" height="128" title="<%= t("views.organizations.logo", org: @user.name) %>" class="crayons-logo__image">
         </span>
 
         <div class="profile-header__actions">
           <button
             id="user-follow-butt"
             class="crayons-btn whitespace-nowrap follow-action-button"
-            data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>", "name": "<%= @user.name %>"}'>
+            data-info='<%= DataInfo.to_json(object: @user) %>'>
             <%= t("views.organizations.follow") %>
           </button>
         </div>
@@ -36,30 +36,30 @@
         <div class="profile-header__meta">
           <% if @organization.location.present? %>
             <span class="profile-header__meta__item">
-              <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("views.organizations.location.icon")) %>
+              <%= crayons_icon_tag(:location, class: "mr-2 shrink-0", title: t("views.organizations.location.icon")) %>
               <%= sanitize @organization.location %>
             </span>
           <% end %>
 
           <span class="profile-header__meta__item">
-            <%= inline_svg_tag("cake.svg", aria: true, class: "crayons-icon mr-2 shrink-0", title: t("views.organizations.joined.icon")) %>
+            <%= crayons_icon_tag(:cake, class: "mr-2 shrink-0", title: t("views.organizations.joined.icon")) %>
             <%= t("views.organizations.joined.text_html", date: local_date(@user.created_at)) %>
           </span>
 
           <span class="profile-header__meta__item -ml-1">
             <% if @user.twitter_username.present? %>
               <a href="https://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: t("views.organizations.twitter.icon")) %>
+                <%= crayons_icon_tag(:twitter, title: t("views.organizations.twitter.icon")) %>
               </a>
             <% end %>
             <% if @user.github_username.present? %>
               <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: t("views.organizations.github.icon")) %>
+                <%= crayons_icon_tag(:github, title: t("views.organizations.github.icon")) %>
               </a>
             <% end %>
             <% if @user.profile.website_url.present? %>
               <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
-                <%= inline_svg_tag("external-link.svg", class: "crayons-icon", aria: true, title: t("views.organizations.external.icon")) %>
+                <%= crayons_icon_tag("external-link", title: t("views.organizations.external.icon")) %>
               </a>
             <% end %>
           </span>

@@ -1,0 +1,40 @@
+---
+fr:
+  create_mascot:
+    name: Mascot
+    error: Mascot already set
+  broadcast:
+    welcome:
+      ask_question: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; just click on 'Create Post' in the sidebar of the tag page to get started!"
+      customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!"
+      customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉"
+      discuss_and_ask: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or <a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; just click on 'Create Post' in the sidebar of the tag page to get started!"
+      download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all of your favorite DEV content on the go!"
+      set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. Let's begin by <a href='/settings'>setting up your profile</a>!"
+      start_discussion: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; just click on 'Create Post' in the sidebar of the tag page to get started!"
+      welcome_thread: "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!"
+    connect:
+      apple: "You're on a roll! 🎉  Do you have an Apple account? Consider <a href='/settings'>connecting it</a>."
+      facebook: "You're on a roll! 🎉  Do you have a Facebook account? Consider <a href='/settings'>connecting it</a>."
+      forem: "You're on a roll! 🎉  Do you have a Forem account? Consider <a href='/settings'>connecting it</a>."
+      github: "You're on a roll! 🎉  Do you have a GitHub account? Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile."
+      google: "You're on a roll! 🎉  Do you have a Google account? Consider <a href='/settings'>connecting it</a>."
+      twitter: "You're on a roll! 🎉 Do you have a Twitter account? Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
+  errors:
+    authentication:
+      errors:
+        suspended: It appears that your previous %{community_name} account was suspended. As such, we've taken measures to prevent you from creating a new account with %{community_name} and its community. If you think that there has been a mistake, please email us at %{community_email}, and we will take another look.
+    fastly_config:
+      must_be_array: 'configs: must be an Array of Strings'
+      invalid_config: Invalid Fastly config - %{invalid_config}. Only %{valid_configs_join} are valid.
+  policies:
+    application_policy:
+      must_be_logged_in: must be logged in
+      you_must_be_logged_in: You must be logged in
+    liquid_tag_policy:
+      no_user_found: No user found
+      not_permitted: User is not permitted to use this liquid tag
+  uploaders:
+    base_uploader:
+      too_many_frames: GIF contains too many frames. Max frame count allowed is %{frame_max}.
+      timeout: Image processing timed out.

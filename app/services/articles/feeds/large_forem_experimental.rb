@@ -75,7 +75,7 @@ module Articles
         # rubocop:enable Layout/LineLength
         if user_signed_in
           hot_stories = experimental_hot_story_grab
-          hot_stories = hot_stories.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
+          hot_stories = hot_stories.not_authored_by(UserBlock.cached_blocked_ids_for_blocker(@user.id))
           featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
           new_stories = Article.published
             .where("score > ?", article_score_threshold)
@@ -85,7 +85,7 @@ module Articles
         else
           hot_stories = Article.published.limited_column_select
             .page(@page).per(@number_of_articles)
-            .where("score >= ? OR featured = ?", Settings::UserExperience.home_feed_minimum_score, true)
+            .with_at_least_home_feed_minimum_score
             .order(hotness_score: :desc)
           featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
         end
