@@ -5,7 +5,7 @@ class VideosController < ApplicationController
 
   def new
     @uploader = Video.new.file
-    @uploader.success_action_redirect = videos_path
+    @uploader.success_action_redirect = videos_url
   end
 
   def index
