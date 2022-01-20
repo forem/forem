@@ -1,5 +1,5 @@
-<%# this is for pawel's testing purpose to emulate tabs...
-  current_tab = "emails" # overview|emails|notes|reports|flags %>
+<%# this is for pawel's testing purpose to emulate tabs... %>
+<% current_tab = "emails" # overview|emails|notes|reports|flags %>
 <% if true %>
   <%= render "header" %>
   <%= render "navigation" %>
@@ -40,7 +40,7 @@
       </div>
     </section>
   <% elsif current_tab == 'emails' %>
-    <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "crayons-card mb-4 p-5 px-7 flex justify-between gap-4 items-center" do |f| %>
+    <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "crayons-card mb-4 p-4 pl-7 pr-4 flex justify-between gap-4 items-center" do |f| %>
       <% unless @last_email_verification_date %>
         <div>
           <h2 class="crayons-subtitle-2">Email not verified...</h2>
@@ -49,12 +49,7 @@
         <%= f.button "Verify email address", class: "c-btn c-btn--secondary" %>
       <% else %>
         <p class="color-base-80">Email verified at: <%= @last_email_verification_date %></p>
-        <button class="c-btn c-btn--icon-alone ml-2 crayons-tooltip__activator">
-          <%= crayons_icon_tag(:refresh, class: "c-btn__icon") %>
-          <span data-testid="tooltip" class="crayons-tooltip__content">
-            Send verification email
-          </span>
-        </button>
+        <%= f.button "Re-verify", class: "c-btn c-btn--secondary" %>
       <% end %>
     <% end %>
     <section class="flex flex-col m:flex-row gap-4">
