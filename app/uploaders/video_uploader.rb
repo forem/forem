@@ -18,6 +18,6 @@ class VideoUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "video_uploads/"
+    "video_uploads"
   end
 end
