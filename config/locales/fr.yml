@@ -193,8 +193,11 @@ fr:
         other: est la mauvaise longueur (devrait être %{count} caractères)
   time:
     formats:
-      json: "%b %e, %Y"
       comment: "%B %d, %Y"
+      github: "%b %d, %Y"
+      json: "%b %e, %Y"
+      medium: "%b %-d, %Y"
+      reddit: "%b %e '%y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"
       stackexchange: "%b %e '%y"

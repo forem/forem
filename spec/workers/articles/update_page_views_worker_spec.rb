@@ -3,6 +3,26 @@ require "rails_helper"
 RSpec.describe Articles::UpdatePageViewsWorker, type: :worker do
   let(:worker) { described_class.new }
 
+  context "when the article is unpublished" do
+    subject(:perform) { worker.perform(article_id: article.id) }
+
+    let(:article) { create(:article, published: false, published_at: nil) }
+
+    it "does not create a page view" do
+      expect { perform }.not_to change(PageView, :count)
+    end
+  end
+
+  context "when the article is published and written by the given user" do
+    subject(:perform) { worker.perform(article_id: article.id, user_id: article.user_id) }
+
+    let(:article) { create(:article) }
+
+    it "does not create a page view" do
+      expect { perform }.not_to change(PageView, :count)
+    end
+  end
+
   context "when the article id is invalid" do
     let(:article_id) { :no_article_with_this_id }
 

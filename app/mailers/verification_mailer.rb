@@ -1,6 +1,7 @@
 class VerificationMailer < ApplicationMailer
   default from: lambda {
-    "#{Settings::Community.community_name} Email Verification <#{ForemInstance.email}>"
+    I18n.t("mailers.verification_mailer.from", community: Settings::Community.community_name,
+                                               email: ForemInstance.email)
   }
 
   def account_ownership_verification_email
@@ -8,6 +9,8 @@ class VerificationMailer < ApplicationMailer
     email_authorization = EmailAuthorization.create!(user: @user, type_of: "account_ownership")
     @confirmation_token = email_authorization.confirmation_token
 
-    mail(to: @user.email, subject: "Verify Your #{Settings::Community.community_name} Account Ownership")
+    mail(to: @user.email,
+         subject: I18n.t("mailers.verification_mailer.verify_ownership",
+                         community: Settings::Community.community_name))
   end
 end

@@ -10,11 +10,10 @@ cache:
 rvm:
   - 3.0.2
 addons:
-  postgresql: '12'
+  postgresql: '13'
   apt:
     packages:
-      - postgresql-12
-      - postgresql-client-12
+      - postgresql-13
   chrome: 'stable'
   artifacts:
     paths:
@@ -26,9 +25,9 @@ addons:
 env:
   global:
     - RAILS_ENV=test
-    - DATABASE_URL=postgres://travis@localhost:5433/Forem_prod_test
+    - DATABASE_URL=postgres://travis@localhost:5432/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
-    - DATABASE_URL_TEST=postgres://travis@localhost:5433/Forem_test
+    - DATABASE_URL_TEST=postgres://travis@localhost:5432/Forem_test
     - DATABASE_NAME_TEST=Forem_test
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
@@ -46,12 +45,8 @@ env:
 before_install:
   - sudo apt-get update
   - sudo apt-get -y install gsfonts
-  - >-
-    sudo sed -i
-    -e '/local.*peer/s/postgres/all/'
-    -e 's/peer\|md5/trust/g'
-    /etc/postgresql/12/main/pg_hba.conf
-  - sudo service postgresql@12-main restart
+  - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
+  - sudo service postgresql restart
   - gem install bundler:"<2.3"
 install:
   - date --rfc-3339=seconds

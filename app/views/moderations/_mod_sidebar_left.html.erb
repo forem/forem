@@ -19,7 +19,7 @@
         <% @current_user_tags.each do |tag| %>
           <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block <%= "crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
             #<%= tag %>
-            <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
+            <span id="<%= tag %>-indicator" class="c-indicator"></span>
           </a>
         <% end %>
       <% end %>
@@ -42,7 +42,7 @@
             <li>
               <a data-text="#<%= tag %>" href="<%= "#{mod_path}/#{tag}" %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>" aria-current="<%= "page" if tag == @tag&.name %>">
                 #<%= tag %>
-                <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
+                <span id="<%= tag %>-indicator" class="c-indicator"></span>
               </a>
             </li>
           <% end %>

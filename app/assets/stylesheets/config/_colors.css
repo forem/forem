@@ -259,6 +259,30 @@
 
   --tooltip-bg: rgba(var(--grey-900), 0.9);
   --tooltip-color: rgb(var(--white));
+  
+  /***********************************************
+  ** Indicators **********************************
+  ***********************************************/
+
+  /* Indicators: Default */
+  --badge-bg: var(--base-30);
+  --badge-color: var(--base-80);
+
+  /* Indicators: Success */
+  --badge-success-bg: var(--accent-success);
+  --badge-success-color: rgb(0,0,0);
+
+  /* Indicators: Warning */
+  --badge-warning-bg: var(--accent-warning);
+  --badge-warning-color: rgb(0,0,0);
+
+  /* Indicators: Danger */
+  --badge-danger-bg: var(--accent-danger);
+  --badge-danger-color: rgb(255,255,255);
+
+  /* Indicators: Info */
+  --badge-info-bg: var(--accent-brand);
+  --badge-info-color: rgb(255,255,255);
 
   /***********************************************
   ** Utilities ***********************************

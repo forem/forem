@@ -231,13 +231,13 @@ RSpec.describe "StoriesIndex", type: :request do
         create(:article, approved: false, body_markdown: u_body, score: 1)
       end
 
-      xit "doesn't display posts with the campaign tags when sidebar is disabled" do
+      it "doesn't display posts with the campaign tags when sidebar is disabled" do
         allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
       end
 
-      xit "doesn't display unapproved posts" do
+      it "doesn't display unapproved posts" do
         allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
         allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
         allow(Settings::Campaign).to receive(:articles_require_approval).and_return(true)

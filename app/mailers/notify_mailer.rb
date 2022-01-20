@@ -13,7 +13,8 @@ class NotifyMailer < ApplicationMailer
 
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_comment_notifications)
 
-    mail(to: @user.email, subject: "#{@comment.user.name} replied to your #{@comment.parent_type}")
+    mail(to: @user.email,
+         subject: I18n.t("mailers.notify_mailer.new_reply", name: @comment.user.name, type: @comment.parent_type))
   end
 
   def new_follower_email
@@ -39,7 +40,8 @@ class NotifyMailer < ApplicationMailer
 
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_mention_notifications)
 
-    mail(to: @user.email, subject: "#{@mentioner.name} just mentioned you in their #{@mentionable_type}")
+    mail(to: @user.email,
+         subject: I18n.t("mailers.notify_mailer.new_mention", name: @mentioner.name, type: @mentionable_type))
   end
 
   def unread_notifications_email
@@ -48,14 +50,15 @@ class NotifyMailer < ApplicationMailer
 
     @unread_notifications_count = @user.notifications.unread.count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
-    subject = "🔥 You have #{@unread_notifications_count} unread notifications on #{Settings::Community.community_name}"
+    subject = I18n.t("mailers.notify_mailer.unread_notifications", count: @unread_notifications_count,
+                                                                   community: Settings::Community.community_name)
     mail(to: @user.email, subject: subject)
   end
 
   def video_upload_complete_email
     @article = params[:article]
     @user = @article.user
-    mail(to: @user.email, subject: "Your video upload is complete")
+    mail(to: @user.email, subject: I18n.t("mailers.notify_mailer.video_upload"))
   end
 
   def new_badge_email
@@ -64,11 +67,13 @@ class NotifyMailer < ApplicationMailer
     @badge = @badge_achievement.badge
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_badge_notifications)
 
-    mail(to: @user.email, subject: "You just got a badge")
+    mail(to: @user.email, subject: I18n.t("mailers.notify_mailer.new_badge"))
   end
 
   def feedback_response_email
-    mail(to: params[:email_to], subject: "Thanks for your report on #{Settings::Community.community_name}")
+    mail(to: params[:email_to],
+         subject: I18n.t("mailers.notify_mailer.feedback",
+                         community: Settings::Community.community_name))
   end
 
   def feedback_message_resolution_email
@@ -88,7 +93,7 @@ class NotifyMailer < ApplicationMailer
   def account_deleted_email
     @name = params[:name]
 
-    subject = "#{Settings::Community.community_name} - Account Deletion Confirmation"
+    subject = I18n.t("mailers.notify_mailer.account_deleted", community: Settings::Community.community_name)
     mail(to: params[:email], subject: subject)
   end
 
@@ -96,7 +101,7 @@ class NotifyMailer < ApplicationMailer
     @name = params[:name]
     @org_name = params[:org_name]
 
-    subject = "#{Settings::Community.community_name} - Organization Deletion Confirmation"
+    subject = I18n.t("mailers.notify_mailer.org_deleted", community: Settings::Community.community_name)
     mail(to: params[:email], subject: subject)
   end
 
@@ -105,7 +110,7 @@ class NotifyMailer < ApplicationMailer
     @name = user.name
     @token = params[:token]
 
-    subject = "#{Settings::Community.community_name} - Account Deletion Requested"
+    subject = I18n.t("mailers.notify_mailer.deletion_requested", community: Settings::Community.community_name)
     mail(to: user.email, subject: subject)
   end
 
@@ -114,27 +119,30 @@ class NotifyMailer < ApplicationMailer
 
     export_filename = "devto-export-#{Date.current.iso8601}.zip"
     attachments[export_filename] = attachment
-    mail(to: params[:email], subject: "The export of your content is ready")
+    mail(to: params[:email], subject: I18n.t("mailers.notify_mailer.export"))
   end
 
   def tag_moderator_confirmation_email
     @user = params[:user]
     @tag = params[:tag]
+    @channel_slug = params[:channel_slug]
 
-    subject = "Congrats! You're the moderator for ##{@tag.name}"
+    subject = I18n.t("mailers.notify_mailer.moderator", tag_name: @tag.name)
     mail(to: @user.email, subject: subject)
   end
 
   def trusted_role_email
     @user = params[:user]
 
-    subject = "Congrats! You're now a \"trusted\" user on #{Settings::Community.community_name}!"
+    subject = I18n.t("mailers.notify_mailer.trusted",
+                     community: Settings::Community.community_name)
     mail(to: @user.email, subject: subject)
   end
 
   def subjects
     {
-      new_follower_email: "just followed you on #{Settings::Community.community_name}".freeze
+      new_follower_email: I18n.t("mailers.notify_mailer.new_follower",
+                                 community: Settings::Community.community_name).freeze
     }.freeze
   end
 end
