@@ -24,6 +24,9 @@ class MediumTag < LiquidTagBase
   private
 
   def parse_url(url)
+    match = pattern_match_for(url, [REGISTRY_REGEXP])
+    raise StandardError, I18n.t("liquid_tags.medium_tag.invalid_link_url") unless match
+
     MediumArticleRetrievalService.new(url).call
   rescue StandardError
     raise_error
