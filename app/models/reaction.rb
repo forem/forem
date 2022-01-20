@@ -164,10 +164,10 @@ class Reaction < ApplicationRecord
     base_points /= 2 if reactable_type == "User"
     base_points *= 2 if status == "confirmed"
 
-    # Post author's comment reaction counts for more weight on comments to their own posts. (5.0 vs 1.0)
+    # Author's comment reaction counts for more weight on to their own posts. (5.0 vs 1.0)
     base_points *= 5 if positive_reaction_to_comment_on_own_article?
 
-    # New users will have their reaction weight gradually ramp to a 1.0 baseline.
+    # New users will have their reaction weight gradually ramp by 0.1 from 0 to 1.0.
     base_points *= new_user_adjusted_points if new_untrusted_user # New users get minimal reaction weight
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
