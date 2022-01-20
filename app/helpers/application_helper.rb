@@ -270,12 +270,6 @@ module ApplicationHelper
   def admin_config_label(method, content = nil, model: Settings::General)
     content ||= tag.span(method.to_s.humanize)
 
-    if method.to_sym.in?(Settings::Mandatory.keys)
-      required = tag.span(I18n.t("helpers.application_helper.required"),
-                          class: "c-indicator c-indicator--danger")
-      content = safe_join([content, required])
-    end
-
     label_prefix = model.name.split("::").map(&:underscore).join("_")
     tag.label(content, class: "site-config__label crayons-field__label", for: "#{label_prefix}_#{method}")
   end
