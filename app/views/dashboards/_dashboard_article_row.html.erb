@@ -2,7 +2,7 @@
   <div class="dashboard-story__title">
     <h3 class="flex items-center">
       <% if article.archived %>
-        <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal whitespace-nowrap"><%= t("views.dashboard.article.archived") %></span>
+        <span class="c-indicator c-indicator--danger mr-2 fw-normal whitespace-nowrap"><%= t("views.dashboard.article.archived") %></span>
       <% end %>
       <a href="<%= article.current_state_path %>" class="inline-flex items-center">
         <% if article.organization_id %>
@@ -30,7 +30,7 @@
 
   <div class="fs-s color-base-60">
     <% if !article.published? %>
-      <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent"><%= t("views.dashboard.article.draft") %></a>
+      <a href="<%= article.path %>/edit" class="c-indicator c-indicator--warning"><%= t("views.dashboard.article.draft") %></a>
     <% else %>
       <div class="flex flex-nowrap whitespace-nowrap" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="flex items-center p-1" title="<%= t("views.dashboard.article.reactions.title") %>">

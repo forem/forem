@@ -63,7 +63,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
 
         it "renders page when tag is not supported but has at least one approved article" do
           unsupported_tag = create(:tag, supported: false)
-          article = create(:article, published: true, approved: true, tags: unsupported_tag)
+          create(:article, published: true, approved: true, tags: unsupported_tag)
 
           get "/t/#{unsupported_tag.name}/top/week"
           expect(response.body).to include(unsupported_tag.name)

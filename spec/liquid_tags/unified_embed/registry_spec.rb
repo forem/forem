@@ -155,6 +155,11 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
+    it "returns TweetTag for a tweet url" do
+      expect(described_class.find_liquid_tag_for(link: "https://twitter.com/aritdeveloper/status/1483614684884484099"))
+        .to eq(TweetTag)
+    end
+
     it "returns TwitchTag for a valid twitch url" do
       valid_twitch_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))

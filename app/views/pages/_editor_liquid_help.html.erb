@@ -145,6 +145,36 @@
         Add default-tab parameter to your CodePen embed tag. Default to <i>result</i><br>
         <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result %}</code>
       </dd>
+
+      <dt><code>preview</code></dt>
+      <dd>
+        <p>Change the codepen URL path from /pen/ to /pen/preview/ (or to /embed/preview/) to use codepen's Click-to-Load preview embed feature in the resulting iframe.</p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/preview/dyVMgBg %}</pre>
+      </dd>
+
+      <dt><code>height</code></dt>
+      <dd>
+        <p>Add height parameter to your CodePen embed tag and to the resulting iframe itself. Defaults to <i>600</i></p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg height=300 %}</pre>
+      </dd>
+
+      <dt><code>theme-id</code></dt>
+      <dd>
+        <p>Add theme-id parameter to your CodePen embed tag. The pen and theme-id must be from a codepen pro user to have an effect.</p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg theme-id=40148 %}</pre>
+      </dd>
+
+      <dt><code>editable=true</code></dt>
+      <dd>
+        <p>Add editable=true parameter to your CodePen embed tag. Editable Embeds require more resources than non-editable Embeds. The pen must be from a codepen pro user to have an effect.</p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg editable=true %}</pre>
+      </dd>
+
+      <dt><code>multiple-params</code></dt>
+      <dd>
+        <p>Add multiple parameters to your CodePen embed tag.</p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg height=300 default-tab=css,result editable=true %}</pre>
+      </dd>
     </dl>
     <h3>Kotlin Playground</h3>
     <p>To create a runnable kotlin snippet, create a Kotlin Snippet at <a href="https://play.kotlinlang.org">https://play.kotlinlang.org</a></p>
