@@ -1,3 +1,6 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
 *.rb   diff=ruby
 *.rake diff=ruby
 *.css  diff=css
