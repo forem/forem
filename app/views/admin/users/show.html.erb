@@ -1,5 +1,5 @@
 <%# this is for pawel's testing purpose to emulate tabs... %>
-<% current_tab = "emails" # overview|emails|notes|reports|flags %>
+<% current_tab = "reports" # overview|emails|notes|reports|flags %>
 <% if true %>
   <%= render "header" %>
   <%= render "navigation" %>
@@ -48,8 +48,13 @@
         </div>
         <%= f.button "Verify email address", class: "c-btn c-btn--secondary" %>
       <% else %>
-        <p class="color-base-80">Email verified at: <%= @last_email_verification_date %></p>
-        <%= f.button "Re-verify", class: "c-btn c-btn--secondary" %>
+        <p>
+          Email verified on:
+          <time datetime="<%= @last_email_verification_date.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="fw-medium whitespace-nowrap">
+            <%= @last_email_verification_date.strftime("%b %e '%y, %H:%M") %>
+          </time>
+        </p>
+        <%= f.button "Re-verify", class: "c-btn c-btn--secondary whitespace-nowrap" %>
       <% end %>
     <% end %>
     <section class="flex flex-col m:flex-row gap-4">

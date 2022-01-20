@@ -37,22 +37,23 @@
     <div class="crayons-header__container">
       <%= render "layouts/logo" %>
 
-      <h1 class="pl-4 fs-l">
-        <a href="<%= admin_path %>">Admin</a>
-        <span class="color-base-60">&raquo;</span> <span class="fw-bold">
+      <h1 class="pl-4 fs-base hidden s:block">
+        <a class="c-link c-link--branded" href="<%= admin_path %>">Admin</a>
+        <span class="color-base-60">&raquo;</span>
+        <span class="fw-medium">
           <%= yield(:h1).presence || controller_name.titleize %>
         </span>
       </h1>
 
-      <div class="flex items-center h-100 ml-auto">
-        <a href="https://admin.forem.com/" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block">
-          Forem Admin Guide
+      <nav class="flex items-center h-100 ml-auto">
+        <a href="https://admin.forem.com/" class="c-link c-link--block whitespace-nowrap">
+          Help
         </a>
 
-        <a href="/" class="crayons-btn hidden mr-2 whitespace-nowrap s:block">
-          Go to <%= community_name %> home page
+        <a href="<%= root_path %>" class="c-link c-link--block whitespace-nowrap">
+          Visit page &raquo;
         </a>
-      </div>
+      </nav>
     </div>
   </header>
 

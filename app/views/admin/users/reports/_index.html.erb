@@ -5,13 +5,15 @@
     <% @related_reports.each do |report| %>
       <article class="flex justify-between gap-4 py-3 border-b-1 border-0 border-solid border-base-10">
         <div>
-          <h3>
-            <a href="<%= admin_report_path(report.id) %>"></a>
+          <h3 class="crayons-subtitle-3">
+            <a href="<%= admin_report_path(report.id) %>">
+              Click
+            </a>
           </h3>
           <p><%= report.message %></p>
           <p>
             <%= report.category.capitalize %>
-            <span class="c-indicator">
+            <span class="crayons-indicator">
               <%= report.status %>
             </span>
           </p>
