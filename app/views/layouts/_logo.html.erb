@@ -9,13 +9,5 @@
         <%= community_name %>
       </span>
     <% end %>
-  <% else %>
-    <% if Settings::General.logo_svg.present? %>
-      <%= logo_svg %>
-    <% else %>
-      <span class="site-logo__community-name truncate-at-2">
-        <%= community_name %>
-      </span>
-    <% end %>
   <% end %>
 </a>

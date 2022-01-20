@@ -35,8 +35,6 @@ module Settings
             default: proc { URL.local_image("icon.png") },
             validates: { url: true }
 
-    setting :logo_svg, type: :string
-
     setting :original_logo, type: :string
     setting :resized_logo, type: :string
 
