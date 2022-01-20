@@ -158,7 +158,7 @@ module ListingsToolkit
 
   def charge_credits_before_bump(purchaser, cost)
     ActiveRecord::Base.transaction do
-      Credits::Buyer.call(
+      Credits::Buy.call(
         purchaser: purchaser,
         purchase: @listing,
         cost: cost,
