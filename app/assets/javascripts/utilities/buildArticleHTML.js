@@ -4,14 +4,20 @@
 
 function buildArticleHTML(article) {
   if (article && article.class_name === 'Tag') {
-    return `<article class="crayons-story crayons-podcast-episode mb-2">
-        <div class="crayons-story__body flex flex-start">
+    return `<article class="crayons-story">
+        <div class="crayons-story__body">
+          <div class="crayons-story__top mb-0">
+            <div class="crayons-story__meta">
+              <h3 class="crayons-story__title">
+                <a href="/t/${article.name}" class="crayons-tag crayons-tag--l">
+                  <span class="crayons-tag__prefix">#</span><span class="pl-4">${
+                    article.name
+                  }</span>
+                </a>
+              </h3>\
+            </div>
+          </div>
           <div class="crayons-story__indention">
-            <h3 class="crayons-story__title">
-              <a href="/t/${article.name}" id="article-link-${article.id}">
-                # ${article.name}
-              </a>
-            </h3>\
             <div class="crayons-story__snippet mb-1">
               ${article.short_summary || ''}
             </div>
