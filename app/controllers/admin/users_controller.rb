@@ -35,6 +35,8 @@ module Admin
     def show
       @user = User.find(params[:id])
 
+      set_feedback_messages
+
       if FeatureFlag.enabled?(:new_admin_members, current_user)
         render "admin/users/new/show"
       else

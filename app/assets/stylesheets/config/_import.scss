@@ -154,7 +154,7 @@ $z-indexes: (
   @each $name, $value in $values {
     .#{$prefix}#{$separator}#{$name} {
       @each $property in $properties {
-        #{$property}: $value;
+        #{$property}: $value !important;
       }
     }
   }

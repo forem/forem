@@ -1,32 +1,77 @@
+<%# this is for pawel's testing purpose to emulate tabs...
+  current_tab = "emails" # overview|emails|notes|reports|flags %>
 <% if true %>
   <%= render "header" %>
   <%= render "navigation" %>
 
-  <div class="crayons-card p-7"><%# This container could be considered as wrapper for tab's content %>
-    <%= render "stats" if @user.registered %>
+  <% if current_tab == 'overview' %>
+    <div class="crayons-card p-7">
+      <%= render "stats" if @user.registered %>
 
-    <div class="m:grid gap-8 grid-cols-2">
-      <div>
-        <section class="mb-7">
-          <%= render "admin/users/widgets/roles" %>
-        </section>
+      <div class="m:grid gap-8 grid-cols-2">
+        <div>
+          <section class="mb-7">
+            <%= render "admin/users/widgets/roles" %>
+          </section>
 
-        <section class="mb-7">
-          <%= render "admin/users/widgets/tag_moderation" %>
-        </section>
-      </div>
+          <section class="mb-7">
+            <%= render "admin/users/widgets/tag_moderation" %>
+          </section>
+        </div>
 
-      <div>
-        <section class="mb-7">
-          <%= render "admin/users/widgets/organizations" %>
-        </section>
+        <div>
+          <section class="mb-7">
+            <%= render "admin/users/widgets/organizations" %>
+          </section>
 
-        <section class="mb-7">
-          <%= render "admin/users/widgets/credits" %>
-        </section>
+          <section class="mb-7">
+            <%= render "admin/users/widgets/credits" %>
+          </section>
+        </div>
       </div>
     </div>
-  </div>
+  <% elsif current_tab == 'notes' %>
+    <section class="flex flex-col m:flex-row gap-4">
+      <div class="crayons-card p-7 flex-1">
+        <%= render "admin/users/notes/form" %>
+      </div>
+      <div class="crayons-card p-7 flex-1">
+        <%= render "admin/users/notes/index" %>
+      </div>
+    </section>
+  <% elsif current_tab == 'emails' %>
+    <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "crayons-card mb-4 p-5 px-7 flex justify-between gap-4 items-center" do |f| %>
+      <% unless @last_email_verification_date %>
+        <div>
+          <h2 class="crayons-subtitle-2">Email not verified...</h2>
+          <p class="color-base-80">User's email address <%= @user.email %> hasn't been verified yet.</p>
+        </div>
+        <%= f.button "Verify email address", class: "c-btn c-btn--secondary" %>
+      <% else %>
+        <p class="color-base-80">Email verified at: <%= @last_email_verification_date %></p>
+        <button class="c-btn c-btn--icon-alone ml-2 crayons-tooltip__activator">
+          <%= crayons_icon_tag(:refresh, class: "c-btn__icon") %>
+          <span data-testid="tooltip" class="crayons-tooltip__content">
+            Send verification email
+          </span>
+        </button>
+      <% end %>
+    <% end %>
+    <section class="flex flex-col m:flex-row gap-4">
+      <div class="crayons-card p-7 flex-1">
+        <%= render "admin/users/emails/form" %>
+      </div>
+      <div class="crayons-card p-7 flex-1">
+        <%= render "admin/users/emails/index" %>
+      </div>
+    </section>
+  <% elsif current_tab == 'reports' %>
+    <section class="crayons-card p-7">
+      <%= render "admin/users/reports/index" %>
+    </section>
+  <% elsif current_tab == 'flags' %>
+    flags
+  <% end %>
 <% else %>
   <div class="grid gap-6">
     <div class="crayons-card p-6">
