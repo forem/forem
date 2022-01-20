@@ -79,7 +79,7 @@
       <% flash.each do |type, message| %>
         <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert" aria-label="Close">
-            <i class="fa fa-times" aria-hidden="true"></i>
+            <%= crayons_icon_tag(:x, aria_hidden: true) %>
           </button>
           <%= message %>
         </div>
