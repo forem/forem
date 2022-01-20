@@ -35,7 +35,7 @@ gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
 gem "flipper", "~> 0.23.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.23.0" # Store Flipper flags in ActiveRecord
-gem "flipper-active_support_cache_store", "~> 0.23.0" # Cache feature flags for a short time
+gem "flipper-active_support_cache_store", "~> 0.23.1" # Cache feature flags for a short time
 gem "flipper-ui", "~> 0.23.0"
 gem "fog-aws", "~> 3.12" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
