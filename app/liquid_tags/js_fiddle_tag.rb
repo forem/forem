@@ -1,7 +1,7 @@
 class JsFiddleTag < LiquidTagBase
   PARTIAL = "liquids/jsfiddle".freeze
   OPTION_REGEXP = /\A(js|html|css|result|,)*\z/
-  LINK_REGEXP = %r{\A(http|https)://(jsfiddle\.net)/[a-zA-Z0-9\-/]*\z}
+  REGISTRY_REGEXP = %r{\A(http|https)://(jsfiddle\.net)/[a-zA-Z0-9\-/]*\z}
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -31,8 +31,10 @@ class JsFiddleTag < LiquidTagBase
     _, *options = stripped_link.split
 
     # Validation
-    validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
-    raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
+    validated_options = options.filter_map { |option| valid_option(option) }
+    unless options.empty? || !validated_options.empty?
+      raise StandardError, I18n.t("liquid_tags.js_fiddle_tag.invalid_options")
+    end
 
     validated_options.length.zero? ? "" : validated_options.join(",").concat("/")
   end
@@ -40,15 +42,17 @@ class JsFiddleTag < LiquidTagBase
   def parse_link(link)
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split.first
-    raise StandardError, "Invalid JSFiddle URL" unless valid_link?(the_link)
+    raise StandardError, I18n.t("liquid_tags.js_fiddle_tag.invalid_jsfiddle_url") unless valid_link?(the_link)
 
     the_link
   end
 
   def valid_link?(link)
     link_no_space = link.delete(" ")
-    (link_no_space =~ LINK_REGEXP).zero?
+    (link_no_space =~ REGISTRY_REGEXP).zero?
   end
 end
 
 Liquid::Template.register_tag("jsfiddle", JsFiddleTag)
+
+UnifiedEmbed.register(JsFiddleTag, regexp: JsFiddleTag::REGISTRY_REGEXP)

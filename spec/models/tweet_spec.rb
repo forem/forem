@@ -5,7 +5,6 @@ RSpec.describe Tweet, type: :model, vcr: true do
   let(:tweet_reply_id) { "1242938461784608770" }
   let(:retweet_id) { "1262395854469677058" }
 
-  it { is_expected.to validate_presence_of(:twitter_id_code) }
   it { is_expected.to validate_presence_of(:full_fetched_object_serialized) }
 
   describe ".find_or_fetch" do
@@ -83,7 +82,7 @@ RSpec.describe Tweet, type: :model, vcr: true do
         expect(tweet.last_fetched_at).to be_present
       end
 
-      it "is assignes to the existing user if the screen name corresponds" do
+      it "is assigns to the existing user if the screen name corresponds" do
         user = create(:user, twitter_username: "ThePracticalDev")
 
         tweet = described_class.find_or_fetch(tweet_id)

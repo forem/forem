@@ -7,7 +7,7 @@ import {
   select,
 } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import notes from './buttons.md';
+import notes from './buttons.mdx';
 import { Button } from '@crayons';
 import '../../storybook-utilities/designSystem.scss';
 
@@ -20,7 +20,7 @@ const commonProps = {
 };
 
 export default {
-  title: 'Components/Buttons',
+  title: 'Deprecated/Buttons',
   decorator: [withKnobs],
   parameters: {
     notes,

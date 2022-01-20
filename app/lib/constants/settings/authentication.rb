@@ -26,6 +26,10 @@ module Constants
           "The \"PEM\" key from the Authentication Service configured in the Apple Developer Portal",
           placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
         },
+        blocked_registration_email_domains: {
+          description: "Block registration from specified domains?  (comma-separated list)",
+          placeholder: "seo-hunt.com"
+        },
         display_email_domain_allow_list_publicly: {
           description: "Do you want to display the list of allowed domains, or keep it private?"
         },
@@ -53,6 +57,14 @@ module Constants
         },
         github_secret: {
           description: "The \"Client Secret\" portion of the GitHub Oauth Apps portal",
+          placeholder: ""
+        },
+        google_oauth2_key: {
+          description: "The \"Client ID\" portion of the OAuth 2.0 page on the Google Cloud Platform portal",
+          placeholder: ""
+        },
+        google_oauth2_secret: {
+          description: "The \"Client Secret\" portion of the OAuth 2.0 page on the Google Cloud Platform portal",
           placeholder: ""
         },
         invite_only_mode: {

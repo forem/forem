@@ -1,11 +1,11 @@
 /*
   global initializeLocalStorageRender, initializeBodyData,
-  initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
+  initializeAllTagEditButtons, initializeUserFollowButts,
   initializeBaseTracking, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeSettings,
   initializeCommentPreview, initializeRuntimeBanner,
-  initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
+  initializeTimeFixer, initializeDashboardSort,
   initializeArchivedPostFilter, initializeCreditsPage,
   initializeProfileInfoToggle, initializePodcastPlayback,
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
@@ -27,13 +27,10 @@ function callInitializers() {
   initializeCommentPreview();
   initializeTimeFixer();
   initializeDashboardSort();
-  initializePWAFunctionality();
   initializeArchivedPostFilter();
   initializeCreditsPage();
   initializeProfileInfoToggle();
   initializeProfileBadgesToggle();
-  initializePodcastPlayback();
-  initializeVideoPlayback();
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
@@ -50,7 +47,6 @@ function initializePage() {
       clearInterval(waitingForDataLoad);
       if (document.body.getAttribute('data-user-status') === 'logged-in') {
         initializeBaseUserData();
-        initializeAllChatButtons();
         initializeAllTagEditButtons();
       }
       initializeBroadcast();
@@ -59,6 +55,8 @@ function initializePage() {
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
+      initializePodcastPlayback();
+      initializeVideoPlayback();
     }
   }, 1);
 

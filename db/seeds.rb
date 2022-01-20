@@ -55,17 +55,22 @@ end
 num_users = 10 * SEEDS_MULTIPLIER
 
 users_in_random_order = seeder.create_if_none(User, num_users) do
-  roles = %i[trusted chatroom_beta_tester workshop_pass]
+  roles = %i[trusted workshop_pass]
 
   num_users.times do |i|
-    name = Faker::Name.unique.name
+    fname = Faker::Name.unique.first_name
+    # Including "\\:/" to help with identifying local issues with
+    # character escaping.
+    lname = Faker::Name.unique.last_name
+    name = [fname, "\"The #{fname}\"", lname, " \\:/"].join(" ")
+    username = "#{fname} #{lname}"
 
     user = User.create!(
       name: name,
       profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-      twitter_username: Faker::Internet.username(specifier: name),
+      twitter_username: Faker::Internet.username(specifier: username),
       # Emails limited to 50 characters
-      email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
+      email: Faker::Internet.email(name: username, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
       registered_at: Time.current,
       registered: true,
@@ -87,18 +92,71 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       user.add_role(roles[role_index]) if role_index != roles.length # increases chance of more no-role users
     end
 
+    omniauth_info = OmniAuth::AuthHash::InfoHash.new(
+      first_name: fname,
+      last_name: lname,
+      location: "location,state,country",
+      name: name,
+      nickname: user.username,
+      email: user.email,
+      verified: true,
+    )
+
+    omniauth_extra_info = OmniAuth::AuthHash::InfoHash.new(
+      raw_info: OmniAuth::AuthHash::InfoHash.new(
+        email: user.email,
+        first_name: fname,
+        gender: "female",
+        id: "123456",
+        last_name: lname,
+        link: "http://www.facebook.com/url&#8221",
+        lang: "fr",
+        locale: "en_US",
+        name: name,
+        timezone: 5.5,
+        updated_time: "2012-06-08T13:09:47+0000",
+        username: user.username,
+        verified: true,
+        followers_count: 100,
+        friends_count: 1000,
+        created_at: "2017-06-08T13:09:47+0000",
+      ),
+    )
+
+    omniauth_basic_info = {
+      uid: SecureRandom.hex(3),
+      info: omniauth_info,
+      extra: omniauth_extra_info,
+      credentials: {
+        token: SecureRandom.hex,
+        secret: SecureRandom.hex
+      }
+    }.freeze
+
+    info = omniauth_basic_info[:info].merge(
+      image: "https://dummyimage.com/400x400_normal.jpg",
+      urls: { "Twitter" => "https://example.com" },
+    )
+
+    extra = omniauth_basic_info[:extra].merge(
+      access_token: "value",
+    )
+
+    auth_dump = OmniAuth::AuthHash.new(
+      omniauth_basic_info.merge(
+        provider: "twitter",
+        info: info,
+        extra: extra,
+      ),
+    )
+
     Identity.create!(
       provider: "twitter",
       uid: i.to_s,
       token: i.to_s,
       secret: i.to_s,
       user: user,
-      auth_data_dump: {
-        "extra" => {
-          "raw_info" => { "lang" => "en" }
-        },
-        "info" => { "nickname" => user.username }
-      },
+      auth_data_dump: auth_dump,
     )
   end
 
@@ -125,10 +183,9 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
-
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
-    name: "Admin McAdmin",
+    name: "Admin \"The \\:/ Administrator\" McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
@@ -170,7 +227,7 @@ end
 num_articles = 25 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Article, num_articles) do
-  user_ids = User.all.pluck(:id)
+  user_ids = User.all.ids
   public_categories = %w[like unicorn]
 
   num_articles.times do |i|
@@ -198,7 +255,7 @@ seeder.create_if_none(Article, num_articles) do
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
 
-    Random.random_number(10).times do |t|
+    Random.random_number(10).times do |_t|
       article.reactions.create(
         user_id: user_ids.sample,
         category: public_categories.sample,
@@ -301,39 +358,19 @@ end
 
 seeder.create_if_none(Broadcast) do
   broadcast_messages = {
-    set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. " \
-                    "Let's begin by <a href='/settings'>setting up your profile</a>!",
-    welcome_thread: "Sloan here again! 👋 DEV is a friendly community. " \
-                    "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
-    twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? " \
-                     "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
-                     "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
-    facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
-                      "Consider <a href='/settings'>connecting it</a>.",
-    github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
-                    "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
-    customize_feed:
-      "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
-      "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
-    customize_experience:
-      "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
-      "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
-    start_discussion:
-      "Sloan here! 👋 I noticed that you haven't " \
-      "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
-      "just click on 'Create Post' in the sidebar of the tag page to get started!",
-    ask_question:
-      "Sloan here! 👋 I noticed that you haven't " \
-      "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
-      "just click on 'Create Post' in the sidebar of the tag page to get started!",
-    discuss_and_ask:
-      "Sloan here! 👋 I noticed that you haven't " \
-      "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
-      "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; " \
-      "just click on 'Create Post' in the sidebar of the tag page to get started!",
-    download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? " \
-                  "Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all " \
-                  "of your favorite DEV content on the go!"
+    set_up_profile: I18n.t("broadcast.welcome.set_up_profile"),
+    welcome_thread: I18n.t("broadcast.welcome.welcome_thread"),
+    twitter_connect: I18n.t("broadcast.connect.twitter"),
+    facebook_connect: I18n.t("broadcast.connect.facebook"),
+    github_connect: I18n.t("broadcast.connect.github"),
+    google_oauth2_connect: I18n.t("broadcast.connect.google"),
+    apple_connect: I18n.t("broadcast.connect.apple"),
+    customize_feed: I18n.t("broadcast.welcome.customize_feed"),
+    customize_experience: I18n.t("broadcast.welcome.customize_experience"),
+    start_discussion: I18n.t("broadcast.welcome.start_discussion"),
+    ask_question: I18n.t("broadcast.welcome.ask_question"),
+    discuss_and_ask: I18n.t("broadcast.welcome.discuss_and_ask"),
+    download_app: I18n.t("broadcast.welcome.download_app"),
   }
 
   broadcast_messages.each do |type, message|
@@ -361,32 +398,6 @@ seeder.create_if_none(Broadcast) do
   Article.create!(
     body_markdown: welcome_thread_content,
     user: User.staff_account || User.first,
-  )
-end
-
-##############################################################################
-
-seeder.create_if_none(ChatChannel) do
-  %w[Workshop Meta General].each do |chan|
-    ChatChannel.create!(
-      channel_name: chan,
-      channel_type: "open",
-      slug: chan,
-    )
-  end
-
-  # This channel is hard-coded in a few places
-  ChatChannel.create!(
-    channel_name: "Tag Moderators",
-    channel_type: "open",
-    slug: "tag-moderators",
-  )
-
-  direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
-  Message.create!(
-    chat_channel: direct_channel,
-    user: User.last,
-    message_markdown: "This is **awesome**",
   )
 end
 
@@ -533,7 +544,6 @@ seeder.create_if_none(Listing) do
         location: Faker::Address.city,
         organization_id: user.organizations.first&.id,
         listing_category_id: category_id,
-        contact_via_connect: true,
         published: true,
         originally_published_at: Time.current,
         bumped_at: Time.current,

@@ -58,8 +58,6 @@ Rails.application.configure do
   # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []
 
-  config.active_job.queue_adapter = :test
-
   # Debug is the default log_level, but can be changed per environment.
   config.log_level = :debug
 
@@ -77,11 +75,11 @@ Rails.application.configure do
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
-    # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
+    # Suppress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
-    # @citizen428: We have not yet resolved all user - profile preloads related to profilge generalization
+    # @citizen428: We have not yet resolved all user - profile preloads related to profile generalization
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "Profile", association: :user)
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :setting)

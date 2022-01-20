@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Organizations::BustCacheWorker, type: :worker do
   describe "#perform" do
-    let!(:organization) { FactoryBot.create(:organization) }
+    let!(:organization) { create(:organization) }
     let(:worker) { subject }
 
     before do

@@ -1,38 +1,50 @@
 module Admin
   class CreatorSettingsController < Admin::ApplicationController
-    ALLOWED_PARAMS = %i[community_name logo_svg primary_brand_color_hex invite_only_mode public].freeze
+    after_action :bust_content_change_caches, only: %i[create]
 
-    def new; end
+    ALLOWED_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions community_name
+                        invite_only_mode logo primary_brand_color_hex public].freeze
+
+    def new
+      @creator_settings_form = CreatorSettingsForm.new(
+        community_name: ::Settings::Community.community_name,
+        public: ::Settings::UserExperience.public,
+        invite_only_mode: ::Settings::Authentication.invite_only_mode,
+        primary_brand_color_hex: ::Settings::UserExperience.primary_brand_color_hex,
+        checked_code_of_conduct: current_user.checked_code_of_conduct,
+        checked_terms_and_conditions: current_user.checked_terms_and_conditions,
+      )
+      @max_file_size = LogoUploader::MAX_FILE_SIZE
+      @logo_allowed_types = LogoUploader::ALLOWED_TYPES
+    end
 
     def create
       extra_authorization
-      ActiveRecord::Base.transaction do
-        ::Settings::Community.community_name = settings_params[:community_name]
-        ::Settings::General.logo_svg = settings_params[:logo_svg]
-        ::Settings::UserExperience.primary_brand_color_hex = settings_params[:primary_brand_color_hex]
-        ::Settings::Authentication.invite_only_mode = settings_params[:invite_only]
-        ::Settings::UserExperience.public = settings_params[:public]
+
+      @creator_settings_form = CreatorSettingsForm.new(settings_params)
+      current_user.update!(
+        checked_code_of_conduct: @creator_settings_form.checked_code_of_conduct,
+        checked_terms_and_conditions: @creator_settings_form.checked_terms_and_conditions,
+      )
+      @creator_settings_form.save
+
+      if @creator_settings_form.success
+        current_user.update!(saw_onboarding: true)
+        redirect_to root_path
+      else
+        flash[:error] = @creator_settings_form.errors.full_messages
+        redirect_to new_admin_creator_setting_path
       end
-      # For this feature to work as expected for the time being, we must set the COC and TOS to true.
-      # However, this is not a viable solution, as Forem Creators are required to see and check the
-      # COC and TOS. Bypassing them in this manner will not do and we will need to rethink this solution.
-      # TODO: Replace the current solution of setting the COC and TOS to true with a better, more
-      # long-term solution for Forem Creators.
-      current_user.update!(saw_onboarding: true, checked_code_of_conduct: true, checked_terms_and_conditions: true)
-      redirect_to root_path
-    rescue StandardError => e
-      flash.now[:error] = e.message
-      render new_admin_creator_setting_path
     end
 
     private
 
     def extra_authorization
-      not_authorized unless current_user.has_role?(:creator)
+      not_authorized unless current_user.creator?
     end
 
     def settings_params
-      params.permit(ALLOWED_PARAMS)
+      params.require(:creator_settings_form).permit(ALLOWED_PARAMS)
     end
   end
 end

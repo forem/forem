@@ -61,6 +61,20 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
         end
 
+        it "renders page when tag is not supported but has at least one approved article" do
+          unsupported_tag = create(:tag, supported: false)
+          create(:article, published: true, approved: true, tags: unsupported_tag)
+
+          get "/t/#{unsupported_tag.name}/top/week"
+          expect(response.body).to include(unsupported_tag.name)
+          get "/t/#{unsupported_tag.name}/top/month"
+          expect(response.body).to include(unsupported_tag.name)
+          get "/t/#{unsupported_tag.name}/top/year"
+          expect(response.body).to include(unsupported_tag.name)
+          get "/t/#{unsupported_tag.name}/top/infinity"
+          expect(response.body).to include(unsupported_tag.name)
+        end
+
         it "returns not found if no published posts and tag not supported" do
           Article.destroy_all
           tag.update_column(:supported, false)
@@ -69,7 +83,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
 
         it "renders normal page if no articles but tag is supported" do
           Article.destroy_all
-          expect { get "/t/#{tag.name}" }.not_to raise_error(ActiveRecord::RecordNotFound)
+          expect { get "/t/#{tag.name}" }.not_to raise_error
         end
 
         it "renders page with top/week etc." do
@@ -129,7 +143,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
 
           it "shows tags and renders properly", :aggregate_failures do
             get "/t/#{tag.name}"
-            expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+            expect(response.body).to include("crayons-navigation__item crayons-navigation__item--current")
             has_mod_action_button
             does_not_paginate
             sets_remember_token
@@ -150,7 +164,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           it "renders properly even if site config is private" do
             allow(Settings::UserExperience).to receive(:public).and_return(false)
             get "/t/#{tag.name}"
-            expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+            expect(response.body).to include("crayons-navigation__item crayons-navigation__item--current")
           end
 
           it "does not render pagination even with many posts" do
@@ -174,7 +188,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def shows_sign_in_notice
-            expect(response.body).not_to include("crayons-tabs__item crayons-tabs__item--current")
+            expect(response.body).not_to include("crayons-navigation__item crayons-navigation__item--current")
             expect(response.body).to include("for the ability sort posts by")
           end
 

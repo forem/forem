@@ -1,9 +1,9 @@
 import { h, createRef, render } from 'preact';
 import { MentionAutocompleteTextArea } from '../MentionAutocompleteTextArea';
-import notes from './mention-autocomplete.md';
+import notes from './mention-autocomplete.mdx';
 
 export default {
-  title: 'App Components/MentionAutocompleteTextArea',
+  title: 'App Components/Mention Autocomplete Textarea',
   parameters: { notes },
 };
 

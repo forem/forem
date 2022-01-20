@@ -11,5 +11,6 @@ FactoryBot.define do
     feed_referential_link { true }
     inbox_type { "private" }
     permit_adjacent_sponsors { true }
+    prefer_os_color_scheme { true }
   end
 end

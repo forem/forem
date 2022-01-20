@@ -5,7 +5,7 @@ describe('Sign up with email', () => {
   });
 
   // Regression test for #11099
-  it('should preserve the form data on unsuccesful submissions', () => {
+  it('should preserve the form data on unsuccessful submissions', () => {
     cy.findByRole('link', { name: /Sign up with Email/ }).click();
 
     cy.findByLabelText('Profile image').attachFile('images/admin-image.png');

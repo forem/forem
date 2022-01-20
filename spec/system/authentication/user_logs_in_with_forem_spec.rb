@@ -4,22 +4,8 @@ RSpec.describe "Authenticating with Forem" do
   let(:sign_in_link) { "Continue with Forem" }
 
   before do
-    allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
     omniauth_mock_forem_payload
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
-  end
-
-  describe "FeatureFlag hides the Forem Passport auth" do
-    it "shows Forem auth when enabled" do
-      visit sign_up_path
-      expect(page).to have_text(sign_in_link)
-    end
-
-    it "doesn't show the Forem auth when disabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(false)
-      visit sign_up_path
-      expect(page).not_to have_text(sign_in_link)
-    end
   end
 
   context "when a user is new" do
@@ -49,7 +35,7 @@ RSpec.describe "Authenticating with Forem" do
       end
     end
 
-    context "when using valid credentials but witholding email address" do
+    context "when using valid credentials but withholding email address" do
       before do
         OmniAuth.config.mock_auth[:forem][:info].delete(:email)
         OmniAuth.config.mock_auth[:forem][:extra][:raw_info].delete(:email)
@@ -109,7 +95,7 @@ RSpec.describe "Authenticating with Forem" do
       end
 
       after do
-        OmniAuth.config.on_failure = OmniauthHelpers.const_get("OMNIAUTH_DEFAULT_FAILURE_HANDLER")
+        OmniAuth.config.on_failure = OmniauthHelpers.const_get(:OMNIAUTH_DEFAULT_FAILURE_HANDLER)
       end
 
       it "does not create a new user" do
@@ -173,7 +159,7 @@ RSpec.describe "Authenticating with Forem" do
       end
     end
 
-    context "when a validation failure occurrs" do
+    context "when a validation failure occurs" do
       before do
         # A User is invalid if their name is more than 100 chars long
         OmniAuth.config.mock_auth[:forem].info.name = "X" * 101

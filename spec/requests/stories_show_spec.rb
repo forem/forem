@@ -150,25 +150,31 @@ RSpec.describe "StoriesShow", type: :request do
 
     it "redirects to appropriate page if user changes username" do
       old_username = user.username
-      user.update(username: "new_hotness_#{rand(10_000)}")
+      user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
+                          old_old_username: user.old_username)
       get "/#{old_username}/#{article.slug}"
+      user.reload
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
       expect(response).to have_http_status(:moved_permanently)
     end
 
     it "redirects to appropriate page if user changes username twice" do
       old_username = user.username
-      user.update(username: "new_hotness_#{rand(10_000)}")
-      user.update(username: "new_new_username_#{rand(10_000)}")
+      user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
+                          old_old_username: user.old_username)
+      user.update_columns(username: "new_new_username_#{rand(10_000)}", old_username: user.username,
+                          old_old_username: user.old_username)
       get "/#{old_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
       expect(response).to have_http_status(:moved_permanently)
     end
 
     it "redirects to appropriate page if user changes username twice and go to middle username" do
-      user.update(username: "new_hotness_#{rand(10_000)}")
+      user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: user.username,
+                          old_old_username: user.old_username)
       middle_username = user.username
-      user.update(username: "new_new_username_#{rand(10_000)}")
+      user.update_columns(username: "new_new_username_#{rand(10_000)}", old_username: user.username,
+                          old_old_username: user.old_username)
       get "/#{middle_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
       expect(response).to have_http_status(:moved_permanently)

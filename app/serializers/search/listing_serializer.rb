@@ -4,7 +4,6 @@ module Search
                :body_markdown,
                :bumped_at,
                :category,
-               :contact_via_connect,
                :expires_at,
                :originally_published_at,
                :location,

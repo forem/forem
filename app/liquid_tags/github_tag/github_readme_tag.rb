@@ -40,7 +40,7 @@ class GithubTag
       validate_options!(*options)
 
       path.delete_suffix!("/") # remove optional trailing forward slash
-      repository_path = URI.parse(path)
+      repository_path = Addressable::URI.parse(path)
       repository_path.query = repository_path.fragment = nil
 
       [repository_path.normalize.to_s, options]
@@ -50,7 +50,8 @@ class GithubTag
       return if options.empty?
       return if options.all? { |o| VALID_OPTIONS.include?(o) }
 
-      message = "GitHub tag: invalid options: #{options - VALID_OPTIONS} - supported options: #{VALID_OPTIONS}"
+      message = I18n.t("liquid_tags.github_tag.github_readme_tag.invalid_options",
+                       invalid: (options - VALID_OPTIONS), valid: VALID_OPTIONS)
       raise StandardError, message
     end
 
@@ -72,7 +73,7 @@ class GithubTag
     end
 
     def raise_error
-      raise StandardError, "Invalid GitHub repository path or URL"
+      raise StandardError, I18n.t("liquid_tags.github_tag.github_readme_tag.invalid_github_repository")
     end
 
     def clean_relative_path!(readme_html, url)

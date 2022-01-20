@@ -12,7 +12,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "warning user", user_status: "Warn" },
     )
-    expect(user.warned).to be true
+    expect(user.warned?).to be true
     expect(user.suspended?).to be false
   end
 
@@ -22,7 +22,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Super Admin" },
     )
-    expect(user.has_role?(:super_admin)).to be true
+    expect(user.super_admin?).to be true
   end
 
   it "assigns trusted role to user that's updated to super admin" do
@@ -31,8 +31,8 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Super Admin" },
     )
-    expect(user.has_role?(:super_admin)).to be true
-    expect(user.has_role?(:trusted)).to be true
+    expect(user.super_admin?).to be true
+    expect(user.has_trusted_role?).to be true
   end
 
   it "updates user to admin" do
@@ -41,7 +41,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "Upgrading to admin", user_status: "Admin" },
     )
-    expect(user.has_role?(:admin)).to be true
+    expect(user.admin?).to be true
   end
 
   it "assigns trusted role to user that's updated to admin" do
@@ -50,8 +50,8 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "Upgrading to admin", user_status: "Admin" },
     )
-    expect(user.has_role?(:admin)).to be true
-    expect(user.has_role?(:trusted)).to be true
+    expect(user.admin?).to be true
+    expect(user.has_trusted_role?).to be true
   end
 
   it "updates user to tech admin" do
@@ -60,8 +60,8 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "Upgrading to tech admin", user_status: "Tech Admin" },
     )
-    expect(user.has_role?(:tech_admin)).to be true
-    expect(user.has_role?(:single_resource_admin, DataUpdateScript)).to be true
+    expect(user.tech_admin?).to be true
+    expect(user.single_resource_admin_for?(DataUpdateScript)).to be true
   end
 
   it "updates user to single resource admin" do
@@ -70,7 +70,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       user: user,
       user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Resource Admin: Article" },
     )
-    expect(user.has_role?(:single_resource_admin, Article)).to be true
+    expect(user.single_resource_admin_for?(Article)).to be true
   end
 
   it "updates negative role to positive role" do

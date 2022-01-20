@@ -25,8 +25,13 @@ module Payments
     end
 
     def call
-      process_purchase
-      create_credits if success?
+      if payment_method_provided?
+        process_purchase
+        create_credits if success?
+      else
+        self.error = I18n.t("services.payments.errors.select_payment_method")
+      end
+
       self
     end
 
@@ -38,6 +43,11 @@ module Payments
 
     attr_accessor :user, :credits_count, :success, :purchase_options
     attr_writer :purchaser, :error
+
+    def payment_method_provided?
+      # we expect at least one of :stripe_token or :selected_card to process
+      purchase_options.slice(:stripe_token, :selected_card).compact_blank.present?
+    end
 
     def process_purchase
       customer = find_or_create_customer
@@ -73,7 +83,7 @@ module Payments
       Payments::Customer.charge(
         customer: customer,
         amount: credits_count * cost_per_credit,
-        description: "Purchase of #{credits_count} credits.",
+        description: I18n.t("services.payments.process_credit_purchase.charge", count: credits_count),
         card_id: card&.id,
       )
     end

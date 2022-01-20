@@ -11,8 +11,7 @@ RSpec.describe "/listings", type: :request do
         title: "something",
         body_markdown: "something else",
         listing_category_id: edu_category.id,
-        tag_list: "ruby, rails, go",
-        contact_via_connect: true
+        tag_list: "ruby, rails, go"
       }
     }
   end
@@ -23,7 +22,6 @@ RSpec.describe "/listings", type: :request do
         body_markdown: "something draft",
         listing_category_id: edu_category.id,
         tag_list: "",
-        contact_via_connect: true,
         action: "draft"
       }
     }
@@ -54,7 +52,7 @@ RSpec.describe "/listings", type: :request do
       listings = JSON.parse(parsed_response.xpath("//*[@id='listings-index-container']")[0]["data-listings"])
 
       index_keys = %w[
-        title processed_html tag_list category id user_id slug contact_via_connect location bumped_at
+        title processed_html tag_list category id user_id slug location bumped_at
         originally_published_at author user
       ]
 

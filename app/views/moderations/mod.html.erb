@@ -39,8 +39,8 @@
           data-category="thumbsup"
           data-reactable-type="<%= @moderatable.class.name %>">
     <div class="reaction-button-circle">
-      <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_up")) %>
-      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
+      <%= crayons_icon_tag("twemoji/thumb-up", native: true, width: 32, height: 32, title: t("views.moderations.actions.thumb_up")) %>
+      <%= crayons_icon_tag("checkmark", class: "reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </div>
     <span class="vote-text"><%= t("views.moderations.actions.vote_up") %></span>
   </button>
@@ -49,8 +49,8 @@
             data-category="thumbsdown"
             data-reactable-type="<%= @moderatable.class.name %>">
       <div class="reaction-button-circle">
-        <%= inline_svg_tag("twemoji/thumb-down.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.thumb_down")) %>
-        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
+        <%= crayons_icon_tag("twemoji/thumb-down", native: true, width: 32, height: 32, title: t("views.moderations.actions.thumb_down")) %>
+        <%= crayons_icon_tag(:checkmark, class: "reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
       </div>
       <span class="vote-text"><%= t("views.moderations.actions.vote_down") %></span>
     </button>
@@ -59,18 +59,18 @@
             data-category="vomit"
             data-reactable-type="<%= @moderatable.class.name %>">
       <div class="reaction-button-circle">
-        <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.suspicious")) %>
-        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
+        <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 32, height: 32, title: t("views.moderations.actions.suspicious")) %>
+        <%= crayons_icon_tag(:checkmark, class: "reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
       </div>
       <span class="vote-text"><%= t("views.moderations.actions.flag_to_admins") %></span>
     </button>
   </div>
 
-  <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
+  <% if current_user.super_admin? && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit"><%= t("views.moderations.actions.edit.post") %></a> |
       <a href="/resource_admin/articles/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.resource_admin") %></a> |
       <a href="<%= admin_article_path(@moderatable.id) %>" data-no-instant><%= t("views.moderations.actions.edit.article_admin") %></a></h3>
-  <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
+  <% elsif current_user.super_admin? && @moderatable.class.name == "Comment" %>
     <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.comment_admin") %></a> |
       <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant><%= t("views.moderations.actions.edit.user_admin") %></a></h3>
   <% end %>
@@ -87,8 +87,8 @@
             data-category="vomit"
             data-reactable-type="<%= @moderatable.user.class.name %>">
       <div class="reaction-button-circle">
-        <%= inline_svg_tag("twemoji/suspicious.svg", aria: true, class: "crayons-icon crayons-icon--default", width: 32, height: 32, title: t("views.moderations.actions.suspicious")) %>
-        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
+        <%= crayons_icon_tag("twemoji/suspicious", native: true, title: t("views.moderations.actions.suspicious")) %>
+        <%= crayons_icon_tag(:checkmark, class: "reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
       </div>
       <span class="vote-text"><%= t("views.moderations.actions.flag") %></span>
     </button>
@@ -148,7 +148,7 @@
             <%= f.label :adjustment_type, t("views.moderations.actions.tag.add"), value: "addition" %>
           </div>
         <% end %>
-        <% if current_user.has_role?(:super_admin) %>
+        <% if current_user.super_admin? %>
           <%= f.text_field :tag_name, placeholder: t("views.moderations.actions.tag.tag_name"), required: true %>
         <% else %>
           <%= f.select :tag_name, @tag_moderator_tags, { prompt: t("views.moderations.actions.tag.select") }, required: true %>

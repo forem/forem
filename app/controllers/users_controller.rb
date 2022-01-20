@@ -63,7 +63,7 @@ class UsersController < ApplicationController
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
     else
-      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("error", @user.errors.messages.compact_blank)
       Honeycomb.add_field("errored", true)
 
       if @tab
@@ -267,7 +267,7 @@ class UsersController < ApplicationController
       handle_integrations_tab
       handle_response_templates_tab
     else
-      not_found unless @tab.in?(Settings.tab_list.map { |t| t.downcase.tr(" ", "-") })
+      not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
     end
   end
 
@@ -277,7 +277,7 @@ class UsersController < ApplicationController
     if @user.update_with_password(password_params)
       redirect_to user_settings_path(@tab)
     else
-      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("error", @user.errors.messages.compact_blank)
       Honeycomb.add_field("errored", true)
 
       if @tab

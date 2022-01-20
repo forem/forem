@@ -15,5 +15,5 @@
 <meta name="twitter:description" content="<%= @user.tag_line %>">
 <meta name="twitter:image:src" content="<%= user_social_image_url(@user) %>">
 <% if @stories.any? %>
-  <%= auto_discovery_link_tag(:rss, app_url("/feed/#{@user.username}"), title: "#{community_name} RSS Feed") %>
+  <%= auto_discovery_link_tag(:rss, app_url("/feed/#{@user.username}"), title: t("views.stories.meta.rss", name: community_name)) %>
 <% end %>

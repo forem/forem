@@ -1,0 +1,20 @@
+<div class="crayons-field mt-6 align-left" data-controller="logo-upload">
+  <%= f.label :logo, class: "crayons-field__label" do %>
+    Logo
+  <% end %>
+
+  <% if FeatureFlag.enabled?(:creator_onboarding) %>
+    <p id="logo-subtitle" class="crayons-field__description">Your logo will display in the upper left hand corner of your Forem. Upload a PNG or JPEG with a maximum size of 4096x4096px.</p>
+  <% else %>
+    <p id="logo-subtitle" class="crayons-field__description">You can adjust what your logo will look like here but it will not be live on the visitor facing site until after the release on 17 January. Upload a PNG or JPEG with a maximum size of 4096x4096px.</p>
+  <% end %>
+
+  <div class="flex flex-1 gap-4">
+    <%= f.file_field :logo, accept: allowed_types.to_s, aria_describedby: "logo-subtitle", data: { "max-file-size-mb": max_file_size.to_s, action: "change->logo-upload#previewLogo" } %>
+    <div data-logo-upload-target="previewLogo" id="logo-upload-preview">
+      <% if logo.present? %>
+        <img class="site-logo__img" src="<%= logo %>" alt="preview of logo selected">
+      <% end %>
+    </div>
+  </div>
+</div>

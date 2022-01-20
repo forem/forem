@@ -1,9 +1,15 @@
+#  @note When we destroy the related user, it's using dependent:
+#        :delete for the relationship.  That means no before/after
+#        destroy callbacks will be called on this object.
+#
+# @note When we destroy the related article, it's using dependent:
+#       :delete for the relationship.  That means no before/after
+#       destroy callbacks will be called on this object.
 class Mention < ApplicationRecord
   belongs_to :user
   belongs_to :mentionable, polymorphic: true
 
-  validates :user_id, presence: true, uniqueness: { scope: %i[mentionable_id mentionable_type] }
-  validates :mentionable_id, presence: true
+  validates :user_id, uniqueness: { scope: %i[mentionable_id mentionable_type] }
   validates :mentionable_type, presence: true
   validate :permission
 

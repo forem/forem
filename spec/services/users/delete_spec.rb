@@ -68,6 +68,14 @@ RSpec.describe Users::Delete, type: :service do
     end.to change(FieldTest::Membership, :count).by(-1)
   end
 
+  it "deletes reactions to the user" do
+    create(:vomit_reaction, reactable: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(Reaction, :count).by(-1)
+  end
+
   # check that all the associated records are being destroyed,
   # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
@@ -147,22 +155,6 @@ RSpec.describe Users::Delete, type: :service do
           expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
-    end
-  end
-
-  context "when cleaning up chat channels" do
-    let(:other_user) { create(:user) }
-
-    it "deletes the user's private chat channels" do
-      chat_channel = ChatChannels::CreateWithUsers.call(users: [user, other_user])
-      described_class.call(user)
-      expect(ChatChannel.find_by(id: chat_channel.id)).to be_nil
-    end
-
-    it "does not delete the user's open channels" do
-      chat_channel = ChatChannels::CreateWithUsers.call(users: [user, other_user], channel_type: "open")
-      described_class.call(user)
-      expect(ChatChannel.find_by(id: chat_channel.id)).not_to be_nil
     end
   end
 

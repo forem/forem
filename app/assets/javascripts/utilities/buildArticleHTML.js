@@ -32,26 +32,13 @@ function buildArticleHTML(article) {
       currentTag = JSON.parse(container.dataset.params).tag;
     }
     if (article.flare_tag && currentTag !== article.flare_tag.name) {
-      flareTag =
-        "<a href='/t/" +
-        article.flare_tag.name +
-        "' class='crayons-tag' style='background:" +
-        article.flare_tag.bg_color_hex +
-        ';color:' +
-        article.flare_tag.text_color_hex +
-        "'><span className='crayons-tag__prefix'>#</span>" +
-        article.flare_tag.name +
-        '</a>';
-    }
-    if (article.class_name === 'PodcastEpisode') {
-      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
-    }
-    if (article.class_name === 'Comment') {
-      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
-    }
-    if (article.class_name === 'User') {
-      flareTag =
-        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
+      flareTag = `<a href="/t/${article.flare_tag.name}"
+        class="crayons-tag crayons-tag--filled"
+        style="--tag-bg: ${article.flare_tag.bg_color_hex}1a; --tag-prefix: ${article.flare_tag.bg_color_hex}; --tag-bg-hover: ${article.flare_tag.bg_color_hex}1a; --tag-prefix-hover: ${article.flare_tag.bg_color_hex};"
+      >
+        <span class="crayons-tag__prefix">#</span>
+        ${article.flare_tag.name}
+      </a>`;
     }
 
     var tagString = '';
@@ -66,11 +53,7 @@ function buildArticleHTML(article) {
       tagList.forEach(function buildTagString(t) {
         tagString =
           tagString +
-          '<a href="/t/' +
-          t +
-          '" class="crayons-tag"><span class="crayons-tag__prefix">#</span>' +
-          t +
-          '</a>\n';
+          `<a href="/t/${t}" class="crayons-tag crayons-tag--monochrome"><span class="crayons-tag__prefix">#</span>${t}</a>\n`;
       });
     }
 
@@ -187,6 +170,8 @@ function buildArticleHTML(article) {
     // We only show profile preview cards for Posts
     var isArticle = article.class_name === 'Article';
 
+    // We need to be able to set the data-info hash attribute with escaped characters.
+    var name = article.user.name.replace(/[\\"']/g, '\\$&');
     var previewCardContent = `
       <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
@@ -199,7 +184,7 @@ function buildArticleHTML(article) {
             </a>
           </div>
           <div class="print-hidden">
-            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full", "name": "${article.user.name}"}'>Follow</button>
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full", "name": "${name}"}'>Follow</button>
           </div>
           <div class="author-preview-metadata-container" data-author-id="${article.user_id}"></div>
         </div>

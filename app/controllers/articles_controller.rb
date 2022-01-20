@@ -7,17 +7,6 @@ class ArticlesController < ApplicationController
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
 
-  FEED_ALLOWED_TAGS = %w[
-    a b blockquote br center cite code col colgroup dd del div dl dt em em h1 h2
-    h3 h4 h5 h6 i iframe img li ol p pre q small span strong sup table tbody td
-    tfoot th thead time tr u ul
-  ].freeze
-
-  FEED_ALLOWED_ATTRIBUTES = %w[
-    alt class colspan data-conversation data-lang em height href id ref rel
-    rowspan size span src start strong title value width
-  ].freeze
-
   def feed
     skip_authorization
 
@@ -32,8 +21,7 @@ class ArticlesController < ApplicationController
                     .includes(:user)
                 else
                   @articles
-                    .where(featured: true)
-                    .or(@articles.where(score: Settings::UserExperience.home_feed_minimum_score..))
+                    .with_at_least_home_feed_minimum_score
                     .includes(:user)
                 end
 
@@ -46,13 +34,13 @@ class ArticlesController < ApplicationController
       articles: @articles,
       user: @user,
       tag: @tag,
-      allowed_tags: FEED_ALLOWED_TAGS,
-      allowed_attributes: FEED_ALLOWED_ATTRIBUTES
+      allowed_tags: MarkdownProcessor::AllowedTags::FEED,
+      allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED
     }
   end
 
   def new
-    base_editor_assigments
+    base_editor_assignments
 
     @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
 
@@ -216,7 +204,7 @@ class ArticlesController < ApplicationController
 
   private
 
-  def base_editor_assigments
+  def base_editor_assignments
     @user = current_user
     @version = @user.setting.editor_version if @user
     @organizations = @user&.organizations

@@ -21,5 +21,8 @@ import 'cypress-failed-log';
 // Import commands.js using ES2015 syntax:
 import './commands';
 
+// Helper for retriable actions (e.g. to account for asynchronously attached event listeners) https://github.com/NicholasBoll/cypress-pipe
+import 'cypress-pipe';
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

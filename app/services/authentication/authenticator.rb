@@ -20,12 +20,22 @@ module Authentication
       @cta_variant = cta_variant
     end
 
+    # @api public
+    #
+    # @see #initialize method for parameters
+    #
+    # @return user [User] when the given provider is valid
+    #
+    # @raises [Authentication::Errors::PreviouslySuspended] when the user was already suspended
+    # @raises [Authentication::Errors::SpammyEmailDomain] when the associated email is spammy
     def self.call(...)
       new(...).call
     end
 
+    # @api private
     def call
       identity = Identity.build_from_omniauth(provider)
+      guard_against_spam_from!(identity: identity)
       return current_user if current_user_identity_exists?
 
       # These variables need to be set outside of the scope of the
@@ -72,6 +82,16 @@ module Authentication
     end
 
     private
+
+    def guard_against_spam_from!(identity:)
+      domain = identity.email.split("@")[-1]
+      return unless domain
+      return if Settings::Authentication.acceptable_domain?(domain: domain)
+
+      message = I18n.t("services.authentication.authenticator.not_allowed")
+
+      raise Authentication::Errors::SpammyEmailDomain, message
+    end
 
     attr_reader :provider, :current_user, :cta_variant
 
@@ -129,9 +149,20 @@ module Authentication
     end
 
     def update_user(user)
+      return user if user.suspended?
+
       user.tap do |model|
         model.unlock_access! if model.access_locked?
-        model.assign_attributes(provider.existing_user_data)
+
+        if model.confirmed?
+          # We don't want to update users' email or any other fields if they're
+          # connecting an existing account that already has a confirmed email.
+          model.assign_attributes(provider.existing_user_data.except(:email))
+        else
+          # If the user doesn't have a confirmed email we can update their email
+          # and trust it because the auth provider confirmed email ownership
+          model.assign_attributes(provider.existing_user_data)
+        end
 
         update_profile_updated_at(model)
 

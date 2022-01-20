@@ -44,16 +44,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         create(:user_block, blocker: user, blocked: second_user, config: "default")
         expect(result).not_to include(hot_story)
       end
-
-      it "doesn't display blocked articles", type: :system, js: true do
-        selector = "article[data-content-user-id='#{hot_story.user_id}']"
-        sign_in user
-        visit root_path
-        expect(page).to have_selector(selector, visible: :visible)
-        create(:user_block, blocker: user, blocked: hot_story.user, config: "default")
-        visit root_path
-        expect(page).to have_selector(selector, visible: :hidden)
-      end
     end
 
     context "when ranking is true" do
@@ -171,7 +161,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       end
 
       # This test handles a situation in which there are a low number of hot or new stories, and the user is logged in.
-      # Previously the offest factor could result in zero stories being returned sometimes.
+      # Previously the offset factor could result in zero stories being returned sometimes.
 
       # We manually called `feed.globally_hot_articles` here because `let` caches it!
       it "still returns articles" do

@@ -1,9 +1,11 @@
+/* global Runtime */
+import 'focus-visible';
 import {
   initializeMobileMenu,
   setCurrentPageIconLink,
-  getInstantClick,
   initializeMemberMenu,
 } from '../topNavigation/utilities';
+import { waitOnBaseData } from '../utilities/waitOnBaseData';
 
 // Unique ID applied to modals created using window.Forem.showModal
 const WINDOW_MODAL_ID = 'window-modal';
@@ -111,9 +113,8 @@ window.Forem = {
 function getPageEntries() {
   return Object.entries({
     'notifications-index': document.getElementById('notifications-link'),
-    'chat_channels-index': document.getElementById('connect-link'),
     'moderations-index': document.getElementById('moderation-link'),
-    'stories-search': document.getElementById('search-link'),
+    'articles_search-index': document.getElementById('search-link'),
   });
 }
 
@@ -137,10 +138,51 @@ if (memberMenu) {
   initializeMemberMenu(memberMenu, menuNavButton);
 }
 
-getInstantClick().then((spa) => {
-  spa.on('change', () => {
-    initializeNav();
+// Initialize when asset pipeline (sprockets) initializers have executed
+waitOnBaseData()
+  .then(() => {
+    InstantClick.on('change', () => {
+      initializeNav();
+    });
+
+    if (Runtime.currentMedium() === 'ForemWebView') {
+      // Dynamic import of the namespace
+      import('../mobile/foremMobile.js').then((module) => {
+        // Load the namespace
+        window.ForemMobile = module.foremMobileNamespace();
+        // Run the first session
+        window.ForemMobile.userSessionBroadcast();
+      });
+    }
+  })
+  .catch((error) => {
+    Honeybadger.notify(error);
   });
-});
 
 initializeNav();
+
+async function loadCreatorSettings() {
+  try {
+    const [
+      { CreatorSettingsController },
+      { LogoUploadController },
+      { Application },
+    ] = await Promise.all([
+      import('@admin-controllers/creator_settings_controller'),
+      import('@admin-controllers/logo_upload_controller'),
+      import('@hotwired/stimulus'),
+    ]);
+
+    const application = Application.start();
+    application.register('creator-settings', CreatorSettingsController);
+    application.register('logo-upload', LogoUploadController);
+  } catch (error) {
+    Honeybadger.notify(
+      `Error loading the creator settings controller: ${error.message}`,
+    );
+  }
+}
+
+if (document.location.pathname === '/admin/creator_settings/new') {
+  loadCreatorSettings();
+}

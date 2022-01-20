@@ -1,6 +1,7 @@
 import { h, Fragment } from 'preact';
 import ahoy from 'ahoy.js';
 import PropTypes from 'prop-types';
+import { Link } from '@crayons';
 
 export const TagsFollowed = ({ tags = [] }) => {
   const trackSidebarTagClick = (event) => {
@@ -10,22 +11,17 @@ export const TagsFollowed = ({ tags = [] }) => {
 
   return (
     <Fragment>
-      {tags.map((tag) =>
-        tag.points >= 1 ? (
-          <div
-            key={tag.id}
-            className="sidebar-nav-element"
-            id={`sidebar-element-${tag.name}`}
+      {tags.map(({ name, id, points }) =>
+        points >= 1 ? (
+          <Link
+            key={id}
+            title={`${name} tag`}
+            onClick={trackSidebarTagClick}
+            block
+            href={`/t/${name}`}
           >
-            <a
-              title={`${tag.name} tag`}
-              onClick={trackSidebarTagClick}
-              className="crayons-link crayons-link--block"
-              href={`/t/${tag.name}`}
-            >
-              {`#${tag.name}`}
-            </a>
-          </div>
+            {`#${name}`}
+          </Link>
         ) : null,
       )}
     </Fragment>
@@ -38,10 +34,7 @@ TagsFollowed.propTypes = {
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
-      hotness_score: PropTypes.number.isRequired,
       points: PropTypes.number.isRequired,
-      bg_color_hex: PropTypes.string.isRequired,
-      text_color_hex: PropTypes.string.isRequired,
     }),
   ),
 };

@@ -3,7 +3,7 @@ class ListingsController < ApplicationController
 
   INDEX_JSON_OPTIONS = {
     only: %i[
-      title processed_html tag_list category id user_id slug contact_via_connect location bumped_at
+      title processed_html tag_list category id user_id slug location bumped_at
       originally_published_at
     ],
     methods: %i[category],

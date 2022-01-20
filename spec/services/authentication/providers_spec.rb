@@ -24,12 +24,32 @@ RSpec.describe Authentication::Providers, type: :service do
       )
       expect(is_subclass_of).to be(true)
     end
+
+    it "handles spaces in provider names" do
+      allow(Settings::Authentication).to receive(:providers).and_return(%w[google_oauth2])
+
+      expect do
+        described_class.get!(:google_oauth2)
+      end.not_to raise_error
+    end
   end
 
   describe ".available" do
     it "lists the available providers" do
-      available_providers = %i[apple facebook forem github twitter]
+      available_providers = %i[apple facebook forem github google_oauth2 twitter]
       expect(described_class.available).to eq(available_providers)
+    end
+  end
+
+  describe ".availble_providers" do
+    it "lists the available providers" do
+      available_providers = [Authentication::Providers::Forem,
+                             Authentication::Providers::Facebook,
+                             Authentication::Providers::Apple,
+                             Authentication::Providers::Twitter,
+                             Authentication::Providers::GoogleOauth2,
+                             Authentication::Providers::Github].sort_by(&:name)
+      expect(described_class.available_providers).to eq(available_providers)
     end
   end
 

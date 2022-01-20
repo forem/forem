@@ -4,6 +4,7 @@
 @import 'scaffolds';
 
 @import 'components/admin/users';
+@import 'components/skip-link';
 
 // overriding Bootstrap styles
 label {
@@ -169,22 +170,6 @@ label {
   color: var(--base-inverted);
 }
 
-.admin-help-button {
-  position: fixed;
-  bottom: var(--su-7);
-  margin-bottom: env(safe-area-inset-bottom);
-  right: var(--su-7);
-  z-index: var(--z-elevate);
-  cursor: pointer;
-  border-radius: 50px;
-
-  @media (max-width: $breakpoint-m) {
-    bottom: calc(var(--header-height) + var(--su-3));
-    right: var(--su-3);
-    padding: 0;
-  }
-}
-
 .mod-actions__data {
   max-width: 300px;
 }
@@ -220,7 +205,7 @@ label {
 .admin__tabbed-navbar,
 .admin__left-sidebar {
   // Navbar links have text-decorations that are being
-  // rendered from boostrap. We want to remove these to be
+  // rendered from bootstrap. We want to remove these to be
   // consistent with links in the crayons design system.
   .crayons-link,
   .crayons-tabs__item {

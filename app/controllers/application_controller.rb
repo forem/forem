@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
   include Pundit
   include CachingHeaders
   include ImageUploads
-  include VerifySetupCompleted
   include DevelopmentDependencyChecks if Rails.env.development?
   include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
@@ -74,12 +73,12 @@ class ApplicationController < ActionController::Base
   end
 
   def not_authorized
-    render json: "Error: not authorized", status: :unauthorized
+    render json: { error: "Error: not authorized" }, status: :unauthorized
     raise NotAuthorizedError, "Unauthorized"
   end
 
   def bad_request
-    render json: "Error: Bad Request", status: :bad_request
+    render json: { error: "Error: Bad Request" }, status: :bad_request
   end
 
   def error_too_many_requests(exc)

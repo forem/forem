@@ -2,7 +2,7 @@ class ConsumerApp < ApplicationRecord
   resourcify
 
   FOREM_BUNDLE = "com.forem.app".freeze
-  FOREM_APP_PLATFORMS = %w[ios].freeze
+  FOREM_APP_PLATFORMS = %w[ios android].freeze
   FOREM_TEAM_ID = "R9SWHSQNV8".freeze
 
   enum platform: { android: Device::ANDROID, ios: Device::IOS }
@@ -35,8 +35,10 @@ class ConsumerApp < ApplicationRecord
   # custom PN targets will get their credentials from the auth_key stored in
   # the DB (configured by the Forem creator).
   def auth_credentials
-    if forem_app?
+    if forem_app? && ios?
       ApplicationConfig["RPUSH_IOS_PEM"]
+    elsif forem_app? && android?
+      ApplicationConfig["RPUSH_FCM_KEY"]
     else
       auth_key
     end
@@ -47,11 +49,12 @@ class ConsumerApp < ApplicationRecord
   # [@forem/backend] `.where().first` is necessary because we use Redis data storage
   # https://github.com/rpush/rpush/wiki/Using-Redis#find_by_name-cannot-be-used-in-rpush-redis
   def clear_rpush_app
+    app_name = "#{app_bundle_was}.#{platform}"
     case ConsumerApp.platforms[platform_was]
     when Device::IOS
-      Rpush::Apns2::App.where(name: app_bundle_was).first&.destroy
+      Rpush::Apns2::App.where(name: app_name).first&.destroy
     when Device::ANDROID
-      Rpush::Gcm::App.where(name: app_bundle_was).first&.destroy
+      Rpush::Gcm::App.where(name: app_name).first&.destroy
     end
 
     # This prevents the `destroy` method to return true or false in a callback

@@ -1,0 +1,78 @@
+# Buttons
+
+Buttons are clickable elements that are used to trigger actions. 
+They communicate calls to action to the user and allow users to interact with pages in a variety of ways. 
+Button labels express what action will occur when the user interacts with it.
+
+ It is therefore very important that the different variants are implemented consistently across product, 
+ so that they message the correct actions.
+
+## CTAs vs Links vs Buttons
+
+The most important of these rules is that the `<CTA />` (or `<Link />`) and `<Button />` elements are assigned to appropriate respective tasks. 
+That is: `<CTA />` or `<Link />` should be used where navigation is elicited, and `<Button />` where a non-navigational action is being invoked.
+For example, a 'Submit' control on 'Sign in' view (form) would suit a `<Button />` because its job is to submit the form. 
+However, 'Register' call-to-action—taking the user to a different form, in a different page or screen—would benefit from `<CTA />` or `<Link />` semantics.
+
+Do not use `<Button />s` as navigational elements. Instead, use `<Link />s` (or `<CTA />s`) when the desired action is to take the user to a new page.
+
+## Variants
+
+### Default
+
+The _Default_ variant is not very prominent, and therefore can be used for less prominent actions.
+The _Default_ buttons are visually light (greyish) and you can have as many of them as you want (within common sense :D). 
+They can (but don't have to) be used in conjunction with a _Primary_ button and less often with _Secondary_ buttons (use your common sense again or ping your designer).
+When combined with the _Primary_ or the _Secondary_, the _Default_ variant should be used for any remaining actions.
+
+Whenever used, make sure it has sufficient color contrast against the background it's used on.
+
+### Primary
+
+The _Primary_ variant has a special look: high contrast (against rest of the view/component) and it's filled with accent color. 
+
+Ideally there should be only one _Primary_ button per entire component, or sometimes even per entire view.
+Primary buttons should be used for the principal action on the page.
+
+### Secondary
+
+The _Secondary_ variant is visually in between the _Primary_ and the _Default_ buttons. It's not as loud as the _Primary_ button but definitely stands out more than the _Default_ button.
+It's especially useful when you want your button to be more distinguishable from its surroundings without making it super loud (like _Primary_). 
+A good example would be a component with lots of text. The _Default_ button could be potentially missed there (as it uses similar colors as regular texts).
+
+Whenever you have doubts between using the _Secondary_ vs the _Default_ variants, the rule of thumb should be:
+
+> Use the _Default_ variant by default :D unless it's not distinguishable enough from its surroundings.
+
+When combined with the _Primary_ button, the _Secondary_ variant should be used for any remaining or alternative actions.
+
+## Configuration
+
+### Destructive actions
+
+For actions that could have destructive effects on the user’s data (for example, *delete* or *remove*) we have a special style.
+This style can be applied by using `destructive` prop and it will work with two variants: _Primary_ and _Default_ (as it doesn't really make sense to have _Secondary_ variant for destructive buttons).
+
+### Icons
+
+Icon can be placed in front of a label to both clarify an action but also to make button stand out more.
+By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself within `<Button />` is **not** customizable. Icons within buttons are hidden from assistive technology, so make sure your button has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
+
+#### Icon-only
+
+There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
+Icon-only buttons should always use clear and obvious icon, ideally accompanied by a tooltip or title. Make sure your button is adequately labelled for assistive technologies, either by the tooltip or by an `aria-label`.
+
+##### Fully rounded
+
+In most cases, whenever we display icon-only buttons (standalone, not in a *buttons group*) we tend to make button fully rounded - use `rounded` prop for that.
+Other than that please avoid customizing border-radius on buttons.
+
+### Tooltip
+
+By passing a string or node in `tooltip` prop, button will get a custom tooltip (visually different than a classic `title`) on `:hover` and `:focus`. The tooltip makes up part of the "accessible name" used by assistive technologies like screen readers. If you _do not_ wish the tooltip to be part of the accessible name, consider wrapping it in a `<span aria-hidden="true">`. Tooltips can be temporarily dismissed on `Escape` key press.
+
+## Design
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FgHpwugeu9jFGW4d9u3ReuR%2FCrayons%3Fnode-id%3D1%253A29" allowfullscreen></iframe>

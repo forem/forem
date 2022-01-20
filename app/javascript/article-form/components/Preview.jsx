@@ -16,10 +16,10 @@ function titleArea({
     tags = tagArray.map((tag) => {
       return (
         tag.length > 0 && (
-          <span className="crayons-tag">
-            <span className="crayons-tag__prefix">#</span>
+          <a href={`/t/${tag}`} className="crayons-tag">
+            <span key={tag} className="crayons-tag__prefix">#</span>
             {tag}
-          </span>
+          </a>
         )
       );
     });

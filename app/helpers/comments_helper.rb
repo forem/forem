@@ -23,7 +23,11 @@ module CommentsHelper
   end
 
   def get_ama_or_op_banner(commentable)
-    commentable.decorate.cached_tag_list_array.include?("ama") ? "Ask Me Anything" : "Author"
+    if commentable.decorate.cached_tag_list_array.include?(I18n.t("helpers.comments_helper.ama"))
+      I18n.t("helpers.comments_helper.ask_me_anything")
+    else
+      I18n.t("helpers.comments_helper.author")
+    end
   end
 
   def tree_for(comment, sub_comments, commentable)
@@ -31,7 +35,8 @@ module CommentsHelper
   end
 
   def should_be_hidden?(comment, root_comment)
-    comment.hidden_by_commentable_user && comment != root_comment
+    # when opened by a permalink + root comment is hidden => show root comment and its descendants
+    comment.hidden_by_commentable_user && comment != root_comment && !root_comment&.hidden_by_commentable_user
   end
 
   def high_number_of_comments?(comments_number)
@@ -51,13 +56,12 @@ module CommentsHelper
   end
 
   def like_button_text(comment)
+    # TODO: [yheuhtozr] support cross-element i18n compatible with initializeCommentsPage.js.erb
     case comment.public_reactions_count
     when 0
-      I18n.t("core.like")
-    when 1
-      "&nbsp;#{I18n.t('core.like').downcase}"
+      I18n.t("helpers.comments_helper.like")
     else
-      "&nbsp;#{I18n.t('core.like').downcase}s"
+      I18n.t("helpers.comments_helper.nbsp_likes_html", count: comment.public_reactions_count)
     end
   end
 

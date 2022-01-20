@@ -138,34 +138,4 @@ RSpec.describe Articles::Updater, type: :service do
       end
     end
   end
-
-  describe "events dispatcher" do
-    let(:event_dispatcher) { double }
-
-    before do
-      allow(event_dispatcher).to receive(:call)
-    end
-
-    it "calls the dispatcher" do
-      described_class.call(user, article, attributes, event_dispatcher)
-      expect(event_dispatcher).to have_received(:call).with("article_updated", article)
-    end
-
-    it "doesn't call the dispatcher when unpublished => unpublished" do
-      described_class.call(user, draft, attributes, event_dispatcher)
-      expect(event_dispatcher).not_to have_received(:call)
-    end
-
-    it "calls the dispatcher when unpublished => published" do
-      attributes[:published] = true
-      described_class.call(user, draft, attributes, event_dispatcher)
-      expect(event_dispatcher).to have_received(:call).with("article_updated", draft)
-    end
-
-    it "calls the dispatcher when published => unpublished" do
-      attributes[:published] = false
-      described_class.call(user, article, attributes, event_dispatcher)
-      expect(event_dispatcher).to have_received(:call).with("article_updated", article)
-    end
-  end
 end

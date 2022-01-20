@@ -1,4 +1,7 @@
 module Users
+  #  @note When we destroy the related user, it's using dependent:
+  #        :delete for the relationship.  That means no before/after
+  #        destroy callbacks will be called on this object.
   class Setting < ApplicationRecord
     self.table_name_prefix = "users_"
 
@@ -12,8 +15,8 @@ module Users
          _suffix: :font
     enum inbox_type: { private: 0, open: 1 }, _suffix: :inbox
     enum config_navbar: { default: 0, static: 1 }, _suffix: :navbar
-    enum config_theme: { light_theme: 0, minimal_light_theme: 1, dark_theme: 2, pink_theme: 3,
-                         ten_x_hacker_theme: 4 }
+    # NOTE: We previously had a set of 5 themes with values from 0 to 4.
+    enum config_theme: { light_theme: 0, dark_theme: 2 }
     enum config_homepage_feed: { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
          _suffix: :feed
 
@@ -21,7 +24,6 @@ module Users
               :brand_color2,
               format: { with: HEX_COLOR_REGEXP, message: "is not a valid hex color" },
               allow_nil: true
-    validates :user_id, presence: true
     validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
     validates :feed_referential_link, inclusion: { in: [true, false] }
     validates :feed_url, length: { maximum: 500 }, allow_nil: true

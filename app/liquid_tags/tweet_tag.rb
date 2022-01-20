@@ -1,7 +1,9 @@
 class TweetTag < LiquidTagBase
   include ActionView::Helpers::AssetTagHelper
   PARTIAL = "liquids/tweet".freeze
-  ID_REGEXP = /\A\d{10,20}\z/ # id must be all numbers between 10 and 20 chars
+  REGISTRY_REGEXP = %r{https://twitter.com/\w{1,15}/status/(?<id>\d{10,20})}
+  VALID_ID_REGEXP = /\A(?<id>\d{10,20})\Z/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
     var videoPreviews = document.getElementsByClassName("ltag__twitter-tweet__media__video-wrapper");
@@ -27,7 +29,7 @@ class TweetTag < LiquidTagBase
 
   def initialize(_tag_name, id, _parse_context)
     super
-    @id = parse_id(id)
+    @id = parse_id_or_url(strip_tags(id))
     @tweet = Tweet.find_or_fetch(@id)
     @twitter_logo = ActionController::Base.helpers.asset_path("twitter.svg")
   end
@@ -49,17 +51,14 @@ class TweetTag < LiquidTagBase
 
   private
 
-  def parse_id(input)
-    input_no_space = input.delete(" ")
-    raise StandardError, "Invalid Twitter Id" unless valid_id?(input_no_space)
+  def parse_id_or_url(input)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, "Invalid Tweet ID or URL" unless match
 
-    input_no_space
-  end
-
-  def valid_id?(id)
-    ID_REGEXP.match?(id)
+    match[:id]
   end
 end
 
 Liquid::Template.register_tag("tweet", TweetTag)
 Liquid::Template.register_tag("twitter", TweetTag)
+UnifiedEmbed.register(TweetTag, regexp: TweetTag::REGISTRY_REGEXP)

@@ -1,13 +1,15 @@
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
-  include Storext.model
   include Reactable
   include UserSubscriptionSourceable
   include PgSearch::Model
 
   acts_as_taggable_on :tags
   resourcify
+
+  include StringAttributeCleaner.for(:canonical_url, on: :before_save)
+  DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
 
   attr_accessor :publish_under_org
   attr_writer :series
@@ -29,18 +31,23 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   UNIQUE_URL_ERROR = "has already been taken. " \
                      "Email #{ForemInstance.email} for further details.".freeze
+  PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
-  has_one :discussion_lock, dependent: :destroy
+  has_one :discussion_lock, dependent: :delete
 
-  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
-  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
-  has_many :page_views, dependent: :destroy
+  has_many :page_views, dependent: :delete_all
+  # `dependent: :destroy` because in Poll we cascade the deletes of
+  #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy
-  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :destroy
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :delete_all
+  # `dependent: :destroy` because in RatingVote we're relying on
+  #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
@@ -74,7 +81,6 @@ class Article < ApplicationRecord
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
   validates :title, presence: true, length: { maximum: 128 }
-  validates :user_id, presence: true
   validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
@@ -94,9 +100,10 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
   before_validation :evaluate_markdown, :create_slug
+  before_validation :remove_prohibited_unicode_characters
   before_save :update_cached_user
   before_save :set_all_dates
-  before_save :clean_data
+
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
@@ -153,7 +160,12 @@ class Article < ApplicationRecord
     SQL
   end
 
+  # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
+  # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
   serialize :cached_user
+
+  # @todo Enforce the serialization class (e.g., Articles::CachedEntity)
+  # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
   serialize :cached_organization
 
   # TODO: [@rhymes] Rename the article column and the trigger name.
@@ -180,6 +192,13 @@ class Article < ApplicationRecord
       .where("published_at <= ?", Time.current)
   }
   scope :unpublished, -> { where(published: false) }
+
+  scope :not_authored_by, ->(user_id) { where.not(user_id: user_id) }
+
+  # [@jeremyf] For approved articles is there always an assumption of
+  #            published?  Regardless, the scope helps us deal with
+  #            that in the future.
+  scope :approved, -> { where(approved: true) }
 
   scope :admin_published_with, lambda { |tag_name|
     published
@@ -285,6 +304,18 @@ class Article < ApplicationRecord
 
     order(column => dir.to_sym)
   }
+
+  # @note This includes the `featured` scope, which may or may not be
+  #       something we expose going forward.  However, it was
+  #       something used in two of the three queries we had that
+  #       included the where `score > Settings::UserExperience.home_feed_minimum_score`
+  scope :with_at_least_home_feed_minimum_score, lambda {
+    featured.or(
+      where(score: Settings::UserExperience.home_feed_minimum_score..),
+    )
+  }
+
+  scope :featured, -> { where(featured: true) }
 
   scope :feed, lambda {
                  published.includes(:taggings)
@@ -460,6 +491,7 @@ class Article < ApplicationRecord
   def update_score
     self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
     update_columns(score: score,
+                   privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
                    hotness_score: BlackBox.article_hotness_score(self),
                    spaminess_rating: BlackBox.calculate_spaminess(self))
@@ -582,8 +614,7 @@ class Article < ApplicationRecord
   end
 
   def before_destroy_actions
-    bust_cache
-    touch_actor_latest_article_updated_at(destroying: true)
+    bust_cache(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -780,10 +811,6 @@ class Article < ApplicationRecord
     "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
   end
 
-  def clean_data
-    self.canonical_url = nil if canonical_url == ""
-  end
-
   def touch_actor_latest_article_updated_at(destroying: false)
     return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
 
@@ -791,13 +818,13 @@ class Article < ApplicationRecord
     organization&.touch(:latest_article_updated_at)
   end
 
-  def bust_cache
+  def bust_cache(destroying: false)
     cache_bust = EdgeCache::Bust.new
     cache_bust.call(path)
     cache_bust.call("#{path}?i=i")
     cache_bust.call("#{path}?preview=#{password}")
     async_bust
-    touch_actor_latest_article_updated_at
+    touch_actor_latest_article_updated_at(destroying: destroying)
   end
 
   def calculate_base_scores
@@ -806,27 +833,7 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless Settings::RateLimit.spam_trigger_terms.any? do |term|
-                    Regexp.new(term.downcase).match?(title.downcase)
-                  end
-
-    Reaction.create(
-      user_id: Settings::General.mascot_user_id,
-      reactable_id: id,
-      reactable_type: "Article",
-      category: "vomit",
-    )
-
-    return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
-
-    user.add_role(:suspended)
-    Note.create(
-      author_id: Settings::General.mascot_user_id,
-      noteable_id: user_id,
-      noteable_type: "User",
-      reason: "automatic_suspend",
-      content: "User suspended for too many spammy articles, triggered by autovomit.",
-    )
+    Spam::Handler.handle_article!(article: self)
   end
 
   def async_bust
@@ -846,5 +853,11 @@ class Article < ApplicationRecord
     return unless saved_change_to_attribute?(:processed_html)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
+  end
+
+  def remove_prohibited_unicode_characters
+    return unless title&.match?(PROHIBITED_UNICODE_CHARACTERS_REGEX)
+
+    self.title = title.gsub(PROHIBITED_UNICODE_CHARACTERS_REGEX, "")
   end
 end

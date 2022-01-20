@@ -2,7 +2,7 @@ class RedditTag < LiquidTagBase
   include ActionView::Helpers::SanitizeHelper
 
   PARTIAL = "liquids/reddit".freeze
-  URL_REGEXP = %r{\Ahttps://(www.)?reddit.com}
+  REGISTRY_REGEXP = %r{\Ahttps://(www.)?reddit.com}
 
   def initialize(_tag_name, url, _parse_context)
     super
@@ -44,7 +44,7 @@ class RedditTag < LiquidTagBase
       author: data["author"],
       title: data["title"],
       post_url: @url,
-      created_at: Time.zone.at(data["created_utc"]).strftime("%b %e '%y"),
+      created_at: I18n.l(Time.zone.at(data["created_utc"]), format: :reddit),
       post_hint: data["post_hint"],
       image_url: data["url"],
       thumbnail: data["thumbnail"],
@@ -61,15 +61,17 @@ class RedditTag < LiquidTagBase
   end
 
   def validate_url
-    return true if valid_url?(@url.delete(" ")) && (@url =~ URL_REGEXP)&.zero?
+    return true if valid_url?(@url.delete(" ")) && (@url =~ REGISTRY_REGEXP)&.zero?
 
-    raise StandardError, "Invalid Reddit link: #{@url}"
+    raise StandardError, I18n.t("liquid_tags.reddit_tag.invalid_reddit_link", url: @url)
   end
 
   def valid_url?(url)
-    url = URI.parse(url)
-    url.is_a?(URI::HTTP)
+    url = Addressable::URI.parse(url)
+    %w[http https].include? url.scheme
   end
 end
 
 Liquid::Template.register_tag("reddit", RedditTag)
+
+UnifiedEmbed.register(RedditTag, regexp: RedditTag::REGISTRY_REGEXP)

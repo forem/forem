@@ -6,6 +6,19 @@ RSpec.describe Authentication::Authenticator, type: :service do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
+  # A shared context is somewhat like a module mixin.  You define
+  # the specs to share and then later you can `include_context` for
+  # that shared context.
+  shared_examples "spam handling" do
+    context "when email is spammy" do
+      it "raises an Identity::SpamDomainForIdentityError" do
+        allow(Settings::Authentication).to receive(:acceptable_domain?).and_return(false)
+
+        expect { service.call }.to raise_error(Authentication::Errors::SpammyEmailDomain)
+      end
+    end
+  end
+
   context "when authenticating through an unknown provider" do
     it "raises ProviderNotFound" do
       auth_payload = OmniAuth.config.mock_auth[:github].merge(provider: "okta")
@@ -18,6 +31,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
   context "when authenticating through Apple", vcr: { cassette_name: "fastly_sloan" } do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:apple] }
     let!(:service) { described_class.new(auth_payload) }
+
+    include_context "spam handling"
 
     describe "new user" do
       it "creates a new user" do
@@ -135,6 +150,24 @@ RSpec.describe Authentication::Authenticator, type: :service do
         end.to change { user.reload.apple_username }.to("newname")
       end
 
+      # rubocop:disable RSpec/AnyInstance
+      it "avoids overriding the email when a provider has a different one" do
+        existing_email = user.email
+
+        # The following mocks the behavior of `current_user` being available
+        # which means we're connecting an existing account with the new identity
+        allow_any_instance_of(described_class).to receive(:proper_user).and_return(user)
+        forem_auth_payload = OmniAuth.config.mock_auth[:forem].merge(email: "different+email@example.com")
+
+        described_class.call(forem_auth_payload)
+
+        # We want to keep the previous email the user had instead of overriding
+        # with the new (different) email given by the OAuth provider
+        expect(user.reload.email).to eq(existing_email)
+        expect(user.reload.unconfirmed_email).to be_nil
+      end
+      # rubocop:enable RSpec/AnyInstance
+
       it "sets remember_me for the existing user" do
         user.update_columns(remember_token: nil, remember_created_at: nil)
 
@@ -169,12 +202,12 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "does not update the username when the first_name is nil" do
-        previos_username = user.apple_username
+        previous_username = user.apple_username
         auth_payload.info.first_name = nil
 
         user = described_class.call(auth_payload)
 
-        expect(user.apple_username).to eq(previos_username)
+        expect(user.apple_username).to eq(previous_username)
       end
 
       it "updates profile_updated_at when the username is changed" do
@@ -212,6 +245,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
   context "when authenticating through Github" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:github] }
     let!(:service) { described_class.new(auth_payload) }
+
+    include_context "spam handling"
 
     describe "new user" do
       it "creates a new user" do
@@ -393,6 +428,15 @@ RSpec.describe Authentication::Authenticator, type: :service do
         tags = hash_including(tags: array_including("error:StandardError"))
         expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags)
       end
+
+      it "does not update their github_username if the user is suspended" do
+        new_username = "new_username#{rand(1000)}"
+        auth_payload.info.nickname = new_username
+        user.add_role :suspended
+
+        user = described_class.call(auth_payload)
+        expect(user.github_username).not_to eq(new_username)
+      end
     end
 
     describe "user already logged in" do
@@ -413,6 +457,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
   context "when authenticating through Facebook" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:facebook] }
     let!(:service) { described_class.new(auth_payload) }
+
+    include_context "spam handling"
 
     describe "new user" do
       it "creates a new user" do
@@ -502,6 +548,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
   context "when authenticating through Twitter" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
     let!(:service) { described_class.new(auth_payload) }
+
+    include_context "spam handling"
 
     describe "new user" do
       it "creates a new user" do
@@ -667,6 +715,15 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(
           user.profile_updated_at.to_i > original_profile_updated_at.to_i,
         ).to be(true)
+      end
+
+      it "does not update their twitter_username if the user is suspended" do
+        new_username = "new_username#{rand(1000)}"
+        auth_payload.info.nickname = new_username
+        user.add_role :suspended
+
+        user = described_class.call(auth_payload)
+        expect(user.github_username).not_to eq(new_username)
       end
     end
 

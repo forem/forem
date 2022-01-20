@@ -1,6 +1,12 @@
 class PollTag < LiquidTagBase
   PARTIAL = "liquids/poll".freeze
   VALID_CONTEXTS = %w[Article].freeze
+
+  # @see LiquidTagBase.user_authorization_method_name for discussion
+  def self.user_authorization_method_name
+    :any_admin?
+  end
+
   VALID_ROLES = %i[
     admin
     super_admin
@@ -117,7 +123,7 @@ class PollTag < LiquidTagBase
   def find_poll(id_code)
     Poll.find(id_code.to_i(26))
   rescue ActiveRecord::RecordNotFound
-    raise StandardError, "Invalid poll ID"
+    raise StandardError, I18n.t("liquid_tags.poll_tag.invalid_poll_id")
   end
 
   def self.script

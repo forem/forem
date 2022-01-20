@@ -20,6 +20,7 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
 
       user.follow(second_tag)
       user.follow(tag)
+      article.save
     end
 
     it "calculates scores", :aggregate_failures do

@@ -30,7 +30,7 @@
     </tr>
   </thead>
   <tbody class="crayons-card">
-    <% @privileged_reactions.each do |reaction| %>
+    <% @privileged_reactions.select(&:reactable).each do |reaction| %>
       <tr>
         <td class="whitespace-nowrap"><%= reaction.id %></td>
         <td><%= link_to reaction.user.username, admin_user_path(reaction.user_id) %></td>

@@ -8,7 +8,6 @@ module Admin
       articles: "https://admin.forem.com/docs/forem-basics/posts",
       badges: "https://admin.forem.com/docs/forem-basics/badges",
       badge_achievements: "https://admin.forem.com/docs/forem-basics/badges",
-      chat_channels: "https://admin.forem.com/docs/advanced-customization/chat-channels",
       display_ads: "https://admin.forem.com/docs/advanced-customization/display-ads",
       feedback_messages: "https://admin.forem.com/docs/advanced-customization/reports",
       html_variants: "https://admin.forem.com/docs/advanced-customization/html-variants",
@@ -19,7 +18,8 @@ module Admin
       podcasts: "https://admin.forem.com/docs/advanced-customization/content-manager/podcasts",
       settings: "https://admin.forem.com/docs/advanced-customization/config",
       tags: "https://admin.forem.com/docs/forem-basics/tags",
-      users: "https://admin.forem.com/docs/forem-basics/user-roles"
+      users: "https://admin.forem.com/docs/forem-basics/user-roles",
+      creator_settings: "https://admin.forem.com/docs/getting-started/first-user-registration"
     }.freeze
 
     protected

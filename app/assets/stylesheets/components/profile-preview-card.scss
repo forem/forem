@@ -7,7 +7,6 @@
     transition-duration: var(--dropdown-transition);
     color: var(--base-100);
     padding-top: 0;
-    top: 100%;
     left: 0;
     font-size: var(--fs-base);
     font-weight: var(--fw-normal);
@@ -24,7 +23,7 @@
 
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
-    animation: hoverAppear vaR(--dropdown-hover-delay);
+    animation: hoverAppear var(--dropdown-hover-delay);
 
     &.showing {
       animation: none;

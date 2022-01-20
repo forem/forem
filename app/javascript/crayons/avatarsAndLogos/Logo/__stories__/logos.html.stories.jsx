@@ -1,10 +1,13 @@
 import { h } from 'preact';
-import '../../../storybook-utilities/designSystem.scss';
-import notes from '../../avatars-and-logos.md';
+import notes from '../../avatars-and-logos.mdx';
 
 export default {
-  title: 'Components/Avatars & Logos/Logos/HTML',
-  parameters: { notes },
+  title: 'Components/Avatars & Logos/Logos',
+  parameters: {
+    docs: {
+      page: notes,
+    },
+  },
 };
 
 export const Default = () => (

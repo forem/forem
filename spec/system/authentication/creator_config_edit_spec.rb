@@ -7,7 +7,6 @@ RSpec.describe "Creator config edit", type: :system, js: true do
     before do
       sign_in admin
       allow(ForemInstance).to receive(:private?).and_return(false)
-      allow(FeatureFlag).to receive(:enabled?).with(:forem_passport).and_return(true)
     end
 
     it "presents all available OAuth providers" do
@@ -17,8 +16,8 @@ RSpec.describe "Creator config edit", type: :system, js: true do
         click_on("Show info", match: :first)
       end
 
-      Authentication::Providers.available.each do |provider|
-        element = find(".config-authentication__item--label", text: /#{provider}/i)
+      Authentication::Providers.available_providers.each do |provider|
+        element = find(".config-authentication__item--label", text: /#{provider.official_name}/i)
         expect(element).not_to be_nil
       end
     end

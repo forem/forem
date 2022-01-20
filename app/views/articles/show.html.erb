@@ -103,18 +103,21 @@
               <div class="flex flex-1 mb-5 items-start">
                 <div class="relative">
                   <% if @organization %>
-                    <a href="<%= @organization.path %>"><img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="radius-default align-middle" width="40" height="40" alt="<%= @organization.name %> profile image"></a>
+                    <a href="<%= @organization.path %>"><img src="<%= @organization.profile_image_url_for(length: 50) %>" class="radius-default align-middle" width="40" height="40" alt="<%= @organization.name %> profile image"></a>
                     <a href="/<%= @user.username %>" class="absolute -right-2 -bottom-2 radius-full border border-solid border-2 border-base-inverted inline-flex">
-                      <img class="radius-full align-middle" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" width="24" height="24" alt="<%= @user.name %>" />
+                      <img class="radius-full align-middle" src="<%= @user.profile_image_url_for(length: 50) %>" width="24" height="24" alt="<%= @user.name %>" />
                     </a>
                   <% else %>
-                    <a href="/<%= @user.username %>"><img class="radius-full align-middle" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" width="40" height="40" alt="<%= @user.name %>" /></a>
+                    <a href="/<%= @user.username %>"><img class="radius-full align-middle" src="<%= @user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= @user.name %>" /></a>
                   <% end %>
                 </div>
                 <div class="pl-3 flex-1">
                   <a href="/<%= @user.username %>" class="crayons-link fw-bold"><%= @user.name %></a>
                   <% if @organization %>
-                    <span class="color-base-60">for</span> <a href="<%= @organization.path %>" class="crayons-link"><%= @organization.name %></a>
+                    <%= t("views.articles.for_org_html",
+                          start: tag("span", { class: "color-base-60" }, true),
+                          end: "</span>".html_safe,
+                          org: tag.a(@organization.name, href: @organization.path, class: "crayons-link")) %>
                   <% end %>
                   <p class="fs-xs color-base-60">
                     <% if @article.published_timestamp.present? %>
@@ -151,9 +154,9 @@
             </h1>
 
             <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
-              <div class="spec__tags">
+              <div class="spec__tags flex flex-wrap">
                 <% @article.cached_tag_list_array.each do |tag| %>
-                  <a class="crayons-tag" href="/t/<%= tag %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+                  <%= render_tag_link(tag) %>
                 <% end %>
               </div>
             <% end %>
@@ -212,7 +215,6 @@
 <% end %>
 
 <div class="mod-actions-menu print-hidden"></div>
-<div id="mod-actions-menu-btn-area" class="print-hidden"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
 <div class="fullscreen-code js-fullscreen-code"></div>

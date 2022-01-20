@@ -25,6 +25,7 @@ class DashboardsController < ApplicationController
 
     @articles = @articles.includes(:collection).sorting(params[:sort]).decorate
     @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(50)
+    @collections_count = target.collections.non_empty.count
   end
 
   def following_tags

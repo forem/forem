@@ -17,7 +17,7 @@ RSpec.describe MarkdownProcessor::Fixer::FixAll, type: :service do
     it "defines METHODS" do
       methods = %i[
         add_quotes_to_title add_quotes_to_description lowercase_published
-        modify_hr_tags convert_new_lines split_tags underscores_in_usernames
+        convert_new_lines split_tags underscores_in_usernames
       ]
 
       expect(described_class::METHODS).to eq methods

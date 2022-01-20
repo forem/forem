@@ -4,6 +4,10 @@ RSpec.describe Identity, type: :model do
   let(:identity) { create(:identity, user: create(:user), uid: SecureRandom.hex) }
 
   describe "validations" do
+    before do
+      omniauth_mock_providers_payload
+    end
+
     describe "builtin validations" do
       subject { identity }
 
@@ -11,7 +15,6 @@ RSpec.describe Identity, type: :model do
 
       it { is_expected.to validate_presence_of(:provider) }
       it { is_expected.to validate_presence_of(:uid) }
-      it { is_expected.to validate_presence_of(:user_id) }
       it { is_expected.to validate_uniqueness_of(:uid).scoped_to(:provider) }
       it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:provider) }
 

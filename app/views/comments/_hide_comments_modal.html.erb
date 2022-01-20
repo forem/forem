@@ -1,0 +1,19 @@
+<div id="hide-comments-modal" class="hidden">
+  <%= form_with url: "/comments/hide", class: "hide-comments-modal__form", id: "hide-comments-modal__form", method: :patch, remote: true, html: { "data-type": "json" } do |f| %>
+    <div class="hide-comments-modal__content">
+      <p class="pb-2">
+        <%= t("views.comments.hider.description_html", permalink: link_to(t("views.comments.hider.permalink"), "#", id: "hide-comments-modal__comment-permalink")) %>
+      </p>
+      <label class="crayons-field crayons-field--checkbox my-2">
+        <%= f.check_box :hide_children, class: "hide_children crayons-checkbox" %>
+        <p class="crayons-field__label"><%= t("views.comments.hider.hide_child") %></p>
+      </label>
+      <p class="pb-4 pt-2">
+        <button type="submit" class="crayons-btn">
+          <%= t("views.comments.hider.submit") %>
+        </button>
+      </p>
+    </div>
+  <% end %>
+  <p class="fs-s color-base-60"><%= t("views.comments.hider.note_html", reporting: link_to(t("views.comments.hider.reporting"), "/report-abuse", id: "hide-comments-modal__report-link")) %></p>
+</div>

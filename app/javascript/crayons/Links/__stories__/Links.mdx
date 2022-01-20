@@ -1,0 +1,47 @@
+# Links
+
+Links are used as navigational elements. They may appear on their own, within a sentence or paragraph, or directly following the content.
+
+## CTAs vs Links vs Buttons
+
+The most important of these rules is that the `<CTA />` (or `<Link />`) and `<Button />` elements are assigned to appropriate respective tasks. 
+That is: `<CTA />` or `<Link />` should be used where navigation is elicited, and `<Button />` where a non-navigational action is being invoked.
+For example, a 'Submit' control on 'Sign in' view (form) would suit a `<Button />` because its job is to submit the form. 
+However, 'Register' call-to-action—taking the user to a different form, in a different page or screen—would benefit from `<CTA />` or `<Link />` semantics.
+
+Do not use `<Button />s` as navigational elements. Instead, use Links (or CTAs) when the desired action is to take the user to a new page.
+
+## Usage
+
+In Crayons you can either use inline link (which basically is plain text) or block link (which has a bit of padding and is slightly visually heavier).
+Both variants are just fine and which one you gonna use is dependent on the context.
+
+`<Link />` component is just an HTML's `<a>` element under the hood so it can use the same attributes, like `href` for setting path, `target` for defining whether link should open in new window, etc.
+
+## Configuration
+
+### Variants (styles)
+
+There are two available variants (styles) to pick from: _default_ and _branded_. The primary difference is color: _default_ uses grey color and _branded_ uses accent color.
+It is recommended to always use `branded` variant for inline links, especially when link is used alongside other text - making it `branded` will make it more distinguishable.
+
+### Icons
+
+Icon can be placed in front of a label to both clarify an action but also to make link stand out more.
+By passing an object in `icon` prop, there will be automatically included `<Icon />` component.
+By default, the icon itself within `<Link />` is **not** customizable. Icons within links are hidden from assistive technologies, so make sure your link has descriptive enough text, or is otherwise well-labelled (e.g. with `aria-label`).
+
+#### Icon-only
+
+There are certain instances where an icon will suffice in place of a text label, but use these cautiously.
+Icon-only links should always use clear and obvious icon, ideally accompanied by a title. Icon-only links will require an `aria-label` to ensure they are understood by users of assistive technologies.
+
+##### Fully rounded
+
+In most cases, whenever we display icon-only links we tend to make them fully rounded - use `rounded` prop for that.
+Other than that please avoid customizing border-radius on links.
+
+
+## Design
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FgHpwugeu9jFGW4d9u3ReuR%2FCrayons%3Fnode-id%3D1%253A29" allowfullscreen></iframe>

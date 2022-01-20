@@ -18,17 +18,17 @@ RSpec.describe Article, type: :model do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
 
-    it { is_expected.to have_one(:discussion_lock).dependent(:destroy) }
+    it { is_expected.to have_one(:discussion_lock).dependent(:delete) }
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
-    it { is_expected.to have_many(:mentions).dependent(:destroy) }
+    it { is_expected.to have_many(:mentions).dependent(:delete_all) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
-    it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
-    it { is_expected.to have_many(:page_views).dependent(:destroy) }
+    it { is_expected.to have_many(:page_views).dependent(:delete_all) }
     it { is_expected.to have_many(:polls).dependent(:destroy) }
-    it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
+    it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
     it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
     it { is_expected.to have_many(:sourced_subscribers) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
@@ -47,7 +47,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_presence_of(:reactions_count) }
     it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_presence_of(:user_id) }
 
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
@@ -230,6 +229,34 @@ RSpec.describe Article, type: :model do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
         end
+      end
+    end
+
+    describe "title validation" do
+      it "produces a proper title" do
+        test_article = build(:article, title: "An Article Title")
+
+        test_article.validate
+
+        expect(test_article.title).to eq("An Article Title")
+      end
+
+      it "sanitizes the title" do
+        test_article = build(:article, title: "\u202dThis starts with BIDI override")
+
+        test_article.validate
+
+        expect(test_article.title).not_to match(/\u202d/)
+        expect(test_article.title).to eq("This starts with BIDI override")
+      end
+
+      it "rejects empty titles after sanitizing" do
+        test_article = build(:article, title: "\u202a\u202b\u202c\u202d\u202e")
+
+        test_article.validate
+
+        expect(test_article).not_to be_valid
+        expect(test_article.errors_as_sentence).to match("Title can't be blank")
       end
     end
 
@@ -981,6 +1008,7 @@ RSpec.describe Article, type: :model do
     end
 
     it "assigns cached_user on save" do
+      expect(article.cached_user).to be_a(Articles::CachedEntity)
       expect(article.cached_user.name).to eq(article.user.name)
       expect(article.cached_user.username).to eq(article.user.username)
       expect(article.cached_user.slug).to eq(article.user.username)
@@ -990,6 +1018,7 @@ RSpec.describe Article, type: :model do
 
     it "assigns cached_organization on save" do
       article = create(:article, user: user, organization: create(:organization))
+      expect(article.cached_organization).to be_a(Articles::CachedEntity)
       expect(article.cached_organization.name).to eq(article.organization.name)
       expect(article.cached_organization.username).to eq(article.organization.username)
       expect(article.cached_organization.slug).to eq(article.organization.slug)
@@ -1033,56 +1062,10 @@ RSpec.describe Article, type: :model do
     end
 
     describe "spam" do
-      before do
-        allow(Settings::General).to receive(:mascot_user_id).and_return(user.id)
-        allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(
-          ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
-        )
-      end
-
-      it "creates vomit reaction if possible spam" do
-        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
+      it "delegates spam handling to Spam::Handler.handle_article!" do
+        allow(Spam::Handler).to receive(:handle_article!).with(article: article).and_call_original
         article.save
-        expect(Reaction.last.category).to eq("vomit")
-        expect(Reaction.last.user_id).to eq(user.id)
-      end
-
-      it "creates vomit reaction if possible spam based on pattern" do
-        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about magoo to the magee")
-        article.save
-        expect(Reaction.last.category).to eq("vomit")
-        expect(Reaction.last.user_id).to eq(user.id)
-      end
-
-      it "does not suspend user if only single vomit" do
-        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
-        article.save
-        expect(article.user.suspended?).to be false
-      end
-
-      it "suspends user with 3 comment vomits" do
-        second_article = create(:article, user: article.user)
-        third_article = create(:article, user: article.user)
-        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
-        second_article.body_markdown = second_article.body_markdown.gsub(second_article.title, "testtestetest")
-        third_article.body_markdown = third_article.body_markdown.gsub(third_article.title, "yahoomagoo gogo")
-
-        article.save
-        second_article.save
-        third_article.save
-        expect(article.user.suspended?).to be true
-        expect(Note.last.reason).to eq "automatic_suspend"
-      end
-
-      it "does not create vomit reaction if does not have matching title" do
-        article.save
-        expect(Reaction.last).to be nil
-      end
-
-      it "does not create vomit reaction if does not have pattern match" do
-        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about magoo to")
-        article.save
-        expect(Reaction.last).to be nil
+        expect(Spam::Handler).to have_received(:handle_article!).with(article: article)
       end
     end
 
@@ -1245,7 +1228,7 @@ RSpec.describe Article, type: :model do
     end
 
     context "when article does not have any comments" do
-      it "retrns empty set if there aren't any top comments" do
+      it "returns empty set if there aren't any top comments" do
         expect(article.top_comments).to be_empty
       end
     end
@@ -1330,6 +1313,14 @@ RSpec.describe Article, type: :model do
 
       article.update_score
       expect { article.update_score }.not_to change { article.reload.hotness_score }
+    end
+
+    it "caches the privileged score values" do
+      user = create(:user, :trusted)
+
+      create(:thumbsdown_reaction, reactable: article, user: user)
+
+      expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
     end
   end
 

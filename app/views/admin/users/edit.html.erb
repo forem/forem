@@ -22,11 +22,11 @@
         User Status
         <% if @user.suspended? %>
           <span class="badge badge-danger">🚨 Member is Suspended 🚨</span>
-        <% elsif @user.warned %>
+        <% elsif @user.warned? %>
           <span class="badge badge-warning">Member is Warned</span>
         <% elsif @user.comment_suspended? %>
           <span class="badge badge-warning">Member is Comment Suspended</span>
-        <% elsif @user.trusted %>
+        <% elsif @user.trusted? %>
           <span class="badge badge-success">Member is Trusted</span>
         <% else %>
           <span class="badge badge-info">Member is in Good Standing</span>
@@ -37,7 +37,7 @@
       <div class="form-group">
         <%= f.label "Select new user status", class: "mr-3" %>
         <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>
-        <% options["Special Roles"] = Constants::Role::SPECIAL_ROLES if current_user.has_role?(:super_admin) %>
+        <% options["Special Roles"] = Constants::Role::SPECIAL_ROLES if current_user.super_admin? %>
         <%= f.select(:user_status, grouped_options_for_select(options), include_blank: true) %>
       </div>
       <div class="form-group">
@@ -132,7 +132,7 @@
           <%= form_for(@user, url: banish_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible. Banishing will delete all articles and turn their username into @spam_###')" }) do %>
             <button class="btn btn-danger">🚫 Banish User for Spam 🚫</button>
           <% end %>
-        <% elsif current_user.has_role?(:super_admin) || current_user.has_role?(:support_admin) %>
+        <% elsif current_user.super_admin? || current_user.support_admin? %>
           <p><strong>This is not a new user.</strong> You are only allowed to take this action because you are a
             <strong>super admin or a support admin.</strong></p>
           <p>
@@ -147,7 +147,7 @@
         <% end %>
       </div>
 
-      <% if current_user.has_role?(:super_admin) %>
+      <% if current_user.super_admin? %>
         <div>
           <h3>Fully Delete User</h3>
           <p>This will

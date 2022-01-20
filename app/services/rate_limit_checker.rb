@@ -29,7 +29,7 @@ class RateLimitChecker
     end
 
     def message
-      "Rate limit reached, try again in #{retry_after} seconds"
+      I18n.t("services.rate_limit_checker.limit_reached", count: retry_after)
     end
   end
 
@@ -75,7 +75,7 @@ class RateLimitChecker
 
   def limit_cache_key(action)
     unique_key_component = @user&.id || @user&.ip_address
-    raise "Invalid Cache Key: no unique component present" if unique_key_component.blank?
+    raise I18n.t("services.rate_limit_checker.invalid_key") if unique_key_component.blank?
 
     "#{unique_key_component}_#{action}"
   end

@@ -52,34 +52,53 @@ Cypress.Commands.add('loginAndVisit', (user, url) => {
  * Visits the given URL, waiting for all user-related network requests to complete.
  * This ensures that no user side effects bleed into subsequent tests.
  */
-Cypress.Commands.add('visitAndWaitForUserSideEffects', (url, options) => {
-  // If navigating directly to an admin route, no relevant network requests to intercept
-  const { baseUrl } = Cypress.config().baseUrl;
-  if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
-    cy.visit(url, options);
-  } else {
-    const intercepts = getInterceptsForLingeringUserRequests(url, true);
-    cy.visit(url, options);
-    cy.wait(intercepts);
-  }
-});
+Cypress.Commands.add(
+  'visitAndWaitForUserSideEffects',
+  (url, options, userLoggedIn = true) => {
+    // If navigating directly to an admin route, no relevant network requests to intercept
+    const { baseUrl } = Cypress.config().baseUrl;
+    if (url === `${baseUrl}/admin` || url.includes('/admin/')) {
+      cy.visit(url, options);
+    } else {
+      const intercepts = getInterceptsForLingeringUserRequests(
+        url,
+        userLoggedIn,
+      );
+      cy.visit(url, options);
+      cy.wait(intercepts);
+    }
+  },
+);
 
 /**
  * Runs necessary test setup to run a clean test.
  */
 Cypress.Commands.add('testSetup', () => {
+  const MAX_RETRIES = 3;
+
   // Required for the moment because of https://github.com/cypress-io/cypress/issues/781
   cy.clearCookies();
 
-  cy.getCookies().then((cookie) => {
-    if (cookie.length) {
+  function retryClearCookies(retryCount) {
+    if (retryCount > MAX_RETRIES) {
+      cy.log('Could not clear cookies');
+    }
+
+    cy.getCookies().then((cookie) => {
+      if (cookie.length === 0) {
+        return;
+      }
+
       // Instead of always waiting, only wait if the cookies aren't
       // cleared yet and attempt to clear again.
+      cy.log(`Cookies not cleared yet, retrying... (attempt ${retryCount})`);
       cy.wait(500); // eslint-disable-line cypress/no-unnecessary-waiting
       cy.clearCookies();
-    }
-  });
+      retryClearCookies(retryCount + 1);
+    });
+  }
 
+  retryClearCookies(1);
   cy.request('/cypress_rails_reset_state');
 });
 
@@ -112,7 +131,7 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
     cy.log('Login failed. Attempting one more login.');
 
     // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionnally.
+    // This is to combat some flaky tests where the login fails occasionally.
     return getLoginRequest();
   });
 });
@@ -150,7 +169,7 @@ Cypress.Commands.add('loginCreator', ({ name, username, email, password }) => {
     cy.log('Login failed. Attempting one more login.');
 
     // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionnally.
+    // This is to combat some flaky tests where the login fails occasionally.
     return getLoginRequest();
   });
 });
@@ -193,7 +212,7 @@ const DEFAULT_AUTH_CONFIG = {
 };
 
 /**
- * Sets default values of Settings::General atrributes relevant to Authentication Section.
+ * Sets default values of Settings::General attributes relevant to Authentication Section.
  *
  * @param username {string} The username used in the test
  * @param settingsGeneral

@@ -14,6 +14,14 @@
         <h3 class="crayons-subtitle-3 mb-3">
           General settings
         </h3>
+        <div class="crayons-field mb-6">
+          <%= admin_config_label :blocked_registration_email_domains, "Block email domains", model: Settings::Authentication %>
+          <%= admin_config_description Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:description] %>
+          <%= f.text_field :blocked_registration_email_domains,
+                           class: "crayons-textfield",
+                           value: Settings::Authentication.blocked_registration_email_domains.join(","),
+                           placeholder: Constants::Settings::Authentication::DETAILS[:blocked_registration_email_domains][:placeholder] %>
+        </div>
         <div
             class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-hover-tooltip" : "" %>"
             data-tooltip="Unchecking this will enable Email Registration">
@@ -39,7 +47,7 @@
 
         <section class="config-authentication__item mb-0">
           <figure class="config-authentication__item--icon">
-            <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
+            <%= crayons_icon_tag(:email, title: "Email icon") %>
           </figure>
           <div class="config-authentication__item--container">
             <div
@@ -53,7 +61,7 @@
                   <div
                       class="enabled-indicator <%= Settings::Authentication.allow_email_password_registration ? "visible" : "" %>"
                       data-config-target="enabledIndicator">
-                      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Email enabled") %>
+                      <%= crayons_icon_tag(:checkmark, class: "admin-config-checkmark", title: "Email enabled") %>
                       <small class="crayons-field__description ml-1">Enabled</small>
                   </div>
                 </div>
@@ -161,10 +169,9 @@
                              readonly: true %>
           </div>
           <% authentication_available_providers.each do |provider| %>
-            <% next if provider.provider_name == :forem && !FeatureFlag.enabled?(:forem_passport) %>
             <section class="config-authentication__item mb-0">
               <figure class="config-authentication__item--icon">
-                <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
+                <%= crayons_icon_tag(provider.provider_name, title: "#{provider.official_name} logo") %>
               </figure>
               <div class="config-authentication__item--container">
                 <div
@@ -177,7 +184,7 @@
                       <div
                           id="<%= provider.provider_name %>-enabled-indicator"
                           class="enabled-indicator <%= authentication_provider_enabled?(provider) ? "visible" : "" %>">
-                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "#{provider.official_name} enabled") %>
+                          <%= crayons_icon_tag(:checkmark, class: "admin-config-checkmark", title: "#{provider.official_name} enabled") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
                       </div>
                     </div>

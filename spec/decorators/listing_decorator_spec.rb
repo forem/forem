@@ -13,7 +13,7 @@ RSpec.describe ListingDecorator, type: :decorator do
       expect(decorated_listing.social_preview_category).to eq(category.name)
     end
 
-    it "returns the category's social preview descripton if available" do
+    it "returns the category's social preview description if available" do
       expect(decorated_listing.social_preview_category)
         .to eq(category.social_preview_description)
     end
