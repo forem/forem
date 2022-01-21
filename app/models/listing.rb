@@ -77,6 +77,10 @@ class Listing < ApplicationRecord
     update(bumped_at: Time.current)
   end
 
+  def clear_cache
+    Listings::BustCacheWorker.perform_async(id)
+  end
+
   private
 
   def evaluate_markdown

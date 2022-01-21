@@ -4,10 +4,6 @@ module ListingsToolkit
 
   MANDATORY_FIELDS_FOR_UPDATE = %i[body_markdown title tag_list].freeze
 
-  def clear_listings_cache
-    Listings::BustCacheWorker.perform_async(@listing.id)
-  end
-
   def set_listing
     @listing = Listing.find(params[:id])
   end
@@ -85,7 +81,7 @@ module ListingsToolkit
 
     if create_result.success?
       rate_limiter.track_limit_by_action(:listing_creation)
-      clear_listings_cache
+      @listing.clear_cache
       process_successful_creation
     else
       @credits = current_user.credits.unspent
@@ -98,10 +94,10 @@ module ListingsToolkit
   def update
     authorize @listing
 
-    cost = @listing.cost
-
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
-    return bump_listing(cost) if listing_params[:action] == "bump"
+    if listing_params[:action] == "bump"
+      return Listings::Bump.call(@listing, user: current_user)
+    end
 
     if listing_params[:action] == "unpublish"
       @listing.unpublish
@@ -109,7 +105,7 @@ module ListingsToolkit
       return
     elsif listing_params[:action] == "publish"
       unless @listing.bumped_at?
-        first_publish(cost)
+        first_publish(@listing.cost)
         return
       end
 
@@ -119,34 +115,8 @@ module ListingsToolkit
       return process_unsuccessful_update unless saved
     end
 
-    clear_listings_cache
+    @listing.clear_cache
     process_after_update
-  end
-
-  def bump_listing(cost)
-    org = Organization.find_by(id: @listing.organization_id)
-
-    if org&.enough_credits?(cost)
-      charge_credits_before_bump(org, cost)
-    elsif current_user.enough_credits?(cost)
-      charge_credits_before_bump(current_user, cost)
-    else
-      process_no_credit_left && return
-    end
-  end
-
-  def charge_credits_before_bump(purchaser, cost)
-    ActiveRecord::Base.transaction do
-      enough_credits = Credits::Buy.call(
-        purchaser: purchaser,
-        purchase: @listing,
-        cost: cost,
-      )
-
-      unless enough_credits && @listing.bump
-        raise ActiveRecord::Rollback
-      end
-    end
   end
 
   def first_publish(cost)
