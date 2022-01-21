@@ -31,12 +31,9 @@
     --color: var(--pill-color-hover);
     --border: var(--pill-border-hover);
     --bg: var(--pill-bg-hover);
-    --icon-left-color: var(
-      --icon-left-color-hover
-    ) !important; // TODO: figure out a way to drop !important...
-    --icon-right-color: var(
-      --icon-right-color-hover
-    ) !important; // TODO: figure out a way to drop !important...
+    // TODO: figure out a way to drop !important...
+    --icon-left-color: var(--icon-left-color-hover) !important;
+    --icon-right-color: var(--icon-right-color-hover) !important;
     z-index: var(--z-elevate);
   }
 
