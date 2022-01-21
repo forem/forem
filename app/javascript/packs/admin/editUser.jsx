@@ -43,5 +43,5 @@ const openModal = async (event) => {
   );
 };
 
-overviewContainer.addEventListener('click', openModal);
+overviewContainer?.addEventListener('click', openModal);
 userEditActionsMenu.addEventListener('click', openModal);
