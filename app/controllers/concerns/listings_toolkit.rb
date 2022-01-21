@@ -16,10 +16,7 @@ module ListingsToolkit
     # [@forem/oss] Not entirely sure what the intention behind the
     # original code was, but at least this is more compact.
 
-    # [@forem/oss] Rails 6.1 adds `.compact` on ActionController::Parameters
-    # rubocop:disable Style/CollectionCompact
-    filtered_params = listing_params.reject { |_k, v| v.nil? }
-    # rubocop:enable Style/CollectionCompact
+    filtered_params = listing_params.compact
 
     @listing.update(filtered_params)
   end
@@ -105,29 +102,9 @@ module ListingsToolkit
   end
 
   def create_listing(purchaser, cost)
-    successful_transaction = false
-    ActiveRecord::Base.transaction do
-      # subtract credits
-      Credits::Buyer.call(
-        purchaser: purchaser,
-        purchase: @listing,
-        cost: cost,
-      )
+    create_result = Listings::Create.call(@listing, purchaser: purchaser, cost: cost)
 
-      # save the listing
-      @listing.bumped_at = Time.current
-      @listing.published = true
-      @listing.originally_published_at = Time.current
-
-      # since we can't raise active record errors in this transaction
-      # due to the fact that we need to display them in the :new view,
-      # we manually rollback the transaction if there are validation errors
-      raise ActiveRecord::Rollback unless @listing.save
-
-      successful_transaction = true
-    end
-
-    if successful_transaction
+    if create_result.success?
       rate_limiter.track_limit_by_action(:listing_creation)
       clear_listings_cache
       process_successful_creation
