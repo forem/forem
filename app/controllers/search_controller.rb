@@ -134,15 +134,7 @@ class SearchController < ApplicationController
       elsif class_name.Article?
         search_postgres_article
       elsif class_name.Tag?
-        # {"class_name"=>"Tag", "page"=>0, "per_page"=>60, "search_fields"=>"discuss"} permitted: true>
         Search::Tag.search_documents(feed_params[:search_fields])
-        # Search::Tag.search_documents(
-        # term: feed_params[:search_fields],
-        # page: feed_params[:page],
-        # per_page: feed_params[:per_page],
-        # sort_by: feed_params[:sort_by] == "published_at" ? :created_at : nil,
-        # sort_direction: feed_params[:sort_direction],
-        # )
       end
     render json: { result: result }
   end
