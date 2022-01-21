@@ -11,9 +11,9 @@ module Settings
     setting :password, type: :string, default: ApplicationConfig["SMTP_PASSWORD"].presence
     setting :port, type: :integer, default: ApplicationConfig["SMTP_PORT"].presence || 25
     setting :user_name, type: :string, default: ApplicationConfig["SMTP_USER_NAME"].presence
-    setting :from_email_address, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"], validates: { url: true }
+    setting :from_email_address, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"], validates: { email: true }
     setting :reply_to_email_address, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"].presence,
-                                     validates: { url: true }
+                                     validates: { email: true }
 
     class << self
       def settings
