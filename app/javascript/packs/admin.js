@@ -2,7 +2,6 @@ import { Application } from '@hotwired/stimulus';
 import { definitionsFromContext } from '@hotwired/stimulus-webpack-helpers';
 import { LocalTimeElement } from '@github/time-elements'; // eslint-disable-line no-unused-vars
 import Rails from '@rails/ujs';
-import { initializeDropdown } from '@utilities/dropdownUtils';
 import 'focus-visible';
 
 // Initialize Rails unobtrusive scripting adapter
@@ -15,8 +14,3 @@ Rails.start();
 const application = Application.start();
 const context = require.context('admin/controllers', true, /.js$/);
 application.load(definitionsFromContext(context));
-
-initializeDropdown({
-  triggerElementId: 'options-dropdown-trigger',
-  dropdownContentId: 'options-dropdown',
-});
