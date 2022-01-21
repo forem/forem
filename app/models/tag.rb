@@ -165,9 +165,13 @@ class Tag < ActsAsTaggableOn::Tag
       .order(hotness_score: :desc)
   end
 
-  # What's going on here?  There are times where we want our "Tag" object
+  # What's going on here?  There are times where we want our "Tag" object to have a "points"
+  # attribute; for example when we want to render the tags a user is following and the points we've
+  # calculated for that following.  (Yes that is a short-circuit and we could perhaps make a more
+  # appropriate data structure, but that's our current state as of <2022-01-21 Fri>.)
   #
-  # @see Tag.cached_followed_tags_for
+  # @see Tag.cached_followed_tags_for for details on injecting the "points" attribute on the Tag
+  #      object's attributes.
   #
   # @note The @points can be removed when we remove `attr_writer :points`
   #
