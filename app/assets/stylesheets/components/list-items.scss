@@ -11,7 +11,7 @@
     border-bottom: none;
   }
 
-  &:not(&--no-interactive) {
+  &:not(&--inactive) {
     &:hover,
     &:focus-visible,
     &:focus-within {

@@ -57,9 +57,9 @@
 
   &--interactive {
     &:hover,
-    &:focus-visible,
     &:focus-within {
       --card-border: var(--base-90);
+      --card-bg: var(--card-secondary-bg);
       --revealable-display: block;
     }
   }

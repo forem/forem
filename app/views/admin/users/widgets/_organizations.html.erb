@@ -1,4 +1,4 @@
-<header class="mb-3">
+<header class="mb-4">
   <h2 class="crayons-subtitle-2 mb-1 flex items-center">
     <%= crayons_icon_tag(:team, title: "Organizations", class: "mr-2") %>
     Organizations
@@ -14,8 +14,8 @@
   <% @organization_memberships.each do |org_membership| %>
     <div class="c-card c-card--interactive flex p-2 relative items-center mb-2">
       <div class="flex items-center gap-2 flex-1">
-        <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener">
-          <img src="http://placehold.it/32" width="32" height="32" alt="<%= org_membership.organization.name %> logo" class="rounded">
+        <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link">
+          <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %> logo" class="rounded">
         </a>
         <h3 class="crayons-subtitle-3">
           <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link">

@@ -1,0 +1,61 @@
+////////////////////////////////////////////////////////////
+// .c-pill /////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+.c-pill {
+  --border: var(--pill-border);
+  --bg: var(--pill-bg);
+  --color: var(--pill-color);
+
+  --icon-left-color: inherit;
+  --icon-left-color-hover: inherit;
+
+  --icon-right-color: inherit;
+  --icon-right-color-hover: inherit;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius);
+  font: inherit;
+  outline: 0;
+  text-decoration: none;
+  padding: calc(var(--su-2) - 1px) var(--su-3);
+  color: var(--color);
+  border: 1px solid var(--border);
+  background: var(--bg);
+
+  &:hover:enabled,
+  .js-focus-visible &.focus-visible:focus {
+    // Safari doesn't support focus-visible very well so we need to use polyfill :shrug:
+    --color: var(--pill-color-hover);
+    --border: var(--pill-border-hover);
+    --bg: var(--pill-bg-hover);
+    --icon-left-color: var(
+      --icon-left-color-hover
+    ) !important; // TODO: figure out a way to drop !importants...
+    --icon-right-color: var(
+      --icon-right-color-hover
+    ) !important; // TODO: figure out a way to drop !importants...
+    z-index: var(--z-elevate);
+  }
+
+  .js-focus-visible &.focus-visible:focus {
+    box-shadow: var(--focus-ring);
+    outline: 0;
+  }
+}
+
+.c-pill--icon-left {
+  .c-pill__icon {
+    color: var(--icon-left-color);
+    margin-right: var(--su-2);
+  }
+}
+
+.c-pill--icon-right {
+  .c-pill__icon {
+    color: var(--icon-right-color);
+    margin-left: var(--su-2);
+  }
+}
