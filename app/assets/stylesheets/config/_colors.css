@@ -201,8 +201,8 @@
   --btn-destructive-color-hover: rgb(var(--red-800));
 
   /* Buttons: Destructive Primary */
-  --btn-primary-destructive-bg: var(--red-600);
-  --btn-primary-destructive-bg-hover: var(--red-700);
+  --btn-primary-destructive-bg: rgb(var(--red-600));
+  --btn-primary-destructive-bg-hover: rgb(var(--red-700));
   --btn-primary-destructive-color: rgb(var(--white));
   --btn-primary-destructive-color-hover: rgb(var(--white));
 
