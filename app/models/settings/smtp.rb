@@ -22,6 +22,10 @@ module Settings
         keys.index_with { |k| public_send(k) }.symbolize_keys
       end
 
+      def provided_minimum_settings?
+        address.present? && user_name.present? && password.present?
+      end
+
       private
 
       def sendgrid_settings
