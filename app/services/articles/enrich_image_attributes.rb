@@ -40,7 +40,7 @@ module Articles
         attribute_width, attribute_height = image_width_height(img)
         img["width"] = attribute_width
         img["height"] = attribute_height
-        img["data-animated"] = true if FastImage.animated?(image, timeout: TIMEOUT)
+        img["data-animated"] = true if FastImage.animated?(image, timeout: TIMEOUT, raise_on_failure: false)
       end
 
       article.update_columns(processed_html: parsed_html.to_html)
@@ -50,7 +50,7 @@ module Articles
       src = img.attr("src")
       return unless src
 
-      FastImage.size(src, timeout: timeout)
+      FastImage.size(src, timeout: timeout, raise_on_failure: false)
     end
 
     def self.retrieve_image_from_uploader_store(src)

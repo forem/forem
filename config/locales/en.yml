@@ -173,6 +173,7 @@ en:
       comment: "%B %d, %Y"
       github: "%b %d, %Y"
       json: "%b %e, %Y"
+      medium: "%b %-d, %Y"
       reddit: "%b %e '%y"
       short: "%b %-e"
       short_with_year: "%b %-e, %Y"
