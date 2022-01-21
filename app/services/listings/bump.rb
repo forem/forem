@@ -6,6 +6,7 @@ module Listings
 
     def initialize(listing, user:)
       @listing = listing
+      @cost = listing.cost
       @user = user
       @org = Organization.find_by(id: listing.organization_id)
     end
@@ -25,7 +26,7 @@ module Listings
         enough_credits = Credits::Buy.call(
           purchaser: purchaser,
           purchase: @listing,
-          cost: @listing.cost,
+          cost: @cost,
         )
 
         unless enough_credits && @listing.bump
