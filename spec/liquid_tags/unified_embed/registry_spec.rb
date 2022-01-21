@@ -129,6 +129,11 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
+    it "returns JsitorTag for a jsitor url" do
+      expect(described_class.find_liquid_tag_for(link: "https://jsitor.com/embed/B7FQ5tHbY"))
+        .to eq(JsitorTag)
+    end
+
     it "returns Forem Link for a forem url" do
       expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
         .to eq(LinkTag)

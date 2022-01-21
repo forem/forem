@@ -1,7 +1,7 @@
 class JsitorTag < LiquidTagBase
   PARTIAL = "liquids/jsitor".freeze
-  URL_REGEXP = %r{\A(https|http)://jsitor\.com/embed/\w+[-?a-zA-Z&]*\Z}
-  ID_REGEXP = /\A[\w&?-]+\Z/
+  REGISTRY_REGEXP = %r{\A(https|http)://jsitor\.com/embed/[\w\-?&]+\Z}
+  ID_REGEXP = /\A[\w\-?&]+\Z/
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -26,7 +26,7 @@ class JsitorTag < LiquidTagBase
   end
 
   def validate_link(link)
-    return link if URL_REGEXP.match link
+    return link if REGISTRY_REGEXP.match link
     return "https://jsitor.com/embed/#{link}" if ID_REGEXP.match link
 
     jsitor_error
@@ -38,3 +38,5 @@ class JsitorTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("jsitor", JsitorTag)
+
+UnifiedEmbed.register(JsitorTag, regexp: JsitorTag::REGISTRY_REGEXP)
