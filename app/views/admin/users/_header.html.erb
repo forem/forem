@@ -9,7 +9,7 @@
 <% end %>
 
 <section class="crayons-card flex gap-4 m:gap-6 mb-2 m:mb-3 p-3 s:p-4 m:p-7">
-  <img src="<%= @user.profile_image_url_for(length: 192) %>" width="96" height="96" alt="<%= @user.name %> profile picture" class="radius-full bg-base-10 hidden s:block">
+  <img src="<%= @user.profile_image_url_for(length: 192) %>" width="96" height="96" alt="<%= @user.name %> profile picture" class="radius-full bg-base-10 shrink-0 hidden s:block">
   <div class="grid gap-2 flex-1">
     <div class="s:flex items-center">
       <div class="flex flex-1 items-center">
@@ -50,11 +50,14 @@
       </div>
     </div>
     <div class="fs-s mb-1 color-secondary">
-      @<%= @user.username %> &bull; <%= @user.id %> &bull;
+      @<%= @user.username %> <span class="opacity-50">&bull;</span> ID <%= @user.id %> <span class="opacity-50">&bull;</span>
       <% if @user.registered? %>
-        Member since <%= @user.created_at.strftime("%b %e '%y") %>
+        Member since
+        <time datetime="<%= @user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z") %>" title="<%= @user.created_at.strftime("%Y-%m-%d, %H:%M") %>">
+          <%= @user.created_at.strftime("%b %e '%y") %>
+        </time>
       <% else %>
-        @<%= @user.username %> has not accepted their invitation yet.
+        <span class="color-accent-danger fw-medium">User has not accepted their invitation yet.</span>
       <% end %>
     </div>
     <div>
