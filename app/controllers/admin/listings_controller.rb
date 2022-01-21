@@ -23,7 +23,7 @@ module Admin
       @listing = Listing.find(params[:id])
       handle_publish_status if listing_params[:published]
       bump_listing(@listing.cost) if listing_params[:action] == "bump"
-      update_listing_details
+      @listing.update(listing_params.compact)
       clear_listings_cache
       flash[:success] = "Listing updated successfully"
       redirect_to edit_admin_listing_path(@listing)
