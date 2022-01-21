@@ -1,3 +1,4 @@
+<%= javascript_packs_with_chunks_tag "admin/editUserActions", defer: true %>
 <div class="flex relative justify-between s:justify-end gap-2 my-2 s:my-0">
   <%= link_to "Visit profile", @user.path, class: "c-cta", target: "_blank", rel: "noopener" %>
   <div class="dropdown-trigger-container">
@@ -11,7 +12,7 @@
         <% end %>
         <% unless @last_email_verification_date %>
           <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true do |f| %>
-            <%= f.button "Verify email address", class: "c-btn w-100 align-left" %>
+            <%= f.button "Verify email address", class: "c-btn w-100 align-left", data: { "no-modal": "" } %>
           <% end %>
         <% end %>
         <li><button type="button" class="c-btn w-100 align-left">Export data</button></li>
