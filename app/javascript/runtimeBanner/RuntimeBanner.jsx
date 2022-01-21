@@ -27,7 +27,7 @@ function androidTargetIntent() {
     'action=android.intent.action.SEND;' +
     'type=text/plain;' +
     `S.browser_fallback_url=${FOREM_GOOGLE_PLAY_URL};` +
-    `S.android.intent.extra.TEXT=${window.location.host};` +
+    `S.android.intent.extra.TEXT=${window.location.href};` +
     `scheme=${APP_LAUNCH_SCHEME};` +
     'package=com.forem.android;end'
   );
