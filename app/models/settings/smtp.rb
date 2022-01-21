@@ -28,7 +28,7 @@ module Settings
       private
 
       def custom_provider_settings
-        keys.index_with { |k| public_send(k) }.symbolize_keys
+        to_h
       end
 
       def fallback_sendgrid_settings
