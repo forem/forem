@@ -36,6 +36,7 @@ module Admin
       @user = User.find(params[:id])
 
       set_feedback_messages
+      set_related_reactions
 
       if FeatureFlag.enabled?(:new_admin_members, current_user)
         render "admin/users/new/show"

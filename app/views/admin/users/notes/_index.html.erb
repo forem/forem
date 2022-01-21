@@ -2,13 +2,13 @@
   <h2 class="crayons-subtitle-1">Notes (<%= @notes.count %>)</h2>
   <% if @notes.load.empty? %>
     <div class="align-center flex flex-col justify-center my-auto py-7">
-      <h3 class="fs-xl fw-normal mb-2">No previous notes found.</h3>
+      <h3 class="fs-xl fw-normal mb-2">🗒 No notes found.</h3>
       <p class="color-base-60">Any notes added for @<%= @user.name %> will be found here. </p>
     </div>
   <% else %>
     <div class="pt-3">
       <% @notes.each do |note| %>
-        <article class="flex justify-between gap-4 py-3 border-b-1 border-0 border-solid border-base-10">
+        <article class="c-list-item flex justify-between gap-4">
           <div>
             <p><%= note.content %></p>
             <p class="fs-s color-base-60">

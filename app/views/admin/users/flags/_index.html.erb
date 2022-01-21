@@ -1,32 +1,44 @@
-<h2 class="crayons-subtitle-1">Flags received(<%= @related_reports.count %>)</h2>
+<h2 class="crayons-subtitle-1">Flags received (<%= @related_vomit_reactions.count %>)</h2>
 
 <% unless @related_vomit_reactions.empty? %>
   <div class="pt-3">
     <% @related_vomit_reactions.each do |flag| %>
-      <article class="flex justify-between gap-4 py-3 border-b-1 border-0 border-solid border-base-10">
-        <div>
-          <header class="flex gap-3 items-center">
-            <h3 class="crayons-subtitle-3">
-              <a href="<%= admin_report_path(report.id) %>" class="c-link">
-                <%= report.category.capitalize %>
-              </a>
-            </h3>
-            <span class="c-indicator c-indicator--relaxed  <%= "c-indicator--danger" if report.status.casecmp("open").zero? %> <%= "c-indicator--success" if report.status.casecmp("resolved").zero? %>">
-              <%= report.status.capitalize %>
-            </span>
-          </header>
-          <p class="mb-1"><%= report.message %></p>
-          <p class="fs-s color-base-60">For <a href="<%= report.reported_url %>" class="c-link" target="_blank" rel="noopener"><%= report.reported_url %></a></p>
+      <article class="c-list-item flex gap-2">
+        <span class="opacity-75 shrink-0">
+          <% if flag.reactable_type == "Article" %>
+            <%= crayons_icon_tag("post") %>
+          <% elsif flag.reactable_type == "User" %>
+            <%= crayons_icon_tag("user-line") %>
+          <% elsif flag.reactable_type == "Comment" %>
+            <%= crayons_icon_tag("comment") %>
+          <% end %>
+        </span>
+        <div class="flex-1">
+          <h3 class="crayons-subtitle-3 mb-1">
+            <%= link_to flag.reactable.path, class: "c-link" do %>
+              <% if flag.reactable_type == "Article" %>
+                Post "<%= flag.reactable.title %>"
+              <% elsif flag.reactable_type == "User" %>
+                User's profile
+              <% elsif flag.reactable_type == "Comment" %>
+                Comment on "<%= flag.reactable.title %>"
+              <% end %>
+            <% end %>
+          </h3>
+          <p class="fs-s color-base-60">
+            Flagged by
+            <%= link_to flag.user.username, admin_user_path(flag.user_id), class: "c-link c-link--branded" %>
+          </p>
         </div>
-        <time datetime="<%= report.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-base-60 fs-s shrink-0" title="<%= report.created_at&.strftime("%Y-%m-%d, %H:%M") %>">
-          <%= report.created_at&.strftime("%b %e '%y") %>
+        <time datetime="<%= flag.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-base-60 fs-s shrink-0" title="<%= flag.created_at&.strftime("%Y-%m-%d, %H:%M") %>">
+          <%= flag.created_at&.strftime("%b %e '%y") %>
         </time>
       </article>
     <% end %>
   </div>
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="fs-xl fw-normal mb-2">User hasn't reported anything yet.</h3>
-    <p class="color-base-60">Any comment or article reported by @<%= @user.username %> will be found here.</p>
+    <h3 class="fs-xl fw-normal mb-2">😇 No flags!</h3>
+    <p class="color-base-60">No one flagged anything (profile, posts or comments) negative about @<%= @user.username %>.</p>
   </div>
 <% end %>

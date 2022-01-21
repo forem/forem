@@ -3,7 +3,7 @@
 <% unless @related_reports.empty? %>
   <div class="pt-3">
     <% @related_reports.each do |report| %>
-      <article class="flex justify-between gap-4 py-3 border-b-1 border-0 border-solid border-base-10">
+      <article class="c-list-item c-list-item--interactive flex justify-between gap-4">
         <div>
           <header class="flex gap-3 items-center">
             <h3 class="crayons-subtitle-3">
@@ -26,7 +26,7 @@
   </div>
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="fs-xl fw-normal mb-2">User hasn't reported anything yet.</h3>
-    <p class="color-base-60">Any comment or article reported by @<%= @user.username %> will be found here.</p>
+    <h3 class="fs-xl fw-normal mb-2">🧐 No reports submitted.</h3>
+    <p class="color-base-60">This user hasn't reported anything yet.</p>
   </div>
 <% end %>
