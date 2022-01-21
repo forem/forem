@@ -1,14 +1,13 @@
-<%# TODO: update once #16190 is merged %>
-<span class="ml-3 fs-s fw-medium" aria-label="Current status" title="Current status">
+<span class="ml-3" aria-label="Current status" title="Current status">
   <% if @user.suspended? %>
-    <span class="crayons-indicator crayons-indicator--danger">Suspended</span>
+    <span class="c-indicator c-indicator--danger c-indicator--relaxed">Suspended</span>
   <% elsif @user.warned? %>
-    <span class="crayons-indicator crayons-indicator--warning">Warned</span>
+    <span class="c-indicator c-indicator--warning c-indicator--relaxed">Warned</span>
   <% elsif @user.comment_suspended? %>
-    <span class="crayons-indicator crayons-indicator--warning">Comment suspended</span>
+    <span class="c-indicator c-indicator--warning c-indicator--relaxed">Comment suspended</span>
   <% elsif @user.trusted? %>
-    <span class="crayons-indicator crayons-indicator--success">Trusted</span>
+    <span class="c-indicator c-indicator--success c-indicator--relaxed">Trusted</span>
   <% else %>
-    <span class="crayons-indicator crayons-indicator--info">Good standing</span>
+    <span class="c-indicator c-indicator--info c-indicator--relaxed">Good standing</span>
   <% end %>
 </span>

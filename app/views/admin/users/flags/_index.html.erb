@@ -1,8 +1,8 @@
-<h2 class="crayons-subtitle-1">Reports submitted by @<%= @user.username %> (<%= @related_reports.count %>)</h2>
+<h2 class="crayons-subtitle-1">Flags received(<%= @related_reports.count %>)</h2>
 
-<% unless @related_reports.empty? %>
+<% unless @related_vomit_reactions.empty? %>
   <div class="pt-3">
-    <% @related_reports.each do |report| %>
+    <% @related_vomit_reactions.each do |flag| %>
       <article class="flex justify-between gap-4 py-3 border-b-1 border-0 border-solid border-base-10">
         <div>
           <header class="flex gap-3 items-center">
