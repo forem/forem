@@ -8,10 +8,10 @@
     grid-gap: var(--su-6);
     padding: var(--su-6);
     margin: var(--su-3);
-    background: var(--accent-brand-a10);
+    background: rgba(var(--brand), 0.1);
     color: var(--card-color);
     border-radius: var(--radius);
-    border: 1px solid var(--accent-brand-a10);
+    border: 1px solid rgba(var(--brand), 0.1);
 
     @media (min-width: $breakpoint-s) {
       padding: var(--su-7);

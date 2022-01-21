@@ -1,21 +1,7 @@
-/***********************************************
-** Colors. *************************************
-************************************************
-/*
-All --base-* and --accent-* color variables will be used to generate
-Utility-First Classes/ (see config/import.scss & base/colors.scss for
-reference). Other color variables are more functional and define usage
-of particular colors in components and views.
-*/
-
 :root {
-  /***********************************************
-  ** Fundamental color variables. ****************
-  ***********************************************/
-
   /* Base */
   --base: #090909;
-  --base-inverted: #fff;
+  --base-inverted: rgb(var(--white));
 
   --base-100: var(--base);
   --base-90: #242424;
@@ -29,84 +15,58 @@ of particular colors in components and views.
   --base-10: #efefef;
   --base-0: #f9f9f9;
 
-  --base-a90: rgba(9, 9, 9, 0.9);
-  --base-a80: rgba(9, 9, 9, 0.8);
-  --base-a70: rgba(9, 9, 9, 0.7);
-  --base-a60: rgba(9, 9, 9, 0.6);
-  --base-a50: rgba(9, 9, 9, 0.5);
-  --base-a40: rgba(9, 9, 9, 0.4);
-  --base-a30: rgba(9, 9, 9, 0.3);
-  --base-a20: rgba(9, 9, 9, 0.2);
-  --base-a10: rgba(9, 9, 9, 0.1);
-  --base-a5: rgba(9, 9, 9, 0.05);
-
-  --base-inverted-a90: rgba(255, 255, 255, 0.9);
-  --base-inverted-a80: rgba(255, 255, 255, 0.8);
-  --base-inverted-a70: rgba(255, 255, 255, 0.7);
-  --base-inverted-a60: rgba(255, 255, 255, 0.6);
-  --base-inverted-a50: rgba(255, 255, 255, 0.5);
-  --base-inverted-a40: rgba(255, 255, 255, 0.4);
-  --base-inverted-a30: rgba(255, 255, 255, 0.3);
-  --base-inverted-a20: rgba(255, 255, 255, 0.2);
-  --base-inverted-a10: rgba(255, 255, 255, 0.1);
-  --base-inverted-a5: rgba(255, 255, 255, 0.05);
-
-  /* Accent colors */
-  --accent-brand: #3b49df;
-  --accent-brand-darker: #1827ce;
-  --accent-brand-lighter: #8d95f2;
-  --accent-brand-a10: rgba(59, 73, 223, 0.1);
+  /* Brand */
+  --accent-brand-lighter: rgb(var(--accent-brand-lighter-rgb));
+  --accent-brand: rgb(var(--accent-brand-rgb));
+  --accent-brand-darker: rgb(var(--accent-brand-darker-rgb));
 
   /* Success */
-  --accent-success: #26d9ca;
-  --accent-success-darker: #1ab3a6;
-  --accent-success-lighter: #79ece2;
-  --accent-success-a10: rgba(38, 217, 202, 0.1);
+  --accent-success: rgb(var(--green-600));
+  --accent-success-darker: rgb(var(--green-700));
+  --accent-success-lighter: rgb(var(--green-500));
+  --accent-success-a10: rgba(var(--green-600), 0.1);
 
   /* Warning */
-  --accent-warning: #ffcf4c;
-  --accent-warning-darker: #f5b400;
-  --accent-warning-lighter: #ffe499;
-  --accent-warning-a10: rgba(255, 207, 76, 0.1);
+  --accent-warning: rgb(var(--yellow-500));
+  --accent-warning-darker: rgb(var(--yellow-600));
+  --accent-warning-lighter: rgb(var(--yellow-400));
+  --accent-warning-a10: rgba(var(--yellow-500), 0.1);
 
   /* Danger */
-  --accent-danger: #d31616;
-  --accent-danger-darker: #b90909;
-  --accent-danger-lighter: #ec4646;
-  --accent-danger-a10: rgba(211, 22, 22, 0.1);
+  --accent-danger: rgb(var(--red-600));
+  --accent-danger-darker: rgb(var(--red-700));
+  --accent-danger-lighter: rgb(var(--red-500));
+  --accent-danger-a10: rgba(var(--red-600), 0.1);
 
   /***********************************************
   ** Functional color variables. *****************
   ***********************************************/
 
-  --body-bg: var(--base-10);
-  --body-color: var(--base-100);
-  --body-color-inverted: var(--base-inverted);
+  /* Main colors */
+  --body-bg: rgb(var(--grey-100));
+  --body-color: rgb(var(--grey-900));
+  --body-color-inverted: rgb(var(--white));
 
   /* Main content containers */
-  --card-bg: var(--base-inverted);
-  --card-color: var(--base-100);
-  --card-color-secondary: var(--base-70);
-  --card-color-tertiary: var(--base-60);
-  --card-secondary-bg: var(--base-0);
-  --card-secondary-color: var(--base-90);
-  --card-headline-color: var(--base-100);
-  --card-border: var(--base-a10);
-  --card-secondary-border: var(--base-a5);
-  --card-hover-bg: var(--base-10);
-  --card-selected-bg: var(--base-20);
+  --card-bg: rgb(var(--white));
+  --card-color: rgb(var(--grey-900));
+  --card-color-secondary: rgb(var(--grey-700));
+  --card-color-tertiary: rgb(var(--grey-600));
+  --card-secondary-bg: rgb(var(--grey-50));
+  --card-secondary-color: rgb(var(--grey-700));
+  --card-border: rgba(var(--grey-900), 0.1);
+  --card-secondary-border: rgba(var(--grey-900), 0.05);
 
   /* Header */
-  --header-bg: var(--base-inverted);
-  --header-shadow: rgba(0, 0, 0, 0.1);
+  --header-bg: rgb(var(--white));
+  --header-shadow: rgba(var(--black), 0.1);
 
   /* Footer */
-  --footer-bg: var(--base-20);
-  --footer-color: var(--base-80);
+  --footer-bg: rgb(var(--grey-200));
+  --footer-color: rgb(var(--grey-700));
 
   /* Links */
   --link-bg-hover-alt: var(--base-inverted);
-  --link-brand-color: var(--accent-brand);
   --link-color-current: var(--base-100);
   --link-color-secondary: var(--base-60);
   --link-color-secondary-hover: var(--base-70);
@@ -117,7 +77,7 @@ of particular colors in components and views.
   --button-primary-bg-hover: var(--accent-brand-darker);
   --button-primary-color: var(--base-0);
   --button-primary-color-hover: var(--base-0);
-  /* //-- Inverted */
+  /* -- Inverted */
   --button-primary-inverted-bg: var(--accent-brand);
   --button-primary-inverted-bg-hover: var(--accent-brand-darker);
   --button-primary-inverted-color: var(--base-0);
@@ -128,11 +88,6 @@ of particular colors in components and views.
   --button-secondary-bg-hover: var(--base-30);
   --button-secondary-color: var(--base-80);
   --button-secondary-color-hover: var(--base-100);
-  /* //-- Inverted */
-  --button-secondary-inverted-bg: var(--base-70);
-  --button-secondary-inverted-bg-hover: var(--base-60);
-  --button-secondary-inverted-color: var(--base-10);
-  --button-secondary-inverted-color-hover: var(--base-0);
 
   /* Outlined buttons */
   --button-outlined-bg: transparent;
@@ -141,13 +96,6 @@ of particular colors in components and views.
   --button-outlined-border-hover: var(--base-40);
   --button-outlined-color: var(--base-80);
   --button-outlined-color-hover: var(--base-100);
-  /* //-- Inverted */
-  --button-outlined-inverted-bg: transparent;
-  --button-outlined-inverted-bg-hover: rgba(255, 255, 255, 0.15);
-  --button-outlined-inverted-border: var(--base-60);
-  --button-outlined-inverted-border-hover: var(--base-40);
-  --button-outlined-inverted-color: var(--base-30);
-  --button-outlined-inverted-color-hover: var(--base-10);
 
   /* Ghost buttons */
   --button-ghost-bg: transparent;
@@ -156,7 +104,7 @@ of particular colors in components and views.
   --button-ghost-color-hover: var(--base-100);
   --button-ghost-dimmed-color: var(--base-60);
   --button-ghost-dimmed-color-hover: var(--base-100);
-  /* //-- Inverted */
+  /* -- Inverted */
   --button-ghost-inverted-bg: transparent;
   --button-ghost-inverted-bg-hover: rgba(255, 255, 255, 0.15);
   --button-ghost-inverted-color: var(--base-30);
@@ -165,63 +113,53 @@ of particular colors in components and views.
   --button-ghost-dimmed-inverted-color-hover: var(--base-100);
 
   /* Forms */
-  --form-bg: var(--base-inverted);
-  --form-bg-focus: var(--base-inverted);
-  --form-border: var(--base-20);
-  --form-border-hover: var(--base-40);
-  --form-border-focus: var(--accent-brand);
-  --form-placeholder-color: var(--base-60);
+  --form-bg: rgb(var(--white));
+  --form-bg-focus: rgb(var(--white));
+  --form-border: rgb(var(--grey-300));
+  --form-border-hover: rgb(var(--grey-400));
+  --form-border-focus: var(--focus);
+  --form-placeholder-color: rgb(var(--grey-600));
 
   /* Form labels */
-  --label-primary: var(--base-90);
-  --label-secondary: var(--base-60);
+  --label-primary: rgb(var(--grey-900));
+  --label-secondary: rgb(var(--grey-600));
 
   /* Snackbars */
-  --snackbar-bg: var(--base-90);
-  --snackbar-color: var(--body-color-inverted);
-
-  /* Indicators */
-  --indicator-accent-bg: var(--accent-brand);
-  --indicator-accent-color: var(--body-color-inverted);
-  --indicator-critical-bg: var(--accent-danger);
-  --indicator-critical-color: var(--body-color-inverted);
-  --indicator-default-bg: var(--button-secondary-bg);
-  --indicator-default-color: var(--button-secondary-color);
+  --snackbar-bg: rgb(var(--grey-900));
+  --snackbar-color: rgb(var(--white));
 
   /* Tabs */
-  --tab-color: var(--base-80);
+  --tab-color: rgb(var(--grey-700));
   --tab-color-hover: var(--accent-brand);
-  --tab-color-current: var(--base-100);
-  --tab-bg-hover: var(--accent-brand-a10);
-  --tab-bg-current: var(--accent-brand);
-  --tab-muted-color: var(--base-80);
-  --tab-muted-color-hover: var(--base-90);
-  --tab-muted-color-current: var(--base-100);
-  --tab-muted-bg-hover: var(--base-a10);
-  --tab-muted-bg-current: var(--base-20);
-  --tab-pill-color-current: var(--base-inverted);
+  --tab-color-current: rgb(var(--grey-900));
+  --tab-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --tab-bg-current: rgb(var(--accent-brand));
 
   /* Tags */
-  --tag-color: var(--base-60);
-  --tag-color-hover: var(--base-100);
+  --tag-color: rgb(var(--grey-700));
+  --tag-color-hover: rgb(var(--grey-900));
+  --tag-bg: rgba(var(--grey-900), 0.05);
+  --tag-bg-hover: rgba(var(--grey-900), 0.05);
+  --tag-prefix: rgba(var(--grey-900), 0.6);
+  --tag-prefix-hover: rgb(var(--grey-900));
 
   /* Story */
-  --story-comments-bg: 249, 249, 249;
-  --story-comments-bg-top: rgba(var(--story-comments-bg), 0);
-  --story-comments-bg-bottom: rgba(var(--story-comments-bg), 1);
+  --story-comments-bg: rgb(var(--grey-50));
+  --story-comments-bg-top: rgba(var(--grey-50), 0);
+  --story-comments-bg-bottom: rgba(var(--grey-50), 1);
 
   /* Select icon */
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMDgwOTBBIi8+Cjwvc3ZnPg==);
 
   /* Reactions */
-  --reaction-like-color: var(--accent-danger);
-  --reaction-like-bg: var(--accent-danger-a10);
-  --reaction-custom-color: var(--accent-success);
-  --reaction-custom-bg: var(--accent-success-a10);
-  --reaction-save-color: var(--accent-brand);
-  --reaction-save-bg: var(--accent-brand-a10);
-  --reaction-comment-color: var(--accent-warning);
-  --reaction-comment-bg: var(--accent-warning-a10);
+  --reaction-like-color: rgb(var(--red-600));
+  --reaction-like-bg: rgba(var(--red-600), 0.1);
+  --reaction-custom-color: rgb(var(--green-600));
+  --reaction-custom-bg: rgb(var(--green-600), 0.1);
+  --reaction-save-color: rgb(var(--indigo-600));
+  --reaction-save-bg: rgba(var(--indigo-600), 0.1);
+  --reaction-comment-color: rgb(var(--yellow-500));
+  --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
 }
 
 :root {
@@ -237,36 +175,36 @@ of particular colors in components and views.
 
   /* Buttons: Default */
   --btn-bg: transparent;
-  --btn-bg-hover: var(--accent-brand-a10);
-  --btn-color: var(--base-80);
+  --btn-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --btn-color: rgb(var(--grey-800));
   --btn-color-hover: var(--accent-brand-darker);
 
-  --btn-current-bg: var(--base-20);
-  --btn-current-color: var(--base-100);
+  --btn-current-bg: rgb(var(--grey-200));
+  --btn-current-color: rgb(var(--grey-900));
 
   /* Buttons: Primary */
   --btn-primary-bg: var(--accent-brand);
   --btn-primary-bg-hover: var(--accent-brand-darker);
-  --btn-primary-color: var(--base-inverted);
-  --btn-primary-color-hover: var(--base-inverted);
+  --btn-primary-color: rgb(var(--white));
+  --btn-primary-color-hover: rgb(var(--white));
 
   /* Buttons: Secondary */
-  --btn-secondary-bg: var(--accent-brand-a10);
+  --btn-secondary-bg: rgba(var(--accent-brand-rgb), 0.1);
   --btn-secondary-bg-hover: var(--accent-brand);
   --btn-secondary-color: var(--accent-brand);
-  --btn-secondary-color-hover: var(--base-inverted);
+  --btn-secondary-color-hover: rgb(var(--white));
 
   /* Buttons: Destructive Default */
   --btn-destructive-bg: transparent;
-  --btn-destructive-bg-hover: var(--accent-danger-a10);
-  --btn-destructive-color: var(--accent-danger);
-  --btn-destructive-color-hover: var(--accent-danger-darker);
+  --btn-destructive-bg-hover: rgba(var(--red-600), 0.1);
+  --btn-destructive-color: rgb(var(--red-700));
+  --btn-destructive-color-hover: rgb(var(--red-800));
 
   /* Buttons: Destructive Primary */
-  --btn-primary-destructive-bg: var(--accent-danger);
-  --btn-primary-destructive-bg-hover: var(--accent-danger-darker);
-  --btn-primary-destructive-color: var(--base-inverted);
-  --btn-primary-destructive-color-hover: var(--base-inverted);
+  --btn-primary-destructive-bg: var(--red-600);
+  --btn-primary-destructive-bg-hover: var(--red-700);
+  --btn-primary-destructive-color: rgb(var(--white));
+  --btn-primary-destructive-color-hover: rgb(var(--white));
 
   /***********************************************
   ** Links ***************************************
@@ -274,16 +212,16 @@ of particular colors in components and views.
 
   /* Links: Default */
   --link-bg: transparent;
-  --link-bg-hover: var(--accent-brand-a10);
-  --link-color: var(--base-80);
+  --link-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --link-color: rgb(var(--grey-700));
   --link-color-hover: var(--accent-brand-darker);
 
-  --link-current-bg: var(--base-20);
-  --link-current-color: var(--base-100);
+  --link-current-bg: rgb(var(--grey-200));
+  --link-current-color: rgb(var(--grey-900));
 
   /* Links: Branded */
   --link-branded-bg: transparent;
-  --link-branded-bg-hover: var(--accent-brand-a10);
+  --link-branded-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
   --link-branded-color: var(--accent-brand);
   --link-branded-color-hover: var(--accent-brand-darker);
 
@@ -293,47 +231,61 @@ of particular colors in components and views.
 
   /* CTAs: Default */
   --cta-bg: transparent;
-  --cta-bg-hover: var(--accent-brand-a10);
-  --cta-color: var(--base-80);
+  --cta-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --cta-color: rgb(var(--grey-800));
   --cta-color-hover: var(--accent-brand-darker);
-  --cta-border: var(--base-60);
+  --cta-border: rgb(var(--grey-600));
   --cta-border-hover: var(--accent-brand-darker);
 
   /* CTAs: Branded */
   --cta-branded-bg: transparent;
   --cta-branded-bg-hover: var(--accent-brand);
   --cta-branded-color: var(--accent-brand);
-  --cta-branded-color-hover: var(--base-inverted);
+  --cta-branded-color-hover: rgb(var(--white));
   --cta-branded-border: var(--accent-brand);
   --cta-branded-border-hover: var(--accent-brand-darker);
 
   /***********************************************
-  ** Badges **************************************
+  ** Tooltips ************************************
   ***********************************************/
 
-  /* Badges: Default */
-  --badge-bg: var(--base-30);
-  --badge-color: var(--base-80);
+  --tooltip-bg: rgba(var(--grey-900), 0.9);
+  --tooltip-color: rgb(var(--white));
+  
+  /***********************************************
+  ** Indicators **********************************
+  ***********************************************/
 
-  /* Badges: Success */
-  --badge-success-bg: var(--accent-success);
-  --badge-success-color: rgb(0,0,0);
+  /* Indicators: Default */
+  --indicator-bg: rgb(var(--grey-300));
+  --indicator-color: rgb(var(--grey-700));
 
-  /* Badges: Warning */
-  --badge-warning-bg: var(--accent-warning);
-  --badge-warning-color: rgb(0,0,0);
+  /* Indicators: Success */
+  --indicator-success-bg: rgb(var(--green-400));
+  --indicator-success-color: rgb(var(--green-900));
 
-  /* Badges: Danger */
-  --badge-danger-bg: var(--accent-danger);
-  --badge-danger-color: rgb(255,255,255);
+  /* Indicators: Warning */
+  --indicator-warning-bg: rgb(var(--yellow-300));
+  --indicator-warning-color: rgb(var(--yellow-900));
 
-  /* Badges: Info */
-  --badge-info-bg: var(--accent-brand);
-  --badge-info-color: rgb(255,255,255);
+  /* Indicators: Danger */
+  --indicator-danger-bg: rgb(var(--red-600));
+  --indicator-danger-color: rgb(var(--white));
+
+  /* Indicators: Info */
+  --indicator-info-bg: var(--accent-brand);
+  --indicator-info-color: rgb(var(--white));
 
   /***********************************************
   ** Utilities ***********************************
   ***********************************************/
 
+  /* Focus */
   --focus: var(--accent-brand);
+
+  /* Shadows */
+  --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.1),
+    0 4px 6px -2px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
+  --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.1),
+    0 10px 10px -5px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
 }
