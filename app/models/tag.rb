@@ -156,10 +156,19 @@ class Tag < ActsAsTaggableOn::Tag
   #
   # @see Tag#points
   #
+  # @see UserDecorator::CACHED_TAGGED_BY_USER_ATTRIBUTES for discussion on why we're selecting this.
+  #
   # @todo should we sort by hotness score?  Wouldn't the user's points make more sense?
   def self.cached_followed_tags_for(follower:)
     Tag
-      .select("tags.*", "followings.points")
+      .select(
+        "tags.bg_color_hex",
+        "tags.hotness_score",
+        "tags.id",
+        "tags.name",
+        "tags.text_color_hex",
+        "followings.points",
+      )
       .joins(:followings)
       .where("followings.follower_id" => follower.id, "followings.follower_type" => follower.class_name)
       .order(hotness_score: :desc)
