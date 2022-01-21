@@ -5,13 +5,15 @@ let preact;
 let Modal;
 
 const userEditActionsMenu = document.getElementById('options-dropdown');
+const overviewContainer = document.getElementById('overview-container');
 
 initializeDropdown({
   triggerElementId: 'options-dropdown-trigger',
   dropdownContentId: 'options-dropdown',
 });
 
-userEditActionsMenu.addEventListener('click', async (event) => {
+const openModal = async (event) => {
+  // Append an empty div to the end of the document so that is does not affect the layout.
   const modalContainer = document.createElement('div');
   document.body.appendChild(modalContainer);
 
@@ -39,4 +41,7 @@ userEditActionsMenu.addEventListener('click', async (event) => {
     <Modal title={potentialButton.innerHTML}>Hello</Modal>,
     modalContainer,
   );
-});
+};
+
+overviewContainer.addEventListener('click', openModal);
+userEditActionsMenu.addEventListener('click', openModal);
