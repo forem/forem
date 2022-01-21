@@ -166,4 +166,15 @@ RSpec.describe Settings::Base, type: :model do
         .to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Host can't be blank")
     end
   end
+
+  describe "conversions" do
+    it "can be converted to a hash", :aggregate_failures do
+      result = TestSetting.to_h
+      expect(result).to be_an_instance_of(Hash)
+      # Chill Rubocop, it's not a hash
+      # rubocop:disable Style/HashEachMethods
+      TestSetting.keys.each { |key| expect(result).to have_key(key.to_sym) }
+      # rubocop:enable Style/HashEachMethods
+    end
+  end
 end
