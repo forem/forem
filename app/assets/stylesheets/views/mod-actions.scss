@@ -222,10 +222,10 @@
   }
 
   .reaction-button.reacted {
-    background: var(--accent-brand);
+    background: var(--btn-primary-bg);
 
     .reaction-button-circle {
-      border-color: var(--accent-brand-lighter);
+      border-color: var(--btn-primary-bg);
     }
 
     .vote-text {

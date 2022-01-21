@@ -77,7 +77,7 @@ namespace :navigation_links do
     task code_of_conduct: :environment do
       NavigationLink.where(url: "/code-of-conduct").first_or_create(
         name: "Code of Conduct",
-        url: URL.url("code-of-conduct"),
+        url: URL.url(Page::CODE_OF_CONDUCT_SLUG),
         icon: thumb_up_icon,
         display_only_when_signed_in: false,
         position: 0,
@@ -88,7 +88,7 @@ namespace :navigation_links do
     task privacy: :environment do
       NavigationLink.where(url: "/privacy").first_or_create(
         name: "Privacy Policy",
-        url: URL.url("privacy"),
+        url: URL.url(Page::PRIVACY_SLUG),
         icon: smart_icon,
         display_only_when_signed_in: false,
         position: 1,
@@ -99,7 +99,7 @@ namespace :navigation_links do
     task terms: :environment do
       NavigationLink.where(url: "/terms").first_or_create(
         name: "Terms of Use",
-        url: URL.url("terms"),
+        url: URL.url(Page::TERMS_SLUG),
         icon: look_icon,
         display_only_when_signed_in: false,
         position: 2,

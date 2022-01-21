@@ -1,9 +1,12 @@
 import { h } from 'preact';
 import { render, waitFor } from '@testing-library/preact';
+import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { Form } from '../Form';
+
+fetch.enableMocks();
 
 let bodyMarkdown;
 let mainImage;
@@ -95,10 +98,23 @@ describe('<Form />', () => {
 
   describe('v2', () => {
     beforeEach(() => {
+      fetch.resetMocks();
+
       bodyMarkdown =
         '---↵title: Test Title v2↵published: false↵description: some description↵tags: javascript, career↵cover_image: https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png↵---↵↵Lets do this v2 changes↵↵![Alt Text](/i/12qpyywb0jlj6hksp9fn.png)';
       mainImage =
         'https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png';
+
+      window.fetch = fetch;
+      window.getCsrfToken = async () => 'this-is-a-csrf-token';
+
+      fetch.mockResponse((req) =>
+        Promise.resolve(
+          req.url.includes('/tags/suggest')
+            ? '[]'
+            : JSON.stringify({ result: [] }),
+        ),
+      );
     });
 
     it('should have no a11y violations', async () => {
@@ -145,7 +161,7 @@ describe('<Form />', () => {
 
       getByAltText(/post cover/i);
       queryByTestId('article-form__title');
-      getByLabelText('Post Tags');
+      getByLabelText('Add up to 4 tags');
       queryByTestId('article-form__body');
 
       const coverImageInput = getByLabelText('Change');
