@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="fs-s color-base-60 mb-1">
+    <div class="fs-s mb-1 color-secondary">
       @<%= @user.username %> &bull; <%= @user.id %> &bull;
       <% if @user.registered? %>
         Member since <%= @user.created_at.strftime("%b %e '%y") %>

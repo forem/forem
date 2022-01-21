@@ -44,7 +44,7 @@
       <% unless @last_email_verification_date %>
         <div>
           <h2 class="crayons-subtitle-2">Email not verified...</h2>
-          <p class="color-base-80">User's email address <%= @user.email %> hasn't been verified yet.</p>
+          <p class="color-secondary">User's email address <%= @user.email %> hasn't been verified yet.</p>
         </div>
         <%= f.button "Verify email address", class: "c-btn c-btn--secondary" %>
       <% else %>

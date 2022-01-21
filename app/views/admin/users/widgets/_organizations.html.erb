@@ -3,7 +3,7 @@
     <%= crayons_icon_tag(:team, title: "Organizations", class: "mr-2") %>
     Organizations
   </h2>
-  <p class="color-base-60">Assign a roles to this member based on permissions. <a href="#" class="c-link c-link--branded">Learn more</a></p>
+  <p class="color-secondary">Assign a roles to this member based on permissions. <a href="#" class="c-link c-link--branded">Learn more</a></p>
 </header>
 <% if @organization_memberships.load.empty? %>
   <div class="flex justify-between items-center gap-4">
@@ -22,7 +22,7 @@
             <%= org_membership.organization.name %>
           </a>
         </h3>
-        <small class="color-base-60">&bull; <%= org_membership.type_of_user %></small>
+        <small class="color-secondary">&bull; <%= org_membership.type_of_user %></small>
       </div>
       <div class="c-card__revealable absolute right-1">
         <button type="button" class="c-btn c-btn--icon-alone">

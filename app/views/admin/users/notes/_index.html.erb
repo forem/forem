@@ -3,7 +3,7 @@
   <% if @notes.load.empty? %>
     <div class="align-center flex flex-col justify-center my-auto py-7">
       <h3 class="fs-xl fw-normal mb-2">🗒 No notes found.</h3>
-      <p class="color-base-60">Any notes added for @<%= @user.name %> will be found here. </p>
+      <p class="color-secondary">Any notes added for @<%= @user.name %> will be found here. </p>
     </div>
   <% else %>
     <div class="pt-3">
@@ -11,14 +11,14 @@
         <article class="c-list-item flex justify-between gap-4">
           <div>
             <p><%= note.content %></p>
-            <p class="fs-s color-base-60">
+            <p class="fs-s color-secondary">
               <%= note.reason.presence %>
               <% if note.author_id.present? %>
                 by <span class="fw-medium"><%= User.find(note.author_id).username %></span>
               <% end %>
             </p>
           </div>
-          <time datetime="<%= note.created_at.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-base-60 fs-s shrink-0" title="<%= note.created_at.strftime("%Y-%m-%d, %H:%M") %>">
+          <time datetime="<%= note.created_at.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= note.created_at.strftime("%Y-%m-%d, %H:%M") %>">
             <%= note.created_at.strftime("%b %e '%y") %>
           </time>
         </article>

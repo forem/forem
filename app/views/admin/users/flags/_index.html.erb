@@ -4,7 +4,7 @@
   <div class="pt-3">
     <% @related_vomit_reactions.each do |flag| %>
       <article class="c-list-item flex gap-2">
-        <span class="opacity-75 shrink-0">
+        <span class="color-secondary shrink-0">
           <% if flag.reactable_type == "Article" %>
             <%= crayons_icon_tag("post") %>
           <% elsif flag.reactable_type == "User" %>
@@ -25,12 +25,12 @@
               <% end %>
             <% end %>
           </h3>
-          <p class="fs-s color-base-60">
+          <p class="fs-s color-secondary">
             Flagged by
             <%= link_to flag.user.username, admin_user_path(flag.user_id), class: "c-link c-link--branded" %>
           </p>
         </div>
-        <time datetime="<%= flag.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-base-60 fs-s shrink-0" title="<%= flag.created_at&.strftime("%Y-%m-%d, %H:%M") %>">
+        <time datetime="<%= flag.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= flag.created_at&.strftime("%Y-%m-%d, %H:%M") %>">
           <%= flag.created_at&.strftime("%b %e '%y") %>
         </time>
       </article>
@@ -39,6 +39,6 @@
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
     <h3 class="fs-xl fw-normal mb-2">😇 No flags!</h3>
-    <p class="color-base-60">No one flagged anything (profile, posts or comments) negative about @<%= @user.username %>.</p>
+    <p class="color-secondary">No one flagged anything (profile, posts or comments) negative about @<%= @user.username %>.</p>
   </div>
 <% end %>
