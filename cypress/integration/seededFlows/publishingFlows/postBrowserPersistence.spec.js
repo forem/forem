@@ -128,7 +128,7 @@ describe('Post Editor', () => {
           .as('postTitle')
           .type('This is some title that should be reverted');
         cy.get('@articleForm')
-          .findByLabelText(/^Post Tags$/i)
+          .findByLabelText('Add up to 4 tags')
           .as('postTags')
           .type('tag1, tag2, tag3');
         cy.get('@articleForm')
@@ -140,7 +140,12 @@ describe('Post Editor', () => {
           'have.value',
           'This is some title that should be reverted',
         );
-        cy.get('@postTags').should('have.value', 'tag1, tag2, tag3');
+
+        // Check all tag selections are present
+        cy.findByRole('button', { name: 'Remove tag1' }).should('exist');
+        cy.findByRole('button', { name: 'Remove tag2' }).should('exist');
+        cy.findByRole('button', { name: 'Remove tag3' }).should('exist');
+
         getPostContent().should(
           'have.value',
           'This is some text that should be reverted',
@@ -155,9 +160,15 @@ describe('Post Editor', () => {
           .findByLabelText(/^Post Title$/i)
           .should('have.value', '');
         cy.get('@articleForm')
-          .findByLabelText(/^Post Tags$/i)
+          .findByLabelText('Add up to 4 tags')
           .as('postTags')
           .should('have.value', '');
+
+        // Check tag selections are not present
+        cy.findByRole('button', { name: 'Remove tag1' }).should('not.exist');
+        cy.findByRole('button', { name: 'Remove tag2' }).should('not.exist');
+        cy.findByRole('button', { name: 'Remove tag3' }).should('not.exist');
+
         getPostContent().should('have.value', '');
       });
 
@@ -194,12 +205,22 @@ describe('Post Editor', () => {
               force: true,
             });
 
+          // Check original tag selections are present, and remove them
+          cy.findByRole('button', { name: 'Remove beginner' })
+            .click()
+            .should('not.exist');
+          cy.findByRole('button', { name: 'Remove ruby' })
+            .click()
+            .should('not.exist');
+          cy.findByRole('button', { name: 'Remove go' })
+            .click()
+            .should('not.exist');
+
+          // Add the new tags
           cy.get('@articleForm')
-            .findByLabelText(/^Post Tags$/i)
+            .findByRole('textbox', { name: 'Add up to 4 tags' })
             .as('postTags')
-            .should('have.value', 'beginner, ruby, go') // checking for original value first
-            .clear()
-            .type('tag1, tag2, tag3');
+            .type('tag1, tag2, tag3,');
 
           getPostContent()
             .should('have.value', `This is a Test Post's contents.`) // checking for original value first
@@ -213,7 +234,10 @@ describe('Post Editor', () => {
             'This is some title that should be reverted',
           );
 
-          cy.get('@postTags').should('have.value', 'tag1, tag2, tag3');
+          // Check new tags are selected
+          cy.findByRole('button', { name: 'Remove tag1' });
+          cy.findByRole('button', { name: 'Remove tag2' });
+          cy.findByRole('button', { name: 'Remove tag3' });
 
           getPostContent().should(
             'have.value',
@@ -228,12 +252,13 @@ describe('Post Editor', () => {
           // are no longer the same reference after reverting changes in the editor.
           cy.get('@articleForm')
             .findByLabelText(/^Post Title$/i)
-            .as('postTags')
             .should('have.value', 'Test Post');
-          cy.get('@articleForm')
-            .findByLabelText(/^Post Tags$/i)
-            .as('postTags')
-            .should('have.value', 'beginner, ruby, go');
+
+          // check the correct original tags are present
+          cy.findByRole('button', { name: 'Remove beginner' });
+          cy.findByRole('button', { name: 'Remove ruby' });
+          cy.findByRole('button', { name: 'Remove go' });
+
           getPostContent().should(
             'have.value',
             `This is a Test Post's contents.`,
@@ -244,7 +269,6 @@ describe('Post Editor', () => {
       it('should not revert changes in the editor if the member clicks cancel in the confirmation dialog', () => {
         cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
         const title = 'Some Title';
-        const tags = 'tag1, tag2, tag3';
         const content = 'This is some text in the body.';
 
         // Fill out the title, tags, and content for an post.
@@ -253,16 +277,21 @@ describe('Post Editor', () => {
           .as('postTitle')
           .type(title);
         cy.get('@articleForm')
-          .findByLabelText(/^Post Tags$/i)
+          .findByRole('textbox', { name: 'Add up to 4 tags' })
           .as('postTags')
-          .type(tags);
+          .type('tag1, tag2, tag3,');
         cy.get('@articleForm')
           .findByLabelText(/^Post Content$/i)
           .as('postContent')
           .type(content, { force: true });
 
         cy.get('@postTitle').should('have.value', title);
-        cy.get('@postTags').should('have.value', tags);
+
+        // Check tags are added
+        cy.findByRole('button', { name: 'Remove tag1' });
+        cy.findByRole('button', { name: 'Remove tag2' });
+        cy.findByRole('button', { name: 'Remove tag3' });
+
         getPostContent().should('have.value', content);
 
         cy.findByRole('button', { name: /^Revert new changes$/i }).click();
@@ -273,7 +302,12 @@ describe('Post Editor', () => {
         // NOTE: The aliases for the title and tags input are not being used because the DOM nodes
         // are no longer the same reference after reverting changes in the editor.
         cy.get('@postTitle').should('have.value', title);
-        cy.get('@postTags').should('have.value', tags);
+
+        // Check tags are still present
+        cy.findByRole('button', { name: 'Remove tag1' });
+        cy.findByRole('button', { name: 'Remove tag2' });
+        cy.findByRole('button', { name: 'Remove tag3' });
+
         getPostContent().should('have.value', content);
       });
     });
