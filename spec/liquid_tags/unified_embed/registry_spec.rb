@@ -30,6 +30,12 @@ RSpec.describe UnifiedEmbed::Registry do
       "instagram.com/p/CXgzXWXroHK/",
     ]
 
+    valid_kotlin_url_formats = [
+      "https://pl.kotl.in/mCMciWl85",
+      "https://pl.kotl.in/owreUFFUG?theme=darcula",
+      "https://pl.kotl.in/Wplen1rPa?theme=darcula&readOnly=true&from=6&to=7",
+    ]
+
     valid_replit_url_formats = [
       "https://replit.com/@msarit/Shell-Challenge#index.html",
       "https://replit.com/@msarit/Shell-Challenge",
@@ -114,6 +120,13 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns JsFiddle for a jsfiddle url" do
       expect(described_class.find_liquid_tag_for(link: "http://jsfiddle.net/link2twenty/v2kx9jcd"))
         .to eq(JsFiddleTag)
+    end
+
+    it "returns KotlinTag for a valid kotlin url" do
+      valid_kotlin_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(KotlinTag)
+      end
     end
 
     it "returns JsitorTag for a jsitor url" do
