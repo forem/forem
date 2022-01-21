@@ -363,13 +363,13 @@ module Articles
         # ActiveRecord goodness of scopes (e.g.,
         # limited_column_select) and eager includes.
         finalized_results = Article.where(
-                              Article.arel_table[:id].in(
-                                Arel.sql(
-                                  Article.sanitize_sql(unsanitized_sub_sql),
-                                ),
-                              ),
-                            ).limited_column_select.includes(top_comments: :user)
-        finalized_results = final_order_logic(finalized_results)
+          Article.arel_table[:id].in(
+            Arel.sql(
+              Article.sanitize_sql(unsanitized_sub_sql),
+            ),
+          ),
+        ).limited_column_select.includes(top_comments: :user)
+        final_order_logic(finalized_results)
       end
       # rubocop:enable Layout/LineLength
 
@@ -460,8 +460,10 @@ module Articles
         when "final_order_by_random_weighted_to_comment_score"
           articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.comment_score, 0.1)) DESC"))
         when "final_order_by_random_weighted_to_last_comment_at"
+          # rubocop:disable Layout/LineLength
           articles
-            .order(Arel.sql("RANDOM() ^ (1.0 / extract(epoch from now() - articles.last_comment_at)::integer) ASC"))
+            .order(Arel.sql("RANDOM() ^ (1.0 / greatest( 1, (extract(epoch from now() - articles.last_comment_at)::integer))) ASC"))
+          # rubocop:enable Layout/LineLength
         else # original
           articles
         end

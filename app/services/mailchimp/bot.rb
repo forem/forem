@@ -196,7 +196,7 @@ module Mailchimp
     end
 
     def previously_subscribed?(error)
-      error.title.include?("Member In Compliance State")
+      error.title.include?(I18n.t("services.mailchimp.bot.member_in_compliance_state"))
     end
   end
 end

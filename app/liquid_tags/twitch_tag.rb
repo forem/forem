@@ -44,7 +44,7 @@ class TwitchTag < LiquidTagBase
     input = input.split("&")[0] # prevent param injection
 
     match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid Twitch ID, Slug or URL" unless match
+    raise StandardError, I18n.t("liquid_tags.twitch_tag.invalid_twitch_id") unless match
 
     return player_url(match[:video_id]) if match.names.include?("video_id")
     return clip_url(match[:clip_slug]) if match.names.include?("clip_slug")

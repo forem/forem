@@ -14,8 +14,7 @@
   }
 
   &--elevated {
-    box-shadow: 0 0 0 1px var(--card-secondary-border), 0 1px 3px var(--base-a5),
-      0 3px 9px var(--base-a5);
+    box-shadow: var(--shadow-1);
   }
 
   &--content-rows {

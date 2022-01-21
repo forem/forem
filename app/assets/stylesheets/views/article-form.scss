@@ -343,8 +343,8 @@
 
 .drop-area {
   &--active {
-    background: var(--accent-brand-a10);
-    box-shadow: inset 0 0 0 1px var(--accent-brand);
+    background: rgba(var(--accent-brand-rgb), 0.1);
+    box-shadow: inset 0 0 0 1px var(--focus);
 
     // ideally this one shouldn't be there, but I'm not sure how else we could handle that right now...
     .crayons-article-form__toolbar {

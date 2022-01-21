@@ -1,15 +1,8 @@
 module Badges
   class AwardStreak
     LONGEST_STREAK_WEEKS = 16
-    LONGEST_STREAK_MESSAGE = "16 weeks! You've achieved the longest writing " \
-                             "streak possible. This makes you eligible for special quests in the future. " \
-                             "Keep up the amazing contributions to our community!".freeze
 
     MINIMUM_QUALITY = -25
-
-    MESSAGE_TEMPLATE =
-      "Congrats on achieving this streak! Consistent writing is hard. " \
-      "The next streak badge you can get is the %<weeks>d Week Badge. 😉".freeze
 
     def self.call(weeks:)
       new(weeks: weeks).call
@@ -53,9 +46,9 @@ module Badges
     end
 
     def generate_message
-      return LONGEST_STREAK_MESSAGE if weeks == LONGEST_STREAK_WEEKS
+      return I18n.t("services.badges.award_streak.longest") if weeks == LONGEST_STREAK_WEEKS
 
-      format(MESSAGE_TEMPLATE, weeks: weeks * 2)
+      I18n.t("services.badges.award_streak.message", count: weeks * 2)
     end
   end
 end
