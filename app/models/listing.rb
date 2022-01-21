@@ -65,6 +65,18 @@ class Listing < ApplicationRecord
     (bumped_at || created_at) + 30.days
   end
 
+  def publish
+    update(published: true)
+  end
+
+  def unpublish
+    update(published: false)
+  end
+
+  def bump
+    update(bumped_at: Time.current)
+  end
+
   private
 
   def evaluate_markdown
@@ -94,13 +106,5 @@ class Listing < ApplicationRecord
 
   def create_slug
     self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_s(26)}"
-  end
-
-  def publish
-    @listing.update(published: true)
-  end
-
-  def unpublish
-    @listing.update(published: false)
   end
 end

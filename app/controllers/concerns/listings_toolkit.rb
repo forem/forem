@@ -143,7 +143,7 @@ module ListingsToolkit
         cost: cost,
       )
 
-      unless enough_credits && @listing.update(bumped_at: Time.current)
+      unless enough_credits && @listing.bump
         raise ActiveRecord::Rollback
       end
     end
@@ -171,8 +171,6 @@ module ListingsToolkit
   end
 
   def bumped_in_last_24_hrs?
-    return unless (last_bumped_at = @listing.bumped_at)
-
-    last_bumped_at > 24.hours.ago
+    @listing.bumped_at&.after?(24.hours.ago)
   end
 end
