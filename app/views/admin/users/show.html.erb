@@ -1,5 +1,5 @@
 <%# this is for pawel's testing purpose to emulate tabs... %>
-<% current_tab = "overview" # overview|emails|notes|reports|flags %>
+<% current_tab = "flags" # overview|emails|notes|reports|flags %>
 <% if true %>
   <%= render "header" %>
   <%= render "navigation" %>
@@ -40,7 +40,7 @@
       </div>
     </section>
   <% elsif current_tab == 'emails' %>
-    <%= render "admin/users/emails/verfication" %>
+    <%= render "admin/users/emails/verification" %>
     <section class="flex flex-col m:flex-row gap-4">
       <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
         <%= render "admin/users/emails/form" %>
