@@ -33,16 +33,16 @@ gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given i
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
-gem "flipper", "~> 0.23.0" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.23.0" # Store Flipper flags in ActiveRecord
-gem "flipper-active_support_cache_store", "~> 0.23.0" # Cache feature flags for a short time
-gem "flipper-ui", "~> 0.23.0"
+gem "flipper", "~> 0.23.1" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.23.1" # Store Flipper flags in ActiveRecord
+gem "flipper-active_support_cache_store", "~> 0.23.1" # Cache feature flags for a short time
+gem "flipper-ui", "~> 0.23.1"
 gem "fog-aws", "~> 3.12" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 0.2.24" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
-gem "honeybadger", "~> 4.9" # Used for tracking application errors
+gem "honeybadger", "~> 4.10" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.8.1" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -101,7 +101,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.42" # Ruby library for the Stripe API
+gem "stripe", "~> 5.43" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -140,7 +140,7 @@ group :development, :test do
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.24", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.25", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.13", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.7", require: false # Code style checking for RSpec files

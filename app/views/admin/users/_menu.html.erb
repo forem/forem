@@ -40,7 +40,7 @@
       <%= link_to admin_users_gdpr_delete_requests_path, class: "nav-link #{'active' if params[:controller] == 'admin/users/gdpr_delete_requests'}" do %>
         GDPR Delete Requests
         <% if Users::GdprDeleteRequest.any? %>
-          &nbsp;<span class="crayons-indicator crayons-indicator--critical"><%= Users::GdprDeleteRequest.count %></span>
+          &nbsp;<span class="c-indicator c-indicator--danger"><%= Users::GdprDeleteRequest.count %></span>
         <% end %>
       <% end %>
     </li>

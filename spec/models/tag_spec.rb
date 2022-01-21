@@ -111,6 +111,12 @@ RSpec.describe Tag, type: :model do
     end
   end
 
+  it "strips HTML tags from short_summary before saving" do
+    tag.short_summary = "<p>Hello <strong>World</strong>.</p>"
+    tag.save
+    expect(tag.short_summary).to eq("Hello World.")
+  end
+
   it "turns markdown into HTML before saving" do
     tag.rules_markdown = "Hello [Google](https://google.com)"
     tag.save

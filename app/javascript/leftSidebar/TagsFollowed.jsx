@@ -13,7 +13,7 @@ export const TagsFollowed = ({ tags = [] }) => {
     <Fragment>
       {tags.map(({ name, id, points }) =>
         // Note points are the calculated points of a Tag.  See Tag#points for more discussion.
-        points >= 1 ? (
+        points >= 0 ? (
           <Link
             key={id}
             title={`${name} tag`}

@@ -1,21 +1,6 @@
 module Slack
   module Messengers
     class Feedback
-      MESSAGE_TEMPLATE = <<~TEXT.chomp.freeze
-        %<user_detail>s
-        Category: %<category>s
-        Internal Report: %<reports_url>s
-        *_ Reported URL: %<reported_url>s _*
-        -----
-        *Message:* %<message>s
-      TEXT
-
-      USER_DETAIL_TEMPLATE = <<~TEXT.chomp.freeze
-        *Logged in user:*
-        reporter: %<username>s - %<url>s
-        email: <mailto:%<email>s|%<email>s>
-      TEXT
-
       def initialize(type:, category:, reported_url:, message:, user: nil)
         @user = user
         @type = type
@@ -33,8 +18,8 @@ module Slack
           Rails.application.routes.url_helpers.admin_reports_path,
         )
 
-        final_message = format(
-          MESSAGE_TEMPLATE,
+        final_message = I18n.t(
+          "services.slack.messengers.feedback.final_message",
           user_detail: user_detail,
           category: category,
           reports_url: reports_url,
@@ -55,10 +40,10 @@ module Slack
       attr_reader :user, :type, :category, :reported_url, :message
 
       def user_detail
-        return "*Anonymous report:" unless user
+        return I18n.t("services.slack.messengers.feedback.anonymous_report") unless user
 
-        format(
-          USER_DETAIL_TEMPLATE,
+        I18n.t(
+          "services.slack.messengers.feedback.body",
           username: user.username,
           url: URL.user(user),
           email: user.email,

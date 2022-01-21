@@ -4,8 +4,8 @@
     left: 50%;
     top: 100%;
     transform: translate(-50%, calc(-1 * var(--su-1)));
-    background: var(--base-a90);
-    color: var(--base-inverted);
+    background: var(--tooltip-bg);
+    color: var(--tooltip-color);
     font-size: var(--fs-s);
     font-family: var(--ff-sans-serif);
     font-weight: var(--fw-normal);
