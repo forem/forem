@@ -20,12 +20,46 @@ class UserDecorator < ApplicationDecorator
 
   DEFAULT_PROFILE_SUMMARY = "404 bio not found".freeze
 
+  # The relevant attribute names for cached tags.  These are the attributes that we'll make
+  # available in the front-end.  The list comes from the two places (see below for that list).
+  #
+  # @see app/controllers/async_info_controller.rb
+  # @see app/services/articles/feeds/article_score_calculator_for_user.rb
+  CACHED_TAGGED_BY_USER_ATTRIBUTES = %i[bg_color_hex hotness_score id name points text_color_hex].freeze
+
+  # A proxy for a Tag object.  In app/services/articles/feeds/article_score_calculator_for_user.rb
+  # we rely on method calls to the object.  (e.g. "tag.name").  This class helps us conform to that
+  # expectation.
+  #
+  # @note A Struct in Rails can be cast "to_json" and uses it's attributes.
+  #
+  # @see https://github.com/rails/rails/blob/main/activesupport/lib/active_support/core_ext/object/json.rb#L68-L72
+  CachedTagByUser = Struct.new(*CACHED_TAGGED_BY_USER_ATTRIBUTES) do
+    def self.from_hash(hash)
+      hash = hash.symbolize_keys
+      new.tap do |tag|
+        CACHED_TAGGED_BY_USER_ATTRIBUTES.each do |attr|
+          tag.public_send("#{attr}=", hash[attr])
+        end
+      end
+    end
+  end
+
+  # Return the relevant tags that the user follows and their points.
+  #
+  # @note We want to avoid caching ActiveRecord objects.
+  #
+  # @return [Array<UserDecorator::CachedTagByUser>]
   def cached_followed_tags
-    Rails.cache.fetch(
-      "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tags",
+    cached_tag_attriibutes = Rails.cache.fetch(
+      "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/user_followed_tags",
       expires_in: 20.hours,
     ) do
-      Tag.cached_followed_tags_for(follower: object)
+      Tag.cached_followed_tags_for(follower: object).map { |tag| tag.slice(*CACHED_TAGGED_BY_USER_ATTRIBUTES) }
+    end
+
+    cached_tag_attriibutes.map do |cached_tag|
+      CachedTagByUser.from_hash(cached_tag)
     end
   end
 

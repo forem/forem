@@ -20,11 +20,22 @@ RSpec.describe UserDecorator, type: :decorator do
   end
 
   describe "#cached_followed_tags" do
-    it "forward delegates to Tag.cached_followed_tags_for" do
-      allow(Tag).to receive(:cached_followed_tags_for).with(follower: user)
-      user.decorate.cached_followed_tags
+    let(:saved_user) { create(:user) }
+    let(:tag1) { create(:tag) }
+    let(:tag2) { create(:tag) }
+    let(:tag3) { create(:tag) }
 
-      expect(Tag).to have_received(:cached_followed_tags_for).with(follower: user)
+    it "returns array of tags if user follows them" do
+      saved_user.follow(tag1)
+      saved_user.follow(tag2)
+      saved_user.follow(tag3)
+
+      results = saved_user.decorate.cached_followed_tags
+      expect(results.size).to eq(3)
+      expect(results.first.points).to eq(1)
+      # Just a quick and dirty verification that we have a to_json method on an Array of Struct
+      # objects
+      expect(results.to_json).to be_present
     end
   end
 
