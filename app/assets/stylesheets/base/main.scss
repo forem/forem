@@ -107,26 +107,13 @@ a {
     --font-size: var(--fs-xl);
   }
 
-  &:hover {
+  &:hover,
+  .js-focus-visible &.focus-visible:focus {
     color: var(--base-80);
     text-decoration: underline;
   }
 
-  // Both focus declarations below are the same but we unfortunately can't
-  // combine them because Safari doesn't recognize it properly.
-  //  • First declaration is for all browsers that support :focus-visible
-  //    which is basically almost all of them
-  //  • Second declaration is for browsers that do not support :focus-visible
-  //    which basically is only Safari right now.
-  &:focus-visible {
-    z-index: var(--z-elevate);
-    box-shadow: var(--focus-ring);
-    text-decoration: underline;
-  }
-
   .js-focus-visible &.focus-visible:focus {
-    z-index: var(--z-elevate);
     box-shadow: var(--focus-ring);
-    text-decoration: underline;
   }
 }
