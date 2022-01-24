@@ -16,6 +16,9 @@ class Reaction < ApplicationRecord
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
+  # Days to ramp up new user points weight
+  NEW_USER_RAMPUP_DAYS_COUNT = 10
+
   belongs_to :reactable, polymorphic: true
   belongs_to :user
 
@@ -164,11 +167,13 @@ class Reaction < ApplicationRecord
     base_points /= 2 if reactable_type == "User"
     base_points *= 2 if status == "confirmed"
 
-    # Author's comment reaction counts for more weight on to their own posts. (5.0 vs 1.0)
-    base_points *= 5 if positive_reaction_to_comment_on_own_article?
+    unless persisted? # Actions we only want to apply upon initial creation
+      # Author's comment reaction counts for more weight on to their own posts. (5.0 vs 1.0)
+      base_points *= 5 if positive_reaction_to_comment_on_own_article?
 
-    # New users will have their reaction weight gradually ramp by 0.1 from 0 to 1.0.
-    base_points *= new_user_adjusted_points if new_untrusted_user # New users get minimal reaction weight
+      # New users will have their reaction weight gradually ramp by 0.1 from 0 to 1.0.
+      base_points *= new_user_adjusted_points if new_untrusted_user # New users get minimal reaction weight
+    end
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 
@@ -195,10 +200,10 @@ class Reaction < ApplicationRecord
   end
 
   def new_user_adjusted_points
-    ((Time.current - user.registered_at).seconds.in_days / 10)
+    ((Time.current - user.registered_at).seconds.in_days / NEW_USER_RAMPUP_DAYS_COUNT)
   end
 
   def new_untrusted_user
-    user.registered_at > 10.days.ago && !user.trusted? && !user.any_admin?
+    user.registered_at > NEW_USER_RAMPUP_DAYS_COUNT.days.ago && !user.trusted? && !user.any_admin?
   end
 end

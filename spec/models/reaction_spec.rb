@@ -94,10 +94,18 @@ RSpec.describe Reaction, type: :model do
       expect(reaction.points).to eq(reaction_points * 2)
     end
 
-    it "assigns fractional points to new users" do
+    it "assigns fractional points to new users on create" do
       newish_user = create(:user, registered_at: 3.days.ago)
       reaction = create(:reaction, reactable: article, user: newish_user)
       expect(reaction.points).to be_within(0.1).of(0.3)
+    end
+
+    it "Does not assign new fractional logic on re-save" do
+      reaction.save
+      original_points = reaction.points
+      reaction.user.update_column(:registered_at, 7.days.ago)
+      reaction.save
+      expect(reaction.points).to eq(original_points)
     end
 
     it "assigns full points to new users who is also trusted" do
