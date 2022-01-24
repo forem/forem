@@ -16,7 +16,7 @@ module Users
          tiger-face_1f42f.png
          fox_1f98a.png
          wolf_1f43a.png].freeze
-    BACKGROUND_HEXES = %w[#f68d8e #fce289 #f3f096 #55c1ae #88aedc #f8b4d0].freeze
+
     def self.call
       # This pulls from emojipedia source for the liberally open source twemoji lib.
       # TODO: Make this much more interesting than just emojis.

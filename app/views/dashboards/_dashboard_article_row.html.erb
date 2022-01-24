@@ -2,7 +2,7 @@
   <div class="dashboard-story__title">
     <h3 class="flex items-center">
       <% if article.archived %>
-        <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal whitespace-nowrap"><%= t("views.dashboard.article.archived") %></span>
+        <span class="c-indicator c-indicator--danger mr-2 fw-normal whitespace-nowrap"><%= t("views.dashboard.article.archived") %></span>
       <% end %>
       <a href="<%= article.current_state_path %>" class="inline-flex items-center">
         <% if article.organization_id %>
@@ -30,11 +30,11 @@
 
   <div class="fs-s color-base-60">
     <% if !article.published? %>
-      <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent"><%= t("views.dashboard.article.draft") %></a>
+      <a href="<%= article.path %>/edit" class="c-indicator c-indicator--warning"><%= t("views.dashboard.article.draft") %></a>
     <% else %>
       <div class="flex flex-nowrap whitespace-nowrap" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="flex items-center p-1" title="<%= t("views.dashboard.article.reactions.title") %>">
-          <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon mr-1", title: t("views.dashboard.article.reactions.icon")) %>
+          <%= crayons_icon_tag("small-heart", class: "mr-1", title: t("views.dashboard.article.reactions.icon")) %>
           <% if article.published %>
             <%= article.public_reactions_count %>
           <% else %>
@@ -43,14 +43,14 @@
         </span>
 
         <span class="flex items-center p-1 ml-1" title="<%= t("views.dashboard.article.comments.title") %>">
-          <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon mr-1", title: t("views.dashboard.article.comments.icon")) %>
+          <%= crayons_icon_tag("small-comment", class: "mr-1", title: t("views.dashboard.article.comments.icon")) %>
           <span class="spec__comments-count">
             <%= article.comments_count %>
           </span>
         </span>
 
         <span class="flex items-center p-1 ml-1" title="<%= t("views.dashboard.article.views.title") %>">
-          <%= inline_svg_tag("small-eye.svg", aria: true, class: "crayons-icon mr-1", title: t("views.dashboard.article.views.icon")) %>
+          <%= crayons_icon_tag("small-eye", class: "mr-1", title: t("views.dashboard.article.views.icon")) %>
           <% if article.published %>
             <% if article.page_views_count > 25 %>
               <%= article.page_views_count %>
@@ -64,7 +64,7 @@
 
         <% if article.user_subscriptions_count > 0 %>
           <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="flex items-center crayons-btn crayons-btn--ghost-dimmed crayons-btn--s" title="<%= t("views.dashboard.article.subscriptions.title") %>">
-            <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: t("views.dashboard.article.subscriptions.icon")) %>
+            <%= crayons_icon_tag("small-data", class: "mr-1", title: t("views.dashboard.article.subscriptions.icon")) %>
             <%= article.user_subscriptions_count %>
           </a>
         <% end %>
@@ -95,7 +95,7 @@
 
     <div class="js-ellipsis-menu relative inline-block">
       <button id="ellipsis-menu-trigger-<%= article.id %>" aria-controls="ellipsis-menu-dropdown-<%= article.id %>" aria-expanded="false" aria-haspopup="true" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon">
-        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: t("views.dashboard.article.more.title", title: article.title)) %>
+        <%= crayons_icon_tag("overflow-horizontal", title: t("views.dashboard.article.more.title", title: article.title)) %>
       </button>
 
       <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 align-left js-ellipsis-menu-dropdown">

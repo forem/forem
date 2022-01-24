@@ -1,0 +1,115 @@
+---
+en:
+  services:
+    analytics_service:
+      no_stats: You can't view this article's stats
+    article_with_video_creation_service:
+      unpublished_video: Unpublished Video ~ %{rand}
+    authentication:
+      authenticator:
+        not_allowed: Sorry, but the domain for your email address is not allowed. This Forem may have limited signup to only specified email domains or blocked this specific domain from joining.
+      providers:
+        apple:
+          name: "%{first} %{last}"
+        not_available: Provider %{name} is not available!
+        not_enabled: Provider %{name} is not enabled!
+    badges:
+      award_beloved_comment:
+        message: "You're famous! [This is the comment](%{comment}) for which you're being recognized. 😄"
+      award_streak:
+        longest: 16 weeks! You've achieved the longest writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!
+        message:
+          one: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
+          other: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
+      award_yearly_club:
+        message:
+          one: Happy %{community} birthday! Can you believe it's been %{count} year already?!
+          other: Happy %{community} birthday! Can you believe it's been %{count} years already?!
+      congrats: Congrats!!!
+      thank_you: Thank you so much for your contributions!
+    broadcasts:
+      welcome_notification:
+        generator:
+          welcome: 'Welcome Notification: %{key}'
+    error_messages:
+      clean:
+        parse_error: There was a problem parsing the front-matter YAML. Perhaps you need to escape a quote or a colon or something. Email %{email} if you are having trouble.
+    html:
+      parser:
+        enter_fullscreen_mode: Enter fullscreen mode
+        exit_fullscreen_mode: Exit fullscreen mode
+    mailchimp:
+      bot:
+        member_in_compliance_state: Member In Compliance State
+    markdown_processor:
+      parser:
+        invalid_markdown_detected: Invalid markdown detected!
+    moderator:
+      banish_user:
+        spam_account: spam account
+      manage_activity_and_roles:
+        need_super: You need super admin status to take this action
+      merge_user:
+        duplicate: The user has duplicate authentication methods on the two accounts. Please double check and delete the identity that the user is no longer using. This is usually the already-deleted social account, or the authentication method tied to the user to be deleted.
+        multiple: The user being deleted already has two or more authentication methods. Are you sure this is the right user to be deleted? If so, a super admin will need to do this from the console to be safe.
+        same_user: You cannot merge the same two user IDs
+    notifications:
+      new_comment:
+        new: "💬 New Comment"
+      new_mention:
+        new: "🗣️ New Mention"
+    payments:
+      customer:
+        usd: usd
+      errors:
+        select_payment_method: "Please select a payment method"
+      process_credit_purchase:
+        charge:
+          one: Purchase of %{count} credits.
+          other: Purchase of %{count} credits.
+    rate_limit_checker:
+      invalid_key: 'Invalid Cache Key: no unique component present'
+      limit_reached:
+        one: Rate limit reached, try again in %{count} seconds
+        other: Rate limit reached, try again in %{count} seconds
+    slack:
+      messengers:
+        article_fetched_feed:
+          body: |
+            New Article Retrieved via RSS: %{title}
+            %{url}
+        article_published:
+          body: |
+            New Article Published: %{title}
+            %{url}
+        feedback:
+          anonymous_report: "*Anonymous report:"
+          final_message: |-
+            %{user_detail}
+            Category: %{category}
+            Internal Report: %{reports_url}
+            *_ Reported URL: %{reported_url} _*
+            -----
+            *Message:* %{message}
+          body: |
+            *Logged in user:*
+            reporter: %{username} - %{url}
+            email: <mailto:%{email}|%{email}>
+        potential_spammer:
+          body: 'Potential spam user! %{url}
+
+            '
+        sponsorship:
+          body: "%{user} bought a %{type} sponsorship for %{organization}\n"
+    spam:
+      article_handler:
+        suspended_too_many: User suspended for too many spammy articles, triggered by autovomit.
+    user_subscriptions:
+      create_from_controller_params:
+        source_not_found: Source not found.
+        email_mismatch: Subscriber email mismatch.
+    users:
+      remove_role:
+        remove_self: Admins cannot remove roles from themselves.
+        remove_super: Super Admin roles cannot be removed.
+        error: There was an issue removing this role. %{e_message}

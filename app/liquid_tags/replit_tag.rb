@@ -22,7 +22,7 @@ class ReplitTag < LiquidTagBase
 
   def parse_input(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid Replit URL or @user/slug" unless match
+    raise StandardError, I18n.t("liquid_tags.replit_tag.invalid_replit_id") unless match
 
     match[:address]
   end

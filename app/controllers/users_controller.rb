@@ -63,7 +63,7 @@ class UsersController < ApplicationController
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
     else
-      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("error", @user.errors.messages.compact_blank)
       Honeycomb.add_field("errored", true)
 
       if @tab
@@ -169,15 +169,15 @@ class UsersController < ApplicationController
   def onboarding_update
     authorize User
 
-    user_params = { saw_onboarding: true }
+    user_params = {}
 
     if params[:user]
-      if params.dig(:user, :username).blank?
+      if params[:user].key?(:username) && params[:user][:username].blank?
         return render_update_response(false, "Username cannot be blank")
       end
 
       sanitize_user_params
-      user_params.merge!(params[:user].permit(ALLOWED_USER_PARAMS))
+      user_params = params[:user].permit(ALLOWED_USER_PARAMS)
     end
 
     update_result = Users::Update.call(current_user, user: user_params, profile: profile_params)
@@ -277,7 +277,7 @@ class UsersController < ApplicationController
     if @user.update_with_password(password_params)
       redirect_to user_settings_path(@tab)
     else
-      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("error", @user.errors.messages.compact_blank)
       Honeycomb.add_field("errored", true)
 
       if @tab

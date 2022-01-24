@@ -1,6 +1,36 @@
 require "rails_helper"
 
 RSpec.describe Page, type: :model do
+  describe ".render_safe_html_for" do
+    let(:slug) { "the-given-slug" }
+
+    context "when no matching slug in Page database" do
+      specify { expect { |b| described_class.render_safe_html_for(slug: slug, &b) }.to yield_control }
+    end
+
+    context "when no matching slug and the caller didn't pass a block" do
+      # Instead of raising an exception we could "silently" do nothing.  That too might be
+      # reasonable.  But this seems like a good enough test.
+      it "raises an exception" do
+        expect { described_class.render_safe_html_for(slug: slug) }.to raise_error(LocalJumpError)
+      end
+    end
+
+    context "when there's a matching slug" do
+      subject(:rendered_html) { described_class.render_safe_html_for(slug: page.slug) }
+
+      let!(:page) { create(:page, slug: "the-given-slug") }
+
+      it { is_expected.to be_html_safe }
+
+      it "returns the html safe version of the processed_html" do
+        expect(rendered_html).to eq(page.processed_html)
+      end
+
+      specify { expect { |b| described_class.render_safe_html_for(slug: slug, &b) }.not_to yield_control }
+    end
+  end
+
   describe "#validations" do
     it "requires either body_markdown, body_html, or body_json" do
       page = build(:page)

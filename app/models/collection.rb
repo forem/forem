@@ -6,6 +6,8 @@ class Collection < ApplicationRecord
 
   validates :slug, presence: true, uniqueness: { scope: :user_id }
 
+  scope :non_empty, -> { joins(:articles).distinct }
+
   after_touch :touch_articles
 
   def self.find_series(slug, user)

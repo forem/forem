@@ -86,10 +86,10 @@ body {
 
   a {
     text-decoration: underline;
-    color: var(--accent-brand);
+    color: var(--link-branded-color);
 
     &:hover {
-      color: var(--accent-brand-darker);
+      color: var(--link-branded-color-hover);
     }
   }
 
