@@ -43,9 +43,9 @@ module Notifications
 
       def to_h
         {
-          reactable_id: reactable_id,
-          reactable_type: reactable_type,
-          reactable_user_id: reactable_user_id
+          "reactable_id" => reactable_id,
+          "reactable_type" => reactable_type,
+          "reactable_user_id" => reactable_user_id
         }
       end
     end
