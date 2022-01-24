@@ -146,7 +146,7 @@ module Articles
           fallback: 0.85,
           requires_user: false,
           group_by: "articles.featured",
-          enabled: false
+          enabled: true
         },
         # Weight to give when the given user follows the article's
         # author.
@@ -266,6 +266,8 @@ module Articles
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
+      #
+      # rubocop:disable Layout/LineLength
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
@@ -284,6 +286,7 @@ module Articles
           days_since_published: @days_since_published,
         )
       end
+      # rubocop:enable Layout/LineLength
 
       # The goal of this query is to generate a list of articles that
       # are relevant to the user's interest.
@@ -359,13 +362,14 @@ module Articles
         # can use to help ensure that we can use all of the
         # ActiveRecord goodness of scopes (e.g.,
         # limited_column_select) and eager includes.
-        Article.where(
+        finalized_results = Article.where(
           Article.arel_table[:id].in(
             Arel.sql(
               Article.sanitize_sql(unsanitized_sub_sql),
             ),
           ),
         ).limited_column_select.includes(top_comments: :user)
+        final_order_logic(finalized_results)
       end
       # rubocop:enable Layout/LineLength
 
@@ -440,6 +444,30 @@ module Articles
       end
 
       private
+
+      def final_order_logic(articles)
+        case @strategy
+        when "final_order_by_score"
+          articles.order("score DESC")
+        when "final_order_by_comment_score"
+          articles.order("comment_score DESC")
+        when "final_order_by_last_comment_at"
+          articles.order("articles.last_comment_at DESC")
+        when "final_order_by_random"
+          articles.order("RANDOM()")
+        when "final_order_by_random_weighted_to_score"
+          articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.score, 0.1)) DESC"))
+        when "final_order_by_random_weighted_to_comment_score"
+          articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.comment_score, 0.1)) DESC"))
+        when "final_order_by_random_weighted_to_last_comment_at"
+          # rubocop:disable Layout/LineLength
+          articles
+            .order(Arel.sql("RANDOM() ^ (1.0 / greatest( 1, (extract(epoch from now() - articles.last_comment_at)::integer))) ASC"))
+          # rubocop:enable Layout/LineLength
+        else # original
+          articles
+        end
+      end
 
       # Concatenate the required group by clauses.
       #
@@ -585,7 +613,7 @@ module Articles
           scoring_config = default_config unless scoring_config.is_a?(Hash)
 
           # Change an alement of config via a/b test strategy
-          scoring_config = inject_config_ab_test(valid_method_name, scoring_config)
+          # scoring_config = inject_config_ab_test(valid_method_name, scoring_config) # Not currently in use.
 
           # This scoring method requires a group by clause.
           @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)

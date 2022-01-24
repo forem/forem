@@ -6,46 +6,16 @@ import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { addSnackbarItem } from '../../Snackbar';
 import { ClipboardButton } from './ClipboardButton';
-import { Button, Spinner } from '@crayons';
-
-const ImageIcon = () => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    className="crayons-icon"
-    xmlns="http://www.w3.org/2000/svg"
-    role="img"
-    aria-hidden="true"
-  >
-    <title id="a17qec5pfhrwzk9w4kg0tp62v27qqu9t">Upload image</title>
-    <path d="M20 5H4v14l9.292-9.294a1 1 0 011.414 0L20 15.01V5zM2 3.993A1 1 0 012.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 01-.992.993H2.992A.993.993 0 012 20.007V3.993zM8 11a2 2 0 110-4 2 2 0 010 4z" />
-  </svg>
-);
-
-const CancelIcon = () => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    className="crayons-icon cancel"
-    xmlns="http://www.w3.org/2000/svg"
-    role="img"
-    aria-hidden="true"
-  >
-    <title id="as1mn15llu5e032u2pgzlc6yhvss2myk">Cancel</title>
-    <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-  </svg>
-);
+import { ButtonNew as Button, Spinner, Icon } from '@crayons';
+import ImageIcon from '@images/image.svg';
+import CancelIcon from '@images/x.svg';
 
 const SpinnerOrCancel = () => (
   <span className="spinner-or-cancel">
     <Spinner />
-    <CancelIcon />
+    <Icon className="cancel" src={CancelIcon} />
   </span>
 );
-
-ImageIcon.displayName = 'ImageIcon';
 
 function imageUploaderReducer(state, action) {
   const { type, payload } = action;
@@ -92,9 +62,7 @@ const NativeIosV1ImageUpload = ({ uploadingImage }) => (
     {!uploadingImage && (
       <Button
         aria-label="Upload an image"
-        className="mr-2 fw-normal"
-        variant="ghost"
-        contentType="icon-left"
+        className="mr-2"
         icon={ImageIcon}
         onClick={initNativeImagePicker}
       >
@@ -256,8 +224,9 @@ const V1EditorImageUpload = ({
         />
       ) : uploadingImage ? null : (
         <Fragment>
-          <label className="cursor-pointer crayons-btn crayons-btn--ghost">
-            <ImageIcon /> Upload image
+          <label className="cursor-pointer c-btn">
+            <Icon src={ImageIcon} className="c-btn__icon crayons-icon" /> Upload
+            image
             <input
               type="file"
               id="image-upload-field"

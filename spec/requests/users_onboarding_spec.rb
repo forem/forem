@@ -12,11 +12,6 @@ RSpec.describe "UsersOnboarding", type: :request do
     context "when signed in" do
       before { sign_in user }
 
-      it "updates saw_onboarding boolean" do
-        patch "/onboarding_update.json", params: {}
-        expect(user.saw_onboarding).to eq(true)
-      end
-
       it "updates the user's last_onboarding_page attribute" do
         params = { user: { last_onboarding_page: "v2: personal info form", username: "test" } }
         expect do

@@ -1,27 +1,15 @@
 module ApplicationHelper
-  # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
-  USER_COLORS = ["#19063A", "#dce9f3"].freeze
-
-  DELETED_USER = OpenStruct.new(
-    id: nil,
-    darker_color: Color::CompareHex.new(USER_COLORS).brightness,
-    username: "[deleted user]",
-    name: "[Deleted User]",
-    summary: nil,
-    twitter_username: nil,
-    github_username: nil,
-  )
-  # rubocop:enable Style/OpenStructUse, Performance/OpenStruct
-
   LARGE_USERBASE_THRESHOLD = 1000
 
-  SUBTITLES = {
-    "week" => "Top posts this week",
-    "month" => "Top posts this month",
-    "year" => "Top posts this year",
-    "infinity" => "All posts",
-    "latest" => "Latest posts"
-  }.freeze
+  def subtitles
+    {
+      "week" => I18n.t("helpers.application_helper.subtitle.week"),
+      "month" => I18n.t("helpers.application_helper.subtitle.month"),
+      "year" => I18n.t("helpers.application_helper.subtitle.year"),
+      "infinity" => I18n.t("helpers.application_helper.subtitle.infinity"),
+      "latest" => I18n.t("helpers.application_helper.subtitle.latest")
+    }
+  end
 
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
@@ -56,11 +44,12 @@ module ApplicationHelper
   end
 
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
-    if timeframe.blank? || SUBTITLES[timeframe].blank?
+    if timeframe.blank? || subtitles[timeframe].blank?
       return content_for ? title(page_title) : page_title
     end
 
-    title_text = "#{page_title} - #{SUBTITLES.fetch(timeframe)}"
+    title_text = I18n.t("helpers.application_helper.title_text", title: page_title,
+                                                                 timeframe: subtitles.fetch(timeframe))
     content_for ? title(title_text) : title_text
   end
 
@@ -120,31 +109,28 @@ module ApplicationHelper
   end
 
   def follow_button(followable, style = "full", classes = "")
-    return if followable == DELETED_USER
+    return if followable == Users::DeletedUser
 
     user_follow = followable.instance_of?(User) ? "follow-user" : ""
-    followable_type = if followable.respond_to?(:decorated?) && followable.decorated?
-                        followable.object.class.name
-                      else
-                        followable.class.name
-                      end
-
+    followable_type = followable.class_name
     followable_name = followable.name
 
     tag.button(
-      I18n.t("core.follow"),
+      I18n.t("helpers.application_helper.follow.text.#{followable_type}",
+             default: I18n.t("helpers.application_helper.follow.text.default")),
       name: :button,
       type: :button,
       data: {
-        info: {
-          id: followable.id,
-          className: followable_type,
-          name: followable_name,
-          style: style
-        }
+        info: DataInfo.to_json(object: followable, className: followable_type, style: style)
       },
       class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
-      aria: { label: "Follow #{followable_type}: #{followable_name}", pressed: "false" },
+      aria: {
+        label: I18n.t("helpers.application_helper.follow.aria_label.#{followable_type}",
+                      name: followable_name,
+                      default: I18n.t("helpers.application_helper.follow.aria_label.default", type: followable_type,
+                                                                                              name: followable_name)),
+        pressed: "false"
+      },
     )
   end
 
@@ -154,8 +140,6 @@ module ApplicationHelper
   end
 
   def user_colors(user)
-    return { bg: "#19063A", text: "#dce9f3" } if user == DELETED_USER
-
     user.decorate.enriched_colors
   end
 
@@ -173,7 +157,8 @@ module ApplicationHelper
     if Settings::General.logo_svg.present?
       Settings::General.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
     else
-      inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
+      inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true,
+                                     title: I18n.t("helpers.application_helper.app_logo"))
     end
   end
 
@@ -202,8 +187,13 @@ module ApplicationHelper
   end
 
   def collection_link(collection, **kwargs)
-    size_string = "#{collection.articles.published.size} Part Series"
-    body = collection.slug.present? ? "#{collection.slug} (#{size_string})" : size_string
+    size_string = I18n.t("views.articles.series.size", count: collection.articles.published.size)
+    body = if collection.slug.present?
+             I18n.t("views.articles.series.subtitle", slug: collection.slug,
+                                                      size: size_string)
+           else
+             size_string
+           end
 
     link_to body, collection.path, **kwargs
   end
@@ -279,11 +269,6 @@ module ApplicationHelper
 
   def admin_config_label(method, content = nil, model: Settings::General)
     content ||= tag.span(method.to_s.humanize)
-
-    if method.to_sym.in?(Settings::Mandatory.keys)
-      required = tag.span("Required", class: "crayons-indicator crayons-indicator--critical")
-      content = safe_join([content, required])
-    end
 
     label_prefix = model.name.split("::").map(&:underscore).join("_")
     tag.label(content, class: "site-config__label crayons-field__label", for: "#{label_prefix}_#{method}")

@@ -1,6 +1,9 @@
 /* global Runtime */
 
 import { h } from 'preact';
+import { ButtonNew as Button, Icon } from '@crayons';
+import CloseIcon from '@images/x.svg';
+import LogoForem from '@images/logo-forem-app.svg';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
 
@@ -91,49 +94,18 @@ export const RuntimeBanner = () => {
         class="flex items-center flex-1"
         rel="noopener noreferrer"
       >
-        <svg
-          class="crayons-icon crayons-icon--default"
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M16.44 23.363a.5.5 0 0 1 .59.286c.712 1.893 2.765 2.915 4.713 2.393 1.938-.553 3.206-2.465 2.876-4.46a.474.474 0 0 1 .368-.543l1.628-.437a.508.508 0 0 1 .607.35l.008.032c.642 3.416-1.444 6.743-4.778 7.705-3.352.898-6.813-.909-7.933-4.196a.488.488 0 0 1 .31-.63l.032-.009 1.579-.491z"
-            fill="#E9F0E8"
-          />
-          <path
-            d="M12.828 11.415a.5.5 0 0 1-.59-.287c-.713-1.893-2.766-2.915-4.713-2.393-1.971.562-3.206 2.465-2.877 4.461a.474.474 0 0 1-.367.543l-1.628.436a.508.508 0 0 1-.607-.35l-.009-.032c-.642-3.416 1.444-6.742 4.779-7.704 3.352-.898 6.812.908 7.933 4.196a.488.488 0 0 1-.31.63l-.032.008-1.58.492z"
-            fill="#4CFCA7"
-          />
-          <path
-            d="m22.142 8.509-1.691.453a.508.508 0 0 1-.607-.35l-.692-2.582a.508.508 0 0 1 .35-.607l1.724-.462a.508.508 0 0 0 .35-.606l-.435-1.626a.486.486 0 0 0-.607-.35l-4.269 1.178a.508.508 0 0 0-.35.606l.563 2.105.692 2.582.692 2.582.026.096L19.81 18.7c.068.255.32.427.575.359l1.596-.428a.508.508 0 0 0 .35-.607l-1.597-5.961c-.051-.192.042-.353.234-.405l1.884-.504a.508.508 0 0 0 .35-.607l-.435-1.626c-.086-.319-.37-.482-.625-.413zm2.155-.133a.526.526 0 0 1 .255-.581c.746-.405 1.157-1.301.934-2.13-.222-.83-.993-1.408-1.834-1.354a.463.463 0 0 1-.502-.344l-.436-1.626c-.068-.255.095-.538.342-.638l.064-.017a4.412 4.412 0 0 1 4.92 3.295c.59 2.2-.511 4.476-2.605 5.345a.513.513 0 0 1-.654-.27l-.017-.063-.467-1.617z"
-            fill="#FBC1F5"
-          />
-        </svg>
+        <Icon src={LogoForem} native />
         <div class="flex flex-col pl-3">
           <span>Forem</span>
           <span>Open with the Forem app</span>
         </div>
       </a>
-      <button
+      <Button
         onClick={dismissBanner}
-        type="button"
-        class="runtime-banner__dismiss crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--inverted crayons-btn--s"
-      >
-        <svg
-          class="crayons-icon"
-          title="Dismiss banner: Open with the Forem app"
-          aria="true"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-        </svg>
-      </button>
+        class="runtime-banner__dismiss color-base-inverted"
+        icon={CloseIcon}
+        tooltip="Dismiss banner"
+      />
     </div>
   );
 };

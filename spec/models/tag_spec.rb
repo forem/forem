@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe Tag, type: :model do
   let(:tag) { build(:tag) }
 
+  describe "#class_name" do
+    subject(:class_name) { tag.class_name }
+
+    it { is_expected.to eq("Tag") }
+  end
+
   describe "validations" do
     describe "builtin validations" do
       subject { tag }
@@ -103,6 +109,12 @@ RSpec.describe Tag, type: :model do
         expect(tag).not_to be_valid
       end
     end
+  end
+
+  it "strips HTML tags from short_summary before saving" do
+    tag.short_summary = "<p>Hello <strong>World</strong>.</p>"
+    tag.save
+    expect(tag.short_summary).to eq("Hello World.")
   end
 
   it "turns markdown into HTML before saving" do

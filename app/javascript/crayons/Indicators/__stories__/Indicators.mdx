@@ -1,0 +1,33 @@
+# Indicators
+
+Indicators are meant to be used to inform user about, for example, unread
+notifications. They supposed to steal user&apos;s attention and make them notice
+or click specific element.
+
+We should keep in mind to never show too many indicators at the same time. Use
+your best judgment here.
+
+## Variants
+
+There's a bunch of variants (styles) to pick from:
+
+- Default - grey.
+- Info - blue-ish.
+- Success - green.
+- Warninig - yellow.
+- Danger - red.
+
+Even though they are named specifically, they don't really come with any function in mind - main difference is basically a color.
+
+## Padding
+
+By default, Indicator has very tight padding around label - `4px`. It's ok for short labels - like a number.
+But for longer labels it may look better with some extra spacing. And there comes `extraPadding` prop which will increase the padding to `8px`.
+
+Keep in mind, Indicators can inherit any classes like every other element which means you can (if you have to) increase that padding manually
+with, for example, `p-*` utility classes.
+
+## Design
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FgHpwugeu9jFGW4d9u3ReuR%2FCrayons%3Fnode-id%3D391%253A234" allowfullscreen></iframe>
+

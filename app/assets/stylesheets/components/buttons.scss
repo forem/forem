@@ -24,6 +24,10 @@
   --brand-email-bg: #24292e;
   --brand-email-color: #fff;
   --brand-email-bg-hover: #000;
+
+  --brand-google_oauth2-bg: #1da1f2;
+  --brand-google_oauth2-color: #fff;
+  --brand-google_oauth2-bg-hover: #0096f2;
 }
 
 // Basic styling
@@ -147,10 +151,6 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   --bg-hover: var(--button-secondary-bg-hover);
   --color: var(--button-secondary-color);
   --color-hover: var(--button-secondary-color-hover);
-  --bg-inverted: var(--button-secondary-inverted-bg);
-  --bg-inverted-hover: var(--button-secondary-inverted-bg-hover);
-  --color-inverted: var(--button-secondary-inverted-color);
-  --color-inverted-hover: var(--button-secondary-inverted-color-hover);
 }
 
 .crayons-btn--outlined {
@@ -160,12 +160,6 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   --border-hover: var(--button-outlined-border-hover);
   --color: var(--button-outlined-color);
   --color-hover: var(--button-outlined-color-hover);
-  --bg-inverted: var(--button-outlined-inverted-bg);
-  --bg-inverted-hover: var(--button-outlined-inverted-bg-hover);
-  --border-inverted: var(--button-outlined-inverted-border);
-  --border-inverted-hover: var(--button-outlined-inverted-border-hover);
-  --color-inverted: var(--button-outlined-inverted-color);
-  --color-inverted-hover: var(--button-outlined-inverted-color-hover);
 
   --border-width: 2px;
 }
@@ -200,10 +194,6 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
     --color-hover: var(--accent-brand-darker);
     --shadow: none;
     --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-brand-lighter);
-    --color-inverted-hover: var(--accent-brand-lighter);
   }
 
   &-dimmed {
@@ -213,10 +203,6 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
     --color-hover: var(--button-ghost-dimmed-color-hover);
     --shadow: none;
     --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-ghost-dimmed-inverted-color);
-    --color-inverted-hover: var(--accent-ghost-dimmed-inverted-color-hover);
   }
 
   &-success {
@@ -232,19 +218,6 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
     --color-inverted-hover: var(--accent-success-darker);
   }
 
-  &-warning {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-warning);
-    --color-hover: var(--accent-warning-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-warning);
-    --color-inverted-hover: var(--accent-warning-darker);
-  }
-
   &-danger {
     --bg: var(--button-ghost-bg);
     --bg-hover: var(--button-ghost-bg-hover);
@@ -252,10 +225,6 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
     --color-hover: var(--accent-danger-darker);
     --shadow: none;
     --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-danger);
-    --color-inverted-hover: var(--accent-danger-lighter);
   }
 }
 
@@ -323,6 +292,17 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   --bg-inverted-hover: var(--brand-email-bg-hover);
   --color-inverted: var(--brand-email-color);
   --color-inverted-hover: var(--brand-email-color);
+}
+
+.crayons-btn--brand-google_oauth2 {
+  --bg: var(--brand-google_oauth2-bg);
+  --bg-hover: var(--brand-google_oauth2-bg-hover);
+  --color: var(--brand-google_oauth2-color);
+  --color-hover: var(--brand-google_oauth2-color);
+  --bg-inverted: var(--brand-google_oauth2-bg);
+  --bg-inverted-hover: var(--brand-google_oauth2-bg-hover);
+  --color-inverted: var(--brand-google_oauth2-color);
+  --color-inverted-hover: var(--brand-google_oauth2-color);
 }
 
 // Icon alone
@@ -445,7 +425,9 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   //    which is basically almost all of them.
   //  • Second declaration is for browsers that do not support :focus-visible
   //    which basically is only Safari right now :shrug:
-  &:focus-visible {
+  &:focus-visible,
+  &:is(label):focus-within {
+    // label for input[type="file"] made to look like a button as the browse... button can't be styled.
     background-color: var(--bg-hover);
     color: var(--color-hover);
     z-index: var(--z-elevate);

@@ -22,6 +22,7 @@ const NAVIGATION_KEYS = [
 ];
 
 const LETTERS_NUMBERS = /[a-z0-9]/i;
+export const DEFAULT_TAG_FORMAT = '[0-9A-Za-z, ]+';
 
 /* TODO: Remove all instances of this.props.listing
    and refactor this component to be more generic */

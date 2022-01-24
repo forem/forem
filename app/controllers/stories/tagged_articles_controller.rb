@@ -59,7 +59,9 @@ module Stories
     end
 
     def not_found_if_not_established(stories:, tag:)
-      not_found if stories.none? && !tag.supported?
+      return if tag.supported?
+
+      not_found unless stories.any?(&:published?)
     end
 
     def stories_by_timeframe(stories:)

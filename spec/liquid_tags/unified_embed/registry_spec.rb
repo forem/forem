@@ -3,7 +3,12 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed::Registry do
   subject(:unified_embed) { described_class }
 
+  let(:user) { create(:user) }
   let(:article) { create(:article) }
+  let(:comment) do
+    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
+  end
+  let(:organization) { create(:organization) }
 
   describe ".find_liquid_tag_for" do
     valid_blogcast_url_formats = [
@@ -23,6 +28,12 @@ RSpec.describe UnifiedEmbed::Registry do
       "http://www.instagram.com/p/CXgzXWXroHK/",
       "www.instagram.com/p/CXgzXWXroHK/",
       "instagram.com/p/CXgzXWXroHK/",
+    ]
+
+    valid_kotlin_url_formats = [
+      "https://pl.kotl.in/mCMciWl85",
+      "https://pl.kotl.in/owreUFFUG?theme=darcula",
+      "https://pl.kotl.in/Wplen1rPa?theme=darcula&readOnly=true&from=6&to=7",
     ]
 
     valid_replit_url_formats = [
@@ -74,6 +85,11 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
+    it "returns CommentTag for a Forem comment url" do
+      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{user.username}/comment/#{comment.id_code}"))
+        .to eq(CommentTag)
+    end
+
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
         .to eq(GistTag)
@@ -89,6 +105,11 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(CodepenTag)
     end
 
+    it "returns DotnetFiddleTag for a dotnetfiddle url" do
+      expect(described_class.find_liquid_tag_for(link: "https://dotnetfiddle.net/PmoDip"))
+        .to eq(DotnetFiddleTag)
+    end
+
     it "returns InstagramTag for a valid instagram url" do
       valid_instagram_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
@@ -101,6 +122,18 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(JsFiddleTag)
     end
 
+    it "returns KotlinTag for a valid kotlin url" do
+      valid_kotlin_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(KotlinTag)
+      end
+    end
+
+    it "returns JsitorTag for a jsitor url" do
+      expect(described_class.find_liquid_tag_for(link: "https://jsitor.com/embed/B7FQ5tHbY"))
+        .to eq(JsitorTag)
+    end
+
     it "returns Forem Link for a forem url" do
       expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
         .to eq(LinkTag)
@@ -109,6 +142,11 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns NextTechTag for a nexttech url" do
       expect(described_class.find_liquid_tag_for(link: "https://nt.dev/s/6ba1fffbd09e"))
         .to eq(NextTechTag)
+    end
+
+    it "returns OrganizationTag for a Forem organization url" do
+      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{organization.slug}"))
+        .to eq(OrganizationTag)
     end
 
     it "returns RedditTag for a reddit url" do
@@ -133,6 +171,11 @@ RSpec.describe UnifiedEmbed::Registry do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(SpotifyTag)
       end
+    end
+
+    it "returns TweetTag for a tweet url" do
+      expect(described_class.find_liquid_tag_for(link: "https://twitter.com/aritdeveloper/status/1483614684884484099"))
+        .to eq(TweetTag)
     end
 
     it "returns TwitchTag for a valid twitch url" do

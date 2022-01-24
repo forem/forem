@@ -17,7 +17,7 @@
             <div class="crayons-field flex-1 relative">
               <input class="crayons-textfield" type="text" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="on" />
               <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
-                <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: t("views.search.icon.title")) %>
+                <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
               </button>
             </div>
           </div>

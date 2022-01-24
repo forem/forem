@@ -38,7 +38,7 @@ class GlitchTag < LiquidTagBase
   def parse_id(input)
     id = input.split.first
     id.sub!(TILDE_PREFIX_REGEXP, "")
-    raise StandardError, "Invalid Glitch ID" unless valid_id?(id)
+    raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_glitch_id") unless valid_id?(id)
 
     id
   end
@@ -68,7 +68,9 @@ class GlitchTag < LiquidTagBase
 
     # Validation
     validated_options = options.filter_map { |option| valid_option(option) }
-    raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
+    unless options.empty? || !validated_options.empty?
+      raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_options")
+    end
 
     build_options(options)
   end

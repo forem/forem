@@ -55,7 +55,7 @@ module Payments
             source: source,
             amount: amount,
             description: description,
-            currency: "usd",
+            currency: I18n.t("services.payments.customer.usd"),
           )
         end
       end

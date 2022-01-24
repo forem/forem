@@ -11,6 +11,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let!(:facebook_connect_broadcast) { create(:facebook_connect_broadcast) }
   let!(:apple_connect_broadcast)    { create(:apple_connect_broadcast) }
   let!(:forem_connect_broadcast)    { create(:forem_connect_broadcast) }
+  let!(:google_oauth2_connect_broadcast) { create(:google_oauth2_connect_broadcast) }
   let!(:customize_feed_broadcast)   { create(:customize_feed_broadcast) }
   let!(:discuss_and_ask_broadcast)  { create(:discuss_and_ask_broadcast) }
   let!(:customize_ux_broadcast)     { create(:customize_ux_broadcast) }
@@ -70,6 +71,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
         twitter_connect_broadcast,
         apple_connect_broadcast,
         forem_connect_broadcast,
+        google_oauth2_connect_broadcast,
       ].include?(user.notifications.last.notifiable)
       expect(not_github).to be(true)
 

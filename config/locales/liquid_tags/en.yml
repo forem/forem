@@ -1,0 +1,107 @@
+---
+en:
+  liquid_tags:
+    asciinema_tag:
+      invalid_asciinema_id: 'Invalid Asciinema ID: %{id}'
+    blogcast_tag:
+      invalid_blogcast_id: Invalid Blogcast ID
+    codepen_tag:
+      invalid_codepen_url: Invalid CodePen URL
+      invalid_options: Invalid Options
+    codesandbox_tag:
+      invalid_id: 'CodeSandbox Error: Invalid ID'
+    comment_tag:
+      invalid_comment: Invalid Comment ID or URL
+    dotnet_fiddle_tag:
+      invalid_dotnetfiddle_url: Invalid DotnetFiddle URL
+    gist_tag:
+      invalid_filename: Invalid Filename
+      invalid_format: 'Invalid Gist link: %{link} Links must follow this format: https://gist.github.com/username/gist_id'
+      invalid_gist_link: 'Invalid Gist link: You must provide a Gist link'
+    git_pitch_tag:
+      invalid_gitpitch_url: Invalid GitPitch URL
+    github_tag:
+      github_issue_tag:
+        comment_for: Comment for
+        commented_on: commented on
+        invalid_github_issue_pull: Invalid GitHub issue, pull request or comment link
+        posted_on: posted on
+      github_readme_tag:
+        invalid_options: 'GitHub tag: invalid options: %{invalid} - supported options: %{valid}'
+        invalid_github_repository: Invalid GitHub repository path or URL
+    glitch_tag:
+      invalid_glitch_id: Invalid Glitch ID
+      invalid_options: Invalid Options
+    instagram_tag:
+      invalid_instagram_id: Invalid Instagram ID
+    js_fiddle_tag:
+      invalid_jsfiddle_url: Invalid JSFiddle URL
+      invalid_options: Invalid Options
+    jsitor_tag:
+      invalid_jsitor_link: Invalid JSitor link. Please read the editor guide for more information
+    kotlin_tag:
+      invalid_kotlin_playground: Invalid Kotlin Playground URL
+    link_tag:
+      not_exist: 'The article you''re looking for does not exist: %{slug}'
+      not_exist_link: 'The article you''re looking for does not exist: {% link %{slug} %}'
+    liquid_tag_base:
+      invalid_context: Invalid context. This liquid tag can only be used in %{valid}.
+      no_source_found: No source found
+    listing_tag:
+      invalid_url_or_slug: Invalid URL or slug. Listing not found.
+    medium_tag:
+      invalid_link_url: Invalid link URL or link URL does not exist
+    next_tech_tag:
+      invalid_url: Invalid Next Tech share URL
+    null_tag:
+      liquid_tag_is_disabled: Liquid#%{tag_name} tag is disabled
+    organization_tag:
+      invalid_slug: Invalid organization slug
+      invalid_url: Invalid Organization URL
+    parler_tag:
+      invalid_parler_url: Invalid Parler URL
+    podcast_tag:
+      invalid_podcast_link: Invalid podcast link
+    poll_tag:
+      invalid_poll_id: Invalid poll ID
+    reddit_tag:
+      invalid_reddit_link: 'Invalid Reddit link: %{url}'
+    replit_tag:
+      invalid_replit_id: Invalid Replit URL or @user/slug
+    runkit_tag:
+      runkit_tag_is_invalid: Runkit tag is invalid
+    slideshare_tag:
+      invalid_slideshare_key: Invalid Slideshare Key
+    soundcloud_tag:
+      invalid_soundcloud_url: 'Invalid Soundcloud URL - try taking off any URL params: ''?something=value'''
+    speakerdeck_tag:
+      invalid_speakerdeck_id: Invalid Speakerdeck Id
+    spotify_tag:
+      invalid_spotify_uri: Invalid Spotify URI or URL.
+    stackblitz_tag:
+      invalid_options: Invalid Options
+      invalid_stackblitz_id: Invalid Stackblitz Id
+    stackery_tag:
+      missing_argument: Stackery - Missing owner and/or repository name arguments
+    stackexchange_tag:
+      post_not_found: 'Couldn''t find a post with that ID: {% %{tag} %{input} %}'
+      invalid_id: 'Invalid Stack Exchange ID: {% %{tag} %{input} %}'
+      invalid_site: 'Invalid Stack Exchange site: {% %{tag} %{input} %}'
+    tag_tag:
+      invalid_tag_name: invalid tag name
+    tweet_tag:
+      invalid_twitter_id: Invalid Twitter Id
+    twitch_tag:
+      invalid_twitch_id: Invalid Twitch ID, Slug or URL
+    twitter_timeline_tag:
+      invalid_url: Invalid Twitter Timeline URL
+    user_subscription_tag:
+      submit: Submit
+      submitting: Submitting...
+      subscribed: You are already subscribed.
+    wikipedia_tag:
+      section_not_found: Couldn't find the section of the Wikipedia article - %{input}
+      article_not_found: 'Couldn''t find the Wikipedia article - %{input}: %{response_detail}'
+      invalid_wikipedia_url: Invalid Wikipedia URL
+    youtube_tag:
+      invalid_youtube_id: Invalid YouTube ID or URL

@@ -8,6 +8,13 @@ RSpec.describe ApplicationRecord, type: :model do
     end
   end
 
+  describe "#class_name" do
+    it "is expected to be a string" do
+      user = User.new
+      expect(user.class_name).to eq("User")
+    end
+  end
+
   describe "#decorate" do
     it "decorates an object that has a decorator" do
       sponsorship = build(:sponsorship)

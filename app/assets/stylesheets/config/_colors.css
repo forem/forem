@@ -1,0 +1,291 @@
+:root {
+  /* Base */
+  --base: #090909;
+  --base-inverted: rgb(var(--white));
+
+  --base-100: var(--base);
+  --base-90: #242424;
+  --base-80: #3d3d3d;
+  --base-70: #575757;
+  --base-60: #717171;
+  --base-50: #8a8a8a;
+  --base-40: #a3a3a3;
+  --base-30: #bdbdbd;
+  --base-20: #d6d6d7;
+  --base-10: #efefef;
+  --base-0: #f9f9f9;
+
+  /* Brand */
+  --accent-brand-lighter: rgb(var(--accent-brand-lighter-rgb));
+  --accent-brand: rgb(var(--accent-brand-rgb));
+  --accent-brand-darker: rgb(var(--accent-brand-darker-rgb));
+
+  /* Success */
+  --accent-success: rgb(var(--green-600));
+  --accent-success-darker: rgb(var(--green-700));
+  --accent-success-lighter: rgb(var(--green-500));
+  --accent-success-a10: rgba(var(--green-600), 0.1);
+
+  /* Warning */
+  --accent-warning: rgb(var(--yellow-500));
+  --accent-warning-darker: rgb(var(--yellow-600));
+  --accent-warning-lighter: rgb(var(--yellow-400));
+  --accent-warning-a10: rgba(var(--yellow-500), 0.1);
+
+  /* Danger */
+  --accent-danger: rgb(var(--red-600));
+  --accent-danger-darker: rgb(var(--red-700));
+  --accent-danger-lighter: rgb(var(--red-500));
+  --accent-danger-a10: rgba(var(--red-600), 0.1);
+
+  /***********************************************
+  ** Functional color variables. *****************
+  ***********************************************/
+
+  /* Main colors */
+  --body-bg: rgb(var(--grey-100));
+  --body-color: rgb(var(--grey-900));
+  --body-color-inverted: rgb(var(--white));
+
+  /* Main content containers */
+  --card-bg: rgb(var(--white));
+  --card-color: rgb(var(--grey-900));
+  --card-color-secondary: rgb(var(--grey-700));
+  --card-color-tertiary: rgb(var(--grey-600));
+  --card-secondary-bg: rgb(var(--grey-50));
+  --card-secondary-color: rgb(var(--grey-700));
+  --card-border: rgba(var(--grey-900), 0.1);
+  --card-secondary-border: rgba(var(--grey-900), 0.05);
+
+  /* Header */
+  --header-bg: rgb(var(--white));
+  --header-shadow: rgba(var(--black), 0.1);
+
+  /* Footer */
+  --footer-bg: rgb(var(--grey-200));
+  --footer-color: rgb(var(--grey-700));
+
+  /* Links */
+  --link-bg-hover-alt: var(--base-inverted);
+  --link-color-current: var(--base-100);
+  --link-color-secondary: var(--base-60);
+  --link-color-secondary-hover: var(--base-70);
+  --link-bg-current: var(--base-inverted);
+
+  /* Primary buttons */
+  --button-primary-bg: var(--accent-brand);
+  --button-primary-bg-hover: var(--accent-brand-darker);
+  --button-primary-color: var(--base-0);
+  --button-primary-color-hover: var(--base-0);
+  /* -- Inverted */
+  --button-primary-inverted-bg: var(--accent-brand);
+  --button-primary-inverted-bg-hover: var(--accent-brand-darker);
+  --button-primary-inverted-color: var(--base-0);
+  --button-primary-inverted-color-hover: var(--base-0);
+
+  /* Secondary buttons */
+  --button-secondary-bg: var(--base-20);
+  --button-secondary-bg-hover: var(--base-30);
+  --button-secondary-color: var(--base-80);
+  --button-secondary-color-hover: var(--base-100);
+
+  /* Outlined buttons */
+  --button-outlined-bg: transparent;
+  --button-outlined-bg-hover: rgba(0, 0, 0, 0.035);
+  --button-outlined-border: var(--base-20);
+  --button-outlined-border-hover: var(--base-40);
+  --button-outlined-color: var(--base-80);
+  --button-outlined-color-hover: var(--base-100);
+
+  /* Ghost buttons */
+  --button-ghost-bg: transparent;
+  --button-ghost-bg-hover: rgba(0, 0, 0, 0.035);
+  --button-ghost-color: var(--base-80);
+  --button-ghost-color-hover: var(--base-100);
+  --button-ghost-dimmed-color: var(--base-60);
+  --button-ghost-dimmed-color-hover: var(--base-100);
+  /* -- Inverted */
+  --button-ghost-inverted-bg: transparent;
+  --button-ghost-inverted-bg-hover: rgba(255, 255, 255, 0.15);
+  --button-ghost-inverted-color: var(--base-30);
+  --button-ghost-inverted-color-hover: var(--base-10);
+  --button-ghost-dimmed-inverted-color: var(--base-50);
+  --button-ghost-dimmed-inverted-color-hover: var(--base-100);
+
+  /* Forms */
+  --form-bg: rgb(var(--white));
+  --form-bg-focus: rgb(var(--white));
+  --form-border: rgb(var(--grey-300));
+  --form-border-hover: rgb(var(--grey-400));
+  --form-border-focus: var(--focus);
+  --form-placeholder-color: rgb(var(--grey-600));
+
+  /* Form labels */
+  --label-primary: rgb(var(--grey-900));
+  --label-secondary: rgb(var(--grey-600));
+
+  /* Snackbars */
+  --snackbar-bg: rgb(var(--grey-900));
+  --snackbar-color: rgb(var(--white));
+
+  /* Tabs */
+  --tab-color: rgb(var(--grey-700));
+  --tab-color-hover: var(--accent-brand);
+  --tab-color-current: rgb(var(--grey-900));
+  --tab-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --tab-bg-current: rgb(var(--accent-brand));
+
+  /* Tags */
+  --tag-color: rgb(var(--grey-700));
+  --tag-color-hover: rgb(var(--grey-900));
+  --tag-bg: rgba(var(--grey-900), 0.05);
+  --tag-bg-hover: rgba(var(--grey-900), 0.05);
+  --tag-prefix: rgba(var(--grey-900), 0.6);
+  --tag-prefix-hover: rgb(var(--grey-900));
+
+  /* Story */
+  --story-comments-bg: rgb(var(--grey-50));
+  --story-comments-bg-top: rgba(var(--grey-50), 0);
+  --story-comments-bg-bottom: rgba(var(--grey-50), 1);
+
+  /* Select icon */
+  --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMDgwOTBBIi8+Cjwvc3ZnPg==);
+
+  /* Reactions */
+  --reaction-like-color: rgb(var(--red-600));
+  --reaction-like-bg: rgba(var(--red-600), 0.1);
+  --reaction-custom-color: rgb(var(--green-600));
+  --reaction-custom-bg: rgb(var(--green-600), 0.1);
+  --reaction-save-color: rgb(var(--indigo-600));
+  --reaction-save-bg: rgba(var(--indigo-600), 0.1);
+  --reaction-comment-color: rgb(var(--yellow-500));
+  --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
+}
+
+:root {
+  /*
+  Separating some variables here as these are the results
+  of broader Crayons refactoring (see #15311) and I did not
+  want to mix everything together.
+  */
+
+  /***********************************************
+  ** Buttons *************************************
+  ***********************************************/
+
+  /* Buttons: Default */
+  --btn-bg: transparent;
+  --btn-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --btn-color: rgb(var(--grey-800));
+  --btn-color-hover: var(--accent-brand-darker);
+
+  --btn-current-bg: rgb(var(--grey-200));
+  --btn-current-color: rgb(var(--grey-900));
+
+  /* Buttons: Primary */
+  --btn-primary-bg: var(--accent-brand);
+  --btn-primary-bg-hover: var(--accent-brand-darker);
+  --btn-primary-color: rgb(var(--white));
+  --btn-primary-color-hover: rgb(var(--white));
+
+  /* Buttons: Secondary */
+  --btn-secondary-bg: rgba(var(--accent-brand-rgb), 0.1);
+  --btn-secondary-bg-hover: var(--accent-brand);
+  --btn-secondary-color: var(--accent-brand);
+  --btn-secondary-color-hover: rgb(var(--white));
+
+  /* Buttons: Destructive Default */
+  --btn-destructive-bg: transparent;
+  --btn-destructive-bg-hover: rgba(var(--red-600), 0.1);
+  --btn-destructive-color: rgb(var(--red-700));
+  --btn-destructive-color-hover: rgb(var(--red-800));
+
+  /* Buttons: Destructive Primary */
+  --btn-primary-destructive-bg: rgb(var(--red-600));
+  --btn-primary-destructive-bg-hover: rgb(var(--red-700));
+  --btn-primary-destructive-color: rgb(var(--white));
+  --btn-primary-destructive-color-hover: rgb(var(--white));
+
+  /***********************************************
+  ** Links ***************************************
+  ***********************************************/
+
+  /* Links: Default */
+  --link-bg: transparent;
+  --link-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --link-color: rgb(var(--grey-700));
+  --link-color-hover: var(--accent-brand-darker);
+
+  --link-current-bg: rgb(var(--grey-200));
+  --link-current-color: rgb(var(--grey-900));
+
+  /* Links: Branded */
+  --link-branded-bg: transparent;
+  --link-branded-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --link-branded-color: var(--accent-brand);
+  --link-branded-color-hover: var(--accent-brand-darker);
+
+  /***********************************************
+  ** CTAs ****************************************
+  ***********************************************/
+
+  /* CTAs: Default */
+  --cta-bg: transparent;
+  --cta-bg-hover: rgba(var(--accent-brand-rgb), 0.1);
+  --cta-color: rgb(var(--grey-800));
+  --cta-color-hover: var(--accent-brand-darker);
+  --cta-border: rgb(var(--grey-600));
+  --cta-border-hover: var(--accent-brand-darker);
+
+  /* CTAs: Branded */
+  --cta-branded-bg: transparent;
+  --cta-branded-bg-hover: var(--accent-brand);
+  --cta-branded-color: var(--accent-brand);
+  --cta-branded-color-hover: rgb(var(--white));
+  --cta-branded-border: var(--accent-brand);
+  --cta-branded-border-hover: var(--accent-brand-darker);
+
+  /***********************************************
+  ** Tooltips ************************************
+  ***********************************************/
+
+  --tooltip-bg: rgba(var(--grey-900), 0.9);
+  --tooltip-color: rgb(var(--white));
+  
+  /***********************************************
+  ** Indicators **********************************
+  ***********************************************/
+
+  /* Indicators: Default */
+  --indicator-bg: rgb(var(--grey-300));
+  --indicator-color: rgb(var(--grey-700));
+
+  /* Indicators: Success */
+  --indicator-success-bg: rgb(var(--green-400));
+  --indicator-success-color: rgb(var(--green-900));
+
+  /* Indicators: Warning */
+  --indicator-warning-bg: rgb(var(--yellow-300));
+  --indicator-warning-color: rgb(var(--yellow-900));
+
+  /* Indicators: Danger */
+  --indicator-danger-bg: rgb(var(--red-600));
+  --indicator-danger-color: rgb(var(--white));
+
+  /* Indicators: Info */
+  --indicator-info-bg: var(--accent-brand);
+  --indicator-info-color: rgb(var(--white));
+
+  /***********************************************
+  ** Utilities ***********************************
+  ***********************************************/
+
+  /* Focus */
+  --focus: var(--accent-brand);
+
+  /* Shadows */
+  --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.1),
+    0 4px 6px -2px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
+  --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.1),
+    0 10px 10px -5px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
+}

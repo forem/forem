@@ -86,7 +86,7 @@ module MarkdownProcessor
     def catch_xss_attempts(markdown)
       return unless markdown.match?(Regexp.union(BAD_XSS_REGEX))
 
-      raise ArgumentError, "Invalid markdown detected!"
+      raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
     end
 
     def escape_liquid_tags_in_codeblock(content)

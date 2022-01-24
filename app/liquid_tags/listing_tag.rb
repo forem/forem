@@ -23,10 +23,10 @@ class ListingTag < LiquidTagBase
 
   def get_listing(url)
     hash = get_hash(url)
-    raise StandardError, "Invalid URL or slug. Listing not found." if hash.nil?
+    raise StandardError, I18n.t("liquid_tags.listing_tag.invalid_url_or_slug") if hash.nil?
 
     listing = Listing.in_category(hash[:category]).find_by(slug: hash[:slug])
-    raise StandardError, "Invalid URL or slug. Listing not found." unless listing
+    raise StandardError, I18n.t("liquid_tags.listing_tag.invalid_url_or_slug") unless listing
 
     listing
   end

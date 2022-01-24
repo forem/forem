@@ -11,6 +11,5 @@ class DiscussionLock < ApplicationRecord
 
   include StringAttributeCleaner.for(:notes, :reason)
 
-  validates :article_id, presence: true, uniqueness: true
-  validates :locking_user_id, presence: true
+  validates :article_id, uniqueness: true
 end

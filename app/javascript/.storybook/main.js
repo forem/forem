@@ -17,6 +17,8 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-a11y',
     '@storybook/addon-notes/register-panel',
+    '@storybook/addon-backgrounds',
+    '@etchteam/storybook-addon-css-variables-theme',
     'storybook-addon-jsx',
     '@whitespace/storybook-addon-html',
     {

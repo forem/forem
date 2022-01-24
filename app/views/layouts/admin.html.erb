@@ -16,8 +16,7 @@
 
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 
-  <!-- Bootstrap and FontAwesome -->
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <!-- Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.16/css/bootstrap-select.min.css" integrity="sha256-g19F2KOr/H58l6XdI/rhCdEK3NmB8OILHwP/QYBQ8M4=" crossorigin="anonymous" />
 
@@ -62,14 +61,14 @@
           <ul>
             <li>
               <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-current "<%= "page" if controller.controller_name == "overview" %>">
-                <%= inline_svg_tag("stack-line.svg", aria: true, class: "dropdown-icon crayons-icon") %>
+                <%= crayons_icon_tag("stack-line", class: "dropdown-icon") %>
                 Overview
               </a>
             </li>
             <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
             <li class="block s:hidden">
               <a class="crayons-link crayons-link--block" href="/">
-                <%= inline_svg_tag("external-link.svg", aria: true, class: "dropdown-icon crayons-icon") %>
+                <%= crayons_icon_tag("external-link", class: "dropdown-icon") %>
                 Go to <%= community_name %> home page
               </a>
             </li>
@@ -80,7 +79,7 @@
       <% flash.each do |type, message| %>
         <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert" aria-label="Close">
-            <i class="fa fa-times" aria-hidden="true"></i>
+            <%= crayons_icon_tag(:x, aria_hidden: true) %>
           </button>
           <%= message %>
         </div>
