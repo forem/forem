@@ -37,7 +37,7 @@ RSpec.describe Notifications::NewFollower::FollowData do
   describe "#to_h" do
     it "returns a hash" do
       obj = described_class.new(valid_attributes)
-      expect(obj.to_h).to eq(valid_attributes)
+      expect(obj.to_h).to eq(valid_attributes.stringify_keys)
     end
   end
 end
