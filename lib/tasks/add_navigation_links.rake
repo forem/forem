@@ -8,6 +8,7 @@ namespace :navigation_links do
     image_path("twemoji", name)
   end
 
+  home_icon = twemoji_path("house.svg")
   reading_icon = twemoji_path("drawer.svg")
   contact_icon = twemoji_path("contact.svg")
   thumb_up_icon = twemoji_path("thumb-up.svg")
@@ -40,6 +41,7 @@ namespace :navigation_links do
       # [@jeremyf] I went ahead and atomized these tasks so we _could_ call them individually if
       #            desired.  I did not add descriptions so those tasks will not show up in the task
       #            list.
+      Rake::Task["navigation_links:find_or_create:home"].invoke
       Rake::Task["navigation_links:find_or_create:readinglist"].invoke
       Rake::Task["navigation_links:find_or_create:contact"].invoke
       Rake::Task["navigation_links:find_or_create:code_of_conduct"].invoke
@@ -52,13 +54,24 @@ namespace :navigation_links do
   end
 
   namespace :find_or_create do
+    task home: :environment do
+      NavigationLink.where(url: "/").first_or_create(
+        name: "Home",
+        url: URL.url("/"),
+        icon: home_icon,
+        display_only_when_signed_in: false,
+        position: 0,
+        section: :default,
+      )
+    end
+
     task readinglist: :environment do
       NavigationLink.where(url: "/readinglist").first_or_create(
         name: "Reading List",
         url: URL.url("readinglist"),
         icon: reading_icon,
         display_only_when_signed_in: true,
-        position: 0,
+        position: 1,
         section: :default,
       )
     end
@@ -69,7 +82,7 @@ namespace :navigation_links do
         url: URL.url("contact"),
         icon: contact_icon,
         display_only_when_signed_in: false,
-        position: 1,
+        position: 2,
         section: :default,
       )
     end
@@ -114,39 +127,46 @@ namespace :navigation_links do
     domain = Rails.application&.initialized? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
     base_url = "#{protocol}#{domain}".freeze
 
+    NavigationLink.where(url: base_url.to_s).first_or_create(
+      name: "Home",
+      icon: home_icon,
+      display_only_when_signed_in: false,
+      position: 0,
+      section: :default,
+    )
     NavigationLink.where(url: "#{base_url}/readinglist").first_or_create(
       name: "Reading List",
       icon: reading_icon,
       display_only_when_signed_in: true,
-      position: 0,
+      position: 1,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/listings").first_or_create(
       name: "Listings",
       icon: listing_icon,
       display_only_when_signed_in: false,
-      position: 1,
+      position: 2,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/pod").first_or_create(
       name: "Podcasts",
       icon: mic_icon,
       display_only_when_signed_in: false,
-      position: 2,
+      position: 3,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/videos").first_or_create(
       name: "Videos",
       icon: camera_icon,
       display_only_when_signed_in: false,
-      position: 3,
+      position: 4,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/tags").first_or_create(
       name: "Tags",
       icon: tag_icon,
       display_only_when_signed_in: false,
-      position: 4,
+      position: 5,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/code-of-conduct").first_or_create(
