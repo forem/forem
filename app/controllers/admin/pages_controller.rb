@@ -9,9 +9,9 @@ module Admin
 
     def index
       @pages = Page.all.order(created_at: :desc)
-      @code_of_conduct = Page.find_by(slug: "code-of-conduct")
-      @privacy = Page.find_by(slug: "privacy")
-      @terms = Page.find_by(slug: "terms")
+      @code_of_conduct = Page.find_by(slug: Page::CODE_OF_CONDUCT_SLUG)
+      @privacy = Page.find_by(slug: Page::PRIVACY_SLUG)
+      @terms = Page.find_by(slug: Page::TERMS_SLUG)
     end
 
     def new
@@ -74,7 +74,7 @@ module Admin
                                    email_link: view_context.email_link
                                  }
       @page = case slug
-              when "code-of-conduct"
+              when Page::CODE_OF_CONDUCT_SLUG
                 Page.new(
                   slug: slug,
                   body_html: html,
@@ -82,7 +82,7 @@ module Admin
                   description: "A page that describes how to behave on this platform",
                   is_top_level_path: true,
                 )
-              when "privacy"
+              when Page::PRIVACY_SLUG
                 Page.new(
                   slug: slug,
                   body_html: html,
@@ -90,7 +90,7 @@ module Admin
                   description: "A page that describes the privacy policy",
                   is_top_level_path: true,
                 )
-              when "terms"
+              when Page::TERMS_SLUG
                 Page.new(
                   slug: slug,
                   body_html: html,

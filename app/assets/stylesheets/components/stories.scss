@@ -195,7 +195,7 @@
 
   &__comments {
     cursor: default;
-    background: RGB(var(--story-comments-bg));
+    background: var(--story-comments-bg);
     border-radius: var(--radius);
     position: relative;
     bottom: var(--su-2);

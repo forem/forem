@@ -52,6 +52,7 @@ class Tag < ActsAsTaggableOn::Tag
   validate :validate_name, if: :name?
 
   before_validation :evaluate_markdown
+  before_validation :tidy_short_summary
   before_validation :pound_it
 
   before_save :calculate_hotness_score
@@ -130,6 +131,10 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   private
+
+  def tidy_short_summary
+    self.short_summary = ActionController::Base.helpers.strip_tags(short_summary)
+  end
 
   def evaluate_markdown
     self.rules_html = MarkdownProcessor::Parser.new(rules_markdown).evaluate_markdown
