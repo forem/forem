@@ -7,5 +7,9 @@
 </header>
 <div class="flex justify-between items-center">
   <p class="fs-2xl fw-heavy"><%= @user.unspent_credits_count %></p>
-  <button class="c-btn c-btn--secondary whitespace-nowrap" type="button">Adjust balance</button>
+  <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Adjust balance" data-modal-size="m" data-modal-content-selector="#adjust-balance">Adjust balance</button>
+</div>
+
+<div id="adjust-balance" class="hidden">
+  hi
 </div>

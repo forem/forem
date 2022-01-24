@@ -4,8 +4,7 @@ import { initializeDropdown } from '@utilities/dropdownUtils';
 let preact;
 let Modal;
 
-const userEditActionsMenu = document.getElementById('options-dropdown');
-const overviewContainer = document.getElementById('overview-container');
+const modalTriggers = document.querySelectorAll('[data-modal-trigger]');
 
 initializeDropdown({
   triggerElementId: 'options-dropdown-trigger',
@@ -17,14 +16,7 @@ const openModal = async (event) => {
   const modalContainer = document.createElement('div');
   document.body.appendChild(modalContainer);
 
-  const { target: potentialButton } = event;
-  if (
-    potentialButton.tagName !== 'BUTTON' ||
-    Object.prototype.hasOwnProperty.call(potentialButton.dataset, 'noModal')
-  ) {
-    // The button that was clicked does not require a modal.
-    return;
-  }
+  const { target: trigger } = event;
 
   // Only load Preact if we haven't already.
   if (!preact || !AdminUserActionsModal) {
@@ -38,10 +30,19 @@ const openModal = async (event) => {
 
   // TODO: Where are we pulling the modal body from?
   render(
-    <Modal title={potentialButton.innerHTML}>Hello</Modal>,
+    <Modal title={trigger.dataset.modalTitle} size={trigger.dataset.modalSize}>
+      <div
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: document.querySelector(trigger.dataset.modalContentSelector)
+            .innerHTML,
+        }}
+      />
+    </Modal>,
     modalContainer,
   );
 };
 
-overviewContainer?.addEventListener('click', openModal);
-userEditActionsMenu.addEventListener('click', openModal);
+modalTriggers.forEach((trigger) =>
+  trigger.addEventListener('click', openModal),
+);

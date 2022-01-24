@@ -8,7 +8,7 @@
 <% unless @user.roles.any? %>
   <div class="flex justify-between items-center">
     <p>No special role assigned yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button">Add role</button>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="#add-role">Add role</button>
   </div>
 <% else %>
   <ul class="flex flex-wrap gap-2">
@@ -43,6 +43,10 @@
         </li>
       <% end %>
     <% end %>
-    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button">Add role</button></li>
+    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="#add-role">Add role</button></li>
   </ul>
 <% end %>
+
+<div id="add-role" class="hidden">
+  Add role
+</div>
