@@ -12,8 +12,8 @@ module Listings
     end
 
     def call
-      purchaser = @org || @user
-      return false unless purchaser.enough_credits?(@cost)
+      purchaser = [@org, @user].detect { |who| who&.enough_credits?(@cost) }
+      return false unless purchaser
 
       charge_credits_before_bump(purchaser)
       true

@@ -96,7 +96,8 @@ module ListingsToolkit
 
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
-      return Listings::Bump.call(@listing, user: current_user)
+      bump_result = Listings::Bump.call(@listing, user: current_user)
+      return process_no_credit_left unless bump_result
     end
 
     if listing_params[:action] == "unpublish"

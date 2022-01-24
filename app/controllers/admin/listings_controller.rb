@@ -24,7 +24,7 @@ module Admin
 
       if listing_params[:action] == "bump"
         bump_success = Listings::Bump.call(@listing, user: current_user)
-        process_no_credit_left && return unless bump_success
+        return process_no_credit_left unless bump_success
       end
 
       @listing.update(listing_params.compact)
