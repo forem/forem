@@ -68,7 +68,7 @@ gem "omniauth-rails_csrf_protection", "~> 1.0" # Provides CSRF protection on Omn
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.21" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with GitHub OAuth client
-gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
+gem "pg", "~> 1.3" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_query", ">= 0.9.0" # Allows PGHero to analyze queries
 gem "pg_search", "~> 2.3.6" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
 gem "pghero", "~> 2.8" # Dashboard for Postgres
@@ -84,7 +84,7 @@ gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML pars
 
 gem "redis", "~> 4.5.1" # Redis ruby client
 gem "redis-actionpack", "5.3.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
-gem "rpush", "~> 6.0" # Push Notification library for Rails
+gem "rpush", "~> 7.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
@@ -94,7 +94,7 @@ gem "rouge", "~> 3.27" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sidekiq", "~> 6.3.1" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq", "~> 6.4.0" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.1.12" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
@@ -143,7 +143,7 @@ group :development, :test do
   gem "rubocop", "~> 1.25", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.13", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.7", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.8", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
   gem "spring", "~> 4.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
