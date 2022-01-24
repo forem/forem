@@ -34,16 +34,7 @@ class UserDecorator < ApplicationDecorator
   # @note A Struct in Rails can be cast "to_json" and uses it's attributes.
   #
   # @see https://github.com/rails/rails/blob/main/activesupport/lib/active_support/core_ext/object/json.rb#L68-L72
-  CachedTagByUser = Struct.new(*CACHED_TAGGED_BY_USER_ATTRIBUTES) do
-    def self.from_hash(hash)
-      hash = hash.symbolize_keys
-      new.tap do |tag|
-        CACHED_TAGGED_BY_USER_ATTRIBUTES.each do |attr|
-          tag.public_send("#{attr}=", hash[attr])
-        end
-      end
-    end
-  end
+  CachedTagByUser = Struct.new(*CACHED_TAGGED_BY_USER_ATTRIBUTES, keyword_init: true)
 
   # Return the relevant tags that the user follows and their points.
   #
@@ -55,11 +46,11 @@ class UserDecorator < ApplicationDecorator
       "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/user_followed_tags",
       expires_in: 20.hours,
     ) do
-      Tag.cached_followed_tags_for(follower: object).map { |tag| tag.slice(*CACHED_TAGGED_BY_USER_ATTRIBUTES) }
+      Tag.followed_tags_for(follower: object).map { |tag| tag.slice(*CACHED_TAGGED_BY_USER_ATTRIBUTES) }
     end
 
     cached_tag_attributes.map do |cached_tag|
-      CachedTagByUser.from_hash(cached_tag)
+      CachedTagByUser.new(cached_tag)
     end
   end
 

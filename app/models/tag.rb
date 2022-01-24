@@ -131,7 +131,9 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   # @param follower [#id, #class_name] An object who's class "acts_as_follower" (e.g. a User).
-  # @return [ActiveRecord::Relation<Tag>] with the "points" method added.
+  #
+  # @return [ActiveRecord::Relation<Tag>] with the "points" attribute and limited field selection
+  #         for presenting followed tags on the front-end.
   #
   # @note This method will also add the follower's "points" for the given tag.  In the
   #       ActiveRecord::Base implementation, we can add "virtual" attributes by including them in
@@ -159,7 +161,7 @@ class Tag < ActsAsTaggableOn::Tag
   # @see UserDecorator::CACHED_TAGGED_BY_USER_ATTRIBUTES for discussion on why we're selecting this.
   #
   # @todo should we sort by hotness score?  Wouldn't the user's points make more sense?
-  def self.cached_followed_tags_for(follower:)
+  def self.followed_tags_for(follower:)
     Tag
       .select(
         "tags.bg_color_hex",
@@ -179,7 +181,7 @@ class Tag < ActsAsTaggableOn::Tag
   # calculated for that following.  (Yes that is a short-circuit and we could perhaps make a more
   # appropriate data structure, but that's our current state as of <2022-01-21 Fri>.)
   #
-  # @see Tag.cached_followed_tags_for for details on injecting the "points" attribute on the Tag
+  # @see Tag.followed_tags_for for details on injecting the "points" attribute on the Tag
   #      object's attributes.
   #
   # @note The @points can be removed when we remove `attr_writer :points`

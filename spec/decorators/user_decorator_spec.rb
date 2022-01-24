@@ -23,19 +23,16 @@ RSpec.describe UserDecorator, type: :decorator do
     let(:saved_user) { create(:user) }
     let(:tag1) { create(:tag) }
     let(:tag2) { create(:tag) }
-    let(:tag3) { create(:tag) }
 
     it "returns array of tags if user follows them" do
+      _tag3 = create(:tag)
       saved_user.follow(tag1)
       saved_user.follow(tag2)
-      saved_user.follow(tag3)
 
       results = saved_user.decorate.cached_followed_tags
-      expect(results.size).to eq(3)
+      expect(results.size).to eq(2)
+      expect(results.map(&:id).sort).to eq([tag1.id, tag2.id])
       expect(results.first.points).to eq(1)
-      # Just a quick and dirty verification that we have a to_json method on an Array of Struct
-      # objects
-      expect(results.to_json).to be_present
     end
   end
 
