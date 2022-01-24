@@ -370,7 +370,7 @@ seeder.create_if_none(Broadcast) do
     start_discussion: I18n.t("broadcast.welcome.start_discussion"),
     ask_question: I18n.t("broadcast.welcome.ask_question"),
     discuss_and_ask: I18n.t("broadcast.welcome.discuss_and_ask"),
-    download_app: I18n.t("broadcast.welcome.download_app"),
+    download_app: I18n.t("broadcast.welcome.download_app")
   }
 
   broadcast_messages.each do |type, message|
