@@ -173,6 +173,11 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
+    it "returns SlideshareTag for a slideshare url" do
+      expect(described_class.find_liquid_tag_for(link: "https://www.slideshare.net/slideshow/embed_code/key/d5rGkEgXFDRN17"))
+        .to eq(SlideshareTag)
+    end
+
     it "returns SoundcloudTag for a soundcloud url" do
       expect(described_class.find_liquid_tag_for(link: "https://soundcloud.com/before-30-tv/stranger-moni-lati-lo-1"))
         .to eq(SoundcloudTag)
