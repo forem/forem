@@ -45,6 +45,10 @@ module Settings
         @defined_settings.pluck(:key)
       end
 
+      def to_h
+        keys.to_h { |k| [k.to_sym, public_send(k)] }
+      end
+
       private
 
       def cache_key
