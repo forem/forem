@@ -31,7 +31,7 @@ class Notification < ApplicationRecord
       return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
-      follow_data = Notifications::NewFollower::FollowData.coerce(follow).to_h
+      follow_data = Notifications::NewFollower::FollowData.coerce(follow).to_h.stringify_keys
       Notifications::NewFollowerWorker.perform_async(follow_data, is_read)
     end
 
@@ -157,7 +157,7 @@ class Notification < ApplicationRecord
     private
 
     def reaction_notification_attributes(reaction, receiver)
-      reactable_data = Notifications::Reactions::ReactionData.coerce(reaction).to_h
+      reactable_data = Notifications::Reactions::ReactionData.coerce(reaction).to_h.stringify_keys
       receiver_data = { "klass" => receiver.class.name, "id" => receiver.id }
       [reactable_data, receiver_data]
     end
