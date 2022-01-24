@@ -7,4 +7,9 @@ namespace :cache do
       BustCachePathWorker.set(queue: :high_priority).perform_in(n.seconds, "/onboarding")
     end
   end
+
+  desc "Clear application cache"
+  task clear_app_cache: :environment do
+    Rails.cache.clear
+  end
 end
