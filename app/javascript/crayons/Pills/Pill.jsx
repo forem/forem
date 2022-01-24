@@ -28,12 +28,16 @@ export const Pill = ({
   };
 
   const Element = element;
+
   const restOfProps =
     element === 'button'
-      ? { type: 'button', onKeyUp: handleKeyUp }
-      : element === 'a'
-      ? href
-      : '';
+      ? {
+          type: 'button',
+          onKeyUp: handleKeyUp,
+        }
+      : element === 'a' && {
+          href,
+        };
 
   const classes = classNames('c-pill', {
     'c-pill--icon-left': descriptionIcon,

@@ -20,16 +20,23 @@
   border: 1px solid var(--border);
   background: var(--bg);
 
-  &:hover:enabled,
+  &:hover,
   .js-focus-visible &.focus-visible:focus {
-    --color: var(--pill-color-hover);
-    --border: var(--pill-border-hover);
-    --bg: var(--pill-bg-hover);
-    --icon-right-color: var(--pill-color-hover);
-    z-index: var(--z-elevate);
+    &:is(a, button:enabled) {
+      --color: var(--pill-color-hover);
+      --border: var(--pill-border-hover);
+      --bg: var(--pill-bg-hover);
+      --icon-right-color: var(--pill-color-hover);
+      z-index: var(--z-elevate);
 
-    &:is(.c-pill--icon-right--destructive) {
-      --icon-right-color: var(--accent-danger);
+      &:is(.c-pill--icon-right--destructive) {
+        --icon-right-color: var(--accent-danger);
+      }
+
+      &[href] {
+        text-decoration: underline;
+        --color: var(--link-color-hover);
+      }
     }
   }
 
