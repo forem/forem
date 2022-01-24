@@ -97,7 +97,7 @@ RSpec.describe Reaction, type: :model do
     it "assigns fractional points to new users" do
       newish_user = create(:user, registered_at: 3.days.ago)
       reaction = create(:reaction, reactable: article, user: newish_user)
-      expect(reaction.points.round(1)).to eq(0.3)
+      expect(reaction.points).to be_within(0.1).of(0.3)
     end
 
     it "assigns full points to new users who is also trusted" do
