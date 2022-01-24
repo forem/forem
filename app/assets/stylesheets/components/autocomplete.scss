@@ -60,7 +60,7 @@
 }
 
 .c-autocomplete--multi {
-  &__wrapper:focus-within {
+  &__wrapper-border:focus-within {
     @extend %form-styling-focus;
 
     .c-autocomplete--multi__input {
@@ -69,12 +69,18 @@
   }
 
   &__input {
-    background-color: var(--form-bg);
+    background-color: var(--bg-color);
     color: var(--body-color);
     border: none;
   }
 
-  .crayons-btn.c-autocomplete--multi__selected {
+  &__wrapper-border {
+    .c-autocomplete--multi__input {
+      background-color: var(--form-bg);
+    }
+  }
+
+  .c-btn.c-autocomplete--multi__selected {
     &:first-child {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
@@ -91,7 +97,11 @@
     }
   }
 
-  ul.c-autocomplete--multi__popover {
+  .c-autocomplete--multi__popover {
+    position: absolute;
+    max-height: 500px;
+    overflow: auto;
+    width: 100%;
     padding: var(--su-1);
     z-index: var(--z-elevate);
     background: var(--card-bg);

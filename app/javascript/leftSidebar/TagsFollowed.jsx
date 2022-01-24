@@ -12,7 +12,7 @@ export const TagsFollowed = ({ tags = [] }) => {
   return (
     <Fragment>
       {tags.map(({ name, id, points }) =>
-        points >= 1 ? (
+        points >= 0 ? (
           <Link
             key={id}
             title={`${name} tag`}

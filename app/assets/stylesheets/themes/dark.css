@@ -24,95 +24,71 @@
   --base-10: #242424;
   --base-0: #090909;
 
-  --base-a90: rgba(249, 249, 249, 0.9);
-  --base-a80: rgba(249, 249, 249, 0.8);
-  --base-a70: rgba(249, 249, 249, 0.7);
-  --base-a60: rgba(249, 249, 249, 0.6);
-  --base-a50: rgba(249, 249, 249, 0.5);
-  --base-a40: rgba(249, 249, 249, 0.4);
-  --base-a30: rgba(249, 249, 249, 0.3);
-  --base-a20: rgba(249, 249, 249, 0.2);
-  --base-a10: rgba(249, 249, 249, 0.1);
-  --base-a5: rgba(249, 249, 249, 0.05);
-
-  --base-inverted-a90: rgba(0, 0, 0, 0.9);
-  --base-inverted-a80: rgba(0, 0, 0, 0.8);
-  --base-inverted-a70: rgba(0, 0, 0, 0.7);
-  --base-inverted-a60: rgba(0, 0, 0, 0.6);
-  --base-inverted-a50: rgba(0, 0, 0, 0.5);
-  --base-inverted-a40: rgba(0, 0, 0, 0.4);
-  --base-inverted-a30: rgba(0, 0, 0, 0.3);
-  --base-inverted-a20: rgba(0, 0, 0, 0.2);
-  --base-inverted-a10: rgba(0, 0, 0, 0.1);
-  --base-inverted-a5: rgba(0, 0, 0, 0.05);
-
-  /* Accent colors */
-  --accent-brand: #7b78ff;
-  --accent-brand-darker: #5855f3;
-  --accent-brand-lighter: #9896ff;
-  --accent-brand-a10: rgba(123, 120, 255, 0.1);
+  /* Brand */
+  --accent-brand-lighter: rgb(var(--indigo-400));
+  --accent-brand: rgb(var(--indigo-500));
+  --accent-brand-darker: rgb(var(--indigo-600));
 
   /* Success */
-  --accent-success: #26d9ca;
-  --accent-success-darker: #1ab3a6;
-  --accent-success-lighter: #79ece2;
-  --accent-success-a10: rgba(38, 217, 202, 0.1);
-;
+  --accent-success: rgb(var(--green-600));
+  --accent-success-darker: rgb(var(--green-700));
+  --accent-success-lighter: rgb(var(--green-500));
+  --accent-success-a10: rgba(var(--green-600), 0.2);
 
   /* Warning */
-  --accent-warning: #ffcf4c;
-  --accent-warning-darker: #f5b400;
-  --accent-warning-lighter: #ffe499;
-  --accent-warning-a10: rgba(255, 207, 76, 0.1);
+  --accent-warning: rgb(var(--yellow-500));
+  --accent-warning-darker: rgb(var(--yellow-600));
+  --accent-warning-lighter: rgb(var(--yellow-400));
+  --accent-warning-a10: rgba(var(--yellow-500), 0.2);
 
   /* Danger */
-  --accent-danger: #ed3434;
-  --accent-danger-darker: #e40a0a;
-  --accent-danger-lighter: #f15555;
-  --accent-danger-a10: rgba(237, 52, 52, 0.1);
+  --accent-danger: rgb(var(--red-600));
+  --accent-danger-darker: rgb(var(--red-700));
+  --accent-danger-lighter: rgb(var(--red-500));
+  --accent-danger-a10: rgba(var(--red-600), 0.2);
+
+  /***********************************************
+  ** Functional color variables. *****************
+  ***********************************************/
 
   /* Main colors */
-  --body-bg: var(--base-0);
-  --body-color: var(--base-100);
-  --body-color-inverted: var(--base-inverted);
+  --body-bg: rgb(var(--black));
+  --body-color: rgb(var(--grey-50));
+  --body-color-inverted: rgb(var(--black));
 
   /* Main content containers */
-  --card-bg: var(--base-10);
-  --card-color: var(--base-100);
-  --card-color-secondary: var(--base-70);
-  --card-color-tertiary: var(--base-50);
-  --card-secondary-bg: var(--base-a5);
-  --card-secondary-color: var(--base-90);
-  --card-headline-color: var(--base-100);
-  --card-border: rgba(255, 255, 255, 0.15);
-  --card-secondary-border: rgba(255, 255, 255, 0.1);
-  --card-hover-bg: var(--accent-brand-lighter);
-  --card-selected-bg: var(--accent-brand-darker);
+  --card-bg: rgb(var(--grey-900));
+  --card-color: rgb(var(--grey-50));
+  --card-color-secondary: rgb(var(--grey-300));
+  --card-color-tertiary: rgb(var(--grey-400));
+  --card-secondary-bg: rgb(var(--grey-900));
+  --card-secondary-color: rgb(var(--grey-200));
+  --card-border: rgba(var(--white), 0.15);
+  --card-secondary-border: rgba(var(--white), 0.1);
 
   /* Header */
-  --header-bg: var(--base-10);
-  --header-shadow: rgba(0, 0, 0, 0.3);
+  --header-bg: rgb(var(--grey-900));
+  --header-shadow: rgb(var(--black));
 
   /* Footer */
-  --footer-bg: var(--base-inverted);
-  --footer-color: var(--base-60);
+  --footer-bg: rgb(var(--grey-900));
+  --footer-color: rgb(var(--grey-400));
 
   /* Links */
-  --link-bg-hover-alt: var(--base-inverted);
-  --link-brand-color: #17a1f6;
+  --link-bg-hover-alt: rgba(var(--base-inverted));
   --link-color-current: var(--base-100);
   --link-color-secondary: var(--base-70);
   --link-color-secondary-hover: var(--base-80);
   --link-bg-current: var(--base-inverted);
 
   /* Primary buttons */
-  --button-primary-bg: var(--accent-brand);
-  --button-primary-bg-hover: var(--accent-brand-darker);
-  --button-primary-color: var(--base-inverted);
-  --button-primary-color-hover: var(--base-inverted);
+  --button-primary-bg: var(--accent-brand-darker);
+  --button-primary-bg-hover: var(--accent-brand);
+  --button-primary-color: rgb(var(--white));
+  --button-primary-color-hover: rgb(var(--white));
   /* -- Inverted */
   --button-primary-inverted-bg: var(--accent-brand);
-  --button-primary-inverted-bg-hover: var(--accent-brand-darker);
+  --button-primary-inverted-bg-hover: var(--accent-brand-lighter);
   --button-primary-inverted-color: var(--base-0);
   --button-primary-inverted-color-hover: var(--base-0);
 
@@ -121,11 +97,6 @@
   --button-secondary-bg-hover: var(--base-30);
   --button-secondary-color: var(--base-80);
   --button-secondary-color-hover: var(--base-100);
-  /* -- Inverted */
-  --button-secondary-inverted-bg: var(--base-70);
-  --button-secondary-inverted-bg-hover: var(--base-60);
-  --button-secondary-inverted-color: var(--base-10);
-  --button-secondary-inverted-color-hover: var(--base-0);
 
   /* Outlined buttons */
   --button-outlined-bg: transparent;
@@ -134,13 +105,6 @@
   --button-outlined-border-hover: var(--base-30);
   --button-outlined-color: var(--base-80);
   --button-outlined-color-hover: var(--base-100);
-  /* -- Inverted */
-  --button-outlined-inverted-bg: transparent;
-  --button-outlined-inverted-bg-hover: rgba(0, 0, 0, 0.1);
-  --button-outlined-inverted-border: var(--base-60);
-  --button-outlined-inverted-border-hover: var(--base-40);
-  --button-outlined-inverted-color: var(--base-30);
-  --button-outlined-inverted-color-hover: var(--base-10);
 
   /* Ghost buttons */
   --button-ghost-bg: transparent;
@@ -156,61 +120,53 @@
   --button-ghost-inverted-color-hover: var(--base-10);
 
   /* Forms */
-  --form-bg: var(--base-20);
-  --form-bg-focus: var(--base-0);
-  --form-border: var(--base-30);
-  --form-border-hover: var(--base-40);
-  --form-border-focus: var(--accent-brand);
-  --form-placeholder-color: var(--base-60);
+  --form-bg: rgb(var(--black));
+  --form-bg-focus: rgb(var(--black));
+  --form-border: rgb(var(--grey-700));
+  --form-border-hover: rgb(var(--grey-600));
+  --form-border-focus: var(--focus);
+  --form-placeholder-color: rgb(var(--grey-600));
 
   /* Form labels */
-  --label-primary: var(--base-90);
-  --label-secondary: var(--base-60);
+  --label-primary: rgb(var(--grey-50));
+  --label-secondary: rgb(var(--grey-30));
 
   /* Snackbars */
-  --snackbar-bg: var(--base-10);
-  --snackbar-color: var(--card-color);
-
-  /* Indicators */
-  --indicator-accent-bg: var(--accent-brand);
-  --indicator-accent-color: var(--body-color);
-  --indicator-critical-bg: var(--accent-danger);
-  --indicator-critical-color: var(--body-color);
-  --indicator-default-bg: var(--button-secondary-bg);
-  --indicator-default-color: var(--button-secondary-color);
+  --snackbar-bg: rgb(var(--grey-50));
+  --snackbar-color: rgb(var(--grey-900));
 
   /* Tabs */
-  --tab-color: var(--base-80);
+  --tab-color: rgb(var(--grey-100));
   --tab-color-hover: var(--accent-brand-lighter);
-  --tab-color-current: var(--base-100);
-  --tab-bg-hover: var(--accent-brand-a10);
-  --tab-bg-current: var(--accent-brand);
-  --tab-muted-color: var(--base-80);
-  --tab-muted-color-hover: var(--base-90);
-  --tab-muted-color-current: var(--base-100);
-  --tab-muted-bg-hover: var(--base-a10);
-  --tab-muted-bg-current: var(--base-20);
-  --tab-pill-color-current: var(--base-inverted);
+  --tab-color-current: rgb(var(--grey-50));
+  --tab-bg-hover: rgba(var(--accent-brand-rgb), 0.2);
+  --tab-bg-current: rgb(var(--accent-brand));
 
   /* Tags */
-  --tag-color: var(--base-70);
-  --tag-color-hover: var(--base-100);
+  --tag-color: rgb(var(--grey-300));
+  --tag-color-hover: rgb(var(--grey-100));
+  --tag-bg: rgba(var(--grey-50), 0.05);
+  --tag-bg-hover: rgba(var(--grey-50), 0.05);
+  --tag-prefix: rgba(var(--grey-50), 0.6);
+  --tag-prefix-hover: rgb(var(--grey-50));
 
   /* Story */
-  --story-comments-bg: 21, 30, 42;
-  --story-comments-bg-top: rgba(var(--story-comments-bg), 0);
-  --story-comments-bg-bottom: rgba(var(--story-comments-bg), 1);
+  --story-comments-bg: rgb(var(--grey-800));
+  --story-comments-bg-top: rgba(var(--grey-800), 0);
+  --story-comments-bg-bottom: rgba(var(--grey-800), 1);
 
   /* Select icon */
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjYzJjNmNhIi8+Cjwvc3ZnPg==);
 
   /* Reactions */
-  --reaction-like-color: var(--accent-danger);
-  --reaction-like-bg: var(--accent-danger-a10);
-  --reaction-custom-color: var(--accent-success);
-  --reaction-custom-bg: var(--accent-success-a10);
-  --reaction-save-color: var(--accent-brand);
-  --reaction-save-bg: var(--accent-brand-a10);
+  --reaction-like-color: rgb(var(--red-500));
+  --reaction-like-bg: rgba(var(--red-500), 0.1);
+  --reaction-custom-color: rgb(var(--green-600));
+  --reaction-custom-bg: rgb(var(--green-600), 0.1);
+  --reaction-save-color: rgb(var(--indigo-500));
+  --reaction-save-bg: rgba(var(--indigo-500), 0.1);
+  --reaction-comment-color: rgb(var(--yellow-500));
+  --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
 }
 
 :root {
@@ -225,51 +181,119 @@
   ***********************************************/
 
   /* Buttons: Default */
-  --btn-color-hover: var(--accent-brand-lighter);
+  --btn-bg: transparent;
+  --btn-bg-hover: rgba(var(--indigo-900), 0.75);
+  --btn-color: rgb(var(--grey-300));
+  --btn-color-hover: rgb(var(--indigo-300));
+
+  --btn-current-bg: rgb(var(--grey-700));
+  --btn-current-color: rgb(var(--grey-50));
 
   /* Buttons: Primary */
-  --btn-primary-bg-hover: var(--accent-brand-lighter);
+  --btn-primary-bg: rgb(var(--indigo-700));
+  --btn-primary-bg-hover: rgb(var(--indigo-600));
+  --btn-primary-color: rgba(var(--white), 0.9);
+  --btn-primary-color-hover: rgb(var(--white));
 
-  /* Buttons: Primary Destructive */
-  --btn-primary-destructive-bg-hover: var(--accent-danger-lighter);
+  /* Buttons: Secondary */
+  --btn-secondary-bg: rgba(var(--indigo-600), 0.4);
+  --btn-secondary-bg-hover: rgb(var(--indigo-700));
+  --btn-secondary-color: rgb(var(--indigo-200));
+  --btn-secondary-color-hover: rgb(var(--white));
+
+  /* Buttons: Destructive Default */
+  --btn-destructive-bg: transparent;
+  --btn-destructive-bg-hover: rgba(var(--red-500), 0.3);
+  --btn-destructive-color: rgb(var(--red-400));
+  --btn-destructive-color-hover: rgb(var(--red-300));
+
+  /* Buttons: Destructive Primary */
+  --btn-primary-destructive-bg: rgb(var(--red-700));
+  --btn-primary-destructive-bg-hover: rgb(var(--red-600));
+  --btn-primary-destructive-color: rgb(var(--white));
+  --btn-primary-destructive-color-hover: rgb(var(--white));
 
   /***********************************************
   ** Links ***************************************
   ***********************************************/
 
   /* Links: Default */
-  --link-color-hover: var(--accent-brand-lighter);
+  --link-bg: transparent;
+  --link-bg-hover: rgba(var(--indigo-900), 0.75);
+  --link-color: rgb(var(--grey-300));
+  --link-color-hover: rgb(var(--indigo-300));
+
+  --link-current-bg: rgb(var(--grey-700));
+  --link-current-color: rgb(var(--grey-50));
 
   /* Links: Branded */
-  --link-branded-color-hover: var(--accent-brand-lighter);
+  --link-branded-bg: transparent;
+  --link-branded-bg-hover: rgba(var(--indigo-900), 0.75);
+  --link-branded-color: rgb(var(--indigo-400));
+  --link-branded-color-hover: rgb(var(--indigo-300));
 
   /***********************************************
   ** CTAs ****************************************
   ***********************************************/
 
   /* CTAs: Default */
-  --cta-color-hover: var(--accent-brand-lighter);
-  --cta-border-hover: var(--accent-brand-lighter);
+  --cta-bg: transparent;
+  --cta-bg-hover: rgba(var(--indigo-900), 0.75);
+  --cta-color: rgb(var(--grey-300));
+  --cta-color-hover: rgb(var(--indigo-300));
+  --cta-border: rgb(var(--grey-500));
+  --cta-border-hover: rgb(var(--indigo-400));
 
   /* CTAs: Branded */
-  --cta-branded-bg-hover: var(--accent-brand);
-  --cta-branded-border: var(--accent-brand);
-  --cta-branded-border-hover: var(--accent-brand-lighter);
+  --cta-branded-bg: transparent;
+  --cta-branded-bg-hover: rgb(var(--indigo-600));
+  --cta-branded-color: rgb(var(--indigo-400));
+  --cta-branded-color-hover: rgb(var(--white));
+  --cta-branded-border: rgb(var(--indigo-400));
+  --cta-branded-border-hover: rgb(var(--indigo-500));
+
 
   /***********************************************
-  ** Badges **************************************
+  ** Tooltips ************************************
   ***********************************************/
 
-  /* Badges: Danger */
-  --badge-danger-bg: var(--accent-danger-darker);
-  --badge-danger-color: rgb(255,255,255);
+  --tooltip-bg: rgba(var(--white), 0.9);
+  --tooltip-color: rgb(var(--grey-800));
 
-  /* Badges: Info */
-  --badge-info-bg: var(--accent-brand-darker);
-  --badge-info-color: rgb(255,255,255);
+  /***********************************************
+  ** Indicators **********************************
+  ***********************************************/
+
+  /* Indicators: Default */
+  --indicator-bg: rgb(var(--grey-600));
+  --indicator-color: rgb(var(--grey-200));
+
+  /* Indicators: Success */
+  --indicator-success-bg: rgb(var(--green-700));
+  --indicator-success-color: rgb(var(--green-50));
+
+  /* Indicators: Warning */
+  --indicator-warning-bg: rgb(var(--yellow-400));
+  --indicator-warning-color: rgb(var(--yellow-900));
+
+  /* Indicators: Danger */
+  --indicator-danger-bg: rgb(var(--red-700));
+  --indicator-danger-color: rgb(var(--red-50));
+
+  /* Indicators: Info */
+  --indicator-info-bg: rgb(var(--indigo-700));
+  --indicator-info-color: rgb(var(--indigo-100));
 
   /***********************************************
   ** Utilities ***********************************
   ***********************************************/
+
+  /* Focus */
   --focus: var(--accent-brand-lighter);
+
+  /* Shadows */
+  --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.5),
+    0 4px 6px -2px rgba(var(--black), 0.25), inset 0 0 0 1px rgba(var(--white), 0.1);
+  --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.5),
+    0 10px 10px -5px rgba(var(--black), 0.25), inset 0 0 0 1px rgba(var(--white), 0.1);
 }
