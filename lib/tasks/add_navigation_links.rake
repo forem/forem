@@ -127,7 +127,7 @@ namespace :navigation_links do
     domain = Rails.application&.initialized? ? Settings::General.app_domain : ApplicationConfig["APP_DOMAIN"]
     base_url = "#{protocol}#{domain}".freeze
 
-    NavigationLink.where(url: base_url.to_s).first_or_create(
+    NavigationLink.where(url: "#{base_url}/").first_or_create(
       name: "Home",
       icon: home_icon,
       display_only_when_signed_in: false,
