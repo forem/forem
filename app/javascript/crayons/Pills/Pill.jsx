@@ -2,7 +2,6 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useState } from 'preact/hooks';
 import classNames from 'classnames/bind';
-import { defaultChildrenPropTypes } from '../../common-prop-types/default-children-prop-types';
 import { Icon } from '@crayons';
 import XIcon from '@images/x.svg';
 
@@ -84,7 +83,7 @@ export const Pill = ({
 Pill.displayName = 'Pill';
 
 Pill.propTypes = {
-  children: defaultChildrenPropTypes.isRequired,
+  children: PropTypes.string.isRequired,
   element: PropTypes.oneOf(['button', 'a', 'span', 'li']),
   className: PropTypes.string,
   iconLeft: PropTypes.elementType,
