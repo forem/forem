@@ -1,38 +1,66 @@
 import { h } from 'preact';
 import { Pill } from '..';
 import PillsDoc from './Pills.mdx';
+import CakeIcon from '@images/cake.svg';
+import XIcon from '@images/x.svg';
+import HideIcon from '@images/eye-off.svg';
 
 export default {
   component: Pill,
-  title: 'BETA/Pills',
+  title: 'Components/Pills',
   parameters: {
     docs: {
       page: PillsDoc,
     },
   },
   argTypes: {
-    variant: {
+    element: {
       control: {
         type: 'select',
         options: {
-          default: undefined,
-          info: 'info',
-          success: 'success',
-          warning: 'warning',
-          danger: 'danger',
+          button: undefined,
+          a: 'a',
+          span: 'span',
+          li: 'li',
         },
       },
       description:
-        'There are bunch of available variants (styles) to pick from. The primary difference is color but each color should be used for different purpose. Read Docs for more info.',
+        'Pills can be used in a bunch of different contexts, therefore it is important to use appropriate element to represent it in the markup.',
       table: {
-        defaultValue: { summary: 'default' },
+        defaultValue: { summary: 'button' },
       },
     },
-    extraPadding: {
+    iconLeft: {
+      control: false,
       description:
-        'Indicators are "tight" by default which means they have very little padding. This will gently increase the padding so it looks more loose.',
+        'If possible, this icon should represent the actual data associated with the Pill.',
+      table: {
+        defaultValue: { summary: 'LockIcon' },
+      },
+    },
+    iconRight: {
+      control: false,
+      description:
+        'If possible, this icon should represent the action associated with the Pill. If there is no action associated, consider not using this icon.',
+      table: {
+        defaultValue: { summary: 'XIcon' },
+      },
+    },
+    iconRightDestructive: {
+      description:
+        'Sometimes clicking a pill may cause a destructive action. When `iconRightDestructive` prop is set to true, it will use "X" icon for `iconRight` value by default, and will also apply appropriate style to it.',
       table: {
         defaultValue: { summary: false },
+      },
+    },
+    tooltip: {
+      description:
+        "If defined, pill will have a custom tooltip on `:hover` and `:focus`. The tooltip content will form part of the Pill's accessible name unless passed as a `<span>` with `aria-hidden='true'`",
+      control: {
+        type: 'text',
+      },
+      table: {
+        defaultValue: { summary: undefined },
       },
     },
   },
@@ -41,11 +69,53 @@ export default {
 export const Default = (args) => <Pill {...args} />;
 Default.args = {
   children: 'Hello world',
-  extraPadding: false,
+  element: undefined,
+  iconLeft: undefined,
+  iconRight: undefined,
+  iconRightDestructive: false,
 };
 
-export const VariantInfo = (args) => <Pill {...args} />;
-VariantInfo.args = {
+export const WithLeftIcon = (args) => <Pill {...args} />;
+WithLeftIcon.args = {
   ...Default.args,
-  variant: 'info',
+  iconLeft: CakeIcon,
+};
+
+export const WithRightIcon = (args) => <Pill {...args} />;
+WithRightIcon.args = {
+  ...Default.args,
+  iconRight: XIcon,
+};
+
+export const WithBothIcons = (args) => <Pill {...args} />;
+WithBothIcons.args = {
+  ...Default.args,
+  iconLeft: CakeIcon,
+  iconRight: XIcon,
+};
+
+export const Destructive = (args) => <Pill {...args} />;
+Destructive.args = {
+  ...Default.args,
+  iconRightDestructive: true,
+};
+
+export const DestructiveWithLeftIcon = (args) => <Pill {...args} />;
+DestructiveWithLeftIcon.args = {
+  ...Default.args,
+  iconLeft: CakeIcon,
+  iconRightDestructive: true,
+};
+
+export const DestructiveWithCustomIcon = (args) => <Pill {...args} />;
+DestructiveWithCustomIcon.args = {
+  ...Default.args,
+  iconRight: HideIcon,
+  iconRightDestructive: true,
+};
+
+export const WithTooltip = (args) => <Pill {...args} />;
+WithTooltip.args = {
+  ...Default.args,
+  tooltip: 'Tooltip content...',
 };

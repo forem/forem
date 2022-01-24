@@ -6,12 +6,7 @@
   --border: var(--pill-border);
   --bg: var(--pill-bg);
   --color: var(--pill-color);
-
-  --icon-left-color: inherit;
-  --icon-left-color-hover: inherit;
-
-  --icon-right-color: inherit;
-  --icon-right-color-hover: inherit;
+  --icon-right-color: var(--color-secondary);
 
   position: relative;
   display: inline-flex;
@@ -30,10 +25,12 @@
     --color: var(--pill-color-hover);
     --border: var(--pill-border-hover);
     --bg: var(--pill-bg-hover);
-    // TODO: figure out a way to drop !important...
-    --icon-left-color: var(--icon-left-color-hover) !important;
-    --icon-right-color: var(--icon-right-color-hover) !important;
+    --icon-right-color: var(--pill-color-hover);
     z-index: var(--z-elevate);
+
+    &:is(.c-pill--icon-right--destructive) {
+      --icon-right-color: var(--accent-danger);
+    }
   }
 
   .js-focus-visible &.focus-visible:focus {
@@ -43,14 +40,14 @@
 }
 
 .c-pill--icon-left {
-  .c-pill__icon {
+  .c-pill__icon-left {
     color: var(--icon-left-color);
     margin-right: var(--su-2);
   }
 }
 
 .c-pill--icon-right {
-  .c-pill__icon {
+  .c-pill__icon-right {
     color: var(--icon-right-color);
     margin-left: var(--su-2);
   }

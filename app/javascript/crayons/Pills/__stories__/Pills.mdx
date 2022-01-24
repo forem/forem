@@ -1,1 +1,64 @@
 # Pills
+
+Pill is an element representing a relatively short form of data, i.e. short label.
+Pill would visually encapsulate such a data in... well, a _pill_.
+
+Generally pills should occur in a herd 🐺. So it's type of data that you would expect to see as set of values.
+For example, imagine a list of roles associated with some user's account. 
+This could be represented as bunch of pills (of course depending on the context) - each pill being one role.
+
+Pills could be used to simply represent some data but they can also have an action (only one action per pill) baked-in.
+
+## Element
+
+For the reason mentioned above, it is allowed for a pill to be used as one of the following elements:
+
+- `button` - for actionable pill, in a way that would trigger some function ([read more about using Buttons vs Links](https://forem.team/pp/buttons-links-ctas-234e))
+- `a` - for actionable pill, in a way that would take you to other location,
+- `span` - for static representation of data,
+- `li` - for static representation of data.
+
+We set this limitation because of the nature of the pill - where and how it should occur.
+This constraint should limit overusing it for undesigneted scenarios.
+
+## Icons
+
+### Left
+
+If possible, this icon should represent the actual data associated with the Pill, 
+e.g. if pill's value says "Cake" maybe the icon should also represent a cake.
+
+### Right
+
+If possible, this icon should represent the action associated with the Pill, for example:
+
+- if action associated with a pill is to edit its value, maybe the icon should be a "pen".
+- if action associated with a pill is to remove it, maybe the icon should be a "x".
+
+If there is no action associated with a pill (for example when using non-actionable `element`), 
+consider not using this icon at all.
+
+#### Destructive Icon
+
+Using actionable pill with an action being designated to remove this specific data was a pretty common scenario.
+For that reason, if you need such a pill toggling a prop `iconRightDestructive` will set "x" icon as default for right icon
+and will also apply appropriate styling.
+
+If you need that "destructive" styling but want to use another icon, you can do it too:
+
+```
+<Pill
+  iconRightDestructive
+  iconRight={HideIcon}
+  ...
+>
+...
+</Pill>
+```
+
+## Tooltip
+
+By passing a string or node in `tooltip` prop, button will get a custom tooltip (visually different than a classic `title`) on `:hover` and `:focus`.
+The tooltip makes up part of the "accessible name" used by assistive technologies like screen readers. 
+If you _do not_ wish the tooltip to be part of the accessible name, consider wrapping it in a `<span aria-hidden="true">`.
+Tooltips can be temporarily dismissed on `Escape` key press.
