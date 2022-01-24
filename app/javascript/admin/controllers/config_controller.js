@@ -158,7 +158,6 @@ export default class ConfigController extends Controller {
       communityName.parentNode.replaceChild(newLogo, communityName);
     } else {
       for (const logo of document.querySelectorAll('.site-logo__img')) {
-
         if (logo !== previewLogo) {
           logo.src = previewLogo.src;
         }
@@ -417,7 +416,7 @@ export default class ConfigController extends Controller {
 
   activateMissingKeysModal(providers) {
     this.configModalAnchorTarget.innerHTML = adminModal({
-      title: 'Getting started',
+      title: 'Setup not complete',
       controllerName: 'config',
       closeModalFunction: 'closeAdminModal',
       body: this.missingAuthKeysModalBody(providers),

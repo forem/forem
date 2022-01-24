@@ -10,13 +10,13 @@
     }
 
     a[aria-current='page'] {
-      color: var(--link-brand-color);
+      color: var(--link-branded-color);
     }
 
     .check-icon {
       vertical-align: middle;
       display: none;
-      color: var(--link-brand-color);
+      color: var(--link-branded-color);
     }
 
     a[aria-current='page'] + .check-icon {

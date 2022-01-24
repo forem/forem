@@ -1,40 +1,78 @@
 import { h } from 'preact';
 import { MultiSelectAutocomplete } from '../MultiSelectAutocomplete';
+import MultiSelectAutocompleteDoc from './MultiSelectAutocomplete.mdx';
 
 export default {
-  title: 'BETA/MultiSelectAutocomplete',
+  title: 'App Components/MultiSelectAutocomplete',
+  parameters: {
+    docs: {
+      page: MultiSelectAutocompleteDoc,
+    },
+  },
+  argTypes: {
+    border: {
+      table: {
+        defaultValue: { summary: false },
+      },
+      description: 'Display as a standard bordered input',
+    },
+    labelText: {
+      description: 'The label for the input',
+    },
+    showLabel: {
+      description:
+        'Should the label text be visible (it will always be available to assistive technology regardless)',
+      table: {
+        defaultValue: { summary: true },
+      },
+    },
+    placeholder: {
+      description:
+        'Placeholder text, shown when no selections have been made yet',
+    },
+    maxSelections: {
+      description: 'Optional maximum number of selections that can be made',
+    },
+    staticSuggestionsHeading: {
+      description:
+        'Optional heading to show when static suggestions are shown (when user has not yet typed a search term). Accepts either a string or an HTML element.',
+    },
+  },
 };
 
-export const Default = () => {
+export const Default = (args) => {
   const options = [
-    'one',
-    'two',
-    'three',
-    'four',
-    'five',
-    'six',
-    'seven',
-    'eight',
-    'nine',
-    'ten',
+    { name: 'one' },
+    { name: 'two' },
+    { name: 'three' },
+    { name: 'four' },
+    { name: 'five' },
+    { name: 'six' },
+    { name: 'seven' },
+    { name: 'eight' },
+    { name: 'nine' },
+    { name: 'ten' },
   ];
 
-  const fetchSuggestions = async (searchTerm) => {
-    const filteredSuggestions = options.filter((option) =>
-      option.startsWith(searchTerm),
-    );
-
-    return filteredSuggestions.length === 0
-      ? [searchTerm]
-      : filteredSuggestions;
-  };
+  const fetchSuggestions = async (searchTerm) =>
+    options.filter((option) => option.name.startsWith(searchTerm));
 
   return (
     <MultiSelectAutocomplete
-      labelText="Example multi select autocomplete"
+      {...args}
       fetchSuggestions={fetchSuggestions}
+      staticSuggestions={options.slice(0, 3)}
     />
   );
+};
+
+Default.args = {
+  border: true,
+  labelText: 'Example multi select autocomplete',
+  showLabel: true,
+  placeholder: 'Add a number...',
+  maxSelections: 4,
+  staticSuggestionsHeading: 'Static suggestions',
 };
 
 Default.story = {

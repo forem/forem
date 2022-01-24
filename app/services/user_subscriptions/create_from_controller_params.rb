@@ -52,7 +52,7 @@ module UserSubscriptions
     def invalid_source?(source)
       return false if source
 
-      response.error = "Source not found."
+      response.error = I18n.t("services.user_subscriptions.create_from_controller_params.source_not_found")
       true
     end
 
@@ -64,7 +64,7 @@ module UserSubscriptions
       # consented to share their old email address instead of the current one.
       return false if user.email == subscriber_email
 
-      response.error = "Subscriber email mismatch."
+      response.error = I18n.t("services.user_subscriptions.create_from_controller_params.email_mismatch")
       true
     end
   end

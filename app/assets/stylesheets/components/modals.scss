@@ -62,8 +62,7 @@
     overflow: hidden;
     pointer-events: auto;
     border-radius: var(--radius-large-auto);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.05), 0 0 0 1px var(--base-a10);
+    box-shadow: var(--shadow-2);
 
     @media (min-width: $breakpoint-s) {
       background: var(--card-bg);
