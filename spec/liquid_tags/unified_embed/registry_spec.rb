@@ -22,6 +22,11 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://app.codesandbox.io/embed/exciting-knuth-hywlv?file=/index.html&runonclick=0&view=editor",
     ]
 
+    valid_medium_url_formats = [
+      "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c",
+      "https://themobilist.medium.com/is-universal-basic-mobility-the-route-to-a-sustainable-c-b18e1e2d014c",
+    ]
+
     valid_instagram_url_formats = [
       "https://www.instagram.com/p/CXgzXWXroHK/",
       "https://instagram.com/p/CXgzXWXroHK/",
@@ -137,6 +142,13 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns Forem Link for a forem url" do
       expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
         .to eq(LinkTag)
+    end
+
+    it "returns MediumTag for a valid medium url" do
+      valid_medium_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(MediumTag)
+      end
     end
 
     it "returns NextTechTag for a nexttech url" do
