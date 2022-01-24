@@ -19,16 +19,16 @@ For the reason mentioned above, it is allowed for a pill to be used as one of th
 - `li` - for static representation of data.
 
 We set this limitation because of the nature of the pill - where and how it should occur.
-This constraint should limit overusing it for undesigneted scenarios.
+This constraint should limit overusing it for undesignated scenarios.
 
 ## Icons
 
-### Left
+### Description Icon
 
 If possible, this icon should represent the actual data associated with the Pill, 
 e.g. if pill's value says "Cake" maybe the icon should also represent a cake.
 
-### Right
+### Action Icon
 
 If possible, this icon should represent the action associated with the Pill, for example:
 
@@ -41,15 +41,15 @@ consider not using this icon at all.
 #### Destructive Icon
 
 Using actionable pill with an action being designated to remove this specific data was a pretty common scenario.
-For that reason, if you need such a pill toggling a prop `iconRightDestructive` will set "x" icon as default for right icon
+For that reason, if you need such a pill toggling a prop `destructiveActionIcon` will set "x" icon as default for right icon
 and will also apply appropriate styling.
 
 If you need that "destructive" styling but want to use another icon, you can do it too:
 
 ```
 <Pill
-  iconRightDestructive
-  iconRight={HideIcon}
+  destructiveActionIcon
+  actionIcon={HideIcon}
   ...
 >
 ...

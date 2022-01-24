@@ -30,7 +30,7 @@ export default {
         defaultValue: { summary: 'button' },
       },
     },
-    iconLeft: {
+    descriptionIcon: {
       control: false,
       description:
         'If possible, this icon should represent the actual data associated with the Pill.',
@@ -38,7 +38,7 @@ export default {
         defaultValue: { summary: 'LockIcon' },
       },
     },
-    iconRight: {
+    actionIcon: {
       control: false,
       description:
         'If possible, this icon should represent the action associated with the Pill. If there is no action associated, consider not using this icon.',
@@ -46,9 +46,9 @@ export default {
         defaultValue: { summary: 'XIcon' },
       },
     },
-    iconRightDestructive: {
+    destructiveActionIcon: {
       description:
-        'Sometimes clicking a pill may cause a destructive action. When `iconRightDestructive` prop is set to true, it will use "X" icon for `iconRight` value by default, and will also apply appropriate style to it.',
+        'Sometimes clicking a pill may cause a destructive action. When `destructiveActionIcon` prop is set to true, it will use "X" icon for `actionIcon` value by default, and will also apply appropriate style to it.',
       table: {
         defaultValue: { summary: false },
       },
@@ -70,48 +70,48 @@ export const Default = (args) => <Pill {...args} />;
 Default.args = {
   children: 'Hello world',
   element: undefined,
-  iconLeft: undefined,
-  iconRight: undefined,
-  iconRightDestructive: false,
+  descriptionIcon: undefined,
+  actionIcon: undefined,
+  destructiveActionIcon: false,
 };
 
-export const WithLeftIcon = (args) => <Pill {...args} />;
-WithLeftIcon.args = {
+export const WithDescriptionIcon = (args) => <Pill {...args} />;
+WithDescriptionIcon.args = {
   ...Default.args,
-  iconLeft: CakeIcon,
+  descriptionIcon: CakeIcon,
 };
 
-export const WithRightIcon = (args) => <Pill {...args} />;
-WithRightIcon.args = {
+export const WithActionIcon = (args) => <Pill {...args} />;
+WithActionIcon.args = {
   ...Default.args,
-  iconRight: XIcon,
+  actionIcon: XIcon,
 };
 
 export const WithBothIcons = (args) => <Pill {...args} />;
 WithBothIcons.args = {
   ...Default.args,
-  iconLeft: CakeIcon,
-  iconRight: XIcon,
+  descriptionIcon: CakeIcon,
+  actionIcon: XIcon,
 };
 
 export const Destructive = (args) => <Pill {...args} />;
 Destructive.args = {
   ...Default.args,
-  iconRightDestructive: true,
+  destructiveActionIcon: true,
 };
 
-export const DestructiveWithLeftIcon = (args) => <Pill {...args} />;
-DestructiveWithLeftIcon.args = {
+export const DestructiveWithDescriptionIcon = (args) => <Pill {...args} />;
+DestructiveWithDescriptionIcon.args = {
   ...Default.args,
-  iconLeft: CakeIcon,
-  iconRightDestructive: true,
+  descriptionIcon: CakeIcon,
+  destructiveActionIcon: true,
 };
 
 export const DestructiveWithCustomIcon = (args) => <Pill {...args} />;
 DestructiveWithCustomIcon.args = {
   ...Default.args,
-  iconRight: HideIcon,
-  iconRightDestructive: true,
+  actionIcon: HideIcon,
+  destructiveActionIcon: true,
 };
 
 export const WithTooltip = (args) => <Pill {...args} />;

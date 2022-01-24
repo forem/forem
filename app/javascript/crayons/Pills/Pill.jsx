@@ -8,22 +8,15 @@ import XIcon from '@images/x.svg';
 export const Pill = ({
   children,
   element = 'button',
-  iconLeft,
-  iconRight,
-  iconRightDestructive,
+  href = '#',
+  descriptionIcon,
+  actionIcon,
+  destructiveActionIcon,
   className,
   tooltip,
   onKeyUp,
   ...otherProps
 }) => {
-  const Element = element;
-  const restOfProps =
-    element === 'button'
-      ? { type: 'button', onKeyUp: handleKeyUp }
-      : element === 'a'
-      ? { href: '#' }
-      : '';
-
   const [suppressTooltip, setSuppressTooltip] = useState(false);
 
   const handleKeyUp = (event) => {
@@ -34,35 +27,42 @@ export const Pill = ({
     setSuppressTooltip(event.key === 'Escape');
   };
 
+  const Element = element;
+  const restOfProps =
+    element === 'button'
+      ? { type: 'button', onKeyUp: handleKeyUp }
+      : element === 'a'
+      ? href
+      : '';
+
   const classes = classNames('c-pill', {
-    'c-pill--icon-left': iconLeft,
-    'c-pill--icon-right': iconRight || iconRightDestructive,
-    'c-pill--icon-right--destructive': iconRightDestructive,
+    'c-pill--icon-left': descriptionIcon,
+    'c-pill--icon-right': actionIcon || destructiveActionIcon,
+    'c-pill--icon-right--destructive': destructiveActionIcon,
     'crayons-tooltip__activator': tooltip,
     [className]: className,
   });
 
   return (
     <Element className={classes} {...otherProps} {...restOfProps}>
-      {iconLeft && (
+      {descriptionIcon && (
         <Icon
           aria-hidden="true"
           focusable="false"
-          viewBox="0 0 24 24" // TODO:
           width={18}
           height={18}
-          src={iconLeft}
+          src={descriptionIcon}
           className="c-pill__icon-left"
         />
       )}
       {children}
-      {(iconRight || iconRightDestructive) && (
+      {(actionIcon || destructiveActionIcon) && (
         <Icon
           aria-hidden="true"
           focusable="false"
           width={18}
           height={18}
-          src={iconRight || (iconRightDestructive && XIcon)}
+          src={actionIcon || (destructiveActionIcon && XIcon)}
           className="c-pill__icon-right"
         />
       )}
@@ -86,8 +86,8 @@ Pill.propTypes = {
   children: PropTypes.string.isRequired,
   element: PropTypes.oneOf(['button', 'a', 'span', 'li']),
   className: PropTypes.string,
-  iconLeft: PropTypes.elementType,
-  iconRight: PropTypes.elementType,
-  iconRightDestructive: PropTypes.bool,
+  descriptionIcon: PropTypes.elementType,
+  actionIcon: PropTypes.elementType,
+  destructiveActionIcon: PropTypes.bool,
   tooltip: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 };
