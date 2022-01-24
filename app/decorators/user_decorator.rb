@@ -31,7 +31,7 @@ class UserDecorator < ApplicationDecorator
   # we rely on method calls to the object.  (e.g. "tag.name").  This class helps us conform to that
   # expectation.
   #
-  # @note A Struct in Rails can be cast "to_json" and uses it's attributes.
+  # @note A Struct in Rails can be cast "to_json" and uses its attributes.
   #
   # @see https://github.com/rails/rails/blob/main/activesupport/lib/active_support/core_ext/object/json.rb#L68-L72
   CachedTagByUser = Struct.new(*CACHED_TAGGED_BY_USER_ATTRIBUTES, keyword_init: true)
