@@ -8,11 +8,7 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
   let(:user3) { create(:user) }
 
   def reaction_data(reaction)
-    {
-      reactable_id: reaction.reactable_id,
-      reactable_type: reaction.reactable_type,
-      reactable_user_id: reaction.reactable.user_id
-    }
+    Notifications::Reactions::ReactionData.coerce(reaction).to_h
   end
 
   context "when data is invalid" do
