@@ -15,7 +15,7 @@ initializeDropdown({
 const openModal = async (event) => {
   event.preventDefault();
 
-  const { dataset = {} } = event.target;
+  const { dataset } = event.target;
 
   if (!Object.prototype.hasOwnProperty.call(dataset, 'modalTrigger')) {
     // We're not trying to trigger a modal.
