@@ -29,7 +29,7 @@ module UnifiedEmbed
       # notice that they didn't have a rich embed and instead published a basic
       # A-tag. In addition, said A-tag would goes nowhere; which may confuse
       # users and/or Forem readers.
-      raise StandardError, "Embed URL not valid" unless klass
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") unless klass
 
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
