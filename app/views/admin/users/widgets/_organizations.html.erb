@@ -21,10 +21,10 @@
           <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link">
             <%= org_membership.organization.name %>
           </a>
+          <span class="color-secondary fw-normal">– <%= org_membership.type_of_user.capitalize %></span>
         </h3>
-        <small class="color-secondary">&bull; <%= org_membership.type_of_user %></small>
       </div>
-      <div class="c-card__revealable absolute right-1">
+      <div class="c-card__revealable">
         <button type="button" class="c-btn c-btn--icon-alone" data-modal-trigger data-modal-title="Edit organization" data-modal-size="m" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon") %>
         </button>
@@ -53,7 +53,7 @@
     <%= f.hidden_field :user_id, value: @user.id %>
     <div class="crayons-field">
       <%= f.label :organization_id, "Organization ID", class: "crayons-field__label" %>
-      <%= f.text_field :organization_id, class: "crayons-textfield", size: 8, inputmode: "numeric", type: "number", placeholder: "1234" %>
+      <%= f.text_field :organization_id, class: "crayons-textfield", size: 8, required: true, inputmode: "numeric", type: "number", placeholder: "1234" %>
     </div>
     <div class="crayons-field">
       <%= f.label "Permission level", class: "crayons-field__label" %>

@@ -44,7 +44,10 @@
 }
 
 .c-card {
-  --revealable-display: none;
+  --revealable-opacity: 1;
+  @media (hover: hover) {
+    --revealable-opacity: 0;
+  }
 
   border-radius: var(--radius-auto);
   background: var(--card-bg);
@@ -52,7 +55,8 @@
   overflow-wrap: anywhere;
 
   &__revealable {
-    display: var(--revealable-display);
+    flex-shrink: 0;
+    opacity: var(--revealable-opacity);
   }
 
   &--interactive {
@@ -60,7 +64,7 @@
     &:focus-within {
       --card-border: var(--base-90);
       --card-bg: var(--card-secondary-bg);
-      --revealable-display: block;
+      --revealable-opacity: 1;
     }
   }
 }

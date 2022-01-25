@@ -27,19 +27,15 @@
         </li>
       <% else %>
         <li>
-          <button class="c-pill c-pill--icon-right" style="--icon-right-color: var(--color-secondary); --icon-right-color-hover: var(--accent-danger);" type="button">
+          <%= button_to url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: "Are you sure?" }, class: "c-pill c-pill--icon-right",
+                                                                                                                                 style: "--icon-right-color: var(--color-secondary); --icon-right-color-hover: var(--accent-danger);" do %>
             <% if role.resource_name %>
               <%= role.resource_name.to_s %>
             <% else %>
               <%= role_display_name(role) %>
             <% end %>
             <%= crayons_icon_tag(:x, class: "c-pill__icon", width: 18, height: 18) %>
-          </button>
-
-          <%# TODO: Turn that `link_to` below to be a `button` that you can see above... %>
-          <%#= link_to url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: "Are you sure?" }, class: "c-link c-link--block c-link--icon-alone" do %>
-            <%#= crayons_icon_tag(:x, width: 18, height: 18, class: "c-link__icon") %>
-          <%# end %>
+          <% end %>
         </li>
       <% end %>
     <% end %>
@@ -48,5 +44,19 @@
 <% end %>
 
 <div id="add-role" class="hidden">
-  Add role
+  <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4" }) do |f| %>
+    <div class="crayons-field">
+      <%= f.label "Role", class: "crayons-field__label" %>
+      <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>
+      <% options["Special Roles"] = Constants::Role::SPECIAL_ROLES if current_user.super_admin? %>
+      <%= f.select(:user_status, grouped_options_for_select(options), { include_blank: true }, class: "crayons-select") %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label "Reason", class: "crayons-field__label" %>
+      <%= f.text_area :note_for_current_role, required: true, class: "crayons-textfield", placeholder: "What's the reason for adding a role?" %>
+    </div>
+    <div>
+      <%= f.button "Add", class: "c-btn c-btn--primary" %>
+    </div>
+  <% end %>
 </div>
