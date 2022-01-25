@@ -12,7 +12,7 @@
   </div>
 <% else %>
   <ul class="flex flex-wrap gap-2">
-    <% @user.roles.each do |role| %>
+    <% @user.roles.reject { |role| role.name == "tag_moderator" }.each do |role| %>
       <% if role.name == "banned" || role.name == "suspended" || role.name == "super_admin" || @user.id == current_user.id %>
         <li>
           <span class="c-pill c-pill--inactive c-pill--icon-left cursor-not-allowed fs-italic crayons-tooltip__activator">
