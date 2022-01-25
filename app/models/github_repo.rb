@@ -27,7 +27,7 @@ class GithubRepo < ApplicationRecord
   end
 
   def self.update_to_latest
-    ids = where("updated_at < ?", 26.hours.ago).ids.each_slice(1).to_a
+    ids = where(updated_at: ...26.hours.ago).ids.map { |id| [id] }
     GithubRepos::RepoSyncWorker.perform_bulk(ids)
   end
 
