@@ -10,6 +10,8 @@ namespace :cache do
 
   desc "Clear application cache"
   task clear_app_cache: :environment do
+    raise "Attempting to clear Rails cache in production" if Rails.env.production?
+
     Rails.cache.clear
   end
 end
