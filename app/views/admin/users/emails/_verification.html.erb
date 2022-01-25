@@ -2,7 +2,7 @@
   <% unless @last_email_verification_date %>
     <div>
       <h2 class="crayons-subtitle-2">Email not verified...</h2>
-      <p class="color-secondary">User's email address <%= @user.email %> hasn't been verified yet.</p>
+      <p class="color-secondary">The user's email address, <%= @user.email %>, hasn't been verified yet.</p>
     </div>
     <%= f.button "Verify email address", class: "c-btn c-btn--secondary whitespace-nowrap" %>
   <% else %>
@@ -12,6 +12,6 @@
         <%= @last_email_verification_date.strftime("%b %e '%y, %H:%M") %>
       </time>
     </p>
-    <%= f.button "Re-verify", class: "c-btn c-btn--secondary whitespace-nowrap" %>
+    <%= f.button "Reverify", class: "c-btn c-btn--secondary whitespace-nowrap" %>
   <% end %>
 <% end %>

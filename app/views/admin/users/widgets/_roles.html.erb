@@ -7,7 +7,7 @@
 </header>
 <% unless @user.roles.any? %>
   <div class="flex justify-between items-center">
-    <p>No special role assigned yet.</p>
+    <p>No special roles assigned yet.</p>
     <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="#add-role">Add role</button>
   </div>
 <% else %>
