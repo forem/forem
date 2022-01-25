@@ -13,14 +13,14 @@ initializeDropdown({
 });
 
 const openModal = async (event) => {
-  event.preventDefault();
-
   const { dataset } = event.target;
 
   if (!Object.prototype.hasOwnProperty.call(dataset, 'modalTrigger')) {
     // We're not trying to trigger a modal.
     return;
   }
+
+  event.preventDefault();
 
   // Only load Preact if we haven't already.
   if (!preact) {
