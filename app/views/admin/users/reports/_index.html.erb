@@ -12,7 +12,7 @@
               </a>
             </h3>
             <span class="c-indicator c-indicator--relaxed  <%= "c-indicator--danger" if report.status.casecmp("open").zero? %> <%= "c-indicator--success" if report.status.casecmp("resolved").zero? %>">
-              <%= report.status.capitalize %>
+              <%= report.status %>
             </span>
           </header>
           <p class="mb-1"><%= report.message %></p>
