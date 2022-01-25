@@ -10,6 +10,7 @@
 
   position: relative;
   display: inline-flex;
+  text-align: left;
   align-items: center;
   border-radius: var(--radius);
   font: inherit;
@@ -49,6 +50,7 @@
 .c-pill--description-icon {
   .c-pill__description-icon {
     color: var(--description-icon-color);
+    flex-shrink: 0;
     margin-right: var(--su-2);
   }
 }
@@ -56,6 +58,7 @@
 .c-pill--action-icon {
   .c-pill__action-icon {
     color: var(--action-icon-color);
+    flex-shrink: 0;
     margin-left: var(--su-2);
   }
 }
