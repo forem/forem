@@ -26,12 +26,9 @@ RSpec.describe StackexchangeTag, type: :liquid_tag, vcr: true do
       end
     end
 
-    it "renders basic stackoverflow html with title" do
+    it "renders titles for stackoverflow questions" do
       VCR.use_cassette("stackexchange_tag_stackoverflow") do
         liquid = generate_new_liquid(valid_id)
-        expect(liquid.render).to include("ltag__stackexchange")
-        expected_answer_url = "https://stackoverflow.com/questions/57496168/use-where-and-limit-to-child-in-foreach"
-        expect(liquid.render).to include("<a href=\"#{expected_answer_url}\"")
         expect(liquid.render).to include("Use &quot;where&quot; and &quot;limit&quot; to child in @foreach")
       end
     end
