@@ -91,9 +91,15 @@ export const RuntimeBanner = () => {
   const targetPath = `https://${window.location.host}/r/mobile?deep_link=${window.location.pathname}`;
   let targetURL = `https://udl.forem.com/${encodeURIComponent(targetPath)}`;
   if (Runtime.currentOS() === 'Android') {
-    // Android handles Intents with a fallback URL: playstore URL to install the
-    // app if not available. It's best to redirect with the intent directly
-    targetURL = androidTargetIntent();
+    if (navigator.userAgent.match(/Gecko\/.+Firefox\/.+$/)) {
+      // This is the Firefox browser on Android and we can't display the banner
+      // here because of a bug. Read more: https://github.com/mozilla-mobile/fenix/issues/23397
+      return;
+    } 
+      // Android handles Intents with a fallback URL: playstore URL to install the
+      // app if not available. It's best to redirect with the intent directly
+      targetURL = androidTargetIntent();
+    
   }
 
   return (
