@@ -6,7 +6,7 @@
         <h1>
           <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" alt="">
             <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
-              <%= post_type == "question" ? "" : t("views.liquids.stackexchange.answer.text_html", answer: tag.span(t("views.liquids.stackexchange.answer.answer"), class: "title-flare"), title: CGI.unescapeHTML(title)) %>
+              <%= post_type == "question" ? CGI.unescapeHTML(title) : t("views.liquids.stackexchange.answer.text_html", answer: tag.span(t("views.liquids.stackexchange.answer.answer"), class: "title-flare"), title: CGI.unescapeHTML(title)) %>
             </a>
         </h1>
         <div class="ltag__stackexchange--post-metadata">
