@@ -18,7 +18,7 @@ class TagsController < ApplicationController
   def index
     skip_authorization
     @tags_index = true
-    @tags = if params.key?(:q) && params[:q].present?
+    @tags = if params[:q].present?
               Tag.includes([:sponsorship]).search_by_name(params[:q]).limit(100)
             else
               Tag.direct.includes(:sponsorship).order(hotness_score: :desc).limit(100)
