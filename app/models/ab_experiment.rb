@@ -13,11 +13,14 @@ class AbExperiment < SimpleDelegator
 
   ORIGINAL_VARIANT = "original".freeze
 
+  CURRENT_FEED_STRATEGY_EXPERIMENT = FieldTest.config["experiments"]&.keys
+    &.detect { |e| e.start_with? "feed_strategy" }.freeze
+
   # Sometimes we might want to repurpose the same AbExperiment logic
   # for different experiments.  This provides the tooling for that
   # exact thing.
   EXPERIMENT_TO_METHOD_NAME_MAP = {
-    feed_strategy_round_4: :feed_strategy
+    CURRENT_FEED_STRATEGY_EXPERIMENT => :feed_strategy
   }.freeze
 
   # This method helps us leverage existing methods for different
@@ -29,6 +32,11 @@ class AbExperiment < SimpleDelegator
   # @see EXPERIMENT_TO_METHOD_NAME_MAP
   def self.method_name_for(experiment)
     EXPERIMENT_TO_METHOD_NAME_MAP.fetch(experiment, experiment)
+  end
+
+  def self.variants_for_experiment(experiment)
+    configured_experiment = FieldTest.config["experiments"][experiment]
+    configured_experiment["variants"] if configured_experiment
   end
 
   # @api public

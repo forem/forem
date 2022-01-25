@@ -68,7 +68,7 @@ gem "omniauth-rails_csrf_protection", "~> 1.0" # Provides CSRF protection on Omn
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.21" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with GitHub OAuth client
-gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
+gem "pg", "~> 1.3" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_query", ">= 0.9.0" # Allows PGHero to analyze queries
 gem "pg_search", "~> 2.3.6" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
 gem "pghero", "~> 2.8" # Dashboard for Postgres
@@ -143,7 +143,7 @@ group :development, :test do
   gem "rubocop", "~> 1.25", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.13", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.7", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.8", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
   gem "spring", "~> 4.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
