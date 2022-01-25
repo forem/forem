@@ -21,8 +21,23 @@
 
 <main id="main-content" class="crayons-layout crayons-layout--header-inside">
   <header class="crayons-page-header">
-    <h1 class="crayons-title"><%= t("views.tags.heading") %></h1>
-    <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
+    <h1 class="crayons-title">
+      <% if params.key?(:q) && params[:q].present? %>
+        <%= t("views.tags.heading.search_results", q: params[:q]) %>
+      <% else %>
+        <%= t("views.tags.heading.default") %>
+      <% end %>
+    </h1>
+    <form accept-charset="UTF-8" method="get" action="<%= tags_path %>" role="search">
+      <div class="crayons-fields crayons-fields--horizontal">
+        <div class="crayons-field flex-1 relative">
+          <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="<%= t("views.tags.search.placeholder") %>" autocomplete="off" />
+          <button type="submit" aria-label="<%= t("views.search.icon.aria_label") %>" class="c-btn c-btn--icon-alone absolute inset-px left-auto mt-0 py-0">
+            <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
+          </button>
+        </div>
+          <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
+      </div>
   </header>
 
   <div class="grid gap-3 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-3 m:px-0 pb-3" data-follow-button-container="true">
