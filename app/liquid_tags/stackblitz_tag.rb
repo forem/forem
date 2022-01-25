@@ -1,8 +1,12 @@
 class StackblitzTag < LiquidTagBase
   PARTIAL = "liquids/stackblitz".freeze
-  ID_REGEXP = /\A[a-zA-Z0-9\-]{0,60}\z/
-  VIEW_OPTION_REGEXP = /\Aview=(preview|editor|both)\z/
-  FILE_OPTION_REGEXP = /\Afile=(.*)\z/
+  REGISTRY_REGEXP = %r{https://stackblitz.com/edit/(?<id>[\w\-]{,60})\?(?<options>.*)?}
+  ID_REGEXP = /\A(?<id>[a-zA-Z0-9\-]{,60})\Z/
+  VIEW_OPTION_REGEXP = /\Aview=(preview|editor|both)\Z/
+  FILE_OPTION_REGEXP = /\Afile=(.*)\Z/
+  # rubocop:disable Layout/LineLength
+  PARAM_REGEXP = /\A(view=(preview|editor|both))|(file=(.*))|(embed=1)|(hideExplorer=1)|(hideNavigation=1)|(theme=(default|light|dark))|(ctl=1)|(devtoolsheight=33)\Z/
+  # rubocop:enable Layout/LineLength
 
   def initialize(_tag_name, id, _parse_context)
     super
