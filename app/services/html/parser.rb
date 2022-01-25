@@ -42,8 +42,8 @@ module Html
         # allow image to render as-is
         next if allowed_image_host?(src)
 
-        if synchronous_detail_detection && img
-          img["width"], img["height"] = FastImage.size(img.attr("src"), timeout: 10)
+        if synchronous_detail_detection
+          img["width"], img["height"] = FastImage.size(src, timeout: 10)
         end
 
         img["loading"] = "lazy"
