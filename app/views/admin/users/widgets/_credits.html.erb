@@ -11,5 +11,32 @@
 </div>
 
 <div id="adjust-balance" class="hidden">
-  hi
+  <form action="" class="flex flex-col gap-4 fs-base">
+    <div class="flex items-center gap-2 color-secondary">
+      <%= crayons_icon_tag(:wallet) %>
+      <p>
+        <%= @user.name %> currently has <span class="color-primary"><%= @user.unspent_credits_count %> credits</span>.
+      </p>
+    </div>
+    <div class="crayons-field">
+      <label for="balance-type" class="crayons-field__label">Adjust balance</label>
+      <div class="flex gap-2 items-center">
+        <select name="" id="balance-type" class="crayons-select w-auto" required>
+          <option value="add">Add</option>
+          <option value="substract">Substract</option>
+        </select>
+
+        <input type="number" inputmode="numeric" placeholder="10" size="5" min="1" max="9999" required class="crayons-textfield w-auto">
+
+        <span class="color-secondary flex-1">credits</span>
+      </div>
+    </div>
+    <div class="crayons-field">
+      <label for="balance-note" class="crayons-field__label">Why are you adjusting credits?</label>
+      <textarea name="" id="balance-note" class="crayons-textfield" placeholder="Explanation..."></textarea>
+    </div>
+    <div>
+      <button type="submit" class="c-btn c-btn--primary">Adjust</button>
+    </div>
+  </form>
 </div>
