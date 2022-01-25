@@ -95,11 +95,10 @@ export const RuntimeBanner = () => {
       // This is the Firefox browser on Android and we can't display the banner
       // here because of a bug. Read more: https://github.com/mozilla-mobile/fenix/issues/23397
       return;
-    } 
-      // Android handles Intents with a fallback URL: playstore URL to install the
-      // app if not available. It's best to redirect with the intent directly
-      targetURL = androidTargetIntent();
-    
+    }
+    // Android handles Intents with a fallback URL: playstore URL to install the
+    // app if not available. It's best to redirect with the intent directly
+    targetURL = androidTargetIntent();
   }
 
   return (
