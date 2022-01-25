@@ -85,7 +85,8 @@ textarea {
 
 // Drop default outline (Crayons provides custom)
 textarea,
-input:not([type='hidden']) {
+input:not([type='hidden']),
+button {
   outline: 0;
 }
 
