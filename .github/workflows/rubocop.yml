@@ -2,7 +2,7 @@ name: Rubocop
 on: [pull_request]
 jobs:
   rubocop:
-    name: runner / rubocop
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
