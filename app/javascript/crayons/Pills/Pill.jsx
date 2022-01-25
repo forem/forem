@@ -43,9 +43,9 @@ export const Pill = ({
   }
 
   const classes = classNames('c-pill', {
-    'c-pill--icon-left': descriptionIcon,
-    'c-pill--icon-right': actionIcon || destructiveActionIcon,
-    'c-pill--icon-right--destructive': destructiveActionIcon,
+    'c-pill--description-icon': descriptionIcon,
+    'c-pill--action-icon': actionIcon || destructiveActionIcon,
+    'c-pill--action-icon--destructive': destructiveActionIcon,
     'crayons-tooltip__activator': tooltip,
     [className]: className,
   });
@@ -59,7 +59,7 @@ export const Pill = ({
           width={18}
           height={18}
           src={descriptionIcon}
-          className="c-pill__icon-left"
+          className="c-pill__description-icon"
         />
       )}
       {children}
@@ -70,7 +70,7 @@ export const Pill = ({
           width={18}
           height={18}
           src={actionIcon || (destructiveActionIcon && XIcon)}
-          className="c-pill__icon-right"
+          className="c-pill__action-icon"
         />
       )}
       {tooltip ? (
