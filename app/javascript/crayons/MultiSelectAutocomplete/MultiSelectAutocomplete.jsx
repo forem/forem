@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/interactive-supports-focus, jsx-a11y/role-has-required-aria-props */
 // Disabled due to the linter being out of date for combobox role: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/789
 import { h, Fragment } from 'preact';
+import PropTypes from 'prop-types';
 import { useEffect, useRef, useReducer } from 'preact/hooks';
-import { Icon, Button } from '@crayons';
-import { Close } from '@images/x.svg';
+import { DefaultSelectionTemplate } from './DefaultSelectionTemplate';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -16,14 +16,15 @@ const KEYS = {
 };
 
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9])/;
+const PLACEHOLDER_SELECTIONS_MADE = 'Add another...';
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'setSelectedItems':
       return {
         ...state,
-        selectedItems: action.payload,
-        suggestions: [],
+        selectedItems: action.payload.selectedItems,
+        suggestions: action.payload.suggestions ?? state.suggestions,
         activeDescendentIndex: null,
       };
     case 'setSuggestions':
@@ -42,19 +43,56 @@ const reducer = (state, action) => {
       return { ...state, activeDescendentIndex: action.payload };
     case 'setIgnoreBlur':
       return { ...state, ignoreBlur: action.payload };
+    case 'setShowMaxSelectionsReached':
+      return { ...state, showMaxSelectionsReached: action.payload };
     default:
       return state;
   }
 };
 
-export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
+/**
+ * Component allowing users to search and select multiple values
+ *
+ * @param {Object} props
+ * @param {string} props.labelText The text for the input's label
+ * @param {boolean} props.showLabel Whether the label text should be visible or hidden (for assistive tech users only)
+ * @param {Function} props.fetchSuggestions Callback function which accepts the search term string and returns an array of suggestions
+ * @param {Array} props.defaultValue Array of items which should be selected by default
+ * @param {Array} props.staticSuggestions Array of items which should be suggested if no search term has been entered yet
+ * @param {string} props.staticSuggestionsHeading Optional heading to display when static suggestions are rendered
+ * @param {boolean} props.border Whether to show a bordered input
+ * @param {string} props.placeholder Input placeholder text
+ * @param {string} props.inputId ID to be applied to the input element
+ * @param {number} props.maxSelections Optional maximum number of allowed selections
+ * @param {Function} props.onSelectionsChanged Callback for when selections are added or removed
+ * @param {Function} props.onFocus Callback for when the component receives focus
+ * @param {Function} props.SuggestionTemplate Optional Preact component to render suggestion items
+ * @param {Function} props.SelectionTemplate Optional Preact component to render selected items
+ */
+export const MultiSelectAutocomplete = ({
+  labelText,
+  showLabel = true,
+  fetchSuggestions,
+  defaultValue = [],
+  staticSuggestions = [],
+  staticSuggestionsHeading,
+  border = true,
+  placeholder = 'Add...',
+  inputId,
+  maxSelections,
+  onSelectionsChanged,
+  onFocus,
+  SuggestionTemplate,
+  SelectionTemplate = DefaultSelectionTemplate,
+}) => {
   const [state, dispatch] = useReducer(reducer, {
     suggestions: [],
-    selectedItems: [],
+    selectedItems: defaultValue,
     inputPosition: null,
-    editValue: '',
+    editValue: null,
     activeDescendentIndex: null,
     ignoreBlur: false,
+    showMaxSelectionsReached: false,
   });
 
   const {
@@ -64,53 +102,131 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     editValue,
     activeDescendentIndex,
     ignoreBlur,
+    showMaxSelectionsReached,
   } = state;
 
   const inputRef = useRef(null);
   const inputSizerRef = useRef(null);
   const selectedItemsRef = useRef(null);
+  const popoverRef = useRef(null);
+
+  const allowSelections =
+    !maxSelections || selectedItems.length < maxSelections;
+
+  useEffect(() => {
+    if (defaultValue.length > 0) {
+      dispatch({
+        type: 'setSelectedItems',
+        payload: {
+          selectedItems: defaultValue,
+        },
+      });
+    }
+  }, [defaultValue]);
 
   const handleInputBlur = () => {
-    // Since the input is sometimes removed and rendered in a new location on blur, it's possible that inputRef.current may be null when we complete this check.
-    const currentValue = inputRef.current ? inputRef.current.value : '';
+    dispatch({ type: 'setShowMaxSelectionsReached', payload: false });
+
+    const {
+      current: { value: currentValue },
+    } = inputRef;
+
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
-    if (!ignoreBlur && currentValue !== '') {
-      selectItem({ selectedItem: currentValue, focusInput: false });
-    } else {
+    if (!ignoreBlur && allowSelections && currentValue !== '') {
+      selectByText({ textValue: currentValue, keepSelecting: false });
+      return;
+    }
+    if (!ignoreBlur) {
+      // Clear the suggestions if a genuine blur event
       dispatch({ type: 'setSuggestions', payload: [] });
     }
-
+    exitEditState({ keepSelecting: false });
     dispatch({ type: 'setIgnoreBlur', payload: false });
   };
 
   useEffect(() => {
+    // editValue defaults to null when component is first rendered.
+    // This ensures we do not autofocus the input before the user has started interacting with the component.
+    if (editValue === null) {
+      return;
+    }
+
     const { current: input } = inputRef;
-    if (inputPosition !== null) {
+    if (input && inputPosition !== null) {
+      // Entering 'edit' mode
       resizeInputToContentSize();
 
       input.value = editValue;
       const { length: cursorPosition } = editValue;
+
       input.focus();
       input.setSelectionRange(cursorPosition, cursorPosition);
-    } else {
-      // Remove inline style added to size the input
-      input.style.width = '';
-      input.focus();
+
+      // Trigger the input event to make sure suggestion UI updates correctly
+      const changeEvent = new Event('input');
+      input.dispatchEvent(changeEvent);
     }
   }, [inputPosition, editValue]);
 
+  useEffect(() => {
+    if (activeDescendentIndex !== null) {
+      const { current: popover } = popoverRef;
+      const activeItem = popover?.querySelector('[aria-selected="true"]');
+      if (!popover || !activeItem) {
+        return;
+      }
+
+      // Make sure that the active item is scrolled into view, if need be
+      const { offsetHeight, offsetTop } = activeItem;
+      const { offsetHeight: popoverOffsetHeight, scrollTop } = popover;
+
+      const isAbove = offsetTop < scrollTop;
+      const isBelow =
+        offsetTop + offsetHeight > scrollTop + popoverOffsetHeight;
+
+      if (isAbove) {
+        popover.scrollTo(0, offsetTop);
+      } else if (isBelow) {
+        popover.scrollTo(0, offsetTop - popoverOffsetHeight + offsetHeight);
+      }
+    }
+  }, [activeDescendentIndex]);
+
+  const selectByText = ({
+    textValue,
+    nextInputValue = '',
+    keepSelecting = true,
+  }) => {
+    const matchingSuggestion = suggestions.find(
+      (suggestion) => suggestion.name === textValue,
+    );
+    selectItem({
+      selectedItem: matchingSuggestion
+        ? matchingSuggestion
+        : { name: textValue },
+      nextInputValue,
+      keepSelecting,
+    });
+  };
+
   const enterEditState = (editItem, editItemIndex) => {
-    inputSizerRef.current.innerText = editItem;
+    inputSizerRef.current.innerText = editItem.name;
     deselectItem(editItem);
 
     dispatch({
       type: 'updateEditState',
-      payload: { editValue: editItem, inputPosition: editItemIndex },
+      payload: {
+        editValue: editItem.name,
+        inputPosition: editItemIndex,
+      },
     });
   };
 
-  const exitEditState = (nextInputValue = '') => {
+  const exitEditState = ({ nextInputValue = '', keepSelecting = true }) => {
+    // Reset 'edit mode' input resizing
+    inputRef.current?.style?.removeProperty('width');
     inputSizerRef.current.innerText = nextInputValue;
+
     dispatch({
       type: 'updateEditState',
       payload: {
@@ -118,24 +234,88 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
         inputPosition: nextInputValue === '' ? null : inputPosition + 1,
       },
     });
+
+    // Blurring away while clearing the input
+    if (!keepSelecting && nextInputValue === '') {
+      inputRef.current.value = '';
+    }
   };
 
   const resizeInputToContentSize = () => {
-    inputRef.current.style.width = `${inputSizerRef.current.clientWidth}px`;
+    const { current: input } = inputRef;
+
+    if (input) {
+      input.style.width = `${inputSizerRef.current.clientWidth}px`;
+    }
+  };
+
+  const handleAutocompleteStart = () => {
+    // Only show static suggestions when not in edit mode
+    if (inputPosition !== null) {
+      return;
+    }
+
+    // If we've already reached max selections, show the message rather than static suggestions
+    if (!allowSelections) {
+      dispatch({ type: 'setShowMaxSelectionsReached', payload: true });
+      return;
+    }
+
+    // If we have static suggestions, and no search term, show the static suggestions
+    if (staticSuggestions.length > 0 && inputRef.current?.value === '') {
+      dispatch({
+        type: 'setSuggestions',
+        payload: staticSuggestions.filter(
+          (item) =>
+            !selectedItems.some(
+              (selectedItem) => selectedItem.name === item.name,
+            ),
+        ),
+      });
+    }
   };
 
   const handleInputChange = async ({ target: { value } }) => {
     // When the input appears inline in "edit" mode, we need to dynamically calculate the width to ensure it occupies the right space
     // (an input cannot resize based on its text content). We use a hidden <span> to track the size.
     inputSizerRef.current.innerText = value;
+
     if (inputPosition !== null) {
       resizeInputToContentSize();
     }
 
+    // If max selections have already been reached, no need to fetch further suggestions
+    if (!allowSelections) {
+      return;
+    }
+
+    if (value === '') {
+      dispatch({
+        type: 'setSuggestions',
+        payload: staticSuggestions.filter(
+          (item) =>
+            !selectedItems.some(
+              (selectedItem) => selectedItem.name === item.name,
+            ),
+        ),
+      });
+      return;
+    }
+
     const results = await fetchSuggestions(value);
+    // If no results, display current search term as an option
+    if (results.length === 0 && value !== '') {
+      results.push({ name: value });
+    }
+
     dispatch({
       type: 'setSuggestions',
-      payload: results.filter((item) => !selectedItems.includes(item)),
+      payload: results.filter(
+        (item) =>
+          !selectedItems.some(
+            (selectedItem) => selectedItem.name === item.name,
+          ),
+      ),
     });
   };
 
@@ -191,9 +371,9 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
         e.preventDefault();
         // Accept whatever is in the input before the comma or space.
         // If any text remains after the comma or space, the edit will continue separately
-        if (currentValue !== '') {
-          selectItem({
-            selectedItem: currentValue.slice(0, selectionStart),
+        if (currentValue !== '' && allowSelections) {
+          selectByText({
+            textValue: currentValue.slice(0, selectionStart),
             nextInputValue: currentValue.slice(selectionStart),
           });
         }
@@ -223,13 +403,26 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
     }
   };
 
+  const getEmptyInputSuggestions = ({ currentSelections = selectedItems }) => {
+    if (staticSuggestions.length > 0) {
+      return staticSuggestions.filter(
+        (suggestion) =>
+          !currentSelections.some(
+            (selection) => selection.name === suggestion.name,
+          ),
+      );
+    }
+
+    return [];
+  };
+
   const selectItem = ({
     selectedItem,
     nextInputValue = '',
-    focusInput = true,
+    keepSelecting = true,
   }) => {
     // If a user has manually typed an item already selected, reset
-    if (selectedItems.includes(selectedItem)) {
+    if (selectedItems.some((item) => item.name === selectedItem.name)) {
       clearInput();
       return;
     }
@@ -245,79 +438,98 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
 
     // We update the hidden selected items list, so additions are announced to screen reader users
     const listItem = document.createElement('li');
-    listItem.innerText = selectedItem;
+    listItem.innerText = selectedItem.name;
     selectedItemsRef.current.appendChild(listItem);
 
-    exitEditState(nextInputValue);
-    dispatch({ type: 'setSelectedItems', payload: newSelections });
+    exitEditState({ nextInputValue, keepSelecting });
+
+    dispatch({
+      type: 'setSelectedItems',
+      payload: {
+        selectedItems: newSelections,
+        suggestions: keepSelecting
+          ? getEmptyInputSuggestions({
+              currentSelections: newSelections,
+            })
+          : [],
+      },
+    });
+
+    onSelectionsChanged?.(newSelections);
 
     // Clear the text input
     const { current: input } = inputRef;
     input.value = nextInputValue;
-    focusInput && input.focus();
+
+    if (keepSelecting) {
+      dispatch({
+        type: 'setShowMaxSelectionsReached',
+        payload: maxSelections && newSelections.length >= maxSelections,
+      });
+
+      // setTimeout is used with no delay here to make sure this focus event is executed in the next event cycle.
+      // selectItem() happens on mousedown rather than click, because mousedown is handled before the blur event, and we
+      // want to ignore some blur events (i.e. when input blurs because user has clicked a dropdown option).
+      // By using setTimeout, we make sure that the normal blur event is handled before we try to refocus the input.
+      setTimeout(() => {
+        input.focus();
+      });
+    }
   };
 
   const deselectItem = (deselectedItem) => {
+    const newSelections = selectedItems.filter(
+      (item) => item.name !== deselectedItem.name,
+    );
     dispatch({
       type: 'setSelectedItems',
-      payload: selectedItems.filter((item) => item !== deselectedItem),
+      payload: {
+        selectedItems: newSelections,
+        suggestions,
+      },
     });
+
+    dispatch({
+      type: 'setShowMaxSelectionsReached',
+      payload: maxSelections && newSelections.length >= maxSelections,
+    });
+
+    onSelectionsChanged?.(newSelections);
 
     // We also update the hidden selected items list, so removals are announced to screen reader users
     selectedItemsRef.current.querySelectorAll('li').forEach((selectionNode) => {
-      if (selectionNode.innerText === deselectedItem) {
+      if (selectionNode.innerText === deselectedItem.name) {
         selectionNode.remove();
       }
     });
   };
 
-  const allSelectedItemElements = selectedItems.map((item, index) => (
-    <li key={item} className="w-max">
-      <div role="group" aria-label={item} className="flex mr-1 mb-1 w-max">
-        <Button
-          variant="secondary"
-          className="c-autocomplete--multi__selected p-1 cursor-text"
-          aria-label={`Edit ${item}`}
-          onClick={() => enterEditState(item, index)}
-        >
-          {item}
-        </Button>
-        <Button
-          variant="secondary"
-          className="c-autocomplete--multi__selected p-1"
-          aria-label={`Remove ${item}`}
-          onClick={() => deselectItem(item)}
-        >
-          <Icon src={Close} />
-        </Button>
-      </div>
-    </li>
-  ));
+  const allSelectedItemElements = selectedItems.map((item, index) => {
+    // When we are in "edit mode" we visually display the input between the other selections
+    const defaultPosition = index + 1;
+    const appearsBeforeInput = inputPosition === null || index < inputPosition;
+    const position = appearsBeforeInput ? defaultPosition : defaultPosition + 1;
 
-  // When a user edits a tag, we need to move the input inside the selected items
-  const splitSelectionsAt =
-    inputPosition !== null ? inputPosition : selectedItems.length;
+    const { name: displayName } = item;
+    return (
+      <li
+        key={displayName}
+        className="c-autocomplete--multi__selection-list-item w-max"
+        style={{ order: position }}
+      >
+        <SelectionTemplate
+          {...item}
+          onEdit={() => enterEditState(item, index)}
+          onDeselect={() => deselectItem(item)}
+        />
+      </li>
+    );
+  });
 
-  const input = (
-    <li className="self-center">
-      <input
-        ref={inputRef}
-        autocomplete="off"
-        className="c-autocomplete--multi__input"
-        aria-activedescendant={
-          activeDescendentIndex !== null
-            ? suggestions[activeDescendentIndex]
-            : null
-        }
-        aria-autocomplete="list"
-        aria-labelledby="multi-select-label selected-items-list"
-        type="text"
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        onBlur={handleInputBlur}
-      />
-    </li>
-  );
+  const selectionsPlaceholder =
+    selectedItems.length > 0 ? PLACEHOLDER_SELECTIONS_MADE : placeholder;
+
+  const inputPlaceholder = allowSelections ? selectionsPlaceholder : null;
 
   return (
     <Fragment>
@@ -326,7 +538,15 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
         aria-hidden="true"
         className="absolute pointer-events-none opacity-0 p-2"
       />
-      <label id="multi-select-label">{labelText}</label>
+      <label
+        id="multi-select-label"
+        className={showLabel ? '' : 'screen-reader-only'}
+      >
+        {labelText}
+      </label>
+      <span id="input-description" className="screen-reader-only">
+        {maxSelections ? `Maximum ${maxSelections} selections` : ''}
+      </span>
 
       {/* A visually hidden list provides confirmation messages to screen reader users as an item is selected or removed */}
       <div className="screen-reader-only">
@@ -348,43 +568,112 @@ export const MultiSelectAutocomplete = ({ labelText, fetchSuggestions }) => {
           aria-haspopup="listbox"
           aria-expanded={suggestions.length > 0}
           aria-owns="listbox1"
-          className="c-autocomplete--multi__wrapper flex items-center crayons-textfield cursor-text"
-          onClick={() => inputRef.current.focus()}
+          className={`c-autocomplete--multi__wrapper${
+            border ? '-border crayons-textfield' : ' border-none p-0'
+          } flex items-center  cursor-text`}
+          onClick={() => inputRef.current?.focus()}
         >
           <ul id="combo-selected" className="list-none flex flex-wrap w-100">
-            {allSelectedItemElements.slice(0, splitSelectionsAt)}
-            {inputPosition !== null && input}
-            {allSelectedItemElements.slice(splitSelectionsAt)}
-            {inputPosition === null && input}
+            {allSelectedItemElements}
+
+            <li
+              className="self-center"
+              style={{
+                order:
+                  inputPosition === null
+                    ? selectedItems.length + 1
+                    : inputPosition + 1,
+              }}
+            >
+              <input
+                id={inputId}
+                ref={inputRef}
+                autocomplete="off"
+                className="c-autocomplete--multi__input"
+                aria-activedescendant={
+                  activeDescendentIndex !== null
+                    ? suggestions[activeDescendentIndex]
+                    : null
+                }
+                aria-autocomplete="list"
+                aria-labelledby="multi-select-label selected-items-list"
+                aria-describedby="input-description"
+                aria-disabled={!allowSelections}
+                type="text"
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                onBlur={handleInputBlur}
+                onFocus={(e) => {
+                  onFocus?.(e);
+                  handleAutocompleteStart();
+                }}
+                placeholder={inputPosition === null ? inputPlaceholder : null}
+              />
+            </li>
           </ul>
         </div>
-        {suggestions.length > 0 ? (
-          <ul
-            className="c-autocomplete--multi__popover"
-            aria-labelledby="multi-select-label"
-            role="listbox"
-            aria-multiselectable="true"
-            id="listbox1"
-          >
-            {suggestions.map((suggestion, index) => (
-              // Focus remains in the input during keyboard use, and event handler is attached to that input
-              // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-              <li
-                id={suggestion}
-                role="option"
-                aria-selected={index === activeDescendentIndex}
-                key={suggestion}
-                onClick={() => selectItem({ selectedItem: suggestion })}
-                onMouseDown={() =>
-                  dispatch({ type: 'setIgnoreBlue', payload: true })
-                }
-              >
-                {suggestion}
-              </li>
-            ))}
-          </ul>
+        {showMaxSelectionsReached ? (
+          <div className="c-autocomplete--multi__popover">
+            <span className="p-3">Only {maxSelections} selections allowed</span>
+          </div>
+        ) : null}
+        {suggestions.length > 0 && allowSelections ? (
+          <div className="c-autocomplete--multi__popover" ref={popoverRef}>
+            {inputRef.current?.value === '' ? staticSuggestionsHeading : null}
+            <ul
+              className="list-none"
+              aria-labelledby="multi-select-label"
+              role="listbox"
+              aria-multiselectable="true"
+              id="listbox1"
+            >
+              {suggestions.map((suggestion, index) => {
+                const { name: suggestionDisplayName } = suggestion;
+                return (
+                  <li
+                    id={suggestionDisplayName}
+                    role="option"
+                    aria-selected={index === activeDescendentIndex}
+                    key={suggestionDisplayName}
+                    onMouseDown={() => {
+                      selectItem({ selectedItem: suggestion });
+                      dispatch({ type: 'setIgnoreBlur', payload: true });
+                    }}
+                  >
+                    {SuggestionTemplate ? (
+                      <SuggestionTemplate {...suggestion} />
+                    ) : (
+                      suggestionDisplayName
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         ) : null}
       </div>
     </Fragment>
   );
+};
+
+const optionPropType = PropTypes.shape({ name: PropTypes.string });
+
+MultiSelectAutocomplete.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  showLabel: PropTypes.bool,
+  fetchSuggestions: PropTypes.func.isRequired,
+  defaultValue: PropTypes.arrayOf(optionPropType),
+  staticSuggestions: PropTypes.arrayOf(optionPropType),
+  staticSuggestionsHeading: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.string,
+  ]),
+  border: PropTypes.bool,
+  placeholder: PropTypes.string,
+  inputId: PropTypes.string,
+  maxSelections: PropTypes.number,
+  onSelectionsChanged: PropTypes.func,
+  onFocus: PropTypes.func,
+  SuggestionTemplate: PropTypes.func,
+  SelectionTemplate: PropTypes.func,
 };
