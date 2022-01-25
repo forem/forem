@@ -22,7 +22,7 @@
 <main id="main-content" class="crayons-layout crayons-layout--header-inside">
   <header class="crayons-page-header">
     <h1 class="crayons-title">
-      <% if params.key?(:q) && params[:q].present? %>
+      <% if params[:q].present? %>
         <%= t("views.tags.heading.search_results", q: params[:q]) %>
       <% else %>
         <%= t("views.tags.heading.default") %>
