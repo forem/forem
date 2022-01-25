@@ -172,4 +172,45 @@ RSpec.describe Tag, type: :model do
       expect(described_class.find_preferred_alias_for("something")).to eq("something")
     end
   end
+
+  describe ".followed_tags_for" do
+    let(:saved_user) { create(:user) }
+    let(:tag1) { create(:tag) }
+    let(:tag2) { create(:tag) }
+    let(:tag3) { create(:tag) }
+
+    it "returns empty if no tags followed" do
+      expect(described_class.followed_tags_for(follower: saved_user).size).to eq(0)
+    end
+
+    it "returns array of tags if user follows them" do
+      saved_user.follow(tag1)
+      saved_user.follow(tag2)
+      saved_user.follow(tag3)
+      expect(described_class.followed_tags_for(follower: saved_user).size).to eq(3)
+    end
+
+    it "returns tag object with name" do
+      saved_user.follow(tag1)
+      expect(described_class.followed_tags_for(follower: saved_user).first.name).to eq(tag1.name)
+    end
+
+    it "returns follow points for tag" do
+      saved_user.follow(tag1)
+      expect(described_class.followed_tags_for(follower: saved_user).first.points).to eq(1.0)
+    end
+
+    it "returns adjusted points for tag" do
+      follow = saved_user.follow(tag1)
+      follow.update(explicit_points: 0.1)
+
+      expect(described_class.followed_tags_for(follower: saved_user).first.points).to eq(0.1)
+    end
+  end
+
+  describe "#points" do
+    it "defaults to 0" do
+      expect(described_class.new.points).to eq(0)
+    end
+  end
 end

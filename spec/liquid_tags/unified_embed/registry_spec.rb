@@ -183,6 +183,11 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(SoundcloudTag)
     end
 
+    it "returns SpeakerdeckTag for a speakerdeck url" do
+      expect(described_class.find_liquid_tag_for(link: "https://speakerdeck.com/player/87fa761026bf013092b722000a1d8877"))
+        .to eq(SpeakerdeckTag)
+    end
+
     it "returns SpotifyTag for a valid spotify url" do
       valid_spotify_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
