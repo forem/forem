@@ -43,7 +43,7 @@ module Html
         next if allowed_image_host?(src)
 
         if synchronous_detail_detection && img
-          img["width"], img["height"] = FastImage.new(img, timeout: 10).size
+          img["width"], img["height"] = FastImage.size(img.attr("src"), timeout: 10)
         end
 
         img["loading"] = "lazy"
