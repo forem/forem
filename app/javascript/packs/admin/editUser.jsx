@@ -1,7 +1,7 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 let preact;
-let Modal;
+let AdminModal;
 
 // Append an empty div to the end of the document so that is does not affect the layout.
 const modalContainer = document.createElement('div');
@@ -24,32 +24,31 @@ const openModal = async (event) => {
 
   // Only load Preact if we haven't already.
   if (!preact) {
-    [preact, { AdminUserActionsModal: Modal }] = await Promise.all([
+    [preact, { Modal: AdminModal }] = await Promise.all([
       import('preact'),
-      import('@admin'),
+      import('@crayons/Modal/Modal'),
     ]);
   }
 
   const { h, render } = preact;
 
-  if (modalContainer) {
-    // We've loaded a modal at least once in the modal container, so unmount it before rendering a new one.
-    // This allows us to only ever append one div to the body.
-    render(null, modalContainer);
-  }
-
   const { modalTitle, modalSize, modalContentSelector } = dataset;
 
-  // TODO: Where are we pulling the modal body from?
   render(
-    <Modal title={modalTitle} size={modalSize}>
+    <AdminModal
+      title={modalTitle}
+      size={modalSize}
+      onClose={() => {
+        render(null, modalContainer);
+      }}
+    >
       <div
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: document.querySelector(modalContentSelector).innerHTML,
         }}
       />
-    </Modal>,
+    </AdminModal>,
     modalContainer,
   );
 };
