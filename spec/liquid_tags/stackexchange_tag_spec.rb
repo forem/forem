@@ -32,7 +32,7 @@ RSpec.describe StackexchangeTag, type: :liquid_tag, vcr: true do
         expect(liquid.render).to include("ltag__stackexchange")
         expected_answer_url = "https://stackoverflow.com/questions/57496168/use-where-and-limit-to-child-in-foreach"
         expect(liquid.render).to include("<a href=\"#{expected_answer_url}\"")
-        expect(liquid.render).to include('Use "where" and "limit" to child in @foreach')
+        expect(liquid.render).to include("Use &quot;where&quot; and &quot;limit&quot; to child in @foreach")
       end
     end
 
