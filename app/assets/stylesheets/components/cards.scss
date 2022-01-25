@@ -55,7 +55,6 @@
   overflow-wrap: anywhere;
 
   &__revealable {
-    flex-shrink: 0;
     opacity: var(--revealable-opacity);
   }
 
