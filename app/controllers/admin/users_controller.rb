@@ -80,7 +80,7 @@ module Admin
       else
         flash[:danger] = response.error_message
       end
-      redirect_to edit_admin_user_path(@user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     def user_status
@@ -91,7 +91,7 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to edit_admin_user_path(@user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     def export_data
@@ -106,13 +106,13 @@ module Admin
       end
       ExportContentWorker.perform_async(user.id, email)
       flash[:success] = "Data exported to the #{receiver}. The job will complete momentarily."
-      redirect_to edit_admin_user_path(user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = "This user is being banished in the background. The job will complete soon."
-      redirect_to edit_admin_user_path(params[:id])
+      redirect_to admin_user_path(params[:id])
     end
 
     def full_delete
@@ -134,7 +134,7 @@ module Admin
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
       flash[:success] = "Posts are being unpublished in the background. The job will complete soon."
-      redirect_to admin_users_path
+      redirect_to admin_user_path(params[:id])
     end
 
     def merge
@@ -145,7 +145,7 @@ module Admin
         flash[:danger] = e.message
       end
 
-      redirect_to edit_admin_user_path(@user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     def remove_identity
@@ -166,7 +166,7 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to edit_admin_user_path(@user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
@@ -184,7 +184,7 @@ module Admin
 
           format.html do
             flash[:success] = message
-            redirect_back(fallback_location: admin_users_path)
+            redirect_back(fallback_location: admin_user_path(params[:id]))
           end
 
           format.js { render json: { result: message }, content_type: "application/json" }
@@ -195,7 +195,7 @@ module Admin
 
           format.html do
             flash[:danger] = message
-            redirect_back(fallback_location: admin_users_path)
+            redirect_back(fallback_location: admin_user_path(params[:id]))
           end
 
           format.js do
