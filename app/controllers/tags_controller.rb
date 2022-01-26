@@ -62,7 +62,7 @@ class TagsController < ApplicationController
   private
 
   def tags
-    @tags ||= Tag.direct.includes(:sponsorship).limit 100
+    @tags ||= Tag.direct.includes(:sponsorship).limit(100)
   end
 
   def convert_empty_string_to_nil
