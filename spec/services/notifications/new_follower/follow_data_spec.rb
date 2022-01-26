@@ -1,6 +1,6 @@
 require "rails_helper"
 RSpec.describe Notifications::NewFollower::FollowData do
-  let(:valid_attributes) { { followable_id: 1, followable_type: "User", follower_id: 2 } }
+  let(:valid_attributes) { { "followable_id" => 1, "followable_type" => "User", "follower_id" => 2 } }
 
   describe ".coerce" do
     subject(:coercion) { described_class.coerce(coercible) }

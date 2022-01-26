@@ -33,10 +33,10 @@ module Slack
         )
 
         Slack::Messengers::Worker.perform_async(
-          message: message,
-          channel: "warned-user-comments",
-          username: "sloan_watch_bot",
-          icon_emoji: ":sloan:",
+          "message" => message,
+          "channel" => "warned-user-comments",
+          "username" => "sloan_watch_bot",
+          "icon_emoji" => ":sloan:",
         )
       end
 

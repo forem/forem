@@ -351,7 +351,7 @@ seeder.create_if_none(Podcast) do
 
   podcast_objects.each do |attributes|
     podcast = Podcast.create!(attributes)
-    Podcasts::GetEpisodesWorker.perform_async(podcast_id: podcast.id)
+    Podcasts::GetEpisodesWorker.perform_async("podcast_id" => podcast.id)
   end
 end
 ##############################################################################

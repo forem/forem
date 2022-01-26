@@ -7,4 +7,11 @@ namespace :cache do
       BustCachePathWorker.set(queue: :high_priority).perform_in(n.seconds, "/onboarding")
     end
   end
+
+  desc "Clear application cache"
+  task clear_app_cache: :environment do
+    raise "Attempting to clear Rails cache in production" if Rails.env.production?
+
+    Rails.cache.clear
+  end
 end
