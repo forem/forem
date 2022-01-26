@@ -42,7 +42,7 @@ class StackeryTag < LiquidTagBase
 
   def extract_params(params)
     params = params.delete("?").split("&")
-    params.filter_map { |param| param if valid_param(param) }.join("&")
+    params.select { |param| valid_param(param) }.join("&")
   end
 
   def valid_param(param)
