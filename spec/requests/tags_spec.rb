@@ -28,6 +28,9 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       get tags_path(q: "java")
       expect(response.body).to include("Search results for java", "java", "javascript")
       expect(response.body).not_to include("ruby")
+
+      get tags_path(q: "yeet")
+      expect(response.body).to include("No results match that query")
     end
   end
 
