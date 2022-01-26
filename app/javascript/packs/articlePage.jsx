@@ -8,71 +8,11 @@ import { embedGists } from '../utilities/gist';
 
 const animatedImages = document.querySelectorAll('[data-animated="true"]');
 if (animatedImages.length > 0) {
-  import('freezeframe').then(({ default: Freezeframe }) => {
-    const freezeframes = [];
-
-    const handleMutationsForReadyState = (_mutationList, observer) => {
-      // Wait until freezeframe has finished initializing
-      const initializedFrames = document.querySelectorAll(
-        '.ff-container.ff-ready',
-      );
-
-      if (initializedFrames.length === freezeframes.length) {
-        observer.disconnect();
-
-        const okWithMotion = window.matchMedia(
-          '(prefers-reduced-motion: no-preference)',
-        ).matches;
-
-        freezeframes.forEach((ff) => {
-          if (okWithMotion) {
-            ff.start();
-          }
-
-          // Freezeframe doesn't allow gifs to be stopped by keyboard press, so we add a button to handle it
-          const ffWrapper = ff.items[0]['$container'];
-
-          render(
-            <button
-              aria-label="Toggle animation playback"
-              aria-pressed={!okWithMotion}
-              className="ff-button"
-              onClick={(e) => {
-                ff.toggle();
-                const { target } = e;
-                const isPressed =
-                  target.getAttribute('aria-pressed') === 'true';
-                target.setAttribute('aria-pressed', !isPressed);
-              }}
-            >
-              toggle
-            </button>,
-            ffWrapper,
-          );
-        });
-      }
-    };
-
-    const readyWatcher = new MutationObserver(handleMutationsForReadyState);
-    readyWatcher.observe(document.querySelector('main'), {
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    // Remove the surrounding links for the image, so it can be clicked to play/pause
-    for (const image of animatedImages) {
-      image.closest('a').outerHTML = image.outerHTML;
-
-      freezeframes.push(
-        new Freezeframe({
-          selector: `img[src="${image.getAttribute('src')}"]`,
-          responsive: false,
-          trigger: 'click',
-        }),
-      );
-    }
-  });
+  import('@utilities/animatedImageUtils').then(
+    ({ initializePausableAnimatedImages }) => {
+      initializePausableAnimatedImages(animatedImages);
+    },
+  );
 }
 
 const fullscreenActionElements = document.getElementsByClassName(
