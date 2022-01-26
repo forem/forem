@@ -195,6 +195,11 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
+    it "returns StackeryTag for a stackery url" do
+      expect(described_class.find_liquid_tag_for(link: "https://app.stackery.io/editor/design?owner=stackery&repo=quickstart-ruby&file=template.yaml"))
+        .to eq(StackeryTag)
+    end
+
     it "returns TweetTag for a tweet url" do
       expect(described_class.find_liquid_tag_for(link: "https://twitter.com/aritdeveloper/status/1483614684884484099"))
         .to eq(TweetTag)
