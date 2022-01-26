@@ -82,7 +82,8 @@ RSpec.describe ForemInstance, type: :model do
       expect(described_class.smtp_enabled?).to be(false)
     end
 
-    it "returns true if user_name and password are present" do
+    it "returns true if provided_minimum_settings?" do
+      allow(Settings::SMTP).to receive(:address).and_return("address")
       allow(Settings::SMTP).to receive(:user_name).and_return("something")
       allow(Settings::SMTP).to receive(:password).and_return("something")
 
