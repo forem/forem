@@ -15,24 +15,56 @@ export default {
       control: {
         type: 'select',
         options: {
-          default: 'default',
-          small: 's',
-          medium: 'm',
+          Default: undefined,
+          Small: 's',
+          Medium: 'm',
         },
       },
+      description:
+        'There are several sizes available - use appropriate size depending on how much content you need to display inside modal.',
       table: {
         defaultValue: { summary: 'default' },
       },
     },
-    overlay: {
+    noBackdrop: {
+      description: 'Removes the default backdrop overlay.',
       table: {
         defaultValue: { summary: true },
+      },
+    },
+    backdropDismissible: {
+      description:
+        'If `backdrop` is visible you can also make it clickable so clicking it would dismiss the Modal',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+    prompt: {
+      description:
+        'Special style for Modals that should be used for short prompts (short messages or confirmations). Prompts can only be used with size `small` (`s`).',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+    centered: {
+      description:
+        'In some cases it might be "nicer" to center Modals content. This will only work with `prompt` though.',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+    danger: {
+      description:
+        'Add special styling for Modals providing destructive functionality, e.g. _"Are you sure you want to remove this user and all their data?"_',
+      table: {
+        defaultValue: { summary: false },
       },
     },
     title: {
       control: {
         type: 'text',
       },
+      description: '🤷‍♂️',
       table: {
         defaultValue: { summary: 'Modal title' },
       },
@@ -48,11 +80,21 @@ export const Default = (args) => {
       <Button onClick={() => setIsModalOpen(true)}>Open modal</Button>
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)} {...args}>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            odio est, ultricies vel euismod ut, fringilla quis tellus. Sed at
-            dui mi. Fusce cursus nibh lectus, vitae lobortis orci volutpat quis.{' '}
-          </p>
+          <div class="flex flex-col gap-4">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse odio est, ultricies vel euismod ut, fringilla quis
+              tellus. Sed at dui mi. Fusce cursus nibh lectus, vitae lobortis
+              orci volutpat quis.
+            </p>
+            <p>
+              Sed at dui mi. Fusce cursus nibh lectus, vitae lobortis orci
+              volutpat quis. Lorem ipsum dolor sit amet, consectetur adipiscing
+              elit. Suspendisse odio est, ultricies vel euismod ut, fringilla
+              quis tellus. Sed at dui mi. Fusce cursus nibh lectus, vitae
+              lobortis orci volutpat quis.
+            </p>
+          </div>
         </Modal>
       )}
     </div>
@@ -60,7 +102,11 @@ export const Default = (args) => {
 };
 
 Default.args = {
-  size: 'default',
-  title: 'My modal',
-  overlay: true,
+  size: undefined,
+  title: 'Modal title',
+  noBackdrop: false,
+  backdropDismissible: false,
+  prompt: false,
+  centered: false,
+  danger: false,
 };
