@@ -47,7 +47,7 @@ class StackblitzTag < LiquidTagBase
 
   def build_link_with_params(id, params)
     params = params.split("&") if params.is_a?(String)
-    vetted_params = params.filter_map { |param| param if valid_param(param) }.join("&")
+    vetted_params = params.select { |param| valid_param(param) }.join("&")
 
     [id, vetted_params]
   end
