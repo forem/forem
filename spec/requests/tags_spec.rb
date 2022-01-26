@@ -19,7 +19,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     end
 
     it "searches tags" do
-      %w(ruby java javascript).each { |t| create(:tag, name: t) }
+      %w[ruby java javascript].each { |t| create(:tag, name: t) }
 
       get tags_path(q: "ruby")
       expect(response.body).to include("Search results for ruby", "ruby")
