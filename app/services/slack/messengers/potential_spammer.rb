@@ -16,10 +16,10 @@ module Slack
         )
 
         Slack::Messengers::Worker.perform_async(
-          message: message,
-          channel: "potential-spam",
-          username: "spam_account_checker_bot",
-          icon_emoji: ":exclamation:",
+          "message" => message,
+          "channel" => "potential-spam",
+          "username" => "spam_account_checker_bot",
+          "icon_emoji" => ":exclamation:",
         )
       end
 

@@ -44,9 +44,9 @@ module Notifications
 
       def to_h
         {
-          followable_id: followable_id,
-          followable_type: followable_type,
-          follower_id: follower_id
+          "followable_id" => followable_id,
+          "followable_type" => followable_type,
+          "follower_id" => follower_id
         }
       end
     end

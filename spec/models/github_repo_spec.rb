@@ -81,9 +81,9 @@ RSpec.describe GithubRepo, type: :model do
   describe "::update_to_latest" do
     it "enqueues GithubRepos::RepoSyncWorker" do
       repo.update(updated_at: 1.week.ago)
-      allow(GithubRepos::RepoSyncWorker).to receive(:perform_async)
+      allow(GithubRepos::RepoSyncWorker).to receive(:perform_bulk)
       described_class.update_to_latest
-      expect(GithubRepos::RepoSyncWorker).to have_received(:perform_async).with(repo.id)
+      expect(GithubRepos::RepoSyncWorker).to have_received(:perform_bulk).with([[repo.id]])
     end
   end
 end

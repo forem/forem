@@ -6,7 +6,8 @@ RSpec.describe AbExperiment do
 
   describe ".get" do
     before do
-      allow(controller).to receive(:field_test).with(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user).and_return("special")
+      allow(controller).to receive(:field_test).with(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT,
+                                                     participant: user).and_return("special")
     end
 
     context "with :feed_strategy_round_3 experiment" do
