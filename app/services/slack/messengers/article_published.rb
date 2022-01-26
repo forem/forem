@@ -20,10 +20,10 @@ module Slack
 
         # [forem-fix] Remove channel name from Settings::General
         Slack::Messengers::Worker.perform_async(
-          message: message,
-          channel: Settings::General.article_published_slack_channel,
-          username: "article_bot",
-          icon_emoji: ":writing_hand:",
+          "message" => message,
+          "channel" => Settings::General.article_published_slack_channel,
+          "username" => "article_bot",
+          "icon_emoji" => ":writing_hand:",
         )
       end
 
