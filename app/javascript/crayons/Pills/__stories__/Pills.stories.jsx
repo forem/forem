@@ -14,22 +14,6 @@ export default {
     },
   },
   argTypes: {
-    element: {
-      control: {
-        type: 'select',
-        options: {
-          button: undefined,
-          a: 'a',
-          span: 'span',
-          li: 'li',
-        },
-      },
-      description:
-        'Pills can be used in a bunch of different contexts, therefore it is important to use appropriate element to represent it in the markup.',
-      table: {
-        defaultValue: { summary: 'button' },
-      },
-    },
     descriptionIcon: {
       control: false,
       description:
@@ -41,7 +25,7 @@ export default {
     actionIcon: {
       control: false,
       description:
-        'If possible, this icon should represent the action associated with the Pill. If there is no action associated, consider not using this icon.',
+        'If possible, this icon should represent the action associated with the Pill.',
       table: {
         defaultValue: { summary: 'XIcon' },
       },
@@ -49,6 +33,13 @@ export default {
     destructiveActionIcon: {
       description:
         'Sometimes clicking a pill may cause a destructive action. When `destructiveActionIcon` prop is set to true, it will use "X" icon for `actionIcon` value by default, and will also apply appropriate style to it.',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+    noAction: {
+      description:
+        'In some edge cases (very edge...) we may not want to trigger any action. Enabling this prop will add appropriate attributes to the Pill to still make it accessible for assistive technologies.',
       table: {
         defaultValue: { summary: false },
       },
@@ -69,10 +60,10 @@ export default {
 export const Default = (args) => <Pill {...args} />;
 Default.args = {
   children: 'Hello world',
-  element: undefined,
   descriptionIcon: undefined,
   actionIcon: undefined,
   destructiveActionIcon: false,
+  noAction: false,
 };
 
 export const WithDescriptionIcon = (args) => <Pill {...args} />;
@@ -118,4 +109,17 @@ export const WithTooltip = (args) => <Pill {...args} />;
 WithTooltip.args = {
   ...Default.args,
   tooltip: 'Tooltip content...',
+};
+
+export const NoAction = (args) => <Pill {...args} />;
+NoAction.args = {
+  ...Default.args,
+  noAction: true,
+};
+
+export const NoActionWithTooltip = (args) => <Pill {...args} />;
+NoActionWithTooltip.args = {
+  ...Default.args,
+  noAction: true,
+  tooltip: 'Explain why no action...',
 };

@@ -7,14 +7,13 @@ import XIcon from '@images/x.svg';
 
 export const Pill = ({
   children,
-  element = 'button',
-  href = '#',
   descriptionIcon,
   actionIcon,
   destructiveActionIcon,
   className,
   tooltip,
   onKeyUp,
+  noAction,
   ...otherProps
 }) => {
   const [suppressTooltip, setSuppressTooltip] = useState(false);
@@ -27,31 +26,25 @@ export const Pill = ({
     setSuppressTooltip(event.key === 'Escape');
   };
 
-  const Element = element;
-
-  let restOfProps;
-
-  switch (element) {
-    case 'button':
-      restOfProps = { type: 'button', onKeyUp: handleKeyUp };
-      break;
-    case 'a':
-      restOfProps = { href };
-      break;
-    default:
-      restOfProps = {};
-  }
-
   const classes = classNames('c-pill', {
     'c-pill--description-icon': descriptionIcon,
     'c-pill--action-icon': actionIcon || destructiveActionIcon,
     'c-pill--action-icon--destructive': destructiveActionIcon,
     'crayons-tooltip__activator': tooltip,
+    'cursor-default': noAction,
+    'cursor-help': tooltip && noAction,
     [className]: className,
   });
 
   return (
-    <Element className={classes} {...otherProps} {...restOfProps}>
+    <button
+      className={classes}
+      {...otherProps}
+      type="button"
+      onKeyUp={handleKeyUp}
+      readonly={noAction}
+      aria-disabled={noAction}
+    >
       {descriptionIcon && (
         <Icon
           aria-hidden="true"
@@ -73,7 +66,7 @@ export const Pill = ({
           className="c-pill__action-icon"
         />
       )}
-      {tooltip ? (
+      {tooltip && (
         <span
           data-testid="tooltip"
           className={classNames('crayons-tooltip__content', {
@@ -82,8 +75,8 @@ export const Pill = ({
         >
           {tooltip}
         </span>
-      ) : null}
-    </Element>
+      )}
+    </button>
   );
 };
 
@@ -91,10 +84,10 @@ Pill.displayName = 'Pill';
 
 Pill.propTypes = {
   children: PropTypes.string.isRequired,
-  element: PropTypes.oneOf(['button', 'a', 'span', 'li']),
   className: PropTypes.string,
   descriptionIcon: PropTypes.elementType,
   actionIcon: PropTypes.elementType,
   destructiveActionIcon: PropTypes.bool,
+  noAction: PropTypes.bool,
   tooltip: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 };

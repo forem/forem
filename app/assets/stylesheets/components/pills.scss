@@ -23,7 +23,7 @@
 
   &:hover,
   .js-focus-visible &.focus-visible:focus {
-    &:is(a, button:enabled) {
+    &:not([aria-disabled='true']) {
       --color: var(--pill-color-hover);
       --border: var(--pill-border-hover);
       --bg: var(--pill-bg-hover);
@@ -32,11 +32,6 @@
 
       &:is(.c-pill--action-icon--destructive) {
         --action-icon-color: var(--accent-danger);
-      }
-
-      &[href] {
-        text-decoration: underline;
-        --color: var(--link-color-hover);
       }
     }
   }

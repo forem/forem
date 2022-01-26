@@ -7,19 +7,7 @@ Generally pills should occur in a herd 🐺. So it's type of data that you would
 For example, imagine a list of roles associated with some user's account. 
 This could be represented as bunch of pills (of course depending on the context) - each pill being one role.
 
-Pills could be used to simply represent some data but they can also have an action (only one action per pill) baked-in.
-
-## Element
-
-For the reason mentioned above, it is allowed for a pill to be used as one of the following elements:
-
-- `button` - for actionable pill, in a way that would trigger some function ([read more about using Buttons vs Links](https://forem.team/pp/buttons-links-ctas-234e))
-- `a` - for actionable pill, in a way that would take you to other location,
-- `span` - for static representation of data,
-- `li` - for static representation of data.
-
-We set this limitation because of the nature of the pill - where and how it should occur.
-This constraint should limit overusing it for undesignated scenarios.
+Pills, expect just representing some date, should also have associated action (e.g. "remove", "edit", ...) but only one per pill.
 
 ## Icons
 
@@ -56,12 +44,32 @@ If you need that "destructive" styling but want to use another icon, you can do 
 </Pill>
 ```
 
+## No Action
+
+Pills should usually have an associated action (e.g. "remove", "edit", etc.) but if some rare cases you may want to show one (or more)
+of the pills without associated action (for example due to some limitation coming from backend logic, 
+like "you can't remove ABC role becuase you don't have appropraite privilages").
+
+Since Pill is a `<button>` under the hood we actually want to keep it that way. So for these specific and rare occasions please use
+`noAction` prop which will apply approriate attributes to the button (`aria-disabled="true" readonly="true"`) - this will keep the Pill
+accessible.
+
+It would be wise to provide additional explanation, for example by adding a `tooltip` (read more below).
+
 ## Tooltip
 
 By passing a string or node in `tooltip` prop, button will get a custom tooltip (visually different than a classic `title`) on `:hover` and `:focus`.
 The tooltip makes up part of the "accessible name" used by assistive technologies like screen readers. 
 If you _do not_ wish the tooltip to be part of the accessible name, consider wrapping it in a `<span aria-hidden="true">`.
 Tooltips can be temporarily dismissed on `Escape` key press.
+
+```
+<Pill
+  noAction
+  tooltip="Here's why you can't do anything with this Pill..."
+  ...
+>
+```
 
 ## Design
 
