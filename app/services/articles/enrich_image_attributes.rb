@@ -34,9 +34,9 @@ module Articles
 
         next if image.blank?
 
-        property = FastImage.new(image, timeout: 10)
-        img["width"], img["height"] = property.size
-        img["data-animated"] = true if property.type == :gif
+        img_properties = FastImage.new(image, timeout: 10)
+        img["width"], img["height"] = img_properties.size
+        img["data-animated"] = true if img_properties.type == :gif
       end
 
       article.update_columns(processed_html: parsed_html.to_html)
