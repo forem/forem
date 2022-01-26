@@ -553,6 +553,9 @@ article {
 }
 
 .ff-container {
+  --gif-bg: rgb(var(--black));
+  --gif-color: rgb(var(--white));
+
   left: 50%;
   transform: translateX(-50%);
 
