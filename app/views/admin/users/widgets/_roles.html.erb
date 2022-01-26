@@ -44,7 +44,7 @@
 <% end %>
 
 <div id="add-role" class="hidden">
-  <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4" }) do |f| %>
+  <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4", id: nil }) do |f| %>
     <div class="crayons-field">
       <%= f.label "Role", class: "crayons-field__label" %>
       <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>

@@ -18,7 +18,7 @@
 
     <% @user.identities.each do |identity| %>
       <%= form_for(@user, url: remove_identity_admin_user_path(@user),
-                          html: { class: "fs-base p-4 py-3 c-card c-card--interactive flex gap-2 justify-between items-center", method: :delete, onsubmit: "return confirm('Are you sure? This should only be done as a solution for the listed example(s).)" }) do |f| %>
+                          html: { class: "fs-base p-4 py-3 c-card c-card--interactive flex gap-2 justify-between items-center", method: :delete, onsubmit: "return confirm('Are you sure? This should only be done as a solution for the listed example(s).)", id: nil }) do |f| %>
         <%= f.hidden_field :identity_id, value: identity.id %>
         <div class="flex-1 flex items-center gap-2">
           <%= crayons_icon_tag(identity.provider, class: "shrink-0", width: 32, height: 32) %>
