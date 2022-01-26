@@ -12,6 +12,7 @@ seeder = Seeder.new
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false
 Settings::Authentication.allow_email_password_registration = true
+Settings::SMTP.address = "smtp.website.com"
 Settings::SMTP.user_name = "username"
 Settings::SMTP.password = "password"
 

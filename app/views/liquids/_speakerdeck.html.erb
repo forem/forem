@@ -1,21 +1,9 @@
-<%# Padding bottom set for 16:9 aspect ratio https://benmarshall.me/responsive-iframes/ %>
-<div class="ltag_speakerdeck"
-  style="position: relative;
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;">
-  <iframe allowfullscreen="true"
-    allowtransparency="true"
-    frameborder="0"
-    height="463"
-    id="talk_frame_<%= id %>"
-    mozallowfullscreen="true"
-    src="//speakerdeck.com/player/<%= id %>"
-    style="border:0; padding:0; margin:0; background:transparent;position: absolute;
-            width: 100%;
-            height: 100%;
-            left: 0; top: 0;"
-    webkitallowfullscreen="true"
-    width="710"
-    loading="lazy"></iframe>
-</div>
+<iframe
+  class="speakerdeck-iframe ltag_speakerdeck"
+  frameborder="0"
+  src="https://speakerdeck.com/player/<%= id %>"
+  allowfullscreen="true"
+  mozallowfullscreen="true"
+  webkitallowfullscreen="true"
+  data-ratio="1.3333333333333333">
+</iframe>

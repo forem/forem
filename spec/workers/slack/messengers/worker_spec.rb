@@ -12,7 +12,7 @@ RSpec.describe Slack::Messengers::Worker, type: :worker do
   end
 
   include_examples "#enqueues_on_correct_queue", "default", [
-    { message: "hello", channel: "#help", username: "sloan_watch_bot", icon_emoji: ":sloan:" },
+    { "message" => "hello", "channel" => "#help", "username" => "sloan_watch_bot", "icon_emoji" => ":sloan:" },
   ]
 
   describe "#perform_now" do

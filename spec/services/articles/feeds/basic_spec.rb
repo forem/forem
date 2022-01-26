@@ -30,7 +30,6 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
     it "returns articles with score above 0 sorted by user preference scores" do
       user.follow(old_story.user)
       old_story_tag = Tag.find_by(name: unique_tag_name)
-      old_story_tag.update(points: 10)
       user.follow(old_story_tag)
 
       result = feed.feed

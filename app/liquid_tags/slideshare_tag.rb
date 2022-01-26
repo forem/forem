@@ -1,9 +1,14 @@
 class SlideshareTag < LiquidTagBase
   PARTIAL = "liquids/slideshare".freeze
+  REGISTRY_REGEXP = %r{https://(?:www.)?slideshare.net/slideshow/embed_code/key/(?<id>\w{12,14})}
+  VALID_ID_REGEXP = /\A(?<id>\w{12,14})\Z/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
-  def initialize(_tag_name, key, _parse_context)
+  def initialize(_tag_name, input, _parse_context)
     super
-    @key = validate(key.strip)
+
+    stripped_input = strip_tags(input)
+    @key = parse_input(stripped_input)
   end
 
   def render(_context)
@@ -11,21 +16,21 @@ class SlideshareTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         key: @key,
-        height: 450
+        height: 487
       },
     )
   end
 
   private
 
-  def validate(key)
-    unless key.match?(/\A[a-zA-Z0-9]{12,14}\Z/)
-      raise StandardError,
-            I18n.t("liquid_tags.slideshare_tag.invalid_slideshare_key")
-    end
+  def parse_input(input)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, I18n.t("liquid_tags.slideshare_tag.invalid_slideshare_key") unless match
 
-    key
+    match[:id]
   end
 end
 
 Liquid::Template.register_tag("slideshare", SlideshareTag)
+
+UnifiedEmbed.register(SlideshareTag, regexp: SlideshareTag::REGISTRY_REGEXP)
