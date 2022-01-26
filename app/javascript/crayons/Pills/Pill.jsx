@@ -42,7 +42,6 @@ export const Pill = ({
       {...otherProps}
       type="button"
       onKeyUp={handleKeyUp}
-      readonly={noAction}
       aria-disabled={noAction}
     >
       {descriptionIcon && (
