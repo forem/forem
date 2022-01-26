@@ -60,7 +60,7 @@ namespace :navigation_links do
         url: URL.url("/"),
         icon: home_icon,
         display_only_when_signed_in: false,
-        position: 0,
+        position: -1,
         section: :default,
       )
     end
@@ -71,7 +71,7 @@ namespace :navigation_links do
         url: URL.url("readinglist"),
         icon: reading_icon,
         display_only_when_signed_in: true,
-        position: 1,
+        position: 0,
         section: :default,
       )
     end
@@ -82,7 +82,7 @@ namespace :navigation_links do
         url: URL.url("contact"),
         icon: contact_icon,
         display_only_when_signed_in: false,
-        position: 2,
+        position: 1,
         section: :default,
       )
     end
@@ -131,42 +131,42 @@ namespace :navigation_links do
       name: "Home",
       icon: home_icon,
       display_only_when_signed_in: false,
-      position: 0,
+      position: -1,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/readinglist").first_or_create(
       name: "Reading List",
       icon: reading_icon,
       display_only_when_signed_in: true,
-      position: 1,
+      position: 0,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/listings").first_or_create(
       name: "Listings",
       icon: listing_icon,
       display_only_when_signed_in: false,
-      position: 2,
+      position: 1,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/pod").first_or_create(
       name: "Podcasts",
       icon: mic_icon,
       display_only_when_signed_in: false,
-      position: 3,
+      position: 2,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/videos").first_or_create(
       name: "Videos",
       icon: camera_icon,
       display_only_when_signed_in: false,
-      position: 4,
+      position: 3,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/tags").first_or_create(
       name: "Tags",
       icon: tag_icon,
       display_only_when_signed_in: false,
-      position: 5,
+      position: 4,
       section: :default,
     )
     NavigationLink.where(url: "#{base_url}/code-of-conduct").first_or_create(
