@@ -139,7 +139,7 @@ group :development, :test do
   gem "knapsack_pro", "~> 3.1.3" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
-  gem "rspec-rails", "~> 5.0" # rspec-rails is a testing framework for Rails 3+
+  gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.25", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.13", require: false # Automatic Rails code style checking tool
