@@ -3,24 +3,26 @@
 /* eslint-disable no-multi-str */
 
 function buildArticleHTML(article) {
+  var tagIcon = `<svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg"><path d="M7.784 14l.42-4H4V8h4.415l.525-5h2.011l-.525 5h3.989l.525-5h2.011l-.525 5H20v2h-3.784l-.42 4H20v2h-4.415l-.525 5h-2.011l.525-5H9.585l-.525 5H7.049l.525-5H4v-2h3.784zm2.011 0h3.99l.42-4h-3.99l-.42 4z"/></svg>`;
   if (article && article.class_name === 'Tag') {
     return `<article class="crayons-story">
-        <div class="crayons-story__body">
-          <div class="crayons-story__top mb-0">
-            <div class="crayons-story__meta">
-              <h3 class="crayons-story__title">
-                <a href="/t/${article.name}" class="crayons-tag crayons-tag--l">
-                  <span class="crayons-tag__prefix">#</span><span class="pl-4">${
-                    article.name
-                  }</span>
-                </a>
-              </h3>\
-            </div>
-          </div>
-          <div class="crayons-story__indention">
-            <div class="crayons-story__snippet mb-1">
-              ${article.short_summary || ''}
-            </div>
+        <div class="crayons-story__body flex items-start gap-2">
+          <span class="radius-default p-2 shrink-0" style="background: ${
+            article.bg_color_hex || '#000000'
+          }1a; color: ${article.bg_color_hex || '#000'}">
+            ${tagIcon}
+          </span>
+          <div>
+            <h3 class="crayons-subtitle-2 lh-tight py-2">
+              <a href="/t/${article.name}" class="c-link">
+                ${article.name}
+              </a>
+            </h3>
+            ${
+              article.short_summary
+                ? `<div class="truncate-at-3">${article.short_summary}</div>`
+                : ''
+            }
           </div>
         </div>
       </article>`;
