@@ -17,6 +17,7 @@
     border-radius: var(--radius);
     width: max-content;
     opacity: var(--opacity-0);
+    pointer-events: none;
   }
 
   .js-focus-visible &__activator.focus-visible:focus,
