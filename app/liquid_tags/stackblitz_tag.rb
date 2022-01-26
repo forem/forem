@@ -32,7 +32,7 @@ class StackblitzTag < LiquidTagBase
   def parsed_input(input)
     id, *params = input.split
     match = pattern_match_for(id, REGEXP_OPTIONS)
-    raise StandardError, I18n.t("liquid_tags.stackblitz_tag.invalid_stackblitz_id ") unless match
+    raise StandardError, I18n.t("liquid_tags.stackblitz_tag.invalid_stackblitz_id") unless match
 
     return [match[:id], nil] unless params_present?(match) || params
 
