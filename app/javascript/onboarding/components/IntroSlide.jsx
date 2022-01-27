@@ -57,30 +57,21 @@ export class IntroSlide extends Component {
   }
 
   isButtonDisabled() {
-    const {
-      checked_code_of_conduct,
-      checked_terms_and_conditions,
-    } = this.state;
+    const { checked_code_of_conduct, checked_terms_and_conditions } =
+      this.state;
 
     return !checked_code_of_conduct || !checked_terms_and_conditions;
   }
 
   render() {
-    const {
-      slidesCount,
-      currentSlideIndex,
-      prev,
-      communityConfig,
-    } = this.props;
-    const {
-      checked_code_of_conduct,
-      checked_terms_and_conditions,
-      text,
-    } = this.state;
+    const { slidesCount, currentSlideIndex, prev, communityConfig } =
+      this.props;
+    const { checked_code_of_conduct, checked_terms_and_conditions, text } =
+      this.state;
 
     if (text) {
       return (
-        <div className="onboarding-main crayons-modal crayons-modal--m">
+        <div className="onboarding-main crayons-modal crayons-modal--large">
           <div className="crayons-modal__box overflow-auto">
             <div className="onboarding-content terms-and-conditions-wrapper">
               <button
@@ -104,7 +95,7 @@ export class IntroSlide extends Component {
     return (
       <div
         data-testid="onboarding-intro-slide"
-        className="onboarding-main introduction crayons-modal crayons-modal--m"
+        className="onboarding-main introduction crayons-modal"
       >
         <div
           className="crayons-modal__box overflow-auto"

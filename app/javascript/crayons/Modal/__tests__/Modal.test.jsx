@@ -144,12 +144,14 @@ it('should render with a backdrop', async () => {
 
 it('should render with a different size modal', async () => {
   const { getByTestId } = render(
-    <Modal title="This is a modal title" size="m" onClose={jest.fn()}>
+    <Modal title="This is a modal title" size="large" onClose={jest.fn()}>
       This is the modal body content
     </Modal>,
   );
 
   const modalContainer = getByTestId('modal-container');
 
-  expect(modalContainer.classList.contains('crayons-modal--m')).toEqual(true);
+  expect(modalContainer.classList.contains('crayons-modal--large')).toEqual(
+    true,
+  );
 });

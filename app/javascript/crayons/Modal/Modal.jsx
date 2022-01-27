@@ -72,6 +72,6 @@ Modal.propTypes = {
   prompt: PropTypes.bool,
   centered: PropTypes.bool,
   onClose: PropTypes.func,
-  size: PropTypes.oneOf(['small', 'medium', 'large']).isRequired,
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
   focusTrapSelector: PropTypes.string,
 };
