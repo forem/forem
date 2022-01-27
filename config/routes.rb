@@ -255,7 +255,6 @@ Rails.application.routes.draw do
     get "/welcome", to: "pages#welcome"
     get "/challenge", to: "pages#challenge"
     get "/checkin", to: "pages#checkin"
-    get "/badge", to: "pages#badge", as: :pages_badge
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
     get "/sponsors", to: "pages#sponsors"
