@@ -1,14 +1,18 @@
 class StackblitzTag < LiquidTagBase
   PARTIAL = "liquids/stackblitz".freeze
-  ID_REGEXP = /\A[a-zA-Z0-9\-]{0,60}\z/
-  VIEW_OPTION_REGEXP = /\Aview=(preview|editor|both)\z/
-  FILE_OPTION_REGEXP = /\Afile=(.*)\z/
+  REGISTRY_REGEXP = %r{https://stackblitz.com/edit/(?<id>[\w\-]{,60})(?<params>\?.*)?}
+  ID_REGEXP = /\A(?<id>[\w\-]{,60})\Z/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
+  # rubocop:disable Layout/LineLength
+  PARAM_REGEXP = /\A(view=(preview|editor|both))|(file=(.*))|(embed=1)|(hideExplorer=1)|(hideNavigation=1)|(theme=(default|light|dark))|(ctl=1)|(devtoolsheight=\d)\Z/
+  # rubocop:enable Layout/LineLength
 
-  def initialize(_tag_name, id, _parse_context)
+  def initialize(_tag_name, input, _parse_context)
     super
-    @id = parse_id(id)
-    @view = parse_input(id, method(:valid_view?))
-    @file = parse_input(id, method(:valid_file?))
+
+    stripped_input  = strip_tags(input)
+    unescaped_input = CGI.unescape_html(stripped_input)
+    @id, @params = parsed_input(unescaped_input)
     @height = 500
   end
 
@@ -17,8 +21,7 @@ class StackblitzTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         id: @id,
-        view: @view,
-        file: @file,
+        params: @params,
         height: @height
       },
     )
@@ -26,35 +29,34 @@ class StackblitzTag < LiquidTagBase
 
   private
 
-  def valid_id?(id)
-    id =~ ID_REGEXP
+  def parsed_input(input)
+    id, *params = input.split
+    match = pattern_match_for(id, REGEXP_OPTIONS)
+    raise StandardError, I18n.t("liquid_tags.stackblitz_tag.invalid_stackblitz_id") unless match
+
+    return [match[:id], nil] unless params_present?(match) || params
+
+    build_link_with_params(match[:id], (params_present?(match) || params))
   end
 
-  def parse_id(input)
-    input_no_space = input.split.first
-    raise StandardError, I18n.t("liquid_tags.stackblitz_tag.invalid_stackblitz_id") unless valid_id?(input_no_space)
+  def params_present?(match)
+    return unless match.names.include?("params")
 
-    input_no_space
+    match[:params].delete("?")
   end
 
-  def parse_input(input, validator)
-    inputs = input.split
+  def build_link_with_params(id, params)
+    params = params.split("&") if params.is_a?(String)
+    vetted_params = params.select { |param| valid_param(param) }.join("&")
 
-    # Validation
-    validated_views = inputs.filter_map { |input_option| validator.call(input_option) }
-    raise StandardError, I18n.t("liquid_tags.stackblitz_tag.invalid_options") unless validated_views.length.between?(0,
-                                                                                                                     1)
-
-    validated_views.length.zero? ? "" : validated_views.join.to_s
+    [id, vetted_params]
   end
 
-  def valid_view?(option)
-    option.match(VIEW_OPTION_REGEXP)
-  end
-
-  def valid_file?(option)
-    option.match(FILE_OPTION_REGEXP)
+  def valid_param(param)
+    (param =~ PARAM_REGEXP)&.zero?
   end
 end
 
 Liquid::Template.register_tag("stackblitz", StackblitzTag)
+
+UnifiedEmbed.register(StackblitzTag, regexp: StackblitzTag::REGISTRY_REGEXP)
