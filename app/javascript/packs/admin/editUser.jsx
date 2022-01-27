@@ -46,13 +46,12 @@ const openModal = async (event) => {
 
   const { h, render } = preact;
 
-  const { modalTitle, modalSize, modalContentSelector, modalPrompt } = dataset;
+  const { modalTitle, modalSize, modalContentSelector } = dataset;
 
   render(
     <AdminModal
       title={modalTitle}
       size={modalSize}
-      prompt={!!modalPrompt}
       onClose={() => {
         render(null, modalContainer);
       }}
