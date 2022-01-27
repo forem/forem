@@ -15,16 +15,16 @@
             <%= f.button "Verify email address", class: "c-btn w-100 align-left" %>
           <% end %>
         <% end %>
-        <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Export data" data-modal-size="m" data-modal-content-selector="#export-data">Export data</button></li>
-        <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Merge accounts" data-modal-size="m" data-modal-content-selector="#merge-accounts">Merge accounts</button></li>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Export data" data-modal-size="small" data-modal-content-selector="#export-data">Export data</button></li>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Merge accounts" data-modal-size="small" data-modal-content-selector="#merge-accounts">Merge accounts</button></li>
         <% if @user.articles_count > 0 %>
-          <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Unpublish all posts" data-modal-size="m" data-modal-content-selector="#unpublish-all-posts">Unpublish all posts</button></li>
+          <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Unpublish all posts" data-modal-size="small" data-modal-content-selector="#unpublish-all-posts">Unpublish all posts</button></li>
         <% end %>
         <% if @user.identities.any? %>
-          <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Remove social accounts" data-modal-size="m" data-modal-content-selector="#remove-social-accounts">Remove social accounts</button></li>
+          <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Remove social accounts" data-modal-size="medium" data-modal-content-selector="#remove-social-accounts">Remove social accounts</button></li>
         <% end %>
-        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-trigger data-modal-title="Banish for spam" data-modal-size="m" data-modal-content-selector="#banish-for-spam">Banish for spam</button></li>
-        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-trigger data-modal-title="Delete user" data-modal-size="m" data-modal-content-selector="#delete-user">Delete user</button></li>
+        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-trigger data-modal-title="Banish for spam" data-modal-size="small" data-modal-content-selector="#banish-for-spam">Banish for spam</button></li>
+        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-trigger data-modal-title="Delete user" data-modal-size="small" data-modal-content-selector="#delete-user">Delete user</button></li>
       </ul>
     </div>
   </div>
