@@ -22,6 +22,11 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://app.codesandbox.io/embed/exciting-knuth-hywlv?file=/index.html&runonclick=0&view=editor",
     ]
 
+    valid_medium_url_formats = [
+      "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c",
+      "https://themobilist.medium.com/is-universal-basic-mobility-the-route-to-a-sustainable-c-b18e1e2d014c",
+    ]
+
     valid_instagram_url_formats = [
       "https://www.instagram.com/p/CXgzXWXroHK/",
       "https://instagram.com/p/CXgzXWXroHK/",
@@ -49,6 +54,12 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://open.spotify.com/album/3YA5DdB3wSz4pdfEXoMyRd?si=LQ6ft_T9QfiNA_KHbn6CkA",
       "https://open.spotify.com/episode/3fLyjTYjIdHxC0kdKMpbGj?si=5f45e5032cd5450a",
       "https://open.spotify.com/show/3sRrtlRiByFrOC49vPwP8L?si=c3c6c1180afe4094",
+    ]
+
+    valid_stackblitz_url_formats = [
+      "https://stackblitz.com/edit/web-platform-3tqbd4",
+      "https://stackblitz.com/edit/web-platform-3tqbd4?embed=1&file=index.html&hideExplorer=1&hideNavigation=1&theme=dark",
+      "https://stackblitz.com/edit/web-platform-3tqbd4?embed=1&file=index.html&theme=light",
     ]
 
     valid_twitch_url_formats = [
@@ -139,6 +150,13 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(LinkTag)
     end
 
+    it "returns MediumTag for a valid medium url" do
+      valid_medium_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(MediumTag)
+      end
+    end
+
     it "returns NextTechTag for a nexttech url" do
       expect(described_class.find_liquid_tag_for(link: "https://nt.dev/s/6ba1fffbd09e"))
         .to eq(NextTechTag)
@@ -161,9 +179,19 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
+    it "returns SlideshareTag for a slideshare url" do
+      expect(described_class.find_liquid_tag_for(link: "https://www.slideshare.net/slideshow/embed_code/key/d5rGkEgXFDRN17"))
+        .to eq(SlideshareTag)
+    end
+
     it "returns SoundcloudTag for a soundcloud url" do
       expect(described_class.find_liquid_tag_for(link: "https://soundcloud.com/before-30-tv/stranger-moni-lati-lo-1"))
         .to eq(SoundcloudTag)
+    end
+
+    it "returns SpeakerdeckTag for a speakerdeck url" do
+      expect(described_class.find_liquid_tag_for(link: "https://speakerdeck.com/player/87fa761026bf013092b722000a1d8877"))
+        .to eq(SpeakerdeckTag)
     end
 
     it "returns SpotifyTag for a valid spotify url" do
@@ -171,6 +199,18 @@ RSpec.describe UnifiedEmbed::Registry do
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(SpotifyTag)
       end
+    end
+
+    it "returns StackblitzTag for a valid stackblitz url" do
+      valid_stackblitz_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(StackblitzTag)
+      end
+    end
+
+    it "returns StackeryTag for a stackery url" do
+      expect(described_class.find_liquid_tag_for(link: "https://app.stackery.io/editor/design?owner=stackery&repo=quickstart-ruby&file=template.yaml"))
+        .to eq(StackeryTag)
     end
 
     it "returns TweetTag for a tweet url" do

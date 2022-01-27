@@ -101,7 +101,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   return (
     <div
       data-testid="flag-user-modal"
-      class="crayons-modal crayons-modal--s absolute flag-user-modal"
+      class="crayons-modal crayons-modal--small absolute flag-user-modal"
     >
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header flag-user-modal-header">

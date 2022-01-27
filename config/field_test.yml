@@ -5,25 +5,17 @@ experiments:
   # Do not change the goals unless you intend to also change the corresponding code in
   # app/workers/users/record_field_test_event_worker.rb
 
-  feed_strategy_round_4:
+  feed_strategy_round_5:
     variants:
       - original
-      - final_order_by_score
-      - final_order_by_comment_score
-      - final_order_by_last_comment_at
-      - final_order_by_random
-      - final_order_by_random_weighted_to_score
-      - final_order_by_random_weighted_to_comment_score
-      - final_order_by_random_weighted_to_last_comment_at
+      - tag_follow_points_maximum_spectrum
+      - tag_follow_points_medium_spectrum
+      - tag_follow_points_minimum_spectrum
     weights:
-      - 51
-      - 7
-      - 7
-      - 7
-      - 7
-      - 7
-      - 7
-      - 7
+      - 70
+      - 10
+      - 10
+      - 10
     goals:
       - user_creates_comment
       - user_creates_comment_on_at_least_four_different_days_within_a_week

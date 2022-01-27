@@ -28,10 +28,10 @@ module Slack
         )
 
         Slack::Messengers::Worker.perform_async(
-          message: message,
-          channel: "abuse-reports",
-          username: "abuse_bot",
-          icon_emoji: ":cry:",
+          "message" => message,
+          "channel" => "abuse-reports",
+          "username" => "abuse_bot",
+          "icon_emoji" => ":cry:",
         )
       end
 

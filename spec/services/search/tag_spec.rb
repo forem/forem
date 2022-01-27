@@ -5,29 +5,29 @@ RSpec.describe Search::Tag, type: :service do
     it "does not find non supported tags" do
       tag = create(:tag, supported: false)
 
-      expect(described_class.search_documents(tag.name)).to be_empty
+      expect(described_class.search_documents(term: tag.name)).to be_empty
     end
 
     it "returns data in the expected format" do
       tag = create(:tag, supported: true)
 
-      result = described_class.search_documents(tag.name)
+      result = described_class.search_documents(term: tag.name)
 
       expect(result.first.keys).to match_array(
-        %i[id name hotness_score rules_html supported short_summary badge bg_color_hex],
+        %i[id name class_name hotness_score rules_html supported short_summary badge bg_color_hex],
       )
     end
 
     it "finds a tag by its name" do
       tag = create(:tag, supported: true)
 
-      expect(described_class.search_documents(tag.name)).to be_present
+      expect(described_class.search_documents(term: tag.name)).to be_present
     end
 
     it "finds a tag by a partial name" do
       tag = create(:tag, supported: true)
 
-      expect(described_class.search_documents(tag.name.first(1))).to be_present
+      expect(described_class.search_documents(term: tag.name.first(1))).to be_present
     end
 
     it "finds multiple tags whose names have common parts", :aggregate_failures do
@@ -35,7 +35,7 @@ RSpec.describe Search::Tag, type: :service do
       javascript = create(:tag, name: "javascript")
       ruby = create(:tag, name: "ruby")
 
-      result = described_class.search_documents("jav")
+      result = described_class.search_documents(term: "jav")
       tags = result.pluck(:name)
 
       expect(tags).to include(java.name)
@@ -55,7 +55,7 @@ RSpec.describe Search::Tag, type: :service do
       tag1.save!
       tag2.save!
 
-      result = described_class.search_documents("jav")
+      result = described_class.search_documents(term: "jav")
       tags = result.pluck(:name)
 
       expect(tags).to eq([tag2.name, tag1.name])
