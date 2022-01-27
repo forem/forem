@@ -39,10 +39,10 @@ export const Pill = ({
   return (
     <button
       className={classes}
-      {...otherProps}
       type="button"
       onKeyUp={handleKeyUp}
       aria-disabled={noAction}
+      {...otherProps}
     >
       {descriptionIcon && (
         <Icon
