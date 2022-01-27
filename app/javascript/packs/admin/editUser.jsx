@@ -2,6 +2,20 @@ import { initializeDropdown } from '@utilities/dropdownUtils';
 
 let preact;
 let AdminModal;
+const modalContents = new Map();
+
+function getModalContents(modalContentSelector) {
+  if (!modalContents.has(modalContentSelector)) {
+    const modelContentElement = document.querySelector(modalContentSelector);
+    const modalContent = modelContentElement.innerHTML;
+
+    // Remove the element from the DOM to avoid duplicate ID errors in regards to a11y.
+    modelContentElement.remove();
+    modalContents.set(modalContentSelector, modalContent);
+  }
+
+  return modalContents.get(modalContentSelector);
+}
 
 // Append an empty div to the end of the document so that is does not affect the layout.
 const modalContainer = document.createElement('div');
@@ -45,7 +59,7 @@ const openModal = async (event) => {
       <div
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
-          __html: document.querySelector(modalContentSelector).innerHTML,
+          __html: getModalContents(modalContentSelector),
         }}
       />
     </AdminModal>,
