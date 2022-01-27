@@ -20,7 +20,7 @@ module Listings
     def call
       ActiveRecord::Base.transaction do
         # Subtract credits
-        enough_credits = Credits::Buyer.call(
+        enough_credits = Credits::Buy.call(
           purchaser: @purchaser,
           purchase: @listing,
           cost: @cost,

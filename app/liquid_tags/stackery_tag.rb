@@ -1,44 +1,55 @@
 class StackeryTag < LiquidTagBase
   PARTIAL = "liquids/stackery".freeze
+  REGISTRY_REGEXP = %r{https://app.stackery.io/editor/design(?<params>\?.*)?}
+  PARAM_REGEXP = /\A(owner=[\w\-]+)|(repo=[\w\-]+)|(file=.*)|(ref=.*)\Z/
 
   def initialize(_tag_name, input, _parse_context)
     super
-    @data = get_data(input.strip)
+
+    stripped_input  = strip_tags(input)
+    unescaped_input = CGI.unescape_html(stripped_input)
+    @params = parsed_input(unescaped_input)
   end
 
   def render(_context)
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
-        owner: @data[:owner],
-        repo: @data[:repo],
-        ref: @data[:ref]
+        params: @params
       },
     )
   end
 
   private
 
-  def get_data(input)
-    items = input.split
-    owner = items.first
-    repo = items.second
-    ref = items.third || "master"
+  def parsed_input(input)
+    if input.split.length > 1
+      params = input.split
+      owner = params.first
+      repo = params.second
+      ref = params.third || "master"
 
-    validate_items(owner, repo)
+      raise StandardError, I18n.t("liquid_tags.stackery_tag.missing_argument") unless owner && repo
 
-    {
-      owner: owner,
-      repo: repo,
-      ref: ref
-    }
+      "owner=#{owner}&repo=#{repo}&ref=#{ref}"
+    else
+      match = pattern_match_for(input, [REGISTRY_REGEXP])
+      raise StandardError, I18n.t("liquid_tags.stackery_tag.missing_argument") unless match
+
+      extract_params(match[:params])
+    end
   end
 
-  def validate_items(owner, repo)
-    return unless owner.blank? || repo.blank?
+  def extract_params(params)
+    params = params.delete("?").split("&")
+    params.select { |param| valid_param(param) }.join("&")
+  end
 
-    raise StandardError, I18n.t("liquid_tags.stackery_tag.missing_argument")
+  def valid_param(param)
+    (param =~ PARAM_REGEXP)&.zero?
   end
 end
 
 Liquid::Template.register_tag("stackery", StackeryTag)
+
+UnifiedEmbed.register(StackeryTag, regexp: StackeryTag::REGISTRY_REGEXP)
