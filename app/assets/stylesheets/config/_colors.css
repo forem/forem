@@ -277,6 +277,14 @@
   --indicator-info-color: rgb(var(--white));
 
   /***********************************************
+  ** Modals **************************************
+  ***********************************************/
+
+  --modal-bg: rgb(var(--white));
+  --modal-backdrop: rgba(var(--black), 0.6);
+  --modal-danger-border-color: rgb(var(--red-500));
+
+  /***********************************************
   ** Colors **************************************
   ***********************************************/
 
@@ -300,6 +308,9 @@
 
   /* Focus */
   --focus: var(--accent-brand);
+
+  /* Divider */
+  --divider: rgb(var(--grey-200));
 
   /* Shadows */
   --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.1),

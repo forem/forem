@@ -285,6 +285,14 @@
   --indicator-info-color: rgb(var(--indigo-100));
 
   /***********************************************
+  ** Modals **************************************
+  ***********************************************/
+
+  --modal-bg: rgb(var(--grey-900));
+  --modal-backdrop: rgba(var(--black), 0.6);
+  --modal-danger-border-color: rgb(var(--red-400));
+
+  /***********************************************
   ** Colors **************************************
   ***********************************************/
   --color-primary: rgb(var(--grey-50));
@@ -307,6 +315,9 @@
 
   /* Focus */
   --focus: var(--accent-brand-lighter);
+
+  /* Divider */
+  --divider: rgb(var(--grey-700));
 
   /* Shadows */
   --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.5),
