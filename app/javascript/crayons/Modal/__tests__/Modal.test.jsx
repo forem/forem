@@ -101,7 +101,7 @@ it('should close on click outside, if enabled', () => {
       <Modal
         title="This is a modal title"
         onClose={onClose}
-        closeOnClickOutside
+        backdropDismissible
       >
         This is the modal body content
       </Modal>
@@ -130,9 +130,9 @@ it('should render with additional class names', async () => {
   ).toEqual(true);
 });
 
-it('should render with an overlay', async () => {
+it('should render with a backdrop', async () => {
   const { getByTestId } = render(
-    <Modal title="This is a modal title" overlay onClose={jest.fn()}>
+    <Modal title="This is a modal title" backdrop onClose={jest.fn()}>
       This is the modal body content
     </Modal>,
   );
@@ -144,12 +144,7 @@ it('should render with an overlay', async () => {
 
 it('should render with a different size modal', async () => {
   const { getByTestId } = render(
-    <Modal
-      title="This is a modal title"
-      size="large"
-      className="some-additional-class-name"
-      onClose={jest.fn()}
-    >
+    <Modal title="This is a modal title" size="large" onClose={jest.fn()}>
       This is the modal body content
     </Modal>,
   );

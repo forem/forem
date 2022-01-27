@@ -158,7 +158,7 @@ class Notification < ApplicationRecord
 
     def reaction_notification_attributes(reaction, receiver)
       reactable_data = Notifications::Reactions::ReactionData.coerce(reaction).to_h
-      receiver_data = { klass: receiver.class.name, id: receiver.id }
+      receiver_data = { "klass" => receiver.class.name, "id" => receiver.id }
       [reactable_data, receiver_data]
     end
   end

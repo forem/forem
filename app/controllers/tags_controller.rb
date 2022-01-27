@@ -18,7 +18,7 @@ class TagsController < ApplicationController
   def index
     skip_authorization
     @tags_index = true
-    @tags = Tag.direct.includes(:sponsorship).order(hotness_score: :desc).limit(100)
+    @tags = Tag.direct.includes(:sponsorship).order(taggings_count: :desc).limit(100)
   end
 
   def edit
