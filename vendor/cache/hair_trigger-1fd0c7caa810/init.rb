@@ -1,1 +1,0 @@
-require 'hair_trigger'

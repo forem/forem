@@ -1,14 +1,4 @@
 GIT
-  remote: https://github.com/citizen428/hair_trigger.git
-  revision: 1fd0c7caa81056dffabd98a0922d30d0515bd5e4
-  branch: master
-  specs:
-    hairtrigger (0.2.24)
-      activerecord (>= 5.0, < 8)
-      ruby2ruby (~> 2.4)
-      ruby_parser (~> 3.10)
-
-GIT
   remote: https://github.com/forem/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
@@ -363,6 +353,10 @@ GEM
       guard (~> 2.8)
       guard-compat (~> 1.0)
       multi_json (~> 1.8)
+    hairtrigger (0.2.25)
+      activerecord (>= 5.0, < 8)
+      ruby2ruby (~> 2.4)
+      ruby_parser (~> 3.10)
     hashdiff (1.0.1)
     hashie (5.0.0)
     heapy (0.2.0)
@@ -394,7 +388,7 @@ GEM
     httpclient (2.8.3)
     hypershield (0.2.2)
       activerecord (>= 5)
-    i18n (1.8.11)
+    i18n (1.9.0)
       concurrent-ruby (~> 1.0)
     i18n-js (3.9.0)
       i18n (>= 0.6.6)
@@ -965,7 +959,7 @@ DEPENDENCIES
   gibbon (~> 3.4)
   guard (~> 2.18)
   guard-livereload (~> 2.5)
-  hairtrigger!
+  hairtrigger (~> 0.2.25)
   honeybadger (~> 4.10)
   honeycomb-beeline (~> 2.8.1)
   html_truncator (~> 0.4)
