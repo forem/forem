@@ -40,6 +40,21 @@ class Listing < ApplicationRecord
 
   delegate :cost, to: :listing_category
 
+  # As part of making listings "optional", this is the current place to go for the answer "Is the
+  # Listing feature enabled?"  This approach will get us quite far, at least up until we flip this
+  # into a plugin (e.g. we won't be able to guarantee that we have the constant :Listing in the Ruby
+  # object space).
+  #
+  # @see https://github.com/forem/rfcs/issues/291 for discussion and rollout strategy
+  #
+  # @return [TrueClass] if the Listing is enabled for this Forem
+  # @return [FalseClass] if the Listing is disabled for this Forem
+  def self.feature_enabled?
+    # Going forward, we'll want to leverage a feature flag.  But for now, let's not bother asking
+    # the feature flag.
+    true
+  end
+
   # Wrapping the column accessor names for consistency. Aliasing did not work.
   def listing_category_id
     classified_listing_category_id
