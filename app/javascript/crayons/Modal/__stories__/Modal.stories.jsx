@@ -15,9 +15,9 @@ export default {
       control: {
         type: 'select',
         options: {
-          Default: undefined,
-          Small: 's',
-          Medium: 'm',
+          Small: 'small',
+          'Medium (default)': undefined,
+          Large: 'large',
         },
       },
       description:
@@ -53,13 +53,6 @@ export default {
         defaultValue: { summary: false },
       },
     },
-    danger: {
-      description:
-        'Add special styling for Modals providing destructive functionality, e.g. _"Are you sure you want to remove this user and all their data?"_',
-      table: {
-        defaultValue: { summary: false },
-      },
-    },
     title: {
       control: {
         type: 'text',
@@ -72,7 +65,7 @@ export default {
   },
 };
 
-export const Default = (args) => {
+const Template = (args) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -87,13 +80,15 @@ export const Default = (args) => {
               tellus. Sed at dui mi. Fusce cursus nibh lectus, vitae lobortis
               orci volutpat quis.
             </p>
-            <p>
-              Sed at dui mi. Fusce cursus nibh lectus, vitae lobortis orci
-              volutpat quis. Lorem ipsum dolor sit amet, consectetur adipiscing
-              elit. Suspendisse odio est, ultricies vel euismod ut, fringilla
-              quis tellus. Sed at dui mi. Fusce cursus nibh lectus, vitae
-              lobortis orci volutpat quis.
-            </p>
+            {!args.prompt && (
+              <p>
+                Sed at dui mi. Fusce cursus nibh lectus, vitae lobortis orci
+                volutpat quis. Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit. Suspendisse odio est, ultricies vel euismod ut,
+                fringilla quis tellus. Sed at dui mi. Fusce cursus nibh lectus,
+                vitae lobortis orci volutpat quis.
+              </p>
+            )}
           </div>
         </Modal>
       )}
@@ -101,6 +96,7 @@ export const Default = (args) => {
   );
 };
 
+export const Default = Template.bind({});
 Default.args = {
   size: undefined,
   title: 'Modal title',
@@ -108,5 +104,46 @@ Default.args = {
   backdropDismissible: false,
   prompt: false,
   centered: false,
-  danger: false,
+};
+
+export const Prompt = Template.bind({});
+Prompt.args = {
+  size: undefined,
+  title:
+    'Are you sure you want to remove Paweł Ludwiczak from Design Department?',
+  noBackdrop: false,
+  backdropDismissible: false,
+  prompt: true,
+  centered: false,
+};
+
+export const PromptCentered = Template.bind({});
+PromptCentered.args = {
+  size: undefined,
+  title:
+    'Are you sure you want to remove Paweł Ludwiczak from Design Department?',
+  noBackdrop: false,
+  backdropDismissible: false,
+  prompt: true,
+  centered: true,
+};
+
+export const BackdropDismissible = Template.bind({});
+BackdropDismissible.args = {
+  size: undefined,
+  title: 'Modal title',
+  noBackdrop: false,
+  backdropDismissible: true,
+  prompt: false,
+  centered: false,
+};
+
+export const NoBackdrop = Template.bind({});
+NoBackdrop.args = {
+  size: undefined,
+  title: 'Modal title',
+  noBackdrop: true,
+  backdropDismissible: false,
+  prompt: false,
+  centered: false,
 };

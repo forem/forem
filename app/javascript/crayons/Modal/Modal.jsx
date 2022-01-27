@@ -13,15 +13,13 @@ export const Modal = ({
   title,
   prompt,
   centered,
-  danger,
   noBackdrop,
   backdropDismissible = false,
   onClose = () => {},
   focusTrapSelector = '.crayons-modal__box',
 }) => {
   const classes = classNames('crayons-modal', {
-    [`crayons-modal--${size}`]: size && size !== 'default',
-    'crayons-modal--danger': danger,
+    [`crayons-modal--${size}`]: size && size !== 'medium',
     'crayons-modal--prompt': prompt,
     'crayons-modal--centered': centered && prompt,
     'crayons-modal--bg-dismissible': !noBackdrop && backdropDismissible,
@@ -73,8 +71,7 @@ Modal.propTypes = {
   backdropDismissible: PropTypes.bool,
   prompt: PropTypes.bool,
   centered: PropTypes.bool,
-  danger: PropTypes.bool,
   onClose: PropTypes.func,
-  size: PropTypes.oneOf(['default', 's', 'm']).isRequired,
+  size: PropTypes.oneOf(['small', 'medium', 'large']).isRequired,
   focusTrapSelector: PropTypes.string,
 };

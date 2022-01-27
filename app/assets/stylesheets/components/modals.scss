@@ -1,7 +1,7 @@
 @import '../config/import';
 
 .crayons-modal {
-  --modal-max-width: 768px;
+  --modal-max-width: 640px;
   --modal-padding: var(--su-3);
   --modal-backdrop-pointer-events: none;
   --modal-border: none;
@@ -112,15 +112,15 @@
     }
   }
 
-  &--s {
+  &--small {
     @media (min-width: $breakpoint-s) {
       --modal-max-width: 480px;
     }
   }
 
-  &--m {
+  &--large {
     @media (min-width: $breakpoint-m) {
-      --modal-max-width: 640px;
+      --modal-max-width: 768px;
     }
   }
 
