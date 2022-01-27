@@ -13,6 +13,7 @@ export const Pill = ({
   className,
   tooltip,
   onKeyUp,
+  onClick,
   noAction,
   ...otherProps
 }) => {
@@ -42,6 +43,7 @@ export const Pill = ({
       type="button"
       onKeyUp={handleKeyUp}
       aria-disabled={noAction}
+      onClick={noAction ? null : onClick}
       {...otherProps}
     >
       {descriptionIcon && (
