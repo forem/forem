@@ -13,33 +13,33 @@
 <% else %>
   <ul class="flex flex-wrap gap-2">
     <% @user.roles.reject { |role| role.name == "tag_moderator" }.each do |role| %>
-      <% if role.name == "banned" || role.name == "suspended" || role.name == "super_admin" || @user.id == current_user.id %>
-        <li>
-          <span class="c-pill c-pill--inactive c-pill--icon-left cursor-not-allowed fs-italic crayons-tooltip__activator">
-            <%= crayons_icon_tag(:lock, class: "c-pill__icon", width: 18, height: 18) %>
+      <li>
+        <% if role.name == "banned" || role.name == "suspended" || role.name == "super_admin" || @user.id == current_user.id %>
+          <button
+            class="c-pill c-pill--description-icon crayons-tooltip__activator cursor-help"
+            type="button"
+            aria-disabled="true">
+            <%= crayons_icon_tag(:lock, class: "c-pill__description-icon", width: 18, height: 18) %>
             <% if role.resource_name %>
               <%= role.resource_name.to_s %>
             <% else %>
               <%= role_display_name(role) %>
             <% end %>
-            <span data-testid="tooltip" class="crayons-tooltip__content fs-normal pointer-events-none">You can't remove this role...</span>
-          </span>
-        </li>
-      <% else %>
-        <li>
-          <%= button_to url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: "Are you sure?" }, class: "c-pill c-pill--icon-right",
-                                                                                                                                 style: "--icon-right-color: var(--color-secondary); --icon-right-color-hover: var(--accent-danger);" do %>
+            <span data-testid="tooltip" class="crayons-tooltip__content">You can't remove this role...</span>
+          </button>
+        <% else %>
+          <%= button_to url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: "Are you sure?" }, class: "c-pill c-pill--action-icon" do %>
             <% if role.resource_name %>
               <%= role.resource_name.to_s %>
             <% else %>
               <%= role_display_name(role) %>
             <% end %>
-            <%= crayons_icon_tag(:x, class: "c-pill__icon", width: 18, height: 18) %>
+            <%= crayons_icon_tag(:x, class: "c-pill__action-icon", width: 18, height: 18) %>
           <% end %>
-        </li>
-      <% end %>
+        <% end %>
+      </li>
     <% end %>
-    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="#add-role">Add role</button></li>
+    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="small" data-modal-content-selector="#add-role">Add role</button></li>
   </ul>
 <% end %>
 

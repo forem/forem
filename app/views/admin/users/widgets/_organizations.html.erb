@@ -8,7 +8,7 @@
 <% if @organization_memberships.load.empty? %>
   <div class="flex justify-between items-center gap-4">
     <p>This user hasn't been added to any organizations yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="m" data-modal-content-selector="#add-organization">Add to organization</button>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add to organization</button>
   </div>
 <% else %>
   <% @organization_memberships.each do |org_membership| %>
@@ -25,7 +25,7 @@
         </h3>
       </div>
       <div class="c-card__revealable shrink-0">
-        <button type="button" class="c-btn c-btn--icon-alone" data-modal-trigger data-modal-title="Edit organization" data-modal-size="m" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
+        <button type="button" class="c-btn c-btn--icon-alone" data-modal-trigger data-modal-title="Edit organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon") %>
         </button>
         <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
@@ -45,7 +45,7 @@
       <% end %>
     </div>
   <% end %>
-  <button class="c-btn c-btn--secondary whitespace-nowrap w-100" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="m" data-modal-content-selector="#add-organization">Add another organization</button>
+  <button class="c-btn c-btn--secondary whitespace-nowrap w-100" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add another organization</button>
 <% end %>
 
 <div id="add-organization" class="hidden">
