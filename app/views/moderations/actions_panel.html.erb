@@ -49,7 +49,7 @@
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </button>
     <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
-      <span class="how-this-works-section">
+      <span class="additional-subtext-section py-3">
         <%= t("views.moderations.actions.how") %>
       </span>
     </a>
@@ -111,7 +111,7 @@
           <button class="crayons-btn" id="tag-adjust-submit" type="submit"><%= t("views.moderations.actions.adjust.submit") %></button>
         </form>
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
-          <span class="how-this-works-section">
+          <span class="additional-subtext-section py-3">
             <%= t("views.moderations.actions.how") %>
           </span>
         </a>
@@ -154,14 +154,14 @@
       </button>
       <% end %>
       <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
-        <span class="how-this-works-section">
+        <span class="additional-subtext-section py-3">
           <%= t("views.moderations.actions.how") %>
         </span>
       </a>
     </div>
 
     <% if current_user.any_admin? && @moderatable.published %>
-      <button aria-haspopup="true" aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="<%= t("views.moderations.actions.experience.aria_label") %>">
+      <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
             <%= inline_svg_tag("admin.svg", aria: true, title: t("views.moderations.actions.experience.icon")) %>
@@ -175,41 +175,33 @@
           <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
         </div>
       </button>
-      <div id="admin-options" class="admin-options dropdown-options hidden">
-        <% rating_hash = { "Expert" => [10, 5], "Advanced" => [8, 4], "Mid-level" => [5, 3], "Beginner" => [3, 2], "Novice" => [1, 1] } %>
-        <% current_rating_value = @rating_vote.rating.round(0) if @rating_vote %>
-        <% rating_hash.each do |rating_name, rating_level| %>
-        <button
-          value="<%= rating_level[0] %>"
-          name="rating_vote_<%= rating_level[0] %>"
-          id="js__rating__vote__<%= rating_level[0] %>"
-          class="level-rating-button <%= " selected" if current_rating_value == rating_level[0] %>"
-          data-user-id="<%= current_user.id %>"
-          data-article-id="<%= @moderatable.id %>"
-          data-group="experience_level">
-          <div class="level-rating-content">
-            <span class="level-rating-number"><%= rating_level[1] %></span>
-            <span class="level-rating-text"><%= t("views.moderations.actions.experience.level.#{rating_name}") %></span>
-          </div>
-          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: t("views.moderations.actions.checkmark")) %>
-        </button>
-        <% end %>
-        <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
-          <span class="how-this-works-section">
-            <%= t("views.moderations.actions.how") %>
-          </span>
-        </a>
-      </div>
 
-      <div class="unpublish-article">
-        <button
-          class="crayons-btn crayons-btn--danger"
-          id="unpublish-article-btn"
-          data-article-id="<%= @moderatable.id %>"
-          data-article-author="<%= @moderatable.username %>"
-          data-article-slug="<%= @moderatable.slug %>">
-          <%= t("views.moderations.actions.unpublish") %>
-        </button>
+      <div id="admin-action-options" class="admin-action-options dropdown-options hidden">
+        <% @recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
+        <div class="article-admin-action mt-2">
+          <button
+            class="crayons-btn w-100"
+            id="feature-article-btn"
+            data-article-id="<%= @moderatable.id %>"
+            data-article-author="<%= @moderatable.username %>"
+            data-article-slug="<%= @moderatable.slug %>">
+            <%= t("views.moderations.actions.feature") %>
+          </button>
+          <div class="block additional-subtext-section py-4 pt-2">
+            <%= @recent_featured_count %> new posts have been featured in the past day.
+          </div>
+          
+        </div>
+        <div class="article-admin-action">
+          <button
+            class="crayons-btn crayons-btn--danger w-100"
+            id="unpublish-article-btn"
+            data-article-id="<%= @moderatable.id %>"
+            data-article-author="<%= @moderatable.username %>"
+            data-article-slug="<%= @moderatable.slug %>">
+            <%= t("views.moderations.actions.unpublish") %>
+          </button>
+        </div>
       </div>
     <% end %>
   </div>

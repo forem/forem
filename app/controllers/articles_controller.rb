@@ -184,6 +184,18 @@ class ArticlesController < ApplicationController
     end
   end
 
+  def admin_feature_toggle
+    authorize @article
+
+    @article.featured = params[:article][:featured].to_i == 1
+
+    if @article.save
+      render json: { message: "success", path: @article.current_state_path }, status: :ok
+    else
+      render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   def discussion_lock_confirm
     # This allows admins to also use this action vs searching only in the current_user.articles scope
     @article = Article.find_by(slug: params[:slug])

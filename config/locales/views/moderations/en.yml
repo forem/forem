@@ -61,12 +61,6 @@ en:
           icon: Crown
           desc_html: Who <em>might</em> find this post most valuable, based on overall experience level?
           from: "%{lvl} - "
-          level:
-            Advanced: Advanced
-            Beginner: Beginner
-            Expert: Expert
-            Mid-level: Mid-level
-            Novice: Novice
         flag: Flag user
         how: How does this work?
         hidden:
@@ -103,6 +97,7 @@ en:
         thumb_down: Thumb down
         thumb_up: Thumb up
         toggle: Toggle section
+        feature: Feature Post
         unpublish: Unpublish Post
         vote_down: Low Quality
         flag_to_admins: Flag to Admins
