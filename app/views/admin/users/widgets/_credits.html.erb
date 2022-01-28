@@ -22,7 +22,7 @@
       <%= f.label :credit_action, "Adjust balance", class: "crayons-field__label" %>
       <div class="flex gap-2 items-center">
         <%= f.select :credit_action, options_for_select(current_credits.positive? ? %w[Add Remove] : %w[Add]), {}, class: "crayons-select w-auto" %>
-        <%= f.text_field :credit_delta,
+        <%= f.text_field :credit_amount,
                          type: "number",
                          required: true,
                          class: "crayons-textfield w-auto",

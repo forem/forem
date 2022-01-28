@@ -8,6 +8,7 @@ module Admin
       merge_user_id add_credits remove_credits
       add_org_credits remove_org_credits
       organization_id identity_id
+      credit_action credit_amount
     ].freeze
 
     EMAIL_ALLOWED_PARAMS = %i[
@@ -53,7 +54,23 @@ module Admin
       # TODO: [@rhymes] in the new Admin Member view this logic has been moved
       # to Admin::Users::Tools::CreditsController and Admin::Users::Tools::NotesController#create.
       # It can eventually be removed when we transition away from the old Admin UI
-      Credits::Manage.call(@user, user_params)
+      credit_params = nil
+
+      if FeatureFlag.enabled?(:admin_member_view)
+        credit_params = {}
+
+        if user_params[:credit_action] == "Add"
+          credit_params[:add_credits] = user_params[:credit_amount]
+        end
+
+        if user_params[:credit_action] == "Remove"
+          credit_params[:remove_credits] = user_params[:credit_amount]
+        end
+      else
+        credit_params = user_params
+      end
+
+      Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
 
       redirect_to admin_user_path(params[:id])
