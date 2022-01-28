@@ -1,9 +1,14 @@
 class SpeakerdeckTag < LiquidTagBase
   PARTIAL = "liquids/speakerdeck".freeze
+  REGISTRY_REGEXP = %r{https://speakerdeck.com/player/(?<id>\w{,32})}
+  VALID_ID_REGEXP = /\A(?<id>\w{,32})\Z/
+  REGEXP_OPTIONS  = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
-  def initialize(_tag_name, id, _parse_context)
+  def initialize(_tag_name, input, _parse_context)
     super
-    @id = parse_id(id)
+
+    stripped_input = strip_tags(input)
+    @id            = parse_input(stripped_input)
   end
 
   def render(_context)
@@ -17,16 +22,14 @@ class SpeakerdeckTag < LiquidTagBase
 
   private
 
-  def parse_id(input)
-    input_no_space = input.delete(" ")
-    raise StandardError, I18n.t("liquid_tags.speakerdeck_tag.invalid_speakerdeck_id") unless valid_id?(input_no_space)
+  def parse_input(input)
+    match = pattern_match_for(input, REGEXP_OPTIONS)
+    raise StandardError, I18n.t("liquid_tags.speakerdeck_tag.invalid_speakerdeck_id") unless match
 
-    input_no_space
-  end
-
-  def valid_id?(id)
-    id =~ /\A[a-z\d]{32}\Z/i
+    match[:id]
   end
 end
 
 Liquid::Template.register_tag("speakerdeck", SpeakerdeckTag)
+
+UnifiedEmbed.register(SpeakerdeckTag, regexp: SpeakerdeckTag::REGISTRY_REGEXP)

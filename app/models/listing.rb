@@ -65,6 +65,22 @@ class Listing < ApplicationRecord
     (bumped_at || created_at) + 30.days
   end
 
+  def publish
+    update(published: true)
+  end
+
+  def unpublish
+    update(published: false)
+  end
+
+  def bump
+    update(bumped_at: Time.current)
+  end
+
+  def clear_cache
+    Listings::BustCacheWorker.perform_async(id)
+  end
+
   private
 
   def evaluate_markdown

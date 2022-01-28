@@ -18,7 +18,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       expect(response.body).not_to include("aliastag")
     end
 
-    it "searches tags" do
+    it "searches tags", :aggregate_failures do
       %w[ruby java javascript].each { |t| create(:tag, name: t) }
 
       get tags_path(q: "ruby")

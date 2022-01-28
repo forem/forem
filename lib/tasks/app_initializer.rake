@@ -12,6 +12,7 @@ namespace :app_initializer do
     Rake::Task["data_updates:enqueue_data_update_worker"].execute
 
     puts "\n== Bust Caches =="
+    Rake::Task["cache:clear_app_cache"].execute unless Rails.env.production?
     Rake::Task["cache:enqueue_path_bust_workers"].execute
 
     Settings::General.health_check_token ||= SecureRandom.hex(10)

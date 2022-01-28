@@ -54,7 +54,7 @@ export class EmailPreferencesForm extends Component {
     return (
       <div
         data-testid="onboarding-email-preferences-form"
-        className="onboarding-main crayons-modal"
+        className="onboarding-main crayons-modal crayons-modal--large"
       >
         <div
           className="crayons-modal__box"
