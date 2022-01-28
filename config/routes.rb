@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     get "/locale/:locale", to: "stories#index"
 
     draw :admin
+    draw :listing
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
@@ -36,8 +37,7 @@ Rails.application.routes.draw do
     end
 
     namespace :api, defaults: { format: "json" } do
-      scope module: :v0,
-            constraints: ApiConstraints.new(version: 0, default: true) do
+      scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
         resources :articles, only: %i[index show create update] do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
@@ -65,8 +65,6 @@ Rails.application.routes.draw do
         end
         resources :readinglist, only: [:index]
 
-        resources :listings, only: %i[index show create update]
-        get "/listings/category/:category", to: "listings#index", as: :listings_category
         get "/analytics/totals", to: "analytics#totals"
         get "/analytics/historical", to: "analytics#historical"
         get "/analytics/past_day", to: "analytics#past_day"
@@ -83,7 +81,6 @@ Rails.application.routes.draw do
         resources :profile_images, only: %i[show], param: :username
         resources :organizations, only: [:show], param: :username do
           resources :users, only: [:index], to: "organizations#users"
-          resources :listings, only: [:index], to: "organizations#listings"
           resources :articles, only: [:index], to: "organizations#articles"
         end
         resource :instance, only: %i[show]
@@ -156,7 +153,6 @@ Rails.application.routes.draw do
     resources :tag_adjustments, only: %i[create destroy]
     resources :rating_votes, only: [:create]
     resources :page_views, only: %i[create update]
-    resources :listings, only: %i[index new create edit update destroy dashboard]
     resources :credits, only: %i[index new create] do
       get "purchase", on: :collection, to: "credits#new"
     end
@@ -193,17 +189,9 @@ Rails.application.routes.draw do
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags", to: "search#tags"
-    get "/search/listings", to: "search#listings"
     get "/search/usernames", to: "search#usernames"
     get "/search/feed_content", to: "search#feed_content"
     get "/search/reactions", to: "search#reactions"
-    get "/listings/dashboard", to: "listings#dashboard"
-    get "/listings/:category", to: "listings#index", as: :listing_category
-    get "/listings/:category/:slug", to: "listings#index", as: :listing_slug
-    get "/listings/:category/:slug/:view", to: "listings#index",
-                                           constraints: { view: /moderate/ }
-    get "/listings/:category/:slug/delete_confirm", to: "listings#delete_confirm"
-    delete "/listings/:category/:slug", to: "listings#destroy"
     get "/notifications/:filter", to: "notifications#index", as: :notifications_filter
     get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
@@ -221,7 +209,6 @@ Rails.application.routes.draw do
     get "/social_previews/user/:id", to: "social_previews#user", as: :user_social_preview
     get "/social_previews/organization/:id", to: "social_previews#organization", as: :organization_social_preview
     get "/social_previews/tag/:id", to: "social_previews#tag", as: :tag_social_preview
-    get "/social_previews/listing/:id", to: "social_previews#listing", as: :listing_social_preview
     get "/social_previews/comment/:id", to: "social_previews#comment", as: :comment_social_preview
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
@@ -264,7 +251,6 @@ Rails.application.routes.draw do
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about", to: "pages#about"
-    get "/about-listings", to: "pages#about_listings"
     get "/security", to: "pages#bounty"
     get "/community-moderation", to: "pages#community_moderation"
     get "/faq", to: "pages#faq"

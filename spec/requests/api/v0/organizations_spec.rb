@@ -82,6 +82,12 @@ RSpec.describe "Api::V0::Organizations", type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
+    it "returns success for when orgnaization username exists" do
+      create(:listing, user: org_user, organization: organization)
+      get "/api/organizations/#{organization.username}/listings"
+      expect(response).to have_http_status(:success)
+    end
+
     it "supports pagination" do
       create(:listing, user: org_user, organization: organization)
 
