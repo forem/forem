@@ -562,6 +562,10 @@ article {
   // Align styles of freezeframed animated images with normal image styles
   canvas {
     border-radius: var(--radius);
+    object-fit: contain;
+    max-width: 100%;
+    min-width: 100%;
+    max-height: calc(50vh + 180px);
   }
 
   img[data-animated='true'] {
