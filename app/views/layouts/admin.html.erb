@@ -29,6 +29,15 @@
   data-ga-tracking="<%= Settings::General.ga_tracking_id %>"
   data-controller="snackbar"
   data-action="snackbar:add@document->snackbar#addItem">
+  <div id="body-styles">
+    <style>
+      :root {
+        --accent-brand-lighter-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.35, only_values: true) %>;
+        --accent-brand-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1, only_values: true) %>;
+        --accent-brand-darker-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.8, only_values: true) %>;
+      }
+    </style>
+  </div>
   <header class="crayons-header">
     <span id="route-change-target" tabindex="-1"></span>
     <a href="#main-content" class="skip-content-link"><%= t("views.main.header.skip") %></a>
