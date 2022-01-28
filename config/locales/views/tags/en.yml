@@ -7,7 +7,14 @@ en:
         description: Tags to follow on %{community}
         og:
           description: "%{community} is great!"
-      heading: Top tags
+      heading:
+        default: Top tags
+        search_results: Search results for %{q}
+      search:
+        aria_labels:
+          search_input: Tag search term
+          submit: Search tags
+        placeholder: Search for tag
       edit:
         meta:
           title: Edit %{tag}
