@@ -1,6 +1,6 @@
 <%# this is for pawel's testing purpose to emulate tabs... %>
 <% current_tab = "overview" # overview|emails|notes|reports|flags %>
-<% if true %>
+<% if FeatureFlag.enabled?(:admin_member_view) %>
   <%= render "header" %>
   <%= render "navigation" %>
 
