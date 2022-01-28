@@ -625,7 +625,7 @@ module Articles
 
         # Rewards comment count with slightly more weight up to 10 comments.
         # Testing two case weights beyond what we currently have
-        scoring_config[:clause] = "SUM(followed_tags.points)::integer"
+        scoring_config[:clause] = "LEAST(10.0, SUM(followed_tags.points))::integer"
         scoring_config[:cases] = case @strategy
                                  when "tag_follow_points_maximum_spectrum"
                                    (0..9).map { |n| [n, 0.70 + (n / 33.0)] }

@@ -55,9 +55,8 @@ module Podcasts
     # If the episodes URLs are still reachable, the podcast will remain on the site.
     # If they are not, the podcast will be hidden.
     def refetch_items
-      podcast.podcast_episodes.find_each do |episode|
-        PodcastEpisodes::UpdateMediaUrlWorker.perform_async(episode.id, episode.media_url)
-      end
+      job_params = podcast.podcast_episodes.pluck(:id, :media_url)
+      PodcastEpisodes::UpdateMediaUrlWorker.perform_bulk(job_params)
     end
   end
 end
