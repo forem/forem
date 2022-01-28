@@ -26,7 +26,6 @@ module ListingsToolkit
     authorize @listing, :authorized_organization_poster? if organization_id.present?
 
     @listing.user_id = current_user.id
-    org = Organization.find_by(id: organization_id)
 
     if listing_params[:action] == "draft"
       create_draft
@@ -39,15 +38,10 @@ module ListingsToolkit
       return
     end
 
-    cost = @listing.cost
-    # we use the org's credits if available, otherwise we default to the user's
-    if org&.enough_credits?(cost)
-      create_listing(org, cost)
-    elsif current_user.enough_credits?(cost)
-      create_listing(current_user, cost)
-    else
-      process_no_credit_left
+    purchase_successful = @listing.purchase(current_user) do |purchaser|
+      create_listing(purchaser, @listing.cost)
     end
+    process_no_credit_left unless purchase_successful
   end
 
   ALLOWED_PARAMS = %i[

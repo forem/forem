@@ -81,6 +81,14 @@ class Listing < ApplicationRecord
     Listings::BustCacheWorker.perform_async(id)
   end
 
+  def purchase(user)
+    purchaser = [organization, user].detect { |who| who&.enough_credits?(cost) }
+    return false unless purchaser
+
+    yield purchaser
+    true
+  end
+
   private
 
   def evaluate_markdown
