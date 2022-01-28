@@ -19,18 +19,18 @@
       </p>
     </div>
     <div class="crayons-field">
-      <label for="balance-type" class="crayons-field__label">Adjust balance</label>
+      <%= f.label :credit_action, "Adjust balance", class: "crayons-field__label" %>
       <div class="flex gap-2 items-center">
-        <select name="" id="balance-type" class="crayons-select w-auto" required>
-          <option value="add">Add</option>
-          <% if current_credits.positive? %>
-            <option value="remove">Remove</option>
-          <% end %>
-        </select>
-
-        <input type="number" inputmode="numeric" size="5" min="1" max="9999" value="1" required class="crayons-textfield w-auto">
-
-        <span class="color-secondary flex-1">credits</span>
+        <%= f.select :credit_action, options_for_select(current_credits.positive? ? %w[Add Remove] : %w[Add]), {}, class: "crayons-select w-auto" %>
+        <%= f.text_field :credit_delta,
+                         type: "number",
+                         required: true,
+                         class: "crayons-textfield w-auto",
+                         value: 1,
+                         size: 5,
+                         min: 1,
+                         max: 9999 %>
+      <%= f.label :credit_delta, "credits", class: "color-secondary flex-1", "aria-label": "Amount of credits to add or remove" %>
       </div>
     </div>
     <div class="crayons-field">
