@@ -26,7 +26,7 @@ module Podcasts
       # https://github.com/forem/forem/issues/3580, in which some RSS feeds list their episodes in
       # earliest to latest, whereas others list latest to earliest.  We assume that we're wanting to
       # track the latest.
-      feed.items.sort { |a, b| b.pubDate <=> a.pubDate }.first(limit).each do |item|
+      feed.items.sort { |a, b| b.pubDate.to_i <=> a.pubDate.to_i }.first(limit).each do |item|
         get_episode.call(item: item, force_update: force_update)
       end
       podcast.update_columns(reachable: true, status_notice: "")
