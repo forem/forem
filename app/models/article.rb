@@ -621,9 +621,10 @@ class Article < ApplicationRecord
       article_ids.concat organization.article_ids
     end
     # perform busting cache in chunks in case there're a lot of articles
-    (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
-      Articles::BustMultipleCachesWorker.perform_async(ids)
-    end
+    # NOTE: `perform_bulk` takes an array of arrays as argument. Since the worker
+    # takes an array of ids as argument, this becomes triple-nested.
+    job_params = (article_ids.uniq.sort - [id]).each_slice(10).to_a.map { |ids| [ids] }
+    Articles::BustMultipleCachesWorker.perform_bulk(job_params)
   end
 
   def evaluate_front_matter(front_matter)
