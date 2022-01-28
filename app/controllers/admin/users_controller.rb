@@ -35,21 +35,15 @@ module Admin
     def show
       @user = User.find(params[:id])
 
-      set_feedback_messages
-      set_related_reactions
-
       if FeatureFlag.enabled?(:new_admin_members, current_user)
         render "admin/users/new/show"
-      else
-        @organizations = @user.organizations.order(:name)
-        @notes = @user.notes.order(created_at: :desc).limit(10)
-        @organization_memberships = @user.organization_memberships
-          .joins(:organization)
-          .order("organizations.name" => :asc)
-          .includes(:organization)
-        @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
+      elsif FeatureFlag.enabled?(:admin_member_view)
+        set_feedback_messages
+        set_related_reactions
 
-        render :show
+        set_user_details
+      else
+        set_user_details
       end
     end
 
@@ -248,6 +242,18 @@ module Admin
       @user.unlock_access!
       flash[:success] = "Unlocked User account!"
       redirect_to admin_user_path(@user)
+    end
+
+    def set_user_details
+      @organizations = @user.organizations.order(:name)
+      @notes = @user.notes.order(created_at: :desc).limit(10)
+      @organization_memberships = @user.organization_memberships
+        .joins(:organization)
+        .order("organizations.name" => :asc)
+        .includes(:organization)
+      @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
+
+      render :show
     end
 
     private
