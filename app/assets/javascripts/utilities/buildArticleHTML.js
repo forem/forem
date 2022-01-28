@@ -198,7 +198,7 @@ function buildArticleHTML(article) {
     // We need to be able to set the data-info hash attribute with escaped characters.
     var name = article.user.name.replace(/[\\"']/g, '\\$&');
     var previewCardContent = `
-      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7" data-repositioning-dropdown="true" style="border-top-color: var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
           <div class="-mt-4">
             <a href="/${profileUsername}" class="flex">
