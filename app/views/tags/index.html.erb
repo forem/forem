@@ -38,6 +38,7 @@
         </div>
           <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
       </div>
+    </form>
   </header>
   <% if @tags.empty? %>
     <div class="articles-list crayons-layout__content" id="articles-list" data-follow-button-container="true">
