@@ -64,6 +64,11 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 ##############################################################################
 
+# Enable Admin Member View feature flag for tests
+FeatureFlag.enable(:admin_member_view)
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user = User.create!(
     name: "Trusted User 1 \\:/",

@@ -18,7 +18,7 @@ class TagsController < ApplicationController
   def index
     skip_authorization
     @tags_index = true
-    @tags = Tag.direct.includes(:sponsorship).order(taggings_count: :desc).limit(100)
+    @tags = params[:q].present? ? tags.search_by_name(params[:q]) : tags.order(hotness_score: :desc)
   end
 
   def edit
@@ -60,6 +60,10 @@ class TagsController < ApplicationController
   end
 
   private
+
+  def tags
+    @tags ||= Tag.direct.includes(:sponsorship).limit(100)
+  end
 
   def convert_empty_string_to_nil
     # nil plays nicely with our hex colors, whereas empty string doesn't
