@@ -65,7 +65,7 @@ export const initializePausableAnimatedImages = (animatedImages = []) => {
 
         render(
           <Button
-            aria-label="Toggle animation playback"
+            aria-label="Pause animation playback"
             aria-pressed={!okWithMotion}
             className="gif-button fs-s gap-2"
             onClick={() => ff.toggle()}
