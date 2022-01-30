@@ -75,7 +75,7 @@ module Articles
         # rubocop:enable Layout/LineLength
         if user_signed_in
           hot_stories = experimental_hot_story_grab
-          hot_stories = hot_stories.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
+          hot_stories = hot_stories.not_authored_by(UserBlock.cached_blocked_ids_for_blocker(@user.id))
           featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
           new_stories = Article.published
             .where("score > ?", article_score_threshold)

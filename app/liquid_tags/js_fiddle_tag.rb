@@ -32,7 +32,9 @@ class JsFiddleTag < LiquidTagBase
 
     # Validation
     validated_options = options.filter_map { |option| valid_option(option) }
-    raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
+    unless options.empty? || !validated_options.empty?
+      raise StandardError, I18n.t("liquid_tags.js_fiddle_tag.invalid_options")
+    end
 
     validated_options.length.zero? ? "" : validated_options.join(",").concat("/")
   end
@@ -40,7 +42,7 @@ class JsFiddleTag < LiquidTagBase
   def parse_link(link)
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split.first
-    raise StandardError, "Invalid JSFiddle URL" unless valid_link?(the_link)
+    raise StandardError, I18n.t("liquid_tags.js_fiddle_tag.invalid_jsfiddle_url") unless valid_link?(the_link)
 
     the_link
   end

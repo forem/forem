@@ -7,35 +7,6 @@
     </div>
   <% end %>
 
-  <div id="getStarted">
-    <div class="card w-100">
-      <div
-        id="getStartedHeader"
-        class="card-header"
-        data-toggle="collapse"
-        data-target="#getStartedBodyContainer"
-        aria-expanded="true"
-        aria-controls="getStartedBodyContainer">
-
-        <h2 class="d-inline">Get Started</h2>
-
-        <button
-          class="crayons-btn crayons-btn--secondary float-right"
-          type="button"
-          data-action="click->config#toggleAccordionButtonLabel">
-          Hide Getting Started
-        </button>
-      </div>
-
-      <div
-        id="getStartedBodyContainer"
-        class="show expand p-3"
-        aria-labelledby="getStartedHeader">
-        <%= render partial: "forms/mandatory" %>
-      </div>
-    </div>
-  </div>
-
   <div id="settings">
     <div class="card w-100">
       <div

@@ -16,7 +16,6 @@ module Html
     RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
     RAW_TAG = "{----% raw %----}".freeze
     END_RAW_TAG = "{----% endraw %----}".freeze
-    TIMEOUT = 10
 
     attr_accessor :html
     private :html=
@@ -43,10 +42,8 @@ module Html
         # allow image to render as-is
         next if allowed_image_host?(src)
 
-        if synchronous_detail_detection && img
-          attribute_width, attribute_height = Articles::EnrichImageAttributes.image_width_height(img, TIMEOUT)
-          img["width"] = attribute_width
-          img["height"] = attribute_height
+        if synchronous_detail_detection
+          img["width"], img["height"] = FastImage.size(src, timeout: 10)
         end
 
         img["loading"] = "lazy"
@@ -101,12 +98,12 @@ module Html
     end
 
     def add_fullscreen_button_to_panel
-      on_title = "Enter fullscreen mode"
+      on_title = I18n.t("services.html.parser.enter_fullscreen_mode")
       on_cls = "highlight-action crayons-icon highlight-action--fullscreen-on"
       icon_fullscreen_on = inline_svg_tag(
         "fullscreen-on.svg", class: on_cls, title: on_title, width: "20px", height: "20px"
       )
-      off_title = "Exit fullscreen mode"
+      off_title = I18n.t("services.html.parser.exit_fullscreen_mode")
       off_cls = "highlight-action crayons-icon highlight-action--fullscreen-off"
       icon_fullscreen_off = inline_svg_tag(
         "fullscreen-off.svg", class: off_cls, title: off_title, width: "20px", height: "20px"

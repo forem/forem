@@ -1,7 +1,7 @@
 class CollectionsController < ApplicationController
   def index
     @user = User.find_by!(username: params[:username])
-    @collections = @user.collections.joins(:articles).distinct.order(created_at: :desc)
+    @collections = @user.collections.non_empty.order(created_at: :desc)
   end
 
   def show

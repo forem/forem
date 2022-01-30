@@ -32,7 +32,7 @@
       <h2 style="font-size:2.8em" id="#things-to-know" class="permalink-heading">
         <strong>Things to Know</strong>
         <a href="#things-to-know" aria-label="permalink for Things to know">
-          <%= inline_svg_tag("small-link.svg", aria_hidden: true) %>
+          <%= crayons_icon_tag("small-link", aria_hidden: true) %>
         </a>
       </h2>
       <ul>
@@ -47,7 +47,7 @@
     <h2 style="font-size:2.8em" id="markdown" class="permalink-heading">
       <strong>✍ Markdown Basics</strong>
       <a href="#markdown" aria-label="permalink for Markdown">
-        <%= inline_svg_tag("small-link.svg", aria_hidden: true) %>
+        <%= crayons_icon_tag("small-link", aria_hidden: true) %>
       </a>
     </h2>
     <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
@@ -90,7 +90,7 @@
 
     <h2 style="font-size:2.8em" id="accessibility" class="permalink-heading">
       <strong>Accessibility</strong>
-      <a href="#accessibility" aria-label="permalink for Accessibility"><%= inline_svg_tag("small-link.svg", aria_hidden: true) %></a>
+      <a href="#accessibility" aria-label="permalink for Accessibility"><%= crayons_icon_tag("small-link", aria_hidden: true) %></a>
     </h2>
     <p>People access online content in all kinds of different ways, and there are a few things you can do to make your posts more easily understood by a broad range of users. You can find out more about web accessibility at <a href="https://www.w3.org/WAI/fundamentals/accessibility-intro/">W3C's Introduction to Web Accessibility</a>, but there are two main ways you can make your posts more accessible: providing alternative descriptions of any images you use, and adding appropriate headings.</p>
 
@@ -110,7 +110,7 @@
 
     <h2 style="font-size:2.8em" id="liquidtags" class="permalink-heading">
       <strong>🌊 Liquid Tags</strong>
-      <a href="#liquidtags" aria-label="permalink for Liquid Tags"><%= inline_svg_tag("small-link.svg", aria_hidden: true) %></a>
+      <a href="#liquidtags" aria-label="permalink for Liquid Tags"><%= crayons_icon_tag("small-link", aria_hidden: true) %></a>
     </h2>
     <p>
       We support native
@@ -282,6 +282,36 @@
       <dd>
         <p>Add default-tab parameter to your CodePen embed tag. Defaults to <i>result</i>.</p>
         <pre>{% codepen https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result %}</pre>
+      </dd>
+
+      <dt><strong>preview</strong></dt>
+      <dd>
+        <p>Change the codepen URL path from /pen/ to /pen/preview/ (or to /embed/preview/) to use codepen's Click-to-Load preview embed feature in the resulting iframe.</p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/preview/dyVMgBg %}</pre>
+      </dd>
+
+      <dt><strong>height</strong></dt>
+      <dd>
+        <p>Add height parameter to your CodePen embed tag and to the resulting iframe itself. Defaults to <i>600</i></p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg height=300 %}</pre>
+      </dd>
+
+      <dt><strong>theme-id</strong></dt>
+      <dd>
+        <p>Add theme-id parameter to your CodePen embed tag. The pen and theme-id must be from a codepen pro user to have an effect.</p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg theme-id=40148 %}</pre>
+      </dd>
+
+      <dt><strong>editable=true</strong></dt>
+      <dd>
+        <p>Add editable=true parameter to your CodePen embed tag. Editable Embeds require more resources than non-editable Embeds. The pen must be from a codepen pro user to have an effect.</p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg editable=true %}</pre>
+      </dd>
+
+      <dt><strong>multiple-params</strong></dt>
+      <dd>
+        <p>Add multiple parameters to your CodePen embed tag.</p>
+        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg height=300 default-tab=css,result editable=true %}</pre>
       </dd>
     </dl>
 

@@ -9,7 +9,9 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.cache_classes = true
+  # cache_classes should be false when Spring is enabled, and true when it's disabled
+  # https://guides.rubyonrails.org/configuring.html#config-cache-classes
+  config.cache_classes = ActiveModel::Type::Boolean.new.cast(ENV["DISABLE_SPRING"])
 
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
   config.action_view.cache_template_loading = true

@@ -26,7 +26,7 @@ class CommentTag < LiquidTagBase
 
   def parse_id_code(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid Comment ID or URL" unless match
+    raise StandardError, I18n.t("liquid_tags.comment_tag.invalid_comment") unless match
 
     match[:comment_id]
   end

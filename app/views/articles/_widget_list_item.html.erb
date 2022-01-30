@@ -5,7 +5,7 @@
       <% if plucked_article[2] > 0 %>
         <%= t("views.comments.count", count: plucked_article[2]) %>
       <% else %>
-        <span class="crayons-indicator crayons-indicator--accent"><%= t("views.comments.empty") %></span>
+        <span class="c-indicator c-indicator--warning"><%= t("views.comments.empty") %></span>
       <% end %>
     </div>
   <% end %>
