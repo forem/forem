@@ -16,7 +16,7 @@ module URL
     base_url = "#{protocol}#{domain}"
     return base_url unless uri
 
-    URI.parse(base_url).merge(Addressable::URI.parse(uri).to_s).to_s
+    Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
 
   # Creates an article URL
