@@ -3,6 +3,38 @@ require "rails_helper"
 RSpec.describe NavigationLink, type: :model do
   let(:navigation_link) { create(:navigation_link) }
 
+  describe ".create_or_update_by_identity" do
+    let(:attributes) { attributes_for(:navigation_link).except(:url, :id, :name).stringify_keys }
+    let(:name) { navigation_link.name }
+
+    # I want an existing navigation link, but don't want to apply the `let!` to the declaration as
+    # that impacts tests in other describe blocks.
+    before { navigation_link }
+
+    context "when the url already exists" do
+      let(:url) { navigation_link.url }
+
+      it "updates the existing NavigationLink" do
+        expect do
+          described_class.create_or_update_by_identity(url: url, name: name, **attributes.symbolize_keys)
+        end.not_to change(described_class, :count)
+
+        expect(navigation_link.reload.attributes.slice(*attributes.keys)).to eq(attributes)
+      end
+    end
+
+    context "when the url does not exist" do
+      # Creating a different URL
+      let(:url) { "#{navigation_link.url}-404" }
+
+      it "creates a new NavigationLink" do
+        expect do
+          described_class.create_or_update_by_identity(url: url, name: name, **attributes)
+        end.to change(described_class, :count).by(1)
+      end
+    end
+  end
+
   describe "validations" do
     describe "presence validations" do
       it { is_expected.to validate_presence_of(:name) }

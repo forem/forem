@@ -63,7 +63,7 @@ class PodcastTag < LiquidTagBase
   end
 
   def raise_error
-    raise StandardError, "Invalid podcast link"
+    raise StandardError, I18n.t("liquid_tags.podcast_tag.invalid_podcast_link")
   end
 end
 

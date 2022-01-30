@@ -1,6 +1,10 @@
 class Page < ApplicationRecord
   TEMPLATE_OPTIONS = %w[contained full_within_layout json].freeze
 
+  TERMS_SLUG = "terms".freeze
+  CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
+  PRIVACY_SLUG = "privacy".freeze
+
   validates :title, presence: true
   validates :description, presence: true
   validates :slug, presence: true, format: /\A[0-9a-z\-_]*\z/
@@ -16,6 +20,30 @@ class Page < ApplicationRecord
 
   mount_uploader :social_image, ProfileImageUploader
   resourcify
+
+  # @param slug [String]
+  #
+  # @return An HTML safe String.
+  #
+  # @yield Yield to the calling context if there's no Page match for slug.
+  #
+  # @raise LocalJumpError when no matching slug nor block given.
+  #
+  # @note Yes, treating this value as HTML safe is risky.  But we already opened that vector by
+  #       letting the administrator of pages write HTML.
+  #
+  # @todo Do we want to only allow certain slugs?
+  #
+  # rubocop:disable Rails/OutputSafety
+  def self.render_safe_html_for(slug:)
+    page = find_by(slug: slug)
+    if page
+      page.processed_html.html_safe
+    else
+      yield
+    end
+  end
+  # rubocop:enable Rails/OutputSafety
 
   def self.landing_page
     find_by(landing_page: true)

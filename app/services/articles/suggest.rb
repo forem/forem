@@ -39,7 +39,7 @@ module Articles
       ids_to_ignore << article.id
       Article.published
         .where.not(id: ids_to_ignore)
-        .where.not(user_id: article.user_id)
+        .not_authored_by(article.user_id)
         .order(hotness_score: :desc)
         .offset(rand(0..offset))
         .first(max)
@@ -49,7 +49,7 @@ module Articles
       Article
         .published
         .cached_tagged_with_any(cached_tag_list_array)
-        .where.not(user_id: article.user_id)
+        .not_authored_by(article.user_id)
         .where(tag_suggestion_query)
         .order(hotness_score: :desc)
         .offset(rand(0..offset))

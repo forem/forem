@@ -5,16 +5,18 @@ import PropTypes from 'prop-types';
  * Responsible for the layout of a tag "suggestion" in the article form
  *
  * @param {string} name The tag name
- * @param {string} backgroundColor Optional hex code for tag
- * @param {string} shortSummary Optional short summary of the tag
- * @param {string} badgeUrl Optional src for the tag's badge
+ * @param {string} bg_color_hex Optional hex code for tag
+ * @param {string} short_summary Optional short summary of the tag
+ * @param {string} badge Optional object containing badge details
  */
 export const TagAutocompleteOption = ({
   name,
-  backgroundColor,
-  shortSummary,
-  badgeUrl,
+  bg_color_hex: backgroundColor,
+  short_summary: shortSummary,
+  badge,
 }) => {
+  const badgeUrl = badge?.['badge_image']?.url;
+
   return (
     <div
       className="crayons-article-form__tag-option"
@@ -40,7 +42,9 @@ export const TagAutocompleteOption = ({
 
 TagAutocompleteOption.propTypes = {
   name: PropTypes.string.isRequired,
-  backgroundColor: PropTypes.string,
-  shortSummary: PropTypes.string,
-  badgeUrl: PropTypes.string,
+  background_color_hex: PropTypes.string,
+  short_summary: PropTypes.string,
+  badge: PropTypes.shape({
+    badge_image: PropTypes.shape({ url: PropTypes.string }),
+  }),
 };

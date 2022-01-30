@@ -4,11 +4,10 @@
     id="button-for-comment-<%= comment.id %>"
     data-comment-id="<%= comment.id %>"
     title="heart">
-    <%= inline_svg_tag("small-heart.svg",
-                       aria: true,
-                       class: "crayons-icon reaction-icon not-reacted",
-                       title: t("views.comments.footer.heart.icon")) %>
-    <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: t("views.comments.footer.heart.icon")) %>
+    <%= crayons_icon_tag("small-heart",
+                         class: "reaction-icon not-reacted",
+                         title: t("views.comments.footer.heart.icon")) %>
+    <%= crayons_icon_tag("small-heart-filled", class: "crayons-icon reaction-icon--like reaction-icon reacted", title: t("views.comments.footer.heart.icon")) %>
     <%= t("views.comments.footer.heart.count_html", num: tag.span((comment.public_reactions_count if comment.public_reactions_count.positive?), class: "reactions-count"), likes: tag.span(like_button_text(comment).html_safe, class: "reactions-label hidden m:inline-block")) %>
   </button>
 
@@ -20,12 +19,12 @@
         data-comment-id="<%= comment.id %>"
         data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
         rel="nofollow">
-        <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: t("views.comments.footer.reply.icon")) %>
+        <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", title: t("views.comments.footer.reply.icon")) %>
         <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>
       </a>
     <% else %>
       <span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">
-        <%= inline_svg_tag("small-thread.svg", aria: true, class: "crayons-icon", title: t("views.comments.footer.thread.icon")) %>
+        <%= crayons_icon_tag("small-thread", title: t("views.comments.footer.thread.icon")) %>
         <%= t("views.comments.footer.thread.text") %>
       </span>
     <% end %>

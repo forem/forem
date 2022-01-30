@@ -156,9 +156,6 @@ namespace :admin do
 
   scope :apps do
     resources :consumer_apps, only: %i[index new create edit update destroy]
-    resources :listings, only: %i[index edit update destroy]
-    resources :listing_categories, only: %i[index edit update new create
-                                            destroy], path: "listings/categories"
     resources :welcome, only: %i[index create]
   end
 end

@@ -10,7 +10,7 @@ module Notifications
       #   * :reactable_user_id [Integer] - user id
       # @param receiver [User] or [Organization]
       def initialize(reaction_data, receiver)
-        @reaction = reaction_data.is_a?(ReactionData) ? reaction_data : ReactionData.new(reaction_data)
+        @reaction = ReactionData.coerce(reaction_data)
         @receiver = receiver
       end
 

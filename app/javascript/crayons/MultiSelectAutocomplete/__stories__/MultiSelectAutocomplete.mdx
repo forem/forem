@@ -1,0 +1,60 @@
+# Multi-select Autocomplete
+
+The MultiSelectAutocomplete component can be used in situations where a user can search for matching options, and select multiple values.
+
+When the user starts typing, an async search will be triggered, and any fetched suggestions displayed in the dropdown. If no suggestions are available, the currently entered search term will be displayed as an option.
+
+## Browsing and selecting an option
+
+Options can be selected in a few ways:
+
+- By clicking an option from the dropdown
+- By using the up/down arrow keys to highlight an option in the dropdown, then pressing `Enter`
+- By typing a term, and then pressing `Spacebar`, `Comma`, or leaving the input completely
+
+## Editing and removing selections
+
+When a user selects a suggestion, it will be displayed as a button group. The first button triggers an edit of the selection, and the second button triggers the removal of the selection.
+
+Both buttons appear in the tab order, and are semantically grouped together for assistive technology.
+
+## Technical implementation notes
+
+### Search functionality
+
+A `fetchSuggestions` prop **must** be passed in props to the component. This callback will receive the search term, and expects results to be returned in the format:
+
+```js
+[{ name: 'option one' }, { name: 'option two' }];
+```
+
+i.e. suggestions and selections are expected as `object`s with a `name` attribute.
+
+### Static suggestions
+
+If there are some default suggestions that should be shown to the user before they have started typing their search term, these may be passed using the `staticSuggestions` prop.
+
+Additionally, if you would like explanatory text to be displayed at the top of these static suggestions, it can be passed in the `staticSuggestionsHeading` prop. This prop can be a string, or an HTML element (e.g. in case you want to use a heading or a `span` with specific styles applied).
+
+### Maximum selections
+
+A maximum can be set on the number of selections a user can make, by passing the `maxSuggestions` prop (the default is unlimited). When a user has reached the maximum number of selections, a message will be displayed, and the input's `aria-disabled` property will be set to 'true'.
+
+The maximum number of selections possible is also added to the accessible input description via a hidden span and `aria-describedby`.
+
+### Styling
+
+The component comes with some default styling for both suggested options, and selected options, but the layout of both suggestions and selections can be customised by passing in a Preact component to render them, i.e.:
+
+- SuggestionTemplate
+- SelectionTemplate
+
+If either template is passed, it will receive in props the full option object in props e.g. `{ name: 'option one', someOtherProperty: 'foo' }`.
+
+The overall component may be used with or without a border depending on its context (if in doubt, check with your designer), by passing the `border` prop.
+
+### Accessibility
+
+The component follows the [WAI-ARIA Combobox authoring practices](https://www.w3.org/TR/wai-aria-practices-1.1/#combobox) to ensure operability for a wide range of users.
+
+Selected items appear as a button group with further context provided in `aria-label`s for screen reader users (Edit/Remove). As selections are made from the list, or removed from the selected items, they are announced to screen reader users via a visually hidden `aria-live` region.

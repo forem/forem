@@ -10,11 +10,11 @@
         <p class="fw-medium flex-1">
           <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
           <% if org_membership.user == @user %>
-            <span class="crayons-indicator"><%= t("views.settings.org.admin.you") %></span>
+            <span class="c-indicator"><%= t("views.settings.org.admin.you") %></span>
           <% end %>
 
           <% if org_membership.type_of_user == "admin" %>
-            <span class="crayons-indicator crayons-indicator--critical"><%= t("views.settings.org.admin.admin") %></span>
+            <span class="c-indicator c-indicator--danger"><%= t("views.settings.org.admin.admin") %></span>
           <% end %>
         </p>
 
