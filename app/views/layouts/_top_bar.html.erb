@@ -5,7 +5,7 @@
   <div class="crayons-header__container">
     <span class="inline-block m:hidden ">
       <button class="c-btn c-btn--icon-alone js-hamburger-trigger mx-2">
-        <%= inline_svg_tag("hamburger.svg", aria: true, class: "crayons-icon", title: t("views.hamburger.icon")) %>
+        <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon")) %>
       </button>
     </span>
     <%= render "layouts/logo" %>
@@ -16,7 +16,7 @@
           <div class="crayons-field flex-1 relative">
             <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="off" />
             <button type="submit" aria-label="<%= t("views.search.icon.aria_label") %>" class="c-btn c-btn--icon-alone absolute inset-px left-auto mt-0 py-0">
-              <%= inline_svg_tag("search.svg", aria_hidden: true, width: 24, height: 24, class: "crayons-icon", title: t("views.search.icon.title")) %>
+              <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
             </button>
           </div>
         </div>
@@ -25,7 +25,7 @@
 
     <div class="flex items-center h-100 ml-auto">
       <a class="c-link c-link--icon-alone c-link--block m:hidden <% unless user_signed_in? %>mx-1<% end %>" id="search-link" aria-label="<%= t("views.search.icon.aria_label") %>" href="<%= search_path %>">
-        <%= inline_svg_tag("search.svg", aria: true, class: "crayons-icon", title: t("views.search.icon.title")) %>
+        <%= crayons_icon_tag(:search, title: t("views.search.icon.title")) %>
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
@@ -33,14 +33,14 @@
 
           <span class="trusted-visible-block">
             <a id="moderation-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= mod_path %>">
-              <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: t("views.main.header.moderation.icon")) %>
+              <%= crayons_icon_tag(:mod, title: t("views.main.header.moderation.icon")) %>
             </a>
           </span>
         </span>
 
         <a href="<%= notifications_path %>" id="notifications-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.notifications.aria_label") %>">
-          <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: t("views.main.header.notifications.icon")) %>
-          <span class="crayons-indicator crayons-indicator--critical hidden" id="notifications-number"></span>
+          <%= crayons_icon_tag(:bell, title: t("views.main.header.notifications.icon")) %>
+          <span class="c-indicator c-indicator--danger hidden" id="notifications-number"></span>
         </a>
 
         <div class="crayons-header__menu mx-1" id="crayons-header__menu">

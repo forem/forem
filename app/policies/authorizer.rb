@@ -177,6 +177,4 @@ module Authorizer
       user.__send__(:has_any_role?, *args)
     end
   end
-
-  private_constant :RoleBasedQueries
 end

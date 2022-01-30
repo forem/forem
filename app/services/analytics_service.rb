@@ -78,7 +78,7 @@ class AnalyticsService
       @article_data = @article_data.where(id: @article_id)
 
       # check article_id is published and belongs to the user/org
-      raise ArgumentError, "You can't view this article's stats" unless @article_data.exists?
+      raise ArgumentError, I18n.t("services.analytics_service.no_stats") unless @article_data.exists?
 
       article_ids = [@article_id]
     else

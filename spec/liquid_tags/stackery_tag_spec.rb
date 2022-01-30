@@ -17,7 +17,9 @@ RSpec.describe StackeryTag, type: :liquid_tag do
 
     it "renders valid input" do
       template = generate_tag(valid_input)
-      expected = 'src="//app.stackery.io/editor/design?owner=deeheber&repo=lambda-layer-example&ref=layer-resource'
+      # rubocop:disable Layout/LineLength
+      expected = "src=\"//app.stackery.io/editor/design?owner=deeheber&amp;repo=lambda-layer-example&amp;ref=layer-resource\""
+      # rubocop:enable Layout/LineLength
       expect(template.render(nil)).to include(expected)
     end
 

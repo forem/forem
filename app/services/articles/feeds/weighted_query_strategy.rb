@@ -266,6 +266,8 @@ module Articles
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
+      #
+      # rubocop:disable Layout/LineLength
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
@@ -284,6 +286,7 @@ module Articles
           days_since_published: @days_since_published,
         )
       end
+      # rubocop:enable Layout/LineLength
 
       # The goal of this query is to generate a list of articles that
       # are relevant to the user's interest.
@@ -359,13 +362,14 @@ module Articles
         # can use to help ensure that we can use all of the
         # ActiveRecord goodness of scopes (e.g.,
         # limited_column_select) and eager includes.
-        Article.where(
+        finalized_results = Article.where(
           Article.arel_table[:id].in(
             Arel.sql(
               Article.sanitize_sql(unsanitized_sub_sql),
             ),
           ),
         ).limited_column_select.includes(top_comments: :user)
+        final_order_logic(finalized_results)
       end
       # rubocop:enable Layout/LineLength
 
@@ -440,6 +444,10 @@ module Articles
       end
 
       private
+
+      def final_order_logic(articles)
+        articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.score, 0.1)) DESC"))
+      end
 
       # Concatenate the required group by clauses.
       #
@@ -612,15 +620,19 @@ module Articles
       end
 
       def inject_config_ab_test(valid_method_name, scoring_config)
-        return scoring_config unless valid_method_name == :comments_count_factor # Only proceed on this one factor
+        return scoring_config unless valid_method_name == :matching_tags_factor # Only proceed on this one factor
         return scoring_config if @strategy == AbExperiment::ORIGINAL_VARIANT # Don't proceed if not testing new strategy
 
         # Rewards comment count with slightly more weight up to 10 comments.
         # Testing two case weights beyond what we currently have
-        scoring_config[:cases] = if @strategy == "slightly_more_comments_count_case_weight"
-                                   (0..9).map { |n| [n, 0.8 + (n / 50.0)] }
-                                 else # much_more_comments_count_case_weight
-                                   (0..19).map { |n| [n, 0.6 + (n / 50.0)] }
+        scoring_config[:clause] = "LEAST(10.0, SUM(followed_tags.points))::integer"
+        scoring_config[:cases] = case @strategy
+                                 when "tag_follow_points_maximum_spectrum"
+                                   (0..9).map { |n| [n, 0.70 + (n / 33.0)] }
+                                 when "tag_follow_points_medium_spectrum"
+                                   (0..9).map { |n| [n, 0.77 + (n / 44.0)] }
+                                 else # Minimum variance (i.e. between 0.88 and 1 here)
+                                   (0..9).map { |n| [n, 0.88 + (n / 98.0)] }
                                  end
         scoring_config
       end

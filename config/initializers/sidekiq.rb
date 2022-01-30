@@ -63,3 +63,5 @@ Sidekiq.configure_client do |config|
     chain.add SidekiqUniqueJobs::Middleware::Client
   end
 end
+
+Sidekiq.strict_args! unless Rails.env.production?

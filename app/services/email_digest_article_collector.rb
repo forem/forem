@@ -22,7 +22,7 @@ class EmailDigestArticleCollector
                      .published
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
-                     .where.not(user_id: @user.id)
+                     .not_authored_by(@user.id)
                      .where("score > ?", 12)
                      .where("experience_level_rating > ? AND experience_level_rating < ?",
                             experience_level_rating_min, experience_level_rating_max)
@@ -34,7 +34,7 @@ class EmailDigestArticleCollector
                      .where("published_at > ?", cutoff_date)
                      .featured
                      .where(email_digest_eligible: true)
-                     .where.not(user_id: @user.id)
+                     .not_authored_by(@user.id)
                      .where("score > ?", 25)
                      .order(score: :desc)
                      .limit(6)

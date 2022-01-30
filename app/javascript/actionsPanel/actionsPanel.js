@@ -176,12 +176,6 @@ const adminUnpublishArticle = async (id, username, slug) => {
   }
 };
 
-function toggleSubmitContainer() {
-  document
-    .getElementById('adjustment-reason-container')
-    .classList.toggle('hidden');
-}
-
 function clearAdjustmentReason() {
   document.getElementById('tag-adjustment-reason').value = '';
 }
@@ -242,7 +236,6 @@ async function adjustTag(el) {
         el.value = '';
       }
 
-      toggleSubmitContainer();
       clearAdjustmentReason();
 
       if (outcome.result === 'addition') {
@@ -297,18 +290,8 @@ export function handleAdjustTagBtn(btn) {
       }
       btn.classList.toggle('active');
     });
-    if (btn.classList.contains('active')) {
-      document
-        .getElementById('adjustment-reason-container')
-        .classList.remove('hidden');
-    } else {
-      document
-        .getElementById('adjustment-reason-container')
-        .classList.add('hidden');
-    }
   } else {
     btn.classList.toggle('active');
-    toggleSubmitContainer();
   }
 }
 
@@ -317,10 +300,6 @@ function handleAdminInput() {
 
   if (addTagInput) {
     addTagInput.addEventListener('focus', () => {
-      document
-        .getElementById('adjustment-reason-container')
-        .classList.remove('hidden');
-
       const activeTagBtns = Array.from(
         document.querySelectorAll('button.adjustable-tag.active'),
       );
@@ -330,7 +309,6 @@ function handleAdminInput() {
     });
     addTagInput.addEventListener('focusout', () => {
       if (addTagInput.value === '') {
-        toggleSubmitContainer();
       }
     });
   }
