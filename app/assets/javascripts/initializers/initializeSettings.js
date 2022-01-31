@@ -14,7 +14,7 @@ function initializeSettings() {
         // Show the confirmation message
         document
           .getElementById('copy-text-announcer')
-          ?.classList.remove('hidden');
+          .classList.remove('hidden');
       });
     });
   }
