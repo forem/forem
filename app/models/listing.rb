@@ -81,6 +81,9 @@ class Listing < ApplicationRecord
     Listings::BustCacheWorker.perform_async(id)
   end
 
+  # First tries to purchase the listing with the org's credit. IF that doesn't
+  # work it tries to charge the user instead. The purchasers will be yielded
+  # to the provided block so it can be used for further processing.
   def purchase(user)
     purchaser = [organization, user].detect { |who| who&.enough_credits?(cost) }
     return false unless purchaser
