@@ -235,7 +235,7 @@ module Admin
 
           format.html do
             flash[:success] = message
-            redirect_back(fallback_location: admin_users_path)
+            redirect_back(fallback_location: admin_user_path(params[:id]))
           end
 
           format.js { render json: { result: message }, content_type: "application/json" }
@@ -246,7 +246,7 @@ module Admin
         respond_to do |format|
           format.html do
             flash[:danger] = message
-            redirect_back(fallback_location: admin_users_path)
+            redirect_back(fallback_location: admin_user_path(params[:id]))
           end
 
           format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
