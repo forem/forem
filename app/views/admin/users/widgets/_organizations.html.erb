@@ -7,8 +7,8 @@
 </header>
 <% if @organization_memberships.load.empty? %>
   <div class="flex justify-between items-center gap-4">
-    <p>This user hasn't been added to any organizations yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add to organization</button>
+    <p>This user is not a part of any organization yet.</p>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add organization</button>
   </div>
 <% else %>
   <% @organization_memberships.each do |org_membership| %>
