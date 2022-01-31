@@ -74,7 +74,7 @@
       <div class="flex gap-1">
         <% if decorated_article.pinned? %>
           <%= link_to(
-                "Unpin Post",
+                "Unpin post",
                 unpin_admin_article_path(decorated_article.id),
                 method: :delete,
                 remote: true,
@@ -86,7 +86,7 @@
             data-action="submit->article#pinArticle">
             <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
             <button type="submit" class="c-btn">
-              Pin Post
+              Pin post
             </button>
           </form>
         <% end %>
