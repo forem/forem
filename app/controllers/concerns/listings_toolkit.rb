@@ -4,25 +4,6 @@ module ListingsToolkit
 
   MANDATORY_FIELDS_FOR_UPDATE = %i[body_markdown title tag_list].freeze
 
-  included do
-    before_action :set_and_authorize_listing, only: %i[update]
-  end
-
-  def set_and_authorize_listing
-    @listing = Listing.find(params[:id])
-    authorize @listing
-  end
-
-  def rate_limit?
-    begin
-      rate_limit!(:listing_creation)
-    rescue ::RateLimitChecker::LimitReached => e
-      @listing.errors.add(:listing_creation, e.message)
-      return true
-    end
-    false
-  end
-
   def create
     @listing = Listing.new(listing_params)
     organization_id = @listing.organization_id
@@ -115,6 +96,23 @@ module ListingsToolkit
 
     @listing.clear_cache
     process_after_update
+  end
+
+  private
+
+  def set_and_authorize_listing
+    @listing = Listing.find(params[:id])
+    authorize @listing
+  end
+
+  def rate_limit?
+    begin
+      rate_limit!(:listing_creation)
+    rescue ::RateLimitChecker::LimitReached => e
+      @listing.errors.add(:listing_creation, e.message)
+      return true
+    end
+    false
   end
 
   def first_publish(cost)
