@@ -39,7 +39,7 @@ module Notifications
 
         PushNotifications::Send.call(
           user_ids: [target],
-          title: "🗣️ New Mention",
+          title: I18n.t("services.notifications.new_mention.new"),
           body: "#{I18n.t(
             message_key,
             user: mention.mentionable.user.username,

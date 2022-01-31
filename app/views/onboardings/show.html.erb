@@ -20,9 +20,9 @@
 </div>
 
 <div id="terms" style="display: none;">
-  <%= render "pages/terms_text" %>
+  <%= Page.render_safe_html_for(slug: Page::TERMS_SLUG) { render "pages/terms_text" } %>
 </div>
 
 <div id="coc" style="display: none;">
-  <%= render "pages/coc_text" %>
+  <%= Page.render_safe_html_for(slug: Page::CODE_OF_CONDUCT_SLUG) { render "pages/coc_text" } %>
 </div>

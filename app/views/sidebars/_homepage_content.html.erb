@@ -8,27 +8,7 @@
     <% end %>
 
     <%= render "articles/sidebar_campaign" if Campaign.current.show_in_sidebar? %>
-    <% @listings = Listing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at) %>
-    <% if params[:timeframe].blank? && @listings.any? %>
-      <section class="crayons-card crayons-card--secondary">
-        <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-2"><%= t("views.main.side.listings.heading") %></h3>
-          <div class="crayons-card__actions">
-            <a href="/listings" class="crayons-link--branded fw-medium fs-s"><%= t("views.main.side.listings.all") %></a>
-          </div>
-        </header>
-
-        <div>
-          <% @listings.order(bumped_at: :desc).limit(5).each do |listing| %>
-            <a class="crayons-link crayons-link--contentful" href="<%= listing.path %>">
-              <div><%= listing.title %></div>
-              <div class="crayons-link__secondary"><%= listing.category %></div>
-            </a>
-          <% end %>
-          <a class="crayons-link crayons-link--branded block align-center p-3 fw-medium fs-s w-100" href="/listings/new"><%= t("views.main.side.listings.new") %></a>
-        </div>
-      </section>
-    <% end %>
+    <%= render "articles/sidebar_listings" if Listing.feature_enabled? %>
 
     <% Settings::General.sidebar_tags.each do |tag| %>
       <section class="crayons-card crayons-card--secondary">

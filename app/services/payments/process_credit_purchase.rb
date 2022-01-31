@@ -83,7 +83,7 @@ module Payments
       Payments::Customer.charge(
         customer: customer,
         amount: credits_count * cost_per_credit,
-        description: "Purchase of #{credits_count} credits.",
+        description: I18n.t("services.payments.process_credit_purchase.charge", count: credits_count),
         card_id: card&.id,
       )
     end

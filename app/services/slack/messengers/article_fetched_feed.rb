@@ -1,11 +1,6 @@
 module Slack
   module Messengers
     class ArticleFetchedFeed
-      MESSAGE_TEMPLATE = <<~TEXT.chomp.freeze
-        New Article Retrieved via RSS: %<title>s
-        %<url>s
-      TEXT
-
       def initialize(article:)
         @article = article
       end
@@ -17,17 +12,17 @@ module Slack
       def call
         return unless article.published_from_feed?
 
-        message = format(
-          MESSAGE_TEMPLATE,
+        message = I18n.t(
+          "services.slack.messengers.article_fetched_feed.body",
           title: article.title,
           url: URL.article(article),
         )
 
         Slack::Messengers::Worker.perform_async(
-          message: message,
-          channel: "activity",
-          username: "article_bot",
-          icon_emoji: ":robot_face:",
+          "message" => message,
+          "channel" => "activity",
+          "username" => "article_bot",
+          "icon_emoji" => ":robot_face:",
         )
       end
 

@@ -16,14 +16,14 @@ module Authentication
       unless available?(provider_name)
         raise(
           ::Authentication::Errors::ProviderNotFound,
-          "Provider #{name} is not available!",
+          I18n.t("services.authentication.providers.not_available", name: name),
         )
       end
 
       unless enabled?(provider_name)
         raise(
           ::Authentication::Errors::ProviderNotEnabled,
-          "Provider #{name} is not enabled!",
+          I18n.t("services.authentication.providers.not_enabled", name: name),
         )
       end
 

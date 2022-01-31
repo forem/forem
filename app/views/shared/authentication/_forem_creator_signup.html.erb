@@ -53,10 +53,10 @@
           <div class="fs-xs color-base-60 flex">
             <%= t("views.auth.creator.hint.text_html", start: tag("span", nil, true), end: "</span>".html_safe,
                                                        button: tag.button(
-                                                         tag.span(class: "js-creator-signup-username-hint") + inline_svg_tag("pencil.svg", class: "cursor-pointer crayons-icon opacity-75 ml-1", aria_hidden: true, title: t("views.auth.creator.hint.icon")),
+                                                         tag.span(class: "js-creator-signup-username-hint") + crayons_icon_tag(:pencil, class: "cursor-pointer opacity-75 ml-1", aria_hidden: true, title: t("views.auth.creator.hint.icon")),
                                                          class: "cursor-pointer border-none bg-transparent p-0 js-creator-edit-username flex color-base-90",
                                                          role: "button", type: "button",
-                                                         aria: { label: t("views.auth.creator.hint.aria_label") },
+                                                         aria: { label: t("views.auth.creator.hint.aria_label") }
                                                        )) %>
           </div>
           </div>
@@ -79,8 +79,8 @@
         <div class="relative">
           <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: t("views.auth.register.field.password.placeholder"), required: true, aria: { describedby: "password-helper-text" } %>
           <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="<%= t("views.auth.register.field.password.show") %>" aria-pressed="false">
-            <%= inline_svg_tag("eye.svg", class: "crayons-icon js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.show")) %>
-            <%= inline_svg_tag("eye-off.svg", class: "crayons-icon hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.hide")) %>
+            <%= crayons_icon_tag(:eye, class: "js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.show")) %>
+            <%= crayons_icon_tag("eye-off", class: "hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.hide")) %>
           </button>
         </div>
         <p id="password-helper-text" class="fs-xs color-base-60 mt-1"><%= t("views.auth.register.field.password.desc") %></p>
@@ -102,5 +102,5 @@
       </div>
     <% end %>
   </div>
-  <%= inline_svg_tag("forem-background.svg", aria: true, title: t("views.auth.background"), class: "forem-background absolute bottom-0 right-0 hidden m:block") %>
+  <%= crayons_icon_tag("forem-background", class: "forem-background absolute bottom-0 right-0 hidden m:block", title: t("views.auth.background")) %>
 </main>
