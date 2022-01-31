@@ -11,7 +11,7 @@
   <header>
     <% if decorated_article.pinned? || article.featured || article.approved || (!article.published? && article.published_from_feed?) || article.video || article.user&.warned? %>
       <div class="flex gap-1 mb-1">
-        <% if article.approved %>
+        <% if !article.published? && article.published_from_feed? %>
           <span class="c-indicator c-indicator--danger">Unpublished</span>
         <% end %>
         <% if decorated_article.pinned? %>
