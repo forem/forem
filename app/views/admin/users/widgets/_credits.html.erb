@@ -35,7 +35,7 @@
     </div>
     <div class="crayons-field">
       <label for="balance-note" class="crayons-field__label">Why are you adjusting credits?</label>
-      <textarea name="" id="balance-note" class="crayons-textfield" required></textarea>
+      <%= f.text_area :new_note, id: "balance-note", size: 50, required: true, class: "crayons-textfield" %>
     </div>
     <div>
       <button type="submit" class="c-btn c-btn--primary">Adjust</button>
