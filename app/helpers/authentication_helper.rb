@@ -37,10 +37,6 @@ module AuthenticationHelper
     Authentication::Providers.available.map(&:to_s)
   end
 
-  def forem_creator_flow_enabled?
-    FeatureFlag.enabled?(:creator_onboarding) && waiting_on_first_user?
-  end
-
   def waiting_on_first_user?
     Settings::General.waiting_on_first_user
   end

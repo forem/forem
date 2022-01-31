@@ -16,7 +16,6 @@ RSpec.describe "/creator_settings/new", type: :request do
   end
 
   before do
-    allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
     allow(Settings::General).to receive(:waiting_on_first_user).and_return(false)
   end
 
