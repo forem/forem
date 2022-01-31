@@ -49,7 +49,7 @@
       <%= f.label "Role", class: "crayons-field__label" %>
       <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>
       <% options["Special Roles"] = Constants::Role::SPECIAL_ROLES if current_user.super_admin? %>
-      <%= f.select(:user_status, grouped_options_for_select(options), { include_blank: true }, class: "crayons-select") %>
+      <%= f.select(:user_status, grouped_options_for_select(options), { include_blank: "Select..." }, class: "crayons-select") %>
     </div>
     <div class="crayons-field">
       <%= f.label "Reason", class: "crayons-field__label" %>
