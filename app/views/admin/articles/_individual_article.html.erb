@@ -46,13 +46,19 @@
       </a>
     </h2>
 
-    <div class="-ml-1 fs-s">
-      <% decorated_article.cached_tag_list_array.each do |tag| %>
-        <a class="crayons-tag crayons-tag--monochrome" href='<%= tag_path(tag) %>'><span class="crayons-tag__prefix">#</span><%= tag %></a>
-      <% end %>
+    <div class="-ml-1 fs-s flex items-center gap-4">
+      <div class="flex gap-px">
+        <% decorated_article.cached_tag_list_array.each do |tag| %>
+          <a class="crayons-tag crayons-tag--monochrome" href='<%= tag_path(tag) %>'><span class="crayons-tag__prefix">#</span><%= tag %></a>
+        <% end %>
+      </div>
+
+      <span>❤️ <%= article.public_reactions_count %> likes</span>
+      <span>💬 <%= article.comments_count %> comments</span>
     </div>
 
-    <div class="flex items-center gap-2 fs-s color-secondary">
+    <div class="flex justify-between gap-4 items-center">
+      <div>
         <a href="<%= admin_user_path(article.user_id) %>" class="c-link">@<%= article.user&.username %></a>
         <% if article.published_from_feed? && !article.published? %>
           RSS Import <%= article.created_at.strftime("%b %d, %Y") %>
@@ -63,9 +69,30 @@
         <% else %>
           <%= article.published_at&.strftime("%b %d, %Y") %>
         <% end %>
+      </div>
 
-        <span>❤️ <%= article.public_reactions_count %> likes</span>
-        <span>💬 <%= article.comments_count %> comments</span>
+      <div class="flex gap-1">
+        <% if decorated_article.pinned? %>
+          <%= link_to(
+                "Unpin Post",
+                unpin_admin_article_path(decorated_article.id),
+                method: :delete,
+                remote: true,
+                class: "c-link c-link--block",
+                data: { "article-target": "unpinButton" },
+              ) %>
+        <% else %>
+          <form method="post" action="<%= pin_admin_article_path(decorated_article.id) %>" class="inline"
+            data-action="submit->article#pinArticle">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+            <button type="submit" class="c-btn">
+              Pin Post
+            </button>
+          </form>
+        <% end %>
+        <a class="c-link c-link--block" href="<%= admin_user_path(article.user_id) %>" target="_blank" rel="noopener">User</a>
+        <a href="<%= article.path %>/edit" target="_blank" rel="noopener" class="c-link c-link--block">Edit</a>
+      </div>
     </div>
   </header>
 
@@ -91,7 +118,7 @@
     <% end %>
   <% end %>
 
-  <%= form_with url: admin_article_path(article.id), model: article, local: true, class: "crayons-card crayons-card--secondary p-4 flex flex-col gap-4" do |f| %>
+  <%= form_with url: admin_article_path(article.id), model: article, local: true, class: "crayons-card crayons-card--secondary p-4 flex flex-col gap-3" do |f| %>
     <input name="utf8" type="hidden" value="✓">
     <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
     <input type="hidden" name="_method" value="patch" />
@@ -142,31 +169,9 @@
           Approved
         </label>
       </div>
-
+    </div>
+    <div>
       <button class="c-btn c-btn--secondary">Save</button>
     </div>
   <% end %>
-
-  <div class="crayons-card crayons-card--secondary p-1 flex gap-1">
-    <a href="<%= article.path %>/edit" target="_blank" rel="noopener" class="c-link c-link--block">Edit</a>
-    <a class="c-link c-link--block" href="<%= admin_user_path(article.user_id) %>" target="_blank" rel="noopener">Manage User</a>
-    <% if decorated_article.pinned? %>
-      <%= link_to(
-            "Unpin Post",
-            unpin_admin_article_path(decorated_article.id),
-            method: :delete,
-            remote: true,
-            class: "c-link c-link--block",
-            data: { "article-target": "unpinButton" },
-          ) %>
-    <% else %>
-      <form method="post" action="<%= pin_admin_article_path(decorated_article.id) %>" class="inline"
-        data-action="submit->article#pinArticle">
-        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
-        <button type="submit" class="c-btn">
-          Pin Post
-        </button>
-      </form>
-    <% end %>
-  </div>
 </article>
