@@ -30,9 +30,9 @@ module DataUpdateScripts
 
       Honeybadger.notify(e, context: {
                            community_name: Settings::Community.community_name,
-                           app_domain: Settings::General.app_domain,
+                           app_domain: Settings::General.app_domain
                          },
-                         tags: "failed_svg_conversion")
+                            tags: "failed_svg_conversion")
     end
   end
 end

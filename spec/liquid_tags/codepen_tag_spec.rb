@@ -7,6 +7,21 @@ RSpec.describe CodepenTag, type: :liquid_tag do
     let(:codepen_team_private_link) { "https://codepen.io/team/codepen/pen/fb02c34281cb08966ec44b4e1ae22bc3" }
     let(:codepen_team_link) { "https://codepen.io/team/keyframers/pen/ZMRMEw" }
     let(:codepen_link_with_default_tab) { "https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result" }
+    let(:codepen_link_with_theme_id) { "https://codepen.io/propjockey/pen/dyVMgBg theme-id=40148" }
+    let(:codepen_link_with_preview_indicator) { "https://codepen.io/propjockey/pen/preview/dyVMgBg" }
+    let(:codepen_link_with_embed_path) { "https://codepen.io/propjockey/embed/dyVMgBg" }
+    let(:codepen_link_with_embed_preview_path) { "https://codepen.io/propjockey/embed/preview/dyVMgBg" }
+    let(:codepen_link_with_height_param) { "https://codepen.io/propjockey/pen/dyVMgBg height=300" }
+    let(:codepen_link_with_editable_true) { "https://codepen.io/propjockey/pen/dyVMgBg editable=true" }
+    let(:codepen_link_with_multiple_params) do
+      "https://codepen.io/propjockey/pen/dyVMgBg theme-id=40148 default-tab=js,result height=250 editable=true"
+    end
+    let(:codepen_link_with_preview_and_params) do
+      "https://codepen.io/propjockey/pen/preview/dyVMgBg theme-id=40148 default-tab=js,result"
+    end
+    let(:codepen_link_with_embed_path_and_params) do
+      "https://codepen.io/propjockey/embed/dyVMgBg theme-id=40148 default-tab=js,result"
+    end
 
     xss_links = %w(
       //evil.com/?codepen.io
@@ -82,6 +97,113 @@ RSpec.describe CodepenTag, type: :liquid_tag do
       expect do
         generate_new_liquid(codepen_link_with_default_tab)
       end.not_to raise_error
+    end
+
+    it "accepts codepen link with a theme-id parameter" do
+      expect do
+        generate_new_liquid(codepen_link_with_theme_id)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_theme_id)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('src="https://codepen.io/propjockey/embed/dyVMgBg?height=600&theme-id=40148')
+    end
+
+    it "accepts codepen link with pen/preview in the url" do
+      expect do
+        generate_new_liquid(codepen_link_with_preview_indicator)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_preview_indicator)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('src="https://codepen.io/propjockey/embed/preview/dyVMgBg')
+    end
+
+    it "accepts codepen link with embed path in the url" do
+      expect do
+        generate_new_liquid(codepen_link_with_embed_path)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_embed_path)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('src="https://codepen.io/propjockey/embed/dyVMgBg')
+    end
+
+    it "accepts codepen link with embed/preview in the url" do
+      expect do
+        generate_new_liquid(codepen_link_with_embed_preview_path)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_embed_preview_path)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('src="https://codepen.io/propjockey/embed/preview/dyVMgBg')
+    end
+
+    it "accepts codepen link with a height parameter" do
+      expect do
+        generate_new_liquid(codepen_link_with_height_param)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_height_param)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('height="300"')
+        .and include('src="https://codepen.io/propjockey/embed/dyVMgBg?height=300')
+    end
+
+    it "accepts codepen link with a editable=true parameter" do
+      expect do
+        generate_new_liquid(codepen_link_with_editable_true)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_editable_true)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('src="https://codepen.io/propjockey/embed/dyVMgBg?height=600&editable=true')
+    end
+
+    it "accepts codepen link with multiple params" do
+      expect do
+        generate_new_liquid(codepen_link_with_multiple_params)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_multiple_params)
+
+      expect(liquid.render).to include("<iframe")
+        .and include('height="250"')
+        .and include(
+          'src="https://codepen.io/propjockey/embed/dyVMgBg?height=250&theme-id=40148&amp;default-tab=js,result&amp;editable=true',
+        )
+    end
+
+    it "accepts codepen link with preview and params" do
+      expect do
+        generate_new_liquid(codepen_link_with_preview_and_params)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_preview_and_params)
+
+      expect(liquid.render).to include("<iframe")
+        .and include(
+          'src="https://codepen.io/propjockey/embed/preview/dyVMgBg?height=600&theme-id=40148&amp;default-tab=js,result',
+        )
+    end
+
+    it "accepts codepen link with embed and params" do
+      expect do
+        generate_new_liquid(codepen_link_with_embed_path_and_params)
+      end.not_to raise_error
+
+      liquid = generate_new_liquid(codepen_link_with_embed_path_and_params)
+
+      expect(liquid.render).to include("<iframe")
+        .and include(
+          'src="https://codepen.io/propjockey/embed/dyVMgBg?height=600&theme-id=40148&amp;default-tab=js,result',
+        )
     end
 
     it "rejects XSS attempts" do

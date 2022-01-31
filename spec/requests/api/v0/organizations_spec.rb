@@ -68,7 +68,7 @@ RSpec.describe "Api::V0::Organizations", type: :request do
       end
 
       expect(response_org_users["joined_at"]).to eq(org_user.created_at.strftime("%b %e, %Y"))
-      expect(response_org_users["profile_image"]).to eq(Images::Profile.call(org_user.profile_image_url, length: 320))
+      expect(response_org_users["profile_image"]).to eq(org_user.profile_image_url_for(length: 320))
     end
   end
 
@@ -80,6 +80,12 @@ RSpec.describe "Api::V0::Organizations", type: :request do
     it "returns 404 if the organizations username is not found" do
       get "/api/organizations/invalid-username/listings"
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns success for when orgnaization username exists" do
+      create(:listing, user: org_user, organization: organization)
+      get "/api/organizations/#{organization.username}/listings"
+      expect(response).to have_http_status(:success)
     end
 
     it "supports pagination" do

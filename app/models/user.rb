@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   include CloudinaryHelper
 
+  include Images::Profile.for(:profile_image_url)
+
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
     included do
@@ -316,6 +318,7 @@ class User < ApplicationRecord
     true
   end
 
+  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
@@ -329,6 +332,7 @@ class User < ApplicationRecord
     end
   end
 
+  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_antifollowed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
@@ -507,7 +511,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    Images::Profile.call(profile_image_url, length: 90)
+    profile_image_url_for(length: 90)
   end
 
   def unsubscribe_from_newsletters
@@ -594,6 +598,10 @@ class User < ApplicationRecord
     self.username = username&.downcase
   end
 
+  # @todo Should we do something to ensure that we don't create a username that violates our
+  # USERNAME_MAX_LENGTH constant?
+  #
+  # @see USERNAME_MAX_LENGTH
   def set_temp_username
     self.username = if temp_name_exists?
                       "#{temp_username}_#{rand(100)}"

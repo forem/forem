@@ -4,6 +4,12 @@ RSpec.describe "all routes", type: :routing do
   let(:podcast)     { create(:podcast) }
   let(:user)        { create(:user) }
 
+  describe "#root_url" do
+    it "matches URL.url('/')" do
+      expect(root_url).to eq(URL.url("/"))
+    end
+  end
+
   it "renders a podcast index if there is a podcast with the slug successfully" do
     expect(get: "/#{podcast.slug}").to route_to(
       controller: "stories",

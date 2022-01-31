@@ -9,5 +9,5 @@ export * from '@crayons/Icons';
 export * from '@crayons/Modal';
 export * from '@crayons/Spinner';
 export * from '@crayons/MobileDrawer';
-export * from '@crayons/navigation';
 export * from '@crayons/MarkdownToolbar';
+export * from '@crayons/MultiSelectAutocomplete';

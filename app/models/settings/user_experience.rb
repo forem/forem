@@ -4,12 +4,18 @@ module Settings
     self.table_name = :settings_user_experiences
 
     HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/
+    FEED_STRATEGIES = %w[basic large_forem_experimental].freeze
+    FEED_STYLES = %w[basic rich compact].freeze
 
     # The default font for all users that have not chosen a custom font yet
     setting :default_font, type: :string, default: "sans_serif"
-    setting :feed_strategy, type: :string, default: "basic"
+    setting :feed_strategy, type: :string, default: "basic", validates: {
+      inclusion: { in: FEED_STRATEGIES }
+    }
     # basic (current default), rich (cover image on all posts), compact (more minimal)
-    setting :feed_style, type: :string, default: "basic"
+    setting :feed_style, type: :string, default: "basic", validates: {
+      inclusion: { in: FEED_STYLES }
+    }
     setting :home_feed_minimum_score, type: :integer, default: 0
     setting :index_minimum_score, type: :integer, default: 0
     setting :primary_brand_color_hex, type: :string, default: "#3b49df", validates: {

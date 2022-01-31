@@ -20,21 +20,13 @@
   .github-repo-row {
     background: var(--card-bg);
     padding: var(--su-3);
-
-    &:hover {
-      background: var(--card-hover-bg);
-    }
-
-    &.github-repo-row-featured {
-      background: var(--card-selected-bg);
-    }
     .github-repo-row-name {
       align-items: center;
       display: flex;
       justify-content: space-between;
       font-weight: var(--fw-medium);
 
-      .crayons-indicator {
+      .c-indicator {
         margin-left: 5px;
       }
       button {

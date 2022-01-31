@@ -183,28 +183,30 @@ RSpec.configure do |config|
     allow(Settings::General).to receive(:waiting_on_first_user).and_return(false)
 
     # Default to have field a field test available.
-    config = { "experiments" =>
-      { "wut" =>
-        { "variants" => %w[base var_1],
-          "weights" => [50, 50],
-          "goals" => %w[user_creates_comment
-                        user_creates_comment_four_days_in_week
-                        user_views_article_four_days_in_week
-                        user_views_article_four_hours_in_day
-                        user_views_article_nine_days_in_two_week
-                        user_views_article_twelve_hours_in_five_days] } },
-               "exclude" => { "bots" => true },
-               "cache" => true,
-               "cookies" => false }
+    if AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT.blank?
+      config = { "experiments" =>
+        { "wut" =>
+          { "variants" => %w[base var_1],
+            "weights" => [50, 50],
+            "goals" => %w[user_creates_comment
+                          user_creates_comment_four_days_in_week
+                          user_views_article_four_days_in_week
+                          user_views_article_four_hours_in_day
+                          user_views_article_nine_days_in_two_week
+                          user_views_article_twelve_hours_in_five_days] } },
+                 "exclude" => { "bots" => true },
+                 "cache" => true,
+                 "cookies" => false }
 
-    begin
-      # Add the field tests that are currently configured (if any).
-      field_tests = Psych.load_file("config/field_test.yml")
-      config["experiments"].merge!(field_tests.fetch("experiments", {}))
-    rescue StandardError
-      # Accept that we may not have experiments.
+      begin
+        # Add the field tests that are currently configured (if any).
+        field_tests = Psych.load_file("config/field_test.yml")
+        config["experiments"].merge!(field_tests.fetch("experiments", {}))
+      rescue StandardError
+        # Accept that we may not have experiments.
+      end
+      allow(FieldTest).to receive(:config).and_return(config)
     end
-    allow(FieldTest).to receive(:config).and_return(config)
   end
 
   config.after do

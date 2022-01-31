@@ -1,9 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
-import { Tags } from '../shared/components/tags';
+import { Tags, DEFAULT_TAG_FORMAT } from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
-import { DEFAULT_TAG_FORMAT } from '../article-form/components/TagsField';
 import { Title } from './components/Title';
 import { BodyMarkdown } from './components/BodyMarkdown';
 import { Categories } from './components/Categories';

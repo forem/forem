@@ -26,7 +26,7 @@ class GithubTag
         locals: {
           body: @body,
           created_at: @created_at.rfc3339,
-          date: @created_at.utc.strftime("%b %d, %Y"),
+          date: I18n.l(@created_at.utc, format: :github),
           html_url: @content_json[:html_url],
           issue_number: issue_number,
           tagline: tagline,
@@ -53,7 +53,7 @@ class GithubTag
     end
 
     def generate_api_link(input)
-      uri = URI.parse(input).normalize
+      uri = Addressable::URI.parse(input).normalize
       uri.host = nil if uri.host == "github.com"
 
       # public PRs URLs are "/pull/{id}" but the API requires "/pulls/{id}"
@@ -65,7 +65,7 @@ class GithubTag
       if uri.fragment&.start_with?("issuecomment-")
         uri.path = uri.path.gsub(%r{(issues|pulls)/\d+}, "issues/comments/")
         comment_id = uri.fragment.split("-").last
-        uri.merge!(comment_id)
+        uri.join!(comment_id)
       end
 
       # fragments and query params are not needed in the API call
@@ -75,7 +75,7 @@ class GithubTag
       # remove leading forward slash in the path
       path = uri.path.delete_prefix("/")
 
-      URI.parse(API_BASE_ENDPOINT).merge(path).to_s
+      Addressable::URI.parse(API_BASE_ENDPOINT).join(path).to_s
     end
 
     def valid_link?(link)
@@ -89,11 +89,11 @@ class GithubTag
     end
 
     def raise_error
-      raise StandardError, "Invalid GitHub issue, pull request or comment link"
+      raise StandardError, I18n.t("liquid_tags.github_tag.github_issue_tag.invalid_github_issue_pull")
     end
 
     def title
-      content_json[:title] || "Comment for"
+      content_json[:title] || I18n.t("liquid_tags.github_tag.github_issue_tag.comment_for")
     end
 
     def issue_number
@@ -101,7 +101,7 @@ class GithubTag
     end
 
     def tagline
-      @is_issue ? "posted on" : "commented on"
+      @is_issue ? I18n.t("liquid_tags.github_tag.github_issue_tag.posted_on") : I18n.t("liquid_tags.github_tag.github_issue_tag.commented_on") # rubocop:disable Layout/LineLength
     end
   end
 end

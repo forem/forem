@@ -16,7 +16,7 @@ RSpec.describe Search::PodcastEpisodeSerializer do
     podcast = described_class.new(pce).serializable_hash.dig(:data, :attributes, :podcast)
     expect(podcast.keys).to include(:slug, :image_url, :title)
     expect(podcast[:slug]).to eq(pce.podcast_slug)
-    expect(podcast[:image_url]).to eq(Images::Profile.call(pce.podcast.profile_image_url, length: 90))
+    expect(podcast[:image_url]).to eq(pce.podcast.profile_image_url_for(length: 90))
     expect(podcast[:title]).to eq(pce.title)
   end
 end

@@ -26,6 +26,15 @@
         </div>
 
         <div class="crayons-field">
+          <%= admin_config_label :suggested_tags %>
+          <%= admin_config_description Constants::Settings::General::DETAILS[:suggested_tags][:description] %>
+          <%= f.text_field :suggested_tags,
+                           class: "crayons-textfield",
+                           value: Settings::General.suggested_tags.join(","),
+                           placeholder: Constants::Settings::General::DETAILS[:suggested_tags][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
           <%= admin_config_label :suggested_users %>
           <%= admin_config_description Constants::Settings::General::DETAILS[:suggested_users][:description] %>
           <%= f.text_field :suggested_users,

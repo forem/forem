@@ -16,19 +16,19 @@
                          attributes: %w[href strong em ref rel src title alt class] %>
 
           </p>
-          <h5 class="card-title text-center">
+          <div class="mb-2 mt-2 flex justify-center">
             <% if comment.user %>
               <a href="<%= comment.user.path %>" target="_blank" rel="noopener">
-                <img class="rounded" height="30" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile" loading="lazy" /> <%= comment.user.username %>
+                <img class="rounded" height="30" src="<%= comment.user.profile_image_url_for(length: 50) %>" alt="<%= comment.user.username %> profile" loading="lazy" /> <%= comment.user.username %>
               </a>
             <% end %>
             <% if comment.user && comment.user.twitter_username.present? %>
               |
-              <a href="https://twitter.com/<%= comment.user.twitter_username %>">
-                <i class="fa fa-twitter" aria-hidden="true"></i> @<%= comment.user.twitter_username %>
+              <a href="https://twitter.com/<%= comment.user.twitter_username %>" class="inline-flex items-center">
+                <%= crayons_icon_tag(:twitter, aria_hidden: true) %> @<%= comment.user.twitter_username %>
               </a>
             <% end %>
-          </h5>
+          </div>
           <div class="mt-3 d-flex justify-content-end">
             <a class="btn btn-primary" href="<%= comment.path %>" target="_blank" rel="noopener">View</a>
             <% if comment.reactions.where(user_id: current_user.id).empty? %>
