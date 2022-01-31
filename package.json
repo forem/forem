@@ -48,7 +48,7 @@
     "@storybook/addon-links": "^6.4.13",
     "@storybook/addon-notes": "^5.3.21",
     "@storybook/addon-storysource": "^6.4.10",
-    "@storybook/addons": "^6.4.9",
+    "@storybook/addons": "^6.4.17",
     "@storybook/builder-webpack5": "^6.4.14",
     "@storybook/manager-webpack5": "^6.4.10",
     "@storybook/preact": "^6.4.10",
