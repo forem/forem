@@ -46,13 +46,13 @@
 <div id="add-role" class="hidden">
   <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4", id: nil }) do |f| %>
     <div class="crayons-field">
-      <%= f.label "Role", class: "crayons-field__label" %>
+      <%= f.label :user_status, "Role", class: "crayons-field__label" %>
       <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>
       <% options["Special Roles"] = Constants::Role::SPECIAL_ROLES if current_user.super_admin? %>
       <%= f.select(:user_status, grouped_options_for_select(options), { include_blank: "Select..." }, class: "crayons-select") %>
     </div>
     <div class="crayons-field">
-      <%= f.label "Reason", class: "crayons-field__label" %>
+      <%= f.label :note_for_current_role, "Reason", class: "crayons-field__label" %>
       <%= f.text_area :note_for_current_role, required: true, class: "crayons-textfield", placeholder: "What's the reason for adding a role?" %>
     </div>
     <div>
