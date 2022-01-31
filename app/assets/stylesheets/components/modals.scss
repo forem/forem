@@ -1,26 +1,22 @@
 @import '../config/import';
 
 .crayons-modal {
-  --modal-max-width: 768px;
-  --modal-body-padding: var(--su-3);
-  --modal-header-padding: var(--su-2) var(--su-2) var(--su-2) var(--su-3);
-  --modal-header-font-size: var(--fs-l);
-  --modal-body-font-size: var(--fs-base);
+  --modal-max-width: 640px;
+  --modal-padding: var(--su-3);
+  --modal-backdrop-pointer-events: none;
+  --modal-border: none;
+  --modal-header-border: 1px solid var(--divider);
+  --modal-header-padding: var(--su-2) var(--su-2) var(--su-2)
+    var(--modal-padding);
+  --modal-alignment: unset;
+  --modal-header-alignment: space-between;
 
   @media (min-width: $breakpoint-s) {
-    --modal-header-padding: var(--su-2) var(--su-2) var(--su-2) var(--su-4);
-    --modal-body-padding: var(--su-4);
+    --modal-padding: var(--su-4);
   }
 
   @media (min-width: $breakpoint-m) {
-    --modal-header-padding: var(--su-3) var(--su-3) var(--su-3) var(--su-6);
-    --modal-body-padding: var(--su-6);
-    --modal-header-font-size: var(--fs-xl);
-    --modal-body-font-size: var(--fs-l);
-  }
-
-  @media (min-width: $breakpoint-l) {
-    --modal-body-padding: var(--su-8);
+    --modal-padding: var(--su-7);
   }
 
   position: fixed;
@@ -34,82 +30,103 @@
   z-index: var(--z-modal);
   pointer-events: none;
 
-  &__overlay {
-    background: rgba(0, 0, 0, 0.6);
-    opacity: 0.5;
+  &--bg-dismissible {
+    --modal-backdrop-pointer-events: auto;
+  }
+
+  &--prompt {
+    --modal-header-border: none;
+    --modal-header-padding: var(--modal-padding) var(--su-8) 0
+      var(--modal-padding);
+    --modal-body-margin: 0;
+
+    @media (min-width: $breakpoint-m) {
+      --modal-body-margin: calc((var(--modal-padding) * -1) + var(--su-4));
+    }
+
+    .crayons-modal__dismiss {
+      position: absolute;
+      right: var(--su-2);
+      top: var(--su-2);
+    }
+  }
+
+  &--centered {
+    --modal-header-padding: var(--su-7) var(--su-8) 0 var(--su-8);
+    --modal-alignment: center;
+    --modal-header-alignment: center;
+  }
+
+  &--danger {
+    --modal-border: 4px solid var(--modal-danger-border-color);
+  }
+
+  &__backdrop {
+    background: var(--modal-backdrop);
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
     pointer-events: auto;
-
-    &.background-clickable {
-      pointer-events: none;
-    }
   }
 
   &__box {
     display: grid;
     grid-template-rows: auto 1fr;
     max-width: var(--modal-max-width);
-    background: var(--card-bg);
-    color: var(--card-color);
+    background: var(--modal-bg);
     z-index: var(--z-elevate);
     max-height: 100%;
     width: 100%;
     height: 100%;
     overflow: hidden;
+    position: relative;
     pointer-events: auto;
     border-radius: var(--radius-large-auto);
+    border: var(--modal-border);
+    text-align: var(--modal-alignment);
     box-shadow: var(--shadow-2);
 
     @media (min-width: $breakpoint-s) {
-      background: var(--card-bg);
-      color: var(--card-color);
       max-height: calc(100% - var(--su-6));
       height: auto;
       width: 90%;
     }
 
     &__header {
-      border-bottom: 1px solid var(--base-a5);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      border-bottom: var(--modal-header-border);
       padding: var(--modal-header-padding);
       flex-shrink: 0;
-
-      &__title {
-        font-size: var(--modal-header-font-size);
-      }
+      display: flex;
+      justify-content: var(--modal-header-alignment);
+      align-items: center;
     }
 
     &__body {
-      font-size: var(--modal-body-font-size);
-      padding: var(--modal-body-padding);
+      padding: var(--modal-padding);
+      margin-top: var(--modal-body-margin);
       max-height: 100%;
       overflow-y: auto;
       grid-auto-rows: min-content;
     }
   }
 
-  &--s {
+  &--small {
     @media (min-width: $breakpoint-s) {
       --modal-max-width: 480px;
-      --modal-body-padding: var(--su-6);
-      --modal-header-font-size: var(--fs-l);
-      --modal-body-font-size: var(--fs-base);
     }
   }
 
-  &--m {
+  &--large {
     @media (min-width: $breakpoint-m) {
-      --modal-max-width: 640px;
-      --modal-body-padding: var(--su-7);
-      --modal-header-padding: var(--su-3) var(--su-5);
-      --modal-header-font-size: var(--fs-xl);
-      --modal-body-font-size: var(--fs-l);
+      --modal-max-width: 768px;
+    }
+  }
+
+  &--prompt {
+    @media (min-width: $breakpoint-s) {
+      --modal-max-width: 480px;
     }
   }
 }

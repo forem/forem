@@ -100,12 +100,6 @@ hourly_feed_cache_bust:
   class: "BustCachePathWorker"
   args:
     - "/feed.xml"
-hourly_badge_cache_bust:
-  description: "Busts the edge cache of badges (runs hourly on the hour)"
-  cron: "0 * * * *"
-  class: "BustCachePathWorker"
-  args:
-    - "/badge"
 daily_home_cache_bust:
   description: "Busts the edge cache of the homepage (runs daily at 00:00 UTC)"
   cron: "0 0 * * *"

@@ -285,11 +285,39 @@
   --indicator-info-color: rgb(var(--indigo-100));
 
   /***********************************************
+  ** Modals **************************************
+  ***********************************************/
+
+  --modal-bg: rgb(var(--grey-900));
+  --modal-backdrop: rgba(var(--black), 0.6);
+  --modal-danger-border-color: rgb(var(--red-400));
+
+  /***********************************************
+  ** Colors **************************************
+  ***********************************************/
+  --color-primary: rgb(var(--grey-50));
+  --color-secondary: rgb(var(--grey-400));
+
+  /***********************************************
+  ** Pills ***************************************
+  ***********************************************/
+
+  --pill-bg: transparent;
+  --pill-bg-hover: rgb(var(--grey-800));
+  --pill-color: rgb(var(--grey-200));
+  --pill-color-hover: rgb(var(--grey-50));
+  --pill-border: rgb(var(--grey-500));
+  --pill-border-hover: rgb(var(--grey-200));
+
+  /***********************************************
   ** Utilities ***********************************
   ***********************************************/
 
   /* Focus */
   --focus: var(--accent-brand-lighter);
+
+  /* Divider */
+  --divider: rgb(var(--grey-700));
 
   /* Shadows */
   --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.5),
