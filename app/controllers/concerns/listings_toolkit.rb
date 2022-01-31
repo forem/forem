@@ -4,14 +4,19 @@ module ListingsToolkit
 
   MANDATORY_FIELDS_FOR_UPDATE = %i[body_markdown title tag_list].freeze
 
-  def set_listing
+  included do
+    before_action :set_and_authorize_listing, only: %i[update]
+  end
+
+  def set_and_authorize_listing
     @listing = Listing.find(params[:id])
+    authorize @listing
   end
 
   def rate_limit?
     begin
       rate_limit!(:listing_creation)
-    rescue StandardError => e
+    rescue ::RateLimitChecker::LimitReached => e
       @listing.errors.add(:listing_creation, e.message)
       return true
     end
@@ -86,8 +91,6 @@ module ListingsToolkit
   end
 
   def update
-    authorize @listing
-
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
       bump_result = Listings::Bump.call(@listing, user: current_user)
@@ -118,7 +121,7 @@ module ListingsToolkit
     author = @listing.author
     available_user_credits = author.is_a?(Organization) ? current_user.credits.unspent.size : 0
 
-    if author.credits.unspent.size >= cost
+    if author.enough_credits?(cost)
       create_listing(author, cost)
     elsif available_user_credits >= cost
       create_listing(current_user, cost)
