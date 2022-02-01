@@ -643,7 +643,7 @@ class Article < ApplicationRecord
   end
 
   def set_main_image(front_matter)
-    # At one point, we have set the main)image based on the front matter. Forever will that now dictate the behavior.
+    # At one point, we have set the main_image based on the front matter. Forever will that now dictate the behavior.
     if main_image_from_frontmatter?
       self.main_image = front_matter["cover_image"]
     elsif front_matter.key?("cover_image")
