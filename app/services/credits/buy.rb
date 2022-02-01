@@ -1,16 +1,6 @@
 module Credits
-  class Buyer
-    def initialize(purchaser:, purchase:, cost:)
-      @purchaser = purchaser
-      @purchase = purchase
-      @cost = cost
-    end
-
-    def self.call(...)
-      new(...).call
-    end
-
-    def call
+  class Buy
+    def self.call(purchaser:, purchase:, cost:)
       return false unless purchaser.enough_credits?(cost)
 
       purchaser.credits.unspent.limit(cost).update_all(
@@ -23,9 +13,5 @@ module Credits
 
       true
     end
-
-    private
-
-    attr_reader :purchaser, :purchase, :cost
   end
 end

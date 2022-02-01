@@ -446,27 +446,7 @@ module Articles
       private
 
       def final_order_logic(articles)
-        case @strategy
-        when "final_order_by_score"
-          articles.order("score DESC")
-        when "final_order_by_comment_score"
-          articles.order("comment_score DESC")
-        when "final_order_by_last_comment_at"
-          articles.order("articles.last_comment_at DESC")
-        when "final_order_by_random"
-          articles.order("RANDOM()")
-        when "final_order_by_random_weighted_to_score"
-          articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.score, 0.1)) DESC"))
-        when "final_order_by_random_weighted_to_comment_score"
-          articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.comment_score, 0.1)) DESC"))
-        when "final_order_by_random_weighted_to_last_comment_at"
-          # rubocop:disable Layout/LineLength
-          articles
-            .order(Arel.sql("RANDOM() ^ (1.0 / greatest( 1, (extract(epoch from now() - articles.last_comment_at)::integer))) ASC"))
-          # rubocop:enable Layout/LineLength
-        else # original
-          articles
-        end
+        articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.score, 0.1)) DESC"))
       end
 
       # Concatenate the required group by clauses.
@@ -613,7 +593,7 @@ module Articles
           scoring_config = default_config unless scoring_config.is_a?(Hash)
 
           # Change an alement of config via a/b test strategy
-          # scoring_config = inject_config_ab_test(valid_method_name, scoring_config) # Not currently in use.
+          scoring_config = inject_config_ab_test(valid_method_name, scoring_config)
 
           # This scoring method requires a group by clause.
           @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)
@@ -640,15 +620,19 @@ module Articles
       end
 
       def inject_config_ab_test(valid_method_name, scoring_config)
-        return scoring_config unless valid_method_name == :comments_count_factor # Only proceed on this one factor
+        return scoring_config unless valid_method_name == :matching_tags_factor # Only proceed on this one factor
         return scoring_config if @strategy == AbExperiment::ORIGINAL_VARIANT # Don't proceed if not testing new strategy
 
         # Rewards comment count with slightly more weight up to 10 comments.
         # Testing two case weights beyond what we currently have
-        scoring_config[:cases] = if @strategy == "slightly_more_comments_count_case_weight"
-                                   (0..9).map { |n| [n, 0.8 + (n / 50.0)] }
-                                 else # much_more_comments_count_case_weight
-                                   (0..19).map { |n| [n, 0.6 + (n / 50.0)] }
+        scoring_config[:clause] = "LEAST(10.0, SUM(followed_tags.points))::integer"
+        scoring_config[:cases] = case @strategy
+                                 when "tag_follow_points_maximum_spectrum"
+                                   (0..9).map { |n| [n, 0.70 + (n / 33.0)] }
+                                 when "tag_follow_points_medium_spectrum"
+                                   (0..9).map { |n| [n, 0.77 + (n / 44.0)] }
+                                 else # Minimum variance (i.e. between 0.88 and 1 here)
+                                   (0..9).map { |n| [n, 0.88 + (n / 98.0)] }
                                  end
         scoring_config
       end

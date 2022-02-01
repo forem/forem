@@ -3,6 +3,31 @@
 /* eslint-disable no-multi-str */
 
 function buildArticleHTML(article) {
+  var tagIcon = `<svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg"><path d="M7.784 14l.42-4H4V8h4.415l.525-5h2.011l-.525 5h3.989l.525-5h2.011l-.525 5H20v2h-3.784l-.42 4H20v2h-4.415l-.525 5h-2.011l.525-5H9.585l-.525 5H7.049l.525-5H4v-2h3.784zm2.011 0h3.99l.42-4h-3.99l-.42 4z"/></svg>`;
+  if (article && article.class_name === 'Tag') {
+    return `<article class="crayons-story">
+        <div class="crayons-story__body flex items-start gap-2">
+          <span class="radius-default p-2 shrink-0" style="background: ${
+            article.bg_color_hex || '#000000'
+          }1a; color: ${article.bg_color_hex || '#000'}">
+            ${tagIcon}
+          </span>
+          <div>
+            <h3 class="crayons-subtitle-2 lh-tight py-2">
+              <a href="/t/${article.name}" class="c-link">
+                ${article.name}
+              </a>
+            </h3>
+            ${
+              article.short_summary
+                ? `<div class="truncate-at-3">${article.short_summary}</div>`
+                : ''
+            }
+          </div>
+        </div>
+      </article>`;
+  }
+
   if (article && article.class_name === 'PodcastEpisode') {
     return `<article class="crayons-story crayons-podcast-episode mb-2">
         <div class="crayons-story__body flex flex-start">
@@ -173,7 +198,7 @@ function buildArticleHTML(article) {
     // We need to be able to set the data-info hash attribute with escaped characters.
     var name = article.user.name.replace(/[\\"']/g, '\\$&');
     var previewCardContent = `
-      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7" data-repositioning-dropdown="true" style="border-top-color: var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
           <div class="-mt-4">
             <a href="/${profileUsername}" class="flex">

@@ -176,7 +176,7 @@ export class ProfileForm extends Component {
     return (
       <div
         data-testid="onboarding-profile-form"
-        className="onboarding-main crayons-modal"
+        className="onboarding-main crayons-modal crayons-modal--large"
       >
         <div
           className="crayons-modal__box"

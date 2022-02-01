@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Credits::Buyer, type: :service do
+RSpec.describe Credits::Buy, type: :service do
   let(:user) { create(:user) }
   let(:org) { create(:organization) }
   let(:listing) { create(:listing, user: user) }

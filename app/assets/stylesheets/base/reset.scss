@@ -84,11 +84,9 @@ textarea {
 }
 
 // Drop default outline (Crayons provides custom)
-input[type='text'],
 textarea,
-input[type='url'],
-input[type='email'],
-input[type='password'] {
+input:not([type='hidden']),
+button {
   outline: 0;
 }
 
