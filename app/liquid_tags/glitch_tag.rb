@@ -62,7 +62,7 @@ class GlitchTag < LiquidTagBase
     # 'app' and 'code' should cancel each other out
     options -= %w[app code] if options.include?("app") && options.include?("code")
 
-    # check for file= in options or path= in params; fallback is file=index.html
+    # check for file= in options, then path= in params; fallback is file=index.html
     file_option = options.detect { |option| option.start_with?("file=") }
     options += ["file=#{path_within_params(match)}"] unless file_option
 
