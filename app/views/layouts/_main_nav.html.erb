@@ -9,6 +9,9 @@
   </ul>
 </nav>
 
+<%# Reading Note: There's a faulty assumption that all "other_nav_links" are
+    visible based on the current state (see
+    ApplicationHelper#display_navigation_link? for details).  %>
 <% if other_nav_links.any? %>
   <nav class="mb-4" aria-labelledby="other-nav-heading">
     <h2 id="other-nav-heading" class="crayons-subtitle-3 py-2 pl-3">
