@@ -48,7 +48,7 @@ class GlitchTag < LiquidTagBase
 
   def get_slug(match)
     if match_has_named_capture_group?(match, "subdomain")
-      match[:subdomain].presence
+      match[:subdomain]
     else
       match[:slug]
     end
@@ -60,7 +60,7 @@ class GlitchTag < LiquidTagBase
 
   def parse_options(options, match)
     # 'app' and 'code' should cancel each other out
-    options -= %w[app code] if (options & %w[app code]) == %w[app code]
+    options -= %w[app code] if options.include?("app") && options.include?("code")
 
     # check for file= in options or path= in params; fallback is file=index.html
     file_option = options.detect { |option| option.start_with?("file=") }
