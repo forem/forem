@@ -25,6 +25,8 @@ class ProfileField < ApplicationRecord
     self.attribute_name = Sterile.sluggerize(
       label.titleize, delimiter: "_"
     ).scan(WORD_REGEX).join.underscore
+
+    validate(:update)
   end
 
   def maximum_header_field_count
