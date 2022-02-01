@@ -6,8 +6,8 @@ class GlitchTag < LiquidTagBase
   REGISTRY_REGEXP = %r{https://(?<slug_subdomain>[\w\-]{1,110}.)?glitch(?:.me|.com)(?:/edit/#!/)?(?<slug>[\w\-]{1,110})?(?<params>\?.*)?}
   ID_REGEXP = /\A(?<slug>[\w\-]{1,110})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
-  # last part of PATH_REGEX handles line & character numbers added to filename
-  PATH_REGEX = %r{path=(?:(?<path>[\w/\-.]+)(?:[\d:]+)?)?}
+  # last part of PATH_REGEX handles line & character numbers that may appear at path end
+  PATH_REGEX = %r{path=(?<path>[\w/\-.]*)[\d:]*}
   OPTION_REGEXP = %r{(app|code|no-files|preview-first|no-attribution|file=([\w/\-.]+)?)}
   OPTIONS_TO_QUERY_PAIR = {
     "app" => %w[previewSize 100],
@@ -47,19 +47,24 @@ class GlitchTag < LiquidTagBase
   end
 
   def get_slug(match)
-    # the dot comes through the regex
-    return match[:slug_subdomain]&.delete(".") if match[:slug_subdomain].present?
+    if match_has_named_capture_group?(match, "slug_subdomain")
+      match[:slug_subdomain]&.delete(".") if match[:slug_subdomain].present?
+    else
+      match[:slug]
+    end
+  end
 
-    match[:slug]
+  def match_has_named_capture_group?(match, group_name)
+    match.names.include?(group_name)
   end
 
   def parse_options(options, match)
     # 'app' and 'code' should cancel each other out
     options -= %w[app code] if (options & %w[app code]) == %w[app code]
-    # add file= to options if a path is present within the URL params
-    options += ["file=#{path_within_params(match)}"] if path_within_params(match)
 
-    return if options.blank?
+    # check for file= in options or path= in params; fallback is file=index.html
+    file_option = options.detect { |option| option.start_with?("file=") }
+    options += ["file=#{path_within_params(match)}"] unless file_option
 
     validated_options = options.select { |option| valid_option?(option) }
     raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_options") if validated_options.empty?
@@ -67,19 +72,15 @@ class GlitchTag < LiquidTagBase
     build_options(validated_options)
   end
 
-  # TODO: See if you can get these to work without the match_has method
   def path_within_params(match)
-    return unless match_has_named_capture_group?(match, "params")
+    return "index.html" unless match_has_named_capture_group?(match, "params")
+
+    return "index.html" if match[:params].blank?
 
     path_match = pattern_match_for(match[:params], [PATH_REGEX])
-
-    return unless match_has_named_capture_group?(path_match, "path")
+    return "index.html" if path_match.blank?
 
     path_match[:path]
-  end
-
-  def match_has_named_capture_group?(match, group_name)
-    match.names.include?(group_name)
   end
 
   def valid_option?(option)
@@ -90,9 +91,9 @@ class GlitchTag < LiquidTagBase
     # Convert options to query param pairs
     params = options.filter_map { |option| OPTIONS_TO_QUERY_PAIR[option] }
 
-    # Deal with the file option if present or use default
+    # by this point, there is always a file_option
     file_option = options.detect { |option| option.start_with?("file=") }
-    path = file_option ? (file_option.sub! "file=", "") : "index.html"
+    path = (file_option.sub! "file=", "")
     params.push ["path", path]
 
     # Encode the resulting pairs as a query string
