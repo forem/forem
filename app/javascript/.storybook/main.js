@@ -86,6 +86,25 @@ module.exports = {
   },
   babel: async (options) => ({
     ...options,
-    plugins: [...options.plugins, 'inline-react-svg'],
+    plugins: [
+      ...options.plugins,
+      [
+        'inline-react-svg',
+        {
+          svgo: {
+            plugins: [
+              {
+                name: 'preset-default',
+                params: {
+                  overrides: {
+                    removeViewBox: false,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    ],
   }),
 };

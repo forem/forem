@@ -51,8 +51,7 @@ class SearchController < ApplicationController
   ].freeze
 
   def tags
-    result = Search::Tag.search_documents(params[:name])
-
+    result = Search::Tag.search_documents(term: params[:name])
     render json: { result: result }
   end
 
@@ -134,8 +133,13 @@ class SearchController < ApplicationController
         )
       elsif class_name.Article?
         search_postgres_article
+      elsif class_name.Tag?
+        Search::Tag.search_documents(
+          term: feed_params[:search_fields],
+          page: feed_params[:page],
+          per_page: feed_params[:per_page],
+        )
       end
-
     render json: { result: result }
   end
 

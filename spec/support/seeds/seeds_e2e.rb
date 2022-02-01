@@ -12,6 +12,7 @@ seeder = Seeder.new
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false
 Settings::Authentication.allow_email_password_registration = true
+Settings::SMTP.address = "smtp.website.com"
 Settings::SMTP.user_name = "username"
 Settings::SMTP.password = "password"
 
@@ -31,6 +32,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -63,6 +65,11 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 ##############################################################################
 
+# Enable Admin Member View feature flag for tests
+FeatureFlag.enable(:admin_member_view)
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user = User.create!(
     name: "Trusted User 1 \\:/",
@@ -70,6 +77,7 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
     username: "trusted_user_1",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -114,6 +122,7 @@ seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") d
     username: "changepassworduser",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -140,6 +149,7 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.local
     username: "article_editor_v1_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -167,6 +177,7 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.local
     username: "article_editor_v2_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -193,6 +204,7 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
     username: "notifications_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -265,6 +277,7 @@ seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.local") do
     username: "liquid_tags_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -425,6 +438,7 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.local") do
     username: "series_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -615,11 +629,6 @@ seeder.create_if_none(Reaction) do
   user = User.find_by(username: "trusted_user_1")
   admin_user.reactions.create!(category: :vomit, reactable: user)
 end
-
-##############################################################################
-
-# Enable Connect feature flag for tests
-FeatureFlag.enable(:connect)
 
 ##############################################################################
 
