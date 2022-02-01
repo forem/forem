@@ -128,6 +128,7 @@ namespace :navigation_links do
     base_url = "#{protocol}#{domain}".freeze
 
     NavigationLink.create_or_update_by_identity(
+      url: "/",
       name: "Home",
       icon: home_icon,
       display_only_when_signed_in: false,
