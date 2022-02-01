@@ -4,7 +4,7 @@ class GlitchTag < LiquidTagBase
   PARTIAL = "liquids/glitch".freeze
 
   REGISTRY_REGEXP = %r{https://(?:(?<subdomain>[\w\-]{1,110})\.)?glitch(?:\.me|\.com)(?:/edit/#!/)?(?<slug>[\w\-]{1,110})?(?<params>\?.*)?}
-  ID_REGEXP = /\A(?<slug>[\w\-]{1,110})\Z/
+  ID_REGEXP = /\A(?:^~)?(?<slug>[\w\-]{1,110})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
   # last part of PATH_REGEX handles line & character numbers that may appear at path end
   PATH_REGEX = %r{path=(?<path>[\w/\-.]*)[\d:]*}
@@ -39,8 +39,7 @@ class GlitchTag < LiquidTagBase
 
   def parsed_input(input)
     id, *options = input.split
-    stripped_id = id.gsub(/^~/, "") # remove possible preceeding tilde
-    match = pattern_match_for(stripped_id, REGEXP_OPTIONS)
+    match = pattern_match_for(id, REGEXP_OPTIONS)
     raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_glitch_id") unless match
 
     [get_slug(match), parse_options(options, match)]
@@ -91,9 +90,11 @@ class GlitchTag < LiquidTagBase
     # Convert options to query param pairs
     params = options.filter_map { |option| OPTIONS_TO_QUERY_PAIR[option] }
 
-    # by this point, there is always a file_option
-    file_option = options.detect { |option| option.start_with?("file=") }
-    path = (file_option.sub! "file=", "")
+    # by this point, there is always a 'file='
+    path = options
+      .detect { |option| option.start_with?("file=") }
+      .delete_prefix("file=")
+
     params.push ["path", path]
 
     # Encode the resulting pairs as a query string
