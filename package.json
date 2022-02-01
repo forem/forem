@@ -40,6 +40,7 @@
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.5",
+    "@faker-js/faker": "^5.5.3",
     "@knapsack-pro/cypress": "^4.5.0",
     "@storybook/addon-a11y": "^6.4.17",
     "@storybook/addon-actions": "^6.4.14",
@@ -79,7 +80,6 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.28.0",
-    "@faker-js/faker": "^5.5.3",
     "husky": "^7.0.4",
     "jest": "27.4.7",
     "jest-axe": "^4.1.0",
@@ -101,9 +101,9 @@
     "@babel/core": "^7.16.7",
     "@babel/plugin-proposal-class-properties": "^7.16.0",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@etchteam/storybook-addon-css-variables-theme": "^1.1.0",
     "@babel/plugin-transform-react-jsx": "^7.16.7",
     "@babel/preset-env": "^7.16.8",
+    "@etchteam/storybook-addon-css-variables-theme": "^1.1.0",
     "@github/clipboard-copy-element": "^1.1.2",
     "@github/time-elements": "3.1.2",
     "@honeybadger-io/js": "^3.2.7",
@@ -142,6 +142,7 @@
     "prop-types": "^15.8.1",
     "pusher-js": "^7.0.3",
     "rails-erb-loader": "^5.5.2",
+    "react-colorful": "^5.5.1",
     "web-share-wrapper": "^0.2.2"
   },
   "jest": {
