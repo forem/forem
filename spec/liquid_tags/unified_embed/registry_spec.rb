@@ -22,6 +22,12 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://app.codesandbox.io/embed/exciting-knuth-hywlv?file=/index.html&runonclick=0&view=editor",
     ]
 
+    valid_glitch_url_formats = [
+      "https://zircon-quixotic-attraction.glitch.me",
+      "https://glitch.com/edit/#!/zircon-quixotic-attraction",
+      "https://glitch.com/edit/#!/zircon-quixotic-attraction?path=script.js:1:0",
+    ]
+
     valid_medium_url_formats = [
       "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c",
       "https://themobilist.medium.com/is-universal-basic-mobility-the-route-to-a-sustainable-c-b18e1e2d014c",
@@ -104,6 +110,13 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
         .to eq(GistTag)
+    end
+
+    it "returns GlitchTag for a valid glitch url", :aggregate_failures do
+      valid_glitch_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(GlitchTag)
+      end
     end
 
     it "returns AsciinemaTag for an asciinema url" do
