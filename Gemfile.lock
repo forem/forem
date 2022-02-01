@@ -383,7 +383,7 @@ GEM
     httpclient (2.8.3)
     hypershield (0.2.2)
       activerecord (>= 5)
-    i18n (1.8.11)
+    i18n (1.9.1)
       concurrent-ruby (~> 1.0)
     i18n-js (3.9.0)
       i18n (>= 0.6.6)
@@ -417,7 +417,7 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       sass (>= 3.2)
-    js-routes (2.2.1)
+    js-routes (2.2.2)
       railties (>= 4)
     json (2.5.1)
     jsonapi-serializer (2.2.0)
@@ -888,7 +888,7 @@ GEM
       nokogiri (~> 1.8)
     yard (0.9.27)
       webrick (~> 1.7.0)
-    zeitwerk (2.5.3)
+    zeitwerk (2.5.4)
     zonebie (0.6.1)
 
 PLATFORMS
