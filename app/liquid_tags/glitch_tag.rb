@@ -39,7 +39,7 @@ class GlitchTag < LiquidTagBase
 
   def parsed_input(input)
     id, *options = input.split
-    stripped_id = id.delete("~") # remove possible preceeding tilde
+    stripped_id = id.gsub(/^~/, "") # remove possible preceeding tilde
     match = pattern_match_for(stripped_id, REGEXP_OPTIONS)
     raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_glitch_id") unless match
 
@@ -47,8 +47,8 @@ class GlitchTag < LiquidTagBase
   end
 
   def get_slug(match)
-    if match_has_named_capture_group?(match, "slug_subdomain")
-      match[:slug_subdomain]&.delete(".") if match[:slug_subdomain].present?
+    if match_has_named_capture_group?(match, "subdomain")
+      match[:subdomain].presence
     else
       match[:slug]
     end

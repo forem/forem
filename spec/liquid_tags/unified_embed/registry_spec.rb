@@ -112,7 +112,7 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(GistTag)
     end
 
-    it "returns GlitchTag for a valid glitch url" do
+    it "returns GlitchTag for a valid glitch url", :aggregate_failures do
       valid_glitch_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(GlitchTag)
