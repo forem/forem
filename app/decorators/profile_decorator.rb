@@ -3,10 +3,12 @@ class ProfileDecorator < ApplicationDecorator
   # display area, e.g. :left_sidebar
   def ui_attributes_for(area:)
     names = ProfileField.public_send(area).pluck(:attribute_name)
-    data.slice(*names).select { |_, v| v.present? }.transform_keys { |k| label_for_attribute(k) }
+    data.slice(*names)
+      .transform_keys { |k| label_for_attribute(k) }
+      .select { |k, v| k.present? && v.present? }
   end
 
   def label_for_attribute(attr)
-    ProfileField.find_by(attribute_name: attr).label
+    ProfileField.find_by(attribute_name: attr)&.label
   end
 end
