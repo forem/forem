@@ -28,7 +28,7 @@ describe('Set a landing page from the admin portal', () => {
 
   it('should set a landing page when no other landing page exists', () => {
     cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" }).check();
+    cy.findByTestId('private-checkbox').check();
     cy.findByRole('button', { name: 'Update Page' }).click();
 
     // Verify that the form has submitted and the page has changed to the confirmation page
