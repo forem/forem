@@ -22,11 +22,7 @@ class ProfileField < ApplicationRecord
   private
 
   def generate_attribute_name
-    self.attribute_name = Sterile.sluggerize(
-      label.titleize, delimiter: "_"
-    ).scan(WORD_REGEX).join.underscore
-
-    raise_validation_error unless valid?(:update)
+    self.attribute_name = "attribute_#{SecureRandom.uuid.delete('-')}"
   end
 
   def maximum_header_field_count
