@@ -82,7 +82,7 @@ gem "ransack", "~> 2.5" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
-gem "redis", "~> 4.5.1" # Redis ruby client
+gem "redis", "~> 4.6.0" # Redis ruby client
 gem "redis-actionpack", "5.3.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "rpush", "~> 7.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
