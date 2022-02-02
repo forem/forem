@@ -8,34 +8,10 @@
   }
 
   &--brand {
-    color: var(--accent-brand);
+    color: var(--link-branded-color);
 
     &:hover {
-      color: var(--accent-brand-darker);
-    }
-  }
-
-  &--success {
-    color: var(--accent-success);
-
-    &:hover {
-      color: var(--accent-success-darker);
-    }
-  }
-
-  &--warning {
-    color: var(--accent-warning);
-
-    &:hover {
-      color: var(--accent-warning-darker);
-    }
-  }
-
-  &--danger {
-    color: var(--accent-danger);
-
-    &:hover {
-      color: var(--accent-danger-darker);
+      color: var(--link-branded-color-hover);
     }
   }
 
@@ -52,14 +28,6 @@
     color: var(--link-color-current);
     background: var(--link-bg-current);
   }
-}
-
-.crayons-link--header {
-  color: var(--link-color);
-  font-size: var(--fs-base);
-  font-weight: var(--fw-bold);
-  padding-left: var(--su-2);
-  margin-bottom: var(--su-2);
 }
 
 .crayons-link--block {
@@ -88,7 +56,7 @@
     font-size: var(--fs-xl);
   }
 
-  .crayons-indicator {
+  .c-indicator {
     margin-left: auto;
 
     &:empty {

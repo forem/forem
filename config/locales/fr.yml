@@ -196,6 +196,7 @@ fr:
       comment: "%B %d, %Y"
       github: "%b %d, %Y"
       json: "%b %e, %Y"
+      medium: "%b %-d, %Y"
       reddit: "%b %e '%y"
       short: "%-e %b"
       short_with_year: "%-e %b, %Y"
