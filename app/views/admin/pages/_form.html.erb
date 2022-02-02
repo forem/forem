@@ -65,15 +65,16 @@
 
       <% if ForemInstance.private? %>
         <div class="crayons-field crayons-field--checkbox">
+          <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description",
+                                            data: {
+                                              testid: "private-checkbox",
+                                              "landing-page-modal-target": "landingPageCheckbox",
+                                              action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
+                                            } %>
           <%= form.label :landing_page, class: "crayons-field__label" do %>
             Use as 'Locked Screen'
             <p id="lock-screen-description" class="crayons-field__description">Determines if this page will be used as a landing page for anonymous viewers.</p>
           <% end %>
-          <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description",
-                                            data: {
-                                              "landing-page-modal-target": "landingPageCheckbox",
-                                              action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
-                                            } %>
         </div>
       <% end %>
 
