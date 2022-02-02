@@ -1,11 +1,11 @@
 module DataUpdateScripts
   class WorkProfileFieldFollowUp
-    OBSOLETE_FIELDS = %w[employer_name employer_url employment_title].freeze
+    OBSOLETE_LABELS = ["Employer name", "Employer URL", "Employment title"].freeze
 
     def run
-      ProfileField.destroy_by(attribute_name: OBSOLETE_FIELDS)
+      ProfileField.destroy_by(label: OBSOLETE_LABELS)
 
-      work_field = ProfileField.find_by(attribute_name: "work")
+      work_field = ProfileField.find_by(label: "Work")
       return unless work_field
 
       work_group = ProfileFieldGroup.find_by(name: "Work")
