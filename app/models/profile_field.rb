@@ -26,7 +26,7 @@ class ProfileField < ApplicationRecord
       label.titleize, delimiter: "_"
     ).scan(WORD_REGEX).join.underscore
 
-    validate(:update)
+    raise_validation_error unless valid?(:update)
   end
 
   def maximum_header_field_count
