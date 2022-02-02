@@ -1,8 +1,6 @@
 module Api
   module V0
     class HealthChecksController < ApiController
-      before_action :authenticate_with_token
-
       def app
         render json: { message: "App is up!" }, status: :ok
       end
@@ -24,16 +22,6 @@ module Api
       end
 
       private
-
-      def authenticate_with_token
-        return if request.local?
-
-        key = request.headers["health-check-token"]
-
-        return if key == Settings::General.health_check_token
-
-        error_unauthorized
-      end
 
       def all_cache_instances_connected?
         [
