@@ -11,7 +11,7 @@ en:
         subtitle: Rate the quality of this post
         abusive:
           subtitle_html: Flag %{user} as Abusive
-          desc_html: This is the equivalent of vomiting on <b>all</b> of this user's articles and will lower their article scores.
+          desc_html: This is the equivalent of flagging <b>all</b> of this user's articles and will lower their article scores.
         adjust:
           heading: Adjust tags
           subtitle: Add or remove tags
