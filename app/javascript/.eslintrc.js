@@ -30,6 +30,7 @@ module.exports = {
               '@components': path.join(__dirname, './shared/components'),
               '@images': path.join(__dirname, '../assets/images'),
               '@admin-controllers': path.join(__dirname, './admin/controllers'),
+              '@admin': path.join(__dirname, './admin'),
             },
             extensions: ['.js', '.jsx'],
           },

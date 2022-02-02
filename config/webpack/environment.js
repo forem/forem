@@ -31,6 +31,7 @@ environment.splitChunks((config) => {
           __dirname,
           '../../app/javascript/shared/components',
         ),
+        '@admin': path.resolve(__dirname, '../../app/javascript/admin'),
         react: 'preact/compat',
         'react-dom': 'preact/compat',
       },
