@@ -9,9 +9,6 @@ class Comment < ApplicationRecord
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
-  TITLE_DELETED = "[deleted]".freeze
-  TITLE_HIDDEN = "[hidden by post author]".freeze
-
   URI_REGEXP = %r{
     \A
     (?:https?://)?  # optional scheme
@@ -59,7 +56,8 @@ class Comment < ApplicationRecord
   validates :reactions_count, presence: true
   validates :commentable, on: :create, presence: {
     message: lambda do |object, _data|
-      "#{object.commentable_type.presence || 'item'} has been deleted."
+      I18n.t("models.comment.has_been_deleted",
+             type: I18n.t("models.comment.type.#{object.commentable_type.presence || 'item'}"))
     end
   }
 
@@ -95,6 +93,14 @@ class Comment < ApplicationRecord
       .arrange(order: "score DESC")
       .to_a[0..limit - 1]
       .to_h
+  end
+
+  def self.title_deleted
+    I18n.t("models.comment.deleted")
+  end
+
+  def self.title_hidden
+    I18n.t("models.comment.hidden")
   end
 
   def search_id
@@ -134,8 +140,8 @@ class Comment < ApplicationRecord
   end
 
   def title(length = 80)
-    return TITLE_DELETED if deleted
-    return TITLE_HIDDEN if hidden_by_commentable_user
+    return self.class.title_deleted if deleted
+    return self.class.title_hidden if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
@@ -148,9 +154,9 @@ class Comment < ApplicationRecord
 
   def readable_publish_date
     if created_at.year == Time.current.year
-      created_at.strftime("%b %-e")
+      I18n.l(created_at, format: :short)
     else
-      created_at.strftime("%b %-e '%y")
+      I18n.l(created_at, format: :short_with_yy)
     end
   end
 
@@ -315,11 +321,13 @@ class Comment < ApplicationRecord
   def discussion_not_locked
     return unless commentable_type == "Article" && commentable.discussion_lock
 
-    errors.add(:commentable_id, "the discussion is locked on this Post")
+    errors.add(:commentable_id, I18n.t("models.comment.locked"))
   end
 
   def published_article
-    errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
+    return unless commentable_type == "Article" && !commentable.published
+
+    errors.add(:commentable_id, I18n.t("models.comment.is_not_valid"))
   end
 
   def user_mentions_in_markdown
@@ -329,7 +337,9 @@ class Comment < ApplicationRecord
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
     return if mentions_count <= Settings::RateLimit.mention_creation
 
-    errors.add(:base, "You cannot mention more than #{Settings::RateLimit.mention_creation} users in a comment!")
+    errors.add(:base,
+               I18n.t("models.comment.mention_too_many",
+                      count: Settings::RateLimit.mention_creation))
   end
 
   def record_field_test_event
