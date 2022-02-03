@@ -54,22 +54,6 @@ module Admin
       # TODO: [@rhymes] in the new Admin Member view this logic has been moved
       # to Admin::Users::Tools::CreditsController and Admin::Users::Tools::NotesController#create.
       # It can eventually be removed when we transition away from the old Admin UI
-      credit_params = nil
-
-      if FeatureFlag.enabled?(:admin_member_view)
-        credit_params = {}
-
-        if user_params[:credit_action] == "Add"
-          credit_params[:add_credits] = user_params[:credit_amount]
-        end
-
-        if user_params[:credit_action] == "Remove"
-          credit_params[:remove_credits] = user_params[:credit_amount]
-        end
-      else
-        credit_params = user_params
-      end
-
       Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
 
@@ -310,6 +294,26 @@ module Admin
     def send_email_params
       params.require(EMAIL_ALLOWED_PARAMS)
       params.permit(EMAIL_ALLOWED_PARAMS)
+    end
+
+    def credit_params
+      credit_params = nil
+
+      if FeatureFlag.enabled?(:admin_member_view)
+        credit_params = {}
+
+        if user_params[:credit_action] == "Add"
+          credit_params[:add_credits] = user_params[:credit_amount]
+        end
+
+        if user_params[:credit_action] == "Remove"
+          credit_params[:remove_credits] = user_params[:credit_amount]
+        end
+      else
+        credit_params = user_params
+      end
+
+      credit_params
     end
   end
 end
