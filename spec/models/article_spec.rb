@@ -190,21 +190,6 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "dates" do
-      it "rejects future dates" do
-        invalid_article = build(:article, with_date: true, date: Date.tomorrow.strftime("%d/%m/%Y"), published_at: nil)
-        expect(invalid_article.valid?).to be(false)
-        expect(invalid_article.errors[:date_time])
-          .to include("must be entered in DD/MM/YYYY format with current or past date")
-      end
-
-      it "rejects future dates even when it's published at" do
-        article.published_at = Date.tomorrow
-        expect(article.valid?).to be(false)
-        expect(article.errors[:date_time]).to include("must be entered in DD/MM/YYYY format with current or past date")
-      end
-    end
-
     describe "polls" do
       let!(:poll) { create(:poll, article: article) }
 
@@ -463,10 +448,30 @@ RSpec.describe Article, type: :model do
       expect(unpublished_article.published_at).to be_nil
     end
 
-    it "does have a published_at if published" do
-      # this works because validation triggers the extraction of the date from the front matter
+    it "sets the default published_at if published" do
+      # published_at is set in a #evaluate_markdown before_validation callback
       article.validate
       expect(article.published_at).not_to be_nil
+    end
+
+    it "sets published_at from a valid frontmatter date" do
+      date = (Date.current - 5.days).strftime("%d/%m/%Y")
+      article_with_date = build(:article, with_date: true, date: date, published_at: nil)
+      expect(article_with_date.valid?).to be(true)
+      expect(article_with_date.published_at.strftime("%d/%m/%Y")).to eq(date)
+    end
+
+    it "rejects future dates set from frontmatter" do
+      invalid_article = build(:article, with_date: true, date: Date.tomorrow.strftime("%d/%m/%Y"), published_at: nil)
+      expect(invalid_article.valid?).to be(false)
+      expect(invalid_article.errors[:date_time])
+        .to include("must be entered in DD/MM/YYYY format with current or past date")
+    end
+
+    it "rejects future dates even when it's published at" do
+      article.published_at = Date.tomorrow
+      expect(article.valid?).to be(false)
+      expect(article.errors[:date_time]).to include("must be entered in DD/MM/YYYY format with current or past date")
     end
   end
 
