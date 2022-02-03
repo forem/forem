@@ -712,6 +712,43 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "#main_image_from_frontmatter" do
+    let(:article) { create(:article, user: user, main_image_from_frontmatter: false) }
+
+    it "set to true if markdown has cover_image" do
+      article = create(
+        :article,
+        user: user,
+        body_markdown: "---\ntitle: hey\npublished: false\ncover_image: #{Faker::Avatar.image}\n---\nYo",
+      )
+      expect(article.main_image_from_frontmatter).to eq(true)
+    end
+
+    context "when false" do
+      it "does not remove main image if cover image not passed in markdown" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).not_to be_nil
+      end
+
+      it "does remove main image if cover image is passed empty in markdown" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\ncover_image: \n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).to be_nil
+      end
+    end
+
+    context "when true" do
+      let(:article) { create(:article, main_image_from_frontmatter: true, user: user) }
+
+      it "removes main image when cover_image not provided" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).to be_nil
+      end
+    end
+  end
+
   describe ".active_help" do
     it "returns properly filtered articles under the 'help' tag" do
       filtered_article = create(:article, user: user, tags: "help",
