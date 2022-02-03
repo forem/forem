@@ -27,14 +27,6 @@ module Constants
         domain: {
           description: "If you need to specify a HELO domain, you can do it here",
           placeholder: ""
-        },
-        from_email_address: {
-          description: "The email address that emails will be sent from",
-          placeholder: ""
-        },
-        reply_to_email_address: {
-          description: "The email address that will users will be able to reply to",
-          placeholder: ""
         }
       }.freeze
     end

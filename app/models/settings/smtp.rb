@@ -2,7 +2,7 @@ module Settings
   class SMTP < Base
     self.table_name = :settings_smtp
 
-    OPTIONS = %i[user_name password address authentication domain port from_email_address reply_to_email_address].freeze
+    OPTIONS = %i[user_name password address authentication domain port].freeze
     AUTHENTICATION_METHODS = %w[plain login cram_md5].freeze
 
     setting :address, type: :string, default: ApplicationConfig["SMTP_ADDRESS"].presence
@@ -12,9 +12,6 @@ module Settings
     setting :password, type: :string, default: ApplicationConfig["SMTP_PASSWORD"].presence
     setting :port, type: :integer, default: ApplicationConfig["SMTP_PORT"].presence || 25
     setting :user_name, type: :string, default: ApplicationConfig["SMTP_USER_NAME"].presence
-    setting :from_email_address, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"], validates: { email: true }
-    setting :reply_to_email_address, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"].presence,
-                                     validates: { email: true }
 
     class << self
       def settings

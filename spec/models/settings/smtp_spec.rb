@@ -24,13 +24,7 @@ RSpec.describe Settings::SMTP do
       ENV["SENDGRID_API_KEY"] = nil
     end
 
-    # rubocop:disable RSpec/ExampleLength
     it "uses Settings::SMTP config if SENDGRID_API_KEY is not available" do
-      from_email_address = "hello@forem.com"
-      reply_to_email_address = "reply@forem.com"
-      allow(described_class).to receive(:from_email_address).and_return(from_email_address)
-      allow(described_class).to receive(:reply_to_email_address).and_return(reply_to_email_address)
-
       described_class.address = "smtp.google.com"
       described_class.port = 25
       described_class.authentication = "plain"
@@ -44,11 +38,8 @@ RSpec.describe Settings::SMTP do
                                                authentication: "plain",
                                                user_name: "username",
                                                password: "password",
-                                               domain: "forem.local",
-                                               reply_to_email_address: reply_to_email_address,
-                                               from_email_address: from_email_address
+                                               domain: "forem.local"
                                              })
     end
-    # rubocop:enable RSpec/ExampleLength
   end
 end
