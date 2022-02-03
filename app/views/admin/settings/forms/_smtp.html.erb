@@ -1,3 +1,4 @@
+<%= javascript_packs_with_chunks_tag "admin/config/smtp", defer: true %>
 <% only_sendgrid_enabled = ForemInstance.sendgrid_enabled? && !Settings::SMTP.provided_minimum_settings? %>
 
 <%= form_for(Settings::SMTP.new,
