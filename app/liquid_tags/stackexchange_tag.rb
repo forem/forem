@@ -1,8 +1,9 @@
 class StackexchangeTag < LiquidTagBase
   PARTIAL = "liquids/stackexchange".freeze
-  REGISTRY_REGEXP = %r{https://(?<subdomain>\w+)?(?:\.)?(?:stackexchange.com|stackoverflow.com)/(?<post_type>q|a|questions)/(?<id>\d{1,20})(?:/)?(?:[\w\-]+)?}
+  REGISTRY_REGEXP = %r{https://(?<subdomain>\w*)(?:\.)?(?:stackexchange.com|stackoverflow.com)/(?<post_type>q|a|questions)/(?<id>\d{1,20})(?:/)?(?:[\w\-]*)}
   ID_REGEXP = /\A(?<id>\d{1,20})\Z/
-  REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
+  SITE_REGEXP = /(?<subdomain>\b[a-zA-Z]+\b)/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP, SITE_REGEXP].freeze
   # update API version here and in stackexchange_tag_spec when a new version is out
   API_URL = "https://api.stackexchange.com/2.2/".freeze
   # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
@@ -47,25 +48,17 @@ class StackexchangeTag < LiquidTagBase
 
   def parse_site(input)
     return "stackoverflow" if tag_name == "stackoverflow" || input.include?("stackoverflow.com")
-    return get_stackexchange_site(input) if tag_name == "stackexchange"
 
-    match = pattern_match_for(input, [REGISTRY_REGEXP])
+    match = pattern_match_for(input, REGEXP_OPTIONS)
     # rubocop:disable Layout/LineLength
     raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_site", tag: tag_name, input: input) unless match && match_group_present?(match, "subdomain")
     # rubocop:enable Layout/LineLength
 
-    match[:subdomain]
+    match[:subdomain].downcase
   end
 
   def match_group_present?(match, group_name)
     match.names.include?(group_name)
-  end
-
-  def get_stackexchange_site(input)
-    site = input.match(/(?<subdomain>\b[a-zA-Z]+\b)/)
-    raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_site", tag: tag_name, input: input) unless site
-
-    site.downcase
   end
 
   def get_data(input)
