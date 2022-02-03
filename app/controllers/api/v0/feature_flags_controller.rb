@@ -1,7 +1,7 @@
 module Api
   module V0
-    # This controller is used for toggling feature flags in the development
-    # and test environments, particularly for Cypress tests.
+    # This controller is used for toggling feature flags in the test
+    # environment, specifically for Cypress tests.
     #
     # @note: Despite the used methods this controller does not add or remove
     # the flags themselves, I just wanted distinct methods for enabling and
