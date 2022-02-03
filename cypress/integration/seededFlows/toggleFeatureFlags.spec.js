@@ -1,5 +1,5 @@
 describe('Toggling feature flags', () => {
-  it('toggles and verifies featue flags', () => {
+  it('toggles and verifies feature flags', () => {
     const flag = 'test_feature_flag';
     cy.checkFeatureFlag(flag, false);
     cy.enableFeatureFlag(flag);
