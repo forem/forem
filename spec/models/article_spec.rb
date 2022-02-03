@@ -191,13 +191,17 @@ RSpec.describe Article, type: :model do
     end
 
     describe "dates" do
-      it "reject future dates" do
-        expect(build(:article, with_date: true, date: Date.tomorrow).valid?).to be(false)
+      it "rejects future dates" do
+        invalid_article = build(:article, with_date: true, date: Date.tomorrow.strftime("%d/%m/%Y"), published_at: nil)
+        expect(invalid_article.valid?).to be(false)
+        expect(invalid_article.errors[:date_time])
+          .to include("must be entered in DD/MM/YYYY format with current or past date")
       end
 
-      it "reject future dates even when it's published at" do
+      it "rejects future dates even when it's published at" do
         article.published_at = Date.tomorrow
         expect(article.valid?).to be(false)
+        expect(article.errors[:date_time]).to include("must be entered in DD/MM/YYYY format with current or past date")
       end
     end
 
@@ -705,6 +709,43 @@ RSpec.describe Article, type: :model do
     it "has correctly non-padded minutes with hour in video_duration_in_minutes" do
       article.video_duration_in_seconds = 5000
       expect(article.video_duration_in_minutes).to eq("1:23:20")
+    end
+  end
+
+  describe "#main_image_from_frontmatter" do
+    let(:article) { create(:article, user: user, main_image_from_frontmatter: false) }
+
+    it "set to true if markdown has cover_image" do
+      article = create(
+        :article,
+        user: user,
+        body_markdown: "---\ntitle: hey\npublished: false\ncover_image: #{Faker::Avatar.image}\n---\nYo",
+      )
+      expect(article.main_image_from_frontmatter).to eq(true)
+    end
+
+    context "when false" do
+      it "does not remove main image if cover image not passed in markdown" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).not_to be_nil
+      end
+
+      it "does remove main image if cover image is passed empty in markdown" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\ncover_image: \n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).to be_nil
+      end
+    end
+
+    context "when true" do
+      let(:article) { create(:article, main_image_from_frontmatter: true, user: user) }
+
+      it "removes main image when cover_image not provided" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).to be_nil
+      end
     end
   end
 

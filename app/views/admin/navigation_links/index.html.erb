@@ -1,11 +1,13 @@
-<div class="ml-5">
-  <div class="my-5"> Configure the left sidebar navigation links that appear at <a href="<%= app_url %>"><%= app_url %></a> using the form below:</div>
+<header class="mb-4">
+  <h1 class="crayons-title mb-0">Navigation</h1>
+  <p class="color-secondary">Configure the left sidebar navigation links that will appear at <a href="<%= app_url %>" class="c-link c-link--branded"><%= app_url %></a>.</p>
+</header>
 
+<div class="crayons-card p-6 flex flex-col gap-6">
   <%= render "add_navigation_link_modal" %>
-  <div class="pt-8">
-    <h2 class="fw-bold fs-base">
-      <%= community_name %>
-    </h2>
+
+  <div>
+    <h2 class="crayons-subtitle-2">Main navigation</h2>
     <ul class="ml-0">
       <% @default_nav_links.each_with_index do |link, index| %>
         <li class="flex pt-4 items-center">
@@ -32,10 +34,8 @@
     </ul>
   </div>
 
-  <div class="pb-8">
-    <h2 class="mt-9 fw-bold fs-base">
-      Other
-    </h2>
+  <div>
+    <h2 class="crayons-subtitle-2">Other</h2>
     <ul class="ml-0">
       <% @other_nav_links.each_with_index do |link, index| %>
         <li class="flex pt-4 items-center">
