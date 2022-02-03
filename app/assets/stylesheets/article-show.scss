@@ -557,6 +557,9 @@ article {
   --gif-bg: rgb(var(--black));
   --gif-color: rgb(var(--white));
 
+  left: 50%;
+  transform: translateX(-50%);
+
   // Align styles of freezeframed animated images with normal image styles
   canvas {
     border-radius: var(--radius);
@@ -618,4 +621,10 @@ article {
       display: inline-block;
     }
   }
+}
+
+// When a user has wrapped their gif in a <center> we don't want to manipulate the position
+center .ff-container {
+  left: unset;
+  transform: none;
 }

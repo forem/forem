@@ -21,13 +21,8 @@ export const initializePausableAnimatedImages = (animatedImages = []) => {
       // Give the image an ID so that we can uniquely target it in freezeframe
       image.setAttribute('id', `animated-${i}`);
 
-      // Our markdown parser allows use of the <center> element in posts, which could conflict with CSS we apply to center the freezeframe container
-      // Centering in this way makes sure the position is correct regardless of whether the user has used their own <center> tag
-      const center = document.createElement('center');
-      center.innerHTML = image.outerHTML;
-
       // Remove the surrounding links for the image, so it can be clicked to play/pause
-      image.closest('a').outerHTML = center.outerHTML;
+      image.closest('a').outerHTML = image.outerHTML;
 
       freezeframes.push(
         new Freezeframe({
