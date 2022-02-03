@@ -18,7 +18,7 @@ export const initializePausableAnimatedImages = (animatedImages = []) => {
 
     // Remove the surrounding links for the image, so it can be clicked to play/pause
     for (const image of animatedImages) {
-      // Our markdown parser allows use of the <center> element in posts, which could conflict with CSS we apply to center the freezframe container
+      // Our markdown parser allows use of the <center> element in posts, which could conflict with CSS we apply to center the freezeframe container
       // Centering in this way makes sure the position is correct regardless of whether the user has used their own <center> tag
       const center = document.createElement('center');
       center.innerHTML = image.outerHTML;
