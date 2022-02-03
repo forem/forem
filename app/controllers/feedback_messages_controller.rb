@@ -1,8 +1,6 @@
 class FeedbackMessagesController < ApplicationController
   # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
-  FLASH_MESSAGE = "Make sure the forms are filled. 🤖 Other possible errors: "\
-                  "%<errors>s".freeze
   FEEDBACK_ALLOWED_PARAMS = %i[message feedback_type category reported_url offender_id].freeze
 
   def create
@@ -31,11 +29,15 @@ class FeedbackMessagesController < ApplicationController
 
       respond_to do |format|
         format.html { redirect_to feedback_messages_path }
-        format.json { render json: { success: true, message: "Your report is submitted" } }
+        format.json do
+          render json: { success: true, message: I18n.t("feedback_messages_controller.submitted") }
+        end
       end
     else
       @previous_message = feedback_message_params[:message]
-      flash[:notice] = format(FLASH_MESSAGE, errors: @feedback_message.errors_as_sentence.presence || "N/A")
+      flash[:notice] =
+        I18n.t("feedback_messages_controller.error_fill",
+               errors: @feedback_message.errors_as_sentence.presence || I18n.t("feedback_messages_controller.n_a"))
 
       respond_to do |format|
         format.html { render "pages/report_abuse" }

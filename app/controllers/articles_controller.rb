@@ -129,7 +129,7 @@ class ArticlesController < ApplicationController
           return
         end
         if params[:destination]
-          redirect_to(URI.parse(params[:destination]).path)
+          redirect_to(Addressable::URI.parse(params[:destination]).path)
           return
         end
         if params[:article][:video_thumbnail_url]
@@ -159,7 +159,7 @@ class ArticlesController < ApplicationController
     authorize @article
     Articles::Destroyer.call(@article)
     respond_to do |format|
-      format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
+      format.html { redirect_to "/dashboard", notice: I18n.t("articles_controller.deleted") }
       format.json { head :no_content }
     end
   end
