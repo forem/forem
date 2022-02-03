@@ -28,6 +28,10 @@ class ForemInstance
     Settings::SMTP.provided_minimum_settings? || ENV["SENDGRID_API_KEY"].present?
   end
 
+  def self.sendgrid_enabled?
+    ENV["SENDGRID_API_KEY"].present?
+  end
+
   def self.invitation_only?
     Settings::Authentication.invite_only_mode?
   end
