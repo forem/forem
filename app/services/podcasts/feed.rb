@@ -20,7 +20,7 @@ module Podcasts
 
       get_episode = Podcasts::GetEpisode.new(podcast)
 
-      # Sort by published date in decending order
+      # Sort by published date in descending order
       feed.items.sort_by { |i| -i.pubDate.to_i }.first(limit).each do |item|
         get_episode.call(item: item, force_update: force_update)
       end
