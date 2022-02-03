@@ -191,13 +191,17 @@ RSpec.describe Article, type: :model do
     end
 
     describe "dates" do
-      it "reject future dates" do
-        expect(build(:article, with_date: true, date: Date.tomorrow).valid?).to be(false)
+      it "rejects future dates" do
+        invalid_article = build(:article, with_date: true, date: Date.tomorrow.strftime("%d/%m/%Y"), published_at: nil)
+        expect(invalid_article.valid?).to be(false)
+        expect(invalid_article.errors[:date_time])
+          .to include("must be entered in DD/MM/YYYY format with current or past date")
       end
 
-      it "reject future dates even when it's published at" do
+      it "rejects future dates even when it's published at" do
         article.published_at = Date.tomorrow
         expect(article.valid?).to be(false)
+        expect(article.errors[:date_time]).to include("must be entered in DD/MM/YYYY format with current or past date")
       end
     end
 
