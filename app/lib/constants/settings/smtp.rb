@@ -12,7 +12,8 @@ module Constants
         },
         authentication: {
           description: " If your mail server requires authentication, " \
-                       "you need to specify the authentication type here",
+                       "you need to specify the authentication type here. " \
+                       " ie. plain, login, or cram_md5",
           placeholder: "ie. plain, login, or cram_md5"
         },
         user_name: {
