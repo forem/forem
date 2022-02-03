@@ -364,18 +364,3 @@ Cypress.Commands.add('enableFeatureFlag', (flag) => {
 Cypress.Commands.add('disableFeatureFlag', (flag) => {
   return cy.request('DELETE', `/api/feature_flags?flag=${flag}`);
 });
-
-/**
- * Checks the current status of a feature flag.
- *
- * @param {string} flag The name of the feature flag to check.
- *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for checking a feature flag.
- */
-Cypress.Commands.add('checkFeatureFlag', (flag, expected) => {
-  return cy
-    .request('GET', `/api/feature_flags?flag=${flag}`)
-    .should((response) => {
-      expect(response.body).to.deep.equal({ [flag]: expected });
-    });
-});
