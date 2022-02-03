@@ -27,7 +27,8 @@ module CarrierWaveInitializer
         provider: "AWS",
         aws_access_key_id: ApplicationConfig["AWS_ID"],
         aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
-        region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
+        region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"],
+        endpoint: ENV.fetch("CLOUD_STORAGE_ENDPOINT")
       }
     end
   end
@@ -38,11 +39,11 @@ module CarrierWaveInitializer
       config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
       config.fog_provider = "fog/aws"
       config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
-      config.fog_public = false
       config.fog_credentials = {
         provider: "AWS",
         use_iam_profile: true,
-        region: "us-east-2"
+        region: "us-east-2",
+        endpoint: ENV.fetch("CLOUD_STORAGE_ENDPOINT")
       }
     end
   end
