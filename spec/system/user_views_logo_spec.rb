@@ -2,26 +2,10 @@ require "rails_helper"
 
 RSpec.describe "Logo behaviour with creator_onboarding Feature Flag", type: :system do
   let!(:user) { create(:user) }
-  let(:logo_svg) { "<svg>Some svg</svg>" }
   let(:resized_logo) { "default.png" }
 
   before do
     sign_in user
-  end
-
-  context "when Feature flag creator_onboarding is disabled" do
-    before do
-      allow(Settings::General).to receive(:logo_svg).and_return(logo_svg)
-      allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(false)
-    end
-
-    it "renders the logo_svg" do
-      visit root_path
-      expect(page).to have_css(".site-logo")
-      within(".site-logo") do
-        expect(page.html).to have_text("Some svg")
-      end
-    end
   end
 
   context "when Feature flag creator_onboarding is enabled" do

@@ -22,6 +22,12 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://app.codesandbox.io/embed/exciting-knuth-hywlv?file=/index.html&runonclick=0&view=editor",
     ]
 
+    valid_glitch_url_formats = [
+      "https://zircon-quixotic-attraction.glitch.me",
+      "https://glitch.com/edit/#!/zircon-quixotic-attraction",
+      "https://glitch.com/edit/#!/zircon-quixotic-attraction?path=script.js:1:0",
+    ]
+
     valid_medium_url_formats = [
       "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c",
       "https://themobilist.medium.com/is-universal-basic-mobility-the-route-to-a-sustainable-c-b18e1e2d014c",
@@ -82,14 +88,14 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://youtu.be/rc5AyncB_Xw",
     ]
 
-    it "returns BlogcastTag for a valid blogcast url" do
+    it "returns BlogcastTag for a valid blogcast url", :aggregate_failures do
       valid_blogcast_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(BlogcastTag)
       end
     end
 
-    it "returns CodesandboxTag for a valid codesandbox url" do
+    it "returns CodesandboxTag for a valid codesandbox url", :aggregate_failures do
       valid_codesandbox_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(CodesandboxTag)
@@ -104,6 +110,13 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
         .to eq(GistTag)
+    end
+
+    it "returns GlitchTag for a valid glitch url", :aggregate_failures do
+      valid_glitch_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(GlitchTag)
+      end
     end
 
     it "returns AsciinemaTag for an asciinema url" do
@@ -121,7 +134,7 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(DotnetFiddleTag)
     end
 
-    it "returns InstagramTag for a valid instagram url" do
+    it "returns InstagramTag for a valid instagram url", :aggregate_failures do
       valid_instagram_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(InstagramTag)
@@ -133,7 +146,7 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(JsFiddleTag)
     end
 
-    it "returns KotlinTag for a valid kotlin url" do
+    it "returns KotlinTag for a valid kotlin url", :aggregate_failures do
       valid_kotlin_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(KotlinTag)
@@ -150,7 +163,7 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(LinkTag)
     end
 
-    it "returns MediumTag for a valid medium url" do
+    it "returns MediumTag for a valid medium url", :aggregate_failures do
       valid_medium_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(MediumTag)
@@ -172,7 +185,7 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(RedditTag)
     end
 
-    it "returns ReplitTag for a valid replit url" do
+    it "returns ReplitTag for a valid replit url", :aggregate_failures do
       valid_replit_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(ReplitTag)
@@ -194,14 +207,14 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(SpeakerdeckTag)
     end
 
-    it "returns SpotifyTag for a valid spotify url" do
+    it "returns SpotifyTag for a valid spotify url", :aggregate_failures do
       valid_spotify_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(SpotifyTag)
       end
     end
 
-    it "returns StackblitzTag for a valid stackblitz url" do
+    it "returns StackblitzTag for a valid stackblitz url", :aggregate_failures do
       valid_stackblitz_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(StackblitzTag)
@@ -218,7 +231,7 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(TweetTag)
     end
 
-    it "returns TwitchTag for a valid twitch url" do
+    it "returns TwitchTag for a valid twitch url", :aggregate_failures do
       valid_twitch_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(TwitchTag)
@@ -235,14 +248,14 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(WikipediaTag)
     end
 
-    it "returns VimeoTag for a valid vimeo url" do
+    it "returns VimeoTag for a valid vimeo url", :aggregate_failures do
       valid_vimeo_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(VimeoTag)
       end
     end
 
-    it "returns YoutubeTag for a valid youtube url" do
+    it "returns YoutubeTag for a valid youtube url", :aggregate_failures do
       valid_youtube_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(YoutubeTag)

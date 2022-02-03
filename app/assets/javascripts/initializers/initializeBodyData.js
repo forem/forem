@@ -42,7 +42,6 @@ function fetchBaseData() {
       if (checkUserLoggedIn()) {
         document.body.dataset.user = json.user;
         document.body.dataset.creator = json.creator;
-        document.body.dataset.creatorOnboarding = json.creator_onboarding;
         browserStoreCache('set', json.user);
 
         setTimeout(() => {
@@ -54,7 +53,6 @@ function fetchBaseData() {
         // Ensure user data is not exposed if no one is logged in
         delete document.body.dataset.user;
         delete document.body.dataset.creator;
-        delete document.body.dataset.creatorOnboarding;
         browserStoreCache('remove');
       }
     }
