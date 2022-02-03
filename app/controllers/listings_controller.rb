@@ -29,7 +29,7 @@ class ListingsController < ApplicationController
   # rubocop:disable Rails/LexicallyScopedActionFilter
   before_action :set_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
-  before_action :raise_suspended, only: %i[new create update]
+  before_action :check_suspended, only: %i[new create update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
   after_action :verify_authorized, only: %i[edit update]
   # rubocop:enable Rails/LexicallyScopedActionFilter
