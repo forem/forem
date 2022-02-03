@@ -622,3 +622,9 @@ article {
     }
   }
 }
+
+// When a user has wrapped their gif in a <center> we don't want to manipulate the position
+center .ff-container {
+  left: unset;
+  transform: none;
+}

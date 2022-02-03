@@ -16,13 +16,17 @@ export const initializePausableAnimatedImages = (animatedImages = []) => {
   if (animatedImages.length > 0) {
     const freezeframes = [];
 
-    // Remove the surrounding links for the image, so it can be clicked to play/pause
-    for (const image of animatedImages) {
+    for (let i = 0; i < animatedImages.length; i++) {
+      const image = animatedImages[i];
+      // Give the image an ID so that we can uniquely target it in freezeframe
+      image.setAttribute('id', `animated-${i}`);
+
+      // Remove the surrounding links for the image, so it can be clicked to play/pause
       image.closest('a').outerHTML = image.outerHTML;
 
       freezeframes.push(
         new Freezeframe({
-          selector: `img[src="${image.getAttribute('src')}"]`,
+          selector: `img[id='animated-${i}']`,
           responsive: false,
           trigger: 'click',
         }),
