@@ -1,5 +1,8 @@
 class StackexchangeTag < LiquidTagBase
   PARTIAL = "liquids/stackexchange".freeze
+  REGISTRY_REGEXP = %r{https://(?<subdomain>\w+)?(?:\.)?(?:stackexchange.com|stackoverflow.com)/(?<post_type>q|a|questions)/(?<id>\d{1,20})(?:/)?(?:[\w\-]+)?}
+  ID_REGEXP = /\A(?<id>\d{1,20})\Z/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
   # update API version here and in stackexchange_tag_spec when a new version is out
   API_URL = "https://api.stackexchange.com/2.2/".freeze
   # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
@@ -9,16 +12,16 @@ class StackexchangeTag < LiquidTagBase
     "question" => "!*1SgQGDOL9bPBHULz9sKS.y6qv7V9fYNszvdhDuv5",
     "site" => "!mWxO_PNa4i"
   }.freeze
-  ID_REGEXP = /\A\d{1,20}\z/
 
   attr_reader :site, :post_type
 
   def initialize(_tag_name, input, _parse_context)
     super
 
-    @site = parse_site(input.strip)
-    @post_type = "question"
-    @json_content = get_data(input.strip)
+    stripped_input  = strip_tags(input)
+    unescaped_input = CGI.unescape_html(stripped_input)
+    @site = parse_site(unescaped_input)
+    @json_content, @post_type = get_data(unescaped_input)
   end
 
   def render(_context)
@@ -42,25 +45,51 @@ class StackexchangeTag < LiquidTagBase
 
   private
 
-  def valid_site?(site)
-    (site =~ /[a-z.]+/i)&.zero?
-  end
-
   def parse_site(input)
-    return "stackoverflow" if tag_name == "stackoverflow"
+    return "stackoverflow" if tag_name == "stackoverflow" || input.include?("stackoverflow.com")
+    return get_stackexchange_site(input) if tag_name == "stackexchange"
 
-    site = input.match(/[a-z.]+/i)[0]
-    unless valid_site?(site)
-      raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_site", tag: tag_name, input: input)
-    end
+    match = pattern_match_for(input, [REGISTRY_REGEXP])
+    # rubocop:disable Layout/LineLength
+    raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_site", tag: tag_name, input: input) unless match && match_group_present?(match, "subdomain")
+    # rubocop:enable Layout/LineLength
 
-    site
+    match[:subdomain]
   end
 
-  def valid_input?(input)
-    return false if input.nil?
+  def match_group_present?(match, group_name)
+    match.names.include?(group_name)
+  end
 
-    ID_REGEXP.match?(input.split.first)
+  def get_stackexchange_site(input)
+    site = input.match(/(?<subdomain>\b[a-zA-Z]+\b)/)
+    raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_site", tag: tag_name, input: input) unless site
+
+    site.downcase
+  end
+
+  def get_data(input)
+    id, = input.split
+    match = pattern_match_for(id, REGEXP_OPTIONS)
+    # rubocop:disable Layout/LineLength
+    raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_id", tag: tag_name, input: input) unless match && match_group_present?(match, "id")
+    # rubocop:enable Layout/LineLength
+
+    url = "#{API_URL}posts/#{match[:id]}?site=#{@site}&filter=#{FILTERS['post']}" \
+          "&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
+    post_response = HTTParty.get(url)
+
+    handle_response_error(post_response, input)
+
+    @post_type = post_response["items"][0]["post_type"]
+
+    url = "#{API_URL}#{@post_type.pluralize}/#{match[:id]}?site=#{@site}" \
+          "&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
+    final_response = HTTParty.get(url)
+
+    handle_response_error(final_response, input)
+
+    [final_response["items"][0], @post_type]
   end
 
   def handle_response_error(response, input)
@@ -70,31 +99,8 @@ class StackexchangeTag < LiquidTagBase
 
     raise StandardError, I18n.t("liquid_tags.stackexchange_tag.post_not_found", tag: tag_name, input: input)
   end
-
-  def get_data(input)
-    unless valid_input?(input)
-      raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_id", tag: tag_name, input: input)
-    end
-
-    id = input.split.first
-
-    url = "#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}" \
-          "&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
-    post_response = HTTParty.get(url)
-
-    handle_response_error(post_response, input)
-
-    @post_type = post_response["items"][0]["post_type"]
-
-    url = "#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}" \
-          "&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
-    final_response = HTTParty.get(url)
-
-    handle_response_error(final_response, input)
-
-    final_response["items"][0]
-  end
 end
 
 Liquid::Template.register_tag("stackoverflow", StackexchangeTag)
 Liquid::Template.register_tag("stackexchange", StackexchangeTag)
+UnifiedEmbed.register(StackexchangeTag, regexp: StackexchangeTag::REGISTRY_REGEXP)

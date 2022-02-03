@@ -68,6 +68,15 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://stackblitz.com/edit/web-platform-3tqbd4?embed=1&file=index.html&theme=light",
     ]
 
+    valid_stackexchange_stackoverflow_url_formats = [
+      "https://travel.stackexchange.com/questions/172014/is-it-okay-to-mix-in-local-language-when-i-know-it-poorly",
+      "https://diy.stackexchange.com/q/244088",
+      "https://academia.stackexchange.com/a/181893",
+      "https://stackoverflow.com/q/70974409/9091371",
+      "https://stackoverflow.com/questions/70976451/changing-h1-element-based-on-input-element-content-vanilla-js",
+      "https://stackoverflow.com/a/70976251/9091371",
+    ]
+
     valid_twitch_url_formats = [
       "https://clips.twitch.tv/embed?clip=SpeedyVivaciousDolphinKappaRoss-IQl5YslMAGKbMOGM&parent=www.example.com",
       "https://player.twitch.tv/?video=1222841752&parent=www.example.com",
@@ -224,6 +233,13 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns StackeryTag for a stackery url" do
       expect(described_class.find_liquid_tag_for(link: "https://app.stackery.io/editor/design?owner=stackery&repo=quickstart-ruby&file=template.yaml"))
         .to eq(StackeryTag)
+    end
+
+    it "returns StackexchangeTag for a valid stackexchange or stackoverflow url", :aggregate_failures do
+      valid_stackexchange_stackoverflow_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(StackexchangeTag)
+      end
     end
 
     it "returns TweetTag for a tweet url" do
