@@ -84,6 +84,10 @@ Rails.application.routes.draw do
           resources :articles, only: [:index], to: "organizations#articles"
         end
         resource :instance, only: %i[show]
+
+        constraints(RailsEnvConstraint.new(allowed_envs: %w[test])) do
+          resource :feature_flags, only: %i[create show destroy], param: :flag
+        end
       end
     end
 

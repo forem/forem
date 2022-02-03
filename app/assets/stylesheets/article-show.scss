@@ -551,3 +551,80 @@ article {
     }
   }
 }
+
+// This classname is added by the freezeframe library we use to play/pause animated images
+.ff-container {
+  --gif-bg: rgb(var(--black));
+  --gif-color: rgb(var(--white));
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  // Align styles of freezeframed animated images with normal image styles
+  canvas {
+    border-radius: var(--radius);
+    object-fit: contain;
+    max-width: 100%;
+    min-width: 100%;
+    max-height: calc(50vh + 180px);
+  }
+
+  img[data-animated='true'] {
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .gif-button {
+    --bg: var(--gif-bg);
+    --bg-hover: var(--gif-bg);
+    --color: var(--gif-color);
+    --color-hover: var(--gif-color);
+
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: var(--su-1);
+    z-index: var(--z-sticky);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    padding: var(--su-1) var(--su-2);
+    font-weight: var(--fw-bold);
+
+    &:hover:enabled,
+    .js-focus-visible &.focus-visible:focus,
+    &[aria-pressed='true'] {
+      --bg: var(--gif-bg);
+      --bg-hover: var(--gif-bg);
+      --color: var(--gif-color);
+      --color-hover: var(--gif-color);
+      z-index: var(--z-sticky);
+    }
+  }
+
+  .gif-button[aria-pressed='false'] {
+    .gif-pause {
+      display: inline-block;
+    }
+
+    .gif-play {
+      display: none;
+    }
+  }
+
+  .gif-button[aria-pressed='true'] {
+    .gif-pause {
+      display: none;
+    }
+
+    .gif-play {
+      display: inline-block;
+    }
+  }
+}
+
+// When a user has wrapped their gif in a <center> we don't want to manipulate the position
+center .ff-container {
+  left: unset;
+  transform: none;
+}

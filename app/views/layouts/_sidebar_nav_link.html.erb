@@ -1,4 +1,4 @@
-<% if !link.display_only_when_signed_in || (link.display_only_when_signed_in && user_signed_in?) %>
+<% if display_navigation_link?(link: link) %>
   <li>
     <a href="<%= link.url %>" class="sidebar-navigation-link c-link c-link--block c-link--icon-left">
       <span class="c-link__icon">

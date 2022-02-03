@@ -190,6 +190,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
   )
