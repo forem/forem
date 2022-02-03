@@ -4,7 +4,7 @@ class StackexchangeTag < LiquidTagBase
   ID_REGEXP = /\A(?<id>\d{1,20})\Z/
   SITE_REGEXP = /(?<subdomain>\b[a-zA-Z]+\b)/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP, SITE_REGEXP].freeze
-  # update API version here and in stackexchange_tag_spec when a new version is out
+  STACKOVERFLOW_REGEXP = %r{https://stackoverflow.com/(q|a|questions)/\d{1,20}(/)?[\w\-]*}
   API_URL = "https://api.stackexchange.com/2.2/".freeze
   # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
   FILTERS = {
@@ -47,7 +47,7 @@ class StackexchangeTag < LiquidTagBase
   private
 
   def parse_site(input)
-    return "stackoverflow" if tag_name == "stackoverflow" || input.include?("stackoverflow.com")
+    return "stackoverflow" if tag_name == "stackoverflow" || input.match?(STACKOVERFLOW_REGEXP)
 
     match = pattern_match_for(input, REGEXP_OPTIONS)
     # rubocop:disable Layout/LineLength
