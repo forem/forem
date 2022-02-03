@@ -350,7 +350,7 @@ Cypress.Commands.add('createResponseTemplate', ({ title, content }) => {
  *
  * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for enabling a feature flag.
  */
-Cypress.Commands.add('enableFeatureFlag', ({ flag }) => {
+Cypress.Commands.add('enableFeatureFlag', (flag) => {
   return cy.request('POST', '/api/feature_flags', { flag });
 });
 
@@ -361,10 +361,21 @@ Cypress.Commands.add('enableFeatureFlag', ({ flag }) => {
  *
  * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for disabling a feature flag.
  */
-Cypress.Commands.add('disableFeatureFlag', ({ flag }) => {
-  return cy.request(
-    'DELETE',
-    '/api/feature_flags',
-    `utf8=%E2%9C%93&flag=${flag}`,
-  );
+Cypress.Commands.add('disableFeatureFlag', (flag) => {
+  return cy.request('DELETE', `/api/feature_flags?flag=${flag}`);
+});
+
+/**
+ * Checks the current status of a feature flag.
+ *
+ * @param {string} flag The name of the feature flag to check.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for checking a feature flag.
+ */
+Cypress.Commands.add('checkFeatureFlag', (flag, expected) => {
+  return cy
+    .request('GET', `/api/feature_flags?flag=${flag}`)
+    .should((response) => {
+      expect(response.body).to.deep.equal({ [flag]: expected });
+    });
 });

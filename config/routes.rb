@@ -85,8 +85,8 @@ Rails.application.routes.draw do
         end
         resource :instance, only: %i[show]
 
-        constraints(RailsEnvConstraint.new(allowed_envs: %w[development test])) do
-          resource :feature_flags, only: %i[create destroy]
+        constraints(RailsEnvConstraint.new(allowed_envs: %w[test])) do
+          resource :feature_flags, only: %i[create show destroy], param: :flag
         end
       end
     end

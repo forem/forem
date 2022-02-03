@@ -51,5 +51,14 @@ RSpec.describe "Api::V0::FeatureFlagsController", type: :request do
         delete api_feature_flags_path, params: params
       end.not_to change { FeatureFlag.enabled?(flag) }.from(false)
     end
+
+    it "shows the current value of a feature flag" do
+      FeatureFlag.enable(flag)
+
+      get api_feature_flags_path(flag: flag)
+
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response[flag]).to be true
+    end
   end
 end
