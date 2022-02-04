@@ -26,7 +26,12 @@ Rails.application.routes.draw do
     get "/locale/:locale", to: "stories#index"
 
     draw :admin
-    draw :listing
+
+    # The lambda (e.g. `->`) allows for dynamic checking.  In other words we check with each
+    # request.
+    constraints(->(_req) { Listing.feature_enabled? }) do
+      draw :listing
+    end
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do

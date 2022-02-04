@@ -1,29 +1,30 @@
-<header class="flex items-center mb-6">
-  <h2 class="crayons-title mb-6"><%= @podcast.title %></h2>
-  <div class="ml-auto">
-    <%= link_to "View", "/#{@podcast.slug}", class: "btn btn-primary" %>
-  </div>
+<header class="flex items-center justify-between mb-4">
+  <h1 class="crayons-title"><%= @podcast.title %></h1>
+  <%= link_to "View", "/#{@podcast.slug}", class: "c-link c-link--block" %>
 </header>
 
-<div class="grid gap-6">
+<div class="flex flex-col gap-4">
+  <%= form_with(url: fetch_admin_podcast_path(@podcast.id), method: :post, local: true, class: "flex flex-col gap-4 crayons-card p-6") do %>
+    <h2 class="crayons-subtitle-1">Fetch episodes</h2>
+    <div class="crayons-field">
+      <%= label_tag :limit, "Limit", class: "crayons-field__label" %>
+      <p class="crayons-field__description">The number of episodes to fetch. When set to an empty string, last 1_000 episodes will be fetched.</p>
+      <%= text_field_tag :limit, 5, size: 2, class: "crayons-textfield w-25" %>
+    </div>
+    <div class="crayons-field crayons-field--checkbox">
+      <%= check_box_tag :force, {}, false, { class: "crayons-checkbox" } %>
+      <%= label_tag :force, class: "crayons-field__label" do %>
+        Force
+        <p class="crayons-field__description">When checked, the existing episodes' urls will be re-checked and episodes reachable and https fields will be updated accordingly if needed.</p>
+      <% end %>
+    </div>
+    <div>
+      <%= submit_tag "Fetch episodes", class: "c-btn c-btn--primary" %>
+    </div>
+  <% end %>
+
   <div class="crayons-card p-6">
-    <h4 class="mb-4">Fetch episodes</h4>
-    <%= form_with(url: fetch_admin_podcast_path(@podcast.id), method: :post, local: true) do %>
-      <div class="form-group">
-        <%= check_box_tag :force %>
-        <%= label_tag :force %>
-        <small>(When checked, the existing episodes' urls will be re-checked and episodes reachable and https fields will be updated accordingly if needed.)</small>
-      </div>
-      <div class="form-group">
-        <%= text_field_tag :limit, 5, size: 2 %>
-        <%= label_tag :limit %>
-        <small>(The number of episodes to fetch. When set to an empty string, last 1_000 episodes will be fetched.)</small>
-      </div>
-      <%= submit_tag "Fetch episodes", class: "btn btn-primary" %>
-    <% end %>
-  </div>
-  <div class="crayons-card p-6">
-    <h4 class="mb-4">Manage Owners</h4>
+    <h2 class="crayons-subtitle-1 mb-4">Manage Owners</h2>
 
     <% if @podcast.owners.present? %>
       <ul class="list-group list-group-flush mb-3">
@@ -38,89 +39,94 @@
         <% end %>
       </ul>
     <% else %>
-      <p>There are no owners for this podcast.</p>
+      <p class="pb-4">There are no owners for this podcast.</p>
     <% end %>
 
     <% if @podcast.creator.present? %>
       <p>Created by <%= link_to "@#{@podcast.creator.username}", "/#{@podcast.creator.username}" %></p>
     <% end %>
 
-    <%= form_for @podcast, url: add_owner_admin_podcast_path(@podcast.id), html: { method: :post } do |f| %>
-      <div class="form-group">
-        <%= f.label "Add Owner (by user_id)", for: "podcast_user_id" %>
-        <%= f.text_field :user_id, value: "", class: "form-control" %>
+    <%= form_for @podcast, url: add_owner_admin_podcast_path(@podcast.id), html: { method: :post, class: "flex flex-col gap-4" } do |f| %>
+      <div class="crayons-field">
+        <%= f.label "Add owner", for: "podcast_user_id", class: "crayons-field__label" %>
+        <%= f.text_field :user_id, value: "", class: "crayons-textfield", placeholder: "User ID" %>
       </div>
-      <%= f.submit "Add Owner", class: "btn btn-primary" %>
+      <div>
+        <%= f.submit "Add Owner", class: "c-btn c-btn--primary" %>
+      </div>
     <% end %>
   </div>
 
   <div class="crayons-card p-6">
-    <h4 class="mb-4">Edit Podcast</h4>
     <%= form_for [:admin, @podcast] do |f| %>
-      <div class="form-group">
-        <%= f.label :title, for: "podcast_title" %>
-        <%= f.text_field :title, class: "form-control" %>
+      <div class="flex flex-col gap-4">
+        <h2 class="mb-4">Edit Podcast</h2>
+        <div class="crayons-field">
+          <%= f.label :title, for: "podcast_title", class: "crayons-field__label" %>
+          <%= f.text_field :title, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :feed_url, for: "podcast_feed_url", class: "crayons-field__label" %>
+          <%= f.text_field :feed_url, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :description, for: "description", class: "crayons-field__label" %>
+          <%= f.text_area :description, size: "45x10", required: true, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :itunes_url, for: "itunes_url", class: "crayons-field__label" %>
+          <%= f.text_field :itunes_url, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :overcast_url, for: "overcast_url", class: "crayons-field__label" %>
+          <%= f.text_field :overcast_url, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :android_url, for: "android_url", class: "crayons-field__label" %>
+          <%= f.text_field :android_url, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :soundcloud_url, for: "soundcloud_url", class: "crayons-field__label" %>
+          <%= f.text_field :soundcloud_url, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :website_url, for: "website_url", class: "crayons-field__label" %>
+          <%= f.text_field :website_url, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :twitter_username, for: "twitter_username", class: "crayons-field__label" %>
+          <%= f.text_field :twitter_username, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :main_color_hex, for: "main_color_hex", class: "crayons-field__label" %>
+          <%= f.text_field :main_color_hex, placeholder: "FF00FF", class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :slug, for: "slug", class: "crayons-field__label" %>
+          <%= f.text_field :slug, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-field">
+          <%= f.label :image, for: "image", class: "crayons-field__label" %>
+          <%= f.file_field :image, accept: "image/*" %>
+        </div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :reachable, class: "crayons-checkbox" %>
+          <%= f.label :reachable, "Podcast is reachable", class: "crayons-field__label" %>
+        </div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :featured, class: "crayons-checkbox" %>
+          <%= f.label :featured, class: "crayons-field__label" %>
+        </div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box "published", class: "crayons-checkbox" %>
+          <label class="crayons-field__label" for="published">
+            Published
+          </label>
+        </div>
+        <div>
+          <%= f.submit class: "c-btn c-btn--primary" %>
+        </div>
       </div>
-      <div class="form-group">
-        <%= f.label :feed_url, for: "podcast_feed_url" %>
-        <%= f.text_field :feed_url, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :description, for: "description" %>
-        <%= f.text_area :description, size: "45x10", required: true, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :itunes_url, for: "itunes_url" %>
-        <%= f.text_field :itunes_url, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :overcast_url, for: "overcast_url" %>
-        <%= f.text_field :overcast_url, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :android_url, for: "android_url" %>
-        <%= f.text_field :android_url, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :soundcloud_url, for: "soundcloud_url" %>
-        <%= f.text_field :soundcloud_url, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :website_url, for: "website_url" %>
-        <%= f.text_field :website_url, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :twitter_username, for: "twitter_username" %>
-        <%= f.text_field :twitter_username, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :main_color_hex, for: "main_color_hex" %>
-        <%= f.text_field :main_color_hex, placeholder: "FF00FF", class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :slug, for: "slug" %>
-        <%= f.text_field :slug, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :image, for: "image" %>
-        <%= f.file_field :image, accept: "image/*", class: "form-control" %>
-      </div>
-      <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box :reachable, class: "crayons-checkbox" %>
-        <%= f.label :reachable, "Podcast is reachable", class: "crayons-field__label" %>
-      </div>
-      <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box :featured, class: "crayons-checkbox" %>
-        <%= f.label :featured, class: "crayons-field__label" %>
-      </div>
-      <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box "published", class: "crayons-checkbox" %>
-        <label class="crayons-field__label" for="published">
-          Published
-        </label>
-      </div>
-      <br>
-      <%= f.submit class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>

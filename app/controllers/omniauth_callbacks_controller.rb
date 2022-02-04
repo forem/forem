@@ -101,7 +101,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   rescue StandardError => e
     Honeybadger.notify(e)
 
-    flash[:alert] = "Log in error: #{e}"
+    flash[:alert] = I18n.t("omniauth_callbacks_controller.log_in_error", e: e)
     redirect_to new_user_registration_url
   end
 
@@ -110,7 +110,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def user_persisted_but_username_taken?
-    @user.persisted? && @user.errors_as_sentence.include?("username has already been taken")
+    @user.persisted? && @user.errors_as_sentence.include?(I18n.t("omniauth_callbacks_controller.username_taken"))
   end
 
   # We only bypass CSRF checks on Apple callback path & Apple trusted ORIGIN

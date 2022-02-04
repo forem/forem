@@ -39,7 +39,7 @@ RSpec.describe FeedbackMessage, type: :model do
       it do
         expect(feedback_message).to validate_uniqueness_of(:reporter_id)
           .scoped_to(described_class::REPORTER_UNIQUENESS_SCOPE)
-          .with_message(described_class::REPORTER_UNIQUENESS_MSG)
+          .with_message(described_class.reporter_uniqueness_msg)
       end
 
       it { is_expected.to validate_length_of(:reported_url).is_at_most(250) }

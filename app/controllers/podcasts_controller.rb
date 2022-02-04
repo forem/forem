@@ -28,7 +28,7 @@ class PodcastsController < ApplicationController
 
     if @podcast.save
       current_user.add_role(:podcast_admin, @podcast) if added_by_owner?
-      flash[:global_notice] = "Podcast suggested"
+      flash[:global_notice] = I18n.t("podcasts_controller.podcast_suggested")
 
       redirect_to pod_path
     else
@@ -74,10 +74,10 @@ class PodcastsController < ApplicationController
 
   def valid_image_files_and_names?(images)
     images.each do |field, image|
-      @podcast.errors.add(field, IS_NOT_FILE_MESSAGE) unless file?(image)
+      @podcast.errors.add(field, is_not_file_message) unless file?(image)
       break if @podcast.errors.any?
 
-      @podcast.errors.add(field, FILENAME_TOO_LONG_MESSAGE) if long_filename?(image)
+      @podcast.errors.add(field, filename_too_long_message) if long_filename?(image)
     end
 
     @podcast.errors.blank?

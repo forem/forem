@@ -29,9 +29,11 @@ class Article < ApplicationRecord
 
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
-  UNIQUE_URL_ERROR = "has already been taken. " \
-                     "Email #{ForemInstance.email} for further details.".freeze
   PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
+
+  def self.unique_url_error
+    I18n.t("models.article.unique_url", email: ForemInstance.email)
+  end
 
   has_one :discussion_lock, dependent: :delete
 
@@ -58,17 +60,20 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
-  validates :body_markdown, bytesize: { maximum: 800.kilobytes, too_long: "is too long." }
+  validates :body_markdown, bytesize: {
+    maximum: 800.kilobytes,
+    too_long: proc { I18n.t("models.article.is_too_long") }
+  }
   validates :body_markdown, length: { minimum: 0, allow_nil: false }
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url,
-            uniqueness: { allow_nil: true, scope: :published, message: UNIQUE_URL_ERROR },
+            uniqueness: { allow_nil: true, scope: :published, message: unique_url_error },
             if: :published?
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :comments_count, presence: true
   validates :feed_source_url,
-            uniqueness: { allow_nil: true, scope: :published, message: UNIQUE_URL_ERROR },
+            uniqueness: { allow_nil: true, scope: :published, message: unique_url_error },
             if: :published?
   validates :feed_source_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
@@ -379,7 +384,7 @@ class Article < ApplicationRecord
         .tr("\n", " ")
         .strip
     else
-      "A post by #{user.name}"
+      I18n.t("models.article.a_post_by", user_name: user.name)
     end
   end
 
@@ -434,18 +439,20 @@ class Article < ApplicationRecord
     return unless edited?
 
     if edited_at.year == Time.current.year
-      edited_at.strftime("%b %e")
+      I18n.l(edited_at, format: :short)
     else
-      edited_at.strftime("%b %e '%y")
+      I18n.l(edited_at, format: :short_with_yy)
     end
   end
 
   def readable_publish_date
     relevant_date = displayable_published_at
-    if relevant_date && relevant_date.year == Time.current.year
-      relevant_date&.strftime("%b %-e")
-    else
-      relevant_date&.strftime("%b %-e '%y")
+    return unless relevant_date
+
+    if relevant_date.year == Time.current.year
+      I18n.l(relevant_date, format: :short)
+    elsif relevant_date
+      I18n.l(relevant_date, format: :short_with_yy)
     end
   end
 
@@ -606,7 +613,7 @@ class Article < ApplicationRecord
   end
 
   def update_notifications
-    Notification.update_notifications(self, "Published")
+    Notification.update_notifications(self, I18n.t("models.article.published"))
   end
 
   def update_notification_subscriptions
@@ -664,7 +671,7 @@ class Article < ApplicationRecord
     add_tag_adjustments_to_tag_list
 
     # check there are not too many tags
-    return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.size > 4
+    return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > 4
 
     # check tags names aren't too long and don't contain non alphabet characters
     tag_list.each do |tag|
@@ -691,48 +698,48 @@ class Article < ApplicationRecord
   def validate_video
     if published && video_state == "PROGRESSING"
       return errors.add(:published,
-                        "cannot be set to true if video is still processing")
+                        I18n.t("models.article.video_processing"))
     end
 
     return unless video.present? && user.created_at > 2.weeks.ago
 
-    errors.add(:video, "cannot be added by member without permission")
+    errors.add(:video, I18n.t("models.article.video_unpermitted"))
   end
 
   def validate_collection_permission
     return unless collection && collection.user_id != user_id
 
-    errors.add(:collection_id, "must be one you have permission to post to")
+    errors.add(:collection_id, I18n.t("models.article.series_unpermitted"))
   end
 
   def validate_co_authors
     return if co_author_ids.exclude?(user_id)
 
-    errors.add(:co_author_ids, "must not be the same user as the author")
+    errors.add(:co_author_ids, I18n.t("models.article.same_author"))
   end
 
   def validate_co_authors_must_not_be_the_same
     return if co_author_ids.uniq.count == co_author_ids.count
 
-    errors.add(:base, "co-author IDs must be unique")
+    errors.add(:base, I18n.t("models.article.unique_coauthor"))
   end
 
   def validate_co_authors_exist
     return if User.where(id: co_author_ids).count == co_author_ids.count
 
-    errors.add(:co_author_ids, "must be valid user IDs")
+    errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
 
   def past_or_present_date
     return unless published_at && published_at > Time.current
 
-    errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
+    errors.add(:date_time, I18n.t("models.article.invalid_date"))
   end
 
   def canonical_url_must_not_have_spaces
     return unless canonical_url.to_s.match?(/[[:space:]]/)
 
-    errors.add(:canonical_url, "must not have spaces")
+    errors.add(:canonical_url, I18n.t("models.article.must_not_have_spaces"))
   end
 
   def user_mentions_in_markdown
@@ -742,7 +749,8 @@ class Article < ApplicationRecord
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
     return if mentions_count <= Settings::RateLimit.mention_creation
 
-    errors.add(:base, "You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
+    errors.add(:base,
+               I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
   end
 
   def create_slug

@@ -14,10 +14,10 @@ class ProfilePin < ApplicationRecord
   private
 
   def only_five_pins_per_profile
-    errors.add(:base, "cannot have more than five total pinned posts") if profile.profile_pins.size > 4
+    errors.add(:base, I18n.t("models.profile_pin.only_five")) if profile.profile_pins.size > 4
   end
 
   def pinnable_belongs_to_profile
-    errors.add(:pinnable_id, "must have proper permissions for pin") if pinnable.user_id != profile_id
+    errors.add(:pinnable_id, I18n.t("models.profile_pin.pin_unpermitted")) if pinnable.user_id != profile_id
   end
 end

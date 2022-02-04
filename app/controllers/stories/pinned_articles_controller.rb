@@ -19,7 +19,7 @@ module Stories
           pinned_at: PinnedArticle.updated_at.iso8601
         }
       else
-        render json: { error: "not found" }, status: :not_found
+        render json: { error: I18n.t("stories.pinned_articles_controller.not_found") }, status: :not_found
       end
     end
 

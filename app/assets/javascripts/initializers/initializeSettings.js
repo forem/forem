@@ -1,11 +1,21 @@
-/* global timestampToLocalDateTime InstantClick */
+/* global timestampToLocalDateTime InstantClick Runtime */
 
 function initializeSettings() {
-  // highlights organization secret on click
-  const settingsOrgSecret = document.getElementById('settings-org-secret');
-  if (settingsOrgSecret) {
-    settingsOrgSecret.addEventListener('click', (event) => {
-      event.target.select();
+  // initialize org secret copy to clipboard functionality
+  const settingsOrgSecretInput = document.getElementById('settings-org-secret');
+  const settingsOrgSecretButton = document.getElementById(
+    'settings-org-secret-copy-btn',
+  );
+
+  if (settingsOrgSecretInput && settingsOrgSecretButton) {
+    settingsOrgSecretButton.addEventListener('click', () => {
+      const { value } = settingsOrgSecretInput;
+      Runtime.copyToClipboard(value).then(() => {
+        // Show the confirmation message
+        document
+          .getElementById('copy-text-announcer')
+          .classList.remove('hidden');
+      });
     });
   }
 
