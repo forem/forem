@@ -20,6 +20,10 @@ CypressRails.hooks.before_server_start do
   else
     Rake::Task["db:seed:e2e"].invoke
   end
+
+  # [@jeremyf] <2022-02-07 Mon> :: With https://github.com/forem/forem/pull/16423 we assume that the
+  # listing feature must be explicitly enabled.
+  FeatureFlag.enable(:listing_feature)
 end
 
 CypressRails.hooks.after_transaction_start do
