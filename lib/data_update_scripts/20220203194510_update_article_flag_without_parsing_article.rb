@@ -11,6 +11,7 @@ module DataUpdateScripts
         rescue StandardError
           # Piping this to /dev/null, because we can't assume this article is processible in our
           # current application state
+          ForemStatsClient.increment "dus.update_article_flag_without_parsing_article.errors"
         end
 
         article.update_column(:main_image_from_frontmatter, true) if has_cover_image
