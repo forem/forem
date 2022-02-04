@@ -2,7 +2,7 @@
 <div class="flex relative justify-between s:justify-end gap-2 my-2 s:my-0">
   <%= link_to "Visit profile", @user.path, class: "c-cta", target: "_blank", rel: "noopener" %>
   <div class="dropdown-trigger-container">
-    <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+    <button data-testid="user-options" type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
       <%= crayons_icon_tag("overflow-vertical", title: "Options") %>
     </button>
     <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown">

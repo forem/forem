@@ -1,5 +1,16 @@
-function openUserOptions() {
-  cy.findByRole('button', { name: 'Options' }).click();
+function openUserOptions(callback) {
+  let dropdownId;
+
+  cy.findByTestId('user-options')
+    .should('have.attr', 'aria-haspopup', 'true')
+    .should('have.attr', 'aria-expanded', 'false')
+    .click()
+    .then(([button]) => {
+      expect(button.getAttribute('aria-expanded')).to.equal('true');
+      dropdownId = button.getAttribute('aria-controls');
+
+      cy.get(`#${dropdownId}`).within(callback);
+    });
 }
 
 function closeUserUpdatedMessage(message) {
@@ -23,18 +34,20 @@ describe('Manage User Options', () => {
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
         cy.loginAndVisit(user, '/admin/users/2');
-        openUserOptions();
       });
     });
 
     it(`should verify a user's email address`, () => {
-      cy.findByRole('button', { name: 'Verify email address' }).click();
-
+      openUserOptions(() => {
+        cy.findByRole('button', { name: 'Verify email address' }).click();
+      });
       closeUserUpdatedMessage('Verification email sent!');
     });
 
     it(`should export a user's data to an admin`, () => {
-      cy.findByRole('button', { name: 'Export data' }).click();
+      openUserOptions(() => {
+        cy.findByRole('button', { name: 'Export data' }).click();
+      });
 
       cy.getModal().within(() => {
         cy.findByRole('button', { name: 'Export to Admin' }).click();
@@ -46,7 +59,9 @@ describe('Manage User Options', () => {
     });
 
     it(`should export a user's data to the user`, () => {
-      cy.findByRole('button', { name: 'Export data' }).click();
+      openUserOptions(() => {
+        cy.findByRole('button', { name: 'Export data' }).click();
+      });
 
       cy.getModal().within(() => {
         cy.findByRole('button', { name: 'Export to User' }).click();
@@ -58,7 +73,9 @@ describe('Manage User Options', () => {
     });
 
     it(`should merge a user's account with another account`, () => {
-      cy.findByRole('button', { name: 'Merge accounts' }).click();
+      openUserOptions(() => {
+        cy.findByRole('button', { name: 'Merge accounts' }).click();
+      });
 
       cy.getModal().within(() => {
         cy.findByRole('spinbutton', { name: 'User ID' }).type('3');
@@ -67,7 +84,9 @@ describe('Manage User Options', () => {
     });
 
     it(`should banish a user for spam`, () => {
-      cy.findByRole('button', { name: 'Banish for spam' }).click();
+      openUserOptions(() => {
+        cy.findByRole('button', { name: 'Banish for spam' }).click();
+      });
 
       cy.getModal().within(() => {
         cy.findByRole('button', { name: 'Banish User for spam' }).click();
@@ -79,7 +98,9 @@ describe('Manage User Options', () => {
     });
 
     it(`should delete a user`, () => {
-      cy.findByRole('button', { name: 'Delete user' }).click();
+      openUserOptions(() => {
+        cy.findByRole('button', { name: 'Delete user' }).click();
+      });
 
       cy.getModal().within(() => {
         cy.findByRole('button', {
@@ -90,6 +111,22 @@ describe('Manage User Options', () => {
       closeUserUpdatedMessage(
         '@trusted_user_1 (email: trusted-user-1@forem.local, user_id: 2) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics  and confirm on the page.',
       );
+    });
+
+    it(`should not unpublish all posts of a user if the user has no posts`, () => {
+      openUserOptions(() => {
+        cy.findByRole('button', { name: 'Unpublish all posts' }).should(
+          'not.exist',
+        );
+      });
+    });
+
+    it(`should not remove social accounts of a user if the user has no social accounts`, () => {
+      openUserOptions(() => {
+        cy.findByRole('button', { name: 'Remove social accounts' }).should(
+          'not.exist',
+        );
+      });
     });
   });
 });
