@@ -632,7 +632,7 @@ RSpec.describe Article, type: :model do
     it "does not show year in readable time if not current year" do
       time_now = Time.current
       article.edited_at = time_now
-      expect(article.readable_edit_date).to eq(time_now.strftime("%b %e"))
+      expect(article.readable_edit_date).to eq(I18n.l(article.edited_at, format: :short))
     end
 
     it "shows year in readable time if not current year" do

@@ -57,11 +57,11 @@
     </ol>
     <p>
       <%= t("views.settings.org.admin.secret_code") %>
-      <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
-        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.aria_label") %>">
-        <%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon")) %>
-      </clipboard-copy>
-      <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden><%= t("views.settings.org.admin.copy.text") %></span>
+      <div class="flex">
+        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.input.aria_label") %>">
+        <button id="settings-org-secret-copy-btn" aria-label="<%= t("views.settings.org.admin.copy.button.aria_label") %>" class="c-btn"><%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon"), aria_hidden: true) %></button>
+      </div>
+      <div class="crayons-notice crayons-notice--success mt-2 hidden" id="copy-text-announcer" role="alert"><%= t("views.settings.org.admin.copy.text") %></div>
   </div>
 
   <div class="flex items-center">
