@@ -1,5 +1,5 @@
 class FeatureFlagGenerator < Rails::Generators::NamedBase
-  REPLACEMENT_REGEX = /(def run).*?(end.*)\z/m
+  REPLACEMENT_REGEX = /(def run).*?(end)/m
 
   def create_feature_flag_config
     append_file "config/feature_flags.yml", %(  - #{file_name}\n)
