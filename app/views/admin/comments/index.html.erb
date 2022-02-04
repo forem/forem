@@ -26,7 +26,7 @@
       </div>
       <footer class="fs-s flex gap-4 border-t-1 border-base-10 border-solid border-0 pt-2 -mx-2 pl-2 justify-between items-center">
         <span>❤️ <%= pluralize(comment.public_reactions_count, "like") %></span>
-        <% if !comment.reactions.where(user_id: current_user.id).empty? %>
+        <% if comment.reactions.where(user_id: current_user.id).empty? %>
           <%= form_tag(reactions_path, remote: true) do %>
             <%= hidden_field_tag(:reactable_type, "Comment") %>
             <%= hidden_field_tag(:reactable_id, comment.id) %>
