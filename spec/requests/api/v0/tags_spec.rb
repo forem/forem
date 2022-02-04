@@ -16,11 +16,12 @@ RSpec.describe "Api::V0::Tags", type: :request do
       get api_tags_path
 
       response_tag = response.parsed_body.first
-      expect(response_tag.keys).to match_array(%w[id name bg_color_hex text_color_hex])
+      expect(response_tag.keys).to match_array(%w[id name bg_color_hex text_color_hex short_summary])
       expect(response_tag["id"]).to eq(tag.id)
       expect(response_tag["name"]).to eq(tag.name)
       expect(response_tag["bg_color_hex"]).to eq(tag.bg_color_hex)
       expect(response_tag["text_color_hex"]).to eq(tag.text_color_hex)
+      expect(response_tag["short_summary"]).to eq(tag.short_summary)
     end
 
     it "orders tags by taggings_count in a descending order" do
@@ -31,6 +32,15 @@ RSpec.describe "Api::V0::Tags", type: :request do
 
       expected_result = [other_tag.id, tag.id]
       expect(response.parsed_body.map { |t| t["id"] }).to eq(expected_result)
+    end
+
+    it "finds tags from array of tag_ids" do
+      create_list(:tag, 10, taggings_count: 10)
+      tag_ids = Tag.last(4).ids
+
+      get api_tags_path, params: { tag_ids: tag_ids }
+
+      expect(response.parsed_body.map { |t| t["id"] }).to eq(tag_ids)
     end
 
     it "supports pagination" do
