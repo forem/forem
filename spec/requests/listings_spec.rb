@@ -333,9 +333,10 @@ RSpec.describe "/listings", type: :request do
     context "when user is suspended" do
       it "raises error" do
         user.add_role(:suspended)
-        expect do
-          post "/listings", params: listing_params
-        end.to raise_error(SuspendedError)
+
+        post "/listings", params: listing_params
+
+        expect(response).to have_http_status :forbidden
       end
     end
 
