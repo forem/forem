@@ -5,12 +5,15 @@
 #   https://api.github.com/repos/facebook/react/pulls/14105
 # getting a comment belonging to an issue
 #   https://api.github.com/repos/facebook/react/issues/comments/287635042
-class GithubTag
-  class GithubIssueTag
+class GithubTag < LiquidTagBase
+  class GithubIssueTag < GithubTag
     PARTIAL = "liquids/github_issue".freeze
     API_BASE_ENDPOINT = "https://api.github.com/repos/".freeze
+    ISSUE_REGEXP = %r{https://github.com/[\w\-]{1,39}/[\w\-]{1,39}/(issues|pull)/\d+((#issuecomment-|#discussion_|#pullrequestreview-)\w+)?}
 
     def initialize(link)
+      super
+
       @orig_link = link
       @link = parse_link(link)
       @content = GithubIssue.find_or_fetch(@link)
@@ -43,13 +46,18 @@ class GithubTag
     attr_reader :content_json
 
     def parse_link(link)
-      link = ActionController::Base.helpers.strip_tags(link)
-      link_no_space = link.delete(" ")
-      if valid_link?(link_no_space)
-        generate_api_link(link_no_space)
-      else
-        raise_error
-      end
+      match = pattern_match_for(link, [ISSUE_REGEXP])
+      raise StandardError, I18n.t("liquid_tags.github_tag.github_issue_tag.invalid_github_issue_pull") unless match
+
+      generate_api_link(link)
+
+      # link = ActionController::Base.helpers.strip_tags(link)
+      # link_no_space = link.delete(" ")
+      # if valid_link?(link_no_space)
+      #   generate_api_link(link_no_space)
+      # else
+      #   raise_error
+      # end
     end
 
     def generate_api_link(input)
@@ -78,15 +86,15 @@ class GithubTag
       Addressable::URI.parse(API_BASE_ENDPOINT).join(path).to_s
     end
 
-    def valid_link?(link)
-      link_without_domain = link.gsub(%r{.*github\.com/}, "").split("/")
-      validations = [
-        %r{.*github\.com/}.match?(link),
-        link_without_domain.length == 4,
-        link_without_domain[3].to_i.positive?,
-      ]
-      validations.all? || raise_error
-    end
+    # def valid_link?(link)
+    #   link_without_domain = link.gsub(%r{.*github\.com/}, "").split("/")
+    #   validations = [
+    #     %r{.*github\.com/}.match?(link),
+    #     link_without_domain.length == 4,
+    #     link_without_domain[3].to_i.positive?,
+    #   ]
+    #   validations.all? || raise_error
+    # end
 
     def raise_error
       raise StandardError, I18n.t("liquid_tags.github_tag.github_issue_tag.invalid_github_issue_pull")
