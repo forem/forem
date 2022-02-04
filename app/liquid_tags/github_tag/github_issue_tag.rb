@@ -76,10 +76,6 @@ class GithubTag
       Addressable::URI.parse(API_BASE_ENDPOINT).join(path).to_s
     end
 
-    def raise_error
-      raise StandardError, I18n.t("liquid_tags.github_tag.github_issue_tag.invalid_github_issue_pull")
-    end
-
     def title
       content_json[:title] || I18n.t("liquid_tags.github_tag.github_issue_tag.comment_for")
     end
