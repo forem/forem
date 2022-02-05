@@ -35,12 +35,12 @@ RSpec.describe "Api::V0::Tags", type: :request do
     end
 
     it "finds tags from array of tag_ids" do
-      create_list(:tag, 10, taggings_count: 10)
-      tag_ids = Tag.last(4).ids
+      tags = create_list(:tag, 10, taggings_count: 10)
+      tag_ids = tags.sample(4).map(&:id)
 
       get api_tags_path, params: { tag_ids: tag_ids }
 
-      expect(response.parsed_body.map { |t| t["id"] }).to eq(tag_ids)
+      expect(response.parsed_body.map { |t| t["id"] }).to match_array(tag_ids)
     end
 
     it "supports pagination" do
