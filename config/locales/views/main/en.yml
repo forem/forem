@@ -39,7 +39,7 @@ en:
         Code of Conduct: Code of Conduct
         Contact: Contact
         FAQ: FAQ
-        Listings: Listings
+        Listings: Events
         Podcasts: Podcasts
         Privacy Policy: Privacy Policy
         Reading List: Reading List
@@ -49,9 +49,9 @@ en:
         Videos: Videos
       side:
         listings:
-          heading: Listings
+          heading: Events
           all: See all
-          new: Create a Listing
+          new: Create a Event
         trend: trending guides/resources
         recent: recently queried
       tags:

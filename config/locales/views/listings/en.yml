@@ -3,8 +3,8 @@ en:
   views:
     listings:
       meta:
-        description: "%{community} Listing"
-      heading: Listings
+        description: "%{community} Event"
+      heading: Events
       back: Back
       delete:
         subtitle: Are you sure you want to delete this listing?
@@ -16,7 +16,7 @@ en:
         submit: Delete
         unpublish: Unpublish
       edit:
-        heading: Edit Listing
+        heading: Edit Event
         bump:
           subtitle: Bump your listing
           button: Bump listing
@@ -35,7 +35,7 @@ en:
       errors:
         one: '1 error prohibited this listing from being saved:'
         other: "%{count} errors prohibited this listing from being saved:"
-      expired: This listing has expired.
+      expired: This event has expired.
       form:
         body_markdown:
           description: 400 characters max, 12 line break max, no images allowed, *markdown is encouraged*. Please include a contact method if necessary.
@@ -57,7 +57,7 @@ en:
         organization:
           description: Posting on behalf of an organization spends the organization's credits.
           none: None
-        publish: Publish listing
+        publish: Publish event
         purchase: Purchase credits
         save: Save draft
         save_notice: You will not be charged credits to save a draft.
@@ -66,18 +66,18 @@ en:
         title:
           placeholder: 128 characters max, plain text
       nav:
-        aria_label: Listings
+        aria_label: Events
         create: Create
         manage: Manage
       new:
         meta:
-          title: New Listing
-        heading: Create a Community Listing
+          title: New Event
+        heading: Create a Community Event
         buy: Buy more
         disclaimer:
           subtitle: Disclaimer
           description1: "%{community} admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings."
-          description2: Listings expire 30 days after they are published or "bumped".
+          description2: Events expire 30 days after they are published or "bumped".
         organization: Organization credits
         personal: Personal credits
       preview_icon: DEV logo
