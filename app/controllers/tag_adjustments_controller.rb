@@ -23,7 +23,7 @@ class TagAdjustmentsController < ApplicationController
           render json: { status: "Success", result: tag_adjustment.adjustment_type,
                          colors: { bg: tag.bg_color_hex, text: tag.text_color_hex } }
         end
-        format.html { redirect_to "#{URI.parse(article.path).path}/mod" }
+        format.html { redirect_to "#{Addressable::URI.parse(article.path).path}/mod" }
       end
     else
       # TODO: remove this when we move over to full JSON endpoint
@@ -35,7 +35,10 @@ class TagAdjustmentsController < ApplicationController
       @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
       @allowed_to_adjust = @moderatable.instance_of?(Article) && (current_user.any_admin? || @tag_moderator_tags.any?)
       respond_to do |format|
-        format.json { render json: { error: "Failure: #{tag_adjustment.errors.full_messages.to_sentence}" } }
+        format.json do
+          render json: { error: I18n.t("tag_adjustments_controller.failure",
+                                       errors: tag_adjustment.errors.full_messages.to_sentence) }
+        end
         format.html { render template: "moderations/mod" }
       end
     end
@@ -57,8 +60,8 @@ class TagAdjustmentsController < ApplicationController
 
     respond_to do |format|
       # TODO: add tag adjustment removal async route in actions panel
-      format.json { render json: { result: "Tag adjustment destroyed" } }
-      format.html { redirect_to "#{URI.parse(@article.path).path}/mod" }
+      format.json { render json: { result: I18n.t("tag_adjustments_controller.destroyed") } }
+      format.html { redirect_to "#{Addressable::URI.parse(@article.path).path}/mod" }
     end
   end
 end

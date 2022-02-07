@@ -16,7 +16,7 @@ module Users
     def self.id() = nil
     def self.darker_color() = Color::CompareHex.new(USER_COLORS).brightness
     def self.username() = "[deleted user]"
-    def self.name() = "[Deleted User]"
+    def self.name() = I18n.t("models.users.deleted_user.name")
     def self.summary() = nil
     def self.twitter_username() = nil
     def self.github_username() = nil

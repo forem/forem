@@ -147,9 +147,8 @@ RSpec.describe "Registrations", type: :request do
       end
     end
 
-    context "with the creator_onboarding feature flag" do
+    context "when going through the Creator Onboarding flow" do
       before do
-        allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
         allow(Settings::UserExperience).to receive(:public).and_return(false)
       end
@@ -437,11 +436,9 @@ RSpec.describe "Registrations", type: :request do
       end
     end
 
-    context "with the creator_onboarding feature flag" do
+    context "when going through the Creator Onboarding flow" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
-        allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
-        allow(FeatureFlag).to receive(:enabled?).with(:runtime_banner).and_return(false)
         allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
       end
 

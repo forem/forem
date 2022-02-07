@@ -177,8 +177,11 @@ fr:
         admin:
           admin: Admin
           copy:
-            aria_label: Organization secret (to be rotated regularly)
+            button: 
+              aria_label: Copy organization secret code to clipboard
             icon: Copy to clipboard
+            input:
+              aria_label: Organization secret (to be rotated regularly)
             text: Copied to clipboard!
           cta: Call-to-action box
           cta_desc: Customizable text that appears to the right of every post for your organization.

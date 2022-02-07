@@ -18,7 +18,6 @@
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.16/css/bootstrap-select.min.css" integrity="sha256-g19F2KOr/H58l6XdI/rhCdEK3NmB8OILHwP/QYBQ8M4=" crossorigin="anonymous" />
 
   <%= stylesheet_link_tag "admin" %>
 
@@ -30,28 +29,33 @@
   data-ga-tracking="<%= Settings::General.ga_tracking_id %>"
   data-controller="snackbar"
   data-action="snackbar:add@document->snackbar#addItem">
+  <div id="body-styles">
+    <style>
+      :root {
+        --accent-brand-lighter-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.35, only_values: true) %>;
+        --accent-brand-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1, only_values: true) %>;
+        --accent-brand-darker-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.8, only_values: true) %>;
+      }
+    </style>
+  </div>
   <header class="crayons-header">
     <span id="route-change-target" tabindex="-1"></span>
     <a href="#main-content" class="skip-content-link"><%= t("views.main.header.skip") %></a>
     <div class="crayons-header__container">
       <%= render "layouts/logo" %>
 
-      <h1 class="pl-4 fs-l">
-        <a href="<%= admin_path %>">Admin</a>
-        <span class="color-base-60">&raquo;</span> <span class="fw-bold">
+      <h1 class="pl-4 fs-base hidden s:block">
+        <a class="c-link c-link--branded" href="<%= admin_path %>">Admin</a>
+        <span class="color-base-60">&raquo;</span>
+        <span class="fw-medium">
           <%= yield(:h1).presence || controller_name.titleize %>
         </span>
       </h1>
 
-      <div class="flex items-center h-100 ml-auto">
-        <a href="https://admin.forem.com/" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block">
-          Forem Admin Guide
-        </a>
-
-        <a href="/" class="crayons-btn hidden mr-2 whitespace-nowrap s:block">
-          Go to <%= community_name %> home page
-        </a>
-      </div>
+      <nav aria-label="header" class="flex items-center h-100 ml-auto">
+        <%= link_to "Help", "https://admin.forem.com/", class: "c-link c-link--block whitespace-nowrap" %>
+        <%= link_to "Home page", root_path, class: "c-link c-link--block whitespace-nowrap" %>
+      </nav>
     </div>
   </header>
 
@@ -106,8 +110,6 @@
   <div data-snackbar-target="snackZone"></div>
 
   <!-- Bootstrap Dependencies -->
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.16/js/bootstrap-select.min.js" integrity="sha256-COIM4OdXvo3jkE0/jD/QIEDe3x0jRuqHhOdGTkno3uM=" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -19,6 +19,35 @@ module ApplicationHelper
     "#{controller_name}-#{controller.action_name}"
   end
 
+  # Answers the simple question "Should we show this link?"
+  #
+  # @param link [NavigationLink]
+  #
+  # @return [TrueClass] true when we should render the given link.
+  # @return [FalseClass] false when we should **not** render the given link.
+  def display_navigation_link?(link:)
+    # This is a quick short-circuit; we already have the link.  So don't bother asking the "Is this
+    # feature enabled" question if the given link requires a sign in and the user is not signed in.
+    return false if link.display_only_when_signed_in? && !user_signed_in?
+    return true if navigation_link_is_for_an_enabled_feature?(link: link)
+
+    false
+  end
+
+  # @param link [NavigationLink]
+  #
+  # @note [@jeremyf] - making an assumption, namely that the only navigation oriented feature is the
+  #                    Listing.  If this changes, adjust this method accordingly.  Normally I like to have method return
+  def navigation_link_is_for_an_enabled_feature?(link:)
+    return true if Listing.feature_enabled?
+
+    # The "/listings" is an assumption on the routing.  So let's first try :listings_path.
+    listings_url = URL.url(try(:listings_path) || "/listings")
+    return false if listings_url == URL.url(link.url)
+
+    true
+  end
+
   # rubocop:disable Rails/HelperInstanceVariable
   def view_class
     if @podcast_episode_show # custom due to edge cases
@@ -301,7 +330,6 @@ module ApplicationHelper
   end
 
   def creator_settings_form?
-    return unless FeatureFlag.enabled?(:creator_onboarding)
     return unless User.with_role(:creator).any?
 
     creator = User.with_role(:creator).first

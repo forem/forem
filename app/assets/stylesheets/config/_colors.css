@@ -251,7 +251,7 @@
 
   --tooltip-bg: rgba(var(--grey-900), 0.9);
   --tooltip-color: rgb(var(--white));
-  
+
   /***********************************************
   ** Indicators **********************************
   ***********************************************/
@@ -277,11 +277,40 @@
   --indicator-info-color: rgb(var(--white));
 
   /***********************************************
+  ** Modals **************************************
+  ***********************************************/
+
+  --modal-bg: rgb(var(--white));
+  --modal-backdrop: rgba(var(--black), 0.6);
+  --modal-danger-border-color: rgb(var(--red-500));
+
+  /***********************************************
+  ** Colors **************************************
+  ***********************************************/
+
+  --color-primary: rgb(var(--grey-900));
+  --color-secondary: rgb(var(--grey-500));
+
+  /***********************************************
+  ** Pills ***************************************
+  ***********************************************/
+
+  --pill-bg: transparent;
+  --pill-bg-hover: rgb(var(--grey-50));
+  --pill-color: rgb(var(--grey-800));
+  --pill-color-hover: rgb(var(--grey-900));
+  --pill-border: rgb(var(--grey-200));
+  --pill-border-hover: rgb(var(--grey-600));
+
+  /***********************************************
   ** Utilities ***********************************
   ***********************************************/
 
   /* Focus */
   --focus: var(--accent-brand);
+
+  /* Divider */
+  --divider: rgb(var(--grey-200));
 
   /* Shadows */
   --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.1),

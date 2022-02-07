@@ -90,11 +90,14 @@ en:
     tag_tag:
       invalid_tag_name: invalid tag name
     tweet_tag:
-      invalid_twitter_id: Invalid Twitter Id
+      invalid_twitter_id: Invalid Twitter ID or URL
     twitch_tag:
       invalid_twitch_id: Invalid Twitch ID, Slug or URL
     twitter_timeline_tag:
       invalid_url: Invalid Twitter Timeline URL
+    unified_embed:
+      tag:
+        invalid_url: Embed URL not valid
     user_subscription_tag:
       submit: Submit
       submitting: Submitting...

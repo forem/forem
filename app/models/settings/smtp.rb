@@ -15,9 +15,11 @@ module Settings
 
     class << self
       def settings
-        return sendgrid_settings if ENV["SENDGRID_API_KEY"].present?
-
-        keys.index_with { |k| public_send(k) }.symbolize_keys
+        if provided_minimum_settings?
+          custom_provider_settings
+        else
+          fallback_sendgrid_settings
+        end
       end
 
       def provided_minimum_settings?
@@ -26,7 +28,11 @@ module Settings
 
       private
 
-      def sendgrid_settings
+      def custom_provider_settings
+        to_h
+      end
+
+      def fallback_sendgrid_settings
         {
           address: "smtp.sendgrid.net",
           port: 587,

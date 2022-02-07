@@ -23,6 +23,7 @@ RSpec.describe ApplicationMailer, type: :mailer do
     end
 
     it "sets proper SMTP credential during callback" do
+      Settings::SMTP.address = "smtp.google.com"
       Settings::SMTP.user_name = Faker::Internet.username
       Settings::SMTP.password = Faker::Internet.password
       email.deliver_now

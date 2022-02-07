@@ -1,11 +1,48 @@
-## Modals
+# Modals
 
 Modals should be positioned centered in relation to entire viewport. So relation
-to its trigger doesn’t really matter.
+to its trigger doesn't really matter.
 
 Use your best judgements when choosing the right size.
 
-### Modal accessibility
+## Sizes
+
+We have 3 possible sizes to use:
+
+- Small - 480px - for displaying small amount of data/text.
+- Medium - 640px (this is default one) - you will probably want to use this one in most cases.
+- Large - 768px - use for long and/or complex contnet.
+
+## Prompts
+
+Except classic Modals you can also use `prompt` style (prop) to apply _special styling_. 
+It will work best with really short messages or some sort of confirmation prompts, for example:
+
+> Are you sure you want to remove Ben's account? 
+>
+> [YES] [NO]
+
+The "special styling" means it will:
+
+- always use Small (480px) size,
+- remove the divider between title and content so it all looks more like a one message.
+
+### Centered prompt
+
+Some prompts may visually benefit from centering the content. 
+Leave the decision to designers but keep it mind this is possible with `centered` prop
+(and it will only work in combination with `prompt`).
+
+## Backdrop
+
+By default Modals come with dark backdrop (a layer overlaying underlaying content). 
+It is possible to not show it but it should be used in some very rare scenarios, when underlaying
+content might still be important as additional context.
+
+Because of having that backdrop is a "good default", you should use `noBackdrop` prop cerfaully,
+ideally after consulting with your desinger.
+
+## Modal accessibility
 
 The Preact Modal component utilises the `focus-trap` library to ensure that:
 
@@ -16,3 +53,7 @@ The Preact Modal component utilises the `focus-trap` library to ensure that:
 - While the modal is open, focus is trapped inside so that when a user presses
   the Tab key, interactive items behind the modal are not focused
 - When the modal is open, pressing the Escape key will close it
+
+## Design
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FgHpwugeu9jFGW4d9u3ReuR%2FCrayons%3Fnode-id%3D456%253A215" allowfullscreen></iframe>

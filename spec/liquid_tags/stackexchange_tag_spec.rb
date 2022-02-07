@@ -26,6 +26,13 @@ RSpec.describe StackexchangeTag, type: :liquid_tag, vcr: true do
       end
     end
 
+    it "renders titles for stackoverflow questions" do
+      VCR.use_cassette("stackexchange_tag_stackoverflow") do
+        liquid = generate_new_liquid(valid_id)
+        expect(liquid.render).to include("Use &quot;where&quot; and &quot;limit&quot; to child in @foreach")
+      end
+    end
+
     it "renders basic stackexchange html" do
       VCR.use_cassette("stackexchange_tag_stackexchange") do
         liquid = generate_exchange_liquid(exchange_id)

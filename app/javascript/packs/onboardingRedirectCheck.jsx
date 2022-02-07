@@ -34,9 +34,7 @@ function onboardingSkippable(currentUser) {
 
 function onboardCreator(currentUser) {
   return (
-    document.body.dataset.creator === 'true' &&
-    document.body.dataset.creatorOnboarding === 'true' &&
-    !currentUser.saw_onboarding
+    document.body.dataset.creator === 'true' && !currentUser.saw_onboarding
   );
 }
 

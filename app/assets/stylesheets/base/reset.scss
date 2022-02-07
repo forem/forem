@@ -84,11 +84,9 @@ textarea {
 }
 
 // Drop default outline (Crayons provides custom)
-input[type='text'],
 textarea,
-input[type='url'],
-input[type='email'],
-input[type='password'] {
+input:not([type='hidden']),
+button {
   outline: 0;
 }
 
@@ -162,7 +160,9 @@ sup {
     animation-iteration-count: 1 !important;
     background-attachment: initial !important;
     scroll-behavior: auto !important;
-    transition-duration: 0s !important;
     transition-delay: 0s !important;
+    // A transition duration of 0s will prevent transition start/end events from firing
+    // We use 0.001s instead to ensure no unintended consequences, while still effectively stopping the animation
+    transition-duration: 0.001s !important;
   }
 }

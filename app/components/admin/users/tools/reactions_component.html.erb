@@ -15,7 +15,7 @@
              class="text-none color-base-60 flex justify-between"
              rel="noopener noreferer"
              target="_blank">
-            <span>🤢 <%= reaction.category.capitalize %></span>
+            <span>🧐 <%= t("views.reactions.category.#{reaction.category}") %></span>
             <span><strong><%= reaction.reactable_type %></strong><%= reaction.reactable_type == "User" ? "" : ": #{reaction.reactable.title}" %></span>
             <span><local-time datetime="<%= reaction.created_at.iso8601 %>"><%= reaction.created_at.strftime("%b %d, %Y") %></local-time></span>
           </a>

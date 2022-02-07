@@ -23,15 +23,11 @@ environment.splitChunks((config) => {
         '@crayons': path.resolve(__dirname, '../../app/javascript/crayons'),
         '@utilities': path.resolve(__dirname, '../../app/javascript/utilities'),
         '@images': path.resolve(__dirname, '../../app/assets/images'),
-        '@admin-controllers': path.resolve(
-          __dirname,
-          '../../app/javascript/admin/controllers',
-        ),
+        '@admin': path.resolve(__dirname, '../../app/javascript/admin'),
         '@components': path.resolve(
           __dirname,
           '../../app/javascript/shared/components',
         ),
-        '@admin': path.resolve(__dirname, '../../app/javascript/admin'),
         react: 'preact/compat',
         'react-dom': 'preact/compat',
       },
