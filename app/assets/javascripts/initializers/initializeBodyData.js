@@ -9,6 +9,7 @@ function removeExistingCSRF() {
   }
 }
 
+/* TODO: prefer fetch() to XMLHttpRequest */
 function fetchBaseData() {
   var xmlhttp;
   xmlhttp = new XMLHttpRequest();
