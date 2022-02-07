@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  before_action :raise_suspended, only: %i[update update_password]
+  before_action :check_suspended, only: %i[update update_password]
   before_action :set_user,
                 only: %i[update update_password request_destroy full_delete remove_identity]
   # rubocop:disable Layout/LineLength

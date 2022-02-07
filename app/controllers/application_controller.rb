@@ -131,8 +131,11 @@ class ApplicationController < ActionController::Base
     onboarding_path
   end
 
-  def raise_suspended
-    raise SuspendedError if current_user&.suspended?
+  def check_suspended
+    return unless current_user&.suspended?
+
+    response.status = :forbidden
+    render "pages/forbidden"
   end
 
   def internal_navigation?
