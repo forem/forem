@@ -32,6 +32,10 @@ class ForemInstance
     ENV["SENDGRID_API_KEY"].present?
   end
 
+  def self.only_sendgrid_enabled?
+    ForemInstance.sendgrid_enabled? && !Settings::SMTP.provided_minimum_settings?
+  end
+
   def self.invitation_only?
     Settings::Authentication.invite_only_mode?
   end
