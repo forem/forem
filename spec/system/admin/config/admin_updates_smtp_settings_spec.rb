@@ -18,7 +18,7 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       visit admin_config_path
     end
 
-    it "does not show the checkbox to toggle ones own server" do
+    it "does not show the 'Use my own email server' checkbox" do
       within("form[data-testid='emailServerSettings']") do
         expect(page).not_to have_content("Use my own email server")
       end
@@ -26,12 +26,8 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
 
     it "shows the SMTP Form" do
       within("form[data-testid='emailServerSettings']") do
-        expect(page).to have_content("User name")
-        expect(page).to have_content("Password")
-        expect(page).to have_content("Address")
-        expect(page).to have_content("Authentication")
-        expect(page).to have_content("Domain")
-        expect(page).to have_content("Port")
+        expect(page).to have_selector(".js-custom-smtp-section")
+        expect(page).not_to have_selector(".js-custom-smtp-section.hidden")
       end
     end
   end
@@ -46,7 +42,7 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       visit admin_config_path
     end
 
-    it "shows an unchecked checkbox to allow one to toggle ones own server" do
+    it "shows the checkbox to allow one to toggle ones own server" do
       within("form[data-testid='emailServerSettings']") do
         expect(page).to have_content("Use my own email server")
       end
@@ -76,7 +72,7 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       visit admin_config_path
     end
 
-    it "does not show the checkbox to toggle ones own server" do
+    it "does not show the 'Use my own email server' checkbox" do
       within("form[data-testid='emailServerSettings']") do
         expect(page).not_to have_content("Use my own email server")
       end
@@ -84,12 +80,8 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
 
     it "shows the SMTP Form" do
       within("form[data-testid='emailServerSettings']") do
-        expect(page).to have_content("User name")
-        expect(page).to have_content("Password")
-        expect(page).to have_content("Address")
-        expect(page).to have_content("Authentication")
-        expect(page).to have_content("Domain")
-        expect(page).to have_content("Port")
+        expect(page).to have_selector(".js-custom-smtp-section")
+        expect(page).not_to have_selector(".js-custom-smtp-section.hidden")
       end
     end
   end
@@ -103,13 +95,13 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       visit admin_config_path
     end
 
-    it "shows an checkbox to allow one to toggle ones own server" do
+    it "shows the 'Use my own email server' checkbox" do
       within("form[data-testid='emailServerSettings']") do
         expect(page).to have_content("Use my own email server")
       end
     end
 
-    it "does show an SMTP Form" do
+    it "shows an SMTP Form" do
       within("form[data-testid='emailServerSettings']") do
         expect(page).to have_selector(".js-custom-smtp-section")
         expect(page).not_to have_selector(".js-custom-smtp-section.hidden")
