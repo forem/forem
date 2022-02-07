@@ -61,7 +61,7 @@ describe('Manage User Credits', () => {
       cy.findByTestId('user-credits').should('have.text', '89');
     });
 
-    it('should note remove more credits than a user has', () => {
+    it('should not remove more credits than a user has', () => {
       cy.findByTestId('user-credits').should('have.text', '100');
 
       openCreditsModal().within(() => {
