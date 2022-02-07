@@ -8,8 +8,7 @@ RSpec.describe "/admin/advanced/data_update_scripts", type: :request do
 
     before do
       sign_in user
-      allow(Flipper).to receive(:enabled?).and_call_original
-      allow(Flipper).to receive(:data_update_scripts_enabled?).and_return(true)
+      allow(FeatureFlag).to receive(:data_update_scripts_enabled?).and_return(true)
     end
 
     describe "GET /admin/advanced/data_update_scripts" do
@@ -24,8 +23,7 @@ RSpec.describe "/admin/advanced/data_update_scripts", type: :request do
 
     before do
       sign_in user
-      allow(Flipper).to receive(:enabled?).and_call_original
-      allow(Flipper).to receive(:data_update_scripts_enabled?).and_return(true)
+      allow(FeatureFlag).to receive(:data_update_scripts_enabled?).and_return(true)
     end
 
     describe "GET /admin/advanced/data_update_scripts" do
