@@ -1,7 +1,5 @@
+import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 /* global userData showLoginModal  */
-
-// TODO: there is still an issue of the old button html having duplicate IDs, even if we don't use them
-// TODO: after sign in, the UI doesn't refresh
 
 function toggleSubscribeActionUI({
   tagContainer,
@@ -258,12 +256,15 @@ function showSubscribedNotices() {
   });
 }
 
-function populateSubscriberProfileImage(subscriber) {
+function populateSubscriberProfileImage({
+  profile_image_90: profileImageSrc,
+  username,
+}) {
   document
     .querySelectorAll('.ltag__user-subscription-tag__subscriber-profile-image')
     .forEach((profileImage) => {
-      profileImage.src = subscriber.profile_image_90;
-      profileImage.alt = subscriber.username;
+      profileImage.src = profileImageSrc;
+      profileImage.alt = username;
     });
 }
 
@@ -274,40 +275,41 @@ function populateSubscriberProfileImage(subscriber) {
  * and are therefore kept in-step throughout any user interaction or update (i.e. the UI and behavior of all user_subscription
  * liquid tags in an article will always be the same).
  */
-export function initializeUserSubscriptionLiquidTagContent() {
+export async function initializeUserSubscriptionLiquidTagContent() {
   const allUserSubLiquidTags = document.getElementsByClassName(
     'ltag__user-subscription-tag__container',
   );
 
-  //   TODO: when we sign in and return, we're not awaiting the userData, and the wrong state gets set up
-  const user = userData();
-  const { email } = user ?? {};
+  const { userStatus } = document.querySelector('body').dataset;
+  if (userStatus === 'logged-out') {
+    for (const liquidTag of allUserSubLiquidTags) {
+      initSignedOutState(liquidTag);
+    }
+    return;
+  }
+
+  const { currentUser: user } = await getUserDataAndCsrfToken();
+  const { email } = user;
   const isSubscriberAuthedWithApple =
     email && email.endsWith('@privaterelay.appleid.com');
 
-  // Setup the initial state without waiting on subscription status fetch
+  // Setup the initial signed-in state without waiting on subscription status fetch
   for (const liquidTag of allUserSubLiquidTags) {
-    if (user) {
-      initSignedInState(liquidTag, isSubscriberAuthedWithApple);
-    } else {
-      initSignedOutState(liquidTag);
-    }
+    initSignedInState(liquidTag, isSubscriberAuthedWithApple);
   }
 
   // Check if we need to refresh UI due to existing subscription
-  if (user) {
-    populateSubscriberProfileImage(user);
-    fetchSubscriptionStatus().then(({ is_subscribed: isSubscribed }) => {
-      if (isSubscribed) {
-        showSubscribedNotices();
-      }
-      for (const liquidTag of allUserSubLiquidTags) {
-        toggleSubscribeActionUI({
-          tagContainer: liquidTag,
-          showSubscribeAction: !isSubscribed,
-          appleAuth: isSubscriberAuthedWithApple,
-        });
-      }
-    });
-  }
+  populateSubscriberProfileImage(user);
+  fetchSubscriptionStatus().then(({ is_subscribed: isSubscribed }) => {
+    if (isSubscribed) {
+      showSubscribedNotices();
+    }
+    for (const liquidTag of allUserSubLiquidTags) {
+      toggleSubscribeActionUI({
+        tagContainer: liquidTag,
+        showSubscribeAction: !isSubscribed,
+        appleAuth: isSubscriberAuthedWithApple,
+      });
+    }
+  });
 }
