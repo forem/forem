@@ -29,10 +29,12 @@ export default class ImageUploadController extends Controller {
         }
         const { links } = json;
         return this.onUploadSuccess(links);
-      });
+      })
+      .catch(this.onUploadFailure);
   }
 
   onUploadSuccess(result) {
+    clearTimeout(this.clearImageTimeout);
     this.imageResultTarget.classList.remove('d-none');
     const output = `
       <div class="form-group">
@@ -45,4 +47,32 @@ export default class ImageUploadController extends Controller {
     `;
     this.imageResultTarget.innerHTML = output;
   }
+
+  onUploadFailure = (error) => {
+    this.imageResultTarget.innerHTML = `
+      <div id="snack-zone">
+        <div class="crayons-snackbar">
+          <div class="crayons-snackbar__item flex" data-testid="snackbar">
+            <div class="crayons-snackbar__body" role="alert">
+              ${error}
+            </div>
+            <div class="crayons-snackbar__actions">
+              <button class="crayons-btn crayons-btn--ghost-success crayons-btn--inverted" type="button">
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    this.imageResultTarget.classList.remove('d-none');
+
+    const clearImageResultTarget = () => {
+      this.imageResultTarget.innerText = '';
+    };
+    this.imageResultTarget
+      .querySelector('button')
+      .addEventListener('click', clearImageResultTarget);
+    this.clearImageTimeout = setTimeout(clearImageResultTarget, 5000);
+  };
 }
