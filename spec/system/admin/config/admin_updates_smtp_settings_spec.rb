@@ -65,18 +65,6 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
         expect(page).to have_selector(".js-custom-smtp-section.hidden")
       end
     end
-
-    # describe "checking the checkbox" do
-    #   it "shows the form when we check the checkbox" do
-    #
-    #     within("div[data-target='#smtpSettingsBodyContainer']") do
-    #       click_on("Show info", match: :first)
-    #       find("settings_smtp_own_email_server", :visible => false).click
-    #       expect(page).to have_selector('.js-custom-smtp-section')
-    #       expect(page).not_to have_selector('.hidden')
-    #     end
-    #   end
-    # end
   end
 
   context "when Sendgrid is not enabled and SMTP is enabled" do

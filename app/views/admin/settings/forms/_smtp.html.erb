@@ -40,7 +40,6 @@
                                value: Settings::SMTP.public_send(config_key),
                                placeholder: Constants::Settings::SMTP::DETAILS[config_key][:placeholder],
                                "data-config-target": "smtpSetting#{config_key.to_s.camelize(:upper)}" %>
-
             </div>
           <% end %>
         </div>
