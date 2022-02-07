@@ -47,6 +47,47 @@ describe('Manage User Organziations', () => {
       });
     });
 
+    it('should add a user to multiple organizations', () => {
+      cy.visit('/admin/users/3');
+
+      cy.findByText('This user is not a part of any organization yet.').should(
+        'be.visible',
+      );
+
+      openOrgModal().within(() => {
+        cy.findByRole('spinbutton', { name: 'Organization ID' }).type(1);
+        cy.findByRole('button', { name: 'Add organization' }).click();
+      });
+
+      closeUserUpdatedMessage('User was successfully added to Bachmanity');
+
+      openOrgModal('Add another organization').within(() => {
+        cy.findByRole('spinbutton', { name: 'Organization ID' }).type(2);
+        cy.findByRole('button', { name: 'Add organization' }).click();
+      });
+
+      closeUserUpdatedMessage('User was successfully added to Awesome Org');
+      cy.getModal().should('not.exist');
+
+      cy.findByRole('link', { name: 'Bachmanity' }).focus();
+      cy.findByRole('button', {
+        name: 'Edit Bachmanity organization membership',
+      });
+
+      cy.findByRole('button', {
+        name: 'Revoke Bachmanity organization membership',
+      });
+
+      cy.findByRole('link', { name: 'Awesome Org' }).focus();
+      cy.findByRole('button', {
+        name: 'Edit Awesome Org organization membership',
+      });
+
+      cy.findByRole('button', {
+        name: 'Revoke Awesome Org organization membership',
+      });
+    });
+
     it(`should edit a user's membership to an organization`, () => {
       cy.visit('/admin/users/2');
 
