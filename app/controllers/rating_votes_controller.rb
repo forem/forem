@@ -22,7 +22,7 @@ class RatingVotesController < ApplicationController
         format.json do
           render json: { error: rating_vote.errors.full_messages.to_sentence }, status: :unprocessable_entity
         end
-        format.html { render json: { result: "Not Upserted Successfully" } }
+        format.html { render json: { result: I18n.t("rating_votes_controller.not_upserted_successfully") } }
       end
     end
   end

@@ -20,12 +20,32 @@ describe FeatureFlag, type: :service do
   end
 
   describe ".enabled?" do
+    subject(:method_call) { described_class.enabled?(flag) }
+
+    let(:flag) { "foo" }
+
     it "calls Flipper's enabled? method" do
-      allow(Flipper).to receive(:enabled?).with("foo")
+      allow(Flipper).to receive(:enabled?).with(flag)
 
-      described_class.enabled?("foo")
+      described_class.enabled?(flag)
 
-      expect(Flipper).to have_received(:enabled?).with("foo")
+      expect(Flipper).to have_received(:enabled?).with(flag)
+    end
+
+    context "when flag explicitly enabled" do
+      before { described_class.enable(flag) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when flag doesn't exist" do
+      it { is_expected.to be_falsey }
+    end
+
+    context "when flag explicitly disabled" do
+      before { described_class.disable(flag) }
+
+      it { is_expected.to be_falsey }
     end
   end
 

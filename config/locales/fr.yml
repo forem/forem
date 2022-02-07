@@ -163,6 +163,7 @@ fr:
       even: doit être pair
       exclusion: est réservé
       expired: a expiré, veuillez en demander un nouveau
+      general: 'Error: %{errors}'
       greater_than: doit être supérieur à %{count}
       greater_than_or_equal_to: doit être supérieur ou égal à %{count}
       inclusion: n'est pas inclus dans la liste
@@ -188,6 +189,7 @@ fr:
       too_short:
         one: est trop court (au moins 1 caractère)
         other: est trop court (le minimum est de %{count} caractères)
+      try_again_email: 'An error occurred. Please try again or send an email to: %{email}'
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)
@@ -199,6 +201,7 @@ fr:
       medium: "%b %-d, %Y"
       reddit: "%b %e '%y"
       short: "%-e %b"
+      short_with_yy: "%-e %b '%y"
       short_with_year: "%-e %b, %Y"
       stackexchange: "%b %e '%y"
       tweet: "%H:%M %p - %d %b %Y"

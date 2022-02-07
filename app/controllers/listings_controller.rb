@@ -29,7 +29,7 @@ class ListingsController < ApplicationController
   # rubocop:disable Rails/LexicallyScopedActionFilter
   before_action :set_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
-  before_action :raise_suspended, only: %i[new create update]
+  before_action :check_suspended, only: %i[new create update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
   after_action :verify_authorized, only: %i[edit update]
   # rubocop:enable Rails/LexicallyScopedActionFilter
@@ -92,13 +92,13 @@ class ListingsController < ApplicationController
   def destroy
     authorize @listing
     @listing.destroy!
-    redirect_to "/listings/dashboard", notice: "Listing was successfully deleted."
+    redirect_to "/listings/dashboard", notice: I18n.t("listings_controller.deleted")
   end
 
   private
 
   def process_no_credit_left
-    redirect_to credits_path, notice: "Not enough available credits"
+    redirect_to credits_path, notice: I18n.t("listings_controller.no_credit")
   end
 
   def process_successful_draft

@@ -1,7 +1,4 @@
 class ConfirmationsController < Devise::ConfirmationsController
-  FLASH_MESSAGE = "Email sent! Please contact support at %<email>s if you are "\
-                  "having trouble receiving your confirmation instructions.".freeze
-
   # GET /resource/confirmation?confirmation_token=abcdef
   def show
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
@@ -24,7 +21,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     self.resource = resource_class.send_confirmation_instructions(resource_params)
     resource.errors.clear # Don't leak user information, like paranoid mode.
 
-    message = format(FLASH_MESSAGE, email: ForemInstance.email)
+    message = I18n.t("confirmations_controller.email_sent", email: ForemInstance.email)
     flash.now[:global_notice] = message
     render :new
   end

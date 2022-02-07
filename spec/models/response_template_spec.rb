@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe ResponseTemplate, type: :model do
-  let(:comment_validation_message) { ResponseTemplate::COMMENT_VALIDATION_MSG }
+  let(:comment_validation_message) { I18n.t("models.response_template.comment_markdown") }
 
   it { is_expected.to validate_inclusion_of(:type_of).in_array(ResponseTemplate::TYPE_OF_TYPES) }
   it { is_expected.to validate_inclusion_of(:content_type).in_array(ResponseTemplate::CONTENT_TYPES) }
@@ -25,7 +25,9 @@ RSpec.describe ResponseTemplate, type: :model do
       it "validates that there is no user ID associated" do
         response_template = build(:response_template, type_of: "mod_comment", content_type: "body_markdown", user_id: 1)
         expect(response_template.valid?).to eq false
-        expect(response_template.errors.messages[:type_of].to_sentence).to eq(ResponseTemplate::USER_NIL_TYPE_OF_MSG)
+        expect(response_template.errors.messages[:type_of].to_sentence).to eq(
+          I18n.t("models.response_template.user_nil_only"),
+        )
       end
     end
   end

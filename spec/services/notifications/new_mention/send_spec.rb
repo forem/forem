@@ -52,6 +52,7 @@ RSpec.describe Notifications::NewMention::Send, type: :service do
     user.notification_setting.update(mobile_mention_notifications: true)
     allow(PushNotifications::Send).to receive(:call)
     allow(I18n).to receive(:t).with("services.notifications.new_mention.new")
+    allow(I18n).to receive(:l)
     allow(I18n).to receive(:t).with("views.notifications.mention.article_mobile",
                                     user: mention.mentionable.user.username,
                                     title: anything).and_call_original

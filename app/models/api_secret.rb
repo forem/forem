@@ -14,6 +14,6 @@ class ApiSecret < ApplicationRecord
   def user_api_secret_count
     return if user && user.api_secrets.count < 20
 
-    errors.add(:user, "API secret limit of 20 per user has been reached")
+    errors.add(:user, I18n.t("models.api_secret.api_limit_reached"))
   end
 end
