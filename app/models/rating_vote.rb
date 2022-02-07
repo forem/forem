@@ -22,7 +22,7 @@ class RatingVote < ApplicationRecord
   end
 
   def permissions
-    return unless context == "explicit" && !user&.trusted && user_id != article&.user_id
+    return unless context == "explicit" && !user&.trusted? && user_id != article&.user_id
 
     errors.add(:user_id, I18n.t("models.rating_vote.not_permitted"))
   end
