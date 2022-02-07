@@ -81,7 +81,7 @@
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.28.0",
     "husky": "^7.0.4",
-    "jest": "27.4.7",
+    "jest": "27.5.0",
     "jest-axe": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^1.0.0",
