@@ -1,10 +1,10 @@
 class StackexchangeTag < LiquidTagBase
   PARTIAL = "liquids/stackexchange".freeze
-  REGISTRY_REGEXP = %r{https://(?<subdomain>\w*)(?:\.)?(?:stackexchange.com|stackoverflow.com)/(?<post_type>q|a|questions)/(?<id>\d{1,20})(?:/)?(?:[\w\-]*)}
+  REGISTRY_REGEXP = %r{https://(?:(?<subdomain>\w+)\.)?(?:stackexchange\.com|stackoverflow\.com)/(?<post_type>q|a|questions)/(?<id>\d{1,20})}
   ID_REGEXP = /\A(?<id>\d{1,20})\Z/
   SITE_REGEXP = /(?<subdomain>\b[a-zA-Z]+\b)/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP, SITE_REGEXP].freeze
-  STACKOVERFLOW_REGEXP = %r{https://stackoverflow.com/(q|a|questions)/\d{1,20}(/)?[\w\-]*}
+  STACKOVERFLOW_REGEXP = %r{https://stackoverflow\.com/(q|a|questions)/\d{1,20}(?:/[\w\-]+)?}
   API_URL = "https://api.stackexchange.com/2.3/".freeze
   # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
   FILTERS = {
@@ -62,11 +62,11 @@ class StackexchangeTag < LiquidTagBase
   end
 
   def get_data(input)
-    id, = input.split
+    id = input.split.first
     match = pattern_match_for(id, REGEXP_OPTIONS)
-    # rubocop:disable Layout/LineLength
-    raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_id", tag: tag_name, input: input) unless match && match_group_present?(match, "id")
-    # rubocop:enable Layout/LineLength
+    unless match && match_group_present?(match, "id")
+      raise StandardError, I18n.t("liquid_tags.stackexchange_tag.invalid_id", tag: tag_name, input: input)
+    end
 
     url = "#{API_URL}posts/#{match[:id]}?site=#{@site}&filter=#{FILTERS['post']}" \
           "&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
@@ -86,7 +86,7 @@ class StackexchangeTag < LiquidTagBase
   end
 
   def handle_response_error(response, input)
-    raise StandardError, "Calling StackExchange API failed: #{response&.error_message}" if response.code != 200
+    raise StandardError, "Calling StackExchange API failed: #{response&.error_message}" unless response.ok?
 
     return unless response["items"].length.zero?
 
