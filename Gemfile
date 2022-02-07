@@ -147,6 +147,7 @@ group :development, :test do
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
   gem "spring", "~> 4.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
+  gem "warning", "~> 1.2" # Adds custom processing for warnings, including the ability to ignore specific warning messages
 end
 
 group :test do
