@@ -364,3 +364,12 @@ Cypress.Commands.add('enableFeatureFlag', (flag) => {
 Cypress.Commands.add('disableFeatureFlag', (flag) => {
   return cy.request('DELETE', `/api/feature_flags?flag=${flag}`);
 });
+
+/**
+ * Retrieves the modal in a Forem instance.
+ *
+ * @returns {Cypress.Chainable<HTMLElement>} A reference to a modal dialog.
+ */
+Cypress.Commands.add('getModal', () => {
+  return cy.findByRole('dialog', { name: 'modal' });
+});

@@ -409,11 +409,9 @@ class User < ApplicationRecord
     :suspended?,
     :tag_moderator?,
     :tech_admin?,
-    :trusted, # TODO: Remove this method from the code-base
     :trusted?,
     :user_subscription_tag_available?,
     :vomited_on?,
-    :warned, # TODO: Remove this method from the code-base
     :warned?,
     :workshop_eligible?,
     to: :authorizer,
