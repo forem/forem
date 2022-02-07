@@ -88,7 +88,7 @@ module PracticalDeveloper
       flag_config = YAML.load_file(Rails.root.join("config/feature_flags.yml"))
 
       flag_config["feature_flags"].each do |flag|
-        FeatureFlag.const_set("FLAG_#{flag.underscore.upcase}", flag)
+        FeatureFlag.const_set(flag.underscore.upcase, flag)
         FeatureFlag.define_singleton_method("#{flag}_enabled?") do
           FeatureFlag.enabled?(flag)
         end

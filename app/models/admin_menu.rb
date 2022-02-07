@@ -3,7 +3,10 @@
 class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
-  FEATURE_FLAGS = %i[profile_admin data_update_scripts].freeze
+  FEATURE_FLAGS = [
+    FeatureFlag::PROFILE_ADMIN,
+    FeatureFlag::DATA_UPDATE_SCRIPTS,
+  ].freeze
 
   ITEMS = Menu.define do
     scope :people, "group-2-line", [
@@ -93,12 +96,12 @@ class AdminMenu
     # turned on, instead of creating the payload dynamically each time.
     menu_items = ITEMS.deep_dup
 
-    if FeatureFlag.enabled?(:profile_admin)
+    if FeatureFlag.profile_admin_enabled?
       profile_hash = menu_items.dig(:customization, :children).detect { |item| item[:controller] == "profile_fields" }
       profile_hash[:visible] = true
     end
 
-    if FeatureFlag.enabled?(:data_update_scripts)
+    if FeatureFlag.data_update_scripts_enabled?
       data_update_script_hash = menu_items.dig(:advanced, :children)
         .detect { |item| item[:controller] ==  "tools" }[:children]
         .detect { |item| item[:controller] ==  "data_update_scripts" }

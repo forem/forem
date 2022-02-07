@@ -112,7 +112,7 @@ namespace :admin do
 
     # NOTE: @citizen428 The next two resources have a temporary constraint
     # while profile generalization is still WIP
-    constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
+    constraints(->(_request) { FeatureFlag.profile_admin_enabled? }) do
       resources :profile_field_groups, only: %i[update create destroy]
       resources :profile_fields, only: %i[index update create destroy]
     end
@@ -145,7 +145,7 @@ namespace :admin do
     end
 
     # We do not expose the Data Update Scripts to all Forems by default.
-    constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
+    constraints(->(_request) { FeatureFlag.data_update_scripts_enabled? }) do
       resources :data_update_scripts, only: %i[index show] do
         member do
           post :force_run

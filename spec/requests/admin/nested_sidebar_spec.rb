@@ -5,7 +5,6 @@ RSpec.describe "admin sidebar", type: :request do
 
   before do
     sign_in super_admin
-    allow(FeatureFlag).to receive(:enabled?).and_call_original
   end
 
   describe "sidebar menu options" do
@@ -28,7 +27,7 @@ RSpec.describe "admin sidebar", type: :request do
 
   describe "profile admin feature flag" do
     it "does not show the option in the sidebar when the feature flag is disabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false)
+      allow(FeatureFlag).to receive(:profile_admin_enabled?).and_return(false)
 
       get admin_articles_path
 
@@ -36,7 +35,7 @@ RSpec.describe "admin sidebar", type: :request do
     end
 
     it "shows the option in the sidebar when the feature flag is enabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
+      allow(FeatureFlag).to receive(:enabled?).with(FeatureFlag::PROFILE_ADMIN).and_return(true)
 
       get admin_articles_path
 
@@ -46,7 +45,7 @@ RSpec.describe "admin sidebar", type: :request do
 
   describe "data update script admin feature flag" do
     it "does not show the option in the tabbed header when the feature flag is disabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(false)
+      allow(FeatureFlag).to receive(:data_update_scripts_enabled?).and_return(false)
 
       get admin_tools_path
 
@@ -54,7 +53,7 @@ RSpec.describe "admin sidebar", type: :request do
     end
 
     it "shows the option in the tabbed header when the feature flag is enabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(true)
+      allow(FeatureFlag).to receive(:enabled?).with(FeatureFlag::DATA_UPDATE_SCRIPTS).and_return(true)
 
       get admin_tools_path
 

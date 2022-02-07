@@ -1,2 +1,3 @@
 feature_flags:
-  - creator_onboarding
+  - profile_admin
+  - data_update_scripts
