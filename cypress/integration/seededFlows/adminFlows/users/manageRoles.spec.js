@@ -1,9 +1,9 @@
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openCreditsModal() {
-  cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+  cy.getModal().should('not.exist');
   cy.findByRole('button', { name: 'Add role' }).click();
 
-  return cy.findByRole('dialog', { name: 'modal' });
+  return cy.getModal();
 }
 
 function closeUserUpdatedMessage() {
@@ -43,7 +43,7 @@ describe('Manage User Roles', () => {
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
-        cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+        cy.getModal().should('not.exist');
         closeUserUpdatedMessage();
 
         cy.findByRole('button', { name: 'Warned' }).should('exist');
@@ -108,7 +108,7 @@ describe('Manage User Roles', () => {
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
-        cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+        cy.getModal().should('not.exist');
         closeUserUpdatedMessage();
         checkUserStatus('Warned');
 
@@ -120,7 +120,7 @@ describe('Manage User Roles', () => {
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
-        cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+        cy.getModal().should('not.exist');
         closeUserUpdatedMessage();
         checkUserStatus('Warned');
 

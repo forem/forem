@@ -1,9 +1,9 @@
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openOrgModal(ctaText = 'Add organization') {
-  cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+  cy.getModal().should('not.exist');
   cy.findByRole('button', { name: ctaText }).click();
 
-  return cy.findByRole('dialog', { name: 'modal' });
+  return cy.getModal();
 }
 
 function closeUserUpdatedMessage(message) {
@@ -35,7 +35,7 @@ describe('Manage User Organziations', () => {
       });
 
       closeUserUpdatedMessage('User was successfully added to Bachmanity');
-      cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+      cy.getModal().should('not.exist');
 
       cy.findByRole('link', { name: 'Bachmanity' }).focus();
       cy.findByRole('button', {
@@ -55,13 +55,13 @@ describe('Manage User Organziations', () => {
         name: 'Edit Awesome Org organization membership',
       }).click();
 
-      cy.findByRole('dialog', { name: 'modal' }).within(() => {
+      cy.getModal().within(() => {
         cy.findByRole('combobox', { name: 'Permission level' }).select('admin');
         cy.findByRole('button', { name: 'Update' }).click();
       });
 
       closeUserUpdatedMessage('User was successfully updated to admin');
-      cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+      cy.getModal().should('not.exist');
     });
 
     it(`should add a user to another organization`, () => {
@@ -73,7 +73,7 @@ describe('Manage User Organziations', () => {
       });
 
       closeUserUpdatedMessage('User was successfully added to Bachmanity');
-      cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+      cy.getModal().should('not.exist');
 
       cy.findByRole('link', { name: 'Awesome Org' });
       cy.findByRole('link', { name: 'Bachmanity' });

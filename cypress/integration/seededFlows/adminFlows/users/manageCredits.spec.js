@@ -1,9 +1,9 @@
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openCreditsModal() {
-  cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+  cy.getModal().should('not.exist');
   cy.findByRole('button', { name: 'Adjust balance' }).click();
 
-  return cy.findByRole('dialog', { name: 'modal' });
+  return cy.getModal();
 }
 
 // function closeUserUpdatedMessage() {
@@ -37,7 +37,7 @@ describe('Manage User Credits', () => {
         cy.findByRole('button', { name: 'Adjust' }).click();
       });
 
-      cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+      cy.getModal().should('not.exist');
       // closeUserUpdatedMessage(); // TODO
       cy.findByTestId('user-credits').should('have.text', '210');
     });
@@ -56,7 +56,7 @@ describe('Manage User Credits', () => {
         cy.findByRole('button', { name: 'Adjust' }).click();
       });
 
-      cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+      cy.getModal().should('not.exist');
       // closeUserUpdatedMessage(); // TODO
       cy.findByTestId('user-credits').should('have.text', '89');
     });
@@ -75,7 +75,7 @@ describe('Manage User Credits', () => {
         cy.findByRole('button', { name: 'Adjust' }).click();
       });
 
-      cy.findByRole('dialog', { name: 'modal' }).should('not.exist');
+      cy.getModal().should('not.exist');
       // closeUserUpdatedMessage(); // TODO
       cy.findByTestId('user-credits').should('have.text', '0');
     });
