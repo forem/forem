@@ -1,12 +1,11 @@
-const checkbox = document.getElementById('settings_smtp_own_email_server');
-
-if (checkbox) {
-  checkbox.addEventListener('change', function () {
+document
+  .getElementById('settings_smtp_own_email_server')
+  ?.addEventListener('change', (event) => {
     const customSMTPSection = document.getElementsByClassName(
       'js-custom-smtp-section',
     )[0];
 
-    if (this.checked) {
+    if (event.target.checked) {
       customSMTPSection.classList.remove('hidden');
     } else {
       // when the user indicates that they do not want to use their own server
@@ -22,4 +21,4 @@ if (checkbox) {
       customSMTPSection.classList.add('hidden');
     }
   });
-}
+
