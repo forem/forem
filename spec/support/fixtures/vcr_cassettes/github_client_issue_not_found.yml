@@ -2,48 +2,51 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/0
+    uri: https://api.github.com/repos/forem/forem/issues/0
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
       Accept:
       - application/vnd.github.v3+json
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=7b55123d-9904-435d-b5d3-7db505fe3bce,parent_id=73128408-7991-4aac-8a85-f6569b0e9d3b,context=e30=
+      - 1;dataset=,trace_id=b243e1318ae941869d207a89b3d5b76e,parent_id=e1227105d401469e,context=e30=
       Expect:
       - ''
   response:
     status:
       code: 404
-      message: Not Found
+      message:
     headers:
+      Server:
+      - GitHub.com
       Date:
-      - Sat, 02 May 2020 23:54:41 GMT
+      - Mon, 07 Feb 2022 17:57:47 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
       - '104'
-      Server:
-      - GitHub.com
-      Status:
-      - 404 Not Found
+      X-Github-Media-Type:
+      - github.v3; format=json
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4981'
+      - '4999'
       X-Ratelimit-Reset:
-      - '1588465848'
-      X-Github-Media-Type:
-      - github.v3; format=json
+      - '1644260267'
+      X-Ratelimit-Used:
+      - '1'
+      X-Ratelimit-Resource:
+      - core
       Access-Control-Expose-Headers:
       - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
-        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
-        X-GitHub-Media-Type, Deprecation, Sunset
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -53,7 +56,7 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
-      - 1; mode=block
+      - '0'
       Referrer-Policy:
       - origin-when-cross-origin, strict-origin-when-cross-origin
       Content-Security-Policy:
@@ -61,10 +64,9 @@ http_interactions:
       Vary:
       - Accept-Encoding, Accept, X-Requested-With
       X-Github-Request-Id:
-      - F3A9:29D1:2523C7:33C61F:5EAE0841
+      - CA7E:0600:2034FF:3C754A:62015D9B
     body:
       encoding: ASCII-8BIT
-      string: '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/issues/#get-a-single-issue"}'
-    http_version: null
-  recorded_at: Sat, 02 May 2020 23:54:41 GMT
-recorded_with: VCR 5.1.0
+      string: '{"message":"Not Found","documentation_url":"https://docs.github.com/rest/reference/issues#get-an-issue"}'
+  recorded_at: Mon, 07 Feb 2022 17:57:47 GMT
+recorded_with: VCR 6.0.0
