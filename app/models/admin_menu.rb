@@ -8,7 +8,7 @@ class AdminMenu
   # rubocop:disable Metrics/BlockLength
   FEATURE_FLAGS = [
     FeatureFlag::PROFILE_ADMIN,
-    FeatureFlag::FLAG_DATA_UPDATE_SCRIPTS,
+    FeatureFlag::DATA_UPDATE_SCRIPTS,
   ].freeze
 
   ITEMS = Menu.define do
