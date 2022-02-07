@@ -7,8 +7,7 @@ RSpec.describe "/confirm-email", type: :system do
     click_button "Resend"
 
     expect(page).to have_current_path(user_confirmation_path)
-    expected_message = format(ConfirmationsController::FLASH_MESSAGE,
-                              email: ForemInstance.email)
+    expected_message = I18n.t("confirmations_controller.email_sent", email: ForemInstance.email)
     expect(page).to have_content(expected_message)
   end
 end

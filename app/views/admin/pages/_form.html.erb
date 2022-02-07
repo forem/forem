@@ -10,95 +10,113 @@
 <% end %>
 
   <%= form_for [:admin, @page] do |form| %>
-    <div class="form-group">
-      <%= form.label :title %>
-      <%= form.text_field :title, class: "form-control", required: true %>
-    </div>
-    <div class="form-group">
-      <%= form.label :slug %>
-      <%= form.text_field :slug, class: "form-control", pattern: "^[0-9a-z\-_]*$", required: true %>
-    </div>
-    <div class="form-group">
-      <%= form.label :description %>
-      <%= form.text_field :description, class: "form-control", required: true %>
-    </div>
-    <div class="form-group">
-      <%= form.label :template %>
-      <%= form.select :template, Page::TEMPLATE_OPTIONS, class: "form-control", required: true %>
-      <p>(Determines the way page's body will be embedded in the layout)</p>
-    </div>
-    <div class="form-group optional html">
-      <%= form.label :body_markdown %>
-      <%= form.text_area :body_markdown, class: "form-control" %>
-    </div>
-    <div class="form-group optional html">
-      <%= form.label :body_html %> (Only if not using markdown. HTML is dangerous ⚠️)
-      <%= form.text_area :body_html, class: "form-control" %>
-    </div>
-    <div class="form-group optional json">
-      <%= form.label :body_json %> (For use with template type <code>json</code>)
-      <%= form.text_area :body_json, class: "form-control" %>
-    </div>
-    <div class="form-group">
-      <% if @page.social_image_url %>
-        <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
-      <% end %>
-      <%= form.label :social_image %>
-      <%= form.file_field :social_image, class: "form-control" %>
-    </div>
-    <div class="form-group">
-      <%= form.label :is_top_level_path %>
-      <%= form.check_box :is_top_level_path, class: "crayons-checkbox" %>
-      <p>Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code> Be careful! ⚠️</p>
-    </div>
-
-    <% if ForemInstance.private? %>
-      <div class="form-group">
-        <%= form.label :landing_page, "Use as 'Locked Screen'" %>
-        <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description",
-                                          data: {
-                                            "landing-page-modal-target": "landingPageCheckbox",
-                                            action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
-                                          } %>
-        <p id="lock-screen-description">Determines if this page will be used as a landing page for anonymous viewers.</p>
+    <div class="flex flex-col gap-4">
+      <div class="crayons-field">
+        <%= form.label :title, class: "crayons-field__label" %>
+        <%= form.text_field :title, class: "crayons-textfield", required: true %>
       </div>
-    <% end %>
-
-    <% if @page.errors.count > 0 %>
-      <div id="add-landing-page-link-modal-root">
-        <% @page.errors %>
+      <div class="crayons-field">
+        <%= form.label :slug, class: "crayons-field__label" %>
+        <%= form.text_field :slug, class: "crayons-textfield", pattern: "^[0-9a-z\-_]*$", required: true %>
       </div>
-    <% end %>
+      <div class="crayons-field">
+        <%= form.label :description, class: "crayons-field__label" %>
+        <%= form.text_field :description, class: "crayons-textfield", required: true %>
+      </div>
+      <div class="crayons-field">
+        <%= form.label :template, class: "crayons-field__label" do %>
+          Template
+          <p class="crayons-field__description">Determines the way page's body will be embedded in the layout</p>
+        <% end %>
+        <%= form.select :template, Page::TEMPLATE_OPTIONS, required: true %>
+      </div>
+      <div class="crayons-field optional html">
+        <%= form.label :body_markdown, class: "crayons-field__label" %>
+        <%= form.text_area :body_markdown, rows: 10, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field optional html">
+        <%= form.label :body_html, class: "crayons-field__label" do %>
+          Body HTML
+          <p class="crayons-field__description">Only if not using markdown. HTML is dangerous ⚠️</p>
+        <% end %>
+        <%= form.text_area :body_html, rows: 10, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field optional json">
+        <%= form.label :body_json, class: "crayons-field__label" do %>
+          Body JSON
+          <p class="crayons-field__description">For use with template type <code>json</code></p>
+        <% end %>
+        <%= form.text_area :body_json, rows: 10, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <% if @page.social_image_url %>
+          <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
+        <% end %>
+        <%= form.label :social_image, class: "crayons-field__label" %>
+        <%= form.file_field :social_image %>
+      </div>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= form.check_box :is_top_level_path, class: "crayons-checkbox" %>
+        <%= form.label :is_top_level_path, class: "crayons-field__label" do %>
+          Is top level path?
+          <p class="crayons-field__description">Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code> Be careful! ⚠️</p>
+        <% end %>
+      </div>
 
-    <% if @landing_page %>
-      <%= render partial: "landing_page_modal", locals: { page: @landing_page } %>
-    <% end %>
-
-    <% if current_user.tech_admin? %>
-      <div class="form-group">
-        <p>
-          <b><%= link_to "Feature Flag", "/admin/feature_flags" %></b>
-          <span class="badge badge-<%= FeatureFlag.exist?(@page.feature_flag_name) ? "success" : "warning" %>">
-            <%= FeatureFlag.exist?(@page.feature_flag_name) ? "Present" : "Not Present" %>
-          </span>
-          <br>
-          <% if FeatureFlag.exist?(@page.feature_flag_name) %>
-            Access to this page is being guarded by the feature flag <code><%= @page.feature_flag_name %></code>.
-            <%= link_to "Modify flag here", "/admin/feature_flags/features/#{@page.feature_flag_name}" %>
-          <% else %>
-            Everyone has access. Optionally guard access to this page by creating feature <code><%= @page.feature_flag_name %></code>
-            <%= link_to "here", "/admin/feature_flags/features" %>
+      <% if ForemInstance.private? %>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description",
+                                            data: {
+                                              testid: "private-checkbox",
+                                              "landing-page-modal-target": "landingPageCheckbox",
+                                              action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
+                                            } %>
+          <%= form.label :landing_page, class: "crayons-field__label" do %>
+            Use as 'Locked Screen'
+            <p id="lock-screen-description" class="crayons-field__description">Determines if this page will be used as a landing page for anonymous viewers.</p>
           <% end %>
-          <br>
-        </p>
+        </div>
+      <% end %>
+
+      <% if @page.errors.count > 0 %>
+        <div id="add-landing-page-link-modal-root">
+          <% @page.errors %>
+        </div>
+      <% end %>
+
+      <% if @landing_page %>
+        <%= render partial: "landing_page_modal", locals: { page: @landing_page } %>
+      <% end %>
+
+      <% if current_user.tech_admin? %>
+        <div class="crayons-field">
+          <p>
+            <b><%= link_to "Feature Flag", "/admin/feature_flags" %></b>
+            <span class="c-indicator c-indicator--<%= FeatureFlag.exist?(@page.feature_flag_name) ? "success" : "warning" %>">
+              <%= FeatureFlag.exist?(@page.feature_flag_name) ? "Present" : "Not Present" %>
+            </span>
+            <br>
+            <% if FeatureFlag.exist?(@page.feature_flag_name) %>
+              Access to this page is being guarded by the feature flag <code><%= @page.feature_flag_name %></code>.
+              <%= link_to "Modify flag here", "/admin/feature_flags/features/#{@page.feature_flag_name}" %>
+            <% else %>
+              Everyone has access. Optionally guard access to this page by creating feature <code><%= @page.feature_flag_name %></code>
+              <%= link_to "here", "/admin/feature_flags/features" %>
+            <% end %>
+            <br>
+          </p>
+        </div>
+      <% end %>
+
+      <div>
+        <%= form.submit class: "c-btn c-btn--primary" %>
       </div>
-    <% end %>
-    <%= form.submit class: "crayons-btn" %>
+    </div>
   <% end %>
 
   <% if @page.persisted? %>
     <%= form_with model: [:admin, @page], local: true, method: :delete, class: "mt-3" do |f| %>
-      <%= f.submit "Delete Page", class: "crayons-btn crayons-btn--danger", data: { confirm: "Are you sure?" } %>
+      <%= f.submit "Delete Page", class: "c-btn c-btn--destructive c-btn--primary", data: { confirm: "Are you sure?" } %>
     <% end %>
   <% end %>
 </div>

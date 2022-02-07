@@ -128,6 +128,7 @@
     "file-loader": "^6.2.0",
     "focus-trap": "^6.7.2",
     "focus-visible": "^5.2.0",
+    "freezeframe": "^5.0.2",
     "he": "^1.2.0",
     "i18n-js": "^3.8.0",
     "intersection-observer": "^0.12.0",

@@ -43,7 +43,7 @@ gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard a
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 0.2.25" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.10" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 2.8.1" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.8.2" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
@@ -82,7 +82,7 @@ gem "ransack", "~> 2.5" # Searching and sorting
 gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
-gem "redis", "~> 4.5.1" # Redis ruby client
+gem "redis", "~> 4.6.0" # Redis ruby client
 gem "redis-actionpack", "5.3.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "rpush", "~> 7.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library

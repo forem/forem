@@ -30,7 +30,7 @@ RSpec.describe Admin::Users::Tools::ReactionsComponent, type: :component do
 
       render_inline(described_class.new(user: user))
 
-      expect(rendered_component).to have_text(reaction.category.capitalize)
+      expect(rendered_component).to have_text(I18n.t("views.reactions.category.vomit"))
       expect(rendered_component).to have_text(reaction.reactable_type)
       expect(rendered_component).to have_text(reaction.reactable.title)
     end
@@ -41,7 +41,7 @@ RSpec.describe Admin::Users::Tools::ReactionsComponent, type: :component do
 
       render_inline(described_class.new(user: user))
 
-      expect(rendered_component).to have_text(reaction.category.capitalize)
+      expect(rendered_component).to have_text(I18n.t("views.reactions.category.vomit"))
       expect(rendered_component).to have_text(reaction.reactable_type)
       expect(rendered_component).to have_text(reaction.reactable.title)
     end
@@ -51,7 +51,7 @@ RSpec.describe Admin::Users::Tools::ReactionsComponent, type: :component do
 
       render_inline(described_class.new(user: moderator))
 
-      expect(rendered_component).to have_text(reaction.category.capitalize)
+      expect(rendered_component).to have_text(I18n.t("views.reactions.category.vomit"))
       expect(rendered_component).to have_text(reaction.reactable_type)
     end
   end

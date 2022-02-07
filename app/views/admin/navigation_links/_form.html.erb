@@ -1,55 +1,59 @@
-<div class="form-group">
-  <%= form.label :name %>
-  <%= form.text_field :name, class: "form-control", required: true %>
-  <div class="alert alert-info">A friendly name for the navigation link</div>
-</div>
-<div class="form-group">
-  <%= form.label :url %>
-  <%= form.text_field :url, class: "form-control", pattern: "^(https?:\/\/|\/)\\w+\.[^\s]+$|^\/[^\s]*$", title: "The URL can be absolute by beginning with http/s or it can be relative beginning with a /", required: true %>
-  <div class="alert alert-info">A full (external) or relative (internal) URL for the link</div>
-</div>
-<div class="form-group" data-controller="svg-icon-upload">
-  <div data-svg-icon-upload-target="navId" nav-link-id="<%= form.object[:id] %>">
-    <%= form.label :icon %>
-    <div data-svg-icon-upload-target="svgIconPreview" class="<%= form.object[:id].nil? ? "" : "pb-3" %>" style="width: 48px;">
-      <%= form.object[:icon]&.html_safe %>
-    </div>
-    <%= form.hidden_field :icon, "data-svg-icon-upload-target": "svgIconContent" %>
-
-    <input
-      type="file"
-      accept="image/svg+xml"
-      class="form-control-file"
-      data-action="svg-icon-upload#selectSvgIcon"
-      <%= form.object[:icon].blank? ? "required=true" : "" %> />
-
-    <div class="alert alert-info">An SVG icon should be uploaded</div>
-    <div data-svg-icon-upload-target="svgIconMessageValidate"></div>
+<div class="flex flex-col gap-4 mb-4">
+  <div class="crayons-field">
+    <%= form.label :name, class: "crayons-field__label" %>
+    <p class="crayons-field__description">A friendly name for the navigation link</p>
+    <%= form.text_field :name, class: "crayons-textfield", required: true %>
   </div>
-</div>
-<div class="form-group">
-  <fieldset aria-describedby="section-description">
-    <legend class="fs-l">Section</legend>
-    <div class="grid gap-4 grid-cols-2 l:grid-cols-3">
-      <label class="rich-selector crayons-field crayons-field--radio">
-        <%= form.radio_button :section, "default", checked: true, class: "crayons-radio" %>
-        <div class="crayons-field__label">Default</div>
-      </label>
-      <label class="rich-selector crayons-field crayons-field--radio">
-        <%= form.radio_button :section, "other", class: "crayons-radio" %>
-        <div class="crayons-field__label">Other</div>
-      </label>
+  <div class="crayons-field">
+    <%= form.label :url, class: "crayons-field__label" %>
+    <p class="crayons-field__description">A full (external) or relative (internal) URL for the link</p>
+    <%= form.text_field :url, class: "crayons-textfield", pattern: "^(https?:\/\/|\/)\\w+\.[^\s]+$|^\/[^\s]*$", title: "The URL can be absolute by beginning with http/s or it can be relative beginning with a /", required: true %>
+  </div>
+  <div class="crayons-field" data-controller="svg-icon-upload">
+    <div data-svg-icon-upload-target="navId" nav-link-id="<%= form.object[:id] %>">
+      <%= form.label :icon, class: "crayons-field__label" %>
+      <p class="crayons-field__description">An SVG icon should be uploaded</p>
+      <div data-svg-icon-upload-target="svgIconPreview" class="<%= form.object[:id].nil? ? "" : "pb-3" %>" style="width: 48px;">
+        <%= form.object[:icon]&.html_safe %>
+      </div>
+      <%= form.hidden_field :icon, "data-svg-icon-upload-target": "svgIconContent" %>
+
+      <input
+        type="file"
+        accept="image/svg+xml"
+        class="form-control-file"
+        data-action="svg-icon-upload#selectSvgIcon"
+        <%= form.object[:icon].blank? ? "required=true" : "" %> />
+
+      <div data-svg-icon-upload-target="svgIconMessageValidate"></div>
     </div>
-  </fieldset>
-  <div id="section-description" class="alert alert-info">Determines which section the link will be displayed in</div>
-</div>
-<div class="form-group">
-  <%= form.label :position %>
-  <%= form.number_field :position, class: "form-control" %>
-  <div class="alert alert-info">Determines the order placement of the links in the sidebar</div>
-</div>
-<div class="form-group">
-  <%= form.check_box :display_only_when_signed_in %>
-  <%= form.label :display_only_when_signed_in %>
-  <div class="alert alert-info">Determines whether the link should only be shown after the user has signed into their account.</div>
+  </div>
+  <div class="crayons-field">
+    <fieldset aria-describedby="section-description">
+      <legend class="crayons-field__label pl-0">Section</legend>
+      <p id="section-description" class="crayons-field__description mb-2">Determines which section the link will be displayed in</p>
+      <div class="grid gap-4 grid-cols-2 l:grid-cols-3">
+        <label class="rich-selector crayons-field crayons-field--radio">
+          <%= form.radio_button :section, "default", checked: true, class: "crayons-radio" %>
+          <div class="crayons-field__label">Default</div>
+        </label>
+        <label class="rich-selector crayons-field crayons-field--radio">
+          <%= form.radio_button :section, "other", class: "crayons-radio" %>
+          <div class="crayons-field__label">Other</div>
+        </label>
+      </div>
+    </fieldset>
+  </div>
+  <div class="crayons-field">
+    <%= form.label :position, class: "crayons-field__label" %>
+    <p class="crayons-field__description">Determines the order placement of the links in the sidebar</p>
+    <%= form.number_field :position, class: "crayons-textfield" %>
+  </div>
+  <div class="crayons-field crayons-field--checkbox">
+    <%= form.check_box :display_only_when_signed_in, class: "crayons-checkbox" %>
+    <%= form.label :display_only_when_signed_in, class: "crayons-field__label" do %>
+        Display only when signed in
+      <p class="crayons-field__description">Determines whether the link should only be shown after the user has signed into their account.</p>
+    <% end %>
+  </div>
 </div>

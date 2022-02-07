@@ -1,0 +1,121 @@
+---
+en:
+  api_secrets_controller:
+    generated: 'Your API Key has been generated: %{secret}'
+    revoked: Your API Key has been revoked.
+  application_controller:
+    bad_request: 'Error: Bad Request'
+    not_authorized: 'Error: not authorized'
+    please_sign_in: Please sign in
+  articles_controller:
+    deleted: Article was successfully deleted.
+  comments_controller:
+    create:
+      success: created
+      failure: comment already exists
+    delete:
+      error: Something went wrong; Comment NOT deleted.
+      notice: Comment was successfully deleted.
+    markdown: 'There was an error in your markdown: %{error}'
+    markdown_html: "<p>😔 There was an error in your markdown</p><hr><p>%{error}</p>"
+    moderated: Not allowed due to moderation action
+  confirmations_controller:
+    email_sent: Email sent! Please contact support at %{email} if you are having trouble receiving your confirmation instructions.
+  credits_controller:
+    done:
+      one: "%{count} new credits purchased!"
+      other: "%{count} new credits purchased!"
+  devices_controller:
+    not_found: Not Found
+  discussion_locks_controller:
+    locked: Discussion was successfully locked!
+    unlocked: Discussion was successfully unlocked!
+  email_subscriptions_controller:
+    badge_notifications: badge notifications
+    comment_notifications: comment notifications
+    digest_emails: "%{community} digest emails"
+    follower_notifications: follower notifications
+    mention_notifications: mention notifications
+    this_list: this list
+    unread_notifications: unread notifications
+  feedback_messages_controller:
+    error_fill: "Make sure the forms are filled. 🤖 Other possible errors: %{errors}"
+    n_a: N/A
+    submitted: Your report is submitted
+  follows_controller:
+    already_followed: already followed
+    daily_limit: Daily account follow limit reached!
+    followed: followed
+    unfollowed: unfollowed
+  github_repos_controller:
+    repo_not_found: GitHub repository not found
+    github_unauthorized: 'GitHub Unauthorized: %{e_message}'
+  image_uploads_controller:
+    server_error: A server error has occurred!
+  listings_controller:
+    deleted: Listing was successfully deleted.
+    no_credit: Not enough available credits
+  omniauth_callbacks_controller:
+    log_in_error: 'Log in error: %{e}'
+    username_taken: username has already been taken
+  organizations_controller:
+    secret_updated: Your org secret was updated
+    deletion_scheduled: 'Your organization: "%{organization_name}" deletion is scheduled. You''ll be notified when it''s deleted.'
+    not_deleted: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
+    created: Your organization was successfully created and you are an admin.
+    updated: Your organization was successfully updated.
+  podcasts_controller:
+    podcast_suggested: Podcast suggested
+  profiles_controller:
+    updated: Your profile has been updated
+  rating_votes_controller:
+    not_upserted_successfully: Not Upserted Successfully
+  registrations_controller:
+    error:
+      recaptcha: You must complete the recaptcha ✅
+      domain: is not included in allowed domains.
+  response_templates_controller:
+    response_template_error: 'Response template error: %{errors}'
+    created: Your response template "%{title}" was created.
+    deleted: Your response template "%{title}" was deleted.
+    updated: Your response template "%{title}" was updated.
+  social_previews_controller:
+    fonts: Roboto|Roboto+Condensed
+  stories:
+    pinned_articles_controller:
+      not_found: not found
+  stories_controller:
+    404_bio_not_found: 404 bio not found
+    searching: "...searching"
+  stripe_active_cards_controller:
+    cannot_remove: Can't remove card if you have an active membership. Please cancel your membership first.
+    cannot_update: There was a problem updating your billing info.
+    updated: Your billing information has been updated
+    removed: Your card has been successfully removed.
+  tag_adjustments_controller:
+    failure: 'Failure: %{errors}'
+    destroyed: Tag adjustment destroyed
+  tags_controller:
+    tag_successfully_updated: "Tag successfully updated! 👍 "
+  users_controller:
+    removed_admin: "%{name} is no longer an admin."
+    removed_member: "%{name} is no longer part of your organization."
+    added_admin: "%{name} is now an admin."
+    provide_email: Please, provide an email to delete your account.
+    provide_email_delete: Please, provide an email to delete your account
+    send_export: " The export will be emailed to you shortly."
+    invalid_secret: The given organization secret was invalid.
+    username_blank: Username cannot be blank
+    deletion_in_progress: You have already requested account deletion. Please, check your email for further instructions.
+    joined_org: You have joined the %{organization_name} organization.
+    left_org: You have left your organization.
+    deletion_requested: You have requested account deletion. Please, check your email for further instructions.
+    log_in_to_delete: You must be logged in to proceed with account deletion.
+    deletion_scheduled: Your account deletion is scheduled. You'll be notified when it's deleted.
+    removed_identity: Your %{provider} account was successfully removed.
+    updated_config: Your config has been updated. Refresh to see all changes.
+    updated_profile: Your profile was successfully updated.
+    token_expired: Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated.
+  video_states_controller:
+    related_article_not_found: Related article not found
+    video_state_updated: Video state updated
