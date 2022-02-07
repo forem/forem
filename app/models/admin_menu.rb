@@ -1,3 +1,6 @@
+# May Cthulhu help us all
+require_dependency "../services/feature_flag"
+
 # This "model" is not backed by the database. Its main purpose is to
 # setup and provide methods to interact with the admin sidebar and tabbed menu
 class AdminMenu
@@ -5,7 +8,7 @@ class AdminMenu
   # rubocop:disable Metrics/BlockLength
   FEATURE_FLAGS = [
     FeatureFlag::PROFILE_ADMIN,
-    FeatureFlag::DATA_UPDATE_SCRIPTS,
+    FeatureFlag::FLAG_DATA_UPDATE_SCRIPTS,
   ].freeze
 
   ITEMS = Menu.define do
