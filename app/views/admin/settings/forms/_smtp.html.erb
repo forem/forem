@@ -24,11 +24,11 @@
           </div>
         <% end %>
 
-        <div class="<%= "hidden" unless only_sendgrid_enabled %>">
+        <% if only_sendgrid_enabled %>
           <p class="mb-3">
-            As a Forem Cloud client, we provide an email server managed by the Forem team. All settings are managed by us and the from and reply email addresses are set as noreply@forem.com. However, you can override this to use your own email server.
+            As a Forem Cloud client, we provide an email server managed by the Forem team. All settings are managed by us and the from and reply email addresses are set as <%= ForemInstance.email %>. However, you can override this to use your own email server.
           </p>
-        </div>
+        <% end %>
 
         <div class="js-custom-smtp-section <%= "hidden" if only_sendgrid_enabled %>">
           <% Settings::SMTP::OPTIONS.each do |config_key| %>
