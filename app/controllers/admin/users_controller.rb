@@ -95,7 +95,7 @@ module Admin
       user = User.find(params[:id])
       send_to_admin = params[:send_to_admin].to_boolean
       if send_to_admin
-        email = ::Settings.SMTP.reply_to_email_address
+        email = ::ForemInstance.email
         receiver = "admin"
       else
         email = user.email
