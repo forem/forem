@@ -83,12 +83,15 @@ module PracticalDeveloper
       ReservedWords.all = [ReservedWords::BASE_WORDS + top_routes].flatten.compact.uniq
     end
 
-    # Add class methods for all feature flags to avoid typos on strings/symbols
+    # Define predicate methods for all feature flags to avoid typos on strings/symbols
     config.after_initialize do
       flag_config = YAML.load_file(Rails.root.join("config/feature_flags.yml"))
 
       flag_config["feature_flags"].each do |flag|
-        FeatureFlag.define_singleton_method(flag) { flag }
+        FeatureFlag.const_set("FLAG_#{flag.underscore.upcase}", flag)
+        FeatureFlag.define_singleton_method("#{flag}_enabled?") do
+          FeatureFlag.enabled?(flag)
+        end
       end
     end
   end
