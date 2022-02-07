@@ -57,6 +57,27 @@ describe('Manage User Roles', () => {
         cy.findByRole('button', { name: 'Trusted' }).should('not.exist');
         checkUserStatus('Good standing');
       });
+
+      it('should not remove the Super Admin role', () => {
+        checkUserStatus('Trusted');
+
+        openCreditsModal().within(() => {
+          cy.findByRole('combobox', { name: 'Role' }).select('Super Admin');
+          cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
+          cy.findByRole('button', { name: 'Add' }).click();
+        });
+
+        cy.findByRole('button', {
+          name: `Super Admin You can't remove this role...`,
+        })
+          .as('superAdminButton')
+          .click()
+          .within(() => {
+            cy.findByText(`You can't remove this role...`).should('exist');
+          });
+
+        cy.get('@superAdminButton').should('exist');
+      });
     });
 
     describe('Adding Roles', () => {
