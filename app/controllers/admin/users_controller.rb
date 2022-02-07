@@ -41,7 +41,6 @@ module Admin
       elsif FeatureFlag.enabled?(:admin_member_view)
         set_feedback_messages
         set_related_reactions
-
         set_user_details
       else
         set_user_details
@@ -245,6 +244,8 @@ module Admin
       redirect_to admin_user_path(@user)
     end
 
+    private
+
     def set_user_details
       @organizations = @user.organizations.order(:name)
       @notes = @user.notes.order(created_at: :desc).limit(10)
@@ -256,8 +257,6 @@ module Admin
 
       render :show
     end
-
-    private
 
     def add_note
       Note.create(
@@ -298,7 +297,6 @@ module Admin
 
     def credit_params
       credit_params = nil
-
       if FeatureFlag.enabled?(:admin_member_view)
         credit_params = {}
 
