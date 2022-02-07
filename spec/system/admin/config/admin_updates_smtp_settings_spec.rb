@@ -101,7 +101,7 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       end
     end
 
-    it "shows an SMTP Form" do
+    it "shows an SMTP Form", :aggregate_failures do
       within("form[data-testid='emailServerSettings']") do
         expect(page).to have_selector(".js-custom-smtp-section")
         expect(page).not_to have_selector(".js-custom-smtp-section.hidden")
