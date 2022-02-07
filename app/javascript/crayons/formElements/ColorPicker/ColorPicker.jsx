@@ -7,9 +7,9 @@ import { ButtonNew as Button } from '@crayons';
 
 export const ColorPicker = ({
   id,
-  labelText,
+  buttonLabelText,
   defaultValue,
-  showLabel = true,
+  inputProps,
 }) => {
   // Ternary has been used here to guard against an empty string being passed as default value
   const [color, setColor] = useState(defaultValue ? defaultValue : '#000');
@@ -26,29 +26,20 @@ export const ColorPicker = ({
 
   return (
     <Fragment>
-      {showLabel && (
-        <label
-          for={id}
-          className={`crayons-field__label ${
-            showLabel ? '' : 'screen-reader-only'
-          }`}
-        >
-          {labelText}
-        </label>
-      )}
       <div className="c-color-picker relative">
         <Button
           id={buttonId}
           className="c-btn c-color-picker__swatch absolute"
           style={{ backgroundColor: color }}
-          aria-label={labelText}
+          aria-label={buttonLabelText}
         />
         <HexColorInput
           id={id}
-          className="c-color-picker__input crayons-textfield "
+          className="c-color-picker__input crayons-textfield"
           color={color}
           onChange={setColor}
           prefixed
+          {...inputProps}
         />
         <div
           id={popoverId}
@@ -63,7 +54,7 @@ export const ColorPicker = ({
 
 ColorPicker.propTypes = {
   id: PropTypes.string.isRequired,
-  labelText: PropTypes.string.isRequired,
+  buttonLabelText: PropTypes.string.isRequired,
   defaultValue: PropTypes.string,
-  showLabel: PropTypes.bool,
+  inputProps: PropTypes.object,
 };

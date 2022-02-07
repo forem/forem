@@ -291,7 +291,7 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   &__swatch {
     width: var(--swatch-width);
     height: var(--swatch-height);
-    border: 1px solid var(--form-border);
+    border: 1px solid var(--swatch-border-color);
     top: var(--su-1);
     left: var(--su-1);
     z-index: var(--z-elevate);

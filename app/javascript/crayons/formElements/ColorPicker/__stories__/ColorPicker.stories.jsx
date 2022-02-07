@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import ColorPickerDoc from './ColorPicker.mdx';
 import { ColorPicker } from '@crayons';
 
@@ -11,16 +11,13 @@ export default {
     },
   },
   argTypes: {
-    labelText: {
+    id: {
       description:
-        'Label text for the field. This text is required, but the label can be hidden with the showLabel prop',
+        'A unique ID for the component. Required to make sure the popover operates correctly.',
     },
-    showLabel: {
+    buttonLabelText: {
       description:
-        'Whether to show the visible label, or keep it only for assistive technologies to consume',
-      table: {
-        defaultValue: { summary: true },
-      },
+        "Describes the button's function for users of assistive technologies. Should closely match the input label text.",
     },
     defaultValue: {
       description: 'The initial hex color value of the component',
@@ -28,13 +25,26 @@ export default {
         defaultValue: { summary: '#000' },
       },
     },
+    inputProps: {
+      description:
+        'Any additional props to be attached to the input element (e.g. onChange handler)',
+    },
   },
 };
 
-export const Default = (args) => <ColorPicker id="color-picker" {...args} />;
+export const Default = (args) => (
+  <Fragment>
+    {/* Disabled as the ColorPicker component attaches the correct ID to the input  */}
+    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+    <label for={args.id} className="crayons-field__label">
+      Choose a color
+    </label>
+    <ColorPicker {...args} />
+  </Fragment>
+);
 
 Default.args = {
-  labelText: 'Choose a color',
+  buttonLabelText: 'Choose a color',
   defaultValue: '#1ABC9C',
-  showLabel: true,
+  id: 'color-picker',
 };

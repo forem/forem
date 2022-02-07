@@ -13,7 +13,11 @@ const customAxeRules = {
 describe('<ColorPicker />', () => {
   it('should have no a11y violations when rendered', async () => {
     const { container } = render(
-      <ColorPicker id="color-picker" labelText="Choose a color" />,
+      <ColorPicker
+        id="color-picker"
+        buttonLabelText="Choose a color"
+        inputProps={{ 'aria-label': 'Choose a color' }}
+      />,
     );
 
     const results = await axe(container, { rules: customAxeRules });
@@ -22,7 +26,11 @@ describe('<ColorPicker />', () => {
 
   it('should render', () => {
     const { container } = render(
-      <ColorPicker id="color-picker" labelText="Choose a color" />,
+      <ColorPicker
+        id="color-picker"
+        buttonLabelText="Choose a color"
+        inputProps={{ 'aria-label': 'Choose a color' }}
+      />,
     );
     expect(container.innerHTML).toMatchSnapshot();
   });
@@ -31,20 +39,9 @@ describe('<ColorPicker />', () => {
     const { container } = render(
       <ColorPicker
         id="color-picker"
-        labelText="Choose a color"
+        buttonLabelText="Choose a color"
         defaultValue="#ababab"
-      />,
-    );
-    expect(container.innerHTML).toMatchSnapshot();
-  });
-
-  it('should render with a hidden label', () => {
-    const { container } = render(
-      <ColorPicker
-        id="color-picker"
-        labelText="Choose a color"
-        defaultValue="#ababab"
-        showLabel={false}
+        inputProps={{ 'aria-label': 'Choose a color' }}
       />,
     );
     expect(container.innerHTML).toMatchSnapshot();
