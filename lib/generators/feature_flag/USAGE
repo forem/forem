@@ -2,7 +2,9 @@ Description:
     Explain the generator
 
 Example:
-    bin/rails generate feature_flag Thing
+    bin/rails generate feature_flag the_flag_name
+
+    This will add the_flag_name as last item to config/feature_flags.yml
 
     This will create:
-        what/will/it/create
+	lib/data_update_scripts/<TIMESTAMP>_add_the_flag_name_flag.rb
