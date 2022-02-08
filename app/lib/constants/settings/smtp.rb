@@ -4,7 +4,7 @@ module Constants
       DETAILS = {
         address: {
           description: "Address of the remote mail server",
-          placeholder: "ie. smtp.gmail.com"
+          placeholder: "i.e. smtp.gmail.com"
         },
         port: {
           description: "The port that your mail server runs on",
