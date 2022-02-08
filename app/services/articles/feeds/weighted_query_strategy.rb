@@ -119,7 +119,7 @@ module Articles
         # Weight to give to the number of comments on the article.
         comments_count_factor: {
           clause: "articles.comments_count",
-          cases: (0..9).map { |n| [n, 0.8 + (n / 50.0)] },
+          cases: (0..9).map { |n| [n, 0.8 + 0.02 * n] },
           fallback: 1,
           requires_user: false,
           group_by: "articles.comments_count"
