@@ -1,5 +1,5 @@
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
-/* global userData showLoginModal  */
+/* global userData  */
 
 function toggleSubscribeActionUI({
   tagContainer,
@@ -71,11 +71,6 @@ function initSignedOutState(tagContainer) {
   toggleSubscribeActionUI({ tagContainer, showSubscribeAction: false });
   toggleSignedOutUI(tagContainer, true);
   updateProfileImagesUI(tagContainer, false);
-
-  // Add the click handler to the sign in button
-  tagContainer
-    .getElementsByClassName('crayons-btn')[0]
-    .addEventListener('click', showLoginModal);
 }
 
 function initSignedInState(tagContainer, appleAuth = false) {
