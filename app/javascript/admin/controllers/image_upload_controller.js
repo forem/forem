@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { displayErrorAlert } from '../messageUtilities';
 
 export default class ImageUploadController extends Controller {
   static targets = ['fileField', 'imageResult'];
@@ -48,31 +49,7 @@ export default class ImageUploadController extends Controller {
     this.imageResultTarget.innerHTML = output;
   }
 
-  onUploadFailure = (error) => {
-    this.imageResultTarget.innerHTML = `
-      <div id="snack-zone">
-        <div class="crayons-snackbar">
-          <div class="crayons-snackbar__item flex" data-testid="snackbar">
-            <div class="crayons-snackbar__body" role="alert">
-              ${error}
-            </div>
-            <div class="crayons-snackbar__actions">
-              <button class="crayons-btn crayons-btn--ghost-success crayons-btn--inverted" type="button">
-                Dismiss
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    this.imageResultTarget.classList.remove('d-none');
-
-    const clearImageResultTarget = () => {
-      this.imageResultTarget.innerText = '';
-    };
-    this.imageResultTarget
-      .querySelector('button')
-      .addEventListener('click', clearImageResultTarget);
-    this.clearImageTimeout = setTimeout(clearImageResultTarget, 5000);
-  };
+  onUploadFailure(error) {
+    displayErrorAlert(error.message);
+  }
 }
