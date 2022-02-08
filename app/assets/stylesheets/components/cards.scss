@@ -44,9 +44,9 @@
 }
 
 .c-card {
-  --revealable-opacity: 1;
+  --revealable-opacity: var(--opacity-100);
   @media (hover: hover) {
-    --revealable-opacity: 0;
+    --revealable-opacity: var(--opacity-0);
   }
 
   border-radius: var(--radius-auto);
@@ -63,7 +63,7 @@
     &:focus-within {
       --card-border: var(--base-90);
       --card-bg: var(--card-secondary-bg);
-      --revealable-opacity: 1;
+      --revealable-opacity: var(--opacity-100);
     }
   }
 }
