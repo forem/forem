@@ -43,7 +43,7 @@ class OrganizationsController < ApplicationController
       rate_limiter.track_limit_by_action(:organization_creation)
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id,
                                                                 user_id: current_user.id, type_of_user: "admin")
-      flash[:settings_notice] = "Your organization was successfully created and you are an admin."
+      flash[:settings_notice] = I18n.t("organizations_controller.created")
       redirect_to "/settings/organization/#{@organization.id}"
     else
       render template: "users/edit"
@@ -62,7 +62,7 @@ class OrganizationsController < ApplicationController
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       @organization.users.touch_all(:organization_info_updated_at)
-      flash[:settings_notice] = "Your organization was successfully updated."
+      flash[:settings_notice] = I18n.t("organizations_controller.updated")
       redirect_to "/settings/organization"
     else
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
@@ -79,12 +79,11 @@ class OrganizationsController < ApplicationController
 
     Organizations::DeleteWorker.perform_async(organization.id, current_user.id)
     flash[:settings_notice] =
-      "Your organization: \"#{organization.name}\" deletion is scheduled. You'll be notified when it's deleted."
+      I18n.t("organizations_controller.deletion_scheduled", organization_name: organization.name)
 
     redirect_to user_settings_path(:organization)
   rescue Pundit::NotAuthorizedError
-    flash[:error] = "Your organization was not deleted; you must be an admin, the only member in the organization, " \
-                    "and have no articles connected to the organization."
+    flash[:error] = I18n.t("organizations_controller.not_deleted")
     redirect_to user_settings_path(:organization, id: organization.id)
   end
 
@@ -92,7 +91,7 @@ class OrganizationsController < ApplicationController
     set_organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
-    flash[:settings_notice] = "Your org secret was updated"
+    flash[:settings_notice] = I18n.t("organizations_controller.secret_updated")
     redirect_to user_settings_path(:organization)
   end
 
@@ -137,7 +136,7 @@ class OrganizationsController < ApplicationController
   def valid_image_file?(image)
     return true if file?(image)
 
-    @organization.errors.add(:profile_image, IS_NOT_FILE_MESSAGE)
+    @organization.errors.add(:profile_image, is_not_file_message)
 
     false
   end
@@ -145,7 +144,7 @@ class OrganizationsController < ApplicationController
   def valid_filename?(image)
     return true unless long_filename?(image)
 
-    @organization.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
+    @organization.errors.add(:profile_image, filename_too_long_message)
 
     false
   end

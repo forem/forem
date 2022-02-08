@@ -10,12 +10,6 @@ en:
           title_rel: "%{root} — %{site}"
           title_root: "[Discussion] %{title} — %{site}"
           description: "%{site} Comment"
-      messages:
-        create:
-          success: created
-          failure: comment already exists
-        markdown: 'There was an error in your markdown: %{error}'
-        markdown_html: "<p>😔 There was an error in your markdown</p><hr><p>%{error}</p>"
       parent:
         subtitle_html: "%{start}Discussion on: %{end}%{title}"
         metadata_html: "%{name}%{on}"
@@ -31,8 +25,6 @@ en:
         heading: Are you sure you want to delete this comment?
         desc_html: You cannot undo this action, perhaps you just want to %{action} instead?
         action: Edit
-        error: Something went wrong; Comment NOT deleted.
-        notice: Comment was successfully deleted.
         submit: Delete
         edit: Edit
         cancel: Dismiss

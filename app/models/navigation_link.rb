@@ -42,7 +42,7 @@ class NavigationLink < ApplicationRecord
   # @see NavigationLink.create_or_update_by_identity
   # @see NavigationLink#strip_local_hostname
   def self.normalize_url(url)
-    parsed_url = URI.parse(url)
+    parsed_url = Addressable::URI.parse(url)
     return url unless url.match?(/^#{URL.url}/i)
 
     parsed_url.path
@@ -53,10 +53,10 @@ class NavigationLink < ApplicationRecord
   # We want to allow relative URLs (e.g. /contact) for navigation links while
   # still going through the normal validation process.
   def allow_relative_url
-    parsed_url = URI.parse(url)
+    parsed_url = Addressable::URI.parse(url)
     return unless parsed_url.relative? && url.starts_with?("/")
 
-    self.url = URI.parse(URL.url).merge(parsed_url).to_s
+    self.url = Addressable::URI.parse(URL.url).join(parsed_url).to_s
   end
 
   # When persisting to the database we store local links as relative URLs which
