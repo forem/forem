@@ -1461,10 +1461,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@etchteam/storybook-addon-css-variables-theme@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@etchteam/storybook-addon-css-variables-theme/-/storybook-addon-css-variables-theme-1.1.0.tgz#7803e09759d40eb1bdb6fa2fbf19cea717324f08"
-  integrity sha512-HDW1QRsSXYnNxTX4YKOKFPmC9XeK+ODAap/C6mk9d0wkaSGJGUj2yfSzbYOnfgx5tWR82iszkvvyupZKbxDjWg==
+"@etchteam/storybook-addon-css-variables-theme@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@etchteam/storybook-addon-css-variables-theme/-/storybook-addon-css-variables-theme-1.1.1.tgz#a339ad408061ca972584d74e60c2ebe017d2bbb9"
+  integrity sha512-AlI2ilReETqKVyYzM3RaJLzjhsOgkTn9alXGDw1nE1MceuldzEMS50NNyDBrdjqOAgJUgX0PJrp9lqgPn72A1A==
   dependencies:
     "@storybook/addons" "^6.2.9"
     "@storybook/api" "^6.2.9"
