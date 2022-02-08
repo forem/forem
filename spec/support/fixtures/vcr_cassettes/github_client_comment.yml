@@ -2,55 +2,58 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/comments/621043602?per_page=100
+    uri: https://api.github.com/repos/forem/forem/issues/comments/621043602?per_page=100
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
       Accept:
       - application/vnd.github.v3+json
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=b7791fdb-dcc2-4751-84d7-6d5b91d4c8d7,parent_id=f98dfdd2-ef73-44bd-a92c-3cc4ffd3f62c,context=e30=
+      - 1;dataset=,trace_id=bbb754e247f18a9396c8c3b36e07aa36,parent_id=b638f84c9184c5b7,context=e30=
       Expect:
       - ''
   response:
     status:
       code: 200
-      message: OK
+      message:
     headers:
+      Server:
+      - GitHub.com
       Date:
-      - Sat, 02 May 2020 23:54:45 GMT
+      - Mon, 07 Feb 2022 17:25:26 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
-      - '1454'
-      Server:
-      - GitHub.com
-      Status:
-      - 200 OK
-      X-Ratelimit-Limit:
-      - '5000'
-      X-Ratelimit-Remaining:
-      - '4978'
-      X-Ratelimit-Reset:
-      - '1588465848'
+      - '1645'
       Cache-Control:
       - public, max-age=60, s-maxage=60
       Vary:
       - Accept
       - Accept-Encoding, Accept, X-Requested-With
       Etag:
-      - '"1589430fd33ed6b00098c14727a2a9f6"'
+      - '"c153e0989d42ab0f154ef567a85d0f4466896347cb8249657a7102975002f1ea"'
       X-Github-Media-Type:
       - github.v3; format=json
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4986'
+      X-Ratelimit-Reset:
+      - '1644256079'
+      X-Ratelimit-Used:
+      - '14'
+      X-Ratelimit-Resource:
+      - core
       Access-Control-Expose-Headers:
       - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
-        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
-        X-GitHub-Media-Type, Deprecation, Sunset
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -60,19 +63,18 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
-      - 1; mode=block
+      - '0'
       Referrer-Policy:
       - origin-when-cross-origin, strict-origin-when-cross-origin
       Content-Security-Policy:
       - default-src 'none'
       X-Github-Request-Id:
-      - F3AC:786B:2668DF:351A29:5EAE0845
+      - F05F:468D:B62BB:1AFE23:62015606
     body:
       encoding: ASCII-8BIT
-      string: '{"url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/comments/621043602","html_url":"https://github.com/thepracticaldev/dev.to/issues/7434#issuecomment-621043602","issue_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434","id":621043602,"node_id":"MDEyOklzc3VlQ29tbWVudDYyMTA0MzYwMg==","user":{"login":"catalinpit","id":25515812,"node_id":"MDQ6VXNlcjI1NTE1ODEy","avatar_url":"https://avatars3.githubusercontent.com/u/25515812?u=2c7e3d9e557cc819c3dd2069f5e4904d6a365ad1&v=4","gravatar_id":"","url":"https://api.github.com/users/catalinpit","html_url":"https://github.com/catalinpit","followers_url":"https://api.github.com/users/catalinpit/followers","following_url":"https://api.github.com/users/catalinpit/following{/other_user}","gists_url":"https://api.github.com/users/catalinpit/gists{/gist_id}","starred_url":"https://api.github.com/users/catalinpit/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/catalinpit/subscriptions","organizations_url":"https://api.github.com/users/catalinpit/orgs","repos_url":"https://api.github.com/users/catalinpit/repos","events_url":"https://api.github.com/users/catalinpit/events{/privacy}","received_events_url":"https://api.github.com/users/catalinpit/received_events","type":"User","site_admin":false},"created_at":"2020-04-29T07:46:28Z","updated_at":"2020-04-29T07:46:28Z","author_association":"CONTRIBUTOR","body":"What
-        do you think, @ludwiczakpawel?"}'
-    http_version: null
-  recorded_at: Sat, 02 May 2020 23:54:45 GMT
+      string: '{"url":"https://api.github.com/repos/forem/forem/issues/comments/621043602","html_url":"https://github.com/forem/forem/issues/7434#issuecomment-621043602","issue_url":"https://api.github.com/repos/forem/forem/issues/7434","id":621043602,"node_id":"MDEyOklzc3VlQ29tbWVudDYyMTA0MzYwMg==","user":{"login":"catalinpit","id":25515812,"node_id":"MDQ6VXNlcjI1NTE1ODEy","avatar_url":"https://avatars.githubusercontent.com/u/25515812?u=63150de0534e31d7a357f43fc78cc5a119a8b02a&v=4","gravatar_id":"","url":"https://api.github.com/users/catalinpit","html_url":"https://github.com/catalinpit","followers_url":"https://api.github.com/users/catalinpit/followers","following_url":"https://api.github.com/users/catalinpit/following{/other_user}","gists_url":"https://api.github.com/users/catalinpit/gists{/gist_id}","starred_url":"https://api.github.com/users/catalinpit/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/catalinpit/subscriptions","organizations_url":"https://api.github.com/users/catalinpit/orgs","repos_url":"https://api.github.com/users/catalinpit/repos","events_url":"https://api.github.com/users/catalinpit/events{/privacy}","received_events_url":"https://api.github.com/users/catalinpit/received_events","type":"User","site_admin":false},"created_at":"2020-04-29T07:46:28Z","updated_at":"2020-04-29T07:46:28Z","author_association":"CONTRIBUTOR","body":"What
+        do you think, @ludwiczakpawel?","reactions":{"url":"https://api.github.com/repos/forem/forem/issues/comments/621043602/reactions","total_count":0,"+1":0,"-1":0,"laugh":0,"hooray":0,"confused":0,"heart":0,"rocket":0,"eyes":0},"performed_via_github_app":null}'
+  recorded_at: Mon, 07 Feb 2022 17:25:26 GMT
 - request:
     method: post
     uri: https://api.github.com/markdown
@@ -81,42 +83,45 @@ http_interactions:
       string: '{"text":"What do you think, @ludwiczakpawel?"}'
     headers:
       User-Agent:
-      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
       Accept:
       - application/vnd.github.raw
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=c3f4fcd3-12df-4e45-90ed-6eff8690d534,parent_id=7666e3c3-e7c8-4655-b4ab-b6f5f9622c88,context=e30=
+      - 1;dataset=,trace_id=9c7e34747a1ae9427bcb0653b19de5c8,parent_id=1af853b1b2e75e6d,context=e30=
       Expect:
       - ''
   response:
     status:
       code: 200
-      message: OK
+      message:
     headers:
+      Server:
+      - GitHub.com
       Date:
-      - Sat, 02 May 2020 23:54:46 GMT
+      - Mon, 07 Feb 2022 17:25:26 GMT
       Content-Type:
       - text/html;charset=utf-8
       Content-Length:
       - '43'
-      Server:
-      - GitHub.com
-      Status:
-      - 200 OK
+      X-Commonmarker-Version:
+      - 0.23.2
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4977'
+      - '4985'
       X-Ratelimit-Reset:
-      - '1588465848'
-      X-Commonmarker-Version:
-      - 0.21.0
+      - '1644256079'
+      X-Ratelimit-Used:
+      - '15'
+      X-Ratelimit-Resource:
+      - core
       Access-Control-Expose-Headers:
       - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
-        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
-        X-GitHub-Media-Type, Deprecation, Sunset
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -126,7 +131,7 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
-      - 1; mode=block
+      - '0'
       Referrer-Policy:
       - origin-when-cross-origin, strict-origin-when-cross-origin
       Content-Security-Policy:
@@ -134,10 +139,9 @@ http_interactions:
       Vary:
       - Accept-Encoding, Accept, X-Requested-With
       X-Github-Request-Id:
-      - F3AD:786C:193245:227CB0:5EAE0846
+      - CA08:4E34:1C2A43:35B54E:62015606
     body:
       encoding: ASCII-8BIT
       string: "<p>What do you think, @ludwiczakpawel?</p>\n"
-    http_version: null
-  recorded_at: Sat, 02 May 2020 23:54:46 GMT
-recorded_with: VCR 5.1.0
+  recorded_at: Mon, 07 Feb 2022 17:25:26 GMT
+recorded_with: VCR 6.0.0
