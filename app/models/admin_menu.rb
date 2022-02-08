@@ -1,15 +1,9 @@
-# May Cthulhu help us all
-require_dependency "../services/feature_flag"
-
 # This "model" is not backed by the database. Its main purpose is to
 # setup and provide methods to interact with the admin sidebar and tabbed menu
 class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
-  FEATURE_FLAGS = [
-    FeatureFlag::PROFILE_ADMIN,
-    FeatureFlag::DATA_UPDATE_SCRIPTS,
-  ].freeze
+  FEATURE_FLAGS = %i[profile_admin_enabled? data_update_scripts_enabled?].freeze
 
   ITEMS = Menu.define do
     scope :people, "group-2-line", [
@@ -69,7 +63,7 @@ class AdminMenu
   # rubocop:enable Metrics/BlockLength
 
   def self.navigation_items
-    return ITEMS unless FEATURE_FLAGS.any? { |flag| FeatureFlag.enabled?(flag) }
+    return ITEMS unless FEATURE_FLAGS.any? { |check| FeatureFlag.public_send(check) }
 
     feature_flagged_menu_items
   end

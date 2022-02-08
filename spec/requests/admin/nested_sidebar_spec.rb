@@ -35,7 +35,7 @@ RSpec.describe "admin sidebar", type: :request do
     end
 
     it "shows the option in the sidebar when the feature flag is enabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(FeatureFlag::PROFILE_ADMIN).and_return(true)
+      allow(FeatureFlag).to receive(:profile_admin_enabled?).and_return(true)
 
       get admin_articles_path
 
@@ -53,7 +53,7 @@ RSpec.describe "admin sidebar", type: :request do
     end
 
     it "shows the option in the tabbed header when the feature flag is enabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(FeatureFlag::DATA_UPDATE_SCRIPTS).and_return(true)
+      allow(FeatureFlag).to receive(:data_update_scripts_enabled?).and_return(true)
 
       get admin_tools_path
 
