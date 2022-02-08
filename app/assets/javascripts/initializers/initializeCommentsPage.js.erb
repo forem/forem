@@ -28,11 +28,7 @@ function initializeCommentsPage() {
         for (var i = 0; i < commentableIdList.length; i++) {
           (function(i){
             var ajaxReq;
-            if (window.XMLHttpRequest) {
-              ajaxReq = new XMLHttpRequest();
-            } else {
-              ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
-            }
+            ajaxReq = new XMLHttpRequest();
             ajaxReq.onreadystatechange = function () {
               if (ajaxReq.readyState === XMLHttpRequest.DONE) {
                 var responseObj = JSON.parse(ajaxReq.response);

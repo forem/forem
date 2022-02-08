@@ -9,13 +9,10 @@ function removeExistingCSRF() {
   }
 }
 
+/* TODO: prefer fetch() to XMLHttpRequest */
 function fetchBaseData() {
   var xmlhttp;
-  if (window.XMLHttpRequest) {
-    xmlhttp = new XMLHttpRequest();
-  } else {
-    xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-  }
+  xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === XMLHttpRequest.DONE) {
       // Assigning CSRF
