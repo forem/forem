@@ -23,10 +23,10 @@
 
 </head>
 <body class="admin default-header"
-  data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-  data-deployed-at="<%= ForemInstance.deployed_at %>"
-  data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
-  data-ga-tracking="<%= Settings::General.ga_tracking_id %>"
+  data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+  data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
+  data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
+  data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
   data-controller="snackbar"
   data-action="snackbar:add@document->snackbar#addItem">
   <div id="body-styles">

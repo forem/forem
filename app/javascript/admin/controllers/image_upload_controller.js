@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { displayErrorAlert } from '../messageUtilities';
 
 export default class ImageUploadController extends Controller {
   static targets = ['fileField', 'imageResult'];
@@ -29,7 +30,8 @@ export default class ImageUploadController extends Controller {
         }
         const { links } = json;
         return this.onUploadSuccess(links);
-      });
+      })
+      .catch(this.onUploadFailure);
   }
 
   onUploadSuccess(result) {
@@ -44,5 +46,9 @@ export default class ImageUploadController extends Controller {
       <img width="300px" src=${result}>
     `;
     this.imageResultTarget.innerHTML = output;
+  }
+
+  onUploadFailure(error) {
+    displayErrorAlert(error.message);
   }
 }

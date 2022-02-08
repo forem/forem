@@ -51,9 +51,7 @@ export default class ReactionController extends Controller {
   reactableUserCheck() {
     if (this.reactableType === 'user') {
       if (
-        window.confirm(
-          'You are confirming a User vomit reaction; are you sure?',
-        )
+        window.confirm('You are confirming a User flag reaction; are you sure?')
       ) {
         this.updateReaction(this.confirmedStatus);
       }

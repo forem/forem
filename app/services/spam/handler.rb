@@ -69,7 +69,7 @@ module Spam
         author_id: Settings::General.mascot_user_id,
         noteable: user,
         reason: "automatic_suspend",
-        content: "User suspended for too many spammy interactions, triggered by autovomit.",
+        content: I18n.t("models.comment.suspended_too_many"),
       )
     end
     private_class_method :suspend!

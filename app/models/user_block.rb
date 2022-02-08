@@ -30,7 +30,7 @@ class UserBlock < ApplicationRecord
   private
 
   def blocker_cannot_be_same_as_blocked
-    errors.add(:blocker_id, "can't be the same as the blocked_id") if blocker_id == blocked_id
+    errors.add(:blocker_id, I18n.t("models.user_block.cant_be_the_same")) if blocker_id == blocked_id
   end
 
   def bust_blocker_cache

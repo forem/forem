@@ -58,8 +58,18 @@ describe('Publish or save a post', () => {
       });
 
       cy.findByRole('heading', { name: 'Whoops, something went wrong:' });
-      // We should still be on the form page
-      cy.findByRole('form', { name: /^Edit post$/i });
+      // We should still be on the form page,
+      // and should be able to edit the broken draft successfully
+      cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
+        cy.findByLabelText('Post Content')
+          .clear()
+          .type(validDraftArticleContent);
+        cy.findByRole('button', { name: 'Save changes' }).click();
+      });
+      // The Draft view should be shown
+      cy.findByText(/Unpublished Post/);
+      cy.findByRole('heading', { name: 'Test title' });
+      cy.findByRole('link', { name: 'Click to edit' });
     });
 
     it('Shows an error message when network request fails', () => {

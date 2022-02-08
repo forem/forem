@@ -93,14 +93,14 @@ module Users
     def valid_image_file?(image)
       return true if file?(image)
 
-      errors.append(IS_NOT_FILE_MESSAGE)
+      errors.append(is_not_file_message)
       false
     end
 
     def valid_filename?(image)
       return true unless long_filename?(image)
 
-      errors.append(FILENAME_TOO_LONG_MESSAGE)
+      errors.append(filename_too_long_message)
       false
     end
 
