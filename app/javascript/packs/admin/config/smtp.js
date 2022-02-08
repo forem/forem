@@ -1,9 +1,9 @@
 document
   .getElementById('settings_smtp_own_email_server')
   ?.addEventListener('change', (event) => {
-    const customSMTPSection = document.getElementsByClassName(
+    const [customSMTPSection] = document.getElementsByClassName(
       'js-custom-smtp-section',
-    )[0];
+    );
 
     if (event.target.checked) {
       customSMTPSection.classList.remove('hidden');
@@ -13,12 +13,11 @@ document
       const inputs = customSMTPSection.getElementsByTagName('input');
       const haveDefaultValues = ['authentication'];
 
-      for (let i = 0; i < inputs.length; i++) {
-        if (!haveDefaultValues.some((el) => inputs.item(i).name.includes(el))) {
-          inputs.item(i).value = '';
+      for (const input of inputs) {
+        if (!haveDefaultValues.some((el) => input.name.includes(el))) {
+          input.value = '';
         }
       }
       customSMTPSection.classList.add('hidden');
     }
   });
-
