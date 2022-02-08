@@ -2181,18 +2181,18 @@
     util-deprecate "^1.0.2"
     uuid-browser "^3.1.0"
 
-"@storybook/addon-backgrounds@^6.4.14":
-  version "6.4.14"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-backgrounds/-/addon-backgrounds-6.4.14.tgz#6e55963857993f6a55a01dc8df99c60224bb86af"
-  integrity sha512-/lWCmg32cM3jdoiaYXgN2Itde49DXsjPKuttSvb8DS7aFQEV7jNnpta4vN5OtoBtAY6tgDn3V0Cft9D7xWqzBA==
+"@storybook/addon-backgrounds@^6.4.18":
+  version "6.4.18"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-backgrounds/-/addon-backgrounds-6.4.18.tgz#178531ece3848de33b1aaea44af8cdd88da70314"
+  integrity sha512-LAonQO0s77CkbGx7l8qyeEevOBWDuYZKl9iJ0BSPogU48+4JVEYVSBiystIXPJXcGeEy+M0qFmwg5nHWjf9/cA==
   dependencies:
-    "@storybook/addons" "6.4.14"
-    "@storybook/api" "6.4.14"
-    "@storybook/client-logger" "6.4.14"
-    "@storybook/components" "6.4.14"
-    "@storybook/core-events" "6.4.14"
+    "@storybook/addons" "6.4.18"
+    "@storybook/api" "6.4.18"
+    "@storybook/client-logger" "6.4.18"
+    "@storybook/components" "6.4.18"
+    "@storybook/core-events" "6.4.18"
     "@storybook/csf" "0.0.2--canary.87bc651.0"
-    "@storybook/theming" "6.4.14"
+    "@storybook/theming" "6.4.18"
     core-js "^3.8.2"
     global "^4.4.0"
     memoizerific "^1.11.3"
