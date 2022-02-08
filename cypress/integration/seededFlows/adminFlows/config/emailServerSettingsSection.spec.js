@@ -4,7 +4,7 @@ describe('Email Server Settings Section', () => {
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user);
+      cy.loginAndVisit(user, '/admin/customization/config');
     });
   });
 
