@@ -1,4 +1,4 @@
-<%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "crayons-card mb-4 p-3 m:p-4 s:pl-4 m:pl-7 pr-4 flex justify-between gap-4 items-center" do |f| %>
+<%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "crayons-card mb-4 p-3 m:p-4 s:pl-4 m:pl-7 pr-4 flex flex-col s:flex-row justify-between gap-4 s:items-center" do |f| %>
   <% unless @last_email_verification_date %>
     <div>
       <h2 class="crayons-subtitle-2">Email not verified...</h2>
