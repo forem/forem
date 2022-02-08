@@ -42,7 +42,7 @@
     "@babel/eslint-parser": "^7.16.5",
     "@faker-js/faker": "^5.5.3",
     "@knapsack-pro/cypress": "^4.5.0",
-    "@storybook/addon-a11y": "^6.4.17",
+    "@storybook/addon-a11y": "^6.4.18",
     "@storybook/addon-actions": "^6.4.14",
     "@storybook/addon-docs": "^6.4.13",
     "@storybook/addon-knobs": "^6.4.0",
