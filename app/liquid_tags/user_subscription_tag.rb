@@ -24,7 +24,8 @@ class UserSubscriptionTag < LiquidTagBase
       locals: {
         cta_text: @cta_text,
         author_profile_image: @user&.profile_image_90,
-        author_username: @user&.username
+        author_username: @user&.username,
+        community_name: Settings::Community.community_name
       },
     )
   end

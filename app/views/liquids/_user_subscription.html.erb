@@ -22,7 +22,7 @@
       <div class="ltag__user-subscription-tag__subscription-area align-center">
         <div class="ltag__user-subscription-tag__signed-out">
           <div class="fs-base mb-2">
-            <%= t("views.liquids.user_subscription.logged_out") %>
+            <%= t("views.liquids.user_subscription.logged_out", community: community_name) %>
           </div>
           <a href="/enter" class="c-cta c-cta--default">
             <%= t("views.liquids.user_subscription.sign_in") %>
@@ -34,14 +34,14 @@
             <%= t("views.liquids.user_subscription.subscribe.button") %>
           </button>
           <div class="ltag__user-subscription-tag__logged-in-text fs-s mb-3">
-            <%= t("views.liquids.user_subscription.subscribe.desc_html", update: link_to(t("views.liquids.user_subscription.subscribe.update"), "/settings")) %>
+            <%= t("views.liquids.user_subscription.subscribe.desc_html", community: community_name, update: link_to(t("views.liquids.user_subscription.subscribe.update"), "/settings")) %>
           </div>
         </div>
 
         <div class="ltag__user-subscription-tag__apple-auth fs-s hidden">
           <button disabled class="crayons-btn"><%= t("views.liquids.user_subscription.subscribe.apple.button") %></button>
           <div class="fs-s">
-            <%= t("views.liquids.user_subscription.subscribe.apple.desc_html", update: link_to(t("views.liquids.user_subscription.subscribe.apple.update"), "/settings")) %>
+            <%= t("views.liquids.user_subscription.subscribe.apple.desc_html", community: community_name, update: link_to(t("views.liquids.user_subscription.subscribe.apple.update"), "/settings")) %>
           </div>
         </div>
 
@@ -51,7 +51,7 @@
     <div class="user-subscription-confirmation-modal hidden">
       <div class="crayons-modal__box__body">
         <p class="fs-base mb-4 mt-0">
-          <%= t("views.liquids.user_subscription.confirm.text_html", username: tag.span(author_username, class: "ltag__user-subscription-tag__author-username fw-medium")) %>
+          <%= t("views.liquids.user_subscription.confirm.text_html", community: community_name, username: tag.span(author_username, class: "ltag__user-subscription-tag__author-username fw-medium")) %>
         <p>
         <div class="ltag__user-subscription-tag__confirmation-buttons">
           <button class="ltag__user-subscription-tag__confirmation-btn crayons-btn mr-1">
