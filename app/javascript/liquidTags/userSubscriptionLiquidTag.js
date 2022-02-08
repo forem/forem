@@ -93,17 +93,20 @@ function initSignedInState(tagContainer, appleAuth = false) {
       window.Forem.showModal({
         title: 'Confirm subscribe',
         contentSelector:
-          '#user-subscription-confirmation-modal .crayons-modal__box__body',
+          '.user-subscription-confirmation-modal .crayons-modal__box__body',
         overlay: true,
         onOpen: () => {
           // Attach listeners for cancel button and subscribe button
-          //   TODO: remove the ID from the hidden modal?
           document
-            .querySelector('#window-modal #cancel-btn')
+            .querySelector(
+              '#window-modal .ltag__user-subscription-tag____cancel-btn',
+            )
             .addEventListener('click', window.Forem.closeModal);
 
           document
-            .querySelector('#window-modal #confirmation-btn')
+            .querySelector(
+              '#window-modal .ltag__user-subscription-tag__confirmation-btn',
+            )
             .addEventListener('click', confirmSubscribe);
         },
       });
@@ -180,15 +183,7 @@ function toggleSignedInInstructionsUI(isVisible) {
     '.ltag__user-subscription-tag__signed-in .ltag__user-subscription-tag__logged-in-text',
   );
 
-  // The fall back of looking for a 'div' is to ensure backwards compatibility with older versions of this liquid tag's HTML
-  const legacySignedInInstructions = document.querySelectorAll(
-    '.ltag__user-subscription-tag__signed-in div',
-  );
-
-  for (const instructions of [
-    ...signedInInstructions,
-    ...legacySignedInInstructions,
-  ]) {
+  for (const instructions of signedInInstructions) {
     if (isVisible) {
       instructions.classList.remove('hidden');
     } else {
