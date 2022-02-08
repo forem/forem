@@ -11,17 +11,19 @@ RSpec.describe "Api::V0::Tags", type: :request do
     end
 
     it "returns tags with the correct json representation" do
+      badge = create(:badge)
       tag = create(:tag, taggings_count: 10)
+      tag_with_badge = create(:tag, taggings_count: 5, badge: badge)
 
       get api_tags_path
 
       response_tag = response.parsed_body.first
-      expect(response_tag.keys).to match_array(%w[id name bg_color_hex text_color_hex short_summary badge])
-      expect(response_tag["id"]).to eq(tag.id)
-      expect(response_tag["name"]).to eq(tag.name)
-      expect(response_tag["bg_color_hex"]).to eq(tag.bg_color_hex)
-      expect(response_tag["text_color_hex"]).to eq(tag.text_color_hex)
-      expect(response_tag["short_summary"]).to eq(tag.short_summary)
+      response_tag_with_badge = response.parsed_body.last
+      expect_valid_json_body(response_tag, tag)
+      expect_valid_json_body(response_tag_with_badge, tag_with_badge)
+
+      expect(response_tag["badge"]["badge_image"]).to be_nil
+      expect(response_tag_with_badge["badge"]["badge_image"]["url"]).to eq(tag_with_badge.badge.badge_image.url)
     end
 
     it "orders tags by taggings_count in a descending order" do
@@ -61,5 +63,18 @@ RSpec.describe "Api::V0::Tags", type: :request do
       expected_key = ["tags", tag.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+  end
+
+  private
+
+  def expect_valid_json_body(body, tag)
+    expect(body.keys).to match_array(%w[id name bg_color_hex text_color_hex short_summary badge])
+    expect(body["id"]).to eq(tag.id)
+    expect(body["name"]).to eq(tag.name)
+    expect(body["bg_color_hex"]).to eq(tag.bg_color_hex)
+    expect(body["text_color_hex"]).to eq(tag.text_color_hex)
+    expect(body["short_summary"]).to eq(tag.short_summary)
+    expect(body).to have_key("badge")
+    expect(body["badge"]).to have_key("badge_image")
   end
 end

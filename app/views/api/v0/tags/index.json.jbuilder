@@ -4,7 +4,7 @@ json.array! @tags.each do |tag|
     if tag.badge
       json.badge_image tag.badge.badge_image
     else
-      json.badge_image({})
+      json.badge_image nil
     end
   end
 end
