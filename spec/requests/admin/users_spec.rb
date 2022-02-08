@@ -26,14 +26,6 @@ RSpec.describe "/admin/users", type: :request do
       expect(response.body).not_to include("Go back to All members")
     end
 
-    it "renders the new admin page if the feature flag is enabled" do
-      FeatureFlag.enable(:new_admin_members, admin)
-
-      get admin_user_path(user)
-
-      expect(response.body).to include("Go back to All members")
-    end
-
     context "when a user is unregistered" do
       it "renders a message stating that the user isn't registered" do
         user.update_columns(registered: false)

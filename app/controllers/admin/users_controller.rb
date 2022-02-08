@@ -34,20 +34,15 @@ module Admin
 
     def show
       @user = User.find(params[:id])
+      @organizations = @user.organizations.order(:name)
+      @notes = @user.notes.order(created_at: :desc).limit(10)
+      @organization_memberships = @user.organization_memberships
+        .joins(:organization)
+        .order("organizations.name" => :asc)
+        .includes(:organization)
+      @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
 
-      if FeatureFlag.enabled?(:new_admin_members, current_user)
-        render "admin/users/new/show"
-      else
-        @organizations = @user.organizations.order(:name)
-        @notes = @user.notes.order(created_at: :desc).limit(10)
-        @organization_memberships = @user.organization_memberships
-          .joins(:organization)
-          .order("organizations.name" => :asc)
-          .includes(:organization)
-        @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
-
-        render :show
-      end
+      render :show
     end
 
     def update
