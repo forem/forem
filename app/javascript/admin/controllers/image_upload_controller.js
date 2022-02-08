@@ -35,7 +35,6 @@ export default class ImageUploadController extends Controller {
   }
 
   onUploadSuccess(result) {
-    clearTimeout(this.clearImageTimeout);
     this.imageResultTarget.classList.remove('d-none');
     const output = `
       <div class="form-group">
