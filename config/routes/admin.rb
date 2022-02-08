@@ -44,19 +44,6 @@ namespace :admin do
   end
 
   resources :users, only: %i[index show edit update destroy] do
-    scope module: "users" do
-      resource :tools, only: :show
-
-      namespace :tools do
-        resource :credits, only: %i[show create destroy]
-        resource :emails, only: :show
-        resource :notes, only: %i[show create]
-        resource :organizations, only: %i[show]
-        resource :reports, only: %i[show]
-        resource :reactions, only: %i[show]
-      end
-    end
-
     resources :email_messages, only: :show
 
     member do
