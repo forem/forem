@@ -3,11 +3,11 @@ module Api
     class TagsController < ApiController
       before_action :set_cache_control_headers, only: %i[index]
 
-      ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary].freeze
+      ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       def index
-        @tags = Tag.select(ATTRIBUTES_FOR_SERIALIZATION)
+        @tags = Tag.includes(:badge).select(ATTRIBUTES_FOR_SERIALIZATION)
 
         page = params[:page]
         per_page = (params[:per_page] || 10).to_i

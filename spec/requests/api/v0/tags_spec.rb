@@ -16,7 +16,7 @@ RSpec.describe "Api::V0::Tags", type: :request do
       get api_tags_path
 
       response_tag = response.parsed_body.first
-      expect(response_tag.keys).to match_array(%w[id name bg_color_hex text_color_hex short_summary])
+      expect(response_tag.keys).to match_array(%w[id name bg_color_hex text_color_hex short_summary badge])
       expect(response_tag["id"]).to eq(tag.id)
       expect(response_tag["name"]).to eq(tag.name)
       expect(response_tag["bg_color_hex"]).to eq(tag.bg_color_hex)
