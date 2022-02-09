@@ -38,7 +38,12 @@ xml.rss(version: "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
     articles.each do |article|
       xml.item do
         xml.title article.title
-        xml.author(user.instance_of?(User) ? user.name : article.user.name)
+        author = user.instance_of?(User) ? user : article.user
+        # Is it OK to display the author's email?  I know on the profile,
+        # there's a checkbox for display email or not, but couldn't find
+        # what attribute in the schema matched that checkbox to do a check.
+        rfc_2822_author = "#{author.email} (#{author.name})"
+        xml.author rfc_2822_author
         xml.pubDate article.published_at.to_s(:rfc822) if article.published_at
         xml.link app_url(article.path)
         xml.guid app_url(article.path)
