@@ -17,10 +17,10 @@
         <div class="crayons-field">
           <%= admin_config_label :contact_email %>
           <%= admin_config_description Constants::Settings::General::DETAILS[:contact_email][:description] %>
-          <%= f.number_field :contact_email,
-                             class: "crayons-textfield",
-                             value: Settings::General.contact_email,
-                             placeholder: Constants::Settings::General::DETAILS[:contact_email][:placeholder] %>
+          <%= f.text_field :contact_email,
+                           class: "crayons-textfield",
+                           value: Settings::General.contact_email,
+                           placeholder: Constants::Settings::General::DETAILS[:contact_email][:placeholder] %>
         </div>
 
         <div class="crayons-field">
