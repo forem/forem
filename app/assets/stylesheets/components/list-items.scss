@@ -1,0 +1,21 @@
+////////////////////////////////////////////////////////////
+// .c-list-item ////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+.c-list-item {
+  padding: var(--su-3);
+  margin: 0 calc(var(--su-3) * -1);
+  border-bottom: 1px solid var(--divider);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:not(&--inactive) {
+    &:hover,
+    &:focus-visible,
+    &:focus-within {
+      background: var(--list-item-bg-hover);
+    }
+  }
+}
