@@ -1,13 +1,11 @@
 function openUserOptions(callback) {
-  let dropdownId;
-
   cy.findByTestId('user-options')
     .should('have.attr', 'aria-haspopup', 'true')
     .should('have.attr', 'aria-expanded', 'false')
     .click()
     .then(([button]) => {
       expect(button.getAttribute('aria-expanded')).to.equal('true');
-      dropdownId = button.getAttribute('aria-controls');
+      const dropdownId = button.getAttribute('aria-controls');
 
       cy.get(`#${dropdownId}`).within(callback);
     });
