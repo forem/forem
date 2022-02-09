@@ -1,4 +1,4 @@
-describe('User subscription liquid tag', () => {
+describe('User subscription liquid tag - subscribable email', () => {
   beforeEach(() => {
     cy.testSetup();
 
@@ -49,6 +49,19 @@ describe('User subscription liquid tag', () => {
     cy.findByText(
       'You are now subscribed and may receive emails from admin_mcadmin',
     ).should('not.exist');
+  });
+
+  it('shows any error message and allows user to retry', () => {
+    cy.intercept('POST', '/user_subscriptions', {
+      error: 'This is an error message',
+    });
+
+    cy.findAllByRole('button', { name: 'Subscribe' }).last().click();
+    cy.getModal()
+      .findByRole('button', { name: 'Confirm subscription' })
+      .click();
+
+    cy.findAllByText('This is an error message').should('have.length', 2);
   });
 
   it('shows the signed out UI', () => {

@@ -279,9 +279,7 @@ export async function initializeUserSubscriptionLiquidTagContent() {
   }
 
   const { currentUser: user } = await getUserDataAndCsrfToken();
-  const { email } = user;
-  const isSubscriberAuthedWithApple =
-    email && email.endsWith('@privaterelay.appleid.com');
+  const { apple_auth: isSubscriberAuthedWithApple } = user;
 
   // Setup the initial signed-in state without waiting on subscription status fetch
   for (const liquidTag of allUserSubLiquidTags) {
