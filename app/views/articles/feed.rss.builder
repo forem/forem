@@ -5,17 +5,33 @@
 xml.instruct! :xml, version: "1.0"
 xml.rss version: "2.0" do
   xml.channel do
-    xml.title user ? user.name : community_name
-    xml.author user ? user.name : community_name
-    xml.description user ? user.tag_line : Settings::Community.community_description
-    xml.link user ? app_url(user.path) : app_url
-    xml.language "en" # TODO: [yheuhtozr] support localized feeds (see #15136)
     if user
+      xml.title "#{community_name}: #{user.name}"
+      xml.description "The latest articles on #{community_name} by #{user.name} (@#{user.username})."
+      xml.link app_url(user.path)
       xml.image do
-        xml.url user.profile_image_90
-        xml.title t("xml.user.image", user: user.name)
+        xml.url app_url(user.profile_image_90)
+        xml.title "#{community_name}: #{user.name}"
         xml.link app_url(user.path)
       end
+    elsif tag
+      xml.title "#{community_name}: #{tag.name}"
+      xml.description "The latest articles tagged '#{tag.name}' on #{community_name}."
+      xml.link tag_url(tag)
+      # NOTE: there exists a `tag.profile_image`, but unsure if it's in use.
+      # xml.image do
+      #   xml.url app_url(tag.profile_image)
+      #   xml.title "#{community_name}: #{tag.name}"
+      #   xml.link tag_url(tag)
+      # end
+    elsif latest
+      xml.title "#{community_name}: Latest"
+      xml.description "The most recent articles on #{community_name}."
+      xml.link "#{app_url}/latest"
+    else
+      xml.title community_name
+      xml.description "The most recent home feed on #{community_name}."
+      xml.link app_url
     end
     articles.each do |article|
       xml.item do

@@ -11,11 +11,12 @@ class ArticlesController < ApplicationController
     skip_authorization
 
     @articles = Article.feed.order(published_at: :desc).page(params[:page].to_i).per(12)
+    @latest = request.path == latest_feed_path
     @articles = if params[:username]
                   handle_user_or_organization_feed
                 elsif params[:tag]
                   handle_tag_feed
-                elsif request.path == latest_feed_path
+                elsif @latest
                   @articles
                     .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
                     .includes(:user)
@@ -34,6 +35,7 @@ class ArticlesController < ApplicationController
       articles: @articles,
       user: @user,
       tag: @tag,
+      latest: @latest,
       allowed_tags: MarkdownProcessor::AllowedTags::FEED,
       allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED
     }
