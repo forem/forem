@@ -51,10 +51,6 @@ class LiquidTagBase < Liquid::Tag
       .first
   end
 
-  def render_tag(klass, tag_name, link, parse_context)
-    klass.__send__(:new, tag_name, link, parse_context).render(nil)
-  end
-
   # A method to help collaborators not need to reach into the class
   # implementation details.
   def user_authorization_method_name

@@ -18,8 +18,8 @@ module ForemTag
   end
 
   def self.determine_klass(link)
-    return ListingTag if link.include?("#{URL.url}/listings/")
-    return TagTag if link.include?("#{URL.url}/t/")
+    return ListingTag if link.start_with?("#{URL.url}/listings/")
+    return TagTag if link.start_with?("#{URL.url}/t/")
 
     process_other_link_types(link)
   end
