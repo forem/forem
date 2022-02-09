@@ -5,7 +5,7 @@ module ErrorMessages
     def self.call(error_message)
       return error_message unless error_message.match?(FRONTMATTER_ERROR)
 
-      I18n.t("services.error_messages.clean.parse_error", email: ForemInstance.email)
+      I18n.t("services.error_messages.clean.parse_error", email: ForemInstance.contact_email)
     end
   end
 end
