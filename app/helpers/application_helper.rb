@@ -228,7 +228,7 @@ module ApplicationHelper
   end
 
   def contact_link(text: nil, additional_info: nil)
-    email = Settings::General.contact_email || ForemInstance.email
+    email = ForemInstance.contact_email
     mail_to email, text || email, additional_info
   end
 
@@ -334,9 +334,5 @@ module ApplicationHelper
 
     creator = User.with_role(:creator).first
     !creator.checked_code_of_conduct && !creator.checked_terms_and_conditions
-  end
-
-  def contact_email
-    Settings::General.contact_email || ForemInstance.email
   end
 end

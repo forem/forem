@@ -242,7 +242,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     let(:default_email) { "hi@dev.to" }
 
     before do
-      allow(Settings::General).to receive(:contact_email).and_return(default_email)
+      allow(ForemInstance).to receive(:contact_email).and_return(default_email)
     end
 
     it "returns an 'a' tag" do
@@ -267,46 +267,6 @@ RSpec.describe ApplicationHelper, type: :helper do
       link = "<a href=\"mailto:#{default_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
              "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
       expect(contact_link(text: "text", additional_info: additional_info)).to eq(link)
-    end
-
-    context "when we have only a contact email link", :aggregate_failures do
-      let(:email) { "contact@dev.to" }
-
-      before do
-        allow(Settings::General).to receive(:contact_email).and_return(email)
-        allow(ForemInstance).to receive(:email).and_return(nil)
-      end
-
-      it "sets the correct href" do
-        expect(helper.contact_link).to have_link(href: "mailto:#{email}")
-      end
-    end
-
-    context "when we have only a Forem Instance email link", :aggregate_failures do
-      let(:email) { "noreply@dev.to" }
-
-      before do
-        allow(Settings::General).to receive(:contact_email).and_return(nil)
-        allow(ForemInstance).to receive(:email).and_return(email)
-      end
-
-      it "sets the correct href" do
-        expect(helper.contact_link).to have_link(href: "mailto:#{email}")
-      end
-    end
-
-    context "when we have both a contact eand Forem Instance email link", :aggregate_failures do
-      let(:contact_email) { "hello@dev.to" }
-      let(:forem_instance_email) { "noreply@dev.to" }
-
-      before do
-        allow(Settings::General).to receive(:contact_email).and_return(contact_email)
-        allow(ForemInstance).to receive(:email).and_return(forem_instance_email)
-      end
-
-      it "sets the correct href" do
-        expect(helper.contact_link).to have_link(href: "mailto:#{contact_email}")
-      end
     end
   end
 
