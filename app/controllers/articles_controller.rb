@@ -31,13 +31,14 @@ class ArticlesController < ApplicationController
     set_surrogate_key_header "feed"
     set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
-    render layout: false, locals: {
+    render layout: false, content_type: "application/xml", locals: {
       articles: @articles,
       user: @user,
       tag: @tag,
       latest: @latest,
       allowed_tags: MarkdownProcessor::AllowedTags::FEED,
-      allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED
+      allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED,
+      scrubber: FeedMarkdownScrubber.new
     }
   end
 
