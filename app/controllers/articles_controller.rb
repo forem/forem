@@ -227,10 +227,11 @@ class ArticlesController < ApplicationController
   end
 
   def handle_tag_feed
-    @tag = Tag.aliased_name(params[:tag])
-    return unless @tag
+    tag_name = Tag.aliased_name(params[:tag])
+    return unless tag_name
 
-    @articles = @articles.cached_tagged_with(@tag)
+    @tag = Tag.find_by(name: tag_name)
+    @articles = @articles.cached_tagged_with(tag_name)
   end
 
   def set_article
