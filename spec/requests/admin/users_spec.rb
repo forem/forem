@@ -150,7 +150,7 @@ RSpec.describe "/admin/users", type: :request do
           post send_email_admin_user_path(user.id), params: params
         end
 
-        expect(response).to redirect_to(admin_users_path)
+        expect(response).to redirect_to(admin_user_path)
         expect(flash[:danger]).to include("failed")
       end
 
@@ -159,7 +159,7 @@ RSpec.describe "/admin/users", type: :request do
           post send_email_admin_user_path(user.id), params: params
         end
 
-        expect(response).to redirect_to(admin_users_path)
+        expect(response).to redirect_to(admin_user_path)
         expect(flash[:success]).to include("sent")
 
         email = ActionMailer::Base.deliveries.last
@@ -227,7 +227,7 @@ RSpec.describe "/admin/users", type: :request do
           post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }
         end
 
-        expect(response).to redirect_to(admin_users_path)
+        expect(response).to redirect_to(admin_user_path)
         expect(flash[:danger]).to include("failed")
       end
 
@@ -236,7 +236,7 @@ RSpec.describe "/admin/users", type: :request do
           post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }
         end
 
-        expect(response).to redirect_to(admin_users_path)
+        expect(response).to redirect_to(admin_user_path)
         expect(flash[:success]).to include("sent")
       end
 
@@ -386,7 +386,7 @@ RSpec.describe "/admin/users", type: :request do
     it "redirects properly to the user edit page" do
       sign_in admin
       post export_data_admin_user_path(user), params: { send_to_admin: "true" }
-      expect(response).to redirect_to edit_admin_user_path(user)
+      expect(response).to redirect_to admin_user_path(user)
     end
   end
 end
