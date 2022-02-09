@@ -1,4 +1,6 @@
 class ConfirmationsController < Devise::ConfirmationsController
+  include ApplicationHelper
+
   # GET /resource/confirmation?confirmation_token=abcdef
   def show
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
@@ -21,7 +23,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     self.resource = resource_class.send_confirmation_instructions(resource_params)
     resource.errors.clear # Don't leak user information, like paranoid mode.
 
-    message = I18n.t("confirmations_controller.email_sent", email: ForemInstance.email)
+    message = I18n.t("confirmations_controller.email_sent", email: contact_email)
     flash.now[:global_notice] = message
     render :new
   end

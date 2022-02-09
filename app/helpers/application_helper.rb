@@ -335,4 +335,8 @@ module ApplicationHelper
     creator = User.with_role(:creator).first
     !creator.checked_code_of_conduct && !creator.checked_terms_and_conditions
   end
+
+  def contact_email
+    Settings::General.contact_email || ForemInstance.email
+  end
 end
