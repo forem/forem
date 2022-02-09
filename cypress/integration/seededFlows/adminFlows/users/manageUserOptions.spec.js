@@ -1,5 +1,5 @@
 function openUserOptions(callback) {
-  cy.findByTestId('user-options')
+  cy.findByRole('button', { name: 'Options' })
     .should('have.attr', 'aria-haspopup', 'true')
     .should('have.attr', 'aria-expanded', 'false')
     .click()
