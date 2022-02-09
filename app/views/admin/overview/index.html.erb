@@ -1,80 +1,146 @@
-<canvas id="myChart" width="400" height="400"></canvas>
+<%= javascript_packs_with_chunks_tag "admin/overview", defer: true %>
 
 <h1 class="crayons-title mb-4">
   Overview
 </h1>
 
 <div class="flex flex-col gap-4">
-  <section class="crayons-card p-7">
-    <header class="flex justify-between items-center mb-6">
-      <h2 class="crayons-subtitle-1">Analytics and trends</h2>
-      <select>
-        <option value="7">Last 7 days</option>
-      </select>
-    </header>
+  <div class="flex flex-col m:flex-row gap-4">
+    <section class="crayons-card p-7 m:basis-2-3">
+      <header class="flex justify-between items-center mb-7">
+        <h2 class="crayons-subtitle-1">Analytics and trends</h2>
+        <select class="crayons-select w-auto">
+          <option value="7">Last 7 days</option>
+          <option value="14">Last 14 days</option>
+          <option value="30">Last 30 days</option>
+        </select>
+      </header>
 
-    <div class="grid grid-cols-4 gap-7">
-      <div>
-        <header class="color-secondary">
-          <h3 class="fs-l fw-normal"><span class="color-primary fw-bold">18</span> posts</h3>
-          <p class="flex items-center fs-s mb-1">
-            <%= crayons_icon_tag(:increase, width: 18, height: 18, class: "color-accent-success") %>
-            17% increase
-          </p>
-        </header>
+      <div class="grid s:grid-cols-2 gap-7">
+        <div>
+          <header class="color-secondary">
+            <h3 class="fs-l fw-normal"><span class="color-primary fw-bold">18</span> posts</h3>
+            <p class="flex items-center fs-s mb-1">
+              <%= crayons_icon_tag(:increase, width: 18, height: 18, class: "color-accent-success") %>
+              17% increase
+            </p>
+          </header>
+          <canvas id="postsChart" width="400" height="100" class="-mx-1"></canvas>
+          <footer class="flex justify-between items-center fs-xs color-secondary">
+            <span>Mar 21</span>
+            <span>Today</span>
+          </footer>
+        </div>
 
         <div>
-          graph
+          <header class="color-secondary">
+            <h3 class="fs-l fw-normal"><span class="color-primary fw-bold">411</span> comments</h3>
+            <p class="flex items-center fs-s mb-1">
+              <%= crayons_icon_tag(:increase, width: 18, height: 18, class: "color-accent-success") %>
+              211% increase
+            </p>
+          </header>
+          <canvas id="commentsChart" width="400" height="100" class="-mx-1"></canvas>
+          <footer class="flex justify-between items-center fs-xs color-secondary">
+            <span>Mar 21</span>
+            <span>Today</span>
+          </footer>
         </div>
-      </div>
-
-      <div>
-        <header class="color-secondary">
-          <h3 class="fs-l fw-normal"><span class="color-primary fw-bold">411</span> comments</h3>
-          <p class="flex items-center fs-s mb-1">
-            <%= crayons_icon_tag(:increase, width: 18, height: 18, class: "color-accent-success") %>
-            211% increase
-          </p>
-        </header>
 
         <div>
-          graph
+          <header class="color-secondary">
+            <h3 class="fs-l fw-normal"><span class="color-primary fw-bold">1.7k</span> reactions</h3>
+            <p class="flex items-center fs-s mb-1">
+              <%= crayons_icon_tag(:decrease, width: 18, height: 18, class: "color-accent-danger") %>
+              31% decrease
+            </p>
+          </header>
+          <canvas id="reactionsChart" width="400" height="100" class="-mx-1"></canvas>
+          <footer class="flex justify-between items-center fs-xs color-secondary">
+            <span>Mar 21</span>
+            <span>Today</span>
+          </footer>
         </div>
-      </div>
-
-      <div>
-        <header class="color-secondary">
-          <h3 class="fs-l fw-normal"><span class="color-primary fw-bold">1.7k</span> reactions</h3>
-          <p class="flex items-center fs-s mb-1">
-            <%= crayons_icon_tag(:decrease, width: 18, height: 18, class: "color-accent-danger") %>
-            31% decrease
-          </p>
-        </header>
 
         <div>
-          graph
+          <header class="color-secondary">
+            <h3 class="fs-l fw-normal"><span class="color-primary fw-bold">11</span> new members</h3>
+            <p class="flex items-center fs-s mb-1">
+              <%= crayons_icon_tag(:increase, width: 18, height: 18, class: "color-accent-success") %>
+              2% increase
+            </p>
+          </header>
+          <canvas id="newMembersChart" width="400" height="100" class="-mx-1"></canvas>
+          <footer class="flex justify-between items-center fs-xs color-secondary">
+            <span>Mar 21</span>
+            <span>Today</span>
+          </footer>
         </div>
       </div>
+    </section>
 
-      <div>
-        <header class="color-secondary">
-          <h3 class="fs-l fw-normal"><span class="color-primary fw-bold">11</span> new members</h3>
-          <p class="flex items-center fs-s mb-1">
-            <%= crayons_icon_tag(:increase, width: 18, height: 18, class: "color-accent-success") %>
-            2% increase
-          </p>
-        </header>
+    <section class="crayons-card p-7 m:basis-1-3">
+      <h2 class="crayons-subtitle-1 mb-6">Health check</h2>
 
-        <div>
-          graph
+      <h3 class="crayons-subtitle-3">Flagged by moderators</h3>
+      <ul>
+        <li>8 users</li>
+        <li>1 post</li>
+        <li>32 comments</li>
+      </ul>
+
+      <h3 class="crayons-subtitle-3">Reported by moderators</h3>
+      <ul>
+        <li>8 users</li>
+        <li>1 post</li>
+        <li>32 comments</li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="grid s:grid-cols-2 gap-4">
+    <section class="crayons-card p-7">
+      <header class="mb-6">
+        <h2 class="crayons-subtitle-1">Flagged</h2>
+        <p class="color-secondary">Content and users flagged by moderators to be reviewed by admins.</p>
+      </header>
+      <div class="flex">
+        <div class="flex-1">
+          <strong class="fs-xl l:fs-2xl fw-heavy lh-tight">18</strong>
+          <p class="fs-s l:fs-base color-secondary">Posts</p>
+        </div>
+        <div class="flex-1">
+          <strong class="fs-xl l:fs-2xl fw-heavy lh-tight">22</strong>
+          <p class="fs-s l:fs-base color-secondary">Comments</p>
+        </div>
+        <div class="flex-1">
+          <strong class="fs-xl l:fs-2xl fw-heavy lh-tight">0</strong>
+          <p class="fs-s l:fs-base color-secondary">Users</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="crayons-card p-7">
-    <h2 class="crayons-subtitle-1 mb-6">Health check</h2>
-  </section>
+    <section class="crayons-card p-7">
+      <header class="mb-6">
+        <h2 class="crayons-subtitle-1">Reported</h2>
+        <p class="color-secondary">Content and users reported by members to be reviewed by admins.</p>
+      </header>
+      <div class="flex">
+        <div class="flex-1">
+          <strong class="fs-xl l:fs-2xl fw-heavy lh-tight">18</strong>
+          <p class="fs-s l:fs-base color-secondary">Posts</p>
+        </div>
+        <div class="flex-1">
+          <strong class="fs-xl l:fs-2xl fw-heavy lh-tight">22</strong>
+          <p class="fs-s l:fs-base color-secondary">Comments</p>
+        </div>
+        <div class="flex-1">
+          <strong class="fs-xl l:fs-2xl fw-heavy lh-tight">0</strong>
+          <p class="fs-s l:fs-base color-secondary">Users</p>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <section class="crayons-card p-7 grid grid-cols-2 gap-7">
     <div>
