@@ -1,5 +1,5 @@
 module ForemTag
-  REGISTRY_REGEXP = %r{#{URL.url}/\w+(/[\w-]+)?(/[\w-]+)?}
+  REGISTRY_REGEXP = %r{#{URL.url}/?}
   USER_ORG_REGEXP = %r{#{URL.url}/(?<name>[\w-]+)/?$}
   POST_PODCAST_REGEXP = %r{#{URL.url}/(?<podcast>[\w-]+)/[\w-]+/?}
   COMBINED_REGEXP = [USER_ORG_REGEXP, POST_PODCAST_REGEXP].freeze
@@ -7,7 +7,7 @@ module ForemTag
   def self.new(tag_name, input, parse_context)
     link = process_input(input)
     klass = determine_klass(link)
-    raise StandardError, "Invalid #{Settings::Community.community_name} URL." unless klass
+    raise StandardError, "No LiquidTag for given #{Settings::Community.community_name} URL." unless klass
 
     klass.__send__(:new, tag_name, link, parse_context)
   end

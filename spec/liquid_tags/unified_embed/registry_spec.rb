@@ -143,6 +143,7 @@ RSpec.describe UnifiedEmbed::Registry do
         "#{URL.url}/listings/#{listing.listing_category}/#{listing.slug}",
         "#{URL.url}/#{organization.slug}",
         "#{URL.url}/#{podcast.slug}/#{podcast_episode.slug}",
+        "#{URL.url}/t/#{tag.name}",
         "#{URL.url}/#{user.username}",
       ]
 
