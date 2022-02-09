@@ -28,6 +28,15 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://app.codesandbox.io/embed/exciting-knuth-hywlv?file=/index.html&runonclick=0&view=editor",
     ]
 
+    valid_forem_specific_links = [
+      URL.url + article.path,
+      "#{URL.url}/listings/#{listing.listing_category}/#{listing.slug}",
+      "#{URL.url}/#{organization.slug}",
+      "#{URL.url}/#{podcast.slug}/#{podcast_episode.slug}",
+      "#{URL.url}/#{user.username}",
+
+    ]
+
     valid_glitch_url_formats = [
       "https://zircon-quixotic-attraction.glitch.me",
       "https://glitch.com/edit/#!/zircon-quixotic-attraction",
@@ -137,6 +146,13 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(DotnetFiddleTag)
     end
 
+    it "returns ForemTag for a Forem-specific url", :aggregate_failures do
+      valid_forem_specific_links.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(ForemTag)
+      end
+    end
+
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
         .to eq(GistTag)
@@ -173,17 +189,6 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
-    it "returns LinkTag for a Forem url" do
-      expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
-        .to eq(LinkTag)
-    end
-
-    it "returns ListingTag for a Forem listing url" do
-      expect(described_class
-        .find_liquid_tag_for(link: "#{URL.url}/listings/#{listing.listing_category}/#{listing.slug}"))
-        .to eq(ListingTag)
-    end
-
     it "returns MediumTag for a valid medium url", :aggregate_failures do
       valid_medium_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
@@ -194,16 +199,6 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns NextTechTag for a nexttech url" do
       expect(described_class.find_liquid_tag_for(link: "https://nt.dev/s/6ba1fffbd09e"))
         .to eq(NextTechTag)
-    end
-
-    it "returns OrganizationTag for a Forem organization url" do
-      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{organization.slug}"))
-        .to eq(OrganizationTag)
-    end
-
-    it "returns PodcastTag for a Forem podcast url" do
-      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{podcast.slug}/#{podcast_episode.slug}"))
-        .to eq(PodcastTag)
     end
 
     it "returns RedditTag for a reddit url" do
