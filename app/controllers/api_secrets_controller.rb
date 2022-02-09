@@ -1,7 +1,6 @@
 class ApiSecretsController < ApplicationController
   before_action :load_api_secret, only: :destroy
   after_action :verify_authorized
-  include ApplicationHelper
 
   def create
     authorize ApiSecret

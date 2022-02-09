@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  include ApplicationHelper
-
   before_action :set_no_cache_header
   before_action :check_suspended, only: %i[update update_password]
   before_action :set_user,
