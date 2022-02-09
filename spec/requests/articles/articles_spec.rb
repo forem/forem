@@ -335,17 +335,4 @@ RSpec.describe "Articles", type: :request do
       expect(response.body).to include("Stats for Your Article")
     end
   end
-
-  describe "GET /delete_confirm" do
-    before { sign_in user }
-
-    context "without an article" do
-      it "renders not_found" do
-        article = create(:article, user: user)
-        expect do
-          get "#{article.path}_1/delete_confirm"
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-  end
 end
