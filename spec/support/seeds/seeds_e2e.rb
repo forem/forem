@@ -19,8 +19,14 @@ Settings::SMTP.password = "password"
 ##############################################################################
 
 # Some of our Cypress tests assume specific DEV profile fields to exist
-ProfileField.create_with(display_area: :header).find_or_create_by(label: "Work")
-ProfileField.create_with(display_area: :header).find_or_create_by(label: "Education")
+profile_field_group =
+  ProfileFieldGroup.create(name: "Test Group", description: "A group, for the tests")
+ProfileField
+  .create_with(display_area: :header, profile_field_group: profile_field_group)
+  .find_or_create_by(label: "Work")
+ProfileField
+  .create_with(display_area: :header, profile_field_group: profile_field_group)
+  .find_or_create_by(label: "Education")
 Profile.refresh_attributes!
 
 ##############################################################################
