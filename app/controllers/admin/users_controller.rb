@@ -39,10 +39,8 @@ module Admin
       if FeatureFlag.enabled?(:admin_member_view)
         set_feedback_messages
         set_related_reactions
-        set_user_details
-      else
-        set_user_details
       end
+      set_user_details
     end
 
     def update
