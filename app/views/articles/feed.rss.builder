@@ -3,7 +3,7 @@
 # rubocop:disable Metrics/BlockLength
 
 xml.instruct! :xml, version: "1.0"
-xml.rss version: "2.0" do
+xml.rss(version: "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
   xml.channel do
     if user
       xml.title "#{community_name}: #{user.name}"
@@ -33,6 +33,8 @@ xml.rss version: "2.0" do
       xml.description "The most recent home feed on #{community_name}."
       xml.link app_url
     end
+    xml.tag! "atom:link", rel: "self", type: "application/rss+xml", href: request.original_url
+    xml.language "en" # TODO: [yheuhtozr] support localized feeds (see #15136)
     articles.each do |article|
       xml.item do
         xml.title article.title
