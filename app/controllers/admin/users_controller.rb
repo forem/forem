@@ -295,6 +295,21 @@ module Admin
       params.permit(EMAIL_ALLOWED_PARAMS)
     end
 
+    def credit(_params)
+      return user_params unless FeatureFlag.enabled?(:admin_member_view)
+
+      credit_params = {}
+      if user_params[:credit_action] == "Add"
+        credit_params[:add_credits] = user_params[:credit_amount]
+      end
+
+      if user_params[:credit_action] == "Remove"
+        credit_params[:remove_credits] = user_params[:credit_amount]
+      end
+
+      credit_params
+    end
+
     def credit_params
       credit_params = nil
       if FeatureFlag.enabled?(:admin_member_view)
