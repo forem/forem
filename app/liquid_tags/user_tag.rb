@@ -3,9 +3,11 @@ class UserTag < LiquidTagBase
   include ActionView::Helpers::TagHelper
   PARTIAL = "users/liquid".freeze
 
-  def initialize(_tag_name, user, _parse_context)
+  def initialize(_tag_name, input, _parse_context)
     super
-    @user = parse_username_to_user(user.delete(" "))
+
+    username = input.gsub("#{URL.url}/", "").delete(" ")
+    @user = parse_username_to_user(username)
     @user_colors = user_colors(@user)
   end
 
