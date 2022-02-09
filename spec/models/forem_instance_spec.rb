@@ -98,44 +98,14 @@ RSpec.describe ForemInstance, type: :model do
   end
 
   describe ".contact_email" do
-    context "when we have only a contact email link", :aggregate_failures do
-      let(:email) { "contact@dev.to" }
+    let(:email) { "contact@dev.to" }
 
-      before do
-        allow(Settings::General).to receive(:contact_email).and_return(email)
-        allow(described_class).to receive(:email).and_return(nil)
-      end
-
-      it "sets the correct href" do
-        expect(described_class.contact_email).to be(email)
-      end
+    before do
+      allow(Settings::General).to receive(:contact_email).and_return(email)
     end
 
-    context "when we have only a Forem Instance email link", :aggregate_failures do
-      let(:email) { "noreply@dev.to" }
-
-      before do
-        allow(Settings::General).to receive(:contact_email).and_return(nil)
-        allow(described_class).to receive(:email).and_return(email)
-      end
-
-      it "sets the correct href" do
-        expect(described_class.contact_email).to be(email)
-      end
-    end
-
-    context "when we have both a contact eand Forem Instance email link", :aggregate_failures do
-      let(:contact_email) { "hello@dev.to" }
-      let(:forem_instance_email) { "noreply@dev.to" }
-
-      before do
-        allow(Settings::General).to receive(:contact_email).and_return(contact_email)
-        allow(described_class).to receive(:email).and_return(forem_instance_email)
-      end
-
-      it "sets the correct href" do
-        expect(described_class.contact_email).to be(contact_email)
-      end
+    it "sets the correct email" do
+      expect(described_class.contact_email).to be(email)
     end
   end
 end

@@ -14,7 +14,7 @@ class ForemInstance
   end
 
   def self.contact_email
-    Settings::General.contact_email || email
+    Settings::General.contact_email
   end
 
   # Return true if we are operating on a local installation, false otherwise

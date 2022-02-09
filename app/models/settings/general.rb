@@ -18,7 +18,7 @@ module Settings
     setting :video_encoder_key, type: :string
 
     # Emails
-    setting :contact_email, type: :string
+    setting :contact_email, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"]
     setting :periodic_email_digest, type: :integer, default: 2
 
     # Google Analytics Tracking ID, e.g. UA-71991000-1
