@@ -176,11 +176,11 @@ const adminUnpublishArticle = async (id, username, slug) => {
   }
 };
 
-const adminFeatureArticle = async (id) => {
+const adminFeatureArticle = async (id, featured) => {
   try {
-    const response = await request(`/admin/content_manager/articles/${id}`, {
+    const response = await request(`/articles/${id}/admin_feature_toggle`, {
       method: 'PATCH',
-      body: JSON.stringify({ article: { featured: 1 } }),
+      body: JSON.stringify({ article: { featured: featured ? 0 : 1 } }),
       credentials: 'same-origin',
     });
 
@@ -430,9 +430,10 @@ export function addBottomActionsListeners() {
     featureArticleBtn.addEventListener('click', () => {
       const {
         articleId: id,
+        articleFeatured: featured,
       } = featureArticleBtn.dataset;
       if (confirm('You are featuring this post; are you sure?')) {
-        adminFeatureArticle(id);
+        adminFeatureArticle(id, featured);
       }
     });
   }

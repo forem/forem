@@ -98,6 +98,7 @@ en:
         thumb_up: Thumb up
         toggle: Toggle section
         feature: Feature Post
+        unfeature: Unfeature Post
         unpublish: Unpublish Post
         vote_down: Low Quality
         flag_to_admins: Flag to Admins

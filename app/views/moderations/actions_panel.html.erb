@@ -182,10 +182,11 @@
           <button
             class="crayons-btn w-100"
             id="feature-article-btn"
+            data-article-featured="<%= @moderatable.featured %>"
             data-article-id="<%= @moderatable.id %>"
             data-article-author="<%= @moderatable.username %>"
             data-article-slug="<%= @moderatable.slug %>">
-            <%= t("views.moderations.actions.feature") %>
+            <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
           </button>
           <div class="block additional-subtext-section py-4 pt-2">
             <%= @recent_featured_count %> new posts have been featured in the past day.
