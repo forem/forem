@@ -253,11 +253,6 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
-    it "returns TagTag for a Forem tag url" do
-      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/t/#{tag.name}"))
-        .to eq(TagTag)
-    end
-
     it "returns TweetTag for a tweet url" do
       expect(described_class.find_liquid_tag_for(link: "https://twitter.com/aritdeveloper/status/1483614684884484099"))
         .to eq(TweetTag)
@@ -273,11 +268,6 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns TwitterTimelineTag for a twitter timeline url" do
       expect(described_class.find_liquid_tag_for(link: "https://twitter.com/FreyaHolmer/timelines/1215413954505297922"))
         .to eq(TwitterTimelineTag)
-    end
-
-    it "returns UserTag for a Forem user profile url" do
-      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{user.username}"))
-        .to eq(UserTag)
     end
 
     it "returns VimeoTag for a valid vimeo url", :aggregate_failures do
