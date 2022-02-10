@@ -15,7 +15,11 @@ module Api
         private
 
         def user_params
-          { email: params.require(:email), name: params[:name] }.compact_blank
+          {
+            email: params.require(:email),
+            name: params[:name],
+            username: params[:email]
+          }.compact_blank
         end
       end
     end
