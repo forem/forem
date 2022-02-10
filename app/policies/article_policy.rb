@@ -7,6 +7,10 @@ class ArticlePolicy < ApplicationPolicy
     minimal_admin?
   end
 
+  def admin_featured_toggle?
+    minimal_admin?
+  end
+
   def new?
     true
   end

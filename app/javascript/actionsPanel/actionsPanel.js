@@ -178,9 +178,9 @@ const adminUnpublishArticle = async (id, username, slug) => {
 
 const adminFeatureArticle = async (id, featured) => {
   try {
-    const response = await request(`/articles/${id}/admin_feature_toggle`, {
+    const response = await request(`/articles/${id}/admin_featured_toggle`, {
       method: 'PATCH',
-      body: JSON.stringify({ article: { featured: featured ? 0 : 1 } }),
+      body: JSON.stringify({ id, article: { featured: featured === 'true' ? 0 : 1 } }),
       credentials: 'same-origin',
     });
 
@@ -432,9 +432,7 @@ export function addBottomActionsListeners() {
         articleId: id,
         articleFeatured: featured,
       } = featureArticleBtn.dataset;
-      if (confirm('You are featuring this post; are you sure?')) {
-        adminFeatureArticle(id, featured);
-      }
+      adminFeatureArticle(id, featured);
     });
   }
 

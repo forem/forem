@@ -103,6 +103,9 @@ en:
         vote_down: Low Quality
         flag_to_admins: Flag to Admins
         vote_up: High Quality
+        featured_past_day:
+          one: "%{count} post from the past day is featured."
+          other: "%{count} posts from the past day are featured."
       all: All topics
       aside:
         all: All topics
