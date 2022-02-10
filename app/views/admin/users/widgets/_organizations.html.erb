@@ -31,8 +31,8 @@
           <%= crayons_icon_tag(:edit, class: "c-btn__icon", aria_hidden: true) %>
         </button>
         <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
-          <%= f.button crayons_icon_tag(:x, class: "c-btn__icon"), aria: { label: "Remove #{org_membership.organization.name} membership" }, class: "c-btn c-btn--destructive c-btn--icon-alone",
-                                                                   data: { confirm: "Are you sure you want to remove them from #{org_membership.organization.name}?" } %>
+          <%= f.button crayons_icon_tag(:x, class: "c-btn__icon", aria_hidden: true), aria: { label: "Remove #{org_membership.organization.name} membership" }, class: "c-btn c-btn--destructive c-btn--icon-alone",
+                                                                                      data: { confirm: "Are you sure you want to remove them from #{org_membership.organization.name}?" } %>
         <% end %>
       </div>
     </div>
