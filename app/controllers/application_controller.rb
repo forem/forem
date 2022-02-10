@@ -214,12 +214,6 @@ class ApplicationController < ActionController::Base
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
   end
 
-  # To ensure that components are sent back as HTML, we wrap their rendering in
-  # this helper method
-  def render_component(component_class, *args, **kwargs)
-    render component_class.new(*args, **kwargs), content_type: "text/html"
-  end
-
   private
 
   def configure_permitted_parameters

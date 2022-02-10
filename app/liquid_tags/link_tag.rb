@@ -1,7 +1,6 @@
 class LinkTag < LiquidTagBase
   include ActionView::Helpers
   PARTIAL = "articles/liquid".freeze
-  REGISTRY_REGEXP = %r{#{URL.url}/\w+/[a-zA-Z0-9-]+/?}
 
   def initialize(_tag_name, slug_or_path_or_url, _parse_context)
     super
@@ -56,5 +55,3 @@ end
 
 Liquid::Template.register_tag("link", LinkTag)
 Liquid::Template.register_tag("post", LinkTag)
-
-UnifiedEmbed.register(LinkTag, regexp: LinkTag::REGISTRY_REGEXP)

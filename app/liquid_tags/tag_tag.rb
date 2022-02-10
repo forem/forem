@@ -28,7 +28,8 @@ class TagTag < LiquidTagBase
   end
 
   def parse_tag_name_to_tag(input)
-    tag = Tag.find_by(name: input)
+    tag_name = input.gsub("#{URL.url}/t/", "")
+    tag = Tag.find_by(name: tag_name)
     raise StandardError, I18n.t("liquid_tags.tag_tag.invalid_tag_name") if tag.nil?
 
     tag
