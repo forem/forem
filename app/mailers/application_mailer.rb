@@ -13,7 +13,7 @@ class ApplicationMailer < ActionMailer::Base
   default(
     from: -> { email_from },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
-    reply_to: -> { ForemInstance.reply_to_email_address },
+    reply_to: -> { Settings::SMTP.reply_to_email_address },
   )
 
   def email_from(topic = "")
