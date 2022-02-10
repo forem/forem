@@ -12,7 +12,7 @@ function openUserOptions(callback) {
 }
 
 function closeUserUpdatedMessage(message) {
-  cy.get('[aria-live="polite"]')
+  cy.findByTestId('flash-success')
     .as('success')
     .then((element) => {
       expect(element.text().trim()).equal(message);
