@@ -6,7 +6,7 @@
 
     <%= f.select(
           :category_eq,
-          options_for_select(["", "thumbsup", "thumbsdown", "vomit"], @q.category_eq),
+          options_for_select(["", [t("views.reactions.category.thumbsup"), "thumbsup"], [t("views.reactions.category.thumbsdown"), "thumbsdown"], [t("views.reactions.category.vomit"), "vomit"]], @q.category_eq),
           {},
           class: "custom-select mx-3",
           aria: { label: "Action" },
@@ -35,7 +35,7 @@
         <td class="whitespace-nowrap"><%= reaction.id %></td>
         <td><%= link_to reaction.user.username, admin_user_path(reaction.user_id) %></td>
         <td class="whitespace-nowrap"><%= reaction.reactable_type %></td>
-        <td><%= reaction.category %></td>
+        <td><%= t("views.reactions.category.#{reaction.category}") %></td>
         <td>
           <% if reaction.reactable_type == "Article" %>
             <%= link_to reaction.reactable.title, reaction.reactable.path %>

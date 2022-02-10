@@ -161,8 +161,8 @@ async function loadCreatorSettings() {
       { LogoUploadController },
       { Application },
     ] = await Promise.all([
-      import('@admin-controllers/creator_settings_controller'),
-      import('@admin-controllers/logo_upload_controller'),
+      import('@admin/controllers/creator_settings_controller'),
+      import('@admin/controllers/logo_upload_controller'),
       import('@hotwired/stimulus'),
     ]);
 

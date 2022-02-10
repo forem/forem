@@ -34,6 +34,7 @@ FactoryBot.define do
         date: #{date if with_date}
         series: #{with_collection&.slug if with_collection}
         canonical_url: #{canonical_url if with_canonical_url}
+        #{"cover_image: #{Faker::Avatar.image}" if with_main_image && main_image_from_frontmatter}
         ---
 
         #{Faker::Hipster.paragraph(sentence_count: 2)}

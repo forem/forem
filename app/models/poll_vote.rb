@@ -30,7 +30,7 @@ class PollVote < ApplicationRecord
     return false unless poll
     return false unless poll.vote_previously_recorded_for?(user_id: user_id)
 
-    errors.add(:base, "cannot vote more than once in one poll")
+    errors.add(:base, I18n.t("models.poll_vote.cannot_vote_more_than_once"))
   end
 
   def touch_poll_votes_count

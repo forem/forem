@@ -14,6 +14,13 @@ RSpec.describe ArticlePolicy do
 
   before { allow(article).to receive(:published).and_return(true) }
 
+  describe ".limit_post_creation_to_admins?" do
+    subject(:method_call) { described_class.limit_post_creation_to_admins? }
+
+    # This is articulating the default assumption.  Other tests will likely toggle this behavior.
+    it { is_expected.to be_falsey }
+  end
+
   context "when user is not signed-in" do
     let(:user) { nil }
 
