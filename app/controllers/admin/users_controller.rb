@@ -156,8 +156,6 @@ module Admin
       redirect_to admin_user_path(params[:id])
     end
 
-    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
-    # once the HTML response isn't required anymore
     def send_email
       email_params = {
         email_body: send_email_params[:email_body],
@@ -202,8 +200,6 @@ module Admin
       end
     end
 
-    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
-    # once the HTML response isn't required anymore
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
