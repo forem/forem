@@ -8,7 +8,7 @@ module Constants
         contact_email: {
           description: "Used for contact links. Please provide an email address where users " \
                        "can get in touch with you or your team.",
-          placeholder: "yo@dev.to"
+          placeholder: "hello@example.com"
         },
         credit_prices_in_cents: {
           small: {
