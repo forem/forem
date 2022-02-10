@@ -88,9 +88,9 @@
         <small class="opacity-75">3 articles, 5 coomments, 10 users</small>
       </a>
 
-      <a href="/" class="flex flex-col c-link c-link--block -mx-4">
-        <strong class="fs-xl">11</strong>
-        <span>Reports submitted by <span class="fw-bold">Users</span></span>
+      <a href="<%= admin_feedback_messages_path %>" class="flex flex-col c-link c-link--block -mx-4">
+        <strong class="fs-xl"><%= @open_abuse_reports_count %></strong>
+        <span><%= "Report".pluralize(@open_abuse_reports_count) %> submitted by <span class="fw-bold">Users</span></span>
         <small class="opacity-75">3 articles, 5 coomments, 10 users</small>
       </a>
 
@@ -166,25 +166,3 @@
     </div>
   </section>
 </div>
-
-<% if false %>
-<div class="px-0 crayons-layout crayons-layout--2-cols crayons-layout--2-cols--1-2 crayons-layout--2-cols--inverted">
-  <article class="crayons-layout__content">
-    <section class="crayons-card mb-4">
-
-    <h2 class="crayons-subtitle-1 mb-3">Analytics</h2>
-    <article class="grid s:grid-cols-2 gap-3 mb-4" data-controller="ahoy">
-      <section class="crayons-card">
-        <div class="crayons-card__body">
-          <h2 class="crayons-title"><%= @open_abuse_reports_count %></h2>
-          <p class="crayons-subtitle-4 color-base-70">
-            <a href=<%= admin_feedback_messages_path %>>
-              <%= "Open report".pluralize(@open_abuse_reports_count) %>
-            </a>
-          </p>
-        </div>
-      </section>
-    </article>
-  </article>
-</div>
-<% end %>
