@@ -3,11 +3,7 @@ class PinnedArticlePolicy < ApplicationPolicy
     user&.any_admin?
   end
 
-  def update?
-    show?
-  end
+  alias update? show?
 
-  def destroy?
-    show?
-  end
+  alias destroy? show?
 end

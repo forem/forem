@@ -28,25 +28,17 @@ class ArticlePolicy < ApplicationPolicy
     !user_suspended?
   end
 
-  def delete_confirm?
-    update?
-  end
+  alias delete_confirm? update?
 
-  def discussion_lock_confirm?
-    update?
-  end
+  alias discussion_lock_confirm? update?
 
-  def discussion_unlock_confirm?
-    update?
-  end
+  alias discussion_unlock_confirm? update?
 
-  def destroy?
-    update?
-  end
+  alias destroy? update?
 
-  def preview?
-    true
-  end
+  alias edit? update?
+
+  alias preview? new?
 
   def stats?
     user_author? || user_admin? || user_org_admin?
