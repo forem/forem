@@ -1,4 +1,17 @@
 class ArticlePolicy < ApplicationPolicy
+  # @return [TrueClass] when only Forem admins can post an Article.
+  # @return [FalseClass] when most any Forem user can post an Article.
+  #
+  # @note This is for Authorization System: use case 1-1.  At present, this is the quickest way to
+  #       refactor our code to deliver on that feature.
+  #
+  # @see https://github.com/forem/forem/pull/16437 for pattern of adding a predicate method to the
+  #      "most relevant" class.
+  # @see https://github.com/orgs/forem/projects/46 for project details
+  def self.limit_post_creation_to_admins?
+    FeatureFlag.enabled?(:limit_post_creation_to_admins)
+  end
+
   def update?
     user_author? || user_admin? || user_org_admin? || minimal_admin?
   end
