@@ -74,7 +74,7 @@ GEM
       activerecord (>= 6.0, < 7.1)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    ahoy_email (2.1.1)
+    ahoy_email (2.1.2)
       actionmailer (>= 5)
       addressable (>= 2.3.2)
       nokogiri
@@ -234,7 +234,7 @@ GEM
       rainbow
       rubocop
       smart_properties
-    errbase (0.2.1)
+    errbase (0.2.2)
     erubi (1.10.0)
     et-orbi (1.2.4)
       tzinfo
@@ -901,7 +901,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 9.0)
   acts_as_follower!
   addressable (~> 2.8)
-  ahoy_email (~> 2.1.1)
+  ahoy_email (~> 2.1.2)
   ahoy_matey (~> 4.0)
   amazing_print (~> 1.4)
   ancestry (~> 4.1)
