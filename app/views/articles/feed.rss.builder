@@ -3,7 +3,9 @@
 # rubocop:disable Metrics/BlockLength
 
 xml.instruct! :xml, version: "1.0"
-xml.rss(version: "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
+xml.rss(:version => "2.0",
+        "xmlns:atom" => "http://www.w3.org/2005/Atom",
+        "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
   xml.channel do
     if user
       xml.title "#{community_name}: #{user.name}"
@@ -38,16 +40,12 @@ xml.rss(version: "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
     articles.each do |article|
       xml.item do
         xml.title article.title
-        author = user.instance_of?(User) ? user : article.user
-        # Is it OK to display the author's email?  I know on the profile,
-        # there's a checkbox for display email or not, but couldn't find
-        # what attribute in the schema matched that checkbox to do a check.
-        rfc_2822_author = "#{author.email} (#{author.name})"
-        xml.author rfc_2822_author
+        xml["dc"].creator user.instance_of?(User) ? user.name : article.user.name
         xml.pubDate article.published_at.to_s(:rfc822) if article.published_at
         xml.link app_url(article.path)
         xml.guid app_url(article.path)
-        xml.description sanitize(article.plain_html, tags: allowed_tags, attributes: allowed_attributes, scrubber: scrubber)
+        xml.description sanitize(article.plain_html,
+                                 tags: allowed_tags, attributes: allowed_attributes, scrubber: scrubber)
         article.tag_list.each do |tag_name|
           xml.category tag_name
         end
