@@ -1042,7 +1042,6 @@ DEPENDENCIES
   validate_url (~> 1.0)
   vault (~> 0.16)
   vcr (~> 6.0)
-  view_component (~> 2.48)
   warning (~> 1.2)
   wcag_color_contrast (~> 0.1)
   web-console (~> 4.2)
