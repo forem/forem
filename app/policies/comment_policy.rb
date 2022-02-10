@@ -22,7 +22,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
-    user_moderator? || minimal_admin?
+    user_moderator? || user_any_admin?
   end
 
   def hide?
@@ -32,7 +32,7 @@ class CommentPolicy < ApplicationPolicy
   alias unhide? hide?
 
   def admin_delete?
-    minimal_admin?
+    user_any_admin?
   end
 
   def permitted_attributes_for_update

@@ -6,7 +6,7 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def admin_index?
-    minimal_admin?
+    user_any_admin?
   end
 
   def moderator_index?
@@ -41,7 +41,7 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def user_moderator?
-    minimal_admin? || user.moderator_for_tags&.present?
+    user_any_admin? || user.moderator_for_tags&.present?
   end
 
   def mod_comment?
