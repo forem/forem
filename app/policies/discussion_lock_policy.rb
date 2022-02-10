@@ -5,9 +5,7 @@ class DiscussionLockPolicy < ApplicationPolicy
     (user_author? || minimal_admin?) && !user_suspended?
   end
 
-  def destroy?
-    create?
-  end
+  alias destroy? create?
 
   def permitted_attributes
     PERMITTED_ATTRIBUTES
