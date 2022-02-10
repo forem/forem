@@ -21,6 +21,14 @@ RSpec.describe ArticlePolicy do
     it { is_expected.to be_falsey }
   end
 
+  describe "#new?" do
+    it "does not require a user" do
+      expect do
+        described_class.new(nil, article).new?
+      end.not_to raise_error
+    end
+  end
+
   context "when user is not signed-in" do
     let(:user) { nil }
 

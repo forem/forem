@@ -6,6 +6,9 @@ RSpec.describe "Editor", type: :request do
       it "asks the non logged in user to sign in" do
         get new_path
 
+        # NOTE: [@jeremyf] This response status seems a bit surprising.  Should the prompt for signin redirect
+        # the user to a login page?  Or are we doing something with Javascript?  For now, paint me
+        # curious, but not enough to pull on this thread.
         expect(response).to have_http_status(:ok)
       end
     end

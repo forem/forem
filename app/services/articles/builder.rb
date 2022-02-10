@@ -14,17 +14,30 @@ module Articles
       new(...).call
     end
 
-    # the Builder returns a pair of [article, needs_authorization?]
-    # => `needs_authorization? can be either true or false
+    # the Builder returns a pair of [article, store_location]
+    # => store_location can be either true or false
+    #
+    # @note [@jeremyf] I renamed the boolean return value from
+    #       needs_authorization to store_location.  Why? because in the
+    #       ArticlesController#new action (the one place that instantiates the
+    #       Articles::Builder) when "needs_authorization" was true, we'd call
+    #       authorize(Article).  But at the time of writing, the implementation
+    #       details of ArticlePolicy#new? always returned true.  So the
+    #       "needs_authorization" was in fact behaving as a "should we store
+    #       this location or not?"  Hence the rename and "switching the
+    #       polarity" of the boolean.
+    #
+    # @see https://github.com/forem/forem/issues/16529 for snapshot of past
+    #      state
     def call
-      return [tag_user_editor_v2, true] if tag && editor_version2
-      return [tag_user, true] if tag&.submission_template.present? && user
-      return [prefill_user_editor_v2, true] if prefill.present? && editor_version2
-      return [prefill_user, true] if prefill.present? && user
-      return [tag_article, false] if tag
-      return [user_editor_v2, false] if editor_version2
+      return [tag_user_editor_v2, false] if tag && editor_version2
+      return [tag_user, false] if tag&.submission_template.present? && user
+      return [prefill_user_editor_v2, false] if prefill.present? && editor_version2
+      return [prefill_user, false] if prefill.present? && user
+      return [tag_article, true] if tag
+      return [user_editor_v2, true] if editor_version2
 
-      [user_editor_v1, false]
+      [user_editor_v1, true]
     end
 
     private
