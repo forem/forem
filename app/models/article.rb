@@ -155,7 +155,7 @@ class Article < ApplicationRecord
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
 
   validate :canonical_url_must_not_have_spaces
-  validate :past_or_present_date
+  # validate :past_or_present_date
   validate :validate_collection_permission
   validate :validate_tag
   validate :validate_video
