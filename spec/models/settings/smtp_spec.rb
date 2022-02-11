@@ -35,9 +35,9 @@ RSpec.describe Settings::SMTP do
       described_class.authentication = "plain"
       described_class.user_name = "username"
       described_class.password = "password"
-      described_class.domain = "forem.local",
-                               described_class.reply_to_email_address = reply_to_email_address,
-                               described_class.from_email_address = from_email_address
+      described_class.domain = "forem.local"
+      described_class.reply_to_email_address = reply_to_email_address
+      described_class.from_email_address = from_email_address
 
       expect(described_class.settings).to eq({
                                                address: "smtp.google.com",
