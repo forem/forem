@@ -33,12 +33,12 @@ class ArticlePolicy < ApplicationPolicy
 
   def update?
     require_user!
-    user_author? || user_admin? || user_org_admin? || minimal_admin?
+    user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
   def admin_unpublish?
     require_user!
-    minimal_admin?
+    user_any_admin?
   end
 
   # @note It is likely that we want this to mirror `:create?` in the future.  As it stands, we can
@@ -70,7 +70,7 @@ class ArticlePolicy < ApplicationPolicy
 
   def stats?
     require_user!
-    user_author? || user_admin? || user_org_admin?
+    user_author? || user_super_admin? || user_org_admin?
   end
 
   def permitted_attributes
@@ -82,7 +82,7 @@ class ArticlePolicy < ApplicationPolicy
 
   def subscriptions?
     require_user!
-    user_author? || user_admin?
+    user_author? || user_super_admin?
   end
 
   private

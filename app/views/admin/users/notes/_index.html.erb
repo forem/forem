@@ -8,13 +8,15 @@
   <% else %>
     <div class="pt-3">
       <% @notes.each do |note| %>
+        <% author = User.find(note.author_id).username %>
         <article class="c-list-item flex justify-between gap-4">
+          <h3 class="screen-reader-only">Note from <%= author %> on <%= note.created_at.strftime("%b %e '%y") %></h3>
           <div>
             <p><%= note.content %></p>
             <p class="fs-s color-secondary">
               <%= note.reason.presence %>
               <% if note.author_id.present? %>
-                by <span class="fw-medium"><%= User.find(note.author_id).username %></span>
+                by <span class="fw-medium"><%= author %></span>
               <% end %>
             </p>
           </div>

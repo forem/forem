@@ -6,7 +6,7 @@
   <p class="color-secondary">Credits enable users to purchase classified listings from your site. <a href="https://admin.forem.com/docs/advanced-customization/config/credits" rel="noopener noreferer" target="_blank" class="c-link c-link--branded">Learn more</a></p>
 </header>
 <div class="flex justify-between items-center">
-  <p class="fs-2xl fw-heavy"><%= @user.unspent_credits_count %></p>
+  <p data-testid="user-credits" class="fs-2xl fw-heavy"><%= @user.unspent_credits_count %></p>
   <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Adjust balance" data-modal-size="small" data-modal-content-selector="#adjust-balance">Adjust balance</button>
 </div>
 <% current_credits = @user.unspent_credits_count %>
@@ -30,7 +30,7 @@
                          size: 5,
                          min: 1,
                          max: 9999 %>
-      <%= f.label :credit_delta, "credits", class: "color-secondary flex-1", "aria-label": "Amount of credits to add or remove" %>
+      <%= f.label :credit_amount, "credits", class: "color-secondary flex-1", "aria-label": "Amount of credits to add or remove" %>
       </div>
     </div>
     <div class="crayons-field">
