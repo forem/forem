@@ -19,12 +19,10 @@
                 <%= report.created_at&.strftime("%b %e '%y") %>
               </time>
             </h3>
-
           </header>
           <p class="mb-1"><%= report.message %></p>
           <p class="fs-s color-secondary">For <a href="<%= report.reported_url %>" class="c-link" target="_blank" rel="noopener"><%= report.reported_url %></a></p>
         </div>
-
       </article>
     <% end %>
   </div>
