@@ -91,6 +91,8 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user.add_role(:trusted)
 end
 
+trusted_user = User.find_by(email: "trusted-user-1@forem.local")
+
 ##############################################################################
 
 seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
@@ -107,6 +109,23 @@ seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
     user_id: admin_user.id,
     organization_id: organization.id,
     type_of_user: "admin",
+  )
+end
+
+seeder.create_if_doesnt_exist(Organization, "slug", "awesomeorg") do
+  organization = Organization.create!(
+    name: "Awesome Org",
+    summary: Faker::Company.bs,
+    profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    nav_image: logo,
+    url: Faker::Internet.url,
+    slug: "awesomeorg",
+  )
+
+  OrganizationMembership.create!(
+    user_id: trusted_user.id,
+    organization_id: organization.id,
+    type_of_user: "member",
   )
 end
 
@@ -292,6 +311,36 @@ seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.local") do
 
   admin_user.follows.create!(followable: liquid_tags_user)
 end
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "credits-user@forem.local") do
+  user = User.create!(
+    name: "Credits User",
+    email: "credits-user@forem.local",
+    username: "credits_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+  user.setting.update(editor_version: "v1")
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
+  )
+  Credit.add_to(user, 100)
+
+  user
+end
+
 ##############################################################################
 
 seeder.create_if_none(NavigationLink) do
