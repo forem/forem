@@ -5,7 +5,7 @@ RSpec.describe DeviseMailer, type: :mailer do
 
   describe "#reset_password_instructions" do
     let(:email) { described_class.reset_password_instructions(user, "test") }
-    let(:from_email_address) { "yo@dev.to" }
+    let(:from_email_address) { "custom_noreply@forem.com" }
 
     before do
       allow(Settings::General).to receive(:app_domain).and_return("funky-one-of-a-kind-domain-#{rand(100)}.com")

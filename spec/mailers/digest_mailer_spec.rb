@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe DigestMailer, type: :mailer do
   let(:user) { create(:user) }
   let(:article) { build_stubbed(:article) }
-  let(:from_email_address) { "yo@dev.to" }
+  let(:from_email_address) { "custom_noreply@forem.com" }
 
   describe "#digest_email" do
     before do
