@@ -56,9 +56,6 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
-
-  # Enable new Admin Members
-  FeatureFlag.enable(:new_admin_members, user)
 end
 
 admin_user = User.find_by(email: "admin@forem.local")

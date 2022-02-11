@@ -14,7 +14,7 @@ gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to
 gem "acts-as-taggable-on", "~> 9.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
-gem "ahoy_email", "~> 2.1.1" # Email analytics for Rails
+gem "ahoy_email", "~> 2.1.2" # Email analytics for Rails
 gem "ahoy_matey", "~> 4.0" # Tracking analytics for Rails
 gem "ancestry", "~> 4.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.5.0" # Allows admins to query data
@@ -47,7 +47,7 @@ gem "honeycomb-beeline", "~> 2.8.2" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
-gem "i18n-js", "~> 3.9.0" # Helps with internationalization in Rails.
+gem "i18n-js", "~> 3.9.1" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.0" # A gem that easily generates imgproxy URLs for your images
 gem "inline_svg", "~> 1.8" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
@@ -96,18 +96,17 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.4.1" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.1.14" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.1.15" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "stripe", "~> 5.43" # Ruby library for the Stripe API
-gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
+gem "strong_migrations", "~> 0.8" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.16" # Used to store secrets
-gem "view_component", "~> 2.48" # View components for Rails
 gem "warning", "~> 1.2" # Adds custom processing for warnings, including the ability to ignore specific warning messages
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails

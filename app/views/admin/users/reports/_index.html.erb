@@ -1,0 +1,32 @@
+<h2 class="crayons-subtitle-1">Reports submitted by @<%= @user.username %> (<%= @related_reports.count %>)</h2>
+
+<% unless @related_reports.empty? %>
+  <div class="pt-3">
+    <% @related_reports.each do |report| %>
+      <article class="c-list-item c-list-item--interactive flex justify-between gap-4">
+        <div>
+          <header class="flex gap-3 items-center">
+            <h3 class="crayons-subtitle-3">
+              <a href="<%= admin_report_path(report.id) %>" class="c-link">
+                <%= report.category.capitalize %>
+              </a>
+            </h3>
+            <span class="c-indicator c-indicator--relaxed  <%= "c-indicator--danger" if report.status.casecmp("open").zero? %> <%= "c-indicator--success" if report.status.casecmp("resolved").zero? %>">
+              <%= report.status %>
+            </span>
+          </header>
+          <p class="mb-1"><%= report.message %></p>
+          <p class="fs-s color-secondary">For <a href="<%= report.reported_url %>" class="c-link" target="_blank" rel="noopener"><%= report.reported_url %></a></p>
+        </div>
+        <time datetime="<%= report.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= report.created_at&.strftime("%Y-%m-%d, %H:%M") %>">
+          <%= report.created_at&.strftime("%b %e '%y") %>
+        </time>
+      </article>
+    <% end %>
+  </div>
+<% else %>
+  <div class="align-center flex flex-col justify-center my-auto py-8">
+    <h3 class="fs-xl fw-normal mb-2">🧐 No reports submitted.</h3>
+    <p class="color-secondary">This user hasn't reported anything yet.</p>
+  </div>
+<% end %>
