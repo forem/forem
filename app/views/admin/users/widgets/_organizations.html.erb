@@ -63,7 +63,7 @@
     <div class="crayons-field">
       <%= f.label :type_of_user, "Permission level", class: "crayons-field__label" %>
           <p id="add-org-permission-description" class="crayons-field__description">Users can be assigned an Admin role or can remain a regular member of this organization.</p>
-      <%= f.select(:type_of_user, options_for_select(%w[member admin]), {}, class: "crayons-select"),  aria: { describedby: "add-org-permission-description" } %>
+      <%= f.select(:type_of_user, options_for_select(%w[member admin]), {}, class: "crayons-select", aria: { describedby: "add-org-permission-description" }) %>
     </div>
     <div>
       <%= f.submit "Add organization", class: "c-btn c-btn--primary" %>
