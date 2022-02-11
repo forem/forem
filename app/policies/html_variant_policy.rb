@@ -1,6 +1,6 @@
 class HtmlVariantPolicy < ApplicationPolicy
   def index?
-    minimal_admin?
+    user_any_admin?
   end
 
   alias show? minimal_admin?
