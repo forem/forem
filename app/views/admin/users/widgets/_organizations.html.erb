@@ -17,18 +17,17 @@
     <div class="c-card c-card--interactive flex p-2 relative items-center mb-2 pl-3">
       <div class="flex items-center gap-2 flex-1">
         <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link crayons-logo crayons-logo--l">
-          <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %> profile" class="crayons-logo__image">
+          <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="crayons-logo__image">
         </a>
         <h3 class="crayons-subtitle-3">
           <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link">
             <%= org_membership.organization.name %>
-            <span class="screen-reader-only"> profile</span>
           </a>
           <span class="color-secondary fw-normal">– <%= org_membership.type_of_user.capitalize %></span>
         </h3>
       </div>
       <div class="c-card__revealable shrink-0">
-        <button type="button" class="c-btn c-btn--icon-alone" aria-label="Edit <%= org_membership.organization.name %> membership"
+        <button type="button" class="c-btn c-btn--icon-alone" aria-label="Edit <%= org_membership.organization.name %> organization membership"
           data-modal-trigger data-modal-title="Edit organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon", aria_hidden: true) %>
         </button>
