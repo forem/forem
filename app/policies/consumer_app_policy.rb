@@ -7,15 +7,9 @@ class ConsumerAppPolicy < ApplicationPolicy
     @record.creator_app?
   end
 
-  def edit?
-    @record.creator_app?
-  end
+  alias edit? create?
 
-  def update?
-    @record.creator_app?
-  end
+  alias update? create?
 
-  def destroy?
-    @record.creator_app?
-  end
+  alias destroy? create?
 end

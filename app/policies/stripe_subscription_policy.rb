@@ -3,9 +3,7 @@ class StripeSubscriptionPolicy < ApplicationPolicy
     !user_suspended?
   end
 
-  def update?
-    !user_suspended?
-  end
+  alias update? create?
 
   def destroy?
     true

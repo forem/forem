@@ -7,9 +7,7 @@ class TagPolicy < ApplicationPolicy
     has_mod_permission?
   end
 
-  def update?
-    has_mod_permission?
-  end
+  alias update? edit?
 
   def admin?
     user_admin?
