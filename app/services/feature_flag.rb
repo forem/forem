@@ -44,5 +44,13 @@ module FeatureFlag
 
       enabled?(feature_flag_name, *args)
     end
+
+    # Retrieve a list of all currently defined flags and their status. This is
+    # primarily intended for development and wraps +Flipper.features+.
+    #
+    # @return [Hash<Symbol, Symbol>] the defined flags with their status (+:on+ or +:off+).
+    def all
+      Flipper.features.to_h { |feature| [feature.name.to_sym, feature.state] }
+    end
   end
 end
