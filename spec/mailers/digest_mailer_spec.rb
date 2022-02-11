@@ -8,6 +8,7 @@ RSpec.describe DigestMailer, type: :mailer do
   describe "#digest_email" do
     before do
       allow(article).to receive(:title).and_return("test title")
+      allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(from_email_address)
       allow(Settings::SMTP).to receive(:from_email_address).and_return(from_email_address)
     end
 
