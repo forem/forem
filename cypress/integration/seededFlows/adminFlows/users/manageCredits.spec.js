@@ -6,11 +6,11 @@ function openCreditsModal() {
   return cy.getModal();
 }
 
-// function closeUserUpdatedMessage() {
-//   cy.findByText('User has been updated').should('exist');
-//   cy.findByRole('button', { name: 'Close' }).click();
-//   cy.findByText('User has been updated').should('not.exist');
-// }
+function closeUserUpdatedMessage(message) {
+  cy.findByText(message).should('exist');
+  cy.findByRole('button', { name: 'Close' }).click();
+  cy.findByText(message).should('not.exist');
+}
 
 describe('Manage User Credits', () => {
   describe('As an admin', () => {
@@ -38,7 +38,7 @@ describe('Manage User Credits', () => {
       });
 
       cy.getModal().should('not.exist');
-      // closeUserUpdatedMessage(); // TODO
+      closeUserUpdatedMessage('Credits have been added!');
       cy.findByTestId('user-credits').should('have.text', '210');
     });
 
@@ -57,7 +57,7 @@ describe('Manage User Credits', () => {
       });
 
       cy.getModal().should('not.exist');
-      // closeUserUpdatedMessage(); // TODO
+      closeUserUpdatedMessage('Credits have been removed.');
       cy.findByTestId('user-credits').should('have.text', '89');
     });
 
@@ -76,7 +76,7 @@ describe('Manage User Credits', () => {
       });
 
       cy.getModal().should('not.exist');
-      // closeUserUpdatedMessage(); // TODO
+      closeUserUpdatedMessage('Credits have been removed.');
       cy.findByTestId('user-credits').should('have.text', '0');
     });
   });
