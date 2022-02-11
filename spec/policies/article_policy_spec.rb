@@ -21,14 +21,16 @@ RSpec.describe ArticlePolicy do
   end
 
   context "when user is not the author" do
+    forbidden_actions = %i[update edit manage delete_confirm destroy admin_unpublish admin_featured_toggle]
     it { is_expected.to permit_actions(%i[new create preview]) }
-    it { is_expected.to forbid_actions(%i[update edit manage delete_confirm destroy admin_unpublish admin_featured_toggle]) }
+    it { is_expected.to forbid_actions(forbidden_actions) }
 
     context "with suspended status" do
       before { user.add_role(:suspended) }
 
+      forbidden_actions = %i[create edit manage update delete_confirm destroy admin_unpublish admin_featured_toggle]
       it { is_expected.to permit_actions(%i[new preview]) }
-      it { is_expected.to forbid_actions(%i[create edit manage update delete_confirm destroy admin_unpublish admin_featured_toggle]) }
+      it { is_expected.to forbid_actions(forbidden_actions) }
     end
   end
 

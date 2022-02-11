@@ -10,7 +10,7 @@ RSpec.describe "ArticlesAdminFeature", type: :request do
   end
 
   it "features an article" do
-    expect(article.published).to be false
+    expect(article.featured).to be false
     patch "/articles/#{article.id}/admin_featured_toggle", params: {
       id: article.id,
       article: { featured: 1 }
@@ -31,5 +31,4 @@ RSpec.describe "ArticlesAdminFeature", type: :request do
     article.reload
     expect(article.featured).to be false
   end
-
 end
