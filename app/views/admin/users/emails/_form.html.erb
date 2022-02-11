@@ -4,12 +4,12 @@
 
   <div class="crayons-field">
     <%= f.label :email_subject, "Subject", class: "crayons-field__label" %>
-    <%= f.text_field :email_subject, class: "crayons-textfield", placeholder: "Short and descriptive subject line..." %>
+    <%= f.text_field :email_subject, class: "crayons-textfield", placeholder: "Short and descriptive subject line...", required: true %>
   </div>
 
   <div class="crayons-field">
     <%= f.label :email_body, "Body", class: "crayons-field__label" %>
-    <%= f.text_area :email_body, class: "crayons-textfield", rows: "7", placeholder: "What do you want to say?" %>
+    <%= f.text_area :email_body, class: "crayons-textfield", rows: "7", placeholder: "What do you want to say?", required: true %>
   </div>
 
   <div>
