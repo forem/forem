@@ -16,7 +16,7 @@ class ArticlePolicy < ApplicationPolicy
   #       authorization.  There's an assumption that all policy questions will require a user,
   #       unless you know specifically that they don't.
   #
-  # @todo [@jeremyf] I don't like altering the initializer and it's core assumption.  But the other
+  # @todo [@jeremyf] I don't like altering the initializer and its core assumption.  But the other
   #       option to get Articles working for https://github.com/forem/forem/issues/16529 is to
   #       address the at present fundamental assumption regarding "Policies are for authorizing when
   #       you have a user, otherwise let the controller decide."
