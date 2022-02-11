@@ -2,8 +2,6 @@
   <h2>Email Tools</h2>
 
   <div>
-    <%= button_to "Verify Email Ownership", verify_email_ownership_admin_user_path(@user), remote: true %>
-
     <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true do |f| %>
       Email last verified at: <%= @last_email_verification_date || "Never" %>
       <%= f.submit "Verify Email Ownership", class: "btn btn-primary float-right" %>

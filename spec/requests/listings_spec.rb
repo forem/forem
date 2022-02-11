@@ -314,7 +314,7 @@ RSpec.describe "/listings", type: :request do
       end
 
       it "creates listing draft and does not subtract credits" do
-        allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
+        allow(Credits::Buy).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post "/listings", params: draft_params
         end.to change(Listing, :count).by(1)
@@ -322,7 +322,7 @@ RSpec.describe "/listings", type: :request do
       end
 
       it "does not create a listing or subtract credits if the purchase does not go through" do
-        allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
+        allow(Credits::Buy).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post "/listings", params: listing_params
         end.to change(Listing, :count).by(0)
@@ -333,9 +333,10 @@ RSpec.describe "/listings", type: :request do
     context "when user is suspended" do
       it "raises error" do
         user.add_role(:suspended)
-        expect do
-          post "/listings", params: listing_params
-        end.to raise_error(SuspendedError)
+
+        post "/listings", params: listing_params
+
+        expect(response).to have_http_status :forbidden
       end
     end
 
@@ -393,7 +394,7 @@ RSpec.describe "/listings", type: :request do
 
       it "does not bump the listing or subtract credits if the purchase does not go through" do
         previous_bumped_at = listing.bumped_at
-        allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
+        allow(Credits::Buy).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           put "/listings/#{listing.id}", params: params
         end.to change(user.credits.spent, :size).by(0)

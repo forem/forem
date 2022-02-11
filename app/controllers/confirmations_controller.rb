@@ -1,7 +1,4 @@
 class ConfirmationsController < Devise::ConfirmationsController
-  FLASH_MESSAGE = "Email sent! Please contact support at %<email>s if you are "\
-                  "having trouble receiving your confirmation instructions.".freeze
-
   # GET /resource/confirmation?confirmation_token=abcdef
   def show
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
@@ -11,11 +8,7 @@ class ConfirmationsController < Devise::ConfirmationsController
       set_flash_message!(:notice, :confirmed)
       if resource.creator?
         sign_in(resource)
-        if FeatureFlag.enabled?(:creator_onboarding)
-          redirect_to new_admin_creator_setting_path
-        else
-          redirect_to root_path
-        end
+        redirect_to new_admin_creator_setting_path
       else
         respond_with_navigational(resource) { redirect_to after_confirmation_path_for(resource_name, resource) }
       end
@@ -28,7 +21,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     self.resource = resource_class.send_confirmation_instructions(resource_params)
     resource.errors.clear # Don't leak user information, like paranoid mode.
 
-    message = format(FLASH_MESSAGE, email: ForemInstance.email)
+    message = I18n.t("confirmations_controller.email_sent", email: ForemInstance.email)
     flash.now[:global_notice] = message
     render :new
   end

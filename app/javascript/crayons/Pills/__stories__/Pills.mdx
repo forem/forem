@@ -1,0 +1,76 @@
+# Pills
+
+Pill is an element representing a relatively short form of data, i.e. short label.
+Pill would visually encapsulate such a data in... well, a _pill_.
+
+Generally pills should occur in a herd 🐺. So it's type of data that you would expect to see as set of values.
+For example, imagine a list of roles associated with some user's account. 
+This could be represented as bunch of pills (of course depending on the context) - each pill being one role.
+
+Pills, expect just representing some data, should also have associated action (e.g. "remove", "edit", ...) but only one per pill.
+
+## Icons
+
+### Description Icon
+
+If possible, this icon should represent the actual data associated with the Pill, 
+e.g. if pill's value says "Cake" maybe the icon should also represent a cake.
+
+### Action Icon
+
+If possible, this icon should represent the action associated with the Pill, for example:
+
+- if action associated with a pill is to edit its value, maybe the icon should be a "pen".
+- if action associated with a pill is to remove it, maybe the icon should be a "x".
+
+If there is no action associated with a pill (for example when using the prop `noAction`), 
+consider not using this icon at all.
+
+#### Destructive Icon
+
+Using actionable pill with an action being designated to remove this specific data was a pretty common scenario.
+For that reason, if you need such a pill toggling a prop `destructiveActionIcon` will set "x" icon as default for right icon
+and will also apply appropriate styling.
+
+If you need that "destructive" styling but want to use another icon, you can do it too:
+
+```
+<Pill
+  destructiveActionIcon
+  actionIcon={HideIcon}
+  ...
+>
+...
+</Pill>
+```
+
+## No Action
+
+Pills should usually have an associated action (e.g. "remove", "edit", etc.) but if some rare cases you may want to show one (or more)
+of the pills without associated action (for example due to some limitation coming from backend logic, 
+like "you can't remove ABC role because you don't have appropriate privileges").
+
+Since Pill is a `<button>` under the hood we actually want to keep it that way. So for these specific and rare occasions please use
+`noAction` prop which will apply approriate attributes to the button (`aria-disabled="true"`) - this will keep the Pill
+accessible.
+
+It would be wise to provide additional explanation, for example by adding a `tooltip` (read more below).
+
+## Tooltip
+
+By passing a string or node in `tooltip` prop, button will get a custom tooltip (visually different than a classic `title`) on `:hover` and `:focus`.
+The tooltip makes up part of the "accessible name" used by assistive technologies like screen readers. 
+If you _do not_ wish the tooltip to be part of the accessible name, consider wrapping it in a `<span aria-hidden="true">`.
+Tooltips can be temporarily dismissed on `Escape` key press.
+
+```
+<Pill
+  noAction
+  tooltip="Here's why you can't do anything with this Pill..."
+  ...
+>
+```
+
+## Design
+
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FgHpwugeu9jFGW4d9u3ReuR%2FCrayons%3Fnode-id%3D436%253A212" allowfullscreen></iframe>

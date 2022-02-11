@@ -1,26 +1,29 @@
-<h2 class="crayons-title mb-6">Create badge</h2>
+<h1 class="crayons-title mb-4">Create badge</h1>
 
-<div class="crayons-card p-6">
-  <%= form_for [:admin, @badge], method: :post do |form| %>
-    <div class="form-group">
-      <%= form.label :title, "Title:" %>
-      <%= form.text_field :title, class: "form-control" %>
+<%= form_for [:admin, @badge], method: :post do |form| %>
+  <div class="crayons-card p-6 flex flex-col gap-4">
+    <div class="crayons-field">
+      <%= form.label :title, "Title", class: "crayons-field__label" %>
+      <%= form.text_field :title, class: "crayons-textfield" %>
     </div>
 
-    <div class="form-group">
-      <%= form.label :description, "Description:" %>
-      <%= form.text_field :description, class: "form-control" %>
+    <div class="crayons-field">
+      <%= form.label :description, "Description", class: "crayons-field__label" %>
+      <%= form.text_field :description, class: "crayons-textfield" %>
     </div>
 
-    <div class="form-group">
-      <%= form.label :badge_image, "Badge Image:" %>
-      <%= form.file_field :badge_image, class: "form-control" %>
+    <div class="crayons-field">
+      <%= form.label :badge_image, "Badge image", class: "crayons-field__label" %>
+      <%= form.file_field :badge_image, class: "" %>
     </div>
 
-    <div class="form-group">
-      <%= form.label :credits_awarded, "Credits awarded:" %>
-      <%= form.text_field :credits_awarded, class: "form-control" %>
+    <div class="crayons-field">
+      <%= form.label :credits_awarded, "Credits awarded", class: "crayons-field__label" %>
+      <%= form.text_field :credits_awarded, class: "crayons-textfield" %>
     </div>
-    <%= submit_tag "Create Badge", class: "btn btn-primary" %>
-  <% end %>
-</div>
+
+    <div>
+      <%= submit_tag "Create Badge", class: "c-btn c-btn--primary" %>
+    </div>
+  </div>
+<% end %>

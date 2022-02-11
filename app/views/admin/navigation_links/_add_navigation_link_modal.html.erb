@@ -1,18 +1,16 @@
-<span data-controller="modal" data-modal-root-selector-value="#add-navigation-link-modal-root" data-modal-content-selector-value="#add-navigation-link-modal" data-modal-title-value="Add Navigation Link" data-modal-size-value="l">
-  <button class="btn btn-primary" type="button" data-action="modal#toggleModal" id="nav-link-button">
-    Add Navigation Link
-  </button>
+<div data-controller="modal" data-modal-root-selector-value="#add-navigation-link-modal-root" data-modal-content-selector-value="#add-navigation-link-modal" data-modal-title-value="Add navigation link" data-modal-size-value="medium">
+  <div class="border-solid border-b-1 border-base-10 border-0 pb-6">
+    <button class="c-btn c-btn--secondary" type="button" data-action="modal#toggleModal" id="nav-link-button">
+      Add navigation link
+    </button>
+  </div>
 
   <div id="add-navigation-link-modal" class="hidden">
-    <div class="form-group grid p-6 mb-6 gap-1">
-      <div class="form-group grid p-6 mb-6 gap-1">
-        <%= form_for(NavigationLink.new, url: admin_navigation_links_path) do |form| %>
-          <%= render "form", form: form %>
-          <%= form.submit "Add link", class: "crayons-btn" %>
-        <% end %>
-      </div>
-    </div>
+    <%= form_for(NavigationLink.new, url: admin_navigation_links_path) do |form| %>
+      <%= render "form", form: form %>
+      <%= form.submit "Add link", class: "c-btn" %>
+    <% end %>
   </div>
 
   <div id="add-navigation-link-modal-root"></div>
-</span>
+</div>

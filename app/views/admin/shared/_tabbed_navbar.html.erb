@@ -1,7 +1,7 @@
 <!-- menu_items.is_a?(Hash) we have this condition because /reports changes to /feedback_messages  -->
 <% if menu_items.present? && menu_items.is_a?(Hash) && menu_items[:children].any? %>
   <header class="mb-3 admin__tabbed-navbar">
-    <h2 class="crayons-title"><%= menu_items[:name].to_s.titleize %></h2>
+    <h1 class="crayons-title"><%= menu_items[:name].to_s.titleize %></h1>
     <div class="block s:flex items-center space-between">
       <nav>
         <ul class="crayons-tabs crayons-tabs--wrapped">

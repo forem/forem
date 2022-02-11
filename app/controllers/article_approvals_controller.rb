@@ -14,6 +14,6 @@ class ArticleApprovalsController < ApplicationController
       end
     end
     @article.update(approved: params[:approved])
-    redirect_to "#{URI.parse(@article.path).path}/mod"
+    redirect_to "#{Addressable::URI.parse(@article.path).path}/mod"
   end
 end

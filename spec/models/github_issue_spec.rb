@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe GithubIssue, type: :model, vcr: true do
-  let(:url_issue) { "https://api.github.com/repos/thepracticaldev/dev.to/issues/7434" }
-  let(:url_pull_request) { "https://api.github.com/repos/thepracticaldev/dev.to/pulls/7653" }
-  let(:url_comment) { "https://api.github.com/repos/thepracticaldev/dev.to/issues/comments/621043602" }
-  let(:url_not_found) { "https://api.github.com/repos/thepracticaldev/dev.to/issues/0" }
+  let(:url_issue) { "https://api.github.com/repos/forem/forem/issues/7434" }
+  let(:url_pull_request) { "https://api.github.com/repos/forem/forem/pulls/7653" }
+  let(:url_comment) { "https://api.github.com/repos/forem/forem/issues/comments/621043602" }
+  let(:url_not_found) { "https://api.github.com/repos/forem/forem/issues/0" }
 
   it { is_expected.to validate_length_of(:url).is_at_most(400) }
   it { is_expected.to validate_inclusion_of(:category).in_array(%w[issue issue_comment]) }

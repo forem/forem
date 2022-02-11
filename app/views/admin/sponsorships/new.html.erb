@@ -13,12 +13,12 @@
 
     <div class="form-group">
       <%= f.label :level, "Level:" %>
-      <%= f.select :level, options_for_select(Sponsorship::LEVELS, selected: @sponsorship.level), required: true, class: "form-control selectpicker" %>
+      <%= f.select :level, options_for_select(Sponsorship::LEVELS, selected: @sponsorship.level), required: true, class: "form-control" %>
     </div>
 
     <div class="form-group">
       <%= f.label :status, "Status:" %>
-      <%= f.select :status, options_for_select(Sponsorship::STATUSES, selected: @sponsorship.status), required: true, class: "form-control selectpicker" %>
+      <%= f.select :status, options_for_select(Sponsorship::STATUSES, selected: @sponsorship.status), required: true, class: "form-control" %>
     </div>
 
     <div class="form-group">
