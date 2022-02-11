@@ -37,6 +37,7 @@ describe('Manage User Organziations', () => {
       closeUserUpdatedMessage('User was successfully added to Bachmanity');
       cy.getModal().should('not.exist');
 
+      // Focusing on the link is required to make buttons visible.
       cy.findByRole('link', { name: 'Bachmanity' }).focus();
       cy.findByRole('button', {
         name: 'Edit Bachmanity organization membership',
@@ -69,6 +70,7 @@ describe('Manage User Organziations', () => {
       closeUserUpdatedMessage('User was successfully added to Awesome Org');
       cy.getModal().should('not.exist');
 
+      // Focusing on the link is required to make buttons visible.
       cy.findByRole('link', { name: 'Bachmanity' }).focus();
       cy.findByRole('button', {
         name: 'Edit Bachmanity organization membership',
