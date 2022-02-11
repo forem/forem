@@ -1,0 +1,131 @@
+---
+fr:
+  models:
+    api_secret:
+      api_limit_reached: API secret limit of 20 per user has been reached
+    application_record:
+      uninferrable: Could not infer a decorator for %{class}.
+    article:
+      a_post_by: A post by %{user_name}
+      video_unpermitted: cannot be added by member without permission
+      video_processing: cannot be set to true if video is still processing
+      cannot_search_tags_for: 'Cannot search tags for: %{tag}'
+      cannot_search_tags_for_tags: 'Cannot search tags for: %{tags}'
+      unique_coauthor: co-author IDs must be unique
+      too_many_tags: exceed the maximum of 4 tags
+      is_too_long: is too long.
+      invalid_date: must be entered in DD/MM/YYYY format with current or past date
+      series_unpermitted: must be one you have permission to post to
+      invalid_coauthor: must be valid user IDs
+      same_author: must not be the same user as the author
+      must_not_have_spaces: must not have spaces
+      published: Published
+      unique_url: has already been taken. Email %{email} for further details.
+      mention_too_many:
+        one: You cannot mention more than %{count} users in a post!
+        other: You cannot mention more than %{count} users in a post!
+    broadcast:
+      single_active: You can only have one active announcement broadcast
+    comment:
+      deleted: "[deleted]"
+      has_been_deleted: "%{type} has been deleted."
+      hidden: "[hidden by post author]"
+      is_not_valid: is not valid.
+      locked: the discussion is locked on this Post
+      type:
+        Article: Article
+        item: item
+        PodcastEpisode: Podcast episode
+      suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.
+      mention_too_many:
+        one: You cannot mention more than %{count} users in a comment!
+        other: You cannot mention more than %{count} users in a comment!
+    feedback_message:
+      reported: "(you) previously reported this URL."
+    github_issue:
+      issue_comment_not_found: Issue comment %{issue_id} not found
+      issue_not_found: Issue %{issue_id} not found
+    html_variant:
+      no_edits: cannot change once published and approved
+    identity:
+      no_email_msg: No email found. Please relink your %{provider} account to avoid errors.
+    listing:
+      too_many_tags: exceed the maximum of 8 tags
+      too_many_linebreaks: has too many linebreaks. No more than 12 allowed.
+      image_not_allowed: is not allowed to include images.
+      liquid_not_allowed: is not allowed to include liquid tags.
+    mention:
+      is_not_valid: is not valid.
+    organization:
+      integer_only: Integer only. No sign allowed.
+      reserved_word: "%<value>s is a reserved word. Contact site admins for help registering your organization."
+    page:
+      body_must_exist: must exist if body_html or body_json doesn't exist.
+    podcast:
+      slug_is_reserved: slug is reserved
+    podcast_episode_appearance:
+      provided_role_is_not_valid: provided role is not valid
+    poll_skip:
+      cannot_vote_more_than_once: cannot vote more than once in one poll
+    poll_vote:
+      cannot_vote_more_than_once: cannot vote more than once in one poll
+    profile_pin:
+      only_five: cannot have more than five total pinned posts
+      pin_unpermitted: must have proper permissions for pin
+    rating_vote:
+      not_permitted: is not permitted to take this action.
+    reaction:
+      is_not_valid: is not valid.
+    response_template:
+      user_nil_only: cannot have a user ID associated.
+      comment_markdown: Comment templates must use Markdown as its content type.
+      email_text: Email templates must use plain text or HTML as its content type.
+      limit_reached: Response template limit of 30 per user has been reached
+    settings:
+      campaign:
+        share_your_project: Share your project
+      community:
+        message: may not include the "<" nor ">" character
+        new_forem: New Forem
+        user: user
+      general:
+        community_sponsors: Community Sponsors
+        the_community_mascot: The community mascot
+      user_experience:
+        message: 'must be be a 3 or 6 character hex (starting with #)'
+    sponsorship:
+      invalid_type: is not a sponsorable type
+      already_sponsored: The tag is already sponsored
+      only_one_level: You can have only one sponsorship of %{levels}
+      level:
+        gold: gold
+        silver: silver
+        bronze: bronze
+    tag:
+      alias_for: alias_for must refer to an existing tag
+    tag_adjustment:
+      too_many_tags: 4 tags max per article.
+      unpermitted: does not have privilege to adjust these tags
+      not_live: selected for removal is not a current live tag.
+      unique: can't be an already adjusted tag
+    tweet:
+      tweet_not_found: Tweet not found
+    user:
+      could_not_send: confirmation could not be sent. %{e_message}
+      password_not_matched: doesn't match password confirmation
+      has_been_banished: has been banished.
+      is_taken: "%{username} is taken."
+      user_could_not_be_saved: User could not be saved. %{e_message}
+      username_is_reserved: username is reserved
+    user_block:
+      cant_be_the_same: can't be the same as the blocked_id
+    user_subscription:
+      non_apple: Can't subscribe with an Apple private relay. Please update email.
+      source_not_found: Source not found. Please make sure your %{source} is active!
+      not_enabled: User subscriptions are not enabled for the source.
+    users:
+      deleted_user:
+        name: "[Deleted User]"
+      setting:
+        invalid_hex: is not a valid hex color
+        invalid_rss: is not a valid RSS/Atom feed

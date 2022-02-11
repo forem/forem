@@ -28,6 +28,102 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
+  describe "#display_navigation_link?" do
+    subject(:method_call) { helper.display_navigation_link?(link: link) }
+
+    let(:link) { build(:navigation_link, display_only_when_signed_in: display_only_when_signed_in) }
+
+    before do
+      allow(helper).to receive(:user_signed_in?).and_return(user_signed_in)
+      allow(helper).to receive(:navigation_link_is_for_an_enabled_feature?)
+        .with(link: link)
+        .and_return(navigation_link_is_for_an_enabled_feature)
+    end
+
+    context "when user signed in and link requires signin and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_only_when_signed_in) { true }
+      let(:user_signed_in) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user signed in and link requires signin and feature disabled" do
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { true }
+      let(:navigation_link_is_for_an_enabled_feature) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when user signed in and link **does not** require signin and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user signed in and link **does not** require signin and feature disabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { false }
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { true }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when user **not** signed in and link requires signin and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_only_when_signed_in) { true }
+      let(:user_signed_in) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when user **not** signed in and link **does not** require signin and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { false }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user **not** signed in and link **does not** require signin and feature disabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { false }
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { false }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe "#navigation_link_is_for_an_enabled_feature?" do
+    subject(:method_call) { helper.navigation_link_is_for_an_enabled_feature?(link: link) }
+
+    let(:url) { URL.url("/somehwere") }
+    let(:link) { build(:navigation_link, url: url) }
+
+    context "when Listing feature is enabled" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(true) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when Listing feature is disabled and link not for listing" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when Listing feature is disabled and link is for /listings" do
+      let(:url) { URL.url("/listings") }
+
+      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe "#beautified_url" do
     it "strips the protocol" do
       expect(helper.beautified_url("https://github.com")).to eq("github.com")

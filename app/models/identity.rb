@@ -2,9 +2,6 @@
 #        :delete for the relationship.  That means no before/after
 #        destroy callbacks will be called on this object.
 class Identity < ApplicationRecord
-  NO_EMAIL_MSG = "No email found. Please relink your %<provider>s " \
-                 "account to avoid errors.".freeze
-
   belongs_to :user
 
   scope :enabled, -> { where(provider: Authentication::Providers.enabled) }
@@ -44,6 +41,6 @@ class Identity < ApplicationRecord
   end
 
   def email
-    auth_data_dump&.info&.email || format(NO_EMAIL_MSG, provider: provider)
+    auth_data_dump&.info&.email || I18n.t("models.identity.no_email_msg", provider: provider)
   end
 end

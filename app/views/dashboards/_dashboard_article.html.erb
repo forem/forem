@@ -10,7 +10,7 @@
 
   <div class="js-ellipsis-menu relative inline-block float-right">
     <button id="ellipsis-menu-trigger-<%= article.id %>" aria-controls="ellipsis-menu-dropdown-<%= article.id %>" aria-expanded="false" aria-haspopup="true" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon">
-      <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: t("views.dashboard.article.more.icon")) %>
+      <%= crayons_icon_tag("overflow-horizontal", title: t("views.dashboard.article.more.icon")) %>
     </button>
 
     <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 z-10 align-left js-ellipsis-menu-dropdown">

@@ -72,10 +72,10 @@ class GithubIssue < ApplicationRecord
     def error_message(url)
       if PATH_COMMENT_REGEXP.match?(url)
         _, issue_id = comment_repo_and_issue_id(url)
-        "Issue comment #{issue_id} not found"
+        I18n.t("models.github_issue.issue_comment_not_found", issue_id: issue_id)
       else
         _, issue_id = issue_or_pull_repo_and_issue_id(url)
-        "Issue #{issue_id} not found"
+        I18n.t("models.github_issue.issue_not_found", issue_id: issue_id)
       end
     end
   end

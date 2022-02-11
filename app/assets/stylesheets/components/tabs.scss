@@ -108,32 +108,6 @@
     }
   }
 
-  &--pills {
-    .crayons-tabs__item--current {
-      background: var(--tab-bg-current);
-      color: var(--tab-pill-color-current);
-
-      &::after {
-        display: none;
-      }
-    }
-  }
-
-  &--stacked {
-    flex-direction: column;
-    @media (min-width: $breakpoint-s) {
-      flex-direction: row;
-    }
-
-    .crayons-tabs__item {
-      margin: 0;
-
-      @media (min-width: $breakpoint-s) {
-        margin: 0 var(--su-1);
-      }
-    }
-  }
-
   &--wrapped {
     flex-wrap: wrap;
 
@@ -148,28 +122,6 @@
       width: auto;
     }
   }
-
-  &--muted {
-    .crayons-tabs__item {
-      color: var(--tab-muted-color);
-
-      &:hover {
-        color: var(--tab-muted-color-hover);
-        background: var(--tab-muted-bg-hover);
-      }
-
-      &:after {
-        background: var(--tab-muted-bg-current);
-      }
-    }
-
-    &.crayons-tabs--pills {
-      .crayons-tabs__item--current {
-        color: var(--tab-muted-color-current);
-        background: var(--tab-muted-bg-current);
-      }
-    }
-  }
 }
 
 .crayons-navigation {
@@ -180,7 +132,7 @@
   overflow-x: auto;
   flex-wrap: nowrap;
   // !important here because reset.scss is screwed up a little for ul,ol elements... gotta fix it one day...
-  padding: var(--su-1) 0 !important; // padding to improve tapable
+  padding: var(--su-1) 0 !important; // padding to improve tapping area
   margin: calc(-1 * var(--su-1)) 0 !important;
 
   @media (min-width: $breakpoint-s) {
@@ -204,7 +156,7 @@
 
       &:hover {
         color: var(--accent-brand);
-        background: var(--base-inverted-a50);
+        background: var(--base-inverted);
       }
     }
 
@@ -243,7 +195,7 @@
       background: none;
 
       &:hover {
-        background: var(--base-inverted-a50);
+        background: var(--base-inverted);
       }
     }
   }

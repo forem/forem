@@ -68,7 +68,8 @@ class FollowsController < ApplicationController
                 unfollow(followable, params[:followable_type], need_notification: need_notification)
               else
                 if rate_limiter.limit_by_action("follow_account")
-                  render json: { error: "Daily account follow limit reached!" }, status: :too_many_requests
+                  render json: { error: I18n.t("follows_controller.daily_limit") },
+                         status: :too_many_requests
                   return
                 end
                 follow(followable, need_notification: need_notification)
@@ -101,10 +102,10 @@ class FollowsController < ApplicationController
   def follow(followable, need_notification: false)
     user_follow = current_user.follow(followable)
     Notification.send_new_follower_notification(user_follow) if need_notification
-    "followed"
+    I18n.t("follows_controller.followed")
   rescue ActiveRecord::RecordInvalid
     ForemStatsClient.increment("users.invalid_follow")
-    "already followed"
+    I18n.t("follows_controller.already_followed")
   end
 
   def unfollow(followable, followable_type, need_notification: false)
@@ -113,6 +114,6 @@ class FollowsController < ApplicationController
 
     Follows::DeleteCached.call(current_user, followable_type, followable.id)
 
-    "unfollowed"
+    I18n.t("follows_controller.unfollowed")
   end
 end

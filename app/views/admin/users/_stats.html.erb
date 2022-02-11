@@ -1,0 +1,30 @@
+<section class="crayons-card mb-7 px-2 py-3 flex flex-col l:flex-row gap-4 l:gap-0">
+  <div class="flex flex-1">
+    <div class="align-center flex-1">
+      <strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.comments_count %></strong>
+      <p class="fs-s l:fs-base color-secondary">Comments</p>
+    </div>
+    <div class="align-center flex-1">
+      <strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.articles_count %></strong>
+      <p class="fs-s l:fs-base color-secondary">Posts</p>
+    </div>
+    <div class="align-center flex-1">
+      <strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.reactions_count %></strong>
+      <p class="fs-s l:fs-base color-secondary">Reactions</p>
+    </div>
+  </div>
+  <div class="flex flex-1">
+    <div class="align-center flex-1">
+      <strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.followers_count %></strong>
+      <p class="fs-s l:fs-base color-secondary">Followers</p>
+    </div>
+    <div class="align-center flex-1">
+      <strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.following_users_count %></strong>
+      <p class="fs-s l:fs-base color-secondary">Following</p>
+    </div>
+    <div class="align-center flex-1">
+      <strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.badge_achievements_count %></strong>
+      <p class="fs-s l:fs-base color-secondary">Badges</p>
+    </div>
+  </div>
+</section>

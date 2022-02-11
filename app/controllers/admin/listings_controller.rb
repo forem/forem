@@ -1,6 +1,5 @@
 module Admin
   class ListingsController < Admin::ApplicationController
-    include ListingsToolkit
     ALLOWED_PARAMS = %i[
       published body_markdown title category listing_category_id tag_list action organization_id
     ].freeze
@@ -22,9 +21,14 @@ module Admin
     def update
       @listing = Listing.find(params[:id])
       handle_publish_status if listing_params[:published]
-      bump_listing(@listing.cost) if listing_params[:action] == "bump"
-      update_listing_details
-      clear_listings_cache
+
+      if listing_params[:action] == "bump"
+        bump_success = Listings::Bump.call(@listing, user: current_user)
+        return process_no_credit_left unless bump_success
+      end
+
+      @listing.update(listing_params.compact)
+      @listing.clear_cache
       flash[:success] = "Listing updated successfully"
       redirect_to edit_admin_listing_path(@listing)
     end
@@ -51,6 +55,10 @@ module Admin
 
     def include_unpublished?
       params[:include_unpublished] == "1"
+    end
+
+    def process_no_credit_left
+      redirect_to admin_listings_path, notice: "Not enough available credits"
     end
   end
 end

@@ -2,13 +2,13 @@ require "rails_helper"
 
 RSpec.describe GithubTag::GithubIssueTag, type: :liquid_tag, vcr: true do
   describe "#id" do
-    let(:url_issue) { "https://github.com/thepracticaldev/dev.to/issues/7434" }
-    let(:url_issue_fragment) { "https://github.com/thepracticaldev/dev.to/issues/7434#issue-604653303" }
-    let(:url_pull_request) { "https://github.com/thepracticaldev/dev.to/pull/7653" }
-    let(:url_pull_request_issue_fragment) { "https://github.com/thepracticaldev/dev.to/pull/7653#issue-412271322" }
-    let(:url_issue_comment) { "https://github.com/thepracticaldev/dev.to/issues/7434#issuecomment-621043602" }
-    let(:url_pull_request_comment) { "https://github.com/thepracticaldev/dev.to/pull/7653#issuecomment-622572436" }
-    let(:url_not_found) { "https://github.com/thepracticaldev/dev.to/issues/0" }
+    let(:url_issue) { "https://github.com/forem/forem/issues/7434" }
+    let(:url_issue_fragment) { "https://github.com/forem/forem/issues/7434#issue-604653303" }
+    let(:url_pull_request) { "https://github.com/forem/forem/pull/7653" }
+    let(:url_pull_request_issue_fragment) { "https://github.com/forem/forem/pull/7653#issue-412271322" }
+    let(:url_issue_comment) { "https://github.com/forem/forem/issues/7434#issuecomment-621043602" }
+    let(:url_pull_request_comment) { "https://github.com/forem/forem/pull/7653#issuecomment-622572436" }
+    let(:url_not_found) { "https://github.com/forem/forem/issues/0" }
 
     def generate_tag(url)
       Liquid::Template.register_tag("github", GithubTag)

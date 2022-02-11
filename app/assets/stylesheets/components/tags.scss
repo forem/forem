@@ -1,14 +1,8 @@
 @import '../config/import';
 
 .crayons-tag {
-  --tag-bg: var(--base-a5);
-  --tag-prefix: var(--base-a60);
-
-  --tag-bg-hover: var(--base-a5);
-  --tag-prefix-hover: var(--base);
-
   background: transparent;
-  color: var(--base-80);
+  color: var(--tag-color);
   border-radius: var(--radius);
   display: inline-flex;
   align-items: center;
@@ -25,19 +19,19 @@
 
   &--filled {
     background: var(--tag-bg);
-    color: var(--base-90);
+    color: var(--tag-color-hover);
   }
 
   &--monochrome {
     .crayons-tag__prefix {
-      color: var(--base-a60);
+      color: var(--tag-prefix);
     }
   }
 
   &:hover,
   &:focus {
     background: var(--tag-bg-hover);
-    color: var(--base);
+    color: var(--tag-color-hover);
     box-shadow: inset 0 0 0 1px var(--tag-bg-hover),
       inset 0 0 0 1px var(--tag-bg-hover), inset 0 0 0 1px var(--tag-bg-hover);
 

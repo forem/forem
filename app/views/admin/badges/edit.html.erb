@@ -1,15 +1,13 @@
-<header class="flex mb-6">
-  <h2 class="crayons-title"><%= "Edit Badge #{@badge.id}" %></h2>
+<header class="flex justify-between mb-4 items-center">
+  <h1 class="crayons-title"><%= "Edit badge #{@badge.id}" %></h1>
 
-  <div class="ml-auto">
-    <%= link_to "Back to All Badges", admin_badges_path, class: "btn btn-primary " %>
-  </div>
+  <%= link_to "Back to All Badges", admin_badges_path, class: "c-link c-link--block" %>
 </header>
 
-<div class="crayons-card crayons-card--content-rows">
-  <%= form_for [:admin, @badge], method: :patch do |form| %>
-    <div class="crayons-field mb-3">
-      <%= form.label :title, "Title:", class: "crayons-field__label" %>
+<%= form_for [:admin, @badge], method: :patch do |form| %>
+  <div class="crayons-card flex flex-col gap-4 p-6">
+    <div class="crayons-field">
+      <%= form.label :title, "Title", class: "crayons-field__label" %>
       <p class="crayons-field__description">
         Badge's link is auto-generated based on the title:
         <%= link_to @badge.path, @badge.path %>
@@ -17,23 +15,26 @@
       <%= form.text_field :title, class: "crayons-textfield" %>
     </div>
 
-    <div class="crayons-field mb-3">
-      <%= form.label :description, "Description:", class: "crayons-field__label" %>
+    <div class="crayons-field">
+      <%= form.label :description, "Description", class: "crayons-field__label" %>
       <%= form.text_field :description, class: "crayons-textfield" %>
     </div>
 
-    <div class="crayons-field mb-3">
-      <%= form.label :badge_image, "Badge Image:", class: "crayons-field__label" %>
+    <div class="crayons-field">
+      <%= form.label :badge_image, "Badge image", class: "crayons-field__label" %>
       <% if @badge.badge_image %>
         <img class="mx-auto mt-3" width="60" height="60" src="<%= @badge.badge_image %>" alt="badge image">
       <% end %>
       <%= form.file_field :badge_image %>
     </div>
 
-    <div class="crayons-field mb-3">
+    <div class="crayons-field">
       <%= form.label :credits_awarded, "Credits awarded:", class: "crayons-field__label" %>
       <%= form.text_field :credits_awarded, class: "crayons-textfield" %>
     </div>
-    <%= submit_tag "Update Badge", class: "btn btn-primary" %>
-  <% end %>
-</div>
+
+    <div>
+      <%= submit_tag "Update badge", class: "c-btn c-btn--primary" %>
+    </div>
+  </div>
+<% end %>

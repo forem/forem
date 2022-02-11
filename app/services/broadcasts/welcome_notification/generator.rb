@@ -111,7 +111,9 @@ module Broadcasts
         # the provider from suggestions sent to users
         @providers ||=
           Authentication::Providers.enabled.select do |provider|
-            authentication_broadcasts.exists?(title: "Welcome Notification: #{provider}_connect")
+            authentication_broadcasts.exists?(title: I18n.t(
+              "services.broadcasts.welcome_notification.generator.welcome", key: "#{provider}_connect"
+            ))
           end
       end
 
@@ -124,15 +126,21 @@ module Broadcasts
       end
 
       def welcome_broadcast
-        @welcome_broadcast ||= Broadcast.active.find_by!(title: "Welcome Notification: welcome_thread")
+        @welcome_broadcast ||= Broadcast.active.find_by!(title: I18n.t(
+          "services.broadcasts.welcome_notification.generator.welcome", key: "welcome_thread"
+        ))
       end
 
       def customize_ux_broadcast
-        @customize_ux_broadcast ||= Broadcast.active.find_by!(title: "Welcome Notification: customize_experience")
+        @customize_ux_broadcast ||= Broadcast.active.find_by!(title: I18n.t(
+          "services.broadcasts.welcome_notification.generator.welcome", key: "customize_experience"
+        ))
       end
 
       def customize_feed_broadcast
-        @customize_feed_broadcast ||= Broadcast.active.find_by!(title: "Welcome Notification: customize_feed")
+        @customize_feed_broadcast ||= Broadcast.active.find_by!(title: I18n.t(
+          "services.broadcasts.welcome_notification.generator.welcome", key: "customize_feed"
+        ))
       end
 
       def authentication_broadcast
@@ -144,7 +152,9 @@ module Broadcasts
       end
 
       def download_app_broadcast
-        @download_app_broadcast ||= Broadcast.active.find_by!(title: "Welcome Notification: download_app")
+        @download_app_broadcast ||= Broadcast.active.find_by!(title: I18n.t(
+          "services.broadcasts.welcome_notification.generator.welcome", key: "download_app"
+        ))
       end
 
       def identities
@@ -156,7 +166,8 @@ module Broadcasts
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end
 
-        authentication_broadcasts.find_by!(title: "Welcome Notification: #{missing_identities.sample}")
+        Broadcast.active.find_by!(title: I18n.t("services.broadcasts.welcome_notification.generator.welcome",
+                                                key: missing_identities.first))
       end
 
       def find_discuss_ask_broadcast
@@ -167,7 +178,8 @@ module Broadcasts
                else
                  "discuss_and_ask"
                end
-        Broadcast.active.find_by!(title: "Welcome Notification: #{type}")
+        Broadcast.active.find_by!(title: I18n.t("services.broadcasts.welcome_notification.generator.welcome",
+                                                key: type))
       end
 
       def asked_a_question

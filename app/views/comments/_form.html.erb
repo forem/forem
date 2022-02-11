@@ -47,7 +47,7 @@
         <div class="editor-image-upload">
           <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
           <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed" onclick="handleImageUpload(event,'main')">
-            <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon") %>
+            <%= crayons_icon_tag(:image) %>
             <span class="hidden s:inline-block" aria-hidden="false"><%= t("views.comments.write.field.upload") %></span>
           </button>
           <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
@@ -56,12 +56,12 @@
         </div>
 
         <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button" title="<%= t("views.comments.write.field.use") %>" data-has-listener="false" data-form-id="new_comment">
-          <%= inline_svg_tag("templates.svg", aria: true, class: "crayons-icon") %>
+          <%= crayons_icon_tag(:templates) %>
           <span class="hidden s:inline-block" aria-hidden="false"><%= t("views.comments.write.field.templates") %></span>
         </button>
 
         <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="<%= t("views.comments.write.field.guide.title") %>">
-          <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon", title: t("views.comments.write.field.guide.icon")) %>
+          <%= crayons_icon_tag(:info, title: t("views.comments.write.field.guide.icon")) %>
         </a>
       </div>
     </div>

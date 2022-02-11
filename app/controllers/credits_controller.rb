@@ -33,7 +33,7 @@ class CreditsController < ApplicationController
 
     if payment.success?
       @purchaser = payment.purchaser
-      redirect_to credits_path, notice: "#{number_to_purchase} new credits purchased!"
+      redirect_to credits_path, notice: I18n.t("credits_controller.done", count: number_to_purchase)
     else
       flash[:error] = payment.error
       redirect_to purchase_credits_path

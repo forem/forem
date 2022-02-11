@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.stackexchange.com/2.2/posts/59679915?filter=!3tz1WbZW5JxrG-f99&key=&site=askubuntu
+    uri: https://api.stackexchange.com/2.3/posts/59679915?filter=!3tz1WbZW5JxrG-f99&key=&site=askubuntu
     body:
       encoding: US-ASCII
       string: ''
@@ -18,12 +18,14 @@ http_interactions:
       code: 200
       message: OK
     headers:
+      Cache-Control:
+      - private
       Content-Length:
       - '87'
       Content-Type:
       - application/json; charset=utf-8
       Strict-Transport-Security:
-      - max-age=2592000
+      - max-age=15552000
       Access-Control-Allow-Origin:
       - "*"
       Access-Control-Allow-Methods:
@@ -33,12 +35,13 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Request-Guid:
-      - 356f2fd4-3560-40c4-a494-6a4f0f361e62
+      - 39492868-d51e-49b4-9c87-d5d963306c83
+      Content-Security-Policy:
+      - upgrade-insecure-requests; frame-ancestors 'self' https://stackexchange.com
       Date:
-      - Mon, 13 Jan 2020 12:23:24 GMT
+      - Fri, 04 Feb 2022 14:00:22 GMT
     body:
       encoding: ASCII-8BIT
-      string: '{"items":[],"has_more":false,"quota_max":300,"quota_remaining":287}'
-    http_version: 
-  recorded_at: Mon, 13 Jan 2020 12:23:25 GMT
-recorded_with: VCR 5.0.0
+      string: '{"items":[],"has_more":false,"quota_max":300,"quota_remaining":192}'
+  recorded_at: Fri, 04 Feb 2022 14:00:22 GMT
+recorded_with: VCR 6.0.0

@@ -1,0 +1,33 @@
+---
+en:
+  mailers:
+    digest_mailer:
+      from: Digest
+      more_top_posts: more top %{community} posts
+      more_top_posts_based: more top %{community} posts based on your interests
+      more_top_posts_from: more top reads from the community
+      more_trending_posts: more trending %{community} posts
+      more_trending_posts_picked: more trending %{community} posts picked for you
+      other_posts: other posts you might like
+      other_community_posts: other %{community} posts you might like
+      other_top_posts: other top %{community} posts
+      other_trending_posts: other trending %{community} posts
+    notify_mailer:
+      account_deleted: "%{community} - Account Deletion Confirmation"
+      deletion_requested: "%{community} - Account Deletion Requested"
+      trusted: Congrats! You're now a "trusted" user on %{community}!
+      moderator: 'Congrats! You''re the moderator for #%{tag_name}'
+      new_follower: just followed you on %{community}
+      new_mention: "%{name} just mentioned you in their %{type}"
+      org_deleted: "%{community} - Organization Deletion Confirmation"
+      new_reply: "%{name} replied to your %{type}"
+      feedback: Thanks for your report on %{community}
+      export: The export of your content is ready
+      unread_notifications:
+        one: "🔥 You have %{count} unread notifications on %{community}"
+        other: "🔥 You have %{count} unread notifications on %{community}"
+      new_badge: You just got a badge
+      video_upload: Your video upload is complete
+    verification_mailer:
+      from: "%{community} Email Verification <%{email}>"
+      verify_ownership: Verify Your %{community} Account Ownership

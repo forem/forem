@@ -10,7 +10,7 @@ en:
         thumbsup: Thumbs up
         thumbsdown: Thumbs down
         unicorn: Unicorn
-        vomit: Vomit
+        vomit: Flag
       summary:
         count_html:
           one: "%{count}%{start}\_reaction%{end}"

@@ -70,7 +70,7 @@ module Articles
         .unscope(:select)
         .limited_column_select
         .where.not(id: article.id)
-        .where.not(user_id: article.user_id)
+        .not_authored_by(article.user_id)
         .where("featured_number > ?", 5.days.ago.to_i)
         .order(Arel.sql("RANDOM()"))
     end

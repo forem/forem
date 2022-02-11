@@ -21,6 +21,7 @@ class Follow < ApplicationRecord
   scope :followable_user, ->(id) { where(followable_id: id, followable_type: "User") }
   scope :followable_tag, ->(id) { where(followable_id: id, followable_type: "ActsAsTaggableOn::Tag") }
 
+  # NOTE: These assume that we have one follower_type (as defined by acts_as_follower).
   scope :follower_user, ->(id) { where(follower_id: id, followable_type: "User") }
   scope :follower_organization, ->(id) { where(follower_id: id, followable_type: "Organization") }
   scope :follower_podcast, ->(id) { where(follower_id: id, followable_type: "Podcast") }
