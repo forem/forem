@@ -81,11 +81,11 @@ class UserPolicy < ApplicationPolicy
   alias remove_identity? edit?
 
   def dashboard_show?
-    current_user? || user_admin? || minimal_admin?
+    current_user? || user_super_admin? || user_any_admin?
   end
 
   def moderation_routes?
-    (user.has_trusted_role? || minimal_admin?) && !user.suspended?
+    (user.has_trusted_role? || user_any_admin?) && !user.suspended?
   end
 
   alias update_password? edit?

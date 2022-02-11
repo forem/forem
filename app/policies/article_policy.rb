@@ -13,11 +13,11 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def update?
-    user_author? || user_admin? || user_org_admin? || minimal_admin?
+    user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
   def admin_unpublish?
-    minimal_admin?
+    user_any_admin?
   end
 
   def new?
@@ -41,7 +41,7 @@ class ArticlePolicy < ApplicationPolicy
   alias preview? new?
 
   def stats?
-    user_author? || user_admin? || user_org_admin?
+    user_author? || user_super_admin? || user_org_admin?
   end
 
   def permitted_attributes
@@ -52,7 +52,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def subscriptions?
-    user_author? || user_admin?
+    user_author? || user_super_admin?
   end
 
   private
