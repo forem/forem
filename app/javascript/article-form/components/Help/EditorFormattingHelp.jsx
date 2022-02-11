@@ -108,15 +108,17 @@ export const EditorFormattingHelp = ({ openModal }) => (
         </details>
       </li>
       <li>
-        You can use{' '}
+        Use Liquid tags to add rich content such as Tweets, YouTube videos, etc.
+        Create Liquid Tags with the full URL:&nbsp;
+        <code>{'{% embed Liquid-Tag-URL %}'}</code>{' '}
         <a href="#liquid" onClick={() => openModal('liquidShowing')}>
-          Liquid tags
+          Click here
         </a>{' '}
-        to add rich content such as Tweets, YouTube videos, etc.
+        for a list of supported Liquid Tag URLs.
       </li>
       <li>
         In addition to images for the post's content, you can also drag and drop
-        a cover image
+        a cover image.
       </li>
     </ul>
   </div>
