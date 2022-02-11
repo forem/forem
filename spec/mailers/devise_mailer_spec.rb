@@ -9,6 +9,7 @@ RSpec.describe DeviseMailer, type: :mailer do
 
     before do
       allow(Settings::General).to receive(:app_domain).and_return("funky-one-of-a-kind-domain-#{rand(100)}.com")
+      allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
       allow(Settings::SMTP).to receive(:from_email_address).and_return(from_email_address)
     end
 
