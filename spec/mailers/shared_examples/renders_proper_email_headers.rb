@@ -3,6 +3,7 @@ RSpec.shared_examples "#renders_proper_email_headers" do
   let(:reply_to_email_address) { "custom_reply@forem.com" }
 
   before do
+    allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
     allow(Settings::SMTP).to receive(:from_email_address).and_return(from_email_address)
     allow(Settings::SMTP).to receive(:reply_to_email_address).and_return(reply_to_email_address)
   end

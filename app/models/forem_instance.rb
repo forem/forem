@@ -26,7 +26,7 @@ class ForemInstance
   end
 
   def self.from_email_address
-    # same commen applies from self.reply_to_email_address
+    # same comment applies from self.reply_to_email_address
     Settings::SMTP.provided_minimum_settings? ? Settings::SMTP.from_email_address : email
   end
 
