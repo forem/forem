@@ -37,7 +37,7 @@ describe('Pin an article from the admin area', () => {
 
     cy.findByRole('button', { name: 'Pin post' }).should('not.exist');
     cy.findByRole('link', { name: 'Unpin post' }).should('exist');
-    cy.findByText(/Pinned/i).should('exist');
+    cy.findByTestId('pinned-indicator').should('exist');
   });
 
   it('should display a warning modal when pinning an article, and one is already pinned', () => {
@@ -90,7 +90,7 @@ describe('Pin an article from the admin area', () => {
 
     cy.findByRole('main').within(() => {
       cy.findByText(/A new article/i).should('exist');
-      cy.findByText(/Pinned/i).should('exist');
+      cy.findByTestId('pinned-indicator').should('exist');
     });
   });
 

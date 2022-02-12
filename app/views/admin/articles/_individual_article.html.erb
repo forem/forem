@@ -15,7 +15,7 @@
           <span class="c-indicator c-indicator--danger">Unpublished</span>
         <% end %>
         <% if decorated_article.pinned? %>
-          <span class="c-indicator c-indicator--warning">Pinned</span>
+          <span class="c-indicator c-indicator--warning" data-testid="pinned-indicator">Pinned</span>
         <% end %>
         <% if article.featured %>
           <span class="c-indicator c-indicator--success">Featured</span>

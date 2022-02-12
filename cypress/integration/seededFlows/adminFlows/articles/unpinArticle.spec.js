@@ -34,6 +34,6 @@ describe('Unpin an article from the admin area', () => {
     cy.findAllByRole('link', { name: 'Unpin post' }).first().click();
 
     cy.findAllByRole('link', { name: 'Unpin post' }).should('not.exist');
-    cy.findByText(/Pinned/i).should('not.exist');
+    cy.findByTestId('pinned-indicator').should('not.exist');
   });
 });
