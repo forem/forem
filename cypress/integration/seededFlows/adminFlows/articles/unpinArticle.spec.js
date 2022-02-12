@@ -24,7 +24,7 @@ describe('Unpin an article from the admin area', () => {
     });
   });
 
-  it('should not display the "Unpin Post" button by default', () => {
+  it('should not display the "Unpin post" button by default', () => {
     cy.findByRole('link', { name: 'Unpin post' }).should('not.exist');
   });
 
