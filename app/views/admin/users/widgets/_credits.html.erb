@@ -1,9 +1,9 @@
 <header class="mb-4">
   <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-    <%= crayons_icon_tag(:wallet, title: "Wallet", class: "mr-2") %>
+    <%= crayons_icon_tag(:wallet, title: "Wallet", aria_hidden: true, class: "mr-2") %>
     Credits
   </h2>
-  <p class="color-secondary">Credits enable users to purchase classified listings from your site. <a href="https://admin.forem.com/docs/advanced-customization/config/credits" rel="noopener noreferer" target="_blank" class="c-link c-link--branded">Learn more</a></p>
+  <p class="color-secondary">Credits enable users to purchase classified listings from your site. <a href="https://admin.forem.com/docs/advanced-customization/config/credits" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about credits">Learn more</a></p>
 </header>
 <div class="flex justify-between items-center">
   <p data-testid="user-credits" class="fs-2xl fw-heavy"><%= @user.unspent_credits_count %></p>

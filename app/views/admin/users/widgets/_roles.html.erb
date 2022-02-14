@@ -1,9 +1,9 @@
 <header class="mb-4">
   <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-    <%= crayons_icon_tag(:badge, title: "Assigned roles", class: "mr-2") %>
+    <%= crayons_icon_tag(:badge, title: "Assigned roles", aria_hidden: true, class: "mr-2") %>
     Assigned roles
   </h2>
-  <p class="color-secondary">Assign roles to this member based on permissions. <a href="https://admin.forem.com/docs/forem-basics/user-roles" rel="noopener noreferer" target="_blank" class="c-link c-link--branded">Learn more</a></p>
+  <p class="color-secondary">Assign roles to this member based on permissions. <a href="https://admin.forem.com/docs/forem-basics/user-roles" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about roles">Learn more</a></p>
 </header>
 <% unless @user.roles.any? %>
   <div class="flex justify-between items-center">
@@ -29,12 +29,13 @@
           </button>
         <% else %>
           <%= button_to url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: "Are you sure?" }, class: "c-pill c-pill--action-icon" do %>
+            <span class="screen-reader-only">Remove role:</span>
             <% if role.resource_name %>
               <%= role.resource_name.to_s %>
             <% else %>
               <%= role_display_name(role) %>
             <% end %>
-            <%= crayons_icon_tag(:x, class: "c-pill__action-icon", width: 18, height: 18) %>
+            <%= crayons_icon_tag(:x, class: "c-pill__action-icon", aria_hidden: true, width: 18, height: 18) %>
           <% end %>
         <% end %>
       </li>
