@@ -1,5 +1,5 @@
 class DeviseMailer < Devise::Mailer
-  default reply_to: ForemInstance.reply_to_email_address
+  default reply_to: proc { ForemInstance.reply_to_email_address }
 
   include Deliverable
 
