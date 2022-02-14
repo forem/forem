@@ -66,5 +66,24 @@ RSpec.describe "Editor", type: :request do
         expect(response.media_type).to eq("application/json")
       end
     end
+
+    context "with front matter" do
+      it "returns successfully" do
+        sign_in user
+        article_body = <<~MARKDOWN
+          ---
+          ---
+
+          Hello
+        MARKDOWN
+
+        post "/articles/preview",
+             headers: headers,
+             params: { article_body: article_body },
+             as: :json
+
+        expect(response).to be_successful
+      end
+    end
   end
 end

@@ -90,11 +90,19 @@ class ArticlesController < ApplicationController
         format.json { render json: @article.errors, status: :unprocessable_entity }
       else
         format.json do
+          front_matter = parsed.front_matter.to_h
+          if front_matter["tags"]
+            tags = Article.new.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
+          end
+          if front_matter["cover_image"]
+            cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
+          end
+
           render json: {
             processed_html: processed_html,
-            title: parsed["title"],
-            tags: (Article.new.tag_list.add(parsed["tags"], parser: ActsAsTaggableOn::TagParser) if parsed["tags"]),
-            cover_image: (ApplicationController.helpers.cloud_cover_url(parsed["cover_image"]) if parsed["cover_image"])
+            title: front_matter["title"],
+            tags: tags,
+            cover_image: cover_image
           }, status: :ok
         end
       end
