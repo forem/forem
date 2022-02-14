@@ -6,16 +6,14 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def admin_index?
-    minimal_admin?
+    user_any_admin?
   end
 
   def moderator_index?
     user_moderator?
   end
 
-  def create?
-    true
-  end
+  alias create? index?
 
   # comes from comments_controller
   def moderator_create?
@@ -26,9 +24,7 @@ class ResponseTemplatePolicy < ApplicationPolicy
     user_owner?
   end
 
-  def update?
-    user_owner?
-  end
+  alias update? destroy?
 
   def permitted_attributes_for_create
     PERMITTED_ATTRIBUTES
@@ -45,7 +41,7 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def user_moderator?
-    minimal_admin? || user.moderator_for_tags&.present?
+    user_any_admin? || user.moderator_for_tags&.present?
   end
 
   def mod_comment?
