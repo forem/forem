@@ -32,7 +32,7 @@ module Constants
           placeholder: ""
         },
         reply_to_email_address: {
-          description: "The email address that users reply to",
+          description: "The email address that users can reply to",
           placeholder: ""
         }
       }.freeze
