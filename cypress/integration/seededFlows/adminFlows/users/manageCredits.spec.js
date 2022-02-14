@@ -79,5 +79,26 @@ describe('Manage User Credits', () => {
       closeUserUpdatedMessage('Credits have been removed.');
       cy.findByTestId('user-credits').should('have.text', '0');
     });
+
+    it('should have correct max credits for adding and removing credits', () => {
+      cy.findByTestId('user-credits').should('have.text', '100');
+
+      openCreditsModal().within(() => {
+        cy.findByRole('combobox', { name: 'Adjust balance' })
+          .as('adjustBalance')
+          .select('Add');
+        cy.findByRole('spinbutton', {
+          name: 'Amount of credits to add or remove',
+        })
+          .as('creditAmount')
+          .should('have.attr', 'max', '9999');
+
+        cy.get('@adjustBalance').select('Remove');
+        cy.get('@creditAmount').should('have.attr', 'max', '100');
+
+        cy.get('@adjustBalance').select('Add');
+        cy.get('@creditAmount').should('have.attr', 'max', '9999');
+      });
+    });
   });
 });
