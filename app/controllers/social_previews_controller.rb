@@ -38,7 +38,7 @@ class SocialPreviewsController < ApplicationController
 
   def tag
     @tag = Tag.find(params[:id])
-    @compare_hex = Color::CompareHex.new([@tag.bg_color_hex || "#000000", @tag.fg_color_hex || "#ffffff"])
+    @compare_hex = Color::CompareHex.new([@tag.bg_color_hex || "#000000", @tag.text_color_hex || "#ffffff"])
 
     set_respond
   end
