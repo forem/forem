@@ -1,4 +1,6 @@
 class DeviseMailer < Devise::Mailer
+  default reply_to: ForemInstance.reply_to_email_address
+
   include Deliverable
 
   before_action :use_settings_general_values
