@@ -89,6 +89,7 @@ class ArticlePolicy < ApplicationPolicy
 
   def require_user!
     return if user
+
     raise Pundit::NotAuthorizedError, I18n.t("policies.application_policy.you_must_be_logged_in")
   end
 
