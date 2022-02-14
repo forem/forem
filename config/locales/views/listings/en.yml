@@ -53,7 +53,7 @@ en:
           description: 32 characters max, plain text
           label: Location (If applicable for events, etc.)
           placeholder: New York
-        no_credit: You need at least one credit to create a listing.
+        no_credit: You need permissions to create an event.
         organization:
           description: Posting on behalf of an organization spends the organization's credits.
           none: None
