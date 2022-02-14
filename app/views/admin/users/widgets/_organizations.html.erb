@@ -1,9 +1,9 @@
 <header class="mb-4">
   <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-    <%= crayons_icon_tag(:team, title: "Organizations", class: "mr-2") %>
+    <%= crayons_icon_tag(:team, title: "Organizations", aria_hidden: true, class: "mr-2") %>
     Organizations
   </h2>
-  <p class="color-secondary">Assign roles to this member based on permissions. <a href="https://admin.forem.com/docs/managing-your-community/organization-pages#organization-roles" rel="noopener noreferer" target="_blank" class="c-link c-link--branded">Learn more</a></p>
+  <p class="color-secondary">Assign roles to this member based on permissions. <a href="https://admin.forem.com/docs/managing-your-community/organization-pages#organization-roles" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about organizations">Learn more</a></p>
 </header>
 <% if @organization_memberships.load.empty? %>
   <div class="flex justify-between items-center gap-4">
@@ -11,11 +11,13 @@
     <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add organization</button>
   </div>
 <% else %>
+<%# Used for aria-describedby on input fields, placed here to avoid duplicate IDs when mapping over orgs %>
+<span class="screen-reader-only" id="edit-org-permission-description">Users can be assigned an Admin role or can remain a regular member of this organization.</span>
   <% @organization_memberships.each do |org_membership| %>
     <div class="c-card c-card--interactive flex p-2 relative items-center mb-2 pl-3">
       <div class="flex items-center gap-2 flex-1">
         <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link crayons-logo crayons-logo--l">
-          <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %> logo" class="crayons-logo__image">
+          <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="crayons-logo__image">
         </a>
         <h3 class="crayons-subtitle-3">
           <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link">
@@ -25,12 +27,13 @@
         </h3>
       </div>
       <div class="c-card__revealable shrink-0">
-        <button type="button" class="c-btn c-btn--icon-alone" data-modal-trigger data-modal-title="Edit organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>" aria-label="Edit <%= org_membership.organization.name %> organization membership">
-          <%= crayons_icon_tag(:edit, class: "c-btn__icon") %>
+        <button type="button" class="c-btn c-btn--icon-alone" aria-label="Edit <%= org_membership.organization.name %> organization membership"
+          data-modal-trigger data-modal-title="Edit organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
+          <%= crayons_icon_tag(:edit, class: "c-btn__icon", aria_hidden: true) %>
         </button>
         <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
-          <%= f.button crayons_icon_tag(:x, class: "c-btn__icon"), class: "c-btn c-btn--destructive c-btn--icon-alone", data: { confirm: "Are you sure you want to remove them from #{org_membership.organization.name}?" },
-                                                                   aria: { label: "Revoke #{org_membership.organization.name} organization membership" } %>
+          <%= f.button crayons_icon_tag(:x, class: "c-btn__icon", aria_hidden: true), aria: { label: "Revoke #{org_membership.organization.name} organization membership" }, class: "c-btn c-btn--destructive c-btn--icon-alone",
+                                                                                      data: { confirm: "Are you sure you want to remove them from #{org_membership.organization.name}?" } %>
         <% end %>
       </div>
     </div>
@@ -40,7 +43,7 @@
         <div class="crayons-field mb-4">
           <%= f.label "Permission level", class: "crayons-field__label", for: "edit_#{org_membership.organization.id}_type_of_user" %>
           <p class="crayons-field__description">Users can be assigned an Admin role or can remain a regular member of this organization.</p>
-          <%= f.select :type_of_user, options_for_select(%w[member admin], selected: org_membership.type_of_user), {}, id: "edit_#{org_membership.organization.id}_type_of_user", class: "crayons-select" %>
+          <%= f.select :type_of_user, options_for_select(%w[member admin], selected: org_membership.type_of_user), {}, id: "edit_#{org_membership.organization.id}_type_of_user", class: "crayons-select", aria: { describedby: "edit-org-permission-description" } %>
         </div>
         <%= f.button "Update", class: "c-btn c-btn--primary", type: "submit" %>
       <% end %>
@@ -58,8 +61,8 @@
     </div>
     <div class="crayons-field">
       <%= f.label :type_of_user, "Permission level", class: "crayons-field__label" %>
-          <p class="crayons-field__description">Users can be assigned an Admin role or can remain a regular member of this organization.</p>
-      <%= f.select(:type_of_user, options_for_select(%w[member admin]), {}, class: "crayons-select") %>
+          <p id="add-org-permission-description" class="crayons-field__description">Users can be assigned an Admin role or can remain a regular member of this organization.</p>
+      <%= f.select(:type_of_user, options_for_select(%w[member admin]), {}, class: "crayons-select", aria: { describedby: "add-org-permission-description" }) %>
     </div>
     <div>
       <%= f.submit "Add organization", class: "c-btn c-btn--primary" %>
