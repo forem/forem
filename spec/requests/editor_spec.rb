@@ -74,7 +74,6 @@ RSpec.describe "Editor", type: :request do
           Hello
         MARKDOWN
 
-        # binding.pry
         post "/articles/preview",
              headers: headers,
              params: { article_body: article_body },
