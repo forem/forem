@@ -12,19 +12,47 @@ class ArticlePolicy < ApplicationPolicy
     FeatureFlag.enabled?(:limit_post_creation_to_admins)
   end
 
+  # @note [@jeremyf] I am re-implemnenting the initialize method, but removing the Pundit
+  #       authorization.  There's an assumption that all policy questions will require a user,
+  #       unless you know specifically that they don't.
+  #
+  # @todo [@jeremyf] I don't like altering the initializer and its core assumption.  But the other
+  #       option to get Articles working for https://github.com/forem/forem/issues/16529 is to
+  #       address the at present fundamental assumption regarding "Policies are for authorizing when
+  #       you have a user, otherwise let the controller decide."
+  #
+  # rubocop:disable Lint/MissingSuper
+  #
+  # @see even Rubocop thinks this is a bad idea.  But the short-cut gets me unstuck.  I hope there's
+  # enough breadcrumbs to undo this short-cut.
+  def initialize(user, record)
+    @user = user
+    @record = record
+  end
+  # rubocop:enable Lint/MissingSuper
+
   def update?
+    require_user!
     user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
   def admin_unpublish?
+    require_user!
     user_any_admin?
   end
 
+  # @note It is likely that we want this to mirror `:create?` in the future.  As it stands, we can
+  #       use this value to "triangulate" towards a simplifying solution to
+  #       https://github.com/forem/forem/issues/16529 (Also, I added this comment so that this code
+  #       appears with the pull request)
+  #
+  # @note For backwards compatability purposes, we're not checking if there's a user.
   def new?
     true
   end
 
   def create?
+    require_user!
     !user_suspended?
   end
 
@@ -41,6 +69,7 @@ class ArticlePolicy < ApplicationPolicy
   alias preview? new?
 
   def stats?
+    require_user!
     user_author? || user_super_admin? || user_org_admin?
   end
 
@@ -52,10 +81,17 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def subscriptions?
+    require_user!
     user_author? || user_super_admin?
   end
 
   private
+
+  def require_user!
+    return if user
+
+    raise Pundit::NotAuthorizedError, I18n.t("policies.application_policy.you_must_be_logged_in")
+  end
 
   def user_author?
     if record.instance_of?(Article)
