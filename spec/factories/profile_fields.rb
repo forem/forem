@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :profile_field do
-    profile_field_group
+    association :profile_field_group
     sequence(:label) { |n| "Email #{n}" }
     input_type { :text_field }
     description { "some description" }

@@ -1,7 +1,7 @@
 module Api
   module V0
     class ListingsController < ApiController
-      include Pundit
+      include Pundit::Authorization
       include ListingsToolkit
 
       # actions `create` and `update` are defined in the module `ListingsToolkit`,

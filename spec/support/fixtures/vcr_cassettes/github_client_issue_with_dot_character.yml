@@ -1,0 +1,188 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/7434
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.v3+json
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=c8b214fc6dc79afeb1e12e9b0c9c56a8,parent_id=d5b7a51b5951de5e,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Mon, 07 Feb 2022 17:25:25 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '6468'
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Vary:
+      - Accept
+      - Accept-Encoding, Accept, X-Requested-With
+      Etag:
+      - '"311cf9522a06488dcc13c2d01a07917f1103f44ad6203a11558842661ee7665f"'
+      Last-Modified:
+      - Sat, 05 Feb 2022 15:40:06 GMT
+      X-Github-Media-Type:
+      - github.v3; format=json
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4990'
+      X-Ratelimit-Reset:
+      - '1644256079'
+      X-Ratelimit-Used:
+      - '10'
+      X-Ratelimit-Resource:
+      - core
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - '0'
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      X-Github-Request-Id:
+      - CA03:221E:1D4F90:396014:62015605
+    body:
+      encoding: ASCII-8BIT
+      string: '{"url":"https://api.github.com/repos/forem/forem/issues/7434","repository_url":"https://api.github.com/repos/forem/forem","labels_url":"https://api.github.com/repos/forem/forem/issues/7434/labels{/name}","comments_url":"https://api.github.com/repos/forem/forem/issues/7434/comments","events_url":"https://api.github.com/repos/forem/forem/issues/7434/events","html_url":"https://github.com/forem/forem/issues/7434","id":604653303,"node_id":"MDU6SXNzdWU2MDQ2NTMzMDM=","number":7434,"title":"Profile
+        page not displaying the name due to theming and custom colors","user":{"login":"catalinpit","id":25515812,"node_id":"MDQ6VXNlcjI1NTE1ODEy","avatar_url":"https://avatars.githubusercontent.com/u/25515812?v=4","gravatar_id":"","url":"https://api.github.com/users/catalinpit","html_url":"https://github.com/catalinpit","followers_url":"https://api.github.com/users/catalinpit/followers","following_url":"https://api.github.com/users/catalinpit/following{/other_user}","gists_url":"https://api.github.com/users/catalinpit/gists{/gist_id}","starred_url":"https://api.github.com/users/catalinpit/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/catalinpit/subscriptions","organizations_url":"https://api.github.com/users/catalinpit/orgs","repos_url":"https://api.github.com/users/catalinpit/repos","events_url":"https://api.github.com/users/catalinpit/events{/privacy}","received_events_url":"https://api.github.com/users/catalinpit/received_events","type":"User","site_admin":false},"labels":[{"id":480869965,"node_id":"MDU6TGFiZWw0ODA4Njk5NjU=","url":"https://api.github.com/repos/forem/forem/labels/bug","name":"bug","color":"E99695","default":true,"description":"always
+        open for contribution"},{"id":1031106689,"node_id":"MDU6TGFiZWwxMDMxMTA2Njg5","url":"https://api.github.com/repos/forem/forem/labels/area:%20accessibility","name":"area:
+        accessibility","color":"2a75b2","default":false,"description":"issues that
+        need accessibility improvements (a11y)"},{"id":1290917705,"node_id":"MDU6TGFiZWwxMjkwOTE3NzA1","url":"https://api.github.com/repos/forem/forem/labels/area:%20profile","name":"area:
+        profile","color":"2a75b2","default":false,"description":"user''s profile,
+        settings, dashboard"}],"state":"closed","locked":false,"assignee":{"login":"catalinpit","id":25515812,"node_id":"MDQ6VXNlcjI1NTE1ODEy","avatar_url":"https://avatars.githubusercontent.com/u/25515812?v=4","gravatar_id":"","url":"https://api.github.com/users/catalinpit","html_url":"https://github.com/catalinpit","followers_url":"https://api.github.com/users/catalinpit/followers","following_url":"https://api.github.com/users/catalinpit/following{/other_user}","gists_url":"https://api.github.com/users/catalinpit/gists{/gist_id}","starred_url":"https://api.github.com/users/catalinpit/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/catalinpit/subscriptions","organizations_url":"https://api.github.com/users/catalinpit/orgs","repos_url":"https://api.github.com/users/catalinpit/repos","events_url":"https://api.github.com/users/catalinpit/events{/privacy}","received_events_url":"https://api.github.com/users/catalinpit/received_events","type":"User","site_admin":false},"assignees":[{"login":"catalinpit","id":25515812,"node_id":"MDQ6VXNlcjI1NTE1ODEy","avatar_url":"https://avatars.githubusercontent.com/u/25515812?v=4","gravatar_id":"","url":"https://api.github.com/users/catalinpit","html_url":"https://github.com/catalinpit","followers_url":"https://api.github.com/users/catalinpit/followers","following_url":"https://api.github.com/users/catalinpit/following{/other_user}","gists_url":"https://api.github.com/users/catalinpit/gists{/gist_id}","starred_url":"https://api.github.com/users/catalinpit/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/catalinpit/subscriptions","organizations_url":"https://api.github.com/users/catalinpit/orgs","repos_url":"https://api.github.com/users/catalinpit/repos","events_url":"https://api.github.com/users/catalinpit/events{/privacy}","received_events_url":"https://api.github.com/users/catalinpit/received_events","type":"User","site_admin":false}],"milestone":null,"comments":9,"created_at":"2020-04-22T10:43:38Z","updated_at":"2020-08-21T11:14:26Z","closed_at":"2020-08-21T11:14:26Z","author_association":"CONTRIBUTOR","active_lock_reason":null,"body":"**Describe
+        the bug**\r\n\r\nYou are allowed to change the colour for some of the information
+        from your profile page. There are cases when the profile page doesn''t work
+        properly when the colours are related.\r\n\r\nSee the pictures below or visit
+        my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To Reproduce**\r\n\r\n1.
+        Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected behavior**\r\n\r\nMy
+        name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
+        do you recommend to fix the issue? If you have any recommendations, I''m happy
+        to pick the issue.\r\n","closed_by":{"login":"ludwiczakpawel","id":108287,"node_id":"MDQ6VXNlcjEwODI4Nw==","avatar_url":"https://avatars.githubusercontent.com/u/108287?v=4","gravatar_id":"","url":"https://api.github.com/users/ludwiczakpawel","html_url":"https://github.com/ludwiczakpawel","followers_url":"https://api.github.com/users/ludwiczakpawel/followers","following_url":"https://api.github.com/users/ludwiczakpawel/following{/other_user}","gists_url":"https://api.github.com/users/ludwiczakpawel/gists{/gist_id}","starred_url":"https://api.github.com/users/ludwiczakpawel/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/ludwiczakpawel/subscriptions","organizations_url":"https://api.github.com/users/ludwiczakpawel/orgs","repos_url":"https://api.github.com/users/ludwiczakpawel/repos","events_url":"https://api.github.com/users/ludwiczakpawel/events{/privacy}","received_events_url":"https://api.github.com/users/ludwiczakpawel/received_events","type":"User","site_admin":false},"reactions":{"url":"https://api.github.com/repos/forem/forem/issues/7434/reactions","total_count":0,"+1":0,"-1":0,"laugh":0,"hooray":0,"confused":0,"heart":0,"rocket":0,"eyes":0},"timeline_url":"https://api.github.com/repos/forem/forem/issues/7434/timeline","performed_via_github_app":null}'
+  recorded_at: Mon, 07 Feb 2022 17:25:25 GMT
+- request:
+    method: post
+    uri: https://api.github.com/markdown
+    body:
+      encoding: UTF-8
+      string: '{"text":"**Describe the bug**\r\n\r\nYou are allowed to change the
+        colour for some of the information from your profile page. There are cases
+        when the profile page doesn''t work properly when the colours are related.\r\n\r\nSee
+        the pictures below or visit my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To
+        Reproduce**\r\n\r\n1. Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected
+        behavior**\r\n\r\nMy name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
+        do you recommend to fix the issue? If you have any recommendations, I''m happy
+        to pick the issue.\r\n"}'
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.raw
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=586d0b189b2c4f63107565d978678704,parent_id=8dad92f35bda2647,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Mon, 07 Feb 2022 17:25:25 GMT
+      Content-Type:
+      - text/html;charset=utf-8
+      Content-Length:
+      - '1855'
+      X-Commonmarker-Version:
+      - 0.23.2
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4989'
+      X-Ratelimit-Reset:
+      - '1644256079'
+      X-Ratelimit-Used:
+      - '11'
+      X-Ratelimit-Resource:
+      - core
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - '0'
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      Vary:
+      - Accept-Encoding, Accept, X-Requested-With
+      X-Github-Request-Id:
+      - CA04:4B30:1A7931:3F3B90:62015605
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <p><strong>Describe the bug</strong></p>
+        <p>You are allowed to change the colour for some of the information from your profile page. There are cases when the profile page doesn't work properly when the colours are related.</p>
+        <p>See the pictures below or visit my profile <a href="https://dev.to/catalinmpit" rel="nofollow">dev.to/catalinmpit</a>.</p>
+        <p><strong>To Reproduce</strong></p>
+        <ol>
+        <li>Go to <a href="https://dev.to/catalinmpit" rel="nofollow">dev.to/catalinmpit</a>
+        </li>
+        </ol>
+        <p><strong>Expected behavior</strong></p>
+        <p>My name and other information should be visible.</p>
+        <p><strong>Screenshots</strong></p>
+        <p><a href="https://camo.githubusercontent.com/2baaf1caa6d554bef4c0cc3d514d82cc6792a726084be523b1a002fa25f8da7e/68747470733a2f2f692e696d6775722e636f6d2f414a794d3774482e706e67" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/2baaf1caa6d554bef4c0cc3d514d82cc6792a726084be523b1a002fa25f8da7e/68747470733a2f2f692e696d6775722e636f6d2f414a794d3774482e706e67" alt="broken-profile-page" data-canonical-src="https://i.imgur.com/AJyM7tH.png" style="max-width:100%;"></a></p>
+        <p><strong>Aditional information</strong></p>
+        <p>Played around with the settings and I've done this:</p>
+        <p><a href="https://camo.githubusercontent.com/7189e93e614eb335b7394485f9b8fc3d75ec5dde9a088d074a54516ee4c4c1fc/68747470733a2f2f692e696d6775722e636f6d2f444c69505846542e706e67" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/7189e93e614eb335b7394485f9b8fc3d75ec5dde9a088d074a54516ee4c4c1fc/68747470733a2f2f692e696d6775722e636f6d2f444c69505846542e706e67" alt="profile-page-ok" data-canonical-src="https://i.imgur.com/DLiPXFT.png" style="max-width:100%;"></a></p>
+        <p><strong>Question</strong></p>
+        <p>What do you recommend to fix the issue? If you have any recommendations, I'm happy to pick the issue.</p>
+  recorded_at: Mon, 07 Feb 2022 17:25:25 GMT
+recorded_with: VCR 6.0.0

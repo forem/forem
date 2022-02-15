@@ -38,7 +38,7 @@ describe('Manage User Organziations', () => {
       cy.getModal().should('not.exist');
 
       // Focusing on the link is required to make buttons visible.
-      cy.findByRole('link', { name: 'Bachmanity' }).focus();
+      cy.findAllByRole('link', { name: 'Bachmanity' }).first().focus();
       cy.findByRole('button', {
         name: 'Edit Bachmanity organization membership',
       });
@@ -71,7 +71,7 @@ describe('Manage User Organziations', () => {
       cy.getModal().should('not.exist');
 
       // Focusing on the link is required to make buttons visible.
-      cy.findByRole('link', { name: 'Bachmanity' }).focus();
+      cy.findAllByRole('link', { name: 'Bachmanity' }).first().focus();
       cy.findByRole('button', {
         name: 'Edit Bachmanity organization membership',
       });
@@ -80,7 +80,7 @@ describe('Manage User Organziations', () => {
         name: 'Revoke Bachmanity organization membership',
       });
 
-      cy.findByRole('link', { name: 'Awesome Org' }).focus();
+      cy.findAllByRole('link', { name: 'Awesome Org' }).first().focus();
       cy.findByRole('button', {
         name: 'Edit Awesome Org organization membership',
       });
@@ -93,7 +93,7 @@ describe('Manage User Organziations', () => {
     it(`should edit a user's membership to an organization`, () => {
       cy.visit('/admin/users/2');
 
-      cy.findByRole('link', { name: 'Awesome Org' }).focus();
+      cy.findAllByRole('link', { name: 'Awesome Org' }).first().focus();
       cy.findByRole('button', {
         name: 'Edit Awesome Org organization membership',
       }).click();
@@ -118,14 +118,18 @@ describe('Manage User Organziations', () => {
       closeUserUpdatedMessage('User was successfully added to Bachmanity');
       cy.getModal().should('not.exist');
 
-      cy.findByRole('link', { name: 'Awesome Org' });
-      cy.findByRole('link', { name: 'Bachmanity' });
+      // Two links currently exist for every org (image and name)
+      cy.findAllByRole('link', { name: 'Awesome Org' }).should(
+        'have.length',
+        2,
+      );
+      cy.findAllByRole('link', { name: 'Bachmanity' }).should('have.length', 2);
     });
 
     it(`should revoke a user's membership to an organization`, () => {
       cy.visit('/admin/users/2');
 
-      cy.findByRole('link', { name: 'Awesome Org' }).focus();
+      cy.findAllByRole('link', { name: 'Awesome Org' }).first().focus();
       cy.findByRole('button', {
         name: 'Revoke Awesome Org organization membership',
       }).click();
