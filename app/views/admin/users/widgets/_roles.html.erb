@@ -19,7 +19,7 @@
             class="c-pill c-pill--description-icon crayons-tooltip__activator cursor-help"
             type="button"
             aria-disabled="true">
-            <%= crayons_icon_tag(:lock, class: "c-pill__description-icon", width: 18, height: 18) %>
+            <%= crayons_icon_tag(:lock, class: "c-pill__description-icon", aria_hidden: true, width: 18, height: 18) %>
             <% if role.resource_name %>
               <%= role.resource_name.to_s %>
             <% else %>
