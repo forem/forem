@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   include SessionCurrentUser
   include ValidRequest
-  include Pundit
+  include Pundit::Authorization
   include CachingHeaders
   include ImageUploads
   include DevelopmentDependencyChecks if Rails.env.development?
@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
 
   def not_authorized
     render json: { error: I18n.t("application_controller.not_authorized") }, status: :unauthorized
-    raise NotAuthorizedError, "Unauthorized"
+    raise Pundit::NotAuthorizedError, "Unauthorized"
   end
 
   def bad_request
