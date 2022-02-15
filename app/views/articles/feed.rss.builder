@@ -4,6 +4,7 @@
 
 xml.instruct! :xml, version: "1.0"
 xml.rss(:version => "2.0",
+        "xmlns" => "default",
         "xmlns:atom" => "http://www.w3.org/2005/Atom",
         "xmlns:dc" => "http://purl.org/dc/elements/1.1/") do
   xml.channel do
@@ -40,7 +41,7 @@ xml.rss(:version => "2.0",
     articles.each do |article|
       xml.item do
         xml.title article.title
-        xml["dc"].creator user.instance_of?(User) ? user.name : article.user.name
+        xml.tag!("dc:creator") { user.instance_of?(User) ? user.name : article.user.name }
         xml.pubDate article.published_at.to_s(:rfc822) if article.published_at
         xml.link app_url(article.path)
         xml.guid app_url(article.path)

@@ -1,9 +1,7 @@
 require "rails_helper"
 
 RSpec.describe FeedMarkdownScrubber, type: :permit_scrubber do
-  def sanitize
-    ActionView::Helpers::SanitizeHelper.sanitize
-  end
+  include ActionView::Helpers::SanitizeHelper
 
   it "allows the tags specified by MarkdownProcessor" do
     good_html = <<~HTML
