@@ -1,81 +1,66 @@
-<div class="ltag__user-subscription-tag" id="user-subscription-tag" data-author-username=<%= author_username %>>
+<div class="ltag__user-subscription-tag" data-author-username=<%= author_username %>>
   <div class="ltag__user-subscription-tag__container">
 
-    <div class="ltag__user-subscription-tag__content w-100" id="content">
+    <div class="ltag__user-subscription-tag__content w-100">
 
-      <div class="ltag__user-subscription-tag__profile-images signed-out" id="profile-images">
+      <div class="ltag__user-subscription-tag__profile-images signed-out">
 
-        <span class="crayons-avatar crayons-avatar--xl ltag__user-subscription-tag__author-profile-image">
-          <img class="crayons-avatar__image ltag__user-subscription-tag__author-profile-image" src=<%= author_profile_image %> <%= "#{author_username} profile image" %>>
+        <span class="crayons-avatar crayons-avatar--xl ltag__user-subscription-tag__author-profile-image m-auto">
+          <img class="crayons-avatar__image ltag__user-subscription-tag__author-profile-image m-0" src=<%= author_profile_image %> <%= author_username %> <%= author_username %>>
         </span>
 
-        <span class="crayons-avatar crayons-avatar--xl ltag__user-subscription-tag__subscriber-profile-image">
-          <img class="crayons-avatar__image ltag__user-subscription-tag__subscriber-profile-image">
+        <span class="crayons-avatar crayons-avatar--xl ltag__user-subscription-tag__subscriber-profile-image m-auto">
+          <img class="crayons-avatar__image ltag__user-subscription-tag__subscriber-profile-image m-0" alt="">
         </span>
 
       </div>
 
-      <h1 class="ltag__user-subscription-tag__cta-text fs-xl mt-0 mb-4 align-center" id="user-subscription-cta-text">
+      <h2 class="ltag__user-subscription-tag__cta-text fs-xl mt-0 mb-4 align-center">
         <%= cta_text %>
-      </h1>
+      </h2>
 
-      <div class="ltag__user-subscription-tag__subscription-area align-center" id="subscription-area">
-        <div class="ltag__user-subscription-tag__signed-out" id="subscription-signed-out">
-          <div class="fs-base mb-2" id="logged-out-text">
-            <%= t("views.liquids.user_subscription.logged_out") %>
+      <div class="ltag__user-subscription-tag__subscription-area align-center">
+        <div class="ltag__user-subscription-tag__signed-out">
+          <div class="fs-base mb-2">
+            <%= t("views.liquids.user_subscription.logged_out", community: community_name) %>
           </div>
-          <button class="crayons-btn" id="sign-in-btn">
+          <a href="/enter" class="c-cta c-cta--default">
             <%= t("views.liquids.user_subscription.sign_in") %>
-          </button>
+          </a>
         </div>
 
-        <div class="ltag__user-subscription-tag__signed-in hidden" id="subscription-signed-in">
-          <button class="crayons-btn mb-4" id="subscribe-btn">
+        <div class="ltag__user-subscription-tag__signed-in hidden">
+          <button class="crayons-btn mb-4">
             <%= t("views.liquids.user_subscription.subscribe.button") %>
           </button>
-          <div class="fs-s mb-3" id="logged-in-text">
-            <%= t("views.liquids.user_subscription.subscribe.desc_html", email: tag.span(class: "ltag__user-subscription-tag__subscriber-email"), update: link_to(t("views.liquids.user_subscription.subscribe.update"), "/settings")) %>
+          <div class="ltag__user-subscription-tag__logged-in-text fs-s mb-3">
+            <%= t("views.liquids.user_subscription.subscribe.desc_html", community: community_name, update: link_to(t("views.liquids.user_subscription.subscribe.update"), "/settings")) %>
           </div>
         </div>
 
-        <div class="ltag__user-subscription-tag__apple-auth fs-s hidden" id="subscriber-apple-auth">
-          <button disabled class="crayons-btn" id="apple-subscribe-btn"><%= t("views.liquids.user_subscription.subscribe.apple.button") %></button>
-          <div class="fs-s" id="apple-auth-message">
-            <%= t("views.liquids.user_subscription.subscribe.apple.desc_html", update: link_to(t("views.liquids.user_subscription.subscribe.apple.update"), "/settings")) %>
+        <div class="ltag__user-subscription-tag__apple-auth fs-s hidden">
+          <button disabled class="crayons-btn"><%= t("views.liquids.user_subscription.subscribe.apple.button") %></button>
+          <div class="fs-s">
+            <%= t("views.liquids.user_subscription.subscribe.apple.desc_html", community: community_name, update: link_to(t("views.liquids.user_subscription.subscribe.apple.update"), "/settings")) %>
           </div>
         </div>
 
-        <div class="ltag__user-subscription-tag__response-message crayons-notice fs-base w-100 hidden" aria-live="polite" id="response-message"></div>
+        <div class="ltag__user-subscription-tag__response-message crayons-notice fs-base w-100 hidden" aria-live="polite"></div>
       </div>
     </div>
-    <div id="user-subscription-confirmation-modal" class="hidden">
-      <div class="crayons-modal crayons-modal--small">
-        <div class="crayons-modal__box">
-          <header class="crayons-modal__box__header">
-            <h2 class="fs-l fw-bold mt-0 mb-0">
-              <%= t("views.liquids.user_subscription.confirm.subtitle") %>
-            </h2>
-            <button type="button" class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" id="close-confirmation-modal">
-              <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-              </svg>
-            </button>
-          </header>
-          <div class="crayons-modal__box__body">
-            <p id="confirmation-text" class="fs-base mb-4 mt-0">
-              <%= t("views.liquids.user_subscription.confirm.text_html", email: tag.span(class: "ltag__user-subscription-tag__subscriber-email"), username: tag.span(author_username, class: "ltag__user-subscription-tag__author-username fw-medium")) %>
-            <p>
-            <div class="ltag__user-subscription-tag__confirmation-buttons">
-              <button class="crayons-btn mr-1" id="confirmation-btn">
-                <%= t("views.liquids.user_subscription.confirm.button_text") %>
-              </button>
-              <button class="crayons-btn crayons-btn--secondary" id="cancel-btn">
-                <%= t("views.liquids.user_subscription.confirm.cancel_text") %>
-              </button>
-            </div>
-          </div>
+    <div class="user-subscription-confirmation-modal hidden">
+      <div class="crayons-modal__box__body">
+        <p class="fs-base mb-4 mt-0">
+          <%= t("views.liquids.user_subscription.confirm.text_html", community: community_name, username: tag.span(author_username, class: "ltag__user-subscription-tag__author-username fw-medium")) %>
+        <p>
+        <div class="ltag__user-subscription-tag__confirmation-buttons">
+          <button class="ltag__user-subscription-tag__confirmation-btn crayons-btn mr-1">
+            <%= t("views.liquids.user_subscription.confirm.button_text") %>
+          </button>
+          <button class="ltag__user-subscription-tag____cancel-btn crayons-btn crayons-btn--secondary">
+            <%= t("views.liquids.user_subscription.confirm.cancel_text") %>
+          </button>
         </div>
-        <div class="crayons-modal__overlay"></div>
       </div>
     </div>
   </div>

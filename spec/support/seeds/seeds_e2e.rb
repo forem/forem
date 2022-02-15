@@ -213,6 +213,26 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "apple-auth-admin-user@privaterelay.appleid.com") do
+  user = User.create!(
+    name: "Apple Auth Admin User",
+    email: "apple-auth-admin-user@privaterelay.appleid.com",
+    username: "apple_auth_admin_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  user.add_role(:super_admin)
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") do
   user = User.create!(
     name: "Notifications User \\:/",
