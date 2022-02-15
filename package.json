@@ -141,7 +141,6 @@
     "postscribe": "^2.0.8",
     "preact": "^10.6.6",
     "prop-types": "^15.8.1",
-    "pusher-js": "^7.0.6",
     "rails-erb-loader": "^5.5.2",
     "react-colorful": "^5.5.1",
     "web-share-wrapper": "^0.2.2"
