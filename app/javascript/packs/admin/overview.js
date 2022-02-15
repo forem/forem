@@ -1,4 +1,10 @@
 import Chart from 'chart.js/auto';
+import { initializeDropdown } from '@utilities/dropdownUtils';
+
+initializeDropdown({
+  triggerElementId: 'timeperiods-trigger',
+  dropdownContentId: 'timeperiods-dropdown',
+});
 
 // General graph configuration
 const options = {

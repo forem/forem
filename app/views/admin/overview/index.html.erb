@@ -9,11 +9,19 @@
     <section class="crayons-card p-7 m:basis-2-3">
       <header class="flex justify-between items-center mb-7">
         <h2 class="crayons-subtitle-1">Analytics and trends</h2>
-        <select class="crayons-select w-auto">
-          <option value="7">Last 7 days</option>
-          <option value="14">Last 14 days</option>
-          <option value="30">Last 30 days</option>
-        </select>
+        <div class="relative w-auto">
+          <button type="button" class="c-btn c-btn--icon-left dropdown-trigger whitespace-nowrap" id="timeperiods-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+            <%= crayons_icon_tag("calendar", title: "Timeframes", class: "c-btn__icon") %>
+            <span class="js-timeperiod-label">Last 7 days</span>
+          </button>
+          <form action="" id="timeperiods-dropdown" class="crayons-dropdown right-0 left-0 s:left-auto">
+            <ul class="mb-0">
+              <li><button type="button" class="c-btn w-100 align-left" value="7">Last 7 days</button></li>
+              <li><button type="button" class="c-btn w-100 align-left" value="14">Last 14 days</button></li>
+              <li><button type="button" class="c-btn w-100 align-left" value="30">Last 30 days</button></li>
+            </ul>
+          </form>
+        </div>
       </header>
 
       <div class="grid s:grid-cols-2 gap-7">
