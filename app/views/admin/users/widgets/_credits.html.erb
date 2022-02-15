@@ -29,7 +29,10 @@
                          value: 1,
                          size: 5,
                          min: 1,
-                         max: 9999 %>
+                         max: 9999,
+                         data: {
+                           "unspent-credits": @user.unspent_credits_count
+                         } %>
       <%= f.label :credit_amount, "credits", class: "color-secondary flex-1", "aria-label": "Amount of credits to add or remove" %>
       </div>
     </div>

@@ -68,16 +68,38 @@ describe('Manage User Credits', () => {
         cy.findByRole('combobox', { name: 'Adjust balance' }).select('Remove');
         cy.findByRole('spinbutton', {
           name: 'Amount of credits to add or remove',
-        }).type('10');
+        })
+          .as('credits')
+          .type('10');
         cy.findByRole('textbox', {
           name: 'Why are you adjusting credits?',
         }).type('some reason');
         cy.findByRole('button', { name: 'Adjust' }).click();
       });
 
-      cy.getModal().should('not.exist');
-      closeUserUpdatedMessage('Credits have been removed.');
-      cy.findByTestId('user-credits').should('have.text', '0');
+      cy.getModal().should('exist');
+      cy.findByTestId('user-credits').should('have.text', '100');
+    });
+
+    it('should have correct max credits for adding and removing credits', () => {
+      cy.findByTestId('user-credits').should('have.text', '100');
+
+      openCreditsModal().within(() => {
+        cy.findByRole('combobox', { name: 'Adjust balance' })
+          .as('adjustBalance')
+          .select('Add');
+        cy.findByRole('spinbutton', {
+          name: 'Amount of credits to add or remove',
+        })
+          .as('creditAmount')
+          .should('have.attr', 'max', '9999');
+
+        cy.get('@adjustBalance').select('Remove');
+        cy.get('@creditAmount').should('have.attr', 'max', '100');
+
+        cy.get('@adjustBalance').select('Add');
+        cy.get('@creditAmount').should('have.attr', 'max', '9999');
+      });
     });
   });
 });
