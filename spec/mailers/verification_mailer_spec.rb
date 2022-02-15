@@ -10,7 +10,7 @@ RSpec.describe VerificationMailer, type: :mailer do
       allow(Settings::SMTP).to receive(:from_email_address).and_return(from_email_address)
     end
 
-    it "works correctly" do
+    it "works correctly", :aggregate_failures do
       email = described_class.with(user_id: user.id).account_ownership_verification_email
 
       expect(email.subject).not_to be_nil
