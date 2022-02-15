@@ -5,7 +5,7 @@
   <% end %>
 </h1>
 
-<nav class="mb-2 flex justify-between items-center">
+<nav class="mb-2 flex justify-between items-center" aria-label="Posts">
   <ul class="crayons-navigation crayons-navigation--horizontal">
     <li>
       <a href="<%= admin_articles_path %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state].blank? %>">Hot</a>
