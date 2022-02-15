@@ -15,11 +15,11 @@ function closeUserUpdatedMessage(message) {
 describe('Manage User Credits', () => {
   describe('As an admin', () => {
     beforeEach(() => {
-      10;
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/users/8');
+        cy.loginAndVisit(user, '/admin/users');
+        cy.findByRole('link', { name: 'credits_user' }).click();
       });
     });
 
