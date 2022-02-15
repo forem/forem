@@ -79,6 +79,7 @@ export const renderFeed = (timeFrame) => {
 
         const commonProps = {
           bookmarkClick,
+          timeFrame,
         };
 
         const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
