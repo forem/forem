@@ -114,8 +114,11 @@ export const EditorFormattingHelp = ({ openModal }) => (
         <a href="#liquid" onClick={() => openModal('liquidShowing')}>
           Click here
         </a>{' '}
-        for a list of supported embeds. Open an issue if you experience any
-        issues.
+        for a list of supported embeds.{' '}
+        <a href="https://github.com/forem/forem/issues/new?assignees=&amp;labels=&amp;template=bug_report.md">
+          Open an issue
+        </a>{' '}
+        if you experience any issues.
       </li>
       <li>
         In addition to images for the post's content, you can also drag and drop
