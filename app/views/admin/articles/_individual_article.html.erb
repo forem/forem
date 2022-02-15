@@ -36,7 +36,7 @@
 
     <% if article.main_image.present? %>
       <a href="<%= article.path %>" target="_blank" rel="noopener" class="c-link c-link--branded mb-4">
-        <img src="<%= cloud_cover_url(article.main_image) %>" style="background: <%= article.main_image_background_hex_color %>; max-height:150px; max-width: 300px;" alt="cover image" loading="lazy" class="block radius-default h-auto w-100" />
+        <img src="<%= cloud_cover_url(article.main_image) %>" style="background: <%= article.main_image_background_hex_color %>; max-height:150px; max-width: 300px;" alt="" loading="lazy" class="block radius-default h-auto w-100" />
       </a>
     <% end %>
 
