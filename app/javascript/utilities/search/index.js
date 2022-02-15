@@ -144,3 +144,14 @@ export function fetchSearch(endpoint, dataHash) {
     response.json(),
   );
 }
+
+/**
+ * A helper method to search for tags.
+ *
+ * @param {string} query - A partial or complete tag name that is being searched for.
+ *
+ * @returns {Promise<object>} A collection of found tags, if any.
+ */
+export function fetchTags(name) {
+  return fetchSearch('tags', { name }).then(({ result }) => result);
+}

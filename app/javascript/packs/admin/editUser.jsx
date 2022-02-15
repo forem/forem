@@ -1,4 +1,12 @@
+import { h, render } from 'preact';
+import { TagAutocompleteSelection } from '../../article-form/components/TagAutocompleteSelection';
+import { TagAutocompleteOption } from '../../article-form/components/TagAutocompleteOption';
+import { MultiSelectAutocomplete } from '@crayons';
 import { initializeDropdown } from '@utilities/dropdownUtils';
+import { fetchTags } from '@utilities/search';
+import { getCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+
+window.getCsrfToken = getCsrfToken;
 
 function adjustCreditRange(event) {
   const {
@@ -51,7 +59,6 @@ function getModalContents(modalContentSelector) {
   return modalContents.get(modalContentSelector);
 }
 
-let preact;
 let AdminModal;
 const modalContents = new Map();
 
@@ -81,14 +88,9 @@ const openModal = async (event) => {
   event.preventDefault();
 
   // Only load Preact if we haven't already.
-  if (!preact) {
-    [preact, { Modal: AdminModal }] = await Promise.all([
-      import('preact'),
-      import('@crayons/Modal/Modal'),
-    ]);
+  if (!AdminModal) {
+    AdminModal = (await import('@crayons/Modal/Modal')).Modal;
   }
-
-  const { h, render } = preact;
 
   const { modalTitle, modalSize, modalContentSelector } = dataset;
 
@@ -115,3 +117,23 @@ const openModal = async (event) => {
 };
 
 document.body.addEventListener('click', openModal);
+
+const tagsRoot = document.getElementById('tag-moderation-container');
+
+// Normally, Preact can diff the server-side rendered DOM to hydrate the client-side rendered DOM,
+// but in this case, the MultiSelectAutocomplete component has a lot of markup, so I opted for
+// just a stylized input which is why innerHTML is used.
+tagsRoot.innerHTML = '';
+
+render(
+  <MultiSelectAutocomplete
+    fetchSuggestions={fetchTags}
+    labelText="Assign tags"
+    maxSelections={Math.MAX_VALUE}
+    placeholder="Add a tag..."
+    showLabel={false}
+    SuggestionTemplate={TagAutocompleteOption}
+    SelectionTemplate={TagAutocompleteSelection}
+  />,
+  tagsRoot,
+);
