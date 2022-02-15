@@ -22,6 +22,13 @@ function removeFromDOM() {
 }
 
 function androidTargetIntent() {
+  if (navigator.userAgent === 'DEV-Native-android') {
+    // The DEV Android app has been decommissioned and it kept a custom UA.
+    // Instead of a custom intent we are redirecting directly to the Play Store
+    // because the app isn't capable of handling these
+    return FOREM_GOOGLE_PLAY_URL;
+  }
+
   return (
     'intent://scan/#Intent;' +
     'action=android.intent.action.SEND;' +

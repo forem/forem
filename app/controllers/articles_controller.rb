@@ -1,9 +1,12 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
 
+  # NOTE: It seems quite odd to not authenticate the user for the :new action.
   before_action :authenticate_user!, except: %i[feed new]
   before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish]
-  before_action :raise_suspended, only: %i[new create update]
+  # NOTE: Consider pushing this check into the associated Policy.  We could choose to raise a
+  #       different error which we could then rescue as part of our exception handling.
+  before_action :check_suspended, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
 
@@ -42,14 +45,10 @@ class ArticlesController < ApplicationController
   def new
     base_editor_assignments
 
-    @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
+    @article, store_location = Articles::Builder.call(@user, @tag, @prefill)
 
-    if needs_authorization
-      authorize(Article)
-    else
-      skip_authorization
-      store_location_for(:user, request.path)
-    end
+    authorize(Article)
+    store_location_for(:user, request.path) if store_location
   end
 
   def edit
@@ -91,11 +90,19 @@ class ArticlesController < ApplicationController
         format.json { render json: @article.errors, status: :unprocessable_entity }
       else
         format.json do
+          front_matter = parsed.front_matter.to_h
+          if front_matter["tags"]
+            tags = Article.new.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
+          end
+          if front_matter["cover_image"]
+            cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
+          end
+
           render json: {
             processed_html: processed_html,
-            title: parsed["title"],
-            tags: (Article.new.tag_list.add(parsed["tags"], parser: ActsAsTaggableOn::TagParser) if parsed["tags"]),
-            cover_image: (ApplicationController.helpers.cloud_cover_url(parsed["cover_image"]) if parsed["cover_image"])
+            title: front_matter["title"],
+            tags: tags,
+            cover_image: cover_image
           }, status: :ok
         end
       end
@@ -129,7 +136,7 @@ class ArticlesController < ApplicationController
           return
         end
         if params[:destination]
-          redirect_to(URI.parse(params[:destination]).path)
+          redirect_to(Addressable::URI.parse(params[:destination]).path)
           return
         end
         if params[:article][:video_thumbnail_url]
@@ -150,7 +157,7 @@ class ArticlesController < ApplicationController
   end
 
   def delete_confirm
-    @article = current_user.articles.find_by(slug: params[:slug])
+    @article = Article.find_by(slug: params[:slug])
     not_found unless @article
     authorize @article
   end
@@ -159,7 +166,7 @@ class ArticlesController < ApplicationController
     authorize @article
     Articles::Destroyer.call(@article)
     respond_to do |format|
-      format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
+      format.html { redirect_to "/dashboard", notice: I18n.t("articles_controller.deleted") }
       format.json { head :no_content }
     end
   end

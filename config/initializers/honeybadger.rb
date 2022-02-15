@@ -4,7 +4,6 @@
 # rubocop:disable Metrics/BlockLength
 Rails.application.reloader.to_prepare do
   message_fingerprints = {
-    "SuspendedError" => "banned",
     "Rack::Timeout::RequestTimeoutException" => "rack_timeout",
     "Rack::Timeout::RequestTimeoutError" => "rack_timeout",
     "PG::QueryCanceled" => "pg_query_canceled"

@@ -3,8 +3,18 @@ import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
+import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
 
 /* global Runtime */
+
+const animatedImages = document.querySelectorAll('[data-animated="true"]');
+if (animatedImages.length > 0) {
+  import('@utilities/animatedImageUtils').then(
+    ({ initializePausableAnimatedImages }) => {
+      initializePausableAnimatedImages(animatedImages);
+    },
+  );
+}
 
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
@@ -121,3 +131,5 @@ getCsrfToken().then(async () => {
 
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
+
+initializeUserSubscriptionLiquidTagContent();

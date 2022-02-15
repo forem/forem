@@ -67,7 +67,7 @@ class ArticleDecorator < ApplicationDecorator
     modified_description += "." unless description.end_with?(".")
     return modified_description if cached_tag_list.blank?
 
-    modified_description + " Tagged with #{cached_tag_list}."
+    modified_description + I18n.t("decorators.article_decorator.tagged_with", cached_tag_list: cached_tag_list)
   end
 
   def video_metadata
@@ -102,8 +102,7 @@ class ArticleDecorator < ApplicationDecorator
 
   # Used in determining when to bust additional routes for an Article's comments
   def discussion?
-    cached_tag_list_array.include?("discuss") &&
-      featured_number.to_i > 35.hours.ago.to_i
+    cached_tag_list_array.include?("discuss") && featured_number.to_i > 35.hours.ago.to_i
   end
 
   def pinned?

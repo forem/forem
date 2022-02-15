@@ -26,7 +26,12 @@ Rails.application.routes.draw do
     get "/locale/:locale", to: "stories#index"
 
     draw :admin
-    draw :listing
+
+    # The lambda (e.g. `->`) allows for dynamic checking.  In other words we check with each
+    # request.
+    constraints(->(_req) { Listing.feature_enabled? }) do
+      draw :listing
+    end
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
@@ -38,6 +43,10 @@ Rails.application.routes.draw do
 
     namespace :api, defaults: { format: "json" } do
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+        namespace :admin do
+          resources :users, only: [:create]
+        end
+
         resources :articles, only: %i[index show create update] do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
@@ -84,6 +93,10 @@ Rails.application.routes.draw do
           resources :articles, only: [:index], to: "organizations#articles"
         end
         resource :instance, only: %i[show]
+
+        constraints(RailsEnvConstraint.new(allowed_envs: %w[test])) do
+          resource :feature_flags, only: %i[create show destroy], param: :flag
+        end
       end
     end
 

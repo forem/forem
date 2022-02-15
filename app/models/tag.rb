@@ -119,7 +119,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def validate_name
-    errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
+    errors.add(:name, I18n.t("errors.messages.too_long", count: 30)) if name.length > 30
     # [:alnum:] is not used here because it supports diacritical characters.
     # If we decide to allow diacritics in the future, we should replace the
     # following regex with [:alnum:].
@@ -258,7 +258,7 @@ class Tag < ActsAsTaggableOn::Tag
   def validate_alias_for
     return if Tag.exists?(name: alias_for)
 
-    errors.add(:tag, "alias_for must refer to an existing tag")
+    errors.add(:tag, I18n.t("models.tag.alias_for"))
   end
 
   def pound_it

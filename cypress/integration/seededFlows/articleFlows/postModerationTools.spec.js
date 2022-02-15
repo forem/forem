@@ -48,9 +48,16 @@ describe('Moderation Tools for Posts', () => {
         cy.findByRole('button', { name: 'Moderation' }).click();
 
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open adjust tags section' }).click({
-            force: true,
-          });
+          cy.findByRole('button', { name: 'Open adjust tags section' })
+            .as('adjustTagsButton')
+            .click({
+              force: true,
+            });
+          cy.get('@adjustTagsButton').should(
+            'have.attr',
+            'aria-expanded',
+            'true',
+          );
 
           cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
           cy.findByRole('button', { name: 'Submit' }).click();

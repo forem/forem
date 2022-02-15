@@ -23,10 +23,10 @@
 
 </head>
 <body class="admin default-header"
-  data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-  data-deployed-at="<%= ForemInstance.deployed_at %>"
-  data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
-  data-ga-tracking="<%= Settings::General.ga_tracking_id %>"
+  data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+  data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
+  data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
+  data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
   data-controller="snackbar"
   data-action="snackbar:add@document->snackbar#addItem">
   <div id="body-styles">
@@ -81,7 +81,7 @@
     </div>
     <main id="main-content" class="crayons-layout__content min-w-0 p-2">
       <% flash.each do |type, message| %>
-        <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
+        <div data-testid="flash-<%= type %>" class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
           <button class="close" data-dismiss="alert" aria-label="Close">
             <%= crayons_icon_tag(:x, aria_hidden: true) %>
           </button>

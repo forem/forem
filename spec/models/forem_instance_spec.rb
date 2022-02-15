@@ -96,4 +96,16 @@ RSpec.describe ForemInstance, type: :model do
       ENV["SENDGRID_API_KEY"] = nil
     end
   end
+
+  describe ".contact_email" do
+    let(:email) { "contact@dev.to" }
+
+    before do
+      allow(Settings::General).to receive(:contact_email).and_return(email)
+    end
+
+    it "sets the correct email" do
+      expect(described_class.contact_email).to be(email)
+    end
+  end
 end

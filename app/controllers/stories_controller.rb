@@ -80,7 +80,7 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_permanently_to(URI.parse("/#{@user.username}/#{params[:slug]}").path)
+      redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
     end
 
@@ -401,7 +401,7 @@ class StoriesController < ApplicationController
       url: URL.organization(@organization),
       image: @organization.profile_image_url_for(length: 320),
       name: @organization.name,
-      description: @organization.summary.presence || "404 bio not found"
+      description: @organization.summary.presence || I18n.t("stories_controller.404_bio_not_found")
     }
   end
 

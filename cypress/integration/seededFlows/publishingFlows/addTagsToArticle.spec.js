@@ -39,7 +39,13 @@ describe('Add tags to article', () => {
   });
 
   it('automatically suggests top tags when field is focused', () => {
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' }).focus();
+    // It is possible in slow running tests that the fetched "top tags" will not be available in the autocomplete before the focus event triggered below.
+    // Here we retry the focus event until the combobox expands.
+    const focusInputAndGetParentCombobox = ($el) =>
+      $el.focus().blur().focus().parents('div');
+    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
+      .pipe(focusInputAndGetParentCombobox)
+      .should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('heading', { name: 'Top tags' }).should('exist');
     cy.findByRole('option', { name: '# tagone' }).should('exist');

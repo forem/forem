@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   include SessionCurrentUser
   include ValidRequest
-  include Pundit
+  include Pundit::Authorization
   include CachingHeaders
   include ImageUploads
   include DevelopmentDependencyChecks if Rails.env.development?
@@ -73,12 +73,12 @@ class ApplicationController < ActionController::Base
   end
 
   def not_authorized
-    render json: { error: "Error: not authorized" }, status: :unauthorized
-    raise NotAuthorizedError, "Unauthorized"
+    render json: { error: I18n.t("application_controller.not_authorized") }, status: :unauthorized
+    raise Pundit::NotAuthorizedError, "Unauthorized"
   end
 
   def bad_request
-    render json: { error: "Error: Bad Request" }, status: :bad_request
+    render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
   end
 
   def error_too_many_requests(exc)
@@ -94,7 +94,7 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.html { redirect_to sign_up_path }
-      format.json { render json: { error: "Please sign in" }, status: :unauthorized }
+      format.json { render json: { error: I18n.t("application_controller.please_sign_in") }, status: :unauthorized }
     end
   end
 
@@ -131,8 +131,11 @@ class ApplicationController < ActionController::Base
     onboarding_path
   end
 
-  def raise_suspended
-    raise SuspendedError if current_user&.suspended?
+  def check_suspended
+    return unless current_user&.suspended?
+
+    response.status = :forbidden
+    render "pages/forbidden"
   end
 
   def internal_navigation?
@@ -209,12 +212,6 @@ class ApplicationController < ActionController::Base
   def bust_content_change_caches
     EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
-  end
-
-  # To ensure that components are sent back as HTML, we wrap their rendering in
-  # this helper method
-  def render_component(component_class, *args, **kwargs)
-    render component_class.new(*args, **kwargs), content_type: "text/html"
   end
 
   private
