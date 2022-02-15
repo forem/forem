@@ -268,6 +268,18 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".count_and_group_articles_for" do
+    it "returns an array of CountAndGroupArticlesForResult objects" do
+      create(:article, published_at: 3.days.ago)
+      # Note we always have an article based on line 11 `let!(:article)`
+      results = described_class.count_and_group_articles_for(days_ago: 7, days_until: 0)
+
+      expect(results.size).to eq(8) # 7 days is a date range of today + 1 week
+      # One article "0" days ago, and 1 article 3 days ago
+      expect(results.map(&:record_count)).to eq([1, 0, 0, 1, 0, 0, 0, 0])
+    end
+  end
+
   context "when data is extracted from evaluation of the front matter during validation" do
     let!(:title) { "Talk About It, Justify It" }
     let!(:slug) { "talk-about-it-justify-it" }

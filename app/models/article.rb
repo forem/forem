@@ -338,6 +338,33 @@ class Article < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
+  CountAndGroupArticlesForResult = Struct.new(:record_count, :publication_date, keyword_init: true)
+  # How many articles were published on each day within the given range.
+  #
+  # @param days_ago [Integer] How many days ago starts the date range?
+  # @param days_until [Integer] How many days ago ends the date range?
+  #
+  # @return Array<CountAndGroupArticlesForResult>
+  def self.count_and_group_articles_for(days_ago: 7, days_until: 0)
+    results = (days_until..days_ago).map do |i|
+      CountAndGroupArticlesForResult.new(publication_date: i.days.ago.beginning_of_day.to_date, record_count: 0)
+    end
+
+    # Pardon the "days_ago.days.ago" but the named parameter is more important to be legible than
+    # the innner workings.
+    self.select("(articles.published_at::date)")
+      .published
+      .where(published_at: (days_ago.days.ago.beginning_of_day..days_until.days.ago.end_of_day))
+      .group("(articles.published_at::date)")
+      .count
+      .each do |publication_date, count|
+        result = results.detect { |r| r.publication_date == publication_date }
+        result.record_count = count
+      end
+
+    results
+  end
+
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date
     time_ago = 5.days.ago if time_ago == "latest"
