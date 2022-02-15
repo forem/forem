@@ -10,16 +10,27 @@
       <header class="flex justify-between items-center mb-7">
         <h2 class="crayons-subtitle-1">Analytics and trends</h2>
         <div class="relative w-auto">
-          <button type="button" class="c-btn c-btn--icon-left dropdown-trigger whitespace-nowrap" id="timeperiods-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+          <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger whitespace-nowrap" id="timeperiods-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
             <%= crayons_icon_tag("calendar", title: "Timeframes", class: "c-btn__icon") %>
-            <span class="js-timeperiod-label">Last 7 days</span>
           </button>
           <form action="" id="timeperiods-dropdown" class="crayons-dropdown right-0 left-0 s:left-auto">
-            <ul class="mb-0">
-              <li><button type="button" class="c-btn w-100 align-left" value="7">Last 7 days</button></li>
-              <li><button type="button" class="c-btn w-100 align-left" value="14">Last 14 days</button></li>
-              <li><button type="button" class="c-btn w-100 align-left" value="30">Last 30 days</button></li>
-            </ul>
+            <fieldset class="mb-2">
+              <ul class="mb-0 p-2 flex flex-col gap-3">
+                <li class="crayons-field crayons-field--radio">
+                  <input type="radio" name="timeperiod" value="7" id="7days" class="crayons-radio" checked />
+                  <label for="7days" class="crayons-field__label">Last 7 days</label>
+                </li>
+                <li class="crayons-field crayons-field--radio">
+                  <input type="radio" name="timeperiod" value="14" id="14days" class="crayons-radio" />
+                  <label for="14days" class="crayons-field__label">Last 14 days</label>
+                </li>
+                <li class="crayons-field crayons-field--radio">
+                  <input type="radio" name="timeperiod" value="30" id="30days" class="crayons-radio" />
+                  <label for="30days" class="crayons-field__label">Last 30 days</label>
+                </li>
+              </ul>
+            </fieldset>
+            <button type="submit" class="c-btn c-btn--secondary w-100">Submit</button>
           </form>
         </div>
       </header>
