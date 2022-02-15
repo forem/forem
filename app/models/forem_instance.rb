@@ -17,6 +17,23 @@ class ForemInstance
     Settings::General.contact_email
   end
 
+  def self.reply_to_email_address
+    # Some business logic context:
+    # For a Forem Cloud Account, ApplicationConfig["DEFAULT_EMAIL"] will already be set to noreply@forem.com
+    # during the infrastructure setup and deploy.
+    # For a Forem Cloud Account that has Custom SMTP settings we want to use the Settings::SMTP.reply_to_email_address
+    # that the Forem will provide.
+    # For a selfhosted Forem we want to use the Settings::SMTP.reply_to_email_address, which will already have a
+    # default value of ApplicationConfig["DEFAULT_EMAIL"] set during their infrastructure setup even of they haven't
+    # provided the minimum settings as yet.
+    Settings::SMTP.provided_minimum_settings? ? Settings::SMTP.reply_to_email_address : email
+  end
+
+  def self.from_email_address
+    # same comment applies from self.reply_to_email_address
+    Settings::SMTP.provided_minimum_settings? ? Settings::SMTP.from_email_address : email
+  end
+
   # Return true if we are operating on a local installation, false otherwise
   def self.local?
     Settings::General.app_domain.include?("localhost")

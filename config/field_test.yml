@@ -5,15 +5,13 @@ experiments:
   # Do not change the goals unless you intend to also change the corresponding code in
   # app/workers/users/record_field_test_event_worker.rb
 
-  feed_strategy_round_5:
+  feed_strategy_round_6:
     variants:
       - original
-      - tag_follow_points_maximum_spectrum
-      - tag_follow_points_medium_spectrum
-      - tag_follow_points_minimum_spectrum
+      - slightly_more_recent_articles
+      - much_more_recent_articles
     weights:
-      - 70
-      - 10
+      - 80
       - 10
       - 10
     goals:
