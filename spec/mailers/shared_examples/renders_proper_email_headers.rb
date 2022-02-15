@@ -8,7 +8,7 @@ RSpec.shared_examples "#renders_proper_email_headers" do
     allow(Settings::SMTP).to receive(:reply_to_email_address).and_return(reply_to_email_address)
   end
 
-  it "renders proper sender" do
+  it "renders proper sender", :aggregate_failures do
     expect(email.from).to eq([from_email_address])
     expected_from = "#{Settings::Community.community_name} <#{from_email_address}>"
     expect(email["from"].value).to eq(expected_from)
