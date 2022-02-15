@@ -3,6 +3,7 @@ import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
+import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
 
 /* global Runtime */
 
@@ -130,3 +131,5 @@ getCsrfToken().then(async () => {
 
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
+
+initializeUserSubscriptionLiquidTagContent();

@@ -1,31 +1,19 @@
 class HtmlVariantPolicy < ApplicationPolicy
   def index?
-    minimal_admin?
+    user_any_admin?
   end
 
-  def show?
-    minimal_admin?
-  end
+  alias show? minimal_admin?
 
-  def edit?
-    minimal_admin?
-  end
+  alias edit? minimal_admin?
 
-  def update?
-    minimal_admin?
-  end
+  alias update? minimal_admin?
 
-  def new?
-    minimal_admin?
-  end
+  alias new? minimal_admin?
 
-  def create?
-    minimal_admin?
-  end
+  alias create? minimal_admin?
 
-  def destroy?
-    minimal_admin?
-  end
+  alias destroy? minimal_admin?
 
   def permitted_attributes
     %i[html name published approved target_tag group]

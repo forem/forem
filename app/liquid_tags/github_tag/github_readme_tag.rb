@@ -1,6 +1,7 @@
 class GithubTag
   class GithubReadmeTag
     PARTIAL = "liquids/github_readme".freeze
+    README_REGEXP = %r{https://github\.com/[\w\-.]{1,39}/[\w\-.]{1,39}/?}
     GITHUB_DOMAIN_REGEXP = %r{.*github.com/}
     OPTION_NO_README = "no-readme".freeze
     VALID_OPTIONS = [OPTION_NO_README].freeze
@@ -33,7 +34,7 @@ class GithubTag
     attr_reader :repository_path, :options, :content
 
     def parse_input(input)
-      sanitized_input = sanitize_input(input)
+      sanitized_input = input.gsub(GITHUB_DOMAIN_REGEXP, "")
 
       path, *options = sanitized_input.split
 

@@ -139,6 +139,7 @@ Please see our installation guides, such as the
 - [@rt4914](https://dev.to/rt4914)
 - [@jeremyf](https://dev.to/jeremyf)
 - [@dscottS3](https://dev.to/dscottS3)
+- [@asheren](https://dev.to/asheren)
 
 ## Vulnerability disclosure
 

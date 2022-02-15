@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   include SessionCurrentUser
   include ValidRequest
-  include Pundit
+  include Pundit::Authorization
   include CachingHeaders
   include ImageUploads
   include DevelopmentDependencyChecks if Rails.env.development?
@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
 
   def not_authorized
     render json: { error: I18n.t("application_controller.not_authorized") }, status: :unauthorized
-    raise NotAuthorizedError, "Unauthorized"
+    raise Pundit::NotAuthorizedError, "Unauthorized"
   end
 
   def bad_request
@@ -212,12 +212,6 @@ class ApplicationController < ActionController::Base
   def bust_content_change_caches
     EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
-  end
-
-  # To ensure that components are sent back as HTML, we wrap their rendering in
-  # this helper method
-  def render_component(component_class, *args, **kwargs)
-    render component_class.new(*args, **kwargs), content_type: "text/html"
   end
 
   private

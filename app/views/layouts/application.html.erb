@@ -46,14 +46,14 @@
   <% unless internal_navigation? %>
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
       <body
-        data-user-status="<%= user_logged_in_status %>"
-        data-community-name="<%= community_name %>"
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
-        data-locale="<%= I18n.locale %>"
-        data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-        data-deployed-at="<%= ForemInstance.deployed_at %>"
-        data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
-        data-ga-tracking="<%= Settings::General.ga_tracking_id %>">
+        data-user-status="<%= j(user_logged_in_status) %>"
+        data-community-name="<%= j(community_name) %>"
+        data-locale="<%= j(I18n.locale) %>"
+        data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+        data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
+        data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
+        data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
         <div id="body-styles">

@@ -227,8 +227,8 @@ module ApplicationHelper
     link_to body, collection.path, **kwargs
   end
 
-  def email_link(text: nil, additional_info: nil)
-    email = ForemInstance.email
+  def contact_link(text: nil, additional_info: nil)
+    email = ForemInstance.contact_email
     mail_to email, text || email, additional_info
   end
 

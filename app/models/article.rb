@@ -32,7 +32,7 @@ class Article < ApplicationRecord
   PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
   def self.unique_url_error
-    I18n.t("models.article.unique_url", email: ForemInstance.email)
+    I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
   has_one :discussion_lock, dependent: :delete

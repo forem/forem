@@ -24,7 +24,7 @@ class ApiSecretsController < ApplicationController
       flash[:notice] = I18n.t("api_secrets_controller.revoked")
     else
       flash[:error] =
-        I18n.t("errors.messages.try_again_email", email: ForemInstance.email)
+        I18n.t("errors.messages.try_again_email", email: ForemInstance.contact_email)
     end
 
     redirect_back(fallback_location: root_path)
