@@ -4,6 +4,24 @@
   Overview
 </h1>
 
+<div class="crayons-card p-6 flex flex-col gap-4 mb-4">
+  <h2>Paweł debugging</h2>
+  ------------------------------------<br />
+  <div>
+    <strong>Labels:</strong> <%= @labels.join(",") %><br />
+    <strong>Beginning of the period:</strong> <%= -@length.days.ago.strftime("%b %d") %><br />
+  </div>
+  ------------------------------------<br />
+  <% @analytics.each do |entity, current_period_count, previous_period_count, values| %>
+    <div>
+      <strong><%= entity %></strong><br />
+      Current period count: <%= current_period_count %><br />
+      Previous period count: <%= previous_period_count %><br />
+      <span class="color-accent-danger">Values: <%= values.join(",") %></span>
+    </div>
+  <% end %>
+</div>
+
 <div class="flex flex-col gap-4">
   <div class="flex flex-col m:flex-row gap-4">
     <section class="crayons-card p-7 m:basis-2-3">
@@ -13,7 +31,7 @@
           <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger whitespace-nowrap" id="timeperiods-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
             <%= crayons_icon_tag("calendar", title: "Timeframes", class: "c-btn__icon") %>
           </button>
-          <form action="" id="timeperiods-dropdown" class="crayons-dropdown right-0 left-0 s:left-auto">
+          <%= form_tag admin_path, method: :get, class: "crayons-dropdown right-0 left-0 s:left-auto", id: "timeperiods-dropdown" do %>
             <fieldset class="mb-2">
               <ul class="mb-0 p-2 flex flex-col gap-3">
                 <li class="crayons-field crayons-field--radio">
@@ -31,7 +49,7 @@
               </ul>
             </fieldset>
             <button type="submit" class="c-btn c-btn--secondary w-100">Submit</button>
-          </form>
+          <% end %>
         </div>
       </header>
 
