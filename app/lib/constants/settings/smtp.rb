@@ -4,7 +4,7 @@ module Constants
       DETAILS = {
         address: {
           description: "Address of the remote mail server",
-          placeholder: "ie. smtp.gmail.com"
+          placeholder: "i.e. smtp.gmail.com"
         },
         port: {
           description: "The port that your mail server runs on",
@@ -12,8 +12,9 @@ module Constants
         },
         authentication: {
           description: " If your mail server requires authentication, " \
-                       "you need to specify the authentication type here",
-          placeholder: "ie. plain, login, or cram_md5"
+                       "you need to specify the authentication type here. " \
+                       " i.e. plain, login, or cram_md5",
+          placeholder: "i.e. plain, login, or cram_md5"
         },
         user_name: {
           description: "If your mail server requires authentication, copy the username from your server",

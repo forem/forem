@@ -78,7 +78,6 @@ module.exports = {
     sendFetch: false,
     InstantClick: false,
     filterXSS: false,
-    Pusher: false,
     ga: false,
     Honeybadger: false,
     AndroidBridge: false,

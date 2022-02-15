@@ -13,6 +13,10 @@ class ForemInstance
     ApplicationConfig["DEFAULT_EMAIL"]
   end
 
+  def self.contact_email
+    Settings::General.contact_email
+  end
+
   def self.reply_to_email_address
     # Some business logic context:
     # For a Forem Cloud Account, ApplicationConfig["DEFAULT_EMAIL"] will already be set to noreply@forem.com
@@ -43,6 +47,14 @@ class ForemInstance
 
   def self.smtp_enabled?
     Settings::SMTP.provided_minimum_settings? || ENV["SENDGRID_API_KEY"].present?
+  end
+
+  def self.sendgrid_enabled?
+    ENV["SENDGRID_API_KEY"].present?
+  end
+
+  def self.only_sendgrid_enabled?
+    ForemInstance.sendgrid_enabled? && !Settings::SMTP.provided_minimum_settings?
   end
 
   def self.invitation_only?

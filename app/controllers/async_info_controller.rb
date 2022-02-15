@@ -58,7 +58,7 @@ class AsyncInfoController < ApplicationController
         feed_style: feed_style_preference,
         created_at: @user.created_at,
         admin: @user.any_admin?,
-        apple_auth: @user.email.end_with?("@privaterelay.appleid.com")
+        apple_auth: @user.email.to_s.end_with?("@privaterelay.appleid.com")
       }
     end.to_json
   end
