@@ -110,7 +110,7 @@
     "@honeybadger-io/webpack": "^1.5.1",
     "@hotwired/stimulus": "3.0.1",
     "@hotwired/stimulus-webpack-helpers": "1.0.1",
-    "@rails/ujs": "7.0.1",
+    "@rails/ujs": "7.0.2",
     "@rails/webpacker": "5.4.3",
     "@reach/combobox": "^0.16.5",
     "@storybook/addon-backgrounds": "^6.4.19",
