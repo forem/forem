@@ -36,23 +36,16 @@ module Admin
     def show
       @user = User.find(params[:id])
 
-      if FeatureFlag.enabled?(:new_admin_members, current_user)
-        render "admin/users/new/show"
-      elsif FeatureFlag.enabled?(:admin_member_view)
+      if FeatureFlag.enabled?(:admin_member_view)
         set_feedback_messages
         set_related_reactions
-        set_user_details
-      else
-        set_user_details
       end
+      set_user_details
     end
 
     def update
       @user = User.find(params[:id])
 
-      # TODO: [@rhymes] in the new Admin Member view this logic has been moved
-      # to Admin::Users::Tools::CreditsController and Admin::Users::Tools::NotesController#create.
-      # It can eventually be removed when we transition away from the old Admin UI
       Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
 
@@ -163,8 +156,6 @@ module Admin
       redirect_to admin_user_path(params[:id])
     end
 
-    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
-    # once the HTML response isn't required anymore
     def send_email
       email_params = {
         email_body: send_email_params[:email_body],
@@ -209,8 +200,6 @@ module Admin
       end
     end
 
-    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
-    # once the HTML response isn't required anymore
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
@@ -295,35 +284,18 @@ module Admin
       params.permit(EMAIL_ALLOWED_PARAMS)
     end
 
-    def credit(_params)
+    def credit_params
       return user_params unless FeatureFlag.enabled?(:admin_member_view)
 
       credit_params = {}
       if user_params[:credit_action] == "Add"
         credit_params[:add_credits] = user_params[:credit_amount]
+        flash[:success] = "Credits have been added!"
       end
 
       if user_params[:credit_action] == "Remove"
         credit_params[:remove_credits] = user_params[:credit_amount]
-      end
-
-      credit_params
-    end
-
-    def credit_params
-      credit_params = nil
-      if FeatureFlag.enabled?(:admin_member_view)
-        credit_params = {}
-
-        if user_params[:credit_action] == "Add"
-          credit_params[:add_credits] = user_params[:credit_amount]
-        end
-
-        if user_params[:credit_action] == "Remove"
-          credit_params[:remove_credits] = user_params[:credit_amount]
-        end
-      else
-        credit_params = user_params
+        flash[:success] = "Credits have been removed."
       end
 
       credit_params

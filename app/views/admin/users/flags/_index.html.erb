@@ -6,11 +6,11 @@
       <article class="c-list-item flex gap-2">
         <span class="color-secondary shrink-0">
           <% if flag.reactable_type == "Article" %>
-            <%= crayons_icon_tag("post") %>
+            <%= crayons_icon_tag("post", aria_hidden: true) %>
           <% elsif flag.reactable_type == "User" %>
-            <%= crayons_icon_tag("user-line") %>
+            <%= crayons_icon_tag("user-line", aria_hidden: true) %>
           <% elsif flag.reactable_type == "Comment" %>
-            <%= crayons_icon_tag("comment") %>
+            <%= crayons_icon_tag("comment", aria_hidden: true) %>
           <% end %>
         </span>
         <div class="flex-1">

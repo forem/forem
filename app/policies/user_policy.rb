@@ -54,33 +54,21 @@ class UserPolicy < ApplicationPolicy
     true
   end
 
-  def onboarding_checkbox_update?
-    true
-  end
+  alias onboarding_checkbox_update? onboarding_update?
 
-  def onboarding_notifications_checkbox_update?
-    true
-  end
+  alias onboarding_notifications_checkbox_update? onboarding_update?
 
   def update?
-    current_user? && !user_suspended?
+    edit? && !user_suspended?
   end
 
-  def destroy?
-    current_user?
-  end
+  alias destroy? edit?
 
-  def confirm_destroy?
-    current_user?
-  end
+  alias confirm_destroy? edit?
 
-  def full_delete?
-    current_user?
-  end
+  alias full_delete? edit?
 
-  def request_destroy?
-    current_user?
-  end
+  alias request_destroy? edit?
 
   def join_org?
     !user_suspended?
@@ -90,21 +78,17 @@ class UserPolicy < ApplicationPolicy
     OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 
-  def remove_identity?
-    current_user?
-  end
+  alias remove_identity? edit?
 
   def dashboard_show?
-    current_user? || user_admin? || minimal_admin?
+    current_user? || user_super_admin? || user_any_admin?
   end
 
   def moderation_routes?
-    (user.has_trusted_role? || minimal_admin?) && !user.suspended?
+    (user.has_trusted_role? || user_any_admin?) && !user.suspended?
   end
 
-  def update_password?
-    current_user?
-  end
+  alias update_password? edit?
 
   def permitted_attributes
     PERMITTED_ATTRIBUTES

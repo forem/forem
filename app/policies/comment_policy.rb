@@ -7,40 +7,32 @@ class CommentPolicy < ApplicationPolicy
     !user_suspended? && !user.comment_suspended?
   end
 
-  def update?
-    edit?
-  end
+  alias new? create?
 
-  def destroy?
-    edit?
-  end
+  alias update? edit?
 
-  def delete_confirm?
-    edit?
-  end
+  alias destroy? edit?
 
-  def settings?
-    edit?
-  end
+  alias delete_confirm? edit?
+
+  alias settings? edit?
 
   def preview?
     true
   end
 
   def moderator_create?
-    user_moderator? || minimal_admin?
+    user_moderator? || user_any_admin?
   end
 
   def hide?
     user_commentable_author?
   end
 
-  def unhide?
-    user_commentable_author?
-  end
+  alias unhide? hide?
 
   def admin_delete?
-    minimal_admin?
+    user_any_admin?
   end
 
   def permitted_attributes_for_update
