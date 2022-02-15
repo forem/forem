@@ -125,8 +125,13 @@ const tagsRoot = document.getElementById('tag-moderation-container');
 // just a stylized input which is why innerHTML is used.
 tagsRoot.innerHTML = '';
 
+const currentModTags = JSON.parse(
+  tagsRoot.closest('form')['current_mod_tags'].value,
+);
+
 render(
   <MultiSelectAutocomplete
+    defaultValue={currentModTags}
     fetchSuggestions={fetchTags}
     labelText="Assign tags"
     maxSelections={Math.MAX_VALUE}
