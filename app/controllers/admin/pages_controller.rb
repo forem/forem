@@ -71,7 +71,7 @@ module Admin
       html = view_context.render partial: "pages/coc_text",
                                  locals: {
                                    community_name: view_context.community_name,
-                                   email_link: view_context.email_link
+                                   contact_link: view_context.contact_link
                                  }
       @page = case slug
               when Page::CODE_OF_CONDUCT_SLUG
