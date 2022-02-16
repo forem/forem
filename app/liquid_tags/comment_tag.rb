@@ -1,8 +1,8 @@
 class CommentTag < LiquidTagBase
   PARTIAL = "comments/liquid".freeze
-  REGISTRY_REGEXP = %r{#{URL.url}/\w+/comment/(?<comment_id>\w+)}
+  VALID_LINK_REGEXP = %r{#{URL.url}/\w+/comment/(?<comment_id>\w+)}
   VALID_ID_REGEXP = /\A(?<comment_id>\w+)\Z/
-  REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
+  REGEXP_OPTIONS = [VALID_LINK_REGEXP, VALID_ID_REGEXP].freeze
 
   def initialize(_tag_name, id_code, _parse_context)
     super
@@ -35,5 +35,3 @@ end
 Liquid::Template.register_tag("comment", CommentTag)
 # kept for compatibility with existing comments embeds on DEV
 Liquid::Template.register_tag("devcomment", CommentTag)
-
-UnifiedEmbed.register(CommentTag, regexp: CommentTag::REGISTRY_REGEXP)
