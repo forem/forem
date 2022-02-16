@@ -1,0 +1,24 @@
+<section class="crayons-card p-7 m:basis-1-3">
+  <h2 class="crayons-subtitle-1 mb-4">Health check</h2>
+
+  <a href="<%= admin_privileged_reactions_path %>" class="flex flex-col c-link c-link--block -mx-4">
+    <strong class="fs-xl"><%= @flags_count %></strong>
+    <span>Flags raised by <span class="fw-bold">Moderators</span></span>
+    <small class="opacity-75">
+      <%= pluralize(@flags_posts_count, "post") %>,
+      <%= pluralize(@flags_comments_count, "comment") %>,
+      <%= pluralize(@flags_users_count, "user") %>
+    </small>
+  </a>
+
+  <a href="<%= admin_feedback_messages_path %>" class="flex flex-col c-link c-link--block -mx-4">
+    <strong class="fs-xl"><%= @open_abuse_reports_count %></strong>
+    <span><%= "Report".pluralize(@open_abuse_reports_count) %> submitted by <span class="fw-bold">Users</span></span>
+    <small class="opacity-75">3 articles, 5 coomments, 10 users</small>
+  </a>
+
+  <a href="<%= admin_feedback_messages_path %>" class="flex flex-col c-link c-link--block -mx-4">
+    <strong class="fs-xl"><%= @possible_spam_users_count %></strong>
+    <span>Potential spam/abuse users</span>
+  </a>
+</section>
