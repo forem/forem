@@ -108,17 +108,12 @@ export const EditorFormattingHelp = ({ openModal }) => (
         </details>
       </li>
       <li>
-        Embed Liquid tags to add rich content such as Tweets, YouTube videos,
-        etc. Use the complete URL:&nbsp;
-        <code>{'{% embed Liquid-tag-URL %}'}</code>.{' '}
+        Embed rich content such as Tweets, YouTube videos, etc. Use the complete
+        URL: <code>{'{% embed https://... %}.'}</code>{' '}
         <a href="#liquid" onClick={() => openModal('liquidShowing')}>
-          Click here
-        </a>{' '}
-        for a list of supported embeds.{' '}
-        <a href="https://github.com/forem/forem/issues/new?assignees=&amp;labels=&amp;template=bug_report.md">
-          Open an issue
-        </a>{' '}
-        if you experience any issues.
+          See a list of supported embeds
+        </a>
+        .
       </li>
       <li>
         In addition to images for the post's content, you can also drag and drop
