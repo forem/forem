@@ -16,7 +16,6 @@ module Html
     RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
     RAW_TAG = "{----% raw %----}".freeze
     END_RAW_TAG = "{----% endraw %----}".freeze
-    TIMEOUT = 10
 
     attr_accessor :html
     private :html=
@@ -43,10 +42,8 @@ module Html
         # allow image to render as-is
         next if allowed_image_host?(src)
 
-        if synchronous_detail_detection && img
-          attribute_width, attribute_height = Articles::EnrichImageAttributes.image_width_height(img, TIMEOUT)
-          img["width"] = attribute_width
-          img["height"] = attribute_height
+        if synchronous_detail_detection
+          img["width"], img["height"] = FastImage.size(src, timeout: 10)
         end
 
         img["loading"] = "lazy"

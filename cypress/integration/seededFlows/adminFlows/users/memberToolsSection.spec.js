@@ -260,7 +260,7 @@ describe('Tools Section', () => {
         cy.findByRole('link', { name: username }).click();
         cy.findByRole('link', { name: /Reactions/ }).click();
 
-        cy.findByRole('link', { name: /vomit\s+user/i }).should('be.visible');
+        cy.findByRole('link', { name: /Flag\s+user/i }).should('be.visible');
       });
     });
   });

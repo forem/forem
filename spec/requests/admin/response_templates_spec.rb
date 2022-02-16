@@ -59,7 +59,7 @@ RSpec.describe "/admin/advanced/response_templates", type: :request do
           title: "something"
         }
       }
-      expect(response.body).to include(ResponseTemplate::COMMENT_VALIDATION_MSG)
+      expect(response.body).to include(I18n.t("models.response_template.comment_markdown"))
     end
   end
 
@@ -102,7 +102,7 @@ RSpec.describe "/admin/advanced/response_templates", type: :request do
           content_type: "html"
         }
       }
-      expect(response.body).to include(ResponseTemplate::COMMENT_VALIDATION_MSG)
+      expect(response.body).to include(I18n.t("models.response_template.comment_markdown"))
     end
   end
 

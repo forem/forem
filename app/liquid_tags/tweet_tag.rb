@@ -53,7 +53,7 @@ class TweetTag < LiquidTagBase
 
   def parse_id_or_url(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid Tweet ID or URL" unless match
+    raise StandardError, I18n.t("liquid_tags.tweet_tag.invalid_twitter_id") unless match
 
     match[:id]
   end

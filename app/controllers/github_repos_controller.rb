@@ -10,7 +10,8 @@ class GithubReposController < ApplicationController
     # to fetch all of the user's repositories. This could eventually become slow
     @repos = fetch_repositories_from_github(known_repositories)
   rescue Github::Errors::Unauthorized => e
-    render json: { error: "GitHub Unauthorized: #{e.message}", status: 401 }, status: :unauthorized
+    render json: { error: I18n.t("github_repos_controller.github_unauthorized", e_message: e.message), status: 401 },
+           status: :unauthorized
   end
 
   def update_or_create
@@ -20,7 +21,8 @@ class GithubReposController < ApplicationController
 
     fetched_repo = fetch_repository_from_github(repo_params[:github_id_code])
     unless fetched_repo
-      render json: { error: "GitHub repository not found", status: 404 }, status: :not_found
+      render json: { error: I18n.t("github_repos_controller.repo_not_found"), status: 404 },
+             status: :not_found
       return
     end
 

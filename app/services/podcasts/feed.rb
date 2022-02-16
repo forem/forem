@@ -7,6 +7,10 @@ module Podcasts
       @podcast = podcast
     end
 
+    # @note While the limit might look generous, the callers are passing the value (which they
+    #       themselves receive elsewhere).  In one case, the :limit is 5
+    #
+    # @see Podcasts::EnqueueGetEpisodesWorker
     def get_episodes(limit: 100, force_update: false)
       # increased the redirect limit from 5 (default) to 7 to be able to handle such urls
       rss = HTTParty.get(podcast.feed_url, limit: 7).body.to_s
@@ -15,7 +19,9 @@ module Podcasts
       set_unreachable(status: :unparsable, force_update: force_update) && return unless feed
 
       get_episode = Podcasts::GetEpisode.new(podcast)
-      feed.items.first(limit).each do |item|
+
+      # Sort by published date in descending order
+      feed.items.sort_by { |i| -i.pubDate.to_i }.first(limit).each do |item|
         get_episode.call(item: item, force_update: force_update)
       end
       podcast.update_columns(reachable: true, status_notice: "")
@@ -44,9 +50,8 @@ module Podcasts
     # If the episodes URLs are still reachable, the podcast will remain on the site.
     # If they are not, the podcast will be hidden.
     def refetch_items
-      podcast.podcast_episodes.find_each do |episode|
-        PodcastEpisodes::UpdateMediaUrlWorker.perform_async(episode.id, episode.media_url)
-      end
+      job_params = podcast.podcast_episodes.pluck(:id, :media_url)
+      PodcastEpisodes::UpdateMediaUrlWorker.perform_bulk(job_params)
     end
   end
 end

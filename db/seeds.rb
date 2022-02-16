@@ -190,6 +190,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
   )
@@ -351,7 +352,7 @@ seeder.create_if_none(Podcast) do
 
   podcast_objects.each do |attributes|
     podcast = Podcast.create!(attributes)
-    Podcasts::GetEpisodesWorker.perform_async(podcast_id: podcast.id)
+    Podcasts::GetEpisodesWorker.perform_async("podcast_id" => podcast.id)
   end
 end
 ##############################################################################
@@ -370,7 +371,7 @@ seeder.create_if_none(Broadcast) do
     start_discussion: I18n.t("broadcast.welcome.start_discussion"),
     ask_question: I18n.t("broadcast.welcome.ask_question"),
     discuss_and_ask: I18n.t("broadcast.welcome.discuss_and_ask"),
-    download_app: I18n.t("broadcast.welcome.download_app"),
+    download_app: I18n.t("broadcast.welcome.download_app")
   }
 
   broadcast_messages.each do |type, message|

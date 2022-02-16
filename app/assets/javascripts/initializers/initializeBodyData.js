@@ -9,13 +9,10 @@ function removeExistingCSRF() {
   }
 }
 
+/* TODO: prefer fetch() to XMLHttpRequest */
 function fetchBaseData() {
   var xmlhttp;
-  if (window.XMLHttpRequest) {
-    xmlhttp = new XMLHttpRequest();
-  } else {
-    xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-  }
+  xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === XMLHttpRequest.DONE) {
       // Assigning CSRF
@@ -42,7 +39,6 @@ function fetchBaseData() {
       if (checkUserLoggedIn()) {
         document.body.dataset.user = json.user;
         document.body.dataset.creator = json.creator;
-        document.body.dataset.creatorOnboarding = json.creator_onboarding;
         browserStoreCache('set', json.user);
 
         setTimeout(() => {
@@ -54,7 +50,6 @@ function fetchBaseData() {
         // Ensure user data is not exposed if no one is logged in
         delete document.body.dataset.user;
         delete document.body.dataset.creator;
-        delete document.body.dataset.creatorOnboarding;
         browserStoreCache('remove');
       }
     }

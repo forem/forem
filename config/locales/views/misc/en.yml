@@ -85,6 +85,7 @@ en:
         people: People
         comments: Comments
         my_posts: My posts only
+        tags: Tags
       sort:
         aria_label: Search result sort options
         relevance: Most Relevant

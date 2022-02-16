@@ -1,4 +1,5 @@
 User-agent: *
+Disallow: /*/actions_panel*
 Disallow: /users/auth/twitter*
 Disallow: /users/auth/github*
 Disallow: /report-abuse?url=*
@@ -10,5 +11,7 @@ Disallow: /listings*?q=*
 Disallow: /mod/*
 Disallow: /mod?*
 Disallow: /admin/*
+Disallow: /reactions?*
+Disallow: /async_info/base_data
 
 Sitemap: <%= URL.url("sitemap-index.xml") %>

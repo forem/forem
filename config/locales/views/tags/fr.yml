@@ -7,7 +7,14 @@ fr:
         description: Sujets dans %{community}
         og:
           description: "%{community} est super"
-      heading: Sujets les plus utilisées
+      heading:
+        default: Sujets les plus utilisées
+        search_results: Search results for %{q}
+      search:
+        aria_labels:
+          search_input: Tag search term
+          submit: Search tags
+        placeholder: Search for tag
       edit:
         meta:
           title: Edit %{tag}

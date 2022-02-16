@@ -22,10 +22,10 @@ module Slack
         )
 
         Slack::Messengers::Worker.perform_async(
-          message: message,
-          channel: "incoming-partners",
-          username: "media_sponsor",
-          icon_emoji: ":partyparrot:",
+          "message" => message,
+          "channel" => "incoming-partners",
+          "username" => "media_sponsor",
+          "icon_emoji" => ":partyparrot:",
         )
       end
 

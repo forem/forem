@@ -6,7 +6,7 @@
       "@utilities/*": ["app/javascript/utilities/*"],
       "@images/*": ["app/assets/images/*"],
       "@components/*": ["app/javascript/shared/components/*"],
-      "@admin-controllers/*": ["app/javascript/admin/controllers/*"]
+      "@admin/*": ["app/javascript/admin/*"]
     }
   },
   "exclude": ["node_modules", "**/node_modules/*"]
