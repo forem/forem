@@ -25,13 +25,19 @@ RSpec.describe Settings::SMTP do
                                              })
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "uses Settings::SMTP config if address is provided" do
+      from_email_address = "hello@forem.com"
+      reply_to_email_address = "reply@forem.com"
+
       described_class.address = "smtp.google.com"
       described_class.port = 25
       described_class.authentication = "plain"
       described_class.user_name = "username"
       described_class.password = "password"
       described_class.domain = "forem.local"
+      described_class.reply_to_email_address = reply_to_email_address
+      described_class.from_email_address = from_email_address
 
       expect(described_class.settings).to eq({
                                                address: "smtp.google.com",
@@ -39,10 +45,13 @@ RSpec.describe Settings::SMTP do
                                                authentication: "plain",
                                                user_name: "username",
                                                password: "password",
-                                               domain: "forem.local"
+                                               domain: "forem.local",
+                                               reply_to_email_address: reply_to_email_address,
+                                               from_email_address: from_email_address
                                              })
     end
   end
+  # rubocop:enable RSpec/ExampleLength
 
   describe "::provided_minimum_settings?" do
     it "returns true if addess, user_name, and password are provided" do
