@@ -357,7 +357,7 @@ GEM
       thor
     highline (2.0.3)
     hkdf (0.3.0)
-    honeybadger (4.10.0)
+    honeybadger (4.11.0)
     honeycomb-beeline (2.8.2)
       libhoney (>= 1.14.2)
     html_tokenizer (0.0.7)
@@ -945,7 +945,7 @@ DEPENDENCIES
   guard (~> 2.18)
   guard-livereload (~> 2.5)
   hairtrigger (~> 0.2.25)
-  honeybadger (~> 4.10)
+  honeybadger (~> 4.11)
   honeycomb-beeline (~> 2.8.2)
   html_truncator (~> 0.4)
   httparty (~> 0.20)
