@@ -29,6 +29,15 @@ class ApplicationController < ActionController::Base
     )
   end
 
+  ##
+  # [@jeremyf] - I want to enable this, but based on our current application configuration, I
+  #              cannot.  Why?  The existing tests assume that when we check a policy, if we don't
+  #              have a user we raise a Pundit::NotAuthorizedError.
+  #
+  # rescue_from ApplicationPolicy::UserRequiredError, with: :respond_with_request_for_authentication
+
+  rescue_from ApplicationPolicy::UserSuspendedError, with: :respond_with_user_suspended
+
   PUBLIC_CONTROLLERS = %w[async_info
                           confirmations
                           deep_links
@@ -86,12 +95,37 @@ class ApplicationController < ActionController::Base
     render json: { error: exc.message, status: 429 }, status: :too_many_requests
   end
 
-  def authenticate_user!
-    if current_user
-      Honeycomb.add_field("current_user_id", current_user.id)
-      return
-    end
+  # This method is envisioned as a :before_action callback.
+  #
+  # @return [TrueClass] if we have a current_user
+  # @return [FalseClass] if we don't have a current_user
+  #
+  # @see {#authenticate_user!} for when you want to raise an error if we don't have a current user.
+  def authenticate_user
+    return false unless current_user
 
+    Honeycomb.add_field("current_user_id", current_user.id)
+    true
+  end
+
+  # @deprecated Use {#authenticate_user} and #{ApplicationPolicy}.
+  #
+  # When we don't have a current user, render a response that prompts the requester to authenticate.
+  # This function circumvents the work that should be done in the {ApplicationPolicy} layer.
+  #
+  # @return [TrueClass] if we have an authenticated user
+  #
+  # @note This method is envisioned as a :before_action callback.
+  #
+  # @see {#authenticate_user}
+  # @see {ApplicationPolicy} for discussion around authentication and authorization.
+  def authenticate_user!
+    return true if authenticate_user
+
+    respond_with_request_for_authentication
+  end
+
+  def respond_with_request_for_authentication
     respond_to do |format|
       format.html { redirect_to sign_up_path }
       format.json { render json: { error: I18n.t("application_controller.please_sign_in") }, status: :unauthorized }
@@ -131,9 +165,14 @@ class ApplicationController < ActionController::Base
     onboarding_path
   end
 
+  # @deprecated This is a policy related question and should be part of an ApplicationPolicy
   def check_suspended
     return unless current_user&.suspended?
 
+    respond_with_user_suspended
+  end
+
+  def respond_with_user_suspended
     response.status = :forbidden
     render "pages/forbidden"
   end
