@@ -13,8 +13,12 @@ module Api
         per_page = (params[:per_page] || 10).to_i
         num = [per_page, 1000].min
 
-        @tags = @tags.where(name: params[:tag_names]) if params[:tag_names].present?
-        @tags = @tags.where(id: params[:tag_ids]) if params[:tag_ids].present?
+        if params[:tag_ids].present?
+          @tags = @tags.where(id: params[:tag_ids])
+        elsif params[:tag_names].present?
+          @tags = @tags.where(name: params[:tag_names])
+        end
+
         @tags = @tags.order(taggings_count: :desc).page(page).per(num)
 
         set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
