@@ -146,7 +146,6 @@ render(
     defaultValue={currentModTags}
     fetchSuggestions={fetchTags}
     labelText="Assign tags"
-    maxSelections={Math.MAX_VALUE}
     placeholder="Add a tag..."
     showLabel={false}
     SuggestionTemplate={TagAutocompleteOption}
