@@ -1,5 +1,5 @@
 <%# TODO: incorporate a tab component. For now you have to manually change the value %>
-<% current_tab = "flags" # overview|emails|notes|reports|flags %>
+<% current_tab = "overview" # overview|emails|notes|reports|flags %>
 <% if FeatureFlag.enabled?(:admin_member_view) %>
   <%= render "admin/users/show/profile" %>
   <%= render "admin/users/show/tabs" %>
