@@ -180,7 +180,7 @@
         <% @recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
         <div class="article-admin-action mt-2">
           <button
-            class="crayons-btn w-100 <%= "crayons-btn--danger" if @moderatable.featured%>"
+            class="c-btn c-btn--primary w-100 <%= "crayons-btn--destructive" if @moderatable.featured%>"
             id="feature-article-btn"
             data-article-featured="<%= @moderatable.featured %>"
             data-article-id="<%= @moderatable.id %>"
