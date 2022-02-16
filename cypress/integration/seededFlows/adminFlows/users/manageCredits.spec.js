@@ -6,9 +6,11 @@ function openCreditsModal() {
   return cy.getModal();
 }
 
-function closeUserUpdatedMessage(message) {
+function verifyAndDismissUserUpdatedMessage(message) {
   cy.findByText(message).should('exist');
-  cy.findByRole('button', { name: 'Close' }).click();
+  cy.findByRole('button', { name: 'Dismiss message' })
+    .should('have.focus')
+    .click();
   cy.findByText(message).should('not.exist');
 }
 
@@ -38,7 +40,7 @@ describe('Manage User Credits', () => {
       });
 
       cy.getModal().should('not.exist');
-      closeUserUpdatedMessage('Credits have been added!');
+      verifyAndDismissUserUpdatedMessage('Credits have been added!');
       cy.findByTestId('user-credits').should('have.text', '210');
     });
 
@@ -57,7 +59,7 @@ describe('Manage User Credits', () => {
       });
 
       cy.getModal().should('not.exist');
-      closeUserUpdatedMessage('Credits have been removed.');
+      verifyAndDismissUserUpdatedMessage('Credits have been removed.');
       cy.findByTestId('user-credits').should('have.text', '89');
     });
 
