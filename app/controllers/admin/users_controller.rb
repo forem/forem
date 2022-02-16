@@ -311,5 +311,19 @@ module Admin
                        "overview"
                      end
     end
+
+    def tag_moderation
+      user_id = params[:id]
+
+      begin
+        # TODO: Batch these in a transaction
+        TagModerators::Add.call([user_id], [params[:tag_id]])
+        TagModerators::Remove.call([user_id], [params[:tag_id]])
+        flash[:success] = "Tags moderated by the user have been updated"
+      rescue StandardError => e
+        flash[:danger] = e.message
+      end
+      redirect_to admin_user_path(user_id)
+    end
   end
 end

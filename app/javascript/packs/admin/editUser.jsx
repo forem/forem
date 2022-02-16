@@ -129,8 +129,20 @@ const currentModTags = JSON.parse(
   tagsRoot.closest('form')['current_mod_tags'].value,
 );
 
+const modTags = document.getElementById('mod-tags');
+
+// Converts the array of selected items into a plain string to be saved in the article form
+const syncSelections = (selections = []) => {
+  const selectionsString = `[${selections
+    .map((selection) => JSON.stringify(selection))
+    .join(', ')}]`;
+
+  modTags.value = selectionsString;
+};
+
 render(
   <MultiSelectAutocomplete
+    border={false}
     defaultValue={currentModTags}
     fetchSuggestions={fetchTags}
     labelText="Assign tags"
@@ -139,6 +151,7 @@ render(
     showLabel={false}
     SuggestionTemplate={TagAutocompleteOption}
     SelectionTemplate={TagAutocompleteSelection}
+    onSelectionsChanged={syncSelections}
   />,
   tagsRoot,
 );

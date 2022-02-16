@@ -7,7 +7,8 @@
 </header>
 
 <form class="flex flex-col gap-2">
-  <input name="current_mod_tags" type="hidden" value="<%= @moderated_tags %>">
+  <input name="current_mod_tags" type="hidden" value="<%= @moderated_tags %>" />
+  <input id="mod-tags" name="mod_tags" type="hidden" value="<%= @moderated_tags %>" />
 
   <div id="tag-moderation-container">
     <%#
