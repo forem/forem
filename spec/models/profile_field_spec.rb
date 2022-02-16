@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ProfileField, type: :model do
   describe "associations" do
-    it { is_expected.to belong_to(:profile_field_group).optional(true) }
+    it { is_expected.to belong_to(:profile_field_group) }
   end
 
   describe "validations" do

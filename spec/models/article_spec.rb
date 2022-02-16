@@ -1404,7 +1404,7 @@ RSpec.describe Article, type: :model do
       create(:article, body_markdown: body_markdown, feed_source_url: url)
       another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
       error_message = "has already been taken. " \
-                      "Email #{ForemInstance.email} for further details."
+                      "Email #{ForemInstance.contact_email} for further details."
       expect(another_article).not_to be_valid
       expect(another_article.errors.messages[:canonical_url]).to include(error_message)
       expect(another_article.errors.messages[:feed_source_url]).to include(error_message)

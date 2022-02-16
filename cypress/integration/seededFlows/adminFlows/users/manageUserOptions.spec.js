@@ -11,7 +11,7 @@ function openUserOptions(callback) {
     });
 }
 
-function closeUserUpdatedMessage(message) {
+function verifyAndDismissUserUpdatedMessage(message) {
   cy.findByTestId('flash-success')
     .as('success')
     .then((element) => {
@@ -19,7 +19,9 @@ function closeUserUpdatedMessage(message) {
     });
 
   cy.get('@success').within(() => {
-    cy.findByRole('button', { name: 'Close' }).click();
+    cy.findByRole('button', { name: 'Dismiss message' })
+      .should('have.focus')
+      .click();
   });
 
   cy.findByTestId('flash-success').should('not.exist');
@@ -39,7 +41,7 @@ describe('Manage User Options', () => {
       openUserOptions(() => {
         cy.findByRole('button', { name: 'Verify email address' }).click();
       });
-      closeUserUpdatedMessage('Verification email sent!');
+      verifyAndDismissUserUpdatedMessage('Verification email sent!');
     });
 
     it(`should export a user's data to an admin`, () => {
@@ -51,7 +53,7 @@ describe('Manage User Options', () => {
         cy.findByRole('button', { name: 'Export to Admin' }).click();
       });
 
-      closeUserUpdatedMessage(
+      verifyAndDismissUserUpdatedMessage(
         'Data exported to the admin. The job will complete momentarily.',
       );
     });
@@ -65,7 +67,7 @@ describe('Manage User Options', () => {
         cy.findByRole('button', { name: 'Export to User' }).click();
       });
 
-      closeUserUpdatedMessage(
+      verifyAndDismissUserUpdatedMessage(
         'Data exported to the user. The job will complete momentarily.',
       );
     });
@@ -90,7 +92,7 @@ describe('Manage User Options', () => {
         cy.findByRole('button', { name: 'Banish User for spam' }).click();
       });
 
-      closeUserUpdatedMessage(
+      verifyAndDismissUserUpdatedMessage(
         'This user is being banished in the background. The job will complete soon.',
       );
     });
@@ -106,7 +108,7 @@ describe('Manage User Options', () => {
         }).click();
       });
 
-      closeUserUpdatedMessage(
+      verifyAndDismissUserUpdatedMessage(
         '@trusted_user_1 (email: trusted-user-1@forem.local, user_id: 2) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics  and confirm on the page.',
       );
     });

@@ -6,20 +6,22 @@ function openCreditsModal() {
   return cy.getModal();
 }
 
-function closeUserUpdatedMessage(message) {
+function verifyAndDismissUserUpdatedMessage(message) {
   cy.findByText(message).should('exist');
-  cy.findByRole('button', { name: 'Close' }).click();
+  cy.findByRole('button', { name: 'Dismiss message' })
+    .should('have.focus')
+    .click();
   cy.findByText(message).should('not.exist');
 }
 
 describe('Manage User Credits', () => {
   describe('As an admin', () => {
     beforeEach(() => {
-      10;
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/users/8');
+        cy.loginAndVisit(user, '/admin/users');
+        cy.findByRole('link', { name: 'credits_user' }).click();
       });
     });
 
@@ -38,7 +40,7 @@ describe('Manage User Credits', () => {
       });
 
       cy.getModal().should('not.exist');
-      closeUserUpdatedMessage('Credits have been added!');
+      verifyAndDismissUserUpdatedMessage('Credits have been added!');
       cy.findByTestId('user-credits').should('have.text', '210');
     });
 
@@ -57,7 +59,7 @@ describe('Manage User Credits', () => {
       });
 
       cy.getModal().should('not.exist');
-      closeUserUpdatedMessage('Credits have been removed.');
+      verifyAndDismissUserUpdatedMessage('Credits have been removed.');
       cy.findByTestId('user-credits').should('have.text', '89');
     });
 
@@ -68,16 +70,38 @@ describe('Manage User Credits', () => {
         cy.findByRole('combobox', { name: 'Adjust balance' }).select('Remove');
         cy.findByRole('spinbutton', {
           name: 'Amount of credits to add or remove',
-        }).type('10');
+        })
+          .as('credits')
+          .type('10');
         cy.findByRole('textbox', {
           name: 'Why are you adjusting credits?',
         }).type('some reason');
         cy.findByRole('button', { name: 'Adjust' }).click();
       });
 
-      cy.getModal().should('not.exist');
-      closeUserUpdatedMessage('Credits have been removed.');
-      cy.findByTestId('user-credits').should('have.text', '0');
+      cy.getModal().should('exist');
+      cy.findByTestId('user-credits').should('have.text', '100');
+    });
+
+    it('should have correct max credits for adding and removing credits', () => {
+      cy.findByTestId('user-credits').should('have.text', '100');
+
+      openCreditsModal().within(() => {
+        cy.findByRole('combobox', { name: 'Adjust balance' })
+          .as('adjustBalance')
+          .select('Add');
+        cy.findByRole('spinbutton', {
+          name: 'Amount of credits to add or remove',
+        })
+          .as('creditAmount')
+          .should('have.attr', 'max', '9999');
+
+        cy.get('@adjustBalance').select('Remove');
+        cy.get('@creditAmount').should('have.attr', 'max', '100');
+
+        cy.get('@adjustBalance').select('Add');
+        cy.get('@creditAmount').should('have.attr', 'max', '9999');
+      });
     });
   });
 });

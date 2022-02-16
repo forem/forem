@@ -1,22 +1,47 @@
+<%= javascript_packs_with_chunks_tag "admin/config/smtp", defer: true %>
+
 <%= form_for(Settings::SMTP.new,
              url: admin_settings_smtp_settings_path,
-             html: { data: { action: "submit->config#updateConfigurationSettings" } }) do |f| %>
+             html: { data: {
+               action: "submit->config#updateConfigurationSettings",
+               testid: "emailServerSettings"
+             } }) do |f| %>
   <div class="card mt-3" id="smtp-section">
     <%= render partial: "admin/shared/card_header",
-               locals: { header: "SMTP Settings", state: "collapse", target: "smtpSettingsBodyContainer", expanded: false } %>
+               locals: { header: "Email Server Settings (SMTP)", state: "collapse", target: "smtpSettingsBodyContainer", expanded: false } %>
     <div id="smtpSettingsBodyContainer" class="card-body collapse hide" aria-labelledby="smtpSettingsBodyContainer">
       <fieldset class="grid gap-4">
-        <% Settings::SMTP::OPTIONS.each do |config_key| %>
-          <div class="crayons-field">
-            <%= admin_config_label config_key %>
-            <%= admin_config_description Constants::Settings::SMTP::DETAILS[config_key][:description] %>
-            <%= f.text_field config_key,
-                             class: "crayons-textfield",
-                             value: Settings::SMTP.public_send(config_key),
-                             placeholder: Constants::Settings::SMTP::DETAILS[config_key][:placeholder] %>
 
+        <% if ForemInstance.sendgrid_enabled? %>
+          <div class="crayons-field crayons-field--checkbox mt-3">
+            <%= f.check_box :own_email_server,
+                            checked: Settings::SMTP.provided_minimum_settings?,
+                            class: "crayons-checkbox" %>
+            <%= f.label :own_email_server, class: "crayons-field__label" do %>
+              Use my own email server
+            <% end %>
           </div>
         <% end %>
+
+        <% if ForemInstance.only_sendgrid_enabled? %>
+          <p class="mb-3">
+            As a Forem Cloud client, we provide an email server managed by the Forem team. All settings are managed by us and the from and reply email addresses are set as <%= ForemInstance.email %>. However, you can override this to use your own email server.
+          </p>
+        <% end %>
+
+        <div class="js-custom-smtp-section <%= "hidden" if ForemInstance.only_sendgrid_enabled? %>">
+          <% smpt_options.each do |config_key| %>
+            <div class="crayons-field mt-3">
+              <%= admin_config_label config_key, model: Settings::SMTP %>
+              <%= admin_config_description Constants::Settings::SMTP::DETAILS[config_key][:description] %>
+              <%= f.text_field config_key,
+                               class: "crayons-textfield",
+                               value: Settings::SMTP.public_send(config_key),
+                               placeholder: Constants::Settings::SMTP::DETAILS[config_key][:placeholder],
+                               "data-config-target": "smtpSetting#{config_key.to_s.camelize(:upper)}" %>
+            </div>
+          <% end %>
+        </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

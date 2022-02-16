@@ -112,8 +112,7 @@ describe('Set a landing page from the admin portal', () => {
     cy.findByRole('main').within(() => {
       cy.findByRole('checkbox', {
         name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
-      })
-        .check();
+      }).check();
 
       cy.findAllByRole('button', { name: 'Update Page' }).first().click();
     });
@@ -139,8 +138,7 @@ describe('Set a landing page from the admin portal', () => {
     cy.findByRole('main').within(() => {
       cy.findByRole('checkbox', {
         name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
-      })
-        .check();
+      }).check();
 
       cy.findAllByRole('button', { name: 'Cancel' }).first().click();
 

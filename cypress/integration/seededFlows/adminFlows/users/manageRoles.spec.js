@@ -6,9 +6,11 @@ function openRolesModal() {
   return cy.getModal();
 }
 
-function closeUserUpdatedMessage() {
+function verifyAndDismissUserUpdatedMessage() {
   cy.findByText('User has been updated').should('exist');
-  cy.findByRole('button', { name: 'Close' }).click();
+  cy.findByRole('button', { name: 'Dismiss message' })
+    .should('have.focus')
+    .click();
   cy.findByText('User has been updated').should('not.exist');
 }
 
@@ -44,7 +46,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        closeUserUpdatedMessage();
+        verifyAndDismissUserUpdatedMessage();
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(
           'exist',
@@ -117,7 +119,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        closeUserUpdatedMessage();
+        verifyAndDismissUserUpdatedMessage();
         checkUserStatus('Warned');
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(
@@ -131,7 +133,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        closeUserUpdatedMessage();
+        verifyAndDismissUserUpdatedMessage();
         checkUserStatus('Warned');
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(

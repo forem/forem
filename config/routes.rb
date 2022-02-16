@@ -43,6 +43,10 @@ Rails.application.routes.draw do
 
     namespace :api, defaults: { format: "json" } do
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+        namespace :admin do
+          resources :users, only: [:create]
+        end
+
         resources :articles, only: %i[index show create update] do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }

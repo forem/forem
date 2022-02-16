@@ -64,8 +64,15 @@ module PracticalDeveloper
 
     config.i18n.fallbacks = [:en]
 
-    # Globally handle Pundit::NotAuthorizedError by serving 404
+    # Authorization / Authentication exception handling.
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
+
+    # @note [@jeremyf] I have included this to preserve behavior verified in our test suite.  My
+    #       plan, however, is to change how we handle authentication and authorization.  In the case
+    #       of authorization when we don't have a user (e.g. a non-authenticated request), I would
+    #       like to respond with an offer for the user to provide authentication.  However, as of
+    #       <2022-02-15 Tue> this is not the case.
+    config.action_dispatch.rescue_responses["ApplicationPolicy::UserRequiredError"] = :not_found
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do

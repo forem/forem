@@ -6,9 +6,11 @@ function openOrgModal(ctaText = 'Add organization') {
   return cy.getModal();
 }
 
-function closeUserUpdatedMessage(message) {
+function verifyAndDismissUserUpdatedMessage(message) {
   cy.findByText(message).should('exist');
-  cy.findByRole('button', { name: 'Close' }).click();
+  cy.findByRole('button', { name: 'Dismiss message' })
+    .should('have.focus')
+    .click();
   cy.findByText(message).should('not.exist');
 }
 
@@ -34,7 +36,9 @@ describe('Manage User Organziations', () => {
         cy.findByRole('button', { name: 'Add organization' }).click();
       });
 
-      closeUserUpdatedMessage('User was successfully added to Bachmanity');
+      verifyAndDismissUserUpdatedMessage(
+        'User was successfully added to Bachmanity',
+      );
       cy.getModal().should('not.exist');
 
       // Focusing on the link is required to make buttons visible.
@@ -60,14 +64,18 @@ describe('Manage User Organziations', () => {
         cy.findByRole('button', { name: 'Add organization' }).click();
       });
 
-      closeUserUpdatedMessage('User was successfully added to Bachmanity');
+      verifyAndDismissUserUpdatedMessage(
+        'User was successfully added to Bachmanity',
+      );
 
       openOrgModal('Add another organization').within(() => {
         cy.findByRole('spinbutton', { name: 'Organization ID' }).type(2);
         cy.findByRole('button', { name: 'Add organization' }).click();
       });
 
-      closeUserUpdatedMessage('User was successfully added to Awesome Org');
+      verifyAndDismissUserUpdatedMessage(
+        'User was successfully added to Awesome Org',
+      );
       cy.getModal().should('not.exist');
 
       // Focusing on the link is required to make buttons visible.
@@ -103,7 +111,9 @@ describe('Manage User Organziations', () => {
         cy.findByRole('button', { name: 'Update' }).click();
       });
 
-      closeUserUpdatedMessage('User was successfully updated to admin');
+      verifyAndDismissUserUpdatedMessage(
+        'User was successfully updated to admin',
+      );
       cy.getModal().should('not.exist');
     });
 
@@ -115,7 +125,9 @@ describe('Manage User Organziations', () => {
         cy.findByRole('button', { name: 'Add organization' }).click();
       });
 
-      closeUserUpdatedMessage('User was successfully added to Bachmanity');
+      verifyAndDismissUserUpdatedMessage(
+        'User was successfully added to Bachmanity',
+      );
       cy.getModal().should('not.exist');
 
       // Two links currently exist for every org (image and name)
@@ -134,7 +146,9 @@ describe('Manage User Organziations', () => {
         name: 'Revoke Awesome Org organization membership',
       }).click();
 
-      closeUserUpdatedMessage('User was successfully removed from Awesome Org');
+      verifyAndDismissUserUpdatedMessage(
+        'User was successfully removed from Awesome Org',
+      );
     });
   });
 });

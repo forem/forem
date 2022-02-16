@@ -238,24 +238,24 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe "#email_link" do
+  describe "#contact_link" do
     let(:default_email) { "hi@dev.to" }
 
     before do
-      allow(ForemInstance).to receive(:email).and_return(default_email)
+      allow(ForemInstance).to receive(:contact_email).and_return(default_email)
     end
 
     it "returns an 'a' tag" do
-      expect(helper.email_link).to have_selector("a")
+      expect(helper.contact_link).to have_selector("a")
     end
 
     it "sets the correct href" do
-      expect(helper.email_link).to have_link(href: "mailto:#{default_email}")
+      expect(helper.contact_link).to have_link(href: "mailto:#{default_email}")
     end
 
     it "has the correct text in the a tag" do
-      expect(helper.email_link(text: "Link Name")).to have_text("Link Name")
-      expect(helper.email_link).to have_text(default_email)
+      expect(helper.contact_link(text: "Link Name")).to have_text("Link Name")
+      expect(helper.contact_link).to have_text(default_email)
     end
 
     it "returns an href with additional_info parameters" do
@@ -266,7 +266,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
       link = "<a href=\"mailto:#{default_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
              "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
-      expect(email_link(text: "text", additional_info: additional_info)).to eq(link)
+      expect(contact_link(text: "text", additional_info: additional_info)).to eq(link)
     end
   end
 
