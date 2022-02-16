@@ -35,7 +35,9 @@ export const ColorPicker = ({
         />
         <HexColorInput
           id={id}
-          className="c-color-picker__input crayons-textfield"
+          className={`c-color-picker__input crayons-textfield ${
+            inputProps?.class ?? ''
+          }`}
           color={color}
           onChange={setColor}
           prefixed
