@@ -99,4 +99,14 @@ describe FeatureFlag, type: :service do
       end
     end
   end
+
+  describe ".all", :aggregate_failures do
+    it "returns a hash with all feature flags and their status" do
+      described_class.enable(:flag1)
+      expect(described_class.all).to eq({ flag1: :on })
+
+      described_class.disable(:flag2)
+      expect(described_class.all).to eq({ flag1: :on, flag2: :off })
+    end
+  end
 end

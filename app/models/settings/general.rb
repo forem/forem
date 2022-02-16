@@ -17,7 +17,8 @@ module Settings
     setting :health_check_token, type: :string
     setting :video_encoder_key, type: :string
 
-    # Email digest frequency
+    # Emails
+    setting :contact_email, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"]
     setting :periodic_email_digest, type: :integer, default: 2
 
     # Google Analytics Tracking ID, e.g. UA-71991000-1

@@ -10,13 +10,13 @@ class TagPolicy < ApplicationPolicy
   alias update? edit?
 
   def admin?
-    user_admin?
+    user_super_admin?
   end
 
   private
 
   def has_mod_permission?
-    user_admin? ||
+    user_super_admin? ||
       user.tag_moderator?(tag: record)
   end
 end
