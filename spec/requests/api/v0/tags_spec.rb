@@ -45,6 +45,25 @@ RSpec.describe "Api::V0::Tags", type: :request do
       expect(response.parsed_body.map { |t| t["id"] }).to match_array(tag_ids)
     end
 
+    it "finds tags from array of tag_names" do
+      tags = create_list(:tag, 10, taggings_count: 10)
+      tag_names = tags.sample(4).map(&:name)
+
+      get api_tags_path, params: { tag_names: tag_names }
+
+      expect(response.parsed_body.map { |t| t["name"] }).to match_array(tag_names)
+    end
+
+    it "finds tags from array of tag_ids if both tag_ids and tag_names is passed" do
+      tags = create_list(:tag, 10, taggings_count: 10)
+      tag_names = tags.sample(2).map(&:name)
+      tag_ids = tags.sample(4).map(&:id)
+
+      get api_tags_path, params: { tag_names: tag_names, tag_ids: tag_ids }
+
+      expect(response.parsed_body.map { |t| t["id"] }).to match_array(tag_ids)
+    end
+
     it "supports pagination" do
       create_list(:tag, 3)
 
