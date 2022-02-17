@@ -29,7 +29,7 @@
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
-          <turbo-frame id="authorization-articles-create-post-button" src="/authorization/articles/create_post_button">
+          <turbo-frame id="authorization-articles-create-post-button" src="<%= authorization_create_post_button_path %>">
           </turbo-frame>
 
           <span class="trusted-visible-block">
