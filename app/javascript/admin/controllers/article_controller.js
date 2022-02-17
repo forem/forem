@@ -85,6 +85,8 @@ export default class ArticleController extends Controller {
     const [, , xhr] = event.detail;
     newArticle.innerHTML = xhr.responseText;
 
-    this.element.innerHTML = newArticle.querySelector('.card').innerHTML;
+    this.element.innerHTML = newArticle.querySelector(
+      '.js-individual-article',
+    ).innerHTML;
   }
 }

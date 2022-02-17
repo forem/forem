@@ -5,6 +5,24 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
   # LiquidTagBase inherits from, so we treat this class as a liquid tag itself.
   before { Liquid::Template.register_tag("liquid_tag_base", described_class) }
 
+  context "when context includes a policy" do
+    let(:policy_klass) do
+      Class.new(ApplicationPolicy) do
+        def initialize?
+          false
+        end
+      end
+    end
+
+    it "is used by Pundit for authorization" do
+      source = create(:article)
+      expect do
+        liquid_tag_options = { source: source, user: source.user, policy: policy_klass }
+        Liquid::Template.parse("{% liquid_tag_base %}", liquid_tag_options)
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
   context "when VALID_CONTEXTS are defined" do
     before { stub_const("#{described_class}::VALID_CONTEXTS", %w[Article]) }
 

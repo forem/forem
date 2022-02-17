@@ -16,6 +16,8 @@ const emailAuthModalBody = `
   <p>If you disable Email address as a registration option, people cannot create an account with their email address.</p>
   <p>However, people who have already created an account using their email address can continue to login.</p>`;
 
+// NOTE: In an effort to move away from Stimulus and create consistency across the codebase
+// we are using vanilla JavaScript (app/javascript/packs/admin/config) to handle any new interactions.
 export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',

@@ -20,6 +20,7 @@ module ForemTag
   def self.determine_klass(link)
     return ListingTag if link.start_with?("#{URL.url}/listings/")
     return TagTag if link.start_with?("#{URL.url}/t/")
+    return CommentTag if link.include?("/comment/")
 
     process_other_link_types(link)
   end

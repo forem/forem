@@ -67,7 +67,6 @@
         <div class="crayons-field crayons-field--checkbox">
           <%= form.check_box :landing_page, class: "crayons-checkbox", "aria-describedby": "lock-screen-description",
                                             data: {
-                                              testid: "private-checkbox",
                                               "landing-page-modal-target": "landingPageCheckbox",
                                               action: (@landing_page.present? ? "landing-page-modal#openModal" : "")
                                             } %>
