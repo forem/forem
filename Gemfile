@@ -37,12 +37,12 @@ gem "flipper", "~> 0.23.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.23.1" # Store Flipper flags in ActiveRecord
 gem "flipper-active_support_cache_store", "~> 0.23.1" # Cache feature flags for a short time
 gem "flipper-ui", "~> 0.23.1"
-gem "fog-aws", "~> 3.12" # 'fog' gem to support Amazon Web Services
+gem "fog-aws", "~> 3.13" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 0.2.25" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
-gem "honeybadger", "~> 4.10" # Used for tracking application errors
+gem "honeybadger", "~> 4.11" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.8.2" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -72,8 +72,8 @@ gem "pg", "~> 1.3" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_query", ">= 0.9.0" # Allows PGHero to analyze queries
 gem "pg_search", "~> 2.3.6" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
 gem "pghero", "~> 2.8" # Dashboard for Postgres
-gem "puma", "~> 5.6.1" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
-gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
+gem "puma", "~> 5.6.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "rack-attack", "~> 6.6.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
@@ -101,7 +101,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.43" # Ruby library for the Stripe API
+gem "stripe", "~> 5.44" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.8" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files

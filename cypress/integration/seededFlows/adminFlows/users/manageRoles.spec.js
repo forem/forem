@@ -1,21 +1,21 @@
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
-function openCreditsModal() {
+function openRolesModal() {
   cy.getModal().should('not.exist');
   cy.findByRole('button', { name: 'Add role' }).click();
 
   return cy.getModal();
 }
 
-function closeUserUpdatedMessage() {
+function verifyAndDismissUserUpdatedMessage() {
   cy.findByText('User has been updated').should('exist');
-  cy.findByRole('button', { name: 'Close' }).click();
+  cy.findByRole('button', { name: 'Dismiss message' })
+    .should('have.focus')
+    .click();
   cy.findByText('User has been updated').should('not.exist');
 }
 
 function checkUserStatus(status) {
-  cy.findByTitle('Current status').should((element) => {
-    expect(element.text().trim()).equal(status);
-  });
+  cy.findByTestId('user-status').should('have.text', status);
 }
 
 describe('Manage User Roles', () => {
@@ -36,32 +36,40 @@ describe('Manage User Roles', () => {
       it('should change a role', () => {
         checkUserStatus('Trusted');
 
-        cy.findByRole('button', { name: 'Trusted' }).should('exist');
-        openCreditsModal().within(() => {
+        cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
+          'exist',
+        );
+        openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Warn');
           cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
         cy.getModal().should('not.exist');
-        closeUserUpdatedMessage();
+        verifyAndDismissUserUpdatedMessage();
 
-        cy.findByRole('button', { name: 'Warned' }).should('exist');
+        cy.findByRole('button', { name: 'Remove role: Warned' }).should(
+          'exist',
+        );
         checkUserStatus('Warned');
-        cy.findByRole('button', { name: 'Trusted' }).should('not.exist');
+        cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
+          'not.exist',
+        );
       });
 
       it('should remove a role', () => {
         checkUserStatus('Trusted');
-        cy.findByRole('button', { name: 'Trusted' }).click();
-        cy.findByRole('button', { name: 'Trusted' }).should('not.exist');
+        cy.findByRole('button', { name: 'Remove role: Trusted' }).click();
+        cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
+          'not.exist',
+        );
         checkUserStatus('Good standing');
       });
 
       it('should not remove the Super Admin role', () => {
         checkUserStatus('Trusted');
 
-        openCreditsModal().within(() => {
+        openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Super Admin');
           cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
           cy.findByRole('button', { name: 'Add' }).click();
@@ -89,43 +97,51 @@ describe('Manage User Roles', () => {
         checkUserStatus('Good standing');
         cy.findByText('No special roles assigned yet.').should('be.visible');
 
-        openCreditsModal().within(() => {
+        openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Warn');
           cy.findByRole('button', { name: 'Add' }).click();
           cy.findByRole('button', { name: 'Close' }).click();
         });
 
         checkUserStatus('Good standing');
-        cy.findByRole('button', { name: 'Warned' }).should('not.exist');
+        cy.findByRole('button', { name: 'Remove role: Warned' }).should(
+          'not.exist',
+        );
       });
 
       it('should add multiple roles', () => {
         cy.findByText('No special roles assigned yet.').should('be.visible');
 
-        openCreditsModal().within(() => {
+        openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Warn');
           cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
         cy.getModal().should('not.exist');
-        closeUserUpdatedMessage();
+        verifyAndDismissUserUpdatedMessage();
         checkUserStatus('Warned');
 
-        cy.findByRole('button', { name: 'Warned' }).should('exist');
+        cy.findByRole('button', { name: 'Remove role: Warned' }).should(
+          'exist',
+        );
 
-        openCreditsModal().within(() => {
+        openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Comment Suspend');
           cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
         cy.getModal().should('not.exist');
-        closeUserUpdatedMessage();
+        verifyAndDismissUserUpdatedMessage();
         checkUserStatus('Warned');
 
-        cy.findByRole('button', { name: 'Warned' }).should('exist');
-        cy.findByRole('button', { name: 'Comment Suspended' }).should('exist');
+        cy.findByRole('button', { name: 'Remove role: Warned' }).should(
+          'exist',
+        );
+        cy.findByRole('button', {
+          name: 'Remove role: Comment Suspended',
+        }).should('exist');
       });
     });
   });

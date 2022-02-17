@@ -1,7 +1,7 @@
 class VerificationMailer < ApplicationMailer
   default from: lambda {
     I18n.t("mailers.verification_mailer.from", community: Settings::Community.community_name,
-                                               email: ForemInstance.email)
+                                               email: ForemInstance.from_email_address)
   }
 
   def account_ownership_verification_email

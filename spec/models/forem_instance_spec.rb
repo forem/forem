@@ -96,4 +96,103 @@ RSpec.describe ForemInstance, type: :model do
       ENV["SENDGRID_API_KEY"] = nil
     end
   end
+
+  describe ".contact_email" do
+    let(:email) { "contact@dev.to" }
+
+    before do
+      allow(Settings::General).to receive(:contact_email).and_return(email)
+    end
+
+    it "sets the correct email" do
+      expect(described_class.contact_email).to be(email)
+    end
+  end
+
+  describe ".reply_to_email_address" do
+    context "when the minimum SMTP settings have been provided" do
+      let(:reply_to_email_address) { "custom_reply@forem.com" }
+
+      before do
+        allow(Settings::SMTP).to receive(:reply_to_email_address).and_return(reply_to_email_address)
+        allow(described_class).to receive(:email).and_return("noreply@forem.com")
+        allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
+      end
+
+      it "returns the correct email address" do
+        expect(described_class.reply_to_email_address).to be(reply_to_email_address)
+      end
+    end
+
+    context "when the minimum SMTP settings have not been provided" do
+      let(:reply_to_email_address) { "custom_reply@forem.com" }
+      let(:default_email_address) { "noreply@forem.com" }
+
+      before do
+        allow(Settings::SMTP).to receive(:reply_to_email_address).and_return(reply_to_email_address)
+        allow(described_class).to receive(:email).and_return(default_email_address)
+        allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(false)
+      end
+
+      it "returns the correct email address" do
+        expect(described_class.reply_to_email_address).to be(default_email_address)
+      end
+    end
+  end
+
+  describe ".from_email_address" do
+    context "when the minimum SMTP settings have been provided" do
+      let(:from_email_address) { "custom_noreply@forem.com" }
+
+      before do
+        allow(Settings::SMTP).to receive(:from_email_address).and_return(from_email_address)
+        allow(described_class).to receive(:email).and_return("noreply@forem.com")
+        allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
+      end
+
+      it "returns the correct email address" do
+        expect(described_class.from_email_address).to be(from_email_address)
+      end
+    end
+
+    context "when the minimum SMTP settings have not been provided" do
+      let(:from_email_address) { "custom_noreply@forem.com" }
+      let(:default_email_address) { "noreply@forem.com" }
+
+      before do
+        allow(Settings::SMTP).to receive(:from_email_address).and_return(from_email_address)
+        allow(described_class).to receive(:email).and_return(default_email_address)
+        allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(false)
+      end
+
+      it "returns the correct email address" do
+        expect(described_class.from_email_address).to be(default_email_address)
+      end
+    end
+  end
+
+  describe ".only_sendgrid_enabled?" do
+    it "returns false when the minimum SMTP settings are provided" do
+      allow(Settings::SMTP).to receive(:user_name).and_return("something")
+      allow(Settings::SMTP).to receive(:password).and_return("something")
+      allow(Settings::SMTP).to receive(:address).and_return("something")
+
+      expect(described_class.only_sendgrid_enabled?).to be(false)
+    end
+
+    it "returns false when Sendgrid is not enabled" do
+      allow(described_class).to receive(:sendgrid_enabled?).and_return(false)
+      expect(described_class.only_sendgrid_enabled?).to be(false)
+    end
+
+    it "returns true if Sendgrid is enabled and the minimum SMTP settings are not provided" do
+      allow(described_class).to receive(:sendgrid_enabled?).and_return(true)
+
+      allow(Settings::SMTP).to receive(:user_name).and_return(nil)
+      allow(Settings::SMTP).to receive(:password).and_return(nil)
+      allow(Settings::SMTP).to receive(:address).and_return(nil)
+
+      expect(described_class.only_sendgrid_enabled?).to be(true)
+    end
+  end
 end

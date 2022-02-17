@@ -1074,17 +1074,8 @@ RSpec.describe Article, type: :model do
   end
 
   context "when callbacks are triggered after create" do
-    describe "detect animated images" do
-      it "does not enqueue Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is disabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
-
-        sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
-          build(:article).save
-        end
-      end
-
-      it "enqueues Articles::EnrichImageAttributesWorker if the feature :detect_animated_images is enabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
+    describe "enrich image attributes" do
+      it "enqueues Articles::EnrichImageAttributesWorker" do
         sidekiq_assert_enqueued_jobs(1, only: Articles::EnrichImageAttributesWorker) do
           build(:article).save
         end
@@ -1166,26 +1157,14 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "detect animated images" do
-      it "does not enqueue Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is disabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
-
-        sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
-          article.update(body_markdown: "a body")
-        end
-      end
-
+    describe "enrich image attributes" do
       it "enqueues Articles::EnrichImageAttributesWorker if the HTML has changed" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
-
         sidekiq_assert_enqueued_with(job: Articles::EnrichImageAttributesWorker, args: [article.id]) do
           article.update(body_markdown: "a body")
         end
       end
 
       it "does not Articles::EnrichImageAttributesWorker if the HTML does not change" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
-
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(tag_list: %w[fsharp go])
         end
@@ -1404,7 +1383,7 @@ RSpec.describe Article, type: :model do
       create(:article, body_markdown: body_markdown, feed_source_url: url)
       another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
       error_message = "has already been taken. " \
-                      "Email #{ForemInstance.email} for further details."
+                      "Email #{ForemInstance.contact_email} for further details."
       expect(another_article).not_to be_valid
       expect(another_article.errors.messages[:canonical_url]).to include(error_message)
       expect(another_article.errors.messages[:feed_source_url]).to include(error_message)

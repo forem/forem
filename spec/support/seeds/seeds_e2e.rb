@@ -19,8 +19,14 @@ Settings::SMTP.password = "password"
 ##############################################################################
 
 # Some of our Cypress tests assume specific DEV profile fields to exist
-ProfileField.create_with(display_area: :header).find_or_create_by(label: "Work")
-ProfileField.create_with(display_area: :header).find_or_create_by(label: "Education")
+profile_field_group =
+  ProfileFieldGroup.create(name: "Test Group", description: "A group, for the tests")
+ProfileField
+  .create_with(display_area: :header, profile_field_group: profile_field_group)
+  .find_or_create_by(label: "Work")
+ProfileField
+  .create_with(display_area: :header, profile_field_group: profile_field_group)
+  .find_or_create_by(label: "Education")
 Profile.refresh_attributes!
 
 ##############################################################################
@@ -209,6 +215,26 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.local
     website_url: Faker::Internet.url,
   )
   user
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "apple-auth-admin-user@privaterelay.appleid.com") do
+  user = User.create!(
+    name: "Apple Auth Admin User",
+    email: "apple-auth-admin-user@privaterelay.appleid.com",
+    username: "apple_auth_admin_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  user.add_role(:super_admin)
 end
 
 ##############################################################################
@@ -565,7 +591,7 @@ seeder.create_if_none(Tag) do
   tags.each do |tagname|
     tag = Tag.create!(
       name: tagname,
-      bg_color_hex: Faker::Color.hex_color,
+      bg_color_hex: "#672c99",
       text_color_hex: Faker::Color.hex_color,
       supported: true,
     )

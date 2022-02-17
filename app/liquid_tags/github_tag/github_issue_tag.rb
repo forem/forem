@@ -9,7 +9,7 @@ class GithubTag
   class GithubIssueTag
     PARTIAL = "liquids/github_issue".freeze
     API_BASE_ENDPOINT = "https://api.github.com/repos/".freeze
-    ISSUE_REGEXP = %r{https://github\.com/[\w\-]{1,39}/[\w\-]{1,39}/(issues|pull)/\d+((#issuecomment-|#discussion_|#pullrequestreview-)\w+)?}
+    ISSUE_REGEXP = %r{https://github\.com/[\w\-.]{1,39}/[\w\-.]{1,39}/(issues|pull)/\d+((#issuecomment-|#discussion_|#pullrequestreview-)\w+)?}
 
     def initialize(link)
       @orig_link = link
