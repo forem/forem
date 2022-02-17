@@ -4,9 +4,6 @@ RSpec.describe UnifiedEmbed::Registry do
   subject(:unified_embed) { described_class }
 
   let(:article) { create(:article) }
-  let(:comment) do
-    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
-  end
   let(:listing) { create(:listing) }
   let(:organization) { create(:organization) }
   let(:podcast) { create(:podcast) }
@@ -125,11 +122,6 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns CodepenTag for a codepen url" do
       expect(described_class.find_liquid_tag_for(link: "https://codepen.io/elisavetTriant/pen/KKvRRyE"))
         .to eq(CodepenTag)
-    end
-
-    it "returns CommentTag for a Forem comment url" do
-      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{user.username}/comment/#{comment.id_code}"))
-        .to eq(CommentTag)
     end
 
     it "returns DotnetFiddleTag for a dotnetfiddle url" do

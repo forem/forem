@@ -1,31 +1,31 @@
 <%# TODO: incorporate a tab component. For now you have to manually change the value %>
 <% current_tab = "overview" # overview|emails|notes|reports|flags %>
 <% if FeatureFlag.enabled?(:admin_member_view) %>
-  <%= render "header" %>
-  <%= render "navigation" %>
+  <%= render "admin/users/show/profile" %>
+  <%= render "admin/users/show/tabs" %>
 
   <% if current_tab == 'overview' %>
     <div class="crayons-card p-3 s:p-4 m:p-7">
-      <%= render "stats" if @user.registered %>
+      <%= render "admin/users/show/overview/stats" if @user.registered %>
 
       <div class="l:grid gap-8 grid-cols-2">
         <div>
           <section class="mb-7">
-            <%= render "admin/users/widgets/roles" %>
+            <%= render "admin/users/show/overview/roles" %>
           </section>
 
           <section class="mb-7">
-            <%= render "admin/users/widgets/tag_moderation" %>
+            <%= render "admin/users/show/overview/tag_moderation" %>
           </section>
         </div>
 
         <div>
           <section class="mb-7">
-            <%= render "admin/users/widgets/organizations" %>
+            <%= render "admin/users/show/overview/organizations" %>
           </section>
 
           <section class="mb-7">
-            <%= render "admin/users/widgets/credits" %>
+            <%= render "admin/users/show/overview/credits" %>
           </section>
         </div>
       </div>
@@ -33,29 +33,29 @@
   <% elsif current_tab == 'notes' %>
     <section class="flex flex-col m:flex-row gap-4">
       <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
-        <%= render "admin/users/notes/form" %>
+        <%= render "admin/users/show/notes/form" %>
       </div>
       <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
-        <%= render "admin/users/notes/index" %>
+        <%= render "admin/users/show/notes/index" %>
       </div>
     </section>
   <% elsif current_tab == 'emails' %>
-    <%= render "admin/users/emails/verification" %>
+    <%= render "admin/users/show/emails/verification" %>
     <section class="flex flex-col m:flex-row gap-4">
       <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
-        <%= render "admin/users/emails/form" %>
+        <%= render "admin/users/show/emails/form" %>
       </div>
       <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
-        <%= render "admin/users/emails/index" %>
+        <%= render "admin/users/show/emails/index" %>
       </div>
     </section>
   <% elsif current_tab == 'reports' %>
     <section class="crayons-card p-3 s:p-4 m:p-7">
-      <%= render "admin/users/reports/index" %>
+      <%= render "admin/users/show/reports/index" %>
     </section>
   <% elsif current_tab == 'flags' %>
     <section class="crayons-card p-3 s:p-4 m:p-7">
-      <%= render "admin/users/flags/index" %>
+      <%= render "admin/users/show/flags/index" %>
     </section>
   <% end %>
 <% else %>

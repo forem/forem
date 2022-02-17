@@ -42,7 +42,7 @@ gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically co
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 0.2.25" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
-gem "honeybadger", "~> 4.10" # Used for tracking application errors
+gem "honeybadger", "~> 4.11" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.8.2" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -101,7 +101,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.43" # Ruby library for the Stripe API
+gem "stripe", "~> 5.44" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.8" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files

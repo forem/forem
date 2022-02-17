@@ -4,6 +4,9 @@ RSpec.describe ForemTag do
   subject(:forem_tag) { described_class }
 
   let(:article) { create(:article) }
+  let(:comment) do
+    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
+  end
   let(:listing) { create(:listing) }
   let(:organization) { create(:organization) }
   let(:parse_context) { { source: article, user: user } }
@@ -23,6 +26,12 @@ RSpec.describe ForemTag do
   end
 
   describe "determine_klass" do
+    it "returns CommentTag if link contains /comment/ (connotes comment url)" do
+      comment_url = URL.url + comment.path
+
+      expect(described_class.determine_klass(comment_url)).to eq(CommentTag)
+    end
+
     it "returns LinkTag if link is general Forem link" do
       link_url = URL.url + article.path
 
