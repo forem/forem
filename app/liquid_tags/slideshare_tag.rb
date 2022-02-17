@@ -1,6 +1,6 @@
 class SlideshareTag < LiquidTagBase
   PARTIAL = "liquids/slideshare".freeze
-  REGISTRY_REGEXP = %r{https://(?:www.)?slideshare.net/slideshow/embed_code/key/(?<id>\w{12,14})}
+  REGISTRY_REGEXP = %r{https://(?:www\.)?slideshare\.net/slideshow/embed_code/key/(?<id>\w{12,14})}
   VALID_ID_REGEXP = /\A(?<id>\w{12,14})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
