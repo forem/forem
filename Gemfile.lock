@@ -1002,7 +1002,7 @@ DEPENDENCIES
   rack-cors (~> 1.1)
   rack-host-redirect (~> 1.3)
   rack-timeout (~> 0.6)
-  rails (~> 7.0.1)
+  rails (~> 7.0.2.2)
   ransack (~> 2.5)
   recaptcha (~> 5.8)
   redcarpet (~> 3.5)
