@@ -120,11 +120,6 @@ document.body.addEventListener('click', openModal);
 
 const tagsRoot = document.getElementById('tag-moderation-container');
 
-// Normally, Preact can diff the server-side rendered DOM to hydrate the client-side rendered DOM,
-// but in this case, the MultiSelectAutocomplete component has a lot of markup, so I opted for
-// just a stylized input which is why innerHTML is used.
-tagsRoot.innerHTML = '';
-
 const currentModTags = JSON.parse(
   tagsRoot.closest('form')['current_mod_tags'].value,
 );
@@ -142,7 +137,6 @@ const syncSelections = (selections = []) => {
 
 render(
   <MultiSelectAutocomplete
-    border={false}
     defaultValue={currentModTags}
     fetchSuggestions={fetchTags}
     labelText="Assign tags"
@@ -153,4 +147,5 @@ render(
     onSelectionsChanged={syncSelections}
   />,
   tagsRoot,
+  tagsRoot.firstElementChild, // not replaced, but this helps prevent content layout shift (CLS)
 );

@@ -12,10 +12,10 @@
 
   <div id="tag-moderation-container">
     <%#
-      I'm using the same styling as the multi-autocomplete here to avoid content layout shift (CLS)
-      If the styling of the multi-autocomplete changes, this needs to be updated.
+      The markup for the autocomplete is a copy paste from the rendered Preact component when it's empty.
+      This prevents cummulative layout shifting and Preact is able to bootstrap on top of it.
     %>
-    <input autocomplete="off" class="c-autocomplete--multi__input" aria-hidden="true" type="text" placeholder="Add a tag...">
+    <div class="c-autocomplete--multi relative"><div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="listbox1" class="c-autocomplete--multi__wrapper-border crayons-textfield flex items-center  cursor-text"><ul id="combo-selected" class="list-none flex flex-wrap w-100"><li class="self-center" style="order: 1;"><input autocomplete="off" class="c-autocomplete--multi__input" aria-autocomplete="list" aria-labelledby="multi-select-label selected-items-list" aria-describedby="input-description" aria-disabled="false" type="text" placeholder="Add a tag..."></li></ul></div></div>
   </div>
   <button class="c-btn c-btn--secondary whitespace-nowrap self-end">Submit</button>
 </form>
