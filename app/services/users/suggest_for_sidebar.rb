@@ -7,8 +7,8 @@ module Users
     def initialize(user, given_tag)
       @user = user
       @given_tag = given_tag
-      # TODO: @citizen428 - I just moved this code from elsewhere, but 25 seems
-      # to be geared towards DEV and may not work for smaller communities.
+      # TODO: This code got moved from elsewhere, but 25 seems to be geared
+      # towards DEV and may not work for smaller communities.
       @minimum_reaction_count = Rails.env.production? ? 25 : 0
     end
 
