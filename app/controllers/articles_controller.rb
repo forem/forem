@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
 
   # NOTE: It seems quite odd to not authenticate the user for the :new action.
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish]
+  before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish admin_featured_toggle]
   # NOTE: Consider pushing this check into the associated Policy.  We could choose to raise a
   #       different error which we could then rescue as part of our exception handling.
   before_action :check_suspended, only: %i[new create update]
@@ -183,6 +183,18 @@ class ArticlesController < ApplicationController
     else
       @article.published = false
     end
+
+    if @article.save
+      render json: { message: "success", path: @article.current_state_path }, status: :ok
+    else
+      render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def admin_featured_toggle
+    authorize @article
+
+    @article.featured = params.dig(:article, :featured).to_i == 1
 
     if @article.save
       render json: { message: "success", path: @article.current_state_path }, status: :ok

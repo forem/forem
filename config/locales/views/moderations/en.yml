@@ -11,7 +11,7 @@ en:
         subtitle: Rate the quality of this post
         abusive:
           subtitle_html: Flag %{user} as Abusive
-          desc_html: This is the equivalent of flagging <b>all</b> of this user's articles and will lower their article scores.
+          desc_html: This is the equivalent of flagging <b>all</b> of this user's posts and will lower their post scores.
         adjust:
           heading: Adjust tags
           subtitle: Add or remove tags
@@ -53,6 +53,12 @@ en:
             Expert: Expert
             Mid-level: Mid-level
             Novice: Novice
+        admin:
+          heading: Admin actions
+          heading2: Higher permission post options
+          subtitle: Higher permission post options
+          aria_label: Open admin actions
+          icon: Crown
         flag: Flag user
         how: How does this work?
         hidden:
@@ -89,10 +95,15 @@ en:
         thumb_down: Thumb down
         thumb_up: Thumb up
         toggle: Toggle section
-        unpublish: Unpublish Article
+        feature: Feature Post
+        unfeature: Unfeature Post
+        unpublish: Unpublish Post
         vote_down: Low Quality
         flag_to_admins: Flag to Admins
         vote_up: High Quality
+        featured_past_day:
+          one: "%{count} post from the past day is featured."
+          other: "%{count} posts from the past day are featured."
       all: All topics
       aside:
         all: All topics
