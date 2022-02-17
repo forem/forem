@@ -45,46 +45,6 @@
           <div id="article-copy-link-announcer" aria-live="polite" class="crayons-notice crayons-notice--success my-2 p-1" aria-live="polite" hidden><%= t("views.actions.copy.text") %></div>
         </div>
 
-        <div class="Desktop-only">
-          <a
-            target="_blank"
-            class="crayons-link crayons-link--block"
-            rel="noopener"
-            href='https://twitter.com/intent/tweet?text=<%= u t("views.actions.share.twitter.query",
-                                                                article: @article.title.strip,
-                                                                author: @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name) %><%= u " #{Settings::General.twitter_hashtag}" %><%= u " #{article_url(@article)}" %>'>
-            <%= t("views.actions.share.twitter.text") %>
-          </a>
-          <a
-            target="_blank"
-            class="crayons-link crayons-link--block"
-            rel="noopener"
-            href="https://www.linkedin.com/shareArticle?mini=true&url=<%= u article_url(@article) %>&title=<%= u @article.title %>&summary=<%= u @article.description %>&source=<%= u community_name %>">
-            <%= t("views.actions.share.linkedin.text") %>
-          </a>
-          <a
-            target="_blank"
-            class="crayons-link crayons-link--block"
-            rel="noopener"
-            href="https://www.reddit.com/submit?url=<%= u article_url(@article) %>&title=<%= u @article.title %>">
-            <%= t("views.actions.share.reddit.text") %>
-          </a>
-          <a
-            target="_blank"
-            class="crayons-link crayons-link--block"
-            rel="noopener"
-            href="https://news.ycombinator.com/submitlink?u=<%= u article_url(@article) %>&t=<%= u @article.title %>">
-            <%= t("views.actions.share.hackernews.text") %>
-          </a>
-          <a
-            target="_blank"
-            class="crayons-link crayons-link--block"
-            rel="noopener"
-            href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
-            <%= t("views.actions.share.facebook.text") %>
-          </a>
-        </div>
-
         <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetitle="<%= @article.title %>" sharetext="<%= @article.description %>" template="web-share-button">
         </web-share-wrapper>
         <template id="web-share-button">

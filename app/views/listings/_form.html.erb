@@ -92,17 +92,17 @@
 
   <div class="px-4 m:px-0">
     <% unless @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
-      <div class="crayons-notice mb-4" aria-live="polite"><%= t("views.listings.form.no_credit") %></div>
+      <div class="crayons-notice mb-4" aria-live="polite">
+        <p><%= t("views.listings.form.no_credit") %></p>
+        <br>
+        <p>Please, contact the admin team</p>
+      </div>
     <% end %>
     <div class="flex mb-4 items-center">
       <% if @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
         <%= form.submit t("views.listings.form.publish"), class: "crayons-btn mr-2" %>
-      <% else %>
-        <a href="/credits/new" class="crayons-btn mr-2" data-no-instant><%= t("views.listings.form.purchase") %></a>
       <% end %>
       <%= form.button t("views.listings.form.save"), type: "submit", name: "listing[action]", class: "crayons-btn crayons-btn--secondary", value: "draft" %>
     </div>
-
-    <p class="fs-s color-base-70 mb-6"><%= t("views.listings.form.save_notice") %></p>
   </div>
 <% end %>
