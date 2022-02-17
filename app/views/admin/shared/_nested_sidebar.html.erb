@@ -1,41 +1,45 @@
-<li>
-  <a class="c-link c-link--block c-link--icon-left" href="<%= admin_path %>" aria-current="<%= "page" if controller.controller_name == "overview" %>">
-    <%= crayons_icon_tag("stack-line", class: "c-link__icon") %>
-    Overview
-  </a>
-</li>
+<nav>
+  <ul class="m-0">
+    <li>
+      <a class="c-link c-link--block c-link--icon-left" href="<%= admin_path %>" aria-current="<%= "page" if controller.controller_name == "overview" %>">
+        <%= crayons_icon_tag("stack-line", class: "c-link__icon") %>
+        Overview
+      </a>
+    </li>
 
-<% menu_items.each do |group_name, group| %>
-  <% current = deduced_scope(request).to_s == group[:children][0][:parent].to_s %>
-  <% children = group[:children].length == 1 %>
-  <% path = children ? group[:children][0][:controller] : "#{group_name}/#{group[:children].detect { |child| child[:visible] }[:controller]}" %>
-  <% path = "#{admin_path}/#{path}" %>
-  <li>
-    <a
-      class="c-link c-link--block c-link--icon-left <%= "c-link--current" if current %>"
-      aria-current="<%= "page" if current && children %>"
-      href="<%= path %>">
-      <%= crayons_icon_tag(group[:svg], class: "c-link__icon", aria_hidden: true) %>
-      <%= display_name(group_name) %>
-    </a>
-    <% unless children %>
-      <ul class="ml-6 mb-1 <%= deduced_scope(request) == group_name.to_s ? "" : "hidden" %>">
-        <% group[:children].each do |item| %>
-          <% if item[:visible] %>
-            <li>
-              <a
-                class="c-link c-link--block"
-                href="<%= admin_path %>/<%= group_name %>/<%= item[:controller] %>"
-                <% if deduced_controller(request) == item[:controller].to_s %>
-                  style="--bg: transparent"
-                  aria-current="page"
-                <% end %>>
-                <%= item[:name].to_s.titleize %>
-              </a>
-            </li>
-          <% end %>
+    <% menu_items.each do |group_name, group| %>
+      <% current = deduced_scope(request).to_s == group[:children][0][:parent].to_s %>
+      <% children = group[:children].length == 1 %>
+      <% path = children ? group[:children][0][:controller] : "#{group_name}/#{group[:children].detect { |child| child[:visible] }[:controller]}" %>
+      <% path = "#{admin_path}/#{path}" %>
+      <li>
+        <a
+          class="c-link c-link--block c-link--icon-left <%= "c-link--current" if current %>"
+          aria-current="<%= "page" if current && children %>"
+          href="<%= path %>">
+          <%= crayons_icon_tag(group[:svg], class: "c-link__icon", aria_hidden: true) %>
+          <%= display_name(group_name) %>
+        </a>
+        <% unless children %>
+          <ul class="ml-6 mb-1 <%= deduced_scope(request) == group_name.to_s ? "" : "hidden" %>">
+            <% group[:children].each do |item| %>
+              <% if item[:visible] %>
+                <li>
+                  <a
+                    class="c-link c-link--block"
+                    href="<%= admin_path %>/<%= group_name %>/<%= item[:controller] %>"
+                    <% if deduced_controller(request) == item[:controller].to_s %>
+                      style="--bg: transparent"
+                      aria-current="page"
+                    <% end %>>
+                    <%= item[:name].to_s.titleize %>
+                  </a>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
         <% end %>
-      </ul>
+      </li>
     <% end %>
-  </li>
-<% end %>
+  </ul>
+</nav>
