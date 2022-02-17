@@ -56,8 +56,7 @@ module Notifications
 
           notification = Notification.find_or_initialize_by(notification_params)
 
-          old_json_data = notification.json_data
-          previous_siblings_size = old_json_data&.dig("reaction", "aggregated_siblings")&.size || 0
+          previous_siblings_size = notification.json_data&.dig("reaction", "aggregated_siblings")&.size || 0
 
           notification.json_data = json_data
           notification.notified_at = Time.current
