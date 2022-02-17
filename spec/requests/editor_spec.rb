@@ -30,7 +30,7 @@ RSpec.describe "Editor", type: :request do
         # We have lots of Cypress tests of the behavior of the `/new` page.  Let's make sure we're
         # verifying AuthN/AuthZ things.
         get new_path
-        expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
       end
     end
   end
