@@ -40,8 +40,8 @@ request to issue 1234.  And when we merge the pull request, Github will
 automatically close the issue.
 -->
 
-- [ ] Related Issue #
-- [ ] Closes #
+- Related Issue #
+- Closes #
 
 ## QA Instructions, Screenshots, Recordings
 
