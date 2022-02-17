@@ -187,7 +187,7 @@ class ArticlesController < ApplicationController
   def admin_featured_toggle
     authorize @article
 
-    @article.featured = params[:article][:featured].to_i == 1
+    @article.featured = params.dig(:article, :featured) == "1"
 
     if @article.save
       render json: { message: "success", path: @article.current_state_path }, status: :ok
