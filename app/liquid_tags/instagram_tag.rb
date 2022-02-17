@@ -1,6 +1,6 @@
 class InstagramTag < LiquidTagBase
   PARTIAL = "liquids/instagram".freeze
-  REGISTRY_REGEXP = %r{(?:https?://)?(?:www\.)?(?:instagram.com/p/)(?<video_id>[a-zA-Z0-9_-]{11})/?}
+  REGISTRY_REGEXP = %r{(?:https?://)?(?:www\.)?(?:instagram\.com/p/)(?<video_id>[a-zA-Z0-9_-]{11})/?}
   VALID_ID_REGEXP = /\A(?<video_id>[a-zA-Z0-9_-]{11})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
