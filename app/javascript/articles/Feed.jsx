@@ -43,6 +43,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
         // (either because featuredStory is missing or because they represent two different articles),
         // we set the pinnedArticle and remove it from feedItems.
         // If pinned and featured are the same, we just remove it from feedItems without setting it as state.
+        // NB: We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
         if (pinnedArticle && timeFrame === '') {
           feedItems = feedItems.filter((item) => item.id !== pinnedArticle.id);
 
@@ -54,9 +55,9 @@ export const Feed = ({ timeFrame, renderFeed }) => {
         // Remove that first story from the array to
         // prevent it from rendering twice in the feed.
         const featuredIndex = feedItems.indexOf(featuredStory);
-        const subStories = feedItems.filter(
-          (_item, index) => index !== featuredIndex,
-        );
+        if(featuredStory) {
+          feedItems.splice(featuredIndex, 1);
+        }
         const organizedFeedItems = [featuredStory, subStories].flat();
 
         setFeedItems(organizedFeedItems);
