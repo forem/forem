@@ -1,3 +1,5 @@
+require_relative "../../lib/sidekiq/honeycomb_middleware"
+
 module Sidekiq
   module Cron
     class Job
