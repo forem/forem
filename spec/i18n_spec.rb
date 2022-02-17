@@ -6,15 +6,15 @@ RSpec.describe I18n do
   let(:unused_keys) { i18n.unused_keys }
   let(:inconsistent_interpolations) { i18n.inconsistent_interpolations }
 
-  def missing_node(node)
-    { key: node.full_key, file: node.data[:path] }
+  def missing_keys_details
+    missing_keys.leaves.map do |node|
+      { key: node.full_key, file: node.data[:path] }
+    end
   end
 
   it "does not have missing keys" do
     expect(missing_keys).to be_empty,
-                            "Missing #{missing_keys.leaves.count} i18n keys, #{missing_keys.leaves.map do |n|
-                                                                                 missing_node(n)
-                                                                               end }"
+                            "Missing #{missing_keys.leaves.count} i18n keys\n #{missing_keys_details}"
   end
 
   xit "does not have unused keys" do
