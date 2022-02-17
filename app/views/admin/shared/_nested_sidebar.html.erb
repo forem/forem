@@ -6,11 +6,10 @@
 </li>
 
 <% menu_items.each do |group_name, group| %>
-current = deduced_scope(request).to_s == group[:children][0][:parent].to_s
-    children = group[:children].length == 1
-    path = children ? group[:children][0][:controller] : "#{group_name}/#{group[:children].detect { |child| child[:visible] }[:controller]}"
-    path = "#{admin_path}/#{path}"
-  %>
+  <% current = deduced_scope(request).to_s == group[:children][0][:parent].to_s %>
+  <% children = group[:children].length == 1 %>
+  <% path = children ? group[:children][0][:controller] : "#{group_name}/#{group[:children].detect { |child| child[:visible] }[:controller]}" %>
+  <% path = "#{admin_path}/#{path}" %>
   <li>
     <a
       class="c-link c-link--block c-link--icon-left <%= "c-link--current" if current %>"
