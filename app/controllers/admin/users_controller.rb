@@ -37,9 +37,13 @@ module Admin
       @user = User.find(params[:id])
 
       if FeatureFlag.enabled?(:admin_member_view)
+        # GET /admin/users/#id/@tab
+        set_current_tab(params["tab"] || "overview")
+        handle_member_details_tab
         set_feedback_messages
         set_related_reactions
       end
+      # return set_user_details unless FeatureFlag.enabled?(:admin_member_view)
       set_user_details
     end
 
@@ -233,6 +237,25 @@ module Admin
       redirect_to admin_user_path(@user)
     end
 
+    def handle_member_details_tab
+      return @tab = "overview" if @tab.blank?
+
+      case @tab
+      when "overview"
+        handle_overview_tab
+      when "notes"
+        handle_notes_tab
+      when "emails"
+        handle_emails_tab
+      when "reports"
+        handle_reports_tab
+      when "flags"
+        handle_flags_tab
+      else
+        not_found unless @tab.in?(Constants::MemberDetails::TAB_LIST.map.&:downcase)
+      end
+    end
+
     private
 
     def set_user_details
@@ -300,5 +323,25 @@ module Admin
 
       credit_params
     end
+
+    def set_current_tab(current_tab = "overview")
+      @tab = current_tab
+    end
+
+    def handle_overview_tab
+      # set_user_details
+      # set_feedback_messages
+      # set_related_reactions
+    end
+
+    def handle_notes_tab
+      # add_note
+    end
+
+  #   def handle_emails_tab; end
+
+  #   def handle_reports_tab; end
+
+  #   def handle_flags_tab; end
   end
 end

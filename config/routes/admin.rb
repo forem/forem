@@ -45,6 +45,11 @@ namespace :admin do
 
   resources :users, only: %i[index show edit update destroy] do
     resources :email_messages, only: :show
+    # resources :overview, only: :show
+    # resources :notes, only: :show
+    # resources :emails, only: :show
+    # resources :reports, only: :show
+    # resources :flags, only: :show
 
     member do
       post "banish"
@@ -57,6 +62,12 @@ namespace :admin do
       post "verify_email_ownership"
       patch "unlock_access"
       post "unpublish_all_articles"
+      # get "overview", to: "users#show"
+      # get "overview"
+      get "notes", to: "users#"
+      get "emails", to: "users#show"
+      get "reports", to: "users#show"
+      get "flags", to: "users#show"
     end
   end
 
@@ -145,5 +156,6 @@ namespace :admin do
     resources :consumer_apps, only: %i[index new create edit update destroy]
     resources :welcome, only: %i[index create]
   end
+  # get "/settings/(:tab)", to: "users#show"
 end
 # rubocop:enable Metrics/BlockLength
