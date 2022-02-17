@@ -18,9 +18,9 @@
         <h1 class="crayons-title lh-tight">
           <%= @user.name %>
         </h1>
-        <%= render "status" %>
+        <%= render "admin/users/show/profile/status" %>
       </div>
-      <%= render "actions" %>
+      <%= render "admin/users/show/profile/actions" %>
     </div>
     <div class="fs-s mb-1 color-secondary">
       @<%= @user.username %> <span class="opacity-50">&bull;</span> ID <%= @user.id %> <span class="opacity-50">&bull;</span>
