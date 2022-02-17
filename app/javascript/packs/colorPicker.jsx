@@ -14,6 +14,8 @@ for (const input of colorInputs) {
     inputProps[attr.name] = attr.value;
   }
 
+  // The third `replaceNode` argument here makes sure that the new picker is rendered in the correct position within the parentElement
+  // However, Preact is unable to do a VDOM diff that allows a straight replacement of one input for the other, so we also need to remove it manually on line 29
   render(
     <ColorPicker
       id={inputProps.id}
