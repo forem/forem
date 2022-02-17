@@ -38,7 +38,9 @@ module Admin
 
       if FeatureFlag.enabled?(:admin_member_view)
         # GET /admin/users/#id/@tab
-        set_current_tab(params["tab"] || "overview")
+        set_current_tab(params["tab"])
+        # puts "********************** #{params["tab"]}"
+        # puts "********************** #{@tab}"
         handle_member_details_tab
         set_feedback_messages
         set_related_reactions
@@ -256,6 +258,11 @@ module Admin
       end
     end
 
+    def handle_notes_tab
+      @user = User.find(params[:id])
+      @notes = @user.notes.order(created_at: :desc).limit(10)
+    end
+
     private
 
     def set_user_details
@@ -334,14 +341,10 @@ module Admin
       # set_related_reactions
     end
 
-    def handle_notes_tab
-      # add_note
-    end
+    #   def handle_emails_tab; end
 
-  #   def handle_emails_tab; end
+    #   def handle_reports_tab; end
 
-  #   def handle_reports_tab; end
-
-  #   def handle_flags_tab; end
+    #   def handle_flags_tab; end
   end
 end

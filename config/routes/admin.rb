@@ -64,7 +64,7 @@ namespace :admin do
       post "unpublish_all_articles"
       # get "overview", to: "users#show"
       # get "overview"
-      get "notes", to: "users#"
+      get "notes", to: "users#handle_notes_tab"
       get "emails", to: "users#show"
       get "reports", to: "users#show"
       get "flags", to: "users#show"

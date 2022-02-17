@@ -1,9 +1,8 @@
-<%# TODO: incorporate a tab component. For now you have to manually change the value %>
-<% current_tab = "overview" # overview|emails|notes|reports|flags %>
 <% if FeatureFlag.enabled?(:admin_member_view) %>
   <%= render "admin/users/show/profile" %>
   <%= render "admin/users/show/tabs" %>
 
+  <%= @tab %>
   <% if  @tab == "overview" %>
     <div class="crayons-card p-3 s:p-4 m:p-7">
       <%= render "admin/users/show/overview/stats" if @user.registered %>
