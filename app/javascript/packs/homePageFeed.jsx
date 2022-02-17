@@ -79,7 +79,6 @@ export const renderFeed = (timeFrame) => {
 
         const commonProps = {
           bookmarkClick,
-          timeFrame,
         };
 
         const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
@@ -99,6 +98,7 @@ export const renderFeed = (timeFrame) => {
               <Article
                 {...commonProps}
                 article={pinnedArticle}
+                pinned={true}
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(pinnedArticle.id)}
               />

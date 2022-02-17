@@ -55,10 +55,10 @@ export const Feed = ({ timeFrame, renderFeed }) => {
         // Remove that first story from the array to
         // prevent it from rendering twice in the feed.
         const featuredIndex = feedItems.indexOf(featuredStory);
-        if(featuredStory) {
+        if (featuredStory) {
           feedItems.splice(featuredIndex, 1);
         }
-        const organizedFeedItems = [featuredStory, subStories].flat();
+        const organizedFeedItems = [featuredStory, feedItems].flat();
 
         setFeedItems(organizedFeedItems);
       } catch {
