@@ -40,14 +40,17 @@ RSpec.describe ArticlePolicy do
   end
 
   context "when user is not the author" do
+    author_forbidden = %i[update edit manage delete_confirm destroy admin_unpublish admin_featured_toggle]
     it { is_expected.to permit_actions(%i[new create preview]) }
-    it { is_expected.to forbid_actions(%i[update edit manage delete_confirm destroy admin_unpublish]) }
+    it { is_expected.to forbid_actions(author_forbidden) }
 
     context "with suspended status" do
+      suspended_author_forbidden = %i[create edit manage update delete_confirm destroy admin_unpublish
+                                      admin_featured_toggle]
       before { user.add_role(:suspended) }
 
       it { is_expected.to permit_actions(%i[new preview]) }
-      it { is_expected.to forbid_actions(%i[create edit manage update delete_confirm destroy admin_unpublish]) }
+      it { is_expected.to forbid_actions(suspended_author_forbidden) }
     end
   end
 
@@ -68,7 +71,7 @@ RSpec.describe ArticlePolicy do
     let(:user) { build(:user, :super_admin) }
 
     it { is_expected.to permit_actions(%i[update new edit manage create delete_confirm destroy preview]) }
-    it { is_expected.to permit_actions(%i[admin_unpublish]) }
+    it { is_expected.to permit_actions(%i[admin_unpublish admin_featured_toggle]) }
   end
 
   context "when user is an article's org_admin" do

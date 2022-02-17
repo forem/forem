@@ -41,6 +41,10 @@ class ArticlePolicy < ApplicationPolicy
     user_any_admin?
   end
 
+  def admin_featured_toggle?
+    minimal_admin?
+  end
+
   # @note It is likely that we want this to mirror `:create?` in the future.  As it stands, we can
   #       use this value to "triangulate" towards a simplifying solution to
   #       https://github.com/forem/forem/issues/16529 (Also, I added this comment so that this code

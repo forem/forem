@@ -113,6 +113,7 @@ Rails.application.routes.draw do
     resources :messages, only: [:create]
     resources :articles, only: %i[update create destroy] do
       patch "/admin_unpublish", to: "articles#admin_unpublish"
+      patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do

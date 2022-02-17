@@ -591,7 +591,7 @@ seeder.create_if_none(Tag) do
   tags.each do |tagname|
     tag = Tag.create!(
       name: tagname,
-      bg_color_hex: Faker::Color.hex_color,
+      bg_color_hex: "#672c99",
       text_color_hex: Faker::Color.hex_color,
       supported: true,
     )

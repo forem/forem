@@ -1,6 +1,6 @@
 class AsciinemaTag < LiquidTagBase
   PARTIAL = "liquids/asciinema".freeze
-  REGISTRY_REGEXP = %r{https://asciinema.org/a/(?<id>\d+)}
+  REGISTRY_REGEXP = %r{https://asciinema\.org/a/(?<id>\d+)}
 
   def initialize(_tag_name, id, _parse_context)
     super
