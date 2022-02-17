@@ -59,8 +59,6 @@ en:
           subtitle: Higher permission post options
           aria_label: Open admin actions
           icon: Crown
-          desc_html: Who <em>might</em> find this post most valuable, based on overall experience level?
-          from: "%{lvl} - "
         flag: Flag user
         how: How does this work?
         hidden:
