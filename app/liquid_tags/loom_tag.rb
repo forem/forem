@@ -21,7 +21,7 @@ class LoomTag < LiquidTagBase
 
   def extract_video_id(input)
     match = pattern_match_for(input, [REGISTRY_REGEXP])
-    raise StandardError, I18n.t("liquid_tag.loom_tag.invalid_loom_url") unless match
+    raise StandardError, I18n.t("liquid_tags.loom_tag.invalid_loom_url") unless match
 
     match[:video_id]
   end
