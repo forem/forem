@@ -45,11 +45,6 @@ namespace :admin do
 
   resources :users, only: %i[index show edit update destroy] do
     resources :email_messages, only: :show
-    # resources :overview, only: :show
-    # resources :notes, only: :show
-    # resources :emails, only: :show
-    # resources :reports, only: :show
-    # resources :flags, only: :show
 
     member do
       post "banish"
@@ -62,12 +57,7 @@ namespace :admin do
       post "verify_email_ownership"
       patch "unlock_access"
       post "unpublish_all_articles"
-      # get "overview", to: "users#show"
-      # get "overview"
       get "notes", to: "users#handle_notes_tab"
-      # get "emails", to: "users#show"
-      # get "reports", to: "users#show"
-      # get "flags", to: "users#show"
     end
   end
 

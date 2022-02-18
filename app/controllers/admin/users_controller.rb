@@ -235,30 +235,6 @@ module Admin
       redirect_to admin_user_path(@user)
     end
 
-    def handle_member_details_tab
-      return @tab = "overview" if @tab.blank?
-
-      case @tab
-      when "overview"
-        handle_overview_tab
-      when "notes"
-        handle_notes_tab
-      when "emails"
-        handle_emails_tab
-      when "reports"
-        handle_reports_tab
-      when "flags"
-        handle_flags_tab
-      else
-        not_found unless @tab.in?(Constants::MemberDetails::TAB_LIST.map.&:downcase)
-      end
-    end
-
-    def handle_notes_tab
-      @user = User.find(params[:id])
-      @notes = @user.notes.order(created_at: :desc).limit(10)
-    end
-
     private
 
     def set_user_details
