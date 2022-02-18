@@ -41,7 +41,6 @@ module Admin
         set_feedback_messages
         set_related_reactions
       end
-      # return set_user_details unless FeatureFlag.enabled?(:admin_member_view)
       set_user_details
     end
 
