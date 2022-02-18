@@ -57,7 +57,6 @@ namespace :admin do
       post "verify_email_ownership"
       patch "unlock_access"
       post "unpublish_all_articles"
-      get "notes", to: "users#handle_notes_tab"
     end
   end
 

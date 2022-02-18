@@ -37,7 +37,7 @@ module Admin
       @user = User.find(params[:id])
 
       if FeatureFlag.enabled?(:admin_member_view)
-        set_current_tab(params[:current_tab])
+        set_current_tab(params[:tab])
         set_feedback_messages
         set_related_reactions
       end
