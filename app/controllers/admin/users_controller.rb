@@ -47,6 +47,8 @@ module Admin
     def update
       @user = User.find(params[:id])
 
+      update_tag_moderation if user_params[:mod_tags]
+
       Credits::Manage.call(@user, credit_params) if credit_params.size.positive?
       add_note if user_params[:new_note]
 
@@ -313,13 +315,13 @@ module Admin
                      end
     end
 
-    def tag_moderation
-      user_id = params[:id]
+    def update_tag_moderation
+      # user_id = params[:id]
 
       begin
         # TODO: Batch these in a transaction
-        TagModerators::Add.call([user_id], [params[:tag_id]])
-        TagModerators::Remove.call([user_id], [params[:tag_id]])
+        # TagModerators::Add.call([user_id], [params[:tag_id]])
+        # TagModerators::Remove.call([user_id], [params[:tag_id]])
         flash[:success] = "Tags moderated by the user have been updated"
       rescue StandardError => e
         flash[:danger] = e.message

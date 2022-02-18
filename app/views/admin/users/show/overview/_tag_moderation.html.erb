@@ -6,9 +6,9 @@
   <p class="color-secondary">Assign tags to this member to moderate. <a href="https://admin.forem.com/docs/managing-your-community/tag-moderator-features" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about tag moderation">Learn more</a></p>
 </header>
 
-<form class="flex flex-col gap-2">
-  <input name="current_mod_tags" type="hidden" value="<%= @moderated_tag_ids %>" />
-  <input name="mod_tags" type="hidden" value="<%= @moderated_tag_ids %>" />
+<%= form_with scope: :user, url: admin_user_path(@user), method: :patch, local: true, html: { class: "flex flex-col gap-2" } do |f| %>
+  <%= f.hidden_field :current_mod_tags, id: nil, value: @moderated_tag_ids %>
+  <%= f.hidden_field :mod_tags, id: nil, value: @moderated_tag_ids %>
 
   <div id="tag-moderation-container" data-current-mod-tags="<%= @moderated_tags %>">
     <%#
@@ -18,4 +18,4 @@
     <div class="c-autocomplete--multi relative"><div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="listbox1" class="c-autocomplete--multi__wrapper-border crayons-textfield flex items-center  cursor-text"><ul id="combo-selected" class="list-none flex flex-wrap w-100"><li class="self-center" style="order: 1;"><input autocomplete="off" class="c-autocomplete--multi__input" aria-autocomplete="list" aria-labelledby="multi-select-label selected-items-list" aria-describedby="input-description" aria-disabled="false" type="text" placeholder="Add a tag..."></li></ul></div></div>
   </div>
   <button class="c-btn c-btn--secondary whitespace-nowrap self-end">Submit</button>
-</form>
+<% end %>

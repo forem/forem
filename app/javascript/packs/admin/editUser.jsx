@@ -121,7 +121,7 @@ document.body.addEventListener('click', openModal);
 const tagsRoot = document.getElementById('tag-moderation-container');
 const form = tagsRoot.closest('form');
 const currentModTags = JSON.parse(tagsRoot.dataset.currentModTags);
-const modTags = form['mod_tags'];
+const modTags = form['user[mod_tags]'];
 
 // Converts the array of selected items into a plain string to be saved in the article form
 const syncSelections = (selections = []) => {
