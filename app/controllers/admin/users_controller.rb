@@ -47,7 +47,7 @@ module Admin
     def update
       @user = User.find(params[:id])
 
-      Credits::Manage.call(@user, credit_params)
+      Credits::Manage.call(@user, credit_params) if credit_params.size.positive?
       add_note if user_params[:new_note]
 
       redirect_to admin_user_path(params[:id])
