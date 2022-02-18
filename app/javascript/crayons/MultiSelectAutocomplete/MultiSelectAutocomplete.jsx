@@ -314,7 +314,7 @@ export const MultiSelectAutocomplete = ({
     }
 
     const results = await fetchSuggestions(value);
-    // If no results, display current search term as an option
+    // If no results, display current search term as an option unless only suggestions are permitted.
     if (results.length === 0 && !onlySuggestions && value !== '') {
       results.push({ name: value });
     }
