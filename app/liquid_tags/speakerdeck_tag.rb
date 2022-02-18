@@ -1,6 +1,6 @@
 class SpeakerdeckTag < LiquidTagBase
   PARTIAL = "liquids/speakerdeck".freeze
-  REGISTRY_REGEXP = %r{https://speakerdeck.com/player/(?<id>\w{,32})}
+  REGISTRY_REGEXP = %r{https://speakerdeck\.com/player/(?<id>\w{,32})}
   VALID_ID_REGEXP = /\A(?<id>\w{,32})\Z/
   REGEXP_OPTIONS  = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
