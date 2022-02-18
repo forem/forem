@@ -8,7 +8,7 @@ module Admin
       merge_user_id add_credits remove_credits
       add_org_credits remove_org_credits
       organization_id identity_id
-      credit_action credit_amount
+      credit_action credit_amount current_mod_tags mod_tags
     ].freeze
 
     EMAIL_ALLOWED_PARAMS = %i[
@@ -316,17 +316,20 @@ module Admin
     end
 
     def update_tag_moderation
-      # user_id = params[:id]
+      current_mod_tag_ids = JSON.parse user_params[:current_mod_tags]
+      mod_tag_ids = JSON.parse user_params[:mod_tags]
 
-      begin
-        # TODO: Batch these in a transaction
-        # TagModerators::Add.call([user_id], [params[:tag_id]])
-        # TagModerators::Remove.call([user_id], [params[:tag_id]])
-        flash[:success] = "Tags moderated by the user have been updated"
-      rescue StandardError => e
-        flash[:danger] = e.message
-      end
-      redirect_to admin_user_path(user_id)
+      # Remove tags that are no longer moderated
+      tag_ids_to_remove = current_mod_tag_ids - mod_tag_ids
+
+      # Add tags that are newly moderated
+      tag_ids_to_add = mod_tag_ids - current_mod_tag_ids
+
+      # TODO: Actually update tags moderated by a user.
+
+      flash[:success] = "Tags moderated by the user have been updated"
+    rescue StandardError => e
+      flash[:danger] = e.message
     end
   end
 end
