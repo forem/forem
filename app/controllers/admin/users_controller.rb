@@ -37,7 +37,7 @@ module Admin
       @user = User.find(params[:id])
 
       if FeatureFlag.enabled?(:admin_member_view)
-        set_current_tab(params[:tab])
+        set_current_tab(params[:current_tab])
         set_feedback_messages
         set_related_reactions
       end
@@ -304,11 +304,11 @@ module Admin
     end
 
     def set_current_tab(current_tab = "overview")
-      @tab = if current_tab.in? Constants::MemberDetails::TAB_LIST.map(&:downcase)
-               current_tab
-             else
-               "overview"
-             end
+      @current_tab = if current_tab.in? Constants::UserDetails::TAB_LIST.map(&:downcase)
+                       current_tab
+                     else
+                       "overview"
+                     end
     end
   end
 end

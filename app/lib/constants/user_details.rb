@@ -1,5 +1,5 @@
 module Constants
-  module MemberDetails
+  module UserDetails
     TAB_LIST = %w[
       Overview
       Notes

@@ -1,9 +1,9 @@
 <nav class="mb-2" aria-label="Member details">
   <ul class="crayons-navigation crayons-navigation--horizontal">
-    <li><%= link_to "Overview", admin_user_path(@user.id), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @tab == 'overview'}" %></li>
-    <li><%= link_to "Notes", admin_user_path(@user.id, tab: :notes), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @tab == 'notes'}" %></li>
-    <li><%= link_to "Emails", admin_user_path(@user.id, tab: :emails), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @tab == 'emails'}" %></li></li>
-    <li><%= link_to "Reports", admin_user_path(@user.id, tab: :reports), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @tab == 'reports'}" %></li></li>
-    <li><%= link_to "Flags", admin_user_path(@user.id, tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @tab == 'flags'}" %></li></li>
+    <li><%= link_to "Overview", admin_user_path(@user.id), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'overview'}" %></li>
+    <li><%= link_to "Notes", admin_user_path(@user.id, tab: :notes), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'notes'}" %></li>
+    <li><%= link_to "Emails", admin_user_path(@user.id, tab: :emails), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'emails'}" %></li></li>
+    <li><%= link_to "Reports", admin_user_path(@user.id, tab: :reports), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'reports'}" %></li></li>
+    <li><%= link_to "Flags", admin_user_path(@user.id, tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'flags'}" %></li></li>
   </ul>
 </nav>
