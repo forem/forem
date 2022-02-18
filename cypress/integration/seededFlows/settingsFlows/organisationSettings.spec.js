@@ -1,4 +1,4 @@
-describe('organisation secret code', () => {
+describe('Organisation settings', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
@@ -34,5 +34,35 @@ describe('organisation secret code', () => {
           .invoke('readText')
           .should('equal', $orgSecretCode);
       });
+  });
+
+  it('updates brand colors', () => {
+    // Check buttons exist for changing the color as well as the inputs
+    cy.findByRole('button', { name: 'Brand color 1' });
+    cy.findByRole('textbox', { name: 'Brand color 1' })
+      .should('have.value', '#000')
+      .clear()
+      .type('AD23AD')
+      .should('have.value', '#AD23AD');
+
+    cy.findByRole('button', { name: 'Brand color 2' });
+    cy.findByRole('textbox', { name: 'Brand color 2' })
+      .should('have.value', '#000')
+      .clear()
+      .type('23AD23')
+      .should('have.value', '#23AD23');
+
+    cy.findByRole('button', { name: 'Save' }).click();
+
+    cy.findByText('Your organization was successfully updated.');
+    cy.findByRole('textbox', { name: 'Brand color 1' }).should(
+      'have.value',
+      '#AD23AD',
+    );
+
+    cy.findByRole('textbox', { name: 'Brand color 2' }).should(
+      'have.value',
+      '#23AD23',
+    );
   });
 });
