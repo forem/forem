@@ -37,11 +37,7 @@ module Admin
       @user = User.find(params[:id])
 
       if FeatureFlag.enabled?(:admin_member_view)
-        # GET /admin/users/#id/@tab
-        set_current_tab(params["tab"])
-        # puts "********************** #{params["tab"]}"
-        # puts "********************** #{@tab}"
-        handle_member_details_tab
+        set_current_tab(params[:tab])
         set_feedback_messages
         set_related_reactions
       end
@@ -332,19 +328,11 @@ module Admin
     end
 
     def set_current_tab(current_tab = "overview")
-      @tab = current_tab
+      @tab = if current_tab.in? Constants::MemberDetails::TAB_LIST.map(&:downcase)
+               current_tab
+             else
+               "overview"
+             end
     end
-
-    def handle_overview_tab
-      # set_user_details
-      # set_feedback_messages
-      # set_related_reactions
-    end
-
-    #   def handle_emails_tab; end
-
-    #   def handle_reports_tab; end
-
-    #   def handle_flags_tab; end
   end
 end
