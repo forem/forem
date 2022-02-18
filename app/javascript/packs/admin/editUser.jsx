@@ -119,20 +119,13 @@ const openModal = async (event) => {
 document.body.addEventListener('click', openModal);
 
 const tagsRoot = document.getElementById('tag-moderation-container');
-
-const currentModTags = JSON.parse(
-  tagsRoot.closest('form')['current_mod_tags'].value,
-);
-
-const modTags = document.getElementById('mod-tags');
+const form = tagsRoot.closest('form');
+const currentModTags = JSON.parse(tagsRoot.dataset.currentModTags);
+const modTags = form['mod_tags'];
 
 // Converts the array of selected items into a plain string to be saved in the article form
 const syncSelections = (selections = []) => {
-  const selectionsString = `[${selections
-    .map((selection) => JSON.stringify(selection))
-    .join(', ')}]`;
-
-  modTags.value = selectionsString;
+  modTags.value = JSON.stringify(selections.map(({ id }) => id));
 };
 
 render(

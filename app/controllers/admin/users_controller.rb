@@ -246,6 +246,7 @@ module Admin
       @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
       tag_ids = @user.roles.filter_map { |role| role.resource_id if role.name == "tag_moderator" }
       @moderated_tags = Tag.select(:id, :name).where(id: tag_ids).to_json
+      @moderated_tag_ids = tag_ids.to_json
 
       render :show
     end

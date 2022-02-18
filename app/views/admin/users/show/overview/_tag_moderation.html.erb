@@ -7,10 +7,10 @@
 </header>
 
 <form class="flex flex-col gap-2">
-  <input name="current_mod_tags" type="hidden" value="<%= @moderated_tags %>" />
-  <input id="mod-tags" name="mod_tags" type="hidden" value="<%= @moderated_tags %>" />
+  <input name="current_mod_tags" type="hidden" value="<%= @moderated_tag_ids %>" />
+  <input name="mod_tags" type="hidden" value="<%= @moderated_tag_ids %>" />
 
-  <div id="tag-moderation-container">
+  <div id="tag-moderation-container" data-current-mod-tags="<%= @moderated_tags %>">
     <%#
       The markup for the autocomplete is a copy paste from the rendered Preact component when it's empty.
       This prevents cummulative layout shifting and Preact is able to bootstrap on top of it.
