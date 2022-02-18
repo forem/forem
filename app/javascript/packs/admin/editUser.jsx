@@ -145,6 +145,7 @@ render(
     SuggestionTemplate={TagAutocompleteOption}
     SelectionTemplate={TagAutocompleteSelection}
     onSelectionsChanged={syncSelections}
+    onlySuggestions={true}
   />,
   tagsRoot,
   tagsRoot.firstElementChild, // not replaced, but this helps prevent content layout shift (CLS)
