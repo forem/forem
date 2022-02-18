@@ -4,7 +4,8 @@ module Badges
       "dev-contributor": 1,
       "dev-contributor-bronze": 4,
       "dev-contributor-silver": 8,
-      "dev-contributor-gold": 16
+      "dev-contributor-gold": 16,
+      "dev-contributor-platinum": 32
     }.freeze
 
     REPOSITORIES = [
