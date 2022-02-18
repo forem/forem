@@ -9,8 +9,11 @@ describe('Navigate User Tabs', () => {
     });
 
     it(`navigates to the "Overview" tab`, () => {
-      cy.findByRole('link', { name: /Overview/i });
-      cy.url().should('not.contain', 'tab=');
+      cy.findByRole('navigation', { name: 'Member details' }).within(() => {
+        cy.findByRole('link', { name: /Overview/i }).should('exist');
+        cy.findByRole('link', { name: /Overview/i }).click();
+        cy.url().should('not.contain', 'tab=');
+      });
     });
 
     it(`navigates to the "Notes" tab`, () => {
