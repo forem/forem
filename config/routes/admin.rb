@@ -145,6 +145,5 @@ namespace :admin do
     resources :consumer_apps, only: %i[index new create edit update destroy]
     resources :welcome, only: %i[index create]
   end
-  # get "/settings/(:tab)", to: "users#show"
 end
 # rubocop:enable Metrics/BlockLength
