@@ -325,7 +325,20 @@ module Admin
       # Add tags that are newly moderated
       tag_ids_to_add = mod_tag_ids - current_mod_tag_ids
 
-      # TODO: Actually update tags moderated by a user.
+      # I know this isn't efficient. The TagModerators module probably needs a batch remove and add.
+      # Also, this probably needs to be in a transaction.
+      if tag_ids_to_remove.any?
+        tag_ids_to_remove.each do |tag_id|
+          tag = Tag.find_by(id: tag_id)
+          TagModerators::Remove.call(@user, tag)
+        end
+      end
+
+      if tag_ids_to_add.any?
+        tag_ids_to_add.each do |tag_id|
+          TagModerators::Add.call([@user.id], [tag_id])
+        end
+      end
 
       flash[:success] = "Tags moderated by the user have been updated"
     rescue StandardError => e
