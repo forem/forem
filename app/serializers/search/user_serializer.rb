@@ -5,7 +5,6 @@ module Search
     attributes :id,
                :comments_count,
                :badge_achievements_count,
-               :hotness_score,
                :last_comment_at,
                :name,
                :path,
