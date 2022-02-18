@@ -36,7 +36,7 @@ describe('Manage User Credits', () => {
         cy.findByRole('textbox', {
           name: 'Add a note to this action:',
         }).type('some reason');
-        cy.findByRole('button', { name: 'Adjust' }).click();
+        cy.findByRole('button', { name: 'Adjust balance' }).click();
       });
 
       cy.getModal().should('not.exist');
