@@ -24,6 +24,7 @@
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
     animation: hoverAppear var(--dropdown-hover-delay);
+    overflow-wrap: anywhere;
 
     &.showing {
       animation: none;
