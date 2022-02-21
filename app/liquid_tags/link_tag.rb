@@ -1,7 +1,6 @@
 class LinkTag < LiquidTagBase
   include ActionView::Helpers
   PARTIAL = "articles/liquid".freeze
-  REGISTRY_REGEXP = %r{#{URL.url}/\w+/[a-zA-Z0-9-]+/?}
 
   def initialize(_tag_name, slug_or_path_or_url, _parse_context)
     super
@@ -28,13 +27,13 @@ class LinkTag < LiquidTagBase
 
     # If domain is present in url check if it belongs to the app
     unless domain.blank? || domain&.casecmp?(Settings::General.app_domain)
-      raise StandardError, "The article you're looking for does not exist: {% link #{slug} %}"
+      raise StandardError, I18n.t("liquid_tags.link_tag.not_exist_link", slug: slug)
     end
 
     path.slice!(0) if path.starts_with?("/") # remove leading slash if present
     path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
     extracted_hash = Addressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
-    raise StandardError, "The article you're looking for does not exist: #{slug}" unless extracted_hash
+    raise StandardError, I18n.t("liquid_tags.link_tag.not_exist", slug: slug) unless extracted_hash
 
     extracted_hash
   end
@@ -56,5 +55,3 @@ end
 
 Liquid::Template.register_tag("link", LinkTag)
 Liquid::Template.register_tag("post", LinkTag)
-
-UnifiedEmbed.register(LinkTag, regexp: LinkTag::REGISTRY_REGEXP)

@@ -2,55 +2,58 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/comments/622572436?per_page=100
+    uri: https://api.github.com/repos/forem/forem/issues/comments/622572436?per_page=100
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
       Accept:
       - application/vnd.github.v3+json
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=2130d678-d18a-4c28-a9d9-148409ed2ce1,parent_id=11aec9b3-1ad8-4021-9807-eb96f9426d36,context=e30=
+      - 1;dataset=,trace_id=2d093291532b14f992cce17550ad69b4,parent_id=b81a71cb4047f72d,context=e30=
       Expect:
       - ''
   response:
     status:
       code: 200
-      message: OK
+      message:
     headers:
+      Server:
+      - GitHub.com
       Date:
-      - Mon, 04 May 2020 09:31:20 GMT
+      - Mon, 07 Feb 2022 17:25:27 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
-      - '1663'
-      Server:
-      - GitHub.com
-      Status:
-      - 200 OK
-      X-Ratelimit-Limit:
-      - '5000'
-      X-Ratelimit-Remaining:
-      - '4999'
-      X-Ratelimit-Reset:
-      - '1588588280'
+      - '1854'
       Cache-Control:
       - public, max-age=60, s-maxage=60
       Vary:
       - Accept
       - Accept-Encoding, Accept, X-Requested-With
       Etag:
-      - '"006cef151248d15abe7e14ac18b6c5df"'
+      - '"dc2926004af4521bb34a976bf3498436f56643a48c69ba7970a71a1d378e3b41"'
       X-Github-Media-Type:
       - github.v3; format=json
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4984'
+      X-Ratelimit-Reset:
+      - '1644256079'
+      X-Ratelimit-Used:
+      - '16'
+      X-Ratelimit-Resource:
+      - core
       Access-Control-Expose-Headers:
       - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
-        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
-        X-GitHub-Media-Type, Deprecation, Sunset
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -60,19 +63,18 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
-      - 1; mode=block
+      - '0'
       Referrer-Policy:
       - origin-when-cross-origin, strict-origin-when-cross-origin
       Content-Security-Policy:
       - default-src 'none'
       X-Github-Request-Id:
-      - F1B8:29D1:5382F7:738F6E:5EAFE0E7
+      - CA09:221F:1C013A:415541:62015607
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        eyJ1cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vaXNzdWVzL2NvbW1lbnRzLzYyMjU3MjQzNiIsImh0bWxfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL3RoZXByYWN0aWNhbGRldi9kZXYudG8vcHVsbC83NjUzI2lzc3VlY29tbWVudC02MjI1NzI0MzYiLCJpc3N1ZV91cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vaXNzdWVzLzc2NTMiLCJpZCI6NjIyNTcyNDM2LCJub2RlX2lkIjoiTURFeU9rbHpjM1ZsUTI5dGJXVnVkRFl5TWpVM01qUXpOZz09IiwidXNlciI6eyJsb2dpbiI6Im1pY2hhZWwtdGhhcnJpbmd0b24iLCJpZCI6MTYwMDcwNzUsIm5vZGVfaWQiOiJNRFE2VlhObGNqRTJNREEzTURjMSIsImF2YXRhcl91cmwiOiJodHRwczovL2F2YXRhcnMyLmdpdGh1YnVzZXJjb250ZW50LmNvbS91LzE2MDA3MDc1P3U9ZTVmNDUwNjhhYTYyNDM2NThlYjVkMWQ1MmRiYzhlZWZjOWZlOWE1YiZ2PTQiLCJncmF2YXRhcl9pZCI6IiIsInVybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvbWljaGFlbC10aGFycmluZ3RvbiIsImh0bWxfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL21pY2hhZWwtdGhhcnJpbmd0b24iLCJmb2xsb3dlcnNfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9taWNoYWVsLXRoYXJyaW5ndG9uL2ZvbGxvd2VycyIsImZvbGxvd2luZ191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL21pY2hhZWwtdGhhcnJpbmd0b24vZm9sbG93aW5ney9vdGhlcl91c2VyfSIsImdpc3RzX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvbWljaGFlbC10aGFycmluZ3Rvbi9naXN0c3svZ2lzdF9pZH0iLCJzdGFycmVkX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvbWljaGFlbC10aGFycmluZ3Rvbi9zdGFycmVkey9vd25lcn17L3JlcG99Iiwic3Vic2NyaXB0aW9uc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL21pY2hhZWwtdGhhcnJpbmd0b24vc3Vic2NyaXB0aW9ucyIsIm9yZ2FuaXphdGlvbnNfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9taWNoYWVsLXRoYXJyaW5ndG9uL29yZ3MiLCJyZXBvc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL21pY2hhZWwtdGhhcnJpbmd0b24vcmVwb3MiLCJldmVudHNfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9taWNoYWVsLXRoYXJyaW5ndG9uL2V2ZW50c3svcHJpdmFjeX0iLCJyZWNlaXZlZF9ldmVudHNfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9taWNoYWVsLXRoYXJyaW5ndG9uL3JlY2VpdmVkX2V2ZW50cyIsInR5cGUiOiJVc2VyIiwic2l0ZV9hZG1pbiI6ZmFsc2V9LCJjcmVhdGVkX2F0IjoiMjAyMC0wNS0wMVQyMToxODoxMFoiLCJ1cGRhdGVkX2F0IjoiMjAyMC0wNS0wMVQyMToxODoxMFoiLCJhdXRob3JfYXNzb2NpYXRpb24iOiJDT05UUklCVVRPUiIsImJvZHkiOiJTbyBleGNpdGVkIGZvciB0aGlzISBJJ20gZ29pbmcgdG8gbWFrZSBzdXJlIHdlIHRhbGsgYWJvdXQgdGhpcyBpbiBvdXIgbmV4dCBzdXBwb3J0IG1lZXRpbmcuIEkgdGhpbmsgdGhpcyBpcyBhIHN1cGVyIPCfhpIgdGhpbmcgdG8gbW9uaXRvci4ifQ==
-    http_version: null
-  recorded_at: Mon, 04 May 2020 09:31:20 GMT
+        eyJ1cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL2ZvcmVtL2ZvcmVtL2lzc3Vlcy9jb21tZW50cy82MjI1NzI0MzYiLCJodG1sX3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9mb3JlbS9mb3JlbS9wdWxsLzc2NTMjaXNzdWVjb21tZW50LTYyMjU3MjQzNiIsImlzc3VlX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vcmVwb3MvZm9yZW0vZm9yZW0vaXNzdWVzLzc2NTMiLCJpZCI6NjIyNTcyNDM2LCJub2RlX2lkIjoiTURFeU9rbHpjM1ZsUTI5dGJXVnVkRFl5TWpVM01qUXpOZz09IiwidXNlciI6eyJsb2dpbiI6Im1pY2hhZWwtdGhhcnJpbmd0b24iLCJpZCI6MTYwMDcwNzUsIm5vZGVfaWQiOiJNRFE2VlhObGNqRTJNREEzTURjMSIsImF2YXRhcl91cmwiOiJodHRwczovL2F2YXRhcnMuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3UvMTYwMDcwNzU/dT1lNWY0NTA2OGFhNjI0MzY1OGViNWQxZDUyZGJjOGVlZmM5ZmU5YTViJnY9NCIsImdyYXZhdGFyX2lkIjoiIiwidXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9taWNoYWVsLXRoYXJyaW5ndG9uIiwiaHRtbF91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vbWljaGFlbC10aGFycmluZ3RvbiIsImZvbGxvd2Vyc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL21pY2hhZWwtdGhhcnJpbmd0b24vZm9sbG93ZXJzIiwiZm9sbG93aW5nX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvbWljaGFlbC10aGFycmluZ3Rvbi9mb2xsb3dpbmd7L290aGVyX3VzZXJ9IiwiZ2lzdHNfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9taWNoYWVsLXRoYXJyaW5ndG9uL2dpc3Rzey9naXN0X2lkfSIsInN0YXJyZWRfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9taWNoYWVsLXRoYXJyaW5ndG9uL3N0YXJyZWR7L293bmVyfXsvcmVwb30iLCJzdWJzY3JpcHRpb25zX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvbWljaGFlbC10aGFycmluZ3Rvbi9zdWJzY3JpcHRpb25zIiwib3JnYW5pemF0aW9uc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL21pY2hhZWwtdGhhcnJpbmd0b24vb3JncyIsInJlcG9zX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvbWljaGFlbC10aGFycmluZ3Rvbi9yZXBvcyIsImV2ZW50c191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL21pY2hhZWwtdGhhcnJpbmd0b24vZXZlbnRzey9wcml2YWN5fSIsInJlY2VpdmVkX2V2ZW50c191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL21pY2hhZWwtdGhhcnJpbmd0b24vcmVjZWl2ZWRfZXZlbnRzIiwidHlwZSI6IlVzZXIiLCJzaXRlX2FkbWluIjpmYWxzZX0sImNyZWF0ZWRfYXQiOiIyMDIwLTA1LTAxVDIxOjE4OjEwWiIsInVwZGF0ZWRfYXQiOiIyMDIwLTA1LTAxVDIxOjE4OjEwWiIsImF1dGhvcl9hc3NvY2lhdGlvbiI6IkNPTlRSSUJVVE9SIiwiYm9keSI6IlNvIGV4Y2l0ZWQgZm9yIHRoaXMhIEknbSBnb2luZyB0byBtYWtlIHN1cmUgd2UgdGFsayBhYm91dCB0aGlzIGluIG91ciBuZXh0IHN1cHBvcnQgbWVldGluZy4gSSB0aGluayB0aGlzIGlzIGEgc3VwZXIg8J+GkiB0aGluZyB0byBtb25pdG9yLiIsInJlYWN0aW9ucyI6eyJ1cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL2ZvcmVtL2ZvcmVtL2lzc3Vlcy9jb21tZW50cy82MjI1NzI0MzYvcmVhY3Rpb25zIiwidG90YWxfY291bnQiOjAsIisxIjowLCItMSI6MCwibGF1Z2giOjAsImhvb3JheSI6MCwiY29uZnVzZWQiOjAsImhlYXJ0IjowLCJyb2NrZXQiOjAsImV5ZXMiOjB9LCJwZXJmb3JtZWRfdmlhX2dpdGh1Yl9hcHAiOm51bGx9
+  recorded_at: Mon, 07 Feb 2022 17:25:27 GMT
 - request:
     method: post
     uri: https://api.github.com/markdown
@@ -83,42 +85,45 @@ http_interactions:
         to monitor.\"}"
     headers:
       User-Agent:
-      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
       Accept:
       - application/vnd.github.raw
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=a4437cb5-738c-4169-894b-ee27dd425fc1,parent_id=1d39a812-0a36-4737-85bc-8efe8039dbda,context=e30=
+      - 1;dataset=,trace_id=4d31bdc865de509392e0fdc40732e565,parent_id=57fd5cf070c09ed5,context=e30=
       Expect:
       - ''
   response:
     status:
       code: 200
-      message: OK
+      message:
     headers:
+      Server:
+      - GitHub.com
       Date:
-      - Mon, 04 May 2020 09:31:21 GMT
+      - Mon, 07 Feb 2022 17:25:27 GMT
       Content-Type:
       - text/html;charset=utf-8
       Content-Length:
       - '278'
-      Server:
-      - GitHub.com
-      Status:
-      - 200 OK
+      X-Commonmarker-Version:
+      - 0.23.2
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4998'
+      - '4983'
       X-Ratelimit-Reset:
-      - '1588588280'
-      X-Commonmarker-Version:
-      - 0.21.0
+      - '1644256079'
+      X-Ratelimit-Used:
+      - '17'
+      X-Ratelimit-Resource:
+      - core
       Access-Control-Expose-Headers:
       - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
-        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
-        X-GitHub-Media-Type, Deprecation, Sunset
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -128,7 +133,7 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
-      - 1; mode=block
+      - '0'
       Referrer-Policy:
       - origin-when-cross-origin, strict-origin-when-cross-origin
       Content-Security-Policy:
@@ -136,11 +141,10 @@ http_interactions:
       Vary:
       - Accept-Encoding, Accept, X-Requested-With
       X-Github-Request-Id:
-      - F1B9:786A:DA23C:12F2DF:5EAFE0E8
+      - CA0A:7635:1B0382:3745F4:62015607
     body:
       encoding: ASCII-8BIT
       string: !binary |-
         PHA+U28gZXhjaXRlZCBmb3IgdGhpcyEgSSdtIGdvaW5nIHRvIG1ha2Ugc3VyZSB3ZSB0YWxrIGFib3V0IHRoaXMgaW4gb3VyIG5leHQgc3VwcG9ydCBtZWV0aW5nLiBJIHRoaW5rIHRoaXMgaXMgYSBzdXBlciA8Zy1lbW9qaSBjbGFzcz0iZy1lbW9qaSIgYWxpYXM9ImNvb2wiIGZhbGxiYWNrLXNyYz0iaHR0cHM6Ly9naXRodWIuZ2l0aHViYXNzZXRzLmNvbS9pbWFnZXMvaWNvbnMvZW1vamkvdW5pY29kZS8xZjE5Mi5wbmciPvCfhpI8L2ctZW1vamk+IHRoaW5nIHRvIG1vbml0b3IuPC9wPgo=
-    http_version: null
-  recorded_at: Mon, 04 May 2020 09:31:21 GMT
-recorded_with: VCR 5.1.0
+  recorded_at: Mon, 07 Feb 2022 17:25:27 GMT
+recorded_with: VCR 6.0.0

@@ -1,50 +1,110 @@
-<div class="grid gap-6">
-  <div class="crayons-card p-6">
-    <h2 class="d-inline">
+<% if FeatureFlag.enabled?(:admin_member_view) %>
+  <%= render "admin/users/show/profile" %>
+  <%= render "admin/users/show/tabs" %>
+
+  <% if  @current_tab == "overview" %>
+    <div class="crayons-card p-3 s:p-4 m:p-7">
+      <%= render "admin/users/show/overview/stats" if @user.registered %>
+
+      <div class="l:grid gap-8 grid-cols-2">
+        <div>
+          <section class="mb-7">
+            <%= render "admin/users/show/overview/roles" %>
+          </section>
+
+          <section class="mb-7">
+            <%= render "admin/users/show/overview/tag_moderation" %>
+          </section>
+        </div>
+
+        <div>
+          <section class="mb-7">
+            <%= render "admin/users/show/overview/organizations" %>
+          </section>
+
+          <section class="mb-7">
+            <%= render "admin/users/show/overview/credits" %>
+          </section>
+        </div>
+      </div>
+    </div>
+  <% elsif @current_tab == "notes" %>
+    <section class="flex flex-col m:flex-row gap-4">
+      <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
+        <%= render "admin/users/show/notes/form" %>
+      </div>
+      <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
+        <%= render "admin/users/show/notes/index" %>
+      </div>
+    </section>
+  <% elsif @current_tab == "emails" %>
+    <%= render "admin/users/show/emails/verification" %>
+    <section class="flex flex-col m:flex-row gap-4">
+      <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
+        <%= render "admin/users/show/emails/form" %>
+      </div>
+      <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
+        <%= render "admin/users/show/emails/index" %>
+      </div>
+    </section>
+  <% elsif @current_tab == "reports" %>
+    <section class="crayons-card p-3 s:p-4 m:p-7">
+      <%= render "admin/users/show/reports/index" %>
+    </section>
+  <% elsif @current_tab == "flags" %>
+    <section class="crayons-card p-3 s:p-4 m:p-7">
+      <%= render "admin/users/show/flags/index" %>
+    </section>
+  <% end %>
+<% else %>
+  <div class="grid gap-6">
+    <div class="crayons-card p-6">
+      <h2 class="d-inline">
+        <% if @user.registered? %>
+          <%= @user.name %><%= link_to "@#{@user.username}", @user.path, class: "ml-2", target: "_blank", rel: "noopener" %>
+        <% else %>
+          @<%= @user.username %> has not accepted their invitation yet.
+        <% end %>
+      </h2>
       <% if @user.registered? %>
-        <%= @user.name %><%= link_to "@#{@user.username}", @user.path, class: "ml-2", target: "_blank", rel: "noopener" %>
-      <% else %>
-        @<%= @user.username %> has not accepted their invitation yet.
+        <a href="<%= edit_admin_user_path(@user) %>" class="btn btn-primary float-right">Manage User</a>
+        <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
       <% end %>
-    </h2>
-    <% if @user.registered? %>
-      <a href="<%= edit_admin_user_path(@user) %>" class="btn btn-primary float-right">Manage User</a>
-      <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
-    <% end %>
 
-    <hr>
+      <hr>
 
-    <h2>General Info</h2>
-    <dl>
-      <dt>ID:</dt>
-      <dd><%= @user.id %></dd>
-      <dt>Username:</dt>
-      <dd><%= @user.username %></dd>
-      <dt>Name:</dt>
-      <dd><%= @user.name %></dd>
-      <dt>Email:</dt>
-      <dd><%= @user.email %></dd>
-      <dt>Access Locked:</dt>
-      <dd><%= @user.access_locked? %></dd>
-      <dt>Twitter:</dt>
-      <% if @user.twitter_username %>
-        <dd><%= link_to @user.twitter_username, "https://twitter.com/#{@user.twitter_username}" %></dd>
-      <% else %>
-        <dd>N/A</dd>
-      <% end %>
-      <dt>GitHub:</dt>
-      <% if @user.github_username %>
-        <dd><%= link_to @user.github_username, "https://github.com/#{@user.github_username}" %></dd>
-      <% else %>
-        <dd>N/A</dd>
-      <% end %>
-    </dl>
-  </div>
+      <h2>General Info</h2>
+      <dl>
+        <dt>ID:</dt>
+        <dd><%= @user.id %></dd>
+        <dt>Username:</dt>
+        <dd><%= @user.username %></dd>
+        <dt>Name:</dt>
+        <dd><%= @user.name %></dd>
+        <dt>Email:</dt>
+        <dd><%= @user.email %></dd>
+        <dt>Access Locked:</dt>
+        <dd><%= @user.access_locked? %></dd>
+        <dt>Twitter:</dt>
+        <% if @user.twitter_username %>
+          <dd><%= link_to @user.twitter_username, "https://twitter.com/#{@user.twitter_username}" %></dd>
+        <% else %>
+          <dd>N/A</dd>
+        <% end %>
+        <dt>GitHub:</dt>
+        <% if @user.github_username %>
+          <dd><%= link_to @user.github_username, "https://github.com/#{@user.github_username}" %></dd>
+        <% else %>
+          <dd>N/A</dd>
+        <% end %>
+      </dl>
+    </div>
 
-<% if @user.registered? %>
-  <%= render "activity" %>
-  <%= render "credits" %>
-  <%= render "notes" %>
-  <%= render "user_organizations" %>
-  <%= render "email_tools" %>
+  <% if @user.registered? %>
+    <%= render "activity" %>
+    <%= render "credits" %>
+    <%= render "notes" %>
+    <%= render "user_organizations" %>
+    <%= render "email_tools" %>
+  <% end %>
 <% end %>

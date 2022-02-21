@@ -1,60 +1,39 @@
-@import '../config/import';
-
-// indicator() - Generates styles for Indicators
-//
-// Indicators have bunch of styles combines with bunch of states. To make
-// it easier to generate all these classes, we created a help which should
-// do the job.
-//
-// @param {object} $this          Cached variable with parent element
-// @param {string} $name          Value for border-radius
-// @param {color} $color-1        Main color.
-
-@mixin indicator($this, $name, $color-1, $color-2) {
-  &#{'--' + $name} {
-    background-color: $color-1;
-    border-color: $color-1;
-    color: $color-2;
-
-    &#{$this + '--outlined'} {
-      background-color: transparent;
-      color: $color-1;
-      border-color: $color-1;
-    }
-  }
-}
-
-// Basic styling
-.crayons-indicator {
-  font-family: var(--ff-monospace);
-  font-size: var(--fs-xs);
+.c-indicator {
+  --bg: var(--indicator-bg);
+  --color: var(--indicator-color);
   padding: var(--su-1);
-  background-color: var(--indicator-default-bg);
-  border: 1px solid var(--indicator-default-bg);
-  color: var(--indicator-default-color);
   text-align: center;
   line-height: 1;
+  font-size: var(--fs-s);
   border-radius: var(--radius);
   display: inline-block;
+  background: var(--bg);
+  color: var(--color);
+  min-width: var(--su-2);
 
-  &--outlined {
-    background-color: transparent;
-    border-color: var(--indicator-default-bg);
-    color: var(--indicator-default-color);
+  &--success {
+    --bg: var(--indicator-success-bg);
+    --color: var(--indicator-success-color);
   }
 
-  @include indicator(
-    &,
-    accent,
-    var(--indicator-accent-bg),
-    var(--indicator-accent-color)
-  );
-  @include indicator(
-    &,
-    critical,
-    var(--indicator-critical-bg),
-    var(--indicator-critical-color)
-  );
+  &--warning {
+    --bg: var(--indicator-warning-bg);
+    --color: var(--indicator-warning-color);
+  }
+
+  &--danger {
+    --bg: var(--indicator-danger-bg);
+    --color: var(--indicator-danger-color);
+  }
+
+  &--info {
+    --bg: var(--indicator-info-bg);
+    --color: var(--indicator-info-color);
+  }
+
+  &--relaxed {
+    padding: var(--su-2);
+  }
 
   &:empty {
     display: none;

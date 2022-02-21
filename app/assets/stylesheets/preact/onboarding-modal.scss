@@ -21,7 +21,7 @@
   }
 
   a {
-    color: var(--link-brand-color);
+    color: var(--link-branded-color);
   }
 }
 
@@ -294,7 +294,7 @@
       }
 
       input[type='checkbox']:checked {
-        background: var(--link-brand-color);
+        background: var(--link-branded-color);
       }
     }
   }

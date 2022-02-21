@@ -3,21 +3,15 @@ class ListingPolicy < ApplicationPolicy
     user_author? || authorized_organization_admin_editor?
   end
 
-  def update?
-    user_author? || authorized_organization_admin_editor?
-  end
+  alias update? edit?
 
   def authorized_organization_poster?
     user.org_member?(record.organization_id)
   end
 
-  def delete_confirm?
-    update?
-  end
+  alias delete_confirm? edit?
 
-  def destroy?
-    update?
-  end
+  alias destroy? edit?
 
   private
 

@@ -69,7 +69,23 @@ module.exports = function (api) {
           pragma: 'h',
         },
       ],
-      'inline-react-svg',
+      [
+        'inline-react-svg',
+        {
+          svgo: {
+            plugins: [
+              {
+                name: 'preset-default',
+                params: {
+                  overrides: {
+                    removeViewBox: false,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
       [
         'module-resolver',
         {

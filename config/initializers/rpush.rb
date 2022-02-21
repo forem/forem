@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 Rpush.configure do |config|
   # Supported clients are :active_record and :redis
   config.client = :redis
@@ -58,6 +59,7 @@ Rpush.reflect do |on|
       tags: [
         "app_bundle:#{notification.app&.bundle_id}",
         "type:#{JSON.parse(notification.payload).dig('data', 'type') || 'unknown'}",
+        "host:#{ENV['APP_DOMAIN']}",
       ],
     )
   end
@@ -80,6 +82,7 @@ Rpush.reflect do |on|
         "app_bundle:#{notification.app&.bundle_id}",
         "error_code:#{notification.error_code}",
         "error_description:#{notification.error_description}",
+        "host:#{ENV['APP_DOMAIN']}",
       ],
     )
   end
@@ -158,3 +161,4 @@ Rpush.reflect do |on|
   # on.error do |error|
   # end
 end
+# rubocop:enable Metrics/BlockLength

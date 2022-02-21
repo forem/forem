@@ -40,6 +40,24 @@ class Listing < ApplicationRecord
 
   delegate :cost, to: :listing_category
 
+  # As part of making listings "optional", this is the current place to go for the answer "Is the
+  # Listing feature enabled?"  This approach will get us quite far, at least up until we flip this
+  # into a plugin (e.g. we won't be able to guarantee that we have the constant :Listing in the Ruby
+  # object space).
+  #
+  # @note As of <2022-01-28 Fri>, the assumption is that everyone will have this feature enabled.
+  #       In part because marking this feature as disabled won't yet properly disable all aspects of
+  #       the feature.
+  #
+  # @see https://github.com/forem/rfcs/issues/291 for discussion and rollout strategy
+  # @see FeatureFlag.accessible?
+  #
+  # @return [TrueClass] if the Listing is enabled for this Forem
+  # @return [FalseClass] if the Listing is disabled for this Forem
+  def self.feature_enabled?
+    FeatureFlag.accessible?(:listing_feature_enabled)
+  end
+
   # Wrapping the column accessor names for consistency. Aliasing did not work.
   def listing_category_id
     classified_listing_category_id
@@ -65,6 +83,22 @@ class Listing < ApplicationRecord
     (bumped_at || created_at) + 30.days
   end
 
+  def publish
+    update(published: true)
+  end
+
+  def unpublish
+    update(published: false)
+  end
+
+  def bump
+    update(bumped_at: Time.current)
+  end
+
+  def clear_cache
+    Listings::BustCacheWorker.perform_async(id)
+  end
+
   private
 
   def evaluate_markdown
@@ -81,15 +115,14 @@ class Listing < ApplicationRecord
   def restrict_markdown_input
     markdown_string = body_markdown.to_s
     if markdown_string.scan(/(?=\n)/).count > 12
-      errors.add(:body_markdown,
-                 "has too many linebreaks. No more than 12 allowed.")
+      errors.add(:body_markdown, I18n.t("models.listing.too_many_linebreaks"))
     end
-    errors.add(:body_markdown, "is not allowed to include images.") if markdown_string.include?("![")
-    errors.add(:body_markdown, "is not allowed to include liquid tags.") if markdown_string.include?("{% ")
+    errors.add(:body_markdown, I18n.t("models.listing.image_not_allowed")) if markdown_string.include?("![")
+    errors.add(:body_markdown, I18n.t("models.listing.liquid_not_allowed")) if markdown_string.include?("{% ")
   end
 
   def validate_tags
-    errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
+    errors.add(:tag_list, I18n.t("models.listing.too_many_tags")) if tag_list.length > 8
   end
 
   def create_slug

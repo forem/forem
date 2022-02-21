@@ -31,7 +31,7 @@ export const adminModal = function ({
   rightCustomDataAttr = null,
 }) {
   return `
-    <div class="crayons-modal crayons-modal--s">
+    <div class="crayons-modal crayons-modal--small">
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header">
           <p class="fw-bold fs-l">${title}</p>

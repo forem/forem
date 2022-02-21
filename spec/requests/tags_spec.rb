@@ -17,6 +17,21 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       get tags_path
       expect(response.body).not_to include("aliastag")
     end
+
+    it "searches tags", :aggregate_failures do
+      %w[ruby java javascript].each { |t| create(:tag, name: t) }
+
+      get tags_path(q: "ruby")
+      expect(response.body).to include("Search results for ruby", "ruby")
+      expect(response.body).not_to include("javascript")
+
+      get tags_path(q: "java")
+      expect(response.body).to include("Search results for java", "java", "javascript")
+      expect(response.body).not_to include("ruby")
+
+      get tags_path(q: "yeet")
+      expect(response.body).to include("No results match that query")
+    end
   end
 
   describe "GET /tags/suggest" do

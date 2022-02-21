@@ -1,7 +1,12 @@
 class GithubTag < LiquidTagBase
+  REGISTRY_REGEXP = %r{https://github\.com/[\w\-.]{1,39}/[\w\-.]{1,39}/?((issues|pull)/\d+((#issuecomment-|#discussion_|#pullrequestreview-)\w+)?)?}
+
   def initialize(_tag_name, link, _parse_context)
     super
-    @link = link
+
+    stripped_link  = strip_tags(link)
+    unescaped_link = CGI.unescape_html(stripped_link)
+    @link = unescaped_link
     @rendered = pre_render
   end
 
@@ -31,3 +36,5 @@ class GithubTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("github", GithubTag)
+
+UnifiedEmbed.register(GithubTag, regexp: GithubTag::REGISTRY_REGEXP)

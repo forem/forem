@@ -1,5 +1,27 @@
+<h1 class="crayons-title mb-1">
+  Posts
+  <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
+    <%= params[:state] %>-months
+  <% end %>
+</h1>
+
+<nav class="mb-2 flex justify-between items-center" aria-label="Posts">
+  <ul class="crayons-navigation crayons-navigation--horizontal">
+    <li>
+      <a href="<%= admin_articles_path %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state].blank? %>">Hot</a>
+    </li>
+    <li>
+      <a
+        href="<%= admin_articles_path(state: :chronological) %>"
+        class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state] == "chronological" %>">Chronological</a>
+    </li>
+  </ul>
+</nav>
+
+<%= paginate @articles %>
+
 <div
-  class="row"
+  class="flex flex-col gap-4"
   data-controller="article-pinned-modal"
   data-article-pinned-modal-root-selector-value="#article-pin-modal-root"
   data-article-pinned-modal-content-selector-value="#article-pin-modal"
@@ -8,43 +30,23 @@
   data-article-pinned-modal-cancel-button-id-value="article-pin-modal-cancel"
   data-article-pinned-modal-ok-button-id-value="article-pin-modal-ok"
   data-action="article-pinned-modal:open@document->article-pinned-modal#openModal">
-  <div class="col-12">
-    <ul class="nav nav-tabs nav-fill">
-      <li class="nav-item">
-        <a href="<%= admin_articles_path %>" class="nav-link <%= "active" if params[:state].blank? %>">Hot</a>
-      </li>
-      <li class="nav-item">
-        <a
-          href="<%= admin_articles_path(state: :chronological) %>"
-          class="nav-link <%= "active" if params[:state] == "chronological" %>">Chronological</a>
-      </li>
-    </ul>
-    <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
-      <h1 style="color:red">
-        <%= params[:state] %>-months
-      </h1>
-    <% end %>
-  </div>
 
-  <div class="col-12">
-    <% if @pinned_article.present? %>
-      <h2><%= image_tag("pin.svg", alt: "") %> Pinned Article</h2>
+  <% if @pinned_article.present? %>
+    <div class="crayons-card crayons-card--elevated p-2">
+      <h2 class="crayons-subtitle-2 flex gap-2 items-center mb-2 p-2"><%= crayons_icon_tag("pin.svg") %> Pinned Article</h2>
       <%= render partial: "individual_article", locals: { article: @pinned_article } %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 
-  <div class="col-12">
-    <% if @featured_articles.present? %>
-      <h2>Manually Featured Articles</h2>
+  <% if @featured_articles.present? %>
+    <div class="crayons-card p-3">
+      <h2 class="crayons-subtitle-2 flex gap-2 items-center mb-2">Manually Featured Articles</h2>
       <%= render partial: "individual_article", collection: @featured_articles, as: :article %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 
-  <div class="col-12">
-    <%= paginate @articles %>
-    <%= render partial: "individual_article", collection: @articles, as: :article %>
-    <%= paginate @articles %>
-  </div>
+  <%= render partial: "individual_article", collection: @articles, as: :article %>
+  <%= paginate @articles %>
 
   <%= render partial: "pinned_article_modal" %>
 </div>

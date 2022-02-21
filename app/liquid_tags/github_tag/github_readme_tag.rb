@@ -1,6 +1,7 @@
 class GithubTag
   class GithubReadmeTag
     PARTIAL = "liquids/github_readme".freeze
+    README_REGEXP = %r{https://github\.com/[\w\-.]{1,39}/[\w\-.]{1,39}/?}
     GITHUB_DOMAIN_REGEXP = %r{.*github.com/}
     OPTION_NO_README = "no-readme".freeze
     VALID_OPTIONS = [OPTION_NO_README].freeze
@@ -33,14 +34,14 @@ class GithubTag
     attr_reader :repository_path, :options, :content
 
     def parse_input(input)
-      sanitized_input = sanitize_input(input)
+      sanitized_input = input.gsub(GITHUB_DOMAIN_REGEXP, "")
 
       path, *options = sanitized_input.split
 
       validate_options!(*options)
 
       path.delete_suffix!("/") # remove optional trailing forward slash
-      repository_path = URI.parse(path)
+      repository_path = Addressable::URI.parse(path)
       repository_path.query = repository_path.fragment = nil
 
       [repository_path.normalize.to_s, options]
@@ -50,7 +51,8 @@ class GithubTag
       return if options.empty?
       return if options.all? { |o| VALID_OPTIONS.include?(o) }
 
-      message = "GitHub tag: invalid options: #{options - VALID_OPTIONS} - supported options: #{VALID_OPTIONS}"
+      message = I18n.t("liquid_tags.github_tag.github_readme_tag.invalid_options",
+                       invalid: (options - VALID_OPTIONS), valid: VALID_OPTIONS)
       raise StandardError, message
     end
 
@@ -72,7 +74,7 @@ class GithubTag
     end
 
     def raise_error
-      raise StandardError, "Invalid GitHub repository path or URL"
+      raise StandardError, I18n.t("liquid_tags.github_tag.github_readme_tag.invalid_github_repository")
     end
 
     def clean_relative_path!(readme_html, url)

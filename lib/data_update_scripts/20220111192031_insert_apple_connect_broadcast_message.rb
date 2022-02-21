@@ -4,12 +4,9 @@ module DataUpdateScripts
       title = "Welcome Notification: apple_connect"
       return if Broadcast.find_by title: title
 
-      message = "You're on a roll! 🎉  Do you have an Apple account? " \
-                "Consider <a href='/settings'>connecting it</a>."
-
       Broadcast.create!(
         title: title,
-        processed_html: message,
+        processed_html: I18n.t("broadcast.connect.apple"),
         type_of: "Welcome",
         active: true,
       )

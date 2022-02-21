@@ -1,6 +1,6 @@
 module Users
   class NotificationSettingsController < ApplicationController
-    before_action :raise_suspended
+    before_action :check_suspended
     before_action :authenticate_user!
     after_action :verify_authorized
 

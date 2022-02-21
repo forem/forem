@@ -9,7 +9,7 @@
       <%= t("views.deep_links.alert.subtitle") %>
     </p>
     <p class="mt-5">
-      <%= t("views.deep_links.alert.desc_html", email: link_to(ForemInstance.email, href: "mailto:#{ForemInstance.email}")) %>
+      <%= t("views.deep_links.alert.desc_html", email: link_to(ForemInstance.contact_email, href: "mailto:#{ForemInstance.contact_email}")) %>
     </p>
   </div>
 

@@ -9,12 +9,12 @@ describe('Navigation links', () => {
   });
 
   it('should open the add navigation link modal', () => {
-    cy.findByText('Add Navigation Link').as('addLinkButton');
+    cy.findByText('Add navigation link').as('addLinkButton');
 
     cy.get('@addLinkButton').click();
     cy.findByTestId('modal-container').as('addLinkModal');
 
-    cy.get('@addLinkModal').findByText('Add Navigation Link').should('exist');
+    cy.get('@addLinkModal').findByText('Add navigation link').should('exist');
     cy.get('@addLinkModal')
       .findAllByRole('button')
       .first()

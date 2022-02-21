@@ -42,7 +42,7 @@
         deleteAccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
       </script>
       <p>
-        <%= t("views.settings.destroy.ghost_html", ghost: link_to("@ghost", "/ghost"), click: email_link(text: t("views.settings.destroy.click"), additional_info: { subject: "Request Account Deletion", body: @email_body })) %>
+        <%= t("views.settings.destroy.ghost_html", ghost: link_to("@ghost", "/ghost"), click: contact_link(text: t("views.settings.destroy.click"), additional_info: { subject: "Request Account Deletion", body: @email_body })) %>
       </p>
 
       <p>

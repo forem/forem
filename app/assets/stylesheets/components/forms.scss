@@ -276,3 +276,27 @@ textarea.crayons-textfield.crayons-textfield--ghost {
     --swatch-width: 100%;
   }
 }
+
+// TODO: cleanup duplicated .crayons-color-selector styles once usages have been replaced with the new component
+.c-color-picker {
+  --swatch-width: var(--su-7);
+  --swatch-height: var(--su-7);
+  --input-padding-left: calc(var(--swatch-width) + var(--su-3));
+
+  &__input {
+    padding-left: var(--input-padding-left);
+  }
+
+  &__swatch {
+    width: var(--swatch-width);
+    height: var(--swatch-height);
+    border: 1px solid var(--swatch-border-color);
+    top: var(--su-1);
+    left: var(--su-1);
+    z-index: var(--z-elevate);
+  }
+
+  &__popover {
+    min-width: min-content;
+  }
+}

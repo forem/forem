@@ -6,6 +6,10 @@ import CloseIcon from '@images/x.svg';
 import LogoForem from '@images/logo-forem-app.svg';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
+const APP_LAUNCH_SCHEME = 'com.forem.app';
+const FOREM_APP_STORE_URL = 'https://apps.apple.com/us/app/forem/id1536933197';
+const FOREM_GOOGLE_PLAY_URL =
+  'https://play.google.com/store/apps/details?id=com.forem.android';
 
 function dismissBanner() {
   localStorage.setItem(BANNER_DISMISS_KEY, true);
@@ -15,6 +19,25 @@ function dismissBanner() {
 function removeFromDOM() {
   const container = document.getElementById('runtime-banner-container');
   container?.remove();
+}
+
+function androidTargetIntent() {
+  if (navigator.userAgent === 'DEV-Native-android') {
+    // The DEV Android app has been decommissioned and it kept a custom UA.
+    // Instead of a custom intent we are redirecting directly to the Play Store
+    // because the app isn't capable of handling these
+    return FOREM_GOOGLE_PLAY_URL;
+  }
+
+  return (
+    'intent://scan/#Intent;' +
+    'action=android.intent.action.SEND;' +
+    'type=text/plain;' +
+    `S.browser_fallback_url=${FOREM_GOOGLE_PLAY_URL};` +
+    `S.android.intent.extra.TEXT=${window.location.href};` +
+    `scheme=${APP_LAUNCH_SCHEME};` +
+    'package=com.forem.android;end'
+  );
 }
 
 function handleDeepLinkFallback() {
@@ -30,32 +53,20 @@ function handleDeepLinkFallback() {
   const urlParams = new URLSearchParams(window.location.search);
   const targetPath = urlParams.get('deep_link');
 
-  // Constants - they will become dynamic (configurable by creators) in upcoming releases
-  const FOREM_IOS_SCHEME = 'com.forem.app';
-  const FOREM_APP_STORE_URL =
-    'https://apps.apple.com/us/app/forem/id1536933197';
-  const FOREM_GOOGLE_PLAY_URL =
-    'https://play.google.com/store/apps/details?id=to.dev.dev_android';
-
   if (Runtime.currentOS() === 'iOS') {
     // The install now must target Apple's AppStore
     installNowButton.href = FOREM_APP_STORE_URL;
 
     // We try to deep link directly by launching a custom scheme and populate
     // the retry button in case the user will need it
-    const targetLink = `${FOREM_IOS_SCHEME}://${window.location.host}${targetPath}`;
+    const targetLink = `${APP_LAUNCH_SCHEME}://${window.location.host}${targetPath}`;
     retryButton.href = targetLink;
     window.location.href = targetLink;
   } else if (Runtime.currentOS() === 'Android') {
-    const targetIntent =
-      'intent://scan/#Intent;scheme=com.forem.app;package=com.forem.app;end';
+    const targetIntent = androidTargetIntent();
     retryButton.href = targetIntent;
     installNowButton.href = FOREM_GOOGLE_PLAY_URL;
-
-    // Android support isn't available yet. Android users visiting `/r/mobile`
-    // will be redirected to the home page so they don't land on a unsupported
-    // page until this feature is ready for them.
-    window.location.href = '/';
+    window.location.href = targetIntent;
   }
 }
 
@@ -68,7 +79,7 @@ export const RuntimeBanner = () => {
   // The banner shouldn't appear if it was already dismissed or if it doesn't match the context
   if (
     localStorage.getItem(BANNER_DISMISS_KEY) ||
-    Runtime.currentContext() !== 'Browser-iOS'
+    Runtime.currentContext().match(/Browser-((iOS)|(Android))/) === null
   ) {
     removeFromDOM();
     return;
@@ -85,7 +96,17 @@ export const RuntimeBanner = () => {
   }
 
   const targetPath = `https://${window.location.host}/r/mobile?deep_link=${window.location.pathname}`;
-  const targetURL = `https://udl.forem.com/${encodeURIComponent(targetPath)}`;
+  let targetURL = `https://udl.forem.com/${encodeURIComponent(targetPath)}`;
+  if (Runtime.currentOS() === 'Android') {
+    if (navigator.userAgent.match(/Gecko\/.+Firefox\/.+$/)) {
+      // This is the Firefox browser on Android and we can't display the banner
+      // here because of a bug. Read more: https://github.com/mozilla-mobile/fenix/issues/23397
+      return;
+    }
+    // Android handles Intents with a fallback URL: playstore URL to install the
+    // app if not available. It's best to redirect with the intent directly
+    targetURL = androidTargetIntent();
+  }
 
   return (
     <div class="runtime-banner">

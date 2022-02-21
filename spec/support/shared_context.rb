@@ -1,12 +1,11 @@
 RSpec.shared_context "when proper status" do
-  before do
-    Rails.application.env_config["action_dispatch.show_detailed_exceptions"] = false
+  around do |example|
+    original_show_exceptions = Rails.application.env_config["action_dispatch.show_exceptions"]
     Rails.application.env_config["action_dispatch.show_exceptions"] = true
-  end
 
-  after do
-    Rails.application.env_config["action_dispatch.show_detailed_exceptions"] = true
-    Rails.application.env_config["action_dispatch.show_exceptions"] = false
+    example.run
+
+    Rails.application.env_config["action_dispatch.show_exceptions"] = original_show_exceptions
   end
 end
 

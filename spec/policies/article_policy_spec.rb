@@ -1,65 +1,150 @@
 require "rails_helper"
 
+# These are methods that I envision extracting.  However, they are relevant only for these tests.
+# And to extract would require more explict interface definition.
+RSpec.shared_examples "it requires an authenticated user" do
+  let(:user) { nil }
+  specify "otherwise it raises ApplicationPolicy::UserRequiredError" do
+    expect { subject }.to raise_error(ApplicationPolicy::UserRequiredError)
+  end
+end
+
+RSpec.shared_examples "it requires a user in good standing" do
+  let(:author) { create(:user, :suspended) }
+  specify "otherwise it raises ApplicationPolicy::UserSuspendedError" do
+    expect { subject }.to raise_error(ApplicationPolicy::UserSuspendedError)
+  end
+end
+
+RSpec.shared_examples "permitted roles" do |kwargs|
+  Array(kwargs.fetch(:to)).each do |role|
+    context "#{role.inspect} authorization" do
+      case role
+      when :suspended_author
+        let(:author) { create(:user, :suspended) }
+      when :org_admin
+        let(:organization) { user.organizations.first }
+        let(:user) { create(:user, role, :org_admin) }
+      when :anyone
+        let(:user) { create(:user) }
+      else
+        let(:user) { create(:user, role) }
+      end
+      it { is_expected.to be_truthy }
+    end
+  end
+end
+RSpec.shared_examples "disallowed roles" do |kwargs|
+  Array(kwargs.fetch(:to)).each do |role|
+    context "#{role.inspect} authorization" do
+      case role
+      when :org_admin
+        let(:organization) { user.organizations.first }
+        let(:user) { create(:user, role, :org_admin) }
+      when :author
+        let(:user) { author }
+      when :other_users
+        let(:user) { create(:user) }
+      else
+        let(:user) { create(:user, role) }
+      end
+      it { is_expected.to be_falsey }
+    end
+  end
+end
+
+RSpec.shared_examples "it is otherwise unavailable" do
+  let(:user) { create(:user) }
+  let(:author) { create(:user) }
+  it { is_expected.to be_falsey }
+end
+
+RSpec.shared_examples "when limit_post_creation_to_admins is enabled" do |kwargs|
+  before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true) }
+
+  Array(kwargs.fetch(:authorizes)).each do |role|
+    context "when user is #{role.inspect}" do
+      let(:user) { create(:user, role) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  context "with the \"default\" user" do
+    it { is_expected.to be_falsey }
+  end
+end
+
 RSpec.describe ArticlePolicy do
-  subject { described_class.new(user, article) }
+  subject(:method_call) { policy.public_send(policy_method) }
 
-  let!(:user) { create(:user) }
+  let(:author) { create(:user) }
+  let(:organization) { nil }
+  let(:user) { author }
+  let(:resource) { build(:article, user: author, organization: organization) }
+  let(:policy) { described_class.new(user, resource) }
 
-  let(:article) { build_stubbed(:article) }
-  let(:valid_attributes) do
-    %i[title body_html body_markdown main_image published
-       description tag_list publish_under_org
-       video video_code video_source_url video_thumbnail_url receive_notifications]
+  describe "#feed?" do
+    let(:policy_method) { :feed? }
+
+    it { is_expected.to be_truthy }
   end
 
-  before { allow(article).to receive(:published).and_return(true) }
+  %i[create? new? preview?].each do |method_name|
+    describe "##{method_name}" do
+      let(:policy_method) { method_name }
 
-  context "when user is not signed-in" do
-    let(:user) { nil }
-
-    it { within_block_is_expected.to raise_error(Pundit::NotAuthorizedError) }
-  end
-
-  context "when user is not the author" do
-    it { is_expected.to permit_actions(%i[new create preview]) }
-    it { is_expected.to forbid_actions(%i[update edit manage delete_confirm destroy admin_unpublish]) }
-
-    context "with suspended status" do
-      before { user.add_role(:suspended) }
-
-      it { is_expected.to permit_actions(%i[new preview]) }
-      it { is_expected.to forbid_actions(%i[create edit manage update delete_confirm destroy admin_unpublish]) }
+      it_behaves_like "it requires an authenticated user"
+      it_behaves_like "it requires a user in good standing"
+      it_behaves_like "permitted roles", to: [:anyone]
+      it_behaves_like "when limit_post_creation_to_admins is enabled", authorizes: %i[super_admin admin]
     end
   end
 
-  context "when user is the author" do
-    let(:article) { build_stubbed(:article, user: user) }
+  %i[update? edit?].each do |method_name|
+    describe "##{method_name}" do
+      let(:policy_method) { method_name }
 
-    it { is_expected.to permit_actions(%i[update edit manage new create delete_confirm destroy preview]) }
-    it { is_expected.to permit_mass_assignment_of(valid_attributes) }
-
-    context "with suspended status" do
-      before { user.add_role(:suspended) }
-
-      it { is_expected.to permit_actions(%i[update new delete_confirm destroy preview]) }
+      it_behaves_like "it requires an authenticated user"
+      it_behaves_like "it requires a user in good standing"
+      it_behaves_like "permitted roles", to: %i[super_admin admin org_admin]
+      it_behaves_like "disallowed roles", to: [:other_users]
     end
   end
 
-  context "when user is a super_admin" do
-    let(:user) { build(:user, :super_admin) }
+  describe "#stats?" do
+    let(:policy_method) { :stats? }
 
-    it { is_expected.to permit_actions(%i[update new edit manage create delete_confirm destroy preview]) }
-    it { is_expected.to permit_actions(%i[admin_unpublish]) }
+    it_behaves_like "it requires an authenticated user"
+    it_behaves_like "permitted roles", to: %i[super_admin org_admin suspended_author]
+    it_behaves_like "disallowed roles", to: %i[admin other_users]
   end
 
-  context "when user is an article's org_admin" do
-    let(:user) { create(:user, :org_admin) }
-    let(:org) { user.organizations.first }
-    let(:user2) { create(:user) }
-    let(:article) { build_stubbed(:article, organization_id: org.id, user: user2) }
+  describe "subscriptions?" do
+    let(:policy_method) { :subscriptions? }
 
-    before { create(:organization_membership, user: user2, organization: org) }
+    it_behaves_like "it requires an authenticated user"
+    it_behaves_like "permitted roles", to: %i[super_admin suspended_author]
+    it_behaves_like "disallowed roles", to: %i[admin org_admin other_users]
+  end
 
-    it { is_expected.to permit_actions(%i[update new edit stats create delete_confirm destroy preview]) }
+  %i[admin_unpublish? admin_featured_toggle?].each do |method_name|
+    describe "admin_unpublish?" do
+      let(:policy_method) { method_name }
+
+      it_behaves_like "it requires an authenticated user"
+      it_behaves_like "permitted roles", to: %i[super_admin admin]
+      it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
+    end
+  end
+
+  %i[destroy? delete_confirm? discussion_lock_confirm? discussion_unlock_confirm?].each do |method_name|
+    describe "##{method_name}" do
+      let(:policy_method) { method_name }
+
+      it_behaves_like "it requires an authenticated user"
+      it_behaves_like "permitted roles", to: %i[super_admin admin org_admin suspended_author]
+      it_behaves_like "disallowed roles", to: [:other_users]
+    end
   end
 end
