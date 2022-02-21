@@ -17,7 +17,7 @@ class Menu
     @items[name] = { svg: "#{svg}.svg", children: children }
   end
 
-  def item(name:, controller: name, children: [], visible: true, parent: "")
+  def item(name:, controller: name, children: [], visible: true, parent: false)
     { name: name, controller: controller.tr(" ", "_"), children: children, visible: visible, parent: parent }
   end
 end

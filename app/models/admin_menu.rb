@@ -11,24 +11,24 @@ class AdminMenu
     ]
 
     scope :content_manager, "dashboard-line", [
-      item(name: "posts", controller: "articles", parent: "content_manager"),
-      item(name: "comments", controller: "comments", parent: "content_manager"),
+      item(name: "posts", controller: "articles"),
+      item(name: "comments", controller: "comments"),
       item(name: "badges", children: [
-             item(name: "library", controller: "badges", parent: "content_manager"),
-             item(name: "achievements", controller: "badge_achievements", parent: "content_manager"),
-           ], parent: "content_manager"),
-      item(name: "organizations", parent: "content_manager"),
-      item(name: "podcasts", parent: "content_manager"),
-      item(name: "tags", parent: "content_manager"),
+             item(name: "library", controller: "badges"),
+             item(name: "achievements", controller: "badge_achievements"),
+           ]),
+      item(name: "organizations"),
+      item(name: "podcasts"),
+      item(name: "tags"),
     ]
 
     scope :customization, "tools-line", [
-      item(name: "config", parent: "customization"),
-      item(name: "html variants", controller: "html_variants", parent: "customization"),
-      item(name: "display ads", parent: "customization"),
-      item(name: "navigation links", parent: "customization"),
-      item(name: "pages", parent: "customization"),
-      item(name: "profile fields", visible: false, parent: "customization"),
+      item(name: "config"),
+      item(name: "html variants", controller: "html_variants"),
+      item(name: "display ads"),
+      item(name: "navigation links"),
+      item(name: "pages"),
+      item(name: "profile fields", visible: false),
     ]
 
     scope :admin_team, "user-line", [
@@ -36,28 +36,28 @@ class AdminMenu
     ]
 
     scope :moderation, "mod", [
-      item(name: "reports", parent: "moderation"),
-      item(name: "mods", parent: "moderation"),
-      item(name: "moderator actions ads", controller: "moderator_actions", parent: "moderation"),
-      item(name: "privileged reactions", parent: "moderation"),
+      item(name: "reports"),
+      item(name: "mods"),
+      item(name: "moderator actions ads", controller: "moderator_actions"),
+      item(name: "privileged reactions"),
       # item(name: "interaction limits")
     ]
 
     scope :advanced, "flashlight-line", [
-      item(name: "broadcasts", parent: "advanced"),
-      item(name: "response templates", parent: "advanced"),
-      item(name: "sponsorships", parent: "advanced"),
+      item(name: "broadcasts"),
+      item(name: "response templates"),
+      item(name: "sponsorships"),
       item(name: "developer tools", controller: "tools", children: [
-             item(name: "tools", parent: "advanced"),
-             item(name: "vault secrets", controller: "secrets", parent: "advanced"),
-             item(name: "data update scripts", visible: false, parent: "advanced"),
+             item(name: "tools"),
+             item(name: "vault secrets", controller: "secrets"),
+             item(name: "data update scripts", visible: false),
            ]),
     ]
 
     scope :apps, "palette-line", [
-      item(name: "consumer apps", controller: "consumer_apps", parent: "apps"),
-      item(name: "listings", parent: "apps"),
-      item(name: "welcome", parent: "apps"),
+      item(name: "consumer apps", controller: "consumer_apps"),
+      item(name: "listings"),
+      item(name: "welcome"),
     ]
   end.freeze
   # rubocop:enable Metrics/BlockLength
