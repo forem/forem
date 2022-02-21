@@ -13,7 +13,7 @@
 
   <a href="<%= admin_feedback_messages_path %>" class="flex flex-col c-link c-link--block -mx-4">
     <strong class="fs-xl"><%= @open_abuse_reports_count %></strong>
-    <span><%= "Report".pluralize(@open_abuse_reports_count) %> submitted by <span class="fw-bold">Users</span></span>
+    <span><%= pluralize(@open_abuse_reports_count, "Report") %> submitted by <span class="fw-bold">Users</span></span>
     <small class="opacity-75">3 articles, 5 coomments, 10 users</small>
   </a>
 
