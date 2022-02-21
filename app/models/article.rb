@@ -416,6 +416,10 @@ class Article < ApplicationRecord
     end
   end
 
+  def scheduled?
+    published_at.future?
+  end
+
   def search_id
     "article_#{id}"
   end
