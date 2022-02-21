@@ -29,19 +29,20 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
     // Fetching further tag data allows us to display a richer UI
     // This fetch only happens once on first component load
     if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
-      const tagNamesQueryString = defaultValue
-        .split(', ')
-        .reduce((queryString, nextTagName) => {
-          if (nextTagName) {
-            return queryString
-              ? `${queryString}&tag_names[]=${nextTagName}`
-              : `tag_names[]=${nextTagName}`;
-          }
-        }, '');
+      const tagNames = defaultValue.split(', ');
 
-      fetch(`/api/tags.json?${tagNamesQueryString}`)
-        .then((res) => res.json())
-        .then((data) => setDefaultSelections(data));
+      const tagRequests = tagNames.map((tagName) =>
+        fetchSearch('tags', { name: tagName }).then(({ result = [] }) => {
+          const [potentialMatch = {}] = result;
+          return potentialMatch.name === tagName
+            ? potentialMatch
+            : { name: tagName };
+        }),
+      );
+
+      Promise.all(tagRequests).then((data) => {
+        setDefaultSelections(data);
+      });
     }
     setDefaultsLoaded(true);
   }, [defaultValue, defaultsLoaded]);

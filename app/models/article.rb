@@ -856,7 +856,6 @@ class Article < ApplicationRecord
   end
 
   def enrich_image_attributes
-    return unless FeatureFlag.enabled?(:detect_animated_images)
     return unless saved_change_to_attribute?(:processed_html)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)

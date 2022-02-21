@@ -66,6 +66,7 @@ module PracticalDeveloper
 
     # Authorization / Authentication exception handling.
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
+    config.action_dispatch.rescue_responses["ApplicationPolicy::NotAuthorizedError"] = :not_found
 
     # @note [@jeremyf] I have included this to preserve behavior verified in our test suite.  My
     #       plan, however, is to change how we handle authentication and authorization.  In the case

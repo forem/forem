@@ -1,10 +1,8 @@
-<%# TODO: incorporate a tab component. For now you have to manually change the value %>
-<% current_tab = "overview" # overview|emails|notes|reports|flags %>
 <% if FeatureFlag.enabled?(:admin_member_view) %>
   <%= render "admin/users/show/profile" %>
   <%= render "admin/users/show/tabs" %>
 
-  <% if current_tab == 'overview' %>
+  <% if  @current_tab == "overview" %>
     <div class="crayons-card p-3 s:p-4 m:p-7">
       <%= render "admin/users/show/overview/stats" if @user.registered %>
 
@@ -30,7 +28,7 @@
         </div>
       </div>
     </div>
-  <% elsif current_tab == 'notes' %>
+  <% elsif @current_tab == "notes" %>
     <section class="flex flex-col m:flex-row gap-4">
       <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
         <%= render "admin/users/show/notes/form" %>
@@ -39,7 +37,7 @@
         <%= render "admin/users/show/notes/index" %>
       </div>
     </section>
-  <% elsif current_tab == 'emails' %>
+  <% elsif @current_tab == "emails" %>
     <%= render "admin/users/show/emails/verification" %>
     <section class="flex flex-col m:flex-row gap-4">
       <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
@@ -49,11 +47,11 @@
         <%= render "admin/users/show/emails/index" %>
       </div>
     </section>
-  <% elsif current_tab == 'reports' %>
+  <% elsif @current_tab == "reports" %>
     <section class="crayons-card p-3 s:p-4 m:p-7">
       <%= render "admin/users/show/reports/index" %>
     </section>
-  <% elsif current_tab == 'flags' %>
+  <% elsif @current_tab == "flags" %>
     <section class="crayons-card p-3 s:p-4 m:p-7">
       <%= render "admin/users/show/flags/index" %>
     </section>
