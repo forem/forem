@@ -1488,10 +1488,10 @@
   resolved "https://registry.yarnpkg.com/@github/time-elements/-/time-elements-3.1.2.tgz#cc36d7a34ff2033d7f0b216f1a724405b8fbc201"
   integrity sha512-YVtZVLBikP6I7na22kfB9PKIseISwX41MFJ7lPuNz1VVH2IR5cpRRU6F1X6kcchPChljuvMUR4OiwMWHOJQ8kQ==
 
-"@honeybadger-io/js@^3.2.7":
-  version "3.2.7"
-  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-3.2.7.tgz#65a06bb603d1dc3fd97503fdb9c9664f2713c690"
-  integrity sha512-lsdcuwKbJkIt4wY6Sg7AhmvPsHK7Wr4CJ73HXnHgakxdEuMt8RXilZfWyZ5i/wqcwnSr7OQ83R94aYiQdLTxFQ==
+"@honeybadger-io/js@^3.2.8":
+  version "3.2.8"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-3.2.8.tgz#75907ef232dc05ce6e7aecca63645ee1518036ad"
+  integrity sha512-SqDzxOPlM3qgopLme7wy5bZM1pxsxAH6R2pJgTLyeBTb4EQ6bhNt247jcaj/etK3OIqGs4ANHX6TyT/3X/IgXQ==
   dependencies:
     "@types/express" "^4.17.13"
     stacktrace-parser "^0.1.10"
