@@ -43,6 +43,10 @@ Rails.application.routes.draw do
 
     namespace :api, defaults: { format: "json" } do
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+        namespace :admin do
+          resources :users, only: [:create]
+        end
+
         resources :articles, only: %i[index show create update] do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
@@ -109,6 +113,7 @@ Rails.application.routes.draw do
     resources :messages, only: [:create]
     resources :articles, only: %i[update create destroy] do
       patch "/admin_unpublish", to: "articles#admin_unpublish"
+      patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do

@@ -4,7 +4,7 @@ require Rails.root.join(
 )
 
 describe DataUpdateScripts::WorkProfileFieldFollowUp do
-  it "removes the three obsolete profile fields" do
+  xit "removes the three obsolete profile fields" do
     ProfileField.find_or_create_by(label: "Employer name")
     ProfileField.find_or_create_by(label: "Employer URL")
     ProfileField.find_or_create_by(label: "Employment title")
@@ -12,7 +12,7 @@ describe DataUpdateScripts::WorkProfileFieldFollowUp do
     expect { described_class.new.run }.to change(ProfileField, :count).by(-3)
   end
 
-  it "changes the group of the work field" do
+  xit "changes the group of the work field" do
     work_field = ProfileField.find_or_create_by(attribute_name: "work", label: "Work")
     work_field.update(profile_field_group: nil) # ensure we start without a group
     work_group = ProfileFieldGroup.find_or_create_by(name: "Work")

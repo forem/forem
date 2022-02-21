@@ -19,14 +19,9 @@ module Podcasts
       set_unreachable(status: :unparsable, force_update: force_update) && return unless feed
 
       get_episode = Podcasts::GetEpisode.new(podcast)
-      # NOTE: `sort { |a, b| b.pubDate <=> a.pubDate }` is logically equivalent to
-      # `sort_by(&:pubDate).reverse` but only iterates once through the array.
-      #
-      # The sort ensures that we're fetching the most recently published episodes.  This addresses
-      # https://github.com/forem/forem/issues/3580, in which some RSS feeds list their episodes in
-      # earliest to latest, whereas others list latest to earliest.  We assume that we're wanting to
-      # track the latest.
-      feed.items.sort { |a, b| b.pubDate <=> a.pubDate }.first(limit).each do |item|
+
+      # Sort by published date in descending order
+      feed.items.sort_by { |i| -i.pubDate.to_i }.first(limit).each do |item|
         get_episode.call(item: item, force_update: force_update)
       end
       podcast.update_columns(reachable: true, status_notice: "")

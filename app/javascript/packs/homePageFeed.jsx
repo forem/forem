@@ -98,6 +98,7 @@ export const renderFeed = (timeFrame) => {
               <Article
                 {...commonProps}
                 article={pinnedArticle}
+                pinned={true}
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(pinnedArticle.id)}
               />

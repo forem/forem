@@ -4,6 +4,11 @@ module Constants
       IMAGE_PLACEHOLDER = "https://url/image.png".freeze
 
       DETAILS = {
+        contact_email: {
+          description: "Used for contact links. Please provide an email address where users " \
+                       "can get in touch with you or your team.",
+          placeholder: "hello@example.com"
+        },
         credit_prices_in_cents: {
           small: {
             description: "Price for small credit purchase (<10 credits).",

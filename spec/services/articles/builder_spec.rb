@@ -19,12 +19,12 @@ RSpec.describe Articles::Builder, type: :service do
       }
     end
 
-    it "initializes an article with the correct attributes and needs authorization" do
-      subject, needs_authorization = described_class.call(user, tag, prefill)
+    it "initializes an article with the correct attributes and does not store location" do
+      subject, store_location = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(needs_authorization).to be true
+      expect(store_location).to be false
     end
   end
 
@@ -38,12 +38,12 @@ RSpec.describe Articles::Builder, type: :service do
       }
     end
 
-    it "initializes an article with the correct attributes and needs authorization" do
-      subject, needs_authorization = described_class.call(user, tag, prefill)
+    it "initializes an article with the correct attributes and does not store location" do
+      subject, store_location = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(needs_authorization).to be true
+      expect(store_location).to be false
     end
   end
 
@@ -60,12 +60,12 @@ RSpec.describe Articles::Builder, type: :service do
       }
     end
 
-    it "initializes an article with the correct attributesand needs authorization" do
-      subject, needs_authorization = described_class.call(user, tag, prefill)
+    it "initializes an article with the correct attributes and does not store location" do
+      subject, store_location = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(needs_authorization).to be true
+      expect(store_location).to be false
     end
   end
 
@@ -79,12 +79,12 @@ RSpec.describe Articles::Builder, type: :service do
       }
     end
 
-    it "initializes an article with the correct attributes and needs authorization" do
-      subject, needs_authorization = described_class.call(user, tag, prefill)
+    it "initializes an article with the correct attributes and does not store location" do
+      subject, store_location = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(needs_authorization).to be true
+      expect(store_location).to be false
     end
   end
 
@@ -99,13 +99,13 @@ RSpec.describe Articles::Builder, type: :service do
       }
     end
 
-    it "initializes an article with the correct attributes and does not need authorization" do
+    it "initializes an article with the correct attributes and stores location" do
       user.setting.update(editor_version: "v1")
-      subject, needs_authorization = described_class.call(user, tag, prefill)
+      subject, store_location = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(needs_authorization).to be false
+      expect(store_location).to be true
     end
   end
 
@@ -117,12 +117,12 @@ RSpec.describe Articles::Builder, type: :service do
       }
     end
 
-    it "initializes an article with the correct attributes and does not need authorization" do
-      subject, needs_authorization = described_class.call(user, tag, prefill)
+    it "initializes an article with the correct attributes and does stores location" do
+      subject, store_location = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(needs_authorization).to be false
+      expect(store_location).to be true
     end
   end
 
@@ -139,13 +139,13 @@ RSpec.describe Articles::Builder, type: :service do
       }
     end
 
-    it "initializes an article with the correct attributes and does not need authorization" do
+    it "initializes an article with the correct attributes and does stores location" do
       user.setting.update(editor_version: "v1")
-      subject, needs_authorization = described_class.call(user, tag, prefill)
+      subject, store_location = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(needs_authorization).to be false
+      expect(store_location).to be true
     end
   end
 end

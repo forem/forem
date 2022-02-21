@@ -32,7 +32,7 @@ class Article < ApplicationRecord
   PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
   def self.unique_url_error
-    I18n.t("models.article.unique_url", email: ForemInstance.email)
+    I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
   has_one :discussion_lock, dependent: :delete
@@ -856,7 +856,6 @@ class Article < ApplicationRecord
   end
 
   def enrich_image_attributes
-    return unless FeatureFlag.enabled?(:detect_animated_images)
     return unless saved_change_to_attribute?(:processed_html)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)

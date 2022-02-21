@@ -9,10 +9,22 @@ module MarkdownProcessor
 
     WORDS_READ_PER_MINUTE = 275.0
 
-    def initialize(content, source: nil, user: nil)
+    # @param content [String] The user input, mix of markdown and liquid.  This might be an
+    #        article's markdown body.
+    # @param source [Object] The thing associated with the content.  This might be an article.
+    # @param user [User] Who's the one writing the content?
+    # @param liquid_tag_options [Hash]
+    #
+    # @note This is a place to pass in a different policy object.  But like, maybe don't do
+    #       that with user input, but perhaps via a data migration script.
+    #
+    # @see LiquidTagBase for more information regarding the liquid tag options.
+
+    def initialize(content, source: nil, user: nil, **liquid_tag_options)
       @content = content
       @source = source
       @user = user
+      @liquid_tag_options = liquid_tag_options.merge({ source: @source, user: @user })
     end
 
     def finalize(link_attributes: {})
@@ -25,12 +37,10 @@ module MarkdownProcessor
       html = markdown.render(escaped_content)
       sanitized_content = sanitize_rendered_markdown(html)
       begin
-        liquid_tag_options = { source: @source, user: @user }
-
         # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
         # a String substitute, hence we force the conversion before passing it to Liquid::Template.
         # See <https://github.com/Shopify/liquid/issues/1390>
-        parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, liquid_tag_options)
+        parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, @liquid_tag_options)
 
         html = markdown.render(parsed_liquid.render)
       rescue Liquid::SyntaxError => e
