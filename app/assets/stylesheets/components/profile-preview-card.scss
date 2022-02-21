@@ -10,6 +10,7 @@
     left: 0;
     font-size: var(--fs-base);
     font-weight: var(--fw-normal);
+    overflow-wrap: anywhere;
   }
 
   &__content.crayons-dropdown:hover {
@@ -24,7 +25,6 @@
   &__trigger:hover + .profile-preview-card__content.crayons-dropdown {
     display: block;
     animation: hoverAppear var(--dropdown-hover-delay);
-    overflow-wrap: anywhere;
 
     &.showing {
       animation: none;
