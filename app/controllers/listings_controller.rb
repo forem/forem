@@ -52,7 +52,6 @@ class ListingsController < ApplicationController
     @listings_json = @listings.to_json(INDEX_JSON_OPTIONS)
     @displayed_listing_json = @displayed_listing.to_json(INDEX_JSON_OPTIONS)
 
-    # TODO: [mkohl] Can we change this to listings-#{params[:category]}?
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 
