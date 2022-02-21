@@ -24,7 +24,7 @@ describe('Authentication Section', () => {
           cy.findByTestId('authSectionForm').as('authSectionForm');
 
           cy.get('@authSectionForm')
-            .findByRole('heading', { name: 'Authentication' })
+            .findByRole('summary', { name: 'Authentication' })
             .click();
           cy.get('@authSectionForm')
             .findByRole('checkbox', { name: 'Invite-only mode' })
@@ -48,7 +48,7 @@ describe('Authentication Section', () => {
           cy.findByTestId('authSectionForm').as('authSectionForm');
 
           cy.get('@authSectionForm')
-            .findByRole('heading', { name: 'Authentication' })
+            .findByRole('summary', { name: 'Authentication' })
             .click();
           cy.get('@authSectionForm')
             .findByRole('checkbox', { name: 'Invite-only mode' })
