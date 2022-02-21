@@ -16,7 +16,7 @@
           <%= admin_config_description Constants::Settings::Campaign::DETAILS[:display_name][:description] %>
           <%= f.text_field :display_name,
                            class: "crayons-textfield",
-                           value: Settings::Campaign.name,
+                           value: Settings::Campaign.display_name,
                            placeholder: Constants::Settings::Campaign::DETAILS[:display_name][:placeholder] %>
         </div>
 
