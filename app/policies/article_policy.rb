@@ -16,6 +16,11 @@ class ArticlePolicy < ApplicationPolicy
   #       authorization.  There's an assumption that all policy questions will require a user,
   #       unless you know specifically that they don't.
   #
+  # @note as a reminder, if you attempt to authorize this policy in a controller with that calls
+  #       {CachingHeaders#set_cache_control_headers} you may encounter some headaches.  What do
+  #       those headaches look like?  When you call {CachingHeaders#set_cache_control_headers}, you
+  #       are likely disallowing checks on current_user (via {EdgeCacheSafetyCheck#current_user}).
+  #
   # @todo [@jeremyf] I don't like altering the initializer and its core assumption.  But the other
   #       option to get Articles working for https://github.com/forem/forem/issues/16529 is to
   #       address the at present fundamental assumption regarding "Policies are for authorizing when
@@ -24,16 +29,38 @@ class ArticlePolicy < ApplicationPolicy
   # rubocop:disable Lint/MissingSuper
   #
   # @see even Rubocop thinks this is a bad idea.  But the short-cut gets me unstuck.  I hope there's
-  # enough breadcrumbs to undo this short-cut.
+  #      enough breadcrumbs to undo this short-cut.
   def initialize(user, record)
     @user = user
     @record = record
   end
   # rubocop:enable Lint/MissingSuper
 
+  def feed?
+    true
+  end
+
+  def create?
+    require_user_in_good_standing!
+    return true unless self.class.limit_post_creation_to_admins?
+
+    user_any_admin?
+  end
+
   def update?
-    require_user!
+    require_user_in_good_standing!
+
     user_author? || user_super_admin? || user_org_admin? || user_any_admin?
+  end
+
+  def stats?
+    require_user!
+    user_author? || user_super_admin? || user_org_admin?
+  end
+
+  def subscriptions?
+    require_user!
+    user_author? || user_super_admin?
   end
 
   def admin_unpublish?
@@ -41,41 +68,28 @@ class ArticlePolicy < ApplicationPolicy
     user_any_admin?
   end
 
-  def admin_featured_toggle?
-    minimal_admin?
-  end
-
-  # @note It is likely that we want this to mirror `:create?` in the future.  As it stands, we can
-  #       use this value to "triangulate" towards a simplifying solution to
-  #       https://github.com/forem/forem/issues/16529 (Also, I added this comment so that this code
-  #       appears with the pull request)
-  #
-  # @note For backwards compatability purposes, we're not checking if there's a user.
-  def new?
-    true
-  end
-
-  def create?
+  def destroy?
     require_user!
-    !user_suspended?
+
+    user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
-  alias delete_confirm? update?
+  alias admin_featured_toggle? admin_unpublish?
 
-  alias discussion_lock_confirm? update?
+  alias new? create?
 
-  alias discussion_unlock_confirm? update?
+  alias delete_confirm? destroy?
 
-  alias destroy? update?
+  alias discussion_lock_confirm? destroy?
+
+  alias discussion_unlock_confirm? destroy?
 
   alias edit? update?
 
-  alias preview? new?
-
-  def stats?
-    require_user!
-    user_author? || user_super_admin? || user_org_admin?
-  end
+  # [@jeremyf] I made a decision to compress preview? into create?  However, someone editing a post
+  # should also be able to preview?  Perhaps it would make sense to be "preview? is create? ||
+  # update?".
+  alias preview? create?
 
   def permitted_attributes
     %i[title body_html body_markdown main_image published canonical_url
@@ -84,17 +98,20 @@ class ArticlePolicy < ApplicationPolicy
        archived]
   end
 
-  def subscriptions?
-    require_user!
-    user_author? || user_super_admin?
-  end
-
   private
 
-  def require_user!
-    return if user
+  def require_user_in_good_standing!
+    require_user!
 
-    raise Pundit::NotAuthorizedError, I18n.t("policies.application_policy.you_must_be_logged_in")
+    return true unless user.suspended?
+
+    raise ApplicationPolicy::UserSuspendedError, I18n.t("policies.application_policy.your_account_is_suspended")
+  end
+
+  def require_user!
+    return true if user
+
+    raise ApplicationPolicy::UserRequiredError, I18n.t("policies.application_policy.you_must_be_logged_in")
   end
 
   def user_author?
