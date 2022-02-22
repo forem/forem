@@ -16,7 +16,7 @@ module AdminHelper
   end
 
   def current?(request, group, group_name)
-    comparable = group[:children][0][:parent] ? group[:children][0][:parent].to_s : group_name.to_s
+    comparable = (group[:children][0][:parent] || group_name).to_s
     deduced_scope(request).to_s == comparable
   end
 
