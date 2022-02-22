@@ -10,7 +10,27 @@ class ArticlesController < ApplicationController
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
 
+  ##
+  # [@jeremyf] - My dreamiest of dreams is to move this to the ApplicationController.  But it's very
+  #              presence could create some havoc with our edge caching.  So I'm scoping it to the
+  #              place where the code is likely to raise an ApplicationPolicy::UserRequiredError.
+  #
+  #              I still want to enable this, but first want to get things mostly conformant with
+  #              existing expectations.  Note, in config/application.rb, we're rescuing the below
+  #              excpetion as though it was a Pundit::NotAuthorizedError.
+  #
+  #              The difference being that rescue_from is an ALWAYS use case.  Whereas the
+  #              config/application.rb uses the config.consider_all_requests_local to determine if
+  #              we bubble the exception up or handle it.
+  #
+  # rescue_from ApplicationPolicy::UserRequiredError, with: :respond_with_request_for_authentication
+
   def feed
+    # [@jeremyf] - I am a firm believer that we should check authorization.  However, in this case,
+    #              based on our implementation constraints and assumptions, the `#feed` action will
+    #              almost certainly be available to everyone (what's in the feed will vary
+    #              signficantly).  So while I would love an `authorize(Article)` here, I will make
+    #              do with a comment.
     skip_authorization
 
     @articles = Article.feed.order(published_at: :desc).page(params[:page].to_i).per(12)
