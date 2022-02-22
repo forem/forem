@@ -1,0 +1,39 @@
+<div id="remove-social-accounts">
+  <div class="flex flex-col gap-4">
+    <p>At times, removing a user's social account will resolve certain sign-in issues that a user may be experiencing.</p>
+    <p>For example, users may experience issues related to their UID when creating a <%= community_name %> account. If a user creates an account by, first, deleting their original social account and, then, creating their new account with the same Twitter/GitHub username,
+       the user may be unable to register their new account. This occurs when a user's Twitter/GitHub account's UID does not match their identity's UID. For more information on whether a user's UID does not match their identity UID, the following third party tools can be
+       helpful:
+      <a href="https://tweeterid.com/?username=<%= @user.twitter_username %>" target="_blank" rel="noopener nofollow">Tweeter ID for Twitter (username is in URL for reference)</a>
+      or <a href="https://caius.github.io/github_id/#<%= @user.github_username %>" target="_blank" rel="noopener nofollow">Caius's GitHub ID Lookup Tool</a>
+    </p>
+
+    <h3 class="crayons-subtitle-2">
+      How do I remove a social account?
+    </h3>
+    <ol>
+      <li>To start, click on one of the links provided above to check the user's social account UID.</li>
+      <li>Next, confirm whether or not the user's social account UID matches the user's identity UID.</li>
+      <li>If the social account UID does not match, delete the respective identity.</li>
+      <li>Finally, ask the user to reauthorize their social account via <%= app_url(user_settings_path(:account)) %></li>
+    </ol>
+
+    <% @user.identities.each do |identity| %>
+      <%= form_for(@user, url: remove_identity_admin_user_path(@user),
+                          html: { class: "fs-base p-4 py-3 c-card c-card--interactive flex gap-2 justify-between items-center", method: :delete, onsubmit: "return confirm('Are you sure? This should only be done as a solution for the listed example(s).)", id: nil }) do |f| %>
+        <%= f.hidden_field :identity_id, value: identity.id %>
+        <div class="flex-1 flex items-center gap-2">
+          <%= crayons_icon_tag(identity.provider, class: "shrink-0", width: 32, height: 32) %>
+          <div class="lh-tight">
+            <h4 class="crayons-subtitle-3"><%= identity.provider.capitalize %></h4>
+            <p class="fs-base color-secondary"><strong>UID:</strong> <%= identity.uid %> &bull; <strong>Username:</strong> <%= identity.auth_data_dump.present? ? identity.auth_data_dump["info"]["nickname"] : "No data available..." %></p>
+          </div>
+        </div>
+        <%= f.button class: "c-btn c-btn--icon-left c-btn--destructive", type: "submit" do %>
+          <%= crayons_icon_tag(:bin, class: "c-btn__icon") %>
+          Remove
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

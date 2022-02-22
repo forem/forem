@@ -200,14 +200,13 @@
     }
   }
 
-  .how-this-works-section {
+  .additional-subtext-section {
     font-weight: var(--fw-medium);
     font-size: var(--fs-xs);
     line-height: var(--lh-base);
     letter-spacing: -0.02em;
     color: var(--base-70);
     cursor: pointer;
-    padding: var(--su-4) var(--su-3);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -271,13 +270,11 @@
     border-top: 1px solid var(--base-20);
     overflow-y: auto;
 
-    div.unpublish-article {
+    div.article-admin-action {
       background: inherit;
       border: none;
-      padding: var(--su-3) var(--su-4);
-      display: flex;
       justify-content: center;
-      align-items: center;
+      text-align: center;
       cursor: auto;
     }
 

@@ -170,6 +170,23 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
     end
   end
 
+  # regression test for #16627 and #16570
+  context "when a found reaction has unexpected json data" do
+    let(:existing_notification) do
+      create(
+        :notification,
+        json_data: { user: {}, article: {} },
+        action: "Reaction",
+        user: user,
+      )
+    end
+
+    it "does not raise error" do
+      reaction = create(:reaction, reactable: existing_notification.notifiable)
+      expect { described_class.call(reaction_data(reaction), user) }.not_to raise_error
+    end
+  end
+
   context "when a receiver is an organization" do
     let(:organization) { create(:organization) }
 

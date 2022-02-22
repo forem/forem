@@ -40,7 +40,6 @@ class AdminMenu
       item(name: "mods"),
       item(name: "moderator actions ads", controller: "moderator_actions"),
       item(name: "privileged reactions"),
-      # item(name: "interaction limits")
     ]
 
     scope :advanced, "flashlight-line", [
