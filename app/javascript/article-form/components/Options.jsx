@@ -103,6 +103,19 @@ export const Options = ({
           />
         </div>
         <div className="crayons-field mb-6">
+          <label htmlFor="publishedAt" className="crayons-field__label">
+            Schedule Publication
+          </label>
+          <input
+            type="datetime-local"
+            className="crayons-textfield"
+            name="published_at"
+            onKeyUp={onConfigChange}
+            id="published_at"
+            placeholder="..."
+          />
+        </div>
+        <div className="crayons-field mb-6">
           <label htmlFor="series" className="crayons-field__label">
             Series
           </label>
