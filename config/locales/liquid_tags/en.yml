@@ -42,13 +42,15 @@ en:
     kotlin_tag:
       invalid_kotlin_playground: Invalid Kotlin Playground URL
     link_tag:
-      not_exist: 'The article you''re looking for does not exist: %{slug}'
-      not_exist_link: 'The article you''re looking for does not exist: {% link %{slug} %}'
+      not_exist: "The article you're looking for does not exist: %{slug}"
+      not_exist_link: "The article you're looking for does not exist: {% link %{slug} %}"
     liquid_tag_base:
       invalid_context: Invalid context. This liquid tag can only be used in %{valid}.
       no_source_found: No source found
     listing_tag:
       invalid_url_or_slug: Invalid URL or slug. Listing not found.
+    loom_tag:
+      invalid_loom_url: Invalid Loom URL.
     medium_tag:
       invalid_link_url: Invalid link URL or link URL does not exist
     next_tech_tag:
@@ -73,7 +75,7 @@ en:
     slideshare_tag:
       invalid_slideshare_key: Invalid Slideshare Key
     soundcloud_tag:
-      invalid_soundcloud_url: 'Invalid Soundcloud URL - try taking off any URL params: ''?something=value'''
+      invalid_soundcloud_url: "Invalid Soundcloud URL - try taking off any URL params: '?something=value'"
     speakerdeck_tag:
       invalid_speakerdeck_id: Invalid Speakerdeck Id
     spotify_tag:
@@ -84,7 +86,7 @@ en:
     stackery_tag:
       missing_argument: Stackery - Missing owner and/or repository name arguments
     stackexchange_tag:
-      post_not_found: 'Couldn''t find a post with that ID: {% %{tag} %{input} %}'
+      post_not_found: "Couldn't find a post with that ID: {% %{tag} %{input} %}"
       invalid_id: 'Invalid Stack Exchange ID: {% %{tag} %{input} %}'
       invalid_site: 'Invalid Stack Exchange site: {% %{tag} %{input} %}'
     tag_tag:
@@ -104,7 +106,7 @@ en:
       subscribed: You are already subscribed.
     wikipedia_tag:
       section_not_found: Couldn't find the section of the Wikipedia article - %{input}
-      article_not_found: 'Couldn''t find the Wikipedia article - %{input}: %{response_detail}'
+      article_not_found: "Couldn't find the Wikipedia article - %{input}: %{response_detail}"
       invalid_wikipedia_url: Invalid Wikipedia URL
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL
