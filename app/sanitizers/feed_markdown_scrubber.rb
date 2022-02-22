@@ -8,6 +8,6 @@ class FeedMarkdownScrubber < Rails::Html::PermitScrubber
   def allowed_node?(node)
     return true if tags.include?(node.name) && node.name != "a"
 
-    node.name == "a" && !node["href"].start_with?("#")
+    node.name == "a" && !node["href"]&.start_with?("#")
   end
 end
