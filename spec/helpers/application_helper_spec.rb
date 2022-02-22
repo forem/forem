@@ -216,7 +216,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "works when called with an URI object" do
-      uri = URI::Generic.build(path: "resource_admin", fragment: "test")
+      uri = URI::Generic.build(path: "resource_admin", fragment: "test").to_s
       expect(app_url(uri)).to eq("https://dev.to/resource_admin#test")
     end
   end

@@ -72,7 +72,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       twitter_username: Faker::Internet.username(specifier: username.transliterate),
       # Emails limited to 50 characters
       email: Faker::Internet.email(
-        name: username.transliterate, separators: "+", domain: Faker::Internet.domain_word.first(20)
+        name: username.transliterate, separators: "+", domain: Faker::Internet.domain_word.first(20),
       ),
       confirmed_at: Time.current,
       registered_at: Time.current,
