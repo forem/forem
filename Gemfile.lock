@@ -196,7 +196,7 @@ GEM
       rake (> 10, < 14)
       ruby-statistics (>= 2.1)
       thor (>= 0.19, < 2)
-    device_detector (1.0.6)
+    device_detector (1.0.7)
     devise (4.8.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
