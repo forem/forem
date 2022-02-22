@@ -4,12 +4,6 @@
 <nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" id="main-navigation" aria-label="<%= community_name %>">
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
     <li>
-      <a href="<%= root_path %>" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/house.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
-        <%= t("views.main.home") %>
-      </a>
-    </li>
-    <li>
       <% unless user_signed_in? %>
         <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
           <%= inline_svg_tag("twemoji/handshake.svg", class: "crayons-icon crayons-icon--default", aria_hidden: true) %>
