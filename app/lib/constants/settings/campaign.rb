@@ -10,6 +10,10 @@ module Constants
           description: "",
           placeholder: "Campaign stories show up on sidebar with approval?"
         },
+        display_name: {
+          description: "This text is displayed in reference to the campaign in titles, etc.",
+          placeholder: "My great campaign"
+        },
         call_to_action: {
           description: "This text populates the call to action button on the campaign sidebar",
           placeholder: "Share your project"
