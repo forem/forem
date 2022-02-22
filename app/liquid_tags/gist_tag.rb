@@ -45,6 +45,8 @@ class GistTag < LiquidTagBase
   end
 
   def build_options(option)
+    return "" unless option
+
     option_no_space = option.strip
     return "?#{option_no_space}" if valid_option?(option_no_space)
 
