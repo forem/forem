@@ -29,13 +29,6 @@ class ApplicationController < ActionController::Base
     )
   end
 
-  ##
-  # [@jeremyf] - I want to enable this, but based on our current application configuration, I
-  #              cannot.  Why?  The existing tests assume that when we check a policy, if we don't
-  #              have a user we raise a Pundit::NotAuthorizedError.
-  #
-  # rescue_from ApplicationPolicy::UserRequiredError, with: :respond_with_request_for_authentication
-
   rescue_from ApplicationPolicy::UserSuspendedError, with: :respond_with_user_suspended
 
   PUBLIC_CONTROLLERS = %w[async_info
