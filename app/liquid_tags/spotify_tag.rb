@@ -1,7 +1,7 @@
 class SpotifyTag < LiquidTagBase
   PARTIAL = "liquids/spotify".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(?:open.spotify.com/)(?<type>track|artist|playlist|album|episode|show)/(?<id>\w{,22})(?:\?si=[\w-]+)?}
+  REGISTRY_REGEXP = %r{https?://(?:open\.spotify\.com/)(?<type>track|artist|playlist|album|episode|show)/(?<id>\w{,22})(?:\?si=[\w-]+)?}
   # rubocop:enable Layout/LineLength
   URI_REGEXP = /\A(?:spotify):(?<type>track|artist|playlist|album|episode|show):(?<id>\w{22})\Z/
   URI_PLAYLIST_REGEXP = /\A(?:spotify):(?:user):(?<type>[a-zA-Z0-9]+):(?:playlist):(?<id>\w{22})\Z/ # legacy support

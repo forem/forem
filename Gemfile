@@ -21,7 +21,7 @@ gem "blazer", "~> 2.5.0" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
-gem "cloudinary", "~> 1.21" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.22" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.54.2" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
@@ -33,10 +33,10 @@ gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given i
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
-gem "flipper", "~> 0.23.1" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.23.1" # Store Flipper flags in ActiveRecord
-gem "flipper-active_support_cache_store", "~> 0.23.1" # Cache feature flags for a short time
-gem "flipper-ui", "~> 0.23.1"
+gem "flipper", "~> 0.24.0" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.24.0" # Store Flipper flags in ActiveRecord
+gem "flipper-active_support_cache_store", "~> 0.24.0" # Cache feature flags for a short time
+gem "flipper-ui", "~> 0.24.0"
 gem "fog-aws", "~> 3.13" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji

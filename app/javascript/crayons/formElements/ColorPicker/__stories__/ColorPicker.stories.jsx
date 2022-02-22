@@ -1,4 +1,4 @@
-import { h, Fragment } from 'preact';
+import { h } from 'preact';
 import ColorPickerDoc from './ColorPicker.mdx';
 import { ColorPicker } from '@crayons';
 
@@ -33,14 +33,14 @@ export default {
 };
 
 export const Default = (args) => (
-  <Fragment>
+  <div className="crayons-field">
     {/* Disabled as the ColorPicker component attaches the correct ID to the input  */}
     {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
     <label for={args.id} className="crayons-field__label">
       Choose a color
     </label>
     <ColorPicker {...args} />
-  </Fragment>
+  </div>
 );
 
 Default.args = {

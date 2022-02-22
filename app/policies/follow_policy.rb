@@ -2,7 +2,7 @@ class FollowPolicy < ApplicationPolicy
   PERMITTED_ATTRIBUTES = %i[id explicit_points].freeze
 
   def create?
-    !user_suspended?
+    true
   end
 
   # record is an object of ActiveRecord_Relation
