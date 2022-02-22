@@ -57,4 +57,10 @@ RSpec.describe FeedMarkdownScrubber, type: :permit_scrubber do
     clean = sanitize(bad_html, scrubber: described_class.new)
     expect(clean).to eq(good_html)
   end
+
+  it "does not scrub anchors with no link" do
+    good_html = "I put an anchor <a>here</a>"
+    clean = sanitize(good_html, scrubber: described_class.new)
+    expect(clean).to eq(good_html)
+  end
 end
