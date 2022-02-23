@@ -19,9 +19,10 @@ export const Header = ({
     slug,
     title,
     bumped_at,
+    expires_at,
     originally_published_at,
   } = listing;
-  const listingDate = bumped_at ? bumped_at : originally_published_at;
+  const listingDate = expires_at || originally_published_at;
 
   return (
     <div className="mb-3">
