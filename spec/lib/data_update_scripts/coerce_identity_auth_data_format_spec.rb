@@ -8,7 +8,7 @@ describe DataUpdateScripts::CoerceIdentityAuthDataFormat do
   before do
     # make two we do want to change
     omniauth_mock_twitter_payload
-    2.times do |_t|
+    2.times do
       create(:identity, provider: :twitter, user: create(:user))
     end
 
