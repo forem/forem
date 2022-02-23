@@ -39,8 +39,8 @@
     </div>
     <div class="flex gap-4">
       <div class="crayons-field flex-1">
-        <%= label_tag :bg_color_hex, I18n.t("views.tags.edit.form.bg_color_hex.label"), class: "crayons-field__label" %>
-        <%= color_field_tag "tag[bg_color_hex]", @tag.bg_color_hex.presence || "#000000", placeholder: "#000000", class: "crayons-color-selector crayons-color-selector--full" %>
+        <%= label_tag :tag_bg_color_hex, I18n.t("views.tags.edit.form.bg_color_hex.label"), class: "crayons-field__label" %>
+        <%= text_field_tag "tag[bg_color_hex]", @tag.bg_color_hex.presence || "#000000", placeholder: "#000000", class: "crayons-textfield", data: { color_picker: true, label_text: I18n.t("views.tags.edit.form.bg_color_hex.label") } %>
       </div>
     </div>
     <div class="crayons-field">
@@ -60,3 +60,4 @@
     </div>
   <% end %>
 </main>
+<%= javascript_packs_with_chunks_tag "colorPicker", defer: true %>

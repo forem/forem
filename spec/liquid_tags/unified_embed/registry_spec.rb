@@ -4,9 +4,6 @@ RSpec.describe UnifiedEmbed::Registry do
   subject(:unified_embed) { described_class }
 
   let(:article) { create(:article) }
-  let(:comment) do
-    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
-  end
   let(:listing) { create(:listing) }
   let(:organization) { create(:organization) }
   let(:podcast) { create(:podcast) }
@@ -51,6 +48,12 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://pl.kotl.in/mCMciWl85",
       "https://pl.kotl.in/owreUFFUG?theme=darcula",
       "https://pl.kotl.in/Wplen1rPa?theme=darcula&readOnly=true&from=6&to=7",
+    ]
+
+    valid_loom_url_formats = [
+      "https://loom.com/share/12fb674d39dd4fe281becee7cdbc3cd1",
+      "https://loom.com/embed/12fb674d39dd4fe281becee7cdbc3cd1",
+      "https://www.loom.com/share/12fb674d39dd4fe281becee7cdbc3cd1",
     ]
 
     valid_replit_url_formats = [
@@ -127,11 +130,6 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(CodepenTag)
     end
 
-    it "returns CommentTag for a Forem comment url" do
-      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{user.username}/comment/#{comment.id_code}"))
-        .to eq(CommentTag)
-    end
-
     it "returns DotnetFiddleTag for a dotnetfiddle url" do
       expect(described_class.find_liquid_tag_for(link: "https://dotnetfiddle.net/PmoDip"))
         .to eq(DotnetFiddleTag)
@@ -186,6 +184,13 @@ RSpec.describe UnifiedEmbed::Registry do
       valid_kotlin_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(KotlinTag)
+      end
+    end
+
+    it "returns LoomTag for a valid loom url", :aggregate_failures do
+      valid_loom_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(LoomTag)
       end
     end
 

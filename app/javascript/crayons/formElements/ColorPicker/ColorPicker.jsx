@@ -1,5 +1,6 @@
 import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { initializeDropdown } from '@utilities/dropdownUtils';
@@ -35,7 +36,10 @@ export const ColorPicker = ({
         />
         <HexColorInput
           id={id}
-          className="c-color-picker__input crayons-textfield"
+          className={classNames(
+            'c-color-picker__input crayons-textfield',
+            inputProps?.class,
+          )}
           color={color}
           onChange={setColor}
           prefixed

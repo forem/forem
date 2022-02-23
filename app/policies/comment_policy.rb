@@ -1,5 +1,11 @@
 class CommentPolicy < ApplicationPolicy
   def edit?
+    return false if user_suspended?
+
+    user_author?
+  end
+
+  def destroy?
     user_author?
   end
 
@@ -11,9 +17,7 @@ class CommentPolicy < ApplicationPolicy
 
   alias update? edit?
 
-  alias destroy? edit?
-
-  alias delete_confirm? edit?
+  alias delete_confirm? destroy?
 
   alias settings? edit?
 
