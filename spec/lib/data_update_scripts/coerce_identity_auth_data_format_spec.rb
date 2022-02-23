@@ -23,7 +23,7 @@ describe DataUpdateScripts::CoerceIdentityAuthDataFormat do
 
   it "changes hash auth data dumps to AuthHash" do
     # we have two malformed identities (with plain hashes for auth_data_dump)
-    expect(Identity.where("auth_data_dump ~ '---\n'").count).to equal(2)
+    expect(Identity.where("auth_data_dump ~ '^---\n'").count).to equal(2)
 
     described_class.new.run
 
