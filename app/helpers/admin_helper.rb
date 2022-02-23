@@ -20,14 +20,14 @@ module AdminHelper
   end
 
   def children?(group)
-    group[:children].length == 1
+    group[:children].length > 1
   end
 
   def nav_path(group, group_name)
     if children?(group)
-      "#{admin_path}/#{group[:children][0][:controller]}"
-    else
       "#{admin_path}/#{group_name}/#{group[:children].detect { |child| child[:visible] }[:controller]}"
+    else
+      "#{admin_path}/#{group[:children][0][:controller]}"
     end
   end
 end
