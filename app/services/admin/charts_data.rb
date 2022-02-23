@@ -13,10 +13,11 @@ module Admin
       grouped_reactions = Reaction.where(created_at: period).group("DATE(created_at)").size
       grouped_users = User.where(registered_at: period).group("DATE(registered_at)").size
 
-      posts_values = (0..@length - 1).map { |n| grouped_posts[n.days.ago.to_date] || 0 }.reverse
-      comments_values = (0..@length - 1).map { |n| grouped_comments[n.days.ago.to_date] || 0 }.reverse
-      reactions_values = (0..@length - 1).map { |n| grouped_reactions[n.days.ago.to_date] || 0 }.reverse
-      new_members_values = (0..@length - 1).map { |n| grouped_users[n.days.ago.to_date] || 0 }.reverse
+      days_range = (@length - 1).downto(0)
+      posts_values = days_range.map { |n| grouped_posts[n.days.ago.to_date] || 0 }
+      comments_values = days_range.map { |n| grouped_comments[n.days.ago.to_date] || 0 }
+      reactions_values = days_range.map { |n| grouped_reactions[n.days.ago.to_date] || 0 }
+      new_members_values = days_range.map { |n| grouped_users[n.days.ago.to_date] || 0 }
 
       [
         ["Posts", posts_values.sum, Article.where(published_at: previous_period).size,
