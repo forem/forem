@@ -8,9 +8,7 @@
     </li>
 
     <% menu_items.each do |group_name, group| %>
-      <li
-        data-length="<%= group[:children].length %>"
-        data-size="<%= group[:children].size %>">
+      <li>
         <a
           class="c-link c-link--block c-link--icon-left <%= "c-link--current" if current?(request, group, group_name) %>"
           aria-current="<%= "page" if current?(request, group, group_name) && !children?(group) %>"
