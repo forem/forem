@@ -8,14 +8,15 @@ describe DataUpdateScripts::CoerceIdentityAuthDataFormat do
   before do
     # make two we do want to change
     omniauth_mock_twitter_payload
-    2.times do
-      create(:identity, provider: :twitter, user: create(:user))
-    end
 
-    Identity.all.each do |identity|
-      hash = { "info" => { "email" => Faker::Internet.email } }
-      identity.update(auth_data_dump: hash)
+    # rubocop:disable RSpec/FactoryBot/CreateList
+    2.times do
+      create(:identity, provider: :twitter, user: create(:user)) do |identity|
+        hash = { "info" => { "email" => Faker::Internet.email } }
+        identity.update(auth_data_dump: hash)
+      end
     end
+    # rubocop:enable RSpec/FactoryBot/CreateList
 
     # and one we don't want changed
     create(:identity, provider: :twitter, user: create(:user))
