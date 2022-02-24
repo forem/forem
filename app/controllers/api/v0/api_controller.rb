@@ -43,15 +43,21 @@ module Api
       end
 
       # Checks if the user is authenticated, sets @user to nil otherwise
+      #
+      # @return [User, NilClass]
       def authenticate_with_api_key_or_current_user
         @user = authenticate_with_api_key || current_user
       end
 
-      # Checks if the user is authenticated, if so sets the variable @user
-      # Returns HTTP 401 Unauthorized otherwise
+      # Checks if the user is authenticated, if not respond with an HTTP 401 Unauthorized
+      #
+      # @see {authenticate_with_api_key_or_current_user}
       def authenticate_with_api_key_or_current_user!
-        @user = authenticate_with_api_key || current_user
-        error_unauthorized unless @user
+        # [@jeremyf] Note, I'm not relying on the other method setting the instance variable, but
+        # instead relying on the returned value.  This insulates us from an implementation detail
+        # (namely should we use @user or current_user, which is a bit soupy in the API controller).
+        user = authenticate_with_api_key_or_current_user
+        error_unauthorized unless user
       end
 
       private
