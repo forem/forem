@@ -54,8 +54,6 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       get bulk_tags_path, params: { tag_ids: tag_ids }
 
       expect(response.parsed_body.map { |t| t["id"] }).to match_array(tag_ids)
-      expect(response).to have_http_status(:ok)
-      expect(response.content_type).to match(%r{application/json; charset=utf-8}i)
     end
 
     it "finds tags from array of tag_names" do
@@ -65,8 +63,6 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       get bulk_tags_path, params: { tag_names: tag_names }
 
       expect(response.parsed_body.map { |t| t["name"] }).to match_array(tag_names)
-      expect(response).to have_http_status(:ok)
-      expect(response.content_type).to match(%r{application/json; charset=utf-8}i)
     end
   end
 
