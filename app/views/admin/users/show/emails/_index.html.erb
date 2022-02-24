@@ -2,8 +2,8 @@
   <h2 class="crayons-subtitle-1">Previous emails (<%= @user.email_messages.count %>)</h2>
   <% if @user.email_messages.empty? %>
     <div class="align-center flex flex-col justify-center my-auto py-7">
-      <h3 class="fs-xl fw-normal mb-2">📭 No emails found.</h3>
-      <p class="color-secondary">Any emails sent to <%= @user.email %> can be found here.</p>
+      <h3 class="fs-xl fw-normal mb-2">No previous emails found for <%= @user.name %>.</h3>
+      <p class="color-secondary">Any emails sent to <%= @user.email %> will be found here.</p>
     </div>
   <% else %>
     <div class="pt-3">
