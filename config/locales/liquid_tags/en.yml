@@ -99,7 +99,7 @@ en:
       invalid_url: Invalid Twitter Timeline URL
     unified_embed:
       tag:
-        invalid_url: Embed URL not valid
+        invalid_url: URL may have a typo or error; please check and try again
     user_subscription_tag:
       submit: Submit
       submitting: Submitting...

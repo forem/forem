@@ -1,3 +1,5 @@
+require "net/http"
+
 module UnifiedEmbed
   # This liquid tag is present to facilitate a unified user experience
   # for declaring that they want a URL to have "embedded" behavior.
@@ -22,20 +24,38 @@ module UnifiedEmbed
     def self.new(tag_name, link, parse_context)
       stripped_link = ActionController::Base.helpers.strip_tags(link).strip
       klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_link)
-      # If we can't find a registered "embed" tag, let's raise an exception.
-      # This exception will give the user an opportunity to adjust their approach.
-      #
-      # In a prior implementation, we chose to render an A-tag using the given URL.
-      # With that prior implementation, a user expecting a "rich embed" might not
-      # notice that they didn't have a rich embed and instead published a basic
-      # A-tag. In addition, said A-tag would goes nowhere; which may confuse
-      # users and/or Forem readers.
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") unless klass
+      # If the link does not match the embed registry, we check if the link
+      # is valid (e.g. no typos).
+      # If the link is invalid, we raise an error encouraging the user to
+      # check their link and try again.
+      # If the link is valid, we fallback to using OpenGraph/TwitterCard
+      # metadata (if available) to render an embed.
+      # If there are no OG metatags, then we render an A-tag. Since the link
+      # has been validated, at least this A-tag will not 404.
+
+      # raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") unless klass
+
+      validate_link(stripped_link) unless klass
 
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
       klass.__send__(:new, tag_name, stripped_link, parse_context)
+    end
+
+    def self.validate_link(link)
+      uri = URI.parse(link)
+      http = Net::HTTP.new(uri.host, uri.port)
+      response = http.get(uri.request_uri)
+
+      return opengraph_fallback(link) if response.is_a?(Net::HTTPSuccess)
+
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+    end
+
+    def self.opengraph_fallback(link)
+      # doing this for now, since not implementing fallback yet
+      raise StandardError, "OpenGraph fallback for #{link}"
     end
   end
 end
