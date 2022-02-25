@@ -10,13 +10,6 @@
         <% if @user.access_locked? %>
           <li><%= link_to "Unlock access", unlock_access_admin_user_path(@user), method: :patch, class: "c-link c-link--block" %></li>
         <% end %>
-        <% unless @last_email_verification_date %>
-          <li>
-            <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true do |f| %>
-              <%= f.button "Verify email address", class: "c-btn w-100 align-left" %>
-            <% end %>
-          </li>
-        <% end %>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Export data" data-modal-size="small" data-modal-content-selector="#export-data">Export data</button></li>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Merge accounts" data-modal-size="small" data-modal-content-selector="#merge-accounts">Merge accounts</button></li>
         <% if @user.articles_count > 0 %>

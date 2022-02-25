@@ -37,13 +37,6 @@ describe('Manage User Options', () => {
       });
     });
 
-    it(`should verify a user's email address`, () => {
-      openUserOptions(() => {
-        cy.findByRole('button', { name: 'Verify email address' }).click();
-      });
-      verifyAndDismissUserUpdatedMessage('Verification email sent!');
-    });
-
     it(`should export a user's data to an admin`, () => {
       openUserOptions(() => {
         cy.findByRole('button', { name: 'Export data' }).click();
