@@ -12,6 +12,11 @@ module CachingHeaders
   #  Surrogate-Control: 'max-age: 86400' - 1 day in seconds
   # custom config example:
   #  {cache_control: 'public, no-cache, maxage=xyz', surrogate_control: 'max-age: 100'}
+  #
+  # @note If you call this for a public Forem, you won't have access to data about the current user.
+  #       You can check if they are authenticated but nothing else.
+  #
+  # @see {EdgeCacheSafetyCheck#current_user} for impact on "current_user"
   def set_cache_control_headers(
     max_age = 1.day.to_i,
     surrogate_control: nil,

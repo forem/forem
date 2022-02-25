@@ -8,6 +8,7 @@ module Admin
       merge_user_id add_credits remove_credits
       add_org_credits remove_org_credits
       organization_id identity_id
+      credit_action credit_amount
     ].freeze
 
     EMAIL_ALLOWED_PARAMS = %i[
@@ -35,28 +36,18 @@ module Admin
     def show
       @user = User.find(params[:id])
 
-      if FeatureFlag.enabled?(:new_admin_members, current_user)
-        render "admin/users/new/show"
-      else
-        @organizations = @user.organizations.order(:name)
-        @notes = @user.notes.order(created_at: :desc).limit(10)
-        @organization_memberships = @user.organization_memberships
-          .joins(:organization)
-          .order("organizations.name" => :asc)
-          .includes(:organization)
-        @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
-
-        render :show
+      if FeatureFlag.enabled?(:admin_member_view)
+        set_current_tab(params[:tab])
+        set_feedback_messages
+        set_related_reactions
       end
+      set_user_details
     end
 
     def update
       @user = User.find(params[:id])
 
-      # TODO: [@rhymes] in the new Admin Member view this logic has been moved
-      # to Admin::Users::Tools::CreditsController and Admin::Users::Tools::NotesController#create.
-      # It can eventually be removed when we transition away from the old Admin UI
-      Credits::Manage.call(@user, user_params)
+      Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
 
       redirect_to admin_user_path(params[:id])
@@ -77,7 +68,7 @@ module Admin
       else
         flash[:danger] = response.error_message
       end
-      redirect_to edit_admin_user_path(@user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     def user_status
@@ -88,14 +79,14 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to edit_admin_user_path(@user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     def export_data
       user = User.find(params[:id])
       send_to_admin = params[:send_to_admin].to_boolean
       if send_to_admin
-        email = ::ForemInstance.email
+        email = ::ForemInstance.contact_email
         receiver = "admin"
       else
         email = user.email
@@ -103,13 +94,13 @@ module Admin
       end
       ExportContentWorker.perform_async(user.id, email)
       flash[:success] = "Data exported to the #{receiver}. The job will complete momentarily."
-      redirect_to edit_admin_user_path(user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = "This user is being banished in the background. The job will complete soon."
-      redirect_to edit_admin_user_path(params[:id])
+      redirect_to admin_user_path(params[:id])
     end
 
     def full_delete
@@ -131,7 +122,7 @@ module Admin
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
       flash[:success] = "Posts are being unpublished in the background. The job will complete soon."
-      redirect_to admin_users_path
+      redirect_to admin_user_path(params[:id])
     end
 
     def merge
@@ -142,7 +133,7 @@ module Admin
         flash[:danger] = e.message
       end
 
-      redirect_to edit_admin_user_path(@user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
     def remove_identity
@@ -163,11 +154,9 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to edit_admin_user_path(@user.id)
+      redirect_to admin_user_path(params[:id])
     end
 
-    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
-    # once the HTML response isn't required anymore
     def send_email
       email_params = {
         email_body: send_email_params[:email_body],
@@ -181,7 +170,7 @@ module Admin
 
           format.html do
             flash[:success] = message
-            redirect_back(fallback_location: admin_users_path)
+            redirect_back(fallback_location: admin_user_path(params[:id]))
           end
 
           format.js { render json: { result: message }, content_type: "application/json" }
@@ -192,7 +181,7 @@ module Admin
 
           format.html do
             flash[:danger] = message
-            redirect_back(fallback_location: admin_users_path)
+            redirect_back(fallback_location: admin_user_path(params[:id]))
           end
 
           format.js do
@@ -212,8 +201,6 @@ module Admin
       end
     end
 
-    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
-    # once the HTML response isn't required anymore
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
@@ -221,7 +208,7 @@ module Admin
 
           format.html do
             flash[:success] = message
-            redirect_back(fallback_location: admin_users_path)
+            redirect_back(fallback_location: admin_user_path(params[:id]))
           end
 
           format.js { render json: { result: message }, content_type: "application/json" }
@@ -232,7 +219,7 @@ module Admin
         respond_to do |format|
           format.html do
             flash[:danger] = message
-            redirect_back(fallback_location: admin_users_path)
+            redirect_back(fallback_location: admin_user_path(params[:id]))
           end
 
           format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
@@ -248,6 +235,18 @@ module Admin
     end
 
     private
+
+    def set_user_details
+      @organizations = @user.organizations.order(:name)
+      @notes = @user.notes.order(created_at: :desc).limit(10)
+      @organization_memberships = @user.organization_memberships
+        .joins(:organization)
+        .order("organizations.name" => :asc)
+        .includes(:organization)
+      @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
+
+      render :show
+    end
 
     def add_note
       Note.create(
@@ -284,6 +283,31 @@ module Admin
     def send_email_params
       params.require(EMAIL_ALLOWED_PARAMS)
       params.permit(EMAIL_ALLOWED_PARAMS)
+    end
+
+    def credit_params
+      return user_params unless FeatureFlag.enabled?(:admin_member_view)
+
+      credit_params = {}
+      if user_params[:credit_action] == "Add"
+        credit_params[:add_credits] = user_params[:credit_amount]
+        flash[:success] = "Credits have been added!"
+      end
+
+      if user_params[:credit_action] == "Remove"
+        credit_params[:remove_credits] = user_params[:credit_amount]
+        flash[:success] = "Credits have been removed."
+      end
+
+      credit_params
+    end
+
+    def set_current_tab(current_tab = "overview")
+      @current_tab = if current_tab.in? Constants::UserDetails::TAB_LIST.map(&:downcase)
+                       current_tab
+                     else
+                       "overview"
+                     end
     end
   end
 end

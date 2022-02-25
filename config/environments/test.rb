@@ -7,6 +7,8 @@ require "active_support/core_ext/integer/time"
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
+  config.app_domain = ENV["APP_DOMAIN"] || "test.host"
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # cache_classes should be false when Spring is enabled, and true when it's disabled
@@ -46,7 +48,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
 
   # Additional setting to make test work. This is possibly useless and can be deleted.
-  config.action_mailer.default_url_options = { host: "test.host" }
+  config.action_mailer.default_url_options = { host: config.app_domain }
 
   # Randomize the order test cases are executed.
   config.active_support.test_order = :random
@@ -81,7 +83,7 @@ Rails.application.configure do
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
-    # @citizen428: We have not yet resolved all user - profile preloads related to profile generalization
+    # TODO: We have not yet resolved all user - profile preloads related to profile generalization
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "Profile", association: :user)
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :setting)
@@ -92,5 +94,4 @@ Rails.application.configure do
   end
 end
 # rubocop:enable Metrics/BlockLength
-
-Rails.application.routes.default_url_options = { host: "test.host" }
+Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }

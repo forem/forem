@@ -49,7 +49,7 @@
       <%= crayons_icon_tag(:checkmark, class: "vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </button>
     <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
-      <span class="how-this-works-section">
+      <span class="additional-subtext-section py-3">
         <%= t("views.moderations.actions.how") %>
       </span>
     </a>
@@ -111,7 +111,7 @@
           <button class="crayons-btn" id="tag-adjust-submit" type="submit"><%= t("views.moderations.actions.adjust.submit") %></button>
         </form>
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
-          <span class="how-this-works-section">
+          <span class="additional-subtext-section py-3">
             <%= t("views.moderations.actions.how") %>
           </span>
         </a>
@@ -154,22 +154,55 @@
       </button>
       <% end %>
       <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
-        <span class="how-this-works-section">
+        <span class="additional-subtext-section py-3">
           <%= t("views.moderations.actions.how") %>
         </span>
       </a>
     </div>
 
     <% if current_user.any_admin? && @moderatable.published %>
-      <div class="unpublish-article">
-        <button
-          class="crayons-btn crayons-btn--danger"
-          id="unpublish-article-btn"
-          data-article-id="<%= @moderatable.id %>"
-          data-article-author="<%= @moderatable.username %>"
-          data-article-slug="<%= @moderatable.slug %>">
-          <%= t("views.moderations.actions.unpublish") %>
-        </button>
+      <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
+        <div class="label-wrapper">
+          <div class="icon circle centered-icon">
+            <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
+          </div>
+          <header>
+            <h2><%= t("views.moderations.actions.admin.heading") %></h2>
+            <h3><%= t("views.moderations.actions.admin.subtitle") %></h3>
+          </header>
+        </div>
+        <div class="toggle-chevron-container">
+          <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
+        </div>
+      </button>
+
+      <div id="admin-action-options" class="admin-action-options dropdown-options hidden">
+        <% @recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
+        <div class="article-admin-action mt-2">
+          <button
+            class="c-btn c-btn--primary w-100 <%= "crayons-btn--destructive" if @moderatable.featured %>"
+            id="feature-article-btn"
+            data-article-featured="<%= @moderatable.featured %>"
+            data-article-id="<%= @moderatable.id %>"
+            data-article-author="<%= @moderatable.username %>"
+            data-article-slug="<%= @moderatable.slug %>">
+            <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
+          </button>
+          <div class="block additional-subtext-section py-4 pt-2">
+            <%= t("views.moderations.actions.featured_past_day", count: @recent_featured_count) %>
+          </div>
+
+        </div>
+        <div class="article-admin-action">
+          <button
+            class="c-btn c-btn--primary c-btn--destructive w-100"
+            id="unpublish-article-btn"
+            data-article-id="<%= @moderatable.id %>"
+            data-article-author="<%= @moderatable.username %>"
+            data-article-slug="<%= @moderatable.slug %>">
+            <%= t("views.moderations.actions.unpublish") %>
+          </button>
+        </div>
       </div>
     <% end %>
   </div>

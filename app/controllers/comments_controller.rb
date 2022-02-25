@@ -64,7 +64,7 @@ class CommentsController < ApplicationController
 
       if @comment.invalid?
         @comment.destroy
-        render json: { error: "comment already exists" }, status: :unprocessable_entity
+        render json: { error: I18n.t("comments_controller.create.failure") }, status: :unprocessable_entity
         return
       end
 
@@ -77,7 +77,7 @@ class CommentsController < ApplicationController
     )[1])
 
       comment.destroy
-      render json: { error: "comment already exists" }, status: :unprocessable_entity
+      render json: { error: I18n.t("comments_controller.create.failure") }, status: :unprocessable_entity
     else
       message = @comment.errors_as_sentence
       render json: { error: message }, status: :unprocessable_entity
@@ -91,7 +91,7 @@ class CommentsController < ApplicationController
   rescue StandardError => e
     skip_authorization
 
-    message = "There was an error in your markdown: #{e}"
+    message = I18n.t("comments_controller.markdown", error: e)
     render json: { error: message }, status: :unprocessable_entity
   end
 
@@ -106,26 +106,23 @@ class CommentsController < ApplicationController
     @comment.user_id = moderator.id
     @comment.body_markdown = response_template.content
     authorize @comment
-    permit_commenter
 
     if @comment.save
       Notification.send_new_comment_notifications_without_delay(@comment)
       Mention.create_all(@comment)
 
-      render json: { status: "created", path: @comment.path }
+      render json: { status: I18n.t("comments_controller.create.success"), path: @comment.path }
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
                                     commentable_id: @comment.commentable.id,
                                     ancestry: @comment.ancestry)[0])
-      render json: { status: "comment already exists" }, status: :conflict
+      render json: { status: I18n.t("comments_controller.create.failure") }, status: :conflict
     else
       render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
     end
-  rescue ModerationUnauthorizedError => e
-    render json: { error: e.message }, status: :unprocessable_entity
   rescue StandardError => e
     skip_authorization
 
-    message = "There was an error in your markdown: #{e}"
+    message = I18n.t("comments_controller.markdown", error: e)
     render json: { error: "error", status: message }, status: :unprocessable_entity
   end
 
@@ -169,7 +166,7 @@ class CommentsController < ApplicationController
     end
   rescue StandardError => e
     @commentable = @comment.commentable
-    flash.now[:error] = "There was an error in your markdown: #{e}"
+    flash.now[:error] = I18n.t("comments_controller.markdown", error: e)
     render :edit
   end
 
@@ -186,7 +183,7 @@ class CommentsController < ApplicationController
     redirect = @comment.commentable&.path || user_path(current_user)
     # NOTE: Brakeman doesn't like redirecting to a path, because of a "possible
     # unprotected redirect". Using URI.parse().path is the recommended workaround.
-    redirect_to URI.parse(redirect).path, notice: "Comment was successfully deleted."
+    redirect_to Addressable::URI.parse(redirect).path, notice: I18n.t("comments_controller.delete.notice")
   end
 
   def delete_confirm
@@ -202,7 +199,7 @@ class CommentsController < ApplicationController
       parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
-      processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
+      processed_html = I18n.t("comments_controller.markdown_html", error: e)
     end
     respond_to do |format|
       format.json { render json: { processed_html: processed_html }, status: :ok }
@@ -262,8 +259,8 @@ class CommentsController < ApplicationController
     if @comment.save
       redirect_url = @comment.commentable&.path
       if redirect_url
-        flash[:success] = "Comment was successfully deleted."
-        redirect_to URI.parse(redirect_url).path
+        flash[:success] = I18n.t("comments_controller.delete.notice")
+        redirect_to Addressable::URI.parse(redirect_url).path
       else
         redirect_to_comment_path
       end
@@ -300,7 +297,7 @@ class CommentsController < ApplicationController
   end
 
   def redirect_to_comment_path
-    flash[:error] = "Something went wrong; Comment NOT deleted."
+    flash[:error] = I18n.t("comments_controller.delete.error")
     redirect_to "#{@comment.path}/mod"
   end
 
@@ -315,7 +312,7 @@ class CommentsController < ApplicationController
   def permit_commenter
     return unless user_blocked?
 
-    raise ModerationUnauthorizedError, "Not allowed due to moderation action"
+    raise ModerationUnauthorizedError, I18n.t("comments_controller.moderated")
   end
 
   def user_blocked?

@@ -1,38 +1,40 @@
-<% if params[:action] == 'edit' %>
-  <div class="form-group">
-    <%= label_tag :user_id, "User ID:" %>
-    <%= text_field_tag :user_id, @html_variant.user_id, class: "form-control", disabled: true %>
+<div class="flex flex-col gap-4 mb-4">
+  <% if params[:action] == 'edit' %>
+    <div class="crayons-field">
+      <%= label_tag :user_id, "User ID:", class: "crayons-field__label" %>
+      <%= text_field_tag :user_id, @html_variant.user_id, class: "crayons-textfield", disabled: true %>
+    </div>
+  <% end %>
+
+  <div class="crayons-field">
+    <%= label_tag :name, "Name:", class: "crayons-field__label" %>
+    <%= text_field_tag :name, @html_variant.name, class: "crayons-textfield" %>
   </div>
-<% end %>
 
-<div class="form-group">
-  <%= label_tag :name, "Name:" %>
-  <%= text_field_tag :name, @html_variant.name, class: "form-control" %>
-</div>
-
-<div class="form-group">
-  <%= label_tag :group, "Group:" %>
-  <%= select_tag :group, options_for_select(HtmlVariant::GROUP_NAMES, selected: @html_variant.group) %>
-</div>
-
-<div class="form-group">
-  <%= label_tag :target_tag, "Target Tag:" %>
-  <%= text_field_tag :target_tag, @html_variant.target_tag, size: "100x10", class: "form-control" %>
-</div>
-
-<div class="form-group">
-  <%= label_tag :html, "HTML:" %>
-  <%= text_area_tag :html, @html_variant.html, size: "100x10", class: "form-control" %>
-</div>
-
-<div class="form-group">
-  <%= label_tag :published, "Published:" %>
-  <%= select_tag :published, options_for_select([false, true], selected: @html_variant.published) %>
-</div>
-
-<% if params[:action] == 'edit' %>
-  <div class="form-group">
-    <%= label_tag :approved, "Approved:" %>
-    <%= select_tag :approved, options_for_select([false, true], selected: @html_variant.approved) %>
+  <div class="crayons-field">
+    <%= label_tag :group, "Group:", class: "crayons-field__label" %>
+    <%= select_tag :group, options_for_select(HtmlVariant::GROUP_NAMES, selected: @html_variant.group), class: "crayons-select" %>
   </div>
-<% end %>
+
+  <div class="crayons-field">
+    <%= label_tag :target_tag, "Target Tag:", class: "crayons-field__label" %>
+    <%= text_field_tag :target_tag, @html_variant.target_tag, size: "100x10", class: "crayons-textfield" %>
+  </div>
+
+  <div class="crayons-field">
+    <%= label_tag :html, "HTML:", class: "crayons-field__label" %>
+    <%= text_area_tag :html, @html_variant.html, size: "100x10", class: "crayons-textfield" %>
+  </div>
+
+  <div class="crayons-field">
+    <%= label_tag :published, "Published:", class: "crayons-field__label" %>
+    <%= select_tag :published, options_for_select([false, true], selected: @html_variant.published), class: "crayons-select" %>
+  </div>
+
+  <% if params[:action] == 'edit' %>
+    <div class="crayons-field">
+      <%= label_tag :approved, "Approved:", class: "crayons-field__label" %>
+      <%= select_tag :approved, options_for_select([false, true], selected: @html_variant.approved), class: "crayons-select" %>
+    </div>
+  <% end %>
+</div>

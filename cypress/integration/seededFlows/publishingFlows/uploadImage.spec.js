@@ -10,7 +10,7 @@ describe('Upload image', () => {
       });
     });
 
-    it('Uploads an image in the editor', () => {
+    it('Uploads an image in the editor and copies the markdown', () => {
       cy.findByRole('form', { name: 'Edit post' }).within(() => {
         cy.findByLabelText(/Upload image/).attachFile(
           '/images/admin-image.png',
@@ -18,9 +18,16 @@ describe('Upload image', () => {
       });
 
       // Confirm the UI has updated to show the uploaded state
-     cy.findByRole('button', {
+      cy.findByRole('button', {
         name: 'Copy markdown for image',
-      }).should('exist');
+      }).click();
+
+      cy.findByText('Copied!').should('exist');
+
+      cy.window()
+        .its('navigator.clipboard')
+        .invoke('readText')
+        .should('contain', '![Image description](');
     });
   });
 

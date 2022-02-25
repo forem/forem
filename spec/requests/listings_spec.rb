@@ -196,8 +196,7 @@ RSpec.describe "/listings", type: :request do
       it "does not subtract credits or create a listing if the listing is not valid" do
         expect do
           post "/listings", params: invalid_params
-        end.to change(Listing, :count).by(0)
-          .and change(user.credits.spent, :size).by(0)
+        end.to not_change(Listing, :count).and not_change(user.credits.spent, :size)
       end
     end
 
@@ -333,9 +332,10 @@ RSpec.describe "/listings", type: :request do
     context "when user is suspended" do
       it "raises error" do
         user.add_role(:suspended)
-        expect do
-          post "/listings", params: listing_params
-        end.to raise_error(SuspendedError)
+
+        post "/listings", params: listing_params
+
+        expect(response).to have_http_status :forbidden
       end
     end
 

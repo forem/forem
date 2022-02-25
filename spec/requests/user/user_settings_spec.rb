@@ -388,7 +388,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response).to redirect_to("/settings/account")
 
         error =
-          "An error occurred. Please try again or send an email to: #{ForemInstance.email}"
+          "An error occurred. Please try again or send an email to: #{ForemInstance.contact_email}"
         expect(flash[:error]).to eq(error)
       end
 
@@ -431,7 +431,7 @@ RSpec.describe "UserSettings", type: :request do
         delete users_remove_identity_path, params: { provider: provider }
 
         error =
-          "An error occurred. Please try again or send an email to: #{ForemInstance.email}"
+          "An error occurred. Please try again or send an email to: #{ForemInstance.contact_email}"
         expect(flash[:error]).to eq(error)
       end
 

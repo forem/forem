@@ -2,9 +2,13 @@ module Constants
   module Settings
     module General
       IMAGE_PLACEHOLDER = "https://url/image.png".freeze
-      SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
       DETAILS = {
+        contact_email: {
+          description: "Used for contact links. Please provide an email address where users " \
+                       "can get in touch with you or your team.",
+          placeholder: "hello@example.com"
+        },
         credit_prices_in_cents: {
           small: {
             description: "Price for small credit purchase (<10 credits).",
@@ -39,11 +43,6 @@ module Constants
           description: "Used as a secondary logo in places like the sign in modals, onboarding, Apple touch icons. " \
                        "Recommended minimum of 512x512px",
           placeholder: IMAGE_PLACEHOLDER
-        },
-        logo_svg: {
-          description: "This is the logo currently used on the upper left-hand corner of your Forem. " \
-                       "However, after the release it will be deprecated in favor of the Logo above.",
-          placeholder: SVG_PLACEHOLDER
         },
         main_social_image: {
           description: "Used as the main image in social networks and OpenGraph. Recommended aspect ratio " \

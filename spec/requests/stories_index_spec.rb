@@ -231,6 +231,18 @@ RSpec.describe "StoriesIndex", type: :request do
         create(:article, approved: false, body_markdown: u_body, score: 1)
       end
 
+      it "displays display name when it is set" do
+        allow(Settings::Campaign).to receive(:display_name).and_return("Backstreet is back")
+        get "/"
+        expect(response.body).not_to include("Backstreet is back (0)")
+      end
+
+      it "displays Stories fallback when display name is not set" do
+        allow(Settings::Campaign).to receive(:display_name).and_return("")
+        get "/"
+        expect(response.body).not_to include("Stories (0)")
+      end
+
       it "doesn't display posts with the campaign tags when sidebar is disabled" do
         allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
         get "/"

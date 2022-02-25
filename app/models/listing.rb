@@ -99,6 +99,17 @@ class Listing < ApplicationRecord
     Listings::BustCacheWorker.perform_async(id)
   end
 
+  # First tries to purchase the listing with the org's credit. IF that doesn't
+  # work it tries to charge the user instead. The purchasers will be yielded
+  # to the provided block so it can be used for further processing.
+  def purchase(user)
+    purchaser = [organization, user].detect { |who| who&.enough_credits?(cost) }
+    return false unless purchaser
+
+    yield purchaser
+    true
+  end
+
   private
 
   def evaluate_markdown
@@ -115,15 +126,14 @@ class Listing < ApplicationRecord
   def restrict_markdown_input
     markdown_string = body_markdown.to_s
     if markdown_string.scan(/(?=\n)/).count > 12
-      errors.add(:body_markdown,
-                 "has too many linebreaks. No more than 12 allowed.")
+      errors.add(:body_markdown, I18n.t("models.listing.too_many_linebreaks"))
     end
-    errors.add(:body_markdown, "is not allowed to include images.") if markdown_string.include?("![")
-    errors.add(:body_markdown, "is not allowed to include liquid tags.") if markdown_string.include?("{% ")
+    errors.add(:body_markdown, I18n.t("models.listing.image_not_allowed")) if markdown_string.include?("![")
+    errors.add(:body_markdown, I18n.t("models.listing.liquid_not_allowed")) if markdown_string.include?("{% ")
   end
 
   def validate_tags
-    errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
+    errors.add(:tag_list, I18n.t("models.listing.too_many_tags")) if tag_list.length > 8
   end
 
   def create_slug

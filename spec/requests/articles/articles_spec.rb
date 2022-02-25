@@ -11,7 +11,7 @@ RSpec.describe "Articles", type: :request do
       get feed_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.media_type).to eq("application/rss+xml")
+      expect(response.media_type).to eq("application/xml")
     end
 
     it "contains the full app URL" do
@@ -101,8 +101,8 @@ RSpec.describe "Articles", type: :request do
 
       it "contains a user composite profile image tag", :aggregate_failures do
         expect(response.body).to include("<image>")
-        expect(response.body).to include("<url>#{user.profile_image_90}</url>")
-        expect(response.body).to include("<title>#{user.name} profile image</title>")
+        expect(response.body).to include("<url>#{app_url(user.profile_image_90)}</url>")
+        expect(response.body).to include("<title>#{community_name}: #{user.name}</title>")
         expect(response.body).to include("<link>#{URL.user(user)}</link>")
         expect(response.body).to include("</image>")
       end
@@ -127,8 +127,8 @@ RSpec.describe "Articles", type: :request do
 
       it "contains an organization composite profile image tag", :aggregate_failures do
         expect(response.body).to include("<image>")
-        expect(response.body).to include("<url>#{organization.profile_image_90}</url>")
-        expect(response.body).to include("<title>#{organization.name} profile image</title>")
+        expect(response.body).to include("<url>#{app_url(organization.profile_image_90)}</url>")
+        expect(response.body).to include("<title>#{community_name}: #{organization.name}</title>")
         expect(response.body).to include("<link>#{URL.user(organization)}</link>")
         expect(response.body).to include("</image>")
       end
@@ -230,10 +230,10 @@ RSpec.describe "Articles", type: :request do
         expect(rss_feed.entries.first.categories).to include(tag.name)
       end
 
-      it "contains the full app URL" do
+      it "contains the full tag URL" do
         get tag_feed_path(tag.name)
 
-        expect(response.body).to include("<link>#{URL.url}</link>")
+        expect(response.body).to include("<link>#{tag_url(tag)}</link>")
       end
 
       it "does not contain image tag" do
@@ -333,19 +333,6 @@ RSpec.describe "Articles", type: :request do
       get "#{article.path}/stats"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Stats for Your Article")
-    end
-  end
-
-  describe "GET /delete_confirm" do
-    before { sign_in user }
-
-    context "without an article" do
-      it "renders not_found" do
-        article = create(:article, user: user)
-        expect do
-          get "#{article.path}_1/delete_confirm"
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
     end
   end
 end

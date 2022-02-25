@@ -75,7 +75,7 @@ class Page < ApplicationRecord
   def body_present
     return unless body_markdown.blank? && body_html.blank? && body_json.blank?
 
-    errors.add(:body_markdown, "must exist if body_html or body_json doesn't exist.")
+    errors.add(:body_markdown, I18n.t("models.page.body_must_exist"))
   end
 
   # As there can only be one global landing page, we want to ensure that

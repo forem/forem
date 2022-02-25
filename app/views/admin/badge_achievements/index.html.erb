@@ -8,17 +8,17 @@
     <strong>Note: If you remove a badge that is automatically rewarded it will simply be re-awarded despite being removed.</strong>
   </div>
 
-  <div class="flex">
+  <div class="flex crayons-card crayons-card--secondary p-2">
     <div>
-      <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
+      <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "c-link c-link--branded c-link--block" %>
     </div>
     <div class="ml-auto">
-      <%= search_form_for @q, url: admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
-
-        <%= f.label :user_id_eq, "User ID", class: "sr-only" %>
-        <%= f.search_field :user_id_eq, placeholder: "User ID", class: "form-control mx-3" %>
-
-        <%= f.submit "Search", class: "btn btn-secondary" %>
+      <%= search_form_for @q, url: admin_badge_achievements_path, class: "flex flex-row gap-1 items-center" do |f| %>
+        <div class="crayons-field flex-row items-center gap-2">
+          <%= f.label :user_id_eq, "Search by user ID", class: "crayons-field__label whitespace-nowrap" %>
+          <%= f.search_field :user_id_eq, placeholder: "1234", class: "crayons-textfield mt-0" %>
+        </div>
+        <%= f.submit "Search", class: "c-btn" %>
       <% end %>
     </div>
   </div>

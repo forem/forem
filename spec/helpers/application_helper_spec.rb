@@ -28,6 +28,102 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
+  describe "#display_navigation_link?" do
+    subject(:method_call) { helper.display_navigation_link?(link: link) }
+
+    let(:link) { build(:navigation_link, display_only_when_signed_in: display_only_when_signed_in) }
+
+    before do
+      allow(helper).to receive(:user_signed_in?).and_return(user_signed_in)
+      allow(helper).to receive(:navigation_link_is_for_an_enabled_feature?)
+        .with(link: link)
+        .and_return(navigation_link_is_for_an_enabled_feature)
+    end
+
+    context "when user signed in and link requires signin and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_only_when_signed_in) { true }
+      let(:user_signed_in) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user signed in and link requires signin and feature disabled" do
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { true }
+      let(:navigation_link_is_for_an_enabled_feature) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when user signed in and link **does not** require signin and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user signed in and link **does not** require signin and feature disabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { false }
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { true }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when user **not** signed in and link requires signin and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_only_when_signed_in) { true }
+      let(:user_signed_in) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when user **not** signed in and link **does not** require signin and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { false }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user **not** signed in and link **does not** require signin and feature disabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { false }
+      let(:display_only_when_signed_in) { false }
+      let(:user_signed_in) { false }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe "#navigation_link_is_for_an_enabled_feature?" do
+    subject(:method_call) { helper.navigation_link_is_for_an_enabled_feature?(link: link) }
+
+    let(:url) { URL.url("/somehwere") }
+    let(:link) { build(:navigation_link, url: url) }
+
+    context "when Listing feature is enabled" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(true) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when Listing feature is disabled and link not for listing" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when Listing feature is disabled and link is for /listings" do
+      let(:url) { URL.url("/listings") }
+
+      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe "#beautified_url" do
     it "strips the protocol" do
       expect(helper.beautified_url("https://github.com")).to eq("github.com")
@@ -120,7 +216,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "works when called with an URI object" do
-      uri = URI::Generic.build(path: "resource_admin", fragment: "test")
+      uri = URI::Generic.build(path: "resource_admin", fragment: "test").to_s
       expect(app_url(uri)).to eq("https://dev.to/resource_admin#test")
     end
   end
@@ -142,24 +238,24 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe "#email_link" do
+  describe "#contact_link" do
     let(:default_email) { "hi@dev.to" }
 
     before do
-      allow(ForemInstance).to receive(:email).and_return(default_email)
+      allow(ForemInstance).to receive(:contact_email).and_return(default_email)
     end
 
     it "returns an 'a' tag" do
-      expect(helper.email_link).to have_selector("a")
+      expect(helper.contact_link).to have_selector("a")
     end
 
     it "sets the correct href" do
-      expect(helper.email_link).to have_link(href: "mailto:#{default_email}")
+      expect(helper.contact_link).to have_link(href: "mailto:#{default_email}")
     end
 
     it "has the correct text in the a tag" do
-      expect(helper.email_link(text: "Link Name")).to have_text("Link Name")
-      expect(helper.email_link).to have_text(default_email)
+      expect(helper.contact_link(text: "Link Name")).to have_text("Link Name")
+      expect(helper.contact_link).to have_text(default_email)
     end
 
     it "returns an href with additional_info parameters" do
@@ -170,7 +266,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
       link = "<a href=\"mailto:#{default_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
              "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
-      expect(email_link(text: "text", additional_info: additional_info)).to eq(link)
+      expect(contact_link(text: "text", additional_info: additional_info)).to eq(link)
     end
   end
 

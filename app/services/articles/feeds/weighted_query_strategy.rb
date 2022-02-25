@@ -119,7 +119,7 @@ module Articles
         # Weight to give to the number of comments on the article.
         comments_count_factor: {
           clause: "articles.comments_count",
-          cases: [[0, 0.9], [1, 0.92], [2, 0.94], [3, 0.96], [4, 0.98]],
+          cases: (0..9).map { |n| [n, 0.8 + (0.02 * n)] },
           fallback: 1,
           requires_user: false,
           group_by: "articles.comments_count"
@@ -189,8 +189,8 @@ module Articles
         # Weight to give for the number of intersecting tags the given
         # user follows and the article has.
         matching_tags_factor: {
-          clause: "COUNT(followed_tags.follower_id)",
-          cases: [[0, 0.75], [1, 0.9]],
+          clause: "LEAST(10.0, SUM(followed_tags.points))::integer",
+          cases: (0..9).map { |n| [n, 0.70 + (0.0303 * n)] },
           fallback: 1,
           requires_user: true,
           joins: ["LEFT OUTER JOIN taggings
@@ -620,19 +620,24 @@ module Articles
       end
 
       def inject_config_ab_test(valid_method_name, scoring_config)
-        return scoring_config unless valid_method_name == :matching_tags_factor # Only proceed on this one factor
+        return scoring_config unless valid_method_name == :daily_decay_factor # Only proceed on this one factor
         return scoring_config if @strategy == AbExperiment::ORIGINAL_VARIANT # Don't proceed if not testing new strategy
 
         # Rewards comment count with slightly more weight up to 10 comments.
         # Testing two case weights beyond what we currently have
-        scoring_config[:clause] = "LEAST(10.0, SUM(followed_tags.points))::integer"
         scoring_config[:cases] = case @strategy
-                                 when "tag_follow_points_maximum_spectrum"
-                                   (0..9).map { |n| [n, 0.70 + (n / 33.0)] }
-                                 when "tag_follow_points_medium_spectrum"
-                                   (0..9).map { |n| [n, 0.77 + (n / 44.0)] }
-                                 else # Minimum variance (i.e. between 0.88 and 1 here)
-                                   (0..9).map { |n| [n, 0.88 + (n / 98.0)] }
+                                 when "slightly_more_recent_articles"
+                                   [[0, 1], [1, 0.98], [2, 0.975],
+                                    [3, 0.97], [4, 0.965], [5, 0.96],
+                                    [6, 0.955], [7, 0.95], [8, 0.945],
+                                    [9, 0.94], [10, 0.935], [11, 0.93],
+                                    [12, 0.925], [13, 0.92], [14, 0.915]]
+                                 else # much_more_recent_articles
+                                   [[0, 1], [1, 0.975], [2, 0.965],
+                                    [3, 0.955], [4, 0.945], [5, 0.935],
+                                    [6, 0.925], [7, 0.915], [8, 0.905],
+                                    [9, 0.895], [10, 0.885], [11, 0.875],
+                                    [12, 0.865], [13, 0.855], [14, 0.845]]
                                  end
         scoring_config
       end
