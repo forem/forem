@@ -12,7 +12,8 @@ import {
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
-import { MentionAutocompleteTextArea } from '@crayons/MentionAutocompleteTextArea';
+// import { MentionAutocompleteTextArea } from '@crayons/MentionAutocompleteTextArea';
+import { AutocompleteTriggerTextArea } from '../../crayons/MentionAutocompleteTextArea/NewMentionAutocompleteTextArea';
 
 function handleImageSuccess(textAreaRef) {
   return function (response) {
@@ -74,9 +75,13 @@ export const EditorBody = ({
       className="crayons-article-form__body drop-area text-padding"
     >
       <Toolbar version={version} textAreaId="article_body_markdown" />
-      <MentionAutocompleteTextArea
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        cancelCharactersRegex={/[^a-zA-Z0-9]/}
         ref={textAreaRef}
-        fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+        fetchSuggestions={(username) =>
+          fetchSearch('usernames', { username }).then(({ result }) => result)
+        }
         autoResize
         onChange={onChange}
         onFocus={switchHelpContext}
