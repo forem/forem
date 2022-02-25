@@ -213,4 +213,9 @@ RSpec.describe Tag, type: :model do
       expect(described_class.new.points).to eq(0)
     end
   end
+
+  # [@jeremyf] TODO: In a future state, we'll commit to what this will be.  But for now, we're
+  #            relying on this as a point of indirection for refactoring our code to favor
+  #            accessible tag names.
+  it { is_expected.to respond_to(:accessible_name) }
 end
