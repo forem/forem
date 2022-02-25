@@ -48,14 +48,10 @@ module UnifiedEmbed
       http = Net::HTTP.new(uri.host, uri.port)
       response = http.get(uri.request_uri)
 
-      return opengraph_fallback(link) if response.is_a?(Net::HTTPSuccess)
+      # eventually, this error will be replaced with the fallback OpenGrapg embed
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.unsupported_url") if response.is_a?(Net::HTTPSuccess)
 
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
-    end
-
-    def self.opengraph_fallback(link)
-      # doing this for now, since not implementing fallback yet
-      raise StandardError, "OpenGraph fallback for #{link}"
     end
   end
 end
