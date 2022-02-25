@@ -23,24 +23,25 @@ module UnifiedEmbed
     # @return [LiquidTagBase]
     def self.new(tag_name, link, parse_context)
       stripped_link = ActionController::Base.helpers.strip_tags(link).strip
-      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_link)
-      # If the link does not match the embed registry, we check if the link
+
+      # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
       # If the link is invalid, we raise an error encouraging the user to
       # check their link and try again.
-      # If the link is valid, we fallback to using OpenGraph/TwitterCard
-      # metadata (if available) to render an embed.
+      validated_link = validate_link(stripped_link)
+      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
+
+      # If the link is valid but doesn't match the registry, we return
+      # an "unsupported URL" error. Eventually we shall render a fallback
+      # embed using OpenGraph/TwitterCard metadata (if available).
       # If there are no OG metatags, then we render an A-tag. Since the link
       # has been validated, at least this A-tag will not 404.
-
-      # raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") unless klass
-
-      validate_link(stripped_link) unless klass
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.unsupported_url") unless klass
 
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
-      klass.__send__(:new, tag_name, stripped_link, parse_context)
+      klass.__send__(:new, tag_name, validated_link, parse_context)
     end
 
     def self.validate_link(link)
@@ -48,10 +49,11 @@ module UnifiedEmbed
       http = Net::HTTP.new(uri.host, uri.port)
       response = http.get(uri.request_uri)
 
-      # eventually, this error will be replaced with the fallback OpenGrapg embed
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.unsupported_url") if response.is_a?(Net::HTTPSuccess)
+      unless response.is_a?(Net::HTTPSuccess)
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+      end
 
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+      link
     end
   end
 end
