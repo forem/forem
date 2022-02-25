@@ -151,6 +151,7 @@ Rails.application.routes.draw do
       collection do
         get "/onboarding", to: "tags#onboarding"
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
+        get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]

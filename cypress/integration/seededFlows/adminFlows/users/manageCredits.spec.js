@@ -34,9 +34,9 @@ describe('Manage User Credits', () => {
           name: 'Amount of credits to add or remove',
         }).type('10');
         cy.findByRole('textbox', {
-          name: 'Why are you adjusting credits?',
+          name: 'Add a note to this action:',
         }).type('some reason');
-        cy.findByRole('button', { name: 'Adjust' }).click();
+        cy.findByRole('button', { name: 'Adjust balance' }).click();
       });
 
       cy.getModal().should('not.exist');
@@ -53,9 +53,9 @@ describe('Manage User Credits', () => {
           name: 'Amount of credits to add or remove',
         }).type('1');
         cy.findByRole('textbox', {
-          name: 'Why are you adjusting credits?',
+          name: 'Add a note to this action:',
         }).type('some reason');
-        cy.findByRole('button', { name: 'Adjust' }).click();
+        cy.findByRole('button', { name: 'Adjust balance' }).click();
       });
 
       cy.getModal().should('not.exist');
@@ -74,9 +74,9 @@ describe('Manage User Credits', () => {
           .as('credits')
           .type('10');
         cy.findByRole('textbox', {
-          name: 'Why are you adjusting credits?',
+          name: 'Add a note to this action:',
         }).type('some reason');
-        cy.findByRole('button', { name: 'Adjust' }).click();
+        cy.findByRole('button', { name: 'Adjust balance' }).click();
       });
 
       cy.getModal().should('exist');

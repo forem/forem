@@ -33,9 +33,14 @@ module Api
         render json: { error: "not found", status: 404 }, status: :not_found
       end
 
+      # @note This method is performing both authentication and authorization.  The user suspended
+      #       should be something added to the corresponding pundit policy.
       def authenticate!
-        @user = authenticated_user
-        return error_unauthorized unless @user && !@user.suspended?
+        user = authenticate_with_api_key_or_current_user
+        return error_unauthorized unless user
+        return error_unauthorized if @user.suspended?
+
+        true
       end
 
       def authorize_super_admin
@@ -43,15 +48,21 @@ module Api
       end
 
       # Checks if the user is authenticated, sets @user to nil otherwise
+      #
+      # @return [User, NilClass]
       def authenticate_with_api_key_or_current_user
         @user = authenticate_with_api_key || current_user
       end
 
-      # Checks if the user is authenticated, if so sets the variable @user
-      # Returns HTTP 401 Unauthorized otherwise
+      # Checks if the user is authenticated, if not respond with an HTTP 401 Unauthorized
+      #
+      # @see {authenticate_with_api_key_or_current_user}
       def authenticate_with_api_key_or_current_user!
-        @user = authenticate_with_api_key || current_user
-        error_unauthorized unless @user
+        # [@jeremyf] Note, I'm not relying on the other method setting the instance variable, but
+        # instead relying on the returned value.  This insulates us from an implementation detail
+        # (namely should we use @user or current_user, which is a bit soupy in the API controller).
+        user = authenticate_with_api_key_or_current_user
+        error_unauthorized unless user
       end
 
       private
@@ -67,14 +78,6 @@ module Api
         # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
         secure_secret = ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
         return api_secret.user if secure_secret
-      end
-
-      def authenticated_user
-        if request.headers["api-key"]
-          authenticate_with_api_key
-        elsif current_user
-          current_user
-        end
       end
     end
   end
