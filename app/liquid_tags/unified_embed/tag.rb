@@ -51,7 +51,7 @@ module UnifiedEmbed
       path = uri.path.presence || "/"
       response = http.request_head(path)
 
-      unless response.is_a?(Net::HTTPSuccess)
+      unless response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPMovedPermanently)
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
       end
 
