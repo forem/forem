@@ -52,7 +52,6 @@ module UnifiedEmbed
       response = http.request_head(path)
 
       unless response.is_a?(Net::HTTPSuccess)
-        # inform user that URL may have typos
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
       end
 
