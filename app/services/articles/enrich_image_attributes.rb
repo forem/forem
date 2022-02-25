@@ -15,9 +15,6 @@ module Articles
       ".podcastliquidtag img", # PodcastTag
     ].join(", ").freeze
 
-    # FastImage will use this number both for read and open timeout
-    TIMEOUT = 10
-
     def self.call(article)
       parsed_html = Nokogiri::HTML.fragment(article.processed_html)
 
@@ -37,20 +34,12 @@ module Articles
 
         next if image.blank?
 
-        attribute_width, attribute_height = image_width_height(img)
-        img["width"] = attribute_width
-        img["height"] = attribute_height
-        img["data-animated"] = true if FastImage.animated?(image, timeout: TIMEOUT, raise_on_failure: false)
+        img_properties = FastImage.new(image, timeout: 10)
+        img["width"], img["height"] = img_properties.size
+        img["data-animated"] = true if img_properties.type == :gif
       end
 
       article.update_columns(processed_html: parsed_html.to_html)
-    end
-
-    def self.image_width_height(img, timeout = TIMEOUT)
-      src = img.attr("src")
-      return unless src
-
-      FastImage.size(src, timeout: timeout, raise_on_failure: false)
     end
 
     def self.retrieve_image_from_uploader_store(src)

@@ -22,6 +22,7 @@ export const Article = ({
   isBookmarked,
   bookmarkClick,
   feedStyle,
+  pinned,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
@@ -82,7 +83,7 @@ export const Article = ({
         <div className="crayons-story__body">
           <div className="crayons-story__top">
             <Meta article={article} organization={article.organization} />
-            {article.pinned && (
+            {pinned && (
               <div
                 className="pinned color-accent-brand fw-bold"
                 data-testid="pinned-article"
@@ -162,4 +163,5 @@ Article.propTypes = {
   isFeatured: PropTypes.bool,
   feedStyle: PropTypes.string,
   bookmarkClick: PropTypes.func.isRequired,
+  pinned: PropTypes.bool,
 };

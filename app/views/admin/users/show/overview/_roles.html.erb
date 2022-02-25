@@ -1,0 +1,63 @@
+<header class="mb-4">
+  <h2 class="crayons-subtitle-2 mb-1 flex items-center">
+    <%= crayons_icon_tag(:badge, title: "Roles", aria_hidden: true, class: "mr-2") %>
+    Roles
+  </h2>
+  <p class="color-secondary">Grant this member permissions by assigning a role. <a href="https://admin.forem.com/docs/forem-basics/user-roles" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about roles">Learn more</a></p>
+</header>
+<% unless @user.roles.any? %>
+  <div class="flex justify-between items-center">
+    <p>No roles assigned yet.</p>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="#add-role">Assign role</button>
+  </div>
+<% else %>
+  <ul class="flex flex-wrap gap-2">
+    <% @user.roles.reject { |role| role.name == "tag_moderator" }.each do |role| %>
+      <li>
+        <% if role.name == "banned" || role.name == "suspended" || role.name == "super_admin" || @user.id == current_user.id %>
+          <button
+            class="c-pill c-pill--description-icon crayons-tooltip__activator cursor-help"
+            type="button"
+            aria-disabled="true">
+            <%= crayons_icon_tag(:lock, class: "c-pill__description-icon", aria_hidden: true, width: 18, height: 18) %>
+            <% if role.resource_name %>
+              <%= role.resource_name.to_s %>
+            <% else %>
+              <%= role_display_name(role) %>
+            <% end %>
+            <span data-testid="tooltip" class="crayons-tooltip__content">You can't remove this role.</span>
+          </button>
+        <% else %>
+          <%= button_to url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: "Are you sure?" }, class: "c-pill c-pill--action-icon" do %>
+            <span class="screen-reader-only">Remove role:</span>
+            <% if role.resource_name %>
+              <%= role.resource_name.to_s %>
+            <% else %>
+              <%= role_display_name(role) %>
+            <% end %>
+            <%= crayons_icon_tag(:x, class: "c-pill__action-icon", aria_hidden: true, width: 18, height: 18) %>
+          <% end %>
+        <% end %>
+      </li>
+    <% end %>
+    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="small" data-modal-content-selector="#add-role">Assign role</button></li>
+  </ul>
+<% end %>
+
+<div id="add-role" class="hidden">
+  <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4", id: nil }) do |f| %>
+    <div class="crayons-field">
+      <%= f.label :user_status, "Role", class: "crayons-field__label" %>
+      <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>
+      <% options["Special Roles"] = Constants::Role::SPECIAL_ROLES if current_user.super_admin? %>
+      <%= f.select(:user_status, grouped_options_for_select(options), { include_blank: "Select role" }, class: "crayons-select") %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :note_for_current_role, "Add a note to this action:", class: "crayons-field__label" %>
+      <%= f.text_area :note_for_current_role, required: true, class: "crayons-textfield", placeholder: "" %>
+    </div>
+    <div>
+      <%= f.button "Add", class: "c-btn c-btn--primary" %>
+    </div>
+  <% end %>
+</div>

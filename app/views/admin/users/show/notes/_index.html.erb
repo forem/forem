@@ -1,0 +1,30 @@
+<div class="flex flex-col h-100">
+  <h2 class="crayons-subtitle-1">Previous notes (<%= @notes.count %>)</h2>
+  <% if @notes.load.empty? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <h3 class="fs-xl fw-normal mb-2">No previous notes found for <%= @user.name %>.</h3>
+      <p class="color-secondary">Any notes added for <%= @user.name %> will be found here. </p>
+    </div>
+  <% else %>
+    <div class="pt-3">
+      <% @notes.each do |note| %>
+        <% author = User.find(note.author_id).username %>
+        <article class="c-list-item flex justify-between gap-4">
+          <h3 class="screen-reader-only">Note by <%= author %> on <%= note.created_at.strftime("%b %e '%y") %></h3>
+          <div>
+            <p><%= note.content %></p>
+            <p class="fs-s color-secondary">
+              <%= note.reason.presence %>
+              <% if note.author_id.present? %>
+                by <span class="fw-medium"><%= author %></span>
+              <% end %>
+            </p>
+          </div>
+          <time datetime="<%= note.created_at.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= note.created_at.strftime("%Y-%m-%d, %H:%M") %>">
+            <%= note.created_at.strftime("%b %e '%y") %>
+          </time>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</div>

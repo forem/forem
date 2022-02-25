@@ -76,7 +76,7 @@ Object {
                         Stella Macejkovic
                       </button>
                       <div
-                        class="profile-preview-card__content crayons-dropdown p-4"
+                        class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
                         data-repositioning-dropdown="true"
                         data-testid="profile-preview-card"
                         id="story-author-preview-content-62407"
@@ -326,7 +326,7 @@ Object {
                       Stella Macejkovic
                     </button>
                     <div
-                      class="profile-preview-card__content crayons-dropdown p-4"
+                      class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
                       data-repositioning-dropdown="true"
                       data-testid="profile-preview-card"
                       id="story-author-preview-content-62407"

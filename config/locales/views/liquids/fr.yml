@@ -28,16 +28,16 @@ fr:
           subtitle: Confirm subscribe
           button_text: Confirm subscription
           cancel_text: Cancel
-          text_html: You'll share your email address%{email}, username, name, and DEV profile URL with %{username}. Once you do this, you cannot undo this.
-        logged_out: You must first sign in to DEV.
+          text_html: "You'll share your email address, username, name, and %{community} profile URL with %{username}. Once you do this, you cannot undo this."
+        logged_out: "You must first sign in to %{community}."
         sign_in: Sign In
         subscribe:
           apple:
             button: Subscribe
-            desc_html: Hey, there! It looks like when you created your DEV account you signed up with Apple using a private relay email address. If you'd like to subscribe, please %{update} first to a different email address.
+            desc_html: "Hey, there! It looks like when you created your %{community} account you signed up with Apple using a private relay email address. If you'd like to subscribe, please %{update} first to a different email address."
             update: update your email address in Settings
           button: Subscribe
-          desc_html: You'll subscribe with %{email} the email address associated with your DEV account. To use a different email address, you can %{update}.
+          desc_html: "You'll subscribe with the email address associated with your %{community} account. To use a different email address, you can %{update}."
           update: update your email address in Settings
       wikipedia:
         logo: Wikipedia Logo

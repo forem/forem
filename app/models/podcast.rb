@@ -21,7 +21,7 @@ class Podcast < ApplicationRecord
             presence: true,
             uniqueness: true,
             format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
-            exclusion: { in: ReservedWords.all, message: "slug is reserved" }
+            exclusion: { in: ReservedWords.all, message: I18n.t("models.podcast.slug_is_reserved") }
 
   validates :slug, unique_cross_model_slug: true, if: :slug_changed?
 

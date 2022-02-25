@@ -35,10 +35,10 @@ module Slack
         )
 
         Slack::Messengers::Worker.perform_async(
-          message: final_message,
-          channel: type,
-          username: "new_note_bot",
-          icon_emoji: ":memo:",
+          "message" => final_message,
+          "channel" => type,
+          "username" => "new_note_bot",
+          "icon_emoji" => ":memo:",
         )
       end
 

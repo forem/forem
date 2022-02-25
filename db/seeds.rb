@@ -36,9 +36,9 @@ end
 seeder.create_if_none(Organization) do
   3.times do
     Organization.create!(
-      name: Faker::TvShows::SiliconValley.company,
+      name: Faker::Company.name,
       summary: Faker::Company.bs,
-      remote_profile_image_url: logo = Faker::Company.logo,
+      profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
       nav_image: logo,
       url: Faker::Internet.url,
       slug: "org#{rand(10_000)}",
@@ -68,9 +68,12 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
     user = User.create!(
       name: name,
       profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-      twitter_username: Faker::Internet.username(specifier: username),
+      # Twitter username should be always ASCII
+      twitter_username: Faker::Internet.username(specifier: username.transliterate),
       # Emails limited to 50 characters
-      email: Faker::Internet.email(name: username, separators: "+", domain: Faker::Internet.domain_word.first(20)),
+      email: Faker::Internet.email(
+        name: username.transliterate, separators: "+", domain: Faker::Internet.domain_word.first(20),
+      ),
       confirmed_at: Time.current,
       registered_at: Time.current,
       registered: true,
@@ -190,6 +193,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
   )
@@ -351,7 +355,7 @@ seeder.create_if_none(Podcast) do
 
   podcast_objects.each do |attributes|
     podcast = Podcast.create!(attributes)
-    Podcasts::GetEpisodesWorker.perform_async(podcast_id: podcast.id)
+    Podcasts::GetEpisodesWorker.perform_async("podcast_id" => podcast.id)
   end
 end
 ##############################################################################
@@ -370,7 +374,7 @@ seeder.create_if_none(Broadcast) do
     start_discussion: I18n.t("broadcast.welcome.start_discussion"),
     ask_question: I18n.t("broadcast.welcome.ask_question"),
     discuss_and_ask: I18n.t("broadcast.welcome.discuss_and_ask"),
-    download_app: I18n.t("broadcast.welcome.download_app"),
+    download_app: I18n.t("broadcast.welcome.download_app")
   }
 
   broadcast_messages.each do |type, message|
@@ -555,6 +559,9 @@ end
 
 ##############################################################################
 
+# change locale to en to work around non-ascii slug problem
+loc = I18n.locale
+Faker::Config.locale = "en"
 seeder.create_if_none(Page) do
   5.times do
     Page.create!(
@@ -566,6 +573,7 @@ seeder.create_if_none(Page) do
     )
   end
 end
+Faker::Config.locale = loc
 
 ##############################################################################
 

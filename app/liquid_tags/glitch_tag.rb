@@ -2,9 +2,13 @@ class GlitchTag < LiquidTagBase
   attr_accessor :uri
 
   PARTIAL = "liquids/glitch".freeze
-  ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/
-  TILDE_PREFIX_REGEXP = /\A~/
-  OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file=\w(\.\w)?)/
+
+  REGISTRY_REGEXP = %r{https://(?:(?<subdomain>[\w\-]{1,110})\.)?glitch(?:\.me|\.com)(?:/edit/#!/)?(?<slug>[\w\-]{1,110})?(?<params>\?.*)?}
+  ID_REGEXP = /\A(?:^~)?(?<slug>[\w\-]{1,110})\Z/
+  REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
+  # last part of PATH_REGEX handles line & character numbers that may appear at path end
+  PATH_REGEX = %r{path=(?<path>[\w/\-.]*)[\d:]*}
+  OPTION_REGEXP = %r{(app|code|no-files|preview-first|no-attribution|file=([\w/\-.]+)?)}
   OPTIONS_TO_QUERY_PAIR = {
     "app" => %w[previewSize 100],
     "code" => %w[previewSize 0],
@@ -13,10 +17,12 @@ class GlitchTag < LiquidTagBase
     "no-attribution" => %w[attributionHidden true]
   }.freeze
 
-  def initialize(_tag_name, id, _parse_context)
+  def initialize(_tag_name, input, _parse_context)
     super
-    @query = parse_options(id)
-    @id = parse_id(id)
+
+    unescaped_input = CGI.unescape_html(input)
+    stripped_input  = strip_tags(unescaped_input)
+    @id, @query = parsed_input(stripped_input)
   end
 
   def render(_context)
@@ -31,49 +37,71 @@ class GlitchTag < LiquidTagBase
 
   private
 
-  def valid_id?(input)
-    (input =~ ID_REGEXP)&.zero?
+  def parsed_input(input)
+    id, *options = input.split
+    match = pattern_match_for(id, REGEXP_OPTIONS)
+    raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_glitch_id") unless match
+
+    [get_slug(match), parse_options(options, match)]
   end
 
-  def parse_id(input)
-    id = input.split.first
-    id.sub!(TILDE_PREFIX_REGEXP, "")
-    raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_glitch_id") unless valid_id?(id)
-
-    id
+  def get_slug(match)
+    if match_has_named_capture_group?(match, "subdomain")
+      match[:subdomain]
+    else
+      match[:slug]
+    end
   end
 
-  def valid_option(option)
-    option.match(OPTION_REGEXP)
+  def match_has_named_capture_group?(match, group_name)
+    match.names.include?(group_name)
+  end
+
+  def parse_options(options, match)
+    # 'app' and 'code' should cancel each other out
+    options -= %w[app code] if options.include?("app") && options.include?("code")
+
+    # check for file= in options, then path= in params; fallback is file=index.html
+    file_option = options.detect { |option| option.start_with?("file=") }
+    options += ["file=#{path_within_params(match)}"] unless file_option
+
+    validated_options = options.select { |option| valid_option?(option) }
+    raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_options") if validated_options.empty?
+
+    build_options(validated_options)
+  end
+
+  def path_within_params(match)
+    return "index.html" unless match_has_named_capture_group?(match, "params")
+
+    return "index.html" if match[:params].blank?
+
+    path_match = pattern_match_for(match[:params], [PATH_REGEX])
+    return "index.html" if path_match.blank?
+
+    path_match[:path]
+  end
+
+  def valid_option?(option)
+    option.match?(OPTION_REGEXP)
   end
 
   def build_options(options)
     # Convert options to query param pairs
     params = options.filter_map { |option| OPTIONS_TO_QUERY_PAIR[option] }
 
-    # Deal with the file option if present or use default
-    file_option = options.detect { |option| option.start_with?("file=") }
-    path = file_option ? (file_option.sub! "file=", "") : "index.html"
+    # by this point, there is always a 'file='
+    path = options
+      .detect { |option| option.start_with?("file=") }
+      .delete_prefix("file=")
+
     params.push ["path", path]
 
     # Encode the resulting pairs as a query string
     URI.encode_www_form(params)
   end
-
-  def parse_options(input)
-    _, *options = input.split
-
-    # 'app' and 'code' should cancel each other out
-    options -= %w[app code] if (options & %w[app code]) == %w[app code]
-
-    # Validation
-    validated_options = options.filter_map { |option| valid_option(option) }
-    unless options.empty? || !validated_options.empty?
-      raise StandardError, I18n.t("liquid_tags.glitch_tag.invalid_options")
-    end
-
-    build_options(options)
-  end
 end
 
 Liquid::Template.register_tag("glitch", GlitchTag)
+
+UnifiedEmbed.register(GlitchTag, regexp: GlitchTag::REGISTRY_REGEXP)

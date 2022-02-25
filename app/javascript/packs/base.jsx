@@ -60,13 +60,7 @@ window.Forem = {
     }
     return Promise.all(this.modalImports);
   },
-  showModal: async ({
-    title,
-    contentSelector,
-    overlay = false,
-    size = 's',
-    onOpen,
-  }) => {
+  showModal: async ({ title, contentSelector, size = 'small', onOpen }) => {
     const [{ Modal }, { render, h }] = await window.Forem.getModalImports();
 
     // Guard against two modals being opened at once
@@ -81,7 +75,6 @@ window.Forem = {
 
     render(
       <Modal
-        overlay={overlay}
         title={title}
         onClose={() => {
           render(null, currentModalContainer);
@@ -168,8 +161,8 @@ async function loadCreatorSettings() {
       { LogoUploadController },
       { Application },
     ] = await Promise.all([
-      import('@admin-controllers/creator_settings_controller'),
-      import('@admin-controllers/logo_upload_controller'),
+      import('@admin/controllers/creator_settings_controller'),
+      import('@admin/controllers/logo_upload_controller'),
       import('@hotwired/stimulus'),
     ]);
 

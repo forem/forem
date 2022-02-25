@@ -1,7 +1,7 @@
 class TweetTag < LiquidTagBase
   include ActionView::Helpers::AssetTagHelper
   PARTIAL = "liquids/tweet".freeze
-  REGISTRY_REGEXP = %r{https://twitter.com/\w{1,15}/status/(?<id>\d{10,20})}
+  REGISTRY_REGEXP = %r{https://twitter\.com/\w{1,15}/status/(?<id>\d{10,20})}
   VALID_ID_REGEXP = /\A(?<id>\d{10,20})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
@@ -53,7 +53,7 @@ class TweetTag < LiquidTagBase
 
   def parse_id_or_url(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid Tweet ID or URL" unless match
+    raise StandardError, I18n.t("liquid_tags.tweet_tag.invalid_twitter_id") unless match
 
     match[:id]
   end

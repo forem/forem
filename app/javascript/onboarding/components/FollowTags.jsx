@@ -104,7 +104,7 @@ export class FollowTags extends Component {
     return (
       <div
         data-testid="onboarding-follow-tags"
-        className="onboarding-main crayons-modal"
+        className="onboarding-main crayons-modal crayons-modal--large"
       >
         <div
           className="crayons-modal__box overflow-auto"

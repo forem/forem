@@ -1,39 +1,46 @@
-describe('Email digest frequency Section', () => {
+describe('Emails Section', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginUser(user);
+      cy.loginAndVisit(user, '/admin/customization/config');
+    });
+  });
+
+  describe('contact settings', () => {
+    it('can update the contact email', () => {
+      cy.findByTestId('emailForm').as('emailForm');
+
+      cy.get('@emailForm').within(() => {
+        cy.findByText('Emails').click();
+        cy.findByLabelText('Contact email').clear().type('yo@dev.to');
+        cy.findByText('Update Settings').click();
+      });
+
+      cy.url().should('contains', '/admin/customization/config');
+
+      cy.findByText('Successfully updated settings.').should('be.visible');
+
+      cy.findByLabelText('Contact email').should('have.value', 'yo@dev.to');
     });
   });
 
   describe('email digest frequency settings', () => {
     it('can change the frequency', () => {
-      cy.get('@user').then(() => {
-        cy.visit('/admin/customization/config');
-        cy.findByTestId('emailDigestSectionForm').as('emailDigestSectionForm');
+      cy.findByTestId('emailForm').as('emailForm');
 
-        cy.get('@emailDigestSectionForm')
-          .findByText('Email digest frequency')
-          .click();
-
-        cy.get('@emailDigestSectionForm')
-          .get('#settings_general_periodic_email_digest')
-          .clear()
-          .type('42');
-
-        cy.get('@emailDigestSectionForm').findByText('Update Settings').click();
-
-        cy.url().should('contains', '/admin/customization/config');
-
-        cy.findByText('Successfully updated settings.').should('be.visible');
-
-        cy.get('#settings_general_periodic_email_digest').should(
-          'have.value',
-          '42',
-        );
+      cy.get('@emailForm').within(() => {
+        cy.findByText('Emails').click();
+        cy.findByLabelText('Periodic email digest').clear().type('42');
+        cy.findByText('Update Settings').click();
       });
+
+      cy.url().should('contains', '/admin/customization/config');
+
+      cy.findByText('Successfully updated settings.').should('be.visible');
+
+      cy.findByLabelText('Periodic email digest').should('have.value', '42');
     });
   });
 });

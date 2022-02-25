@@ -25,9 +25,7 @@ describe('Post sidebar actions', () => {
       'dropdownButton',
     );
     cy.get('@dropdownButton').click();
-    cy.findByRole('button', { name: /^Copy link$/i }).as(
-      'copyPostUrlButton',
-    );
+    cy.findByRole('button', { name: /^Copy link$/i }).as('copyPostUrlButton');
     cy.get('@copyPostUrlButton').should('have.focus');
     cy.findByRole('link', { name: /^Share to Twitter$/i });
     cy.findByRole('link', { name: /^Share to LinkedIn$/i });
@@ -51,26 +49,28 @@ describe('Post sidebar actions', () => {
       'dropdownButton',
     );
     cy.get('@dropdownButton').click();
-    cy.findByRole('button', { name: /^Copy link$/i }).as(
-      'copyPostUrlButton',
-    );
+    cy.findByRole('button', { name: /^Copy link$/i }).as('copyPostUrlButton');
     cy.get('@copyPostUrlButton').should('have.focus');
     cy.get('body').type('{esc}');
     cy.get('@copyPostUrlButton').should('not.be.visible');
     cy.get('@dropdownButton').should('have.focus');
   });
 
-  it('should display clipboard copy announcer until the dropdown is next closed', () => {
+  it('should copy to clipboard and display clipboard copy announcer until the dropdown is next closed', () => {
     cy.findByRole('button', { name: /^Share post options$/i }).as(
       'dropdownButton',
     );
     cy.get('@dropdownButton').click();
-    cy.findByRole('button', { name: /^Copy link$/i }).as(
-      'copyPostUrlButton',
-    );
+    cy.findByRole('button', { name: /^Copy link$/i }).as('copyPostUrlButton');
     cy.findByText('Copied to Clipboard').should('not.be.visible');
     cy.get('@copyPostUrlButton').click();
     cy.findByText('Copied to Clipboard').should('be.visible');
+
+    // Check the clipboard was populated
+    cy.window()
+      .its('navigator.clipboard')
+      .invoke('readText')
+      .should('contain', '/article_editor_v2_user/');
 
     // Close the dropdown, and reopen it to check the message has disappeared
     cy.get('@dropdownButton').click();

@@ -2,24 +2,35 @@ require "rails_helper"
 
 RSpec.describe "Editor", type: :request do
   describe "GET /new" do
-    context "when not logged-in" do
-      it "asks the non logged in user to sign in" do
-        get new_path
+    subject(:request_call) { get new_path }
 
-        expect(response).to have_http_status(:ok)
-      end
+    let(:user) { create(:user) }
+
+    context "when not authenticated" do
+      it { within_block_is_expected.to raise_error ApplicationPolicy::UserRequiredError }
     end
 
-    context "when email login is allowed in /admin/customization/config" do
+    context "when authenticated but not authorized" do
       before do
-        allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(true)
+        login_as user
+        allow(ArticlePolicy).to receive(:limit_post_creation_to_admins?).and_return(true)
       end
 
-      it "asks the non logged in user to sign in, with email signin enabled" do
-        get new_path
+      # [@jeremyf] We're handling the authentication and authorization exceptions just a bit
+      #            differently.  In this case (e.g. they don't have permission) we are relying on
+      #            the application configuration to gracefully handle the authorization error (as it
+      #            has prior and up to <2022-02-17 Thu>).
+      it { within_block_is_expected.to raise_error(Pundit::NotAuthorizedError) }
+    end
 
-        expect(response.body).to include("Email")
-        expect(response.body).to include("Password")
+    context "when authenticated and authorized" do
+      before { login_as user }
+
+      it "is a successful response" do
+        # We have lots of Cypress tests of the behavior of the `/new` page.  Let's make sure we're
+        # verifying AuthN/AuthZ things.
+        get new_path
+        expect(response).to have_http_status(:ok)
       end
     end
   end
@@ -30,8 +41,8 @@ RSpec.describe "Editor", type: :request do
 
     context "when not logged-in" do
       it "redirects to /enter" do
-        get "/username/article/edit"
-        expect(response).to redirect_to("/enter")
+        get "/#{user.username}/#{article.slug}/edit"
+        expect(response).to redirect_to(sign_up_path)
       end
     end
 
@@ -61,6 +72,25 @@ RSpec.describe "Editor", type: :request do
         sign_in user
         post "/articles/preview", headers: headers
         expect(response.media_type).to eq("application/json")
+      end
+    end
+
+    context "with front matter" do
+      it "returns successfully" do
+        sign_in user
+        article_body = <<~MARKDOWN
+          ---
+          ---
+
+          Hello
+        MARKDOWN
+
+        post "/articles/preview",
+             headers: headers,
+             params: { article_body: article_body },
+             as: :json
+
+        expect(response).to be_successful
       end
     end
   end
