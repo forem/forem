@@ -47,14 +47,18 @@ module UnifiedEmbed
     def self.validate_link(link)
       uri = URI.parse(link)
       http = Net::HTTP.new(uri.host, uri.port)
-      response = http.get(uri.request_uri)
+      http.use_ssl = true if http.port == 443
+      path = uri.path.presence || "/"
+      response = http.request_head(path)
 
       unless response.is_a?(Net::HTTPSuccess)
         # inform user that URL may have typos
-        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
       end
 
       link
+    rescue SocketError
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
     end
   end
 end
