@@ -1,7 +1,7 @@
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openRolesModal() {
   cy.getModal().should('not.exist');
-  cy.findByRole('button', { name: 'Add role' }).click();
+  cy.findByRole('button', { name: 'Assign role' }).click();
 
   return cy.getModal();
 }
@@ -41,7 +41,9 @@ describe('Manage User Roles', () => {
         );
         openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Warn');
-          cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
+          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
+            'some reason',
+          );
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
@@ -71,17 +73,19 @@ describe('Manage User Roles', () => {
 
         openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Super Admin');
-          cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
+          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
+            'some reason',
+          );
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
         cy.findByRole('button', {
-          name: `Super Admin You can't remove this role...`,
+          name: `Super Admin You can't remove this role.`,
         })
           .as('superAdminButton')
           .click()
           .within(() => {
-            cy.findByText(`You can't remove this role...`).should('exist');
+            cy.findByText(`You can't remove this role.`).should('exist');
           });
 
         cy.get('@superAdminButton').should('exist');
@@ -95,7 +99,7 @@ describe('Manage User Roles', () => {
 
       it('should not add a role if a reason is missing.', () => {
         checkUserStatus('Good standing');
-        cy.findByText('No special roles assigned yet.').should('be.visible');
+        cy.findByText('No roles assigned yet.').should('be.visible');
 
         openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Warn');
@@ -110,11 +114,13 @@ describe('Manage User Roles', () => {
       });
 
       it('should add multiple roles', () => {
-        cy.findByText('No special roles assigned yet.').should('be.visible');
+        cy.findByText('No roles assigned yet.').should('be.visible');
 
         openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Warn');
-          cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
+          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
+            'some reason',
+          );
           cy.findByRole('button', { name: 'Add' }).click();
         });
 
@@ -128,7 +134,9 @@ describe('Manage User Roles', () => {
 
         openRolesModal().within(() => {
           cy.findByRole('combobox', { name: 'Role' }).select('Comment Suspend');
-          cy.findByRole('textbox', { name: 'Reason' }).type('some reason');
+          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
+            'some reason',
+          );
           cy.findByRole('button', { name: 'Add' }).click();
         });
 

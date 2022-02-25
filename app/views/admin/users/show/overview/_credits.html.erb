@@ -3,7 +3,7 @@
     <%= crayons_icon_tag(:wallet, title: "Wallet", aria_hidden: true, class: "mr-2") %>
     Credits
   </h2>
-  <p class="color-secondary">Credits enable users to purchase classified listings from your site. <a href="https://admin.forem.com/docs/advanced-customization/config/credits" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about credits">Learn more</a></p>
+  <p class="color-secondary">Grant/remove credits to purchase classified listings. <a href="https://admin.forem.com/docs/advanced-customization/config/credits" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about credits">Learn more</a></p>
 </header>
 <div class="flex justify-between items-center">
   <p data-testid="user-credits" class="fs-2xl fw-heavy"><%= @user.unspent_credits_count %></p>
@@ -37,11 +37,11 @@
       </div>
     </div>
     <div class="crayons-field">
-      <label for="balance-note" class="crayons-field__label">Why are you adjusting credits?</label>
+      <label for="balance-note" class="crayons-field__label">Add a note to this action:</label>
       <%= f.text_area :new_note, id: "balance-note", size: 50, required: true, class: "crayons-textfield" %>
     </div>
     <div>
-      <button type="submit" class="c-btn c-btn--primary">Adjust</button>
+      <button type="submit" class="c-btn c-btn--primary">Adjust balance</button>
     </div>
   <% end %>
 </div>
