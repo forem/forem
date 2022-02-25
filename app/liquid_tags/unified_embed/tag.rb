@@ -50,6 +50,7 @@ module UnifiedEmbed
       response = http.get(uri.request_uri)
 
       unless response.is_a?(Net::HTTPSuccess)
+        # inform user that URL may have typos
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
       end
 
