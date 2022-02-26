@@ -138,6 +138,13 @@ class ArticlesController < ApplicationController
     @user = current_user
     article = Articles::Creator.call(@user, article_params_json)
 
+    check_embed_tag = @article.processed_html.split
+
+    if check_embed_tag[0] == "<p>Liquid"
+      render json: { message: I18n.t("liquid_tags.liquid_tag_base.no_embed_word") }, status: :unprocessable_entity
+      return
+    end
+
     render json: if article.persisted?
                    { id: article.id, current_state_path: article.decorate.current_state_path }.to_json
                  else
@@ -150,6 +157,13 @@ class ArticlesController < ApplicationController
     @user = @article.user || current_user
 
     updated = Articles::Updater.call(@user, @article, article_params_json)
+
+    check_embed_tag = @article.processed_html.split
+
+    if check_embed_tag[0] == "<p>Liquid"
+      render json: { message: I18n.t("liquid_tags.liquid_tag_base.no_embed_word") }, status: :unprocessable_entity
+      return
+    end
 
     respond_to do |format|
       format.html do
