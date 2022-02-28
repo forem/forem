@@ -44,7 +44,16 @@ function writeCards(data, timeRangeLabel) {
   followerCard.innerHTML = cardHTML(follows, `Followers ${timeRangeLabel}`);
 }
 
-function drawChart({ id, title, labels, datasets }) {
+function drawChart({ id, timeRangeLabel, title, labels, datasets }) {
+  // timeRangeLabel is '' when Infinity time range is selected
+  if (timeRangeLabel === '') {
+    // Remove dots from chart
+    datasets = datasets.map((dataset) => ({
+      ...dataset,
+      pointRadius: 0,
+    }));
+  }
+
   const options = {
     plugins: {
       legend: {
@@ -118,6 +127,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'reactions-chart',
+    timeRangeLabel,
     title: `Reactions ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -158,6 +168,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'comments-chart',
+    timeRangeLabel,
     title: `Comments ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -174,6 +185,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'followers-chart',
+    timeRangeLabel,
     title: `New Followers ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -190,6 +202,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'readers-chart',
+    timeRangeLabel,
     title: `Reads ${timeRangeLabel}`,
     labels,
     datasets: [
