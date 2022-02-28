@@ -1,4 +1,4 @@
-<h2 class="crayons-subtitle-1">Reports submitted by @<%= @user.username %> (<%= @related_reports.count %>)</h2>
+<h2 class="crayons-subtitle-1">Reports submitted by <%= @user.name %> (<%= @related_reports.count %>)</h2>
 
 <% unless @related_reports.empty? %>
   <div class="pt-3">
@@ -28,7 +28,7 @@
   </div>
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="fs-xl fw-normal mb-2">🧐 No reports submitted.</h3>
-    <p class="color-secondary">This user hasn't reported anything yet.</p>
+    <h3 class="fs-xl fw-normal mb-2">No comment or post has been reported yet.</h3>
+    <p class="color-secondary">Any comment or post reported by <%= @user.name %> will be found here.</p>
   </div>
 <% end %>
