@@ -5,18 +5,46 @@
 // TODO: new styles to eventually replace old ones which relied on Reach UI also
 .c-autocomplete {
   &__popover {
-    background: hsla(0, 100%, 100%, 0.99);
     font-size: 85%;
 
     padding: var(--su-1);
     z-index: var(--z-elevate);
-    width: 250px !important;
+    width: 250px;
     background: var(--card-bg);
     color: var(--card-color);
     border-radius: var(--radius);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.1);
     border: none;
+  }
+
+  &__option {
+    cursor: pointer;
+    margin: 0;
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px solid var(--base-10);
+    padding-top: var(--su-2);
+    padding-bottom: var(--su-2);
+
+    &:hover,
+    &[aria-selected='true'] {
+      background: hsl(211, 10%, 95%);
+      // TODO: this is specific to the user mention template
+      & .crayons-autocomplete__name {
+        color: var(--link-color-hover);
+      }
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__empty {
+    display: block;
+    margin: var(--su-2);
+    color: var(--base-60);
+    font-size: var(--fs-s);
   }
 }
 
@@ -59,6 +87,7 @@
     }
   }
 
+  // TODO: these are relatd to mention user only
   &__name {
     font-size: var(--fs-m);
     font-weight: var(--fw-medium);

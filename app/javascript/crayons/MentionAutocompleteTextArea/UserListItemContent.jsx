@@ -7,19 +7,15 @@ import PropTypes from 'prop-types';
  * @param {object} props
  * @param {object} props.user The user data to populate the list item content with
  */
-export const UserListItemContent = ({ user }) => (
+export const UserListItemContent = ({ name, profile_image_90, username }) => (
   <Fragment>
     <span className="crayons-avatar crayons-avatar--l mr-2 shrink-0">
-      <img
-        src={user.profile_image_90}
-        alt=""
-        className="crayons-avatar__image "
-      />
+      <img src={profile_image_90} alt="" className="crayons-avatar__image " />
     </span>
 
     <div>
-      <p className="crayons-autocomplete__name">{user.name}</p>
-      <p className="crayons-autocomplete__username">{`@${user.username}`}</p>
+      <p className="crayons-autocomplete__name">{name}</p>
+      <p className="crayons-autocomplete__username">{`@${username}`}</p>
     </div>
   </Fragment>
 );

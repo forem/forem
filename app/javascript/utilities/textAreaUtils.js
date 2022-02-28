@@ -73,6 +73,9 @@ export const getCursorXY = ({
   };
 };
 
+// TODO: Remove once MentionAutocompleteTextArea removed
+export const getMentionWordData = () => {};
+
 /**
  * A helper function that searches back to the beginning of the currently typed word (indicated by cursor position) and verifies whether it begins with an '@' symbol for user mention
  *
@@ -85,7 +88,7 @@ export const getCursorXY = ({
  *  // Do something
  * }
  */
-export const getMentionWordData = (textArea) => {
+export const getAutocompleteWordData = ({ textArea, triggerCharacter }) => {
   const { selectionStart, value: valueBeforeKeystroke } = textArea;
 
   if (selectionStart === 0 || valueBeforeKeystroke === '') {
@@ -98,7 +101,7 @@ export const getMentionWordData = (textArea) => {
   const indexOfAutocompleteStart = getLastIndexOfCharacter({
     content: valueBeforeKeystroke,
     selectionIndex: selectionStart,
-    character: '@',
+    character: triggerCharacter,
     breakOnCharacters: [' ', '', '\n'],
   });
 

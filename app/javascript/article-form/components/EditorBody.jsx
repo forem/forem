@@ -77,10 +77,12 @@ export const EditorBody = ({
       <Toolbar version={version} textAreaId="article_body_markdown" />
       <AutocompleteTriggerTextArea
         triggerCharacter="@"
-        cancelCharactersRegex={/[^a-zA-Z0-9]/}
+        searchInstructionsMessage="Type to search for a user"
         ref={textAreaRef}
         fetchSuggestions={(username) =>
-          fetchSearch('usernames', { username }).then(({ result }) => result)
+          fetchSearch('usernames', { username }).then(({ result }) =>
+            result.map((user) => ({ ...user, value: user.username })),
+          )
         }
         autoResize
         onChange={onChange}
