@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4">
     <p>
       Choose betweem sending the exported data to either your Admin contact email, <%= ForemInstance.email %>,
-      or to <%= @user.name %>'s <a href="<%= @user.email %>">user email</a> directly.
+      or to <%= @user.name %>'s <a href="mailto:<%= @user.email %>">user email</a> directly.
     </p>
     <p>
       Exported data includes a user's posts and comments.
