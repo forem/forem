@@ -82,7 +82,7 @@ describe('Manage User Options', () => {
       });
 
       cy.getModal().within(() => {
-        cy.findByRole('button', { name: 'Banish Trusted User 1 :/' }).click();
+        cy.findByRole('button', { name: 'Banish Trusted User 1 \\:/' }).click();
       });
 
       verifyAndDismissUserUpdatedMessage(
