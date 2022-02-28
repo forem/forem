@@ -1,19 +1,15 @@
 <div id="export-data">
   <div class="flex flex-col gap-4">
     <p>
-      You can export a user's data here. Currently we only support exporting a user's posts and comments.
+      Choose betweem sending the exported data to either your Admin contact email, <%= ForemInstance.email %>,
+      or to <%= @user.name %>'s <a href="mailto:<%= @user.email %>">user email</a> directly.
     </p>
     <p>
-      You have the option of exporting to your Admin account to send to the user, or exporting to the user directly.
-    </p>
-    <p>
-      Exporting the data to your Admin account will send it to your contact
-      Admin email (<%= ForemInstance.email %>),
-      and exporting to the user will send it to their email (<%= @user.email %>).
+      Exported data includes a user's posts and comments.
     </p>
     <div class="flex gap-2">
-      <%= button_to "Export to Admin", export_data_admin_user_path(@user.id), data: { confirm: "Are you sure you want to export this user's content to the ADMIN?" }, class: "c-btn c-btn--secondary", params: { send_to_admin: true } %>
-      <%= button_to "Export to User", export_data_admin_user_path(@user.id), data: { confirm: "Are you sure you want to export this user's content to the USER?" }, class: "c-btn c-btn--secondary", params: { send_to_admin: false } %>
+      <%= button_to "Export to Admin", export_data_admin_user_path(@user.id), data: { confirm: "Are you sure you want to export this user's content to #{ForemInstance.email}?" }, class: "c-btn c-btn--secondary", params: { send_to_admin: true } %>
+      <%= button_to "Export to User", export_data_admin_user_path(@user.id), data: { confirm: "Are you sure you want to export this user's content to #{@user.email}?" }, class: "c-btn c-btn--secondary", params: { send_to_admin: false } %>
     </div>
   </div>
 </div>

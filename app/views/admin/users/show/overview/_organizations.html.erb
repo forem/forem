@@ -28,12 +28,12 @@
       </div>
       <div class="c-card__revealable shrink-0">
         <button type="button" class="c-btn c-btn--icon-alone" aria-label="Edit <%= org_membership.organization.name %> organization membership"
-          data-modal-trigger data-modal-title="Edit organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
+          data-modal-trigger data-modal-title="Edit <%= @user.name %>'s role at an organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon", aria_hidden: true) %>
         </button>
         <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
           <%= f.button crayons_icon_tag(:x, class: "c-btn__icon", aria_hidden: true), aria: { label: "Revoke #{org_membership.organization.name} organization membership" }, class: "c-btn c-btn--destructive c-btn--icon-alone",
-                                                                                      data: { confirm: "Are you sure you want to remove them from #{org_membership.organization.name}?" } %>
+                                                                                      data: { confirm: "Are you sure you want to remove #{org_membership.user.name} from #{org_membership.organization.name}?" } %>
         <% end %>
       </div>
     </div>
@@ -49,7 +49,7 @@
       <% end %>
     </div>
   <% end %>
-  <button class="c-btn c-btn--secondary whitespace-nowrap w-100" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add organization</button>
+  <button class="c-btn c-btn--secondary whitespace-nowrap w-100" type="button" data-modal-trigger data-modal-title="Add <%= @user.name %> to an organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add organization</button>
 <% end %>
 
 <div id="add-organization" class="hidden">
