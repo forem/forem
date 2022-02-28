@@ -97,8 +97,8 @@ namespace :admin do
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]
 
-    # NOTE: @citizen428 The next two resources have a temporary constraint
-    # while profile generalization is still WIP
+    # NOTE: The next two resources have a temporary constraint while profile
+    # generalization is still WIP
     constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
       resources :profile_field_groups, only: %i[update create destroy]
       resources :profile_fields, only: %i[index update create destroy]

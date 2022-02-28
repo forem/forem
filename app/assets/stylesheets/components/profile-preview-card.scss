@@ -10,6 +10,7 @@
     left: 0;
     font-size: var(--fs-base);
     font-weight: var(--fw-normal);
+    overflow-wrap: anywhere;
   }
 
   &__content.crayons-dropdown:hover {

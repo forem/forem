@@ -50,6 +50,12 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://pl.kotl.in/Wplen1rPa?theme=darcula&readOnly=true&from=6&to=7",
     ]
 
+    valid_loom_url_formats = [
+      "https://loom.com/share/12fb674d39dd4fe281becee7cdbc3cd1",
+      "https://loom.com/embed/12fb674d39dd4fe281becee7cdbc3cd1",
+      "https://www.loom.com/share/12fb674d39dd4fe281becee7cdbc3cd1",
+    ]
+
     valid_replit_url_formats = [
       "https://replit.com/@msarit/Shell-Challenge#index.html",
       "https://replit.com/@msarit/Shell-Challenge",
@@ -178,6 +184,13 @@ RSpec.describe UnifiedEmbed::Registry do
       valid_kotlin_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(KotlinTag)
+      end
+    end
+
+    it "returns LoomTag for a valid loom url", :aggregate_failures do
+      valid_loom_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(LoomTag)
       end
     end
 

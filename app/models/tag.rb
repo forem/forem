@@ -126,6 +126,32 @@ class Tag < ActsAsTaggableOn::Tag
     errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
   end
 
+  # While this non-end user facing flag is "in play", our goal is to say that when it's "false"
+  # we'll preserve existing behavior.  And when true, we're testing out new behavior.  This way we
+  # can push up changes and refactor towards improvements without unleashing a large pull request
+  # with many tendrils.
+  #
+  # @return [TrueClass] when we want to favor the "accessible_name" for the tag.
+  # @return [FalseClass] when we will use the all lower case name for the tag.
+  #
+  # @note This is a feature flag we're using to ease refactoring towards accessible tag labels.
+  #       Eventually, we would remove this method and always favor accessible names.
+  #
+  # @todo When we've fully tested this feature, we'll allways return true, and can effectively
+  #       remove it.
+  def self.favor_accessible_name_for_tag_label?
+    FeatureFlag.enabled?(:favor_accessible_name_for_tag_label)
+  end
+
+  # @note In the future we envision always favoring pretty name over the given name.
+  #
+  # @todo When we "rollout this feature" remove the guard clause and adjust the corresponding spec.
+  def accessible_name
+    return name unless self.class.favor_accessible_name_for_tag_label?
+
+    pretty_name.presence || name
+  end
+
   def errors_as_sentence
     errors.full_messages.to_sentence
   end
