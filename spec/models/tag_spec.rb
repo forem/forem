@@ -214,8 +214,39 @@ RSpec.describe Tag, type: :model do
     end
   end
 
-  # [@jeremyf] TODO: In a future state, we'll commit to what this will be.  But for now, we're
-  #            relying on this as a point of indirection for refactoring our code to favor
-  #            accessible tag names.
-  it { is_expected.to respond_to(:accessible_name) }
+  # [@jeremyf] The implementation details of #accessible_name are contingent on a feature flag that
+  #            we're using for this refactoring.  Once we remove the flag, please adjust the specs
+  #            accordingly.
+  describe "#accessible_name" do
+    subject(:accessible_name) { described_class.new(name: name, pretty_name: pretty_name).accessible_name }
+
+    let(:name) { "helloworld" }
+    let(:pretty_name) { "helloWorld" }
+
+    context "when favor_accessible_name_for_tag_label is true" do
+      before { allow(described_class).to receive(:favor_accessible_name_for_tag_label?).and_return(true) }
+
+      it "equals the #pretty_name" do
+        expect(accessible_name).to eq pretty_name
+      end
+    end
+
+    context "when favor_accessible_name_for_tag_label is true but no pretty name given" do
+      before { allow(described_class).to receive(:favor_accessible_name_for_tag_label?).and_return(true) }
+
+      let(:pretty_name) { nil }
+
+      it "equals the #name" do
+        expect(accessible_name).to eq name
+      end
+    end
+
+    context "when favor_accessible_name_for_tag_label is false" do
+      before { allow(described_class).to receive(:favor_accessible_name_for_tag_label?).and_return(false) }
+
+      it "equals the #name" do
+        expect(accessible_name).to eq name
+      end
+    end
+  end
 end
