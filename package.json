@@ -89,7 +89,7 @@
     "lint-staged": "^12.3.4",
     "markdown-loader": "^7.0.0",
     "prettier": "^2.5.1",
-    "sass": "1.49.8",
+    "sass": "1.49.9",
     "sass-loader": "^12.6.0",
     "storybook-addon-jsx": "^7.3.14",
     "style-loader": "^2.0.0",
