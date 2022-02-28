@@ -26,10 +26,11 @@ module Notifications
         when Notifications::Reactions::ReactionData
           object
         when Reaction
+          user_id = object.reactable.user_id unless object.reactable_type == "User"
           new(
             reactable_id: object.reactable_id,
             reactable_type: object.reactable_type,
-            reactable_user_id: object.reactable.user_id,
+            reactable_user_id: user_id,
           )
         else
           new(object.symbolize_keys)

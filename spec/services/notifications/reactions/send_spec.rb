@@ -204,4 +204,14 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       expect(notification.notifiable).to eq(article)
     end
   end
+
+  context "when reaction is to a user" do
+    let(:user_reaction) { create(:reaction, reactable: user, category: "thumbsup") }
+
+    it "creates a notification" do
+      expect do
+        described_class.call(reaction_data(user_reaction), user)
+      end.to raise_error(Notifications::Reactions::ReactionData::DataError)
+    end
+  end
 end
