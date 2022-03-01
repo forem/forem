@@ -55,7 +55,7 @@ gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
-gem "liquid", "~> 5.1" # A secure, non-evaling end user template engine with aesthetic markup
+gem "liquid", "~> 5.2" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.22" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
