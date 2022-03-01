@@ -7,8 +7,11 @@ import { initializeDropdown } from '@utilities/dropdownUtils';
 import { ButtonNew as Button } from '@crayons';
 
 const convertThreeCharHexToSix = (hex) => {
-  const rgb = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex);
-  return `#${rgb[1]}${rgb[1]}${rgb[2]}${rgb[2]}${rgb[3]}${rgb[3]}`;
+  const r = hex.charAt(1);
+  const g = hex.charAt(2);
+  const b = hex.charAt(3);
+
+  return `#${r}${r}${g}${g}${b}${b}`;
 };
 
 export const ColorPicker = ({
@@ -36,6 +39,7 @@ export const ColorPicker = ({
   // e.g. #0D6 === #00DD66. To make sure that all color codes can be handled consistently through our app,
   // we convert any shorthand hex codes to their full 6 char representation.
   const handleBlur = () => {
+    // Color always includes a leading '#', hence a length of 4
     if (color.length === 4) {
       const fullHexCode = convertThreeCharHexToSix(color);
       setColor(fullHexCode);
