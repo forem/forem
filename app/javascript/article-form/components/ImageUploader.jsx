@@ -334,6 +334,7 @@ export const ImageUploader = ({
     if (message.namespace !== 'imageUpload') {
       return;
     }
+    console.log("ImageUploader - NATIVE MESSAGE: ", e);
 
     switch (message.action) {
       case 'uploading':
