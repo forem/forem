@@ -25,7 +25,7 @@
   <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center crayons-card crayons-card--secondary p-3" do |f| %>
     <div class="crayons-field flex-1 flex-row items-center gap-2">
       <%= f.label :search, class: "crayons-field__label whitespace-nowrap" %>
-      <%= f.text_field :search, value: params[:search], class: "crayons-textfield mt-0", placeholder: "Name, username, email, or Twitter/GitHub usernames" %>
+      <%= f.text_field :search, value: params[:search], class: "crayons-textfield mt-0", placeholder: "Name, username, email, or Twitter/GitHub usernames", aria: { label: "Filter by name, username, or Twitter/GitHub usernames" } %>
     </div>
     <div class="crayons-field flex-row items-center gap-2">
       <%= f.label :role, "Filter by Role", class: "crayons-field__label whitespace-nowrap" %>
