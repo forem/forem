@@ -46,15 +46,17 @@ function writeCards(data, timeRangeLabel) {
 
 function drawChart({ id, timeRangeLabel, title, labels, datasets }) {
   // timeRangeLabel is '' when Infinity time range is selected
-  if (timeRangeLabel === '') {
-    // Remove dots from chart
-    datasets = datasets.map((dataset) => ({
-      ...dataset,
-      pointRadius: 0,
-    }));
-  }
-
-  const options = {
+  const chartOptions =
+    timeRangeLabel === ''
+      ? {
+          elements: {
+            point: {
+              radius: 0,
+            },
+          },
+        }
+      : {};
+  const dataOptions = {
     plugins: {
       legend: {
         position: 'top',
@@ -107,8 +109,9 @@ function drawChart({ id, timeRangeLabel, title, labels, datasets }) {
         data: {
           labels,
           datasets,
-          options,
+          options: dataOptions,
         },
+        options: chartOptions,
       });
     },
   );
