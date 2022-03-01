@@ -6,11 +6,18 @@ import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 import { ButtonNew as Button } from '@crayons';
 
+const convertThreeCharHexToSix = (hex) => {
+  const rgb = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex);
+  return `#${rgb[1]}${rgb[1]}${rgb[2]}${rgb[2]}${rgb[3]}${rgb[3]}`;
+};
+
 export const ColorPicker = ({
   id,
   buttonLabelText,
   defaultValue,
   inputProps,
+  onChange,
+  onBlur,
 }) => {
   // Ternary has been used here to guard against an empty string being passed as default value
   const [color, setColor] = useState(defaultValue ? defaultValue : '#000');
@@ -25,9 +32,20 @@ export const ColorPicker = ({
     });
   }, [buttonId, popoverId]);
 
+  // Hex codes may validly be represented by three characters, where r, g, b are all repeated,
+  // e.g. #0D6 === #00DD66. To make sure that all color codes can be handled consistently through our app,
+  // we convert any shorthand hex codes to their full 6 char representation.
+  const handleBlur = () => {
+    if (color.length === 4) {
+      const fullHexCode = convertThreeCharHexToSix(color);
+      setColor(fullHexCode);
+      onChange?.(fullHexCode);
+    }
+  };
+
   return (
     <Fragment>
-      <div className="c-color-picker relative">
+      <div className="c-color-picker relative w-100">
         <Button
           id={buttonId}
           className="c-btn c-color-picker__swatch absolute"
@@ -35,21 +53,34 @@ export const ColorPicker = ({
           aria-label={buttonLabelText}
         />
         <HexColorInput
+          {...inputProps}
           id={id}
           className={classNames(
             'c-color-picker__input crayons-textfield',
             inputProps?.class,
           )}
           color={color}
-          onChange={setColor}
+          onChange={(color) => {
+            onChange?.(color);
+            setColor(color);
+          }}
+          onBlur={(e) => {
+            onBlur?.(e);
+            handleBlur();
+          }}
           prefixed
-          {...inputProps}
         />
         <div
           id={popoverId}
           className="c-color-picker__popover crayons-dropdown absolute p-0"
         >
-          <HexColorPicker color={color} onChange={setColor} />
+          <HexColorPicker
+            color={color}
+            onChange={(color) => {
+              onChange?.(color);
+              setColor(color);
+            }}
+          />
         </div>
       </div>
     </Fragment>
