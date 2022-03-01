@@ -24,9 +24,9 @@ RSpec.describe Admin::ChartsData, type: :service do
   end
 
   it "returns proper data points in chart" do
-    create_list(:article, 2, published_at: Time.current)
-    create_list(:article, 3, published_at: 2.days.ago)
+    create_list(:article, 2, published_at: Time.current.beginning_of_day)
+    create_list(:article, 3, published_at: 2.days.ago.beginning_of_day)
 
-    expect(described_class.new(5).call.first.fourth).to eq([0, 0, 3, 0, 2])
+    expect(described_class.new(5).call.first.fourth).to eq([0, 3, 0, 2, 0])
   end
 end
