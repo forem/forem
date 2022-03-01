@@ -42,7 +42,8 @@
     }
   }
 
-  &[aria-current='page'] {
+  &[aria-current='page'],
+  &.c-link--current {
     --bg: var(--link-current-bg);
     --color: var(--link-current-color);
     font-weight: var(--fw-bold);
