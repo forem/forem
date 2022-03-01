@@ -17,7 +17,7 @@
       <% end %>
     <% end %>
 
-    <% if policy(:video).new? && policy(:video).enabled? %>
+    <% if policy(:video).new? %>
       <option value="<%= new_video_path %>"><%= t("views.dashboard.actions.upload") %></option>
     <% end %>
   </select>
