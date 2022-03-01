@@ -101,7 +101,7 @@ class Reaction < ApplicationRecord
   # no need to send notification if:
   # - reaction is negative
   # - receiver is the same user as the one who reacted
-  # - receive_notification is disabled
+  # - reaction status is marked invalid
   def skip_notification_for?(_receiver)
     reactor_id = case reactable
                  when User
@@ -110,7 +110,7 @@ class Reaction < ApplicationRecord
                    reactable.user_id
                  end
 
-    points.negative? || (user_id == reactor_id)
+    (status == "invalid") || points.negative? || (user_id == reactor_id)
   end
 
   def vomit_on_user?
