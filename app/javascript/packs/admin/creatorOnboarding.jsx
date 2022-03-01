@@ -45,7 +45,7 @@ function handleValidationsAndUpdates(color) {
 }
 
 /**
- * Updates the branding/colors on the Creator Settings Page.
+ * Updates the branding/colors on the Creator Settings Page
  * by overriding the accent-color in the :root object
  *
  * @param {String} color The color hex code
