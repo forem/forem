@@ -39,6 +39,11 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
+    ## Rails 6.0
+    # Determines whether forms are generated with a hidden tag that forces older versions of Internet
+    # Explorer to submit forms encoded in UTF-8
+    config.action_view.default_enforce_utf8 = true
+
     ## Rails 6.1
     # This replaces the old config.active_support.use_sha1_digests from Rails 5.2
     config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1

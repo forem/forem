@@ -50,6 +50,16 @@ module Api
       # Checks if the user is authenticated, sets @user to nil otherwise
       #
       # @return [User, NilClass]
+      #
+      # @see {#pundit_user} for one way we use this method
+      # @see {#authenticate_with_api_key_or_current_user} for the logic of building the user.
+      #
+      # @note We could memoize the `@user ||=` but Rubocop wants to rename that to
+      #       `authenticate_with_api_key_or_current_user` which would be bad as descendant classes
+      #       have chosen to reference the `@user` instance variable.  Intsead [@jeremyf] is
+      #       favoring leaving this method as is to reduce impact, and having `#pundit_user` do the
+      #       memoization.
+      #
       def authenticate_with_api_key_or_current_user
         @user = authenticate_with_api_key || current_user
       end
@@ -66,6 +76,24 @@ module Api
       end
 
       private
+
+      # @note By default pundit_user is an alias of "#current_user".  However, as "#current_user"
+      #       only tells part of the story, we need to roll our own.  That means checking if we have
+      #       `@user` (which is set in #authenticate_with_api_key_or_current_user) but if that's not
+      #       present, call the method.
+      #
+      # @return [User, NilClass]
+      #
+      # @note [@jeremyf] is choosing to reference the instance variable (e.g. `@user`) and if that's
+      #       nil to call the `authenticate_with_api_key_or_current_user`.  This way I'm not
+      #       altering the implementation details of the `authenticate_with_api_key_or_current_user`
+      #       function by introducing memoization.
+      #
+      # @see {#authenticate_with_api_key_or_current_user}
+      def pundit_user
+        # What's going on here?
+        @pundit_user ||= @user || authenticate_with_api_key_or_current_user
+      end
 
       def authenticate_with_api_key
         api_key = request.headers["api-key"]
