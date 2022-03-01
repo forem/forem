@@ -19,7 +19,7 @@ getCsrfToken().then(() => {
         if (user?.id !== articleAuthorId && !isModerationPage()) {
           initializeActionsPanel(user, path);
           initializeFlagUserModal(articleAuthorId);
-          // dev.to/mod
+          // "/mod" page
         } else if (isModerationPage()) {
           initializeActionsPanel(user, path);
           initializeFlagUserModal(articleAuthorId);
