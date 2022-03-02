@@ -77,10 +77,11 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
-  config.hosts << ENV["APP_DOMAIN"] unless ENV["APP_DOMAIN"].nil?
-  if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
-    config.hosts << /.*#{URI.parse(gitpod_workspace_url).host}/
-  end
+  #config.hosts << ENV["APP_DOMAIN"] unless ENV["APP_DOMAIN"].nil?
+  #if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
+  #  config.hosts << /.*#{URI.parse(gitpod_workspace_url).host}/
+  #end
+  config.hosts.clear
   config.app_domain = ENV["APP_DOMAIN"] || "localhost:3000"
 
   config.action_mailer.delivery_method = :smtp
