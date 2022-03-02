@@ -127,12 +127,8 @@ getCsrfToken().then(async () => {
       root,
     );
   } catch (e) {
-    const commentElement = document.getElementById('comment-subscription');
-
-    if (commentElement) {
-      commentElement.innerHTML =
-        '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
-    }
+    root.innerHTML =
+      '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
   }
 });
 
