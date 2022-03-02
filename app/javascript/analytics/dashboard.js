@@ -45,7 +45,6 @@ function writeCards(data, timeRangeLabel) {
 }
 
 function drawChart({ id, showPoints = true, title, labels, datasets }) {
-  // timeRangeLabel is '' when Infinity time range is selected
   const chartOptions = showPoints
     ? {}
     : {
@@ -127,9 +126,12 @@ function drawCharts(data, timeRangeLabel) {
   const followers = parsedData.map((date) => date.follows.total);
   const readers = parsedData.map((date) => date.page_views.total);
 
+  // When timeRange is "Infinity" we hide the points to avoid over-crowding the UI
+  const showPoints = timeRangeLabel !== '';
+
   drawChart({
     id: 'reactions-chart',
-    showPoints: timeRangeLabel !== '',
+    showPoints,
     title: `Reactions ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -170,7 +172,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'comments-chart',
-    showPoints: timeRangeLabel !== '',
+    showPoints,
     title: `Comments ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -187,7 +189,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'followers-chart',
-    showPoints: timeRangeLabel !== '',
+    showPoints,
     title: `New Followers ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -204,7 +206,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'readers-chart',
-    showPoints: timeRangeLabel !== '',
+    showPoints,
     title: `Reads ${timeRangeLabel}`,
     labels,
     datasets: [
