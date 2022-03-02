@@ -94,7 +94,7 @@ RSpec.describe ArticlePolicy do
       before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true) }
 
       it "omits suspended and regular users" do
-        results = described_class.scope_users_authorized_to_action(user_scope: User, action: :create?).to_a
+        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
         expect(results).to match_array([super_admin_user])
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe ArticlePolicy do
       before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(false) }
 
       it "omits only suspended users" do
-        results = described_class.scope_users_authorized_to_action(user_scope: User, action: :create?).to_a
+        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
         expect(results).to match_array([regular_user, super_admin_user])
       end
     end
