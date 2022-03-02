@@ -84,6 +84,31 @@ RSpec.describe ArticlePolicy do
   let(:resource) { build(:article, user: author, organization: organization) }
   let(:policy) { described_class.new(user, resource) }
 
+  describe ".scope_users_authorized_to_action" do
+    let!(:regular_user) { create(:user) }
+    let!(:super_admin_user) { create(:user, :super_admin) }
+
+    before { create(:user, :suspended) }
+
+    context "when limit_post_creation_to_admins is true" do
+      before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true) }
+
+      it "omits suspended and regular users" do
+        results = described_class.scope_users_authorized_to_action(user_scope: User, action: :create?).to_a
+        expect(results).to match_array([super_admin_user])
+      end
+    end
+
+    context "when limit_post_creation_to_admins is false" do
+      before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(false) }
+
+      it "omits only suspended users" do
+        results = described_class.scope_users_authorized_to_action(user_scope: User, action: :create?).to_a
+        expect(results).to match_array([regular_user, super_admin_user])
+      end
+    end
+  end
+
   describe "#feed?" do
     let(:policy_method) { :feed? }
 

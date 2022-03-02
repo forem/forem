@@ -12,6 +12,43 @@ class ArticlePolicy < ApplicationPolicy
     FeatureFlag.enabled?(:limit_post_creation_to_admins)
   end
 
+  # Helps filter a `:user_scope` to those authorized to the `:action`.  I want a list of all users
+  # who can create an Article.  This policy method can help with that.
+  #
+  # @param user_scope [ActiveRecord::Relation] a scope for querying user objects
+  # @param action [Symbol] the name of one of the ArticlePolicy action predicates (e.g. :create?,
+  #        :new?) though as a convenience, we will also accept :new, and :create.
+  #
+  # @return [ActiveRecord::Relation]
+  #
+  # @see https://api.rubyonrails.org/classes/ActiveRecord/Scoping/Named/ClassMethods.html#method-i-scope
+  #
+  # @note With this duplication it would be feasible to alter the instance method logics to use the
+  #       class method (e.g. `ArticlePolicy.scope_authorized(user_scope: User, action:
+  #       :create?).find_by(user.id)`) but that's a future consideration.
+  #
+  # @note This is not a Pundit scope (see https://github.com/varvet/pundit#scopes), as those methods
+  #       are for answering "What articles can I see?"  This method is for answering "Who all can
+  #       <action> on Articles?"
+  #
+  # @note Why isn't this a User.scope method?  Because the logic of who can take an action on the
+  #       resource is the problem domain of the policy.
+  def self.scope_users_authorized_to_action(user_scope:, action:)
+    case action
+    when :create?, :new?, :create, :new
+      # Note the delicate dance to duplicate logic in a general sense.  [I hope that] this is a
+      # stop-gap solution.
+      user_scope = user_scope.without_role(:suspended)
+      return user_scope unless limit_post_creation_to_admins?
+
+      # NOTE: Not a fan of reaching over to the constant of another class, but I digress.
+      user_scope.with_any_role(*Authorizer::RoleBasedQueries::ANY_ADMIN_ROLES)
+    else
+      # Not going to implement all of the use cases.
+      raise "Unhandled predicate: #{action} for #{self}.#{__method__}"
+    end
+  end
+
   # @note [@jeremyf] I am re-implemnenting the initialize method, but removing the Pundit
   #       authorization.  There's an assumption that all policy questions will require a user,
   #       unless you know specifically that they don't.
@@ -40,6 +77,7 @@ class ArticlePolicy < ApplicationPolicy
     true
   end
 
+  # @see {ArticlePolicy.scope_users_authorized_to_action} for "mirrored" details.
   def create?
     require_user_in_good_standing!
     return true unless self.class.limit_post_creation_to_admins?
