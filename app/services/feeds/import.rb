@@ -1,13 +1,24 @@
 module Feeds
+  # Responsible for fetching RSS feeds for multiple users.
+  #
+  # @see {Feeds::Import.call}
   class Import
-    def self.call(users: nil, earlier_than: nil)
-      new(users: users, earlier_than: earlier_than).call
+    # Fetch the feeds for the given users (with some filtering based on internal business logic).
+    #
+    # @param users_scope [ActiveRecord::Relation<User>] the initial scope for determining the users
+    #        whose feeds we'll be fetching.
+    #
+    # @param earlier_than [NilClass, ActiveSupport::TimeWithZone] when given, use this to further
+    #        filter the user's who's articles we'll fetch.  That is to say, we won't fetch anyone's
+    #        feeds who's last fetch time was after our earlier_than parameter.
+    #
+    # @return [Integer] count of total articles fetched.
+    def self.call(users_scope: User, earlier_than: nil)
+      new(users_scope: users_scope, earlier_than: earlier_than).call
     end
 
-    def initialize(users: nil, earlier_than: nil)
-      # using nil here to avoid an unnecessary table count to check presence
-      @users = users || User.where(id: Users::Setting.with_feed.select(:user_id))
-      @earlier_than = earlier_than
+    def initialize(users_scope: User, earlier_than: nil)
+      set_users_from(users_scope: users_scope, earlier_than: earlier_than)
 
       # NOTE: should these be configurable? Currently they are the result of empiric
       # tests trying to find a balance between memory occupation and speed
@@ -52,9 +63,15 @@ module Feeds
 
     private
 
-    attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers
+    attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers, :users
 
-    def users
+    # TODO: jeremyf, the logic around which users is a bit convoluted; now we need to consider Article policies
+    #
+    # using nil here to avoid an unnecessary table count to check presence
+    def set_users_from(users_scope:, earlier_than:)
+      @users = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
+      @earlier_than = earlier_than
+
       return @users unless earlier_than
 
       # Filtering users whose feed hasn't been processed in the last `earlier_than` time span.
