@@ -199,7 +199,7 @@ function buildArticleHTML(article) {
     // NB: Escaping apostrophes with a "/" does not have the desired effect, as we eventually render the name inside a double quoted string ""
     // To avoid complications with single quotes inside double quotes inside single quotes, we instead replace any apostrophe with its encoded value
     var name = article.user.name
-      .replace("'", '&apos;')
+      .replace(/'/g, '&apos;')
       .replace(/[\\"]/g, '\\$&');
 
     var previewCardContent = `
