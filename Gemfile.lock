@@ -653,7 +653,7 @@ GEM
     rice (4.0.2)
     rolify (6.0.0)
     rouge (3.28.0)
-    rpush (7.0.0)
+    rpush (7.0.1)
       activesupport (>= 5.2)
       jwt (>= 1.5.6)
       multi_json (~> 1.0)
