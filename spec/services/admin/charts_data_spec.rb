@@ -23,5 +23,4 @@ RSpec.describe Admin::ChartsData, type: :service do
     expect(described_class.new(20).call.first.fourth.size).to eq(20)
   end
 
-  end
 end
