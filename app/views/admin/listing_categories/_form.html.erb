@@ -20,10 +20,11 @@
 
 <div class="form-group">
   <%= label_tag :social_preview_color, "Social preview color" %>
-  <%= color_field_tag :social_preview_color, @listing_category.social_preview_color, class: "form-control" %>
+  <%= text_field_tag :social_preview_color, @listing_category.social_preview_color || "#000000", class: "crayons-textfield", placeholder: "#000000", data: { color_picker: true, label_text: "Social preview color" } %>
 </div>
 
 <div class="form-group">
   <%= label_tag :social_preview_description, "Description" %>
   <%= text_area_tag :social_preview_description, @listing_category.social_preview_description, size: "100x10", class: "form-control" %>
 </div>
+<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>
