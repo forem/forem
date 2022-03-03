@@ -38,10 +38,13 @@ export const ColorPicker = ({
   // Hex codes may validly be represented by three characters, where r, g, b are all repeated,
   // e.g. #0D6 === #00DD66. To make sure that all color codes can be handled consistently through our app,
   // we convert any shorthand hex codes to their full 6 char representation.
-  const handleBlur = () => {
+  const handleBlur = (e) => {
+    const {
+      currentTarget: { value: currentColor },
+    } = e;
     // Color always includes a leading '#', hence a length of 4
-    if (color.length === 4) {
-      const fullHexCode = convertThreeCharHexToSix(color);
+    if (currentColor.length === 4) {
+      const fullHexCode = convertThreeCharHexToSix(currentColor);
       setColor(fullHexCode);
       onChange?.(fullHexCode);
     }
@@ -70,7 +73,7 @@ export const ColorPicker = ({
           }}
           onBlur={(e) => {
             onBlur?.(e);
-            handleBlur();
+            handleBlur(e);
           }}
           prefixed
         />
