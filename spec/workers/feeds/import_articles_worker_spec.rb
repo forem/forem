@@ -12,7 +12,7 @@ RSpec.describe Feeds::ImportArticlesWorker, type: :worker do
       Timecop.freeze(Time.current) do
         worker.perform
 
-        expect(Feeds::Import).to have_received(:call).with(users: nil, earlier_than: 4.hours.ago)
+        expect(Feeds::Import).to have_received(:call).with(users_scope: User, earlier_than: 4.hours.ago)
       end
     end
 
@@ -22,7 +22,7 @@ RSpec.describe Feeds::ImportArticlesWorker, type: :worker do
       Timecop.freeze(Time.current) do
         worker.perform([], 1.minute.ago)
 
-        expect(Feeds::Import).to have_received(:call).with(users: nil, earlier_than: 1.minute.ago)
+        expect(Feeds::Import).to have_received(:call).with(users_scope: User, earlier_than: 1.minute.ago)
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.describe Feeds::ImportArticlesWorker, type: :worker do
 
       worker.perform([user.id])
 
-      expect(Feeds::Import).to have_received(:call).with(users: User.where(id: [user.id]), earlier_than: nil)
+      expect(Feeds::Import).to have_received(:call).with(users_scope: User.where(id: [user.id]), earlier_than: nil)
     end
   end
 end
