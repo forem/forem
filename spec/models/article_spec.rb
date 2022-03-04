@@ -222,6 +222,15 @@ RSpec.describe Article, type: :model do
     end
 
     describe "title validation" do
+      it "removes extra spaces" do
+        # Rubocop objects to this for many reasons, but it's intentional
+        # rubocop:disable
+        article = create(:article, title: "I⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Am⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Warning⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀You⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Don't⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Click!")
+        # rubocop:enable
+
+        expect(article.title).to eq "I Am Warning You Don't Click!"
+      end
+
       it "produces a proper title" do
         test_article = build(:article, title: "An Article Title")
 
