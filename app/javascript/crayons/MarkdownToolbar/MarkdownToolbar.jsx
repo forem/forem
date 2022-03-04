@@ -220,7 +220,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     textArea.setSelectionRange(newCursorStart, newCursorEnd);
   };
 
-  const handleImageUploadStarted = () => {
+  const handleImageUploadStarted = ({ textArea, storedCursorPosition }) => {
     const { textBeforeSelection, textAfterSelection } =
       getSelectionData(textArea);
 
@@ -355,7 +355,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
       <ImageUploader
         editorVersion="v2"
-        onImageUploadStart={handleImageUploadStarted}
+        onImageUploadStart={() =>
+          handleImageUploadStarted({ textArea, storedCursorPosition })
+        }
         onImageUploadSuccess={handleImageUploadEnd}
         onImageUploadError={handleImageUploadEnd}
         buttonProps={{
