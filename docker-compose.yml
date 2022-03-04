@@ -1,11 +1,11 @@
 version: "3"
 services:
   rails:
-    image: quay.io/forem/forem:development
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_rails
     user: root
     ports:
-      - "3000:3000"
+      - "4700:3000"
     depends_on:
       - bundle
       - db
@@ -13,7 +13,7 @@ services:
       - yarn
       - testdb
     environment:
-      RAILS_ENV: development
+      RAILS_ENV: production
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       DATABASE_URL_TEST: postgresql://forem:forem@testdb:5432/Forem_test
       REDIS_SESSIONS_URL: redis://redis:6379
@@ -22,7 +22,12 @@ services:
       RACK_TIMEOUT_WAIT_TIMEOUT: 10000
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
-      APP_DOMAIN: localhost:3000
+      APP_DOMAIN: forums.nosadnile.net
+      APP_PROTOCOL: https://
+      FOREM_OWNER_SECRET: ef6f681351307d602fd73c4d32f8062a04caf305
+      COMMUNITY_NAME: NoSadNile Network
+      DEFAULT_EMAIL: forums@nosadnile.net
+      SECRET_KEY_BASE: 9a187eb935bef7ceca67108f806cd869ce08bab52ebfb54a222869b613a81b3d79cc479039f215e4f5561c9137ab490ab2b31198460deaa2c5e40b0ac9506a7f
     tmpfs:
       - /tmp
     volumes:
@@ -31,35 +36,47 @@ services:
     command: [ "bash", "-c", "./scripts/entrypoint.sh bootstrap && bundle exec rails server -b 0.0.0.0 -p 3000"]
 
   bundle:
-    image: quay.io/forem/forem:development
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_bundle
     user: root
     environment:
-      RAILS_ENV: development
+      RAILS_ENV: production
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
+      APP_DOMAIN: forums.nosadnile.net
+      APP_PROTOCOL: https://
+      FOREM_OWNER_SECRET: ef6f681351307d602fd73c4d32f8062a04caf305
+      COMMUNITY_NAME: NoSadNile Network
+      DEFAULT_EMAIL: forums@nosadnile.net
+      SECRET_KEY_BASE: 9a187eb935bef7ceca67108f806cd869ce08bab52ebfb54a222869b613a81b3d79cc479039f215e4f5561c9137ab490ab2b31198460deaa2c5e40b0ac9506a7f
     volumes:
       - .:/opt/apps/forem:delegated
     command: ["./scripts/bundle.sh"]
 
   yarn:
-    image: quay.io/forem/forem:development
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_yarn
     user: root
     environment:
-      RAILS_ENV: development
+      RAILS_ENV: production
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
+      APP_DOMAIN: forums.nosadnile.net
+      APP_PROTOCOL: https://
+      FOREM_OWNER_SECRET: ef6f681351307d602fd73c4d32f8062a04caf305
+      COMMUNITY_NAME: NoSadNile Network
+      DEFAULT_EMAIL: forums@nosadnile.net
+      SECRET_KEY_BASE: 9a187eb935bef7ceca67108f806cd869ce08bab52ebfb54a222869b613a81b3d79cc479039f215e4f5561c9137ab490ab2b31198460deaa2c5e40b0ac9506a7f
     volumes:
       - .:/opt/apps/forem:delegated
     command: yarn install --dev
 
   webpacker:
-    image: quay.io/forem/forem:development
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_webpacker
     user: root
     depends_on:
@@ -67,18 +84,24 @@ services:
       - rails
       - yarn
     environment:
-      RAILS_ENV: development
+      RAILS_ENV: production
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
+      APP_DOMAIN: forums.nosadnile.net
+      APP_PROTOCOL: https://
+      FOREM_OWNER_SECRET: ef6f681351307d602fd73c4d32f8062a04caf305
+      COMMUNITY_NAME: NoSadNile Network
+      DEFAULT_EMAIL: forums@nosadnile.net
+      SECRET_KEY_BASE: 9a187eb935bef7ceca67108f806cd869ce08bab52ebfb54a222869b613a81b3d79cc479039f215e4f5561c9137ab490ab2b31198460deaa2c5e40b0ac9506a7f
     volumes:
       - .:/opt/apps/forem:delegated
     entrypoint: ["dockerize", "-wait", "file:///opt/apps/forem/node_modules/.bin/webpack-dev-server", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "2700s", "-wait-retry-interval", "10s"]
     command: ["./bin/webpack-dev-server"]
 
   seed:
-    image: quay.io/forem/forem:development
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_seed
     user: root
     depends_on:
@@ -86,18 +109,24 @@ services:
       - redis
       - db
     environment:
-      RAILS_ENV: development
+      RAILS_ENV: production
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
+      APP_DOMAIN: forums.nosadnile.net
+      APP_PROTOCOL: https://
+      FOREM_OWNER_SECRET: ef6f681351307d602fd73c4d32f8062a04caf305
+      COMMUNITY_NAME: NoSadNile Network
+      DEFAULT_EMAIL: forums@nosadnile.net
+      SECRET_KEY_BASE: 9a187eb935bef7ceca67108f806cd869ce08bab52ebfb54a222869b613a81b3d79cc479039f215e4f5561c9137ab490ab2b31198460deaa2c5e40b0ac9506a7f
     volumes:
       - .:/opt/apps/forem:delegated
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "tcp://rails:3000", "-timeout", "2700s", "-wait-retry-interval", "20s"]
     command: ["bundle", "exec", "rake","db:seed"]
 
   sidekiq:
-    image: quay.io/forem/forem:development
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_sidekiq
     user: root
     depends_on:
@@ -105,11 +134,17 @@ services:
       - redis
       - db
     environment:
-      RAILS_ENV: development
+      RAILS_ENV: production
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
+      APP_DOMAIN: forums.nosadnile.net
+      APP_PROTOCOL: https://
+      FOREM_OWNER_SECRET: ef6f681351307d602fd73c4d32f8062a04caf305
+      COMMUNITY_NAME: NoSadNile Network
+      DEFAULT_EMAIL: forums@nosadnile.net
+      SECRET_KEY_BASE: 9a187eb935bef7ceca67108f806cd869ce08bab52ebfb54a222869b613a81b3d79cc479039f215e4f5561c9137ab490ab2b31198460deaa2c5e40b0ac9506a7f
     volumes:
       - .:/opt/apps/forem:delegated
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "tcp://rails:3000", "-timeout", "2700s", "-wait-retry-interval", "20s"]

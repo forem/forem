@@ -1,4 +1,4 @@
-FROM quay.io/forem/ruby:3.0.2 as base
+FROM ghcr.io/redstonewizard08/forem/ruby as base
 
 FROM base as builder
 
@@ -8,7 +8,8 @@ RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo 
     dnf install --setopt install_weak_deps=false -y \
     ImageMagick iproute jemalloc less libcurl libcurl-devel \
     libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
-    postgresql postgresql-devel tzdata yarn && \
+    postgresql postgresql-devel tzdata yarn gcc-c++ cairo-devel \
+    pango-devel libjpeg-turbo-devel giflib-devel && \
     dnf -y clean all && \
     rm -rf /var/cache/yum
 
@@ -22,9 +23,14 @@ RUN mkdir -p ${APP_HOME} && chown "${APP_UID}":"${APP_GID}" "${APP_HOME}" && \
     adduser -u "${APP_UID}" -g "${APP_GID}" -d "${APP_HOME}" "${APP_USER}"
 
 ENV DOCKERIZE_VERSION=v0.6.1
-RUN wget https://github.com/jwilder/dockerize/releases/download/"${DOCKERIZE_VERSION}"/dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
-    && rm dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
+RUN export UNAME_ARCH=$(uname -m) && \
+    case $UNAME_ARCH in \
+    "aarch64") export ARCH="armhf" ;; \
+    "x86_64") export ARCH="amd64" ;; \
+    *) export ARCH=$UNAME_ARCH ;; esac && \
+    wget https://github.com/jwilder/dockerize/releases/download/"${DOCKERIZE_VERSION}"/dockerize-linux-"${ARCH}"-"${DOCKERIZE_VERSION}".tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-"${ARCH}"-"${DOCKERIZE_VERSION}".tar.gz \
+    && rm dockerize-linux-"${ARCH}"-"${DOCKERIZE_VERSION}".tar.gz \
     && chown root:root /usr/local/bin/dockerize
 
 WORKDIR "${APP_HOME}"
@@ -50,6 +56,8 @@ RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
 
 RUN rm -rf node_modules vendor/assets spec
 
+EXPOSE 3000
+
 ## Production
 FROM base as production
 
@@ -57,7 +65,8 @@ USER root
 
 RUN dnf install --setopt install_weak_deps=false -y bash curl ImageMagick \
                 iproute jemalloc less libcurl \
-                postgresql tzdata nodejs libpq \
+                postgresql tzdata nodejs libpq gcc-c++ cairo-devel \
+                pango-devel libjpeg-turbo-devel giflib-devel \
                 && dnf -y clean all \
                 && rm -rf /var/cache/yum
 
@@ -77,6 +86,8 @@ WORKDIR "${APP_HOME}"
 
 VOLUME "${APP_HOME}"/public/
 
+EXPOSE 3000
+
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
@@ -87,7 +98,8 @@ FROM builder AS testing
 USER root
 
 RUN dnf install --setopt install_weak_deps=false -y \
-    chromium-headless chromedriver && \
+    chromium-headless chromedriver gcc-c++ cairo-devel \
+    pango-devel libjpeg-turbo-devel giflib-devel && \
     yum clean all && \
     rm -rf /var/cache/yum
 
@@ -103,6 +115,8 @@ RUN bundle config --local build.sassc --disable-march-tune-native && \
     bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
+
+EXPOSE 3000
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
@@ -123,6 +137,8 @@ RUN bundle config --local build.sassc --disable-march-tune-native && \
     bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
+
+EXPOSE 3000
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
