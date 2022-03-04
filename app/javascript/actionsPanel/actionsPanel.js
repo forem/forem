@@ -180,7 +180,10 @@ const adminFeatureArticle = async (id, featured) => {
   try {
     const response = await request(`/articles/${id}/admin_featured_toggle`, {
       method: 'PATCH',
-      body: JSON.stringify({ id, article: { featured: featured === 'true' ? 0 : 1 } }),
+      body: JSON.stringify({
+        id,
+        article: { featured: featured === 'true' ? 0 : 1 },
+      }),
       credentials: 'same-origin',
     });
 
@@ -401,14 +404,11 @@ export function addBottomActionsListeners() {
     },
   );
 
-
   const featureArticleBtn = document.getElementById('feature-article-btn');
   if (featureArticleBtn) {
     featureArticleBtn.addEventListener('click', () => {
-      const {
-        articleId: id,
-        articleFeatured: featured,
-      } = featureArticleBtn.dataset;
+      const { articleId: id, articleFeatured: featured } =
+        featureArticleBtn.dataset;
       adminFeatureArticle(id, featured);
     });
   }
