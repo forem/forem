@@ -112,6 +112,24 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
+  # @see https://github.com/forem/forem/blob/841491c6ee7f9a46d8033b4b55052316db251863/app/javascript/packs/articleModerationTools.js#L17-L27
+  #      for details regarding original authorization logic for this method.
+  def moderate?
+    # Technically, we could check the limit_post_creation_to_admins? first, but [@jeremyf]'s
+    # operating on a "trying to maintain consistency" approach.
+    require_user_in_good_standing!
+
+    return false if self.class.limit_post_creation_to_admins?
+
+    # Don't let a user moderate their own article.  See for prior UI logic reinforcing this
+    # https://github.com/forem/forem/blob/841491c6ee7f9a46d8033b4b55052316db251863/app/javascript/packs/articleModerationTools.js#L17-L27
+    return false if user_author?
+
+    # Beware a trusted user does not guarantee that they are an admin.  And more specifically, being
+    # an admin does not guarantee being trusted.
+    user.trusted?
+  end
+
   alias admin_featured_toggle? admin_unpublish?
 
   alias new? create?
