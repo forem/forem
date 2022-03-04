@@ -13,6 +13,14 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   end
 
   describe ".call" do
+    it "ensures that we only fetch users who can create articles", vcr: { cassette_name: "feeds_import" } do
+      allow(ArticlePolicy).to receive(:scope_users_authorized_to_action).and_call_original
+
+      described_class.call
+
+      expect(ArticlePolicy).to have_received(:scope_users_authorized_to_action).with(users_scope: User, action: :create)
+    end
+
     # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
     it "fetch only articles from a feed_url", vcr: { cassette_name: "feeds_import" } do
       num_articles = described_class.call

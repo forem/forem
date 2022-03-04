@@ -18,7 +18,8 @@ module Feeds
     end
 
     def initialize(users_scope: User, earlier_than: nil)
-      set_users_from(users_scope: users_scope, earlier_than: earlier_than)
+      @earlier_than = earlier_than
+      @users = filter_users_from(users_scope: users_scope, earlier_than: earlier_than)
 
       # NOTE: should these be configurable? Currently they are the result of empiric
       # tests trying to find a balance between memory occupation and speed
@@ -65,18 +66,18 @@ module Feeds
 
     attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers, :users
 
-    # TODO: jeremyf, the logic around which users is a bit convoluted; now we need to consider Article policies
-    #
-    # using nil here to avoid an unnecessary table count to check presence
-    def set_users_from(users_scope:, earlier_than:)
-      @users = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
-      @earlier_than = earlier_than
+    # @return [ActiveRecord::Relation<User>] you'll likely want to set @users from this, but
+    #         [@jeremyf]'s choosing not to do that as it makes the implementation just a bit
+    #         cleaner.
+    def filter_users_from(users_scope:, earlier_than:)
+      users_scope = ArticlePolicy.scope_users_authorized_to_action(users_scope: users_scope, action: :create)
+      users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
 
-      return @users unless earlier_than
+      return users_scope unless earlier_than
 
       # Filtering users whose feed hasn't been processed in the last `earlier_than` time span.
       # New users + any user whose feed was processed earlier than the given time
-      @users.where(feed_fetched_at: nil).or(@users.where(feed_fetched_at: ..earlier_than))
+      users_scope.where(feed_fetched_at: nil).or(users_scope.where(feed_fetched_at: ..earlier_than))
     end
 
     # TODO: put this in separate service object
