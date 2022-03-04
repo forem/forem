@@ -106,7 +106,7 @@ class Article < ApplicationRecord
 
   before_validation :evaluate_markdown, :create_slug
   before_validation :remove_prohibited_unicode_characters
-  before_validation :normalize_spaces
+  before_validation :normalize_title
   before_save :update_cached_user
   before_save :set_all_dates
 
@@ -568,15 +568,15 @@ class Article < ApplicationRecord
     self.path = calculated_path.downcase
   end
 
-  def normalize_spaces
-    if title
-      self.title = title
-        # Filter out anything that isn't a word, space, punctuation mark, or
-        # recognized emoji
-        .gsub(/[^[:word:][:space:][:punct:]\u{1f000}-\u{1ffff}]+/, " ")
-        # Coalesce runs of whitespace into a single space character
-        .gsub(/\s+/, " ")
-    end
+  def normalize_title
+    return unless title
+
+    self.title = title
+      # Filter out anything that isn't a word, space, punctuation mark, or
+      # recognized emoji
+      .gsub(/[^[:word:][:space:][:punct:]\u{1f000}-\u{1ffff}]+/, " ")
+      # Coalesce runs of whitespace into a single space character
+      .gsub(/\s+/, " ")
   end
 
   def evaluate_markdown
