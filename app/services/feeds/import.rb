@@ -19,7 +19,7 @@ module Feeds
 
     def initialize(users_scope: User, earlier_than: nil)
       @earlier_than = earlier_than
-      @users = extract_users_from(users_scope: users_scope, earlier_than: earlier_than)
+      @users = filter_users_from(users_scope: users_scope, earlier_than: earlier_than)
 
       # NOTE: should these be configurable? Currently they are the result of empiric
       # tests trying to find a balance between memory occupation and speed
@@ -69,7 +69,7 @@ module Feeds
     # @return [ActiveRecord::Relation<User>] you'll likely want to set @users from this, but
     #         [@jeremyf]'s choosing not to do that as it makes the implementation just a bit
     #         cleaner.
-    def extract_users_from(users_scope:, earlier_than:)
+    def filter_users_from(users_scope:, earlier_than:)
       users_scope = ArticlePolicy.scope_users_authorized_to_action(users_scope: users_scope, action: :create)
       users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
 
