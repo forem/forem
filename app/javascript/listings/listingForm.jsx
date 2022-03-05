@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
-import { Tags, DEFAULT_TAG_FORMAT } from '../shared/components/tags';
+import { Tags } from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
 import { Title } from './components/Title';
 import { BodyMarkdown } from './components/BodyMarkdown';
@@ -97,13 +97,13 @@ export class ListingForm extends Component {
             <Tags
               defaultValue={tagList}
               category={category}
+              name="listing[tag_list]"
               onInput={linkState(this, 'tagList')}
               classPrefix="listingform"
               fieldClassName="crayons-textfield"
               maxTags={8}
               autocomplete="off"
               listing
-              pattern={DEFAULT_TAG_FORMAT}
             />
           </div>
           <ExpireDate
