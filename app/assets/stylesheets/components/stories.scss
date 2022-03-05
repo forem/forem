@@ -46,6 +46,11 @@
     right: 0;
     bottom: 0;
     left: 0;
+
+    // Prevent long title content skewing layout
+    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
   }
 
   // Defining additional colors.
