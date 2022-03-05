@@ -34,7 +34,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}/forem:9,${{ env.REGISTRY }}/${{ github.repository }}/forem:latest
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
   build-redis:
@@ -65,7 +65,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}/redis:6.2-alpine,${{ env.REGISTRY }}/${{ github.repository }}/redis:latest
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           file: Dockerfile.redis
