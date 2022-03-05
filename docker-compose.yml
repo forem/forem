@@ -1,7 +1,7 @@
 version: "3"
 services:
   rails:
-    image: ghcr.io/redstonewizard08/forem/forem:8
+    image: ghcr.io/redstonewizard08/forem/forem:9
     container_name: forem_rails
     user: root
     ports:
@@ -36,7 +36,7 @@ services:
     command: [ "bash", "-c", "./scripts/entrypoint.sh bootstrap && bundle exec rails server -b 0.0.0.0 -p 3000"]
 
   bundle:
-    image: ghcr.io/redstonewizard08/forem/forem:8
+    image: ghcr.io/redstonewizard08/forem/forem:9
     container_name: forem_bundle
     user: root
     environment:
@@ -56,7 +56,7 @@ services:
     command: ["./scripts/bundle.sh"]
 
   yarn:
-    image: ghcr.io/redstonewizard08/forem/forem:8
+    image: ghcr.io/redstonewizard08/forem/forem:9
     container_name: forem_yarn
     user: root
     environment:
@@ -76,7 +76,7 @@ services:
     command: yarn install --dev
 
   webpacker:
-    image: ghcr.io/redstonewizard08/forem/forem:8
+    image: ghcr.io/redstonewizard08/forem/forem:9
     container_name: forem_webpacker
     user: root
     depends_on:
@@ -101,7 +101,7 @@ services:
     command: ["./bin/webpack-dev-server"]
 
   seed:
-    image: ghcr.io/redstonewizard08/forem/forem:8
+    image: ghcr.io/redstonewizard08/forem/forem:9
     container_name: forem_seed
     user: root
     depends_on:
@@ -126,7 +126,7 @@ services:
     command: ["bundle", "exec", "rake","db:seed"]
 
   sidekiq:
-    image: ghcr.io/redstonewizard08/forem/forem:8
+    image: ghcr.io/redstonewizard08/forem/forem:9
     container_name: forem_sidekiq
     user: root
     depends_on:
@@ -175,10 +175,12 @@ services:
       - testdb_data:/var/lib/postgresql/data:delegated
 
   redis:
-    image: redis:6.0.9-alpine
+    image: ghcr.io/redstonewizard08/forem/redis:6.2-alpine
     container_name: forem_redis
     ports:
       - "6379:6379"
+    volumes:
+      - ./data/redis.conf:/etc/redis/redis.conf
 
 volumes:
   db_data:

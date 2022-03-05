@@ -91,3 +91,23 @@ production:
 
   # Cache manifest.json for performance
   cache_manifest: true
+
+  # Dev Server
+  dev_server:
+    https: false
+    host: 0.0.0.0
+    port: 3035
+    public: 0.0.0.0:3035
+    hmr: false
+    # Inline should be set to true if using HMR
+    inline: true
+    overlay: true
+    compress: true
+    disable_host_check: true
+    use_local_ip: false
+    quiet: false
+    pretty: false
+    headers:
+      'Access-Control-Allow-Origin': '*'
+    watch_options:
+      ignored: '**/node_modules/**'

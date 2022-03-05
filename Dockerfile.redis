@@ -1,0 +1,4 @@
+FROM redis:6.2-alpine
+
+RUN chmod -R a+rwx /etc/crontabs && \
+    chmod -R a+rwx /data
