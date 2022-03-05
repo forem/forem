@@ -1,7 +1,7 @@
 version: "3"
 services:
   rails:
-    image: ghcr.io/redstonewizard08/forem/forem:9
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_rails
     user: root
     ports:
@@ -22,7 +22,7 @@ services:
       RACK_TIMEOUT_WAIT_TIMEOUT: 10000
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
-      APP_DOMAIN: localhost:3000
+      APP_DOMAIN: localhost:4700
     tmpfs:
       - /tmp
     volumes:
@@ -31,7 +31,7 @@ services:
     command: [ "bash", "-c", "./scripts/entrypoint.sh bootstrap && bundle exec rails server -b 0.0.0.0 -p 3000"]
 
   bundle:
-    image: ghcr.io/redstonewizard08/forem/forem:9
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_bundle
     user: root
     environment:
@@ -45,7 +45,7 @@ services:
     command: ["./scripts/bundle.sh"]
 
   yarn:
-    image: ghcr.io/redstonewizard08/forem/forem:9
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_yarn
     user: root
     environment:
@@ -59,7 +59,7 @@ services:
     command: yarn install --dev
 
   webpacker:
-    image: ghcr.io/redstonewizard08/forem/forem:9
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_webpacker
     user: root
     depends_on:
@@ -78,7 +78,7 @@ services:
     command: ["./bin/webpack-dev-server"]
 
   seed:
-    image: ghcr.io/redstonewizard08/forem/forem:9
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_seed
     user: root
     depends_on:
@@ -97,7 +97,7 @@ services:
     command: ["bundle", "exec", "rake","db:seed"]
 
   sidekiq:
-    image: ghcr.io/redstonewizard08/forem/forem:9
+    image: ghcr.io/redstonewizard08/forem/forem:8
     container_name: forem_sidekiq
     user: root
     depends_on:
