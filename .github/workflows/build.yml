@@ -28,13 +28,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/forem:9,${{ env.REGISTRY }}/${{ github.repository }}/forem:latest
+          images: ${{ env.REGISTRY }}/redstonewizard08/forem/forem:9,${{ env.REGISTRY }}/redstonewizard08/forem/forem:latest
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/forem:9,${{ env.REGISTRY }}/${{ github.repository }}/forem:latest
+          tags: ${{ env.REGISTRY }}/redstonewizard08/forem/forem:9,${{ env.REGISTRY }}/redstonewizard08/forem/forem:latest
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
   build-redis:
@@ -59,13 +59,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}/redis:6.2-alpine,${{ env.REGISTRY }}/${{ github.repository }}/redis:latest
+          images: ${{ env.REGISTRY }}/redstonewizard08/forem/redis:6.2-alpine,${{ env.REGISTRY }}/redstonewizard08/forem/redis:latest
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/redis:6.2-alpine,${{ env.REGISTRY }}/${{ github.repository }}/redis:latest
+          tags: ${{ env.REGISTRY }}/redstonewizard08/forem/redis:6.2-alpine,${{ env.REGISTRY }}/redstonewizard08/forem/redis:latest
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           file: Dockerfile.redis
