@@ -15,7 +15,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
   end
 
   it "raises an error when link 404s" do
-    link = "https://gist.github.com/jeremyf/this-gist-goes-nowhere"
+    link = "https://takeonrules.com/goes-nowhere"
 
     expect do
       stub_request_head(link, 404)
