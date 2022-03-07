@@ -19,10 +19,16 @@ module Feeds
         earlier_than ||= 4.hours.ago
       end
 
-      users_scope.select(:id).find_in_batches do |batch|
-        ids = batch.map { |user| [user.id] }
+      # For some reason `ActiveSupport::TimeWithZone#is_a?(Time)` evaluates to
+      # `true` so this works with any sort of time object
+      if earlier_than.is_a?(Time)
+        earlier_than = earlier_than.iso8601
+      end
 
-        ForUser.perform_bulk ids, earlier_than
+      users_scope.select(:id).find_in_batches do |batch|
+        ids = batch.map { |user| [user.id, earlier_than] }
+
+        ForUser.perform_bulk ids
       end
     end
 
