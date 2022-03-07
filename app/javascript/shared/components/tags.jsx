@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { h } from 'preact';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useTagsField } from '../../hooks/useTagsField';
 import { TagAutocompleteOption } from '../../article-form/components/TagAutocompleteOption';
@@ -16,6 +16,7 @@ export const Tags = ({
   category,
   maxTags,
   name,
+  onFocus,
 }) => {
   const listingState = useMemo(
     () =>
@@ -106,6 +107,7 @@ export const Tags = ({
         SelectionTemplate={TagAutocompleteSelection}
         onSelectionsChanged={syncSelections}
         inputId="tag-input"
+        onFocus={onFocus}
       />
       {/* Hidden input to store the selected tags and be sent via form data */}
       {name && <input type="hidden" name={name} value={defaultValue} />}
@@ -118,9 +120,8 @@ Tags.propTypes = {
   onInput: PropTypes.func.isRequired,
   maxTags: PropTypes.number.isRequired,
   classPrefix: PropTypes.string.isRequired,
-  fieldClassName: PropTypes.string.isRequired,
+  name: PropTypes.string,
   listing: PropTypes.bool,
   category: PropTypes.string,
-  onFocus: PropTypes.func.isRequired,
-  pattern: PropTypes.string.isRequired,
+  onFocus: PropTypes.func,
 };
