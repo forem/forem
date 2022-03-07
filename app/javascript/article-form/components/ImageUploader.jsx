@@ -334,7 +334,7 @@ export const ImageUploader = ({
     if (message.namespace !== 'imageUpload') {
       return;
     }
-    console.log("ImageUploader - NATIVE MESSAGE: ", e);
+    console.log('ImageUploader - NATIVE MESSAGE: ', e);
 
     switch (message.action) {
       case 'uploading':
@@ -344,6 +344,7 @@ export const ImageUploader = ({
         });
         break;
       case 'error':
+        onImageUploadError?.();
         dispatch({
           type: 'upload_error',
           payload: { errorMessage: message.error },
