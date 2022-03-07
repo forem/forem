@@ -9,6 +9,7 @@ module Feeds
     # at runtime
     def perform(user_ids = [], earlier_than = nil)
       users_scope = User
+
       if user_ids.present?
         users_scope = users_scope.where(id: user_ids)
         # we assume that forcing a single import should not take into account
@@ -18,7 +19,21 @@ module Feeds
         earlier_than ||= 4.hours.ago
       end
 
-      ::Feeds::Import.call(users_scope: users_scope, earlier_than: earlier_than)
+      users_scope.select(:id).find_in_batches do |batch|
+        ids = batch.map { |user| [user.id] }
+
+        ForUser.perform_bulk ids, earlier_than
+      end
+    end
+
+    class ForUser
+      include Sidekiq::Worker
+
+      def perform(user_ids, earlier_than)
+        users_scope = User.where(id: user_ids)
+
+        ::Feeds::Import.call(users_scope: users_scope, earlier_than: earlier_than)
+      end
     end
   end
 end
