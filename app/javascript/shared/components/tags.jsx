@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import { h } from 'preact';
+import { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useTagsField } from '../../hooks/useTagsField';
 import { TagAutocompleteOption } from '../../article-form/components/TagAutocompleteOption';
@@ -16,79 +17,72 @@ export const Tags = ({
   maxTags,
   name,
 }) => {
-  const listingState = listing
-    ? {
-        additionalTags: {
-          jobs: [
-            'remote',
-            'remoteoptional',
-            'lgbtbenefits',
-            'greencard',
-            'senior',
-            'junior',
-            'intermediate',
-            '401k',
-            'fulltime',
-            'contract',
-            'temp',
-          ],
-          forhire: [
-            'remote',
-            'remoteoptional',
-            'lgbtbenefits',
-            'greencard',
-            'senior',
-            'junior',
-            'intermediate',
-            '401k',
-            'fulltime',
-            'contract',
-            'temp',
-          ],
-          forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
-          events: ['conference', 'meetup'],
-          collabs: ['paid', 'temp'],
-        },
-      }
-    : null;
-
-  // search(query) {
-  //   if (query === '') {
-  //     return this.fetchTopTagSuggestions();
-  //   }
-  //   this.setState({ showingTopTags: false });
-
-  //   const { listing } = this.props;
-
-  //   const dataHash = { name: query };
-  //   const responsePromise = fetchSearch('tags', dataHash);
-
-  //   return responsePromise.then((response) => {
-  //     if (listing === true) {
-  //       const { additionalTags } = this.state;
-  //       const { category } = this.props;
-  //       const additionalItems = (additionalTags[category] || []).filter((t) =>
-  //         t.includes(query),
-  //       );
-  //       const resultsArray = response.result;
-  //       additionalItems.forEach((t) => {
-  //         if (!resultsArray.includes(t)) {
-  //           resultsArray.push({ name: t });
-  //         }
-  //       });
-  //     }
-  //     // updates searchResults array according to what is being typed by user
-  //     // allows user to choose a tag when they've typed the partial or whole word
-  //     this.setState({
-  //       searchResults: response.result.filter(
-  //         (t) => t.name === query || !this.selected.includes(t.name),
-  //       ),
-  //     });
-  //   });
-  // }
+  const listingState = useMemo(
+    () =>
+      listing
+        ? {
+            additionalTags: {
+              jobs: [
+                'remote',
+                'remoteoptional',
+                'lgbtbenefits',
+                'greencard',
+                'senior',
+                'junior',
+                'intermediate',
+                '401k',
+                'fulltime',
+                'contract',
+                'temp',
+              ],
+              forhire: [
+                'remote',
+                'remoteoptional',
+                'lgbtbenefits',
+                'greencard',
+                'senior',
+                'junior',
+                'intermediate',
+                '401k',
+                'fulltime',
+                'contract',
+                'temp',
+              ],
+              forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+              events: ['conference', 'meetup'],
+              collabs: ['paid', 'temp'],
+            },
+          }
+        : null,
+    [listing],
+  );
 
   const { defaultSelections, topTags, fetchSuggestions, syncSelections } =
     useTagsField({ defaultValue, onInput });
+
+  useEffect(() => {
+    if (listingState && listingState.additionalTags) {
+      // TODO: replace jobs with category
+      const { jobs } = listingState.additionalTags;
+      // Push in this way: { name: 'remote' }
+      const newJobs = jobs.map((t) => ({ name: t }));
+      topTags.push(...newJobs);
+    }
+  }, [topTags, listingState]);
+
+  const fetchSuggestionsWithAdditionalTags = async (searchTerm) => {
+    const suggestionsResult = await fetchSuggestions(searchTerm);
+    const suggestedNames = suggestionsResult.map((t) => t.name);
+
+    const additionalItems = topTags.filter((t) => t.name.includes(searchTerm));
+    // Remove duplicates
+    additionalItems.forEach((t) => {
+      if (!suggestedNames.includes(t.name)) {
+        suggestionsResult.push(t);
+      }
+    });
+    return suggestionsResult;
+  };
 
   return (
     <div className={`${classPrefix}__tagswrapper crayons-field`}>
@@ -99,7 +93,7 @@ export const Tags = ({
       )}
       <MultiSelectAutocomplete
         defaultValue={defaultSelections}
-        fetchSuggestions={fetchSuggestions}
+        fetchSuggestions={fetchSuggestionsWithAdditionalTags}
         staticSuggestions={topTags}
         staticSuggestionsHeading={
           <h2 className="crayons-article-form__top-tags-heading">Top tags</h2>
