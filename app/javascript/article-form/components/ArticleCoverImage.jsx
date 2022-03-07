@@ -111,7 +111,6 @@ export class ArticleCoverImage extends Component {
     if (message.namespace !== 'coverUpload') {
       return;
     }
-    console.log("ArticleCoverImage - NATIVE MESSAGE: ", e);
 
     /* eslint-disable no-case-declarations */
     switch (message.action) {
