@@ -45,6 +45,7 @@ module MarkdownProcessor
         html = markdown.render(parsed_liquid.render)
       rescue Liquid::SyntaxError => e
         html = e.message
+        raise LiquidTags::Errors::InvalidParseContext, I18n.t("liquid_tags.liquid_tag_base.no_embed_word")
       end
 
       parse_html(html)
