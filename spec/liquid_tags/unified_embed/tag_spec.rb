@@ -14,6 +14,15 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     expect(GistTag).to have_received(:new)
   end
 
+  it "raises an error when link 404s" do
+    link = "https://gist.github.com/jeremyf/this-gist-goes-nowhere"
+
+    expect do
+      stub_request_head(link, 404)
+      Liquid::Template.parse("{% embed #{link} %}")
+    end.to raise_error(StandardError, "URL provided was not found; please check and try again")
+  end
+
   it "raises an error when no link-matching class is found" do
     link = "https://takeonrules.com/about"
 
