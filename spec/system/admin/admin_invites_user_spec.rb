@@ -26,7 +26,7 @@ RSpec.describe "Admin invites user", type: :system do
     end
 
     it "contains a link to the documentation" do
-      expect(page).to have_link("read more about SMTP Settings in our admin guide", href: "https://admin.forem.com/docs/advanced-customization/config/smtp-settings")
+      expect(page).to have_link("read more about SMTP Settings in our admin guide")
     end
 
     it "contains a link to configure SMTP settings" do
