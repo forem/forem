@@ -98,7 +98,7 @@ describe('Creator Settings Page', () => {
     cy.url().should('equal', `${baseUrl}admin/creator_settings/new`);
   });
 
-  context('color contrast ratios', () => {
+  context.skip('color contrast ratios', () => {
     it('should show an error when the contrast ratio of a brand color is too low', () => {
       const lowContrastColor = '#a6e8a6';
 
@@ -126,7 +126,7 @@ describe('Creator Settings Page', () => {
     });
   });
 
-  context('brand color updates', () => {
+  context.skip('brand color updates', () => {
     it('should not update the brand color if the color contrast ratio is low', () => {
       const lowContrastColor = '#a6e8a6';
       const lowContrastRgbColor = 'rgb(166, 232, 166)';
