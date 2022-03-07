@@ -1,8 +1,6 @@
 require "rails_helper"
 
-RSpec.describe LoomTag do
-  include EmbedsHelpers
-
+RSpec.describe LoomTag, type: :liquid_tag do
   subject(:loom_tag) { described_class }
 
   let(:article) { create(:article) }
