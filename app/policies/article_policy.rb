@@ -138,20 +138,6 @@ class ArticlePolicy < ApplicationPolicy
 
   private
 
-  def require_user_in_good_standing!
-    require_user!
-
-    return true unless user.suspended?
-
-    raise ApplicationPolicy::UserSuspendedError, I18n.t("policies.application_policy.your_account_is_suspended")
-  end
-
-  def require_user!
-    return true if user
-
-    raise ApplicationPolicy::UserRequiredError, I18n.t("policies.application_policy.you_must_be_logged_in")
-  end
-
   def user_author?
     if record.instance_of?(Article)
       record.user_id == user.id

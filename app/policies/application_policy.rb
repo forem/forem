@@ -55,15 +55,51 @@ class ApplicationPolicy
   class UserRequiredError < NotAuthorizedError
   end
 
+  # @param user [Object] the "user" (person?) we're attempting to authorize.
+  # @return [TrueClass] if we have a "user" (whatever that object might be, we'll assume the callers
+  #         know what they're doing) and that user is not suspended
+  #
+  # @raise [ApplicationPolicy::UserSuspendedError] if our user suspended
+  # @raise [ApplicationPolicy::UserRequiredError] if our given user was "falsey"
+  #
+  # @see {ApplicationPolicy.require_user!}
+  # @note [@jeremyf] I'm choosing to make this a class method (even though later I define an
+  #       instance method) because this question is something that we often ask outside of our
+  #       current policy implementation.  By making this class method, I can begin to factor those
+  #       policy implementations to at least a common thing that we use within our policies.
+  def self.require_user_in_good_standing!(user:)
+    require_user!(user: user)
+
+    return true unless user.suspended?
+
+    raise ApplicationPolicy::UserSuspendedError, I18n.t("policies.application_policy.your_account_is_suspended")
+  end
+
+  # @param user [Object] the "user" (person?) we're attempting to authorize.
+  # @return [TrueClass] if we have a "user" (whatever that object might be, we'll assume the callers
+  #         know what they're doing)
+  #
+  # @raise [ApplicationPolicy::UserRequiredError] if our user is "falsey"
+  #
+  # @note [@jeremyf] I'm choosing to make this a class method (even though later I define an
+  #       instance method) because this question is something that we often ask outside of our
+  #       current policy implementation.  By making this class method, I can begin to factor those
+  #       policy implementations to at least a common thing that we use within our policies.
+  def self.require_user!(user:)
+    return true if user
+
+    raise ApplicationPolicy::UserRequiredError, I18n.t("policies.application_policy.you_must_be_logged_in")
+  end
+
   # @param user [User] who's the one taking the action?
   #
   # @param record [Class, Object] what is the user acting on?  This could be a model (e.g. Article)
   #        or an instance of a model (e.g. Article.new) or any Plain Old Ruby Object [PORO].
   def initialize(user, record)
-    raise UserRequiredError, I18n.t("policies.application_policy.you_must_be_logged_in") unless user
-
     @user = user
     @record = record
+
+    require_user!
   end
 
   def index?
@@ -129,5 +165,15 @@ class ApplicationPolicy
 
   def user_trusted?
     user.has_trusted_role?
+  end
+
+  protected
+
+  def require_user!
+    self.class.require_user!(user: user)
+  end
+
+  def require_user_in_good_standing!
+    self.class.require_user_in_good_standing!(user: user)
   end
 end
