@@ -1,11 +1,15 @@
 require "rails_helper"
 
 RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
+  include EmbedsHelpers
+
   it "delegates parsing to the link-matching class" do
     link = "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"
 
     allow(GistTag).to receive(:new).and_call_original
+    stub_request_head(link)
     parsed_tag = Liquid::Template.parse("{% embed #{link} %}")
+
     expect { parsed_tag.render }.not_to raise_error
     expect(GistTag).to have_received(:new)
   end
@@ -14,7 +18,8 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     link = "https://takeonrules.com/about"
 
     expect do
+      stub_request_head(link)
       Liquid::Template.parse("{% embed #{link} %}")
-    end.to raise_error(StandardError, "Embed URL not valid")
+    end.to raise_error(StandardError, "Embeds for this URL are not supported")
   end
 end

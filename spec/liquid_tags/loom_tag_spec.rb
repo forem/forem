@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe LoomTag do
+  include EmbedsHelpers
+
   subject(:loom_tag) { described_class }
 
   let(:article) { create(:article) }
@@ -72,17 +74,5 @@ RSpec.describe LoomTag do
       expect(embed).to include("<iframe")
       expect(embed).to include("src=\"#{expected_link}\"")
     end
-  end
-
-  private
-
-  def stub_request_head(url, status_code = 200)
-    stub_request(:head, url)
-      .with(
-        headers: {
-          Accept: "*/*",
-          "User-Agent": "Ruby"
-        },
-      ).to_return(status: status_code, body: "", headers: {})
   end
 end
