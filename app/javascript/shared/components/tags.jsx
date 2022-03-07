@@ -113,14 +113,8 @@ export const Tags = ({
         onSelectionsChanged={syncSelections}
         inputId="tag-input"
       />
-      {/* Create hidden input to store the selected tags and be sent via form data */}
-      {name && (
-        <input
-          type="hidden"
-          name="listing[tag_list]"
-          // value={this.state.tagList}
-        />
-      )}
+      {/* Hidden input to store the selected tags and be sent via form data */}
+      {name && <input type="hidden" name={name} value={defaultValue} />}
     </div>
   );
 };
