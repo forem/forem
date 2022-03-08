@@ -130,7 +130,6 @@ en:
           remove: Remove
           save: Save template
           saved: Saved templates
-        generate: Generate a personal blog from your %{community} posts
         github:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
@@ -180,7 +179,7 @@ en:
             button:
               aria_label: Copy organization secret code to clipboard
             icon: Copy to clipboard
-            input:  
+            input:
               aria_label: Organization secret (to be rotated regularly)
             text: Copied to clipboard!
           cta: Call-to-action box

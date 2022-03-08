@@ -130,7 +130,6 @@ fr:
           remove: Remove
           save: Save template
           saved: Saved templates
-        generate: Generate a personal blog from your %{community} posts
         github:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
@@ -177,7 +176,7 @@ fr:
         admin:
           admin: Admin
           copy:
-            button: 
+            button:
               aria_label: Copy organization secret code to clipboard
             icon: Copy to clipboard
             input:
