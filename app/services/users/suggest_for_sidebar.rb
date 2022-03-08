@@ -13,6 +13,8 @@ module Users
     end
 
     def suggest
+      return User.none unless user
+
       suggested_user_ids = Rails.cache.fetch(generate_cache_name, expires_in: 120.hours) do
         (reputable_user_ids + random_user_ids).uniq
       end
