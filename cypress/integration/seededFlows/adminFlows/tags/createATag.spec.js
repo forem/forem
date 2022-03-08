@@ -67,7 +67,7 @@ describe('Create a tag', () => {
       'have.value',
       wikiBodyMarkdown,
     );
-    //cy.skip.findByRole('textbox', { name: 'Tag color' }).should(
+    // cy.findByRole('textbox', { name: 'Tag color' }).should(
     //  'have.value',
     //  tagColor,
     //);
