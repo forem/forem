@@ -77,6 +77,9 @@ a {
   letter-spacing: -0.02em;
   line-height: 1;
   outline: 0;
+
+  // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+  overflow-wrap: break-word;
   overflow-wrap: anywhere;
 
   &__img,
