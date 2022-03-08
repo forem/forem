@@ -2,45 +2,39 @@ require "rails_helper"
 
 RSpec.describe Feeds::ImportArticlesWorker, type: :worker, sidekiq: :inline do
   let(:worker) { subject }
+  let(:feed_url) { "https://medium.com/feed/@vaidehijoshi" }
 
   include_examples "#enqueues_on_correct_queue", "medium_priority"
 
   describe "#perform" do
-    it "calls the Feeds::Import defaulting to 4 hours ago" do
+    it "processes jobs for users with feeds", vcr: "feeds_import" do
       allow(Feeds::Import).to receive(:call)
-      alice = create(:user)
+      create(:user) # alice
       bob = create(:user)
+      bob.setting.update(feed_url: feed_url)
+
+      # bob has a feed, and alice doesn't, so we only enqueued for bob
 
       Timecop.freeze(Time.current) do
         worker.perform
 
-        # Each user is run separately. Note that this will not be run
-        # sequentially like this in production. This only works like this due
-        # to the `sidekiq: :inline` tag on the `RSpec.describe` block
-        expect(Feeds::Import)
-          .to have_received(:call)
-          .with(users_scope: User.where(id: [alice.id]), earlier_than: 4.hours.ago.iso8601)
         expect(Feeds::Import)
           .to have_received(:call)
           .with(users_scope: User.where(id: [bob.id]), earlier_than: 4.hours.ago.iso8601)
       end
     end
 
-    it "calls the Feeds::Import with the given time" do
-      allow(Feeds::Import).to receive(:call)
-      alice = create(:user)
+    it "enqueues job for user with the given time", vcr: "feeds_import", sidekiq: :fake do
+      create(:user) # alice
       bob = create(:user)
+      bob.setting.update(feed_url: feed_url)
 
       Timecop.freeze(Time.current) do
-        worker.perform([], 1.minute.ago)
+        earlier_than = 1.minute.ago
 
-        # Each user is run separately
-        expect(Feeds::Import)
-          .to have_received(:call)
-          .with(users_scope: User.where(id: [alice.id]), earlier_than: 1.minute.ago.iso8601)
-        expect(Feeds::Import)
-          .to have_received(:call)
-          .with(users_scope: User.where(id: [bob.id]), earlier_than: 1.minute.ago.iso8601)
+        sidekiq_assert_enqueued_with(job: Feeds::ImportArticlesWorker::ForUser, args: [bob.id, earlier_than.iso8601]) do
+          worker.perform([], earlier_than)
+        end
       end
     end
 
