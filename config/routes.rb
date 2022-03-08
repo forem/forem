@@ -376,7 +376,7 @@ Rails.application.routes.draw do
     get "/:username/comment/:id_code/settings", to: "comments#settings"
 
     get "/:username/:slug/:view", to: "stories#show",
-                                  constraints: { view: /moderate/ }
+                                  constraints: { view: /moderate|admin/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
     get "/:username/:slug/manage", to: "articles#manage", as: :article_manage

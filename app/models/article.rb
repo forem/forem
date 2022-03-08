@@ -8,7 +8,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
-  include StringAttributeCleaner.for(:canonical_url, on: :before_save)
+  include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
   DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
 
   attr_accessor :publish_under_org

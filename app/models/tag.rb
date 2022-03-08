@@ -31,7 +31,7 @@ class Tag < ActsAsTaggableOn::Tag
   #       change will help us achieve that goal.
   #
   # @see https://github.com/forem/forem/blob/72bb284ba73c3df8aa11525427b1dfa1ceba39df/lib/data_update_scripts/20211115154021_nullify_invalid_tag_fields.rb
-  include StringAttributeCleaner.for(:alias_for)
+  include StringAttributeCleaner.nullify_blanks_for(:alias_for)
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
 

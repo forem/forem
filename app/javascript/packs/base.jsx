@@ -156,18 +156,12 @@ initializeNav();
 
 async function loadCreatorSettings() {
   try {
-    const [
-      { CreatorSettingsController },
-      { LogoUploadController },
-      { Application },
-    ] = await Promise.all([
-      import('@admin/controllers/creator_settings_controller'),
+    const [{ LogoUploadController }, { Application }] = await Promise.all([
       import('@admin/controllers/logo_upload_controller'),
       import('@hotwired/stimulus'),
     ]);
 
     const application = Application.start();
-    application.register('creator-settings', CreatorSettingsController);
     application.register('logo-upload', LogoUploadController);
   } catch (error) {
     Honeybadger.notify(

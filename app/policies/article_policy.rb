@@ -12,10 +12,10 @@ class ArticlePolicy < ApplicationPolicy
     FeatureFlag.enabled?(:limit_post_creation_to_admins)
   end
 
-  # Helps filter a `:user_scope` to those authorized to the `:action`.  I want a list of all users
+  # Helps filter a `:users_scope` to those authorized to the `:action`.  I want a list of all users
   # who can create an Article.  This policy method can help with that.
   #
-  # @param user_scope [ActiveRecord::Relation] a scope for querying user objects
+  # @param users_scope [ActiveRecord::Relation] a scope for querying user objects
   # @param action [Symbol] the name of one of the ArticlePolicy action predicates (e.g. :create?,
   #        :new?) though as a convenience, we will also accept :new, and :create.
   #
@@ -24,7 +24,7 @@ class ArticlePolicy < ApplicationPolicy
   # @see https://api.rubyonrails.org/classes/ActiveRecord/Scoping/Named/ClassMethods.html#method-i-scope
   #
   # @note With this duplication it would be feasible to alter the instance method logics to use the
-  #       class method (e.g. `ArticlePolicy.scope_authorized(user_scope: User, action:
+  #       class method (e.g. `ArticlePolicy.scope_authorized(users_scope: User, action:
   #       :create?).find_by(user.id)`) but that's a future consideration.
   #
   # @note This is not a Pundit scope (see https://github.com/varvet/pundit#scopes), as those methods
@@ -33,16 +33,16 @@ class ArticlePolicy < ApplicationPolicy
   #
   # @note Why isn't this a User.scope method?  Because the logic of who can take an action on the
   #       resource is the problem domain of the policy.
-  def self.scope_users_authorized_to_action(user_scope:, action:)
+  def self.scope_users_authorized_to_action(users_scope:, action:)
     case action
     when :create?, :new?, :create, :new
       # Note the delicate dance to duplicate logic in a general sense.  [I hope that] this is a
       # stop-gap solution.
-      user_scope = user_scope.without_role(:suspended)
-      return user_scope unless limit_post_creation_to_admins?
+      users_scope = users_scope.without_role(:suspended)
+      return users_scope unless limit_post_creation_to_admins?
 
       # NOTE: Not a fan of reaching over to the constant of another class, but I digress.
-      user_scope.with_any_role(*Authorizer::RoleBasedQueries::ANY_ADMIN_ROLES)
+      users_scope.with_any_role(*Authorizer::RoleBasedQueries::ANY_ADMIN_ROLES)
     else
       # Not going to implement all of the use cases.
       raise "Unhandled predicate: #{action} for #{self}.#{__method__}"
@@ -112,6 +112,24 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
+  # @see https://github.com/forem/forem/blob/841491c6ee7f9a46d8033b4b55052316db251863/app/javascript/packs/articleModerationTools.js#L17-L27
+  #      for details regarding original authorization logic for this method.
+  def moderate?
+    # Technically, we could check the limit_post_creation_to_admins? first, but [@jeremyf]'s
+    # operating on a "trying to maintain consistency" approach.
+    require_user_in_good_standing!
+
+    return false if self.class.limit_post_creation_to_admins?
+
+    # Don't let a user moderate their own article.  See for prior UI logic reinforcing this
+    # https://github.com/forem/forem/blob/841491c6ee7f9a46d8033b4b55052316db251863/app/javascript/packs/articleModerationTools.js#L17-L27
+    return false if user_author?
+
+    # Beware a trusted user does not guarantee that they are an admin.  And more specifically, being
+    # an admin does not guarantee being trusted.
+    user.trusted?
+  end
+
   alias admin_featured_toggle? admin_unpublish?
 
   alias new? create?
@@ -137,20 +155,6 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   private
-
-  def require_user_in_good_standing!
-    require_user!
-
-    return true unless user.suspended?
-
-    raise ApplicationPolicy::UserSuspendedError, I18n.t("policies.application_policy.your_account_is_suspended")
-  end
-
-  def require_user!
-    return true if user
-
-    raise ApplicationPolicy::UserRequiredError, I18n.t("policies.application_policy.you_must_be_logged_in")
-  end
 
   def user_author?
     if record.instance_of?(Article)

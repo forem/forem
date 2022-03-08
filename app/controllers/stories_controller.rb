@@ -15,6 +15,7 @@ class StoriesController < ApplicationController
   }.freeze
 
   SIGNED_OUT_RECORD_COUNT = 60
+  REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
 
   before_action :authenticate_user!, except: %i[index show]
   before_action :set_cache_control_headers, only: %i[index show]
@@ -210,8 +211,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    redirect_to admin_user_path(@user.id) if params[:view] == "moderate"
-    redirect_to edit_admin_user_path(@user.id) if params[:view] == "admin"
+    redirect_to admin_user_path(@user.id) if REDIRECT_VIEW_PARAMS.include?(params[:view])
   end
 
   def redirect_if_show_view_param
