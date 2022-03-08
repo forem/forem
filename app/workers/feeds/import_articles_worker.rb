@@ -26,9 +26,9 @@ module Feeds
       end
 
       users_scope.select(:id).find_in_batches do |batch|
-        ids = batch.map { |user| [user.id, earlier_than] }
+        arg_lists = batch.map { |user| [user.id, earlier_than] }
 
-        ForUser.perform_bulk(ids)
+        ForUser.perform_bulk(arg_lists)
       end
     end
 
