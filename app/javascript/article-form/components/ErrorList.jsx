@@ -10,6 +10,9 @@ export const ErrorList = ({ errors }) => {
       <h3 className="fs-l mb-2 fw-bold">Whoops, something went wrong:</h3>
       <ul className="list-disc pl-6">
         {Object.keys(errors).map((key) => {
+          if (key === 'base') {
+            return <li key={key}>{errors[key]}</li>;
+          }
           return (
             <li key={key}>
               {key}
