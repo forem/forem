@@ -1,10 +1,14 @@
 # Utilities methods to safely build app wide URLs
 module URL
-  private_class_method :database_available?
-
   def self.protocol
     ApplicationConfig["APP_PROTOCOL"]
   end
+
+  def self.database_available?
+    ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?("site_configs")
+  end
+
+  private_class_method :database_available?
 
   def self.domain
     if database_available?
@@ -85,9 +89,5 @@ module URL
 
   def self.organization(organization)
     url(organization.slug)
-  end
-
-  def self.database_available?
-    ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?("site_configs")
   end
 end
