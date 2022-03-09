@@ -39,7 +39,7 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
           }
         }, '');
 
-      fetch(`/api/tags.json?${tagNamesQueryString}`)
+      fetch(`/tags/bulk?${tagNamesQueryString}`)
         .then((res) => res.json())
         .then((data) => setDefaultSelections(data));
     }
