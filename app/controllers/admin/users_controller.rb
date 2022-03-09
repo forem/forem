@@ -284,16 +284,17 @@ module Admin
 
     def credit_params
       credit_params = {}
-      if user_params[:credit_action] == "Add"
+
+      case user_params[:credit_action]
+      when "Add"
         credit_params[:add_credits] = user_params[:credit_amount]
         flash[:success] = "Credits have been added!"
-      end
-
-      if user_params[:credit_action] == "Remove"
+      when "Remove"
         credit_params[:remove_credits] = user_params[:credit_amount]
         flash[:success] = "Credits have been removed."
+      else
+        return user_params
       end
-
       credit_params
     end
 
