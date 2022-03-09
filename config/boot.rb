@@ -7,8 +7,6 @@ ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
 # 3. The warning is intentional, it will always occur when the used point release
 #    isn't the most recent. Since our update schedule is somewhat influenced by
 #    Fedora release cycles right now, this can occur frequently.
-require "warning"
-Warning.ignore(%r{parser/current})
 
 require "bundler/setup" # Set up gems listed in the Gemfile.
 require "bootsnap/setup" # Speed up boot time by caching expensive operations.
