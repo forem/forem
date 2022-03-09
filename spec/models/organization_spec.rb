@@ -67,7 +67,7 @@ RSpec.describe Organization, type: :model do
     it "generates a secret if set to nil" do
       organization.secret = nil
       organization.save
-      expect(organization.reload.secret).not_to be(nil)
+      expect(organization.reload.secret).not_to be_nil
     end
   end
 

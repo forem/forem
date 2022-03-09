@@ -33,7 +33,9 @@ describe('Create a tag', () => {
 
     // A button should exist in addition to the input
     cy.findByRole('button', { name: 'Tag color' });
-    cy.findByRole('textbox', { name: 'Tag color' }).clear().type(tagColor);
+    cy.findByRole('textbox', { name: 'Tag color' }).enterIntoColorInput(
+      tagColor,
+    );
     cy.findByRole('button', { name: 'Create Tag' }).click();
 
     cy.findByText('newtag has been created!').should('exist');

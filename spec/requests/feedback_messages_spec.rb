@@ -220,7 +220,7 @@ RSpec.describe "feedback_messages", type: :request do
       it "does not add any user as the reporter" do
         post "/feedback_messages", params: valid_abuse_report_params, headers: headers
 
-        expect(FeedbackMessage.last.reporter).to be(nil)
+        expect(FeedbackMessage.last.reporter).to be_nil
       end
 
       it "queues a slack message to be sent" do

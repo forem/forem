@@ -361,7 +361,7 @@ RSpec.describe "/admin/users", type: :request do
 
       delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
 
-      expect(user.public_send("#{identity.provider}_username")).to be(nil)
+      expect(user.public_send("#{identity.provider}_username")).to be_nil
     end
 
     it "does not remove GitHub repositories if the removed identity is not GitHub" do
