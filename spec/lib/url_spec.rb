@@ -39,6 +39,10 @@ RSpec.describe URL, type: :lib do
   end
 
   describe ".article" do
+    before do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+    end
+
     let(:article) { build(:article, path: "/username1/slug") }
 
     it "returns the correct URL for an article" do
