@@ -43,7 +43,7 @@ namespace :admin do
     resources :gdpr_delete_requests, only: %i[index destroy]
   end
 
-  resources :users, only: %i[index show edit update destroy] do
+  resources :users, only: %i[index show update destroy] do
     resources :email_messages, only: :show
 
     member do
