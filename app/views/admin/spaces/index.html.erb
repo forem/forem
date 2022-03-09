@@ -1,0 +1,20 @@
+<h2>Spaces</h2>
+<p>Configure permissions for your different types of posts.</p>
+<a href="#">Create space</a>
+
+<%# Note: there is javascript in play that is capturing the submission of the form and sending via XHR.  That will impact behavior. %>
+<%= form_with model: @space, url: admin_space_path(@space), method: :put do |form| %>
+  <fieldset>
+    <legend>
+      <h3>Uncategorized Posts</h3>
+      <p>All of your uncategorized posts will be in this space.</p>
+    </legend>
+
+    <label for="space_limit_post_creation_to_admins">
+      <%= form.check_box :limit_post_creation_to_admins %>
+      <strong>Make this space comment-only for members</strong>
+      Once turned on, only admins can publish posts.  Other members can only react to and comment on posts.  All of the organizations will also be disabled for the time being.
+    </label>
+    <%= form.submit "Save" %>
+  </fieldset>
+<% end %>

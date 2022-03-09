@@ -61,6 +61,10 @@ namespace :admin do
   end
 
   scope :content_manager do
+    # This is a temporary constraint as we work towards releasing https://github.com/orgs/forem/projects/46/views/1
+    constraints(->(_request) { FeatureFlag.exist?(:limit_post_creation_to_admins) }) do
+      resources :spaces, only: %i[index update]
+    end
     resources :articles, only: %i[index show update] do
       member do
         delete :unpin
