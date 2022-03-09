@@ -5,7 +5,11 @@ module URL
   end
 
   def self.domain
-    Settings::General.app_domain
+    if ActiveRecord::Base.connected?
+      Settings::General.app_domain
+    else
+      ApplicationConfig["APP_DOMAIN"]
+    end
   end
 
   def self.url(uri = nil)
