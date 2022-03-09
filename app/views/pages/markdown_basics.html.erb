@@ -36,33 +36,17 @@
     <h2>Two '#'s for a h2 header</h2>
     <h6>Six '#'s for a h6 header</h6>
 
-    <h2><strong><u>Liquid Tags</u></strong></h2>
-    <p>We support native
-      <a href="https://shopify.github.io/liquid" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:
-    </p>
+    <hr />
 
-    <h3><strong>Twitter Embed</strong></h3>
-    <p>Using the twitter Liquid tag will allow the tweet to pre-render from the server, providing your reader with a better experience. All you need is the tweet
-      <code>id</code> from the url.
-      <code>{% twitter 834439977220112384 %}</code></p>
+    <%= render partial: "liquid_tag_section_intro", locals: { styles: "font-size:2.4em;" } %>
 
-    <h3><strong>GitHub Issue or Comment Embed</strong></h3>
-    <p>All you need is the GitHub issue or comment URL.</p>
-    <code>{% github https://github.com/forem/forem/issues/9 %}</code>
+    <%= render partial: "editor_guide_h3", locals: { id: "supported-url-embeds-list", title: "Supported URL Embeds" } %>
 
-    <h3><strong>GitHub Gist Embed</strong></h3>
-    <p>All you need is the gist link</p>
-    <code>{% gist https://gist.github.com/QuincyLarson/4bb1682ce590dc42402b2edddbca7aaa %}</code>
+    <%= render partial: "supported_url_embeds_list" %>
 
-    <h3><strong>Video Embed</strong></h3>
-    <p>All you need is the <code>id</code> from the URL.</p>
-    <code>{% youtube 9z-Pdfxxdyo %}</code><br />
-    <code>{% vimeo 193110695 %}</code><br />
-    <code>{% twitch ClumsyPrettiestOilLitFam %}</code><br />
+    <%= render partial: "editor_guide_h3", locals: { id: "supported-nonurl-embeds-list", title: "Supported Non-URL Embeds" } %>
 
-    <h3><strong>Instagram Embed</strong></h3>
-    <p>All you need is the Instagram post <code>id</code> from the URL.</p>
-    <code>{% instagram BXgGcAUjM39 %}</code>
+    <%= render partial: "supported_nonurl_embeds_list" %>
 
     <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
     <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>

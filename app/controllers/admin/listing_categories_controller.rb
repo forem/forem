@@ -1,6 +1,5 @@
 module Admin
   class ListingCategoriesController < Admin::ApplicationController
-    include ListingsToolkit
     layout "admin"
 
     def index

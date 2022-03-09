@@ -30,7 +30,7 @@
         <% end %>
 
         <div class="js-custom-smtp-section <%= "hidden" if ForemInstance.only_sendgrid_enabled? %>">
-          <% Settings::SMTP::OPTIONS.each do |config_key| %>
+          <% smpt_options.each do |config_key| %>
             <div class="crayons-field mt-3">
               <%= admin_config_label config_key, model: Settings::SMTP %>
               <%= admin_config_description Constants::Settings::SMTP::DETAILS[config_key][:description] %>

@@ -83,8 +83,8 @@ RSpec.describe CommentPolicy, type: :policy do
     context "with suspended status" do
       before { user.add_role(:suspended) }
 
-      it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
-      it { is_expected.to forbid_actions(%i[create hide unhide moderator_create admin_delete]) }
+      it { is_expected.to permit_actions(%i[preview destroy delete_confirm]) }
+      it { is_expected.to forbid_actions(%i[edit update create hide unhide moderator_create admin_delete]) }
 
       it do
         expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)

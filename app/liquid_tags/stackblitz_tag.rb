@@ -1,6 +1,6 @@
 class StackblitzTag < LiquidTagBase
   PARTIAL = "liquids/stackblitz".freeze
-  REGISTRY_REGEXP = %r{https://stackblitz.com/edit/(?<id>[\w\-]{,60})(?<params>\?.*)?}
+  REGISTRY_REGEXP = %r{https://stackblitz\.com/edit/(?<id>[\w\-]{,60})(?<params>\?.*)?}
   ID_REGEXP = /\A(?<id>[\w\-]{,60})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
   # rubocop:disable Layout/LineLength

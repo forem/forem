@@ -75,12 +75,9 @@
         </div>
         <div class="crayons-field">
           <%= admin_config_label :primary_brand_color_hex, model: Settings::UserExperience %>
-          <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:primary_brand_color_hex][:description] %>
-          <%= f.color_field :primary_brand_color_hex,
-                            class: "crayons-color-selector",
-                            value: Settings::UserExperience.primary_brand_color_hex,
-                            pattern: "^#+([a-fA-F0-9]{6})$",
-                            placeholder: Constants::Settings::UserExperience::DETAILS[:primary_brand_color_hex][:placeholder] %>
+          <%= admin_config_description Constants::Settings::UserExperience::DETAILS[:primary_brand_color_hex][:description], id: "brand-color-description" %>
+          <%= f.text_field :primary_brand_color_hex, class: "crayons-textfield", value: Settings::UserExperience.primary_brand_color_hex, placeholder: Constants::Settings::UserExperience::DETAILS[:primary_brand_color_hex][:placeholder], pattern: "^#+([a-fA-F0-9]{6})$",
+                                                     data: { color_picker: true, label_text: "Primary brand color hex" }, aria: { describedby: "brand-color-description" } %>
         </div>
         <div class="crayons-field crayons-field--checkbox">
           <%= f.check_box :public, checked: Settings::UserExperience.public, class: "crayons-checkbox" %>
@@ -106,3 +103,4 @@
   </div>
 <% end %>
 </div>
+<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>

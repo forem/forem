@@ -1,11 +1,14 @@
-<%= render "menu" %>
+<header>
+  <h1 class="crayons-title">People</h1>
+  <%= render "menu" %>
+</header>
 
 <%= paginate @users, theme: "internal" %>
 
 <table class="crayons-table" width="100%">
   <thead>
     <tr>
-      <th scope="col">User</th>
+      <th scope="col">Username</th>
       <th scope="col">ID</th>
       <th scope="col">Name</th>
       <th scope="col">Twitter</th>

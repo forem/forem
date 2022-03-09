@@ -16,6 +16,20 @@ RSpec.describe "/admin/users", type: :request do
       get admin_users_path
       expect(response.body).to include(user.username)
     end
+
+    context "when searching" do
+      it "finds the proper user by GitHub username" do
+        get "#{admin_users_path}?search=#{user.github_username}"
+        expect(response.body).to include(CGI.escapeHTML(user.github_username))
+      end
+    end
+
+    context "when filtering by role" do
+      it "filters and shows the proper user(s)" do
+        get "#{admin_users_path}?search&role=super_admin"
+        expect(response.body).to include(CGI.escapeHTML(admin.name))
+      end
+    end
   end
 
   describe "GET /admin/users/:id" do
@@ -347,7 +361,7 @@ RSpec.describe "/admin/users", type: :request do
 
       delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
 
-      expect(user.public_send("#{identity.provider}_username")).to be(nil)
+      expect(user.public_send("#{identity.provider}_username")).to be_nil
     end
 
     it "does not remove GitHub repositories if the removed identity is not GitHub" do

@@ -8,7 +8,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
-  include StringAttributeCleaner.for(:canonical_url, on: :before_save)
+  include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
   DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
 
   attr_accessor :publish_under_org
@@ -253,8 +253,7 @@ class Article < ApplicationRecord
     end
   }
 
-  # NOTE: @citizen428
-  # I'd usually avoid using Arel directly like this. However, none of the more
+  # We usually try to avoid using Arel directly like this. However, none of the more
   # straight-forward ways of negating the above scope worked:
   # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
   # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
@@ -856,7 +855,6 @@ class Article < ApplicationRecord
   end
 
   def enrich_image_attributes
-    return unless FeatureFlag.enabled?(:detect_animated_images)
     return unless saved_change_to_attribute?(:processed_html)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
