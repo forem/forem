@@ -1,0 +1,20 @@
+<%= form_with(url: toggle_flags_admin_feature_flags_path, method: :post, local: true, class: "crayons-card crayons-card--secondary p-4 flex flex-col gap-3") do |f| %>
+  <input name="utf8" type="hidden" value="✓">
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+  <input type="hidden" name="_method" value="patch" />
+
+    <% @feature_flags.each do |flag| %>
+      <div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box flag[:feature_flag], class: "crayons-checkbox", checked: FeatureFlag.enabled?(flag[:feature_flag]) %>
+          <label for="featured-1" class="crayons-field__label">
+            <%= flag[:name] %>
+          </label>
+        </div>
+        <div class="pl-7">
+          <%= sanitize flag[:description] %>
+        </div>
+      </div>
+    <% end %>
+    <button class="c-btn c-btn--secondary">Save</button>
+<% end %>
