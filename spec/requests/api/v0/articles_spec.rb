@@ -974,7 +974,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           body_markdown: body_markdown,
         )
         expect(response).to have_http_status(:ok)
-        expect(article.reload.main_image).to eq(nil)
+        expect(article.reload.main_image).to be_nil
       end
 
       it "updates the main_image to be empty if given a different cover_image" do
@@ -1010,7 +1010,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
         end.to change(Collection, :count).by(1)
         expect(response).to have_http_status(:ok)
-        expect(article.reload.collection).not_to be(nil)
+        expect(article.reload.collection).not_to be_nil
       end
 
       it "assigns the article to an existing series belonging to the user" do

@@ -20,7 +20,7 @@ RSpec.describe Discover::Register, type: :service do
 
     it "returns true" do
       result = described_class.call(domain: domain)
-      expect(result).to eq true
+      expect(result).to be true
     end
   end
 
