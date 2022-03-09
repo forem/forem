@@ -596,6 +596,7 @@ article {
       --bg-hover: var(--gif-bg);
       --color: var(--gif-color);
       --color-hover: var(--gif-color);
+      z-index: var(--z-sticky);
     }
   }
 
