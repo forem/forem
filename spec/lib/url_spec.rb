@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe URL, type: :lib do
   before do
+    allow(ApplicationConfig).to receive(:[]).and_call_original
     allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
     allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("test.forem.cloud")
     allow(Settings::General).to receive(:app_domain).and_return("dev.to")
@@ -39,10 +40,6 @@ RSpec.describe URL, type: :lib do
   end
 
   describe ".article" do
-    before do
-      allow(ApplicationConfig).to receive(:[]).and_call_original
-    end
-
     let(:article) { build(:article, path: "/username1/slug") }
 
     it "returns the correct URL for an article" do
