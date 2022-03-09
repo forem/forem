@@ -7,7 +7,6 @@ module Admin
         name: "Listings",
         description: "A description of the listing feature <br> With some more sub text",
         feature_flag: :listing_feature
-
       },
     ].freeze
 
