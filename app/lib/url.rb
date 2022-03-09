@@ -5,7 +5,7 @@ module URL
   end
 
   def self.domain
-    if ActiveRecord::Base.connected?
+    if ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?("site_configs")
       Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
