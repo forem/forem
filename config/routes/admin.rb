@@ -131,6 +131,12 @@ namespace :admin do
       end
     end
 
+    resources :feature_flags, only: %i[index] do
+      collection do
+        patch "toggle_flags", to: "feature_flags#toggle_flags"
+      end
+    end
+
     # We do not expose the Data Update Scripts to all Forems by default.
     constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
       resources :data_update_scripts, only: %i[index show] do
