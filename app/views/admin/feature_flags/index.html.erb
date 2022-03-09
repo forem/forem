@@ -1,5 +1,5 @@
 <%= form_with(url: toggle_flags_admin_feature_flags_path, method: :post, local: true) do |f| %>
-  <div class="crayons-card p-4 flex flex-col gap-3">
+  <div class="crayons-card p-4 flex flex-col gap-4">
     <% @feature_flags.each do |flag| %>
       <div>
         <div class="crayons-field crayons-field--checkbox">
@@ -8,11 +8,11 @@
             <%= flag[:name] %>
           </label>
         </div>
-        <div class="pl-7">
+        <p class="pl-7 crayons-field__description">
           <%= sanitize flag[:description] %>
-        </div>
+        </p>
       </div>
     <% end %>
-    <button class="c-btn c-btn--secondary">Save</button>
+    <button class="c-btn c-btn--primary">Save</button>
   </div>
 <% end %>
