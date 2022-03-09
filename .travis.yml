@@ -139,7 +139,7 @@ jobs:
     #     - bash scripts/after_deploy.sh
     - stage: Deploy
       name: Deploy BenHalpern
-      if: type != pull_request
+      if: type == pull_request
       install: skip
       script: skip
       after_script: skip
@@ -147,4 +147,4 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          main: benhalpern-community
+          msarit/embed-solution-test-on-canary2: benhalpern-community
