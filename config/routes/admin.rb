@@ -133,7 +133,7 @@ namespace :admin do
 
     resources :feature_flags, only: %i[index] do
       collection do
-        patch "toggle_flags", to: "feature_flags#toggle_flags"
+        post "toggle_flags", to: "feature_flags#toggle_flags"
       end
     end
 

@@ -26,6 +26,7 @@ module Admin
           FeatureFlag.disable(flag[:feature_flag])
         end
       end
+      flash[:success] = "Feature Flags have been updated"
       redirect_to admin_feature_flags_path
     end
   end

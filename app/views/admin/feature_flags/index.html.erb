@@ -1,8 +1,5 @@
-<%= form_with(url: toggle_flags_admin_feature_flags_path, method: :post, local: true, class: "crayons-card crayons-card--secondary p-4 flex flex-col gap-3") do |f| %>
-  <input name="utf8" type="hidden" value="✓">
-  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
-  <input type="hidden" name="_method" value="patch" />
-
+<%= form_with(url: toggle_flags_admin_feature_flags_path, method: :post, local: true) do |f| %>
+  <div class="crayons-card p-4 flex flex-col gap-3">
     <% @feature_flags.each do |flag| %>
       <div>
         <div class="crayons-field crayons-field--checkbox">
@@ -17,4 +14,5 @@
       </div>
     <% end %>
     <button class="c-btn c-btn--secondary">Save</button>
+  </div>
 <% end %>
