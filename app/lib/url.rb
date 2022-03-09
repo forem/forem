@@ -4,12 +4,8 @@ module URL
     ApplicationConfig["APP_PROTOCOL"]
   end
 
-  def site_config_table_connected?
-    ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?("site_configs")
-  end
-
   def self.domain
-    if site_config_table_connected?
+    if database_available?
       Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
@@ -87,5 +83,11 @@ module URL
 
   def self.organization(organization)
     url(organization.slug)
+  end
+
+  private
+
+  def database_available?
+    ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?("site_configs")
   end
 end
