@@ -16,6 +16,7 @@ module Feeds
         # the last time a feed was fetched at
         earlier_than = nil
       else
+        users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
         earlier_than ||= 4.hours.ago
       end
 
