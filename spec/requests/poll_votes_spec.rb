@@ -13,7 +13,7 @@ RSpec.describe "PollVotes", type: :request do
       expect(JSON.parse(response.body)["voting_data"]["votes_count"]).to eq(0)
       expect(JSON.parse(response.body)["voting_data"]["votes_distribution"]).to include([poll.poll_options.first.id, 0])
       expect(JSON.parse(response.body)["poll_id"]).to eq(poll.id)
-      expect(JSON.parse(response.body)["voted"]).to eq(false)
+      expect(JSON.parse(response.body)["voted"]).to be(false)
     end
 
     it "returns proper results for poll if voted" do
@@ -22,7 +22,7 @@ RSpec.describe "PollVotes", type: :request do
       expect(JSON.parse(response.body)["voting_data"]["votes_count"]).to eq(1)
       expect(JSON.parse(response.body)["voting_data"]["votes_distribution"]).to include([poll.poll_options.first.id, 1])
       expect(JSON.parse(response.body)["poll_id"]).to eq(poll.id)
-      expect(JSON.parse(response.body)["voted"]).to eq(true)
+      expect(JSON.parse(response.body)["voted"]).to be(true)
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe "PollVotes", type: :request do
       expect(JSON.parse(response.body)["voting_data"]["votes_count"]).to eq(1)
       expect(JSON.parse(response.body)["voting_data"]["votes_distribution"]).to include([poll.poll_options.first.id, 1])
       expect(JSON.parse(response.body)["poll_id"]).to eq(poll.id)
-      expect(JSON.parse(response.body)["voted"]).to eq(true)
+      expect(JSON.parse(response.body)["voted"]).to be(true)
       expect(user.poll_votes.size).to eq(1)
     end
 
@@ -47,7 +47,7 @@ RSpec.describe "PollVotes", type: :request do
       }
       expect(JSON.parse(response.body)["voting_data"]["votes_count"]).to eq(1)
       expect(JSON.parse(response.body)["voting_data"]["votes_distribution"]).to include([poll.poll_options.first.id, 1])
-      expect(JSON.parse(response.body)["voted"]).to eq(true)
+      expect(JSON.parse(response.body)["voted"]).to be(true)
       expect(user.poll_votes.size).to eq(1)
     end
   end
