@@ -9,7 +9,7 @@ RSpec.describe Feeds::ImportArticlesWorker, type: :worker, sidekiq: :inline do
   describe "#perform" do
     it "processes jobs for users with feeds", vcr: "feeds_import" do
       allow(Feeds::Import).to receive(:call)
-      create(:user) # alice
+      alice = create(:user)
       bob = create(:user)
       bob.setting.update(feed_url: feed_url)
 
@@ -21,18 +21,21 @@ RSpec.describe Feeds::ImportArticlesWorker, type: :worker, sidekiq: :inline do
         expect(Feeds::Import)
           .to have_received(:call)
           .with(users_scope: User.where(id: [bob.id]), earlier_than: 4.hours.ago.iso8601)
+        expect(Feeds::Import)
+          .not_to have_received(:call)
+          .with(users_scope: User.where(id: [alice.id]), earlier_than: 4.hours.ago.iso8601)
       end
     end
 
     it "enqueues job for user with the given time", vcr: "feeds_import", sidekiq: :fake do
-      create(:user) # alice
-      bob = create(:user)
-      bob.setting.update(feed_url: feed_url)
+      user = create(:user)
+      user.setting.update(feed_url: feed_url)
 
       Timecop.freeze(Time.current) do
         earlier_than = 1.minute.ago
 
-        sidekiq_assert_enqueued_with(job: Feeds::ImportArticlesWorker::ForUser, args: [bob.id, earlier_than.iso8601]) do
+        sidekiq_assert_enqueued_with(job: Feeds::ImportArticlesWorker::ForUser,
+                                     args: [user.id, earlier_than.iso8601]) do
           worker.perform([], earlier_than)
         end
       end
