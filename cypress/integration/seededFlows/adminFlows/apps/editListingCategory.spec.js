@@ -11,10 +11,10 @@ describe('Edit listing category', () => {
   it('Changes the social preview color', () => {
     // Both a button and an input should exist
     cy.findByRole('button', { name: 'Social preview color' });
-    cy.findByRole('textbox', { name: 'Social preview color' })
-      .clear()
-      .type('#32a852')
-      .blur();
+    cy.findByRole('textbox', {
+      name: 'Social preview color',
+    }).enterIntoColorInput('#32a852');
+
     cy.findByRole('button', { name: 'Update Listing Category' }).click();
     cy.findByText('Listing Category has been updated!').should('exist');
     // Check the table entry reflects the new color

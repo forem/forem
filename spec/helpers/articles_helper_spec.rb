@@ -61,7 +61,7 @@ describe ArticlesHelper do
     end
 
     it "returns nil if there is no timestamp" do
-      expect(helper.utc_iso_timestamp(nil)).to be nil
+      expect(helper.utc_iso_timestamp(nil)).to be_nil
     end
   end
 end
