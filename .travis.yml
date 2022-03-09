@@ -1,7 +1,7 @@
 dist: focal
-branches:
-  only:
-    - main
+# branches:
+#   only:
+#     - main
 language: ruby
 cache:
   bundler: true
