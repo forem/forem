@@ -44,10 +44,10 @@ describe('User experience Section', () => {
 
       // Both a button and an input should exist for the brand color
       cy.findByRole('button', { name: 'Primary brand color hex' });
-      cy.findByRole('textbox', { name: 'Primary brand color hex' })
-        .clear()
-        .type('#591803')
-        .blur();
+      cy.findByRole('textbox', {
+        name: 'Primary brand color hex',
+      }).enterIntoColorInput('#591803');
+
       cy.findByText('Update Settings').click();
     });
 
@@ -65,10 +65,10 @@ describe('User experience Section', () => {
 
       // Both a button and an input should exist for the brand color
       cy.findByRole('button', { name: 'Primary brand color hex' });
-      cy.findByRole('textbox', { name: 'Primary brand color hex' })
-        .clear()
-        .type('#ababab')
-        .blur();
+      cy.findByRole('textbox', {
+        name: 'Primary brand color hex',
+      }).enterIntoColorInput('#ababab');
+
       cy.findByText('Update Settings').click();
     });
 
