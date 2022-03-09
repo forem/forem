@@ -222,6 +222,20 @@ RSpec.describe Article, type: :model do
     end
 
     describe "title validation" do
+      it "normalizes the title to a narrow set of allowable characters" do
+        article = create(:article, title: "I⠀⠀Am⠀⠀Warning⠀⠀You⠀⠀Don't⠀⠀Click!")
+
+        expect(article.title).to eq "I Am Warning You Don't Click!"
+      end
+
+      it "allows useful emojis and extended punctuation" do
+        allowed_title = "Hello! Title — Emdash⁉️ 🤖🤯🔥®™©👨‍👩🏾👦‍👦"
+
+        article = create(:article, title: allowed_title)
+
+        expect(article.title).to eq allowed_title
+      end
+
       it "produces a proper title" do
         test_article = build(:article, title: "An Article Title")
 
