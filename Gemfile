@@ -78,7 +78,7 @@ gem "rack-attack", "~> 6.6.0" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 6.1.4" # Ruby on Rails
-gem "ransack", "~> 2.5" # Searching and sorting
+gem "ransack", "~> 2.6" # Searching and sorting
 gem "recaptcha", "~> 5.9", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
@@ -145,8 +145,6 @@ group :development, :test do
   gem "rubocop-rails", "~> 2.13", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.9", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
-  gem "spring", "~> 4.0" # Preloads your application so things like console, rake and tests run faster
-  gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
 
 group :test do
