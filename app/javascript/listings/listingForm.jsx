@@ -28,7 +28,9 @@ export class ListingForm extends Component {
     this.state = {
       id: this.listing.id || null,
       title: this.listing.title || '',
-      category: this.listing.category || '',
+      categoryId: this.listing.listing_category_id || '',
+      categorySlug:
+        this.listing.category || this.categoriesForSelect[0][1] || '',
       tagList: this.listing.cached_tag_list || '',
       bodyMarkdown: this.listing.body_markdown || '',
       categoriesForSelect: this.categoriesForSelect,
@@ -50,7 +52,8 @@ export class ListingForm extends Component {
       title,
       bodyMarkdown,
       tagList,
-      category,
+      categoryId,
+      categorySlug,
       categoriesForDetails,
       categoriesForSelect,
       organizations,
@@ -90,19 +93,21 @@ export class ListingForm extends Component {
           <Categories
             categoriesForSelect={categoriesForSelect}
             categoriesForDetails={categoriesForDetails}
-            onChange={linkState(this, 'category')}
-            category={category}
+            onChange={(e) => {
+              const categoryId = e.target.value;
+              const categorySlug = e.target.selectedOptions[0].dataset.slug;
+              this.setState({ categoryId, categorySlug });
+            }}
+            categoryId={categoryId}
           />
           <div className="relative">
             <Tags
               defaultValue={tagList}
-              category={category}
+              categorySlug={categorySlug}
               name="listing[tag_list]"
               onInput={linkState(this, 'tagList')}
               classPrefix="listingform"
-              fieldClassName="crayons-textfield"
               maxTags={8}
-              autocomplete="off"
               listing
             />
           </div>

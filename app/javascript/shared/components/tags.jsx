@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 import { h } from 'preact';
-import { useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useTagsField } from '../../hooks/useTagsField';
 import { TagAutocompleteOption } from '../../article-form/components/TagAutocompleteOption';
@@ -13,7 +11,7 @@ export const Tags = ({
   listing,
   onInput,
   classPrefix,
-  category,
+  categorySlug,
   maxTags,
   name,
   onFocus,
@@ -60,22 +58,32 @@ export const Tags = ({
 
   const { defaultSelections, topTags, fetchSuggestions, syncSelections } =
     useTagsField({ defaultValue, onInput });
+  const [topTagsWithAdditional, setTopTagsWithAdditional] = useState([
+    ...topTags,
+  ]);
 
   useEffect(() => {
     if (listingState && listingState.additionalTags) {
-      // TODO: replace jobs with category
-      const { jobs } = listingState.additionalTags;
+      const newTagsForSelectedCategory =
+        listingState.additionalTags[categorySlug] || [];
       // Push in this way: { name: 'remote' }
-      const newJobs = jobs.map((t) => ({ name: t }));
-      topTags.push(...newJobs);
+      const formattedNewTagsForSelectedCategory =
+        newTagsForSelectedCategory.map((name) => ({ name }));
+      setTopTagsWithAdditional([
+        ...topTags,
+        ...formattedNewTagsForSelectedCategory,
+      ]);
     }
-  }, [topTags, listingState]);
+  }, [topTags, listingState, categorySlug]);
 
   const fetchSuggestionsWithAdditionalTags = async (searchTerm) => {
     const suggestionsResult = await fetchSuggestions(searchTerm);
     const suggestedNames = suggestionsResult.map((t) => t.name);
 
-    const additionalItems = topTags.filter((t) => t.name.includes(searchTerm));
+    // Search in the topTagsWithAdditional array
+    const additionalItems = topTagsWithAdditional.filter((t) =>
+      t.name.includes(searchTerm),
+    );
     // Remove duplicates
     additionalItems.forEach((t) => {
       if (!suggestedNames.includes(t.name)) {
@@ -95,7 +103,7 @@ export const Tags = ({
       <MultiSelectAutocomplete
         defaultValue={defaultSelections}
         fetchSuggestions={fetchSuggestionsWithAdditionalTags}
-        staticSuggestions={topTags}
+        staticSuggestions={topTagsWithAdditional}
         staticSuggestionsHeading={
           <h2 className="crayons-article-form__top-tags-heading">Top tags</h2>
         }
@@ -117,11 +125,11 @@ export const Tags = ({
 
 Tags.propTypes = {
   defaultValue: PropTypes.string.isRequired,
-  onInput: PropTypes.func.isRequired,
-  maxTags: PropTypes.number.isRequired,
-  classPrefix: PropTypes.string.isRequired,
+  categorySlug: PropTypes.string,
   name: PropTypes.string,
+  onInput: PropTypes.func.isRequired,
+  classPrefix: PropTypes.string.isRequired,
+  maxTags: PropTypes.number.isRequired,
   listing: PropTypes.bool,
-  category: PropTypes.string,
   onFocus: PropTypes.func,
 };
