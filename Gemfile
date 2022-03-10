@@ -79,7 +79,7 @@ gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compa
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 6.1.4" # Ruby on Rails
 gem "ransack", "~> 2.5" # Searching and sorting
-gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 5.9", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.6.0" # Redis ruby client
@@ -101,7 +101,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.44" # Ruby library for the Stripe API
+gem "stripe", "~> 5.45" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.8" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -135,18 +135,16 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5" # For end to end tests (E2E)
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
-  gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.1.3" # Help parallelize Ruby spec builds
+  gem "faker", "~> 2.20" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "knapsack_pro", "~> 3.2.0" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.25", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.26", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.13", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.9", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
-  gem "spring", "~> 4.0" # Preloads your application so things like console, rake and tests run faster
-  gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
 
 group :test do

@@ -21,8 +21,7 @@ read -t 10 -p "Choose yes to setup a test database or if you're running the scri
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   printf "\n\nSetting up the E2E database before running E2E tests...\n\n"
-  # Spring is disabled only for E2E tests run locally. Otherwise, there are all kinds of errors.
-  DISABLE_SPRING=1 RAILS_ENV=test E2E=true bin/e2e-setup
+  RAILS_ENV=test E2E=true bin/e2e-setup
 else
    printf "\n\nSkipping database setup...\n\n"
 fi

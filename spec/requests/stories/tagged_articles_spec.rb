@@ -158,7 +158,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def sets_remember_token
-            expect(response.cookies["remember_user_token"]).not_to be nil
+            expect(response.cookies["remember_user_token"]).not_to be_nil
           end
 
           it "renders properly even if site config is private" do
@@ -199,7 +199,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def does_not_set_remember_token
-            expect(response.cookies["remember_user_token"]).to be nil
+            expect(response.cookies["remember_user_token"]).to be_nil
           end
 
           def renders_pagination

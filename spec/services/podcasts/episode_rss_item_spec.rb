@@ -46,7 +46,7 @@ RSpec.describe Podcasts::EpisodeRssItem, type: :service do
     it "sets url to nil when no enclosure" do
       item = RSS::Parser.parse("spec/support/fixtures/podcasts/arresteddevops.xml", false).items.first
       data = described_class.from_item(item)
-      expect(data.enclosure_url).to be nil
+      expect(data.enclosure_url).to be_nil
     end
   end
 end

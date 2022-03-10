@@ -12,10 +12,10 @@ RSpec.describe UserSubscriptions::IsSubscribedCacheChecker, type: :service do
            author_id: article.user_id,
            user_subscription_sourceable: article)
 
-    expect(described_class.call(user, params)).to eq(true)
+    expect(described_class.call(user, params)).to be(true)
   end
 
   it "checks if subscribed to a thing and returns false if they are not" do
-    expect(described_class.call(user, params)).to eq(false)
+    expect(described_class.call(user, params)).to be(false)
   end
 end

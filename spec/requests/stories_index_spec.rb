@@ -133,9 +133,9 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.status).to eq(200)
 
-      expect(response.headers["X-Accel-Expires"]).to eq(nil)
+      expect(response.headers["X-Accel-Expires"]).to be_nil
       expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
-      expect(response.headers["Surrogate-Key"]).to eq(nil)
+      expect(response.headers["Surrogate-Key"]).to be_nil
     end
 
     it "sets correct cache headers", :aggregate_failures do
