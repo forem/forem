@@ -1,6 +1,6 @@
 <div id="banish-for-spam">
   <div class="flex flex-col gap-4">
-    <% if current_user.super_admin? || current_user.support_admin? %>
+    <% if @user.comments.where("created_at < ?", 100.days.ago).empty? && @user.created_at < 100.days.ago || current_user.super_admin? || current_user.support_admin? %>
       <p>This action is irreversible.</p>
       <p>Once banished, we will delete all content created by <%= @user.name %> and change their username to @spam_###.</p>
       <p>Be careful with this action.</p>
@@ -8,7 +8,7 @@
         <button class="c-btn c-btn--primary c-btn--destructive">Banish <%= @user.name %></button>
       <% end %>
     <% else %>
-      <div class="crayons-notice crayons-notice--danger">Only Super Admins or Support Admins are allowed to banish <%= @user.name %>.</div>
+      <div class="crayons-notice crayons-notice--danger">This is not a new user. Only Super Admins or Support Admins are allowed to banish <%= @user.name %>.</div>
     <% end %>
   </div>
 </div>
