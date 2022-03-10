@@ -659,7 +659,7 @@ export const MultiSelectAutocomplete = ({
 const optionPropType = PropTypes.shape({ name: PropTypes.string });
 
 MultiSelectAutocomplete.propTypes = {
-  labelText: PropTypes.string.isRequired,
+  labelText: PropTypes.string,
   showLabel: PropTypes.bool,
   fetchSuggestions: PropTypes.func.isRequired,
   defaultValue: PropTypes.arrayOf(optionPropType),

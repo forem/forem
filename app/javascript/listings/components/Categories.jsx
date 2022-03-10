@@ -65,7 +65,7 @@ export class Categories extends Component {
 }
 
 Categories.propTypes = {
-  categoriesForSelect: PropTypes.arrayOf(PropTypes.string).isRequired,
+  categoriesForSelect: PropTypes.arrayOf(PropTypes.array).isRequired,
   categoriesForDetails: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
