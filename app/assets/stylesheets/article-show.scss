@@ -556,6 +556,7 @@ article {
 .ff-container {
   --gif-bg: rgb(var(--black));
   --gif-color: rgb(var(--white));
+  --gif-btn-z-index: 2;
 
   width: fit-content;
 
@@ -583,7 +584,7 @@ article {
     bottom: 0;
     right: 0;
     margin: var(--su-1);
-    z-index: var(--z-elevate);
+    z-index: var(--gif-btn-z-index);
     display: flex;
     align-items: center;
     padding: var(--su-1) var(--su-2);
@@ -596,7 +597,7 @@ article {
       --bg-hover: var(--gif-bg);
       --color: var(--gif-color);
       --color-hover: var(--gif-color);
-      z-index: var(--z-sticky);
+      z-index: var(--gif-btn-z-index);
     }
   }
 
