@@ -10,7 +10,7 @@ describe('Set a landing page from the admin portal', () => {
         // long-term.
 
         cy.get('@userExperienceSectionForm')
-          .findByRole('summary', { name: 'User Experience and Brand' })
+          .findByText('User Experience and Brand')
           .click();
         cy.get('@userExperienceSectionForm')
           .findByRole('checkbox', { name: 'Public' })
