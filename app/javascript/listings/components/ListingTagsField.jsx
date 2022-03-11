@@ -99,7 +99,6 @@ export const ListingTagsField = ({
         labelText="Tags"
         showLabel
         placeholder="Add up to 8 tags..."
-        border={true}
         maxSelections={8}
         SuggestionTemplate={TagAutocompleteOption}
         SelectionTemplate={TagAutocompleteSelection}
