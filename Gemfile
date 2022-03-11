@@ -21,7 +21,7 @@ gem "blazer", "~> 2.5.0" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
-gem "cloudinary", "~> 1.21" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.22" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.54.2" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
@@ -33,10 +33,10 @@ gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given i
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
-gem "flipper", "~> 0.23.1" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.23.1" # Store Flipper flags in ActiveRecord
-gem "flipper-active_support_cache_store", "~> 0.23.1" # Cache feature flags for a short time
-gem "flipper-ui", "~> 0.23.1"
+gem "flipper", "~> 0.24.0" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.24.0" # Store Flipper flags in ActiveRecord
+gem "flipper-active_support_cache_store", "~> 0.24.0" # Cache feature flags for a short time
+gem "flipper-ui", "~> 0.24.0"
 gem "fog-aws", "~> 3.13" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
@@ -55,7 +55,7 @@ gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
-gem "liquid", "~> 5.1" # A secure, non-evaling end user template engine with aesthetic markup
+gem "liquid", "~> 5.2" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.22" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
@@ -78,8 +78,8 @@ gem "rack-attack", "~> 6.6.0" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.2.2" # Ruby on Rails
-gem "ransack", "~> 2.5" # Searching and sorting
-gem "recaptcha", "~> 5.8", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "ransack", "~> 2.6" # Searching and sorting
+gem "recaptcha", "~> 5.9", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.6.0" # Redis ruby client
@@ -101,7 +101,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.44" # Ruby library for the Stripe API
+gem "stripe", "~> 5.45" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.8" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -135,18 +135,16 @@ group :development, :test do
   gem "cypress-rails", "~> 0.5" # For end to end tests (E2E)
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
-  gem "faker", "~> 2.19" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.1.3" # Help parallelize Ruby spec builds
+  gem "faker", "~> 2.20" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "knapsack_pro", "~> 3.2.0" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.25", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.26", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.13", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.8", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.9", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
-  gem "spring", "~> 4.0" # Preloads your application so things like console, rake and tests run faster
-  gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
 
 group :test do

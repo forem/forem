@@ -1,6 +1,6 @@
 class KotlinTag < LiquidTagBase
   PARTIAL = "liquids/kotlin".freeze
-  REGISTRY_REGEXP = %r{https://pl.kotl.in/(?<id>[\w-]+)(?:\?)?(?<params>[\w=&]+)?}
+  REGISTRY_REGEXP = %r{https://pl\.kotl\.in/(?<id>[\w-]+)(?:\?)?(?<params>[\w=&]+)?}
   PARAM_REGEXP = /\A(theme=darcula)|(readOnly=true)|(from=\d)|(to=\d)\Z/
 
   def initialize(_tag_name, link, _parse_context)

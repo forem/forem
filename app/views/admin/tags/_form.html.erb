@@ -51,9 +51,9 @@
   <div class="crayons-field mt-3">
     <%= f.label :bg_color_hex, "Tag color", class: "crayons-field__label" %>
     <div class="flex items-center w-100 m:w-50">
-      <%= f.text_field :bg_color_hex, class: "crayons-textfield", value: tag.bg_color_hex.presence || "#000000", placeholder: "#000000" %>
-      <%= f.color_field :bg_color_hex, class: "crayons-color-selector ml-2", required: true, value: tag.bg_color_hex.presence || "#000000", placeholder: "#000000" %>
+      <%= f.text_field :bg_color_hex, class: "crayons-textfield", value: tag.bg_color_hex.presence || "#000000", placeholder: "#000000", data: { color_picker: true, label_text: "Tag color" } %>
     </div>
   </div>
   <%= f.submit class: "crayons-btn mt-3" %>
 <% end %>
+<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>

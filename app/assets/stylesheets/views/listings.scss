@@ -14,6 +14,9 @@
 
 .single-listing {
   $el: &;
+
+  // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+  overflow-wrap: break-word;
   overflow-wrap: anywhere;
   word-break: break-word;
   overflow: hidden;

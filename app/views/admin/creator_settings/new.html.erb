@@ -22,7 +22,7 @@
       </div>
       <br>
       <%= render "form", creator_settings_form: @creator_settings_form, f: f %>
-      <div class="crayons-field mt-6 align-left">
+      <div id="finish-button" class="crayons-field mt-6 align-left">
         <%= f.submit "Finish", class: "crayons-btn btn--primary" %>
       </div>
       <% if @help_url %>

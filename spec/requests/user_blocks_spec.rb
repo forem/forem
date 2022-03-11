@@ -84,7 +84,7 @@ RSpec.describe "UserBlock", type: :request do
 
     it "removes the correct user_block" do
       delete "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
-      expect(blocker.blocking?(blocked)).to eq false
+      expect(blocker.blocking?(blocked)).to be false
     end
   end
 end

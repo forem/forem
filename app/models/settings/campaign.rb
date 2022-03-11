@@ -6,6 +6,7 @@ module Settings
     setting :articles_expiry_time, type: :integer, default: 4
     setting :articles_require_approval, type: :boolean, default: 0
     setting :call_to_action, type: :string, default: -> { I18n.t("models.settings.campaign.share_your_project") }
+    setting :display_name, type: :string, default: ""
     setting :featured_tags, type: :array, default: %w[]
     setting :hero_html_variant_name, type: :string, default: ""
     setting :sidebar_enabled, type: :boolean, default: 0

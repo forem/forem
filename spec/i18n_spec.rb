@@ -6,14 +6,20 @@ RSpec.describe I18n do
   let(:unused_keys) { i18n.unused_keys }
   let(:inconsistent_interpolations) { i18n.inconsistent_interpolations }
 
+  def details(keys)
+    keys.leaves.map do |node|
+      { key: node.full_key, file: node.data[:path] }
+    end
+  end
+
   it "does not have missing keys" do
     expect(missing_keys).to be_empty,
-                            "Missing #{missing_keys.leaves.count} i18n keys, run `i18n-tasks missing' to show them"
+                            "Missing #{missing_keys.leaves.count} i18n keys\n #{details(missing_keys)}"
   end
 
   xit "does not have unused keys" do
     expect(unused_keys).to be_empty,
-                           "#{unused_keys.leaves.count} unused i18n keys, run `i18n-tasks unused' to show them"
+                           "#{unused_keys.leaves.count} unused i18n keys\n #{details(unused_keys)}"
   end
 
   # NOTE: [@rhymes] disabling normalization check for now as it fails on CI but

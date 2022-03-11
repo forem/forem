@@ -1,0 +1,24 @@
+<div class="flex flex-col h-100">
+  <h2 class="crayons-subtitle-1">Previous emails (<%= @user.email_messages.count %>)</h2>
+  <% if @user.email_messages.empty? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <h3 class="fs-xl fw-normal mb-2">No previous emails found for <%= @user.name %>.</h3>
+      <p class="color-secondary">Any emails sent to <%= @user.email %> will be found here.</p>
+    </div>
+  <% else %>
+    <div class="pt-3">
+      <% @user.email_messages.order(sent_at: :desc).limit(50).each do |email| %>
+        <article class="c-list-item flex justify-between gap-4">
+          <h3 class="flex-1 fw-medium lh-tight fs-base">
+            <a href="<%= admin_user_email_message_path(@user, email) %>" class="c-link" rel="noopener noreferer" target="_blank">
+              <%= email.subject %>
+            </a>
+          </h3>
+          <time datetime="<%= email.sent_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= email.sent_at&.strftime("%Y-%m-%d, %H:%M") %>">
+            <%= email.sent_at&.strftime("%b %e '%y") %>
+          </time>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</div>
