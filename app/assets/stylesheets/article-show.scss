@@ -583,8 +583,7 @@ article {
     bottom: 0;
     right: 0;
     margin: var(--su-1);
-    z-index: var(--z-sticky);
-    border-radius: var(--radius);
+    z-index: var(--z-elevate);
     display: flex;
     align-items: center;
     padding: var(--su-1) var(--su-2);
@@ -597,7 +596,6 @@ article {
       --bg-hover: var(--gif-bg);
       --color: var(--gif-color);
       --color-hover: var(--gif-color);
-      z-index: var(--z-sticky);
     }
   }
 

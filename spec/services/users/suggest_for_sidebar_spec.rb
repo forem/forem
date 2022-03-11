@@ -15,4 +15,9 @@ RSpec.describe Users::SuggestForSidebar, type: :service do
     tags = create_list(:tag, 3)
     expect(described_class.new(user, tags).suggest).to be_empty
   end
+
+  it "returns no user if not signed in" do
+    tags = "html"
+    expect(described_class.new(nil, tags).suggest).to be_empty
+  end
 end

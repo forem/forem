@@ -34,11 +34,12 @@ class ArticlesController < ApplicationController
     skip_authorization
 
     @articles = Article.feed.order(published_at: :desc).page(params[:page].to_i).per(12)
+    @latest = request.path == latest_feed_path
     @articles = if params[:username]
                   handle_user_or_organization_feed
                 elsif params[:tag]
                   handle_tag_feed
-                elsif request.path == latest_feed_path
+                elsif @latest
                   @articles
                     .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
                     .includes(:user)
@@ -53,12 +54,14 @@ class ArticlesController < ApplicationController
     set_surrogate_key_header "feed"
     set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
-    render layout: false, locals: {
+    render layout: false, content_type: "application/xml", locals: {
       articles: @articles,
       user: @user,
       tag: @tag,
+      latest: @latest,
       allowed_tags: MarkdownProcessor::AllowedTags::FEED,
-      allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED
+      allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED,
+      scrubber: FeedMarkdownScrubber.new
     }
   end
 
@@ -263,10 +266,11 @@ class ArticlesController < ApplicationController
   end
 
   def handle_tag_feed
-    @tag = Tag.aliased_name(params[:tag])
-    return unless @tag
+    tag_name = Tag.aliased_name(params[:tag])
+    return unless tag_name
 
-    @articles = @articles.cached_tagged_with(@tag)
+    @tag = Tag.find_by(name: tag_name)
+    @articles = @articles.cached_tagged_with(tag_name)
   end
 
   def set_article

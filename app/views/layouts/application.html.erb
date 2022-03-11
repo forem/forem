@@ -35,7 +35,8 @@
       <link href="<%= optimized_image_url(Settings::General.logo_png, width: 128, fetch_format: "png") %>" rel="icon" sizes="128x128" />
       <meta name="apple-mobile-web-app-title" content="<%= Settings::General.app_domain %>">
       <meta name="application-name" content="<%= Settings::General.app_domain %>">
-      <meta name="theme-color" content="#000000" />
+      <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+      <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
       <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_name %>" />
 
       <meta property="forem:name" content="<%= community_name %>" />

@@ -38,7 +38,7 @@
   </div>
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="fs-xl fw-normal mb-2">😇 No flags!</h3>
-    <p class="color-secondary">No one flagged anything (profile, posts, or comments) negative about @<%= @user.username %>.</p>
+    <h3 class="fs-xl fw-normal mb-2">No flags received against <%= @user.name %> yet.</h3>
+    <p class="color-secondary">Any flags received against <%= @user.name %> will be found here.</p>
   </div>
 <% end %>

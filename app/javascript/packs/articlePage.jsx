@@ -90,6 +90,9 @@ getCsrfToken().then(async () => {
   const root = document.getElementById('comment-subscription');
   const isLoggedIn = userStatus === 'logged-in';
 
+  if (!root) {
+    return;
+  }
   try {
     const {
       getCommentSubscriptionStatus,
@@ -124,7 +127,7 @@ getCsrfToken().then(async () => {
       root,
     );
   } catch (e) {
-    document.getElementById('comment-subscription').innerHTML =
+    root.innerHTML =
       '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
   }
 });

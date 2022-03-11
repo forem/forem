@@ -6,7 +6,7 @@ describe('Set a landing page from the admin portal', () => {
       cy.loginAndVisit(user, '/admin/customization/config').then(() => {
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
         // Ensure Forem instance is private
-        // NOTE: @citizen428 - We may need to find a better situation for this
+        // NOTE: We may need to find a better situation for this
         // long-term.
 
         cy.get('@userExperienceSectionForm')

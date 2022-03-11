@@ -42,14 +42,14 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       allow(item).to receive(:pubDate).and_return("not a date, haha")
       episode = described_class.call(podcast.id, item)
       expect(episode).to be_persisted
-      expect(episode.published_at).to eq(nil)
+      expect(episode.published_at).to be_nil
     end
 
     it "rescues an exception when pubDate is nil" do
       allow(item).to receive(:pubDate).and_return(nil)
       episode = described_class.call(podcast.id, item)
       expect(episode).to be_persisted
-      expect(episode.published_at).to eq(nil)
+      expect(episode.published_at).to be_nil
     end
   end
 

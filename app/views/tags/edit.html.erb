@@ -3,11 +3,7 @@
 <main id="main-content" class="crayons-layout crayons-layout--limited-m">
   <header class="crayons-card flex items-center justify-between branded-4 p-3 pr-1 m:pr-5 m:p-6 m:pt-5" style="border-top-color: <%= @tag.bg_color_hex %>">
     <h1 class="crayons-title">
-      <% if @tag_model && @tag_model.pretty_name.present? %>
-        <%= @tag_model.pretty_name %>
-      <% else %>
-        <span class="opacity-50">#</span><%= @tag %>
-      <% end %>
+      <span class="opacity-50">#</span><%= @tag.accessible_name %>
     </h1>
     <div class="flex">
       <% if current_user.any_admin? %>
@@ -60,4 +56,4 @@
     </div>
   <% end %>
 </main>
-<%= javascript_packs_with_chunks_tag "colorPicker", defer: true %>
+<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>

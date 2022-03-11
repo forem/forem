@@ -8,7 +8,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
-  include StringAttributeCleaner.for(:canonical_url, on: :before_save)
+  include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
   DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
 
   attr_accessor :publish_under_org
@@ -30,6 +30,48 @@ class Article < ApplicationRecord
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
+
+  # Filter out anything that isn't a word, space, punctuation mark, or
+  # recognized emoji.
+  # See: https://github.com/forem/forem/pull/16787#issuecomment-1062044359
+  # rubocop:disable Lint/DuplicateRegexpCharacterClassElement
+  TITLE_CHARACTERS_ALLOWED = /[^
+    [:word:]
+    [:space:]
+    [:punct:]
+    \u00a3        # GBP symbol
+    \u00a9        # Copyright symbol
+    \u00ae        # Registered trademark symbol
+    \u200d        # Zero-width joiner, for multipart emojis such as family
+    \u203c        # !! emoji
+    \u20e3        # Combining enclosing keycap
+    \u2122        # Trademark symbol
+    \u2139        # Information symbol
+    \u2194-\u2199 # Arrow symbols
+    \u21a9-\u21aa # More arrows
+    \u231a        # Watch emoji
+    \u231b        # Hourglass emoji
+    \u2328        # Keyboard emoji
+    \u23cf        # Eject symbol
+    \u23e9-\u23f3 # Various VCR-actions emoji and clocks
+    \u23f8-\u23fa # More VCR emoji
+    \u24c2        # Blue circle with a white M in it
+    \u25aa        # Black box
+    \u25ab        # White box
+    \u25b6        # VCR-style play emoji
+    \u25c0        # VCR-style play backwards emoji
+    \u25fb-\u25fe # More black and white squares
+    \u2600-\u273f # Weather, zodiac, coffee, hazmat, cards, music, other misc emoji
+    \u2934        # Curved arrow pointing up to the right
+    \u2935        # Curved arrow pointing down to the right
+    \u2b00-\u2bff # More arrows, geometric shapes
+    \u3030        # Squiggly line
+    \u303d        # Either a line chart plummeting or the letter M, not sure
+    \u3297        # Circled Ideograph Congratulation
+    \u3299        # Circled Ideograph Secret
+    \u{1f000}-\u{1ffff} # More common emoji
+  ]+/m
+  # rubocop:enable Lint/DuplicateRegexpCharacterClassElement
 
   def self.unique_url_error
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
@@ -106,6 +148,7 @@ class Article < ApplicationRecord
 
   before_validation :evaluate_markdown, :create_slug
   before_validation :remove_prohibited_unicode_characters
+  before_validation :normalize_title
   before_save :update_cached_user
   before_save :set_all_dates
 
@@ -253,8 +296,7 @@ class Article < ApplicationRecord
     end
   }
 
-  # NOTE: @citizen428
-  # I'd usually avoid using Arel directly like this. However, none of the more
+  # We usually try to avoid using Arel directly like this. However, none of the more
   # straight-forward ways of negating the above scope worked:
   # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
   # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
@@ -566,6 +608,16 @@ class Article < ApplicationRecord
     self.cached_user_name = user_name
     self.cached_user_username = user_username
     self.path = calculated_path.downcase
+  end
+
+  def normalize_title
+    return unless title
+
+    self.title = title
+      .gsub(TITLE_CHARACTERS_ALLOWED, " ")
+      # Coalesce runs of whitespace into a single space character
+      .gsub(/\s+/, " ")
+      .strip
   end
 
   def evaluate_markdown
