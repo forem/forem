@@ -73,7 +73,7 @@ Rails.application.configure do
   # enable Bullet in testing mode only if requested
   config.after_initialize do
     Bullet.enable = true
-    Bullet.raise = true
+    Bullet.raise = false
 
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
