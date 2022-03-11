@@ -12,7 +12,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # https://guides.rubyonrails.org/configuring.html#config-cache-classes
-  config.cache_classes = true
+  config.cache_classes = false
 
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
   config.action_view.cache_template_loading = true
