@@ -6,54 +6,48 @@ import { TagAutocompleteOption } from '../../article-form/components/TagAutocomp
 import { TagAutocompleteSelection } from '../../article-form/components/TagAutocompleteSelection';
 import { MultiSelectAutocomplete } from '@crayons';
 
-export const Tags = ({
+export const ListingTagsField = ({
   defaultValue,
-  listing,
   onInput,
-  classPrefix,
   categorySlug,
-  maxTags,
   name,
   onFocus,
 }) => {
   const listingState = useMemo(
-    () =>
-      listing
-        ? {
-            additionalTags: {
-              jobs: [
-                'remote',
-                'remoteoptional',
-                'lgbtbenefits',
-                'greencard',
-                'senior',
-                'junior',
-                'intermediate',
-                '401k',
-                'fulltime',
-                'contract',
-                'temp',
-              ],
-              forhire: [
-                'remote',
-                'remoteoptional',
-                'lgbtbenefits',
-                'greencard',
-                'senior',
-                'junior',
-                'intermediate',
-                '401k',
-                'fulltime',
-                'contract',
-                'temp',
-              ],
-              forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
-              events: ['conference', 'meetup'],
-              collabs: ['paid', 'temp'],
-            },
-          }
-        : null,
-    [listing],
+    () => ({
+      additionalTags: {
+        jobs: [
+          'remote',
+          'remoteoptional',
+          'lgbtbenefits',
+          'greencard',
+          'senior',
+          'junior',
+          'intermediate',
+          '401k',
+          'fulltime',
+          'contract',
+          'temp',
+        ],
+        forhire: [
+          'remote',
+          'remoteoptional',
+          'lgbtbenefits',
+          'greencard',
+          'senior',
+          'junior',
+          'intermediate',
+          '401k',
+          'fulltime',
+          'contract',
+          'temp',
+        ],
+        forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+        events: ['conference', 'meetup'],
+        collabs: ['paid', 'temp'],
+      },
+    }),
+    [],
   );
 
   const { defaultSelections, topTags, fetchSuggestions, syncSelections } =
@@ -82,7 +76,7 @@ export const Tags = ({
 
     // Search in the topTagsWithAdditional array
     const additionalItems = topTagsWithAdditional.filter((t) =>
-      t.name.includes(searchTerm),
+      t.name.startsWith(searchTerm),
     );
     // Remove duplicates
     additionalItems.forEach((t) => {
@@ -94,12 +88,7 @@ export const Tags = ({
   };
 
   return (
-    <div className={`${classPrefix}__tagswrapper crayons-field`}>
-      {listing && (
-        <label htmlFor="Tags" class="crayons-field__label">
-          Tags
-        </label>
-      )}
+    <div className="listingform__tagswrapper crayons-field">
       <MultiSelectAutocomplete
         defaultValue={defaultSelections}
         fetchSuggestions={fetchSuggestionsWithAdditionalTags}
@@ -107,10 +96,11 @@ export const Tags = ({
         staticSuggestionsHeading={
           <h2 className="crayons-article-form__top-tags-heading">Top tags</h2>
         }
-        showLabel={false}
-        placeholder={`Add up to ${maxTags} tags...`}
+        labelText="Tags"
+        showLabel
+        placeholder="Add up to 8 tags..."
         border={true}
-        maxSelections={maxTags}
+        maxSelections={8}
         SuggestionTemplate={TagAutocompleteOption}
         SelectionTemplate={TagAutocompleteSelection}
         onSelectionsChanged={syncSelections}
@@ -123,13 +113,10 @@ export const Tags = ({
   );
 };
 
-Tags.propTypes = {
+ListingTagsField.propTypes = {
   defaultValue: PropTypes.string.isRequired,
   categorySlug: PropTypes.string,
   name: PropTypes.string,
   onInput: PropTypes.func.isRequired,
-  classPrefix: PropTypes.string.isRequired,
-  maxTags: PropTypes.number.isRequired,
-  listing: PropTypes.bool,
   onFocus: PropTypes.func,
 };

@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
-import { Tags } from '../shared/components/tags';
+import { ListingTagsField } from '../listings/components/ListingTagsField';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
 import { Title } from './components/Title';
 import { BodyMarkdown } from './components/BodyMarkdown';
@@ -101,14 +101,11 @@ export class ListingForm extends Component {
             categoryId={categoryId}
           />
           <div className="relative">
-            <Tags
+            <ListingTagsField
               defaultValue={tagList}
               categorySlug={categorySlug}
               name="listing[tag_list]"
               onInput={linkState(this, 'tagList')}
-              classPrefix="listingform"
-              maxTags={8}
-              listing
             />
           </div>
           <ExpireDate
@@ -127,7 +124,10 @@ export class ListingForm extends Component {
           defaultValue={bodyMarkdown}
           onChange={linkState(this, 'bodyMarkdown')}
         />
-        <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+        <ListingTagsField
+          defaultValue={tagList}
+          onInput={linkState(this, 'tagList')}
+        />
         {selectOrg}
       </div>
     );
