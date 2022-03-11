@@ -18,7 +18,7 @@ const negativeTrend = {
 
 const charts = document.getElementsByClassName('js-chart');
 
-Array.from(charts).forEach((chart) => {
+for (const chart of charts) {
   const labels = chart.dataset.days.split(',');
   const data = chart.dataset.values.split(',');
 
@@ -88,4 +88,4 @@ Array.from(charts).forEach((chart) => {
       },
     },
   });
-});
+}
