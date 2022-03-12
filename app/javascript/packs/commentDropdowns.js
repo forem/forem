@@ -1,4 +1,5 @@
 import { addSnackbarItem } from '../Snackbar';
+import { initializeMemberMenu } from '../topNavigation/utilities';
 import {
   initializeDropdown,
   getDropdownRepositionListener,
@@ -21,7 +22,7 @@ const handleCopyPermalink = (closeDropdown) => {
 const initializeArticlePageDropdowns = () => {
   // Gather all dropdown triggers for comment options and profile previews
   const dropdownTriggers = document.querySelectorAll(
-    'button[id^=comment-dropdown-trigger], button[id^=comment-profile-preview-trigger-], #toggle-comments-sort-dropdown',
+    'button[id^=comment-dropdown-trigger], button[id^=comment-profile-preview-trigger-]',
   );
 
   for (const dropdownTrigger of dropdownTriggers) {
@@ -72,6 +73,18 @@ const initializeArticlePageDropdowns = () => {
 
       dropdownTrigger.dataset.initialized = true;
     }
+  }
+
+  const dropdownContent = document.getElementById(
+    'comments-sort-dropdown-container',
+  );
+  const dropdownElement = document.getElementById(
+    'toggle-comments-sort-dropdown',
+  );
+
+  if (dropdownContent && !dropdownContent.dataset.initialized) {
+    initializeMemberMenu(dropdownContent, dropdownElement);
+    dropdownContent.dataset.initialized = true;
   }
 };
 

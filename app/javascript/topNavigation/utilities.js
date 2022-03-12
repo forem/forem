@@ -9,19 +9,20 @@ const firstItem = document.getElementById('first-nav-link');
 function openHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'true');
   memberMenu.classList.add('showing');
+  const focusItem = memberMenu.querySelector('.first-nav-link') || firstItem;
 
-  if (!firstItem) {
+  if (!focusItem) {
     return;
   }
 
   // Focus on the first item in the menu
   (function focusFirstItem() {
-    if (document.activeElement === firstItem) {
+    if (document.activeElement === focusItem) {
       // The first element has focus
       return;
     }
 
-    firstItem.focus();
+    focusItem.focus();
     // requestAnimationFrame is faster and more reliable than setTimeout
     // https://swizec.com/blog/how-to-wait-for-dom-elements-to-show-up-in-modern-browsers
     window.requestAnimationFrame(focusFirstItem);
@@ -90,7 +91,11 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
     });
 
   document.addEventListener('click', (event) => {
-    if (event.target.closest('#member-menu-button') === menuNavButton) {
+    if (
+      event.target.closest('#toggle-comments-sort-dropdown') ===
+        menuNavButton ||
+      event.target.closest('#member-menu-button') === menuNavButton
+    ) {
       // The menu navigation button manages it's own click event.
       return;
     }
@@ -99,10 +104,12 @@ export function initializeMemberMenu(memberTopMenu, menuNavButton) {
     closeHeaderMenu(memberTopMenu, menuNavButton);
   });
 
-  const secondToLastNavLink = document.getElementById('second-last-nav-link');
+  const secondToLastNavLink = memberTopMenu.querySelector(
+    '#second-last-nav-link, .second-last-nav-link',
+  );
 
-  document
-    .getElementById('last-nav-link')
+  memberTopMenu
+    .querySelector('#last-nav-link, .last-nav-link')
     .addEventListener('blur', (_event) => {
       // When we tab out of the last link in the member menu, close
       // the menu.
