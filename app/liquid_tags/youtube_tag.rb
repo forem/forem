@@ -1,8 +1,8 @@
 class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(?:www\.)?(?:youtube\.com|youtu\.be)/(?:embed/|watch\?v=)?(?<video_id>[a-zA-Z0-9_-]{11})(?:(?:&|\?)(?:t=|start=)(?<time_parameter>(?:\d{1,}h)?(?:\d{1,2}m)?(?:\d{1,2}s)?))?}
-  VALID_ID_REGEXP = /\A(?<video_id>[a-zA-Z0-9_-]{11})(?:(?:&|\?)(?:t=|start=)(?<time_parameter>(?:\d{1,}h)?(?:\d{1,2}m)?(?:\d{1,2}s)?))?\Z/
+  REGISTRY_REGEXP = %r{https?://(?:www\.)?(?:youtube\.com|youtu\.be)/(?:embed/|watch\?v=)?(?<video_id>[a-zA-Z0-9_-]{11})(?:(?:&|\?)(?:t=|start=)(?<time_parameter>\d+s?|(?:\d{1,}h)?(?:\d{1,2}m)?(?:\d{1,2}s)?))?}
+  VALID_ID_REGEXP = /\A(?<video_id>[a-zA-Z0-9_-]{11})(?:(?:&|\?)(?:t=|start=)(?<time_parameter>\d+s?|(?:\d{1,}h)?(?:\d{1,2}m)?(?:\d{1,2}s)?))?\Z/
   # rubocop:enable Layout/LineLength
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
@@ -47,7 +47,7 @@ class YoutubeTag < LiquidTagBase
   end
 
   def translate_start_time(video_id, time_parameter)
-    return "#{video_id}?start=#{time_parameter}" if time_parameter.match?(/\A\d+\Z/)
+    return "#{video_id}?start=#{time_parameter.delete_suffix('s')}" if time_parameter.match?(/\A\d+s?\Z/)
 
     time_elements = time_parameter.split(/[a-z]/)
     time_markers = time_parameter.split(/\d+/)[1..]
