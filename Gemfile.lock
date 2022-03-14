@@ -845,7 +845,7 @@ GEM
       public_suffix
     vault (0.16.0)
       aws-sigv4
-    vcr (6.0.0)
+    vcr (6.1.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     warning (1.2.1)
@@ -1031,7 +1031,7 @@ DEPENDENCIES
   uglifier (~> 4.2)
   validate_url (~> 1.0)
   vault (~> 0.16)
-  vcr (~> 6.0)
+  vcr (~> 6.1)
   warning (~> 1.2)
   wcag_color_contrast (~> 0.1)
   web-console (~> 4.2)
