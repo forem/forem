@@ -1,15 +1,15 @@
-<%= form_with(url: toggle_flags_admin_feature_flags_path, method: :post, local: true) do |f| %>
+<%= form_with(url: toggle_admin_extensions_path, method: :post, local: true) do |f| %>
   <div class="crayons-card p-4 flex flex-col gap-4">
-    <% @feature_flags.each do |flag| %>
+    <% @extensions.each do |extension| %>
       <div>
         <div class="crayons-field crayons-field--checkbox">
-          <%= f.check_box flag[:feature_flag], class: "crayons-checkbox", checked: FeatureFlag.enabled?(flag[:feature_flag]) %>
+          <%= f.check_box extension.feature_flag_name, class: "crayons-checkbox", checked: extension.enabled? %>
           <label for="featured-1" class="crayons-field__label">
-            <%= flag[:name] %>
+            <%= extension.name %>
           </label>
         </div>
         <p class="pl-7 crayons-field__description">
-          <%= sanitize flag[:description] %>
+          <%= sanitize extension.description %>
         </p>
       </div>
     <% end %>

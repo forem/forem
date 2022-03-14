@@ -131,9 +131,9 @@ namespace :admin do
       end
     end
 
-    resources :feature_flags, only: %i[index] do
+    resources :extensions, only: %i[index] do
       collection do
-        post "toggle_flags", to: "feature_flags#toggle_flags"
+        post "toggle", to: "extensions#toggle"
       end
     end
 
