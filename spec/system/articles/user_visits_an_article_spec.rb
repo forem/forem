@@ -184,4 +184,39 @@ RSpec.describe "Views an article", type: :system do
       end
     end
   end
+
+  describe "sort comments" do
+    let(:comments_sort_text_selector) do
+      "//div[@id='comments-sort-dropdown-container']/div[@class='crayons-subtitle-1']/h4"
+    end
+    let(:comments_selector) { "//div[contains(@class, 'single-comment-node')]" }
+
+    it "lists comments by score when no sort order given" do
+      article = create(:article)
+      comments = create_list(:comment, 3, commentable: article)
+      comments.first.update_column(:score, 2)
+      comments.second.update_column(:score, 3)
+      comments.third.update_column(:score, 1)
+
+      visit article.path
+      sort_text = page.first(:xpath, comments_sort_text_selector).try(:text)
+      expect(sort_text).to include(I18n.t("views.articles.comments.subtitle.top_html").remove("%{num}")) # rubocop:disable Style/FormatStringToken
+
+      page_comments = page.all(:xpath, comments_selector).map { |comment| comment["data-comment-id"].to_i }
+      expect(page_comments).to eq([comments.second.id, comments.first.id, comments.third.id])
+    end
+
+    it "lists comment by the given order" do
+      article = create(:article)
+      comments = create_list(:comment, 3, commentable: article)
+      comments = comments.sort_by(&:created_at)
+
+      visit "#{article.path}?comments_sort=oldest"
+      sort_text = page.first(:xpath, comments_sort_text_selector).try(:text)
+      expect(sort_text).to include(I18n.t("views.articles.comments.subtitle.oldest_html").remove("%{num}")) # rubocop:disable Style/FormatStringToken
+
+      page_comments = page.all(:xpath, comments_selector).map { |comment| comment["data-comment-id"].to_i }
+      expect(page_comments).to eq([comments.first.id, comments.second.id, comments.third.id])
+    end
+  end
 end

@@ -396,7 +396,7 @@ describe('Comment on articles', () => {
 
   it('should add a comment', () => {
     cy.findByRole('main').within(() => {
-      cy.findByRole('heading', { name: 'Discussion (0)' });
+      cy.findByRole('heading', { name: 'Top comments (0)' });
 
       cy.findByRole('textbox', { name: /^Add a comment to the discussion$/i })
         .focus() // Focus activates the Submit button and mini toolbar below a comment textbox
@@ -414,7 +414,7 @@ describe('Comment on articles', () => {
       }).should('have.value', '');
 
       cy.findByText(/^this is a comment$/i);
-      cy.findByRole('heading', { name: 'Discussion (1)' });
+      cy.findByRole('heading', { name: 'Top comments (1)' });
 
       // Check that the profile preview card is there and can be displayed
       cy.findByTestId('comments-container').within(() => {
@@ -439,7 +439,7 @@ describe('Comment on articles', () => {
       content: 'This is a test canned response',
     }).then((_response) => {
       cy.findByRole('main').within(() => {
-        cy.findByRole('heading', { name: 'Discussion (0)' });
+        cy.findByRole('heading', { name: 'Top comments (0)' });
 
         cy.findByRole('textbox', {
           name: /^Add a comment to the discussion$/i,
@@ -460,7 +460,7 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).should('have.value', '');
 
-        cy.findByRole('heading', { name: 'Discussion (1)' });
+        cy.findByRole('heading', { name: 'Top comments (1)' });
       });
     });
   });

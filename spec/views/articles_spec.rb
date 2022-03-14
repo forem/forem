@@ -9,6 +9,7 @@ RSpec.describe "articles/show", type: :view do
     assign(:user, user1)
     assign(:article, article1.decorate)
     assign(:comment, Comment.new)
+    assign(:comments_order, "top")
     without_partial_double_verification do
       allow(view).to receive(:internal_navigation?).and_return(params[:i] == "i")
     end
