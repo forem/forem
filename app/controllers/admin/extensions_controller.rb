@@ -5,13 +5,9 @@ module Admin
     EXTENSIONS = [
       Extension.new(
         "Listings",
-        "A description of the listing feature <br> With some more sub text",
+        "Once turned on, Listings can be accessed via /listings and members will be able to add listings." \
+        "Learn more about Listings <a href='https://admin.forem.com/docs/advanced-customization/listings'>here</a>.",
         :listing_feature,
-      ),
-      Extension.new(
-        "Admin Member View",
-        "A description of the listing feature <br> With some more sub text",
-        :admin_member_view,
       ),
     ].freeze
 
