@@ -67,6 +67,16 @@ class AdminMenu
     feature_flagged_menu_items
   end
 
+  # Return the Menu item that corresponds to the nav_item within the given named scope.
+  #
+  # @param scope_name [String]
+  # @param nav_item [String]
+  #
+  # @return [NilClass] when we don't have a menu representation of the nav_item
+  # @return [Hash] the representation of the nav_item
+  #
+  # @todo This method returns the nav_item, but we really only operate on that item's children.
+  #       Consider replacing with a method that is "children of nav_item within scope".
   def self.nested_menu_items(scope_name, nav_item)
     return unless navigation_items.dig(scope_name.to_sym, :children)
 
@@ -77,8 +87,14 @@ class AdminMenu
 
       items[:children].each do |child|
         return items if child[:controller] == nav_item
+        # NOTE: [@jeremyf] trying to puzzle this one out.  My read is that if the "grandchild" of the
+        # scope matches the controller, return the parent node (e.g. the item).
       end
     end
+
+    # Because we're using each loops, with short-circuiting returns, we need to make sure we don't
+    # retrun the results of `items[:children].each`, which will be `items[:children]`.
+    nil
   end
 
   def self.nested_menu_items_from_request(request)
