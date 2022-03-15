@@ -1,0 +1,15 @@
+<div id="export-data">
+  <div class="flex flex-col gap-4">
+    <p>
+      Choose betweem sending the exported data to either your Admin contact email, <%= ForemInstance.email %>,
+      or to <%= @user.name %>'s <a href="mailto:<%= @user.email %>">user email</a> directly.
+    </p>
+    <p>
+      Exported data includes a user's posts and comments.
+    </p>
+    <div class="flex gap-2">
+      <%= button_to "Export to Admin", export_data_admin_user_path(@user.id), data: { confirm: "Are you sure you want to export this user's content to #{ForemInstance.email}?" }, class: "c-btn c-btn--secondary", params: { send_to_admin: true } %>
+      <%= button_to "Export to User", export_data_admin_user_path(@user.id), data: { confirm: "Are you sure you want to export this user's content to #{@user.email}?" }, class: "c-btn c-btn--secondary", params: { send_to_admin: false } %>
+    </div>
+  </div>
+</div>

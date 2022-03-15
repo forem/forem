@@ -27,9 +27,9 @@ class ListingsController < ApplicationController
   # actions `create` and `update` are defined in the module `ListingsToolkit`,
   # we thus silence Rubocop lexical scope filter cop: https://rails.rubystyle.guide/#lexically-scoped-action-filter
   # rubocop:disable Rails/LexicallyScopedActionFilter
-  before_action :set_listing, only: %i[edit update destroy]
+  before_action :set_and_authorize_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
-  before_action :raise_suspended, only: %i[new create update]
+  before_action :check_suspended, only: %i[new create update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
   after_action :verify_authorized, only: %i[edit update]
   # rubocop:enable Rails/LexicallyScopedActionFilter
@@ -52,7 +52,6 @@ class ListingsController < ApplicationController
     @listings_json = @listings.to_json(INDEX_JSON_OPTIONS)
     @displayed_listing_json = @displayed_listing.to_json(INDEX_JSON_OPTIONS)
 
-    # TODO: [mkohl] Can we change this to listings-#{params[:category]}?
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 
@@ -63,7 +62,6 @@ class ListingsController < ApplicationController
   end
 
   def edit
-    authorize @listing
     @organizations = current_user.organizations
     @credits = current_user.credits.unspent
   end
@@ -90,15 +88,14 @@ class ListingsController < ApplicationController
   end
 
   def destroy
-    authorize @listing
     @listing.destroy!
-    redirect_to "/listings/dashboard", notice: "Listing was successfully deleted."
+    redirect_to "/listings/dashboard", notice: I18n.t("listings_controller.deleted")
   end
 
   private
 
   def process_no_credit_left
-    redirect_to credits_path, notice: "Not enough available credits"
+    redirect_to credits_path, notice: I18n.t("listings_controller.no_credit")
   end
 
   def process_successful_draft

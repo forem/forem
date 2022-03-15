@@ -10,43 +10,36 @@ function removeExistingCSRF() {
 }
 
 function fetchBaseData() {
-  var xmlhttp;
-  if (window.XMLHttpRequest) {
-    xmlhttp = new XMLHttpRequest();
-  } else {
-    xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-  }
-  xmlhttp.onreadystatechange = () => {
-    if (xmlhttp.readyState === XMLHttpRequest.DONE) {
-      // Assigning CSRF
-      var json = JSON.parse(xmlhttp.responseText);
-      if (json.token) {
+  fetch('/async_info/base_data')
+    .then((response) => response.json())
+    .then(({ token, param, broadcast, user, creator }) => {
+      if (token) {
         removeExistingCSRF();
       }
-      var newCsrfParamMeta = document.createElement('meta');
+
+      const newCsrfParamMeta = document.createElement('meta');
       newCsrfParamMeta.name = 'csrf-param';
-      newCsrfParamMeta.content = json.param;
+      newCsrfParamMeta.content = param;
       document.head.appendChild(newCsrfParamMeta);
-      var newCsrfTokenMeta = document.createElement('meta');
+
+      const newCsrfTokenMeta = document.createElement('meta');
       newCsrfTokenMeta.name = 'csrf-token';
-      newCsrfTokenMeta.content = json.token;
+      newCsrfTokenMeta.content = token;
       document.head.appendChild(newCsrfTokenMeta);
       document.body.dataset.loaded = 'true';
 
-      // Assigning Broadcast
-      if (json.broadcast) {
-        document.body.dataset.broadcast = json.broadcast;
+      if (broadcast) {
+        document.body.dataset.broadcast = broadcast;
       }
 
-      // Assigning User
       if (checkUserLoggedIn()) {
-        document.body.dataset.user = json.user;
-        document.body.dataset.creator = json.creator;
-        browserStoreCache('set', json.user);
+        document.body.dataset.user = user;
+        document.body.dataset.creator = creator;
+        browserStoreCache('set', user);
 
         setTimeout(() => {
           if (typeof ga === 'function') {
-            ga('set', 'userId', JSON.parse(json.user).id);
+            ga('set', 'userId', JSON.parse(user).id);
           }
         }, 400);
       } else {
@@ -55,11 +48,7 @@ function fetchBaseData() {
         delete document.body.dataset.creator;
         browserStoreCache('remove');
       }
-    }
-  };
-
-  xmlhttp.open('GET', '/async_info/base_data', true);
-  xmlhttp.send();
+    });
 }
 
 function initializeBodyData() {

@@ -18,6 +18,6 @@ RSpec.describe Mention, type: :model do
 
   # TODO: Replace this test with validation spec
   it "doesn't raise undefined method for NilClass on valid?" do
-    expect(described_class.new.valid?).to eq(false)
+    expect(described_class.new.valid?).to be(false)
   end
 end

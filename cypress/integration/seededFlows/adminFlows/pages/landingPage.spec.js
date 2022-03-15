@@ -6,7 +6,7 @@ describe('Set a landing page from the admin portal', () => {
       cy.loginAndVisit(user, '/admin/customization/config').then(() => {
         cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
         // Ensure Forem instance is private
-        // NOTE: @citizen428 - We may need to find a better situation for this
+        // NOTE: We may need to find a better situation for this
         // long-term.
 
         cy.get('@userExperienceSectionForm')
@@ -28,7 +28,9 @@ describe('Set a landing page from the admin portal', () => {
 
   it('should set a landing page when no other landing page exists', () => {
     cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" }).check();
+    cy.findByRole('checkbox', {
+      name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
+    }).check();
     cy.findByRole('button', { name: 'Update Page' }).click();
 
     // Verify that the form has submitted and the page has changed to the confirmation page
@@ -41,10 +43,14 @@ describe('Set a landing page from the admin portal', () => {
 
   it('should overwrite the landing page when choosing to set a new landing page', () => {
     cy.findAllByRole('link', { name: 'Edit' }).first().click();
-    cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" });
+    cy.findByRole('checkbox', {
+      name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
+    });
     // Set landing page
     cy.findByRole('main').within(() => {
-      cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" }).check();
+      cy.findByRole('checkbox', {
+        name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
+      }).check();
 
       cy.findByRole('button', { name: 'Update Page' }).click();
     });
@@ -65,10 +71,14 @@ describe('Set a landing page from the admin portal', () => {
 
       cy.findAllByRole('link', { name: 'Edit' }).eq(1).click();
     });
-    cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" });
+    cy.findByRole('checkbox', {
+      name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
+    });
     // Change landing page
     cy.findByRole('main').within(() => {
-      cy.findByRole('checkbox', { name: "Use as 'Locked Screen'" }).check();
+      cy.findByRole('checkbox', {
+        name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
+      }).check();
 
       cy.findAllByRole('button', {
         name: 'Overwrite current locked screen',
@@ -100,9 +110,9 @@ describe('Set a landing page from the admin portal', () => {
 
     // Set landing page
     cy.findByRole('main').within(() => {
-      cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-        .first()
-        .check();
+      cy.findByRole('checkbox', {
+        name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
+      }).check();
 
       cy.findAllByRole('button', { name: 'Update Page' }).first().click();
     });
@@ -126,9 +136,9 @@ describe('Set a landing page from the admin portal', () => {
 
     // Change landing page but then Cancel
     cy.findByRole('main').within(() => {
-      cy.findAllByRole('checkbox', { name: "Use as 'Locked Screen'" })
-        .first()
-        .check();
+      cy.findByRole('checkbox', {
+        name: "Use as 'Locked Screen' Determines if this page will be used as a landing page for anonymous viewers.",
+      }).check();
 
       cy.findAllByRole('button', { name: 'Cancel' }).first().click();
 

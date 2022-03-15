@@ -127,7 +127,7 @@
   ('grow', 'flex-grow', ('0': 0, '1': 1), (), false),
   ('shrink', 'flex-shrink', ('0': 0, '1': 1), (), false),
   ('order', 'order', ('first': -9999, 'last': 9999, '0': 0), (), true),
-  ('gap', 'gap', ('0': 0), $spacing-units, true),
+  ('gap', 'gap', ('0': 0, 'px': 1px), $spacing-units, true),
   (
     'grid-cols',
     'grid-template-columns',
@@ -136,7 +136,8 @@
       '2': repeat(2, minmax(0, 1fr)),
       '3': repeat(3, minmax(0, 1fr)),
       '4': repeat(4, minmax(0, 1fr)),
-      '5': repeat(5, minmax(0, 1fr))
+      '5': repeat(5, minmax(0, 1fr)),
+      '6': repeat(6, minmax(0, 1fr))
     ),
     (),
     true

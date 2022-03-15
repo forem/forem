@@ -264,9 +264,12 @@ body {
     margin: 0 0 var(--content-rhythm) 0;
   }
 
+  // This .ff-container classname is added by the freezeframe library we use to play/pause animated images
   img,
-  video {
+  video,
+  .ff-container {
     height: auto;
+    object-fit: contain;
     display: block;
     margin: var(--content-rhythm) auto;
     max-width: 100%;

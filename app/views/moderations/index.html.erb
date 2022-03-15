@@ -11,7 +11,7 @@
 
       <header class="mod-index-header hidden m:block">
         <h2 class="crayons-subtitle-1">
-          <%= @tag ? "##{@tag.name}" : t("views.moderations.all") %>
+          <%= @tag ? "##{@tag.accessible_name}" : t("views.moderations.all") %>
         </h2>
       </header>
 
@@ -38,7 +38,7 @@
         <%= t("views.moderations.notice.desc2_html", code: link_to(t("views.moderations.notice.code_of_conduct"), code_of_conduct_path), trusted: link_to(t("views.moderations.notice.trusted"), community_moderation_path),
                                                      tag: link_to(t("views.moderations.notice.tag"), tag_moderation_path)) %>
       </p>
-      <p><%= t("views.moderations.notice.desc3_html", email: mail_to(email_link, email_link)) %></p>
+      <p><%= t("views.moderations.notice.desc3_html", email: mail_to(contact_link, contact_link)) %></p>
       <% unless user_signed_in? %>
         <p><em><%= t("views.moderations.notice.desc4") %></em></p>
       <% end %>

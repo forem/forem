@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Github::OauthClient, type: :service, vcr: true do
-  let(:repo) { "thepracticaldev/dev.to" }
+  let(:repo) { "forem/forem" }
   let(:issue_id) { 7434 }
 
   describe "initialization" do

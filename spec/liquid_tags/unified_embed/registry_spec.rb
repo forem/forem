@@ -3,12 +3,15 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed::Registry do
   subject(:unified_embed) { described_class }
 
-  let(:user) { create(:user) }
   let(:article) { create(:article) }
-  let(:comment) do
-    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
-  end
+  let(:listing) { create(:listing) }
   let(:organization) { create(:organization) }
+  let(:podcast) { create(:podcast) }
+  let(:podcast_episode) do
+    create(:podcast_episode, podcast_id: podcast.id)
+  end
+  let(:tag) { create(:tag) }
+  let(:user) { create(:user) }
 
   describe ".find_liquid_tag_for" do
     valid_blogcast_url_formats = [
@@ -47,6 +50,12 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://pl.kotl.in/Wplen1rPa?theme=darcula&readOnly=true&from=6&to=7",
     ]
 
+    valid_loom_url_formats = [
+      "https://loom.com/share/12fb674d39dd4fe281becee7cdbc3cd1",
+      "https://loom.com/embed/12fb674d39dd4fe281becee7cdbc3cd1",
+      "https://www.loom.com/share/12fb674d39dd4fe281becee7cdbc3cd1",
+    ]
+
     valid_replit_url_formats = [
       "https://replit.com/@msarit/Shell-Challenge#index.html",
       "https://replit.com/@msarit/Shell-Challenge",
@@ -66,6 +75,15 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://stackblitz.com/edit/web-platform-3tqbd4",
       "https://stackblitz.com/edit/web-platform-3tqbd4?embed=1&file=index.html&hideExplorer=1&hideNavigation=1&theme=dark",
       "https://stackblitz.com/edit/web-platform-3tqbd4?embed=1&file=index.html&theme=light",
+    ]
+
+    valid_stackexchange_stackoverflow_url_formats = [
+      "https://travel.stackexchange.com/questions/172014/is-it-okay-to-mix-in-local-language-when-i-know-it-poorly",
+      "https://diy.stackexchange.com/q/244088",
+      "https://academia.stackexchange.com/a/181893",
+      "https://stackoverflow.com/q/70974409/9091371",
+      "https://stackoverflow.com/questions/70976451/changing-h1-element-based-on-input-element-content-vanilla-js",
+      "https://stackoverflow.com/a/70976251/9091371",
     ]
 
     valid_twitch_url_formats = [
@@ -88,6 +106,11 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://youtu.be/rc5AyncB_Xw",
     ]
 
+    it "returns AsciinemaTag for an asciinema url" do
+      expect(described_class.find_liquid_tag_for(link: "https://asciinema.org/a/330532"))
+        .to eq(AsciinemaTag)
+    end
+
     it "returns BlogcastTag for a valid blogcast url", :aggregate_failures do
       valid_blogcast_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
@@ -102,9 +125,30 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
-    it "returns CommentTag for a Forem comment url" do
-      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{user.username}/comment/#{comment.id_code}"))
-        .to eq(CommentTag)
+    it "returns CodepenTag for a codepen url" do
+      expect(described_class.find_liquid_tag_for(link: "https://codepen.io/elisavetTriant/pen/KKvRRyE"))
+        .to eq(CodepenTag)
+    end
+
+    it "returns DotnetFiddleTag for a dotnetfiddle url" do
+      expect(described_class.find_liquid_tag_for(link: "https://dotnetfiddle.net/PmoDip"))
+        .to eq(DotnetFiddleTag)
+    end
+
+    it "returns ForemTag for a Forem-specific url", :aggregate_failures do
+      valid_forem_specific_links = [
+        URL.url + article.path,
+        "#{URL.url}/listings/#{listing.listing_category}/#{listing.slug}",
+        "#{URL.url}/#{organization.slug}",
+        "#{URL.url}/#{podcast.slug}/#{podcast_episode.slug}",
+        "#{URL.url}/t/#{tag.name}",
+        "#{URL.url}/#{user.username}",
+      ]
+
+      valid_forem_specific_links.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(ForemTag)
+      end
     end
 
     it "returns GistTag for a gist url" do
@@ -119,21 +163,6 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
-    it "returns AsciinemaTag for an asciinema url" do
-      expect(described_class.find_liquid_tag_for(link: "https://asciinema.org/a/330532"))
-        .to eq(AsciinemaTag)
-    end
-
-    it "returns CodepenTag for a codepen url" do
-      expect(described_class.find_liquid_tag_for(link: "https://codepen.io/elisavetTriant/pen/KKvRRyE"))
-        .to eq(CodepenTag)
-    end
-
-    it "returns DotnetFiddleTag for a dotnetfiddle url" do
-      expect(described_class.find_liquid_tag_for(link: "https://dotnetfiddle.net/PmoDip"))
-        .to eq(DotnetFiddleTag)
-    end
-
     it "returns InstagramTag for a valid instagram url", :aggregate_failures do
       valid_instagram_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
@@ -146,6 +175,11 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(JsFiddleTag)
     end
 
+    it "returns JsitorTag for a jsitor url" do
+      expect(described_class.find_liquid_tag_for(link: "https://jsitor.com/embed/B7FQ5tHbY"))
+        .to eq(JsitorTag)
+    end
+
     it "returns KotlinTag for a valid kotlin url", :aggregate_failures do
       valid_kotlin_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
@@ -153,14 +187,11 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
-    it "returns JsitorTag for a jsitor url" do
-      expect(described_class.find_liquid_tag_for(link: "https://jsitor.com/embed/B7FQ5tHbY"))
-        .to eq(JsitorTag)
-    end
-
-    it "returns Forem Link for a forem url" do
-      expect(described_class.find_liquid_tag_for(link: URL.url + article.path))
-        .to eq(LinkTag)
+    it "returns LoomTag for a valid loom url", :aggregate_failures do
+      valid_loom_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(LoomTag)
+      end
     end
 
     it "returns MediumTag for a valid medium url", :aggregate_failures do
@@ -173,11 +204,6 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns NextTechTag for a nexttech url" do
       expect(described_class.find_liquid_tag_for(link: "https://nt.dev/s/6ba1fffbd09e"))
         .to eq(NextTechTag)
-    end
-
-    it "returns OrganizationTag for a Forem organization url" do
-      expect(described_class.find_liquid_tag_for(link: "#{URL.url}/#{organization.slug}"))
-        .to eq(OrganizationTag)
     end
 
     it "returns RedditTag for a reddit url" do
@@ -226,6 +252,13 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(StackeryTag)
     end
 
+    it "returns StackexchangeTag for a valid stackexchange or stackoverflow url", :aggregate_failures do
+      valid_stackexchange_stackoverflow_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(StackexchangeTag)
+      end
+    end
+
     it "returns TweetTag for a tweet url" do
       expect(described_class.find_liquid_tag_for(link: "https://twitter.com/aritdeveloper/status/1483614684884484099"))
         .to eq(TweetTag)
@@ -243,16 +276,16 @@ RSpec.describe UnifiedEmbed::Registry do
         .to eq(TwitterTimelineTag)
     end
 
-    it "returns WikipediaTag for a twitter timeline url" do
-      expect(described_class.find_liquid_tag_for(link: "https://en.wikipedia.org/wiki/Steve_Jobs"))
-        .to eq(WikipediaTag)
-    end
-
     it "returns VimeoTag for a valid vimeo url", :aggregate_failures do
       valid_vimeo_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(VimeoTag)
       end
+    end
+
+    it "returns WikipediaTag for a twitter timeline url" do
+      expect(described_class.find_liquid_tag_for(link: "https://en.wikipedia.org/wiki/Steve_Jobs"))
+        .to eq(WikipediaTag)
     end
 
     it "returns YoutubeTag for a valid youtube url", :aggregate_failures do

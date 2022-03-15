@@ -23,10 +23,10 @@
 
 </head>
 <body class="admin default-header"
-  data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-  data-deployed-at="<%= ForemInstance.deployed_at %>"
-  data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
-  data-ga-tracking="<%= Settings::General.ga_tracking_id %>"
+  data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+  data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
+  data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
+  data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
   data-controller="snackbar"
   data-action="snackbar:add@document->snackbar#addItem">
   <div id="body-styles">
@@ -61,31 +61,16 @@
 
   <div class="crayons-layout crayons-layout--2-cols">
     <div class="admin__left-sidebar crayons-layout__left-sidebar" data-controller="sidebar" data-action="load@window->sidebar#disableCurrentNavItem">
-      <nav>
-          <ul>
-            <li>
-              <a class="crayons-link crayons-link--block <%= "crayons-link--current" if controller.controller_name == "overview" %>" href="<%= admin_path %>" aria-current "<%= "page" if controller.controller_name == "overview" %>">
-                <%= crayons_icon_tag("stack-line", class: "dropdown-icon") %>
-                Overview
-              </a>
-            </li>
-            <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
-            <li class="block s:hidden">
-              <a class="crayons-link crayons-link--block" href="/">
-                <%= crayons_icon_tag("external-link", class: "dropdown-icon") %>
-                Go to <%= community_name %> home page
-              </a>
-            </li>
-          </ul>
-      </nav>
+      <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
     </div>
     <main id="main-content" class="crayons-layout__content min-w-0 p-2">
-      <% flash.each do |type, message| %>
-        <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
-          <button class="close" data-dismiss="alert" aria-label="Close">
+      <%= javascript_packs_with_chunks_tag "admin/flashMessages", defer: true %>
+      <% flash.each_with_index do |(type, message), i| %>
+        <div data-testid="flash-<%= type %>" class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
+          <span id="flash-<%= i %>"><%= message %></span>
+          <button class="close js-flash-close-btn" data-dismiss="alert" aria-label="Dismiss message" aria-describedby="flash-<%= i %>">
             <%= crayons_icon_tag(:x, aria_hidden: true) %>
           </button>
-          <%= message %>
         </div>
       <% end %>
 

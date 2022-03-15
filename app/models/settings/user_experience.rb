@@ -21,7 +21,7 @@ module Settings
     setting :primary_brand_color_hex, type: :string, default: "#3b49df", validates: {
       format: {
         with: HEX_COLOR_REGEX,
-        message: "must be be a 3 or 6 character hex (starting with #)"
+        message: proc { I18n.t("models.settings.user_experience.message") }
       },
       color_contrast: true
     }

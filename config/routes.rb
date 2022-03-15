@@ -26,7 +26,12 @@ Rails.application.routes.draw do
     get "/locale/:locale", to: "stories#index"
 
     draw :admin
-    draw :listing
+
+    # The lambda (e.g. `->`) allows for dynamic checking.  In other words we check with each
+    # request.
+    constraints(->(_req) { Listing.feature_enabled? }) do
+      draw :listing
+    end
 
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
@@ -38,6 +43,10 @@ Rails.application.routes.draw do
 
     namespace :api, defaults: { format: "json" } do
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+        namespace :admin do
+          resources :users, only: [:create]
+        end
+
         resources :articles, only: %i[index show create update] do
           collection do
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
@@ -84,6 +93,10 @@ Rails.application.routes.draw do
           resources :articles, only: [:index], to: "organizations#articles"
         end
         resource :instance, only: %i[show]
+
+        constraints(RailsEnvConstraint.new(allowed_envs: %w[test])) do
+          resource :feature_flags, only: %i[create show destroy], param: :flag
+        end
       end
     end
 
@@ -100,6 +113,7 @@ Rails.application.routes.draw do
     resources :messages, only: [:create]
     resources :articles, only: %i[update create destroy] do
       patch "/admin_unpublish", to: "articles#admin_unpublish"
+      patch "/admin_featured_toggle", to: "articles#admin_featured_toggle"
     end
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do
@@ -137,6 +151,7 @@ Rails.application.routes.draw do
       collection do
         get "/onboarding", to: "tags#onboarding"
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
+        get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]
@@ -361,7 +376,7 @@ Rails.application.routes.draw do
     get "/:username/comment/:id_code/settings", to: "comments#settings"
 
     get "/:username/:slug/:view", to: "stories#show",
-                                  constraints: { view: /moderate/ }
+                                  constraints: { view: /moderate|admin/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
     get "/:username/:slug/manage", to: "articles#manage", as: :article_manage

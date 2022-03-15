@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "colorPreview", "stickySaveFooter", "userProfileSettings", "validateFileInputs", defer: true %>
+<%= javascript_packs_with_chunks_tag "enhanceColorPickers", "stickySaveFooter", "userProfileSettings", "validateFileInputs", defer: true %>
 
 <%= render "users/additional_authentication" %>
 
@@ -167,16 +167,14 @@
         <%= f.public_send(:text_field, "users_setting[brand_color1]",
                           value: users_setting.public_send(:brand_color1),
                           placeholder: "#000000",
-                          class: "crayons-textfield js-color-field") %>
-        <%= f.public_send(:color_field,
-                          "users_setting[brand_color1]",
-                          value: users_setting.public_send(:brand_color1),
-                          class: "crayons-color-selector js-color-field ml-2") %>
+                          class: "crayons-textfield",
+                          data: { color_picker: "true", label_text: t("views.logo.color_1.label") }) %>
+
       </div>
     </div>
 
     <div class="crayons-field ">
-      <label class="crayons-field__label" for="users_setting[brand_color1]">
+      <label class="crayons-field__label" for="users_setting[brand_color2]">
         <%= t("views.logo.color_2.label") %>
       </label>
       <p class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
@@ -184,11 +182,8 @@
         <%= f.public_send(:text_field, "users_setting[brand_color2]",
                           value: users_setting.public_send(:brand_color2),
                           placeholder: "#000000",
-                          class: "crayons-textfield js-color-field") %>
-        <%= f.public_send(:color_field,
-                          "users_setting[brand_color2]",
-                          value: users_setting.public_send(:brand_color2),
-                          class: "crayons-color-selector js-color-field ml-2") %>
+                          class: "crayons-textfield",
+                          data: { color_picker: "true", label_text: t("views.logo.color_2.label") }) %>
       </div>
     </div>
   </div>

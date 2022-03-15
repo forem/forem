@@ -101,7 +101,7 @@ class Reaction < ApplicationRecord
   # no need to send notification if:
   # - reaction is negative
   # - receiver is the same user as the one who reacted
-  # - receive_notification is disabled
+  # - reaction status is marked invalid
   def skip_notification_for?(_receiver)
     reactor_id = case reactable
                  when User
@@ -110,7 +110,7 @@ class Reaction < ApplicationRecord
                    reactable.user_id
                  end
 
-    points.negative? || (user_id == reactor_id)
+    (status == "invalid") || points.negative? || (user_id == reactor_id)
   end
 
   def vomit_on_user?
@@ -178,9 +178,10 @@ class Reaction < ApplicationRecord
   end
 
   def permissions
-    errors.add(:category, "is not valid.") if negative_reaction_from_untrusted_user?
+    errors.add(:category, I18n.t("models.reaction.is_not_valid")) if negative_reaction_from_untrusted_user?
+    return unless reactable_type == "Article" && !reactable&.published
 
-    errors.add(:reactable_id, "is not valid.") if reactable_type == "Article" && !reactable&.published
+    errors.add(:reactable_id, I18n.t("models.reaction.is_not_valid"))
   end
 
   def negative_reaction_from_untrusted_user?

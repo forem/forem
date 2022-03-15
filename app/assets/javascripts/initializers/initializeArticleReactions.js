@@ -132,11 +132,7 @@ function setCollectionFunctionality() {
 
 function requestReactionCounts(articleId) {
   var ajaxReq;
-  if (window.XMLHttpRequest) {
-    ajaxReq = new XMLHttpRequest();
-  } else {
-    ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
-  }
+  ajaxReq = new XMLHttpRequest();
   ajaxReq.onreadystatechange = () => {
     if (ajaxReq.readyState === XMLHttpRequest.DONE) {
       var json = JSON.parse(ajaxReq.response);

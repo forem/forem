@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(version: 2022_01_26_205052) do
     t.datetime "last_experience_level_rating_at"
     t.string "main_image"
     t.string "main_image_background_hex_color", default: "#dddddd"
+    t.boolean "main_image_from_frontmatter", default: false
     t.integer "nth_published_by_author", default: 0
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0

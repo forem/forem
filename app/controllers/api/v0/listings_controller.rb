@@ -1,7 +1,7 @@
 module Api
   module V0
     class ListingsController < ApiController
-      include Pundit
+      include Pundit::Authorization
       include ListingsToolkit
 
       # actions `create` and `update` are defined in the module `ListingsToolkit`,
@@ -10,7 +10,7 @@ module Api
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
       before_action :authenticate_with_api_key_or_current_user, only: %i[show]
       before_action :set_cache_control_headers, only: %i[index show]
-      before_action :set_listing, only: %i[update]
+      before_action :set_and_authorize_listing, only: %i[update]
       skip_before_action :verify_authenticity_token, only: %i[create update]
       # rubocop:enable Rails/LexicallyScopedActionFilter
 

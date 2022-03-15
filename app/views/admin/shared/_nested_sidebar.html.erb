@@ -1,55 +1,41 @@
-<% menu_items.each do |group_name, group| %>
-  <li>
-    <% if group[:children].length == 1 %>
-      <% if group[:children][0][:visible] %>
-        <a class="crayons-link crayons-link--block <%= "crayons-link--current" if deduced_scope(request) == group[:children][0][:controller] %>"
-           href="/admin/<%= group[:children][0][:controller] %>"
-           aria-current="<%= "page" if deduced_controller(request) == group[:children][0][:controller] %>"
-           data-action="click->sidebar#expandDropdown">
-          <%= crayons_icon_tag(group[:svg], class: "dropdown-icon", aria_hidden: true) %>
+<nav aria-label="Admin">
+  <ul class="m-0">
+    <li>
+      <a class="c-link c-link--block c-link--icon-left" href="<%= admin_path %>" aria-current="<%= "page" if controller.controller_name == "overview" %>">
+        <%= crayons_icon_tag("stack-line", class: "c-link__icon") %>
+        Overview
+      </a>
+    </li>
+
+    <% menu_items.each do |group_name, group| %>
+      <li>
+        <a
+          class="c-link c-link--block c-link--icon-left <%= "c-link--current" if current?(request, group, group_name) %>"
+          aria-current="<%= "page" if current?(request, group, group_name) && !children?(group) %>"
+          href="<%= nav_path(group, group_name) %>">
+          <%= crayons_icon_tag(group[:svg], class: "c-link__icon", aria_hidden: true) %>
           <%= display_name(group_name) %>
         </a>
-      <% end %>
-    <% else %>
-      <button class="crayons-link crayons-link--block cursor-pointer <%= "crayons-link--current" if deduced_scope(request) == group_name.to_s %>"
-        id="<%= group_name %>_button"
-        data-toggle="collapse"
-        data-target="#<%= group_name %>"
-        aria-expanded="<%= (deduced_scope(request) == group_name.to_s).to_s %>"
-        aria-controls="<%= group_name %>"
-        data-action="click->sidebar#expandDropdown">
-        <%= crayons_icon_tag(group[:svg], class: "dropdown-icon", aria_hidden: true) %>
-        <%= display_name(group_name) %>
-      </button>
-      <% first_child = group[:children].detect { |child| child[:visible] } %>
-      <ul id="<%= group_name %>"
-          data-sidebar-target="submenu"
-          class="js-menu-activator <%= deduced_scope(request) == group_name.to_s ? "collapse show" : "collapse" %>"
-          data-target-href="/admin/<%= group_name %>/<%= first_child[:controller] %>">
-        <% group[:children].each do |item| %>
-          <% if item[:visible] %>
-            <li>
-              <a class="crayons-link crayons-link--block ml-7 <%= "fw-bold" if deduced_controller(request) == item[:controller].to_s %>"
-                 href="/admin/<%= group_name %>/<%= item[:controller] %>"
-                 aria-current="<%= "page" if deduced_controller(request) == item[:controller].to_s %>">
-                <%= item[:name].to_s.titleize %>
-              </a>
-            </li>
-          <% end %>
+        <% if children?(group) %>
+          <ul class="ml-6 mb-1 <%= current?(request, group, group_name) ? "" : "hidden" %>">
+            <% group[:children].each do |item| %>
+              <% if item[:visible] %>
+                <li>
+                  <a
+                    class="c-link c-link--block"
+                    href="<%= admin_path %>/<%= group_name %>/<%= item[:controller] %>"
+                    <% if deduced_controller(request) == item[:controller].to_s %>
+                      style="--bg: transparent"
+                      aria-current="page"
+                    <% end %>>
+                    <%= item[:name].to_s.titleize %>
+                  </a>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
         <% end %>
-      </ul>
+      </li>
     <% end %>
-  </li>
-<% end %>
-
-<script>
-  $('.js-menu-activator').on('show.bs.collapse', function (event) {
-    const destinationPath = event.target.getAttribute('data-target-href');
-    const subMenu = document.querySelector(`a[href='${destinationPath}']`);
-
-    if (destinationPath && subMenu) {
-      window.location.href = destinationPath;
-      subMenu.classList.add('fw-bold');
-    }
-  })
-</script>
+  </ul>
+</nav>

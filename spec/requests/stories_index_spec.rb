@@ -133,9 +133,9 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.status).to eq(200)
 
-      expect(response.headers["X-Accel-Expires"]).to eq(nil)
+      expect(response.headers["X-Accel-Expires"]).to be_nil
       expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
-      expect(response.headers["Surrogate-Key"]).to eq(nil)
+      expect(response.headers["Surrogate-Key"]).to be_nil
     end
 
     it "sets correct cache headers", :aggregate_failures do
@@ -229,6 +229,18 @@ RSpec.describe "StoriesIndex", type: :request do
         create(:article, approved: true, body_markdown: a_body, score: 1)
         u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
         create(:article, approved: false, body_markdown: u_body, score: 1)
+      end
+
+      it "displays display name when it is set" do
+        allow(Settings::Campaign).to receive(:display_name).and_return("Backstreet is back")
+        get "/"
+        expect(response.body).not_to include("Backstreet is back (0)")
+      end
+
+      it "displays Stories fallback when display name is not set" do
+        allow(Settings::Campaign).to receive(:display_name).and_return("")
+        get "/"
+        expect(response.body).not_to include("Stories (0)")
       end
 
       it "doesn't display posts with the campaign tags when sidebar is disabled" do

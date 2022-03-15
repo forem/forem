@@ -6,10 +6,6 @@ class Organization < ApplicationRecord
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   INTEGER_REGEXP = /\A\d+\z/
   SLUG_REGEXP = /\A[a-zA-Z0-9\-_]+\z/
-  MESSAGES = {
-    integer_only: "Integer only. No sign allowed.",
-    reserved_word: "%<value>s is a reserved word. Contact site admins for help registering your organization."
-  }.freeze
 
   acts_as_followable
 
@@ -44,7 +40,7 @@ class Organization < ApplicationRecord
 
   validates :articles_count, presence: true
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
-  validates :company_size, format: { with: INTEGER_REGEXP, message: MESSAGES[:integer_only], allow_blank: true }
+  validates :company_size, format: { with: INTEGER_REGEXP, message: :integer_only, allow_blank: true }
   validates :company_size, length: { maximum: 7 }, allow_nil: true
   validates :credits_count, presence: true
   validates :cta_body_markdown, length: { maximum: 256 }
@@ -57,7 +53,7 @@ class Organization < ApplicationRecord
   validates :proof, length: { maximum: 1500 }
   validates :secret, length: { is: 100 }, allow_nil: true
   validates :secret, uniqueness: true
-  validates :slug, exclusion: { in: ReservedWords.all, message: MESSAGES[:reserved_word] }
+  validates :slug, exclusion: { in: ReservedWords.all, message: :reserved_word }
   validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..18 }
   validates :slug, presence: true, uniqueness: { case_sensitive: false }
   validates :spent_credits_count, presence: true
@@ -79,6 +75,14 @@ class Organization < ApplicationRecord
   alias_attribute :old_username, :old_slug
   alias_attribute :old_old_username, :old_old_slug
   alias_attribute :website_url, :url
+
+  def self.integer_only
+    I18n.t("models.organization.integer_only")
+  end
+
+  def self.reserved_word
+    I18n.t("models.organization.reserved_word")
+  end
 
   def check_for_slug_change
     return unless slug_changed?

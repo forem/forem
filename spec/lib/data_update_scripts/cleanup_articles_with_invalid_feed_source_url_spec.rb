@@ -20,7 +20,7 @@ describe DataUpdateScripts::CleanupArticlesWithInvalidFeedSourceUrl do
 
     described_class.new.run
 
-    expect(article.reload.feed_source_url).to be(nil)
+    expect(article.reload.feed_source_url).to be_nil
   end
 
   it "sets totally invalid url to nil" do
@@ -28,7 +28,7 @@ describe DataUpdateScripts::CleanupArticlesWithInvalidFeedSourceUrl do
 
     described_class.new.run
 
-    expect(article.reload.feed_source_url).to be(nil)
+    expect(article.reload.feed_source_url).to be_nil
   end
 
   it "sets an 'almost URL' to a https URL" do
