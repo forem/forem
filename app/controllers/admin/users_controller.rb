@@ -305,10 +305,5 @@ module Admin
                        "overview"
                      end
     end
-
-    def set_user_to_be_banished
-      @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
-        @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
-    end
   end
 end
