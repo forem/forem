@@ -26,4 +26,42 @@ RSpec.describe ApplicationPolicy do
     it { is_expected.to be_a(ApplicationPolicy::NotAuthorizedError) }
   end
   # rubocop:enable RSpec/DescribedClass
+
+  describe "require_user_in_good_standing!" do
+    subject(:method_call) { described_class.require_user_in_good_standing!(user: user) }
+
+    context "when no user given" do
+      let(:user) { nil }
+
+      it { within_block_is_expected.to raise_error ApplicationPolicy::UserRequiredError }
+    end
+
+    context "when given a user who is not suspended" do
+      let(:user) { User.new }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when given a user who suspended" do
+      let(:user) { build(:user, :suspended) }
+
+      it { within_block_is_expected.to raise_error ApplicationPolicy::UserSuspendedError }
+    end
+  end
+
+  describe "require_user!" do
+    subject(:method_call) { described_class.require_user!(user: user) }
+
+    context "when no user given" do
+      let(:user) { nil }
+
+      it { within_block_is_expected.to raise_error ApplicationPolicy::UserRequiredError }
+    end
+
+    context "when given a user" do
+      let(:user) { User.new }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

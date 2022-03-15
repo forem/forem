@@ -294,8 +294,8 @@ module ApplicationHelper
     tag.label(content, class: "site-config__label crayons-field__label", for: "#{label_prefix}_#{method}")
   end
 
-  def admin_config_description(content)
-    tag.p(content, class: "crayons-field__description") unless content.empty?
+  def admin_config_description(content, **opts)
+    tag.p(content, class: "crayons-field__description", **opts) unless content.empty?
   end
 
   def role_display_name(role)
