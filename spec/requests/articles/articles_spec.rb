@@ -95,7 +95,7 @@ RSpec.describe "Articles", type: :request do
         expect(response.body).not_to include(organization_article.title)
       end
 
-      it "contains a user' name, link, and composite profile image tag", :aggregate_failures do
+      it "contains user's name, link, and composite profile image tag" do
         expect(response.body).to include(
           "<image>",
           "<url>#{app_url(user.profile_image_90)}</url>",
