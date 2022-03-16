@@ -41,15 +41,13 @@ describe('Organisation settings', () => {
     cy.findByRole('button', { name: 'Brand color 1' });
     cy.findByRole('textbox', { name: 'Brand color 1' })
       .should('have.value', '#000')
-      .clear()
-      .type('AD23AD')
+      .enterIntoColorInput('AD23AD')
       .should('have.value', '#AD23AD');
 
     cy.findByRole('button', { name: 'Brand color 2' });
     cy.findByRole('textbox', { name: 'Brand color 2' })
       .should('have.value', '#000')
-      .clear()
-      .type('23AD23')
+      .enterIntoColorInput('23AD23')
       .should('have.value', '#23AD23');
 
     cy.findByRole('button', { name: 'Save' }).click();

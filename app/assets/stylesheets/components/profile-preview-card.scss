@@ -10,6 +10,9 @@
     left: 0;
     font-size: var(--fs-base);
     font-weight: var(--fw-normal);
+
+    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+    overflow-wrap: break-word;
     overflow-wrap: anywhere;
   }
 

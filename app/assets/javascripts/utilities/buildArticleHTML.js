@@ -196,7 +196,12 @@ function buildArticleHTML(article) {
     var isArticle = article.class_name === 'Article';
 
     // We need to be able to set the data-info hash attribute with escaped characters.
-    var name = article.user.name.replace(/[\\"']/g, '\\$&');
+    // NB: Escaping apostrophes with a "/" does not have the desired effect, as we eventually render the name inside a double quoted string ""
+    // To avoid complications with single quotes inside double quotes inside single quotes, we instead replace any apostrophe with its encoded value
+    var name = article.user.name
+      .replace(/'/g, '&apos;')
+      .replace(/[\\"]/g, '\\$&');
+
     var previewCardContent = `
       <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7" data-repositioning-dropdown="true" style="border-top-color: var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
