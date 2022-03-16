@@ -104,11 +104,6 @@ describe('Authentication Section', () => {
         cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Successfully updated settings.').should('be.visible');
-
-        // Page reloaded so need to get a new reference to the form.
-        cy.findByTestId('authSectionForm').as('authSectionForm');
-        cy.get('@authSectionForm').findByText('Authentication').click();
-
         cy.findByLabelText('Facebook enabled').should('be.visible');
       });
     });
