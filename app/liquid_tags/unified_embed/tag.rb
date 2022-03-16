@@ -23,7 +23,10 @@ module UnifiedEmbed
     # @return [LiquidTagBase]
     def self.new(tag_name, link, parse_context)
       stripped_link = ActionController::Base.helpers.strip_tags(link).strip
+
+      # This line handles the few instances where options are passed in with the embed URL
       actual_link = stripped_link.split.length > 1 ? stripped_link.split[0] : stripped_link
+
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
       # If the link is invalid, we raise an error encouraging the user to
