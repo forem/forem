@@ -3,8 +3,7 @@ class GithubTag
     PARTIAL = "liquids/github_readme".freeze
     README_REGEXP = %r{https://github\.com/[\w\-.]{1,39}/[\w\-.]{1,39}/?}
     GITHUB_DOMAIN_REGEXP = %r{.*github.com/}
-    OPTION_NO_README = %w[no-readme noreadme].freeze
-    VALID_OPTIONS = OPTION_NO_README
+    VALID_OPTIONS = %w[no-readme noreadme].freeze
 
     def initialize(input)
       @repository_path, @options = parse_input(input)
@@ -57,7 +56,7 @@ class GithubTag
     end
 
     def show_readme?
-      (options & OPTION_NO_README).none?
+      (options & VALID_OPTIONS).none?
     end
 
     def fetch_readme(repository_path, repository_url)
