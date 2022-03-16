@@ -127,7 +127,7 @@ RSpec.describe Notification, type: :model do
         sidekiq_perform_enqueued_jobs do
           described_class.send_new_follower_notification(user_follows_organization)
         end
-        expect(organization.notifications.last&.user_id).to be(nil)
+        expect(organization.notifications.last&.user_id).to be_nil
       end
 
       it "creates a notification from the follow instance" do

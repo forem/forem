@@ -181,13 +181,13 @@ RSpec.describe Podcast, type: :model do
     it "doesn't determine existing episode if episode link is empty" do
       create(:podcast_episode, podcast: podcast, website_url: "")
       no_link_item = build(:podcast_episode_rss_item, item_attributes.merge(link: ""))
-      expect(podcast.existing_episode(no_link_item)).to eq(nil)
+      expect(podcast.existing_episode(no_link_item)).to be_nil
     end
 
     it "doesn't determine existing episode by non-unique website_url" do
       podcast.update_attribute(:unique_website_url?, false)
       create(:podcast_episode, podcast: podcast, website_url: "https://litealloy.ru")
-      expect(podcast.existing_episode(item)).to eq(nil)
+      expect(podcast.existing_episode(item)).to be_nil
     end
   end
 

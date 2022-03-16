@@ -124,11 +124,11 @@ describe('<ImageUploader />', () => {
     });
   });
 
-  describe('Editor v1, native iOS with imageUpload_disabled support', () => {
+  describe('Editor v1, native iOS with imageUpload support', () => {
     beforeEach(() => {
       global.Runtime = {
         isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload_disabled';
+          return namespace === 'imageUpload';
         }),
       };
     });
@@ -285,11 +285,11 @@ describe('<ImageUploader />', () => {
     });
   });
 
-  describe('Editor v2, native iOS with imageUpload_disabled support', () => {
+  describe('Editor v2, native iOS with imageUpload support', () => {
     beforeEach(() => {
       global.Runtime = {
         isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload_disabled';
+          return namespace === 'imageUpload';
         }),
       };
     });

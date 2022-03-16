@@ -7,7 +7,7 @@ class AdminMenu
 
   ITEMS = Menu.define do
     scope :people, "group-2-line", [
-      item(name: "people", controller: "users"),
+      item(name: "people", controller: "users", parent: "users"),
     ]
 
     scope :content_manager, "dashboard-line", [
@@ -32,7 +32,7 @@ class AdminMenu
     ]
 
     scope :admin_team, "user-line", [
-      item(name: "admin team", controller: "permissions"),
+      item(name: "admin team", controller: "permissions", parent: "permissions"),
     ]
 
     scope :moderation, "mod", [
@@ -40,7 +40,6 @@ class AdminMenu
       item(name: "mods"),
       item(name: "moderator actions ads", controller: "moderator_actions"),
       item(name: "privileged reactions"),
-      # item(name: "interaction limits")
     ]
 
     scope :advanced, "flashlight-line", [

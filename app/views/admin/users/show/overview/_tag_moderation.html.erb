@@ -1,9 +1,9 @@
 <header class="mb-4">
   <h2 class="crayons-subtitle-2 mb-1 flex items-center">
     <%= crayons_icon_tag("mod-filled", title: "Mod", aria_hidden: true, class: "mr-2") %>
-    Tag moderation
+    Tags
   </h2>
-  <p class="color-secondary">Assign tags to this member to moderate. <a href="https://admin.forem.com/docs/managing-your-community/tag-moderator-features" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about tag moderation">Learn more</a></p>
+  <p class="color-secondary">Add a tag that this member can moderate. <a href="https://admin.forem.com/docs/managing-your-community/tag-moderator-features" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about tag moderation">Learn more</a></p>
 </header>
 
 <%= form_with scope: :user, url: admin_user_path(@user), method: :patch, local: true, html: { class: "flex flex-col gap-2" } do |f| %>

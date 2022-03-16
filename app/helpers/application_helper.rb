@@ -182,15 +182,6 @@ module ApplicationHelper
     "/t/#{params[:tag]}"
   end
 
-  def logo_svg
-    if Settings::General.logo_svg.present?
-      Settings::General.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
-    else
-      inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true,
-                                     title: I18n.t("helpers.application_helper.app_logo"))
-    end
-  end
-
   def community_name
     @community_name ||= Settings::Community.community_name
   end
@@ -303,8 +294,8 @@ module ApplicationHelper
     tag.label(content, class: "site-config__label crayons-field__label", for: "#{label_prefix}_#{method}")
   end
 
-  def admin_config_description(content)
-    tag.p(content, class: "crayons-field__description") unless content.empty?
+  def admin_config_description(content, **opts)
+    tag.p(content, class: "crayons-field__description", **opts) unless content.empty?
   end
 
   def role_display_name(role)

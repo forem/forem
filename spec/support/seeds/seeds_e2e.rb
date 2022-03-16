@@ -68,11 +68,6 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 ##############################################################################
 
-# Enable Admin Member View feature flag for tests
-FeatureFlag.enable(:admin_member_view)
-
-##############################################################################
-
 seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user = User.create!(
     name: "Trusted User 1 \\:/",
@@ -98,6 +93,43 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
 end
 
 trusted_user = User.find_by(email: "trusted-user-1@forem.local")
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "punctuated-name-user@forem.local") do
+  user = User.create!(
+    name: "User \"The test breaker\" A'postrophe  \\:/",
+    email: "punctuated-name-user@forem.local",
+    username: "punctuated_name_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  seeder.create_if_doesnt_exist(Article, "slug", "apostrophe-user-slug") do
+    markdown = <<~MARKDOWN
+      ---
+      title:  Punctuation user article
+      published: true
+      ---
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+      #{Faker::Markdown.random}
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+    MARKDOWN
+    Article.create!(
+      body_markdown: markdown,
+      featured: true,
+      show_comments: true,
+      user_id: user.id,
+      slug: "apostrophe-user-slug",
+    )
+  end
+end
 
 ##############################################################################
 

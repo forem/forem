@@ -37,13 +37,6 @@ describe('Manage User Options', () => {
       });
     });
 
-    it(`should verify a user's email address`, () => {
-      openUserOptions(() => {
-        cy.findByRole('button', { name: 'Verify email address' }).click();
-      });
-      verifyAndDismissUserUpdatedMessage('Verification email sent!');
-    });
-
     it(`should export a user's data to an admin`, () => {
       openUserOptions(() => {
         cy.findByRole('button', { name: 'Export data' }).click();
@@ -74,22 +67,22 @@ describe('Manage User Options', () => {
 
     it(`should merge a user's account with another account`, () => {
       openUserOptions(() => {
-        cy.findByRole('button', { name: 'Merge accounts' }).click();
+        cy.findByRole('button', { name: 'Merge users' }).click();
       });
 
       cy.getModal().within(() => {
         cy.findByRole('spinbutton', { name: 'User ID' }).type('3');
-        cy.findByRole('button', { name: 'Merge users' }).click();
+        cy.findByRole('button', { name: 'Merge and delete' }).click();
       });
     });
 
     it(`should banish a user for spam`, () => {
       openUserOptions(() => {
-        cy.findByRole('button', { name: 'Banish for spam' }).click();
+        cy.findByRole('button', { name: 'Banish user' }).click();
       });
 
       cy.getModal().within(() => {
-        cy.findByRole('button', { name: 'Banish User for spam' }).click();
+        cy.findByRole('button', { name: 'Banish Trusted User 1 \\:/' }).click();
       });
 
       verifyAndDismissUserUpdatedMessage(
@@ -104,7 +97,7 @@ describe('Manage User Options', () => {
 
       cy.getModal().within(() => {
         cy.findByRole('button', {
-          name: 'Fully Delete User & All Activity',
+          name: 'Delete now',
         }).click();
       });
 
