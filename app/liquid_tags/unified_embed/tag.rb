@@ -23,12 +23,12 @@ module UnifiedEmbed
     # @return [LiquidTagBase]
     def self.new(tag_name, link, parse_context)
       stripped_link = ActionController::Base.helpers.strip_tags(link).strip
-
+      actual_link = stripped_link.split.length > 1 ? stripped_link.split[0] : stripped_link
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
       # If the link is invalid, we raise an error encouraging the user to
       # check their link and try again.
-      validated_link = validate_link(stripped_link)
+      validated_link = validate_link(actual_link)
       klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
 
       # If the link is valid but doesn't match the registry, we return
@@ -41,7 +41,7 @@ module UnifiedEmbed
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
-      klass.__send__(:new, tag_name, validated_link, parse_context)
+      klass.__send__(:new, tag_name, stripped_link, parse_context)
     end
 
     def self.validate_link(link)
