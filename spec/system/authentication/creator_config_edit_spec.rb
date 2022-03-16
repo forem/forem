@@ -11,7 +11,7 @@ RSpec.describe "Creator config edit", type: :system, js: true do
 
     it "presents all available OAuth providers" do
       visit admin_config_path
-      # find("summary", text: "Authentication").click
+      find("summary", text: "Authentication").click
 
       Authentication::Providers.available_providers.each do |provider|
         element = find(".config-authentication__item--label", text: /#{provider.official_name}/i)
