@@ -6,7 +6,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
       .with(
         headers: {
           Accept: "application/vnd.github.v3+json",
-          Authorization: "Basic MDVkNjdlNjQ2MDJmZDhmOTFkNmM6NjEyYTZiMTc5NTkyOWFkZDc3NTJmNGUwOWU1Mjc2OWIxYjdmMDJjZA==",
+          Authorization: "Basic some-authorization-string",
           "Content-Type": "application/json",
           Expect: "",
           "User-Agent": "Octokit Ruby Gem 4.22.0 (http://localhost:3000)",
