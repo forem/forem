@@ -22,6 +22,8 @@ module UnifiedEmbed
     #
     # @return [LiquidTagBase]
     def self.new(tag_name, link, parse_context)
+      # The 'input' could be a URL, or a URL with added options
+      # (such as in the case of Github repositories)
       input = ActionController::Base.helpers.strip_tags(link).strip
 
       # This line handles the few instances where options are passed in with the embed URL
