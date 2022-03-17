@@ -110,7 +110,7 @@ class AdminMenu
   #
   # @note This method assumes that the last two slugs of the request's path are the relevant
   #       information for determining which menu item to return.  In other words, strongly consider
-  #       the impact of having admin routes who's paths are comprised of more than 3 slugs (.e.g. we
+  #       the impact of having admin routes whose paths are comprised of more than 3 slugs (.e.g. we
   #       assume /admin/:scope_name/:nav_item but be wary of /admin/something/:scope_name/:nav_item
   #       or /admin/:scope_name/something/:nav_item).
   def self.nested_menu_items_from_request(request)
