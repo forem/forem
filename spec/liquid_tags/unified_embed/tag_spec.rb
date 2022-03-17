@@ -12,6 +12,20 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     expect(GistTag).to have_received(:new)
   end
 
+  it "delegates parsing to the link-matching class when there are options", vcr: true do
+    link = "https://github.com/rust-lang/rust"
+
+    allow(GithubTag).to receive(:new).and_call_original
+
+    VCR.use_cassette("github_client_repository_no_readme") do
+      stub_request_head(link)
+      parsed_tag = Liquid::Template.parse("{% embed #{link} noreadme %}")
+
+      expect { parsed_tag.render }.not_to raise_error
+      expect(GithubTag).to have_received(:new)
+    end
+  end
+
   it "raises an error when link 404s" do
     link = "https://takeonrules.com/goes-nowhere"
 
