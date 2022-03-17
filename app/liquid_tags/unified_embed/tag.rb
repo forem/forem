@@ -59,17 +59,14 @@ module UnifiedEmbed
         response
       when Net::HTTPRedirection
         location = response["location"]
-        warn "redirected to #{location}"
-        fetch(location, limit - 1)
+        validate_link!(location)
       else
-        response.value
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
       end
 
       # unless accepted_response?(response)
       #   raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
       # end
-    rescue SocketError
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
     end
 
     def self.accepted_response?(response)
