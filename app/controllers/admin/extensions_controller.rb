@@ -24,7 +24,7 @@ module Admin
           extension.disable
         end
       end
-      flash[:success] = "Feature Flags have been updated"
+      flash[:success] = I18n.t("admin.extensions_controller.update_success")
       redirect_to admin_extensions_path
     end
   end
