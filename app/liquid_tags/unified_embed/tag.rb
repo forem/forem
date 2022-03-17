@@ -47,35 +47,25 @@ module UnifiedEmbed
       klass.__send__(:new, tag_name, stripped_input, parse_context)
     end
 
-    def self.validate_link!(link, limit = 2)
-      raise ArgumentError, "too many HTTP redirects" if limit.zero?
-
+    def self.validate_link!(link)
       uri = URI.parse(link)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
       path = uri.path.presence || "/"
       response = http.request_head(path)
 
-      # puts "\n\n\n\n\n\n#{response.inspect}\n#{response['location']}\n\n\n\n\n\n\n"
-
       case response
       when Net::HTTPSuccess
         response
       when Net::HTTPRedirection
-        location = response["location"]
-        warn "redirected to #{location}"
-        validate_link!(location, limit - 1)
-      else
+        warn "redirected to #{response['location']}"
+      when Net::HTTPNotFound
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
+      else
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
       end
     rescue SocketError
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
-    end
-
-    def self.accepted_response?(response)
-      response.is_a?(Net::HTTPSuccess) ||
-        response.is_a?(Net::HTTPMovedPermanently) ||
-        response.is_a?(Net::HTTPFound)
     end
 
     def self.extract_only_url(input)
