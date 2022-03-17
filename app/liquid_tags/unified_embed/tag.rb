@@ -32,7 +32,7 @@ module UnifiedEmbed
       # If the link is invalid, we raise an error encouraging the user to
       # check their link and try again.
       validate_link!(actual_link)
-      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: input)
+      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_input)
 
       # If the link is valid but doesn't match the registry, we return
       # an "unsupported URL" error. Eventually we shall render a fallback
@@ -44,7 +44,7 @@ module UnifiedEmbed
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
-      klass.__send__(:new, tag_name, input, parse_context)
+      klass.__send__(:new, tag_name, stripped_input, parse_context)
     end
 
     def self.validate_link!(link)
