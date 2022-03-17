@@ -1,6 +1,6 @@
 class SoundcloudTag < LiquidTagBase
   PARTIAL = "liquids/soundcloud".freeze
-  REGISTRY_REGEXP = %r{https?://soundcloud.com}
+  REGISTRY_REGEXP = %r{https?://soundcloud\.com}
 
   def initialize(_tag_name, link, _parse_context)
     super

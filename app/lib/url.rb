@@ -4,8 +4,14 @@ module URL
     ApplicationConfig["APP_PROTOCOL"]
   end
 
+  def self.database_available?
+    ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?("site_configs")
+  end
+
+  private_class_method :database_available?
+
   def self.domain
-    if Rails.application&.initialized? && Settings::General.respond_to?(:app_domain)
+    if database_available?
       Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
@@ -16,7 +22,7 @@ module URL
     base_url = "#{protocol}#{domain}"
     return base_url unless uri
 
-    URI.parse(base_url).merge(uri).to_s
+    Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
 
   # Creates an article URL

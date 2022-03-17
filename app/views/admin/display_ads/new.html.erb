@@ -1,7 +1,7 @@
-<h2 class="crayons-title mb-6">Make a new Display Ad:</h2>
+<h2 class="crayons-title mb-4">Make a new Display Ad</h2>
 <div class="crayons-card p-6">
   <%= form_for([:admin, @display_ad], method: :post) do %>
     <%= render "form" %>
-    <%= submit_tag "Save Display Ad", class: "btn btn-primary" %>
+    <%= submit_tag "Save Display Ad", class: "c-btn c-btn--primary" %>
   <% end %>
 </div>

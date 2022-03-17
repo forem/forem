@@ -13,6 +13,14 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   end
 
   describe ".call" do
+    it "ensures that we only fetch users who can create articles", vcr: { cassette_name: "feeds_import" } do
+      allow(ArticlePolicy).to receive(:scope_users_authorized_to_action).and_call_original
+
+      described_class.call
+
+      expect(ArticlePolicy).to have_received(:scope_users_authorized_to_action).with(users_scope: User, action: :create)
+    end
+
     # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
     it "fetch only articles from a feed_url", vcr: { cassette_name: "feeds_import" } do
       num_articles = described_class.call
@@ -104,7 +112,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
     context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do
       # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
       it "accepts a subset of users" do
-        num_articles = described_class.call(users: User.where(id: Users::Setting.with_feed.select(:user_id)).limit(1))
+        num_articles = described_class.call(
+          users_scope: User.where(id: Users::Setting.with_feed.select(:user_id)).limit(1),
+        )
 
         expect(num_articles).to eq(10)
       end
@@ -114,7 +124,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
         user.setting.update(feed_url: nil)
 
         # rubocop:disable Layout/LineLength
-        expect(described_class.call(users: User.where(id: Users::Setting.where(feed_url: nil).select(:user_id)))).to eq(0)
+        expect(described_class.call(users_scope: User.where(id: Users::Setting.where(feed_url: nil).select(:user_id)))).to eq(0)
         # rubocop:enable Layout/LineLength
       end
     end
@@ -188,7 +198,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       user.setting.update(feed_url: "https://medium.com/feed/@dvirsegal")
 
       expect do
-        described_class.call(users: User.where(id: user.id))
+        described_class.call(users_scope: User.where(id: user.id))
       end.to change(user.articles, :count).by(10)
     end
 
@@ -197,7 +207,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       user.setting.update(feed_url: "https://swimburger.net/atom.xml")
 
       expect do
-        described_class.call(users: User.where(id: user.id))
+        described_class.call(users_scope: User.where(id: user.id))
       end.to change(user.articles, :count).by(10)
 
       body_markdown = user.articles.last.body_markdown
@@ -215,7 +225,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       rss_feed_user1 = Users::Setting.find_by(feed_url: link).user
       rss_feed_user2 = create(:user)
       rss_feed_user2.setting.update!(feed_url: link)
-      expect { described_class.call(users: User.where(id: Users::Setting.where(feed_url: link).select(:user_id))) }
+      expect do
+        described_class.call(users_scope: User.where(id: Users::Setting.where(feed_url: link).select(:user_id)))
+      end
         .to change(rss_feed_user1.articles, :count).by(10)
         .and change(rss_feed_user2.articles, :count).by(10)
     end
@@ -225,7 +237,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
       rss_feed_user1.setting.update!(feed_mark_canonical: true)
       rss_feed_user2 = create(:user)
       rss_feed_user2.setting.update!(feed_url: link, feed_mark_canonical: true)
-      expect { described_class.call(users: User.where(id: Users::Setting.where(feed_url: link).select(:user_id))) }
+      expect do
+        described_class.call(users_scope: User.where(id: Users::Setting.where(feed_url: link).select(:user_id)))
+      end
         .to change(rss_feed_user1.articles, :count).by(10)
         .and change(rss_feed_user2.articles, :count).by(10)
     end

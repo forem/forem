@@ -342,3 +342,52 @@ Cypress.Commands.add('createResponseTemplate', ({ title, content }) => {
     `utf8=%E2%9C%93&response_template%5Btitle%5D=${encodedTitle}&response_template%5Bcontent%5D=${encodedContent}`,
   );
 });
+
+/**
+ * Enables a feature flag.
+ *
+ * @param {string} flag The name of the feature flag to enable.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for enabling a feature flag.
+ */
+Cypress.Commands.add('enableFeatureFlag', (flag) => {
+  return cy.request('POST', '/api/feature_flags', { flag });
+});
+
+/**
+ * Disables a feature flag.
+ *
+ * @param {string} flag The name of the feature flag to disable.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for disabling a feature flag.
+ */
+Cypress.Commands.add('disableFeatureFlag', (flag) => {
+  return cy.request('DELETE', `/api/feature_flags?flag=${flag}`);
+});
+
+/**
+ * Retrieves the modal in a Forem instance.
+ *
+ * @returns {Cypress.Chainable<HTMLElement>} A reference to a modal dialog.
+ */
+Cypress.Commands.add('getModal', () => {
+  return cy.findByRole('dialog', { name: 'modal' });
+});
+
+/**
+ * The underlying library we use for the ColorPicker can often skip characters when using the `type()` command.
+ * This is due to the validation and state management under the hood, and the speed of input entry when using `type()`.
+ *
+ * This helper command instead uses `invoke` to make sure the entire color is entered correctly without flake.
+ *
+ * @param {string} color The color to enter
+ *
+ * @returns {Cypress.Chainable<HTMLElement>} A reference to the color input.
+ */
+Cypress.Commands.add(
+  'enterIntoColorInput',
+  { prevSubject: true },
+  (subject, color) => {
+    return cy.wrap(subject).invoke('val', color).trigger('input');
+  },
+);

@@ -2,57 +2,60 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/7653
+    uri: https://api.github.com/repos/forem/forem/issues/7653
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
       Accept:
       - application/vnd.github.v3+json
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=3f8011ec-0d23-49d3-9d19-3acdb553274a,parent_id=e31110e6-dc1e-4884-b01b-ee15846d4236,context=e30=
+      - 1;dataset=,trace_id=29114a0e1d9fac2b9c31c0fd9221c015,parent_id=fc35fee94a2cbb55,context=e30=
       Expect:
       - ''
   response:
     status:
       code: 200
-      message: OK
+      message:
     headers:
+      Server:
+      - GitHub.com
       Date:
-      - Sat, 02 May 2020 23:54:43 GMT
+      - Mon, 07 Feb 2022 17:25:25 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
-      - '4233'
-      Server:
-      - GitHub.com
-      Status:
-      - 200 OK
-      X-Ratelimit-Limit:
-      - '5000'
-      X-Ratelimit-Remaining:
-      - '4980'
-      X-Ratelimit-Reset:
-      - '1588465849'
+      - '4474'
       Cache-Control:
       - public, max-age=60, s-maxage=60
       Vary:
       - Accept
       - Accept-Encoding, Accept, X-Requested-With
       Etag:
-      - '"0494d7edd146d9a6161dabf46f66cf6e"'
+      - '"da1ce5f4ec8dd49faa549bbeaa8f3b647de39fc035310a4f30d2beab2be22167"'
       Last-Modified:
-      - Fri, 01 May 2020 21:47:35 GMT
+      - Mon, 31 Jan 2022 19:53:28 GMT
       X-Github-Media-Type:
       - github.v3; format=json
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4988'
+      X-Ratelimit-Reset:
+      - '1644256079'
+      X-Ratelimit-Used:
+      - '12'
+      X-Ratelimit-Resource:
+      - core
       Access-Control-Expose-Headers:
       - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
-        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
-        X-GitHub-Media-Type, Deprecation, Sunset
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -62,19 +65,19 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
-      - 1; mode=block
+      - '0'
       Referrer-Policy:
       - origin-when-cross-origin, strict-origin-when-cross-origin
       Content-Security-Policy:
       - default-src 'none'
       X-Github-Request-Id:
-      - F3AA:4B32:24AC63:32E837:5EAE0842
+      - CA05:7633:B1FF6:1ADB73:62015605
     body:
       encoding: ASCII-8BIT
-      string: '{"url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7653","repository_url":"https://api.github.com/repos/thepracticaldev/dev.to","labels_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7653/labels{/name}","comments_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7653/comments","events_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7653/events","html_url":"https://github.com/thepracticaldev/dev.to/pull/7653","id":610931120,"node_id":"MDExOlB1bGxSZXF1ZXN0NDEyMjcxMzIy","number":7653,"title":"Log
-        RateLimit hits to Datadog for Better Reporting","user":{"login":"mstruve","id":1813380,"node_id":"MDQ6VXNlcjE4MTMzODA=","avatar_url":"https://avatars3.githubusercontent.com/u/1813380?v=4","gravatar_id":"","url":"https://api.github.com/users/mstruve","html_url":"https://github.com/mstruve","followers_url":"https://api.github.com/users/mstruve/followers","following_url":"https://api.github.com/users/mstruve/following{/other_user}","gists_url":"https://api.github.com/users/mstruve/gists{/gist_id}","starred_url":"https://api.github.com/users/mstruve/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mstruve/subscriptions","organizations_url":"https://api.github.com/users/mstruve/orgs","repos_url":"https://api.github.com/users/mstruve/repos","events_url":"https://api.github.com/users/mstruve/events{/privacy}","received_events_url":"https://api.github.com/users/mstruve/received_events","type":"User","site_admin":false},"labels":[{"id":1123882148,"node_id":"MDU6TGFiZWwxMTIzODgyMTQ4","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/PR:%20merged","name":"PR:
+      string: '{"url":"https://api.github.com/repos/forem/forem/issues/7653","repository_url":"https://api.github.com/repos/forem/forem","labels_url":"https://api.github.com/repos/forem/forem/issues/7653/labels{/name}","comments_url":"https://api.github.com/repos/forem/forem/issues/7653/comments","events_url":"https://api.github.com/repos/forem/forem/issues/7653/events","html_url":"https://github.com/forem/forem/pull/7653","id":610931120,"node_id":"MDExOlB1bGxSZXF1ZXN0NDEyMjcxMzIy","number":7653,"title":"Log
+        RateLimit hits to Datadog for Better Reporting","user":{"login":"mstruve","id":1813380,"node_id":"MDQ6VXNlcjE4MTMzODA=","avatar_url":"https://avatars.githubusercontent.com/u/1813380?v=4","gravatar_id":"","url":"https://api.github.com/users/mstruve","html_url":"https://github.com/mstruve","followers_url":"https://api.github.com/users/mstruve/followers","following_url":"https://api.github.com/users/mstruve/following{/other_user}","gists_url":"https://api.github.com/users/mstruve/gists{/gist_id}","starred_url":"https://api.github.com/users/mstruve/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mstruve/subscriptions","organizations_url":"https://api.github.com/users/mstruve/orgs","repos_url":"https://api.github.com/users/mstruve/repos","events_url":"https://api.github.com/users/mstruve/events{/privacy}","received_events_url":"https://api.github.com/users/mstruve/received_events","type":"User","site_admin":false},"labels":[{"id":1123882148,"node_id":"MDU6TGFiZWwxMTIzODgyMTQ4","url":"https://api.github.com/repos/forem/forem/labels/PR:%20merged","name":"PR:
         merged","color":"786DBE","default":false,"description":"bot applied label
-        for PR''s that are merged"}],"state":"closed","locked":false,"assignee":null,"assignees":[],"milestone":null,"comments":2,"created_at":"2020-05-01T19:40:23Z","updated_at":"2020-05-01T21:47:35Z","closed_at":"2020-05-01T21:47:32Z","author_association":"COLLABORATOR","pull_request":{"url":"https://api.github.com/repos/thepracticaldev/dev.to/pulls/7653","html_url":"https://github.com/thepracticaldev/dev.to/pull/7653","diff_url":"https://github.com/thepracticaldev/dev.to/pull/7653.diff","patch_url":"https://github.com/thepracticaldev/dev.to/pull/7653.patch"},"body":"\r\n##
+        for PR''s that are merged"}],"state":"closed","locked":false,"assignee":null,"assignees":[],"milestone":null,"comments":2,"created_at":"2020-05-01T19:40:23Z","updated_at":"2020-05-01T21:47:35Z","closed_at":"2020-05-01T21:47:32Z","author_association":"CONTRIBUTOR","active_lock_reason":null,"draft":false,"pull_request":{"url":"https://api.github.com/repos/forem/forem/pulls/7653","html_url":"https://github.com/forem/forem/pull/7653","diff_url":"https://github.com/forem/forem/pull/7653.diff","patch_url":"https://github.com/forem/forem/pull/7653.patch","merged_at":"2020-05-01T21:47:32Z"},"body":"\r\n##
         What type of PR is this? (check all applicable)\r\n- [x] Feature\r\n- [x]
         Optimization\r\n\r\n## Description\r\nRather than sending (almost) every single
         rate limit hit to Slack, lets send a metric to Datadog that we can track and
@@ -86,9 +89,8 @@ http_interactions:
         rate limits rather than every single time which sometimes is not concerning
         if they only hit it once, like a pentester trying to see if a rate limiter
         exists. \r\n\r\n## Related Tickets & Documents\r\nhttps://github.com/thepracticaldev/dev.to/projects/9#card-37397577\r\n\r\n##
-        Added tests?\r\n- [x] yes\r\n\r\n![alt_text](https://media1.giphy.com/media/l2YWsOymHDRFYqyAM/giphy.gif)\r\n","closed_by":{"login":"mstruve","id":1813380,"node_id":"MDQ6VXNlcjE4MTMzODA=","avatar_url":"https://avatars3.githubusercontent.com/u/1813380?v=4","gravatar_id":"","url":"https://api.github.com/users/mstruve","html_url":"https://github.com/mstruve","followers_url":"https://api.github.com/users/mstruve/followers","following_url":"https://api.github.com/users/mstruve/following{/other_user}","gists_url":"https://api.github.com/users/mstruve/gists{/gist_id}","starred_url":"https://api.github.com/users/mstruve/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mstruve/subscriptions","organizations_url":"https://api.github.com/users/mstruve/orgs","repos_url":"https://api.github.com/users/mstruve/repos","events_url":"https://api.github.com/users/mstruve/events{/privacy}","received_events_url":"https://api.github.com/users/mstruve/received_events","type":"User","site_admin":false}}'
-    http_version: null
-  recorded_at: Sat, 02 May 2020 23:54:43 GMT
+        Added tests?\r\n- [x] yes\r\n\r\n![alt_text](https://media1.giphy.com/media/l2YWsOymHDRFYqyAM/giphy.gif)\r\n","closed_by":{"login":"mstruve","id":1813380,"node_id":"MDQ6VXNlcjE4MTMzODA=","avatar_url":"https://avatars.githubusercontent.com/u/1813380?v=4","gravatar_id":"","url":"https://api.github.com/users/mstruve","html_url":"https://github.com/mstruve","followers_url":"https://api.github.com/users/mstruve/followers","following_url":"https://api.github.com/users/mstruve/following{/other_user}","gists_url":"https://api.github.com/users/mstruve/gists{/gist_id}","starred_url":"https://api.github.com/users/mstruve/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mstruve/subscriptions","organizations_url":"https://api.github.com/users/mstruve/orgs","repos_url":"https://api.github.com/users/mstruve/repos","events_url":"https://api.github.com/users/mstruve/events{/privacy}","received_events_url":"https://api.github.com/users/mstruve/received_events","type":"User","site_admin":false},"reactions":{"url":"https://api.github.com/repos/forem/forem/issues/7653/reactions","total_count":0,"+1":0,"-1":0,"laugh":0,"hooray":0,"confused":0,"heart":0,"rocket":0,"eyes":0},"timeline_url":"https://api.github.com/repos/forem/forem/issues/7653/timeline","performed_via_github_app":null}'
+  recorded_at: Mon, 07 Feb 2022 17:25:25 GMT
 - request:
     method: post
     uri: https://api.github.com/markdown
@@ -108,42 +110,45 @@ http_interactions:
         Added tests?\r\n- [x] yes\r\n\r\n![alt_text](https://media1.giphy.com/media/l2YWsOymHDRFYqyAM/giphy.gif)\r\n"}'
     headers:
       User-Agent:
-      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      - Octokit Ruby Gem 4.22.0 (http://localhost:3000)
       Accept:
       - application/vnd.github.raw
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=40a6d376-ddbd-4054-8f13-16983a5f5d45,parent_id=8229768b-93f5-4952-8408-fec5650f68a9,context=e30=
+      - 1;dataset=,trace_id=c98be95af09d867f337239da9e08fb5d,parent_id=387598550588eaa9,context=e30=
       Expect:
       - ''
   response:
     status:
       code: 200
-      message: OK
+      message:
     headers:
+      Server:
+      - GitHub.com
       Date:
-      - Sat, 02 May 2020 23:54:44 GMT
+      - Mon, 07 Feb 2022 17:25:26 GMT
       Content-Type:
       - text/html;charset=utf-8
       Content-Length:
-      - '2331'
-      Server:
-      - GitHub.com
-      Status:
-      - 200 OK
+      - '2379'
+      X-Commonmarker-Version:
+      - 0.23.2
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4979'
+      - '4987'
       X-Ratelimit-Reset:
-      - '1588465848'
-      X-Commonmarker-Version:
-      - 0.21.0
+      - '1644256079'
+      X-Ratelimit-Used:
+      - '13'
+      X-Ratelimit-Resource:
+      - core
       Access-Control-Expose-Headers:
       - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
-        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
-        X-GitHub-Media-Type, Deprecation, Sunset
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -153,7 +158,7 @@ http_interactions:
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
-      - 1; mode=block
+      - '0'
       Referrer-Policy:
       - origin-when-cross-origin, strict-origin-when-cross-origin
       Content-Security-Policy:
@@ -161,7 +166,7 @@ http_interactions:
       Vary:
       - Accept-Encoding, Accept, X-Requested-With
       X-Github-Request-Id:
-      - F3AB:29D2:192531:22748D:5EAE0843
+      - CA06:5426:149935:27EC67:62015606
     body:
       encoding: ASCII-8BIT
       string: |
@@ -183,7 +188,6 @@ http_interactions:
         <ul>
         <li>[x] yes</li>
         </ul>
-        <p><a href="https://camo.githubusercontent.com/3972d99d348007c519ae82451b8c52332933b5f4/68747470733a2f2f6d65646961312e67697068792e636f6d2f6d656469612f6c325957734f796d48445246597179414d2f67697068792e676966" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/3972d99d348007c519ae82451b8c52332933b5f4/68747470733a2f2f6d65646961312e67697068792e636f6d2f6d656469612f6c325957734f796d48445246597179414d2f67697068792e676966" alt="alt_text" data-canonical-src="https://media1.giphy.com/media/l2YWsOymHDRFYqyAM/giphy.gif" style="max-width:100%;"></a></p>
-    http_version: null
-  recorded_at: Sat, 02 May 2020 23:54:44 GMT
-recorded_with: VCR 5.1.0
+        <p><a href="https://camo.githubusercontent.com/c88160a7f2bca8e29fdf15740428ef3e7941128a3eaee9c222291b1d82fcb56e/68747470733a2f2f6d65646961312e67697068792e636f6d2f6d656469612f6c325957734f796d48445246597179414d2f67697068792e676966" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/c88160a7f2bca8e29fdf15740428ef3e7941128a3eaee9c222291b1d82fcb56e/68747470733a2f2f6d65646961312e67697068792e636f6d2f6d656469612f6c325957734f796d48445246597179414d2f67697068792e676966" alt="alt_text" data-canonical-src="https://media1.giphy.com/media/l2YWsOymHDRFYqyAM/giphy.gif" style="max-width:100%;"></a></p>
+  recorded_at: Mon, 07 Feb 2022 17:25:26 GMT
+recorded_with: VCR 6.0.0

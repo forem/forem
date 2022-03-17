@@ -448,4 +448,28 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(generate_and_parse_markdown(codeblock)).to include("%}")
     end
   end
+
+  context "with additional_liquid_tag_options" do
+    it "passes those options to Liquid::Template.parse" do
+      # rubocop:disable RSpec/VerifiedDoubles
+      #
+      # I don't want to delve into the implementation details of liquid to test what the parse
+      # method's return value.
+      parse_response = double("parse_response", render: "liquified!")
+      # rubocop:enable RSpec/VerifiedDoubles
+
+      allow(Liquid::Template).to receive(:parse).and_return(parse_response)
+      described_class.new(
+        "{% liquid example %}",
+        source: :my_source,
+        user: :my_user,
+        policy: :my_policy,
+      ).finalize
+      expect(Liquid::Template).to have_received(:parse)
+        .with(
+          "<p>{% liquid example %}</p>\n",
+          { source: :my_source, policy: :my_policy, user: :my_user },
+        )
+    end
+  end
 end

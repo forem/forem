@@ -63,12 +63,14 @@
       </a>
     </li>
 
+    <%- if Listing.feature_enabled? %>
     <li>
       <a class="crayons-link crayons-link--block" href="/listings/dashboard" data-no-instant>
         <%= t("views.dashboard.actions.listings") %>
         <%= crayons_icon_tag("external-link", class: "ml-1") %>
       </a>
     </li>
+    <%- end %>
 
     <li>
       <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_path %>">
@@ -84,7 +86,7 @@
     <% end %>
   <% end %>
 
-  <% if policy(:video).new? && policy(:video).enabled? %>
+  <% if policy(:video).new? %>
     <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant><%= t("views.dashboard.actions.upload") %>
     </a>
   <% end %>

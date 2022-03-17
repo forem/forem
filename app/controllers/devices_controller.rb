@@ -23,7 +23,7 @@ class DevicesController < ApplicationController
   def destroy
     device = Device.find_by(unauthenticated_params)
     unless device
-      render json: { error: "Not Found", status: 404 }, status: :not_found
+      render json: { error: I18n.t("devices_controller.not_found"), status: 404 }, status: :not_found
       return
     end
 
