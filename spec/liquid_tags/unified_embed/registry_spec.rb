@@ -38,6 +38,7 @@ RSpec.describe UnifiedEmbed::Registry do
 
     valid_instagram_post_url_formats = [
       "https://www.instagram.com/p/CXgzXWXroHK/",
+      "https://www.instagram.com/p/CXgzXWXroHK/?utm_source=somesource",
       "https://instagram.com/p/CXgzXWXroHK/",
       "http://www.instagram.com/p/CXgzXWXroHK/",
       "www.instagram.com/p/CXgzXWXroHK/",
@@ -46,6 +47,7 @@ RSpec.describe UnifiedEmbed::Registry do
 
     valid_instagram_profile_url_formats = [
       "https://www.instagram.com/instagram/",
+      "https://www.instagram.com/instagram/?utm_source=somesource",
       "https://instagram.com/instagram/",
       "http://www.instagram.com/instagram/",
       "www.instagram.com/instagram/",
