@@ -93,7 +93,7 @@ class AdminMenu
     end
 
     # Because we're using each loops, with short-circuiting returns, we need to make sure we don't
-    # retrun the results of `items[:children].each`, which will be `items[:children]`.
+    # return the results of `items[:children].each`, which will be `items[:children]`.
     nil
   end
 
