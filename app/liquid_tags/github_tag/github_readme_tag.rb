@@ -56,7 +56,7 @@ class GithubTag
     end
 
     def show_readme?
-      options.any?
+      options.none?
     end
 
     def fetch_readme(repository_path, repository_url)
