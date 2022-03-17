@@ -16,18 +16,16 @@ module UnifiedEmbed
     #
     # @param tag_name [String] in the UI, this was liquid tag name
     #        (e.g., `{% tag_name link %}`)
-    # @param link [String] the URL and additional options for that
-    #        particular service.
+    # @param input [String] the URL and additional options for that
+    #        particular embed.
     # @param parse_context [Liquid::ParseContext]
     #
     # @return [LiquidTagBase]
-    def self.new(tag_name, link, parse_context)
-      # The 'input' could be a URL, or a URL with added options
-      # (such as in the case of Github repositories)
-      input = ActionController::Base.helpers.strip_tags(link).strip
+    def self.new(tag_name, input, parse_context)
+      stripped_input = ActionController::Base.helpers.strip_tags(input).strip
 
       # This line handles the few instances where options are passed in with the embed URL
-      actual_link = input.split.length > 1 ? input.split[0] : input
+      actual_link = stripped_input.split.length > 1 ? stripped_input.split[0] : stripped_input
 
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
