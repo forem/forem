@@ -27,7 +27,7 @@ class InstagramTag < LiquidTagBase
     match = pattern_match_for(input, REGEXP_OPTIONS)
     raise StandardError, I18n.t("liquid_tags.instagram_tag.invalid_instagram_id") unless match
 
-    if match_has_named_capture_group?(match, "handle")
+    if match_has_named_capture_group?(match, "handle") && match[:handle].present?
       return "#{match[:handle]}/embed/"
     end
 

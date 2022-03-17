@@ -47,12 +47,16 @@ module UnifiedEmbed
       klass.__send__(:new, tag_name, stripped_input, parse_context)
     end
 
-    def self.validate_link!(link)
+    def self.validate_link!(link, limit = 2)
+      raise ArgumentError, "too many HTTP redirects" if limit.zero?
+
       uri = URI.parse(link)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
       path = uri.path.presence || "/"
       response = http.request_head(path)
+
+      # puts "\n\n\n\n\n\n#{response.inspect}\n#{response['location']}\n\n\n\n\n\n\n"
 
       case response
       when Net::HTTPSuccess
@@ -60,14 +64,10 @@ module UnifiedEmbed
       when Net::HTTPRedirection
         location = response["location"]
         warn "redirected to #{location}"
-        fetch(location, limit - 1)
+        validate_link!(location, limit - 1)
       else
-        response.value
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
       end
-
-      # unless accepted_response?(response)
-      #   raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
-      # end
     rescue SocketError
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
     end
