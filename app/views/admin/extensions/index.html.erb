@@ -6,7 +6,7 @@
           <%= f.check_box extension.feature_flag_name, class: "crayons-checkbox", checked: extension.enabled? %>
           <%= f.label extension.feature_flag_name, extension.name, class: "crayons-field__label" %>
         </div>
-        <p class="pl-7 crayons-field__description">
+        <p id="<%= extension.feature_flag_name %>-description" class="pl-7 crayons-field__description">
           <%= sanitize extension.description %>
         </p>
       </div>
