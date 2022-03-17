@@ -40,7 +40,7 @@ xml.rss(:version => "2.0",
     articles.each do |article|
       xml.item do
         xml.title article.title
-        xml.tag!("dc:creator") { user.instance_of?(User) ? user.name : article.user.name }
+        xml.tag!("dc:creator", user.instance_of?(User) ? user.name : article.user.name)
         xml.pubDate article.published_at.to_s(:rfc822) if article.published_at
         xml.link app_url(article.path)
         xml.guid app_url(article.path)
