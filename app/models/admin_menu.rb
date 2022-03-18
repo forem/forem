@@ -50,6 +50,7 @@ class AdminMenu
              item(name: "tools"),
              item(name: "vault secrets", controller: "secrets"),
              item(name: "data update scripts", visible: false),
+             item(name: "extensions", controller: "extensions"),
            ]),
     ]
 
