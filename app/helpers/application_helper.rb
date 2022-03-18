@@ -2,6 +2,18 @@ module ApplicationHelper
   # rubocop:disable Style/OpenStructUse, Performance/OpenStruct
   USER_COLORS = ["#19063A", "#dce9f3"].freeze
 
+  def resource_name
+    :user
+  end
+
+  def resource
+    @resource ||= User.new
+  end
+
+  def devise_mapping
+    @devise_mapping ||= Devise.mappings[:user]
+  end
+
   DELETED_USER = OpenStruct.new(
     id: nil,
     darker_color: Color::CompareHex.new(USER_COLORS).brightness,

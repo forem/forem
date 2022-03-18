@@ -1,7 +1,8 @@
 class RegistrationsController < Devise::RegistrationsController
   prepend_before_action :require_no_authentication, only: []
-
+  
   def new
+    @user = User.new
     return redirect_to root_path(signin: "true") if user_signed_in?
 
     if URI(request.referer || "").host == URI(request.base_url).host

@@ -8,13 +8,15 @@ Rails.application.routes.draw do
     registrations: "registrations",
     invitations: "invitations",
     passwords: "passwords",
-    confirmations: "confirmations"
+    confirmations: "confirmations",
+    sessions: "sessions"
   }
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
+    post "/signin", to: "sessions#create", as: :user_session_new
   end
 
   get "/r/mobile", to: "deep_links#mobile"
