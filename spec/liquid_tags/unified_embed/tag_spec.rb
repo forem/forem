@@ -26,13 +26,36 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end
   end
 
-  it "raises an error when link 404s" do
+  it "doesn't raise an error when link redirects" do
+    link = "https://www.instagram.com/p/Ca2MhbCrK_t/"
+
+    expect do
+      stub_request_head(link, 301)
+      Liquid::Template.parse("{% embed #{link} %}")
+    end.not_to raise_error
+
+    expect do
+      stub_request_head(link, 302)
+      Liquid::Template.parse("{% embed #{link} %}")
+    end.not_to raise_error
+  end
+
+  it "raises an error when link cannot be found" do
     link = "https://takeonrules.com/goes-nowhere"
 
     expect do
       stub_request_head(link, 404)
       Liquid::Template.parse("{% embed #{link} %}")
     end.to raise_error(StandardError, "URL provided was not found; please check and try again")
+  end
+
+  it "raises an error when link returns unhandled http status" do
+    link = "https://takeonrules.com/unhandled-response"
+
+    expect do
+      stub_request_head(link, 405)
+      Liquid::Template.parse("{% embed #{link} %}")
+    end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
   end
 
   it "raises an error when no link-matching class is found" do

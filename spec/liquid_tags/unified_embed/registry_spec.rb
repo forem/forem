@@ -36,12 +36,22 @@ RSpec.describe UnifiedEmbed::Registry do
       "https://themobilist.medium.com/is-universal-basic-mobility-the-route-to-a-sustainable-c-b18e1e2d014c",
     ]
 
-    valid_instagram_url_formats = [
+    valid_instagram_post_url_formats = [
       "https://www.instagram.com/p/CXgzXWXroHK/",
+      "https://www.instagram.com/p/CXgzXWXroHK/?utm_source=somesource",
       "https://instagram.com/p/CXgzXWXroHK/",
       "http://www.instagram.com/p/CXgzXWXroHK/",
       "www.instagram.com/p/CXgzXWXroHK/",
       "instagram.com/p/CXgzXWXroHK/",
+    ]
+
+    valid_instagram_profile_url_formats = [
+      "https://www.instagram.com/instagram/",
+      "https://www.instagram.com/instagram/?utm_source=somesource",
+      "https://instagram.com/instagram/",
+      "http://www.instagram.com/instagram/",
+      "www.instagram.com/instagram/",
+      "instagram.com/instagram/",
     ]
 
     valid_kotlin_url_formats = [
@@ -179,8 +189,15 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
-    it "returns InstagramTag for a valid instagram url", :aggregate_failures do
-      valid_instagram_url_formats.each do |url|
+    it "returns InstagramTag for a valid instagram post url", :aggregate_failures do
+      valid_instagram_post_url_formats.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(InstagramTag)
+      end
+    end
+
+    it "returns InstagramTag for a valid instagram profile url", :aggregate_failures do
+      valid_instagram_profile_url_formats.each do |url|
         expect(described_class.find_liquid_tag_for(link: url))
           .to eq(InstagramTag)
       end
