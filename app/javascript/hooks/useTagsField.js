@@ -7,7 +7,7 @@ import { fetchSearch } from '@utilities/search';
  * @param {string} defaultValue The default value for the tags field, needs to be a comma separated string
  * @param {Function} onInput The function to call when the input changes
  * @returns {Object}
- * An object containing default selections, top tags, fetchSuggestions function, and syncSelections function
+ * An object containing `defaultSelections` list, `fetchSuggestions` function, and `syncSelections` function
  */
 export const useTagsField = ({ defaultValue, onInput }) => {
   const [defaultSelections, setDefaultSelections] = useState([]);
