@@ -51,13 +51,19 @@ class Tweet < ApplicationRecord
     end
 
     def retrieve_and_save_tweet(status_id)
-      status = TwitterClient::Client.status(status_id, tweet_mode: "extended")
+      status = get_status(status_id, "extended")
       create_tweet_from_api_status(status)
+    end
+
+    def get_status(status_id, tweet_mode = nil)
+      TwitterClient::Client.status(status_id, tweet_mode: tweet_mode)
+    rescue StandardError => e
+      raise e, I18n.t("models.tweet.authentication_error")
     end
 
     def create_tweet_from_api_status(status)
       status = if status.retweeted_status.present?
-                 TwitterClient::Client.status(status.retweeted_status.id.to_s)
+                 get_status(status.retweeted_status.id.to_s)
                else
                  status
                end
