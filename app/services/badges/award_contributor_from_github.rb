@@ -1,11 +1,11 @@
 module Badges
   class AwardContributorFromGithub
     BADGE_SLUGS = {
-      "dev-contributor": 1
-      # "dev-contributor-bronze": 4,
-      # "dev-contributor-silver": 8,
-      # "dev-contributor-gold": 16,
-      # "dev-contributor-platinum": 32
+      "dev-contributor": 1,
+      "dev-contributor-bronze": 4,
+      "dev-contributor-silver": 8,
+      "dev-contributor-gold": 16,
+      "dev-contributor-platinum": 32
     }.freeze
 
     REPOSITORIES = [
@@ -27,8 +27,7 @@ module Badges
     def call
       REPOSITORIES.each do |repo|
         award_single_commit_contributors(repo)
-        # TODO: @maestromac enable this line when appropriate
-        # award_multi_commit_contributors(repo)
+        award_multi_commit_contributors(repo)
       end
     end
 
