@@ -2,8 +2,8 @@ import { h } from 'preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useTagsField } from '../../hooks/useTagsField';
-import { TagAutocompleteOption } from '../../article-form/components/TagAutocompleteOption';
-import { TagAutocompleteSelection } from '../../article-form/components/TagAutocompleteSelection';
+import { TagAutocompleteOption } from '../../crayons/MultiSelectAutocomplete/TagAutocompleteOption';
+import { TagAutocompleteSelection } from '../../crayons/MultiSelectAutocomplete/TagAutocompleteSelection';
 import { MultiSelectAutocomplete } from '@crayons';
 
 export const ListingTagsField = ({
@@ -50,32 +50,26 @@ export const ListingTagsField = ({
     [],
   );
 
-  const { defaultSelections, topTags, fetchSuggestions, syncSelections } =
-    useTagsField({ defaultValue, onInput });
-  const [topTagsWithAdditional, setTopTagsWithAdditional] = useState([
-    ...topTags,
-  ]);
+  const { defaultSelections, fetchSuggestions, syncSelections } = useTagsField({
+    defaultValue,
+    onInput,
+  });
+  const [suggestedTags, setSuggestedTags] = useState([]);
 
   useEffect(() => {
-    if (listingState && listingState.additionalTags) {
-      const newTagsForSelectedCategory =
-        listingState.additionalTags[categorySlug] || [];
-      // Push in this way: { name: 'remote' }
-      const formattedNewTagsForSelectedCategory =
-        newTagsForSelectedCategory.map((name) => ({ name }));
-      setTopTagsWithAdditional([
-        ...topTags,
-        ...formattedNewTagsForSelectedCategory,
-      ]);
-    }
-  }, [topTags, listingState, categorySlug]);
+    // Push in this way: { name: 'remote' }
+    const categorySuggestedTags = (
+      listingState.additionalTags[categorySlug] || []
+    ).map((name) => ({ name }));
+    setSuggestedTags(categorySuggestedTags);
+  }, [listingState, categorySlug]);
 
   const fetchSuggestionsWithAdditionalTags = async (searchTerm) => {
     const suggestionsResult = await fetchSuggestions(searchTerm);
     const suggestedNames = suggestionsResult.map((t) => t.name);
 
-    // Search in the topTagsWithAdditional array
-    const additionalItems = topTagsWithAdditional.filter((t) =>
+    // Search in the suggestedTags array
+    const additionalItems = suggestedTags.filter((t) =>
       t.name.startsWith(searchTerm),
     );
     // Remove duplicates
@@ -83,6 +77,12 @@ export const ListingTagsField = ({
       if (!suggestedNames.includes(t.name)) {
         suggestionsResult.push(t);
       }
+    });
+    // Order suggestionsResult by name
+    suggestionsResult.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
     });
     return suggestionsResult;
   };
@@ -92,12 +92,11 @@ export const ListingTagsField = ({
       <MultiSelectAutocomplete
         defaultValue={defaultSelections}
         fetchSuggestions={fetchSuggestionsWithAdditionalTags}
-        staticSuggestions={topTagsWithAdditional}
+        staticSuggestions={suggestedTags}
         staticSuggestionsHeading={
           <h2 className="crayons-article-form__top-tags-heading">Top tags</h2>
         }
         labelText="Tags"
-        showLabel
         placeholder="Add up to 8 tags..."
         maxSelections={8}
         SuggestionTemplate={TagAutocompleteOption}

@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'preact/hooks';
 import { fetchSearch } from '@utilities/search';
 
+/**
+ * Custom hook to manage the logic for the tags-fields based on the `MultiSelectAutocomplete` component
+ *
+ * @param {string} defaultValue The default value for the tags field, needs to be a comma separated string
+ * @param {Function} onInput The function to call when the input changes
+ * @returns {Object}
+ * An object containing default selections, top tags, fetchSuggestions function, and syncSelections function
+ */
 export const useTagsField = ({ defaultValue, onInput }) => {
   const [defaultSelections, setDefaultSelections] = useState([]);
   const [defaultsLoaded, setDefaultsLoaded] = useState(false);
-  const [topTags, setTopTags] = useState([]);
-
-  useEffect(() => {
-    fetch('/tags/suggest')
-      .then((res) => res.json())
-      .then((results) => setTopTags(results));
-  }, []);
 
   useEffect(() => {
     // Previously selected tags are passed as a plain comma separated string
@@ -36,7 +37,8 @@ export const useTagsField = ({ defaultValue, onInput }) => {
   }, [defaultValue, defaultsLoaded]);
 
   /**
-   * Converts the array of selected items into a plain string
+   * Converts the array of selected items into a plain string,
+   * and ensures the `onInput` callback is triggered with the new tags list
    * @param {Array} selections
    */
   const syncSelections = (selections = []) => {
@@ -47,9 +49,10 @@ export const useTagsField = ({ defaultValue, onInput }) => {
   };
 
   /**
+   * Fetches tags for a given search term
    *
-   * @param {*} searchTerm
-   * @returns
+   * @param {string} searchTerm The text to search for
+   * @returns {Promise} Promise which resolves to the tag search results
    */
   const fetchSuggestions = (searchTerm) =>
     fetchSearch('tags', { name: searchTerm }).then(
@@ -58,7 +61,6 @@ export const useTagsField = ({ defaultValue, onInput }) => {
 
   return {
     defaultSelections,
-    topTags,
     fetchSuggestions,
     syncSelections,
   };

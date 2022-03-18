@@ -1,8 +1,9 @@
 import { h } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useTagsField } from '../../hooks/useTagsField';
-import { TagAutocompleteOption } from './TagAutocompleteOption';
-import { TagAutocompleteSelection } from './TagAutocompleteSelection';
+import { TagAutocompleteOption } from '../../crayons/MultiSelectAutocomplete/TagAutocompleteOption';
+import { TagAutocompleteSelection } from '../../crayons/MultiSelectAutocomplete/TagAutocompleteSelection';
 import { MultiSelectAutocomplete } from '@crayons';
 
 /**
@@ -13,8 +14,17 @@ import { MultiSelectAutocomplete } from '@crayons';
  * @param {Function} switchHelpContext Callback to switch the help context when the field is focused
  */
 export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
-  const { defaultSelections, topTags, fetchSuggestions, syncSelections } =
-    useTagsField({ defaultValue, onInput });
+  const [topTags, setTopTags] = useState([]);
+  const { defaultSelections, fetchSuggestions, syncSelections } = useTagsField({
+    defaultValue,
+    onInput,
+  });
+
+  useEffect(() => {
+    fetch('/tags/suggest')
+      .then((res) => res.json())
+      .then((results) => setTopTags(results));
+  }, []);
 
   return (
     <MultiSelectAutocomplete
