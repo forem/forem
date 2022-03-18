@@ -2,8 +2,8 @@ import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useTagsField } from '../../hooks/useTagsField';
-import { TagAutocompleteOption } from '../../crayons/MultiSelectAutocomplete/TagAutocompleteOption';
-import { TagAutocompleteSelection } from '../../crayons/MultiSelectAutocomplete/TagAutocompleteSelection';
+import { TagAutocompleteOption } from '@crayons/MultiSelectAutocomplete/TagAutocompleteOption';
+import { TagAutocompleteSelection } from '@crayons/MultiSelectAutocomplete/TagAutocompleteSelection';
 import { MultiSelectAutocomplete } from '@crayons';
 
 /**

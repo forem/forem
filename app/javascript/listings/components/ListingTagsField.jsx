@@ -2,8 +2,8 @@ import { h } from 'preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useTagsField } from '../../hooks/useTagsField';
-import { TagAutocompleteOption } from '../../crayons/MultiSelectAutocomplete/TagAutocompleteOption';
-import { TagAutocompleteSelection } from '../../crayons/MultiSelectAutocomplete/TagAutocompleteSelection';
+import { TagAutocompleteOption } from '@crayons/MultiSelectAutocomplete/TagAutocompleteOption';
+import { TagAutocompleteSelection } from '@crayons/MultiSelectAutocomplete/TagAutocompleteSelection';
 import { MultiSelectAutocomplete } from '@crayons';
 
 export const ListingTagsField = ({
@@ -75,11 +75,7 @@ export const ListingTagsField = ({
     // Join fetched and additional items
     const suggestionsResult = [...fetchedSuggestions, ...additionalItems];
     // Order suggestionsResult by name
-    suggestionsResult.sort((a, b) => {
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
-      return 0;
-    });
+    suggestionsResult.sort((a, b) => a.name.localeCompare(b.name));
     return suggestionsResult;
   };
 
