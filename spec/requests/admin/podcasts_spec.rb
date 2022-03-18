@@ -78,8 +78,8 @@ RSpec.describe "/admin/content_manager/podcasts", type: :request do
       expect(podcast.twitter_username).to eq("@ThePracticalDev")
       expect(podcast.main_color_hex).to eq("ffffff")
       expect(podcast.slug).to eq("postcast-test-url")
-      expect(podcast.reachable).to eq(true)
-      expect(podcast.published).to eq(true)
+      expect(podcast.reachable).to be(true)
+      expect(podcast.published).to be(true)
     end
     # rubocop:enable RSpec/MultipleExpectations
 

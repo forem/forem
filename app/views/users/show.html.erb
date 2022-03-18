@@ -132,7 +132,7 @@
   data-feed="<%= params[:timeframe] || "base-feed" %>"
   data-articles-since="0">
 
-  <div class="crayons-layout__sidebar-left">
+  <div class="crayons-layout__sidebar-left crayons-layout__content">
     <%= render partial: "users/sidebar", locals: { repositories: @github_repositories } %>
   </div>
 

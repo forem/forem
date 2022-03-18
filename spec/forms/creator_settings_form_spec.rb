@@ -27,7 +27,7 @@ RSpec.describe CreatorSettingsForm, type: :model do
         invite_only_mode: false,
       ).attributes
       expect(attributes["primary_brand_color_hex"]).to eq("#0a0a0a")
-      expect(attributes["invite_only_mode"]).to eq(false)
+      expect(attributes["invite_only_mode"]).to be(false)
     end
   end
 
@@ -61,10 +61,10 @@ RSpec.describe CreatorSettingsForm, type: :model do
       expect(creator_settings_form.success).to be(true)
       expect(Settings::Community.community_name).to eq("Climbing Life")
       expect(Settings::UserExperience.primary_brand_color_hex).to eq("#a81adb")
-      expect(Settings::UserExperience.public).to eq(false)
-      expect(Settings::Authentication.invite_only_mode).to eq(false)
-      expect(current_user.checked_code_of_conduct).to eq(true)
-      expect(current_user.checked_terms_and_conditions).to eq(true)
+      expect(Settings::UserExperience.public).to be(false)
+      expect(Settings::Authentication.invite_only_mode).to be(false)
+      expect(current_user.checked_code_of_conduct).to be(true)
+      expect(current_user.checked_terms_and_conditions).to be(true)
     end
     # rubocop:enable RSpec/ExampleLength
   end

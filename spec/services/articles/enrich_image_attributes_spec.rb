@@ -216,13 +216,11 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
 
     it "sets width and height with static images mixed with animated images",
        vcr: { cassette_name: "download_mixed_images" } do
-      WebMock.disable!
       article.update(body_markdown: "![image](https://via.placeholder.com/350x150) ![image](#{animated_image_url})")
 
       assert_has_data_width_height_attributes(article, 2)
       expect(article.processed_html).to include('width="350"')
       expect(article.processed_html).to include('height="150"')
-      WebMock.enable!
     end
   end
 end

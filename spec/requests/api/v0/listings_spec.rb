@@ -505,7 +505,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect do
           put_listing(listing.id, action: "bump")
         end.to change(user.credits.spent, :size).by(cost)
-        expect(listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+        expect(listing.reload.bumped_at >= previous_bumped_at).to be(true)
       end
 
       it "bumps the org listing using org credits before user credits" do
@@ -516,7 +516,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect do
           put_listing(org_listing.id, action: "bump")
         end.to change(organization.credits.spent, :size).by(cost)
-        expect(org_listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+        expect(org_listing.reload.bumped_at >= previous_bumped_at).to be(true)
       end
 
       it "bumps the org listing using user credits if org credits insufficient and user credits are" do
@@ -526,7 +526,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect do
           put_listing(org_listing.id, action: "bump")
         end.to change(user.credits.spent, :size).by(cost)
-        expect(org_listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+        expect(org_listing.reload.bumped_at >= previous_bumped_at).to be(true)
       end
     end
 
@@ -545,7 +545,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         cost = listing_draft.cost
         create_list(:credit, cost, user: user)
         put_listing(listing_draft.id, action: "publish")
-        expect(listing_draft.reload.published).to eq(true)
+        expect(listing_draft.reload.published).to be(true)
       end
 
       it "publishes an org draft and charges org credits if first publish" do
@@ -560,7 +560,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         cost = org_listing_draft.cost
         create_list(:credit, cost, organization: organization)
         put_listing(org_listing_draft.id, action: "publish")
-        expect(org_listing_draft.reload.published).to eq(true)
+        expect(org_listing_draft.reload.published).to be(true)
       end
 
       it "publishes a draft that was charged and is within 30 days of bump doesn't charge credits" do
@@ -573,7 +573,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       it "publishes a draft that was charged and is within 30 days of bump and successfully sets published as true" do
         listing.update_column(:published, false)
         put_listing(listing.id, action: "publish")
-        expect(listing.reload.published).to eq(true)
+        expect(listing.reload.published).to be(true)
       end
     end
 
@@ -588,7 +588,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
 
       it "fails to publish draft and published remains false" do
         put_listing(listing_draft.id, action: "publish")
-        expect(listing_draft.reload.published).to eq(false)
+        expect(listing_draft.reload.published).to be(false)
       end
     end
 

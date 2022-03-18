@@ -61,7 +61,7 @@ RSpec.describe "UsersOnboarding", type: :request do
 
       it "updates saw_onboarding boolean" do
         patch "/onboarding_checkbox_update.json", params: {}
-        expect(user.saw_onboarding).to eq(true)
+        expect(user.saw_onboarding).to be(true)
       end
     end
 

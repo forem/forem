@@ -1,13 +1,14 @@
 <div id="delete-user">
   <% if current_user.super_admin? %>
-    <%= form_for(@user, url: full_delete_admin_user_path(@user), html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible.')", id: nil }) do |f| %>
-      <p>This will <strong>completely destroy the user</strong> and all of their activity from our database. This action is irreversible.</p>
-      <p><strong>Do not do this lightly.</strong></p>
+    <%= form_for(@user, url: full_delete_admin_user_path(@user), html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('Are you sure? This action is irreversible.')", id: nil }) do |f| %>
+      <p>This action is irreversible.</p>
+      <p>Once deleted, all data relating to <%= @user.name %> will be removed from our database.</p>
+      <p>Be careful with this action.</p>
       <div>
-        <button class="c-btn c-btn--primary c-btn--destructive">Fully Delete User & All Activity</button>
+        <button class="c-btn c-btn--primary c-btn--destructive">Delete now</button>
       </div>
     <% end %>
   <% else %>
-    <div class="crayons-notice crayons-notice--danger">Only <strong>Super Admins</strong> are allowed to fully delete users.</div>
+    <div class="crayons-notice crayons-notice--danger">Only Super Admins are allowed to delete users.</div>
   <% end %>
 </div>

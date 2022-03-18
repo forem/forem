@@ -11,9 +11,8 @@ Rails.application.configure do
 
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # cache_classes should be false when Spring is enabled, and true when it's disabled
   # https://guides.rubyonrails.org/configuring.html#config-cache-classes
-  config.cache_classes = ActiveModel::Type::Boolean.new.cast(ENV["DISABLE_SPRING"])
+  config.cache_classes = true
 
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
   config.action_view.cache_template_loading = true
@@ -83,7 +82,7 @@ Rails.application.configure do
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
-    # @citizen428: We have not yet resolved all user - profile preloads related to profile generalization
+    # TODO: We have not yet resolved all user - profile preloads related to profile generalization
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "Profile", association: :user)
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :setting)
