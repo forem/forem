@@ -34,7 +34,7 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service, vcr: true do
   end
 
   it "awards bronze contributor badge" do
-    badge = create(:badge, title: "DEV Contributor Bronze")
+    badge = create(:badge, title: "4x Commit Club")
     user = create(:user, :with_identity, identities: ["github"], uid: "459464")
     Timecop.freeze("2021-08-16T13:49:20Z") do
       VCR.use_cassette("github_client_commits_contributor_badge") do
@@ -46,7 +46,7 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service, vcr: true do
   end
 
   it "awards silver contributor badge" do
-    badge = create(:badge, title: "DEV Contributor Silver")
+    badge = create(:badge, title: "8x Commit Club")
     user = create(:user, :with_identity, identities: ["github"], uid: "6045239")
     Timecop.freeze("2021-08-16T13:49:20Z") do
       VCR.use_cassette("github_client_commits_contributor_badge") do
@@ -58,7 +58,7 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service, vcr: true do
   end
 
   it "awards gold contributor badge" do
-    badge = create(:badge, title: "DEV Contributor Gold")
+    badge = create(:badge, title: "16x-commit-club")
     user = create(:user, :with_identity, identities: ["github"], uid: "15793250")
 
     Timecop.freeze("2021-08-16T13:49:20Z") do

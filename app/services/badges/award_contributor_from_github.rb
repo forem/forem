@@ -2,10 +2,10 @@ module Badges
   class AwardContributorFromGithub
     BADGE_SLUGS = {
       "dev-contributor": 1,
-      "dev-contributor-bronze": 4,
-      "dev-contributor-silver": 8,
-      "dev-contributor-gold": 16,
-      "dev-contributor-platinum": 32
+      "4x-commit-club": 4,
+      "8x-commit-club": 8,
+      "16x-commit-club": 16,
+      "32x-commit-club": 32
     }.freeze
 
     REPOSITORIES = [
