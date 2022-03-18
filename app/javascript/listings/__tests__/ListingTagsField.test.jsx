@@ -18,12 +18,8 @@ describe('<ListingTagsField />', () => {
     fetch.resetMocks();
     window.fetch = fetch;
     window.getCsrfToken = async () => 'this-is-a-csrf-token';
-    fetch.mockResponse((req) =>
-      Promise.resolve(
-        req.url.includes('/tags/suggest')
-          ? '[]'
-          : JSON.stringify({ result: [] }),
-      ),
+    fetch.mockResponse((_req) =>
+      Promise.resolve(JSON.stringify({ result: [] })),
     );
   });
 
