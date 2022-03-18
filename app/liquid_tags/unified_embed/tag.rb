@@ -52,7 +52,7 @@ module UnifiedEmbed
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
 
-      req = Net::HTTP::Get.new(uri.request_uri)
+      req = Net::HTTP::Head.new(uri.request_uri)
       req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
       response = http.request(req)
 

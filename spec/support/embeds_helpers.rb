@@ -1,6 +1,6 @@
 module EmbedsHelpers
-  def stub_get_request(url, status_code = 200)
-    stub_request(:get, url)
+  def stub_head_request(url, status_code = 200)
+    stub_request(:head, url)
       .with(
         headers: {
           Accept: "*/*",
