@@ -4,7 +4,7 @@
       <p>This action is irreversible.</p>
       <p>Once banished, we will delete all content created by <%= @user.name %> and change their username to @spam_###.</p>
       <p>Be careful with this action.</p>
-      <%= form_for(@user, url: banish_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This action is irreversible. Banishing will delete all content by #{@user.name} and change their username to @spam_###.')", id: nil }) do %>
+      <%= form_for(@user, url: banish_admin_user_path(@user), html: { method: :post, id: nil }) do %>
         <button class="c-btn c-btn--primary c-btn--destructive">Banish <%= @user.name %></button>
       <% end %>
     <% else %>
