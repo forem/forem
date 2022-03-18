@@ -65,19 +65,15 @@ export const ListingTagsField = ({
   }, [listingState, categorySlug]);
 
   const fetchSuggestionsWithAdditionalTags = async (searchTerm) => {
-    const suggestionsResult = await fetchSuggestions(searchTerm);
-    const suggestedNames = suggestionsResult.map((t) => t.name);
+    const fetchedSuggestions = await fetchSuggestions(searchTerm);
+    const suggestedNames = fetchedSuggestions.map((t) => t.name);
 
     // Search in the suggestedTags array
-    const additionalItems = suggestedTags.filter((t) =>
-      t.name.startsWith(searchTerm),
+    const additionalItems = suggestedTags.filter(
+      (t) => t.name.startsWith(searchTerm) && !suggestedNames.includes(t.name),
     );
-    // Remove duplicates
-    additionalItems.forEach((t) => {
-      if (!suggestedNames.includes(t.name)) {
-        suggestionsResult.push(t);
-      }
-    });
+    // Join fetched and additional items
+    const suggestionsResult = [...fetchedSuggestions, ...additionalItems];
     // Order suggestionsResult by name
     suggestionsResult.sort((a, b) => {
       if (a.name < b.name) return -1;
