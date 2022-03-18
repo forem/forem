@@ -106,7 +106,6 @@ class ArticlePolicy < ApplicationPolicy
     user_any_admin?
   end
 
-<<<<<<< HEAD
   def destroy?
     require_user!
 
@@ -136,24 +135,6 @@ class ArticlePolicy < ApplicationPolicy
   alias new? create?
 
   alias delete_confirm? destroy?
-=======
-  # @note It is likely that we want this to mirror `:create?` in the future.  As it stands, we can
-  #       use this value to "triangulate" towards a simplifying solution to
-  #       https://github.com/forem/forem/issues/16529 (Also, I added this comment so that this code
-  #       appears with the pull request)
-  #
-  # @note For backwards compatability purposes, we're not checking if there's a user.
-  def new?
-    true
-  end
-
-  def create?
-    require_user!
-    !user_suspended?
-  end
-
-  alias delete_confirm? update?
->>>>>>> ba2af90a4 (Use URL helper and not change the policy just yet)
 
   alias discussion_lock_confirm? destroy?
 
