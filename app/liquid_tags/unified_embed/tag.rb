@@ -24,8 +24,8 @@ module UnifiedEmbed
     def self.new(tag_name, input, parse_context)
       stripped_input = ActionController::Base.helpers.strip_tags(input).strip
 
-      # Extract just the URL from the input, without any params, for validation
-      actual_link = extract_only_url(stripped_input)
+      # This line handles the few instances where options are passed in with the embed URL
+      actual_link = stripped_input.split.length > 1 ? stripped_input.split[0] : stripped_input
 
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
@@ -54,25 +54,11 @@ module UnifiedEmbed
       path = uri.path.presence || "/"
       response = http.request_head(path)
 
-      case response
-      when Net::HTTPSuccess
-        response
-      when Net::HTTPRedirection
-        warn "redirected to #{response['location']}"
-      when Net::HTTPNotFound
+      unless response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPMovedPermanently)
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
-      else
-        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
       end
     rescue SocketError
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
-    end
-
-    def self.extract_only_url(input)
-      url_portion = input.split.length > 1 ? input.split[0] : input
-
-      # remove any params
-      url_portion.split("?")[0]
     end
   end
 end

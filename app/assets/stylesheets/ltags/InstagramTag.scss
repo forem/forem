@@ -2,11 +2,8 @@
   background: rgb(255, 255, 255);
   border: 1px solid rgb(219, 219, 219);
   margin: 1px 1px 12px;
-  min-width: 326px;
-  max-width: 540px;
+  max-width: 450px;
   width: calc(100% - 2px);
-  height: 559px;
-  border-radius: 3px;
   box-shadow: none;
   display: block;
   padding: 0px;
@@ -14,6 +11,6 @@
 
 .instagram-position {
   position: relative;
-  max-width: 540px;
+  max-width: 460px;
   margin: 0 auto;
 }
