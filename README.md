@@ -13,7 +13,7 @@
     <img src="https://img.shields.io/github/issues/forem/forem/ready for dev" alt="GitHub issues ready for dev">
   </a>
   <a href="https://gitpod.io/from-referrer/">
-    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
+    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="Gitpod badge">
   </a>
 </p>
 
