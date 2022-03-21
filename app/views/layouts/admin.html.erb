@@ -81,6 +81,7 @@
           <div data-alert-target="alertZone" role="alert"></div>
       </div>
 
+      <%# We want to skip /admin/path but render /admin/nested/path %>
       <% if request.path.split("/")[-3] == "admin" %>
         <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu.nested_menu_items_from_request(request) %>
       <% end %>
