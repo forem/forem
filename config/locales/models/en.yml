@@ -110,7 +110,7 @@ en:
       unique: can't be an already adjusted tag
     tweet:
       tweet_not_found: Tweet not found
-      authentication_error: Authentication error; check that Twitter key and secret are present in Admin
+      authentication_error: Authentication error; please contact your Forem admin about possible missing Twitter keys
     user:
       could_not_send: confirmation could not be sent. %{e_message}
       password_not_matched: doesn't match password confirmation
