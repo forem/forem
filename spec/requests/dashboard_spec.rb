@@ -95,6 +95,28 @@ RSpec.describe "Dashboards", type: :request do
 
         expect(response.body).not_to include("Upload a video")
       end
+
+      context "limit post creation to admins" do
+        before { FeatureFlag.add("limit_post_creation_to_admins") }
+
+        after { FeatureFlag.remove("limit_post_creation_to_admins") }
+
+        it "does not render turbo frame when disabled" do
+          FeatureFlag.disable("limit_post_creation_to_admins")
+
+          get dashboard_path
+
+          expect(response.body).not_to include("turbo-frame")
+        end
+
+        it "renders turbo frame when enabled" do
+          FeatureFlag.enable("limit_post_creation_to_admins")
+
+          get dashboard_path
+
+          expect(response.body).to include("turbo-frame")
+        end
+      end
     end
 
     context "when logged in as a super admin" do

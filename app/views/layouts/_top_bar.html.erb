@@ -29,7 +29,7 @@
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
-          <% if FeatureFlag.enabled?(:conditionally_show_create_post_button) %>
+          <% if FeatureFlag.enabled?(:limit_post_creation_to_admins) %>
             <turbo-frame id="authorization-articles-create-post-button" src="<%= authorization_create_post_button_path %>">
             </turbo-frame>
           <% else %>
