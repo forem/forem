@@ -48,7 +48,7 @@ class Tweet < ApplicationRecord
       retrieve_and_save_tweet(status_id)
     rescue TwitterClient::Errors::NotFound => e
       raise e, I18n.t("models.tweet.tweet_not_found")
-    rescue StandardError => e
+    rescue TwitterClient::Errors::BadRequest => e
       raise e, I18n.t("models.tweet.authentication_error")
     end
 
