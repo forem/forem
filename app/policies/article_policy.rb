@@ -86,6 +86,11 @@ class ArticlePolicy < ApplicationPolicy
   #       is not, this method will help us with the edge case of "should we show the user a
   #       dashboard listing of posts?"
   #
+  # @note This handles the case in which a user has lost the ability to create posts (e.g. we've
+  #       toggled on the feature limiting posts to admins only) but they have at least one published
+  #       post.  In that case we want to show them things like "their posts's analytics" or a
+  #       dashboard of their published posts.
+  #
   # @note This policy method is a bit different.  It is strictly meant to return true or false.
   #       Other policies might raise exceptions, but the purpose of this method is for conditional
   #       rendering.
