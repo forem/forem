@@ -8,6 +8,38 @@ import { getCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 window.getCsrfToken = getCsrfToken;
 
+const tagsRoot = document.getElementById('tag-moderation-container');
+function initializeTagModeration() {
+  if (!tagsRoot) {
+    return;
+  }
+
+  const form = tagsRoot.closest('form');
+  const currentModTags = JSON.parse(tagsRoot.dataset.currentModTags);
+  const modTags = form['user[mod_tags]'];
+
+  // Converts the array of selected items into a plain string to be saved in the article form
+  const syncSelections = (selections = []) => {
+    modTags.value = JSON.stringify(selections.map(({ id }) => id));
+  };
+
+  render(
+    <MultiSelectAutocomplete
+      defaultValue={currentModTags}
+      fetchSuggestions={fetchTags}
+      labelText="Assign tags"
+      placeholder="Add a tag..."
+      showLabel={false}
+      SuggestionTemplate={TagAutocompleteOption}
+      SelectionTemplate={TagAutocompleteSelection}
+      onSelectionsChanged={syncSelections}
+      onlySuggestions={true}
+    />,
+    tagsRoot,
+    tagsRoot.firstElementChild, // not replaced, but this helps prevent content layout shift (CLS)
+  );
+}
+
 function adjustCreditRange(event) {
   const {
     target: { value, name, form },
@@ -118,28 +150,4 @@ const openModal = async (event) => {
 
 document.body.addEventListener('click', openModal);
 
-const tagsRoot = document.getElementById('tag-moderation-container');
-const form = tagsRoot.closest('form');
-const currentModTags = JSON.parse(tagsRoot.dataset.currentModTags);
-const modTags = form['user[mod_tags]'];
-
-// Converts the array of selected items into a plain string to be saved in the article form
-const syncSelections = (selections = []) => {
-  modTags.value = JSON.stringify(selections.map(({ id }) => id));
-};
-
-render(
-  <MultiSelectAutocomplete
-    defaultValue={currentModTags}
-    fetchSuggestions={fetchTags}
-    labelText="Assign tags"
-    placeholder="Add a tag..."
-    showLabel={false}
-    SuggestionTemplate={TagAutocompleteOption}
-    SelectionTemplate={TagAutocompleteSelection}
-    onSelectionsChanged={syncSelections}
-    onlySuggestions={true}
-  />,
-  tagsRoot,
-  tagsRoot.firstElementChild, // not replaced, but this helps prevent content layout shift (CLS)
-);
+initializeTagModeration();
