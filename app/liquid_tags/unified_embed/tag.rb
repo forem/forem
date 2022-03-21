@@ -51,8 +51,10 @@ module UnifiedEmbed
       uri = URI.parse(link)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
-      path = uri.path.presence || "/"
-      response = http.request_head(path)
+
+      req = Net::HTTP::Head.new(uri.request_uri)
+      req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
+      response = http.request(req)
 
       case response
       when Net::HTTPSuccess
