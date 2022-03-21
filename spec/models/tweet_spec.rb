@@ -97,7 +97,7 @@ RSpec.describe Tweet, type: :model, vcr: true do
         expect do
           described_class.find_or_fetch(tweet_id)
         end.to raise_error(TwitterClient::Errors::BadRequest,
-                           "Authentication error; check that Twitter key and secret are present in Admin")
+                           "Authentication error; please contact your Forem admin about possible missing Twitter keys")
       end
     end
 
