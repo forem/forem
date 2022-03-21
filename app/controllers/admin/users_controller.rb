@@ -47,7 +47,7 @@ module Admin
 
       update_tag_moderation if user_params[:mod_tags]
 
-      Credits::Manage.call(@user, credit_params) if credit_params.size.positive?
+      Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
 
       redirect_to admin_user_path(params[:id])
@@ -299,7 +299,7 @@ module Admin
         credit_params[:remove_credits] = user_params[:credit_amount]
         flash[:success] = "Credits have been removed."
       else
-        return credit_params
+        return user_params
       end
 
       credit_params
