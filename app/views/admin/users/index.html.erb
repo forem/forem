@@ -5,9 +5,7 @@
       <%= render "admin/users/index/tabs" %>
     </header>
 
-    <div>
-      <%= render "admin/users/index/filters" %>
-    </div>
+    <%= render "admin/users/index/filters" %>
 
     <%= paginate @users, theme: "internal" %>
 
