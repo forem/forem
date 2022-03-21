@@ -40,7 +40,7 @@
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
     "@babel/eslint-parser": "^7.17.0",
-    "@faker-js/faker": "^5.5.3",
+    "@faker-js/faker": "^6.0.0",
     "@knapsack-pro/cypress": "^4.5.0",
     "@storybook/addon-a11y": "^6.4.19",
     "@storybook/addon-actions": "^6.4.19",
