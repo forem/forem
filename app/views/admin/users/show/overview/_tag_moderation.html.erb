@@ -6,7 +6,7 @@
   <p class="color-secondary">Add a tag that this member can moderate. <a href="https://admin.forem.com/docs/managing-your-community/tag-moderator-features" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about tag moderation">Learn more</a></p>
 </header>
 
-<%= form_with scope: :user, url: admin_user_path(@user), method: :patch, local: true, html: { class: "flex flex-col gap-2" } do |f| %>
+<%= form_with scope: :user, url: admin_user_path(@user), method: :patch, local: true, html: { class: "flex flex-col gap-2", aria: { label: "Tag moderation" } } do |f| %>
   <%= f.hidden_field :current_mod_tags, id: nil, value: @moderated_tag_ids %>
   <%= f.hidden_field :mod_tags, id: nil, value: @moderated_tag_ids %>
 
