@@ -16,20 +16,23 @@ module UnifiedEmbed
     #
     # @param tag_name [String] in the UI, this was liquid tag name
     #        (e.g., `{% tag_name link %}`)
-    # @param link [String] the URL and additional options for that
-    #        particular service.
+    # @param input [String] the URL and additional options for that
+    #        particular embed.
     # @param parse_context [Liquid::ParseContext]
     #
     # @return [LiquidTagBase]
-    def self.new(tag_name, link, parse_context)
-      stripped_link = ActionController::Base.helpers.strip_tags(link).strip
+    def self.new(tag_name, input, parse_context)
+      stripped_input = ActionController::Base.helpers.strip_tags(input).strip
+
+      # Extract just the URL from the input, without any params, for validation
+      actual_link = extract_only_url(stripped_input)
 
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
       # If the link is invalid, we raise an error encouraging the user to
       # check their link and try again.
-      validated_link = validate_link(stripped_link)
-      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
+      validate_link!(actual_link)
+      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_input)
 
       # If the link is valid but doesn't match the registry, we return
       # an "unsupported URL" error. Eventually we shall render a fallback
@@ -41,23 +44,37 @@ module UnifiedEmbed
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
-      klass.__send__(:new, tag_name, validated_link, parse_context)
+      klass.__send__(:new, tag_name, stripped_input, parse_context)
     end
 
-    def self.validate_link(link)
+    def self.validate_link!(link)
       uri = URI.parse(link)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
-      path = uri.path.presence || "/"
-      response = http.request_head(path)
 
-      unless response.is_a?(Net::HTTPSuccess) || response.is_a?(Net::HTTPMovedPermanently)
+      req = Net::HTTP::Head.new(uri.request_uri)
+      req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
+      response = http.request(req)
+
+      case response
+      when Net::HTTPSuccess
+        response
+      when Net::HTTPRedirection
+        warn "redirected to #{response['location']}"
+      when Net::HTTPNotFound
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
+      else
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
       end
-
-      link
     rescue SocketError
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+    end
+
+    def self.extract_only_url(input)
+      url_portion = input.split.length > 1 ? input.split[0] : input
+
+      # remove any params
+      url_portion.split("?")[0]
     end
   end
 end

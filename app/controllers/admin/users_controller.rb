@@ -36,6 +36,7 @@ module Admin
     def show
       @user = User.find(params[:id])
       set_current_tab(params[:tab])
+      set_banishable_user
       set_feedback_messages
       set_related_reactions
       set_user_details
@@ -304,6 +305,11 @@ module Admin
                      else
                        "overview"
                      end
+    end
+
+    def set_banishable_user
+      @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
+        @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
     end
   end
 end

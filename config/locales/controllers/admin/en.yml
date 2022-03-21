@@ -1,0 +1,5 @@
+---
+en:
+  admin:
+    extensions_controller:
+      update_success: Extensions have been updated.
