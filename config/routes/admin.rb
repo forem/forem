@@ -131,6 +131,12 @@ namespace :admin do
       end
     end
 
+    resources :extensions, only: %i[index] do
+      collection do
+        post "toggle", to: "extensions#toggle"
+      end
+    end
+
     # We do not expose the Data Update Scripts to all Forems by default.
     constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
       resources :data_update_scripts, only: %i[index show] do
