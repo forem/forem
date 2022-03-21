@@ -6353,12 +6353,12 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-failed-log@^2.9.4:
-  version "2.9.4"
-  resolved "https://registry.yarnpkg.com/cypress-failed-log/-/cypress-failed-log-2.9.4.tgz#340d4112392ae13847a7768a7eddb8fb4900718a"
-  integrity sha512-y6QKAacs+lxP5XfbWyCsconpJf7Oa6iffXgm2w5CzRBklamzIm8znzC5KSQoVFD5h05Lm+5cOonhlUcTb855BQ==
+cypress-failed-log@^2.9.5:
+  version "2.9.5"
+  resolved "https://registry.yarnpkg.com/cypress-failed-log/-/cypress-failed-log-2.9.5.tgz#eddb83615d0a97c6388e2b4c097c42d314ff3f1f"
+  integrity sha512-3Tw3V2VKp60zDZwvC7sIW+poULqOILf3MZYOtTq5UcLAruFFotY03YUwpvTeFgZ79+4NDZfOE2vm2Wbqb+g5mg==
   dependencies:
-    debug "4.3.3"
+    debug "4.3.4"
     logdown "3.3.1"
 
 cypress-file-upload@^5.0.8:
@@ -6461,10 +6461,10 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   dependencies:
     ms "2.0.0"
 
-debug@4, debug@4.3.3, debug@^4.1.0, debug@^4.1.1, debug@^4.3.2, debug@^4.3.3:
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.3.tgz#04266e0b70a98d4462e6e288e38259213332b664"
-  integrity sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==
+debug@4, debug@4.3.4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.2, debug@^4.3.3:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
+  integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
   dependencies:
     ms "2.1.2"
 
