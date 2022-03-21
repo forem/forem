@@ -66,14 +66,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # When called, raise ActiveRecord::RecordNotFound.
+  #
+  # @raise [ActiveRecord::RecordNotFound] when called
   def not_found
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
 
+  # When called, raise ActionController::RoutingError.
+  # @raise [ActionController::RoutingError] when called
   def routing_error
     raise ActionController::RoutingError, "Routing Error"
   end
 
+  # When called render unauthorized JSON status and raise Pundit::NotAuthorizedError
+  #
+  # @raise [Pundit::NotAuthorizedError]
+  #
+  # @note [@jeremyf] It's a little surprising that we both render a JSON response and raise an
+  #       exception.
   def not_authorized
     render json: { error: I18n.t("application_controller.not_authorized") }, status: :unauthorized
     raise Pundit::NotAuthorizedError, "Unauthorized"
