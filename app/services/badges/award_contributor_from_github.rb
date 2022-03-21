@@ -26,7 +26,8 @@ module Badges
 
     def call
       REPOSITORIES.each do |repo|
-        award_contributors(repo)
+        award_single_commit_contributors(repo)
+        award_multi_commit_contributors(repo)
       end
     end
 
@@ -34,7 +35,18 @@ module Badges
 
     attr_reader :msg, :badge_slugs_with_id
 
-    def award_contributors(repo)
+    def award_single_commit_contributors(repo)
+      yesterday = 1.day.ago.utc.iso8601
+      commits = Github::OauthClient.new.commits(repo, since: yesterday)
+      authors_uids = commits.map { |commit| commit.author.id }
+      Identity.github.where(uid: authors_uids).find_each do |i|
+        BadgeAchievement
+          .where(user_id: i.user_id, badge_id: badge_slugs_with_id[:"dev-contributor"])
+          .first_or_create(rewarding_context_message_markdown: msg)
+      end
+    end
+
+    def award_multi_commit_contributors(repo)
       contributors = Github::OauthClient.new.contributors(repo)
       authors_uids = contributors.map(&:id)
 
@@ -50,7 +62,7 @@ module Badges
       badge_slugs_with_id.each do |slug, slug_id|
         next if commits_count < BADGE_SLUGS[slug]
 
-        BadgeAchievement.create(user_id: user_id, badge_id: slug_id, rewarding_context_message_markdown: msg)
+        BadgeAchievement.create(user_id: user_id, badge_id: slug_id)
       end
     end
 
