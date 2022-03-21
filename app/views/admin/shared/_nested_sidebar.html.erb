@@ -11,24 +11,24 @@
       <li>
         <a
           class="c-link c-link--block c-link--icon-left <%= "c-link--current" if current?(request, group, group_name) %>"
-          aria-current="<%= "page" if current?(request, group, group_name) && !children?(group) %>"
+          aria-current="<%= "page" if current?(request, group, group_name) && !group.has_multiple_children? %>"
           href="<%= nav_path(group, group_name) %>">
-          <%= crayons_icon_tag(group[:svg], class: "c-link__icon", aria_hidden: true) %>
+          <%= crayons_icon_tag(group.svg, class: "c-link__icon", aria_hidden: true) %>
           <%= display_name(group_name) %>
         </a>
-        <% if children?(group) %>
+        <% if group.has_multiple_children? %>
           <ul class="ml-6 mb-1 <%= current?(request, group, group_name) ? "" : "hidden" %>">
-            <% group[:children].each do |item| %>
-              <% if item[:visible] %>
+            <% group.children.each do |item| %>
+              <% if item.visible %>
                 <li>
                   <a
                     class="c-link c-link--block"
-                    href="<%= admin_path %>/<%= group_name %>/<%= item[:controller] %>"
-                    <% if deduced_controller(request) == item[:controller].to_s %>
+                    href="<%= admin_path %>/<%= group_name %>/<%= item.controller %>"
+                    <% if deduced_controller(request) == item.controller.to_s %>
                       style="--bg: transparent"
                       aria-current="page"
                     <% end %>>
-                    <%= item[:name].to_s.titleize %>
+                    <%= item.name.to_s.titleize %>
                   </a>
                 </li>
               <% end %>

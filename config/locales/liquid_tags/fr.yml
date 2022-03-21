@@ -27,7 +27,7 @@ fr:
         invalid_github_issue_pull: Invalid GitHub issue, pull request or comment link
         posted_on: posted on
       github_readme_tag:
-        invalid_options: 'GitHub tag: invalid options: %{invalid} - supported options: %{valid}'
+        invalid_options: 'GitHub tag: invalid options: %{invalid} | supported options: %{valid}'
         invalid_github_repository: Invalid GitHub repository path or URL
     glitch_tag:
       invalid_glitch_id: Invalid Glitch ID

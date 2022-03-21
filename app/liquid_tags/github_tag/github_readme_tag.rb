@@ -3,8 +3,7 @@ class GithubTag
     PARTIAL = "liquids/github_readme".freeze
     README_REGEXP = %r{https://github\.com/[\w\-.]{1,39}/[\w\-.]{1,39}/?}
     GITHUB_DOMAIN_REGEXP = %r{.*github.com/}
-    OPTION_NO_README = "no-readme".freeze
-    VALID_OPTIONS = [OPTION_NO_README].freeze
+    NOREADME_OPTIONS = %w[no-readme noreadme].freeze
 
     def initialize(input)
       @repository_path, @options = parse_input(input)
@@ -49,15 +48,15 @@ class GithubTag
 
     def validate_options!(*options)
       return if options.empty?
-      return if options.all? { |o| VALID_OPTIONS.include?(o) }
+      return if options.all? { |o| NOREADME_OPTIONS.include?(o) }
 
       message = I18n.t("liquid_tags.github_tag.github_readme_tag.invalid_options",
-                       invalid: (options - VALID_OPTIONS), valid: VALID_OPTIONS)
+                       invalid: (options - NOREADME_OPTIONS), valid: NOREADME_OPTIONS)
       raise StandardError, message
     end
 
     def show_readme?
-      options.none?(OPTION_NO_README)
+      options.none?
     end
 
     def fetch_readme(repository_path, repository_url)
