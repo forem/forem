@@ -91,9 +91,9 @@ RSpec.describe ForemInstance, type: :model do
     end
 
     it "returns true if sendgrid api key is available" do
-      ENV["SENDGRID_API_KEY"] = "something"
+      allow(ENV).to receive(:[]).and_return("something")
+
       expect(described_class.smtp_enabled?).to be(true)
-      ENV["SENDGRID_API_KEY"] = nil
     end
   end
 
