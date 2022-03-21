@@ -3,6 +3,31 @@
 /* eslint-disable no-multi-str */
 
 function buildArticleHTML(article) {
+  var tagIcon = `<svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg"><path d="M7.784 14l.42-4H4V8h4.415l.525-5h2.011l-.525 5h3.989l.525-5h2.011l-.525 5H20v2h-3.784l-.42 4H20v2h-4.415l-.525 5h-2.011l.525-5H9.585l-.525 5H7.049l.525-5H4v-2h3.784zm2.011 0h3.99l.42-4h-3.99l-.42 4z"/></svg>`;
+  if (article && article.class_name === 'Tag') {
+    return `<article class="crayons-story">
+        <div class="crayons-story__body flex items-start gap-2">
+          <span class="radius-default p-2 shrink-0" style="background: ${
+            article.bg_color_hex || '#000000'
+          }1a; color: ${article.bg_color_hex || '#000'}">
+            ${tagIcon}
+          </span>
+          <div>
+            <h3 class="crayons-subtitle-2 lh-tight py-2">
+              <a href="/t/${article.name}" class="c-link">
+                ${article.name}
+              </a>
+            </h3>
+            ${
+              article.short_summary
+                ? `<div class="truncate-at-3">${article.short_summary}</div>`
+                : ''
+            }
+          </div>
+        </div>
+      </article>`;
+  }
+
   if (article && article.class_name === 'PodcastEpisode') {
     return `<article class="crayons-story crayons-podcast-episode mb-2">
         <div class="crayons-story__body flex flex-start">
@@ -32,8 +57,8 @@ function buildArticleHTML(article) {
       currentTag = JSON.parse(container.dataset.params).tag;
     }
     if (article.flare_tag && currentTag !== article.flare_tag.name) {
-      flareTag = `<a href="/t/${article.flare_tag.name}" 
-        class="crayons-tag crayons-tag--filled" 
+      flareTag = `<a href="/t/${article.flare_tag.name}"
+        class="crayons-tag crayons-tag--filled"
         style="--tag-bg: ${article.flare_tag.bg_color_hex}1a; --tag-prefix: ${article.flare_tag.bg_color_hex}; --tag-bg-hover: ${article.flare_tag.bg_color_hex}1a; --tag-prefix-hover: ${article.flare_tag.bg_color_hex};"
       >
         <span class="crayons-tag__prefix">#</span>
@@ -170,8 +195,15 @@ function buildArticleHTML(article) {
     // We only show profile preview cards for Posts
     var isArticle = article.class_name === 'Article';
 
+    // We need to be able to set the data-info hash attribute with escaped characters.
+    // NB: Escaping apostrophes with a "/" does not have the desired effect, as we eventually render the name inside a double quoted string ""
+    // To avoid complications with single quotes inside double quotes inside single quotes, we instead replace any apostrophe with its encoded value
+    var name = article.user.name
+      .replace(/'/g, '&apos;')
+      .replace(/[\\"]/g, '\\$&');
+
     var previewCardContent = `
-      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4" data-repositioning-dropdown="true" style="border-top: var(--su-7) solid var(--card-color);" data-testid="profile-preview-card">
+      <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7" data-repositioning-dropdown="true" style="border-top-color: var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
           <div class="-mt-4">
             <a href="/${profileUsername}" class="flex">
@@ -182,7 +214,7 @@ function buildArticleHTML(article) {
             </a>
           </div>
           <div class="print-hidden">
-            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full", "name": "${article.user.name}"}'>Follow</button>
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": ${article.user_id}, "className": "User", "style": "full", "name": "${name}"}'>Follow</button>
           </div>
           <div class="author-preview-metadata-container" data-author-id="${article.user_id}"></div>
         </div>

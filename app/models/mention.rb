@@ -9,8 +9,7 @@ class Mention < ApplicationRecord
   belongs_to :user
   belongs_to :mentionable, polymorphic: true
 
-  validates :user_id, presence: true, uniqueness: { scope: %i[mentionable_id mentionable_type] }
-  validates :mentionable_id, presence: true
+  validates :user_id, uniqueness: { scope: %i[mentionable_id mentionable_type] }
   validates :mentionable_type, presence: true
   validate :permission
 
@@ -30,6 +29,6 @@ class Mention < ApplicationRecord
   end
 
   def permission
-    errors.add(:mentionable_id, "is not valid.") unless mentionable&.valid?
+    errors.add(:mentionable_id, I18n.t("models.mention.is_not_valid")) unless mentionable&.valid?
   end
 end

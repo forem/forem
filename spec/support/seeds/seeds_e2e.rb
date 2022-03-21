@@ -12,14 +12,21 @@ seeder = Seeder.new
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false
 Settings::Authentication.allow_email_password_registration = true
+Settings::SMTP.address = "smtp.website.com"
 Settings::SMTP.user_name = "username"
 Settings::SMTP.password = "password"
 
 ##############################################################################
 
 # Some of our Cypress tests assume specific DEV profile fields to exist
-ProfileField.create_with(display_area: :header).find_or_create_by(label: "Work")
-ProfileField.create_with(display_area: :header).find_or_create_by(label: "Education")
+profile_field_group =
+  ProfileFieldGroup.create(name: "Test Group", description: "A group, for the tests")
+ProfileField
+  .create_with(display_area: :header, profile_field_group: profile_field_group)
+  .find_or_create_by(label: "Work")
+ProfileField
+  .create_with(display_area: :header, profile_field_group: profile_field_group)
+  .find_or_create_by(label: "Education")
 Profile.refresh_attributes!
 
 ##############################################################################
@@ -31,6 +38,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -54,9 +62,6 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
   user.add_role(:trusted)
-
-  # Enable new Admin Members
-  FeatureFlag.enable(:new_admin_members, user)
 end
 
 admin_user = User.find_by(email: "admin@forem.local")
@@ -65,11 +70,12 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user = User.create!(
-    name: "Trusted User 1",
+    name: "Trusted User 1 \\:/",
     email: "trusted-user-1@forem.local",
     username: "trusted_user_1",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -84,6 +90,45 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user.profile.update(website_url: Faker::Internet.url)
 
   user.add_role(:trusted)
+end
+
+trusted_user = User.find_by(email: "trusted-user-1@forem.local")
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "punctuated-name-user@forem.local") do
+  user = User.create!(
+    name: "User \"The test breaker\" A'postrophe  \\:/",
+    email: "punctuated-name-user@forem.local",
+    username: "punctuated_name_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  seeder.create_if_doesnt_exist(Article, "slug", "apostrophe-user-slug") do
+    markdown = <<~MARKDOWN
+      ---
+      title:  Punctuation user article
+      published: true
+      ---
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+      #{Faker::Markdown.random}
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+    MARKDOWN
+    Article.create!(
+      body_markdown: markdown,
+      featured: true,
+      show_comments: true,
+      user_id: user.id,
+      slug: "apostrophe-user-slug",
+    )
+  end
 end
 
 ##############################################################################
@@ -105,6 +150,23 @@ seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   )
 end
 
+seeder.create_if_doesnt_exist(Organization, "slug", "awesomeorg") do
+  organization = Organization.create!(
+    name: "Awesome Org",
+    summary: Faker::Company.bs,
+    profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    nav_image: logo,
+    url: Faker::Internet.url,
+    slug: "awesomeorg",
+  )
+
+  OrganizationMembership.create!(
+    user_id: trusted_user.id,
+    organization_id: organization.id,
+    type_of_user: "member",
+  )
+end
+
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") do
@@ -114,6 +176,7 @@ seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") d
     username: "changepassworduser",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -140,6 +203,7 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v1-user@forem.local
     username: "article_editor_v1_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -167,6 +231,7 @@ seeder.create_if_doesnt_exist(User, "email", "article-editor-v2-user@forem.local
     username: "article_editor_v2_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -186,13 +251,34 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "apple-auth-admin-user@privaterelay.appleid.com") do
+  user = User.create!(
+    name: "Apple Auth Admin User",
+    email: "apple-auth-admin-user@privaterelay.appleid.com",
+    username: "apple_auth_admin_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  user.add_role(:super_admin)
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") do
   user = User.create!(
-    name: "Notifications User",
+    name: "Notifications User \\:/",
     email: "notifications-user@forem.local",
     username: "notifications_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -265,6 +351,7 @@ seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.local") do
     username: "liquid_tags_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -282,6 +369,36 @@ seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.local") do
 
   admin_user.follows.create!(followable: liquid_tags_user)
 end
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "credits-user@forem.local") do
+  user = User.create!(
+    name: "Credits User",
+    email: "credits-user@forem.local",
+    username: "credits_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+  user.setting.update(editor_version: "v1")
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
+  )
+  Credit.add_to(user, 100)
+
+  user
+end
+
 ##############################################################################
 
 seeder.create_if_none(NavigationLink) do
@@ -425,6 +542,7 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.local") do
     username: "series_user",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -505,7 +623,7 @@ seeder.create_if_none(Tag) do
   tags.each do |tagname|
     tag = Tag.create!(
       name: tagname,
-      bg_color_hex: Faker::Color.hex_color,
+      bg_color_hex: "#672c99",
       text_color_hex: Faker::Color.hex_color,
       supported: true,
     )
@@ -615,11 +733,6 @@ seeder.create_if_none(Reaction) do
   user = User.find_by(username: "trusted_user_1")
   admin_user.reactions.create!(category: :vomit, reactable: user)
 end
-
-##############################################################################
-
-# Enable Connect feature flag for tests
-FeatureFlag.enable(:connect)
 
 ##############################################################################
 

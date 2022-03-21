@@ -7,18 +7,16 @@ class TagPolicy < ApplicationPolicy
     has_mod_permission?
   end
 
-  def update?
-    has_mod_permission?
-  end
+  alias update? edit?
 
   def admin?
-    user_admin?
+    user_super_admin?
   end
 
   private
 
   def has_mod_permission?
-    user_admin? ||
+    user_super_admin? ||
       user.tag_moderator?(tag: record)
   end
 end

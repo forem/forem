@@ -10,7 +10,6 @@ import { locale } from '@utilities/locale';
  * @param {string} style The style of the button from its "info" data attribute
  */
 
-
 function addButtonFollowText(button, style) {
   const { name, className } = JSON.parse(button.dataset.info);
 
@@ -340,11 +339,11 @@ function initializeAllUserFollowButtons() {
     const { name, className } = buttonInfo;
 
     if (userStatus === 'logged-out') {
-      const { style } = JSON.parse(button.dataset.info);
+      const { style } = buttonInfo;
       addButtonFollowText(button, style);
     } else {
       addAriaLabelToButton({ button, followType: className, followName: name });
-      const { id: userId } = JSON.parse(button.dataset.info);
+      const { id: userId } = buttonInfo;
       if (userIds[userId]) {
         userIds[userId].push(button);
       } else {

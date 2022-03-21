@@ -128,7 +128,7 @@ RSpec.describe "Pages", type: :request do
 
     it "redirects to the latest welcome thread" do
       earlier_welcome_thread = create(:article, user: user, tags: "welcome")
-      earlier_welcome_thread.update(published_at: Time.current - 1.week)
+      earlier_welcome_thread.update(published_at: 1.week.ago)
       latest_welcome_thread = create(:article, user: user, tags: "welcome")
       get "/welcome"
 
@@ -160,7 +160,7 @@ RSpec.describe "Pages", type: :request do
 
     it "redirects to the latest challenge thread" do
       earlier_challenge_thread = create(:article, user: user, tags: "challenge")
-      earlier_challenge_thread.update(published_at: Time.current - 1.week)
+      earlier_challenge_thread.update(published_at: 1.week.ago)
       latest_challenge_thread = create(:article, user: user, tags: "challenge")
       get "/challenge"
 
@@ -216,14 +216,6 @@ RSpec.describe "Pages", type: :request do
 
         expect(response.body).to redirect_to("/hijacked/staff")
       end
-    end
-  end
-
-  describe "GET /badge" do
-    it "has proper headline" do
-      html_variant = create(:html_variant, group: "badge_landing_page", published: true, approved: true)
-      get "/badge"
-      expect(response.body).to include(html_variant.html)
     end
   end
 

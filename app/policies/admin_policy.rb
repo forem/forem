@@ -1,9 +1,9 @@
 class AdminPolicy < ApplicationPolicy
   def show?
-    user_admin?
+    user_super_admin?
   end
 
   def minimal?
-    minimal_admin?
+    user_any_admin?
   end
 end

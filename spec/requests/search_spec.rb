@@ -219,6 +219,26 @@ RSpec.describe "Search", type: :request, proper_status: true do
         expect(response.parsed_body["result"].first).to include("body_text" => podcast_episode.body_text)
       end
     end
+
+    context "when using searching for tags" do
+      let!(:tag) { create(:tag, name: "webdev") }
+
+      it "returns the correct keys for tags" do
+        get search_feed_content_path(search_fields: "web", class_name: "Tag")
+        expect(response.parsed_body["result"]).to be_present
+      end
+
+      it "supports the search params for tags" do
+        get search_feed_content_path(
+          search_fields: "web",
+          class_name: "Tag",
+          page: 0,
+          per_page: 1,
+        )
+
+        expect(response.parsed_body["result"].first).to include("name" => tag.name)
+      end
+    end
   end
 
   describe "GET /search/reactions" do

@@ -14,9 +14,9 @@ class PollVote < ApplicationRecord
   counter_culture :poll
 
   # In the future we'll remove this constraint if/when we allow multi-answer polls
-  validates :poll_id, presence: true, uniqueness: { scope: :user_id }
+  validates :poll_id, uniqueness: { scope: :user_id }
 
-  validates :poll_option_id, presence: true, uniqueness: { scope: :user_id }
+  validates :poll_option_id, uniqueness: { scope: :user_id }
   validate :one_vote_per_poll_per_user
 
   after_destroy :touch_poll_votes_count
@@ -30,7 +30,7 @@ class PollVote < ApplicationRecord
     return false unless poll
     return false unless poll.vote_previously_recorded_for?(user_id: user_id)
 
-    errors.add(:base, "cannot vote more than once in one poll")
+    errors.add(:base, I18n.t("models.poll_vote.cannot_vote_more_than_once"))
   end
 
   def touch_poll_votes_count

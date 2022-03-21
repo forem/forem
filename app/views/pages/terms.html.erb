@@ -22,6 +22,6 @@
 <main id="main-content" class="crayons-layout crayons-layout--limited-l">
   <div class="crayons-card text-styles text-padding">
     <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Web Site Terms and Conditions of Use</h1>
-    <%= render "terms_text" %>
+    <%= Page.render_safe_html_for(slug: Page::TERMS_SLUG) { render "terms_text" } %>
   </div>
 </main>

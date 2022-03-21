@@ -1,7 +1,7 @@
 module Search
   class PodcastEpisodeSerializer < ApplicationSerializer
     def self.podcast_image_url(podcast_episode)
-      Images::Profile.call(podcast_episode.podcast.profile_image_url, length: 90)
+      podcast_episode.podcast.profile_image_url_for(length: 90)
     end
 
     attribute :id, &:search_id

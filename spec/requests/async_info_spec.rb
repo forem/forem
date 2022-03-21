@@ -26,7 +26,7 @@ RSpec.describe "AsyncInfo", type: :request do
         sign_in create(:user)
 
         get "/async_info/base_data"
-        expect(response.parsed_body.keys).to match_array(%w[broadcast creator creator_onboarding param token user])
+        expect(response.parsed_body.keys).to match_array(%w[broadcast creator param token user])
       end
     end
   end

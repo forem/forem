@@ -35,7 +35,8 @@
       <link href="<%= optimized_image_url(Settings::General.logo_png, width: 128, fetch_format: "png") %>" rel="icon" sizes="128x128" />
       <meta name="apple-mobile-web-app-title" content="<%= Settings::General.app_domain %>">
       <meta name="application-name" content="<%= Settings::General.app_domain %>">
-      <meta name="theme-color" content="#000000" />
+      <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+      <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
       <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_name %>" />
 
       <meta property="forem:name" content="<%= community_name %>" />
@@ -46,23 +47,22 @@
   <% unless internal_navigation? %>
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
       <body
-        data-user-status="<%= user_logged_in_status %>"
-        data-community-name="<%= community_name %>"
         class="<%= Settings::UserExperience.default_font.tr("_", "-") %>-article-body default-header"
-        data-locale="<%= I18n.locale %>"
-        data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-        data-deployed-at="<%= ForemInstance.deployed_at %>"
-        data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
-        data-ga-tracking="<%= Settings::General.ga_tracking_id %>">
+        data-user-status="<%= j(user_logged_in_status) %>"
+        data-community-name="<%= j(community_name) %>"
+        data-locale="<%= j(I18n.locale) %>"
+        data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+        data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
+        data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
+        data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
         <div id="body-styles">
           <style>
             :root {
-              --accent-brand: <%= Settings::UserExperience.primary_brand_color_hex %>;
-              --accent-brand-darker: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.85) %>;
-              --accent-brand-lighter: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.1) %>;
-              --accent-brand-a10: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).opacity(0.1) %>;
+              --accent-brand-lighter-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.35, only_values: true) %>;
+              --accent-brand-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1, only_values: true) %>;
+              --accent-brand-darker-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.8, only_values: true) %>;
             }
           </style>
         </div>
@@ -83,7 +83,7 @@
 <div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
     <div class="crayons-banner" id="setup-banner" aria-live="polite">
-      <%= flash[:global_notice] %>
+      <%== flash[:global_notice] %>
     </div>
   <% end %>
   <div id="page-content-inner">

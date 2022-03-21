@@ -1,4 +1,3 @@
-<%= javascript_packs_with_chunks_tag "colorPreview", "clipboardCopy", defer: true %>
 <%= render "shared/webcomponents_loader_script" %>
 
 <div class="crayons-card crayons-card--content-rows">
@@ -10,11 +9,11 @@
         <p class="fw-medium flex-1">
           <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
           <% if org_membership.user == @user %>
-            <span class="crayons-indicator"><%= t("views.settings.org.admin.you") %></span>
+            <span class="c-indicator"><%= t("views.settings.org.admin.you") %></span>
           <% end %>
 
           <% if org_membership.type_of_user == "admin" %>
-            <span class="crayons-indicator crayons-indicator--critical"><%= t("views.settings.org.admin.admin") %></span>
+            <span class="c-indicator c-indicator--danger"><%= t("views.settings.org.admin.admin") %></span>
           <% end %>
         </p>
 
@@ -57,11 +56,11 @@
     </ol>
     <p>
       <%= t("views.settings.org.admin.secret_code") %>
-      <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
-        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.aria_label") %>">
-        <%= inline_svg_tag("copy.svg", aria: true, class: "crayons-icon", title: t("views.settings.org.admin.copy.icon")) %>
-      </clipboard-copy>
-      <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden><%= t("views.settings.org.admin.copy.text") %></span>
+      <div class="flex">
+        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.input.aria_label") %>">
+        <button id="settings-org-secret-copy-btn" aria-label="<%= t("views.settings.org.admin.copy.button.aria_label") %>" class="c-btn"><%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon"), aria_hidden: true) %></button>
+      </div>
+      <div class="crayons-notice crayons-notice--success mt-2 hidden" id="copy-text-announcer" role="alert"><%= t("views.settings.org.admin.copy.text") %></div>
   </div>
 
   <div class="flex items-center">
@@ -220,7 +219,7 @@
         </div>
       <% end %>
       <p>
-        <%= t("views.settings.org.admin.delete.questions_html", email: link_to(ForemInstance.email, ForemInstance.email)) %>
+        <%= t("views.settings.org.admin.delete.questions_html", email: link_to(ForemInstance.contact_email, ForemInstance.contact_email)) %>
       </p>
     </div>
   </div>

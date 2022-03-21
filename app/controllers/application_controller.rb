@@ -9,10 +9,9 @@ class ApplicationController < ActionController::Base
 
   include SessionCurrentUser
   include ValidRequest
-  include Pundit
+  include Pundit::Authorization
   include CachingHeaders
   include ImageUploads
-  include VerifySetupCompleted
   include DevelopmentDependencyChecks if Rails.env.development?
   include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
@@ -29,6 +28,8 @@ class ApplicationController < ActionController::Base
       tags: ["controller_name:#{controller_name}", "path:#{request.fullpath}"],
     )
   end
+
+  rescue_from ApplicationPolicy::UserSuspendedError, with: :respond_with_user_suspended
 
   PUBLIC_CONTROLLERS = %w[async_info
                           confirmations
@@ -74,12 +75,12 @@ class ApplicationController < ActionController::Base
   end
 
   def not_authorized
-    render json: { error: "Error: not authorized" }, status: :unauthorized
-    raise NotAuthorizedError, "Unauthorized"
+    render json: { error: I18n.t("application_controller.not_authorized") }, status: :unauthorized
+    raise Pundit::NotAuthorizedError, "Unauthorized"
   end
 
   def bad_request
-    render json: { error: "Error: Bad Request" }, status: :bad_request
+    render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
   end
 
   def error_too_many_requests(exc)
@@ -87,15 +88,40 @@ class ApplicationController < ActionController::Base
     render json: { error: exc.message, status: 429 }, status: :too_many_requests
   end
 
-  def authenticate_user!
-    if current_user
-      Honeycomb.add_field("current_user_id", current_user.id)
-      return
-    end
+  # This method is envisioned as a :before_action callback.
+  #
+  # @return [TrueClass] if we have a current_user
+  # @return [FalseClass] if we don't have a current_user
+  #
+  # @see {#authenticate_user!} for when you want to raise an error if we don't have a current user.
+  def authenticate_user
+    return false unless current_user
 
+    Honeycomb.add_field("current_user_id", current_user.id)
+    true
+  end
+
+  # @deprecated Use {#authenticate_user} and #{ApplicationPolicy}.
+  #
+  # When we don't have a current user, render a response that prompts the requester to authenticate.
+  # This function circumvents the work that should be done in the {ApplicationPolicy} layer.
+  #
+  # @return [TrueClass] if we have an authenticated user
+  #
+  # @note This method is envisioned as a :before_action callback.
+  #
+  # @see {#authenticate_user}
+  # @see {ApplicationPolicy} for discussion around authentication and authorization.
+  def authenticate_user!
+    return true if authenticate_user
+
+    respond_with_request_for_authentication
+  end
+
+  def respond_with_request_for_authentication
     respond_to do |format|
       format.html { redirect_to sign_up_path }
-      format.json { render json: { error: "Please sign in" }, status: :unauthorized }
+      format.json { render json: { error: I18n.t("application_controller.please_sign_in") }, status: :unauthorized }
     end
   end
 
@@ -132,8 +158,16 @@ class ApplicationController < ActionController::Base
     onboarding_path
   end
 
-  def raise_suspended
-    raise SuspendedError if current_user&.suspended?
+  # @deprecated This is a policy related question and should be part of an ApplicationPolicy
+  def check_suspended
+    return unless current_user&.suspended?
+
+    respond_with_user_suspended
+  end
+
+  def respond_with_user_suspended
+    response.status = :forbidden
+    render "pages/forbidden"
   end
 
   def internal_navigation?
@@ -210,12 +244,6 @@ class ApplicationController < ActionController::Base
   def bust_content_change_caches
     EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
-  end
-
-  # To ensure that components are sent back as HTML, we wrap their rendering in
-  # this helper method
-  def render_component(component_class, *args, **kwargs)
-    render component_class.new(*args, **kwargs), content_type: "text/html"
   end
 
   private

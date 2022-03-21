@@ -330,14 +330,6 @@ RSpec.describe "/admin/customization/config", type: :request do
             }
           end.not_to change(Settings::General, :logo_png)
         end
-
-        it "updates logo_svg" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post admin_settings_general_settings_path, params: {
-            settings_general: { logo_svg: expected_image_url }
-          }
-          expect(Settings::General.logo_svg).to eq(expected_image_url)
-        end
       end
 
       describe "Mascot" do
@@ -734,7 +726,7 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
 
         it "updates the feed_strategy" do
-          feed_strategy = "optimized"
+          feed_strategy = "large_forem_experimental"
           post admin_settings_user_experiences_path, params: {
             settings_user_experience: { feed_strategy: feed_strategy }
           }

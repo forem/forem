@@ -155,9 +155,9 @@ RSpec.describe Article, type: :model do
     describe "#main_image_background_hex_color" do
       it "must have true hex for image background" do
         article.main_image_background_hex_color = "hello"
-        expect(article.valid?).to eq(false)
+        expect(article.valid?).to be(false)
         article.main_image_background_hex_color = "#fff000"
-        expect(article.valid?).to eq(true)
+        expect(article.valid?).to be(true)
       end
     end
 
@@ -184,20 +184,9 @@ RSpec.describe Article, type: :model do
     describe "#main_image" do
       it "must have url for main image if present" do
         article.main_image = "hello"
-        expect(article.valid?).to eq(false)
-        article.main_image = "https://image.com/image.png"
-        expect(article.valid?).to eq(true)
-      end
-    end
-
-    describe "dates" do
-      it "reject future dates" do
-        expect(build(:article, with_date: true, date: Date.tomorrow).valid?).to be(false)
-      end
-
-      it "reject future dates even when it's published at" do
-        article.published_at = Date.tomorrow
         expect(article.valid?).to be(false)
+        article.main_image = "https://image.com/image.png"
+        expect(article.valid?).to be(true)
       end
     end
 
@@ -206,13 +195,13 @@ RSpec.describe Article, type: :model do
 
       it "does not allow the use of admin-only liquid tags for non-admins" do
         article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
-        expect(article.valid?).to eq(false)
+        expect(article.valid?).to be(false)
       end
 
       it "allows admins" do
         article.user.add_role(:admin)
         article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
-        expect(article.valid?).to eq(true)
+        expect(article.valid?).to be(true)
       end
     end
 
@@ -233,6 +222,20 @@ RSpec.describe Article, type: :model do
     end
 
     describe "title validation" do
+      it "normalizes the title to a narrow set of allowable characters" do
+        article = create(:article, title: "I⠀⠀Am⠀⠀Warning⠀⠀You⠀⠀Don't⠀⠀Click!")
+
+        expect(article.title).to eq "I Am Warning You Don't Click!"
+      end
+
+      it "allows useful emojis and extended punctuation" do
+        allowed_title = "Hello! Title — Emdash⁉️ 🤖🤯🔥®™©👨‍👩🏾👦‍👦"
+
+        article = create(:article, title: allowed_title)
+
+        expect(article.title).to eq allowed_title
+      end
+
       it "produces a proper title" do
         test_article = build(:article, title: "An Article Title")
 
@@ -364,7 +367,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "parses does not assign canonical_url" do
-        expect(article.canonical_url).to eq(nil)
+        expect(article.canonical_url).to be_nil
       end
 
       it "parses canonical_url if canonical_url is present" do
@@ -406,7 +409,7 @@ RSpec.describe Article, type: :model do
       before { article_without_main_image.validate }
 
       it "can parse the main_image" do
-        expect(article_without_main_image.main_image).to eq(nil)
+        expect(article_without_main_image.main_image).to be_nil
       end
 
       it "can parse the main_image when added" do
@@ -432,7 +435,7 @@ RSpec.describe Article, type: :model do
         article_with_main_image.main_image = nil
         article_with_main_image.validate
 
-        expect(article_with_main_image.main_image).to eq(nil)
+        expect(article_with_main_image.main_image).to be_nil
       end
 
       it "can parse the main_image when changed" do
@@ -459,10 +462,30 @@ RSpec.describe Article, type: :model do
       expect(unpublished_article.published_at).to be_nil
     end
 
-    it "does have a published_at if published" do
-      # this works because validation triggers the extraction of the date from the front matter
+    it "sets the default published_at if published" do
+      # published_at is set in a #evaluate_markdown before_validation callback
       article.validate
       expect(article.published_at).not_to be_nil
+    end
+
+    it "sets published_at from a valid frontmatter date" do
+      date = (Date.current - 5.days).strftime("%d/%m/%Y")
+      article_with_date = build(:article, with_date: true, date: date, published_at: nil)
+      expect(article_with_date.valid?).to be(true)
+      expect(article_with_date.published_at.strftime("%d/%m/%Y")).to eq(date)
+    end
+
+    it "rejects future dates set from frontmatter" do
+      invalid_article = build(:article, with_date: true, date: Date.tomorrow.strftime("%d/%m/%Y"), published_at: nil)
+      expect(invalid_article.valid?).to be(false)
+      expect(invalid_article.errors[:date_time])
+        .to include("must be entered in DD/MM/YYYY format with current or past date")
+    end
+
+    it "rejects future dates even when it's published at" do
+      article.published_at = Date.tomorrow
+      expect(article.valid?).to be(false)
+      expect(article.errors[:date_time]).to include("must be entered in DD/MM/YYYY format with current or past date")
     end
   end
 
@@ -547,7 +570,7 @@ RSpec.describe Article, type: :model do
 
       it "properly converts underscores and still has a valid slug" do
         underscored_article = build(:article, title: "hey_hey_hey node_modules", published: false)
-        expect(underscored_article.valid?).to eq true
+        expect(underscored_article.valid?).to be true
       end
     end
 
@@ -565,7 +588,7 @@ RSpec.describe Article, type: :model do
 
       it "properly converts underscores and still has a valid slug" do
         underscored_article = build(:article, title: "hey_hey_hey node_modules", published: true)
-        expect(underscored_article.valid?).to eq true
+        expect(underscored_article.valid?).to be true
       end
 
       # rubocop:disable RSpec/NestedGroups
@@ -595,23 +618,23 @@ RSpec.describe Article, type: :model do
     it "returns true if the article has a frontmatter" do
       body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
       article.body_markdown = body
-      expect(article.has_frontmatter?).to eq(true)
+      expect(article.has_frontmatter?).to be(true)
     end
 
     it "returns false if the article does not have a frontmatter" do
       article.body_markdown = "Hey hey Ho Ho"
-      expect(article.has_frontmatter?).to eq(false)
+      expect(article.has_frontmatter?).to be(false)
     end
 
     it "returns true if parser raises a Psych::DisallowedClass error" do
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg"))
-      expect(article.has_frontmatter?).to eq(true)
+      expect(article.has_frontmatter?).to be(true)
     end
 
     it "returns true if parser raises a Psych::SyntaxError error" do
       syntax_error = Psych::SyntaxError.new("file", 1, 1, 0, "problem", "context")
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
-      expect(article.has_frontmatter?).to eq(true)
+      expect(article.has_frontmatter?).to be(true)
     end
   end
 
@@ -623,13 +646,13 @@ RSpec.describe Article, type: :model do
     it "does not show year in readable time if not current year" do
       time_now = Time.current
       article.edited_at = time_now
-      expect(article.readable_edit_date).to eq(time_now.strftime("%b %e"))
+      expect(article.readable_edit_date).to eq(I18n.l(article.edited_at, format: :short))
     end
 
     it "shows year in readable time if not current year" do
       article.edited_at = 1.year.ago
       last_year = 1.year.ago.year % 100
-      expect(article.readable_edit_date.include?("'#{last_year}")).to eq(true)
+      expect(article.readable_edit_date.include?("'#{last_year}")).to be(true)
     end
   end
 
@@ -643,7 +666,7 @@ RSpec.describe Article, type: :model do
     it "shows year in readable time if not current year" do
       article.published_at = 1.year.ago
       last_year = 1.year.ago.year % 100
-      expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+      expect(article.readable_publish_date.include?("'#{last_year}")).to be(true)
     end
   end
 
@@ -705,6 +728,43 @@ RSpec.describe Article, type: :model do
     it "has correctly non-padded minutes with hour in video_duration_in_minutes" do
       article.video_duration_in_seconds = 5000
       expect(article.video_duration_in_minutes).to eq("1:23:20")
+    end
+  end
+
+  describe "#main_image_from_frontmatter" do
+    let(:article) { create(:article, user: user, main_image_from_frontmatter: false) }
+
+    it "set to true if markdown has cover_image" do
+      article = create(
+        :article,
+        user: user,
+        body_markdown: "---\ntitle: hey\npublished: false\ncover_image: #{Faker::Avatar.image}\n---\nYo",
+      )
+      expect(article.main_image_from_frontmatter).to be(true)
+    end
+
+    context "when false" do
+      it "does not remove main image if cover image not passed in markdown" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).not_to be_nil
+      end
+
+      it "does remove main image if cover image is passed empty in markdown" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\ncover_image: \n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).to be_nil
+      end
+    end
+
+    context "when true" do
+      let(:article) { create(:article, main_image_from_frontmatter: true, user: user) }
+
+      it "removes main image when cover_image not provided" do
+        expect(article.main_image).not_to be_nil
+        article.update! body_markdown: "---\ntitle: hey\npublished: false\n---\nYo ho ho#{rand(100)}"
+        expect(article.reload.main_image).to be_nil
+      end
     end
   end
 
@@ -1008,6 +1068,7 @@ RSpec.describe Article, type: :model do
     end
 
     it "assigns cached_user on save" do
+      expect(article.cached_user).to be_a(Articles::CachedEntity)
       expect(article.cached_user.name).to eq(article.user.name)
       expect(article.cached_user.username).to eq(article.user.username)
       expect(article.cached_user.slug).to eq(article.user.username)
@@ -1017,6 +1078,7 @@ RSpec.describe Article, type: :model do
 
     it "assigns cached_organization on save" do
       article = create(:article, user: user, organization: create(:organization))
+      expect(article.cached_organization).to be_a(Articles::CachedEntity)
       expect(article.cached_organization.name).to eq(article.organization.name)
       expect(article.cached_organization.username).to eq(article.organization.username)
       expect(article.cached_organization.slug).to eq(article.organization.slug)
@@ -1026,17 +1088,8 @@ RSpec.describe Article, type: :model do
   end
 
   context "when callbacks are triggered after create" do
-    describe "detect animated images" do
-      it "does not enqueue Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is disabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
-
-        sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
-          build(:article).save
-        end
-      end
-
-      it "enqueues Articles::EnrichImageAttributesWorker if the feature :detect_animated_images is enabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
+    describe "enrich image attributes" do
+      it "enqueues Articles::EnrichImageAttributesWorker" do
         sidekiq_assert_enqueued_jobs(1, only: Articles::EnrichImageAttributesWorker) do
           build(:article).save
         end
@@ -1118,26 +1171,14 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "detect animated images" do
-      it "does not enqueue Articles::EnrichImageAttributesWorker if the feature :enrich_image_attributes is disabled" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(false)
-
-        sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
-          article.update(body_markdown: "a body")
-        end
-      end
-
+    describe "enrich image attributes" do
       it "enqueues Articles::EnrichImageAttributesWorker if the HTML has changed" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
-
         sidekiq_assert_enqueued_with(job: Articles::EnrichImageAttributesWorker, args: [article.id]) do
           article.update(body_markdown: "a body")
         end
       end
 
       it "does not Articles::EnrichImageAttributesWorker if the HTML does not change" do
-        allow(FeatureFlag).to receive(:enabled?).with(:detect_animated_images).and_return(true)
-
         sidekiq_assert_no_enqueued_jobs(only: Articles::EnrichImageAttributesWorker) do
           article.update(tag_list: %w[fsharp go])
         end
@@ -1356,7 +1397,7 @@ RSpec.describe Article, type: :model do
       create(:article, body_markdown: body_markdown, feed_source_url: url)
       another_article = build(:article, body_markdown: body_markdown, feed_source_url: url)
       error_message = "has already been taken. " \
-                      "Email #{ForemInstance.email} for further details."
+                      "Email #{ForemInstance.contact_email} for further details."
       expect(another_article).not_to be_valid
       expect(another_article.errors.messages[:canonical_url]).to include(error_message)
       expect(another_article.errors.messages[:feed_source_url]).to include(error_message)

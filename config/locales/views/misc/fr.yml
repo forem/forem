@@ -40,15 +40,9 @@ fr:
       color_1:
         label: Brand color 1
         description: Used for backgrounds, borders etc.
-        select:
-          aria_label: Brand color 1 color selector
-          label: Brand color 1 color select
       color_2:
         label: Brand color 2
         description_html: Used for texts (usually put on <em>Brand color 1</em>).
-        select:
-          aria_label: Brand color 2 color selector
-          label: Brand color 2 color select
       preview:
         icon: App logo
         text: 'Preview:'
@@ -85,6 +79,7 @@ fr:
         people: People
         comments: Comments
         my_posts: My posts only
+        tags: Tags
       sort:
         aria_label: Search result sort options
         relevance: Most Relevant

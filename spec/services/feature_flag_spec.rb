@@ -20,12 +20,32 @@ describe FeatureFlag, type: :service do
   end
 
   describe ".enabled?" do
+    subject(:method_call) { described_class.enabled?(flag) }
+
+    let(:flag) { "foo" }
+
     it "calls Flipper's enabled? method" do
-      allow(Flipper).to receive(:enabled?).with("foo")
+      allow(Flipper).to receive(:enabled?).with(flag)
 
-      described_class.enabled?("foo")
+      described_class.enabled?(flag)
 
-      expect(Flipper).to have_received(:enabled?).with("foo")
+      expect(Flipper).to have_received(:enabled?).with(flag)
+    end
+
+    context "when flag explicitly enabled" do
+      before { described_class.enable(flag) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when flag doesn't exist" do
+      it { is_expected.to be_falsey }
+    end
+
+    context "when flag explicitly disabled" do
+      before { described_class.disable(flag) }
+
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -77,6 +97,16 @@ describe FeatureFlag, type: :service do
       it "returns true for a user" do
         expect(described_class.accessible?("flag", user)).to be(true)
       end
+    end
+  end
+
+  describe ".all", :aggregate_failures do
+    it "returns a hash with all feature flags and their status" do
+      described_class.enable(:flag1)
+      expect(described_class.all).to eq({ flag1: :on })
+
+      described_class.disable(:flag2)
+      expect(described_class.all).to eq({ flag1: :on, flag2: :off })
     end
   end
 end

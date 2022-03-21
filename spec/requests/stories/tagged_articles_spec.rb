@@ -61,6 +61,20 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
         end
 
+        it "renders page when tag is not supported but has at least one approved article" do
+          unsupported_tag = create(:tag, supported: false)
+          create(:article, published: true, approved: true, tags: unsupported_tag)
+
+          get "/t/#{unsupported_tag.name}/top/week"
+          expect(response.body).to include(unsupported_tag.name)
+          get "/t/#{unsupported_tag.name}/top/month"
+          expect(response.body).to include(unsupported_tag.name)
+          get "/t/#{unsupported_tag.name}/top/year"
+          expect(response.body).to include(unsupported_tag.name)
+          get "/t/#{unsupported_tag.name}/top/infinity"
+          expect(response.body).to include(unsupported_tag.name)
+        end
+
         it "returns not found if no published posts and tag not supported" do
           Article.destroy_all
           tag.update_column(:supported, false)
@@ -144,7 +158,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def sets_remember_token
-            expect(response.cookies["remember_user_token"]).not_to be nil
+            expect(response.cookies["remember_user_token"]).not_to be_nil
           end
 
           it "renders properly even if site config is private" do
@@ -185,7 +199,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def does_not_set_remember_token
-            expect(response.cookies["remember_user_token"]).to be nil
+            expect(response.cookies["remember_user_token"]).to be_nil
           end
 
           def renders_pagination

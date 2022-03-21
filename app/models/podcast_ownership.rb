@@ -6,5 +6,4 @@ class PodcastOwnership < ApplicationRecord
   belongs_to :podcast
 
   validates :podcast_id, uniqueness: { scope: :user_id }
-  validates :podcast_id, :user_id, presence: true
 end

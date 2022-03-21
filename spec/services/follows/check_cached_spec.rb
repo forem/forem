@@ -6,11 +6,11 @@ RSpec.describe Follows::CheckCached, type: :service do
   it "checks if following a thing and returns true if they are" do
     user2 = create(:user)
     user.follow(user2)
-    expect(described_class.call(user, "User", user2.id)).to eq(true)
+    expect(described_class.call(user, "User", user2.id)).to be(true)
   end
 
   it "checks if following a thing and returns false if they are not" do
     user2 = create(:user)
-    expect(described_class.call(user, "User", user2.id)).to eq(false)
+    expect(described_class.call(user, "User", user2.id)).to be(false)
   end
 end

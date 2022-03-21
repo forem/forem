@@ -5,7 +5,7 @@ import CogIcon from '@images/cog.svg';
 
 export default {
   component: Button,
-  title: 'BETA/Buttons',
+  title: 'Components/Buttons',
   parameters: {
     docs: {
       page: ButtonsDoc,

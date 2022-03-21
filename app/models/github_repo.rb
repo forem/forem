@@ -27,9 +27,8 @@ class GithubRepo < ApplicationRecord
   end
 
   def self.update_to_latest
-    where("updated_at < ?", 26.hours.ago).ids.each do |repo_id|
-      GithubRepos::RepoSyncWorker.perform_async(repo_id)
-    end
+    ids = where(updated_at: ...26.hours.ago).ids.map { |id| [id] }
+    GithubRepos::RepoSyncWorker.perform_bulk(ids)
   end
 
   private

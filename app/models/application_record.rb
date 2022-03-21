@@ -35,6 +35,16 @@ class ApplicationRecord < ActiveRecord::Base
     false
   end
 
+  # In our view objects, we often ask "What's this object's class's name?"
+  #
+  # We can either first check "Are you decorated?"  If so, ask for the decorated object's class
+  # name.  Or we can add a helper method for that very thing.
+  #
+  # @return [String]
+  def class_name
+    self.class.name
+  end
+
   # Decorate collection with appropriate decorator
   def self.decorate
     decorator_class.decorate_collection(all)
@@ -50,7 +60,8 @@ class ApplicationRecord < ActiveRecord::Base
 
     return superclass.decorator_class(called_on) if superclass.respond_to?(:decorator_class)
 
-    raise UninferrableDecoratorError, "Could not infer a decorator for #{called_on.class.name}."
+    raise UninferrableDecoratorError,
+          I18n.t("models.application_record.uninferrable", class: called_on.class.name)
   end
 
   def self.statement_timeout

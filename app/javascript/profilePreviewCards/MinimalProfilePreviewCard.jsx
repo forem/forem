@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { ButtonNew as Button } from '@crayons';
 
 export const MinimalProfilePreviewCard = ({
   triggerId,
@@ -20,8 +21,8 @@ export const MinimalProfilePreviewCard = ({
 
     <div
       id={contentId}
-      class="profile-preview-card__content crayons-dropdown p-4"
-      style="border-top: var(--su-7) solid var(--card-color);"
+      class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
+      style="border-top-color: var(--card-color);"
       data-repositioning-dropdown="true"
       data-testid="profile-preview-card"
     >
@@ -40,8 +41,9 @@ export const MinimalProfilePreviewCard = ({
           </a>
         </div>
         <div class="print-hidden">
-          <button
-            class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
+          <Button
+            variant="primary"
+            className="follow-action-button follow-user w-100"
             data-info={JSON.stringify({
               id: userId,
               className: 'User',
@@ -50,7 +52,7 @@ export const MinimalProfilePreviewCard = ({
             })}
           >
             Follow
-          </button>
+          </Button>
         </div>
         <div
           class="author-preview-metadata-container"

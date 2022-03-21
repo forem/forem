@@ -1,8 +1,6 @@
 class FeedbackMessagesController < ApplicationController
   # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
-  FLASH_MESSAGE = "Make sure the forms are filled. 🤖 Other possible errors: "\
-                  "%<errors>s".freeze
   FEEDBACK_ALLOWED_PARAMS = %i[message feedback_type category reported_url offender_id].freeze
 
   def create
@@ -12,7 +10,7 @@ class FeedbackMessagesController < ApplicationController
     @feedback_message = FeedbackMessage.new(params)
 
     recaptcha_enabled = ReCaptcha::CheckEnabled.call(current_user)
-    if (!recaptcha_enabled || recaptcha_verified? || connect_feedback?) && !rate_limit? && @feedback_message.save
+    if (!recaptcha_enabled || recaptcha_verified?) && !rate_limit? && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
         type: feedback_message_params[:feedback_type],
@@ -31,11 +29,15 @@ class FeedbackMessagesController < ApplicationController
 
       respond_to do |format|
         format.html { redirect_to feedback_messages_path }
-        format.json { render json: { success: true, message: "Your report is submitted" } }
+        format.json do
+          render json: { success: true, message: I18n.t("feedback_messages_controller.submitted") }
+        end
       end
     else
       @previous_message = feedback_message_params[:message]
-      flash[:notice] = format(FLASH_MESSAGE, errors: @feedback_message.errors_as_sentence.presence || "N/A")
+      flash[:notice] =
+        I18n.t("feedback_messages_controller.error_fill",
+               errors: @feedback_message.errors_as_sentence.presence || I18n.t("feedback_messages_controller.n_a"))
 
       respond_to do |format|
         format.html { render "pages/report_abuse" }
@@ -55,10 +57,6 @@ class FeedbackMessagesController < ApplicationController
   def recaptcha_verified?
     recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
-  end
-
-  def connect_feedback?
-    feedback_message_params[:feedback_type] == "connect"
   end
 
   def feedback_message_params

@@ -1,13 +1,14 @@
 import { h } from 'preact';
-import { useState, useLayoutEffect } from 'preact/hooks';
+import { useState, useLayoutEffect, useRef } from 'preact/hooks';
 import { ImageUploader } from '../../article-form/components/ImageUploader';
 import {
   coreSyntaxFormatters,
   secondarySyntaxFormatters,
   getNewTextAreaValueWithEdits,
 } from './markdownSyntaxFormatters';
-import { Overflow, Help } from './icons';
-import { Button } from '@crayons';
+import OverflowIcon from '@images/overflow-vertical.svg';
+import HelpIcon from '@images/help.svg';
+import { ButtonNew as Button, Link } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
@@ -58,7 +59,8 @@ const getPreviousMatchingSibling = (element, selector) => {
  * @param {string} props.textAreaId The ID of the textarea the markdown formatting should be added to
  */
 export const MarkdownToolbar = ({ textAreaId }) => {
-  const [textArea, setTextArea] = useState(null);
+  const textAreaRef = useRef(null);
+
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
   const [storedCursorPosition, setStoredCursorPosition] = useState({});
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
@@ -88,7 +90,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   );
 
   useLayoutEffect(() => {
-    setTextArea(document.getElementById(textAreaId));
+    textAreaRef.current = document.getElementById(textAreaId);
   }, [textAreaId]);
 
   useLayoutEffect(() => {
@@ -182,6 +184,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   const insertSyntax = (syntaxName) => {
     setOverflowMenuOpen(false);
 
+    const { current: textArea } = textAreaRef;
     const {
       newCursorStart,
       newCursorEnd,
@@ -220,6 +223,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   };
 
   const handleImageUploadStarted = () => {
+    const { current: textArea } = textAreaRef;
     const { textBeforeSelection, textAfterSelection } =
       getSelectionData(textArea);
 
@@ -240,6 +244,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   };
 
   const handleImageUploadEnd = (imageMarkdown = '') => {
+    const { current: textArea } = textAreaRef;
+
     const {
       selectionStart,
       selectionEnd,
@@ -286,8 +292,6 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         <Button
           key={`${controlName}-btn`}
           role={isOverflow ? 'menuitem' : 'button'}
-          variant="ghost"
-          contentType="icon"
           icon={icon}
           className={
             isOverflow
@@ -332,8 +336,6 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         return (
           <Button
             key={`${controlName}-btn`}
-            variant="ghost"
-            contentType="icon"
             icon={icon}
             className="toolbar-btn mr-1"
             tabindex={index === 0 ? '0' : '-1'}
@@ -364,15 +366,15 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         buttonProps={{
           onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
           onClick: () => {
-            const { selectionStart, selectionEnd } = textArea;
+            const {
+              current: { selectionStart, selectionEnd },
+            } = textAreaRef;
             setStoredCursorPosition({ selectionStart, selectionEnd });
           },
           tooltip: smallScreen ? null : (
             <span aria-hidden="true">Upload image</span>
           ),
           key: 'image-btn',
-          variant: 'ghost',
-          contentType: 'icon',
           className: 'toolbar-btn formatter-btn mr-1',
           tabindex: '-1',
         }}
@@ -387,9 +389,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
           aria-expanded={overflowMenuOpen ? 'true' : 'false'}
           aria-haspopup="true"
-          variant="ghost"
-          contentType="icon"
-          icon={Overflow}
+          icon={OverflowIcon}
           className="toolbar-btn ml-auto hidden m:block"
           tabindex="-1"
           aria-label="More options"
@@ -403,15 +403,13 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           className="crayons-dropdown flex p-2 min-w-unset right-0 top-100"
         >
           {getSecondaryFormatterButtons(true)}
-          <Button
-            tagName="a"
+          <Link
+            block
             role="menuitem"
-            url="/p/editor_guide"
+            href="/p/editor_guide"
             target="_blank"
             rel="noopener noreferrer"
-            variant="ghost"
-            contentType="icon"
-            icon={Help}
+            icon={HelpIcon}
             className="overflow-menu-btn"
             tabindex="-1"
             aria-label="Help"
@@ -419,10 +417,10 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           />
         </div>
       )}
-      {textArea && (
+      {textAreaRef.current && (
         <KeyboardShortcuts
           shortcuts={keyboardShortcuts}
-          eventTarget={textArea}
+          eventTarget={textAreaRef.current}
         />
       )}
     </div>

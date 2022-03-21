@@ -2,9 +2,13 @@ module Constants
   module Settings
     module General
       IMAGE_PLACEHOLDER = "https://url/image.png".freeze
-      SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
       DETAILS = {
+        contact_email: {
+          description: "Used for contact links. Please provide an email address where users " \
+                       "can get in touch with you or your team.",
+          placeholder: "hello@example.com"
+        },
         credit_prices_in_cents: {
           small: {
             description: "Price for small credit purchase (<10 credits).",
@@ -36,12 +40,9 @@ module Constants
           placeholder: "a secure token"
         },
         logo_png: {
-          description: "Used as a fallback to the SVG. Recommended minimum of 512x512px",
+          description: "Used as a secondary logo in places like the sign in modals, onboarding, Apple touch icons. " \
+                       "Recommended minimum of 512x512px",
           placeholder: IMAGE_PLACEHOLDER
-        },
-        logo_svg: {
-          description: "Used as the SVG logo of the community",
-          placeholder: SVG_PLACEHOLDER
         },
         main_social_image: {
           description: "Used as the main image in social networks and OpenGraph. Recommended aspect ratio " \
@@ -94,7 +95,7 @@ module Constants
           placeholder: 2
         },
         sidebar_tags: {
-          description: "Determines which tags are shown on the homepage righthand sidebar",
+          description: "Determines which tags are shown on the homepage right-hand sidebar",
           placeholder: "List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta"
         },
         sponsor_headline: {

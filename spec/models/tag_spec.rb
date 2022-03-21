@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe Tag, type: :model do
   let(:tag) { build(:tag) }
 
+  describe "#class_name" do
+    subject(:class_name) { tag.class_name }
+
+    it { is_expected.to eq("Tag") }
+  end
+
   describe "validations" do
     describe "builtin validations" do
       subject { tag }
@@ -105,6 +111,12 @@ RSpec.describe Tag, type: :model do
     end
   end
 
+  it "strips HTML tags from short_summary before saving" do
+    tag.short_summary = "<p>Hello <strong>World</strong>.</p>"
+    tag.save
+    expect(tag.short_summary).to eq("Hello World.")
+  end
+
   it "turns markdown into HTML before saving" do
     tag.rules_markdown = "Hello [Google](https://google.com)"
     tag.save
@@ -158,6 +170,83 @@ RSpec.describe Tag, type: :model do
 
     it "returns self if there's no preferred tag" do
       expect(described_class.find_preferred_alias_for("something")).to eq("something")
+    end
+  end
+
+  describe ".followed_tags_for" do
+    let(:saved_user) { create(:user) }
+    let(:tag1) { create(:tag) }
+    let(:tag2) { create(:tag) }
+    let(:tag3) { create(:tag) }
+
+    it "returns empty if no tags followed" do
+      expect(described_class.followed_tags_for(follower: saved_user).size).to eq(0)
+    end
+
+    it "returns array of tags if user follows them" do
+      saved_user.follow(tag1)
+      saved_user.follow(tag2)
+      saved_user.follow(tag3)
+      expect(described_class.followed_tags_for(follower: saved_user).size).to eq(3)
+    end
+
+    it "returns tag object with name" do
+      saved_user.follow(tag1)
+      expect(described_class.followed_tags_for(follower: saved_user).first.name).to eq(tag1.name)
+    end
+
+    it "returns follow points for tag" do
+      saved_user.follow(tag1)
+      expect(described_class.followed_tags_for(follower: saved_user).first.points).to eq(1.0)
+    end
+
+    it "returns adjusted points for tag" do
+      follow = saved_user.follow(tag1)
+      follow.update(explicit_points: 0.1)
+
+      expect(described_class.followed_tags_for(follower: saved_user).first.points).to eq(0.1)
+    end
+  end
+
+  describe "#points" do
+    it "defaults to 0" do
+      expect(described_class.new.points).to eq(0)
+    end
+  end
+
+  # [@jeremyf] The implementation details of #accessible_name are contingent on a feature flag that
+  #            we're using for this refactoring.  Once we remove the flag, please adjust the specs
+  #            accordingly.
+  describe "#accessible_name" do
+    subject(:accessible_name) { described_class.new(name: name, pretty_name: pretty_name).accessible_name }
+
+    let(:name) { "helloworld" }
+    let(:pretty_name) { "helloWorld" }
+
+    context "when favor_accessible_name_for_tag_label is true" do
+      before { allow(described_class).to receive(:favor_accessible_name_for_tag_label?).and_return(true) }
+
+      it "equals the #pretty_name" do
+        expect(accessible_name).to eq pretty_name
+      end
+    end
+
+    context "when favor_accessible_name_for_tag_label is true but no pretty name given" do
+      before { allow(described_class).to receive(:favor_accessible_name_for_tag_label?).and_return(true) }
+
+      let(:pretty_name) { nil }
+
+      it "equals the #name" do
+        expect(accessible_name).to eq name
+      end
+    end
+
+    context "when favor_accessible_name_for_tag_label is false" do
+      before { allow(described_class).to receive(:favor_accessible_name_for_tag_label?).and_return(false) }
+
+      it "equals the #name" do
+        expect(accessible_name).to eq name
+      end
     end
   end
 end

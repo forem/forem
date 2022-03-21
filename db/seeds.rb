@@ -36,9 +36,9 @@ end
 seeder.create_if_none(Organization) do
   3.times do
     Organization.create!(
-      name: Faker::TvShows::SiliconValley.company,
+      name: Faker::Company.name,
       summary: Faker::Company.bs,
-      remote_profile_image_url: logo = Faker::Company.logo,
+      profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
       nav_image: logo,
       url: Faker::Internet.url,
       slug: "org#{rand(10_000)}",
@@ -54,21 +54,26 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
-# rubocop:disable Metrics/BlockLength
 users_in_random_order = seeder.create_if_none(User, num_users) do
   roles = %i[trusted workshop_pass]
 
   num_users.times do |i|
     fname = Faker::Name.unique.first_name
+    # Including "\\:/" to help with identifying local issues with
+    # character escaping.
     lname = Faker::Name.unique.last_name
-    name = [fname, lname].join(" ")
+    name = [fname, "\"The #{fname}\"", lname, " \\:/"].join(" ")
+    username = "#{fname} #{lname}"
 
     user = User.create!(
       name: name,
       profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-      twitter_username: Faker::Internet.username(specifier: name),
+      # Twitter username should be always ASCII
+      twitter_username: Faker::Internet.username(specifier: username.transliterate),
       # Emails limited to 50 characters
-      email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
+      email: Faker::Internet.email(
+        name: username.transliterate, separators: "+", domain: Faker::Internet.domain_word.first(20),
+      ),
       confirmed_at: Time.current,
       registered_at: Time.current,
       registered: true,
@@ -181,15 +186,14 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
   User.order(Arel.sql("RANDOM()"))
 end
-# rubocop:enable Metrics/BlockLength
-
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
-    name: "Admin McAdmin",
+    name: "Admin \"The \\:/ Administrator\" McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
+    registered_at: Time.current,
     password: "password",
     password_confirmation: "password",
   )
@@ -351,46 +355,26 @@ seeder.create_if_none(Podcast) do
 
   podcast_objects.each do |attributes|
     podcast = Podcast.create!(attributes)
-    Podcasts::GetEpisodesWorker.perform_async(podcast_id: podcast.id)
+    Podcasts::GetEpisodesWorker.perform_async("podcast_id" => podcast.id)
   end
 end
 ##############################################################################
 
 seeder.create_if_none(Broadcast) do
   broadcast_messages = {
-    set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. " \
-                    "Let's begin by <a href='/settings'>setting up your profile</a>!",
-    welcome_thread: "Sloan here again! 👋 DEV is a friendly community. " \
-                    "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
-    twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? " \
-                     "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
-                     "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
-    facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
-                      "Consider <a href='/settings'>connecting it</a>.",
-    github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
-                    "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
-    customize_feed:
-      "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
-      "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
-    customize_experience:
-      "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
-      "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
-    start_discussion:
-      "Sloan here! 👋 I noticed that you haven't " \
-      "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
-      "just click on 'Create Post' in the sidebar of the tag page to get started!",
-    ask_question:
-      "Sloan here! 👋 I noticed that you haven't " \
-      "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
-      "just click on 'Create Post' in the sidebar of the tag page to get started!",
-    discuss_and_ask:
-      "Sloan here! 👋 I noticed that you haven't " \
-      "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
-      "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; " \
-      "just click on 'Create Post' in the sidebar of the tag page to get started!",
-    download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? " \
-                  "Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all " \
-                  "of your favorite DEV content on the go!"
+    set_up_profile: I18n.t("broadcast.welcome.set_up_profile"),
+    welcome_thread: I18n.t("broadcast.welcome.welcome_thread"),
+    twitter_connect: I18n.t("broadcast.connect.twitter"),
+    facebook_connect: I18n.t("broadcast.connect.facebook"),
+    github_connect: I18n.t("broadcast.connect.github"),
+    google_oauth2_connect: I18n.t("broadcast.connect.google"),
+    apple_connect: I18n.t("broadcast.connect.apple"),
+    customize_feed: I18n.t("broadcast.welcome.customize_feed"),
+    customize_experience: I18n.t("broadcast.welcome.customize_experience"),
+    start_discussion: I18n.t("broadcast.welcome.start_discussion"),
+    ask_question: I18n.t("broadcast.welcome.ask_question"),
+    discuss_and_ask: I18n.t("broadcast.welcome.discuss_and_ask"),
+    download_app: I18n.t("broadcast.welcome.download_app")
   }
 
   broadcast_messages.each do |type, message|
@@ -575,6 +559,9 @@ end
 
 ##############################################################################
 
+# change locale to en to work around non-ascii slug problem
+loc = I18n.locale
+Faker::Config.locale = "en"
 seeder.create_if_none(Page) do
   5.times do
     Page.create!(
@@ -586,6 +573,7 @@ seeder.create_if_none(Page) do
     )
   end
 end
+Faker::Config.locale = loc
 
 ##############################################################################
 

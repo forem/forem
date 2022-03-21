@@ -11,10 +11,8 @@ class UserSubscription < ApplicationRecord
   belongs_to :subscriber, class_name: "User", inverse_of: :subscribed_to_user_subscriptions
   belongs_to :user_subscription_sourceable, polymorphic: true, optional: true
 
-  validates :author_id, presence: true
-
   validates :subscriber_email, presence: true
-  validates :subscriber_id, presence: true, uniqueness: {
+  validates :subscriber_id, uniqueness: {
     scope: %i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id]
   }
 
@@ -54,7 +52,7 @@ class UserSubscription < ApplicationRecord
     return unless user_subscription_sourceable
     return if liquid_tags_used.include?(UserSubscriptionTag)
 
-    errors.add(:base, "User subscriptions are not enabled for the source.")
+    errors.add(:base, I18n.t("models.user_subscription.not_enabled"))
   end
 
   def liquid_tags_used
@@ -70,7 +68,7 @@ class UserSubscription < ApplicationRecord
   def non_apple_auth_subscriber
     return unless subscriber_email&.end_with?("@privaterelay.appleid.com")
 
-    errors.add(:subscriber_email, "Can't subscribe with an Apple private relay. Please update email.")
+    errors.add(:subscriber_email, I18n.t("models.user_subscription.non_apple"))
   end
 
   def active_user_subscription_source
@@ -90,6 +88,6 @@ class UserSubscription < ApplicationRecord
 
     return if source_active
 
-    errors.add(:base, "Source not found. Please make sure your #{user_subscription_sourceable_type} is active!")
+    errors.add(:base, I18n.t("models.user_subscription.source_not_found", source: user_subscription_sourceable_type))
   end
 end

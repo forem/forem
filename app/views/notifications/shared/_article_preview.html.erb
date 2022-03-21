@@ -15,8 +15,8 @@
         data-reactable-id="<%= json_data["article"]["id"] %>"
         data-category="like"
         data-reactable-type="Article">
-        <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: t("views.reactions.like.icon")) %>
-        <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: t("views.reactions.like.icon")) %>
+        <%= crayons_icon_tag("small-heart", class: "reaction-icon not-reacted", title: t("views.reactions.like.icon")) %>
+        <%= crayons_icon_tag("small-heart-filled", class: "reaction-icon--like reaction-icon reacted", title: t("views.reactions.like.icon")) %>
         <span class="hidden m:inline-block"><%= t("views.reactions.like.text") %></span>
       </button>
 
@@ -26,8 +26,8 @@
         data-category="readinglist"
         data-reactable-type="Article">
         <span class="reaction-button-text hidden m:inline-block"><%= t("views.reactions.readingList.text") %></span>
-        <%= inline_svg_tag("small-save.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: t("views.reactions.readingList.icon")) %>
-        <%= inline_svg_tag("small-save-filled.svg", aria: true, class: "crayons-icon reaction-icon--readinglist reaction-icon reacted", title: t("views.reactions.readingList.icon")) %>
+        <%= crayons_icon_tag("small-save", class: "reaction-icon not-reacted", title: t("views.reactions.readingList.icon")) %>
+        <%= crayons_icon_tag("small-save-filled", class: "reaction-icon--readinglist reaction-icon reacted", title: t("views.reactions.readingList.icon")) %>
       </button>
     </footer>
   <% end %>

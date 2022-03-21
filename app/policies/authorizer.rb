@@ -133,11 +133,6 @@ module Authorizer
       has_any_role?(:tech_admin, :super_admin)
     end
 
-    def trusted
-      ActiveSupport::Deprecation.warn("User#trusted is deprecated, favor User#trusted?")
-      trusted?
-    end
-
     def trusted?
       return @trusted if defined? @trusted
 
@@ -158,11 +153,6 @@ module Authorizer
       has_role?(:warned)
     end
 
-    def warned
-      ActiveSupport::Deprecation.warn("User#warned is deprecated, favor User#warned?")
-      warned?
-    end
-
     def workshop_eligible?
       has_any_role?(:workshop_pass)
     end
@@ -177,6 +167,4 @@ module Authorizer
       user.__send__(:has_any_role?, *args)
     end
   end
-
-  private_constant :RoleBasedQueries
 end

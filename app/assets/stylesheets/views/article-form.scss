@@ -238,6 +238,29 @@
 }
 
 .crayons-article-form {
+  &__top-tags-heading {
+    padding: var(--su-3);
+    font-size: var(--fs-l);
+    border-bottom: 1px solid var(--base-20);
+  }
+
+  &__tag-selection {
+    .c-btn {
+      color: var(--base-80);
+      background-color: var(--tag-bg);
+    }
+
+    .c-btn:hover:enabled,
+    .c-btn:focus-visible:enabled {
+      color: var(--base-80);
+      background-color: var(--tag-bg-hover);
+    }
+  }
+
+  &__tag-prefix {
+    color: var(--tag-prefix);
+  }
+
   &__tag-option {
     background: var(--card-bg);
     color: var(--card-color);
@@ -263,88 +286,36 @@
     }
   }
 
+  [aria-selected='true'] {
+    .crayons-article-form__tag-option {
+      --tag-prefix: var(--accent-brand-darker) !important;
+      background: var(--body-bg);
+
+      .crayons-article-form__tag-option-title {
+        color: var(--accent-brand-darker);
+      }
+    }
+  }
+
   &__tag-option-image {
     height: 1rem;
     margin-left: var(--su-1);
   }
+}
 
-  // TODO: Clean up these old styles when Autocomplete component is added
-  &__tagsoptions {
-    background: var(--card-bg);
-    color: var(--card-color);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.1);
-    border-radius: var(--radius);
-
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + var(--su-4));
-    z-index: var(--z-dropdown);
-    padding: var(--su-1);
-
-    @media (min-width: $breakpoint-s) {
-      left: calc(var(--su-2) * -1);
-      right: calc(var(--su-2) * -1);
-    }
-
-    @media (min-width: $breakpoint-m) {
-      left: calc(var(--su-4) * -1);
-      right: calc(var(--su-4) * -1);
-    }
-  }
-
-  &__tagsoptionsheading {
-    padding: var(--su-3);
-    font-size: var(--fs-l);
-    border-bottom: 1px solid var(--base-20);
-  }
-
-  &__tagname {
-    color: var(--base-90);
-    font-weight: var(--fw-medium);
-  }
-
-  &__tagoptionrow {
-    cursor: pointer;
-    color: var(--link-color);
-    padding: var(--su-3);
-
-    &:hover {
-      background: var(--link-bg-hover);
-      .crayons-tag {
-        color: var(--link-color-hover);
-      }
-    }
-
-    &--active {
-      background: var(--link-bg-hover);
-      .crayons-article-form__tagname {
-        color: var(--link-color-hover);
-      }
-    }
-  }
-
-  &__tagsoptionrulesbutton {
-    display: none;
-  }
-  &__tagrules,
-  &__tagrules--inactive {
-    font-size: var(--fs-s);
-    color: var(--base-70);
-  }
-
-  &__tagsoptionsbottomrow {
-    display: none;
-  }
+.js-focus-visible
+  .crayons-article-form__tag-selection
+  .c-btn.focus-visible:focus {
+  background-color: var(--tag-bg);
+  color: var(--base-80);
 }
 
 // Styling for drag'n'drop functionality...
 
 .drop-area {
   &--active {
-    background: var(--accent-brand-a10);
-    box-shadow: inset 0 0 0 1px var(--accent-brand);
+    background: rgba(var(--accent-brand-rgb), 0.1);
+    box-shadow: inset 0 0 0 1px var(--focus);
 
     // ideally this one shouldn't be there, but I'm not sure how else we could handle that right now...
     .crayons-article-form__toolbar {

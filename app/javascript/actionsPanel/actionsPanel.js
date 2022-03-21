@@ -176,11 +176,35 @@ const adminUnpublishArticle = async (id, username, slug) => {
   }
 };
 
-function toggleSubmitContainer() {
-  document
-    .getElementById('adjustment-reason-container')
-    .classList.toggle('hidden');
-}
+const adminFeatureArticle = async (id, featured) => {
+  try {
+    const response = await request(`/articles/${id}/admin_featured_toggle`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        id,
+        article: { featured: featured === 'true' ? 0 : 1 },
+      }),
+      credentials: 'same-origin',
+    });
+
+    const outcome = await response.json();
+
+    /* eslint-disable no-restricted-globals */
+    if (outcome.message == 'success') {
+      window.top.location.assign(`${window.location.origin}${outcome.path}`);
+    } else {
+      top.addSnackbarItem({
+        message: `Error: ${outcome.message}`,
+        addCloseButton: true,
+      });
+    }
+  } catch (error) {
+    top.addSnackbarItem({
+      message: `Error: ${error}`,
+      addCloseButton: true,
+    });
+  }
+};
 
 function clearAdjustmentReason() {
   document.getElementById('tag-adjustment-reason').value = '';
@@ -242,7 +266,6 @@ async function adjustTag(el) {
         el.value = '';
       }
 
-      toggleSubmitContainer();
       clearAdjustmentReason();
 
       if (outcome.result === 'addition') {
@@ -297,18 +320,8 @@ export function handleAdjustTagBtn(btn) {
       }
       btn.classList.toggle('active');
     });
-    if (btn.classList.contains('active')) {
-      document
-        .getElementById('adjustment-reason-container')
-        .classList.remove('hidden');
-    } else {
-      document
-        .getElementById('adjustment-reason-container')
-        .classList.add('hidden');
-    }
   } else {
     btn.classList.toggle('active');
-    toggleSubmitContainer();
   }
 }
 
@@ -317,10 +330,6 @@ function handleAdminInput() {
 
   if (addTagInput) {
     addTagInput.addEventListener('focus', () => {
-      document
-        .getElementById('adjustment-reason-container')
-        .classList.remove('hidden');
-
       const activeTagBtns = Array.from(
         document.querySelectorAll('button.adjustable-tag.active'),
       );
@@ -330,7 +339,6 @@ function handleAdminInput() {
     });
     addTagInput.addEventListener('focusout', () => {
       if (addTagInput.value === '') {
-        toggleSubmitContainer();
       }
     });
   }
@@ -345,18 +353,16 @@ export function addAdjustTagListeners() {
     },
   );
 
-  const adjustTagSubmitBtn = document.getElementById('tag-adjust-submit');
-  if (adjustTagSubmitBtn) {
-    adjustTagSubmitBtn.addEventListener('click', (e) => {
+  const form = document.getElementById('tag-adjust-submit')?.form;
+  if (form) {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const textArea = document.getElementById('tag-adjustment-reason');
+
       const dataSource =
-        document.querySelector('button.adjustable-tag.active') ||
+        document.querySelector('button.adjustable-tag.active') ??
         document.getElementById('admin-add-tag');
 
-      if (textArea.checkValidity()) {
-        adjustTag(dataSource);
-      }
+      adjustTag(dataSource);
     });
 
     handleAdminInput();
@@ -398,6 +404,15 @@ export function addBottomActionsListeners() {
     },
   );
 
+  const featureArticleBtn = document.getElementById('feature-article-btn');
+  if (featureArticleBtn) {
+    featureArticleBtn.addEventListener('click', () => {
+      const { articleId: id, articleFeatured: featured } =
+        featureArticleBtn.dataset;
+      adminFeatureArticle(id, featured);
+    });
+  }
+
   const unpublishArticleBtn = document.getElementById('unpublish-article-btn');
   if (unpublishArticleBtn) {
     unpublishArticleBtn.addEventListener('click', () => {
@@ -407,7 +422,7 @@ export function addBottomActionsListeners() {
         articleSlug: slug,
       } = unpublishArticleBtn.dataset;
 
-      if (confirm('You are unpublishing this article; are you sure?')) {
+      if (confirm('You are unpublishing this post; are you sure?')) {
         adminUnpublishArticle(id, username, slug);
       }
     });

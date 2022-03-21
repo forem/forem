@@ -103,3 +103,6 @@ dump.rdb
 
 # pry configuration file
 .pryrc
+
+# generated yarddoc
+doc/

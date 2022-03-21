@@ -19,8 +19,7 @@ class AsyncInfoController < ApplicationController
           param: request_forgery_protection_token,
           token: form_authenticity_token,
           user: user_data,
-          creator: user_is_a_creator,
-          creator_onboarding: use_creator_onboarding
+          creator: user_is_a_creator
         }
       end
     end
@@ -43,9 +42,8 @@ class AsyncInfoController < ApplicationController
         id: @user.id,
         name: @user.name,
         username: @user.username,
-        profile_image_90: Images::Profile.call(@user.profile_image_url, length: 90),
-        followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score],
-                                                          methods: [:points]),
+        profile_image_90: @user.profile_image_url_for(length: 90),
+        followed_tags: @user.cached_followed_tags.to_json,
         followed_podcast_ids: @user.cached_following_podcasts_ids,
         reading_list_ids: @user.cached_reading_list_article_ids,
         blocked_user_ids: UserBlock.cached_blocked_ids_for_blocker(@user.id),
@@ -59,17 +57,14 @@ class AsyncInfoController < ApplicationController
         config_body_class: @user.config_body_class,
         feed_style: feed_style_preference,
         created_at: @user.created_at,
-        admin: @user.any_admin?
+        admin: @user.any_admin?,
+        apple_auth: @user.email.to_s.end_with?("@privaterelay.appleid.com")
       }
     end.to_json
   end
 
   def user_is_a_creator
     @user.creator?
-  end
-
-  def use_creator_onboarding
-    FeatureFlag.enabled?(:creator_onboarding) && user_is_a_creator
   end
 
   def user_cache_key

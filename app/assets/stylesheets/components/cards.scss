@@ -5,6 +5,8 @@
   background: var(--card-bg);
   color: var(--card-color);
   box-shadow: 0 0 0 1px var(--card-border);
+  // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+  overflow-wrap: break-word;
   overflow-wrap: anywhere;
 
   &--secondary {
@@ -14,8 +16,7 @@
   }
 
   &--elevated {
-    box-shadow: 0 0 0 1px var(--card-secondary-border), 0 1px 3px var(--base-a5),
-      0 3px 9px var(--base-a5);
+    box-shadow: var(--shadow-1);
   }
 
   &--content-rows {
@@ -41,5 +42,33 @@
 
   &__body {
     padding: var(--su-4);
+  }
+}
+
+.c-card {
+  --revealable-opacity: var(--opacity-100);
+  @media (hover: hover) {
+    --revealable-opacity: var(--opacity-0);
+  }
+
+  border-radius: var(--radius-auto);
+  background: var(--card-bg);
+  box-shadow: 0 0 0 1px var(--card-border);
+
+  // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+
+  &__revealable {
+    opacity: var(--revealable-opacity);
+  }
+
+  &--interactive {
+    &:hover,
+    &:focus-within {
+      --card-border: var(--base-90);
+      --card-bg: var(--card-secondary-bg);
+      --revealable-opacity: var(--opacity-100);
+    }
   }
 }

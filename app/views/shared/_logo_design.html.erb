@@ -9,13 +9,9 @@
     <% end %>
     <div class="crayons-field">
       <%= f.label :bg_color_hex, t("views.logo.color_1.label"), class: "crayons-field__label" %>
-      <p class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
+      <p id="color-1-description" class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
       <div class="flex items-center">
-        <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "crayons-textfield mr-2", id: "bg-color-textfield" %>
-        <label class="hidden" for="bg-color-colorfield">
-          <%= t("views.logo.color_1.select.label") %>
-        </label>
-        <input id="bg-color-colorfield" type="color" class="crayons-color-selector" aria-label="<%= t("views.logo.color_1.select.aria_label") %>">
+        <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "crayons-textfield mr-2", data: { color_picker: "true", label_text: t("views.logo.color_1.label") }, aria: { describedby: "color-1-description" } %>
       </div>
     </div>
 
@@ -26,13 +22,9 @@
         <% account.bg_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
       <% end %>
       <%= f.label :text_color_hex, t("views.logo.color_2.label"), class: "crayons-field__label" %>
-      <p class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
+      <p id="color-2-description" class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
       <div class="flex items-center">
-        <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "crayons-textfield mr-2", id: "text-color-textfield" %>
-        <label class="hidden" for="text-color-colorfield">
-          <%= t("views.logo.color_2.select.label") %>
-        </label>
-        <input id="text-color-colorfield" type="color" class="crayons-color-selector" aria-label="<%= t("views.logo.color_2.select.aria_label") %>">
+        <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "crayons-textfield mr-2", data: { color_picker: "true", label_text: t("views.logo.color_2.label") }, aria: { describedby: "color-2-description" } %>
       </div>
     </div>
   </div>
@@ -42,3 +34,4 @@
     <%= inline_svg_tag("preview-logo.svg", id: "color-select-preview-logo", class: "p-4 radius-default", title: t("views.logo.preview.icon")) %>
   </div>
 </div>
+<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>

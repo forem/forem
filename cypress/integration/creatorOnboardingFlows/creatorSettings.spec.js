@@ -17,9 +17,6 @@ describe('Creator Settings Page', () => {
     cy.findByText('No stress, you can always change it later.').should(
       'be.visible',
     );
-    cy.findByText(
-      /Setup not completed yet, missing community description, suggested tags, and suggested users./i,
-    ).should('not.be.visible');
 
     // should contain a community name and update the field properly
     cy.findByRole('textbox', { name: /community name/i })
@@ -36,9 +33,11 @@ describe('Creator Settings Page', () => {
       'be.visible',
     );
 
-    // should contain a brand color field
-    cy.findByText(/^Brand color/).should('be.visible');
-    cy.findByText(/^Brand color/).invoke('attr', 'value', '#ff0000');
+    // should contain a brand color field, enhanced with popover picker
+    cy.findByRole('button', { name: /^Brand color/ }).should('be.visible');
+    cy.findByRole('textbox', { name: /^Brand color/ }).enterIntoColorInput(
+      '#BC1A90',
+    );
 
     // should contain a 'Who can join this community?' radio selector field and allow selection upon click
     cy.findByRole('group', { name: /^Who can join this community/i })
@@ -103,10 +102,11 @@ describe('Creator Settings Page', () => {
     it('should show an error when the contrast ratio of a brand color is too low', () => {
       const lowContrastColor = '#a6e8a6';
 
-      cy.findByLabelText(/^Brand color/)
-        .clear()
-        .type(lowContrastColor)
-        .blur();
+      // The rich color picker should render with a button as well as an input
+      cy.findByRole('button', { name: /^Brand color/ });
+      cy.findByRole('textbox', { name: /^Brand color/ }).enterIntoColorInput(
+        lowContrastColor,
+      );
 
       cy.findByText(
         /^The selected color must be darker for accessibility purposes./,
@@ -116,10 +116,11 @@ describe('Creator Settings Page', () => {
     it('should not show an error when the contrast ratio of a brand color is good', () => {
       const adequateContrastColor = '#25544b';
 
-      cy.findByLabelText(/^Brand color/)
-        .clear()
-        .type(adequateContrastColor)
-        .blur();
+      // The rich color picker should render with a button as well as an input
+      cy.findByRole('button', { name: /^Brand color/ });
+      cy.findByRole('textbox', { name: /^Brand color/ }).enterIntoColorInput(
+        adequateContrastColor,
+      );
 
       cy.findByText(
         /^The selected color must be darker for accessibility purposes./,
@@ -132,10 +133,11 @@ describe('Creator Settings Page', () => {
       const lowContrastColor = '#a6e8a6';
       const lowContrastRgbColor = 'rgb(166, 232, 166)';
 
-      cy.findByLabelText(/^Brand color/)
-        .clear()
-        .type(lowContrastColor)
-        .blur();
+      // The rich color picker should render with a button as well as an input
+      cy.findByRole('button', { name: /^Brand color/ });
+      cy.findByRole('textbox', { name: /^Brand color/ }).enterIntoColorInput(
+        lowContrastColor,
+      );
 
       cy.findByText(
         /^The selected color must be darker for accessibility purposes./,
@@ -152,10 +154,11 @@ describe('Creator Settings Page', () => {
       const color = '#25544b';
       const rgbColor = 'rgb(37, 84, 75)';
 
-      cy.findByLabelText(/^Brand color/)
-        .clear()
-        .type(color)
-        .blur();
+      // The rich color picker should render with a button as well as an input
+      cy.findByRole('button', { name: /^Brand color/ });
+      cy.findByRole('textbox', { name: /^Brand color/ }).enterIntoColorInput(
+        color,
+      );
 
       cy.findByRole('button', { name: 'Finish' }).should(
         'have.css',
@@ -237,14 +240,11 @@ describe('Admin -> Customization -> Config -> Images', () => {
       'not.exist',
     );
 
-    cy.findAllByRole('img', { name: /DEV\(local\)/i }).then((images) => {
-      // Some images being picked up are SVGs which we don't want to check
-      const logoImages = [...images].filter((image) => image.tagName === 'IMG');
+    cy.findAllByRole('img', { name: /DEV\(local\)/i }).should('not.exist');
 
-      // Ensure that the logo URL hasn't been changed.
-      for (const image of logoImages) {
-        cy.get(image).should('have.attr', 'src', '');
-      }
-    });
+    // we should see the community name instead of a logo
+    cy.get('.site-logo__community-name')
+      .findByText(/DEV\(local\)/i)
+      .should('be.visible');
   });
 });

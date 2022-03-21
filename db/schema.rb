@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_22_040359) do
+ActiveRecord::Schema.define(version: 2022_01_26_205052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(version: 2021_12_22_040359) do
     t.datetime "last_experience_level_rating_at"
     t.string "main_image"
     t.string "main_image_background_hex_color", default: "#dddddd"
+    t.boolean "main_image_from_frontmatter", default: false
     t.integer "nth_published_by_author", default: 0
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0
@@ -1121,9 +1122,11 @@ ActiveRecord::Schema.define(version: 2021_12_22_040359) do
     t.datetime "updated_at", null: false
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
+    t.index ["hotness_score"], name: "index_tags_on_hotness_score"
     t.index ["name"], name: "index_tags_on_name", unique: true
     t.index ["social_preview_template"], name: "index_tags_on_social_preview_template"
     t.index ["supported"], name: "index_tags_on_supported"
+    t.index ["taggings_count"], name: "index_tags_on_taggings_count"
   end
 
   create_table "tweets", force: :cascade do |t|
@@ -1209,6 +1212,8 @@ ActiveRecord::Schema.define(version: 2021_12_22_040359) do
     t.string "forem_username"
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
+    t.datetime "google_oauth2_created_at"
+    t.string "google_oauth2_username"
     t.datetime "invitation_accepted_at"
     t.datetime "invitation_created_at"
     t.integer "invitation_limit"
@@ -1270,6 +1275,7 @@ ActiveRecord::Schema.define(version: 2021_12_22_040359) do
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
+    t.index ["google_oauth2_username"], name: "index_users_on_google_oauth2_username"
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"

@@ -72,6 +72,15 @@ function sendFetch(switchStatement, body) {
         },
         body,
       });
+    case 'user_subscriptions':
+      return fetchCallback({
+        url: '/user_subscriptions',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body,
+      });
     default:
       console.log('A wrong switchStatement was used.'); // eslint-disable-line no-console
       break;

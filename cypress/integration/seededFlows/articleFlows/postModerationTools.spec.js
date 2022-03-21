@@ -40,4 +40,29 @@ describe('Moderation Tools for Posts', () => {
       cy.findByRole('button', { name: 'Moderation' }).should('not.exist');
     });
   });
+
+  it('should not alter tags from a post if a reason is not specified', () => {
+    cy.fixture('users/adminUser.json').as('user');
+    cy.get('@user').then((user) => {
+      cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article').then(() => {
+        cy.findByRole('button', { name: 'Moderation' }).click();
+
+        // Helper function for pipe command
+        const click = ($el) => $el.click();
+
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
+          cy.findByRole('button', { name: 'Open adjust tags section' })
+            .as('adjustTagsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+
+          cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
+          cy.findByRole('button', { name: 'Submit' }).click();
+        });
+
+        cy.findByTestId('snackbar').should('not.exist');
+      });
+    });
+  });
 });

@@ -16,6 +16,8 @@ const emailAuthModalBody = `
   <p>If you disable Email address as a registration option, people cannot create an account with their email address.</p>
   <p>However, people who have already created an account using their email address can continue to login.</p>`;
 
+// NOTE: In an effort to move away from Stimulus and create consistency across the codebase
+// we are using vanilla JavaScript (app/javascript/packs/admin/config) to handle any new interactions.
 export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
@@ -139,14 +141,28 @@ export default class ConfigController extends Controller {
     const previewLogo = document.querySelector(
       '#logo-upload-preview .site-logo__img',
     );
+    const communityName = document.querySelector(
+      '.site-logo .site-logo__community-name',
+    );
 
     if (!previewLogo) {
       return;
     }
 
-    for (const logo of document.querySelectorAll('.site-logo__img')) {
-      if (logo !== previewLogo) {
-        logo.src = previewLogo.src;
+    // if we are showing the community name because this is the first time that the
+    // creator is uploading a logo, then we want the logo to replace the community name
+    if (communityName) {
+      const newLogo = document.createElement('img');
+      newLogo.src = previewLogo.src;
+      newLogo.className = 'site-logo__img';
+      newLogo.alt = communityName.innerText;
+
+      communityName.parentNode.replaceChild(newLogo, communityName);
+    } else {
+      for (const logo of document.querySelectorAll('.site-logo__img')) {
+        if (logo !== previewLogo) {
+          logo.src = previewLogo.src;
+        }
       }
     }
   }

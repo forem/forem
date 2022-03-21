@@ -3,9 +3,11 @@ class OrganizationTag < LiquidTagBase
   include ActionView::Helpers::TagHelper
   PARTIAL = "organizations/liquid".freeze
 
-  def initialize(_tag_name, organization, _parse_context)
+  def initialize(_tag_name, input, _parse_context)
     super
-    @organization = parse_slug_to_organization(organization.delete(" "))
+
+    org_slug = input.gsub("#{URL.url}/", "").delete(" ")
+    @organization = parse_slug_to_organization(org_slug)
     @follow_button = follow_button(@organization)
     @organization_colors = user_colors(@organization)
   end
@@ -21,9 +23,9 @@ class OrganizationTag < LiquidTagBase
     )
   end
 
-  def parse_slug_to_organization(organization)
-    organization = Organization.find_by(slug: organization)
-    raise StandardError, "Invalid organization slug" if organization.nil?
+  def parse_slug_to_organization(org_slug)
+    organization = Organization.find_by(slug: org_slug)
+    raise StandardError, I18n.t("liquid_tags.organization_tag.invalid_slug") if organization.nil?
 
     organization
   end

@@ -23,9 +23,9 @@ class CommentDecorator < ApplicationDecorator
 
   def readable_publish_date
     if created_at.year == Time.current.year
-      created_at.strftime("%b %-e")
+      I18n.l(created_at, format: :short)
     else
-      created_at.strftime("%b %-e '%y")
+      I18n.l(created_at, format: :short_with_yy)
     end
   end
 end

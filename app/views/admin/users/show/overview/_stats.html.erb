@@ -1,0 +1,32 @@
+<section class="crayons-card mb-7 px-4 m:px-8 py-3 ">
+  <dl class="grid grid-flow-col grid-cols-3 grid-rows-2 l:grid-cols-6 l:grid-rows-1">
+    <div class="flex flex-col items-center">
+      <dd><strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.comments_count %></strong></dd>
+      <dt class="fs-s l:fs-base color-secondary fw-normal">Comments</dt>
+    </div>
+    <div class="flex flex-col items-center">
+      <dd><strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.articles_count %></strong></dd>
+      <dt class="fs-s l:fs-base color-secondary fw-normal">Posts</dt>
+    </div>
+    <div class="flex flex-col items-center">
+      <dd><strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.reactions_count %></strong></dd>
+      <dt class="fs-s l:fs-base color-secondary fw-normal">Reactions</dt>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <dd><strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.followers_count %></strong></dd>
+      <dt class="fs-s l:fs-base color-secondary fw-normal">Followers</dt>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <dd><strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.following_users_count %></strong></dd>
+      <dt class="fs-s l:fs-base color-secondary fw-normal">Following</dt>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <dd><strong class="fs-xl l:fs-2xl fw-heavy lh-tight"><%= @user.badge_achievements_count %></strong></dd>
+      <dt class="fs-s l:fs-base color-secondary fw-normal">Badges</dt>
+    </div>
+  </dl>
+
+</section>
