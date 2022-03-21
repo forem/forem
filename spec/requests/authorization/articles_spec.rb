@@ -13,19 +13,15 @@ RSpec.describe "Articles", type: :request do
 
       after { FeatureFlag.remove("limit_post_creation_to_admins") }
 
-      context "when user is admin" do
-        it "returns the Create Post anchor tag" do
-          sign_in super_admin
-          get authorization_create_post_button_path
-          expect(response.body).to include("Create Post")
-        end
+      it "returns the Create Post anchor tag for admins" do
+        sign_in super_admin
+        get authorization_create_post_button_path
+        expect(response.body).to include("Create Post")
       end
 
-      context "when user is not admin" do
-        it "raises Pundit::NotAuthorizedError" do
-          sign_in user
-          expect { get authorization_create_post_button_path }.to raise_error(Pundit::NotAuthorizedError)
-        end
+      it "raises Pundit::NotAuthorizedError for non admins" do
+        sign_in user
+        expect { get authorization_create_post_button_path }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
