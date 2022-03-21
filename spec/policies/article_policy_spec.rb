@@ -63,6 +63,30 @@ RSpec.describe ArticlePolicy do
     end
   end
 
+  describe "#has_existing_articles_or_can_create_new_ones?" do
+    let(:policy_method) { :has_existing_articles_or_can_create_new_ones? }
+
+    it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+    it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
+    it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+
+    context "when user has published articles" do
+      before do
+        create(:article, published: true, user: user)
+      end
+
+      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
+    end
+
+    context "when user has no published articles" do
+      before { user.articles.delete_all }
+
+      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+      it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+    end
+  end
+
   describe "#moderate?" do
     let(:policy_method) { :moderate? }
 
