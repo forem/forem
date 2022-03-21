@@ -299,8 +299,9 @@ module Admin
         credit_params[:remove_credits] = user_params[:credit_amount]
         flash[:success] = "Credits have been removed."
       else
-        return user_params
+        return credit_params
       end
+
       credit_params
     end
 
