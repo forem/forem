@@ -1,7 +1,7 @@
 <% if FeatureFlag.enabled?(:member_index_view) %>
   <div class="crayons-card p-3 s:p-4 m:p-7">
-    <header class="flex justify-content-between">
-      <h1 class="crayons-title">Members</h1>
+    <header class="flex flex-col l:flex-row justify-content-between l:items-center ">
+      <h1 class="crayons-title ml-3 l:ml-0">Members</h1>
       <%= render "admin/users/index/tabs" %>
     </header>
 
