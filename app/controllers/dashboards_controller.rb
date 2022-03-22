@@ -30,26 +30,22 @@ class DashboardsController < ApplicationController
 
   def following_tags
     fetch_and_authorize_user
-    @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag")
-      .order(points: :desc).includes(:followable).limit(follows_limit)
+    @followed_tags = follows_for(user: @user, type: "ActsAsTaggableOn::Tag", order_by: :points)
   end
 
   def following_users
     fetch_and_authorize_user
-    @follows = @user.follows_by_type("User")
-      .order(created_at: :desc).includes(:followable).limit(follows_limit)
+    @follows = follows_for(user: @user, type: "User")
   end
 
   def following_organizations
     fetch_and_authorize_user
-    @followed_organizations = @user.follows_by_type("Organization")
-      .order(created_at: :desc).includes(:followable).limit(follows_limit)
+    @followed_organizations = follows_for(user: @user, type: "Organization")
   end
 
   def following_podcasts
     fetch_and_authorize_user
-    @followed_podcasts = @user.follows_by_type("Podcast")
-      .order(created_at: :desc).includes(:followable).limit(follows_limit)
+    @followed_podcasts = follows_for(user: @user, type: "Podcast")
   end
 
   def followers
@@ -76,6 +72,10 @@ class DashboardsController < ApplicationController
   end
 
   private
+
+  def follows_for(user:, type:, order_by: :created_at)
+    user.follows_by_type(type).order(order_by => :desc).includes(:followable).limit(follows_limit)
+  end
 
   def set_source
     source_type = UserSubscription::ALLOWED_TYPES.detect { |allowed_type| allowed_type == params[:source_type] }
