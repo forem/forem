@@ -38,14 +38,24 @@ latest.dump
 /config/application_unused.yml
 /public/packs
 /public/packs-test
+.env
+
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
 /node_modules
 yarn-debug.log*
 .yarn-integrity
-.env
+yarn-error.log
 
 # Ignore storybook static site generation
 app/javascript/storybook-static/
-yarn-error.log
 
 # Ignore package-lock.json because we use yarn
 package-lock.json
