@@ -142,5 +142,6 @@
     "rails-erb-loader": "^5.5.2",
     "react-colorful": "^5.5.1",
     "web-share-wrapper": "^0.2.2"
-  }
+  },
+  "packageManager": "yarn@3.2.0"
 }
