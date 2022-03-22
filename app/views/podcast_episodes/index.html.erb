@@ -81,21 +81,21 @@
         </a>
       <% end %>
     </div>
-    <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("views.podcasts.browse") %></h2>
-    <div class="grid gap-2 s:grid-cols-2 m:grid-cols-4 px-2 m:px-0">
-      <% @more_podcasts.each do |podcast| %>
-        <a href="/<%= podcast.slug %>" class="crayons-link flex items-center m:fs-l  lh-tight">
-          <span class="crayons-logo crayons-logo--xl mr-3">
-            <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
-              alt="<%= podcast.title %>" aria-hidden="true" class="crayons-logo__image" />
-          </span>
-          <span class="truncate-at-2">
-            <%= podcast.title %>
-          </span>
-        </a>
-      <% end %>
-    </div>
   <% end %>
+  <h2 class="crayons-subtitle-1 p-3 m:p-0"><%= t("views.podcasts.browse") %></h2>
+  <div class="grid gap-2 s:grid-cols-2 m:grid-cols-4 px-2 m:px-0">
+    <% @more_podcasts&.each do |podcast| %>
+      <a href="/<%= podcast.slug %>" class="crayons-link flex items-center m:fs-l  lh-tight">
+        <span class="crayons-logo crayons-logo--xl mr-3">
+          <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
+            alt="<%= podcast.title %>" aria-hidden="true" class="crayons-logo__image" />
+        </span>
+        <span class="truncate-at-2">
+          <%= podcast.title %>
+        </span>
+      </a>
+    <% end %>
+  </div>
 </main>
 
 <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", defer: true %>
