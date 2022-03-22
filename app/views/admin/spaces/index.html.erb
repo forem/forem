@@ -1,0 +1,44 @@
+<div class="crayons-card p-7 mb-7">
+  <header class="mb-7">
+    <div class="flex justify-between gap-4 items-center">
+      <h1 class="crayons-title">Spaces</h1>
+      <button type="button" class="c-btn crayons-tooltip__activator opacity-100" disabled>
+        Create space
+        <span data-testid="tooltip" class="crayons-tooltip__content">
+          Coming soon. We're working on it.
+        </span>
+      </button>
+    </div>
+    <p class="color-secondary fs-l">Configure permissions for your different types of posts.</p>
+  </header>
+
+  <%# Note: there is javascript in play that is capturing the submission of the form and sending via XHR.  That will impact behavior. %>
+  <%= form_with model: @space, url: admin_space_path(@space), method: :put, class: "crayons-card p-6 flex flex-col gap-6" do |form| %>
+    <div class="flex items-center gap-4">
+      <span class="p-3 crayons-card shrink-0">
+        <%= crayons_icon_tag(:folder) %>
+      </span>
+      <div>
+        <h2 class="fs-l fw-bold lh-base">Uncategorized Posts</h2>
+        <p class="color-secondary lh-tight">All of your uncategorized posts will be in this space.</p>
+      </div>
+    </div>
+
+    <div class="flex justify-between gap-8 items-start">
+      <label for="space_limit_post_creation_to_admins">
+        <p class="fw-medium">Make this space comment-only for members</p>
+        <p class="fs-s color-secondary">Once turned on, only admins can publish posts.  Other members can only react to and comment on posts. Only admins will be able to post on behalf of organizations.</p>
+      </label>
+
+      <label class="c-toggle">
+        <%= form.check_box :limit_post_creation_to_admins %>
+        <span class="c-toggle__control"></span>
+      </label>
+    </div>
+
+    <div>
+      <%= form.button "Save", type: "submit", class: "c-btn c-btn--primary" %>
+    </div>
+  <% end %>
+
+</div>

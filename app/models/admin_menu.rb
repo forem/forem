@@ -3,8 +3,6 @@
 class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
-  FEATURE_FLAGS = %i[profile_admin data_update_scripts].freeze
-
   ITEMS = Menu.define do
     scope :people, "group-2-line", [
       item(name: "people", controller: "users", parent: "users"),
@@ -28,7 +26,7 @@ class AdminMenu
       item(name: "display ads"),
       item(name: "navigation links"),
       item(name: "pages"),
-      item(name: "profile fields", visible: false),
+      item(name: "profile fields", visible: -> { FeatureFlag.enabled?(:profile_admin) }),
     ]
 
     scope :admin_team, "user-line", [
@@ -49,7 +47,7 @@ class AdminMenu
       item(name: "developer tools", controller: "tools", children: [
              item(name: "tools"),
              item(name: "vault secrets", controller: "secrets"),
-             item(name: "data update scripts", visible: false),
+             item(name: "data update scripts", visible: -> { FeatureFlag.enabled?(:data_update_scripts) }),
              item(name: "extensions", controller: "extensions"),
            ]),
     ]
@@ -63,9 +61,7 @@ class AdminMenu
   # rubocop:enable Metrics/BlockLength
 
   def self.navigation_items
-    return ITEMS unless FEATURE_FLAGS.any? { |flag| FeatureFlag.enabled?(flag) }
-
-    feature_flagged_menu_items
+    ITEMS
   end
 
   # Return the Menu item that corresponds to the nav_item within the given named scope.
@@ -76,7 +72,7 @@ class AdminMenu
   #        declarations that are one level below the scope declarations of {ITEMS}.
   #
   # @return [NilClass] when we don't have a menu representation of the nav_item
-  # @return [Hash] the representation of the nav_item
+  # @return [Menu::Item] the representation of the nav_item
   #
   # @todo This method returns the nav_item, but we really only operate on that item's children.
   #       Consider replacing with a method that is "children of nav_item within scope".
@@ -84,17 +80,18 @@ class AdminMenu
   # @see AdminMenu.nested_menu_items_from_request
   # @see AdminMenu::ITEMS
   def self.nested_menu_items(scope_name, nav_item)
-    return unless navigation_items.dig(scope_name.to_sym, :children)
+    children = navigation_items[scope_name.to_sym]&.children
+    return unless children
 
-    navigation_items.dig(scope_name.to_sym, :children).each do |items|
-      return items if items[:controller] == nav_item
+    children.each do |items|
+      return items if items.controller == nav_item
 
-      next unless items[:children]&.any?
+      next unless items.children&.any?
 
-      items[:children].each do |child|
+      items.children.each do |child|
         # NOTE: [@jeremyf] trying to puzzle this one out.  My read is that if the "grandchild" of the
         # scope matches the controller, return the parent node (e.g. the item).
-        return items if child[:controller] == nav_item
+        return items if child.controller == nav_item
       end
     end
 
@@ -105,7 +102,7 @@ class AdminMenu
 
   # @param request [#path] the request object (which must respond to `#path`)
   # @return [NilClass] when we don't have a menu representation of the nav_item
-  # @return [Hash] the representation of the nav_item
+  # @return [MenuItem] the representation of the nav_item
   #
   # @see {.nested_menu_items} for implementation details
   #
@@ -117,26 +114,5 @@ class AdminMenu
   def self.nested_menu_items_from_request(request)
     scope, nav_item = request.path.split("/").last(2)
     nested_menu_items(scope, nav_item)
-  end
-
-  def self.feature_flagged_menu_items
-    # We default to creating a ITEMS constant with visibility set to false
-    # and then simply amend the visibility of the feature flag when it's
-    # turned on, instead of creating the payload dynamically each time.
-    menu_items = ITEMS.deep_dup
-
-    if FeatureFlag.enabled?(:profile_admin)
-      profile_hash = menu_items.dig(:customization, :children).detect { |item| item[:controller] == "profile_fields" }
-      profile_hash[:visible] = true
-    end
-
-    if FeatureFlag.enabled?(:data_update_scripts)
-      data_update_script_hash = menu_items.dig(:advanced, :children)
-        .detect { |item| item[:controller] ==  "tools" }[:children]
-        .detect { |item| item[:controller] ==  "data_update_scripts" }
-      data_update_script_hash[:visible] = true
-    end
-
-    menu_items
   end
 end
