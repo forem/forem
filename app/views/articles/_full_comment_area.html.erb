@@ -12,27 +12,29 @@
               <%= inline_svg_tag("expand.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
             </button>
           </div>
-          <div id="comments-sort-dropdown" class="crayons-dropdown crayons-header__menu__dropdown inline-block">
+          <nav class="comments-sort-dropdown crayons-dropdown crayons-header__menu__dropdown inline-block" aria-labelledby="sort-comments-heading">
               <h4 class="comments-sort-title">Sort discussion: </h4>
-              <%= render "comments/sort_option",
-                         sort_order: "top",
-                         sort_title: "Top",
-                         sort_description: "Most upvoted and relevant comments will be first",
-                         show_selected: @comments_order == "top",
-                         html_classes: "first-nav-link" %>
-              <%= render "comments/sort_option",
-                         sort_order: "latest",
-                         sort_title: "Latest",
-                         sort_description: "Most recent comments will be first",
-                         show_selected: @comments_order == "latest",
-                         html_classes: "second-last-nav-link" %>
-              <%= render "comments/sort_option",
-                         sort_order: "oldest",
-                         sort_title: "Oldest",
-                         sort_description: "The oldest comments will be first",
-                         show_selected: @comments_order == "oldest",
-                         html_classes: "last-nav-link" %>
-          </div>
+              <ul class="comments-sort-dropdown__list">
+                <%= render "comments/sort_option",
+                           sort_order: "top",
+                           sort_title: "Top",
+                           sort_description: "Most upvoted and relevant comments will be first",
+                           show_selected: @comments_order == "top",
+                           html_classes: "first-nav-link" %>
+                <%= render "comments/sort_option",
+                           sort_order: "latest",
+                           sort_title: "Latest",
+                           sort_description: "Most recent comments will be first",
+                           show_selected: @comments_order == "latest",
+                           html_classes: "second-last-nav-link" %>
+                <%= render "comments/sort_option",
+                           sort_order: "oldest",
+                           sort_title: "Oldest",
+                           sort_description: "The oldest comments will be first",
+                           show_selected: @comments_order == "oldest",
+                           html_classes: "last-nav-link" %>
+              </ul>
+          </nav>
         </div>
         <div id="comment-subscription" class="print-hidden">
           <div class="crayons-btn-group">

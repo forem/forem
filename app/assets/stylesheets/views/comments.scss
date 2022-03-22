@@ -283,31 +283,47 @@
 #comments-sort-dropdown-container {
   z-index: var(--z-dropdown);
 
-  #comments-sort-dropdown {
+  .comments-sort-dropdown {
     left: 0;
     padding: var(--su-4);
     padding-right: var(--su-6);
     width: 310px;
+
+    &__list {
+      list-style-type: none;
+    }
   }
 
   .comment-sort-option {
-    display: flex;
     margin-top: var(--su-2);
+    padding-left: var(--su-7);
 
-    h4 {
+    &__header {
       color: var(--base-90);
       font-weight: var(--fw-medium);
-    }
-
-    p {
-      color: var(--card-color);
-      font-size: var(--fs-s);
+      display: block;
     }
 
     .sort-selected {
       flex-basis: auto;
       min-width: 40px;
-      color: var(--link-branded-color);
+    }
+
+    .comment-sort-option__header {
+      .crayons-icon {
+        display: none;
+        position: absolute;
+        left: var(--su-4);
+        color: var(--link-branded-color);
+      }
+
+      &[aria-current='page'] {
+        font-weight: var(--fw-bold);
+
+        .crayons-icon {
+          display: block;
+        }
+      }
     }
   }
 
