@@ -122,7 +122,6 @@ Please see our installation guides, such as the
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@atsmith813](https://dev.to/atsmith813)
-- [@nickytonline](https://dev.to/nickytonline)
 - [@joshpuetz](http://dev.to/joshpuetz)
 - [@juliannatetreault](https://dev.to/juliannatetreault)
 - [@ridhwana](https://dev.to/ridhwana)
