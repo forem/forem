@@ -124,6 +124,11 @@ export const MultiSelectAutocomplete = ({
     }
   }, [defaultValue]);
 
+  // We only want to create suggestions as a selection in the multi-select autocomplete in some instances.
+  const canCreateSelection = (value) => {
+    return suggestions.map((suggestion) => suggestion.name).includes(value);
+  };
+
   const handleInputBlur = () => {
     dispatch({ type: 'setShowMaxSelectionsReached', payload: false });
 
@@ -132,7 +137,12 @@ export const MultiSelectAutocomplete = ({
     } = inputRef;
 
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
-    if (!ignoreBlur && allowSelections && currentValue !== '') {
+    if (
+      !ignoreBlur &&
+      allowSelections &&
+      currentValue !== '' &&
+      canCreateSelection(currentValue)
+    ) {
       selectByText({ textValue: currentValue, keepSelecting: false });
       return;
     }
@@ -303,9 +313,9 @@ export const MultiSelectAutocomplete = ({
     }
 
     const results = await fetchSuggestions(value);
-    // If no results, display current search term as an option
+    // If no results, display current search term as an option unless only suggestions are permitted.
     if (results.length === 0 && value !== '') {
-      results.push({ name: value });
+      return;
     }
 
     dispatch({
@@ -371,7 +381,11 @@ export const MultiSelectAutocomplete = ({
         e.preventDefault();
         // Accept whatever is in the input before the comma or space.
         // If any text remains after the comma or space, the edit will continue separately
-        if (currentValue !== '' && allowSelections) {
+        if (
+          currentValue !== '' &&
+          allowSelections &&
+          canCreateSelection(currentValue)
+        ) {
           selectByText({
             textValue: currentValue.slice(0, selectionStart),
             nextInputValue: currentValue.slice(selectionStart),
