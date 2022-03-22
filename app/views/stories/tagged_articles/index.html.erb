@@ -61,7 +61,7 @@
             <nav class="-mx-3 m:mx-0 s:flex items-center justify-between w-100" aria-label="<%= t("views.stories.sort.aria_tagged") %>">
               <ul class="crayons-navigation crayons-navigation--horizontal">
                 <li>
-                  <a data-text="<%= t("views.stories.sort.relevant") %>" href="<%= list_path %>/" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"
+                  <a data-text="<%= t("views.stories.sort.relevant") %>" href="<%= list_path %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"
                     <%= %w[week month year infinity latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>><%= t("views.stories.sort.relevant") %></a>
                 </li>
                 <li>

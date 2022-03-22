@@ -12,7 +12,7 @@ describe('User experience Section', () => {
     cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
 
     cy.get('#new_settings_user_experience').within(() => {
-      cy.findByRole('button', { name: 'Show info' }).click();
+      cy.findByText('User Experience and Brand').click();
 
       cy.findByRole('combobox', { name: 'Default font' }).select(
         'open-dyslexic',
@@ -40,7 +40,7 @@ describe('User experience Section', () => {
 
   it('Should change the primary brand color hex if contrast is sufficient', () => {
     cy.get('#new_settings_user_experience').within(() => {
-      cy.findByRole('button', { name: 'Show info' }).click();
+      cy.findByText('User Experience and Brand').click();
 
       // Both a button and an input should exist for the brand color
       cy.findByRole('button', { name: 'Primary brand color hex' });
@@ -61,7 +61,7 @@ describe('User experience Section', () => {
 
   it('should not update brand color if contrast is insufficient', () => {
     cy.get('#new_settings_user_experience').within(() => {
-      cy.findByRole('button', { name: 'Show info' }).click();
+      cy.findByText('User Experience and Brand').click();
 
       // Both a button and an input should exist for the brand color
       cy.findByRole('button', { name: 'Primary brand color hex' });
