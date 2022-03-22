@@ -75,6 +75,11 @@ RSpec.describe ArticlePolicy do
         create(:article, published: true, user: user)
       end
 
+      # Below are two scenarios: one with limit_post_creation_to_admins? as true and the other as
+      # limit_post_creation_to_admins? as false.  In both cases, when the user has published
+      # articles, it doesn't matter if they can create an article or not, the
+      # `has_existing_articles_or_can_create_new_ones?` should return true (which is what the
+      # "permitted roles" shared spec verifies).
       it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
       it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
     end
