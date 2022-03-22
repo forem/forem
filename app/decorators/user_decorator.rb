@@ -18,7 +18,7 @@ class UserDecorator < ApplicationDecorator
     },
   ].freeze
 
-  DEFAULT_PROFILE_SUMMARY = "404 bio not found".freeze
+  DEFAULT_PROFILE_SUMMARY = -> { I18n.t("stories_controller.404_bio_not_found") }
 
   # The relevant attribute names for cached tags.  These are the attributes that we'll make
   # available in the front-end.  The list comes from the two places (see below for that list).
@@ -132,7 +132,7 @@ class UserDecorator < ApplicationDecorator
 
   # Returns the users profile summary or a placeholder text
   def profile_summary
-    profile.summary.presence || DEFAULT_PROFILE_SUMMARY
+    profile.summary.presence || DEFAULT_PROFILE_SUMMARY.call
   end
 
   delegate :display_sponsors, to: :setting

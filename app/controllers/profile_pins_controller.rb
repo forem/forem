@@ -8,9 +8,9 @@ class ProfilePinsController < ApplicationController
     @profile_pin.pinnable_id = profile_pin_params[:pinnable_id].to_i
     @profile_pin.pinnable_type = "Article"
     if @profile_pin.save
-      flash[:success] = "📌 Pinned! (pinned posts display chronologically, 5 max)"
+      flash[:success] = I18n.t("views.pins.pinned")
     else
-      flash[:error] = "You can only have five pins"
+      flash[:error] = I18n.t("views.pins.error")
     end
     redirect_back(fallback_location: "/dashboard")
     bust_user_profile
@@ -20,7 +20,7 @@ class ProfilePinsController < ApplicationController
     # for removing pinnable
     current_user.profile_pins.destroy_by(id: params[:id])
     bust_user_profile
-    flash[:pins_success] = "🗑 Pin removed"
+    flash[:success] = I18n.t("views.pins.removed")
     redirect_back(fallback_location: "/dashboard")
   end
 

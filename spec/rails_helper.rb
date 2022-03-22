@@ -37,6 +37,7 @@ Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].each { |f| require f
 Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/mailers/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/policies/shared_examples/**/*.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -73,6 +74,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::IntegrationHelpers, type: :system
+  config.include EmbedsHelpers, type: :liquid_tag
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthHelpers
   config.include RpushHelpers

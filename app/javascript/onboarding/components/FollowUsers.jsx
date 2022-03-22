@@ -145,7 +145,7 @@ export class FollowUsers extends Component {
     return (
       <div
         data-testid="onboarding-follow-users"
-        className="onboarding-main crayons-modal"
+        className="onboarding-main crayons-modal crayons-modal--large"
       >
         <div
           className="crayons-modal__box overflow-auto"

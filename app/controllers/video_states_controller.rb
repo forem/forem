@@ -21,9 +21,9 @@ class VideoStatesController < ApplicationController
 
       NotifyMailer.with(article: @article).video_upload_complete_email.deliver_now
 
-      render json: { message: "Video state updated" }
+      render json: { message: I18n.t("video_states_controller.video_state_updated") }
     else
-      render json: { message: "Related article not found" }, status: :not_found
+      render json: { message: I18n.t("video_states_controller.related_article_not_found") }, status: :not_found
     end
   end
 

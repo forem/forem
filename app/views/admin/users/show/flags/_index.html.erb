@@ -1,0 +1,44 @@
+<h2 class="crayons-subtitle-1">Flags received (<%= @related_vomit_reactions.count %>)</h2>
+
+<% unless @related_vomit_reactions.empty? %>
+  <div class="pt-3">
+    <% @related_vomit_reactions.each do |flag| %>
+      <article class="c-list-item flex gap-2">
+        <span class="color-secondary shrink-0">
+          <% if flag.reactable_type == "Article" %>
+            <%= crayons_icon_tag("post", aria_hidden: true) %>
+          <% elsif flag.reactable_type == "User" %>
+            <%= crayons_icon_tag("user-line", aria_hidden: true) %>
+          <% elsif flag.reactable_type == "Comment" %>
+            <%= crayons_icon_tag("comment", aria_hidden: true) %>
+          <% end %>
+        </span>
+        <div class="flex-1">
+          <h3 class="crayons-subtitle-3 mb-1">
+            <%= link_to flag.reactable.path, class: "c-link" do %>
+              <% if flag.reactable_type == "Article" %>
+                Post "<%= flag.reactable.title %>"
+              <% elsif flag.reactable_type == "User" %>
+                User's profile
+              <% elsif flag.reactable_type == "Comment" %>
+                Comment on "<%= flag.reactable.title %>"
+              <% end %>
+            <% end %>
+          </h3>
+          <p class="fs-s color-secondary">
+            Flagged by
+            <%= link_to flag.user.username, admin_user_path(flag.user_id), class: "c-link c-link--branded" %>
+          </p>
+        </div>
+        <time datetime="<%= flag.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= flag.created_at&.strftime("%Y-%m-%d, %H:%M") %>">
+          <%= flag.created_at&.strftime("%b %e '%y") %>
+        </time>
+      </article>
+    <% end %>
+  </div>
+<% else %>
+  <div class="align-center flex flex-col justify-center my-auto py-8">
+    <h3 class="fs-xl fw-normal mb-2">No flags received against <%= @user.name %> yet.</h3>
+    <p class="color-secondary">Any flags received against <%= @user.name %> will be found here.</p>
+  </div>
+<% end %>

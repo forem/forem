@@ -13,34 +13,25 @@ function initNotifications() {
 function markNotificationsAsRead() {
   setTimeout(function () {
     if (document.getElementById('notifications-container')) {
-      var xmlhttp;
-      var locationAsArray = window.location.pathname.split('/');
-      // Use regex to ensure only numbers in the original string are converted to integers
-      var parsedLastParam = parseInt(
-        locationAsArray[locationAsArray.length - 1].replace(/[^0-9]/g, ''),
-        10,
-      );
-
-      if (window.XMLHttpRequest) {
-        xmlhttp = new XMLHttpRequest();
-      } else {
-        xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-      }
-      xmlhttp.onreadystatechange = function () {};
-
-      var csrfToken = document.querySelector("meta[name='csrf-token']").content;
-
-      if (Number.isInteger(parsedLastParam)) {
-        xmlhttp.open(
-          'Post',
-          '/notifications/reads?org_id=' + parsedLastParam,
-          true,
+      getCsrfToken().then((csrfToken) => {
+        const locationAsArray = window.location.pathname.split('/');
+        // Use regex to ensure only numbers in the original string are converted to integers
+        const parsedLastParam = parseInt(
+          locationAsArray[locationAsArray.length - 1].replace(/[^0-9]/g, ''),
+          10,
         );
-      } else {
-        xmlhttp.open('Post', '/notifications/reads', true);
-      }
-      xmlhttp.setRequestHeader('X-CSRF-Token', csrfToken);
-      xmlhttp.send();
+
+        const options = {
+          method: 'POST',
+          headers: { 'X-CSRF-Token': csrfToken },
+        };
+
+        if (Number.isInteger(parsedLastParam)) {
+          fetch(`/notifications/reads?org_id=${parsedLastParam}`, options);
+        } else {
+          fetch('/notifications/reads', options);
+        }
+      });
     }
   }, 450);
 }

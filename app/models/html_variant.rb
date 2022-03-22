@@ -56,7 +56,7 @@ class HtmlVariant < ApplicationRecord
     return if group == "campaign"
 
     published_and_approved = (approved && (html_changed? || name_changed? || group_changed?)) && persisted?
-    errors.add(:base, "cannot change once published and approved") if published_and_approved
+    errors.add(:base, I18n.t("models.html_variant.no_edits")) if published_and_approved
   end
 
   def prefix_all_images

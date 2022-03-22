@@ -3,18 +3,15 @@
 
 <nav class="mb-4 <% unless user_signed_in? %>mt-4<% end %>" id="main-navigation" aria-label="<%= community_name %>">
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
-    <li>
-      <a href="<%= root_path %>" class="c-link c-link--block c-link--icon-left">
-        <%= crayons_icon_tag("twemoji/house", class: "c-link__icon", native: true, aria_hidden: true) %>
-        <%= t("views.main.home") %>
-      </a>
-    </li>
     <% default_nav_links.each do |link| %>
       <%= render "layouts/sidebar_nav_link", link: link %>
     <% end %>
   </ul>
 </nav>
 
+<%# Reading Note: There's a faulty assumption that all "other_nav_links" are
+    visible based on the current state (see
+    ApplicationHelper#display_navigation_link? for details).  %>
 <% if other_nav_links.any? %>
   <nav class="mb-4" aria-labelledby="other-nav-heading">
     <h2 id="other-nav-heading" class="crayons-subtitle-3 py-2 pl-3">

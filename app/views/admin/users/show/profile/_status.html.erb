@@ -1,0 +1,14 @@
+<span class="ml-3 whitespace-nowrap" title="Current status">
+  <span class="screen-reader-only">Current status:</span>
+  <% if @user.suspended? %>
+    <span data-testid="user-status" class="c-indicator c-indicator--danger c-indicator--relaxed">Suspended</span>
+  <% elsif @user.warned? %>
+    <span data-testid="user-status" class="c-indicator c-indicator--warning c-indicator--relaxed">Warned</span>
+  <% elsif @user.comment_suspended? %>
+    <span data-testid="user-status" class="c-indicator c-indicator--warning c-indicator--relaxed">Comment suspended</span>
+  <% elsif @user.trusted? %>
+    <span data-testid="user-status" class="c-indicator c-indicator--success c-indicator--relaxed">Trusted</span>
+  <% else %>
+    <span data-testid="user-status" class="c-indicator c-indicator--relaxed">Good standing</span>
+  <% end %>
+</span>

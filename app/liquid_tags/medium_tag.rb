@@ -5,7 +5,7 @@ class MediumTag < LiquidTagBase
   attr_reader :response
 
   PARTIAL = "liquids/medium".freeze
-  REGISTRY_REGEXP = %r{https://(?:\w+.)?medium.com/(?:@\w+/)?[\w-]+}
+  REGISTRY_REGEXP = %r{https://(?:\w+.)?medium\.com/(?:@\w+/)?[\w-]+}
 
   def initialize(_tag_name, url, _parse_context)
     super

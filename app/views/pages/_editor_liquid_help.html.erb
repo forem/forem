@@ -1,29 +1,69 @@
 <div id="editor-liquid-help">
   <div class="text-styles">
-    <p>We support native <a href="https://shopify.github.io/liquid" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:</p>
-    <h3><%= community_name %> Article/Post Embed</h3>
-    <p>All you need is the full link of the article:</p>
-    <code>{% link <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
-    <p>You can also use the slug like this:</p>
-    <code>{% link kazz/boost-your-productivity-using-markdown-1be %}</code>
-    <p>You can also use the alias post instead of link like this:</p>
-    <code>{% post <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
-    <p>or this:</p>
-    <code>{% post kazz/boost-your-productivity-using-markdown-1be %}</code>
-    <h3><%= community_name %> User Embed</h3>
-    <p>All you need is the <%= community_name %> username:</p>
-    <code>{% user jess %}</code>
-    <h3><%= community_name %> Tag Embed</h3>
-    <p>All you need is the tag name:</p>
-    <code>{% tag git %}</code>
-    <h3><%= community_name %> Comment Embed</h3>
-    <p>All you need is the
-      <code>ID</code> at the end of a comment URL. To get the comment link, click either the timestamp or the menu button in the top right corner on a comment and then click "Permalink". Here's an example:
-    </p>
-    <code>{% comment 2d1a %}</code>
+    <h3>Supported URL Embeds</h3>
+
+    <ul class="crayons-card grid gap-2 grid-cols-2 p-4 list-disc">
+      <li class="ml-4"><%= community_name %> Comment</li>
+      <li class="ml-4"><%= community_name %> Link</li>
+      <li class="ml-4"><%= community_name %> Link</li>
+      <li class="ml-4"><%= community_name %> Listing</li>
+      <li class="ml-4"><%= community_name %> Organization</li>
+      <li class="ml-4"><%= community_name %> Podcast Episode</li>
+      <li class="ml-4"><%= community_name %> Tag</li>
+      <li class="ml-4"><%= community_name %> User Profile</li>
+      <li class="ml-4">Asciinema</li>
+      <li class="ml-4">Codepen</li>
+      <li class="ml-4">Codesandbox</li>
+      <li class="ml-4">DotNetFiddle</li>
+      <li class="ml-4">Github Gist, Issue or Repository</li>
+      <li class="ml-4">Glitch</li>
+      <li class="ml-4">Instagram</li>
+      <li class="ml-4">JSFiddle</li>
+      <li class="ml-4">Jsitor</li>
+      <li class="ml-4">Loom</li>
+      <li class="ml-4">Kotlin</li>
+      <li class="ml-4">Medium</li>
+      <li class="ml-4">NextTech</li>
+      <li class="ml-4">Reddit</li>
+      <li class="ml-4">Replit</li>
+      <li class="ml-4">Slideshare</li>
+      <li class="ml-4">Speakerdeck</li>
+      <li class="ml-4">Soundcloud</li>
+      <li class="ml-4">Spotify</li>
+      <li class="ml-4">Stackblitz</li>
+      <li class="ml-4">Stackery</li>
+      <li class="ml-4">StackExchange or StackOverflow</li>
+      <li class="ml-4">Twitch</li>
+      <li class="ml-4">Twitter</li>
+      <li class="ml-4">TwitterTimeline</li>
+      <li class="ml-4">Wikipedia</li>
+      <li class="ml-4">Vimeo</li>
+      <li class="ml-4">Youtube</li>
+    </ul>
+
+    <hr />
+
+    <h3>Supported Non-URL Embeds</h3>
+
+    <h4>Details</h4>
+    <p>You can embed a <code>details</code> HTML element by using details, spoiler, or collapsible. The <em>summary</em> will be what the dropdown title displays. The <em>content</em> will be the text hidden behind the dropdown. This is great for when you want to hide text (i.e. answers to questions) behind a user action/intent (i.e. a click).</p>
+    <p><code>{% details summary %} content {% enddetails %}</code></p>
+    <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
+    <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
+
+    <h4>KaTex</h4>
+    <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
+    <pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+    <p>To render KaTeX inline add the "inline" option:</p>
+    <pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+
+    <h4>RunKit</h4>
+    <p>Put executable code within a runkit liquid block, as follows:</p>
+    <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
+
     <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
-      <h3><%= community_name %> User Subscriptions</h3>
-      <p class="fs-s fw-bold">This tag can only be used in articles.</p>
+      <h4><%= community_name %> User Subscriptions</h4>
+      <p class="fs-s fw-bold">This embed can only be created within posts by Admins.</p>
       <p>You can add call-to-action text that will show above the subscribe button:</p>
       <code>{% user_subscription If you'd like to receive future updates, subscribe below! %}</code>
       <p class="fs-s">
@@ -32,313 +72,5 @@
         to subscribe.
       </p>
     <% end %>
-    <h3><%= community_name %> Podcast Episode Embed</h3>
-    <p>All you need is the full link of the podcast episode:</p>
-    <code>{% podcast <%= app_url("/basecspodcast/s2e2--queues-irl") %> %}</code>
-    <h3><%= community_name %> Listing Embed</h3>
-    <p>All you need is the full link of the listing:</p>
-    <code>{% listing <%= app_url("/listings/collabs/dev-is-open-source-823") %> %}</code>
-    <p>You can also use the category and slug like this:</p>
-    <code>{% listing collabs/dev-is-open-source-823 %}</code>
-    <p>Note: Expired listings will raise an error. Make sure the listing is published or recently bumped.</p>
-    <h3>Details Embed</h3>
-    <p>You can embed a details HTML element by using details, spoiler, or
-    collapsible. The <em>summary</em> will be what the dropdown title displays.
-    The <em>content</em> will be the text hidden behind the dropdown. This is
-    great for when you want to hide text (i.e. answers to questions) behind a
-    user action/intent (i.e. a click).</p>
-    <p><code>{% details summary %} content {% enddetails %}</code></p>
-    <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
-    <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
-    <h3>Twitter Embed</h3>
-    <p>Using the Twitter Liquid tag will allow the tweet to pre-render from the server, providing your reader with a better experience. All you need is the tweet
-      <code>id</code> from the url.</p>
-    <code>{% twitter 834439977220112384 %}</code>
-    <h3>Glitch embed</h3>
-    <p>All you need is the Glitch project slug</p>
-    <code>{% glitch earthy-course %}</code>
-    <p>There are several
-      <a href="https://glitch.com/help/how-can-i-customize-a-glitch-app-embed">optional attributes</a> you can use in your tag, just add them after the id, separated by spaces.
-    </p>
-    <ul>
-      <li><code>app</code> – Shows the app preview without the code.<br>
-        <code>{% glitch earthy-course app %}</code>
-      </li>
-      <li><code>code</code> – Shows the code without the app preview.<br>
-        <code>{% glitch earthy-course code %}</code></li>
-      <li><code>preview-first</code> – Swap panes: Show the app preview on the left and the code on the right.<br>
-        <code>{% glitch earthy-course preview-first %}</code></li>
-      <li><code>no-attribution</code> – Hides the avatar of the creator(s).<br>
-        <code>{% glitch earthy-course no-attribution %}</code></li>
-      <li><code>no-files</code> – Hides the file browser.<br>
-        <code>{% glitch earthy-course no-files %}</code></li>
-      <li><code>file</code> – Lets you choose which file to display in the code panel. Defaults to index.html.<br>
-        <code>{% glitch earthy-course file=script.js %}</code></li>
-    </ul>
-    <h3>GitHub Repo Embed</h3>
-    <p>All you need is the GitHub username and repo:</p>
-    <code>{% github forem/forem %}</code>
-    <dl>
-      <dt><code>no-readme</code></dt>
-      <dd>
-        You can add a no-readme option to your GitHub tag to hide the readme file from the preview.<br>
-        <code>{% github forem/forem no-readme %}</code>
-      </dd>
-    </dl>
-    <h3>GitHub Issue, Pull request or Comment Embed</h3>
-    <p>All you need is the GitHub issue, PR or comment URL:</p>
-    <code>{% github https://github.com/forem/forem/issues/9 %}</code>
-    <h3>GitHub Gist Embed</h3>
-    <p>All you need is the gist link:</p>
-    <code>
-      {% gist https://gist.github.com/CristinaSolana/1885435 %}
-    </code>
-    <dl>
-      <dt><code>Single File Embed</code></dt>
-      <dd>
-        <p>You can choose to embed a single gist file. <br>
-        <code>{% gist https://gist.github.com/CristinaSolana/1885435 file=gistfile1.md %}</code></p>
-      </dd>
-      <dt><code>Specific Version Embed</code></dt>
-      <dd>
-        <p>You can choose to embed a specific version of a gist file. All you need
-        the link and the commit hash for that specific version. <br>
-        The format is <code>{% gist [gist-link]/[commit-hash] %}</code> <br>
-        e.g. <br>
-        <code>{% gist https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/f77d01e82defbf736ebf4879a812cf9c916a9252 %}</code></p>
-      </dd>
-      <dt><code>Specific Version File Embed</code></dt>
-      <dd>
-        <p>You can choose to embed a specific version of a gist file. All you need
-        the link, the filename and the commit hash for that specific version . <br>
-        The format is <code>{% gist [gist-link]/[commit-hash] file=[filename] %}</code> <br>
-        e.g. <br>
-        <code>
-          {% gist https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/f77d01e82defbf736ebf4879a812cf9c916a9252 file=Images.tmpl %}
-        </code></p>
-      </dd>
-    </dl>
-    <h3>GitPitch Embed</h3>
-    <p>All you need is the GitPitch link:</p>
-    <code>
-      {% gitpitch https://gitpitch.com/gitpitch/in-60-seconds %}
-    </code>
-    <h3>Video Embed</h3>
-    <p>All you need is the <code>id</code> from the URL.</p>
-    <ul>
-      <li><strong>YouTube:</strong> <code>{% youtube dQw4w9WgXcQ %}</code></li>
-      <li><strong>Vimeo:</strong> <code>{% vimeo 193110695 %}</code></li>
-      <li><strong>Twitch:</strong> <code>{% twitch ClumsyPrettiestOilLitFam %}</code></li>
-    </ul>
-    <h3>Medium Embed</h3>
-    <p>Just enter the full URL of the Medium article you are trying to embed.</p>
-    <code>{% medium https://medium.com/s/story/boba-science-how-can-i-drink-a-bubble-tea-to-ensure-that-i-dont-finish-the-tea-before-the-bobas-7fc5fd0e442d %}</code>
-    <h3>SlideShare Embed</h3>
-    <p>All you need is the SlideShare <code>key</code>:</p>
-    <code>{% slideshare rdOzN9kr1yK5eE %}</code>
-    <h3>CodePen Embed</h3>
-    <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
-    <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX %}</code>
-    <dl>
-      <dt><code>default-tab</code></dt>
-      <dd>
-        Add default-tab parameter to your CodePen embed tag. Default to <i>result</i><br>
-        <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result %}</code>
-      </dd>
-
-      <dt><code>preview</code></dt>
-      <dd>
-        <p>Change the codepen URL path from /pen/ to /pen/preview/ (or to /embed/preview/) to use codepen's Click-to-Load preview embed feature in the resulting iframe.</p>
-        <pre>{% codepen https://codepen.io/propjockey/pen/preview/dyVMgBg %}</pre>
-      </dd>
-
-      <dt><code>height</code></dt>
-      <dd>
-        <p>Add height parameter to your CodePen embed tag and to the resulting iframe itself. Defaults to <i>600</i></p>
-        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg height=300 %}</pre>
-      </dd>
-
-      <dt><code>theme-id</code></dt>
-      <dd>
-        <p>Add theme-id parameter to your CodePen embed tag. The pen and theme-id must be from a codepen pro user to have an effect.</p>
-        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg theme-id=40148 %}</pre>
-      </dd>
-
-      <dt><code>editable=true</code></dt>
-      <dd>
-        <p>Add editable=true parameter to your CodePen embed tag. Editable Embeds require more resources than non-editable Embeds. The pen must be from a codepen pro user to have an effect.</p>
-        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg editable=true %}</pre>
-      </dd>
-
-      <dt><code>multiple-params</code></dt>
-      <dd>
-        <p>Add multiple parameters to your CodePen embed tag.</p>
-        <pre>{% codepen https://codepen.io/propjockey/pen/dyVMgBg height=300 default-tab=css,result editable=true %}</pre>
-      </dd>
-    </dl>
-    <h3>Kotlin Playground</h3>
-    <p>To create a runnable kotlin snippet, create a Kotlin Snippet at <a href="https://play.kotlinlang.org">https://play.kotlinlang.org</a></p>
-    <p>Go to <code>Share</code> dialog and copy the full <code>link</code> from the <code>Medium</code> tab. Use it as follows:</p>
-    <code>{% kotlin https://pl.kotl.in/owreUFFUG?theme=darcula&from=3&to=6&readOnly=true %}</code>
-    <h3>RunKit Embed</h3>
-    <p>Put executable code within a runkit liquid block, as follows:</p>
-    <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
-
-    <h3>KaTeX Embed</h3>
-    <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
-    <pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
-    <p>To render KaTeX inline add the "inline" option:</p>
-    <pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
-
-    <h3>Stackblitz Embed</h3>
-    <p>All you need is the ID of the Stackblitz:</p>
-    <code>{% stackblitz ball-demo %}</code>
-    <dl>
-      <dt><code>Default view</code></dt>
-      <dd>
-        You can change the default view, the options are <i>both</i>, <i>preview</i>, <i>editor</i>. Defaults to
-        <i>both</i><br>
-        <code>{% stackblitz ball-demo view=preview %}</code>
-      </dd>
-      <dt><code>Default file</code></dt>
-      <dd>
-        You can change the default file you want your embed to point to<br>
-        <code>{% stackblitz ball-demo file=style.css %}</code>
-      </dd>
-    </dl>
-    <h3>CodeSandbox Embed</h3>
-    <p>All you need is the ID of the Sandbox:</p>
-    <code>{% codesandbox ppxnl191zx %}</code>
-    <p>Of CodeSandbox's many
-      <a href="https://codesandbox.io/docs/embedding#embed-options">optional attributes</a>, the following are supported by using them in your tag, just add them after the id, separated by spaces.
-    </p>
-    <dl>
-      <dt><code>initialpath</code></dt>
-      <dd>
-        Which url to initially load in address bar.<br>
-        <code>{% codesandbox ppxnl191zx initialpath=/initial/load/path %}</code>
-      </dd>
-      <dt><code>module</code></dt>
-      <dd>
-        Which module to open by default.<br>
-        <code>{% codesandbox ppxnl191zx module=/path/to/module %}</code>
-      </dd>
-      <dt><code>runonclick</code></dt>
-      <dd>
-        Delays when code is ran if <code>1</code> <br>
-        <code>{% codesandbox ppxnl191zx runonclick=1 %}</code>
-      </dd>
-    </dl>
-    <h3>JSFiddle Embed</h3>
-    <p>All you need is the full JSFiddle <code>link</code>, ending in the fiddle ID code, as follows:</p>
-    <code>{% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}</code>
-    <dl>
-      <dt><code>Custom tabs</code></dt>
-      <dd>
-        You can add a custom tab order to you JSFiddle embed tag. Defaults to <i>js,html,css,result</i><br>
-        <code>{% jsfiddle https://jsfiddle.net/webdevem/Q8KVC result,html,css %}</code>
-      </dd>
-    </dl>
-    <h3>DotnetFiddle Embed</h3>
-    <p>All you need is the full DotnetFiddle <code>link</code>, ending in the fiddle ID code, as follows:</p>
-    <code>{% dotnetfiddle https://dotnetfiddle.net/PmoDip %}</code>
-
-    <h3>JSitor Liquid Tag</h3>
-    <p>
-      To use JSitor liquid tag you can use the JSitor full <code>link</code>, with or without the parameters
-    </p>
-    <code>{% jsitor https://jsitor.com/embed/B7FQ5tHbY %}</code>
-    <br />
-    <code>{% jsitor https://jsitor.com/embed/B7FQ5tHbY?html&js&css&result&light %}</code>
-    <p>
-      Other options to use JSitor liquid tag is just by its ID, you can add it with or without the parameters
-    </p>
-    <code>{% jsitor B7FQ5tHbY %}</code>
-    <br />
-    <code>{% jsitor B7FQ5tHbY?html&js&css&result&light %}</code>
-
-    <h3>replit.com Embed</h3>
-    <p>All you need is the URL after the domain name:</p>
-    <code>{% replit @WigWog/PositiveFineOpensource %}</code>
-    <h3>Stackery Embed</h3>
-    <p>Visualize your AWS Serverless Application Model templates with <a href="https://www.stackery.io/">Stackery's</a> visualizer embed</p>
-    <p>All you need is the repository owner, repository name, and branch that you would like visualized</p>
-    <code>{% stackery deeheber lambda-layer-example master %}</code>
-    <br />
-    <p>The repository must be a public GitHub repository and have a valid AWS SAM template in the project root titled template.yaml</p>
-    <h3>Next Tech Embed</h3>
-    <p>All you need is the share URL for your sandbox. You can get the share URL by clicking
-    the "Share" button in the top right when the sandbox is open.</p>
-    <p><img src="https://thepracticaldev.s3.amazonaws.com/i/r449xp8cay3383i139qv.png" alt="Share Replit sandbox" loading="lazy" /></p>
-    <code>{% nexttech https://nt.dev/s/6ba1fffbd09e %}</code>
-    <h3>Instagram Embed</h3>
-    <p>All you need is the Instagram post <code>id</code> from the URL:</p>
-    <code>{% instagram BXgGcAUjM39 %}</code>
-    <h3>Speakerdeck Tag</h3>
-    <p>All you need is the data-id code from the embed link:</p>
-    <pre><span style="color: gray;"># Given this embed link:</span><br>&lt;script async class="speakerdeck-embed"<br>    data-id="<span style='color: orange;'>7e9f8c0fa0c949bd8025457181913fd0</span>"<br>    data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"&gt;&lt;/script&gt;</pre>
-    <pre>{% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}</pre>
-    <h3>Soundcloud Embed</h3>
-    <p>Just enter the full URL of the Soundcloud track you are trying to embed.</p>
-    <code>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</code>
-    <h3>Spotify Embed</h3>
-    <p>
-      Enter the Spotify URI of the Spotify track / playlist /
-      album / artist / podcast episode you are trying to embed.
-    </p>
-    <pre>{% spotify <span style="color: #1DB954;">spotify:episode:5V4XZWqZQJvbddd31n56mf</span> %}</pre>
-    <h3>Blogcast Tag</h3>
-    <p>All you need is the article id code from the embed code:</p>
-    <pre>{% blogcast <span style="color: orange;">1234</span> %}</pre>
-    <h3>Parler Tag</h3>
-    <p>Enter the full url of the Parler.io audio file you want to embed. </p>
-    <pre>{% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}</pre>
-    <h3>Stack Exchange / Stack Overflow Tag</h3>
-    <p>
-      You'll need the question or answer's ID code, and the site. When using <code>{% stackoverflow %}</code> as the tag, the site will default to Stack Overflow.
-      For example:
-      <br>
-      <a href="https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console">https://stackoverflow.com/questions/24789130/colors-in-irb-rails-console</a>
-      <ul>
-          <li>The question ID is: <code style="color: aquamarine; background-color: black;">24789130</code></li>
-      </ul>
-      <pre>{% stackoverflow <span style="color: aquamarine;">24789130</span> %}</pre>
-    </p>
-    <p>
-      For other Stack Exchange network sites, you'll need to provide the site's name and use <code>{% stackexchange %}</code> as the tag. For example:
-      <br>
-      <a href="https://diy.stackexchange.com/questions/169988/base-for-refrigerator-wine-shelf">https://diy.stackexchange.com/questions/169988/base-for-refrigerator-wine-shelf</a>
-      <ul>
-        <li>The question ID is: <code style="color: aquamarine; background-color: black;">169988</code></li>
-      <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
-      </ul>
-      <pre>{% stackexchange <span style="color: aquamarine;">169988</span> <span style="color: orange;">diy</span> %}</pre>
-    </p>
-    <p>
-    For answers, you can get the answer's ID code by from the answer's "Share" link. For example:
-    <br>
-    <a href="https://diy.stackexchange.com/a/170185">https://diy.stackexchange.com/a/170185</a>
-    <ul>
-      <li>The answer ID is: <code style="color: aquamarine; background-color: black;">170185</code></li>
-      <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
-    </ul>
-    <pre>{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}</pre>
-    </p>
-    <h3>Wikipedia Embed</h3>
-    <p>Enter the full URL of the Wikipedia article you want to embed, with or without the anchor.</p>
-    <p>
-      <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia %}</code>
-      <br />
-      <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia#Diversity %}</code>
-    </p>
-    <h3>Asciinema Embed</h3>
-    <p>All you need is the Asciinema id:</p>
-    <code>{% asciinema 239367 %}</code>
-    <h3>Parsing Liquid Tags as a Code Example</h3>
-    <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
-    <p><code>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</code></p>
-    <p>One specific edge case is with using the <code>raw</code> tag. To properly escape it, use this format:
-    </p>
-    <p><code>`{% raw %}{{site.SOMETHING }} {% ``endraw`` %}`</code></p>
   </div>
 </div>

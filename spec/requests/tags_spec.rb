@@ -17,6 +17,53 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       get tags_path
       expect(response.body).not_to include("aliastag")
     end
+
+    it "searches tags", :aggregate_failures do
+      %w[ruby java javascript].each { |t| create(:tag, name: t) }
+
+      get tags_path(q: "ruby")
+      expect(response.body).to include("Search results for ruby", "ruby")
+      expect(response.body).not_to include("javascript")
+
+      get tags_path(q: "java")
+      expect(response.body).to include("Search results for java", "java", "javascript")
+      expect(response.body).not_to include("ruby")
+
+      get tags_path(q: "yeet")
+      expect(response.body).to include("No results match that query")
+    end
+  end
+
+  describe "GET /tags/bulk" do
+    it "returns a JSON representation of the top tags", :aggregate_failures do
+      tags = create_list(:tag, 10, taggings_count: 10)
+      tag_names = tags.sample(2).map(&:name)
+      tag_ids = tags.sample(4).map(&:id)
+
+      get bulk_tags_path, params: { tag_names: tag_names, tag_ids: tag_ids }
+
+      expect(response.parsed_body.map { |t| t["id"] }).to match_array(tag_ids)
+      expect(response).to have_http_status(:ok)
+      expect(response.content_type).to match(%r{application/json; charset=utf-8}i)
+    end
+
+    it "finds tags from array of tag_ids" do
+      tags = create_list(:tag, 10, taggings_count: 10)
+      tag_ids = tags.sample(4).map(&:id)
+
+      get bulk_tags_path, params: { tag_ids: tag_ids }
+
+      expect(response.parsed_body.map { |t| t["id"] }).to match_array(tag_ids)
+    end
+
+    it "finds tags from array of tag_names" do
+      tags = create_list(:tag, 10, taggings_count: 10)
+      tag_names = tags.sample(4).map(&:name)
+
+      get bulk_tags_path, params: { tag_names: tag_names }
+
+      expect(response.parsed_body.map { |t| t["name"] }).to match_array(tag_names)
+    end
   end
 
   describe "GET /tags/suggest" do

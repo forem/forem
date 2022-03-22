@@ -19,8 +19,7 @@ class AsyncInfoController < ApplicationController
           param: request_forgery_protection_token,
           token: form_authenticity_token,
           user: user_data,
-          creator: user_is_a_creator,
-          creator_onboarding: use_creator_onboarding
+          creator: user_is_a_creator
         }
       end
     end
@@ -58,17 +57,14 @@ class AsyncInfoController < ApplicationController
         config_body_class: @user.config_body_class,
         feed_style: feed_style_preference,
         created_at: @user.created_at,
-        admin: @user.any_admin?
+        admin: @user.any_admin?,
+        apple_auth: @user.email.to_s.end_with?("@privaterelay.appleid.com")
       }
     end.to_json
   end
 
   def user_is_a_creator
     @user.creator?
-  end
-
-  def use_creator_onboarding
-    FeatureFlag.enabled?(:creator_onboarding) && user_is_a_creator
   end
 
   def user_cache_key
