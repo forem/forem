@@ -304,6 +304,28 @@ RSpec.describe "StoriesIndex", type: :request do
     end
   end
 
+  describe "GET stories index with timeframe" do
+    describe "/latest" do
+      it "includes a link to Relevant", :aggregate_failures do
+        get "/latest"
+
+        # The link should be `/`
+        expected_tag = "<a data-text=\"Relevant\" href=\"/\""
+        expect(response.body).to include(expected_tag)
+      end
+    end
+
+    describe "/top/week" do
+      it "includes a link to Relevant", :aggregate_failures do
+        get "/top/week"
+
+        # The link should be `/`
+        expected_tag = "<a data-text=\"Relevant\" href=\"/\""
+        expect(response.body).to include(expected_tag)
+      end
+    end
+  end
+
   describe "GET locale index" do
     it "names proper locale" do
       get "/locale/fr"

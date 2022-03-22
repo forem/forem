@@ -70,7 +70,7 @@ RSpec.describe "User visits articles by tag", type: :system do
 
     it "shows top level sort options" do
       within("#on-page-nav-controls") do
-        expect(page).to have_link("Relevant", href: "/t/functional/")
+        expect(page).to have_link("Relevant", href: "/t/functional")
         expect(page).to have_link("Top", href: "/t/functional/top/week")
         expect(page).to have_link("Latest", href: "/t/functional/latest")
       end
