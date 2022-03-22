@@ -63,6 +63,35 @@ RSpec.describe ArticlePolicy do
     end
   end
 
+  describe "#has_existing_articles_or_can_create_new_ones?" do
+    let(:policy_method) { :has_existing_articles_or_can_create_new_ones? }
+
+    it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+    it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
+    it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+
+    context "when user has published articles" do
+      before do
+        create(:article, published: true, user: user)
+      end
+
+      # Below are two scenarios: one with limit_post_creation_to_admins? as true and the other as
+      # limit_post_creation_to_admins? as false.  In both cases, when the user has published
+      # articles, it doesn't matter if they can create an article or not, the
+      # `has_existing_articles_or_can_create_new_ones?` should return true (which is what the
+      # "permitted roles" shared spec verifies).
+      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
+    end
+
+    context "when user has no published articles" do
+      before { user.articles.delete_all }
+
+      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+      it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+    end
+  end
+
   describe "#moderate?" do
     let(:policy_method) { :moderate? }
 
