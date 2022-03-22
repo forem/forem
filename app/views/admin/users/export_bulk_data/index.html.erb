@@ -1,0 +1,22 @@
+<%= render "admin/users/menu" %>
+
+<div class="crayons-card p-6 m-6">
+  <h2 class="crayons-title mb-4">Export User Data</h2>
+  <p>
+    This tool exports data on your users, including:
+    <ul>
+      <% Exporter::Admin::Users::ATTRIBUTES.each do |attribute| %>
+        <li><%= attribute %></li>
+      <% end %>
+    </ul>
+    
+    <% if current_user.has_role?(:super_admin) %>
+      <%= form_with(url: admin_users_export_bulk_data_index_path, method: :post, local: true) do |f| %>
+        <p>This will export the data as a CSV file to your email (<%= current_user.email %>).</p>
+        <%= f.submit "Export Data", class: "crayons-btn mt-4" %>
+      <% end %>
+    <% else %>
+    <div class="crayons-notice crayons-notice--danger mt-4">This tool is only available to super admins.</div>
+    <% end %>
+  </p>
+</div>
