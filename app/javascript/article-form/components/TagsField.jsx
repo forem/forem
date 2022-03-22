@@ -56,8 +56,8 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
   };
 
   const fetchSuggestions = (searchTerm) =>
-    fetchSearch('tags', { name: searchTerm }).then(
-      (response) => response.result,
+    fetchSearch('tags', { name: searchTerm }).then((response) =>
+      response.result.concat({ name: searchTerm }),
     );
 
   return (

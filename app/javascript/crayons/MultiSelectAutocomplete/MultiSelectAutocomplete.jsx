@@ -84,7 +84,6 @@ export const MultiSelectAutocomplete = ({
   onFocus,
   SuggestionTemplate,
   SelectionTemplate = DefaultSelectionTemplate,
-  onlySuggestions = false,
 }) => {
   const [state, dispatch] = useReducer(reducer, {
     suggestions: [],
@@ -127,10 +126,7 @@ export const MultiSelectAutocomplete = ({
 
   // We only want to create suggestions as a selection in the multi-select autocomplete in some instances.
   const canCreateSelection = (value) => {
-    return (
-      !onlySuggestions ||
-      suggestions.map((suggestion) => suggestion.name).includes(value)
-    );
+    return suggestions.map((suggestion) => suggestion.name).includes(value);
   };
 
   const handleInputBlur = () => {
@@ -318,8 +314,8 @@ export const MultiSelectAutocomplete = ({
 
     const results = await fetchSuggestions(value);
     // If no results, display current search term as an option unless only suggestions are permitted.
-    if (results.length === 0 && !onlySuggestions && value !== '') {
-      results.push({ name: value });
+    if (results.length === 0 && value !== '') {
+      return;
     }
 
     dispatch({
