@@ -201,7 +201,7 @@ describe('Admin -> Customization -> Config -> Images', () => {
   it('should upload an image from the admin -> customization -> config -> images section', () => {
     cy.visit(`/admin/customization/config`);
 
-    cy.findByRole('heading', { name: /Images/i }).click();
+    cy.findByText('Images').click();
     cy.findByLabelText(/^Logo$/i).attachFile('/images/admin-image.png');
     cy.findByRole('button', { name: /Update image settings/i }).click();
 
@@ -229,7 +229,7 @@ describe('Admin -> Customization -> Config -> Images', () => {
   it('should not upload an image from the admin -> customization -> config -> images section', () => {
     cy.visit(`/admin/customization/config`);
 
-    cy.findByRole('heading', { name: /Images/i }).click();
+    cy.findByText('Images').click();
     cy.findByRole('button', { name: /Update image settings/i }).click();
 
     cy.findByTestId('snackbar')
