@@ -123,25 +123,6 @@ describe('<MultiSelectAutocomplete />', () => {
     ).toBeInTheDocument();
   });
 
-  it('displays search term as an option if no suggestions', async () => {
-    const mockFetchSuggestions = jest.fn(async () => []);
-
-    const { getByLabelText, getByRole } = render(
-      <MultiSelectAutocomplete
-        labelText="Example label"
-        fetchSuggestions={mockFetchSuggestions}
-      />,
-    );
-
-    const input = getByLabelText('Example label');
-    input.focus();
-    userEvent.type(input, 'a');
-
-    await waitFor(() =>
-      expect(getByRole('option', { name: 'a' })).toBeInTheDocument(),
-    );
-  });
-
   it('selects an option by clicking', async () => {
     const mockFetchSuggestions = jest.fn(async () => [
       { name: 'option1' },
