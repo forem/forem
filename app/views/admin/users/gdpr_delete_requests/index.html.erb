@@ -1,37 +1,77 @@
-<header class="mb-4">
-  <h1 class="crayons-title">GDPR Delete Requests</h1>
-  <%= render "admin/users/menu" %>
-</header>
-<div class="crayons-notice mb-4" aria-live="polite">
-  <strong>These users' accounts were deleted. Please, destroy GDPR data from external services (GA, Mailchimp) for them.</strong>
-</div>
-<table class="crayons-table" width="100%">
-  <thead>
-    <tr>
-      <th scope="col">User destroyed at</th>
-      <th scope="col">ID</th>
-      <th scope="col">Username</th>
-      <th scope="col">Email</th>
-      <th scope="col">Done</th>
-    </tr>
-  </thead>
-  <tbody class="crayons-card">
-    <% @gdpr_delete_requests.each do |r| %>
+<% if FeatureFlag.enabled?(:member_index_view) %>
+  <div class="crayons-card p-3 s:p-4 m:p-7">
+    <header class="flex flex-col l:flex-row justify-content-between l:items-center">
+      <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (GDPR Delete Requests)</span></h1>
+      <%= render "admin/users/index/tabs" %>
+    </header>
+    <div class="crayons-notice mb-4" aria-live="polite">
+      <strong>These users' accounts were deleted. Please, destroy GDPR data from external services (GA, Mailchimp) for them.</strong>
+    </div>
+    <table class="crayons-table" width="100%">
+      <thead>
+        <tr>
+          <th scope="col">User destroyed at</th>
+          <th scope="col">ID</th>
+          <th scope="col">Username</th>
+          <th scope="col">Email</th>
+          <th scope="col">Done</th>
+        </tr>
+      </thead>
+      <tbody class="crayons-card">
+        <% @gdpr_delete_requests.each do |r| %>
+          <tr>
+            <td><%= r.created_at.strftime("%m-%d-%Y %H:%m") %></td>
+            <td><%= r.user_id %></td>
+            <td><%= r.username %></td>
+            <td><%= r.email %></td>
+            <td>
+              <%= link_to "Done!",
+                          url_for(action: :destroy, id: r.id),
+                          method: :delete,
+                          data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
+                          class: "btn btn-danger" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= paginate @gdpr_delete_requests, theme: "internal" %>
+  </div>
+<% else %>
+  <header class="mb-4">
+    <h1 class="crayons-title">GDPR Delete Requests</h1>
+    <%= render "admin/users/menu" %>
+  </header>
+  <div class="crayons-notice mb-4" aria-live="polite">
+    <strong>These users' accounts were deleted. Please, destroy GDPR data from external services (GA, Mailchimp) for them.</strong>
+  </div>
+  <table class="crayons-table" width="100%">
+    <thead>
       <tr>
-        <td><%= r.created_at.strftime("%m-%d-%Y %H:%m") %></td>
-        <td><%= r.user_id %></td>
-        <td><%= r.username %></td>
-        <td><%= r.email %></td>
-        <td>
-          <%= link_to "Done!",
-                      url_for(action: :destroy, id: r.id),
-                      method: :delete,
-                      data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
-                      class: "btn btn-danger" %>
-        </td>
+        <th scope="col">User destroyed at</th>
+        <th scope="col">ID</th>
+        <th scope="col">Username</th>
+        <th scope="col">Email</th>
+        <th scope="col">Done</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<%= paginate @gdpr_delete_requests, theme: "internal" %>
+    </thead>
+    <tbody class="crayons-card">
+      <% @gdpr_delete_requests.each do |r| %>
+        <tr>
+          <td><%= r.created_at.strftime("%m-%d-%Y %H:%m") %></td>
+          <td><%= r.user_id %></td>
+          <td><%= r.username %></td>
+          <td><%= r.email %></td>
+          <td>
+            <%= link_to "Done!",
+                        url_for(action: :destroy, id: r.id),
+                        method: :delete,
+                        data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
+                        class: "btn btn-danger" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @gdpr_delete_requests, theme: "internal" %>
+<% end %>

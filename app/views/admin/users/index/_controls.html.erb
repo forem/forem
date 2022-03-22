@@ -11,3 +11,6 @@
     <%= f.submit "Filter", class: "c-btn c-btn--secondary" %>
   <% end %>
 <% end %>
+<% if params[:controller] == "admin/invitations" %>
+  <%= link_to "New", new_admin_invitation_path, class: "c-cta self-end" %>
+<% end %>
