@@ -1,8 +1,9 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
-  before_action -> { limit_per_page(default: 80, max: 1000) }, except: %i[show analytics]
 
+  LIMIT_PER_PAGE_DEFAULT = 80
+  LIMIT_PER_PAGE_MAX = 1000
   def show
     fetch_and_authorize_user
     target = @user
@@ -30,31 +31,31 @@ class DashboardsController < ApplicationController
   def following_tags
     fetch_and_authorize_user
     @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag")
-      .order(points: :desc).includes(:followable).limit(@follows_limit)
+      .order(points: :desc).includes(:followable).limit(follows_limit)
   end
 
   def following_users
     fetch_and_authorize_user
     @follows = @user.follows_by_type("User")
-      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(follows_limit)
   end
 
   def following_organizations
     fetch_and_authorize_user
     @followed_organizations = @user.follows_by_type("Organization")
-      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(follows_limit)
   end
 
   def following_podcasts
     fetch_and_authorize_user
     @followed_podcasts = @user.follows_by_type("Podcast")
-      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(follows_limit)
   end
 
   def followers
     fetch_and_authorize_user
     @follows = Follow.followable_user(@user.id)
-      .includes(:follower).order(created_at: :desc).limit(@follows_limit)
+      .includes(:follower).order(created_at: :desc).limit(follows_limit)
   end
 
   def analytics
@@ -94,8 +95,12 @@ class DashboardsController < ApplicationController
     authorize (@user || User), :dashboard_show?
   end
 
-  def limit_per_page(default:, max:)
-    per_page = (params[:per_page] || default).to_i
-    @follows_limit = [per_page, max].min
+  def follows_limit(default: LIMIT_PER_PAGE_DEFAULT, max: LIMIT_PER_PAGE_MAX)
+    return default unless params.key?(:per_page)
+
+    per_page = params[:per_page].to_i
+    return max if per_page > max
+
+    per_page
   end
 end
