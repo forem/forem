@@ -12,10 +12,6 @@ describe('Email Server Settings Section', () => {
     it('updates the smtp fields', () => {
       cy.findByTestId('emailServerSettings').as('emailServerSettings');
 
-      cy.get('@emailServerSettings')
-        .findByText('Email Server Settings (SMTP)')
-        .click();
-
       cy.get('@emailServerSettings').within(() => {
         cy.findByText('Email Server Settings (SMTP)').click();
         cy.findByLabelText('User name').clear().type('jane_doe');

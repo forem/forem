@@ -253,31 +253,6 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   white-space: pre-wrap;
 }
 
-///////////////////////////////////////////////////
-.crayons-color-selector {
-  --swatch-width: var(--su-6);
-  --swatch-height: var(--su-6);
-  @extend %form-styling;
-  padding: calc(0.5em - var(--border-width)) 0.5em;
-  height: 40px;
-
-  &::-webkit-color-swatch-wrapper {
-    padding: 0;
-    width: var(--swatch-width);
-    height: var(--swatch-height);
-  }
-
-  &::-webkit-color-swatch {
-    border: 0;
-  }
-
-  &--full {
-    width: 100%;
-    --swatch-width: 100%;
-  }
-}
-
-// TODO: cleanup duplicated .crayons-color-selector styles once usages have been replaced with the new component
 .c-color-picker {
   --swatch-width: var(--su-7);
   --swatch-height: var(--su-7);
@@ -298,5 +273,63 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   &__popover {
     min-width: min-content;
+  }
+}
+
+///////////////////////////////////////////////////
+.c-toggle {
+  --knob-position: 2px;
+  --size: calc(1.5em - var(--su-1));
+  display: inline-flex;
+  border-radius: 1000px;
+
+  $this: '.c-toggle';
+
+  &__control {
+    width: 3em;
+    height: 1.5em;
+    padding: 2px;
+    cursor: pointer;
+    display: inline-flex;
+    position: relative;
+    background: var(--toggle-rail-bg);
+    border-radius: 1000px;
+    transition: var(--transition-props);
+
+    &::after {
+      content: '';
+      background: var(--toggle-knob-bg);
+      position: absolute;
+      left: var(--knob-position);
+      right: 100%;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 1000px;
+      transition: var(--transition-props);
+      box-shadow: 0 0 0 1px rgba(var(--black), 0.05),
+        0 2px 3px rgba(var(--black), 0.2);
+    }
+  }
+
+  [type='checkbox'] {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+
+    &:checked + #{$this}__control {
+      background: var(--toggle-rail-checked-bg);
+      &::after {
+        left: calc(100% - var(--size) - 2px);
+        right: var(--knob-position);
+      }
+    }
+  }
+
+  &:focus-within {
+    box-shadow: var(--focus-ring);
+    outline: 0;
   }
 }

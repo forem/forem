@@ -17,7 +17,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "does nothing when given nil" do
-      expect(described_class.call(nil)).to be(nil)
+      expect(described_class.call(nil)).to be_nil
     end
 
     it "returns the image if neither cloudinary nor imgproxy are enabled", :aggregate_failures do

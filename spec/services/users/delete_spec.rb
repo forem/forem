@@ -57,7 +57,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
     end.to change(AuditLog, :count).by(0)
 
-    expect(audit_log.reload.user_id).to be(nil)
+    expect(audit_log.reload.user_id).to be_nil
   end
 
   it "deletes field tests memberships" do

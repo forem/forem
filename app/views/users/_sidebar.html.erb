@@ -1,7 +1,7 @@
 <div class="m:gap-4 hidden m:grid js-user-info">
   <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
     <% if @user.organizations.present? %>
-      <div class="crayons-card crayons-card--secondary">
+      <div class="crayons-card crayons-card--secondary crayons-layout__content">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-3 spec-org-titles"><%= t("views.users.side.org") %></h3>
         </header>

@@ -1,11 +1,11 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
-  before_action :fetch_and_authorize_user, except: :analytics
-  before_action :set_source, only: %i[subscriptions]
-  before_action -> { limit_per_page(default: 80, max: 1000) }, except: %i[show analytics]
 
+  LIMIT_PER_PAGE_DEFAULT = 80
+  LIMIT_PER_PAGE_MAX = 1000
   def show
+    fetch_and_authorize_user
     target = @user
     not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
 
@@ -29,28 +29,29 @@ class DashboardsController < ApplicationController
   end
 
   def following_tags
-    @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag")
-      .order(points: :desc).includes(:followable).limit(@follows_limit)
+    fetch_and_authorize_user
+    @followed_tags = follows_for(user: @user, type: "ActsAsTaggableOn::Tag", order_by: :points)
   end
 
   def following_users
-    @follows = @user.follows_by_type("User")
-      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
+    fetch_and_authorize_user
+    @follows = follows_for(user: @user, type: "User")
   end
 
   def following_organizations
-    @followed_organizations = @user.follows_by_type("Organization")
-      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
+    fetch_and_authorize_user
+    @followed_organizations = follows_for(user: @user, type: "Organization")
   end
 
   def following_podcasts
-    @followed_podcasts = @user.follows_by_type("Podcast")
-      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
+    fetch_and_authorize_user
+    @followed_podcasts = follows_for(user: @user, type: "Podcast")
   end
 
   def followers
+    fetch_and_authorize_user
     @follows = Follow.followable_user(@user.id)
-      .includes(:follower).order(created_at: :desc).limit(@follows_limit)
+      .includes(:follower).order(created_at: :desc).limit(follows_limit)
   end
 
   def analytics
@@ -63,12 +64,18 @@ class DashboardsController < ApplicationController
   end
 
   def subscriptions
+    fetch_and_authorize_user
+    set_source
     authorize @source
     @subscriptions = @source.user_subscriptions
       .includes(:subscriber).order(created_at: :desc).page(params[:page]).per(100)
   end
 
   private
+
+  def follows_for(user:, type:, order_by: :created_at)
+    user.follows_by_type(type).order(order_by => :desc).includes(:followable).limit(follows_limit)
+  end
 
   def set_source
     source_type = UserSubscription::ALLOWED_TYPES.detect { |allowed_type| allowed_type == params[:source_type] }
@@ -88,8 +95,12 @@ class DashboardsController < ApplicationController
     authorize (@user || User), :dashboard_show?
   end
 
-  def limit_per_page(default:, max:)
-    per_page = (params[:per_page] || default).to_i
-    @follows_limit = [per_page, max].min
+  def follows_limit(default: LIMIT_PER_PAGE_DEFAULT, max: LIMIT_PER_PAGE_MAX)
+    return default unless params.key?(:per_page)
+
+    per_page = params[:per_page].to_i
+    return max if per_page > max
+
+    per_page
   end
 end

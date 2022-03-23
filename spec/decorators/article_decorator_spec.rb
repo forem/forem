@@ -50,17 +50,17 @@ RSpec.describe ArticleDecorator, type: :decorator do
   describe "has_recent_comment_activity?" do
     it "returns false if no comment activity" do
       article.last_comment_at = nil
-      expect(article.decorate.has_recent_comment_activity?).to eq(false)
+      expect(article.decorate.has_recent_comment_activity?).to be(false)
     end
 
     it "returns true if more recent than passed in value" do
       article.last_comment_at = 1.week.ago
-      expect(article.decorate.has_recent_comment_activity?(2.weeks.ago)).to eq(true)
+      expect(article.decorate.has_recent_comment_activity?(2.weeks.ago)).to be(true)
     end
 
     it "returns false if less recent than passed in value" do
       article.last_comment_at = 4.weeks.ago
-      expect(article.decorate.has_recent_comment_activity?(2.weeks.ago)).to eq(false)
+      expect(article.decorate.has_recent_comment_activity?(2.weeks.ago)).to be(false)
     end
   end
 
@@ -187,31 +187,31 @@ RSpec.describe ArticleDecorator, type: :decorator do
   describe "#long_markdown?" do
     it "returns false if body_markdown is nil" do
       article.body_markdown = nil
-      expect(article.decorate.long_markdown?).to eq false
+      expect(article.decorate.long_markdown?).to be false
     end
 
     it "returns false if body_markdown has fewer characters than LONG_MARKDOWN_THRESHOLD" do
       article.body_markdown = "---\ntitle: Title\n---\n\nHey this is the article"
-      expect(article.decorate.long_markdown?).to eq false
+      expect(article.decorate.long_markdown?).to be false
     end
 
     it "returns true if body_markdown has more characters than LONG_MARKDOWN_THRESHOLD" do
       additional_characters_length = (ArticleDecorator::LONG_MARKDOWN_THRESHOLD + 1) - article.body_markdown.length
       article.body_markdown << Faker::Hipster.paragraph_by_chars(characters: additional_characters_length)
-      expect(article.decorate.long_markdown?).to eq true
+      expect(article.decorate.long_markdown?).to be true
     end
   end
 
   describe "#discussion?" do
     it "returns false if it's not tagged with discuss" do
       article.cached_tag_list = "welcome"
-      expect(article.decorate.discussion?).to eq false
+      expect(article.decorate.discussion?).to be false
     end
 
     it "returns false if featured number is less than 35 hours ago" do
       Timecop.freeze(Time.current) do
         article.featured_number = 35.hours.ago.to_i - 1
-        expect(article.decorate.discussion?).to eq false
+        expect(article.decorate.discussion?).to be false
       end
     end
 
@@ -219,7 +219,7 @@ RSpec.describe ArticleDecorator, type: :decorator do
       Timecop.freeze(Time.current) do
         article.cached_tag_list = "welcome, discuss"
         article.featured_number = 35.hours.ago.to_i + 1
-        expect(article.decorate.discussion?).to eq true
+        expect(article.decorate.discussion?).to be true
       end
     end
   end

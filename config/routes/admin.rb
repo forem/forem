@@ -43,7 +43,7 @@ namespace :admin do
     resources :gdpr_delete_requests, only: %i[index destroy]
   end
 
-  resources :users, only: %i[index show edit update destroy] do
+  resources :users, only: %i[index show update destroy] do
     resources :email_messages, only: :show
 
     member do
@@ -61,6 +61,10 @@ namespace :admin do
   end
 
   scope :content_manager do
+    # This is a temporary constraint as we work towards releasing https://github.com/orgs/forem/projects/46/views/1
+    constraints(->(_request) { FeatureFlag.exist?(:limit_post_creation_to_admins) }) do
+      resources :spaces, only: %i[index update]
+    end
     resources :articles, only: %i[index show update] do
       member do
         delete :unpin
@@ -128,6 +132,12 @@ namespace :admin do
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
+      end
+    end
+
+    resources :extensions, only: %i[index] do
+      collection do
+        post "toggle", to: "extensions#toggle"
       end
     end
 

@@ -11,5 +11,6 @@ FactoryBot.define do
     feed_url        { Faker::Internet.url }
     main_color_hex  { "ffffff" }
     published       { true }
+    featured        { false }
   end
 end

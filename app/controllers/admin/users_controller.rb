@@ -35,12 +35,10 @@ module Admin
 
     def show
       @user = User.find(params[:id])
-
-      if FeatureFlag.enabled?(:admin_member_view)
-        set_current_tab(params[:tab])
-        set_feedback_messages
-        set_related_reactions
-      end
+      set_current_tab(params[:tab])
+      set_banishable_user
+      set_feedback_messages
+      set_related_reactions
       set_user_details
     end
 
@@ -286,19 +284,18 @@ module Admin
     end
 
     def credit_params
-      return user_params unless FeatureFlag.enabled?(:admin_member_view)
-
       credit_params = {}
-      if user_params[:credit_action] == "Add"
+
+      case user_params[:credit_action]
+      when "Add"
         credit_params[:add_credits] = user_params[:credit_amount]
         flash[:success] = "Credits have been added!"
-      end
-
-      if user_params[:credit_action] == "Remove"
+      when "Remove"
         credit_params[:remove_credits] = user_params[:credit_amount]
         flash[:success] = "Credits have been removed."
+      else
+        return user_params
       end
-
       credit_params
     end
 
@@ -308,6 +305,11 @@ module Admin
                      else
                        "overview"
                      end
+    end
+
+    def set_banishable_user
+      @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
+        @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
     end
   end
 end

@@ -22,7 +22,7 @@ class User < ApplicationRecord
     end
   end
 
-  include StringAttributeCleaner.for(:email)
+  include StringAttributeCleaner.nullify_blanks_for(:email)
 
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/

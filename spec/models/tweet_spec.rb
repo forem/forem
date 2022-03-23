@@ -88,6 +88,17 @@ RSpec.describe Tweet, type: :model, vcr: true do
         tweet = described_class.find_or_fetch(tweet_id)
         expect(tweet.user_id).to eq(user.id)
       end
+
+      it "raises an error when Twitter key or secret are missing" do
+        allow(TwitterClient::Client)
+          .to receive(:status)
+          .and_raise(TwitterClient::Errors::BadRequest, "Bad Authentication data.")
+
+        expect do
+          described_class.find_or_fetch(tweet_id)
+        end.to raise_error(TwitterClient::Errors::BadRequest,
+                           "Authentication error; please contact your Forem admin about possible missing Twitter keys")
+      end
     end
 
     context "when retrieving non existent tweet", vcr: { cassette_name: "twitter_client_status_not_found_extended" } do

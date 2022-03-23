@@ -158,7 +158,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def sets_remember_token
-            expect(response.cookies["remember_user_token"]).not_to be nil
+            expect(response.cookies["remember_user_token"]).not_to be_nil
           end
 
           it "renders properly even if site config is private" do
@@ -171,6 +171,14 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
             create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
             get "/t/#{tag.name}"
             expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+          end
+
+          it "includes a link to Relevant", :aggregate_failures do
+            get "/t/#{tag.name}/latest"
+
+            # The link should be `/t/tag2` (without a trailing slash) instead of `/t/tag2/`
+            expected_tag = "<a data-text=\"Relevant\" href=\"/t/#{tag.name}\""
+            expect(response.body).to include(expected_tag)
           end
         end
 
@@ -199,7 +207,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def does_not_set_remember_token
-            expect(response.cookies["remember_user_token"]).to be nil
+            expect(response.cookies["remember_user_token"]).to be_nil
           end
 
           def renders_pagination
