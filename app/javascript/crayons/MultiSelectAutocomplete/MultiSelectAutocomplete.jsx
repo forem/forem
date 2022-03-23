@@ -126,7 +126,10 @@ export const MultiSelectAutocomplete = ({
 
   // We only want to create suggestions as a selection in the multi-select autocomplete in some instances.
   const canCreateSelection = (value) => {
-    return suggestions.map((suggestion) => suggestion.name).includes(value);
+    return (
+      suggestions.map((suggestion) => suggestion.name).includes(value) ||
+      selectedItems.map((item) => item.name).includes(value)
+    );
   };
 
   const handleInputBlur = () => {
