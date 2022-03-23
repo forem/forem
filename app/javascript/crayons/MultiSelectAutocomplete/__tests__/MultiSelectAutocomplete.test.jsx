@@ -406,7 +406,7 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'a');
+    userEvent.type(input, 'option1');
 
     await waitFor(() =>
       expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
@@ -420,8 +420,8 @@ describe('<MultiSelectAutocomplete />', () => {
     );
 
     // Text value should be selected
-    expect(getByRole('button', { name: 'Edit a' })).toBeInTheDocument();
-    expect(getByRole('button', { name: 'Remove a' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
   });
 
   it('clears the input on Escape press', async () => {
