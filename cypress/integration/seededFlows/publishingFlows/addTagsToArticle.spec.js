@@ -91,9 +91,10 @@ describe('Add tags to article', () => {
     cy.findByRole('option', { name: '# a' }).should('exist');
   });
 
-  // eslint-disable-next-line
   it('selects a tag by clicking, typing a comma or space', () => {
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' }).as('input').focus();
+    cy.findByRole('textbox', { name: 'Add up to 4 tags' }).as('input').click();
+
+    cy.findByRole('heading', { name: 'Top tags' }).should('exist');
 
     cy.findByRole('option', { name: '# tagone' }).click();
 
@@ -121,11 +122,11 @@ describe('Add tags to article', () => {
 
   it('selects currently entered text when input blurs', () => {
     cy.findByRole('textbox', { name: 'Add up to 4 tags' })
-      .type('something')
+      .type('tagone')
       .blur();
 
-    cy.findByRole('button', { name: 'Edit something' }).should('exist');
-    cy.findByRole('button', { name: 'Remove something' }).should('exist');
+    cy.findByRole('button', { name: 'Edit tagone' }).should('exist');
+    cy.findByRole('button', { name: 'Remove tagone' }).should('exist');
   });
 
   it('edits and deletes a previous selection', () => {
@@ -133,8 +134,17 @@ describe('Add tags to article', () => {
       .as('input')
       .type('something,');
 
+    cy.findByRole('option', { name: '# something' });
+
+    cy.get('@input').type(',');
+
     cy.findByRole('button', { name: 'Edit something' }).click();
-    cy.get('@input').should('have.value', 'something').type('else,');
+    cy.get('@input').should('have.value', 'something').type('else');
+
+    cy.findByRole('option', { name: '# somethingelse' });
+
+    cy.get('@input').type(',');
+
     cy.findByRole('button', { name: 'Edit somethingelse' }).should('exist');
 
     cy.findByRole('button', { name: 'Remove somethingelse' }).click();
@@ -150,7 +160,11 @@ describe('Add tags to article', () => {
   it('edits a previous tag when backspace typed', () => {
     cy.findByRole('textbox', { name: 'Add up to 4 tags' })
       .as('input')
-      .type('something,');
+      .type('something');
+
+    cy.findByRole('option', { name: '# something' });
+
+    cy.get('@input').type(',');
 
     // Verify tag is selected
     cy.findByRole('button', { name: 'Edit something' }).should('exist');
@@ -170,9 +184,11 @@ describe('Add tags to article', () => {
   it('splits an edited value if space or comma are typed', () => {
     cy.findByRole('textbox', { name: 'Add up to 4 tags' })
       .as('input')
-      .type('onetwothree,');
+      .type('onetwothree');
 
     cy.findByRole('button', { name: 'Edit onetwothree' }).click();
+
+    cy.get('@input').type(',');
 
     // Check the input is pre-filled with the selection, and move the cursor to before 'three' before entering a comma
     cy.get('@input')
