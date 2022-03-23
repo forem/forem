@@ -197,7 +197,7 @@ describe('<MultiSelectAutocomplete />', () => {
       { name: 'option2' },
     ]);
 
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, findByRole } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
         fetchSuggestions={mockFetchSuggestions}
@@ -206,13 +206,19 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'option1{space}');
+    userEvent.type(input, 'option1');
+
+    findByRole('option', { name: 'option1' });
+
+    userEvent.type(input, '{space}');
 
     // It should now be added to the list of selected items
-    await waitFor(() =>
-      expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument(),
-    );
-    expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
+    waitFor(() => {
+      expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument();
+      expect(
+        getByRole('button', { name: 'Remove option1' }),
+      ).toBeInTheDocument();
+    });
   });
 
   it('should select current text on comma press', async () => {
@@ -221,7 +227,7 @@ describe('<MultiSelectAutocomplete />', () => {
       { name: 'option2' },
     ]);
 
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, findByRole } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
         fetchSuggestions={mockFetchSuggestions}
@@ -230,13 +236,19 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example,');
+    userEvent.type(input, 'option1');
+
+    findByRole('option', { name: 'option1' });
+
+    userEvent.type(input, ',');
 
     // It should now be added to the list of selected items
-    await waitFor(() =>
-      expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument(),
-    );
-    expect(getByRole('button', { name: 'Remove example' })).toBeInTheDocument();
+    waitFor(() => {
+      expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument();
+      expect(
+        getByRole('button', { name: 'Remove option1' }),
+      ).toBeInTheDocument();
+    });
   });
 
   it("doesn't select manual text entry if already selected", async () => {
@@ -244,7 +256,7 @@ describe('<MultiSelectAutocomplete />', () => {
       <MultiSelectAutocomplete
         labelText="Example label"
         defaultValue={[{ name: 'example' }]}
-        fetchSuggestions={() => [{ name: 'example' }]}
+        fetchSuggestions={() => []}
       />,
     );
 
@@ -269,7 +281,7 @@ describe('<MultiSelectAutocomplete />', () => {
       { name: 'option2' },
     ]);
 
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, findByRole } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
         fetchSuggestions={mockFetchSuggestions}
@@ -279,14 +291,18 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example,');
+    userEvent.type(input, 'option1');
 
-    // It should now be added to the list of selected items using the custom template
-    await waitFor(() =>
+    findByRole('option', { name: 'option1' });
+
+    userEvent.type(input, ',');
+
+    // It should now be added to the list of selected items
+    waitFor(() => {
       expect(
         getByRole('button', { name: 'Selected: example' }),
-      ).toBeInTheDocument(),
-    );
+      ).toBeInTheDocument();
+    });
   });
 
   it('edits a selection', async () => {
@@ -491,6 +507,7 @@ describe('<MultiSelectAutocomplete />', () => {
     const mockFetchSuggestions = jest.fn(async () => [
       { name: 'option1' },
       { name: 'option2' },
+      { name: 'option3' },
     ]);
 
     const {
@@ -499,10 +516,11 @@ describe('<MultiSelectAutocomplete />', () => {
       queryByText,
       getByText,
       queryAllByRole,
+      findByRole,
     } = render(
       <MultiSelectAutocomplete
         maxSelections={2}
-        defaultValue={[{ name: 'defaultSelection' }]}
+        defaultValue={[{ name: 'option1' }]}
         labelText="Example label"
         fetchSuggestions={mockFetchSuggestions}
       />,
@@ -515,24 +533,35 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(queryByText('Only 2 selections allowed')).toBeNull();
     expect(input).toHaveAttribute('aria-disabled', 'false');
 
-    userEvent.type(input, 'example,');
+    userEvent.type(input, 'option2');
 
-    // Make sure option has been selected
-    await waitFor(() => getByRole('button', { name: 'Edit example' }));
+    findByRole('option', { name: 'option2' });
 
-    // Check input is in the max reached state
-    expect(input).toHaveAttribute('placeholder', '');
-    expect(getByText('Only 2 selections allowed')).toBeInTheDocument();
-    expect(input).toHaveAttribute('aria-disabled', 'true');
+    userEvent.type(input, ',');
 
-    // Start typing and make sure further options not shown
-    userEvent.type(input, 'a');
-    expect(queryAllByRole('option')).toHaveLength(0);
-    expect(getByText('Only 2 selections allowed')).toBeInTheDocument();
+    // It should now be added to the list of selected items
+    waitFor(() => {
+      expect(getByRole('button', { name: 'Edit option2' })).toBeInTheDocument();
+      expect(
+        getByRole('button', { name: 'Remove option2' }),
+      ).toBeInTheDocument();
 
-    // Try to select a value by typing a comma
-    userEvent.type(input, 'b,');
-    // Verify the selection wasn't made, and the text is still in the input
-    expect(input).toHaveValue('ab');
+      // Check input is in the max reached state
+      expect(input).toHaveAttribute('placeholder', '');
+      expect(getByText('Only 2 selections allowed')).toBeInTheDocument();
+      expect(input).toHaveAttribute('aria-disabled', 'true');
+
+      // // Start typing and make sure further options not shown
+      userEvent.type(input, 'a');
+      expect(queryAllByRole('option')).toHaveLength(0);
+      expect(getByText('Only 2 selections allowed')).toBeInTheDocument();
+
+      // // Try to select a value by typing a comma
+      userEvent.type(input, 'b,');
+      // Verify the selection wasn't made, and the text is still in the input
+      expect(input).toHaveValue('ab');
+
+      return undefined;
+    });
   });
 });
