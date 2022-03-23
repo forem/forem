@@ -1,0 +1,30 @@
+<div class="crayons-card p-3 s:p-4 m:p-7">
+  <header class="flex flex-col l:flex-row justify-content-between l:items-center ">
+    <h1 class="crayons-title ml-3 l:ml-0">Members</h1>
+    <%= render "admin/users/index/tabs" %>
+  </header>
+
+  <%= render "admin/users/index/controls" %>
+
+  <%= paginate @users, theme: "internal" %>
+
+    <table class="crayons-table" width="100%">
+      <thead>
+        <tr>
+          <th scope="col">Member</th>
+          <th scope="col">Status</th>
+          <th scope="col">Last activity & Joined on</th>
+          <th scope="col">Organizations</th>
+        </tr>
+      </thead>
+      <tbody class="crayons-card">
+        <% @users.each do |user| %>
+        <tr>
+          <td><%= link_to user.name, admin_user_path(user) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <%= paginate @users, theme: "internal" %>
+</div>
