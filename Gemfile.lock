@@ -170,7 +170,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     connection_pool (2.2.5)
     counter_culture (3.2.1)
       activerecord (>= 4.2)
@@ -709,7 +709,7 @@ GEM
     rspec-support (3.11.0)
     rss (0.2.9)
       rexml
-    rubocop (1.26.0)
+    rubocop (1.26.1)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -836,7 +836,7 @@ GEM
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (> 5, < 6)
-    strong_migrations (0.8.0)
+    strong_migrations (1.0.0)
       activerecord (>= 5.2)
     strscan (3.0.1)
     terminal-table (3.0.2)
@@ -1057,7 +1057,7 @@ DEPENDENCIES
   sterile (~> 1.0)
   stripe (~> 5.45)
   stripe-ruby-mock (= 3.1.0.rc3)
-  strong_migrations (~> 0.8)
+  strong_migrations (~> 1.0)
   test-prof (~> 1.0)
   timecop (~> 0.9)
   twitter (~> 7.0)
