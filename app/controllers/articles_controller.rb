@@ -312,7 +312,7 @@ class ArticlesController < ApplicationController
                      else
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
-                         tag_list canonical_url series collection_id archived
+                         tag_list canonical_url series collection_id archived published_at
                        ]
                      end
 

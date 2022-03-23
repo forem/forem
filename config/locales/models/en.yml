@@ -21,6 +21,7 @@ en:
       must_not_have_spaces: must not have spaces
       published: Published
       unique_url: has already been taken. Email %{email} for further details.
+      invalid_published_at: updating published_at for posts that have already been published is not allowed
       mention_too_many:
         one: You cannot mention more than %{count} users in a post!
         other: You cannot mention more than %{count} users in a post!

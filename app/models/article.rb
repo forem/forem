@@ -153,6 +153,7 @@ class Article < ApplicationRecord
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
+  validate :has_correct_published_at?
 
   validate :canonical_url_must_not_have_spaces
   # validate :past_or_present_date
@@ -718,7 +719,8 @@ class Article < ApplicationRecord
     self.title = front_matter["title"] if front_matter["title"].present?
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
-    self.published_at = parse_date(front_matter["date"]) if published
+    self.published_at = front_matter["published_at"] if front_matter["published_at"]
+    self.published_at ||= parse_date(front_matter["date"]) if published
     set_main_image(front_matter)
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
 
@@ -814,6 +816,12 @@ class Article < ApplicationRecord
     return unless published_at && published_at > Time.current
 
     errors.add(:date_time, I18n.t("models.article.invalid_date"))
+  end
+
+  def has_correct_published_at?
+    if published_was && published_at_was < Time.current && changes["published_at"]
+      errors.add(:published_at, I18n.t("models.article.invalid_published_at"))
+    end
   end
 
   def canonical_url_must_not_have_spaces
