@@ -316,7 +316,7 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
-    it "returns WikipediaTag for a twitter timeline url" do
+    it "returns WikipediaTag for a wikipedia url" do
       expect(described_class.find_liquid_tag_for(link: "https://en.wikipedia.org/wiki/Steve_Jobs"))
         .to eq(WikipediaTag)
     end

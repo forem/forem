@@ -5,15 +5,15 @@
 </div>
 <br>
 <p align="center">
-  <a href="https://travis-ci.com/forem/forem">
-    <img src="https://travis-ci.com/forem/forem.svg?branch=main" alt="Travis Status for forem/forem">
+  <a href="https://app.travis-ci.com/github/forem/forem">
+    <img src="https://api.travis-ci.com/forem/forem.svg?branch=main" alt="Build Status">
   </a>
   <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
     <img src="https://img.shields.io/github/issues/forem/forem/ready for dev" alt="GitHub issues ready for dev">
   </a>
   <a href="https://gitpod.io/from-referrer/">
-    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
+    <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="Gitpod badge">
   </a>
 </p>
 
@@ -122,7 +122,6 @@ Please see our installation guides, such as the
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@atsmith813](https://dev.to/atsmith813)
-- [@nickytonline](https://dev.to/nickytonline)
 - [@joshpuetz](http://dev.to/joshpuetz)
 - [@juliannatetreault](https://dev.to/juliannatetreault)
 - [@ridhwana](https://dev.to/ridhwana)

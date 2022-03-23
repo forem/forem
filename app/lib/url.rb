@@ -5,10 +5,16 @@ module URL
   end
 
   def self.database_available?
-    ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?("site_configs")
+    ActiveRecord::Base.connected? && has_site_configs?
   end
 
   private_class_method :database_available?
+
+  def self.has_site_configs?
+    @has_site_configs ||= ActiveRecord::Base.connection.table_exists?("site_configs")
+  end
+
+  private_class_method :has_site_configs?
 
   def self.domain
     if database_available?
