@@ -91,6 +91,7 @@ describe('Add tags to article', () => {
     cy.findByRole('option', { name: '# a' }).should('exist');
   });
 
+  // eslint-disable-next-line
   it('selects a tag by clicking, typing a comma or space', () => {
     cy.findByRole('textbox', { name: 'Add up to 4 tags' }).as('input').focus();
 
@@ -99,12 +100,20 @@ describe('Add tags to article', () => {
     cy.findByRole('button', { name: 'Edit tagone' }).should('exist');
     cy.findByRole('button', { name: 'Remove tagone' }).should('exist');
 
-    cy.get('@input').type('something,');
+    cy.get('@input').type('something');
+
+    cy.findByRole('option', { name: '# something' }).should('exist');
+
+    cy.get('@input').type(',');
 
     cy.findByRole('button', { name: 'Edit something' }).should('exist');
     cy.findByRole('button', { name: 'Remove something' }).should('exist');
 
-    cy.get('@input').type('another ');
+    cy.get('@input').type('another');
+
+    cy.findByRole('option', { name: '# another' }).should('exist');
+
+    cy.get('@input').type(' ');
 
     cy.findByRole('button', { name: 'Edit another' }).should('exist');
     cy.findByRole('button', { name: 'Remove another' }).should('exist');
