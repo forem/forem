@@ -123,25 +123,6 @@ describe('<MultiSelectAutocomplete />', () => {
     ).toBeInTheDocument();
   });
 
-  it('does not display search term as an option if no suggestions', async () => {
-    const mockFetchSuggestions = jest.fn(async () => []);
-
-    const { getByLabelText, queryByRole } = render(
-      <MultiSelectAutocomplete
-        labelText="Example label"
-        fetchSuggestions={mockFetchSuggestions}
-      />,
-    );
-
-    const input = getByLabelText('Example label');
-    input.focus();
-    userEvent.type(input, 'a');
-
-    await waitFor(() =>
-      expect(queryByRole('option', { name: 'a' })).not.toBeInTheDocument(),
-    );
-  });
-
   it('selects an option by clicking', async () => {
     const mockFetchSuggestions = jest.fn(async () => [
       { name: 'option1' },
@@ -225,13 +206,13 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example{space}');
+    userEvent.type(input, 'option1{space}');
 
     // It should now be added to the list of selected items
     await waitFor(() =>
-      expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument(),
+      expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument(),
     );
-    expect(getByRole('button', { name: 'Remove example' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
   });
 
   it('should select current text on comma press', async () => {
@@ -263,7 +244,7 @@ describe('<MultiSelectAutocomplete />', () => {
       <MultiSelectAutocomplete
         labelText="Example label"
         defaultValue={[{ name: 'example' }]}
-        fetchSuggestions={() => []}
+        fetchSuggestions={() => [{ name: 'example' }]}
       />,
     );
 
@@ -425,7 +406,7 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'a');
+    userEvent.type(input, 'option1');
 
     await waitFor(() =>
       expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
@@ -439,8 +420,8 @@ describe('<MultiSelectAutocomplete />', () => {
     );
 
     // Text value should be selected
-    expect(getByRole('button', { name: 'Edit a' })).toBeInTheDocument();
-    expect(getByRole('button', { name: 'Remove a' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
   });
 
   it('clears the input on Escape press', async () => {
