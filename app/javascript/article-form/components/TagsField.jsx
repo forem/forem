@@ -57,6 +57,8 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
 
   const fetchSuggestions = (searchTerm) =>
     fetchSearch('tags', { name: searchTerm }).then((response) =>
+      // The search term is appended to the tag search results to allow for new tag creation,
+      // a use case specific to the article form
       response.result.concat({ name: searchTerm }),
     );
 
