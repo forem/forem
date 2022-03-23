@@ -39,8 +39,6 @@ module SidekiqTestHelpers
 
     yield
 
-    sleep 0.1
-
     # check there's at least one job with the given args
     matching_job = job.jobs.detect do |queued_job|
       expected_args.all? { |key, value| value == queued_job[key] }
