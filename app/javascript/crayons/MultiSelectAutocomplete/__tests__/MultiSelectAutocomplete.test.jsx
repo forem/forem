@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitFor } from '@testing-library/preact';
+import { findByRole, render, waitFor } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 
 import '@testing-library/jest-dom';
@@ -197,7 +197,7 @@ describe('<MultiSelectAutocomplete />', () => {
       { name: 'option2' },
     ]);
 
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, findByRole } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
         fetchSuggestions={mockFetchSuggestions}
@@ -206,13 +206,19 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example{space}');
+    userEvent.type(input, 'option1');
+
+    findByRole('option', { name: 'option1' });
+
+    userEvent.type(input, '{space}');
 
     // It should now be added to the list of selected items
-    await waitFor(() =>
-      expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument(),
-    );
-    expect(getByRole('button', { name: 'Remove example' })).toBeInTheDocument();
+    waitFor(() => {
+      expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument();
+      expect(
+        getByRole('button', { name: 'Remove option1' }),
+      ).toBeInTheDocument();
+    });
   });
 
   it('should select current text on comma press', async () => {
@@ -221,7 +227,7 @@ describe('<MultiSelectAutocomplete />', () => {
       { name: 'option2' },
     ]);
 
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, findByRole } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
         fetchSuggestions={mockFetchSuggestions}
@@ -230,13 +236,19 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example,');
+    userEvent.type(input, 'option1');
+
+    findByRole('option', { name: 'option1' });
+
+    userEvent.type(input, ',');
 
     // It should now be added to the list of selected items
-    await waitFor(() =>
-      expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument(),
-    );
-    expect(getByRole('button', { name: 'Remove example' })).toBeInTheDocument();
+    waitFor(() => {
+      expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument();
+      expect(
+        getByRole('button', { name: 'Remove option1' }),
+      ).toBeInTheDocument();
+    });
   });
 
   it("doesn't select manual text entry if already selected", async () => {
@@ -269,7 +281,7 @@ describe('<MultiSelectAutocomplete />', () => {
       { name: 'option2' },
     ]);
 
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, findByRole } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
         fetchSuggestions={mockFetchSuggestions}
@@ -279,14 +291,18 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example,');
+    userEvent.type(input, 'option1');
 
-    // It should now be added to the list of selected items using the custom template
-    await waitFor(() =>
+    findByRole('option', { name: 'option1' });
+
+    userEvent.type(input, ',');
+
+    // It should now be added to the list of selected items
+    waitFor(() => {
       expect(
         getByRole('button', { name: 'Selected: example' }),
-      ).toBeInTheDocument(),
-    );
+      ).toBeInTheDocument();
+    });
   });
 
   it('edits a selection', async () => {
