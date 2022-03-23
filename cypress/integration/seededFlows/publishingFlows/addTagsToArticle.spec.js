@@ -214,7 +214,23 @@ describe('Add tags to article', () => {
   it('shows a message and prevents further selections when the maximum tags (4) have been added', () => {
     cy.findByRole('textbox', { name: 'Add up to 4 tags' })
       .as('input')
-      .type('one, two, three, four,');
+      .click()
+      .type('one');
+
+    cy.findByRole('option', { name: '# one' });
+    cy.get('@input').type(',');
+
+    cy.get('@input').type('two');
+    cy.findByRole('option', { name: '# two' });
+    cy.get('@input').type(',');
+
+    cy.get('@input').type('three');
+    cy.findByRole('option', { name: '# three' });
+    cy.get('@input').type(',');
+
+    cy.get('@input').type('four');
+    cy.findByRole('option', { name: '# four' });
+    cy.get('@input').type(',');
 
     cy.get('@input').should('have.focus').should('have.value', '');
 
