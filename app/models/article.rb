@@ -819,9 +819,10 @@ class Article < ApplicationRecord
   end
 
   def has_correct_published_at?
-    if published_was && published_at_was < Time.current && changes["published_at"]
-      errors.add(:published_at, I18n.t("models.article.invalid_published_at"))
-    end
+    # don't allow editing published_at if an article has already been published
+    return unless published_was && published_at_was < Time.current && changes["published_at"]
+
+    errors.add(:published_at, I18n.t("models.article.invalid_published_at"))
   end
 
   def canonical_url_must_not_have_spaces
