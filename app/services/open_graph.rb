@@ -43,7 +43,7 @@ class OpenGraph
 
     return {} if tags["property"].blank?
 
-    tags['property']
+    tags["property"]
   end
 
   # this method groups like properties making it a little easier to determine
