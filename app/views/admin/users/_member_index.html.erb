@@ -4,9 +4,10 @@
     <%= render "admin/users/index/tabs" %>
   </header>
 
-  <%= render "admin/users/index/controls" %>
-
-  <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+  <div class="flex justify-between">
+    <%= render "admin/users/index/controls" %>
+    <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+  </div>
 
     <table class="crayons-table" width="100%">
       <thead>
