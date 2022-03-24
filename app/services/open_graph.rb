@@ -41,7 +41,7 @@ class OpenGraph
   def properties
     tags ||= meta_tags
 
-    return {} if tags['property'].blank?
+    return {} if tags["property"].blank?
 
     tags['property']
   end
