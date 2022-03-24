@@ -6,7 +6,7 @@
 
   <%= render "admin/users/index/controls" %>
 
-  <%= paginate @users, theme: "internal" %>
+  <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
 
     <table class="crayons-table" width="100%">
       <thead>
