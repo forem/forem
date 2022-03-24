@@ -18,13 +18,13 @@ class OrganizationPolicy < ApplicationPolicy
   def part_of_org?
     return false if record.blank?
 
-    OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
+    user.org_member?(record)
   end
 
   def admin_of_org?
     return false if record.blank?
 
-    OrganizationMembership.exists?(user_id: user.id, organization_id: record.id, type_of_user: "admin")
+    user.org_admin?(record)
   end
 
   alias generate_new_secret? update?
