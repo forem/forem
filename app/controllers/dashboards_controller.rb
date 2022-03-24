@@ -1,3 +1,16 @@
+# @note The actions of this class are overloaded with three concerns:
+#
+#       - the current user
+#       - a given user
+#       - a given organization
+#
+#       The implementation details are such that things silently "fallback" to the current user's
+#       information.  This fallback happens when we have quasi-policy checks say the current user
+#       can't access the given user or given organization.
+#
+#       [@jeremyf] I'm including these notes for future refactors, as I've spent time trying to
+#       improve legibility of the code but there are logical assumptions that require revisiting
+#       (hence https://github.com/forem/forem/issues/16931).
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
@@ -7,15 +20,22 @@ class DashboardsController < ApplicationController
   def show
     fetch_and_authorize_user
     target = @user
+    # NOTE: This is a subtle policy check happening here that we are not encapsulating
     not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
 
     @organizations = @user.admin_organizations
 
+    # NOTE: This logic is a super set of the above not_authorized check
     if params[:which] == "organization" && params[:org_id] && (@user.org_admin?(params[:org_id]) || @user.any_admin?)
       target = @organizations.find_by(id: params[:org_id])
       @organization = target
       @articles = target.articles
     else
+      # This redirect assumes that the dashboards#show action renders article specific information.
+      # When a user doesn't have articles nor can they create them, we want to send them somewhere
+      # else.
+      redirect_to dashboard_following_tags_path unless policy(Article).has_existing_articles_or_can_create_new_ones?
+
       # if the target is a user, we need to eager load the organization
       @articles = target.articles.includes(:organization)
     end
@@ -92,6 +112,7 @@ class DashboardsController < ApplicationController
             else
               current_user
             end
+    # NOTE: later we expect @user so the `||` is a bit misleading.
     authorize (@user || User), :dashboard_show?
   end
 
