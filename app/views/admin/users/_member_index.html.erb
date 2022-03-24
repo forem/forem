@@ -20,7 +20,20 @@
       <tbody class="crayons-card">
         <% @users.each do |user| %>
         <tr>
-          <td><%= link_to user.name, admin_user_path(user) %></td>
+          <td>
+          <div class="flex s:items-start flex-col s:flex-row">
+            <a href="/<%= user.username %>">
+              <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
+            </a>
+            <%= user.name %>
+          </div>
+          <p class="fs-xs color-base-60">
+            @<%= user.username %>
+          </p>
+          </td>
+          <td></td>
+          <td><%= user.registered_at.strftime("%d %b, %Y") %></td>
+          <td></td>
         </tr>
         <% end %>
       </tbody>
