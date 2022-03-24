@@ -50,7 +50,7 @@ class OpenGraph
   # the high level properties available for use. All "fb", "og", etc properties
   # will be grouped by their respective key
   def grouped_properties
-    return {} if tags['property'].blank?
+    return {} if properties.blank?
 
     group(properties)
   end
