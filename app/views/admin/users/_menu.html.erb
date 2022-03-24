@@ -1,7 +1,7 @@
-<nav aria-label="People" class="mb-2 flex justify-between gap-4">
+<nav aria-label="Members" class="mb-2 flex justify-between gap-4">
   <ul class="crayons-navigation crayons-navigation--horizontal">
     <li>
-      <%= link_to "People", admin_users_path, class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:controller] == 'admin/users'}", "aria-current": ("page" if params[:controller] == "admin/users") %>
+      <%= link_to "Members", admin_users_path, class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:controller] == 'admin/users'}", "aria-current": ("page" if params[:controller] == "admin/users") %>
     </li>
     <li>
       <%= link_to "Invitations", admin_invitations_path, class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:controller] == 'admin/invitations'}", "aria-current": ("page" if params[:controller] == "admin/invitations") %>
