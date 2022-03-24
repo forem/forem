@@ -7,7 +7,7 @@ class OpenGraph
 
   attr_accessor :page, :tags
 
-  DEFAULT_METHODS = %i(author title description).freeze
+  DEFAULT_METHODS = %i[author title description].freeze
 
   def initialize(url)
     @page = MetaInspector.new(url)
