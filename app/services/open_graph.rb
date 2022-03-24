@@ -61,7 +61,7 @@ class OpenGraph
   end
 
   def twitter
-    return {} unless grouped_meta.has_key?('twitter')
+    return {} unless grouped_meta.key?("twitter")
     grouped_meta['twitter']
   end
 
