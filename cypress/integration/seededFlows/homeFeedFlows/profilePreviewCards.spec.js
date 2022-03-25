@@ -29,9 +29,9 @@ describe('Home feed profile preview cards', () => {
       .within(() => {
         // Check all the expected user data sections are present
         cy.findByText('Admin user summary').should('exist');
-        cy.findByText('Software developer at Company');
-        cy.findByText('Edinburgh');
-        cy.findByText('University of Life');
+        cy.findByText('Software developer at Company').should('exist');
+        cy.findByText('Edinburgh').should('exist');
+        cy.findByText('University of Life').should('exist');
 
         // Check the follow button works as expected
         cy.findByRole('button', { name: 'Follow user: Admin McAdmin' })
