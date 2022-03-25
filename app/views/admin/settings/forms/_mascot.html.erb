@@ -4,15 +4,9 @@
                action: "submit->config#updateConfigurationSettings",
                testid: "mascotSectionForm"
              } }) do |f| %>
-  <div class="card mt-3">
-    <%= render partial: "admin/shared/card_header",
-               locals: {
-                 header: "Mascot",
-                 state: "collapse",
-                 target: "mascotBodyContainer",
-                 expanded: false
-               } %>
-    <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
+  <details class="crayons-card">
+    <summary class="crayons-subtitle-2 p-6">Mascot</summary>
+    <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :mascot_user_id, "Mascot user ID" %>
@@ -40,5 +34,5 @@
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>
-  </div>
+  </details>
 <% end %>

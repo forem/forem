@@ -172,6 +172,14 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
             get "/t/#{tag.name}"
             expect(response.body).not_to include('<span class="olderposts-pagenumber">')
           end
+
+          it "includes a link to Relevant", :aggregate_failures do
+            get "/t/#{tag.name}/latest"
+
+            # The link should be `/t/tag2` (without a trailing slash) instead of `/t/tag2/`
+            expected_tag = "<a data-text=\"Relevant\" href=\"/t/#{tag.name}\""
+            expect(response.body).to include(expected_tag)
+          end
         end
 
         context "without user signed in" do

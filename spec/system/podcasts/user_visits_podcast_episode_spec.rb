@@ -19,7 +19,6 @@ RSpec.describe "User visits podcast show page", type: :system, js: true do
 
     expect(page).to have_text(podcast_episode.title)
     expect(page).to have_css ".record"
-    expect(page).not_to have_css ".published-at"
   end
 
   it "see the new comment box on the page" do

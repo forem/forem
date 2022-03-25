@@ -275,3 +275,61 @@ textarea.crayons-textfield.crayons-textfield--ghost {
     min-width: min-content;
   }
 }
+
+///////////////////////////////////////////////////
+.c-toggle {
+  --knob-position: 2px;
+  --size: calc(1.5em - var(--su-1));
+  display: inline-flex;
+  border-radius: 1000px;
+
+  $this: '.c-toggle';
+
+  &__control {
+    width: 3em;
+    height: 1.5em;
+    padding: 2px;
+    cursor: pointer;
+    display: inline-flex;
+    position: relative;
+    background: var(--toggle-rail-bg);
+    border-radius: 1000px;
+    transition: var(--transition-props);
+
+    &::after {
+      content: '';
+      background: var(--toggle-knob-bg);
+      position: absolute;
+      left: var(--knob-position);
+      right: 100%;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 1000px;
+      transition: var(--transition-props);
+      box-shadow: 0 0 0 1px rgba(var(--black), 0.05),
+        0 2px 3px rgba(var(--black), 0.2);
+    }
+  }
+
+  [type='checkbox'] {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+
+    &:checked + #{$this}__control {
+      background: var(--toggle-rail-checked-bg);
+      &::after {
+        left: calc(100% - var(--size) - 2px);
+        right: var(--knob-position);
+      }
+    }
+  }
+
+  &:focus-within {
+    box-shadow: var(--focus-ring);
+    outline: 0;
+  }
+}
