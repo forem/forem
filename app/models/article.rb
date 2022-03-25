@@ -820,7 +820,9 @@ class Article < ApplicationRecord
 
   def has_correct_published_at?
     # don't allow editing published_at if an article has already been published
-    return unless published_was && published_at_was < Time.current && changes["published_at"]
+    # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
+    return unless published_was && published_at_was < Time.current &&
+      changes["published_at"] && !(published_at_was - published_at).between?(-60, 60)
 
     errors.add(:published_at, I18n.t("models.article.invalid_published_at"))
   end
