@@ -35,6 +35,7 @@ describe('Home feed profile preview cards', () => {
 
         // Check the follow button works as expected
         cy.findByRole('button', { name: 'Follow user: Admin McAdmin' })
+          .should('have.attr', 'data-fetched', 'fetched')
           .should('have.attr', 'aria-pressed', 'false')
           .click()
           .should('have.text', 'Following')
@@ -56,11 +57,11 @@ describe('Home feed profile preview cards', () => {
 
     cy.findByRole('button', {
       name: 'Follow user: User "The test breaker" A\'postrophe \\:/',
-    }).as('userFollowButton');
-    cy.get('@userFollowButton').should('have.attr', 'aria-pressed', 'false');
-    cy.get('@userFollowButton').click();
-
-    cy.get('@userFollowButton').should('have.text', 'Following');
-    cy.get('@userFollowButton').should('have.attr', 'aria-pressed', 'true');
+    })
+      .should('have.attr', 'data-fetched', 'fetched')
+      .should('have.attr', 'aria-pressed', 'false')
+      .click()
+      .should('have.text', 'Following')
+      .should('have.attr', 'aria-pressed', 'true');
   });
 });
