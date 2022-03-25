@@ -1,9 +1,10 @@
 # This class provides methods for getting structured metadata properties for
 # Open Graph usage
-#
+
 # @note A wrapper around the metainspector gem
 class OpenGraph
   delegate :meta, :meta_tags, :images, to: :page
+  delegate :favicon, to: :images
 
   attr_accessor :page, :tags
 
@@ -16,9 +17,9 @@ class OpenGraph
 
   # the optional "use_best" argument is used to determine if we should use the
   # "best" option availabile for said method this works by picking the most
-  # available (first?) image, description, or author (respectively), if defined
+  # available (first?) title, description, or author (respectively), if defined
   # with the og:* or twitter:* metatags. example page.title(true) would look in
-  # said areas the default only looks at the head or default metatag.
+  # said areas. the default only looks at the head or default metatag.
 
   DEFAULT_METHODS.each do |method_name|
     define_method(method_name) do |use_best = false|
@@ -34,12 +35,12 @@ class OpenGraph
     page.meta[data]
   end
 
-  def favicon
-    images.favicon
+  def image
+    page.images.best
   end
 
   def properties
-    tags ||= meta_tags
+    @tags ||= meta_tags
 
     return {} if tags["property"].blank?
 
@@ -57,11 +58,13 @@ class OpenGraph
 
   def grouped_meta
     return {} if meta.blank?
+
     group(meta)
   end
 
   def twitter
     return {} unless grouped_meta.key?("twitter")
+
     grouped_meta["twitter"]
   end
 
