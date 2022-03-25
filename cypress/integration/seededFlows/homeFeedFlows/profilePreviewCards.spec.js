@@ -1,4 +1,4 @@
-describe('Home feed profile preview cards', () => {
+describe.skip('Home feed profile preview cards', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/articleEditorV2User.json').as('user');
