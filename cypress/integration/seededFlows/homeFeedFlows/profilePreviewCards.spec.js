@@ -1,10 +1,12 @@
 describe('Home feed profile preview cards', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.fixture('users/articleEditorV1User.json').as('user');
+    cy.fixture('users/articleEditorV2User.json').as('user');
     cy.get('@user').then((user) => {
       cy.loginAndVisit(user, '/');
       // Wait until we're on the home feed, and it's finished loading
+      cy.intercept('/follows/bulk_show*').as('followsRequest');
+      cy.wait('@followsRequest');
       cy.findByRole('heading', { name: 'Posts' });
       cy.findByTestId('feed-loading').should('not.exist');
     });
@@ -14,6 +16,8 @@ describe('Home feed profile preview cards', () => {
   const click = (el) => el.click();
 
   it("shows a profile preview card for a post's author", () => {
+    cy.intercept({ method: 'POST', url: '/follows' }).as('followUserRequest');
+
     cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
       .first()
       .as('previewButton');
@@ -35,9 +39,12 @@ describe('Home feed profile preview cards', () => {
 
         // Check the follow button works as expected
         cy.findByRole('button', { name: 'Follow user: Admin McAdmin' })
-          .should('have.attr', 'data-fetched', 'fetched')
+          .as('followButton')
           .should('have.attr', 'aria-pressed', 'false')
-          .click()
+          .click();
+
+        cy.wait('@followUserRequest');
+        cy.get('@followButton')
           .should('have.text', 'Following')
           .should('have.attr', 'aria-pressed', 'true');
       });
@@ -45,6 +52,8 @@ describe('Home feed profile preview cards', () => {
 
   // Regression test for https://github.com/forem/forem/issues/16734
   it('handles users with punctuation in the name', () => {
+    cy.intercept({ method: 'POST', url: '/follows' }).as('followUserRequest');
+
     cy.findAllByRole('button', {
       name: 'User "The test breaker" A\'postrophe \\:/ profile details',
     })
@@ -58,9 +67,12 @@ describe('Home feed profile preview cards', () => {
     cy.findByRole('button', {
       name: 'Follow user: User "The test breaker" A\'postrophe \\:/',
     })
-      .should('have.attr', 'data-fetched', 'fetched')
+      .as('followButton')
       .should('have.attr', 'aria-pressed', 'false')
-      .click()
+      .click();
+
+    cy.wait('@followUserRequest');
+    cy.get('@followButton')
       .should('have.text', 'Following')
       .should('have.attr', 'aria-pressed', 'true');
   });
