@@ -1,14 +1,9 @@
 ---
-fr:
+en:
   views:
     pagination:
       aria_next: "Next page"
       aria_previous: "Previous page"
-      first: "&laquo; Premier"
-      last: Dernier &raquo;
-      next: Suivant &rsaquo;
-      previous: "&lsaquo; Précédent"
-      truncate: "&hellip;"
   helpers:
     page_entries_info:
       more_pages:
