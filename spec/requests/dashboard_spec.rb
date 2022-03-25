@@ -170,6 +170,15 @@ RSpec.describe "Dashboards", type: :request do
         expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
       end
     end
+
+    context "when logged in but not member of org" do
+      it "renders unauthorized" do
+        sign_in user
+        expect do
+          get "/dashboard/organization/#{organization.id}"
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
   end
 
   describe "GET /dashboard/following" do
@@ -308,7 +317,7 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
 
-    context "when user has is an org member" do
+    context "when user is an org member" do
       it "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org)

@@ -48,8 +48,8 @@ module Api
       def authorize_user_organization
         return unless analytics_params[:organization_id]
 
-        @org = Organization.find_by(id: analytics_params[:organization_id])
-        raise ApplicationPolicy::NotAuthorizedError unless @org && @user.org_member?(@org)
+        @org = Organization.find(analytics_params[:organization_id])
+        authorize(@org, :analytics?)
       end
 
       def load_owner

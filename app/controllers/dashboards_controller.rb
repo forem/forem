@@ -76,10 +76,11 @@ class DashboardsController < ApplicationController
 
   def analytics
     @user_or_org = if params[:org_id]
-                     Organization.find_by(id: params[:org_id])
+                     Organization.find(params[:org_id])
                    else
                      current_user
                    end
+    authorize(@user_or_org, :analytics?)
     @organizations = current_user.member_organizations
   end
 
