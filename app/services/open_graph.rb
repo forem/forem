@@ -74,7 +74,7 @@ class OpenGraph
     data.each_with_object({}) do |(key, value), hash|
       group_key = key.split(":").first
       hash[group_key] ||= {}
-      hash[group_key].merge!({ key => value })
+      hash[group_key][key] = value
     end
   end
 end
