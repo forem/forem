@@ -20,4 +20,36 @@ describe OpenGraph, type: :service, vcr: true do
       expect(page.meta_for("theme-color")).to eq("#1e2327")
     end
   end
+
+  describe "twitter" do
+    it "returns twitter data" do
+      expect(page.twitter["twitter:site"]).to eq "@github"
+      expect(page.twitter["twitter:title"]).to eq "Forem"
+      expect(page.twitter["twitter:card"]).to eq "summary_large_image"
+    end
+
+    it "returns empty hash when not available" do
+      page.stub(:twitter) { {} }
+      expect(page.twitter).to be_blank
+    end
+  end
+
+  describe "grouped by key" do
+    it "groups open graph properties" do
+      expect(page.grouped_properties).to have_key("fb")
+      expect(page.grouped_properties).to have_key("og")
+      expect(page.grouped_properties).to have_key("profile")
+    end
+
+    # not an exhaustive check but will check a couple of the more popular ones
+    # and make sure they're grouped
+    it "groups metadata" do
+      expect(page.grouped_meta).to have_key("og")
+      expect(page.grouped_meta).to have_key("twitter")
+      expect(page.grouped_meta["og"].size).to eq 7
+      expect(page.grouped_meta["og"].class).to eq Hash
+      expect(page.grouped_meta["twitter"].size).to eq 5
+      expect(page.grouped_meta["twitter"].class).to eq Hash
+    end
+  end
 end
