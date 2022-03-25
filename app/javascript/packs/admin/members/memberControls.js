@@ -5,36 +5,29 @@ const expandFilterButton = document.getElementById('expand-filter-btn');
 const searchSection = document.getElementById('search-users');
 const filterSection = document.getElementById('filter-users');
 
-if (
-  expandSearchButton &&
-  expandFilterButton &&
-  searchSection &&
-  filterSection
-) {
-  expandSearchButton.addEventListener('click', () => {
-    collapseControlsSection({
-      section: filterSection,
-      triggerButton: expandFilterButton,
-    });
-
-    expandOrCollapseControlsSection({
-      section: searchSection,
-      triggerButton: expandSearchButton,
-    });
+expandSearchButton?.addEventListener('click', () => {
+  collapseControlsSection({
+    section: filterSection,
+    triggerButton: expandFilterButton,
   });
 
-  expandFilterButton.addEventListener('click', () => {
-    collapseControlsSection({
-      section: searchSection,
-      triggerButton: expandSearchButton,
-    });
-
-    expandOrCollapseControlsSection({
-      section: filterSection,
-      triggerButton: expandFilterButton,
-    });
+  expandOrCollapseControlsSection({
+    section: searchSection,
+    triggerButton: expandSearchButton,
   });
-}
+});
+
+expandFilterButton?.addEventListener('click', () => {
+  collapseControlsSection({
+    section: searchSection,
+    triggerButton: expandSearchButton,
+  });
+
+  expandOrCollapseControlsSection({
+    section: filterSection,
+    triggerButton: expandFilterButton,
+  });
+});
 
 /**
  * Ensures the given controls section is closed.
@@ -43,12 +36,8 @@ if (
  * @param {HTMLElement} triggerButton The button responsible for opening and closing the section
  */
 const collapseControlsSection = ({ section, triggerButton }) => {
-  if (!section) {
-    return;
-  }
-
-  section.classList.add('hidden');
-  triggerButton.setAttribute('aria-expanded', false);
+  section?.classList.add('hidden');
+  triggerButton?.setAttribute('aria-expanded', false);
 };
 
 /**
@@ -58,17 +47,13 @@ const collapseControlsSection = ({ section, triggerButton }) => {
  * @param {HTMLElement} triggerButton The button responsible for opening and closing the section
  */
 const expandOrCollapseControlsSection = ({ section, triggerButton }) => {
-  if (!section) {
-    return;
-  }
-
-  const isExpanded = triggerButton.getAttribute('aria-expanded') === 'true';
+  const isExpanded = triggerButton?.getAttribute('aria-expanded') === 'true';
   if (isExpanded) {
-    section.classList.add('hidden');
-    triggerButton.setAttribute('aria-expanded', false);
+    section?.classList.add('hidden');
+    triggerButton?.setAttribute('aria-expanded', false);
   } else {
-    section.classList.remove('hidden');
-    triggerButton.setAttribute('aria-expanded', true);
+    section?.classList.remove('hidden');
+    triggerButton?.setAttribute('aria-expanded', true);
     sendFocusToFirstInteractiveItem(section);
   }
 };
@@ -79,5 +64,5 @@ const expandOrCollapseControlsSection = ({ section, triggerButton }) => {
  * @param {HTMLElement} element The element to send focus into (e.g. search form)
  */
 const sendFocusToFirstInteractiveItem = (element) => {
-  element.querySelector(INTERACTIVE_ELEMENTS_QUERY)?.focus();
+  element?.querySelector(INTERACTIVE_ELEMENTS_QUERY)?.focus();
 };
