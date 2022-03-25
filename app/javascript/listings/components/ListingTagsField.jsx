@@ -86,7 +86,7 @@ export const ListingTagsField = ({
         fetchSuggestions={fetchSuggestionsWithAdditionalTags}
         staticSuggestions={suggestedTags}
         staticSuggestionsHeading={
-          <h2 className="crayons-article-form__top-tags-heading">Top tags</h2>
+          <h2 className="c-autocomplete--multi__top-tags-heading">Top tags</h2>
         }
         labelText="Tags"
         placeholder="Add up to 8 tags..."
