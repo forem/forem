@@ -989,7 +989,7 @@ DEPENDENCIES
   liquid (~> 5.3)
   listen (~> 3.7)
   memory_profiler (~> 1.0)
-  metainspector
+  metainspector (~> 5.11)
   nakayoshi_fork (~> 0.0.4)
   nokogiri (~> 1.13)
   octokit (~> 4.22)
