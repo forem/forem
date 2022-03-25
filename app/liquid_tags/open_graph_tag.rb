@@ -1,5 +1,6 @@
 class OpenGraphTag < LiquidTagBase
   PARTIAL = "liquids/open_graph".freeze
+  REGISTRY_REGEXP = %r{.*}
   attr_accessor :page
 
   def initialize(_tag_name, url, _parse_context)
@@ -13,4 +14,4 @@ class OpenGraphTag < LiquidTagBase
   end
 end
 
-UnifiedEmbed.register(OpenGraphTag, regexp: LoomTag::REGISTRY_REGEXP)
+UnifiedEmbed.register(OpenGraphTag, regexp: OpenGraphTag::REGISTRY_REGEXP)
