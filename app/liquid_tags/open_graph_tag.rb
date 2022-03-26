@@ -1,6 +1,6 @@
 class OpenGraphTag < LiquidTagBase
   PARTIAL = "liquids/open_graph".freeze
-  REGISTRY_REGEXP = %r{.*}
+  REGISTRY_REGEXP = /.*/
   attr_accessor :page
 
   def initialize(_tag_name, url, _parse_context)
