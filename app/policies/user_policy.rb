@@ -50,6 +50,10 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  # The analytics? policy method is also on the OrganizationPolicy.  This exists specifically to allow for
+  # "duck-typing" on the tests.
+  alias analytics? edit?
+
   def onboarding_update?
     true
   end

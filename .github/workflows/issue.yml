@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Automatic Comment
-        uses: peter-evans/create-or-update-comment@v1.4.5
+        uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
