@@ -25,7 +25,7 @@
           </button>
         </div>
         <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
-          <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: true, prompt: "Filter by role..." }, aria: { label: "User role" }, class: "crayons-select" %>
+          <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: "All roles" }, aria: { label: "User role" }, class: "crayons-select" %>
           <%= f.submit "Filter", class: "c-btn c-btn--secondary mt-0" %>
         </div>
       </div>
@@ -41,7 +41,7 @@
           </button>
         </div>
         <div class="crayons-field flex-row items-center gap-2">
-          <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: true, prompt: "Filter by role..." }, aria: { label: "User role" }, class: "crayons-select mt-0" %>
+          <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: "All roles" }, aria: { label: "User role" }, class: "crayons-select mt-0" %>
         </div>
         <%= f.submit "Filter", class: "c-btn c-btn--secondary" %>
       <% end %>
@@ -58,7 +58,7 @@
       </div>
       <div class="crayons-field flex-row items-center gap-2">
         <%= f.label :role, "Filter by Role", class: "crayons-field__label whitespace-nowrap" %>
-        <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: true }, class: "crayons-select mt-0" %>
+        <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: "All roles" }, class: "crayons-select mt-0" %>
       </div>
       <%= f.submit "Filter", class: "c-btn c-btn--secondary" %>
     <% end %>
