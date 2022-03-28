@@ -1,104 +1,76 @@
-<h2 class="crayons-title mb-4">
-  Overview
-</h2>
-<div class="px-0 crayons-layout crayons-layout--2-cols crayons-layout--2-cols--1-2 crayons-layout--2-cols--inverted">
-  <article class="crayons-layout__content">
-    <section class="crayons-card mb-4">
-      <div class="crayons-card__body p-4" data-controller="ahoy">
-        <h3 class="crayons-subtitle-1">Welcome Checklist</h3>
-        <p class="crayons-subtitle-4 color-base-70 mb-3">Here are a few things we recommend doing now that you're using Forem!</p>
+<%= javascript_packs_with_chunks_tag "admin/overview", defer: true %>
 
-        <ol>
-          <li class="mb-1 -ml-4">
-            Fully review the
-            <a href="https://admin.forem.com" data-action="click->ahoy#trackOverviewLink">Forem Admin Documentation</a>
-            and the latest Forem
-            <a href="https://admin.forem.com/docs/getting-started/forem-setup-checklist" data-action="click->ahoy#trackOverviewLink">Quick Start Guide</a>
-          </li>
-          <li class="mb-1 -ml-4">
-            <a href="https://admin.forem.com/docs/getting-started/forem-setup-checklist" data-action="click->ahoy#trackOverviewLink">
-              Set up and configure your Forem
-            </a>
-            under <%= link_to "the Config section", admin_config_path, "data-action": "click->ahoy#trackOverviewLink" %>
-          </li>
-          <li class="mb-1 -ml-4"><%= link_to "Create a Welcome Thread", admin_welcome_index_path, "data-action": "click->ahoy#trackOverviewLink" %></li>
-          <li class="mb-1 -ml-4"><%= link_to "Update and customize your Forem tags", admin_tags_path, "data-action": "click->ahoy#trackOverviewLink" %></li>
-          <li class="mb-1 -ml-4">
-            <%= link_to "Create pages", admin_pages_path, "data-action": "click->ahoy#trackOverviewLink" %>
-            and
-            <%= link_to "sort them in the navigation sidebar", admin_navigation_links_path, "data-action": "click->ahoy#trackOverviewLink" %>
-          </li>
-          <li class="mb-1 -ml-4">
-            <a href="https://admin.forem.com/docs/advanced-customization/config/authentication" data-action="click->ahoy#trackOverviewLink">Set your Forem's access level</a>
-            and
-            <a href="https://admin.forem.com/docs/advanced-customization/config/smtp-settings" data-action="click->ahoy#trackOverviewLink">email settings</a>
-          </li>
-          <li class="-ml-4">Join <a href="https://forem.dev" data-action="click->ahoy#trackOverviewLink">forem.dev</a> to learn from fellow Forem creators</li>
-        </ol>
-        <div class="align-center">
-          <a class="crayons-btn crayons-btn--ghost-brand" href="https://admin.forem.com" data-action="click->ahoy#trackOverviewLink">Visit Forem Admin Guide</a>
-        </div>
-      </div>
-    </section>
-    <h2 class="crayons-subtitle-1 mb-3">Analytics</h2>
-    <article class="grid s:grid-cols-2 gap-3 mb-4" data-controller="ahoy">
-      <section class="crayons-card">
-        <div class="crayons-card__body">
-          <h2 class="crayons-title"><%= @open_abuse_reports_count %></h2>
-          <p class="crayons-subtitle-4 color-base-70">
-            <a href=<%= admin_feedback_messages_path %>>
-              <%= "Open report".pluralize(@open_abuse_reports_count) %>
-            </a>
-          </p>
-        </div>
-      </section>
-    </article>
-    <h2 class="crayons-subtitle-1 mb-3">Resources</h2>
-    <article class="grid s:grid-cols-2 gap-3" data-controller="ahoy">
-      <section class="crayons-card">
-        <div class="crayons-card__header">
-          <h3 class="crayons-subtitle-2">Forem Admin Guide</h3>
-        </div>
-        <div class="crayons-card__body flex flex-wrap" style="min-height: 150px;">
-          <p class="mb-2">
-            This guide gives you the best practices on how you can manage and
-            grow your community on Forem.
-          </p>
-          <a role="button" href="https://admin.forem.com" class="crayons-btn mt-1 w-100 self-end" data-action="click->ahoy#trackOverviewLink">Visit Guide</a>
-        </div>
-      </section>
-      <section class="crayons-card">
-        <div class="crayons-card__header">
-          <h3 class="crayons-subtitle-2">Forem.dev</h3>
-        </div>
-        <div class="crayons-card__body flex flex-wrap" style="min-height: 150px;">
-          <p class="mb-2">
-            Meet other creators using Forem so that you can share tips with each other.
-          </p>
-          <a role="button" href="https://forem.dev" class="crayons-btn mt-1 w-100 self-end" data-action="click->ahoy#trackOverviewLink">Join Community</a>
-        </div>
-      </section>
-    </article>
-  </article>
-  <div class="crayons-layout__sidebar-right">
-    <article class="crayons-card">
-      <div class="crayons-card__header">
-        <h3 class="crayons-subtitle-2">Deployment</h3>
-      </div>
-      <div class="crayons-card__body">
-        <small class="crayons-field__description">
-          Last Deployed
-        </small>
-        <p class="mb-2">
-          <%= ForemInstance.deployed_at %>
-        </p>
-        <small class="crayons-field__description">
-          Latest Commit ID
-        </small>
-        <p>
-          <%= ForemInstance.latest_commit_id || "Not Available" %>
-        </p>
-      </div>
-    </article>
+<h1 class="crayons-title mb-4">
+  Overview
+</h1>
+
+<div class="flex flex-col gap-4">
+  <div class="flex flex-col l:flex-row gap-4">
+    <%= render "analytics" %>
+    <%= render "health_check" %>
   </div>
+
+  <section class="crayons-card p-7 grid grid-cols-2 gap-7">
+    <div>
+      <header class="mb-4">
+        <h2 class="crayons-subtitle-1">Help</h2>
+        <p class="color-secondary">Here are a few things we recommend doing now that you're using Forem!</p>
+      </header>
+
+      <ol>
+        <li class="mb-1 -ml-4">
+          Fully review the
+          <a href="https://admin.forem.com" class="c-link c-link--branded">Forem Admin Documentation</a>
+          and the latest Forem
+          <a href="https://admin.forem.com/docs/getting-started/forem-setup-checklist" class="c-link c-link--branded">Quick Start Guide</a>
+        </li>
+        <li class="mb-1 -ml-4">
+          Set up and configure your Forem
+          under <%= link_to "the Config section", admin_config_path, class: "c-link c-link--branded" %>.
+        </li>
+        <li class="mb-1 -ml-4"><%= link_to "Create a Welcome Thread", admin_welcome_index_path, class: "c-link c-link--branded" %></li>
+        <li class="mb-1 -ml-4"><%= link_to "Update and customize your Forem tags", admin_tags_path, class: "c-link c-link--branded" %></li>
+        <li class="mb-1 -ml-4">
+          <%= link_to "Create pages", admin_pages_path, class: "c-link c-link--branded" %>
+          and
+          <%= link_to "sort them in the navigation sidebar", admin_navigation_links_path %>.
+        </li>
+        <li class="mb-1 -ml-4">
+          <a href="https://admin.forem.com/docs/advanced-customization/config/authentication" class="c-link c-link--branded">Set your Forem's access level</a>
+          and
+          <a href="https://admin.forem.com/docs/advanced-customization/config/smtp-settings" class="c-link c-link--branded">email settings</a>.
+        </li>
+      </ol>
+    </div>
+
+    <div>
+      <div class="mb-7">
+        <h2 class="crayons-subtitle-1">Forem Admin Guide</h2>
+        <p class="color-secondary mb-4">This guide gives you the best practices on how you can manage and grow your community on Forem.</p>
+        <a href="https://admin.forem.com" target="_blank" class="c-cta">Visit Forem Admin Guide &raquo;</a>
+      </div>
+
+      <div>
+        <h2 class="crayons-subtitle-1">Forem.dev</h2>
+        <p class="color-secondary mb-4">Meet other creators using Forem so that you can share tips with each other.</p>
+        <a href="https://forem.dev" target="_blank" class="c-cta">Join Forem.dev Community &raquo;</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="crayons-card p-7">
+    <h2 class="crayons-subtitle-1 mb-6">Deployment</h2>
+
+    <div class="grid grid-cols-2 gap-7">
+      <div>
+        <strong class="color-secondary mr-2">Last deploy</strong>
+        <%= ForemInstance.deployed_at %>
+      </div>
+
+      <div>
+        <strong class="color-secondary mr-2">Latest Commit ID</strong>
+        <%= ForemInstance.latest_commit_id || "Not Available" %>
+      </div>
+    </div>
+  </section>
 </div>
