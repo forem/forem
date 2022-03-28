@@ -40,7 +40,6 @@
   font-family: inherit;
   font-size: var(--fs-base);
   width: 100%;
-  resize: vertical;
   @extend %form-styling;
 
   &::placeholder {
@@ -66,6 +65,10 @@
 
   &--icon {
     padding-left: var(--su-7);
+  }
+
+  &:is(textarea):not(.crayons-textfield--ghost) {
+    resize: vertical;
   }
 }
 
