@@ -95,7 +95,9 @@ module Articles
     end
 
     def user_editor_v1
-      body = "---\ntitle: \npublished: false\ndescription: " \
+      body = "---\ntitle: \npublished: false" \
+             "\n//published_at: DD/MM/YYYY HH:MM" \
+             "\ndescription: " \
              "\ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n"
 
       Article.new(
