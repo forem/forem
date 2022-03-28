@@ -565,6 +565,47 @@ class User < ApplicationRecord
     Reaction.for_user(self)
   end
 
+  def latest_activity
+    return unless registered == true
+
+    latest_activity = last_comment_at || last_article_at || latest_article_updated_at ||
+      last_reacted_at || profile_updated_at || last_moderation_notification
+
+    if latest_activity == Time.zone.today
+      "Today #{latest_activity.strftime('%b, %Y')}"
+    elsif latest_activity == Date.yesterday
+      "Yesterday #{latest_activity.strftime('%b, %Y')}"
+    else
+      latest_activity.strftime("%d %b, %Y")
+    end
+  end
+
+  def current_status
+    if suspended?
+      "Suspended"
+    elsif warned?
+      "Warned"
+    elsif trusted?
+      "Trusted"
+    else
+      "Good standing"
+    end
+  end
+
+  def current_roles
+    if admin?
+      "Admin"
+    elsif super_admin?
+      "Super Admin"
+    elsif tag_moderator?
+      "Moderator"
+    elsif tech_admin?
+      "Tech Admin"
+    else
+      "Resource Admin"
+    end
+  end
+
   protected
 
   # Send emails asynchronously
