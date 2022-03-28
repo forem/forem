@@ -57,7 +57,7 @@
         </div>
 
         <%# new or less active users that don't have a page worth of notifications
-            won't be shown the "load more" button %>
+          # won't be shown the "load more" button %>
         <% if @notifications.size >= @initial_page_size %>
           <button id="load-more-button" type="button" class="crayons-btn crayons-btn--secondary crayons-btn--l my-6 w-100">
             <%= t("views.notifications.load") %>
