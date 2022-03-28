@@ -5,10 +5,9 @@ module Admin
   class SpacesController < Admin::ApplicationController
     layout "admin"
 
-    # TODO: What kind of logging do we need?  Any?  Looking for guidance.  I can assume we want to
-    # log changes to a space.
-    #
-    # after_action only: %i[update] { Audit::Logger.log(:moderator, current_user, params.dup) }
+    after_action only: %i[update] do
+      Audit::Logger.log(:internal, current_user, params.dup)
+    end
 
     # @note I'm instantiating the @space because in the index view I'm rendering a form that then
     # PUTs to the update action.

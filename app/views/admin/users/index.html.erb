@@ -1,41 +1,5 @@
 <% if FeatureFlag.enabled?(:member_index_view) %>
-  <div class="crayons-card p-3 s:p-4 m:p-7">
-    <header class="flex flex-col l:flex-row justify-content-between l:items-center ">
-      <h1 class="crayons-title ml-3 l:ml-0">Members</h1>
-      <%= render "admin/users/index/tabs" %>
-    </header>
-
-    <%= render "admin/users/index/controls" %>
-
-    <%= paginate @users, theme: "internal" %>
-
-      <table class="crayons-table" width="100%">
-        <thead>
-          <tr>
-            <th scope="col">Username</th>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Twitter</th>
-            <th scope="col">GitHub</th>
-            <th scope="col">Email</th>
-          </tr>
-        </thead>
-        <tbody class="crayons-card">
-          <% @users.each do |user| %>
-          <tr>
-            <td><%= link_to user.username, admin_user_path(user) %></td>
-            <td class="whitespace-nowrap"><%= user.id %></td>
-            <td><%= user.name %></td>
-            <td><%= user_twitter_link(user) %></td>
-            <td><%= user_github_link(user) %></td>
-            <td><%= user.email %></td>
-          </tr>
-          <% end %>
-        </tbody>
-      </table>
-
-      <%= paginate @users, theme: "internal" %>
-  </div>
+  <%= render "admin/users/member_index" %>
 <% else %>
   <header>
     <h1 class="crayons-title">People</h1>
