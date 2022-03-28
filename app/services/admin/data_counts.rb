@@ -33,7 +33,7 @@ module Admin
         possible_spam_users_count: possible_spam_users_count,
         flags_count: flags.size,
         flags_posts_count: flags.where(reactable_type: "Article").size,
-        flags_comments_count: flags.where(reactable_type: "Article").size,
+        flags_comments_count: flags.where(reactable_type: "Comment").size,
         flags_users_count: flags.where(reactable_type: "User").size,
       )
     end
