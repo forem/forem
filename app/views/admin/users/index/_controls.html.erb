@@ -2,39 +2,32 @@
 
 <% if FeatureFlag.enabled?(:member_index_view) %>
   <% if params[:controller] == "admin/users" %>
-
     <!-- Small screen layout -->
-    <div class="flex justify-between my-3 l:hidden">
+    <%= form_with url: admin_users_path, method: :get, local: true, class: "l:hidden" do |f| %>
+      <div class="flex justify-between my-3">
+        <div>
+          <button type="button" id="expand-search-btn" class="c-btn c-btn--icon-alone" aria-label="Expand search" aria-expanded="false" aria-controls="search-users">
+            <%= crayons_icon_tag("search", aria_hidden: true) %>
+          </button>
+          <button type="button" id="expand-filter-btn" class="c-btn c-btn--icon-alone" aria-label="Expand filter" aria-expanded="false" aria-controls="filter-users">
+            <%= crayons_icon_tag("filter", aria_hidden: true) %>
+          </button>
+        </div>
+        <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+      </div>
       <div>
-        <button id="expand-search-btn" class="c-btn c-btn--icon-alone" aria-label="Expand search" aria-expanded="false" aria-controls="search-users">
-          <%= crayons_icon_tag("search", aria_hidden: true) %>
-        </button>
-        <button id="expand-filter-btn" class="c-btn c-btn--icon-alone" aria-label="Expand filter" aria-expanded="false" aria-controls="filter-users">
-          <%= crayons_icon_tag("filter", aria_hidden: true) %>
-        </button>
+        <div id="search-users" class="hidden relative">
+          <%= f.text_field :search, value: params[:search], class: "crayons-textfield mt-0", placeholder: "Search member...", aria: { label: "Search member by name, username, email, or Twitter/GitHub usernames" } %>
+          <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
+            <%= crayons_icon_tag(:search, aria_hidden: true) %>
+          </button>
+        </div>
+        <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
+          <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: true, prompt: "Filter by role..." }, aria: { label: "User role" }, class: "crayons-select" %>
+          <%= f.submit "Filter", class: "c-btn c-btn--secondary mt-0" %>
+        </div>
       </div>
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
-    </div>
-    <div>
-      <div id="search-users" class="hidden">
-        <%= form_with url: admin_users_path, method: :get, local: true do |f| %>
-          <div class="relative">
-            <%= f.text_field :search, value: params[:search], class: "crayons-textfield mt-0", placeholder: "Search member...", aria: { label: "Search member by name, username, email, or Twitter/GitHub usernames" } %>
-            <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
-              <%= crayons_icon_tag(:search, aria_hidden: true) %>
-            </button>
-          </div>
-        <% end %>
-      </div>
-      <div id="filter-users" class="hidden">
-        <%= form_with url: admin_users_path, method: :get, local: true do |f| %>
-          <div class="crayons-field flex-row items-center gap-2">
-            <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: true, prompt: "Filter by role..." }, aria: { label: "User role" }, class: "crayons-select" %>
-            <%= f.submit "Filter", class: "c-btn c-btn--secondary mt-0" %>
-          </div>
-        <% end %>
-      </div>
-    </div>
+    <% end %>
 
     <!-- Larger screen layout -->
     <div class="hidden l:flex justify-between">
