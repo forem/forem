@@ -15,7 +15,7 @@ RSpec.describe UserPolicy, type: :policy do
     let(:user) { other_user }
 
     permitted_actions = %i[
-      edit update onboarding_update join_org dashboard_show remove_identity destroy
+      edit analytics update onboarding_update join_org dashboard_show remove_identity destroy
     ]
 
     it { is_expected.to permit_actions(permitted_actions) }
