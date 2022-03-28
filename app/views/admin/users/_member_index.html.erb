@@ -39,7 +39,9 @@
             <%= user.registered_at.strftime("%d %b, %Y") %>
           </p>
           </td>
-          <td></td>
+          <td>
+            <%= user.organizations.map(&:name).join(", ") %>
+          </td>
         </tr>
         <% end %>
       </tbody>
