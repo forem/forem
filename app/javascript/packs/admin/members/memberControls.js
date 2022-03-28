@@ -5,29 +5,34 @@ const expandFilterButton = document.getElementById('expand-filter-btn');
 const searchSection = document.getElementById('search-users');
 const filterSection = document.getElementById('filter-users');
 
-expandSearchButton?.addEventListener('click', () => {
-  collapseControlsSection({
-    section: filterSection,
-    triggerButton: expandFilterButton,
+/**
+ * Sets up the expand/collapse behavior used on the small-screen layout for Search and Filter form sections
+ */
+const initializeExpandingSections = () => {
+  expandSearchButton?.addEventListener('click', () => {
+    collapseControlsSection({
+      section: filterSection,
+      triggerButton: expandFilterButton,
+    });
+
+    expandOrCollapseControlsSection({
+      section: searchSection,
+      triggerButton: expandSearchButton,
+    });
   });
 
-  expandOrCollapseControlsSection({
-    section: searchSection,
-    triggerButton: expandSearchButton,
-  });
-});
+  expandFilterButton?.addEventListener('click', () => {
+    collapseControlsSection({
+      section: searchSection,
+      triggerButton: expandSearchButton,
+    });
 
-expandFilterButton?.addEventListener('click', () => {
-  collapseControlsSection({
-    section: searchSection,
-    triggerButton: expandSearchButton,
+    expandOrCollapseControlsSection({
+      section: filterSection,
+      triggerButton: expandFilterButton,
+    });
   });
-
-  expandOrCollapseControlsSection({
-    section: filterSection,
-    triggerButton: expandFilterButton,
-  });
-});
+};
 
 /**
  * Ensures the given controls section is closed.
@@ -66,3 +71,46 @@ const expandOrCollapseControlsSection = ({ section, triggerButton }) => {
 const sendFocusToFirstInteractiveItem = (element) => {
   element?.querySelector(INTERACTIVE_ELEMENTS_QUERY)?.focus();
 };
+
+/**
+ * Ensures that search/filter button indicators stay in sync with the user's current selections.
+ * Indicators may become visible when a search term or filter option is input (although they are only displayed via CSS
+ * when the section is collapsed).
+ */
+const initializeSectionIndicators = () => {
+  document
+    .getElementById('search')
+    ?.addEventListener('change', ({ target: { value } }) => {
+      toggleIndicator({
+        indicator: expandSearchButton?.querySelector('.search-indicator'),
+        value,
+      });
+    });
+
+  document
+    .getElementById('role')
+    ?.addEventListener('change', ({ target: { value } }) => {
+      toggleIndicator({
+        indicator: expandFilterButton?.querySelector('.search-indicator'),
+        value,
+      });
+    });
+};
+
+/**
+ * Helper function to show or hide an indicator depending if a value is selected or not
+ *
+ * @param {Object} args
+ * @param {string} args.value The current input value
+ * @param {HTMLElement} args.indicator The HTML indicator element
+ */
+const toggleIndicator = ({ value, indicator }) => {
+  if (value !== '') {
+    indicator?.classList.remove('hidden');
+  } else {
+    indicator?.classList.add('hidden');
+  }
+};
+
+initializeExpandingSections();
+initializeSectionIndicators();
