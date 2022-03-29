@@ -571,9 +571,9 @@ class User < ApplicationRecord
     latest_activity = last_comment_at || last_article_at || latest_article_updated_at ||
       last_reacted_at || profile_updated_at || last_moderation_notification
 
-    if latest_activity == Time.zone.today
+    if latest_activity.strftime("%Y-%m-%d") == Time.zone.today.strftime("%Y-%m-%d")
       "Today #{latest_activity.strftime('%b, %Y')}"
-    elsif latest_activity == Date.yesterday
+    elsif latest_activity.strftime("%Y-%m-%d") == Date.yesterday.strftime("%Y-%m-%d")
       "Yesterday #{latest_activity.strftime('%b, %Y')}"
     else
       latest_activity.strftime("%d %b, %Y")
