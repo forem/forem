@@ -9,6 +9,13 @@ module Admin
       Audit::Logger.log(:internal, current_user, params.dup)
     end
 
+    # When we change the settings of a Space, this can impact what user's see.  Thus, we need to
+    # ensure we are busting the cache.
+    #
+    # @see ApplicationHelper#release_adjusted_cache_key ApplicationHelper#release_adjusted_cache_key
+    #      produces the cache key we use for caching the homepage's top bar.
+    after_action :bust_content_change_caches, only: %i[update]
+
     # @note I'm instantiating the @space because in the index view I'm rendering a form that then
     # PUTs to the update action.
     def index
