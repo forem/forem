@@ -1,7 +1,7 @@
 module ApplicationHelper
   LARGE_USERBASE_THRESHOLD = 1000
 
-  # @return [Hash<String, String>] the key is the timeframe name and the correspnding is the
+  # @return [Hash<String, String>] the key is the timeframe name and the corresponding is the
   #         translated label.
   def subtitles
     {
