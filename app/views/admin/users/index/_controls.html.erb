@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "admin/members/memberControls", defer: true %>
+<%= javascript_packs_with_chunks_tag "admin/users/controls", defer: true %>
 
 <% if FeatureFlag.enabled?(:member_index_view) %>
   <% if params[:controller] == "admin/users" %>
