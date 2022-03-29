@@ -11,6 +11,11 @@ class OpenGraphTag < LiquidTagBase
   end
 
   def render(_context)
-    ApplicationController.render(partial: PARTIAL, locals: { page: page })
+    ApplicationController.render(
+      partial: PARTIAL,
+      locals: {
+        page: page
+      },
+    )
   end
 end
