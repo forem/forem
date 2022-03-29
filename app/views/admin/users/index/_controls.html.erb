@@ -19,14 +19,10 @@
       </div>
       <div>
         <div id="search-users" class="hidden relative">
-          <%= f.text_field :search, value: params[:search], class: "crayons-textfield mt-0", placeholder: "Search member...", aria: { label: "Search member by name, username, email, or Twitter/GitHub usernames" } %>
-          <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
-            <%= crayons_icon_tag(:search, aria_hidden: true) %>
-          </button>
+          <%= render "admin/users/index/search_field", f: f %>
         </div>
         <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
-          <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: "All roles" }, aria: { label: "User role" }, class: "crayons-select" %>
-          <%= f.submit "Filter", class: "c-btn c-btn--secondary mt-0" %>
+          <%= render "admin/users/index/filter_role_field", f: f %>
         </div>
       </div>
     <% end %>
@@ -35,15 +31,11 @@
     <div class="hidden l:flex justify-between">
       <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center py-3" do |f| %>
         <div class="crayons-field flex-1 flex-row items-center gap-2 relative">
-          <%= f.text_field :search, value: params[:search], class: "crayons-textfield mt-0", placeholder: "Search member...", aria: { label: "Search member by name, username, email, or Twitter/GitHub usernames" } %>
-          <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-1 bottom-0 top-0 m-1">
-            <%= crayons_icon_tag(:search, aria_hidden: true) %>
-          </button>
+          <%= render "admin/users/index/search_field", f: f %>
         </div>
         <div class="crayons-field flex-row items-center gap-2">
-          <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: "All roles" }, aria: { label: "User role" }, class: "crayons-select mt-0" %>
+          <%= render "admin/users/index/filter_role_field", f: f %>
         </div>
-        <%= f.submit "Filter", class: "c-btn c-btn--secondary" %>
       <% end %>
       <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
     </div>
