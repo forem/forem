@@ -64,7 +64,7 @@ function hideHintRow() {
   hintRow.classList.add('hidden');
 }
 
-function setTogglePasswordEvent(targetClass) {
+function setTogglePasswordEvent(targetWrapper) {
   function togglePasswordMask(event) {
     event.preventDefault();
     visible = !visible;
@@ -88,7 +88,6 @@ function setTogglePasswordEvent(targetClass) {
   }
 
   let visible = false;
-  const targetWrapper = document.getElementsByClassName(targetClass)[0];
   const eyeIcon = targetWrapper.getElementsByClassName('js-eye')[0];
   const eyeOffIcon = targetWrapper.getElementsByClassName('js-eye-off')[0];
   const passwordField = targetWrapper.getElementsByClassName('js-password')[0];
@@ -98,8 +97,9 @@ function setTogglePasswordEvent(targetClass) {
   visibility.addEventListener('click', togglePasswordMask);
 }
 
-setTogglePasswordEvent('js-password-toggle-wrapper');
-setTogglePasswordEvent('js-forem-owner-secret-toggle-wrapper');
+document.querySelectorAll('.js-password-toggle-wrapper').forEach((el) => {
+  setTogglePasswordEvent(el);
+});
 
 const name = document.getElementsByClassName('js-creator-signup-name')[0];
 name.addEventListener('input', setDefaultUsername);
