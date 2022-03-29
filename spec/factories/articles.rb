@@ -23,7 +23,11 @@ FactoryBot.define do
     co_author_ids { [] }
     association :user, factory: :user, strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
-    main_image    { with_main_image ? Faker::Avatar.image : nil }
+    main_image    do
+      if with_main_image
+        URL.url(ActionController::Base.helpers.asset_path("#{rand(1..40)}.png"))
+      end
+    end
     experience_level_rating { rand(4..6) }
     body_markdown do
       <<~HEREDOC
