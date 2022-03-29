@@ -609,9 +609,7 @@ class User < ApplicationRecord
   end
 
   def current_organizations
-    return if organizations.blank?
-
-    organizations.map(&:name).join(", ")
+    organizations.present? ? organizations.map(&:name).join(", ") : "-"
   end
 
   protected
