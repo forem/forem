@@ -13,7 +13,9 @@
     </p>
   </div>
   <div class="color-secondary fs-s">
-    <span class="fw-medium"><%= page.properties["og:site_name"].first %> &bull;</span>
+    <% if page.properties["og:site_name"] %>
+      <span class="fw-medium"><%= page.properties["og:site_name"].first %> &bull;</span>
+    <% end %>
     <span>
       <a href="<%= page.properties["og:url"].first %>" target="_blank" rel="noopener noreferrer">
         <%= page.properties["og:url"].first %>
