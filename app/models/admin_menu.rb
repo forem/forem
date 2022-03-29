@@ -4,8 +4,8 @@ class AdminMenu
   # On second level navigation with more children, we reference the default tabs controller. i.e look at developer_tools
   # rubocop:disable Metrics/BlockLength
   ITEMS = Menu.define do
-    scope :people, "group-2-line", [
-      item(name: "people", controller: "users", parent: "users"),
+    scope :members, "group-2-line", [
+      item(name: "members", controller: "users", parent: "users"),
     ]
 
     scope :content_manager, "dashboard-line", [

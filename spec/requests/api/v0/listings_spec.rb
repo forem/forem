@@ -237,7 +237,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
   describe "POST /api/listings" do
     def post_listing(key: api_secret.secret, **params)
       headers = { "api-key" => key, "content-type" => "application/json" }
-      post api_listings_path, params: { classified_listing: params }.to_json, headers: headers
+      post api_listings_path, params: { listing: params }.to_json, headers: headers
     end
 
     describe "user cannot proceed if not properly unauthorized" do
@@ -428,6 +428,17 @@ RSpec.describe "Api::V0::Listings", type: :request do
         listing = Listing.find(response.parsed_body["id"])
 
         expect(listing.cached_tag_list).to eq("discuss, javascript")
+      end
+
+      it "reads the 'classified_listing' key when listing not present" do
+        # this is like post_listing but uses the "classified_listing" key
+        key = api_secret.secret
+        headers = { "api-key" => key, "content-type" => "application/json" }
+
+        expect do
+          post api_listings_path, params: { classified_listing: listing_params }.to_json, headers: headers
+          expect(response).to have_http_status(:created)
+        end.to change(Listing, :count).by(1)
       end
     end
   end

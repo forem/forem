@@ -22,6 +22,31 @@ label {
     padding: 8px;
   }
 }
+// New pagination styles as added in Admin Member Index view. As we roll out these styles to other admin views, the above CSS will eventually be removed.
+.admin-pagination {
+  color: var(--link-color-secondary);
+
+  &--link {
+    padding: var(--su-1);
+  }
+
+  &--inactive {
+    color: var(--base-30);
+  }
+}
+
+// Member index view search and filter indicators
+.indicator-btn {
+  .search-indicator {
+    display: inline-block;
+  }
+
+  &[aria-expanded='true'] {
+    .search-indicator {
+      display: none;
+    }
+  }
+}
 
 .bg-featured {
   background: #bbffd2;
