@@ -608,6 +608,12 @@ class User < ApplicationRecord
     end
   end
 
+  def current_organizations
+    return if organizations.blank?
+
+    organizations.map(&:name).join(", ")
+  end
+
   protected
 
   # Send emails asynchronously

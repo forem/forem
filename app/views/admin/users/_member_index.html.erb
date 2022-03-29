@@ -14,7 +14,7 @@
         </tr>
       </thead>
       <tbody class="crayons-card">
-        <% @users.each do |user| %>
+        <% @users.includes([:organizations]).each do |user| %>
         <tr>
           <td>
           <div class="flex s:items-start flex-col s:flex-row">
@@ -34,7 +34,7 @@
           </p>
           </td>
           <td>
-            <%= user.organizations.map(&:name).join(", ") %>
+            <%= user.current_organizations %>
           </td>
         </tr>
         <% end %>
