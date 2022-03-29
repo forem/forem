@@ -29,7 +29,8 @@ describe OpenGraph, type: :service, vcr: true do
     end
 
     it "returns empty hash when not available" do
-      page.stub(:twitter) { {} }
+      allow(page).to receive(:twitter).and_return({})
+
       expect(page.twitter).to be_blank
     end
   end

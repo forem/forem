@@ -47,7 +47,7 @@ class OpenGraph
     tags["property"]
   end
 
-  # this method groups like properties making it a little easier to determine
+  # this method groups like-properties, making it a little easier to determine
   # the high level properties available for use. All "fb", "og", etc properties
   # will be grouped by their respective key
   def grouped_properties

@@ -1,6 +1,7 @@
 class OpenGraphTag < LiquidTagBase
+  # OpenGraphTag is NOT registered in the Registry;
+  # rather, it is a fallback
   PARTIAL = "liquids/open_graph".freeze
-  REGISTRY_REGEXP = /.*/
   attr_accessor :page
 
   def initialize(_tag_name, url, _parse_context)
@@ -13,5 +14,3 @@ class OpenGraphTag < LiquidTagBase
     ApplicationController.render(partial: PARTIAL, locals: { page: page })
   end
 end
-
-UnifiedEmbed.register(OpenGraphTag, regexp: OpenGraphTag::REGISTRY_REGEXP)
