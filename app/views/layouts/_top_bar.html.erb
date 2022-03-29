@@ -29,7 +29,12 @@
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
-          <a href="<%= new_path %>" class="c-cta c-cta--branded mr-2 whitespace-nowrap"><%= t("views.main.create_post") %></a>
+          <% if FeatureFlag.enabled?(:limit_post_creation_to_admins) %>
+            <turbo-frame id="authorization-articles-create-post-button" src="<%= authorization_create_post_button_path %>">
+            </turbo-frame>
+          <% else %>
+            <a href="<%= new_path %>" class="c-cta c-cta--branded mr-2 whitespace-nowrap"><%= t("views.main.create_post") %></a>
+          <% end %>
 
           <span class="trusted-visible-block">
             <a id="moderation-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= mod_path %>">
