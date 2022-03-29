@@ -3,11 +3,7 @@
     <h1 class="crayons-title ml-3 l:ml-0">Members</h1>
     <%= render "admin/users/index/tabs" %>
   </header>
-
-  <%= render "admin/users/index/controls" %>
-
-  <%= paginate @users, theme: "internal" %>
-
+    <%= render "admin/users/index/controls" %>
     <table class="crayons-table" width="100%">
       <thead>
         <tr>
@@ -26,5 +22,7 @@
       </tbody>
     </table>
 
-    <%= paginate @users, theme: "internal" %>
+    <div class="flex justify-end">
+      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+    </div>
 </div>

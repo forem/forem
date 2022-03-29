@@ -4,9 +4,11 @@
 //= require initializePage
 //= require utilities/getImageForLink
 //= require @honeybadger-io/js/dist/browser/honeybadger.js
+//= require @hotwired/turbo
 //= require i18n
 //= require ahoy.js/dist/ahoy.js
 
+Turbo.session.drive = false
 I18n.defaultLocale = 'en';
 I18n.locale = document.body.dataset.locale;
 I18n.translations = JSON.parse(document.getElementById('i18n-translations').dataset.translations);
