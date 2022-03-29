@@ -35,6 +35,19 @@ label {
   }
 }
 
+// Member index view search and filter indicators
+.indicator-btn {
+  .search-indicator {
+    display: inline-block;
+  }
+
+  &[aria-expanded='true'] {
+    .search-indicator {
+      display: none;
+    }
+  }
+}
+
 .bg-featured {
   background: #bbffd2;
 }
