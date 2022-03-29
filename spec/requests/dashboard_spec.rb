@@ -110,6 +110,15 @@ RSpec.describe "Dashboards", type: :request do
 
         expect(response.body).not_to include("turbo-frame")
       end
+
+      it "renders turbo frame when enabled" do
+        FeatureFlag.enable("limit_post_creation_to_admins")
+
+        sign_in user
+        get dashboard_path
+
+        expect(response.body).to include("turbo-frame")
+      end
     end
 
     context "when logged but has no articles nor can create them" do
