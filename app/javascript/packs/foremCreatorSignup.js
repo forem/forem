@@ -99,7 +99,7 @@ function setTogglePasswordEvent(targetClass) {
 }
 
 setTogglePasswordEvent('js-password-toggle-wrapper');
-setTogglePasswordEvent('js-forem_owner_secret-toggle-wrapper');
+setTogglePasswordEvent('js-forem-owner-secret-toggle-wrapper');
 
 const name = document.getElementsByClassName('js-creator-signup-name')[0];
 name.addEventListener('input', setDefaultUsername);
