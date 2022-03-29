@@ -583,6 +583,8 @@ class User < ApplicationRecord
   def current_status
     if suspended?
       "Suspended"
+    elsif comment_suspended?
+      "Comment suspended"
     elsif warned?
       "Warned"
     elsif trusted?
@@ -597,10 +599,10 @@ class User < ApplicationRecord
       "Admin"
     elsif super_admin?
       "Super Admin"
-    elsif tag_moderator?
-      "Moderator"
     elsif tech_admin?
       "Tech Admin"
+    elsif tag_moderator?
+      "Moderator"
     else
       "Resource Admin"
     end

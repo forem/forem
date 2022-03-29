@@ -21,11 +21,10 @@
             <a href="<%= admin_user_path(user.id) %>">
               <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
             </a>
-            <%= user.name %>
+            <div class="pl-3 flex-1"><%= user.name %>
+              <p class="fs-xs color-base-60">@<%= user.username %>&nbsp;<span class="fs-xs c-indicator" aria-disabled="true"><%= user.current_roles %></span></p>
+            </div>
           </div>
-          <p class="fs-xs color-base-60">
-            @<%= user.username %> <%= user.current_roles %>
-          </p>
           </td>
           <td><%= user.current_status %></td>
           <td>
