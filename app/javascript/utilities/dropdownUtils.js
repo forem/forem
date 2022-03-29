@@ -53,7 +53,7 @@ const handleDropdownRepositions = () => {
 /**
  * Helper query string to identify interactive/focusable HTML elements
  */
-const INTERACTIVE_ELEMENTS_QUERY =
+export const INTERACTIVE_ELEMENTS_QUERY =
   'button, [href], input:not([type="hidden"]), select, textarea, [tabindex="0"]';
 
 /**

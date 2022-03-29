@@ -61,6 +61,8 @@ en:
         secret:
           label: New Forem Secret
           placeholder: As provided by your Forem host
+          hide: Hide new Forem secret
+          show: Show new Forem secret
         submit: Sign up
       wizard:
         meta:

@@ -3,11 +3,8 @@
     <h1 class="crayons-title ml-3 l:ml-0">Members</h1>
     <%= render "admin/users/index/tabs" %>
   </header>
-
-  <div class="flex justify-between">
     <%= render "admin/users/index/controls" %>
-    <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
-  </div>
+
     <!-- Small screen data view start -->
     <div class="block m:hidden fs-s">
       <h2 class="member-data-heading fs-s py-2 -mx-3 px-3 color-base-60">Members</h2>
