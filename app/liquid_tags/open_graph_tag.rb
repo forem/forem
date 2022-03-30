@@ -8,13 +8,15 @@ class OpenGraphTag < LiquidTagBase
     super
 
     @page = OpenGraph.new url
+    @plain_url = url
   end
 
   def render(_context)
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
-        page: page
+        page: page,
+        plain_url: @plain_url
       },
     )
   end

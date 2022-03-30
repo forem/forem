@@ -8,7 +8,7 @@ class OpenGraph
 
   attr_accessor :page, :tags
 
-  DEFAULT_METHODS = %i[author title description].freeze
+  DEFAULT_METHODS = %i[description title url].freeze
 
   def initialize(url)
     @page = MetaInspector.new(url)
@@ -39,12 +39,24 @@ class OpenGraph
     page.images.best
   end
 
+  def site_name
+    properties["og:site_name"].first
+  end
+
   def properties
     @tags ||= meta_tags
 
     return {} if tags["property"].blank?
 
     tags["property"]
+  end
+
+  def main_properties
+    %w[og:title og:url]
+  end
+
+  def main_properties_present?
+    (main_properties - properties.keys).empty?
   end
 
   # this method groups like-properties, making it a little easier to determine

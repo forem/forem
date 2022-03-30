@@ -1,25 +1,33 @@
-<div class="crayons-card p-5">
-  <% if page.image %>
-    <div class="s:max-w-50 mb-4">
-      <img src="<%= page.image %>" height="auto" alt="Avatar">
-    </div>
-  <% end %>
-  <div class="color-primary">
-    <p class="fs-xl fw-bold lh-tight mb-2">
-      <%= page.title %>
-    </p>
-    <p class="truncate-at-2 mb-2">
-      <%= page.description %>
-    </p>
-  </div>
-  <div class="color-secondary fs-s">
-    <% if page.properties["og:site_name"] %>
-      <span class="fw-medium"><%= page.properties["og:site_name"].first %> &bull;</span>
+<% if page.main_properties_present? %>
+  <div class="crayons-card p-5">
+    <% if page.image %>
+      <div class="s:max-w-50 mb-4">
+        <img src="<%= page.image %>" height="auto" alt="Cover image">
+      </div>
     <% end %>
-    <span>
-      <a href="<%= page.properties["og:url"].first %>" target="_blank" rel="noopener noreferrer">
-        <%= page.properties["og:url"].first %>
+    <div>
+      <a href="<%= page.url %>" target="_blank" rel="noopener noreferrer">
+        <h2 class="fs-xl fw-bold lh-tight mb-2">
+          <%= page.title %>
+        </h2>
       </a>
-    </span>
+      <% if page.description %>
+        <p class="truncate-at-2 mb-2">
+          <%= page.description %>
+        </p>
+      <% end %>
+    </div>
+    <div class="color-secondary fs-s">
+      <% if page.site_name %>
+        <span class="fw-medium"><%= page.site_name %> &bull;</span>
+      <% end %>
+      <span>
+        <%= page.url %>
+      </span>
+    </div>
   </div>
-</div>
+<% else %>
+  <a href="<%= plain_url %>" target="_blank" rel="noopener noreferrer">
+    <%= plain_url %>
+  </a>
+<% end %>
