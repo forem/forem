@@ -77,13 +77,13 @@ gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "rack-attack", "~> 6.6.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 6.1.5" # Ruby on Rails
+gem "rails", "~> 7.0.2.2" # Ruby on Rails
 gem "ransack", "~> 2.6" # Searching and sorting
 gem "recaptcha", "~> 5.9", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.6.0" # Redis ruby client
-gem "redis-actionpack", "5.3.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+gem "redis-actionpack", "~> 5.3.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
 gem "rpush", "~> 7.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 
@@ -98,7 +98,7 @@ gem "sidekiq", "~> 6.4.1" # Sidekiq is used to process background jobs with the 
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.1.15" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
-gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
+gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "stripe", "~> 5.48" # Ruby library for the Stripe API
