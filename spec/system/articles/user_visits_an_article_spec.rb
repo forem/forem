@@ -161,6 +161,7 @@ RSpec.describe "Views an article", type: :system do
       it "does not the article edit link" do
         visit article_path
         expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
+        expect(page.body).to include('display: none;">Click to edit</a>')
       end
     end
 
@@ -171,7 +172,7 @@ RSpec.describe "Views an article", type: :system do
       it "does not the article edit link" do
         sign_out user
         visit article_path
-        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
+        expect(page.body).not_to include("Click to edit")
       end
     end
 
