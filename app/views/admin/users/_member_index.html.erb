@@ -9,32 +9,37 @@
     <div class="block m:hidden fs-s">
       <h2 class="member-data-heading fs-s py-2 -mx-3 px-3 color-base-60">Members</h2>
       <ul class="list-none">
-        <% @users.each do |user| %>
+        <% @users.includes([:organizations]).each do |user| %>
           <li class="py-4">
             <article>
               <header class="flex">
-                <img class="radius-full mr-2" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="" />
-                <div class="flex flex-col">
-                  <h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
-                  <span class="color-base-60">@<%= user.username %></span>
+                <a href="<%= admin_user_path(user.id) %>">
+                  <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
+                </a>
+                <div class="pl-3 flex-1 fs-s"><%= user.name %>
+                  <p class="color-base-60">@<%= user.username %>&nbsp;
+                    <button class="c-pill ml-2 crayons-tooltip__activator" aria-disabled="true"><%= user.current_roles %>
+                      <span data-testid="tooltip" class="crayons-tooltip__content"><%= user.current_roles %></span>
+                    </button>
+                  </p>
                 </div>
               </header>
               <div class="flex justify-between py-2">
                 <div>standing info</div>
-                <div>role info</div>
+                <div><%= user.current_status %></div>
               </div>
               <div class="flex justify-between items-end">
                 <dl class="flex gap-2">
                   <div>
-                    <dt class="color-base-60 fw-normal">Last activity</dt>
-                    <dd>placeholder</dd>
+                    <dt class="color-base-60 fw-normal">Latest activity</dt>
+                    <dd><%= user.latest_activity %></dd>
                   </div>
                   <div>
                     <dt class="color-base-60 fw-normal">Joined on</dt>
                     <dd><%= user.registered_at.strftime("%d %b, %Y") %></dd>
                   </div>
                 </dl>
-                <div>Orgs info</div>
+                <div><%= user.current_organizations %></div>
               </div>
             </article>
           </li>
