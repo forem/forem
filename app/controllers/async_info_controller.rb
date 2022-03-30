@@ -36,6 +36,10 @@ class AsyncInfoController < ApplicationController
     }.to_json
   end
 
+  # @note The `user_cache_key` uses `current_user` and this method assumes `@user` which is a
+  #       decorated version of the user.  It would be nice if we were using the same "variable" for
+  #       the cache key and for that which we cache.
+  # rubocop:disable Metrics/BlockLength
   def user_data
     Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
       {
@@ -58,10 +62,20 @@ class AsyncInfoController < ApplicationController
         feed_style: feed_style_preference,
         created_at: @user.created_at,
         admin: @user.any_admin?,
+        policies: [
+          {
+            dom_class: ApplicationPolicy.dom_class_for(record: Article, query: :create?),
+            # Why forbidden and not authorized?  I want to "default" to optimistic rendering.  And
+            # the javascript is just a bit more tolerant if we "hide" a button when it's forbidden
+            # ELSE we show it.
+            forbidden: !policy(Article).create?
+          },
+        ],
         apple_auth: @user.email.to_s.end_with?("@privaterelay.appleid.com")
       }
     end.to_json
   end
+  # rubocop:enable Metrics/BlockLength
 
   def user_is_a_creator
     @user.creator?
