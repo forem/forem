@@ -572,9 +572,9 @@ class User < ApplicationRecord
       last_reacted_at || profile_updated_at || last_moderation_notification
 
     if latest_activity.strftime("%Y-%m-%d") == Time.zone.today.strftime("%Y-%m-%d")
-      "Today #{latest_activity.strftime('%b, %Y')}"
+      "Today, #{latest_activity.strftime('%%d %b')}"
     elsif latest_activity.strftime("%Y-%m-%d") == Date.yesterday.strftime("%Y-%m-%d")
-      "Yesterday #{latest_activity.strftime('%b, %Y')}"
+      "Yesterday, #{latest_activity.strftime('%d %b')}"
     else
       latest_activity.strftime("%d %b, %Y")
     end
@@ -603,8 +603,10 @@ class User < ApplicationRecord
       "Tech Admin"
     elsif tag_moderator?
       "Moderator"
-    else
+    elsif has_role?(:single_resource_admin, :any)
       "Resource Admin"
+    else
+      "Regular Member"
     end
   end
 
