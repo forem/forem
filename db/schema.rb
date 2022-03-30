@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_26_205052) do
+ActiveRecord::Schema.define(version: 2022_03_23_185428) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 2022_01_26_205052) do
     t.index ["comments_count"], name: "index_articles_on_comments_count"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
+    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"

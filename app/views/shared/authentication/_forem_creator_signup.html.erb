@@ -76,7 +76,7 @@
 
       <div class="crayons-field mt-6">
         <%= f.label :password, t("views.auth.register.field.password.label"), class: "crayons-field__label" %>
-        <div class="relative">
+        <div class="relative js-password-toggle-wrapper">
           <%= f.password_field :password, minlength: "8", class: "crayons-textfield js-password", placeholder: t("views.auth.register.field.password.placeholder"), required: true, aria: { describedby: "password-helper-text" } %>
           <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="<%= t("views.auth.register.field.password.show") %>" aria-pressed="false">
             <%= crayons_icon_tag(:eye, class: "js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: t("views.auth.register.field.password.show")) %>
@@ -92,7 +92,13 @@
         <% else %>
           <div class="crayons-field mt-6">
             <%= f.label :forem_owner_secret, t("views.auth.register.secret.label"), class: "crayons-field__label" %>
-            <%= f.password_field :forem_owner_secret, class: "crayons-textfield", required: ForemInstance.needs_owner_secret?, placeholder: t("views.auth.register.secret.placeholder") %>
+            <div class="relative js-password-toggle-wrapper">
+              <%= f.password_field :forem_owner_secret, class: "crayons-textfield js-password", required: ForemInstance.needs_owner_secret?, placeholder: t("views.auth.register.secret.placeholder") %>
+              <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s js-creator-password-visibility h-100 absolute z-elevate right-0" aria-label="<%= t("views.auth.register.secret.show") %>" aria-pressed="false">
+                <%= crayons_icon_tag(:eye, class: "js-eye", data: { testid: "mask-icon" }, aria_hidden: true, title: t("views.auth.register.secret.show")) %>
+                <%= crayons_icon_tag("eye-off", class: "hidden js-eye-off", data: { testid: "unmask-icon" }, aria_hidden: true, title: t("views.auth.register.secret.hide")) %>
+              </button>
+            </div>
           </div>
         <% end %>
       <% end %>

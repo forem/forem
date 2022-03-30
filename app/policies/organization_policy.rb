@@ -18,14 +18,18 @@ class OrganizationPolicy < ApplicationPolicy
   def part_of_org?
     return false if record.blank?
 
-    OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
+    user.org_member?(record)
   end
 
   def admin_of_org?
     return false if record.blank?
 
-    OrganizationMembership.exists?(user_id: user.id, organization_id: record.id, type_of_user: "admin")
+    user.org_admin?(record)
   end
 
   alias generate_new_secret? update?
+
+  # The analytics? policy method is also on the UserPolicy.  This exists specifically to allow for
+  # "duck-typing" on the tests.
+  alias analytics? part_of_org?
 end

@@ -43,7 +43,7 @@ gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard a
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 0.2.25" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.11" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 2.8.2" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.9.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "httpclient", "~> 2.8.3" # Gives something like the functionality of libwww-perl (LWP) in Ruby
@@ -55,7 +55,7 @@ gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
-gem "liquid", "~> 5.2" # A secure, non-evaling end user template engine with aesthetic markup
+gem "liquid", "~> 5.3" # A secure, non-evaling end user template engine with aesthetic markup
 gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.22" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
@@ -101,7 +101,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.46" # Ruby library for the Stripe API
+gem "stripe", "~> 5.47" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 1.0" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -121,7 +121,7 @@ group :development do
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.18", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
-  gem "i18n-tasks", "~> 0.9.37" # Helpers to find and manage missing and unused translations
+  gem "i18n-tasks", "~> 1.0.5" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "solargraph", "~> 0.44", require: false # For LSP support (such as symbol renaming, documentation lookup)
@@ -140,7 +140,7 @@ group :development, :test do
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.20" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.2.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 3.2.1" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
