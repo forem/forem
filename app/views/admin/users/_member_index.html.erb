@@ -21,8 +21,12 @@
             <a href="<%= admin_user_path(user.id) %>">
               <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
             </a>
-            <div class="pl-3 flex-1"><%= user.name %>
-              <p class="fs-xs color-base-60">@<%= user.username %>&nbsp;<span class="fs-xs c-indicator" aria-disabled="true"><%= user.current_roles %></span></p>
+            <div class="pl-3 flex-1 fs-s"><%= user.name %>
+              <p class="color-base-60">@<%= user.username %>&nbsp;
+                <button class="c-pill ml-2 crayons-tooltip__activator" aria-disabled="true"><%= user.current_roles %>
+                  <span data-testid="tooltip" class="crayons-tooltip__content"><%= user.current_roles %></span>
+                </button>
+              </p>
             </div>
           </div>
           </td>
