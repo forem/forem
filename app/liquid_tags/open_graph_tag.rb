@@ -7,7 +7,7 @@ class OpenGraphTag < LiquidTagBase
     super
 
     @page = OpenGraph.new url
-    @plain_url = url
+    @url_domain = URI.parse(url).host
   end
 
   def render(_context)
@@ -15,7 +15,7 @@ class OpenGraphTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         page: page,
-        plain_url: @plain_url
+        url_domain: @url_domain
       },
     )
   end

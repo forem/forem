@@ -40,7 +40,7 @@ class OpenGraph
   end
 
   def site_name
-    properties["og:site_name"].first
+    properties["og:site_name"]&.first
   end
 
   def properties
