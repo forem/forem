@@ -8,6 +8,8 @@ en:
         aria_label: Article actions
       comments:
         aria_label: Comments for post %{title} (%{num})
+        sort_button:
+          aria_label: Sort comments
         subtitle:
           top_html: Top comments %{num}
           latest_html: Latest comments %{num}
