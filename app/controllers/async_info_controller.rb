@@ -58,6 +58,9 @@ class AsyncInfoController < ApplicationController
         feed_style: feed_style_preference,
         created_at: @user.created_at,
         admin: @user.any_admin?,
+        policies: [
+          { resource_type: "Article", action: "create", allowed: policy(Article).create? },
+        ],
         apple_auth: @user.email.to_s.end_with?("@privaterelay.appleid.com")
       }
     end.to_json

@@ -108,6 +108,21 @@ function setCurrentUserToNavBar(user) {
       .getElementsByClassName('js-header-menu-admin-link')[0]
       .classList.remove('hidden');
   }
+
+  // If the user has policies in their data, let's iterate through them and start
+  if (user.policies) {
+    user.policies.forEach(function (policy) {
+      if (
+        policy.resource_type == 'Article' &&
+        policy.action == 'create' &&
+        !policy.allowed
+      ) {
+        document
+          .getElementsByClassName('js-policy-Article-create')[0]
+          .classList.add('hidden');
+      }
+    });
+  }
 }
 
 function initializeBaseUserData() {
