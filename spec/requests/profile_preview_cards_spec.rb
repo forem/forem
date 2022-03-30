@@ -50,6 +50,11 @@ RSpec.describe "ProfilePreviewCards", type: :request do
     end
 
     let(:profile) { user.profile }
+    let(:labels_to_attrs) do
+      %w[Work Education].index_with do |label|
+        ProfileField.find_by(label: label)&.attribute_name
+      end
+    end
 
     context "when signed out" do
       it "does not find an unknown user id" do
@@ -66,9 +71,6 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         get profile_preview_card_path(user), as: :json
 
         preview_card = response.parsed_body
-        labels_to_attrs = %w[Work Education].index_with do |label|
-          ProfileField.find_by(label: label)&.attribute_name
-        end
 
         expect(preview_card["summary"]).to eq(profile.summary)
         expect(preview_card["work"]).to eq(profile.public_send(labels_to_attrs["Work"]))
@@ -122,9 +124,6 @@ RSpec.describe "ProfilePreviewCards", type: :request do
         get profile_preview_card_path(user), as: :json
 
         preview_card = response.parsed_body
-        labels_to_attrs = %w[Work Education].index_with do |label|
-          ProfileField.find_by(label: label)&.attribute_name
-        end
 
         expect(preview_card["summary"]).to eq(profile.summary)
         expect(preview_card["work"]).to eq(profile.public_send(labels_to_attrs["Work"]))
