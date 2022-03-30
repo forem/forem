@@ -35,6 +35,10 @@ label {
   }
 }
 
+.member-data-heading {
+  box-shadow: 0 2px 4px var(--header-shadow);
+}
+
 // Member index view search and filter indicators
 .indicator-btn {
   .search-indicator {
