@@ -117,7 +117,7 @@ module Users
     def conditionally_resave_articles
       return unless resave_articles? && !@user.suspended?
 
-      Users::ResaveArticlesWorker.perform_async(@user.id)
+      Articles::ResaveForAssociationWorker.perform_async(@user.model_name.name, @user.id)
     end
 
     def resave_articles?

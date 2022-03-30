@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe Users::Update, type: :service do
   def sidekiq_assert_resave_article_worker(user, &block)
     sidekiq_assert_enqueued_with(
-      job: Users::ResaveArticlesWorker,
-      args: [user.id],
+      job: Articles::ResaveForAssociationWorker,
+      args: ["User", user.id],
       queue: "medium_priority",
       &block
     )
@@ -162,7 +162,7 @@ RSpec.describe Users::Update, type: :service do
 
         expect do
           described_class.call(suspended_user, user: { username_field => "greatnewusername" })
-        end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
+        end.not_to change(Articles::ResaveForAssociationWorker.jobs, :size)
       end
     end
   end
