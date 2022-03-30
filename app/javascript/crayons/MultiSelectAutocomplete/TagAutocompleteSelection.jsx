@@ -28,7 +28,7 @@ export const TagAutocompleteSelection = ({
     <div
       role="group"
       aria-label={name}
-      className="crayons-article-form__tag-selection flex mr-1 mb-1 w-max"
+      className="c-autocomplete--multi__tag-selection flex mr-1 mb-1 w-max"
     >
       <Button
         style={baseColorStyles}
@@ -36,7 +36,7 @@ export const TagAutocompleteSelection = ({
         aria-label={`Edit ${name}`}
         onClick={onEdit}
       >
-        <span className="crayons-article-form__tag-prefix"># </span>
+        <span className="c-autocomplete--multi__tag-prefix"># </span>
         {name}
       </Button>
       <Button
