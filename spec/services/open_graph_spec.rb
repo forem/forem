@@ -23,9 +23,9 @@ describe OpenGraph, type: :service, vcr: true do
 
   describe "twitter" do
     it "returns twitter data" do
-      expect(page.meta_for("twitter:site")).to eq "@github"
-      expect(page.meta_for("twitter:title")).to eq "Forem"
-      expect(page.meta_for("twitter:card")).to eq "summary_large_image"
+      expect(page.twitter["twitter:site"]).to eq "@github"
+      expect(page.twitter["twitter:title"]).to eq "Forem"
+      expect(page.twitter["twitter:card"]).to eq "summary_large_image"
     end
 
     it "returns empty hash when not available" do
