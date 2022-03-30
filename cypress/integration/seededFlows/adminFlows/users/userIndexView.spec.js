@@ -28,8 +28,8 @@ describe('User index view', () => {
 
         cy.findByRole('button', { name: 'Search' }).click();
 
-        // Coreect search result should appear
-        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
+        // Correct search result should appear
+        cy.findAllByText('Admin McAdmin').should('exist');
       });
 
       it('Filters for a user', () => {
@@ -41,11 +41,9 @@ describe('User index view', () => {
         cy.findByRole('combobox', { name: 'User role' }).select('super_admin');
         cy.findByRole('button', { name: 'Filter' }).click();
 
-        // Search results should include these two results
-        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
-        cy.findByRole('heading', { name: 'Apple Auth Admin User' }).should(
-          'exist',
-        );
+        // Filter results should include these two results
+        cy.findAllByText('Admin McAdmin').should('exist');
+        cy.findAllByText('Apple Auth Admin User').should('exist');
       });
 
       it('Prevents both search and filter widgets being visible at the same time', () => {
@@ -97,6 +95,9 @@ describe('User index view', () => {
 
         cy.findByRole('button', { name: 'Search' }).click();
 
+        // Correct search result should appear
+        cy.findAllByText('Admin McAdmin').should('exist');
+
         // The table headers consistitute a row, plus one result
         cy.findAllByRole('row').should('have.length', 2);
       });
@@ -104,6 +105,10 @@ describe('User index view', () => {
       it('Filters for a user', () => {
         cy.findByRole('combobox', { name: 'User role' }).select('super_admin');
         cy.findByRole('button', { name: 'Filter' }).click();
+
+        // Filter results should include these two results
+        cy.findAllByText('Admin McAdmin').should('exist');
+        cy.findAllByText('Apple Auth Admin User').should('exist');
 
         // Table header, 'normal' admin and apple auth admin
         cy.findAllByRole('row').should('have.length', 3);
