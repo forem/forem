@@ -6,7 +6,7 @@ class OpenGraph
   delegate :meta, :meta_tags, :images, to: :page
   delegate :favicon, to: :images
 
-  attr_accessor :page, :tags
+  attr_reader :page, :tags
 
   DEFAULT_METHODS = %i[description title url].freeze
 

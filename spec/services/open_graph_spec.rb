@@ -7,8 +7,8 @@ describe OpenGraph, type: :service, vcr: true do
 
   describe "meta-programmed methods" do
     it "calls the methods" do
-      expect(page.title).to eq("Forem · GitHub")
-      expect(page.author).to be_nil
+      expect(page.title).to eq("Forem")
+      expect(page.url).to eq("https://github.com/forem")
       expect(page.description).to include("Forem has 18 repositories available. Follow their code on GitHub.")
     end
   end

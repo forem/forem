@@ -1,6 +1,5 @@
+# OpenGraphTag is NOT registered in the Registry; rather, it is a fallback
 class OpenGraphTag < LiquidTagBase
-  # OpenGraphTag is NOT registered in the Registry;
-  # rather, it is a fallback
   PARTIAL = "liquids/open_graph".freeze
   attr_accessor :page
 
