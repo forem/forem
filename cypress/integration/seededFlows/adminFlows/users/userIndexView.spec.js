@@ -63,11 +63,11 @@ describe('User index view', () => {
           .should('have.attr', 'aria-expanded', 'true');
         cy.findByRole('button', { name: 'Search' }).should('exist');
 
-        // verify the filter options have now closed
+        // Verify the filter options have now closed
         cy.get('@filterButton').should('have.attr', 'aria-expanded', 'false');
         cy.findByRole('combobox').should('not.exist');
 
-        // now re-click filter options and check search options have closed
+        // Now re-click filter options and check search options have closed
         cy.get('@filterButton').click();
         cy.get('@searchButton').should('have.attr', 'aria-expanded', 'false');
         cy.findByRole('button', { name: 'Search' }).should('not.exist');
