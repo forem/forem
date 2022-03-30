@@ -5,12 +5,14 @@
         <img src="<%= page.image %>" height="auto" alt="">
       </div>
     <% end %>
-    <div>
-      <a href="<%= page.url %>" target="_blank" rel="noopener noreferrer">
-        <h2 class="fs-xl fw-bold lh-tight mb-2">
+    <div class="text-styles">
+      <h2 class="fs-xl fw-bold lh-tight mb-2">
+        <a href="<%= page.url %>" class="ltag" target="_blank" rel="noopener noreferrer">
           <%= page.title %>
-        </h2>
-      </a>
+        </a>
+      </h2>
+    </div>
+    <div>
       <% if page.description %>
         <p class="truncate-at-2 mb-2">
           <%= page.description %>
