@@ -78,7 +78,7 @@ gem "rack-attack", "~> 6.6.0" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.2.2" # Ruby on Rails
-gem "ransack", "~> 2.6" # Searching and sorting
+gem "ransack", "~> 3.0" # Searching and sorting
 gem "recaptcha", "~> 5.9", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 

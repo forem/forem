@@ -638,7 +638,7 @@ GEM
       zeitwerk (~> 2.5)
     rainbow (3.1.1)
     rake (13.0.6)
-    ransack (2.6.0)
+    ransack (3.0.0)
       activerecord (>= 6.0.4)
       activesupport (>= 6.0.4)
       i18n
@@ -1022,7 +1022,7 @@ DEPENDENCIES
   rack-host-redirect (~> 1.3)
   rack-timeout (~> 0.6)
   rails (~> 7.0.2.2)
-  ransack (~> 2.6)
+  ransack (~> 3.0)
   recaptcha (~> 5.9)
   redcarpet (~> 3.5)
   redis (~> 4.6.0)
