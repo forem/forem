@@ -59,6 +59,27 @@ RSpec.describe "ArticlesShow", type: :request do
     end
   end
 
+  describe "GET /:username/:slug (scheduled)" do
+    let(:scheduled_article) { create(:article, published: true, published_at: Date.tomorrow) }
+    let(:query_params) { "?preview=#{scheduled_article.password}" }
+    let(:scheduled_article_path) { scheduled_article.path + query_params }
+
+    it "renders a scheduled article with the article password" do
+      get scheduled_article_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(scheduled_article.title)
+    end
+
+    it "doesn't show edit link when user is not signed in" do
+      get scheduled_article_path
+      expect(response.body).not_to include("Click to edit")
+    end
+
+    it "renders 404 for a scheduled article w/o article password" do
+      expect { get scheduled_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
   it "renders the proper organization for an article when one is present" do
     get organization.path
     expect(response_json).to include(

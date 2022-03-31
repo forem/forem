@@ -46,6 +46,7 @@ fr:
         series_html: "<strong>Series:</strong> %{series}"
         draft: Draft
         scheduled: Scheduled
+        scheduled_at: 'Scheduled:'
         reactions:
           title: Reactions
           icon: Reactions
