@@ -580,7 +580,7 @@ class User < ApplicationRecord
     end
   end
 
-  def current_roles
+  def current_role
     if admin?
       "Admin"
     elsif super_admin?

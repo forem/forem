@@ -36,8 +36,8 @@
                 <% end %>
                 </div>
                 <div>
-                <span class="c-indicator ml-2 crayons-tooltip__activator"><%= user.current_roles %>
-                  <span data-testid="tooltip" class="crayons-tooltip__content"><%= user.current_roles %></span>
+                <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= user.current_role %>">
+                  <%= user.current_role %>
                 </span>
                 </div>
               </div>
@@ -81,8 +81,8 @@
             </a>
             <div class="pl-3 flex-1 fs-s"><%= link_to user.name, admin_user_path(user) %>
               <p class="color-base-60">@<%= link_to user.username, admin_user_path(user) %>&nbsp;
-                <span class="c-indicator ml-2 crayons-tooltip__activator"><%= user.current_roles %>
-                  <span data-testid="tooltip" class="crayons-tooltip__content"><%= user.current_roles %></span>
+                <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= user.current_role %>">
+                  <%= user.current_role %>
                 </span>
               </p>
             </div>
