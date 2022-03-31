@@ -22,7 +22,19 @@
                 </div>
               </header>
               <div class="flex justify-between py-2">
-                <div><%= user.current_status %></div>
+                <div>
+                <% if user.suspended? %>
+                  <span><%= inline_svg_tag("suspended-circle.svg", aria: true, title: "Suspended", class: "mb-1") %>Suspended</span>
+                <% elsif user.warned? %>
+                  <span><%= inline_svg_tag("warned-circle.svg", aria: true, title: "Warned", class: "mb-1") %>Warned</span>
+                <% elsif user.comment_suspended? %>
+                  <span><%= inline_svg_tag("suspended-circle.svg", aria: true, title: "Comment Suspended", class: "mb-1") %>Comment suspended</span>
+                <% elsif user.trusted? %>
+                  <span><%= inline_svg_tag("trusted-circle.svg", aria: true, title: "Trusted", class: "mb-1") %>Trusted</span>
+                <% else %>
+                  <span><%= inline_svg_tag("good-standing-circle.svg", aria: true, title: "Good Standing", class: "mb-1") %>Good standing</span>
+                <% end %>
+                </div>
                 <div>
                 <span class="c-indicator ml-2 crayons-tooltip__activator"><%= user.current_roles %>
                   <span data-testid="tooltip" class="crayons-tooltip__content"><%= user.current_roles %></span>
