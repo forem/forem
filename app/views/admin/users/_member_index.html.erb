@@ -52,7 +52,11 @@
                     <dd><%= user.registered_at.strftime("%d %b, %Y") %></dd>
                   </div>
                 </dl>
-                <div><%= user.current_organizations %></div>
+                <div>
+                  <span class="crayons-hover-tooltip" data-tooltip="<%= user.current_organizations %>">
+                    <%= user.current_organizations %>
+                  </span>
+                </div>
               </div>
             </article>
           </li>
@@ -108,7 +112,9 @@
           </p>
           </td>
           <td>
-            <%= user.current_organizations %>
+            <span class="crayons-hover-tooltip" data-tooltip="<%= user.current_organizations %>">
+              <%= user.current_organizations %>
+            </span>
           </td>
         </tr>
         <% end %>
