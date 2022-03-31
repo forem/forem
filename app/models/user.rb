@@ -580,20 +580,6 @@ class User < ApplicationRecord
     end
   end
 
-  def current_status
-    if suspended?
-      "Suspended"
-    elsif comment_suspended?
-      "Comment suspended"
-    elsif warned?
-      "Warned"
-    elsif trusted?
-      "Trusted"
-    else
-      "Good standing"
-    end
-  end
-
   def current_roles
     if admin?
       "Admin"

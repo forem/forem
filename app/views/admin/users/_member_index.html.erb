@@ -76,7 +76,19 @@
             </div>
           </div>
           </td>
-          <td><%= user.current_status %></td>
+          <td>
+           <% if user.suspended? %>
+             <span><%= inline_svg_tag("suspended-circle.svg", aria: true, title: "Suspended", class: "mb-1") %>Suspended</span>
+           <% elsif user.warned? %>
+             <span><%= inline_svg_tag("warned-circle.svg", aria: true, title: "Warned", class: "mb-1") %>Warned</span>
+           <% elsif user.comment_suspended? %>
+             <span><%= inline_svg_tag("suspended-circle.svg", aria: true, title: "Comment Suspended", class: "mb-1") %>Comment suspended</span>
+           <% elsif user.trusted? %>
+             <span><%= inline_svg_tag("trusted-circle.svg", aria: true, title: "Trusted", class: "mb-1") %>Trusted</span>
+           <% else %>
+             <span><%= inline_svg_tag("good-standing-circle.svg", aria: true, title: "Good Standing", class: "mb-1") %>Good standing</span>
+           <% end %>
+          </td>
           <td>
           <%= user.latest_activity %>
           <p class="fs-xs color-base-60">
