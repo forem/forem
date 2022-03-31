@@ -1,14 +1,14 @@
-<div class="crayons-card p-3 s:p-4 m:p-7">
+<div class="crayons-card overflow-admin-main-layout-padding p-4 m:p-7">
   <header class="flex flex-col l:flex-row justify-content-between l:items-center ">
-    <h1 class="crayons-title">Members</h1>
+    <h1 class="crayons-title ml-2 m:ml-0">Members</h1>
     <%= render "admin/users/index/tabs" %>
   </header>
     <%= render "admin/users/index/controls" %>
 
     <!-- Small screen data view start -->
     <div class="block m:hidden fs-s">
-      <h2 class="member-data-heading fs-s py-2 -mx-3 px-3 color-base-60">Members</h2>
-      <ul class="list-none">
+      <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Members</h2>
+      <ul class="list-none mx-2">
         <% @users.each do |user| %>
           <li class="py-4">
             <article>
