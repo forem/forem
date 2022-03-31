@@ -9,7 +9,7 @@
     <div class="block m:hidden fs-s">
       <h2 class="member-data-heading fs-s py-2 -mx-3 px-3 color-base-60">Members</h2>
       <ul class="list-none">
-        <% @users.includes([:organizations]).each do |user| %>
+        <% @users.includes([:organization_memberships]).each do |user| %>
           <li class="py-4">
             <article>
               <header class="flex">
@@ -53,9 +53,17 @@
                   </div>
                 </dl>
                 <div>
-                  <span class="crayons-hover-tooltip" data-tooltip="<%= user.current_organizations %>">
-                    <%= user.current_organizations %>
-                  </span>
+                  <% if user.organization_memberships.any? %>
+                    <% user.organization_memberships.includes([:organization]).each do |org_membership| %>
+                      <span class="crayons-hover-tooltip" data-tooltip="<%= org_membership.organization.name %>">
+                        <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link crayons-logo crayons-logo--l">
+                          <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="crayons-logo__image">
+                        </a>
+                      </span>
+                    <% end %>
+                  <% else %>
+                    -
+                  <% end %>
                 </div>
               </div>
             </article>
@@ -76,7 +84,7 @@
         </tr>
       </thead>
       <tbody class="crayons-card">
-        <% @users.includes([:organizations]).each do |user| %>
+        <% @users.includes([:organization_memberships]).each do |user| %>
         <tr>
           <td>
           <div class="flex s:items-start flex-col s:flex-row">
@@ -112,9 +120,17 @@
           </p>
           </td>
           <td>
-            <span class="crayons-hover-tooltip" data-tooltip="<%= user.current_organizations %>">
-              <%= user.current_organizations %>
-            </span>
+            <% if user.organization_memberships.any? %>
+              <% user.organization_memberships.includes([:organization]).each do |org_membership| %>
+                <span class="crayons-hover-tooltip" data-tooltip="<%= org_membership.organization.name %>">
+                  <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link crayons-logo crayons-logo--l">
+                    <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="crayons-logo__image">
+                  </a>
+                </span>
+              <% end %>
+            <% else %>
+              -
+            <% end %>
           </td>
         </tr>
         <% end %>

@@ -572,7 +572,7 @@ class User < ApplicationRecord
       last_reacted_at || profile_updated_at || last_moderation_notification
 
     if latest_activity.strftime("%Y-%m-%d") == Time.zone.today.strftime("%Y-%m-%d")
-      "Today, #{latest_activity.strftime('%%d %b')}"
+      "Today, #{latest_activity.strftime('%d %b')}"
     elsif latest_activity.strftime("%Y-%m-%d") == Date.yesterday.strftime("%Y-%m-%d")
       "Yesterday, #{latest_activity.strftime('%d %b')}"
     else
@@ -594,10 +594,6 @@ class User < ApplicationRecord
     else
       "Regular Member"
     end
-  end
-
-  def current_organizations
-    organizations.present? ? organizations.map(&:name).join(", ") : "-"
   end
 
   protected
