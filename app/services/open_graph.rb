@@ -39,10 +39,6 @@ class OpenGraph
     page.images.best
   end
 
-  def site_name
-    properties["og:site_name"]&.first
-  end
-
   def properties
     return {} if tags["property"].blank?
 
