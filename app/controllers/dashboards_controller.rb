@@ -21,7 +21,7 @@ class DashboardsController < ApplicationController
     fetch_and_authorize_user
     target = @user
     # NOTE: This is a subtle policy check happening here that we are not encapsulating
-    not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
+    not_authorized if params[:org_id] && !(@user.org_admin?(params[:org_id]) || @user.any_admin?)
 
     @organizations = @user.admin_organizations
 

@@ -69,7 +69,7 @@
         <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
           <strong><%= t("views.articles.unpublished.subtitle") %></strong><%= t("views.articles.unpublished.text") %>
           <% if user_signed_in? %>
-            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none"><%= t("views.articles.unpublished.edit") %></a>
+            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" style="display: none;"><%= t("views.articles.unpublished.edit") %></a>
           <% end %>
         </div>
       <% end %>

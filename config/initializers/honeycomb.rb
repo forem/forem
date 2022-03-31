@@ -1,3 +1,5 @@
+require_relative "../../app/lib/honeycomb/noise_cancelling_sampler"
+
 if Rails.env.test?
   Honeycomb.configure do |config|
     config.client = Libhoney::TestClient.new
