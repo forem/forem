@@ -16,17 +16,18 @@
                 <a href="<%= admin_user_path(user.id) %>">
                   <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
                 </a>
-                <div class="pl-3 flex-1 fs-s"><%= user.name %>
-                  <p class="color-base-60">@<%= user.username %>&nbsp;
-                    <button class="c-pill ml-2 crayons-tooltip__activator" aria-disabled="true"><%= user.current_roles %>
-                      <span data-testid="tooltip" class="crayons-tooltip__content"><%= user.current_roles %></span>
-                    </button>
+                <div class="pl-3 flex-1 fs-s"><%= link_to user.name, admin_user_path(user) %>
+                  <p class="color-base-60">@<%= link_to user.username, admin_user_path(user) %>&nbsp;
                   </p>
                 </div>
               </header>
               <div class="flex justify-between py-2">
-                <div>standing info</div>
                 <div><%= user.current_status %></div>
+                <div>
+                <span class="c-indicator ml-2 crayons-tooltip__activator"><%= user.current_roles %>
+                  <span data-testid="tooltip" class="crayons-tooltip__content"><%= user.current_roles %></span>
+                </span>
+                </div>
               </div>
               <div class="flex justify-between items-end">
                 <dl class="flex gap-2">
@@ -66,11 +67,11 @@
             <a href="<%= admin_user_path(user.id) %>">
               <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
             </a>
-            <div class="pl-3 flex-1 fs-s"><%= user.name %>
-              <p class="color-base-60">@<%= user.username %>&nbsp;
-                <button class="c-pill ml-2 crayons-tooltip__activator" aria-disabled="true"><%= user.current_roles %>
+            <div class="pl-3 flex-1 fs-s"><%= link_to user.name, admin_user_path(user) %>
+              <p class="color-base-60">@<%= link_to user.username, admin_user_path(user) %>&nbsp;
+                <span class="c-indicator ml-2 crayons-tooltip__activator"><%= user.current_roles %>
                   <span data-testid="tooltip" class="crayons-tooltip__content"><%= user.current_roles %></span>
-                </button>
+                </span>
               </p>
             </div>
           </div>
