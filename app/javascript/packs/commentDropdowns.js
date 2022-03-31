@@ -21,7 +21,7 @@ const handleCopyPermalink = (closeDropdown) => {
 const initializeArticlePageDropdowns = () => {
   // Gather all dropdown triggers for comment options and profile previews
   const dropdownTriggers = document.querySelectorAll(
-    'button[id^=comment-dropdown-trigger], button[id^=comment-profile-preview-trigger-],#toggle-comments-sort-dropdown',
+    'button[id^=comment-dropdown-trigger], button[id^=comment-profile-preview-trigger-], button[id^=toggle-comments-sort-dropdown]',
   );
 
   for (const dropdownTrigger of dropdownTriggers) {

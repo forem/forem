@@ -52,9 +52,7 @@ describe('Sort Comments in an Article', () => {
     cy.url().should('contain', '?comments_sort=latest');
     cy.findByRole('heading', { name: 'Latest comments (1)' }).should('exist');
 
-    // Helper function for pipe command
-    const click = ($el) => $el.click();
-    cy.findByRole('button', { name: 'Sort comments' }).pipe(click).click();
+    cy.findByRole('button', { name: 'Sort comments' }).click();
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
       cy.findByRole('link', {
@@ -75,9 +73,7 @@ describe('Sort Comments in an Article', () => {
     cy.url().should('contain', '?comments_sort=oldest');
     cy.findByRole('heading', { name: 'Oldest comments (1)' }).should('exist');
 
-    // Helper function for pipe command
-    const click = ($el) => $el.click();
-    cy.findByRole('button', { name: 'Sort comments' }).pipe(click).click();
+    cy.findByRole('button', { name: 'Sort comments' }).click();
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
       cy.findByRole('link', {
