@@ -4,12 +4,10 @@
   </button>
 
   <div id="edit-navigation-link-<%= link[:id] %>-modal" class="hidden">
-    <div class="form-group grid p-6 mb-6 gap-1">
-      <%= form_for [:admin, link] do |form| %>
-        <%= render "form", form: form %>
-        <%= form.submit class: "btn btn-primary" %>
-      <% end %>
-    </div>
+    <%= form_for [:admin, link] do |form| %>
+      <%= render "form", form: form %>
+      <%= form.submit class: "c-btn c-btn--primary" %>
+    <% end %>
   </div>
 
    <div id="edit-navigation-link-<%= link[:id] %>-modal-root"></div>

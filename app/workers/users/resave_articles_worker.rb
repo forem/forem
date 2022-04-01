@@ -8,7 +8,7 @@ module Users
       user = User.find_by(id: user_id)
       return unless user
 
-      user.resave_articles
+      user.articles.find_each(&:save)
     end
   end
 end

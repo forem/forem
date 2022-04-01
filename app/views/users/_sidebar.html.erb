@@ -1,7 +1,7 @@
 <div class="m:gap-4 hidden m:grid js-user-info">
   <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
     <% if @user.organizations.present? %>
-      <div class="crayons-card crayons-card--secondary">
+      <div class="crayons-card crayons-card--secondary crayons-layout__content">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-3 spec-org-titles"><%= t("views.users.side.org") %></h3>
         </header>
@@ -54,11 +54,11 @@
         <%= t "views.users.side.post.text", count: @user.articles.published.size %>
       </div>
       <div class="flex items-center mb-4">
-        <%= inline_svg_tag("comment.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.comment.icon")) %>
+        <%= crayons_icon_tag(:comment, class: "mr-3 color-base-50", title: t("views.users.side.comment.icon")) %>
         <%= t "views.users.side.comment.text", count: @user.comments.where(deleted: false).size %>
       </div>
       <div class="flex items-center">
-        <%= inline_svg_tag("tag.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: t("views.users.side.tag.icon")) %>
+        <%= crayons_icon_tag(:tag, class: "mr-3 color-base-50", title: t("views.users.side.tag.icon")) %>
         <%= t("views.users.side.tag.text", count: @user.decorate.cached_followed_tags.size) %>
       </div>
     </div>

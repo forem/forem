@@ -119,7 +119,7 @@ module Articles
         # Weight to give to the number of comments on the article.
         comments_count_factor: {
           clause: "articles.comments_count",
-          cases: [[0, 0.9], [1, 0.92], [2, 0.94], [3, 0.96], [4, 0.98]],
+          cases: (0..9).map { |n| [n, 0.8 + (0.02 * n)] },
           fallback: 1,
           requires_user: false,
           group_by: "articles.comments_count"
@@ -189,8 +189,8 @@ module Articles
         # Weight to give for the number of intersecting tags the given
         # user follows and the article has.
         matching_tags_factor: {
-          clause: "COUNT(followed_tags.follower_id)",
-          cases: [[0, 0.75], [1, 0.9]],
+          clause: "LEAST(10.0, SUM(followed_tags.points))::integer",
+          cases: (0..9).map { |n| [n, 0.70 + (0.0303 * n)] },
           fallback: 1,
           requires_user: true,
           joins: ["LEFT OUTER JOIN taggings
@@ -266,6 +266,8 @@ module Articles
       #
       # @todo I envision that we will tweak the factors we choose, so
       #   those will likely need some kind of structured consideration.
+      #
+      # rubocop:disable Layout/LineLength
       def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
@@ -284,6 +286,7 @@ module Articles
           days_since_published: @days_since_published,
         )
       end
+      # rubocop:enable Layout/LineLength
 
       # The goal of this query is to generate a list of articles that
       # are relevant to the user's interest.
@@ -359,13 +362,14 @@ module Articles
         # can use to help ensure that we can use all of the
         # ActiveRecord goodness of scopes (e.g.,
         # limited_column_select) and eager includes.
-        Article.where(
+        finalized_results = Article.where(
           Article.arel_table[:id].in(
             Arel.sql(
               Article.sanitize_sql(unsanitized_sub_sql),
             ),
           ),
         ).limited_column_select.includes(top_comments: :user)
+        final_order_logic(finalized_results)
       end
       # rubocop:enable Layout/LineLength
 
@@ -440,6 +444,10 @@ module Articles
       end
 
       private
+
+      def final_order_logic(articles)
+        articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.score, 0.1)) DESC"))
+      end
 
       # Concatenate the required group by clauses.
       #
@@ -612,15 +620,24 @@ module Articles
       end
 
       def inject_config_ab_test(valid_method_name, scoring_config)
-        return scoring_config unless valid_method_name == :comments_count_factor # Only proceed on this one factor
+        return scoring_config unless valid_method_name == :daily_decay_factor # Only proceed on this one factor
         return scoring_config if @strategy == AbExperiment::ORIGINAL_VARIANT # Don't proceed if not testing new strategy
 
         # Rewards comment count with slightly more weight up to 10 comments.
         # Testing two case weights beyond what we currently have
-        scoring_config[:cases] = if @strategy == "slightly_more_comments_count_case_weight"
-                                   (0..9).map { |n| [n, 0.8 + (n / 50.0)] }
-                                 else # much_more_comments_count_case_weight
-                                   (0..19).map { |n| [n, 0.6 + (n / 50.0)] }
+        scoring_config[:cases] = case @strategy
+                                 when "slightly_more_recent_articles"
+                                   [[0, 1], [1, 0.98], [2, 0.975],
+                                    [3, 0.97], [4, 0.965], [5, 0.96],
+                                    [6, 0.955], [7, 0.95], [8, 0.945],
+                                    [9, 0.94], [10, 0.935], [11, 0.93],
+                                    [12, 0.925], [13, 0.92], [14, 0.915]]
+                                 else # much_more_recent_articles
+                                   [[0, 1], [1, 0.975], [2, 0.965],
+                                    [3, 0.955], [4, 0.945], [5, 0.935],
+                                    [6, 0.925], [7, 0.915], [8, 0.905],
+                                    [9, 0.895], [10, 0.885], [11, 0.875],
+                                    [12, 0.865], [13, 0.855], [14, 0.845]]
                                  end
         scoring_config
       end

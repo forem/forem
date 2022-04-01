@@ -37,6 +37,7 @@ Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].each { |f| require f
 Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/mailers/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/policies/shared_examples/**/*.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -73,6 +74,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::IntegrationHelpers, type: :system
+  config.include EmbedsHelpers, type: :liquid_tag
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthHelpers
   config.include RpushHelpers
@@ -116,7 +118,6 @@ RSpec.configure do |config|
     allow_any_instance_of(CarrierWave::Downloader::Base)
       .to receive(:skip_ssrf_protection?).and_return(true)
     # rubocop:enable RSpec/AnyInstance
-    # Enable the Connect feature flag for tests
     # Doing this via a stub gets rid of the following error:
     # "Please stub a default value first if message might be received with other args as well."
     allow(FeatureFlag).to receive(:enabled?).and_call_original
@@ -183,28 +184,30 @@ RSpec.configure do |config|
     allow(Settings::General).to receive(:waiting_on_first_user).and_return(false)
 
     # Default to have field a field test available.
-    config = { "experiments" =>
-      { "wut" =>
-        { "variants" => %w[base var_1],
-          "weights" => [50, 50],
-          "goals" => %w[user_creates_comment
-                        user_creates_comment_four_days_in_week
-                        user_views_article_four_days_in_week
-                        user_views_article_four_hours_in_day
-                        user_views_article_nine_days_in_two_week
-                        user_views_article_twelve_hours_in_five_days] } },
-               "exclude" => { "bots" => true },
-               "cache" => true,
-               "cookies" => false }
+    if AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT.blank?
+      config = { "experiments" =>
+        { "wut" =>
+          { "variants" => %w[base var_1],
+            "weights" => [50, 50],
+            "goals" => %w[user_creates_comment
+                          user_creates_comment_four_days_in_week
+                          user_views_article_four_days_in_week
+                          user_views_article_four_hours_in_day
+                          user_views_article_nine_days_in_two_week
+                          user_views_article_twelve_hours_in_five_days] } },
+                 "exclude" => { "bots" => true },
+                 "cache" => true,
+                 "cookies" => false }
 
-    begin
-      # Add the field tests that are currently configured (if any).
-      field_tests = Psych.load_file("config/field_test.yml")
-      config["experiments"].merge!(field_tests.fetch("experiments", {}))
-    rescue StandardError
-      # Accept that we may not have experiments.
+      begin
+        # Add the field tests that are currently configured (if any).
+        field_tests = Psych.load_file("config/field_test.yml")
+        config["experiments"].merge!(field_tests.fetch("experiments", {}))
+      rescue StandardError
+        # Accept that we may not have experiments.
+      end
+      allow(FieldTest).to receive(:config).and_return(config)
     end
-    allow(FieldTest).to receive(:config).and_return(config)
   end
 
   config.after do

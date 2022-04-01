@@ -21,7 +21,7 @@ const handleCopyPermalink = (closeDropdown) => {
 const initializeArticlePageDropdowns = () => {
   // Gather all dropdown triggers for comment options and profile previews
   const dropdownTriggers = document.querySelectorAll(
-    'button[id^=comment-dropdown-trigger], button[id^=comment-profile-preview-trigger-]',
+    'button[id^=comment-dropdown-trigger], button[id^=comment-profile-preview-trigger-], button[id^=toggle-comments-sort-dropdown]',
   );
 
   for (const dropdownTrigger of dropdownTriggers) {
@@ -58,7 +58,11 @@ const initializeArticlePageDropdowns = () => {
         '.report-abuse-link-wrapper',
       );
       if (reportAbuseWrapper) {
-        reportAbuseWrapper.innerHTML = `<a href="${reportAbuseWrapper.dataset.path}" class="crayons-link crayons-link--block">${locale('core.report_abuse')}</a>`;
+        reportAbuseWrapper.innerHTML = `<a href="${
+          reportAbuseWrapper.dataset.path
+        }" class="crayons-link crayons-link--block">${locale(
+          'core.report_abuse',
+        )}</a>`;
       }
 
       // Initialize the "Copy link" functionality

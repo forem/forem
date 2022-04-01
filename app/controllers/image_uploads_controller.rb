@@ -28,7 +28,8 @@ class ImageUploadsController < ApplicationController
     rescue CarrierWave::ProcessingError # server error
       respond_to do |format|
         format.json do
-          render json: { error: "A server error has occurred!" }, status: :unprocessable_entity
+          render json: { error: I18n.t("image_uploads_controller.server_error") },
+                 status: :unprocessable_entity
         end
       end
       return
@@ -49,8 +50,8 @@ class ImageUploadsController < ApplicationController
   def validate_image
     images = Array.wrap(params["image"])
     return if images.blank?
-    return IS_NOT_FILE_MESSAGE unless valid_image_files?(images)
-    return FILENAME_TOO_LONG_MESSAGE unless valid_filenames?(images)
+    return is_not_file_message unless valid_image_files?(images)
+    return filename_too_long_message unless valid_filenames?(images)
 
     nil
   end

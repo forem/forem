@@ -53,7 +53,7 @@
         <h1 class="screen-reader-only"><%= t("views.stories.heading") %></h1>
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden mb-auto" id="on-page-nav-butt-left" aria-label="<%= t("views.stories.menu.aria_left") %>">
           <div class="crayons-icon nav-icon ">
-            <%= inline_svg_tag("hamburger.svg", aria: true, title: t("views.hamburger.icon_left")) %>
+            <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon_left")) %>
           </div>
         </button>
         <% if user_signed_in? %>
@@ -61,7 +61,7 @@
             <nav class="-mx-3 m:mx-0 s:flex items-center justify-between w-100" aria-label="<%= t("views.stories.sort.aria_tagged") %>">
               <ul class="crayons-navigation crayons-navigation--horizontal">
                 <li>
-                  <a data-text="<%= t("views.stories.sort.relevant") %>" href="<%= list_path %>/" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"
+                  <a data-text="<%= t("views.stories.sort.relevant") %>" href="<%= list_path %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>"
                     <%= %w[week month year infinity latest].exclude?(params[:timeframe]) ? ' aria-current="page"'.html_safe : "" %>><%= t("views.stories.sort.relevant") %></a>
                 </li>
                 <li>
@@ -111,7 +111,7 @@
 
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon ml-2 inline-block l:hidden mb-auto" id="on-page-nav-butt-right" aria-label="<%= t("views.stories.menu.aria_right") %>">
           <div class="crayons-icon nav-icon ">
-            <%= inline_svg_tag("hamburger.svg", aria: true, title: t("views.hamburger.icon_right")) %>
+            <%= crayons_icon_tag(:hamburger, title: t("views.hamburger.icon_right")) %>
           </div>
         </button>
       </header>

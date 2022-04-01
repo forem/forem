@@ -38,6 +38,7 @@ class SocialPreviewsController < ApplicationController
 
   def tag
     @tag = Tag.find(params[:id])
+    @compare_hex = Color::CompareHex.new([@tag.bg_color_hex || "#000000", @tag.text_color_hex || "#ffffff"])
 
     set_respond
   end
@@ -61,7 +62,7 @@ class SocialPreviewsController < ApplicationController
       format.png do
         html = render_to_string(template, formats: :html, layout: false)
         redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS,
-                                             google_fonts: "Roboto|Roboto+Condensed"), status: :found
+                                             google_fonts: I18n.t("social_previews_controller.fonts")), status: :found
       end
     end
   end

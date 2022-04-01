@@ -43,20 +43,7 @@ namespace :admin do
     resources :gdpr_delete_requests, only: %i[index destroy]
   end
 
-  resources :users, only: %i[index show edit update destroy] do
-    scope module: "users" do
-      resource :tools, only: :show
-
-      namespace :tools do
-        resource :credits, only: %i[show create destroy]
-        resource :emails, only: :show
-        resource :notes, only: %i[show create]
-        resource :organizations, only: %i[show]
-        resource :reports, only: %i[show]
-        resource :reactions, only: %i[show]
-      end
-    end
-
+  resources :users, only: %i[index show update destroy] do
     resources :email_messages, only: :show
 
     member do
@@ -74,6 +61,10 @@ namespace :admin do
   end
 
   scope :content_manager do
+    # This is a temporary constraint as we work towards releasing https://github.com/orgs/forem/projects/46/views/1
+    constraints(->(_request) { FeatureFlag.exist?(:limit_post_creation_to_admins) }) do
+      resources :spaces, only: %i[index update]
+    end
     resources :articles, only: %i[index show update] do
       member do
         delete :unpin
@@ -110,8 +101,8 @@ namespace :admin do
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]
 
-    # NOTE: @citizen428 The next two resources have a temporary constraint
-    # while profile generalization is still WIP
+    # NOTE: The next two resources have a temporary constraint while profile
+    # generalization is still WIP
     constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
       resources :profile_field_groups, only: %i[update create destroy]
       resources :profile_fields, only: %i[index update create destroy]
@@ -144,6 +135,12 @@ namespace :admin do
       end
     end
 
+    resources :extensions, only: %i[index] do
+      collection do
+        post "toggle", to: "extensions#toggle"
+      end
+    end
+
     # We do not expose the Data Update Scripts to all Forems by default.
     constraints(->(_request) { FeatureFlag.enabled?(:data_update_scripts) }) do
       resources :data_update_scripts, only: %i[index show] do
@@ -156,9 +153,6 @@ namespace :admin do
 
   scope :apps do
     resources :consumer_apps, only: %i[index new create edit update destroy]
-    resources :listings, only: %i[index edit update destroy]
-    resources :listing_categories, only: %i[index edit update new create
-                                            destroy], path: "listings/categories"
     resources :welcome, only: %i[index create]
   end
 end

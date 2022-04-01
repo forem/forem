@@ -1,6 +1,6 @@
 class ReplitTag < LiquidTagBase
   PARTIAL = "liquids/replit".freeze
-  REGISTRY_REGEXP = %r{https?://replit.com/(?<address>@\w{2,15}/[a-zA-Z0-9\-]{0,60})(?:#[\w.]+)?}
+  REGISTRY_REGEXP = %r{https?://replit\.com/(?<address>@\w{2,15}/[a-zA-Z0-9\-]{0,60})(?:#[\w.]+)?}
   VALID_ADDRESS = %r{(?<address>@\w{2,15}/[a-zA-Z0-9\-]{0,60})(?:#[\w.]+)?}
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ADDRESS].freeze
 
@@ -22,7 +22,7 @@ class ReplitTag < LiquidTagBase
 
   def parse_input(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid Replit URL or @user/slug" unless match
+    raise StandardError, I18n.t("liquid_tags.replit_tag.invalid_replit_id") unless match
 
     match[:address]
   end

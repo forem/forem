@@ -2,7 +2,7 @@ require "uri"
 
 class DotnetFiddleTag < LiquidTagBase
   PARTIAL = "liquids/dotnetfiddle".freeze
-  REGISTRY_REGEXP = %r{https://dotnetfiddle.net(?:/Widget)?/(?<id>[\w\-]+)}
+  REGISTRY_REGEXP = %r{https://dotnetfiddle\.net(?:/Widget)?/(?<id>[\w\-]+)}
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -23,7 +23,7 @@ class DotnetFiddleTag < LiquidTagBase
 
   def parse_link(link)
     match = pattern_match_for(link, [REGISTRY_REGEXP])
-    raise StandardError, "Invalid DotnetFiddle URL" unless match
+    raise StandardError, I18n.t("liquid_tags.dotnet_fiddle_tag.invalid_dotnetfiddle_url") unless match
 
     insert_widget(link, match)
   end

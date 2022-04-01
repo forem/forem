@@ -13,6 +13,7 @@ class Campaign
     articles_expiry_time
     articles_require_approval?
     call_to_action
+    display_name
     featured_tags
     hero_html_variant_name
     sidebar_enabled?

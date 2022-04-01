@@ -22,13 +22,10 @@ class User < ApplicationRecord
     end
   end
 
-  include StringAttributeCleaner.for(:email)
+  include StringAttributeCleaner.nullify_blanks_for(:email)
 
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
-  MESSAGES = {
-    reserved_username: "username is reserved"
-  }.freeze
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
   PAYMENT_POINTER_REGEXP = %r{
     \A                # start
@@ -141,9 +138,12 @@ class User < ApplicationRecord
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
-  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
+  validates :username, presence: true, exclusion: {
+    in: ReservedWords.all,
+    message: proc { I18n.t("models.user.username_is_reserved") }
+  }
   validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
-    "#{data[:value]} is taken."
+    I18n.t("models.user.is_taken", username: (data[:value]))
   end }, if: :username_changed?
 
   # add validators for provider related usernames
@@ -318,6 +318,7 @@ class User < ApplicationRecord
     true
   end
 
+  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
@@ -331,6 +332,7 @@ class User < ApplicationRecord
     end
   end
 
+  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_antifollowed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
@@ -407,11 +409,9 @@ class User < ApplicationRecord
     :suspended?,
     :tag_moderator?,
     :tech_admin?,
-    :trusted, # TODO: Remove this method from the code-base
     :trusted?,
     :user_subscription_tag_available?,
     :vomited_on?,
-    :warned, # TODO: Remove this method from the code-base
     :warned?,
     :workshop_eligible?,
     to: :authorizer,
@@ -481,7 +481,7 @@ class User < ApplicationRecord
   end
 
   def non_banished_username
-    errors.add(:username, "has been banished.") if BanishedUser.exists?(username: username)
+    errors.add(:username, I18n.t("models.user.has_been_banished")) if BanishedUser.exists?(username: username)
   end
 
   def subscribe_to_mailchimp_newsletter
@@ -495,17 +495,6 @@ class User < ApplicationRecord
 
   def a_sustaining_member?
     monthly_dues.positive?
-  end
-
-  def resave_articles
-    articles.find_each do |article|
-      if article.path
-        cache_bust = EdgeCache::Bust.new
-        cache_bust.call(article.path)
-        cache_bust.call("#{article.path}?i=i")
-      end
-      article.save
-    end
   end
 
   def profile_image_90
@@ -525,10 +514,6 @@ class User < ApplicationRecord
 
   def receives_follower_email_notifications?
     email.present? && subscribed_to_email_follower_notifications?
-  end
-
-  def hotness_score
-    search_score
   end
 
   def authenticated_through?(provider_name)
@@ -596,6 +581,10 @@ class User < ApplicationRecord
     self.username = username&.downcase
   end
 
+  # @todo Should we do something to ensure that we don't create a username that violates our
+  # USERNAME_MAX_LENGTH constant?
+  #
+  # @see USERNAME_MAX_LENGTH
   def set_temp_username
     self.username = if temp_name_exists?
                       "#{temp_username}_#{rand(100)}"
@@ -629,21 +618,6 @@ class User < ApplicationRecord
     Spam::Handler.handle_user!(user: self)
   end
 
-  # TODO: @citizen428 I don't want to completely remove this method yet, as we
-  # have similar methods in other models. But the previous implementation used
-  # three profile fields that we can't guarantee to exist across all Forems. So
-  # for now this method will just return an empty string.
-  def tag_keywords_for_search
-    ""
-  end
-
-  # TODO: this can be removed once we migrate away from ES
-  def search_score
-    counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
-    score = (counts_score + tag_keywords_for_search.size) * reputation_modifier
-    score.to_i
-  end
-
   def destroy_follows
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
@@ -656,7 +630,7 @@ class User < ApplicationRecord
     rate_limiter.track_limit_by_action(:send_email_confirmation)
     rate_limiter.check_limit!(:send_email_confirmation)
   rescue RateLimitChecker::LimitReached => e
-    errors.add(:email, "confirmation could not be sent. #{e.message}")
+    errors.add(:email, I18n.t("models.user.could_not_send", e_message: e.message))
   end
 
   def update_rate_limit
@@ -665,13 +639,13 @@ class User < ApplicationRecord
     rate_limiter.track_limit_by_action(:user_update)
     rate_limiter.check_limit!(:user_update)
   rescue RateLimitChecker::LimitReached => e
-    errors.add(:base, "User could not be saved. #{e.message}")
+    errors.add(:base, I18n.t("models.user.user_could_not_be_saved", e_message: e.message))
   end
 
   def password_matches_confirmation
     return true if password == password_confirmation
 
-    errors.add(:password, "doesn't match password confirmation")
+    errors.add(:password, I18n.t("models.user.password_not_matched"))
   end
 
   def strip_payment_pointer

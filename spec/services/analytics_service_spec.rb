@@ -433,7 +433,9 @@ RSpec.describe AnalyticsService, type: :service do
       it "returns the most visited domain if asked for only one result" do
         top_url = Faker::Internet.url
         create_list(:page_view, 3, user: user, article: article, referrer: top_url)
-        other_url = Faker::Internet.url
+        # Faker url's generate colliding domain names about 1 to two times in 10,000
+        # Faker domains never end in ".dev" so this is a safe choice
+        other_url = Faker::Internet.url(host: "forem.dev")
         create_list(:page_view, 2, user: user, article: article, referrer: other_url)
 
         top_domain = Addressable::URI.parse(top_url).domain

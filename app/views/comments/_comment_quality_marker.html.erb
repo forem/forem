@@ -6,7 +6,7 @@
 
 <% if comment.hidden_by_commentable_user %>
   <div class="low-quality-comment-marker comment__quality-marker <%= should_be_hidden?(comment, @root_comment) ? "element-hidden-by-commentable-user" : "" %>">
-    <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon mr-2", title: t("views.comments.quality.hidden.icon")) %>
+    <%= crayons_icon_tag(:info, class: "mr-2", title: t("views.comments.quality.hidden.icon")) %>
     <% if @root_comment %>
       <%= t("views.comments.quality.hidden.text.visible_in_permalink") %>
     <% else %>

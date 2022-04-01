@@ -23,8 +23,8 @@ module Feeds
     attr_reader :item
 
     def get_host_without_www(url)
-      url = "http://#{url}" if URI.parse(url).scheme.nil?
-      host = URI.parse(url).host.downcase
+      url = "http://#{url}" if Addressable::URI.parse(url).scheme.nil?
+      host = Addressable::URI.parse(url).host.downcase
       host.start_with?("www.") ? host[4..] : host
     end
 

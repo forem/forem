@@ -2,10 +2,13 @@ module Constants
   module Settings
     module General
       IMAGE_PLACEHOLDER = "https://url/image.png".freeze
-      SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
       def self.details
         {
+          contact_email: {
+            description: I18n.t("lib.constants.settings.general.contact_email.description"),
+            placeholder: "hello@example.com"
+          },
           credit_prices_in_cents: {
             small: {
               description: I18n.t("lib.constants.settings.general.credit.small.description"),

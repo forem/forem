@@ -26,6 +26,14 @@ module Constants
           domain: {
             description: I18n.t("lib.constants.settings.smtp.domain.description"),
             placeholder: ""
+          },
+          from_email_address: {
+            description: I18n.t("lib.constants.settings.smtp.from_email.description"),
+            placeholder: ""
+          },
+          reply_to_email_address: {
+            description: I18n.t("lib.constants.settings.smtp.reply_to.description"),
+            placeholder: ""
           }
         }
       end

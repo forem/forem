@@ -15,6 +15,10 @@ module Constants
             description: I18n.t("lib.constants.settings.campaign.call_to_action.description"),
             placeholder: I18n.t("lib.constants.settings.campaign.call_to_action.placeholder")
           },
+          display_name: {
+            description: I18n.t("lib.constants.settings.campaign.display_name.description"),
+            placeholder: I18n.t("lib.constants.settings.campaign.display_name.placeholder")
+          },
           featured_tags: {
             description: I18n.t("lib.constants.settings.campaign.featured.description"),
             placeholder: I18n.t("lib.constants.settings.campaign.featured.placeholder")
@@ -32,8 +36,8 @@ module Constants
             placeholder: I18n.t("lib.constants.settings.campaign.sidebar_image.placeholder")
           },
           url: {
-            description: I18n.t("lib.constants.settings.campaign.url.description"),
-            placeholder: I18n.t("lib.constants.settings.campaign.url.placeholder")
+            description: "https://url.com/lander",
+            placeholder: "URL campaign sidebar image will link to"
           }
         }
       end

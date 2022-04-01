@@ -31,7 +31,7 @@ class CodesandboxTag < LiquidTagBase
     return [match[:id], parse_options(match[:options]&.split("&"))] if match
 
     id = input.split.first
-    raise StandardError, "CodeSandbox Error: Invalid ID" unless valid_id?(id)
+    raise StandardError, I18n.t("liquid_tags.codesandbox_tag.invalid_id") unless valid_id?(id)
 
     [id, parse_options(extract_options(input))]
   end

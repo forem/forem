@@ -23,7 +23,7 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   describe "Viewing the editor", js: true do
-    it "renders the logo_svg or Community name as expected" do
+    it "renders the logo or Community name as expected" do
       visit "/new"
       expect(page).to have_css(".site-logo")
       within(".truncate-at-2") do

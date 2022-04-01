@@ -220,20 +220,20 @@ RSpec.describe Comment, type: :model do
 
         comment.body_markdown = "I like the part at 4:30 and 5:50"
         comment.validate!
-        expect(comment.processed_html.include?(">5:50</a>")).to eq(true)
+        expect(comment.processed_html.include?(">5:50</a>")).to be(true)
 
         comment.body_markdown = "I like the part at 5:30 and :55"
         comment.validate!
-        expect(comment.processed_html.include?(">:55</a>")).to eq(true)
+        expect(comment.processed_html.include?(">:55</a>")).to be(true)
 
         comment.body_markdown = "I like the part at 52:30"
         comment.validate!
-        expect(comment.processed_html.include?(">52:30</a>")).to eq(true)
+        expect(comment.processed_html.include?(">52:30</a>")).to be(true)
 
         comment.body_markdown = "I like the part at 1:52:30 and 1:20"
         comment.validate!
-        expect(comment.processed_html.include?(">1:52:30</a>")).to eq(true)
-        expect(comment.processed_html.include?(">1:20</a>")).to eq(true)
+        expect(comment.processed_html.include?(">1:52:30</a>")).to be(true)
+        expect(comment.processed_html.include?(">1:20</a>")).to be(true)
       end
       # rubocop:enable RSpec/ExampleLength
 
@@ -242,7 +242,7 @@ RSpec.describe Comment, type: :model do
 
         comment.body_markdown = "I like the part at 1:52:30 and 1:20"
         comment.validate!
-        expect(comment.processed_html.include?(">1:52:30</a>")).to eq(false)
+        expect(comment.processed_html.include?(">1:52:30</a>")).to be(false)
       end
 
       it "does not add DOCTYPE and html body to processed html" do
@@ -268,7 +268,7 @@ RSpec.describe Comment, type: :model do
     it "shows year in readable time if not current year" do
       comment.created_at = 1.year.ago
       last_year = 1.year.ago.year % 100
-      expect(comment.readable_publish_date.include?("'#{last_year}")).to eq(true)
+      expect(comment.readable_publish_date.include?("'#{last_year}")).to be(true)
     end
   end
 
@@ -364,6 +364,40 @@ RSpec.describe Comment, type: :model do
     it "returns part of the tree" do
       comments = described_class.tree_for(article, 1)
       expect(comments).to eq(comment => { child_comment => {} })
+    end
+
+    context "with sort order" do
+      let!(:new_comment) { create(:comment, commentable: article, user: user, created_at: Date.tomorrow) }
+      let!(:old_comment) { create(:comment, commentable: article, user: user, created_at: Date.yesterday) }
+
+      before { comment }
+
+      it "returns comments in the right order when order is oldest" do
+        comments = described_class.tree_for(article, 0, "oldest")
+        comments = comments.map { |key, _| key.id }
+        expect(comments).to eq([old_comment.id, other_comment.id, comment.id, new_comment.id])
+      end
+
+      it "returns comments in the right order when order is latest" do
+        comments = described_class.tree_for(article, 0, "latest")
+        comments = comments.map { |key, _| key.id }
+        expect(comments).to eq([new_comment.id, comment.id, other_comment.id, old_comment.id])
+      end
+
+      it "returns comments in the right order when order is top" do
+        comment.update_column(:score, 5)
+        highest_rated_comment = comment
+        new_comment.update_column(:score, 1)
+        lowest_rated_comment = new_comment
+        old_comment.update_column(:score, 3)
+        mid_high_rated_comment = old_comment
+        other_comment.update_column(:score, 2)
+        mid_low_rated_comment = other_comment
+        comments = described_class.tree_for(article, 0)
+
+        comments = comments.map { |key, _| key.id }
+        expect(comments).to eq([highest_rated_comment.id, mid_high_rated_comment.id, mid_low_rated_comment.id, lowest_rated_comment.id]) # rubocop:disable Layout/LineLength
+      end
     end
   end
 
@@ -533,12 +567,12 @@ RSpec.describe Comment, type: :model do
     let(:comment) { create(:comment, ancestry: root_comment.id) }
 
     it "returns true if root is present" do
-      expect(comment.root_exists?).to eq(true)
+      expect(comment.root_exists?).to be(true)
     end
 
     it "returns false if root has been deleted" do
       root_comment.destroy
-      expect(comment.reload.root_exists?).to eq(false)
+      expect(comment.reload.root_exists?).to be(false)
     end
   end
 end

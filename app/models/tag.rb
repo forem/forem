@@ -16,7 +16,7 @@
 class Tag < ActsAsTaggableOn::Tag
   self.ignored_columns = %w[mod_chat_channel_id].freeze
 
-  attr_accessor :points, :tag_moderator_id, :remove_moderator_id
+  attr_accessor :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
   resourcify
@@ -31,7 +31,7 @@ class Tag < ActsAsTaggableOn::Tag
   #       change will help us achieve that goal.
   #
   # @see https://github.com/forem/forem/blob/72bb284ba73c3df8aa11525427b1dfa1ceba39df/lib/data_update_scripts/20211115154021_nullify_invalid_tag_fields.rb
-  include StringAttributeCleaner.for(:alias_for)
+  include StringAttributeCleaner.nullify_blanks_for(:alias_for)
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
 
@@ -52,6 +52,7 @@ class Tag < ActsAsTaggableOn::Tag
   validate :validate_name, if: :name?
 
   before_validation :evaluate_markdown
+  before_validation :tidy_short_summary
   before_validation :pound_it
 
   before_save :calculate_hotness_score
@@ -118,18 +119,129 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def validate_name
-    errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
+    errors.add(:name, I18n.t("errors.messages.too_long", count: 30)) if name.length > 30
     # [:alnum:] is not used here because it supports diacritical characters.
     # If we decide to allow diacritics in the future, we should replace the
     # following regex with [:alnum:].
     errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
   end
 
+  # While this non-end user facing flag is "in play", our goal is to say that when it's "false"
+  # we'll preserve existing behavior.  And when true, we're testing out new behavior.  This way we
+  # can push up changes and refactor towards improvements without unleashing a large pull request
+  # with many tendrils.
+  #
+  # @return [TrueClass] when we want to favor the "accessible_name" for the tag.
+  # @return [FalseClass] when we will use the all lower case name for the tag.
+  #
+  # @note This is a feature flag we're using to ease refactoring towards accessible tag labels.
+  #       Eventually, we would remove this method and always favor accessible names.
+  #
+  # @todo When we've fully tested this feature, we'll allways return true, and can effectively
+  #       remove it.
+  def self.favor_accessible_name_for_tag_label?
+    FeatureFlag.enabled?(:favor_accessible_name_for_tag_label)
+  end
+
+  # @note In the future we envision always favoring pretty name over the given name.
+  #
+  # @todo When we "rollout this feature" remove the guard clause and adjust the corresponding spec.
+  def accessible_name
+    return name unless self.class.favor_accessible_name_for_tag_label?
+
+    pretty_name.presence || name
+  end
+
   def errors_as_sentence
     errors.full_messages.to_sentence
   end
 
+  # @param follower [#id, #class_name] An object who's class "acts_as_follower" (e.g. a User).
+  #
+  # @return [ActiveRecord::Relation<Tag>] with the "points" attribute and limited field selection
+  #         for presenting followed tags on the front-end.
+  #
+  # @note This method will also add the follower's "points" for the given tag.  In the
+  #       ActiveRecord::Base implementation, we can add "virtual" attributes by including them in
+  #       the select statement (as shown in the method implementation).  Doing this can sometimes
+  #       result in a surprise, so you may want to consider casting the results into a well-defined
+  #       data structure.  But then you might be looking at implementing the DataMapper pattern.
+  #
+  #
+  # @example
+  #   Below is the SQL generated:
+  #
+  #   ```sql
+  #     SELECT tags.*, "followings"."points"
+  #       FROM "tags"
+  #         INNER JOIN "follows" "followings"
+  #           ON "followings"."followable_type" = 'ActsAsTaggableOn::Tag'
+  #           AND "followings"."followable_id" = "tags"."id"
+  #       WHERE "followings"."follower_id" = 1
+  #          AND "followings"."follower_type" = 'User'
+  #     ORDER BY "tags"."hotness_score" DESC
+  #   ```
+  #
+  # @see Tag#points
+  #
+  # @see UserDecorator::CACHED_TAGGED_BY_USER_ATTRIBUTES for discussion on why we're selecting this.
+  #
+  # @todo should we sort by hotness score?  Wouldn't the user's points make more sense?
+  def self.followed_tags_for(follower:)
+    Tag
+      .select(
+        "tags.bg_color_hex",
+        "tags.hotness_score",
+        "tags.id",
+        "tags.name",
+        "tags.text_color_hex",
+        "followings.points",
+      )
+      .joins(:followings)
+      .where("followings.follower_id" => follower.id, "followings.follower_type" => follower.class_name)
+      .order(hotness_score: :desc)
+  end
+
+  # What's going on here?  There are times where we want our "Tag" object to have a "points"
+  # attribute; for example when we want to render the tags a user is following and the points we've
+  # calculated for that following.  (Yes that is a short-circuit and we could perhaps make a more
+  # appropriate data structure, but that's our current state as of <2022-01-21 Fri>.)
+  #
+  # @see Tag.followed_tags_for for details on injecting the "points" attribute on the Tag
+  #      object's attributes.
+  #
+  # @note The @points can be removed when we remove `attr_writer :points`
+  #
+  # @see Follows::UpdatePointsWorker for details on how :points are calculated from the :explicit_points
+  # @see Tag#explicit_points
+  # @see Tag#implicit_points
+  def points
+    (attributes["points"] || @points || 0)
+  end
+
+  # @!attribute [rw] explicit_points
+  #
+  #   These values are set by the user.  The `Follows::UpdatePointsWorker` runs calculations on the
+  #   points to determine the explicit points.
+  #
+  #   @see ./app/views/dashboards/following_tags.html.erb
+
+  # @!attribute [rw] implicit_points
+  #
+  #   This value is calculated.  The `Follows::UpdatePointsWorker` runs calculations on the points
+  #   to determine the explicit points.
+  #
+  #   @see ./app/views/dashboards/following_tags.html.erb
+
+  # @deprecated [@jeremyf] in moving towards adding the :points attribute via ActiveRecord query
+  #             instantiation, this is not needed.  But it's here for later removal
+  attr_writer :points
+
   private
+
+  def tidy_short_summary
+    self.short_summary = ActionController::Base.helpers.strip_tags(short_summary)
+  end
 
   def evaluate_markdown
     self.rules_html = MarkdownProcessor::Parser.new(rules_markdown).evaluate_markdown
@@ -172,7 +284,7 @@ class Tag < ActsAsTaggableOn::Tag
   def validate_alias_for
     return if Tag.exists?(name: alias_for)
 
-    errors.add(:tag, "alias_for must refer to an existing tag")
+    errors.add(:tag, I18n.t("models.tag.alias_for"))
   end
 
   def pound_it

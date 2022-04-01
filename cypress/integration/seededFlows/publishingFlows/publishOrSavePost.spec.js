@@ -27,7 +27,7 @@ describe('Publish or save a post', () => {
       });
       //   The post should now be published
       cy.findByRole('heading', { name: 'Test title' });
-      cy.findByRole('heading', { name: 'Discussion (0)' });
+      cy.findByRole('heading', { name: 'Top comments (0)' });
       cy.findByRole('link', { name: 'Edit' });
       cy.findByRole('link', { name: 'Manage' });
       cy.findByRole('link', { name: 'Stats' });
@@ -58,8 +58,18 @@ describe('Publish or save a post', () => {
       });
 
       cy.findByRole('heading', { name: 'Whoops, something went wrong:' });
-      // We should still be on the form page
-      cy.findByRole('form', { name: /^Edit post$/i });
+      // We should still be on the form page,
+      // and should be able to edit the broken draft successfully
+      cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
+        cy.findByLabelText('Post Content')
+          .clear()
+          .type(validDraftArticleContent);
+        cy.findByRole('button', { name: 'Save changes' }).click();
+      });
+      // The Draft view should be shown
+      cy.findByText(/Unpublished Post/);
+      cy.findByRole('heading', { name: 'Test title' });
+      cy.findByRole('link', { name: 'Click to edit' });
     });
 
     it('Shows an error message when network request fails', () => {
@@ -94,7 +104,7 @@ describe('Publish or save a post', () => {
       });
       //   The post should now be published
       cy.findByRole('heading', { name: 'Test title' });
-      cy.findByRole('heading', { name: 'Discussion (0)' });
+      cy.findByRole('heading', { name: 'Top comments (0)' });
       cy.findByRole('link', { name: 'Edit' });
       cy.findByRole('link', { name: 'Manage' });
       cy.findByRole('link', { name: 'Stats' });
@@ -236,7 +246,7 @@ describe('Publish or save a post', () => {
 
       // Wait for published post page, and choose to edit
       cy.findByRole('heading', { name: 'Test title' });
-      cy.findByRole('heading', { name: 'Discussion (0)' });
+      cy.findByRole('heading', { name: 'Top comments (0)' });
       cy.findByRole('link', { name: 'Edit' }).click();
 
       cy.findByLabelText('Post Content').clear().type('something else');

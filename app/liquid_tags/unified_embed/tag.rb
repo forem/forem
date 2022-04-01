@@ -1,3 +1,5 @@
+require "net/http"
+
 module UnifiedEmbed
   # This liquid tag is present to facilitate a unified user experience
   # for declaring that they want a URL to have "embedded" behavior.
@@ -14,27 +16,65 @@ module UnifiedEmbed
     #
     # @param tag_name [String] in the UI, this was liquid tag name
     #        (e.g., `{% tag_name link %}`)
-    # @param link [String] the URL and additional options for that
-    #        particular service.
+    # @param input [String] the URL and additional options for that
+    #        particular embed.
     # @param parse_context [Liquid::ParseContext]
     #
     # @return [LiquidTagBase]
-    def self.new(tag_name, link, parse_context)
-      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: link)
-      # If we can't find a registered "embed" tag, let's raise an exception.
-      # This exception will give the user an opportunity to adjust their approach.
-      #
-      # In a prior implementation, we chose to render an A-tag using the given URL.
-      # With that prior implementation, a user expecting a "rich embed" might not
-      # notice that they didn't have a rich embed and instead published a basic
-      # A-tag. In addition, said A-tag would goes nowhere; which may confuse
-      # users and/or Forem readers.
-      raise StandardError, "Embed URL not valid" unless klass
+    def self.new(tag_name, input, parse_context)
+      stripped_input = ActionController::Base.helpers.strip_tags(input).strip
+
+      # Extract just the URL from the input, without any params, for validation
+      actual_link = extract_only_url(stripped_input)
+
+      # Before matching against the embed registry, we check if the link
+      # is valid (e.g. no typos).
+      # If the link is invalid, we raise an error encouraging the user to
+      # check their link and try again.
+      validate_link!(actual_link)
+      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_input)
+
+      # If the link is valid but doesn't match the registry, we return
+      # an "unsupported URL" error. Eventually we shall render a fallback
+      # embed using OpenGraph/TwitterCard metadata (if available).
+      # If there are no OG metatags, then we render an A-tag. Since the link
+      # has been validated, at least this A-tag will not 404.
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.unsupported_url") unless klass
 
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
-      klass.__send__(:new, tag_name, link, parse_context)
+      klass.__send__(:new, tag_name, stripped_input, parse_context)
+    end
+
+    def self.validate_link!(link)
+      uri = URI.parse(link)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if http.port == 443
+
+      req = Net::HTTP::Head.new(uri.request_uri)
+      req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
+      response = http.request(req)
+
+      case response
+      when Net::HTTPSuccess
+        response
+      when Net::HTTPRedirection
+        warn "redirected to #{response['location']}"
+      when Net::HTTPNotFound
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
+      else
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+      end
+    rescue SocketError
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+    end
+
+    def self.extract_only_url(input)
+      url_portion = input.split.length > 1 ? input.split[0] : input
+
+      # remove any params
+      url_portion.split("?")[0]
     end
   end
 end

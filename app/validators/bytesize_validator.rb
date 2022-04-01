@@ -7,14 +7,13 @@ class BytesizeValidator < ActiveModel::EachValidator
   CHECKS = { maximum: :<= }.freeze
   RESERVED_OPTIONS = %i[maximum too_long].freeze
 
-  ERROR_MISSING_OPTIONS_MESSAGE = "Specify the :maximum option.".freeze
-  ERROR_NON_NEGATIVE_MESSAGE = ":maximum must be a non-negative Integer".freeze
-
   def check_validity!
     raise ArgumentError, ERROR_MESSAGE unless options.key?(:maximum)
 
     maximum = options[:maximum]
-    raise ArgumentError, ERROR_NON_NEGATIVE_MESSAGE unless maximum.is_a?(Integer) && maximum >= 0
+    return if maximum.is_a?(Integer) && maximum >= 0
+
+    raise ArgumentError, I18n.t("validators.bytesize_validator.non_negative")
   end
 
   def validate_each(record, attribute, value)

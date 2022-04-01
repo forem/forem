@@ -5,10 +5,11 @@ class MediumTag < LiquidTagBase
   attr_reader :response
 
   PARTIAL = "liquids/medium".freeze
+  REGISTRY_REGEXP = %r{https://(?:\w+.)?medium\.com/(?:@\w+/)?[\w-]+}
 
   def initialize(_tag_name, url, _parse_context)
     super
-    @response = parse_url_for_medium_article(url)
+    @response = parse_url(strip_tags(url))
   end
 
   def render(_context)
@@ -22,17 +23,20 @@ class MediumTag < LiquidTagBase
 
   private
 
-  def parse_url_for_medium_article(url)
-    sanitized_article_url = ActionController::Base.helpers.strip_tags(url).strip
+  def parse_url(url)
+    match = pattern_match_for(url, [REGISTRY_REGEXP])
+    raise StandardError, I18n.t("liquid_tags.medium_tag.invalid_link_url") unless match
 
-    MediumArticleRetrievalService.new(sanitized_article_url).call
+    MediumArticleRetrievalService.new(url).call
   rescue StandardError
     raise_error
   end
 
   def raise_error
-    raise StandardError, "Invalid link URL or link URL does not exist"
+    raise StandardError, I18n.t("liquid_tags.medium_tag.invalid_link_url")
   end
 end
 
 Liquid::Template.register_tag("medium", MediumTag)
+
+UnifiedEmbed.register(MediumTag, regexp: MediumTag::REGISTRY_REGEXP)

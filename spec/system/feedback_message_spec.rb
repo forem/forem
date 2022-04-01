@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Feedback report by chat channel messages", type: :system do
+RSpec.describe "Feedback report", type: :system do
   let(:user) { create(:user) }
   let(:message) { Faker::Lorem.paragraph }
   let(:url) { Faker::Lorem.sentence }
@@ -14,10 +14,10 @@ RSpec.describe "Feedback report by chat channel messages", type: :system do
       expect do
         post "/feedback_messages", params: {
           feedback_message: {
-            message: "Test Message",
-            feedback_type: "connect",
+            message: message,
+            feedback_type: "abuse-reports",
             category: "rude or vulgar",
-            offender_id: user.id
+            reported_url: url
           }
         }, as: :json
       end.to change(FeedbackMessage, :count).by(1)

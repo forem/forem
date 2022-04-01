@@ -23,7 +23,7 @@ class BlogcastTag < LiquidTagBase
 
   def parse_id_or_url(input)
     match = pattern_match_for(input, REGEXP_OPTIONS)
-    raise StandardError, "Invalid Blogcast ID" unless match
+    raise StandardError, I18n.t("liquid_tags.blogcast_tag.invalid_blogcast_id") unless match
 
     match[:video_id]
   end

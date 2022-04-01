@@ -60,7 +60,7 @@
 }
 
 .c-autocomplete--multi {
-  &__wrapper:focus-within {
+  &__wrapper-border:focus-within {
     @extend %form-styling-focus;
 
     .c-autocomplete--multi__input {
@@ -69,12 +69,18 @@
   }
 
   &__input {
-    background-color: var(--form-bg);
+    background-color: var(--bg-color);
     color: var(--body-color);
     border: none;
   }
 
-  .crayons-btn.c-autocomplete--multi__selected {
+  &__wrapper-border {
+    .c-autocomplete--multi__input {
+      background-color: var(--form-bg);
+    }
+  }
+
+  .c-btn.c-autocomplete--multi__selected {
     &:first-child {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
@@ -91,7 +97,11 @@
     }
   }
 
-  ul.c-autocomplete--multi__popover {
+  .c-autocomplete--multi__popover {
+    position: absolute;
+    max-height: 500px;
+    overflow: auto;
+    width: 100%;
     padding: var(--su-1);
     z-index: var(--z-elevate);
     background: var(--card-bg);
@@ -110,5 +120,74 @@
         color: var(--link-color-hover);
       }
     }
+  }
+}
+
+/***********************************************
+** TagAutocompleteOption/Selection styles ***
+***********************************************/
+.c-autocomplete--multi {
+  &__top-tags-heading {
+    padding: var(--su-3);
+    font-size: var(--fs-l);
+    border-bottom: 1px solid var(--base-20);
+  }
+
+  &__tag-selection {
+    .c-btn {
+      color: var(--base-80);
+      background-color: var(--tag-bg);
+    }
+
+    .c-btn:hover:enabled,
+    .c-btn:focus-visible:enabled {
+      color: var(--base-80);
+      background-color: var(--tag-bg-hover);
+    }
+  }
+
+  &__tag-prefix {
+    color: var(--tag-prefix);
+  }
+
+  &__tag-option {
+    background: var(--card-bg);
+    color: var(--card-color);
+    padding: var(--su-3);
+    border-radius: var(--radius);
+  }
+
+  &__tag-option-title {
+    font-weight: var(--fw-medium);
+  }
+
+  &__tag-option-name {
+    text-overflow: ellipsis;
+  }
+
+  &__tag-option:hover {
+    // We try to avoid !important, but since the --tag-prefix color needs to be set inline, !important is required to temporarily change it
+    --tag-prefix: var(--accent-brand-darker) !important;
+    background: var(--body-bg);
+
+    .c-autocomplete--multi__tag-option-title {
+      color: var(--accent-brand-darker);
+    }
+  }
+
+  [aria-selected='true'] {
+    .c-autocomplete--multi__tag-option {
+      --tag-prefix: var(--accent-brand-darker) !important;
+      background: var(--body-bg);
+
+      .c-autocomplete--multi__tag-option-title {
+        color: var(--accent-brand-darker);
+      }
+    }
+  }
+
+  &__tag-option-image {
+    height: 1rem;
+    margin-left: var(--su-1);
   }
 }

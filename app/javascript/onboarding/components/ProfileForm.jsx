@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { userData, updateOnboarding } from '../utilities';
 
 import { Navigation } from './Navigation';
-import { ColorPicker } from './ProfileForm/ColorPicker';
 import { TextArea } from './ProfileForm/TextArea';
 import { TextInput } from './ProfileForm/TextInput';
 import { CheckBox } from './ProfileForm/CheckBox';
@@ -124,14 +123,6 @@ export class ProfileForm extends Component {
             onFieldChange={this.handleFieldChange}
           />
         );
-      case 'color_field':
-        return (
-          <ColorPicker
-            key={field.id}
-            field={field}
-            onColorChange={this.handleColorPickerChange}
-          />
-        );
       case 'text_area':
         return (
           <TextArea
@@ -176,7 +167,7 @@ export class ProfileForm extends Component {
     return (
       <div
         data-testid="onboarding-profile-form"
-        className="onboarding-main crayons-modal"
+        className="onboarding-main crayons-modal crayons-modal--large"
       >
         <div
           className="crayons-modal__box"

@@ -5,14 +5,14 @@ experiments:
   # Do not change the goals unless you intend to also change the corresponding code in
   # app/workers/users/record_field_test_event_worker.rb
 
-  feed_strategy_round_3:
+  feed_strategy_round_6:
     variants:
       - original
-      - slightly_more_comments_count_case_weight
-      - much_more_comments_count_case_weight
+      - slightly_more_recent_articles
+      - much_more_recent_articles
     weights:
-      - 70
-      - 20
+      - 80
+      - 10
       - 10
     goals:
       - user_creates_comment

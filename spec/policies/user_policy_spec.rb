@@ -15,7 +15,7 @@ RSpec.describe UserPolicy, type: :policy do
     let(:user) { other_user }
 
     permitted_actions = %i[
-      edit update onboarding_update join_org dashboard_show remove_identity destroy
+      edit analytics update onboarding_update join_org dashboard_show remove_identity destroy
     ]
 
     it { is_expected.to permit_actions(permitted_actions) }
@@ -23,7 +23,7 @@ RSpec.describe UserPolicy, type: :policy do
     context "with suspended status" do
       before { user.add_role(:suspended) }
 
-      it { is_expected.to forbid_actions(%i[join_org moderation_routes]) }
+      it { is_expected.to forbid_actions(%i[join_org moderation_routes update]) }
     end
   end
 

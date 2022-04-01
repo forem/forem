@@ -45,6 +45,10 @@ module Settings
         @defined_settings.pluck(:key)
       end
 
+      def to_h
+        keys.to_h { |k| [k.to_sym, public_send(k)] }
+      end
+
       private
 
       def cache_key
@@ -108,7 +112,7 @@ module Settings
         when :boolean
           value.in?(["true", "1", 1, true])
         when :array
-          value.split(separator || SEPARATOR_REGEXP).reject(&:empty?).map(&:strip)
+          value.split(separator || SEPARATOR_REGEXP).compact_blank.map(&:strip)
         when :hash
           value = begin
             YAML.safe_load(value).to_h

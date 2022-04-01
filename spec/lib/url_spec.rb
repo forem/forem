@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe URL, type: :lib do
   before do
+    allow(ApplicationConfig).to receive(:[]).and_call_original
     allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
     allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("test.forem.cloud")
     allow(Settings::General).to receive(:app_domain).and_return("dev.to")
@@ -33,7 +34,7 @@ RSpec.describe URL, type: :lib do
     end
 
     it "works when called with an URI object" do
-      uri = URI::Generic.build(path: "admin", fragment: "test")
+      uri = URI::Generic.build(path: "admin", fragment: "test").to_s
       expect(described_class.url(uri)).to eq("https://dev.to/admin#test")
     end
   end

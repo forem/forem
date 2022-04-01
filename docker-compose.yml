@@ -11,9 +11,11 @@ services:
       - db
       - redis
       - yarn
+      - testdb
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
+      DATABASE_URL_TEST: postgresql://forem:forem@testdb:5432/Forem_test
       REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
@@ -21,6 +23,8 @@ services:
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
       APP_DOMAIN: localhost:3000
+    tmpfs:
+      - /tmp
     volumes:
       - .:/opt/apps/forem:delegated
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "2700s", "-wait-retry-interval", "10s"]
@@ -112,7 +116,7 @@ services:
     command: ["bundle", "exec", "sidekiq","-c","2"]
 
   db:
-    image: postgres:11-alpine
+    image: postgres:13-alpine
     container_name: forem_postgresql
     environment:
       POSTGRES_USER: forem
@@ -123,6 +127,18 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data:delegated
 
+  testdb:
+    image: postgres:13-alpine
+    container_name: forem_postgresql_test
+    environment:
+      POSTGRES_USER: forem
+      POSTGRES_PASSWORD: forem
+      POSTGRES_DB: Forem_test
+    expose:
+      - "5432"
+    volumes:
+      - testdb_data:/var/lib/postgresql/data:delegated
+
   redis:
     image: redis:6.0.9-alpine
     container_name: forem_redis
@@ -131,3 +147,4 @@ services:
 
 volumes:
   db_data:
+  testdb_data:
