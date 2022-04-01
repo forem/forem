@@ -39,5 +39,3 @@ RUN yarn install
 COPY . /app
 
 RUN bundle exec rake assets:precompile
-
-EXPOSE 80

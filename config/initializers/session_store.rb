@@ -18,6 +18,5 @@ Rails.application.config.session_store :redis_store,
                                        servers: servers,
                                        expire_after: expires_after,
                                        signed: true,
-                                       secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
                                        same_site: :lax,
                                        httponly: true
