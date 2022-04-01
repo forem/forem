@@ -14,9 +14,11 @@ module Admin
     def create
       navigation_link = NavigationLink.new(navigation_link_params)
       if navigation_link.save
-        flash[:success] = "Successfully created navigation link: #{navigation_link.name}"
+        flash[:success] =
+          I18n.t("admin.navigation_links_controller.created",
+                 link: navigation_link.name)
       else
-        flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
+        flash[:error] = I18n.t("errors.messages.general", errors: navigation_link.errors_as_sentence)
       end
       redirect_to admin_navigation_links_path
     end
@@ -24,9 +26,11 @@ module Admin
     def update
       navigation_link = NavigationLink.find(params[:id])
       if navigation_link.update(navigation_link_params)
-        flash[:success] = "Successfully updated navigation link: #{navigation_link.name}"
+        flash[:success] =
+          I18n.t("admin.navigation_links_controller.updated",
+                 link: navigation_link.name)
       else
-        flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
+        flash[:error] = I18n.t("errors.messages.general", errors: navigation_link.errors_as_sentence)
       end
       redirect_to admin_navigation_links_path
     end
@@ -34,9 +38,11 @@ module Admin
     def destroy
       navigation_link = NavigationLink.find(params[:id])
       if navigation_link.destroy
-        flash[:success] = "Navigation Link #{navigation_link.name} deleted"
+        flash[:success] =
+          I18n.t("admin.navigation_links_controller.deleted",
+                 link: navigation_link.name)
       else
-        flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
+        flash[:error] = I18n.t("errors.messages.general", errors: navigation_link.errors_as_sentence)
       end
       redirect_to admin_navigation_links_path
     end

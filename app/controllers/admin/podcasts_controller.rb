@@ -39,7 +39,7 @@ module Admin
 
     def update
       if @podcast.update(podcast_params)
-        redirect_to admin_podcasts_path, notice: "Podcast updated"
+        redirect_to admin_podcasts_path, notice: I18n.t("admin.podcasts_controller.updated")
       else
         render :edit
       end
@@ -49,14 +49,15 @@ module Admin
       limit = params[:limit].to_i.zero? ? nil : params[:limit].to_i
       force = params[:force].to_i == 1
       Podcasts::GetEpisodesWorker.perform_async("podcast_id" => @podcast.id, "limit" => limit, "force" => force)
-      flash[:notice] = "Podcast's episodes fetching was scheduled (#{@podcast.title}, ##{@podcast.id})"
+      flash[:notice] =
+        I18n.t("admin.podcasts_controller.scheduled", title: @podcast.title, id: @podcast.id)
       redirect_to admin_podcasts_path
     end
 
     def add_owner
       @podcast_ownership = @podcast.podcast_ownerships.build(user_id: params["podcast"]["user_id"])
       if @podcast_ownership.save
-        redirect_to admin_podcasts_path, notice: "New owner added!"
+        redirect_to admin_podcasts_path, notice: I18n.t("admin.podcasts_controller.new_owner_added")
       else
         redirect_to edit_admin_podcast_path(@podcast), notice: @podcast_ownership.errors_as_sentence
       end
@@ -70,7 +71,9 @@ module Admin
 
     def find_user
       @user = User.find_by(id: params[:podcast][:user_id])
-      redirect_to edit_admin_podcast_path(@podcast), notice: "No such user" unless @user
+      return if @user
+
+      redirect_to edit_admin_podcast_path(@podcast), notice: I18n.t("admin.podcasts_controller.no_such_user")
     end
 
     def podcast_params

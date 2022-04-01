@@ -13,7 +13,7 @@ module Admin
       name = params.dig(:user, :name)
 
       if User.exists?(email: email.downcase, registered: true)
-        flash[:error] = "Invitation was not sent. There is already a registered user with the email: #{email}"
+        flash[:error] = I18n.t("admin.invitations_controller.duplicate", email: email)
         redirect_to admin_invitations_path
         return
       end
@@ -24,14 +24,14 @@ module Admin
                    username: username,
                    remote_profile_image_url: ::Users::ProfileImageGenerator.call,
                    registered: false)
-      flash[:success] = "The invite has been sent to the user's email."
+      flash[:success] = I18n.t("admin.invitations_controller.success")
       redirect_to admin_invitations_path
     end
 
     def destroy
       @invitation = User.where(registered: false).find(params[:id])
       if @invitation.destroy
-        flash[:success] = "The invitation has been deleted."
+        flash[:success] = I18n.t("admin.invitations_controller.deleted")
       else
         flash[:danger] = @invitation.errors_as_sentence
       end
