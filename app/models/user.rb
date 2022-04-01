@@ -497,17 +497,6 @@ class User < ApplicationRecord
     monthly_dues.positive?
   end
 
-  def resave_articles
-    articles.find_each do |article|
-      if article.path
-        cache_bust = EdgeCache::Bust.new
-        cache_bust.call(article.path)
-        cache_bust.call("#{article.path}?i=i")
-      end
-      article.save
-    end
-  end
-
   def profile_image_90
     profile_image_url_for(length: 90)
   end
