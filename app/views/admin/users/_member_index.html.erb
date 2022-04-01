@@ -16,8 +16,8 @@
                 <a href="<%= admin_user_path(user.id) %>">
                   <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
                 </a>
-                <div class="pl-3 flex-1 fs-s"><%= link_to user.name, admin_user_path(user) %>
-                  <p class="color-base-60">@<%= link_to user.username, admin_user_path(user) %>&nbsp;
+                <div class="pl-3 flex-1 fs-s"><h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
+                  <p class="color-base-60"><%= link_to "@#{user.username}", admin_user_path(user) %>&nbsp;
                   </p>
                 </div>
               </header>
@@ -44,7 +44,7 @@
               <div class="flex justify-between items-end">
                 <dl class="flex gap-2">
                   <div>
-                    <dt class="color-base-60 fw-normal">Latest activity</dt>
+                    <dt class="color-base-60 fw-normal">Last activity</dt>
                     <dd><%= user.latest_activity %></dd>
                   </div>
                   <div>
@@ -91,8 +91,8 @@
             <a href="<%= admin_user_path(user.id) %>">
               <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
             </a>
-            <div class="pl-3 flex-1 fs-s"><%= link_to user.name, admin_user_path(user) %>
-              <p class="color-base-60">@<%= link_to user.username, admin_user_path(user) %>&nbsp;
+            <div class="pl-3 flex-1 fs-s"><h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
+              <p class="color-base-60"><%= link_to "@#{user.username}", admin_user_path(user) %>&nbsp;
                 <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= user.current_role %>">
                   <%= user.current_role %>
                 </span>

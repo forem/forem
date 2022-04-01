@@ -29,7 +29,7 @@ describe('User index view', () => {
         cy.findByRole('button', { name: 'Search' }).click();
 
         // Correct search result should appear
-        cy.findAllByText('Admin McAdmin').should('exist');
+        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
       });
 
       it('Filters for a user', () => {
@@ -42,7 +42,7 @@ describe('User index view', () => {
         cy.findByRole('button', { name: 'Filter' }).click();
 
         // Filter results should include these two results
-        cy.findAllByText('Admin McAdmin').should('exist');
+        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
         cy.findAllByText('Apple Auth Admin User').should('exist');
       });
 
@@ -96,7 +96,7 @@ describe('User index view', () => {
         cy.findByRole('button', { name: 'Search' }).click();
 
         // Correct search result should appear
-        cy.findAllByText('Admin McAdmin').should('exist');
+        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
 
         // The table headers consistitute a row, plus one result
         cy.findAllByRole('row').should('have.length', 2);
@@ -107,7 +107,7 @@ describe('User index view', () => {
         cy.findByRole('button', { name: 'Filter' }).click();
 
         // Filter results should include these two results
-        cy.findAllByText('Admin McAdmin').should('exist');
+        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
         cy.findAllByText('Apple Auth Admin User').should('exist');
 
         // Table header, 'normal' admin and apple auth admin
