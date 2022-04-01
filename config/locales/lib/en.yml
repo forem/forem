@@ -52,19 +52,25 @@ en:
           twitter_secret:
             description: The "API secret key" portion of consumer keys in the Twitter developer portal.
         campaign:
-          articles_approval.placeholder: Campaign stories show up on sidebar with approval?
+          articles_approval:
+            placeholder: Campaign stories show up on sidebar with approval?
           articles_expiry:
             description: Sets the expiry time for articles (in weeks) to be displayed in campaign sidebar
           call_to_action:
             description: This text populates the call to action button on the campaign sidebar
             placeholder: Share your project
+          display_name:
+            description: This text is displayed in reference to the campaign in titles, etc.
+            placeholder: My great campaign
           featured:
             description: Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)
             placeholder: 'List of campaign tags: comma separated, letters only e.g. shecoded,theycoded'
           hero_html:
             description: Hero HtmlVariant name
-          sidebar_enabled.placeholder: Campaign sidebar enabled or not
-          sidebar_image.placeholder: Used at the top of the campaign sidebar
+          sidebar_enabled:
+            placeholder: Campaign sidebar enabled or not
+          sidebar_image:
+            placeholder: Used at the top of the campaign sidebar
           url:
             description: https://url.com/lander
             placeholder: URL campaign sidebar image will link to
@@ -88,6 +94,8 @@ en:
             description: Used in signup modal.
             placeholder: We're a place where coders share, stay up-to-date and grow their careers.
         general:
+          contact_email:
+            description: Used for contact links. Please provide an email address where users can get in touch with you or your team.
           credit:
             large:
               description: Price for large credit purchase (100 - 999 credits).
@@ -164,10 +172,10 @@ en:
         smtp:
           address:
             description: Address of the remote mail server
-            placeholder: ie. smtp.gmail.com
+            placeholder: i.e. smtp.gmail.com
           authentication:
             description: If your mail server requires authentication, you need to specify the authentication type here
-            placeholder: ie. plain, login, or cram_md5
+            placeholder: i.e. plain, login, or cram_md5
           domain:
             description: If you need to specify a HELO domain, you can do it here
           password:
@@ -177,6 +185,10 @@ en:
             placeholder: '25'
           user_name:
             description: If your mail server requires authentication, copy the username from your server
+          from_email:
+            description: The email address that emails should be sent from
+          reply_to:
+            description: The email address that users can reply to
         user_experience:
           default_font:
             description: Determines the default reading font (registered users can change this in their UX settings)

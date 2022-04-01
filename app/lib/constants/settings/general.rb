@@ -45,7 +45,7 @@ module Constants
           },
           logo_svg: {
             description: I18n.t("lib.constants.settings.general.logo_svg.description"),
-            placeholder: SVG_PLACEHOLDER
+            placeholder: IMAGE_PLACEHOLDER
           },
           main_social_image: {
             description: I18n.t("lib.constants.settings.general.main_social.description"),

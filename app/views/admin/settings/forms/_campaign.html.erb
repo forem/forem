@@ -7,11 +7,11 @@
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :display_name, "Display Name" %>
-          <%= admin_config_description Constants::Settings::Campaign::DETAILS[:display_name][:description] %>
+          <%= admin_config_description Constants::Settings::Campaign.details[:display_name][:description] %>
           <%= f.text_field :display_name,
                            class: "crayons-textfield",
                            value: Settings::Campaign.display_name,
-                           placeholder: Constants::Settings::Campaign::DETAILS[:display_name][:placeholder] %>
+                           placeholder: Constants::Settings::Campaign.details[:display_name][:placeholder] %>
         </div>
 
         <div class="crayons-field">
