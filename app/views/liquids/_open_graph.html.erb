@@ -1,33 +1,33 @@
 <% if page.main_properties_present? %>
-  <div class="crayons-card p-5">
+  <div class="crayons-card c-embed text-styles text-styles--secondary">
     <% if page.image %>
-      <div class="s:max-w-50 mb-4">
-        <img alt="" src="<%= page.image %>" height="auto" loading="lazy">
+      <div class="c-embed__cover">
+        <a href="<%= page.url %>" class="c-link s:max-w-50 align-middle" target="_blank" rel="noopener noreferrer">
+          <img alt="" src="<%= page.image %>" height="auto" loading="lazy" class="m-0">
+        </a>
       </div>
     <% end %>
-    <div class="text-styles">
-      <h2 class="fs-xl fw-bold lh-tight mb-2">
-        <a href="<%= page.url %>" class="ltag" target="_blank" rel="noopener noreferrer">
+    <div class="c-embed__body">
+      <h2 class="fs-xl lh-tight">
+        <a href="<%= page.url %>" target="_blank" rel="noopener noreferrer" class="c-link">
           <%= page.title %>
         </a>
       </h2>
-    </div>
-    <div>
       <% if page.description %>
-        <p class="truncate-at-2 mb-2">
+        <p class="truncate-at-3">
           <%= page.description %>
         </p>
       <% end %>
-    </div>
-    <div class="color-secondary fs-s flex items-center">
-      <% if page.images.favicon %>
-        <img
-          alt="favicon"
-          class="m-0 mr-2"
-          src="<%= Images::Optimizer.call(page.images.favicon, width: 32) %>"
-          width="32" height="32" loading="lazy" />
-      <% end %>
-      <%= url_domain %>
+      <div class="color-secondary fs-s flex items-center">
+        <% if page.images.favicon %>
+          <img
+            alt="favicon"
+            class="m-0 mr-2"
+            src="<%= Images::Optimizer.call(page.images.favicon, width: 48) %>"
+            width="24" height="24" loading="lazy" />
+        <% end %>
+        <%= url_domain %>
+      </div>
     </div>
   </div>
 <% else %>
