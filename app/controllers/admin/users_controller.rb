@@ -113,7 +113,7 @@ module Admin
                                  user: @user.username,
                                  email: @user.email.presence || I18n.t("admin.users_controller.no_email"),
                                  id: @user.id,
-                                 the_page: link)
+                                 the_page: link).html_safe # rubocop:disable Rails/OutputSafety
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -122,7 +122,7 @@ module Admin
 
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      flash[:success] = I18n.t("admin.user_controller.unpublished")
+      flash[:success] = I18n.t("admin.users_controller.unpublished")
       redirect_to admin_user_path(params[:id])
     end
 
