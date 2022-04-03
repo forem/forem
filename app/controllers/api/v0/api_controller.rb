@@ -7,6 +7,10 @@ module Api
 
       respond_to :json
 
+      # Informs the application that all actions taking by this controller (and it's subclasses) are
+      # considered an api_action.
+      self.api_action = true
+
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
       end
