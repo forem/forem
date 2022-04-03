@@ -62,7 +62,7 @@ class ApplicationPolicy
   # @raise [ApplicationPolicy::UserSuspendedError] if our user suspended
   # @raise [ApplicationPolicy::UserRequiredError] if our given user was "falsey"
   #
-  # @see {ApplicationPolicy.require_user!}
+  # @see ApplicationPolicy.require_user!
   # @note [@jeremyf] I'm choosing to make this a class method (even though later I define an
   #       instance method) because this question is something that we often ask outside of our
   #       current policy implementation.  By making this class method, I can begin to factor those
