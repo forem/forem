@@ -13,8 +13,8 @@
     visible based on the current state (see
     ApplicationHelper#display_navigation_link? for details).  %>
 <% if other_nav_links.any? %>
-  <nav class="mb-4" aria-labelledby="other-nav-heading">
-    <h2 id="other-nav-heading" class="crayons-subtitle-3 py-2 pl-3">
+  <nav class="mb-4" class="other-nav-heading">
+    <h2 class="crayons-subtitle-3 py-2 pl-3">
       <%= t("views.main.nav.other") %>
     </h2>
     <ul class="other-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
