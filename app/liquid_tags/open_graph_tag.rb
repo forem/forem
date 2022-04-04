@@ -7,7 +7,7 @@ class OpenGraphTag < LiquidTagBase
     super
 
     @page = OpenGraph.new url
-    @url_domain = URI.parse(url).host
+    @url_domain = URI.parse(url).host.delete_prefix("www.")
   end
 
   def render(_context)
