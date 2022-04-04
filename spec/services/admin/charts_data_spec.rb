@@ -30,10 +30,10 @@ RSpec.describe Admin::ChartsData, type: :service do
     end
 
     it "returns proper number of items" do
-      create(:article, title: "Excluded new", published_at: Time.zone.today) # excluded
-      create_list(:article, 3, published_at: 4.days.ago) # included
-      create_list(:article, 2, published_at: 7.days.ago) # included
-      create(:article, title: "Excluded old", published_at: 8.days.ago) # excluded
+      create(:article, published_at: Time.zone.today)
+      create_list(:article, 3, published_at: 4.days.ago)
+      create_list(:article, 2, published_at: 7.days.ago)
+      create(:article, published_at: 8.days.ago)
 
       expect(described_class.new.call.first.second).to eq(5)
     end
