@@ -22,7 +22,7 @@ class ProfileField < ApplicationRecord
   private
 
   def generate_attribute_name
-    self.attribute_name = "attribute_#{SecureRandom.uuid.delete('-')}"
+    self.attribute_name = "attribute_#{SecureRandom.hex}"
   end
 
   def maximum_header_field_count
