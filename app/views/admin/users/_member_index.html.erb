@@ -24,15 +24,15 @@
               <div class="flex justify-between py-2">
                 <div>
                 <% if user.suspended? %>
-                  <span><%= inline_svg_tag("suspended-circle.svg", aria: true, title: "Suspended", class: "mb-1") %>Suspended</span>
+                  <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Suspended
                 <% elsif user.warned? %>
-                  <span><%= inline_svg_tag("warned-circle.svg", aria: true, title: "Warned", class: "mb-1") %>Warned</span>
+                  <span class="c-indicator mr-2 inline-block" style="--bg: #F59E0B"></span>Warned
                 <% elsif user.comment_suspended? %>
-                  <span><%= inline_svg_tag("suspended-circle.svg", aria: true, title: "Comment Suspended", class: "mb-1") %>Comment suspended</span>
+                  <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Comment suspended
                 <% elsif user.trusted? %>
-                  <span><%= inline_svg_tag("trusted-circle.svg", aria: true, title: "Trusted", class: "mb-1") %>Trusted</span>
+                  <span class="c-indicator mr-2 inline-block" style="--bg: #059669"></span>Trusted
                 <% else %>
-                  <span><%= inline_svg_tag("good-standing-circle.svg", aria: true, title: "Good Standing", class: "mb-1") %>Good standing</span>
+                  <span class="c-indicator mr-2 inline-block" style="--bg: #A3A3A3"></span>Good standing
                 <% end %>
                 </div>
                 <div>
@@ -101,17 +101,17 @@
           </div>
           </td>
           <td>
-           <% if user.suspended? %>
-             <span><%= inline_svg_tag("suspended-circle.svg", aria: true, title: "Suspended", class: "mb-1") %>Suspended</span>
-           <% elsif user.warned? %>
-             <span><%= inline_svg_tag("warned-circle.svg", aria: true, title: "Warned", class: "mb-1") %>Warned</span>
-           <% elsif user.comment_suspended? %>
-             <span><%= inline_svg_tag("suspended-circle.svg", aria: true, title: "Comment Suspended", class: "mb-1") %>Comment suspended</span>
-           <% elsif user.trusted? %>
-             <span><%= inline_svg_tag("trusted-circle.svg", aria: true, title: "Trusted", class: "mb-1") %>Trusted</span>
-           <% else %>
-             <span><%= inline_svg_tag("good-standing-circle.svg", aria: true, title: "Good Standing", class: "mb-1") %>Good standing</span>
-           <% end %>
+            <% if user.suspended? %>
+              <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Suspended
+            <% elsif user.warned? %>
+              <span class="c-indicator mr-2 inline-block" style="--bg: #F59E0B"></span>Warned
+            <% elsif user.comment_suspended? %>
+              <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Comment suspended
+            <% elsif user.trusted? %>
+              <span class="c-indicator mr-2 inline-block" style="--bg: #059669"></span>Trusted
+            <% else %>
+              <span class="c-indicator mr-2 inline-block" style="--bg: #A3A3A3"></span>Good standing
+            <% end %>
           </td>
           <td>
           <%= user.latest_activity %>
