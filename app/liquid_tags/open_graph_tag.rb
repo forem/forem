@@ -14,7 +14,7 @@ class OpenGraphTag < LiquidTagBase
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
-        page: page,
+        page: @page,
         url_domain: @url_domain
       },
     )
