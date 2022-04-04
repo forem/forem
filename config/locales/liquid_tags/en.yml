@@ -64,8 +64,6 @@ en:
       invalid_parler_url: Invalid Parler URL
     podcast_tag:
       invalid_podcast_link: Invalid podcast link
-    poll_tag:
-      invalid_poll_id: Invalid poll ID
     reddit_tag:
       invalid_reddit_link: 'Invalid Reddit link: %{url}'
     replit_tag:
