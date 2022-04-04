@@ -3,7 +3,7 @@
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <aside class="side-bar">
       <% if @tag && @tag.rules_html.present? %>
-        <div class="widget">
+        <div class="widget <%= ApplicationPolicy.dom_class_for(record: Article, query: :create?) %> hidden">
           <header>
             <h4><%= t("views.tags.sidebar.guidelines") %></h4>
           </header>
