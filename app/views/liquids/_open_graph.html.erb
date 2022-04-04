@@ -1,5 +1,5 @@
-<% if page.main_properties_present? %>
-  <div class="crayons-card c-embed text-styles text-styles--secondary">
+<div class="crayons-card c-embed text-styles text-styles--secondary">
+  <% if page.main_properties_present? %>
     <% if page.image %>
       <div class="c-embed__cover">
         <a href="<%= page.url %>" class="c-link s:max-w-50 align-middle" target="_blank" rel="noopener noreferrer">
@@ -29,9 +29,9 @@
         <%= url_domain %>
       </div>
     </div>
-  </div>
-<% else %>
-  <a href="<%= url_domain %>" target="_blank" rel="noopener noreferrer">
-    <%= url_domain %>
-  </a>
-<% end %>
+  <% else %>
+    <a href="<%= url_domain %>" target="_blank" rel="noopener noreferrer">
+      <%= url_domain %>
+    </a>
+  <% end %>
+</div>
