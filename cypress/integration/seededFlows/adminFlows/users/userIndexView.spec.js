@@ -72,6 +72,11 @@ describe('User index view', () => {
         cy.get('@searchButton').should('have.attr', 'aria-expanded', 'false');
         cy.findByRole('button', { name: 'Search' }).should('not.exist');
       });
+
+      it(`Clicks through to the Member Detail View`, () => {
+        cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
+        cy.url().should('contain', '/admin/users/1');
+      });
     });
   });
 
@@ -112,6 +117,11 @@ describe('User index view', () => {
 
         // Table header, 'normal' admin and apple auth admin
         cy.findAllByRole('row').should('have.length', 3);
+      });
+
+      it(`Clicks through to the Member Detail View`, () => {
+        cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
+        cy.url().should('contain', '/admin/users/1');
       });
     });
   });

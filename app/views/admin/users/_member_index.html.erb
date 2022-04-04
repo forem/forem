@@ -56,9 +56,7 @@
                   <% if user.organization_memberships.any? %>
                     <% user.organization_memberships.includes([:organization]).each do |org_membership| %>
                       <span class="crayons-hover-tooltip" data-tooltip="<%= org_membership.organization.name %>">
-                        <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link crayons-logo crayons-logo--l">
-                          <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="crayons-logo__image">
-                        </a>
+                        <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="c-link crayons-logo crayons-logo--l">
                       </span>
                     <% end %>
                   <% else %>
@@ -123,9 +121,7 @@
             <% if user.organization_memberships.any? %>
               <% user.organization_memberships.includes([:organization]).each do |org_membership| %>
                 <span class="crayons-hover-tooltip" data-tooltip="<%= org_membership.organization.name %>">
-                  <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link crayons-logo crayons-logo--l">
-                    <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="crayons-logo__image">
-                  </a>
+                  <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="c-link crayons-logo crayons-logo--l">
                 </span>
               <% end %>
             <% else %>
