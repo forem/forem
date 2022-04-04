@@ -58,12 +58,18 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
   end
 
-  it "raises an error when no link-matching class is found" do
-    link = "https://takeonrules.com/about"
+  it "calls OpenGraphTag when no link-matching class is found", vcr: true do
+    link = "https://takeonrules.com/about/"
 
-    expect do
-      stub_head_request(link)
-      Liquid::Template.parse("{% embed #{link} %}")
-    end.to raise_error(StandardError, "Embeds for this URL are not supported")
+    allow(OpenGraphTag).to receive(:new).and_call_original
+
+    VCR.use_cassette("takeonrules_fetch") do
+      expect do
+        stub_head_request(link)
+        Liquid::Template.parse("{% embed #{link} %}")
+      end.not_to raise_error
+    end
+
+    expect(OpenGraphTag).to have_received(:new)
   end
 end
