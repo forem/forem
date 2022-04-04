@@ -18,7 +18,17 @@ RSpec.describe Admin::ChartsData, type: :service do
     expect(described_class.new(20).call.first.fourth.size).to eq(20)
   end
 
-  xdescribe "current period" do
+  describe "current period" do
+    # for the reasons described in the analytics service spec,
+    # we set the time in these tests to midday UTC to avoid the
+    # PostgreSQL DATE() function shifting articles in or out of the
+    # last week when considering N.days.ago locally
+    around do |example|
+      Timecop.freeze("2022-04-05T12:00:00Z")
+      example.run
+      Timecop.return
+    end
+
     it "returns proper number of items" do
       create(:article, title: "Excluded new", published_at: Time.zone.today) # excluded
       create_list(:article, 3, published_at: 4.days.ago) # included
