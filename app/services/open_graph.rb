@@ -53,6 +53,10 @@ class OpenGraph
     (main_properties - properties.keys).empty?
   end
 
+  def preferred_desc
+    properties["og:description"].first || page.description
+  end
+
   # this method groups like-properties, making it a little easier to determine
   # the high level properties available for use. All "fb", "og", etc properties
   # will be grouped by their respective key
