@@ -52,10 +52,7 @@ class AsyncInfo
       policies: [
         {
           dom_class: ApplicationPolicy.dom_class_for(record: Article, query: :create?),
-          # Why forbidden and not authorized?  I want to "default" to optimistic rendering.  And
-          # the javascript is just a bit more tolerant if we "hide" a button when it's forbidden
-          # ELSE we show it.
-          forbidden: !allow(record: Article, query: :create?)
+          visible: visible?(record: Article, query: :create?)
         },
       ],
       apple_auth: user.email.to_s.end_with?("@privaterelay.appleid.com")
@@ -69,7 +66,7 @@ class AsyncInfo
   # @return [TrueClass] if policy allows the given query on the given record
   # @return [FalseClass] if policy raises Pundit::NotAuthorizedError
   # @return [FalseClass] if policy does not allow the given query on the given record
-  def allow(record:, query:)
+  def visible?(record:, query:)
     context.__send__(:policy, record).public_send(query)
   rescue Pundit::NotAuthorizedError
     false

@@ -17,7 +17,7 @@ RSpec.describe AsyncInfo do
       expect(policies.length).to be > 0
 
       # All policy keys will have dom_class and forbidden
-      expect(policies.map(&:keys).uniq).to eq([%i[dom_class forbidden]])
+      expect(policies.map(&:keys).uniq).to eq([%i[dom_class visible]])
     end
   end
 end

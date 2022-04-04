@@ -130,10 +130,10 @@ function applyPolicyToggles(user) {
       const elements = document.getElementsByClassName(policy.dom_class);
       for (let i = 0; i < elements.length; i++) {
         const element = elements[i];
-        if (policy.forbidden) {
-          element.classList.add('hidden');
-        } else {
+        if (policy.visible) {
           element.classList.remove('hidden');
+        } else {
+          element.classList.add('hidden');
         }
       }
     });
