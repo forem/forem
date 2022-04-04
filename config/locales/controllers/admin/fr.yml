@@ -4,4 +4,4 @@ fr:
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
     spaces_controller:
-      update_success: Space has been updated.
+      update_success: L'espace a été mis à jour.
