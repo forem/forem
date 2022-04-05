@@ -14,8 +14,7 @@ getUserDataAndCsrfToken().then(({ currentUser }) => {
   if (currentUser.policies) {
     currentUser.policies.forEach((policy) => {
       const elements = document.getElementsByClassName(policy.dom_class);
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
+      for (const element of elements) {
         if (policy.visible) {
           element.classList.remove('hidden');
         } else {
