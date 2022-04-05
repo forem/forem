@@ -159,7 +159,7 @@ GEM
       fastimage
     chartkick (4.1.2)
     childprocess (4.1.0)
-    cloudinary (1.22.0)
+    cloudinary (1.23.0)
       aws_cf_signer
       rest-client (>= 2.0.0)
     coderay (1.1.3)
@@ -962,7 +962,7 @@ DEPENDENCIES
   capybara (~> 3.36.0)
   carrierwave (~> 2.2)
   carrierwave-bombshelter (~> 0.2)
-  cloudinary (~> 1.22)
+  cloudinary (~> 1.23)
   counter_culture (~> 3.2)
   cypress-rails (~> 0.5)
   ddtrace (~> 0.54.2)
