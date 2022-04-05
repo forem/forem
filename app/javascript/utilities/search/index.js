@@ -134,13 +134,14 @@ export function preloadSearchResults({
  *
  * @param {string} endpoint - The search endpoint you want to request (i.e. tags).
  * @param {object} dataHash - A hash with the search params that need to be included in the request.
+ * @param {object} fetchOptions - A hash with the options that need to be passed to the fetch call.
  *
  * @returns {Promise} A promise object with response formatted as JSON.
  */
-export function fetchSearch(endpoint, dataHash) {
+export function fetchSearch(endpoint, dataHash, fetchOptions = {}) {
   const searchUrl = createSearchUrl(dataHash);
 
-  return request(`/search/${endpoint}?${searchUrl}`).then((response) =>
-    response.json(),
+  return request(`/search/${endpoint}?${searchUrl}`, fetchOptions).then(
+    (response) => response.json(),
   );
 }

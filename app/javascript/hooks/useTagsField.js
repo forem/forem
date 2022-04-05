@@ -52,10 +52,11 @@ export const useTagsField = ({ defaultValue, onInput }) => {
    * Fetches tags for a given search term
    *
    * @param {string} searchTerm The text to search for
+   * @param {object} fetchOptions A hash with the options that need to be passed to the fetch call
    * @returns {Promise} Promise which resolves to the tag search results
    */
-  const fetchSuggestions = (searchTerm) =>
-    fetchSearch('tags', { name: searchTerm }).then(
+  const fetchSuggestions = (searchTerm, fetchOptions = {}) =>
+    fetchSearch('tags', { name: searchTerm }, fetchOptions).then(
       (response) => response.result,
     );
 

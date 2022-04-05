@@ -113,6 +113,8 @@ export const MultiSelectAutocomplete = ({
   const allowSelections =
     !maxSelections || selectedItems.length < maxSelections;
 
+  const fetchSuggestionsController = new AbortController();
+
   useEffect(() => {
     if (defaultValue.length > 0) {
       dispatch({
@@ -302,21 +304,26 @@ export const MultiSelectAutocomplete = ({
       return;
     }
 
-    const results = await fetchSuggestions(value);
-    // If no results, display current search term as an option
-    if (results.length === 0 && value !== '') {
-      results.push({ name: value });
-    }
+    try {
+      const { signal } = fetchSuggestionsController;
+      const results = await fetchSuggestions(value, { signal });
+      // If no results, display current search term as an option
+      if (results.length === 0 && value !== '') {
+        results.push({ name: value });
+      }
 
-    dispatch({
-      type: 'setSuggestions',
-      payload: results.filter(
-        (item) =>
-          !selectedItems.some(
-            (selectedItem) => selectedItem.name === item.name,
-          ),
-      ),
-    });
+      dispatch({
+        type: 'setSuggestions',
+        payload: results.filter(
+          (item) =>
+            !selectedItems.some(
+              (selectedItem) => selectedItem.name === item.name,
+            ),
+        ),
+      });
+    } catch (error) {
+      // Aborted operation
+    }
   };
 
   const clearInput = () => {
@@ -372,6 +379,7 @@ export const MultiSelectAutocomplete = ({
         // Accept whatever is in the input before the comma or space.
         // If any text remains after the comma or space, the edit will continue separately
         if (currentValue !== '' && allowSelections) {
+          fetchSuggestionsController.abort(); // Abort any previous requests
           selectByText({
             textValue: currentValue.slice(0, selectionStart),
             nextInputValue: currentValue.slice(selectionStart),
