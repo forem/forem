@@ -117,8 +117,8 @@ function setCurrentUserToNavBar(user) {
  * elements that present functionality available or not available to the given
  * user.
  *
- * @param {Object} user with a policies properties that is an array of objects.
- *        Each of those policy objects has a dom_class and forbidden property.
+ * @param {Object} user with a policies property that is an array of objects.
+ *        Each of those policy objects has a dom_class and visible property.
  *
  * A critical assumption is that we are not employing "security through
  * obscurity".  That is to say, if we accidentally show the link, the server

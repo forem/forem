@@ -17,10 +17,16 @@ describe('Limit Post Creation to Admins', () => {
     // "Create Button" that's on the nav bar but not in the drop down.
 
     cy.findByRole('button', { name: 'Navigation menu' }).as('menuButton');
-    cy.get('@menuButton')
+  cy.get('@menuButton')
       .should('have.attr', 'aria-expanded', 'false')
       .click()
       .should('have.attr', 'aria-expanded', 'true');
+
+    cy.findByRole('link', {
+      name: 'Article Editor v1 User @article_editor_v1_user',
+    }).should('exist');
+
+    cy.findByRole('link', { name: 'Create Post' }).should('not.exist');
 
     cy.findByRole('link', { name: 'Create Post' }).should('not.exist');
   });
