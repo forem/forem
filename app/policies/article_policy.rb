@@ -168,10 +168,10 @@ class ArticlePolicy < ApplicationPolicy
 
   alias edit? update?
 
-  # [@jeremyf] I made a decision to compress preview? into create?  However, someone editing a post
-  # should also be able to preview?  Perhaps it would make sense to be "preview? is create? ||
-  # update?".
-  alias preview? create?
+  # The ArticlesController#preview method is very complicated but aspirationally, we want to ensure
+  # that someone can preview an article of their if they already have a published article or they
+  # can create new ones.
+  alias preview? has_existing_articles_or_can_create_new_ones?
 
   def permitted_attributes
     %i[title body_html body_markdown main_image published canonical_url
