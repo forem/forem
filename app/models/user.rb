@@ -554,19 +554,11 @@ class User < ApplicationRecord
     Reaction.for_user(self)
   end
 
-  def latest_activity
+  def last_activity
     return unless registered == true
 
-    latest_activity = last_comment_at || last_article_at || latest_article_updated_at ||
-      last_reacted_at || profile_updated_at || last_moderation_notification
-
-    if latest_activity.strftime("%Y-%m-%d") == Time.zone.today.strftime("%Y-%m-%d")
-      "Today, #{latest_activity.strftime('%d %b')}"
-    elsif latest_activity.strftime("%Y-%m-%d") == Date.yesterday.strftime("%Y-%m-%d")
-      "Yesterday, #{latest_activity.strftime('%d %b')}"
-    else
-      latest_activity.strftime("%d %b, %Y")
-    end
+    [last_comment_at, last_article_at, latest_article_updated_at, last_reacted_at, profile_updated_at,
+     last_moderation_notification, last_notification_activity].compact.max
   end
 
   def current_role

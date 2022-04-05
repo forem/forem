@@ -16,9 +16,8 @@
                 <a href="<%= admin_user_path(user.id) %>">
                   <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
                 </a>
-                <div class="pl-3 flex-1 fs-s"><h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
-                  <p class="color-base-60"><%= link_to "@#{user.username}", admin_user_path(user) %>&nbsp;
-                  </p>
+                <div class="pl-3 flex-1 fs-s"><h3 class="fs-base"><%= link_to user.name, admin_user_path(user), class: "color-base-80" %></h3>
+                  <%= link_to "@#{user.username}", admin_user_path(user), class: "color-base-60" %>
                 </div>
               </header>
               <div class="flex justify-between py-2">
@@ -37,7 +36,7 @@
                 </div>
                 <div>
                 <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= user.current_role %>">
-                  <%= user.current_role %>
+                  <%= cascading_high_level_roles(user) %>
                 </span>
                 </div>
               </div>
@@ -45,7 +44,7 @@
                 <dl class="flex gap-2">
                   <div>
                     <dt class="color-base-60 fw-normal">Last activity</dt>
-                    <dd><%= user.latest_activity %></dd>
+                    <dd><%= format_last_activity_timestamp(user.last_activity) %></dd>
                   </div>
                   <div>
                     <dt class="color-base-60 fw-normal">Joined on</dt>
@@ -59,8 +58,6 @@
                         <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="c-link crayons-logo crayons-logo--l">
                       </span>
                     <% end %>
-                  <% else %>
-                    -
                   <% end %>
                 </div>
               </div>
@@ -89,12 +86,11 @@
             <a href="<%= admin_user_path(user.id) %>">
               <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
             </a>
-            <div class="pl-3 flex-1 fs-s"><h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
-              <p class="color-base-60"><%= link_to "@#{user.username}", admin_user_path(user) %>&nbsp;
-                <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= user.current_role %>">
-                  <%= user.current_role %>
-                </span>
-              </p>
+            <div class="pl-3 flex-1 fs-s"><h3 class="fs-base"><%= link_to user.name, admin_user_path(user), class: "color-base-80" %></h3>
+              <%= link_to "@#{user.username}", admin_user_path(user), class: "color-base-60" %>&nbsp;
+              <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= user.current_role %>">
+                <%= cascading_high_level_roles(user) %>
+              </span>
             </div>
           </div>
           </td>
@@ -112,7 +108,7 @@
             <% end %>
           </td>
           <td>
-          <%= user.latest_activity %>
+          <%= format_last_activity_timestamp(user.last_activity) %>
           <p class="fs-xs color-base-60">
             <%= user.registered_at.strftime("%d %b, %Y") %>
           </p>
