@@ -35,7 +35,7 @@
                 <% end %>
                 </div>
                 <div>
-                <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= user.current_role %>">
+                <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
                   <%= cascading_high_level_roles(user) %>
                 </span>
                 </div>
@@ -88,7 +88,7 @@
             </a>
             <div class="pl-3 flex-1 fs-s"><h3 class="fs-base"><%= link_to user.name, admin_user_path(user), class: "color-base-80" %></h3>
               <%= link_to "@#{user.username}", admin_user_path(user), class: "color-base-60" %>&nbsp;
-              <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= user.current_role %>">
+              <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
                 <%= cascading_high_level_roles(user) %>
               </span>
             </div>
