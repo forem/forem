@@ -62,7 +62,7 @@ class ApplicationPolicy
   # @raise [ApplicationPolicy::UserSuspendedError] if our user suspended
   # @raise [ApplicationPolicy::UserRequiredError] if our given user was "falsey"
   #
-  # @see {ApplicationPolicy.require_user!}
+  # @see ApplicationPolicy.require_user!
   # @note [@jeremyf] I'm choosing to make this a class method (even though later I define an
   #       instance method) because this question is something that we often ask outside of our
   #       current policy implementation.  By making this class method, I can begin to factor those
@@ -89,6 +89,32 @@ class ApplicationPolicy
     return true if user
 
     raise ApplicationPolicy::UserRequiredError, I18n.t("policies.application_policy.you_must_be_logged_in")
+  end
+
+  # This method provides a means for creating a consistent DOM class for "policy" related HTML elements.
+  #
+  # @param record [Object] what object are we testing our policy?
+  # @param query [String,Symbol] what query are we asking of the object's corresponding policy?
+  #
+  # @note This method's signature maps to pundit's `policy` helper method and the implicit chained
+  #       call (e.g. `policy(Article).create?`)
+  #
+  # @see Pundit::Authorization.policy pundit's #policy helper method
+  #
+  # @return [String] a dom class compliant string, see the corresponding specs for expected values.
+  def self.dom_class_for(record:, query:)
+    fragments = %w[js policy]
+    case record
+    when Symbol
+      fragments << record.to_s.underscore
+    when Class
+      fragments << record.model_name.name.underscore
+    when ActiveRecord::Base
+      fragments << record.model_name.name.underscore
+      fragments << (record.id.presence || "new")
+    end
+    fragments << query.to_s.underscore.delete("?").to_s
+    fragments.join("-")
   end
 
   # @param user [User] who's the one taking the action?

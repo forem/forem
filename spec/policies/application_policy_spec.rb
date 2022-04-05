@@ -27,6 +27,26 @@ RSpec.describe ApplicationPolicy do
   end
   # rubocop:enable RSpec/DescribedClass
 
+  describe ".dom_class_for" do
+    [
+      [Article, :create?, "js-policy-article-create"],
+      [:Article, :create?, "js-policy-article-create"],
+      # Note the underscore for WorkerBee
+      [:WorkerBee, :create?, "js-policy-worker_bee-create"],
+      [Article.new(id: 5), :create, "js-policy-article-5-create"],
+      [Article.new, :create, "js-policy-article-new-create"],
+    ].each do |record, query, expected|
+      context "when record=#{record.inspect} and query=#{query.inspect}" do
+        subject { described_class.dom_class_for(record: record, query: query) }
+
+        let(:record) { record }
+        let(:query) { query }
+
+        it { is_expected.to eq(expected) }
+      end
+    end
+  end
+
   describe "require_user_in_good_standing!" do
     subject(:method_call) { described_class.require_user_in_good_standing!(user: user) }
 

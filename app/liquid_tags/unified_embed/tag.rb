@@ -34,13 +34,9 @@ module UnifiedEmbed
       validate_link!(actual_link)
       klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_input)
 
-      # If the link is valid but doesn't match the registry, we return
-      # an "unsupported URL" error. Eventually we shall render a fallback
-      # embed using OpenGraph/TwitterCard metadata (if available).
-      # If there are no OG metatags, then we render an A-tag. Since the link
+      # If there are no OG metatags, we shall render an A-tag. Since the link
       # has been validated, at least this A-tag will not 404.
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.unsupported_url") unless klass
-
+      #
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
