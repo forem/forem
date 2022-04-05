@@ -1,6 +1,8 @@
 class AsyncInfoController < ApplicationController
   # No pundit policy. All actions are unrestricted.
 
+  ASYNC_INFO_CACHE_KEY_PREFIX = "user-info".freeze
+
   def base_data
     flash.discard(:notice)
     unless user_signed_in?
@@ -68,7 +70,7 @@ class AsyncInfoController < ApplicationController
   end
 
   def user_cache_key
-    "user-info-#{current_user&.id}__
+    "#{ASYNC_INFO_CACHE_KEY_PREFIX}-#{current_user&.id}__
     #{current_user&.last_sign_in_at}__
     #{current_user&.following_tags_count}__
     #{current_user&.last_followed_at}__

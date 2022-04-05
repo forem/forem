@@ -6,6 +6,8 @@
 #
 # @note This class exists to assist with authorization and exposing an "ActiveModel" compliant
 #       interface for form work.
+#
+# @see AsyncInfoController#base_data for impact.
 class Space
   # ...the final frontier.
   include ActiveModel::Model
@@ -31,6 +33,8 @@ class Space
     else
       FeatureFlag.disable(:limit_post_creation_to_admins)
     end
+
+    Users::BustCacheForSpaceChangeWorker.perform
 
     # I want to ensure that we're returning true, to communicate that the "save" was successful.
     true
