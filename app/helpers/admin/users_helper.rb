@@ -18,7 +18,7 @@ module Admin
       elsif user.trusted?
         "Tag moderator"
       else
-        "Regualr member"
+        "Regular member"
       end
     end
   end
