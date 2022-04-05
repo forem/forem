@@ -2166,20 +2166,20 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-controls@^6.4.19":
-  version "6.4.19"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-controls/-/addon-controls-6.4.19.tgz#1ebf74f7b0843ea0eccd319f5295dfa48947a975"
-  integrity sha512-JHi5z9i6NsgQLfG5WOeQE1AyOrM+QJLrjT+uOYx40bq+OC1yWHH7qHiphPP8kjJJhCZlaQk1qqXYkkQXgaeHSw==
+"@storybook/addon-controls@^6.4.20":
+  version "6.4.20"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-controls/-/addon-controls-6.4.20.tgz#62f63621001616a094d69f1da42d003708a286a6"
+  integrity sha512-Tqq66SCbi2WIiKrkHu3edtg4r8QIdm/RbNB/PwnFuXwkJVt5mAoV9QQUt1zkbzdknU8xTwwgM4cEEfYLfBVm9Q==
   dependencies:
-    "@storybook/addons" "6.4.19"
-    "@storybook/api" "6.4.19"
-    "@storybook/client-logger" "6.4.19"
-    "@storybook/components" "6.4.19"
-    "@storybook/core-common" "6.4.19"
+    "@storybook/addons" "6.4.20"
+    "@storybook/api" "6.4.20"
+    "@storybook/client-logger" "6.4.20"
+    "@storybook/components" "6.4.20"
+    "@storybook/core-common" "6.4.20"
     "@storybook/csf" "0.0.2--canary.87bc651.0"
-    "@storybook/node-logger" "6.4.19"
-    "@storybook/store" "6.4.19"
-    "@storybook/theming" "6.4.19"
+    "@storybook/node-logger" "6.4.20"
+    "@storybook/store" "6.4.20"
+    "@storybook/theming" "6.4.20"
     core-js "^3.8.2"
     lodash "^4.17.21"
     ts-dedent "^2.0.0"
