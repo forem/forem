@@ -3,25 +3,25 @@ class AsyncInfoController < ApplicationController
 
   def base_data
     flash.discard(:notice)
-    unless user_signed_in?
+    if user_signed_in?
+      @user = current_user.decorate
+      respond_to do |format|
+        format.json do
+          render json: {
+            broadcast: broadcast_data,
+            param: request_forgery_protection_token,
+            token: form_authenticity_token,
+            user: user_data,
+            creator: user_is_a_creator
+          }
+        end
+      end
+    else
       render json: {
         broadcast: broadcast_data,
         param: request_forgery_protection_token,
         token: form_authenticity_token
       }
-      return
-    end
-    @user = current_user.decorate
-    respond_to do |format|
-      format.json do
-        render json: {
-          broadcast: broadcast_data,
-          param: request_forgery_protection_token,
-          token: form_authenticity_token,
-          user: user_data,
-          creator: user_is_a_creator
-        }
-      end
     end
   end
 
