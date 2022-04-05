@@ -12,12 +12,15 @@
         <% @users.each do |user| %>
           <li class="py-4">
             <article>
-              <header class="grid grid-cols-2">
+              <header class="grid grid-cols-2 mb-2">
                 <div class="flex">
                   <img class="radius-full mr-2" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="" />
                   <div class="flex flex-col">
                     <h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
-                    <span class="color-base-60">@<%= user.username %></span>
+                    <div class="flex">
+                      <span class="color-base-60">@<%= user.username %></span>
+                      <span class="hidden m:block">&nbsp; role info</span>
+                    </div>
                   </div>
                 </div>
                 <div class="flex justify-between items-center">
@@ -27,8 +30,8 @@
                   </button>
                 </div>
               </header>
-              <div class="flex justify-between py-2">
-                <div class="block m:hidden">standing info</div>
+              <div class="flex justify-between mb-2 block m:hidden">
+                <div>standing info</div>
                 <div>role info</div>
               </div>
               <div class="flex justify-between items-end">
