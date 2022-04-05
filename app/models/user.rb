@@ -561,22 +561,6 @@ class User < ApplicationRecord
      last_moderation_notification, last_notification_activity].compact.max
   end
 
-  def current_role
-    if admin?
-      "Admin"
-    elsif super_admin?
-      "Super Admin"
-    elsif tech_admin?
-      "Tech Admin"
-    elsif tag_moderator?
-      "Moderator"
-    elsif has_role?(:single_resource_admin, :any)
-      "Resource Admin"
-    else
-      "Regular Member"
-    end
-  end
-
   protected
 
   # Send emails asynchronously
