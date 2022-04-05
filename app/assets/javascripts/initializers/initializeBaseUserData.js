@@ -110,40 +110,9 @@ function setCurrentUserToNavBar(user) {
   }
 }
 
-/**
- * Responsible for hiding or showing elements that match each of the given user
- * policies.  While this function is "oblivious" to what it's hiding, it
- * coordinates between the rendered HTML and the user data to show or hide
- * elements that present functionality available or not available to the given
- * user.
- *
- * @param {Object} user with a policies property that is an array of objects.
- *        Each of those policy objects has a dom_class and visible property.
- *
- * A critical assumption is that we are not employing "security through
- * obscurity".  That is to say, if we accidentally show the link, the server
- * will enforce the correct policy.
- */
-function applyPolicyToggles(user) {
-  if (user.policies) {
-    user.policies.forEach(function (policy) {
-      const elements = document.getElementsByClassName(policy.dom_class);
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
-        if (policy.visible) {
-          element.classList.remove('hidden');
-        } else {
-          element.classList.add('hidden');
-        }
-      }
-    });
-  }
-}
-
 function initializeBaseUserData() {
   const user = userData();
   setCurrentUserToNavBar(user);
-  applyPolicyToggles(user);
   initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);
