@@ -12,8 +12,8 @@
     <p class="color-secondary fs-l">Configure permissions for your different types of posts.</p>
   </header>
 
-  <%# Note: there is javascript in play that is capturing the submission of the form and sending via XHR.  That will impact behavior. %>
-  <%= form_with model: @space, url: admin_space_path(@space), method: :put, class: "crayons-card p-6 flex flex-col gap-6" do |form| %>
+  <%# Note: With data remote false, we submit the form via a non-XHR request (e.g. boring old web). %>
+  <%= form_with model: @space, url: admin_space_path(@space), method: :put, data: { remote: false, confirm: "Are you sure?" }, class: "crayons-card p-6 flex flex-col gap-6" do |form| %>
     <div class="flex items-center gap-4">
       <span class="p-3 crayons-card shrink-0">
         <%= crayons_icon_tag(:folder) %>
@@ -27,7 +27,7 @@
     <div class="flex justify-between gap-8 items-start">
       <label for="space_limit_post_creation_to_admins">
         <p class="fw-medium">Make this space comment-only for members</p>
-        <p class="fs-s color-secondary">Once turned on, only admins can publish posts.  Other members can only react to and comment on posts. Only admins will be able to post on behalf of organizations.</p>
+        <p class="fs-s color-secondary">Only admins can publish posts. Other members can only react to and comment on posts. Only admins will be able to post on behalf of organizations.</p>
       </label>
 
       <label class="c-toggle">

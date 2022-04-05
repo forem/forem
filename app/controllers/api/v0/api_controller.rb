@@ -51,8 +51,8 @@ module Api
       #
       # @return [User, NilClass]
       #
-      # @see {#pundit_user} for one way we use this method
-      # @see {#authenticate_with_api_key_or_current_user} for the logic of building the user.
+      # @see #pundit_user
+      # @see #authenticate_with_api_key_or_current_user
       #
       # @note We could memoize the `@user ||=` but Rubocop wants to rename that to
       #       `authenticate_with_api_key_or_current_user` which would be bad as descendant classes
@@ -66,7 +66,7 @@ module Api
 
       # Checks if the user is authenticated, if not respond with an HTTP 401 Unauthorized
       #
-      # @see {authenticate_with_api_key_or_current_user}
+      # @see #authenticate_with_api_key_or_current_user
       def authenticate_with_api_key_or_current_user!
         # [@jeremyf] Note, I'm not relying on the other method setting the instance variable, but
         # instead relying on the returned value.  This insulates us from an implementation detail
@@ -89,7 +89,7 @@ module Api
       #       altering the implementation details of the `authenticate_with_api_key_or_current_user`
       #       function by introducing memoization.
       #
-      # @see {#authenticate_with_api_key_or_current_user}
+      # @see #authenticate_with_api_key_or_current_user
       def pundit_user
         # What's going on here?
         @pundit_user ||= @user || authenticate_with_api_key_or_current_user
