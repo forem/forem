@@ -86,7 +86,9 @@ function renderButtonState(button, json) {
 }
 
 function renderNewSidebarCount(button, json) {
-  const readingListContainers = document.querySelectorAll('reading-list-count');
+  const readingListContainers = document.querySelectorAll(
+    '.reading-list-count',
+  );
   if (readingListContainers) {
     readingListContainers.forEach(function (e) {
       let count = parseInt(e.dataset.count, 10);
