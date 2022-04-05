@@ -1,4 +1,3 @@
-/* global Runtime */
 import 'focus-visible';
 import {
   initializeMobileMenu,
@@ -6,6 +5,7 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
+import { currentMedium } from '@utilities/runtime';
 
 // Unique ID applied to modals created using window.Forem.showModal
 const WINDOW_MODAL_ID = 'window-modal';
@@ -138,7 +138,7 @@ waitOnBaseData()
       initializeNav();
     });
 
-    if (Runtime.currentMedium() === 'ForemWebView') {
+    if (currentMedium() === 'ForemWebView') {
       // Dynamic import of the namespace
       import('../mobile/foremMobile.js').then((module) => {
         // Load the namespace
