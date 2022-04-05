@@ -8,7 +8,7 @@ module Users
     def perform
       return unless Rails.cache.respond_to?(:delete_matched)
 
-      Rails.cache.delete_matched("^#{AsyncInfoController::ASYNC_INFO_CACHE_KEY_PREFIX}-")
+      Rails.cache.delete_matched("#{AsyncInfoController::ASYNC_INFO_CACHE_KEY_PREFIX}-*")
     end
   end
 end
