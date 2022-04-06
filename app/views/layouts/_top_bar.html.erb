@@ -29,7 +29,9 @@
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
-          <a href="<%= new_path %>" class="c-cta c-cta--branded mr-2 whitespace-nowrap <%= ApplicationPolicy.dom_class_for(record: Article, query: :create?) %> hidden"><%= t("views.main.create_post") %></a>
+          <%= application_policy_content_tag("a", record: Article, query: :create?, feature_flag: :limit_post_creation_to_admins, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
+            <%= t("views.main.create_post") %>
+          <% end %>
 
           <span class="trusted-visible-block">
             <a id="moderation-link" class="c-link c-link--icon-alone c-link--block mx-1" aria-label="<%= t("views.main.header.moderation.aria_label") %>" href="<%= mod_path %>">
