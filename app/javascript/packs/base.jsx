@@ -5,7 +5,7 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
-import { currentMedium } from '@utilities/runtime';
+import * as Runtime from '@utilities/runtime';
 
 // Unique ID applied to modals created using window.Forem.showModal
 const WINDOW_MODAL_ID = 'window-modal';
@@ -101,6 +101,7 @@ window.Forem = {
       render(null, currentModalContainer);
     }
   },
+  Runtime,
 };
 
 function getPageEntries() {
@@ -138,7 +139,7 @@ waitOnBaseData()
       initializeNav();
     });
 
-    if (currentMedium() === 'ForemWebView') {
+    if (Runtime.currentMedium() === 'ForemWebView') {
       // Dynamic import of the namespace
       import('../mobile/foremMobile.js').then((module) => {
         // Load the namespace

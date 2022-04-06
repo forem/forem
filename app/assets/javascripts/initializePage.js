@@ -12,7 +12,6 @@
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
   initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
-  Runtime
 */
 
 function callInitializers() {
@@ -77,5 +76,5 @@ function initializePage() {
   }
 
   // Initialize data-runtime context to the body data-attribute
-  document.body.dataset.runtime = Runtime.currentContext();
+  document.body.dataset.runtime = window.Forem.Runtime.currentContext();
 }
