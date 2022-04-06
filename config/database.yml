@@ -28,7 +28,7 @@ default: &default
 development:
   <<: *default
   url: <%= ENV.fetch("DATABASE_URL", "postgres:///Forem_development") %>
-  database: <%= ENV.fetch("DATABASE_NAME", "Forem_development") %>
+  database: <%= ENV.fetch("DATABASE_NAME", "Forem_development") %> 
   variables:
       statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i %>
 

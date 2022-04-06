@@ -14,6 +14,8 @@
       <%= f.check_box :remember_me, class: "crayons-checkbox" %>
       <%= f.label :remember_me, class: "crayons-field__label fw-normal" %>
     </div>
+
+    <%= f.hidden_field :address, autocomplete: "address", class: "crayons-textfield" %>
   
     <div class="registration__hr">
                 <span class="registration__hr-label">

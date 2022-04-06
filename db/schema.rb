@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_22_040359) do
+ActiveRecord::Schema.define(version: 2022_04_05_202011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1181,6 +1181,7 @@ ActiveRecord::Schema.define(version: 2021_12_22_040359) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "address"
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.integer "badge_achievements_count", default: 0, null: false

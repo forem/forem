@@ -33,19 +33,16 @@ COPY ./.ruby-version "${APP_HOME}"/
 COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"/
 COPY ./vendor/cache "${APP_HOME}"/vendor/cache
 
-RUN bundle config --local build.sassc --disable-march-tune-native
-RUN bundle update rake
-RUN bundle install
-# RUN find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
-#     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
+RUN bundle config --local build.sassc --disable-march-tune-native && \
+    BUNDLE_WITHOUT="development:test" bundle install --deployment --jobs 4 --retry 5 && \
+    find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
+    find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
 COPY . "${APP_HOME}"
 
 RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
-ENV RAILS_ENV=production 
-ENV NODE_ENV=production
-# RUN bundle exec rake assets:precompile
+RUN RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile
 
 RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
@@ -130,3 +127,4 @@ RUN bundle config --local build.sassc --disable-march-tune-native && \
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+
