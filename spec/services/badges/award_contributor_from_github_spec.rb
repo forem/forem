@@ -6,7 +6,21 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service, vcr: true do
   before do
     badge
     omniauth_mock_github_payload
+    allow(Settings::Authentication).to receive(:providers).and_return([:github])
     stub_const("#{described_class}::REPOSITORIES", ["forem/DEV-Android"])
+  end
+
+  it "won't work without Github oauth configured" do
+    allow(Settings::Authentication).to receive(:providers).and_return([])
+    user = create(:user, :with_identity, identities: ["github"], uid: "389169")
+
+    Timecop.freeze("2021-08-16T13:49:20Z") do
+      expect do
+        VCR.use_cassette("github_client_commits_contributor_badge") do
+          described_class.call
+        end
+      end.to change(user.badge_achievements, :count).by(0)
+    end
   end
 
   it "awards contributor badge" do
