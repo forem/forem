@@ -28,20 +28,6 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end
   end
 
-  it "doesn't raise an error when link redirects" do
-    link = "https://www.instagram.com/p/Ca2MhbCrK_t/"
-
-    expect do
-      stub_head_request(link, 301)
-      Liquid::Template.parse("{% embed #{link} %}")
-    end.not_to raise_error
-
-    expect do
-      stub_head_request(link, 302)
-      Liquid::Template.parse("{% embed #{link} %}")
-    end.not_to raise_error
-  end
-
   it "raises an error when link cannot be found" do
     link = "https://takeonrules.com/goes-nowhere"
 

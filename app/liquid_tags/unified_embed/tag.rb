@@ -39,9 +39,6 @@ module UnifiedEmbed
       validate_link!(actual_link)
       klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_input)
 
-      # If there are no OG metatags, we shall render an A-tag. Since the link
-      # has been validated, at least this A-tag will not 404.
-      #
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
