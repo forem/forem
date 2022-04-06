@@ -42,7 +42,7 @@ module UnifiedEmbed
       klass.__send__(:new, tag_name, validated_link, parse_context)
     end
 
-    def self.validate_link(link, limit = MAX_REDIRECTION_COUNT)
+    def self.validate_link(link, retries = MAX_REDIRECTION_COUNT)
       # Extract just the URL from the input, without any params, for validation
       actual_link = extract_only_url(link)
 
@@ -58,9 +58,9 @@ module UnifiedEmbed
       when Net::HTTPSuccess
         link
       when Net::HTTPRedirection
-        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.too_many_redirects") if limit.zero?
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.too_many_redirects") if retries.zero?
 
-        validate_link(response["location"], limit - 1)
+        validate_link(response["location"], retries - 1)
       when Net::HTTPNotFound
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
       else
