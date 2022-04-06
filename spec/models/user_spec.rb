@@ -801,8 +801,10 @@ RSpec.describe User, type: :model do
 
   describe "#last_activity" do
     it "determines a user's last activity" do
-      user = create(:user, last_comment_at: 1.minute.ago)
-      expect(user.last_activity).to eq(Time.zone.now)
+      Timecop.freeze do
+        user = create(:user, last_comment_at: 1.minute.ago)
+        expect(user.last_activity).to eq(Time.zone.now)
+      end
     end
   end
 end
