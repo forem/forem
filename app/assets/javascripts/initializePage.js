@@ -55,10 +55,10 @@ function initializePage() {
       }
       initializePodcastPlayback();
       initializeVideoPlayback();
-    }
 
-    // Initialize data-runtime context to the body data-attribute
-    document.body.dataset.runtime = window.Forem.Runtime.currentContext();
+      // Initialize data-runtime context to the body data-attribute
+      document.body.dataset.runtime = window.Forem.Runtime.currentContext();
+    }
   }, 1);
 
   callInitializers();
