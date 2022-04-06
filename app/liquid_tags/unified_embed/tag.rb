@@ -25,28 +25,28 @@ module UnifiedEmbed
     def self.new(tag_name, input, parse_context)
       stripped_input = ActionController::Base.helpers.strip_tags(input).strip
 
-      # Extract just the URL from the input, without any params, for validation
-      actual_link = extract_only_url(stripped_input)
-
-      # When Listings are disabled, it makes little sense to perform a validate_link
+      # when Listings are disabled, it makes little sense to perform a validate_link
       # network call.
-      handle_listings_disabled!(actual_link)
+      handle_listings_disabled!(stripped_input)
 
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
       # If the link is invalid, we raise an error encouraging the user to
       # check their link and try again.
-      validate_link!(actual_link)
-      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_input)
+      validated_link = validate_link(stripped_input)
+      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
 
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
-      klass.__send__(:new, tag_name, stripped_input, parse_context)
+      klass.__send__(:new, tag_name, validated_link, parse_context)
     end
 
-    def self.validate_link!(link, limit = MAX_REDIRECTION_COUNT)
-      uri = URI.parse(link)
+    def self.validate_link(link, limit = MAX_REDIRECTION_COUNT)
+      # Extract just the URL from the input, without any params, for validation
+      actual_link = extract_only_url(link)
+
+      uri = URI.parse(actual_link)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
 
@@ -56,11 +56,11 @@ module UnifiedEmbed
 
       case response
       when Net::HTTPSuccess
-        response
+        link
       when Net::HTTPRedirection
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.too_many_redirects") if limit.zero?
 
-        validate_link!(response["location"], limit - 1)
+        validate_link(response["location"], limit - 1)
       when Net::HTTPNotFound
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
       else

@@ -49,12 +49,12 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
   it "repeats validation when link returns redirect", vcr: true do
     link = "https://bit.ly/hoagintake"
 
-    allow(described_class).to receive(:validate_link!).and_call_original
+    allow(described_class).to receive(:validate_link).and_call_original
 
     VCR.use_cassette("redirected_url_fetch") do
       Liquid::Template.parse("{% embed #{link} %}")
 
-      expect(described_class).to have_received(:validate_link!).twice
+      expect(described_class).to have_received(:validate_link).twice
     end
   end
 
