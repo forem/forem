@@ -59,7 +59,9 @@
             <%= image_tag(image_url, class: "sloan mb-7", alt: "Mascot image") %>
           <% end %>
           <p class="mb-6"><%= t("views.dashboard.posts.empty.desc") %></p>
-          <p><a href="/new" class="crayons-btn crayons-btn--l"><%= t("views.dashboard.posts.empty.new") %></a></p>
+          <% if policy(Article).create? %>
+            <p><a href="/new" class="crayons-btn crayons-btn--l"><%= t("views.dashboard.posts.empty.new") %></a></p>
+          <% end %>
         </div>
       </div>
     <% end %>
