@@ -15,10 +15,10 @@ module Admin
         "Super Admin"
       elsif user.admin?
         "Admin"
-      elsif user.trusted?
-        "Tag moderator"
+      elsif user.single_resource_admin_for?(:any)
+        "Resource Admin"
       else
-        "Regular member"
+        ""
       end
     end
   end
