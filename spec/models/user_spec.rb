@@ -798,4 +798,11 @@ RSpec.describe User, type: :model do
       expect(user.profile).to respond_to(:location)
     end
   end
+
+  describe "#last_activity" do
+    it "determines a user's last activity" do
+      user = create(:user, last_comment_at: "Mon, 04 Apr 2022 00:00:00.000000000 IDT +03:00")
+      expect(user.last_activity).to eq("Mon, 04 Apr 2022 00:00:00.000000000 IDT +03:00")
+    end
+  end
 end
