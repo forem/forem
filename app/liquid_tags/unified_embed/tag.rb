@@ -10,6 +10,7 @@ module UnifiedEmbed
   # @see https://github.com/forem/forem/issues/15099 for details on the
   #      purpose of this class.
   class Tag < LiquidTagBase
+    MAX_REDIRECTION_COUNT = 3
     # You will not get a UnifiedEmbedTag instance, as we are instead
     # using this class as a lookup (e.g., Factory pattern?) for the
     # LiquidTagBase instance that is applicable for the given :link.
@@ -47,7 +48,7 @@ module UnifiedEmbed
       klass.__send__(:new, tag_name, stripped_input, parse_context)
     end
 
-    def self.validate_link!(link)
+    def self.validate_link!(link, limit = MAX_REDIRECTION_COUNT)
       uri = URI.parse(link)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
@@ -60,7 +61,9 @@ module UnifiedEmbed
       when Net::HTTPSuccess
         response
       when Net::HTTPRedirection
-        warn "redirected to #{response['location']}"
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.too_many_redirects") if limit.zero?
+
+        validate_link!(response["location"], limit - 1)
       when Net::HTTPNotFound
         raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found")
       else

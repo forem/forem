@@ -60,6 +60,29 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
   end
 
+  it "repeats validation when link returns redirect", vcr: true do
+    link = "https://bit.ly/hoagintake"
+
+    allow(described_class).to receive(:validate_link!).and_call_original
+
+    VCR.use_cassette("redirected_url_fetch") do
+      Liquid::Template.parse("{% embed #{link} %}")
+
+      expect(described_class).to have_received(:validate_link!).twice
+    end
+  end
+
+  it "raises error when link redirects more than thrice", vcr: true do
+    link = "https://bit.ly/hoagintake"
+    stub_const("UnifiedEmbed::Tag::MAX_REDIRECTION_COUNT", 0)
+
+    VCR.use_cassette("redirected_url_fetch") do
+      expect do
+        Liquid::Template.parse("{% embed #{link} %}")
+      end.to raise_error(StandardError, "Embedded link redirected too many times.")
+    end
+  end
+
   it "calls OpenGraphTag when no link-matching class is found", vcr: true do
     link = "https://takeonrules.com/about/"
 
