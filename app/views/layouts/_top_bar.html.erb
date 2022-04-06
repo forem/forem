@@ -33,7 +33,7 @@
             <turbo-frame id="authorization-articles-create-post-button" src="<%= authorization_create_post_button_path %>">
             </turbo-frame>
           <% else %>
-            <a href="<%= new_path %>" class="c-cta c-cta--branded mr-2 whitespace-nowrap"><%= t("views.main.create_post") %></a>
+            <a href="<%= create_new_post_path %>" class="c-cta c-cta--branded mr-2 whitespace-nowrap"><%= t("views.main.create_post") %></a>
           <% end %>
 
           <span class="trusted-visible-block">

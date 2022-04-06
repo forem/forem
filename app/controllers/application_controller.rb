@@ -70,6 +70,41 @@ class ApplicationController < ActionController::Base
   #   @see ApplicationController.api_action
   #   @see ApplicationController#verify_private_forem
 
+  # @!scope class
+  # @!attribute [r|w] create_new_post_path
+  #   By default, this is "/new" but sometimes we want a different path based on the handling controller's context.
+  #
+  #   @param path [String]
+  #   @return [String] the relative path to render in the "Create Post" button.
+  #
+  #   @see Stories::TaggedArticlesController#index
+  #   @see https://api.rubyonrails.org/classes/Class.html#method-i-class_attribute Class.class_attribute
+  #   @example
+  #     class CustomController < ApplicationController
+  #       def show
+  #         self.create_new_post_path = "/new/custom/path"
+  #       end
+  #     end
+  class_attribute :create_new_post_path, default: "/new", instance_writer: true
+  helper_method :create_new_post_path
+
+  # @!scope instance
+  # @!attribute [r|w] create_new_post_path
+  #
+  #   During the execution of a controller action, you can override the path for the "Create Post" button.
+  #
+  #   @param path [String]
+  #   @return [String] the relative path to render in the "Create Post" button.
+  #
+  #   @see Stories::TaggedArticlesController#index
+  #   @see ApplicationController.create_new_post_path
+  #   @example
+  #     class CustomController < ApplicationController
+  #       def show
+  #         self.create_new_post_path = "/new/custom/path"
+  #       end
+  #     end
+
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
     return if self.class.module_parent.to_s == "Admin"

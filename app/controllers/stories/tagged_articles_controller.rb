@@ -6,8 +6,12 @@ module Stories
 
     rescue_from ArgumentError, with: :bad_request
 
+    # @see ApplicationController.create_new_post_path
     def index
       @tag = Tag.find_by(name: params[:tag].downcase) || not_found
+      # In the context of a tag's "homepage", we want to have the "Create Post" prepopulate with the
+      # current tag's template.
+      self.create_new_post_path = "/new/#{@tag}"
 
       if @tag.alias_for.present?
         redirect_permanently_to("/t/#{@tag.alias_for}")

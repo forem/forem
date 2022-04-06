@@ -9,9 +9,6 @@
           </header>
           <div class="widget-body">
             <%= sanitize @tag.rules_html %>
-            <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag.name %>">
-              <%= t("views.tags.sidebar.new") %>
-            </a>
           </div>
         </div>
       <% end %>

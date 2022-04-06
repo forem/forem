@@ -19,7 +19,7 @@
       <a href="<%= mod_path %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
     </li>
     <li class="<%= ApplicationPolicy.dom_class_for(record: Article, query: :create?) %> hidden">
-      <a href="<%= new_path %>" class="c-link c-link--block"><%= t("views.main.create_post") %></a>
+      <a href="<%= create_new_post_path %>" class="c-link c-link--block"><%= t("views.main.create_post") %></a>
     </li>
     <li>
       <a href="<%= readinglist_path %>" class="c-link c-link--block"><%= t("views.main.nav.list") %></a>

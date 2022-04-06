@@ -9,6 +9,13 @@ describe('Tag index page navigation', () => {
   });
 
   it('shows Relevant by default', () => {
+    // Verify that the "Create Post" is for the given tag.
+    cy.findByRole('link', { name: 'Create Post' }).should(
+      'have.attr',
+      'href',
+      '/new/tag1',
+    );
+
     cy.findByRole('navigation', { name: 'View tagged posts by' }).within(() => {
       cy.findByRole('link', { name: 'Relevant' }).as('relevant');
       cy.findByRole('link', { name: 'Top' }).as('top');
@@ -37,6 +44,13 @@ describe('Tag index page navigation', () => {
       cy.get('@week').click(); // should not change the page
       cy.url().should('contain', '/top/week'); // so the url stays the same
     });
+
+    // Verify that the "Create Post" is for the given tag.
+    cy.findByRole('link', { name: 'Create Post' }).should(
+      'have.attr',
+      'href',
+      '/new/tag1',
+    );
   });
 
   it('should navigate to Month view', () => {
@@ -63,6 +77,13 @@ describe('Tag index page navigation', () => {
         'page',
       );
     });
+
+    // Verify that the "Create Post" is for the given tag.
+    cy.findByRole('link', { name: 'Create Post' }).should(
+      'have.attr',
+      'href',
+      '/new/tag1',
+    );
   });
 
   it('should navigate to Year view', () => {
@@ -89,6 +110,13 @@ describe('Tag index page navigation', () => {
         'page',
       );
     });
+
+    // Verify that the "Create Post" is for the given tag.
+    cy.findByRole('link', { name: 'Create Post' }).should(
+      'have.attr',
+      'href',
+      '/new/tag1',
+    );
   });
 
   it('should navigate to Infinity view', () => {
@@ -115,5 +143,12 @@ describe('Tag index page navigation', () => {
         'page',
       );
     });
+
+    // Verify that the "Create Post" is for the given tag.
+    cy.findByRole('link', { name: 'Create Post' }).should(
+      'have.attr',
+      'href',
+      '/new/tag1',
+    );
   });
 });
