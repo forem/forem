@@ -46,7 +46,7 @@ describe Admin::UsersHelper do
     it "renders the proper role for a user that isn't a Super Admin, Admin, or Resource Admin" do
       user = create(:user)
       role = helper.cascading_high_level_roles(user)
-      expect(role).to eq ""
+      expect(role).to be_nil
     end
   end
 end
