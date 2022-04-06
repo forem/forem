@@ -1,0 +1,37 @@
+<div class="crayons-card c-embed text-styles text-styles--secondary">
+  <% if page.main_properties_present? %>
+    <% if page.image %>
+      <div class="c-embed__cover">
+        <a href="<%= page.url %>" class="c-link s:max-w-50 align-middle" target="_blank" rel="noopener noreferrer">
+          <img alt="" src="<%= page.image %>" height="auto" loading="lazy" class="m-0">
+        </a>
+      </div>
+    <% end %>
+    <div class="c-embed__body">
+      <h2 class="fs-xl lh-tight">
+        <a href="<%= page.url %>" target="_blank" rel="noopener noreferrer" class="c-link">
+          <%= page.title %>
+        </a>
+      </h2>
+      <% if page.description %>
+        <p class="truncate-at-3">
+          <%= page.preferred_desc %>
+        </p>
+      <% end %>
+      <div class="color-secondary fs-s flex items-center">
+        <% if page.images.favicon %>
+          <img
+            alt="favicon"
+            class="m-0 mr-2 radius-0"
+            src="<%= Images::Optimizer.call(page.images.favicon, width: 48) %>"
+            width="24" height="24" loading="lazy" />
+        <% end %>
+        <%= url_domain %>
+      </div>
+    </div>
+  <% else %>
+    <a href="<%= url_domain %>" target="_blank" rel="noopener noreferrer">
+      <%= url_domain %>
+    </a>
+  <% end %>
+</div>

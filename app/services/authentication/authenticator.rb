@@ -24,10 +24,10 @@ module Authentication
     #
     # @see #initialize method for parameters
     #
-    # @return user [User] when the given provider is valid
+    # @return [User] when the given provider is valid
     #
-    # @raises [Authentication::Errors::PreviouslySuspended] when the user was already suspended
-    # @raises [Authentication::Errors::SpammyEmailDomain] when the associated email is spammy
+    # @raise [Authentication::Errors::PreviouslySuspended] when the user was already suspended
+    # @raise [Authentication::Errors::SpammyEmailDomain] when the associated email is spammy
     def self.call(...)
       new(...).call
     end

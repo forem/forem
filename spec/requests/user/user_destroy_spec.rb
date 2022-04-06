@@ -33,7 +33,7 @@ RSpec.describe "UserDestroy", type: :request do
 
       it "signs out" do
         delete "/users/full_delete"
-        expect(controller.current_user).to eq nil
+        expect(controller.current_user).to be_nil
       end
 
       it "redirects to sign up" do

@@ -29,7 +29,7 @@ function sendFeaturedArticleAnalytics(articleId) {
 }
 
 const FeedLoading = () => (
-  <div>
+  <div data-testid="feed-loading">
     <LoadingArticle version="featured" />
     <LoadingArticle />
     <LoadingArticle />
@@ -98,6 +98,7 @@ export const renderFeed = (timeFrame) => {
               <Article
                 {...commonProps}
                 article={pinnedArticle}
+                pinned={true}
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(pinnedArticle.id)}
               />

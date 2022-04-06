@@ -29,6 +29,17 @@ class LiquidTagBase < Liquid::Tag
     ""
   end
 
+  # @param _tag_name [String] When you do `{% embed <url> %}` the "embed" is the tag name.
+  # @param _content [String] The stuff between the tag name and the end of the liquid declaration.
+  # @param parse_context [Hash]
+  # @option parse_context [User] :user the user who's using the liquid tag (likely the article's
+  #         author).
+  # @option parse_context [Object] :source we're rendering this liquid tag "in" something, the
+  #         source is that something.  Examples iniclude Article.
+  # @option parse_context [ApplicationPolicy] :policy There are cases where we want to update liquid
+  #         tags en-masse (see https://github.com/forem/forem/pull/16460).  However, it's possible
+  #         the current user doesn't have permission to use this liquid tag.  This is the "backdoor"
+  #         for allowing that feature.  In most cases, however, we should use the LiquidTagPolicy.
   def initialize(_tag_name, _content, parse_context)
     super
     validate_contexts
@@ -37,7 +48,7 @@ class LiquidTagBase < Liquid::Tag
       parse_context.partial_options[:user],
       self,
       :initialize?,
-      policy_class: LiquidTagPolicy,
+      policy_class: parse_context.partial_options.fetch(:policy) { LiquidTagPolicy },
     )
   end
 
@@ -49,6 +60,11 @@ class LiquidTagBase < Liquid::Tag
     regex_options
       .filter_map { |regex| input.match(regex) }
       .first
+  end
+
+  # this method checks for presence of named capture group in match
+  def match_has_named_capture_group?(match, group_name)
+    match.names.include?(group_name)
   end
 
   # A method to help collaborators not need to reach into the class

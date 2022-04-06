@@ -25,14 +25,17 @@ FactoryBot.define do
     signup_cta_variant           { "navbar_basic" }
 
     trait :with_identity do
-      transient { identities { Authentication::Providers.available } }
+      transient do
+        identities { Authentication::Providers.available }
+        uid { nil }
+      end
 
       after(:create) do |user, options|
         options.identities.each do |provider|
           auth = OmniAuth.config.mock_auth.fetch(provider.to_sym)
           create(
             :identity,
-            user: user, provider: provider, uid: auth.uid, auth_data_dump: auth,
+            user: user, provider: provider, uid: options.uid || auth.uid, auth_data_dump: auth,
           )
         end
       end

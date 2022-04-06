@@ -17,7 +17,8 @@ module Settings
     setting :health_check_token, type: :string
     setting :video_encoder_key, type: :string
 
-    # Email digest frequency
+    # Emails
+    setting :contact_email, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"]
     setting :periodic_email_digest, type: :integer, default: 2
 
     # Google Analytics Tracking ID, e.g. UA-71991000-1
@@ -34,8 +35,6 @@ module Settings
             type: :string,
             default: proc { URL.local_image("icon.png") },
             validates: { url: true }
-
-    setting :logo_svg, type: :string
 
     setting :original_logo, type: :string
     setting :resized_logo, type: :string
@@ -79,7 +78,7 @@ module Settings
     setting :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
     # Onboarding
-    setting :onboarding_background_image, type: :string, validates: { url: true }
+    setting :onboarding_background_image, type: :string, validates: { url: true, unless: -> { value.blank? } }
     setting :suggested_tags, type: :array, default: %w[]
     setting :suggested_users, type: :array, default: %w[]
     setting :prefer_manual_suggested_users, type: :boolean, default: false

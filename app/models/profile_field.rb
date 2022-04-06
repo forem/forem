@@ -8,7 +8,7 @@ class ProfileField < ApplicationRecord
   enum input_type: { text_field: 0, text_area: 1 }
   enum display_area: { header: 0, left_sidebar: 1 }
 
-  belongs_to :profile_field_group, optional: true
+  belongs_to :profile_field_group
 
   validates :attribute_name, presence: true, on: :update
   validates :display_area, presence: true
@@ -22,7 +22,7 @@ class ProfileField < ApplicationRecord
   private
 
   def generate_attribute_name
-    self.attribute_name = label.titleize.scan(WORD_REGEX).join.underscore
+    self.attribute_name = "attribute_#{SecureRandom.hex}"
   end
 
   def maximum_header_field_count

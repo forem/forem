@@ -8,9 +8,9 @@
 
 <%= render "shared/webcomponents_loader_script" %>
 <% if user_signed_in? %>
-  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "articleModerationTools", "commentDropdowns", defer: true %>
+  <%= javascript_packs_with_chunks_tag "webShare", "articlePage", "articleModerationTools", "commentDropdowns", defer: true %>
 <% else %>
-  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "commentDropdowns", defer: true %>
+  <%= javascript_packs_with_chunks_tag "webShare", "articlePage", "commentDropdowns", defer: true %>
 <% end %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
@@ -69,7 +69,7 @@
         <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
           <strong><%= t("views.articles.unpublished.subtitle") %></strong><%= t("views.articles.unpublished.text") %>
           <% if user_signed_in? %>
-            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none"><%= t("views.articles.unpublished.edit") %></a>
+            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" style="display: none;"><%= t("views.articles.unpublished.edit") %></a>
           <% end %>
         </div>
       <% end %>
@@ -227,6 +227,5 @@
     <%== PollTag.script %>
     <%== RunkitTag.script %>
     <%== TweetTag.script %>
-    <%== UserSubscriptionTag.script %>
   </script>
 <% end %>

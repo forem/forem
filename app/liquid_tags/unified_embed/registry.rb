@@ -40,9 +40,8 @@ module UnifiedEmbed
     end
 
     def find_liquid_tag_for(link:)
-      link = ActionController::Base.helpers.strip_tags(link).strip if link.include?("href=")
       _regexp, klass = @registry.detect { |regexp, _tag_class| regexp.match?(link) }
-      klass
+      klass.presence || OpenGraphTag
     end
   end
 end

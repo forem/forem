@@ -3,11 +3,7 @@
 <main id="main-content" class="crayons-layout crayons-layout--limited-m">
   <header class="crayons-card flex items-center justify-between branded-4 p-3 pr-1 m:pr-5 m:p-6 m:pt-5" style="border-top-color: <%= @tag.bg_color_hex %>">
     <h1 class="crayons-title">
-      <% if @tag_model && @tag_model.pretty_name.present? %>
-        <%= @tag_model.pretty_name %>
-      <% else %>
-        <span class="opacity-50">#</span><%= @tag %>
-      <% end %>
+      <span class="opacity-50">#</span><%= @tag.accessible_name %>
     </h1>
     <div class="flex">
       <% if current_user.any_admin? %>
@@ -39,15 +35,10 @@
     </div>
     <div class="flex gap-4">
       <div class="crayons-field flex-1">
-        <%= label_tag :bg_color_hex, nil, class: "crayons-field__label" %>
-        <%= color_field_tag "tag[bg_color_hex]", @tag.bg_color_hex.presence || "#000000", placeholder: "#000000", class: "crayons-color-selector crayons-color-selector--full" %>
-      </div>
-      <div class="crayons-field flex-1">
-        <%= label_tag :text_color_hex, nil, class: "crayons-field__label" %>
-        <%= color_field_tag "tag[text_color_hex]", @tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff", class: "crayons-color-selector crayons-color-selector--full" %>
+        <%= label_tag :tag_bg_color_hex, I18n.t("views.tags.edit.form.bg_color_hex.label"), class: "crayons-field__label" %>
+        <%= text_field_tag "tag[bg_color_hex]", @tag.bg_color_hex.presence || "#000000", placeholder: "#000000", class: "crayons-textfield", data: { color_picker: true, label_text: I18n.t("views.tags.edit.form.bg_color_hex.label") } %>
       </div>
     </div>
-    <div class="crayons-notice crayons-notice--warning">We will soon update how tags are being displayed. Please define tag's primary color in "Bg color hex" field - the other one ("Text color hex") will be deprecated.</div>
     <div class="crayons-field">
       <%= label_tag :short_summary, nil, class: "crayons-field__label" %>
       <%= text_area_tag "tag[short_summary]", @tag.short_summary, placeholder: t("views.tags.edit.form.short_summary.placeholder"), class: "crayons-textfield" %>
@@ -65,3 +56,4 @@
     </div>
   <% end %>
 </main>
+<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>

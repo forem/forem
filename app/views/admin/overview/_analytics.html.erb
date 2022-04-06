@@ -1,0 +1,69 @@
+<section class="crayons-card p-7 m:basis-2-3">
+  <header class="flex justify-between items-center mb-7">
+    <h2 class="crayons-subtitle-1">Analytics and trends</h2>
+    <div class="relative w-auto">
+      <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger whitespace-nowrap" id="timeperiods-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+        <%= crayons_icon_tag("calendar", title: "Timeframes", class: "c-btn__icon") %>
+      </button>
+      <%= form_tag admin_path, method: :get, class: "crayons-dropdown right-0 left-0 s:left-auto", id: "timeperiods-dropdown" do %>
+        <fieldset class="mb-2">
+          <ul class="mb-0 p-2 flex flex-col gap-3">
+            <li class="crayons-field crayons-field--radio">
+              <%= radio_button_tag :period, 7, params[:period].to_i == 7 || true, class: "crayons-radio", id: "7days" %>
+              <label for="7days" class="crayons-field__label">Last 7 days</label>
+            </li>
+            <li class="crayons-field crayons-field--radio">
+              <%= radio_button_tag :period, 14, params[:period].to_i == 14, class: "crayons-radio", id: "14days" %>
+              <label for="14days" class="crayons-field__label">Last 14 days</label>
+            </li>
+            <li class="crayons-field crayons-field--radio">
+              <%= radio_button_tag :period, 30, params[:period].to_i == 30, class: "crayons-radio", id: "30days" %>
+              <label for="30days" class="crayons-field__label">Last 30 days</label>
+            </li>
+          </ul>
+        </fieldset>
+        <button type="submit" class="c-btn c-btn--secondary w-100">Submit</button>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="grid s:grid-cols-2 gap-7">
+    <% @analytics.each do |entity, current, previous, values| %>
+      <div>
+        <header class="color-secondary">
+          <h3 class="fs-l fw-normal"><span class="color-primary fw-bold"><%= current %></span> <%= entity.pluralize(current) %></h3>
+          <p class="flex items-center fs-s mb-1">
+            <% if previous != 0 %>
+              <% change = (Float(previous - current) / previous * 100).ceil.abs %>
+            <% elsif (previous == 0 && current > 0) %>
+              <% change = 100 %>
+            <% end %>
+
+            <% if current > previous %>
+              <%= crayons_icon_tag(:increase, width: 18, height: 18, class: "color-accent-success") %>
+              <%= change %>%
+              increase
+            <% elsif current < previous %>
+              <%= crayons_icon_tag(:decrease, width: 18, height: 18, class: "color-accent-danger") %>
+              <%= change %>%
+              decrease
+            <% else %>
+              No change
+            <% end %>
+          </p>
+        </header>
+        <canvas
+          id="postsChart"
+          width="400"
+          height="100"
+          class="-mx-1 js-chart"
+          data-days="<%= @labels.join(",") %>"
+          data-values="<%= values.join(",") %>"></canvas>
+        <footer class="flex justify-between items-center fs-xs color-secondary">
+          <span><%= @labels[0] %></span>
+          <span>Yesterday</span>
+        </footer>
+      </div>
+    <% end %>
+  </div>
+</section>

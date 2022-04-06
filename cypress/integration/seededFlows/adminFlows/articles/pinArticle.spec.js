@@ -30,18 +30,18 @@ describe('Pin an article from the admin area', () => {
       statusCode: 404,
     });
 
-    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
     // Verify that the form has submitted and the page has changed to the post page
     cy.url().should('contain', '/content_manager/articles/');
 
-    cy.findByRole('button', { name: 'Pin Post' }).should('not.exist');
-    cy.findByRole('link', { name: 'Unpin Post' }).should('exist');
-    cy.findByText(/Pinned post/i).should('exist');
+    cy.findByRole('button', { name: 'Pin post' }).should('not.exist');
+    cy.findByRole('link', { name: 'Unpin post' }).should('exist');
+    cy.findByTestId('pinned-indicator').should('exist');
   });
 
   it('should display a warning modal when pinning an article, and one is already pinned', () => {
-    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
     cy.createArticle({
       title: 'A new article',
@@ -55,7 +55,7 @@ describe('Pin an article from the admin area', () => {
     cy.findByRole('main')
       .first()
       .within(() => {
-        cy.findAllByRole('button', { name: 'Pin Post' }).last().click();
+        cy.findAllByRole('button', { name: 'Pin post' }).last().click();
       });
 
     cy.findByRole('dialog').within(() => {
@@ -67,7 +67,7 @@ describe('Pin an article from the admin area', () => {
   });
 
   it('should change the pinned article when choosing to pin a new article', () => {
-    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
     cy.createArticle({
       title: 'A new article',
@@ -81,7 +81,7 @@ describe('Pin an article from the admin area', () => {
     cy.findByRole('main')
       .first()
       .within(() => {
-        cy.findAllByRole('button', { name: 'Pin Post' }).last().click();
+        cy.findAllByRole('button', { name: 'Pin post' }).last().click();
       });
 
     cy.findByRole('dialog').within(() => {
@@ -90,12 +90,12 @@ describe('Pin an article from the admin area', () => {
 
     cy.findByRole('main').within(() => {
       cy.findByText(/A new article/i).should('exist');
-      cy.findByText(/Pinned post/i).should('exist');
+      cy.findByTestId('pinned-indicator').should('exist');
     });
   });
 
   it('should show the pinned post to a logged out user', () => {
-    cy.findAllByRole('button', { name: 'Pin Post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
     cy.signOutUser();
 

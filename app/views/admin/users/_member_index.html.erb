@@ -1,0 +1,69 @@
+<div class="crayons-card overflow-admin-main-layout-padding p-4 m:p-7">
+  <header class="flex flex-col l:flex-row justify-content-between l:items-center ">
+    <h1 class="crayons-title ml-2 m:ml-0">Members</h1>
+    <%= render "admin/users/index/tabs" %>
+  </header>
+    <%= render "admin/users/index/controls" %>
+
+    <!-- Small screen data view start -->
+    <div class="block m:hidden fs-s">
+      <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Members</h2>
+      <ul class="list-none mx-2">
+        <% @users.each do |user| %>
+          <li class="py-4">
+            <article>
+              <header class="flex">
+                <img class="radius-full mr-2" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="" />
+                <div class="flex flex-col">
+                  <h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
+                  <span class="color-base-60">@<%= user.username %></span>
+                </div>
+              </header>
+              <div class="flex justify-between py-2">
+                <div>standing info</div>
+                <div>role info</div>
+              </div>
+              <div class="flex justify-between items-end">
+                <dl class="flex gap-2">
+                  <div>
+                    <dt class="color-base-60 fw-normal">Last activity</dt>
+                    <dd>placeholder</dd>
+                  </div>
+                  <div>
+                    <dt class="color-base-60 fw-normal">Joined on</dt>
+                    <dd><%= user.registered_at.strftime("%d %b, %Y") %></dd>
+                  </div>
+                </dl>
+                <div>Orgs info</div>
+              </div>
+            </article>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <!-- Small screen data view end -->
+
+    <!-- Large screen data view start -->
+    <table class="crayons-table hidden m:block" width="100%">
+      <thead>
+        <tr>
+          <th scope="col">Member</th>
+          <th scope="col">Status</th>
+          <th scope="col">Last activity & Joined on</th>
+          <th scope="col">Organizations</th>
+        </tr>
+      </thead>
+      <tbody class="crayons-card">
+        <% @users.each do |user| %>
+        <tr>
+          <td><%= link_to user.name, admin_user_path(user) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <!-- Large screen data view end -->
+
+    <div class="flex justify-end">
+      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 <nav class="hidden m:block" aria-label="Dashboards">
   <ul class="list-none p-0">
+    <% if policy(Article).has_existing_articles_or_can_create_new_ones? %>
     <li>
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>"
         href="<%= dashboard_path %>"
@@ -26,6 +27,7 @@
         <span class="c-indicator"><%= @user.followers_count %></span>
       </a>
     </li>
+    <% end %>
 
     <li>
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_tags" %>"
@@ -63,18 +65,22 @@
       </a>
     </li>
 
+    <%- if Listing.feature_enabled? %>
     <li>
       <a class="crayons-link crayons-link--block" href="/listings/dashboard" data-no-instant>
         <%= t("views.dashboard.actions.listings") %>
         <%= crayons_icon_tag("external-link", class: "ml-1") %>
       </a>
     </li>
+    <%- end %>
 
+    <%- if policy(Article).has_existing_articles_or_can_create_new_ones? %>
     <li>
       <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_path %>">
         <%= t("views.dashboard.actions.analytics") %>
       </a>
     </li>
+    <%- end %>
 
   <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
     <% @organizations.each do |org| %>
@@ -84,7 +90,7 @@
     <% end %>
   <% end %>
 
-  <% if policy(:video).new? && policy(:video).enabled? %>
+  <% if policy(:video).new? %>
     <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant><%= t("views.dashboard.actions.upload") %>
     </a>
   <% end %>

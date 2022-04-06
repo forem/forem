@@ -47,10 +47,15 @@ describe('Moderation Tools for Posts', () => {
       cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article').then(() => {
         cy.findByRole('button', { name: 'Moderation' }).click();
 
+        // Helper function for pipe command
+        const click = ($el) => $el.click();
+
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open adjust tags section' }).click({
-            force: true,
-          });
+          // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
+          cy.findByRole('button', { name: 'Open adjust tags section' })
+            .as('adjustTagsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
 
           cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
           cy.findByRole('button', { name: 'Submit' }).click();

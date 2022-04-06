@@ -113,7 +113,7 @@ RSpec.describe CodesandboxTag, type: :liquid_tag do
 
     it "accepts a valid id with good and bad options, and filters bad options" do
       liquid = generate_tag(valid_id_with_valid_and_invalid_options)
-      puts liquid.render
+
       expect(liquid.render).to include("<iframe")
       expect(liquid.render).not_to include("fakeoption=/fakeoptionvalue")
     end

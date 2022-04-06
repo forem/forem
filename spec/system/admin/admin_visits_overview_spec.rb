@@ -8,7 +8,7 @@ RSpec.describe "Admin visits overview page", type: :system, js: true do
     visit admin_path
   end
 
-  it "tracks link clicks" do
-    expect { click_link("Forem Admin Documentation") }.to change { Ahoy::Event.count }.by 1
+  it "has analytics" do
+    expect(page.body).to include "Analytics and trends"
   end
 end

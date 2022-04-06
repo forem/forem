@@ -4,20 +4,6 @@ module ListingsToolkit
 
   MANDATORY_FIELDS_FOR_UPDATE = %i[body_markdown title tag_list].freeze
 
-  def set_listing
-    @listing = Listing.find(params[:id])
-  end
-
-  def rate_limit?
-    begin
-      rate_limit!(:listing_creation)
-    rescue StandardError => e
-      @listing.errors.add(:listing_creation, e.message)
-      return true
-    end
-    false
-  end
-
   def create
     @listing = Listing.new(listing_params)
     organization_id = @listing.organization_id
@@ -26,7 +12,6 @@ module ListingsToolkit
     authorize @listing, :authorized_organization_poster? if organization_id.present?
 
     @listing.user_id = current_user.id
-    org = Organization.find_by(id: organization_id)
 
     if listing_params[:action] == "draft"
       create_draft
@@ -39,15 +24,10 @@ module ListingsToolkit
       return
     end
 
-    cost = @listing.cost
-    # we use the org's credits if available, otherwise we default to the user's
-    if org&.enough_credits?(cost)
-      create_listing(org, cost)
-    elsif current_user.enough_credits?(cost)
-      create_listing(current_user, cost)
-    else
-      process_no_credit_left
+    purchase_successful = @listing.purchase(current_user) do |purchaser|
+      create_listing(purchaser, @listing.cost)
     end
+    process_no_credit_left unless purchase_successful
   end
 
   ALLOWED_PARAMS = %i[
@@ -92,8 +72,6 @@ module ListingsToolkit
   end
 
   def update
-    authorize @listing
-
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
       bump_result = Listings::Bump.call(@listing, user: current_user)
@@ -120,11 +98,28 @@ module ListingsToolkit
     process_after_update
   end
 
+  private
+
+  def set_and_authorize_listing
+    @listing = Listing.find(params[:id])
+    authorize @listing
+  end
+
+  def rate_limit?
+    begin
+      rate_limit!(:listing_creation)
+    rescue ::RateLimitChecker::LimitReached => e
+      @listing.errors.add(:listing_creation, e.message)
+      return true
+    end
+    false
+  end
+
   def first_publish(cost)
     author = @listing.author
     available_user_credits = author.is_a?(Organization) ? current_user.credits.unspent.size : 0
 
-    if author.credits.unspent.size >= cost
+    if author.enough_credits?(cost)
       create_listing(author, cost)
     elsif available_user_credits >= cost
       create_listing(current_user, cost)

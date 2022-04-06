@@ -34,11 +34,11 @@ RSpec.describe "Reactions", type: :request do
       end
 
       it "does not set Surrogate-Key cache control headers" do
-        expect(response.headers["Surrogate-Key"]).to eq(nil)
+        expect(response.headers["Surrogate-Key"]).to be_nil
       end
 
       it "does not set X-Accel-Expires headers" do
-        expect(response.headers["X-Accel-Expires"]).to eq(nil)
+        expect(response.headers["X-Accel-Expires"]).to be_nil
       end
 
       it "does not set Fastly cache control and surrogate control headers" do

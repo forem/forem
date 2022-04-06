@@ -1,7 +1,7 @@
 module Api
   module V0
     class ListingsController < ApiController
-      include Pundit
+      include Pundit::Authorization
       include ListingsToolkit
 
       # actions `create` and `update` are defined in the module `ListingsToolkit`,
@@ -10,7 +10,7 @@ module Api
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
       before_action :authenticate_with_api_key_or_current_user, only: %i[show]
       before_action :set_cache_control_headers, only: %i[index show]
-      before_action :set_listing, only: %i[update]
+      before_action :set_and_authorize_listing, only: %i[update]
       skip_before_action :verify_authenticity_token, only: %i[create update]
       # rubocop:enable Rails/LexicallyScopedActionFilter
 
@@ -89,11 +89,12 @@ module Api
         render "show", status: :ok
       end
 
-      # NOTE: when doing the big listings refactoring we decided not to break
-      # this API. Since other code assumes the params will be under listing,
-      # we're copying them over.
+      # Since our documentation examples now use "listing", prefer that,
+      # but permit the legacy parameter "classified_listing",
+      # since this was a published API before the refactoring renamed
+      # ClassifiedListing to Listing in https://github.com/forem/forem/pull/7910
       def listing_params
-        params["listing"] = params["classified_listing"]
+        params["listing"] ||= params["classified_listing"]
         if (category_id = find_category_id(params.dig("listing", "category")))
           params["listing"]["listing_category_id"] = category_id
         end

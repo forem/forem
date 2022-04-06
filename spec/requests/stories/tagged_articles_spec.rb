@@ -63,16 +63,20 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
 
         it "renders page when tag is not supported but has at least one approved article" do
           unsupported_tag = create(:tag, supported: false)
-          create(:article, published: true, approved: true, tags: unsupported_tag)
+          create(:article, published: true, approved: true, tags: unsupported_tag, published_at: 5.years.ago)
 
           get "/t/#{unsupported_tag.name}/top/week"
-          expect(response.body).to include(unsupported_tag.name)
+
+          expect(response).to be_successful
+
           get "/t/#{unsupported_tag.name}/top/month"
-          expect(response.body).to include(unsupported_tag.name)
+          expect(response).to be_successful
+
           get "/t/#{unsupported_tag.name}/top/year"
-          expect(response.body).to include(unsupported_tag.name)
+          expect(response).to be_successful
+
           get "/t/#{unsupported_tag.name}/top/infinity"
-          expect(response.body).to include(unsupported_tag.name)
+          expect(response).to be_successful
         end
 
         it "returns not found if no published posts and tag not supported" do
@@ -158,7 +162,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def sets_remember_token
-            expect(response.cookies["remember_user_token"]).not_to be nil
+            expect(response.cookies["remember_user_token"]).not_to be_nil
           end
 
           it "renders properly even if site config is private" do
@@ -171,6 +175,14 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
             create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
             get "/t/#{tag.name}"
             expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+          end
+
+          it "includes a link to Relevant", :aggregate_failures do
+            get "/t/#{tag.name}/latest"
+
+            # The link should be `/t/tag2` (without a trailing slash) instead of `/t/tag2/`
+            expected_tag = "<a data-text=\"Relevant\" href=\"/t/#{tag.name}\""
+            expect(response.body).to include(expected_tag)
           end
         end
 
@@ -199,7 +211,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def does_not_set_remember_token
-            expect(response.cookies["remember_user_token"]).to be nil
+            expect(response.cookies["remember_user_token"]).to be_nil
           end
 
           def renders_pagination

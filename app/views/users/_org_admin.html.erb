@@ -1,4 +1,3 @@
-<%= javascript_packs_with_chunks_tag "colorPreview", "clipboardCopy", defer: true %>
 <%= render "shared/webcomponents_loader_script" %>
 
 <div class="crayons-card crayons-card--content-rows">
@@ -220,7 +219,7 @@
         </div>
       <% end %>
       <p>
-        <%= t("views.settings.org.admin.delete.questions_html", email: link_to(ForemInstance.email, ForemInstance.email)) %>
+        <%= t("views.settings.org.admin.delete.questions_html", email: link_to(ForemInstance.contact_email, ForemInstance.contact_email)) %>
       </p>
     </div>
   </div>

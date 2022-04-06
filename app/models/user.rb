@@ -22,7 +22,7 @@ class User < ApplicationRecord
     end
   end
 
-  include StringAttributeCleaner.for(:email)
+  include StringAttributeCleaner.nullify_blanks_for(:email)
 
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
@@ -409,11 +409,9 @@ class User < ApplicationRecord
     :suspended?,
     :tag_moderator?,
     :tech_admin?,
-    :trusted, # TODO: Remove this method from the code-base
     :trusted?,
     :user_subscription_tag_available?,
     :vomited_on?,
-    :warned, # TODO: Remove this method from the code-base
     :warned?,
     :workshop_eligible?,
     to: :authorizer,
@@ -499,17 +497,6 @@ class User < ApplicationRecord
     monthly_dues.positive?
   end
 
-  def resave_articles
-    articles.find_each do |article|
-      if article.path
-        cache_bust = EdgeCache::Bust.new
-        cache_bust.call(article.path)
-        cache_bust.call("#{article.path}?i=i")
-      end
-      article.save
-    end
-  end
-
   def profile_image_90
     profile_image_url_for(length: 90)
   end
@@ -527,10 +514,6 @@ class User < ApplicationRecord
 
   def receives_follower_email_notifications?
     email.present? && subscribed_to_email_follower_notifications?
-  end
-
-  def hotness_score
-    search_score
   end
 
   def authenticated_through?(provider_name)
@@ -633,21 +616,6 @@ class User < ApplicationRecord
 
   def create_conditional_autovomits
     Spam::Handler.handle_user!(user: self)
-  end
-
-  # TODO: @citizen428 I don't want to completely remove this method yet, as we
-  # have similar methods in other models. But the previous implementation used
-  # three profile fields that we can't guarantee to exist across all Forems. So
-  # for now this method will just return an empty string.
-  def tag_keywords_for_search
-    ""
-  end
-
-  # TODO: this can be removed once we migrate away from ES
-  def search_score
-    counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
-    score = (counts_score + tag_keywords_for_search.size) * reputation_modifier
-    score.to_i
   end
 
   def destroy_follows

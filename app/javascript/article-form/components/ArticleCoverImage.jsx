@@ -95,10 +95,7 @@ export class ArticleCoverImage extends Component {
   };
 
   useNativeUpload = () => {
-    // This namespace is not implemented in the native side. This allows us to
-    // deploy our refactor and wait until our iOS app is approved by AppStore
-    // review. The old web implementation will be the fallback until then.
-    return Runtime.isNativeIOS('imageUpload_disabled');
+    return Runtime.isNativeIOS('imageUpload');
   };
 
   initNativeImagePicker = (e) => {

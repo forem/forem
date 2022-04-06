@@ -26,9 +26,7 @@ en:
             label: Pretty name
             placeholder: This is the name at the top of the show page.
           bg_color_hex:
-            label: Bg color hex
-          text_color_hex:
-            label: Text color hex
+            label: Tag color
           short_summary:
             label: Short summary
             placeholder: Brief overview of what this tag is all about.
