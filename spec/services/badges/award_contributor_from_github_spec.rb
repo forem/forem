@@ -14,13 +14,7 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service, vcr: true do
     allow(Settings::Authentication).to receive(:providers).and_return([])
     user = create(:user, :with_identity, identities: ["github"], uid: "389169")
 
-    Timecop.freeze("2021-08-16T13:49:20Z") do
-      expect do
-        VCR.use_cassette("github_client_commits_contributor_badge") do
-          described_class.call
-        end
-      end.to change(user.badge_achievements, :count).by(0)
-    end
+    expect { described_class.call }.not_to change(user.badge_achievements, :count)
   end
 
   it "awards contributor badge" do
