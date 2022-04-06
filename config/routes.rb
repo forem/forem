@@ -33,6 +33,12 @@ Rails.application.routes.draw do
       draw :listing
     end
 
+    namespace :authorization do
+      scope :articles do
+        get "create_post_button", controller: "articles"
+      end
+    end
+
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
         resource :pinned_article, only: %w[show update destroy]

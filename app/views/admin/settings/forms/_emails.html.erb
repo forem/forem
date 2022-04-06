@@ -4,15 +4,9 @@
                action: "submit->config#updateConfigurationSettings",
                testid: "emailForm"
              } }) do |f| %>
-  <div class="card mt-3">
-    <%= render partial: "admin/shared/card_header",
-               locals: {
-                 header: "Emails",
-                 state: "collapse",
-                 target: "emailBodyContainer",
-                 expanded: false
-               } %>
-    <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
+  <details class="crayons-card">
+    <summary class="crayons-subtitle-2 p-6">Emails</summary>
+    <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :contact_email %>
@@ -34,5 +28,5 @@
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>
-  </div>
+  </details>
 <% end %>

@@ -1,0 +1,4 @@
+<%= f.text_field :search, value: params[:search], class: "crayons-textfield mt-0", placeholder: "Search member...", aria: { label: "Search member by name, username, email, or Twitter/GitHub usernames" } %>
+<button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
+  <%= crayons_icon_tag(:search, aria_hidden: true) %>
+</button>

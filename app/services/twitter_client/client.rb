@@ -44,9 +44,10 @@ module TwitterClient
         error_class = "::TwitterClient::Errors::#{class_name}".safe_constantize
         raise error_class, exception.message if error_class
 
-        error_class = if exception.class < Twitter::Error::ClientError
+        error_class = case exception
+                      when Twitter::Error::ClientError
                         TwitterClient::Errors::ClientError
-                      elsif exception.class < Twitter::Error::ServerError
+                      when Twitter::Error::ServerError
                         TwitterClient::Errors::ServerError
                       else
                         TwitterClient::Errors::Error

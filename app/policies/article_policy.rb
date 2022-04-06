@@ -77,6 +77,32 @@ class ArticlePolicy < ApplicationPolicy
     true
   end
 
+  # Does the user already have existing articles?  Can they create an article?
+  #
+  # @return [TrueClass] They have existing published articles OR can create new ones.
+  # @return [FalseClass] They do not have published articles NOR can they create new ones.
+  #
+  # @note As part of our aspirations to only show users what is relevant to them and "hiding" what
+  #       is not, this method will help us with the edge case of "should we show the user a
+  #       dashboard listing of posts?"
+  #
+  # @note This handles the case in which a user has lost the ability to create posts (e.g. we've
+  #       toggled on the feature limiting posts to admins only) but they have at least one published
+  #       post.  In that case we want to show them things like "their posts's analytics" or a
+  #       dashboard of their published posts.
+  #
+  # @note This policy method is a bit different.  It is strictly meant to return true or false.
+  #       Other policies might raise exceptions, but the purpose of this method is for conditional
+  #       rendering.
+  def has_existing_articles_or_can_create_new_ones?
+    require_user!
+    return true if user.articles.published.exists?
+
+    create?
+  rescue ApplicationPolicy::NotAuthorizedError
+    false
+  end
+
   # @see {ArticlePolicy.scope_users_authorized_to_action} for "mirrored" details.
   def create?
     require_user_in_good_standing!
@@ -142,10 +168,10 @@ class ArticlePolicy < ApplicationPolicy
 
   alias edit? update?
 
-  # [@jeremyf] I made a decision to compress preview? into create?  However, someone editing a post
-  # should also be able to preview?  Perhaps it would make sense to be "preview? is create? ||
-  # update?".
-  alias preview? create?
+  # The ArticlesController#preview method is very complicated but aspirationally, we want to ensure
+  # that someone can preview an article of their if they already have a published article or they
+  # can create new ones.
+  alias preview? has_existing_articles_or_can_create_new_ones?
 
   def permitted_attributes
     %i[title body_html body_markdown main_image published canonical_url

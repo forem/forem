@@ -1,65 +1,6 @@
 require "rails_helper"
 
-# These are methods that I envision extracting.  However, they are relevant only for these tests.
-# And to extract would require more explict interface definition.
-RSpec.shared_examples "it requires an authenticated user" do
-  let(:user) { nil }
-
-  it "otherwise raises ApplicationPolicy::UserRequiredError" do
-    expect { subject }.to raise_error(ApplicationPolicy::UserRequiredError)
-  end
-end
-
-RSpec.shared_examples "it requires a user in good standing" do
-  let(:user) { create(:user, :suspended) }
-
-  it "otherwise raises ApplicationPolicy::UserSuspendedError" do
-    expect { subject }.to raise_error(ApplicationPolicy::UserSuspendedError)
-  end
-end
-
-RSpec.shared_examples "permitted roles" do |**kwargs|
-  to = kwargs.delete(:to)
-  label = kwargs.except(:to).map { |key, value| "#{key} is #{value}" }.join(" AND ")
-  label = "when #{label} " if label.present?
-
-  Array(to).each do |role|
-    context "#{label}#{role.inspect} authorization" do
-      before { kwargs.each { |k, v| allow(described_class).to receive(k).and_return(v) } }
-
-      if role == :suspended_author
-        let(:author) { suspended_user }
-        let(:user) { author }
-      else
-        let(:user) { public_send(role) }
-      end
-
-      it { is_expected.to be_truthy }
-    end
-  end
-end
-
-RSpec.shared_examples "disallowed roles" do |**kwargs|
-  to = kwargs.delete(:to)
-  label = kwargs.map { |key, value| "#{key} is #{value}" }.join(" AND ")
-  label = "when #{label} " if label.present?
-
-  Array(to).each do |role|
-    context "#{label}#{role.inspect} authorization" do
-      before { kwargs.each { |k, v| allow(described_class).to receive(k).and_return(v) } }
-
-      if role == :suspended_author
-        let(:author) { suspended_user }
-        let(:user) { author }
-      else
-        let(:user) { public_send(role) }
-      end
-
-      it { is_expected.to be_falsey }
-    end
-  end
-end
-
+# See ./spec/policies/shared_examples/authorization_shared_examples.rb for the various shared examples.
 RSpec.describe ArticlePolicy do
   subject(:method_call) { policy.public_send(policy_method) }
 
@@ -110,7 +51,7 @@ RSpec.describe ArticlePolicy do
     it { is_expected.to be_truthy }
   end
 
-  %i[create? new? preview?].each do |method_name|
+  %i[create? new?].each do |method_name|
     describe "##{method_name}" do
       let(:policy_method) { method_name }
 
@@ -119,6 +60,37 @@ RSpec.describe ArticlePolicy do
       it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
       it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
       it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+    end
+  end
+
+  %i[preview? has_existing_articles_or_can_create_new_ones?].each do |method_name|
+    describe method_name.to_s do
+      let(:policy_method) { method_name }
+
+      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+      it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
+      it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+
+      context "when user has published articles" do
+        before do
+          create(:article, published: true, user: user)
+        end
+
+        # Below are two scenarios: one with limit_post_creation_to_admins? as true and the other as
+        # limit_post_creation_to_admins? as false.  In both cases, when the user has published
+        # articles, it doesn't matter if they can create an article or not, the
+        # `has_existing_articles_or_can_create_new_ones?` should return true (which is what the
+        # "permitted roles" shared spec verifies).
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
+      end
+
+      context "when user has no published articles" do
+        before { user.articles.delete_all }
+
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+        it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+      end
     end
   end
 

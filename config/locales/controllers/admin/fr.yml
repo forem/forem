@@ -1,0 +1,7 @@
+---
+fr:
+  admin:
+    extensions_controller:
+      update_success: Les extensions ont été mises à jour.
+    spaces_controller:
+      update_success: L'espace a été mis à jour.

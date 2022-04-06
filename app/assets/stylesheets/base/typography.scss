@@ -325,4 +325,27 @@ body {
   .twitter-tweet {
     margin: 0 0 var(--content-rhythm) 0;
   }
+
+  .c-embed {
+    margin: 0 0 var(--content-rhythm) 0;
+  }
+}
+
+// This class should eventually have its own dedicated file
+.c-embed {
+  padding: var(--su-3);
+
+  @media screen and (min-width: $breakpoint-s) {
+    padding: var(--su-5);
+  }
+
+  &__cover {
+    margin-bottom: var(--su-4);
+  }
+
+  h2,
+  p {
+    margin: 0;
+    margin-bottom: var(--su-2);
+  }
 }

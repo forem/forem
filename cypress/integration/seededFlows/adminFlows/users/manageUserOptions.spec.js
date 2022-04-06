@@ -1,3 +1,5 @@
+import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
+
 function openUserOptions(callback) {
   cy.findByRole('button', { name: 'Options' })
     .should('have.attr', 'aria-haspopup', 'true')
@@ -9,22 +11,6 @@ function openUserOptions(callback) {
 
       cy.get(`#${dropdownId}`).within(callback);
     });
-}
-
-function verifyAndDismissUserUpdatedMessage(message) {
-  cy.findByTestId('flash-success')
-    .as('success')
-    .then((element) => {
-      expect(element.text().trim()).equal(message);
-    });
-
-  cy.get('@success').within(() => {
-    cy.findByRole('button', { name: 'Dismiss message' })
-      .should('have.focus')
-      .click();
-  });
-
-  cy.findByTestId('flash-success').should('not.exist');
 }
 
 describe('Manage User Options', () => {

@@ -59,7 +59,7 @@
     </div>
   </header>
 
-  <div class="crayons-layout crayons-layout--2-cols">
+  <div class="crayons-layout crayons-layout--admin-2-cols">
     <div class="admin__left-sidebar crayons-layout__left-sidebar" data-controller="sidebar" data-action="load@window->sidebar#disableCurrentNavItem">
       <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
     </div>
@@ -81,6 +81,7 @@
           <div data-alert-target="alertZone" role="alert"></div>
       </div>
 
+      <%# We want to skip /admin/path but render /admin/nested/path %>
       <% if request.path.split("/")[-3] == "admin" %>
         <%= render "admin/shared/tabbed_navbar", menu_items: AdminMenu.nested_menu_items_from_request(request) %>
       <% end %>
