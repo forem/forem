@@ -1,6 +1,8 @@
 module Admin
   module UsersHelper
     def format_last_activity_timestamp(timestamp)
+      return if timestamp.blank?
+
       if timestamp.today?
         "Today, #{timestamp.strftime('%d %b')}"
       elsif timestamp.yesterday?
@@ -17,8 +19,6 @@ module Admin
         "Admin"
       elsif user.single_resource_admin_for?(:any)
         "Resource Admin"
-      else
-        ""
       end
     end
   end
