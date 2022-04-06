@@ -99,7 +99,7 @@ en:
       tag:
         invalid_url: URL provided may have a typo or error; please check and try again
         not_found: URL provided was not found; please check and try again
-        unsupported_url: Embeds for this URL are not supported
+        listings_disabled: Listings are disabled on this Forem; cannot embed a listing URL
     user_subscription_tag:
       submit: Submit
       submitting: Submitting...

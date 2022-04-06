@@ -27,6 +27,10 @@ module UnifiedEmbed
       # Extract just the URL from the input, without any params, for validation
       actual_link = extract_only_url(stripped_input)
 
+      # When Listings are disabled, it makes little sense to perform a validate_link
+      # network call.
+      handle_listings_disabled!(actual_link)
+
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
       # If the link is invalid, we raise an error encouraging the user to
@@ -64,6 +68,12 @@ module UnifiedEmbed
       end
     rescue SocketError
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+    end
+
+    def self.handle_listings_disabled!(link)
+      return unless link.start_with?("#{URL.url}/listings/") && !Listing.feature_enabled?
+
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.listings_disabled")
     end
 
     def self.extract_only_url(input)
