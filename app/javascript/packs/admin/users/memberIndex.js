@@ -94,7 +94,7 @@ const handleEmailCopy = (copyEmail) => {
           detail: { message: 'Copied to clipboard' },
         }),
       );
-      closeCurrentlyOpenDropdown();
+      closeCurrentlyOpenDropdown(true);
     })
     .catch(() => {
       document.dispatchEvent(
