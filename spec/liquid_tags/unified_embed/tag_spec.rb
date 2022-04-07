@@ -37,7 +37,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end.to raise_error(StandardError, "URL provided was not found; please check and try again")
   end
 
-  it "repeats validation when link returns not-allowed" do
+  it "repeats validation when link returns not-allowed", vcr: true do
     link = "https://takeonrules.com/not-allowed-response"
 
     allow(described_class).to receive(:validate_link).and_call_original
