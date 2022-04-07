@@ -18,7 +18,7 @@
     <li>
       <a href="<%= mod_path %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
     </li>
-    <li>
+    <li class="<%= ApplicationPolicy.dom_class_for(record: Article, query: :create?) %> hidden">
       <a href="<%= new_path %>" class="c-link c-link--block"><%= t("views.main.create_post") %></a>
     </li>
     <li>
@@ -33,3 +33,4 @@
     </li>
   </ul>
 </div>
+<%= javascript_packs_with_chunks_tag "applyApplicationPolicyToggles", defer: true %>
