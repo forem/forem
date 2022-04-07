@@ -1,4 +1,5 @@
 import { openDropdown, closeDropdown } from '@utilities/dropdownUtils';
+import { copyToClipboard } from '@utilities/runtime';
 
 // We present up to 50 users in the UI at once, and for performance reasons we don't want to add individual click listeners to each dropdown menu or inner menu item
 // Instead we listen for click events anywhere in the table, and identify required actions based on data attributes of the target
@@ -85,9 +86,7 @@ document.addEventListener('keyup', ({ key }) => {
  * @param {string} copyEmail The email to copy
  */
 const handleEmailCopy = (copyEmail) => {
-  // TODO: Replace with Runtime implementation of the same
-  navigator.clipboard
-    .writeText(copyEmail)
+  copyToClipboard(copyEmail)
     .then(() => {
       document.dispatchEvent(
         new CustomEvent('snackbar:add', {
