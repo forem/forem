@@ -80,6 +80,17 @@ module Admin
       redirect_to admin_user_path(params[:id])
     end
 
+    def export
+      @users = User.select(:name, :username, :email, :created_at, :last_notification_activity).order(:name)
+      respond_to do |format|
+        format.csv do
+          response.headers["Content-Type"] = "text/csv"
+          response.headers["Content-Disposition"] = "attachment; filename=users.csv"
+          render template: "admin/users/export"
+        end
+      end
+    end
+
     def export_data
       user = User.find(params[:id])
       send_to_admin = params[:send_to_admin].to_boolean
