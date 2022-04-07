@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
+  let(:listing) { create(:listing) }
+
   it "delegates parsing to the link-matching class" do
     link = "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"
 
@@ -58,12 +60,27 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
   end
 
-  it "raises an error when no link-matching class is found" do
-    link = "https://takeonrules.com/about"
+  it "calls OpenGraphTag when no link-matching class is found", vcr: true do
+    link = "https://takeonrules.com/about/"
+
+    allow(OpenGraphTag).to receive(:new).and_call_original
+
+    VCR.use_cassette("takeonrules_fetch") do
+      expect do
+        stub_head_request(link)
+        Liquid::Template.parse("{% embed #{link} %}")
+      end.not_to raise_error
+    end
+
+    expect(OpenGraphTag).to have_received(:new)
+  end
+
+  it "raises an error when Listings are disabled and a listing URL is embedded" do
+    allow(FeatureFlag).to receive(:accessible?).with(:listing_feature_enabled).and_return(false)
+    listing_url = "#{URL.url}/listings/#{listing.slug}"
 
     expect do
-      stub_head_request(link)
-      Liquid::Template.parse("{% embed #{link} %}")
-    end.to raise_error(StandardError, "Embeds for this URL are not supported")
+      Liquid::Template.parse("{% embed #{listing_url} %}")
+    end.to raise_error(StandardError, "Listings are disabled on this Forem; cannot embed a listing URL")
   end
 end

@@ -4,6 +4,7 @@
     <aside class="side-bar">
       <% if @tag && @tag.rules_html.present? %>
         <div class="widget">
+        <%= application_policy_content_tag("div", record: Article, query: :create?, feature_flag: :limit_post_creation_to_admins, class: "widget") do %>
           <header>
             <h4><%= t("views.tags.sidebar.guidelines") %></h4>
           </header>
@@ -13,7 +14,7 @@
               <%= t("views.tags.sidebar.new") %>
             </a>
           </div>
-        </div>
+        <% end %>
       <% end %>
       <% if @tag && @tag.wiki_body_html.present? %>
         <div class="widget">

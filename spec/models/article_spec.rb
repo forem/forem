@@ -1141,23 +1141,31 @@ RSpec.describe Article, type: :model do
         sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
 
-      it "queues a slack message to be sent" do
+      it "queues a slack message to be sent for a new published article" do
         sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-          article.update(published: true, published_at: Time.current)
+          create(:article, user: user, published: true, published_at: Time.current)
         end
       end
 
-      it "does not queue a message for an article published more than 30 seconds ago" do
+      it "does not queue a message for a new article published more than 30 seconds ago" do
         Timecop.freeze(Time.current) do
           sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-            article.update(published: true, published_at: 31.seconds.ago)
+            create(:article, published: true, published_at: 31.seconds.ago)
           end
         end
       end
 
       it "does not queue a message for a draft article" do
         sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-          article.update(body_markdown: "foobar", published: false)
+          markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nHey this is the article"
+          create(:article, body_markdown: markdown, published: false)
+        end
+      end
+
+      it "doesn't queue a message for an article that remains published" do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
+          markdown = "---\ntitle: Title\npublished: true\ndescription:\ntags: heytag\n---\n\nHey this is the article"
+          article.update(body_markdown: markdown, published: true)
         end
       end
 
@@ -1342,7 +1350,6 @@ RSpec.describe Article, type: :model do
       following_user.follow(user)
 
       expect(article.followers.length).to eq(1)
-      expect(article.followers.first.username).to eq(following_user.username)
     end
   end
 

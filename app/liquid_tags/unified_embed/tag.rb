@@ -27,6 +27,10 @@ module UnifiedEmbed
       # Extract just the URL from the input, without any params, for validation
       actual_link = extract_only_url(stripped_input)
 
+      # When Listings are disabled, it makes little sense to perform a validate_link
+      # network call.
+      handle_listings_disabled!(actual_link)
+
       # Before matching against the embed registry, we check if the link
       # is valid (e.g. no typos).
       # If the link is invalid, we raise an error encouraging the user to
@@ -34,13 +38,9 @@ module UnifiedEmbed
       validate_link!(actual_link)
       klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: stripped_input)
 
-      # If the link is valid but doesn't match the registry, we return
-      # an "unsupported URL" error. Eventually we shall render a fallback
-      # embed using OpenGraph/TwitterCard metadata (if available).
-      # If there are no OG metatags, then we render an A-tag. Since the link
+      # If there are no OG metatags, we shall render an A-tag. Since the link
       # has been validated, at least this A-tag will not 404.
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.unsupported_url") unless klass
-
+      #
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
       # liquid tag for the given link.
@@ -68,6 +68,12 @@ module UnifiedEmbed
       end
     rescue SocketError
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+    end
+
+    def self.handle_listings_disabled!(link)
+      return unless link.start_with?("#{URL.url}/listings/") && !Listing.feature_enabled?
+
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.listings_disabled")
     end
 
     def self.extract_only_url(input)

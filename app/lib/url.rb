@@ -49,7 +49,9 @@ module URL
   #
   # A reaction URL is the URL of its reactable.
   #
-  # @param reactable [Reaction] the reaction to create the URL for
+  # @param reaction [Reaction, #reactable] the reaction to create the URL for
+  # @return [String]
+  # @see .url
   def self.reaction(reaction)
     url(reaction.reactable.path)
   end

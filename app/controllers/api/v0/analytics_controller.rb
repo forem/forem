@@ -4,7 +4,7 @@ module Api
       respond_to :json
 
       rescue_from ArgumentError, with: :error_unprocessable_entity
-      rescue_from UnauthorizedError, with: :error_unauthorized
+      rescue_from ApplicationPolicy::NotAuthorizedError, with: :error_unauthorized
 
       before_action :authenticate_with_api_key_or_current_user!
       before_action :authorize_user_organization
@@ -48,8 +48,8 @@ module Api
       def authorize_user_organization
         return unless analytics_params[:organization_id]
 
-        @org = Organization.find_by(id: analytics_params[:organization_id])
-        raise UnauthorizedError unless @org && @user.org_member?(@org)
+        @org = Organization.find(analytics_params[:organization_id])
+        authorize(@org, :analytics?)
       end
 
       def load_owner

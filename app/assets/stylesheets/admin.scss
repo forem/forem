@@ -23,6 +23,46 @@ label {
   }
 }
 
+/****
+The admin area's shared <main> has padding of var(--su-2).
+In the new member index view we want inner content to be able to take up full screen width.
+Since we will want to be able to do the same in later admin area redesigns, we have created a helper class,
+which may be more easily removed once we no longer wish admin layouts to have a padded <main> by default. 
+****/
+.overflow-admin-main-layout-padding {
+  margin: calc(-1 * var(--su-2));
+}
+
+// New pagination styles as added in Admin Member Index view. As we roll out these styles to other admin views, the above CSS will eventually be removed.
+.admin-pagination {
+  color: var(--link-color-secondary);
+
+  &--link {
+    padding: var(--su-1);
+  }
+
+  &--inactive {
+    color: var(--base-30);
+  }
+}
+
+.member-data-heading {
+  box-shadow: 0 2px 4px var(--header-shadow);
+}
+
+// Member index view search and filter indicators
+.indicator-btn {
+  .search-indicator {
+    display: inline-block;
+  }
+
+  &[aria-expanded='true'] {
+    .search-indicator {
+      display: none;
+    }
+  }
+}
+
 .bg-featured {
   background: #bbffd2;
 }

@@ -317,4 +317,32 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(optimized_helper).to eq(cloudinary_image_tag)
     end
   end
+
+  describe "#application_policy_content_tag" do
+    subject(:content) do
+      application_policy_content_tag(html_tag_type, record: Article, query: :create?, feature_flag: given_feature_flag,
+                                                    class: "something") do
+        "My Content"
+      end
+    end
+
+    let(:given_feature_flag) { :hello_world }
+    let(:html_tag_type) { "p" }
+
+    it "has a policy class based on record and query" do
+      expect(content).to include(%(<p class="something js-policy-article-create">My Content</p>))
+    end
+
+    context "when the given flag is enabled" do
+      around do |example|
+        FeatureFlag.enable(given_feature_flag)
+        example.call
+        FeatureFlag.remove(given_feature_flag)
+      end
+
+      it "adds the 'hidden' to the HTML element's class list" do
+        expect(content).to include(%(<p class="something js-policy-article-create hidden">My Content</p>))
+      end
+    end
+  end
 end

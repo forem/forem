@@ -116,6 +116,8 @@ class ReservedWords
     links
     linux
     listen
+    listing
+    listings
     live
     live_articles
     loop

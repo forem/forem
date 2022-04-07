@@ -497,17 +497,6 @@ class User < ApplicationRecord
     monthly_dues.positive?
   end
 
-  def resave_articles
-    articles.find_each do |article|
-      if article.path
-        cache_bust = EdgeCache::Bust.new
-        cache_bust.call(article.path)
-        cache_bust.call("#{article.path}?i=i")
-      end
-      article.save
-    end
-  end
-
   def profile_image_90
     profile_image_url_for(length: 90)
   end
@@ -563,6 +552,13 @@ class User < ApplicationRecord
 
   def reactions_to
     Reaction.for_user(self)
+  end
+
+  def last_activity
+    return unless registered == true
+
+    [registered_at, last_comment_at, last_article_at, latest_article_updated_at, last_reacted_at, profile_updated_at,
+     last_moderation_notification, last_notification_activity].compact.max
   end
 
   protected
