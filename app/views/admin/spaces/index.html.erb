@@ -36,6 +36,14 @@
       </label>
     </div>
 
+    <div class="fs-s color-secondary">
+      <p><%= crayons_icon_tag("info") %> When you turn on comment-only for this space, it also means that for the time being…</p>
+      <ul>
+        <li>Active campaigns will be hidden.  <a href="https://admin.forem.com/docs/advanced-customization/config/campaigns">Learn more about Campaigns</a>.</li>
+        <li>Only admins who are part of an organization will be able to post on behalf of that organization.  <a href="https://admin.forem.com/docs/managing-your-community/organization-pages#overview.">Learn more about Organizations</a>.</li>
+        <li>It will take about <%= pluralize(AsyncInfoController::NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY, "minute") %> to propagate <abbr title="User Interface">UI</abbr> changes for all members. <a href="https://developers.forem.com/technical-overview/caching">Learn more about Caching.</a></li>
+      </ul>
+    </div>
     <div>
       <%= form.button "Save", type: "submit", class: "c-btn c-btn--primary" %>
     </div>

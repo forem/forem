@@ -28,7 +28,7 @@ describe('User index view', () => {
 
         cy.findByRole('button', { name: 'Search' }).click();
 
-        // Coreect search result should appear
+        // Correct search result should appear
         cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
       });
 
@@ -41,11 +41,9 @@ describe('User index view', () => {
         cy.findByRole('combobox', { name: 'User role' }).select('super_admin');
         cy.findByRole('button', { name: 'Filter' }).click();
 
-        // Search results should include these two results
+        // Filter results should include these two results
         cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
-        cy.findByRole('heading', { name: 'Apple Auth Admin User' }).should(
-          'exist',
-        );
+        cy.findAllByText('Apple Auth Admin User').should('exist');
       });
 
       it('Prevents both search and filter widgets being visible at the same time', () => {
@@ -65,14 +63,19 @@ describe('User index view', () => {
           .should('have.attr', 'aria-expanded', 'true');
         cy.findByRole('button', { name: 'Search' }).should('exist');
 
-        // verify the filter options have now closed
+        // Verify the filter options have now closed
         cy.get('@filterButton').should('have.attr', 'aria-expanded', 'false');
         cy.findByRole('combobox').should('not.exist');
 
-        // now re-click filter options and check search options have closed
+        // Now re-click filter options and check search options have closed
         cy.get('@filterButton').click();
         cy.get('@searchButton').should('have.attr', 'aria-expanded', 'false');
         cy.findByRole('button', { name: 'Search' }).should('not.exist');
+      });
+
+      it(`Clicks through to the Member Detail View`, () => {
+        cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
+        cy.url().should('contain', '/admin/users/1');
       });
     });
   });
@@ -97,6 +100,9 @@ describe('User index view', () => {
 
         cy.findByRole('button', { name: 'Search' }).click();
 
+        // Correct search result should appear
+        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
+
         // The table headers consistitute a row, plus one result
         cy.findAllByRole('row').should('have.length', 2);
       });
@@ -105,8 +111,17 @@ describe('User index view', () => {
         cy.findByRole('combobox', { name: 'User role' }).select('super_admin');
         cy.findByRole('button', { name: 'Filter' }).click();
 
+        // Filter results should include these two results
+        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
+        cy.findAllByText('Apple Auth Admin User').should('exist');
+
         // Table header, 'normal' admin and apple auth admin
         cy.findAllByRole('row').should('have.length', 3);
+      });
+
+      it(`Clicks through to the Member Detail View`, () => {
+        cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
+        cy.url().should('contain', '/admin/users/1');
       });
     });
   });

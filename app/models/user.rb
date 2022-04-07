@@ -554,6 +554,13 @@ class User < ApplicationRecord
     Reaction.for_user(self)
   end
 
+  def last_activity
+    return unless registered == true
+
+    [registered_at, last_comment_at, last_article_at, latest_article_updated_at, last_reacted_at, profile_updated_at,
+     last_moderation_notification, last_notification_activity].compact.max
+  end
+
   protected
 
   # Send emails asynchronously
