@@ -1,10 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Admin::ChartsData, type: :service do
-  def format_date(datetime)
-    datetime.utc.to_date.iso8601
-  end
-
   it "returns proper data type" do
     expect(described_class.new.call).to be_an_instance_of(Array)
   end
