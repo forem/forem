@@ -379,8 +379,6 @@ module ApplicationHelper
   # @param name [String,Symbol] the HTML element name (e.g. "li", "div", "a")
   # @param record [Object] the record for which we're testing a policy
   # @param query [Symbol, String] the query we're running on the policy
-  # @param feature_flag [Symbol] the named feature flag that when enabled will add the "hidden"
-  #        class to the dom element.
   # @param kwargs [Hash] The arguments pass, with modifications to the given :class (see
   #        implementation details).
   #
@@ -389,14 +387,9 @@ module ApplicationHelper
   # @see ApplicationPolicy.dom_class_for
   # @see https://api.rubyonrails.org/classes/ActionView/Helpers/TagHelper.html#method-i-content_tag
   # @see ./app/javascript/packs/applyApplicationPolicyToggles.js
-  #
-  # @note This assumes that for the given feature flag, when enabled, we will add the "hidden"
-  #       class.
-  # @note I hope you are correctly busting the cache for this feature_flag
-  def application_policy_content_tag(name, record:, query:, feature_flag:, **kwargs, &block)
+  def application_policy_content_tag(name, record:, query:, **kwargs, &block)
     dom_class = kwargs.delete(:class) || kwargs.delete("class") || ""
-    dom_class += " #{ApplicationPolicy.dom_class_for(record: record, query: query)}"
-    dom_class += " hidden" if FeatureFlag.enabled?(feature_flag)
+    dom_class += " #{ApplicationPolicy.dom_classes_for(record: record, query: query)}"
 
     content_tag(name, class: dom_class, **kwargs, &block)
   end

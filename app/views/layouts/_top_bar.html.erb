@@ -29,7 +29,7 @@
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
-          <%= application_policy_content_tag("a", record: Article, query: :create?, feature_flag: :limit_post_creation_to_admins, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
+          <%= application_policy_content_tag("a", record: Article, query: :create?, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
             <%= t("views.main.create_post") %>
           <% end %>
 

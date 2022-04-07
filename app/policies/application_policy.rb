@@ -91,7 +91,7 @@ class ApplicationPolicy
     raise ApplicationPolicy::UserRequiredError, I18n.t("policies.application_policy.you_must_be_logged_in")
   end
 
-  # This method provides a means for creating a consistent DOM class for "policy" related HTML elements.
+  # This method provides a means for creating consistent DOM classes for "policy" related HTML elements.
   #
   # @param record [Object] what object are we testing our policy?
   # @param query [String,Symbol] what query are we asking of the object's corresponding policy?
@@ -100,9 +100,19 @@ class ApplicationPolicy
   #       call (e.g. `policy(Article).create?`)
   #
   # @see Pundit::Authorization.policy pundit's #policy helper method
+  # @see Pundit::PolicyFinder
   #
   # @return [String] a dom class compliant string, see the corresponding specs for expected values.
-  def self.dom_class_for(record:, query:)
+  def self.dom_classes_for(record:, query:)
+    dom_classes = [base_dom_class_for(record: record, query: query)]
+    # I don't want the Policy instance, because due to construction, that could raise an exception.
+    # The class will do just fine.
+    policy_class = Pundit::PolicyFinder.new(record).policy
+    dom_classes << "hidden" if policy_class&.include_hidden_dom_class_for?(query: query)
+    dom_classes.join(" ")
+  end
+
+  def self.base_dom_class_for(record:, query:)
     fragments = %w[js policy]
     case record
     when Symbol
@@ -116,6 +126,18 @@ class ApplicationPolicy
     fragments << query.to_s.underscore.delete("?").to_s
     fragments.join("-")
   end
+
+  # @api private
+  # @abstract
+  #
+  # @param query [Symbol] the method name we would be calling on the policy instance.
+  # @return [TrueClass] if we should hide the dom element.
+  # @return [FalseClass] if we should not hide the dom element.
+  # rubocop:disable Lint/UnusedMethodArgument
+  def self.include_hidden_dom_class_for?(query:)
+    false
+  end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   # @param user [User] who's the one taking the action?
   #
