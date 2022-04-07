@@ -129,7 +129,8 @@
           </td>
           <td>
             <div class="relative">
-              <button type="button" id="<%= user.id %>-action-dropdown-btn" data-toggle-dropdown="<%= user.id %>-action-dropdown" class="c-btn c-btn--icon-alone ml-auto" aria-expanded="false" aria-controls="<%= user.id %>-action-dropdown" aria-label="User actions: <%= user.name %>">
+              <button type="button" id="<%= user.id %>-action-dropdown-btn" data-toggle-dropdown="<%= user.id %>-action-dropdown" class="c-btn c-btn--icon-alone ml-auto"
+                aria-expanded="false" aria-controls="<%= user.id %>-action-dropdown" aria-haspopup="true" aria-label="User actions: <%= user.name %>">
                 <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
               </button>
               <div id="<%= user.id %>-action-dropdown" class="crayons-dropdown right-0">
