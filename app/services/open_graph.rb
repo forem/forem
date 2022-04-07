@@ -12,9 +12,7 @@ class OpenGraph
   CACHE_EXPIRY_IN_MINUTES = 15
 
   def initialize(url)
-    # get the html from cache or fetch new
     html = fetch_html(url)
-    # MetaInspector can read html
     @page = MetaInspector.new(url, document: html)
     @tags = meta_tags
   end
