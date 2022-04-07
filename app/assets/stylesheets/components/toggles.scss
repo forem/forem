@@ -16,10 +16,6 @@
     border-radius: 1000px;
     transition: var(--transition-props);
 
-    @media (prefers-reduced-motion: reduce) {
-      transition-duration: 0ms;
-    }
-
     &::after {
       content: '';
       background: var(--toggle-knob-bg);
@@ -31,10 +27,6 @@
       transition: var(--transition-props);
       box-shadow: 0 0 0 1px rgba(var(--black), 0.05),
         0 2px 3px rgba(var(--black), 0.2);
-
-      @media (prefers-reduced-motion: reduce) {
-        transition-duration: 0ms;
-      }
     }
   }
 
