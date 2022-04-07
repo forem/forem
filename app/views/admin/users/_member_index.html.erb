@@ -12,8 +12,8 @@
         <% @users.includes([:organization_memberships]).each do |user| %>
           <li class="py-4">
             <article>
-              <header class="flex items-center justify-between mb-2">
-                <div class="flex">
+              <header class="flex items-center justify-between m:justify-start mb-2">
+                <div class="flex grow-1 m:max-w-50">
                   <a href="<%= admin_user_path(user.id) %>" class="mr-2">
                     <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
                   </a>
@@ -25,7 +25,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="flex justify-between items-center">
+                <div class="flex justify-between items-center grow-1">
                   <div class="hidden m:block">
                     <% if user.suspended? %>
                       <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Suspended
