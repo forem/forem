@@ -1,17 +1,12 @@
 import { h } from 'preact';
-import PropTypes from 'prop-types';
 
-export const Toggle = ({ description, ...otherProps }) => {
+export const Toggle = ({ ...otherProps }) => {
   return (
-    <label class="c-toggle" aria-label={description}>
+    <div class="c-toggle">
       <input type="checkbox" {...otherProps} />
       <span class="c-toggle__control" />
-    </label>
+    </div>
   );
 };
 
 Toggle.displayName = 'Toggle';
-
-Toggle.propTypes = {
-  description: PropTypes.string.isRequired,
-};

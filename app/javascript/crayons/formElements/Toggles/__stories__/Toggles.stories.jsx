@@ -5,6 +5,14 @@ import ToggleDoc from './Toggles.mdx';
 export default {
   component: Toggle,
   title: 'Components/Form Elements/Toggles',
+  decorators: [
+    (story) => (
+      <label class="flex gap-2">
+        {story()}
+        Remember: form elements should be wrapped with labels!
+      </label>
+    ),
+  ],
   parameters: {
     docs: {
       page: ToggleDoc,
@@ -18,22 +26,11 @@ export default {
         defaultValue: { summary: false },
       },
     },
-    description: {
-      description:
-        'All form elements should have description provided for accessibility reasons. This will only be accessible to screen readers.',
-      control: {
-        type: 'text',
-      },
-      table: {
-        defaultValue: { summary: undefined },
-      },
-    },
   },
 };
 
 export const Default = (args) => <Toggle {...args} />;
 Default.args = {
-  description: 'This is an a11y description',
   checked: false,
 };
 
