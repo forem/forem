@@ -19,7 +19,7 @@ jobs:
             
             Feature requests that require more discussion may be closed. Read more about our [feature request process](https://forem.dev/foremteam/heads-up-github-discussions-and-feature-requests-54ff) on forem.dev.
 
-            To our amazing contributors: issues labeled `type: bug` are always up for grabs, but for feature requests, please wait until we add a `ready for dev` before starting to work on it.
+            To our amazing contributors: [issues labeled `bug`](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3Abug) are always up for grabs, but for feature requests, please wait until we add a `ready for dev` before starting to work on it.
 
             To claim an issue to work on, please leave a comment. If you've claimed the issue and need help, please ping @forem-team. The OSS Community Manager or the engineers on OSS rotation will follow up.
 
