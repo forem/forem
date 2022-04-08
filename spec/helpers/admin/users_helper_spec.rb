@@ -72,5 +72,18 @@ describe Admin::UsersHelper do
       role = helper.format_role_tooltip(user)
       expect(role).to eq "Resource Admin: Article"
     end
+
+    it "renders the proper, comma-separated tooltip for a Resource Admin with multiple resource_types" do
+      user.add_role(:single_resource_admin, Article)
+      user.add_role(:single_resource_admin, Badge)
+      role = helper.format_role_tooltip(user)
+      expect(role).to eq "Resource Admin: Article, Badge"
+    end
+
+    it "does not render a the resource_type for a Trusted user" do
+      user.add_role(:trusted)
+      role = helper.format_role_tooltip(user)
+      expect(role).to be_nil
+    end
   end
 end
