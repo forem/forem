@@ -9,7 +9,7 @@
     <div class="block xl:hidden fs-s">
       <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Members</h2>
       <ul class="list-none mx-2">
-        <% @users.includes([:organization_memberships]).each do |user| %>
+        <% @users.includes([:organizations]).each do |user| %>
           <li class="py-4">
             <article>
               <header class="flex items-center justify-between m:justify-start mb-2">
@@ -79,13 +79,7 @@
                   </div>
                 </dl>
                 <div>
-                  <% if user.organization_memberships.any? %>
-                    <% user.organization_memberships.includes([:organization]).each do |org_membership| %>
-                      <span class="crayons-hover-tooltip" data-tooltip="<%= org_membership.organization.name %>">
-                        <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="c-link crayons-logo crayons-logo--l">
-                      </span>
-                    <% end %>
-                  <% end %>
+                  <%= render "admin/users/index/organizations", organizations: user.organizations %>
                 </div>
               </div>
             </article>
@@ -107,7 +101,7 @@
         </tr>
       </thead>
       <tbody class="crayons-card">
-        <% @users.includes([:organization_memberships]).each do |user| %>
+        <% @users.includes([:organizations]).each do |user| %>
         <tr>
           <td>
             <div class="flex s:items-start flex-col s:flex-row">
@@ -142,12 +136,8 @@
           </p>
           </td>
           <td>
-            <% if user.organization_memberships.any? %>
-              <% user.organization_memberships.includes([:organization]).each do |org_membership| %>
-                <span class="crayons-hover-tooltip" data-tooltip="<%= org_membership.organization.name %>">
-                  <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="c-link crayons-logo crayons-logo--l">
-                </span>
-              <% end %>
+            <% if user.organizations.any? %>
+              <%= render "admin/users/index/organizations", organizations: user.organizations %>
             <% else %>
               -
             <% end %>
