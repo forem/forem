@@ -186,10 +186,14 @@ module Articles
               AND comments.deleted = false
               AND comments.created_at > :oldest_published_at"]
         },
-        # Weight to give for the number of intersecting tags the given
-        # user follows and the article has.
-        matching_tags_factor: {
-          clause: "LEAST(10.0, SUM(followed_tags.points))::integer",
+        # Weight to give for the the intersection of positive tag follows and the articles tags.  We
+        # look at the sum of the followed points.
+        matching_positive_tag_intersection_sum_of_points_factor: {
+          enabled: false,
+          # NOTE: here we're using points and not explicit points.  There does exist drift from the
+          # explicit points (e.g. what the user set for the tag) and what we've calculated based on
+          # their interactions (e.g. the `points`).
+          clause: "GREATEST(0.0, LEAST(10.0, SUM(followed_tags.points)))::integer",
           cases: (0..9).map { |n| [n, 0.70 + (0.0303 * n)] },
           fallback: 1,
           requires_user: true,
@@ -204,6 +208,45 @@ module Articles
                 AND followed_tags.follower_type = 'User'
                 AND followed_tags.follower_id = :user_id
                 AND followed_tags.explicit_points >= 0"]
+        },
+        # Weight to give for the number of intersecting tags the given
+        # user follows with a positive score and the article has.
+        matching_positive_tag_intersection_count_factor: {
+          clause: "COUNT(followed_tags.follower_id)",
+          cases: [[0, 0.86], [1, 0.94], [2, 0.98]],
+          fallback: 1,
+          requires_user: true,
+          joins: ["LEFT OUTER JOIN taggings
+            ON taggings.taggable_id = articles.id
+              AND taggable_type = 'Article'",
+                  "INNER JOIN tags
+              ON taggings.tag_id = tags.id",
+                  "LEFT OUTER JOIN follows AS followed_tags
+              ON tags.id = followed_tags.followable_id
+                AND followed_tags.followable_type = 'ActsAsTaggableOn::Tag'
+                AND followed_tags.follower_type = 'User'
+                AND followed_tags.follower_id = :user_id
+                AND followed_tags.explicit_points >= 0"]
+        },
+        # Weight to give for the number of intersecting tags the given user follows with a negative
+        # score and the article has.
+        matching_negative_tag_intersection_count_factor: {
+          # NOTE: We're not looking at the actual negative points but the number of negative tags.
+          clause: "COUNT(negative_followed_tags.id)",
+          cases: [[0, 1], [1, 0.9], [2, 0.75], [3, 0.55], [4, 0.3]],
+          fallback: 0.05,
+          requires_user: true,
+          joins: ["LEFT OUTER JOIN taggings
+            ON taggings.taggable_id = articles.id
+              AND taggable_type = 'Article'",
+                  "INNER JOIN tags
+              ON taggings.tag_id = tags.id",
+                  "LEFT OUTER JOIN follows AS negative_followed_tags
+              ON tags.id = negative_followed_tags.followable_id
+                AND negative_followed_tags.followable_type = 'ActsAsTaggableOn::Tag'
+                AND negative_followed_tags.follower_type = 'User'
+                AND negative_followed_tags.follower_id = :user_id
+                AND negative_followed_tags.explicit_points < 0"]
         },
         # Weight privileged user's reactions.
         privileged_user_reaction_factor: {
