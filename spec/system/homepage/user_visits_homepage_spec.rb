@@ -66,20 +66,20 @@ RSpec.describe "User visits a homepage", type: :system do
           expect(page).to have_selector(".sidebar-navigation-link", count: 1)
         end
 
-        within(".other-nav-heading", match: :first) do
+        within("nav[aria-labelledby='other-nav-heading']", match: :first) do
           expect(page).to have_selector(".sidebar-navigation-link", count: 2)
         end
       end
 
       it "shows the Other section when other nav links exist" do
-        within(".other-nav-heading", match: :first) do
+        within("nav[aria-labelledby='other-nav-heading']", match: :first) do
           expect(page).to have_selector(".other-navigation-links")
         end
 
         NavigationLink.other_section.destroy_all
         visit "/"
 
-        expect(page).not_to have_selector(".other-nav-heading")
+        expect(page).not_to have_selector("nav[aria-labelledby='other-nav-heading']")
       end
 
       it "hides link when display_only_when_signed_in is true" do
@@ -196,7 +196,7 @@ RSpec.describe "User visits a homepage", type: :system do
           expect(page).to have_text(navigation_link_3.name)
         end
 
-        within(".other-nav-heading", match: :first) do
+        within("nav[aria-labelledby='other-nav-heading']", match: :first) do
           expect(page).to have_text(navigation_link_2.name)
         end
       end
@@ -207,7 +207,7 @@ RSpec.describe "User visits a homepage", type: :system do
           expect(page).to have_link(href: navigation_link_3.url)
         end
 
-        within(".other-nav-heading", match: :first) do
+        within("nav[aria-labelledby='other-nav-heading']", match: :first) do
           expect(page).to have_link(href: navigation_link_2.url)
         end
       end
