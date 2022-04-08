@@ -1,4 +1,5 @@
-<div class="crayons-card overflow-admin-main-layout-padding p-4 xl:p-7">
+<%= javascript_packs_with_chunks_tag "admin/users/memberIndex", defer: true %>
+<div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-4 xl:p-7">
   <header class="flex flex-col l:flex-row justify-content-between l:items-center ">
     <h1 class="crayons-title ml-2 m:ml-0">Members</h1>
     <%= render "admin/users/index/tabs" %>
@@ -44,9 +45,9 @@
                       <span class="c-indicator mr-2 inline-block" style="--bg: #A3A3A3"></span>Good standing
                     <% end %>
                   </div>
-                  <button type="button" class="c-btn c-btn--icon-alone ml-auto" aria-label="User actions: #{user.name}">
-                    <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
-                  </button>
+                  <div class="ml-auto">
+                    <%= render "admin/users/index/user_actions_dropdown", user: user, id: "responsive-#{user.id}" %>
+                  </div>
                 </div>
               </header>
               <div class="flex justify-between mb-2 block m:hidden">
@@ -97,7 +98,7 @@
           <th scope="col">Status</th>
           <th scope="col">Last activity & Joined on</th>
           <th scope="col">Organizations</th>
-          <th scope="col" class="screen-reader-only">Actions</div>
+          <th scope="col" class="screen-reader-only">Actions</th>
         </tr>
       </thead>
       <tbody class="crayons-card">
@@ -143,9 +144,7 @@
             <% end %>
           </td>
           <td>
-            <button type="button" class="c-btn c-btn--icon-alone ml-auto" aria-label="User actions: #{user.name}">
-              <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
-            </button>
+            <%= render "admin/users/index/user_actions_dropdown", user: user, id: "xl-#{user.id}" %>
           </td>
         </tr>
         <% end %>
