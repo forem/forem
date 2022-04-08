@@ -1,0 +1,58 @@
+module Users
+  class OnboardingsController < ApplicationController
+    before_action :set_no_cache_header
+    before_action :authenticate_user!
+    after_action :verify_authorized
+
+    ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
+    ALLOWED_ONBOARDING_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
+
+    def onboarding_update
+      authorize User
+
+      user_params = {}
+
+      if params[:user]
+        if params[:user].key?(:username) && params[:user][:username].blank?
+          return render json: { errors: I18n.t("users_controller.username_blank") }, status: :unprocessable_entity
+        end
+
+        sanitize_user_params
+        user_params = params[:user].permit(ALLOWED_USER_PARAMS)
+      end
+
+      update_result = Users::Update.call(current_user, user: user_params, profile: profile_params)
+
+      if update_result.success?
+        render json: {}, status: :ok
+      else
+        render json: { errors: update_result.errors_as_sentence }, status: :unprocessable_entity
+      end
+    end
+
+    def onboarding_checkbox_update
+      if params[:user]
+        current_user.assign_attributes(params[:user].permit(ALLOWED_ONBOARDING_PARAMS))
+      end
+
+      current_user.saw_onboarding = true
+      authorize User
+
+      if current_user.save
+        render json: {}, status: :ok
+      else
+        render json: { errors: errors }, status: :unprocessable_entity
+      end
+    end
+
+    private
+
+    def sanitize_user_params
+      params[:user].compact_blank!
+    end
+
+    def profile_params
+      params[:profile] ? params[:profile].permit(Profile.static_fields + Profile.attributes) : nil
+    end
+  end
+end
