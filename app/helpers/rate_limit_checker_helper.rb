@@ -4,6 +4,9 @@ module RateLimitCheckerHelper
     I18n.t("helpers.rate_limit_checker_helper.general", thing: thing, timeframe: timeframe)
   end
 
+  # @return [Hash<Symbol,Hash<Symbol,Object>>] Each element of the returning hash *must* have the
+  #         following keys: `:min`, `:placeholder`, `:title`, `:description`.  It *may* have a
+  #         `:disabled` key.
   def configurable_rate_limits
     {
       published_article_creation: {
@@ -76,7 +79,8 @@ module RateLimitCheckerHelper
         min: 1,
         placeholder: 1,
         title: I18n.t("helpers.rate_limit_checker_helper.listing.title"),
-        description: I18n.t("helpers.rate_limit_checker_helper.listing.description")
+        description: I18n.t("helpers.rate_limit_checker_helper.listing.description"),
+        disabled: !Listing.feature_enabled?
       },
       organization_creation: {
         min: 1,
