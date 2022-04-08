@@ -19,11 +19,34 @@
       <tbody class="crayons-card">
         <% @invitations.each do |user| %>
           <tr>
-            <td><%= link_to user.username, admin_user_path(user) %></td>
+            <td>
+              <div class="flex">
+                <%# TODO: replace with partial once merged %>
+                <a href="<%= admin_user_path(user.id) %>" class="mr-2">
+                  <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
+                </a>
+                <div class="flex flex-col">
+                  <h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
+                  <div class="flex">
+                    <span class="color-base-60">@<%= user.username %></span>
+                    <span class="hidden m:block">
+                        &nbsp;
+                      <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
+                        <%= cascading_high_level_roles(user) %>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </td>
             <td><%= user.email %></td>
             <td><%= user.created_at.strftime("%d %b, %Y") %></td>
             <td>
-              <%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %>
+              <div class="flex">
+                <button type="button" class="c-btn c-btn--icon-alone ml-auto" aria-label="Invitation actions: #{user.name}">
+                  <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
+                </button>
+              </div>
             </td>
           </tr>
         <% end %>
