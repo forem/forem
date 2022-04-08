@@ -10,22 +10,21 @@
     <table class="crayons-table" width="100%">
       <thead>
         <tr>
-          <th scope="col">User</th>
-          <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Email</th>
+          <th scope="col">Invited member</th>
+          <th scope="col">Email address</th>
+          <th scope="col">Invited on</th>
+          <th scope="col" class="screen-reader-only">Actions</th>
         </tr>
       </thead>
       <tbody class="crayons-card">
         <% @invitations.each do |user| %>
           <tr>
             <td><%= link_to user.username, admin_user_path(user) %></td>
-            <td><%= user.id %></td>
-            <td><%= user.name %></td>
             <td><%= user.email %></td>
-            <h5>
-              <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %></td>
-            </h5>
+            <td><%= user.created_at.strftime("%d %b, %Y") %></td>
+            <td>
+              <%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %>
+            </td>
           </tr>
         <% end %>
       </tbody>
