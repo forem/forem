@@ -79,7 +79,7 @@
                   </div>
                 </dl>
                 <div>
-                  <%= render "admin/users/index/organizations", user: user %>
+                  <%= render "admin/users/index/organizations", organizations: user.organizations %>
                 </div>
               </div>
             </article>
@@ -137,7 +137,7 @@
           </td>
           <td>
             <% if user.organizations.any? %>
-              <%= render "admin/users/index/organizations", user: user %>
+              <%= render "admin/users/index/organizations", organizations: user.organizations %>
             <% else %>
               -
             <% end %>
