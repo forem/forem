@@ -9,8 +9,9 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
     let(:admin) { create(:user, :super_admin) }
 
     before do
-      create(:profile_field, label: "Test field")
-      user.profile.update!(test_field: "text is here")
+      profile_field = create(:profile_field, label: "Test field")
+      attr_name = profile_field.attribute_name
+      user.profile.update!(attr_name => "text is here")
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
       create(:listing, user: user)
@@ -33,7 +34,8 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
     end
 
     it "reassigns profile info" do
-      expect(user.profile.test_field).to be_blank
+      attr_name = ProfileField.find_by(label: "Test field").attribute_name
+      expect(user.profile.public_send(attr_name)).to be_blank
     end
 
     it "creates an entry in the BanishedUsers table" do

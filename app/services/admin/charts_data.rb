@@ -5,7 +5,7 @@ module Admin
     end
 
     def call
-      period = @length.days.ago..Time.current
+      period = (@length + 1).days.ago..1.day.ago
       previous_period = (@length * 2).days.ago..@length.days.ago
 
       grouped_posts = Article.where(published_at: period).group("DATE(published_at)").size
@@ -13,7 +13,7 @@ module Admin
       grouped_reactions = Reaction.where(created_at: period).group("DATE(created_at)").size
       grouped_users = User.where(registered_at: period).group("DATE(registered_at)").size
 
-      days_range = (@length - 1).downto(0)
+      days_range = @length.downto(1)
       posts_values = days_range.map { |n| grouped_posts[n.days.ago.to_date] || 0 }
       comments_values = days_range.map { |n| grouped_comments[n.days.ago.to_date] || 0 }
       reactions_values = days_range.map { |n| grouped_reactions[n.days.ago.to_date] || 0 }

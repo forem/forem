@@ -11,7 +11,7 @@ describe DataUpdateScripts::SetOnboardingProfileFieldsForExistingForems do
 
   let!(:profile_field1) { create(:profile_field, label: "summary") }
   let!(:profile_field2) { create(:profile_field, label: "random") }
-  let(:profile_field3) { create(:profile_field, label: "location") }
+  let!(:profile_field3) { create(:profile_field, label: "location") }
 
   it "toggles show_in_onboarding to true for specific profile fields" do
     expect do
@@ -21,10 +21,6 @@ describe DataUpdateScripts::SetOnboardingProfileFieldsForExistingForems do
   end
 
   it "updates the labels for specific profile fields" do
-    # NOTE: we update the label manually here because when
-    # we create the profile field the attribute_name is a
-    # underscored version of the label.
-    profile_field3.update(label: "Where are you located?")
     described_class.new.run
     expect(profile_field3.reload.label).to eq("Location")
   end

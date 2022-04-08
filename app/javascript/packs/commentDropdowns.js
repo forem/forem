@@ -4,14 +4,13 @@ import {
   getDropdownRepositionListener,
 } from '@utilities/dropdownUtils';
 import { locale } from '@utilities/locale';
-
-/* global Runtime   */
+import { copyToClipboard } from '@utilities/runtime';
 
 const handleCopyPermalink = (closeDropdown) => {
   return (event) => {
     event.preventDefault();
     const permalink = event.target.href;
-    Runtime.copyToClipboard(permalink).then(() => {
+    copyToClipboard(permalink).then(() => {
       addSnackbarItem({ message: 'Copied to clipboard' });
     });
     closeDropdown();
@@ -21,7 +20,7 @@ const handleCopyPermalink = (closeDropdown) => {
 const initializeArticlePageDropdowns = () => {
   // Gather all dropdown triggers for comment options and profile previews
   const dropdownTriggers = document.querySelectorAll(
-    'button[id^=comment-dropdown-trigger], button[id^=comment-profile-preview-trigger-], button[id^=toggle-comments-sort-dropdown]',
+    'button[id^=comment-dropdown-trigger], button[id^=comment-profile-preview-trigger-]',
   );
 
   for (const dropdownTrigger of dropdownTriggers) {

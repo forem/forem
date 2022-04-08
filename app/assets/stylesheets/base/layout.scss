@@ -192,6 +192,17 @@
   }
 }
 
+// Unlike the main app, in the admin area we only break into 2 side-by-side columns at large breakpoint,
+// to allow more real estate for data tables
+.crayons-layout--admin-2-cols {
+  @media (min-width: $breakpoint-l) {
+    --layout: var(--layout-sidebar-left-width) var(--layout-content-width);
+    --layout-sidebar-left-width: 240px;
+    --layout-content-width: 1fr;
+    --layout-gap: var(--su-4);
+  }
+}
+
 // Temporary solution for sidebar on mobile
 .crayons-layout__sidebar-left,
 .crayons-layout__sidebar-right {

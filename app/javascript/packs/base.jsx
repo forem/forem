@@ -1,4 +1,3 @@
-/* global Runtime */
 import 'focus-visible';
 import {
   initializeMobileMenu,
@@ -6,6 +5,7 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
+import * as Runtime from '@utilities/runtime';
 
 // Unique ID applied to modals created using window.Forem.showModal
 const WINDOW_MODAL_ID = 'window-modal';
@@ -101,6 +101,7 @@ window.Forem = {
       render(null, currentModalContainer);
     }
   },
+  Runtime,
 };
 
 function getPageEntries() {
