@@ -7,7 +7,7 @@
       </div>
       <%= render "admin/users/index/controls" %>
     </header>
-    <table class="crayons-table" width="100%">
+    <table class="crayons-table crayons-table__lowercase" width="100%">
       <thead>
         <tr>
           <th scope="col">Invited member</th>
@@ -52,7 +52,9 @@
         <% end %>
       </tbody>
     </table>
-    <%= paginate @invitations, theme: "internal" %>
+    <div class="flex justify-end">
+      <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
+    </div>
   <div>
 <% else %>
   <header>
