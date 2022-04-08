@@ -28,7 +28,7 @@ module Admin
       elsif user.admin?
         "Admin"
       elsif user.single_resource_admin_for?(:any)
-        "Resource Admin: #{user.roles.pluck(:resource_type).join(', ')}"
+        "Resource Admin: #{user.roles.pluck(:resource_type).compact.join(', ')}"
       end
     end
   end
