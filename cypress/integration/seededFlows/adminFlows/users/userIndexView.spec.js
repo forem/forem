@@ -78,6 +78,34 @@ describe('User index view', () => {
         cy.url().should('contain', '/admin/users/1');
       });
     });
+
+    describe('User actions', () => {
+      it('Copies user email to clipboard', () => {
+        // Helper function for cypress-pipe
+        const click = (el) => el.click();
+
+        cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
+          .as('userActionsButton')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
+        cy.findByRole('button', { name: 'Copy email address' }).click();
+
+        // Snackbar should appear with confirmation, and dropdown should close
+        cy.findByTestId('snackbar')
+          .findByText('Copied to clipboard')
+          .should('exist');
+        cy.get('@userActionsButton')
+          .should('have.attr', 'aria-expanded', 'false')
+          .should('have.focus');
+
+        // Check the correct text is on the clipboard
+        cy.window()
+          .its('navigator.clipboard')
+          .invoke('readText')
+          .should('equal', 'admin@forem.local');
+      });
+    });
   });
 
   describe('large screens', () => {
@@ -122,6 +150,34 @@ describe('User index view', () => {
       it(`Clicks through to the Member Detail View`, () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
         cy.url().should('contain', '/admin/users/1');
+      });
+    });
+
+    describe('User actions', () => {
+      it('Copies user email to clipboard', () => {
+        // Helper function for cypress-pipe
+        const click = (el) => el.click();
+
+        cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
+          .as('userActionsButton')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
+        cy.findByRole('button', { name: 'Copy email address' }).click();
+
+        // Snackbar should appear with confirmation, and dropdown should close
+        cy.findByTestId('snackbar')
+          .findByText('Copied to clipboard')
+          .should('exist');
+        cy.get('@userActionsButton')
+          .should('have.attr', 'aria-expanded', 'false')
+          .should('have.focus');
+
+        // Check the correct text is on the clipboard
+        cy.window()
+          .its('navigator.clipboard')
+          .invoke('readText')
+          .should('equal', 'admin@forem.local');
       });
     });
   });
