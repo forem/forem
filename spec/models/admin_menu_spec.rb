@@ -97,4 +97,22 @@ RSpec.describe AdminMenu do
       it { is_expected.to be_visible }
     end
   end
+
+  describe "scope :apps" do
+    subject(:listing) { apps.children.detect { |child| child.name == "listings" } }
+
+    let(:apps) { described_class.navigation_items.fetch(:apps) }
+
+    context "when Listing.feature_enabled? is true" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(true) }
+
+      it { is_expected.to be_visible }
+    end
+
+    context "when Listing.feature_enabled? is false" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
+
+      it { is_expected.not_to be_visible }
+    end
+  end
 end
