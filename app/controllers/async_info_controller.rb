@@ -1,5 +1,6 @@
+# @note No pundit policy. All actions are unrestricted.
 class AsyncInfoController < ApplicationController
-  # No pundit policy. All actions are unrestricted.
+  NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY = 15
 
   def base_data
     flash.discard(:notice)
@@ -40,7 +41,7 @@ class AsyncInfoController < ApplicationController
   #       decorated version of the user.  It would be nice if we were using the same "variable" for
   #       the cache key and for that which we cache.
   def user_data
-    Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
+    Rails.cache.fetch(user_cache_key, expires_in: NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY.minutes) do
       AsyncInfo.to_hash(user: @user, context: self)
     end.to_json
   end

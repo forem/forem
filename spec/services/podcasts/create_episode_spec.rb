@@ -97,4 +97,20 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       expect(new_episode.title).to eq(item.title)
     end
   end
+
+  context "when episodes contain non-latin script titles" do
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/design_takoy.rss", false).items.first }
+    let(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
+
+    before do
+      stub_request(:head, item.enclosure_url).to_return(status: 200)
+    end
+
+    it "transliterates title to build a slug" do
+      episode = described_class.call(podcast.id, item)
+
+      expect(episode.title).to start_with("Зачем режиссерам презентации и как их создают?")
+      expect(episode.slug).to start_with("zachiem-riezhissieram-priezientatsii-i-kak-ikh-sozdaiut")
+    end
+  end
 end

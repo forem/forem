@@ -1,0 +1,15 @@
+<a href="<%= admin_user_path(user.id) %>" class="mr-2">
+    <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
+</a>
+<div class="flex flex-col">
+    <h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
+    <div class="flex">
+        <span class="color-base-60">@<%= user.username %></span>
+        <span class="hidden m:block">
+            &nbsp;
+            <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
+            <%= cascading_high_level_roles(user) %>
+            </span>
+        </span>
+    </div>
+</div>

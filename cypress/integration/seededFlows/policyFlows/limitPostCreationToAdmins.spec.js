@@ -1,7 +1,7 @@
 /**
    This is to verify visibility of buttons.  The authorization tests are
    asserted in their corresponding policy tests.
-  */
+*/
 describe('Limit Post Creation to Admins', () => {
   beforeEach(() => {
     cy.testSetup();
@@ -13,11 +13,8 @@ describe('Limit Post Creation to Admins', () => {
   });
 
   it('clicking on User Avatar should open User Dropdown menu and no Create Post is visible', () => {
-    // TODO: If we go with the approach in this commit, then we should test the
-    // "Create Button" that's on the nav bar but not in the drop down.
-
     cy.findByRole('button', { name: 'Navigation menu' }).as('menuButton');
-  cy.get('@menuButton')
+    cy.get('@menuButton')
       .should('have.attr', 'aria-expanded', 'false')
       .click()
       .should('have.attr', 'aria-expanded', 'true');
@@ -26,8 +23,7 @@ describe('Limit Post Creation to Admins', () => {
       name: 'Article Editor v1 User @article_editor_v1_user',
     }).should('exist');
 
-    cy.findByRole('link', { name: 'Create Post' }).should('not.exist');
-
+    // The "Create Post" button either outside of the drop-down nor inside
     cy.findByRole('link', { name: 'Create Post' }).should('not.exist');
   });
 });
