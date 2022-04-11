@@ -73,7 +73,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "shows the Other section when other nav links exist" do
         within("nav[data-testid='other-nav']", match: :first) do
-          expect(page).to have_selector("nav[data-testid='other-nav']igation-links")
+          expect(page).to have_selector(".other-navigation-links")
         end
 
         NavigationLink.other_section.destroy_all
