@@ -65,12 +65,6 @@
     }
   }
 
-  &__lowercase {
-    th {
-      text-transform: none;
-    }
-  }
-
   tbody {
     tr {
       &:first-child {
@@ -115,7 +109,7 @@
     }
   }
 
-  &__minimal {
+  &--minimal {
     th {
       text-transform: none;
     }
