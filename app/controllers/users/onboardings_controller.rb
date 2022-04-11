@@ -13,7 +13,7 @@ module Users
       user_params = {}
 
       if params[:user]
-        if params.dig(:user, :username).blank?
+        if unset_username?
           return render json: { errors: I18n.t("users_controller.username_blank") }, status: :unprocessable_entity
         end
 
@@ -46,6 +46,10 @@ module Users
     end
 
     private
+
+    def unset_username?
+      params[:user].key?(:username) && params[:user][:username].blank?
+    end
 
     def sanitize_user_params
       params[:user].compact_blank!
