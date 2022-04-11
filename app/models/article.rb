@@ -901,7 +901,7 @@ class Article < ApplicationRecord
   end
 
   def calculate_base_scores
-    self.hotness_score = 1000 if hotness_score.blank
+    self.hotness_score = 1000 if hotness_score.blank?
   end
 
   def create_conditional_autovomits
