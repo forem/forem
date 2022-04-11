@@ -15,7 +15,7 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         allow(BlackBox).to receive(:calculate_spaminess).and_return(99)
       end
 
-      it "updates score", :aggregate_failures do
+      it "updates the score" do
         worker.perform(comment.id)
 
         comment.reload
