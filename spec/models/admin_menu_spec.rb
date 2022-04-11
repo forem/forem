@@ -88,15 +88,29 @@ RSpec.describe AdminMenu do
     let(:customization) { described_class.navigation_items.fetch(:customization) }
 
     it { is_expected.to be_a(Menu::Item) }
+    it { is_expected.to be_visible }
 
-    context "when :profile_field FeatureFlag is enabled" do
-      before { allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true) }
+    context "when :profile_field FeatureFlag is not enabled" do
+      # leaving this in place to make sure item is visible even if flag not enabled
+      before { allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false) }
+
+      it { is_expected.to be_visible }
+    end
+  end
+
+  describe "scope :apps" do
+    subject(:listing) { apps.children.detect { |child| child.name == "listings" } }
+
+    let(:apps) { described_class.navigation_items.fetch(:apps) }
+
+    context "when Listing.feature_enabled? is true" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(true) }
 
       it { is_expected.to be_visible }
     end
 
-    context "when :profile_field FeatureFlag is not enabled" do
-      before { allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false) }
+    context "when Listing.feature_enabled? is false" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
 
       it { is_expected.not_to be_visible }
     end
