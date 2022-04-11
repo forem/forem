@@ -17,9 +17,7 @@ class ArticlePolicy < ApplicationPolicy
   # @return [TrueClass] if this query should default to hidden
   # @return [FalseClass] if this query should not be hidden in the UI.
   #
-  # @note The symmetry in case logic as in .scope_users_authorized_to_action; a future path might be
-  # to look at how controller actions do the 'respond_to do' blocks.  But that's already a bit
-  # further afield than this need be.
+  # @note The symmetry of the case statement structure with .scope_users_authorized_to_action
   def self.include_hidden_dom_class_for?(query:)
     case query.to_sym
     when :create?, :new?, :create, :new
@@ -50,6 +48,8 @@ class ArticlePolicy < ApplicationPolicy
   #
   # @note Why isn't this a User.scope method?  Because the logic of who can take an action on the
   #       resource is the problem domain of the policy.
+  #
+  # @note The symmetry of the case statement structure with .include_hidden_dom_class_for?
   def self.scope_users_authorized_to_action(users_scope:, action:)
     case action.to_sym
     when :create?, :new?, :create, :new
