@@ -21,5 +21,19 @@ module Admin
         "Resource Admin"
       end
     end
+
+    def user_status(user)
+      if user.suspended?
+        "Suspended"
+      elsif user.warned?
+        "Warned"
+      elsif user.comment_suspended?
+        "Comment Suspended"
+      elsif user.trusted?
+        "Trusted"
+      else
+        "Good Standing"
+      end
+    end
   end
 end
