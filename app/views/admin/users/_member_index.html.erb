@@ -15,35 +15,11 @@
             <article>
               <header class="flex items-center justify-between m:justify-start mb-2">
                 <div class="flex grow-1 mr-4 m:w-50 m:max-w-50">
-                  <a href="<%= admin_user_path(user.id) %>" class="mr-2">
-                    <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
-                  </a>
-                  <div class="flex flex-col">
-                    <h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
-                    <div class="flex">
-                      <span class="color-base-60">@<%= user.username %></span>
-                      <span class="hidden m:block">
-                         &nbsp;
-                        <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
-                          <%= cascading_high_level_roles(user) %>
-                        </span>
-                      </span>
-                    </div>
-                  </div>
+                  <%= render "admin/users/index/member_data", user: user %>
                 </div>
                 <div class="flex justify-between items-center grow-1">
                   <div class="hidden m:block">
-                    <% if user.suspended? %>
-                      <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Suspended
-                    <% elsif user.warned? %>
-                      <span class="c-indicator mr-2 inline-block" style="--bg: #F59E0B"></span>Warned
-                    <% elsif user.comment_suspended? %>
-                      <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Comment suspended
-                    <% elsif user.trusted? %>
-                      <span class="c-indicator mr-2 inline-block" style="--bg: #059669"></span>Trusted
-                    <% else %>
-                      <span class="c-indicator mr-2 inline-block" style="--bg: #A3A3A3"></span>Good standing
-                    <% end %>
+                    <%= render "admin/users/index/status_indicator", user: user %>
                   </div>
                   <div class="ml-auto">
                     <%= render "admin/users/index/user_actions_dropdown", user: user, id: "responsive-#{user.id}" %>
@@ -52,17 +28,7 @@
               </header>
               <div class="flex justify-between mb-2 block m:hidden">
                 <div>
-                  <% if user.suspended? %>
-                    <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Suspended
-                  <% elsif user.warned? %>
-                    <span class="c-indicator mr-2 inline-block" style="--bg: #F59E0B"></span>Warned
-                  <% elsif user.comment_suspended? %>
-                    <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Comment suspended
-                  <% elsif user.trusted? %>
-                    <span class="c-indicator mr-2 inline-block" style="--bg: #059669"></span>Trusted
-                  <% else %>
-                    <span class="c-indicator mr-2 inline-block" style="--bg: #A3A3A3"></span>Good standing
-                  <% end %>
+                  <%= render "admin/users/index/status_indicator", user: user %>
                 </div>
                 <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
                   <%= cascading_high_level_roles(user) %>
@@ -106,42 +72,20 @@
         <tr>
           <td>
             <div class="flex s:items-start flex-col s:flex-row">
-              <a href="<%= admin_user_path(user.id) %>">
-                <img class="radius-full align-middle" src="<%= user.profile_image_url_for(length: 50) %>" width="40" height="40" alt="<%= user.name %>" />
-              </a>
-              <div class="pl-3 flex-1 fs-s"><h3 class="fs-base"><%= link_to user.name, admin_user_path(user), class: "color-base-80" %></h3>
-                <%= link_to "@#{user.username}", admin_user_path(user), class: "color-base-60" %>&nbsp;
-                <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
-                  <%= cascading_high_level_roles(user) %>
-                </span>
-              </div>
+              <%= render "admin/users/index/member_data", user: user %>
             </div>
           </td>
           <td>
-            <% if user.suspended? %>
-              <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Suspended
-            <% elsif user.warned? %>
-              <span class="c-indicator mr-2 inline-block" style="--bg: #F59E0B"></span>Warned
-            <% elsif user.comment_suspended? %>
-              <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Comment suspended
-            <% elsif user.trusted? %>
-              <span class="c-indicator mr-2 inline-block" style="--bg: #059669"></span>Trusted
-            <% else %>
-              <span class="c-indicator mr-2 inline-block" style="--bg: #A3A3A3"></span>Good standing
-            <% end %>
+            <%= render "admin/users/index/status_indicator", user: user %>
           </td>
           <td>
-          <%= format_last_activity_timestamp(user.last_activity) %>
-          <p class="fs-xs color-base-60">
-            <%= user.registered_at.strftime("%d %b, %Y") %>
-          </p>
+            <%= format_last_activity_timestamp(user.last_activity) %>
+            <p class="fs-xs color-base-60">
+              <%= user.registered_at.strftime("%d %b, %Y") %>
+            </p>
           </td>
           <td>
-            <% if user.organizations.any? %>
-              <%= render "admin/users/index/organizations", organizations: user.organizations %>
-            <% else %>
-              -
-            <% end %>
+            <%= render "admin/users/index/organizations", organizations: user.organizations %>
           </td>
           <td>
             <%= render "admin/users/index/user_actions_dropdown", user: user, id: "xl-#{user.id}" %>

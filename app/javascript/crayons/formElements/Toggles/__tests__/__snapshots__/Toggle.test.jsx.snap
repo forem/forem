@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Toggle /> should render default 1`] = `"<div class=\\"c-toggle\\"><input type=\\"checkbox\\"><span class=\\"c-toggle__control\\"></span></div>"`;
+
+exports[`<Toggle /> should render with additional input props 1`] = `"<div class=\\"c-toggle\\"><input type=\\"checkbox\\" disabled=\\"\\" class=\\"example-class\\"><span class=\\"c-toggle__control\\"></span></div>"`;

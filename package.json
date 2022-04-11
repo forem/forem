@@ -30,14 +30,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thepracticaldev/dev.to.git"
+    "url": "https://github.com/forem/forem.git"
   },
   "author": "",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/thepracticaldev/dev.to/issues"
+    "url": "https://github.com/forem/forem/issues"
   },
-  "homepage": "https://github.com/thepracticaldev/dev.to#readme",
+  "homepage": "https://github.com/forem/forem#readme",
   "devDependencies": {
     "@babel/eslint-parser": "^7.17.0",
     "@faker-js/faker": "^6.0.0",

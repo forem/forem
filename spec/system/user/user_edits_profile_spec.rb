@@ -42,7 +42,6 @@ RSpec.describe "User edits their profile", type: :system do
 
   describe "editing admin created profile fields" do
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
       Profile.refresh_attributes!
     end
 
