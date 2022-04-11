@@ -13,7 +13,7 @@ module Users
       user_params = {}
 
       if params[:user]
-        if params[:user].key?(:username) && params[:user][:username].blank?
+        if params.dig(:user, :username).blank?
           return render json: { errors: I18n.t("users_controller.username_blank") }, status: :unprocessable_entity
         end
 
