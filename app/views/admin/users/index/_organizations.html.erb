@@ -1,0 +1,9 @@
+<% if organizations.any? %>
+  <% organizations.each do |organization| %>
+    <span class="crayons-hover-tooltip" data-tooltip="<%= organization.name %>">
+      <img src="<%= organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= organization.name %>" class="c-link crayons-logo crayons-logo--l">
+    </span>
+  <% end %>
+<% else %>
+  <span class="hidden xl:block">-</span>
+<% end %>

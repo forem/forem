@@ -65,6 +65,12 @@
     }
   }
 
+  &__lowercase {
+    th {
+      text-transform: none;
+    }
+  }
+
   tbody {
     tr {
       &:first-child {

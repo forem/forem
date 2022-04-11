@@ -13,7 +13,6 @@ describe('Limit Post Creation to Admins', () => {
   });
 
   it('clicking on User Avatar should open User Dropdown menu and no Create Post is visible', () => {
-
     cy.findByRole('button', { name: 'Navigation menu' }).as('menuButton');
     cy.get('@menuButton')
       .should('have.attr', 'aria-expanded', 'false')
