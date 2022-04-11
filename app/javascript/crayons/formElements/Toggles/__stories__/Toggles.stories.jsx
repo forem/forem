@@ -36,6 +36,5 @@ Default.args = {
 
 export const Checked = (args) => <Toggle {...args} />;
 Checked.args = {
-  ...Default.args,
   checked: true,
 };
