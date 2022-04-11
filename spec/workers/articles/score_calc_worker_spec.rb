@@ -29,7 +29,6 @@ RSpec.describe Articles::ScoreCalcWorker, type: :worker do
         expect(article.score).to be(7)
         expect(article.comment_score).to be(12)
         expect(article.hotness_score).to be(373)
-        expect(article.spaminess_rating).to be(2)
       end
     end
 
