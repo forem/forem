@@ -5,7 +5,7 @@ module Users
     after_action :verify_authorized
 
     ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
-    ALLOWED_ONBOARDING_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
+    ALLOWED_CHECKBOX_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
 
     def onboarding_update
       authorize User
@@ -32,7 +32,7 @@ module Users
 
     def onboarding_checkbox_update
       if params[:user]
-        current_user.assign_attributes(params[:user].permit(ALLOWED_ONBOARDING_PARAMS))
+        current_user.assign_attributes(params[:user].permit(ALLOWED_CHECKBOX_PARAMS))
       end
 
       current_user.saw_onboarding = true
