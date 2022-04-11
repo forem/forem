@@ -16,6 +16,15 @@ module Admin
       email_body
     ].freeze
 
+    ATTIBUTES_FOR_CSV = %i[
+      id name username email registered_at
+    ].freeze
+
+    ATTRIBUTES_FOR_LAST_ACTIVITY = %i[
+      registered last_comment_at last_article_at latest_article_updated_at last_reacted_at profile_updated_at
+      last_moderation_notification last_notification_activity
+    ].freeze
+
     after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
@@ -69,6 +78,18 @@ module Admin
       redirect_to admin_user_path(params[:id])
     end
 
+    def export
+      @users = User.select(ATTIBUTES_FOR_CSV + ATTRIBUTES_FOR_LAST_ACTIVITY).includes(:organizations)
+
+      respond_to do |format|
+        format.csv do
+          response.headers["Content-Type"] = "text/csv"
+          response.headers["Content-Disposition"] = "attachment; filename=users.csv"
+          render template: "admin/users/export"
+        end
+      end
+    end
+
     def user_status
       @user = User.find(params[:id])
       begin
@@ -78,17 +99,6 @@ module Admin
         flash[:danger] = e.message
       end
       redirect_to admin_user_path(params[:id])
-    end
-
-    def export
-      @users = User.select(:name, :username, :email, :created_at, :last_notification_activity).order(:name)
-      respond_to do |format|
-        format.csv do
-          response.headers["Content-Type"] = "text/csv"
-          response.headers["Content-Disposition"] = "attachment; filename=users.csv"
-          render template: "admin/users/export"
-        end
-      end
     end
 
     def export_data
