@@ -39,7 +39,7 @@ function addReadingListCountToHomePage() {
   );
   if (user && readingListContainers) {
     readingListContainers.forEach(function (e) {
-      let readingListCount =
+      const readingListCount =
         user.reading_list_ids.length > 0 ? user.reading_list_ids.length : '';
       e.innerHTML = readingListCount;
       e.dataset.count = user.reading_list_ids.length;
