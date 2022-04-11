@@ -7,6 +7,6 @@ RSpec.describe "ArticlesFeed", type: :request do
     get "/feed"
 
     expect(response.body).to include(article.title)
-    expect(response.body).to include("<pubDate>#{article.published_at.to_s(:rfc822)}</pubDate>")
+    expect(response.body).to include("<pubDate>#{article.published_at.to_fs(:rfc822)}</pubDate>")
   end
 end
