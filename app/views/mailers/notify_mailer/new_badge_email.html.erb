@@ -26,7 +26,7 @@
     </a>
   </p>
 
-  <% unless @badge.credits_awarded.zero? %>
+  <% if @badge.credits_awarded > 0 && Listing.feature_enabled? %>
     <hr style="opacity:0.4;width: 150px;margin: 30px auto;" />
     <p>
       You also get <strong><a href="<%= credits_url %>"><%= @badge.credits_awarded %> new credits</a></strong> to use for <strong><a href="<%= listings_url %>">community listings</a></strong><br />
