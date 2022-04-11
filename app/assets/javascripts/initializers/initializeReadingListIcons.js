@@ -35,7 +35,7 @@ function highlightButton(button) {
 function addReadingListCountToHomePage() {
   const user = userData();
   const readingListContainers = document.querySelectorAll(
-    '.reading-list-count',
+    '.js-reading-list-count',
   );
   if (user && readingListContainers) {
     readingListContainers.forEach(function (e) {
@@ -87,7 +87,7 @@ function renderButtonState(button, json) {
 
 function renderNewSidebarCount(button, json) {
   const readingListContainers = document.querySelectorAll(
-    '.reading-list-count',
+    '.js-reading-list-count',
   );
   if (readingListContainers) {
     readingListContainers.forEach(function (e) {
