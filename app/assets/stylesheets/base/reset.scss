@@ -1,16 +1,6 @@
-// TODO: Remove this once we enable box-sixing: border-box globally.
-[class^='crayons'],
-[class^='crayons']::before,
-[class^='crayons']::after,
-[class^='crayons'] *,
-[class^='crayons'] *::before,
-[class^='crayons'] *::after,
-[class^='c-'],
-[class^='c-']::before,
-[class^='c-']::after,
-[class^='c-'] *,
-[class^='c-'] *::before,
-[class^='c-'] *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
