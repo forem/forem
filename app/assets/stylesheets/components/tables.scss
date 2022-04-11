@@ -123,15 +123,5 @@
     td {
       border-bottom: none;
     }
-
-    th:first-child,
-    td:first-child {
-      padding-left: var(--su-7);
-    }
-
-    th:last-child,
-    td:last-child {
-      padding-right: var(--su-7);
-    }
   }
 }

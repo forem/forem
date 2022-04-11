@@ -62,7 +62,7 @@
     <table class="crayons-table crayons-table__minimal w-100 hidden xl:table">
       <thead class="member-data-heading">
         <tr>
-          <th scope="col">Member</th>
+          <th scope="col" class="pl-7">Member</th>
           <th scope="col">Status</th>
           <th scope="col">Last activity & Joined on</th>
           <th scope="col">Organizations</th>
@@ -72,7 +72,7 @@
       <tbody>
         <% @users.includes([:organizations]).each do |user| %>
         <tr>
-          <td>
+          <td class="pl-7">
             <div class="flex s:items-start flex-col s:flex-row">
               <%= render "admin/users/index/member_data", user: user %>
             </div>
