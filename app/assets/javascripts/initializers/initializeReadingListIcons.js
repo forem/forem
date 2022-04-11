@@ -91,7 +91,7 @@ function renderNewSidebarCount(button, json) {
   );
   if (readingListContainers) {
     readingListContainers.forEach(function (e) {
-      let count = parseInt(e.dataset.count, 10);
+      const count = parseInt(e.dataset.count, 10);
       let newCount;
       if (json.result === 'create') {
         newCount = count + 1;
