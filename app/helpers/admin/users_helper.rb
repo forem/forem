@@ -22,6 +22,16 @@ module Admin
       end
     end
 
+    def format_role_tooltip(user)
+      if user.super_admin?
+        "Super Admin"
+      elsif user.admin?
+        "Admin"
+      elsif user.single_resource_admin_for?(:any)
+        "Resource Admin: #{user.roles.pluck(:resource_type).compact.join(', ')}"
+      end
+    end
+
     def user_status(user)
       if user.suspended?
         "Suspended"

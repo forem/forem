@@ -89,13 +89,6 @@ RSpec.describe AdminMenu do
 
     it { is_expected.to be_a(Menu::Item) }
     it { is_expected.to be_visible }
-
-    context "when :profile_field FeatureFlag is not enabled" do
-      # leaving this in place to make sure item is visible even if flag not enabled
-      before { allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false) }
-
-      it { is_expected.to be_visible }
-    end
   end
 
   describe "scope :apps" do

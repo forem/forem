@@ -27,14 +27,6 @@ RSpec.describe "admin sidebar", type: :request do
   end
 
   describe "profile admin feature flag" do
-    it "shows the option in the sidebar even when the feature flag is disabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false)
-
-      get admin_articles_path
-
-      expect(response.body).to include("Profile Fields")
-    end
-
     it "shows the option in the sidebar" do
       get admin_articles_path
 

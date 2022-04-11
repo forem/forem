@@ -30,7 +30,7 @@
                 <div>
                   <%= render "admin/users/index/status_indicator", user: user %>
                 </div>
-                <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
+                <span class="c-indicator ml-2 crayons-hover-tooltip crayons-hover-tooltip--right" data-tooltip="<%= format_role_tooltip(user) %>">
                   <%= cascading_high_level_roles(user) %>
                 </span>
               </div>
