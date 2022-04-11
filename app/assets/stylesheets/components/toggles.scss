@@ -1,0 +1,61 @@
+.c-toggle {
+  --gap: 2px;
+  width: 2.75em;
+  height: 1.5em;
+  display: inline-flex;
+  cursor: pointer;
+  position: relative;
+
+  $this: '.c-toggle';
+
+  &__control {
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+    background: var(--toggle-rail-bg);
+    border-radius: 1000px;
+    transition: var(--transition-props);
+
+    &::after {
+      content: '';
+      background: var(--toggle-knob-bg);
+      position: absolute;
+      inset: var(--gap);
+      aspect-ratio: 1;
+      height: calc(100% - (var(--gap) * 2));
+      border-radius: 1000px;
+      transition: var(--transition-props);
+      box-shadow: 0 0 0 1px rgba(var(--black), 0.05),
+        0 2px 3px rgba(var(--black), 0.2);
+    }
+  }
+
+  [type='checkbox'] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: var(--z-elevate);
+    opacity: var(--opacity-0);
+    margin: 0;
+
+    &:checked + #{$this}__control {
+      background: var(--toggle-rail-checked-bg);
+
+      &::after {
+        transform: translateX(100%);
+      }
+    }
+
+    &:focus-visible + #{$this}__control {
+      box-shadow: var(--focus-ring);
+      outline: 0;
+    }
+
+    &[disabled] + #{$this}__control {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}

@@ -4,16 +4,15 @@
 [class^='crayons']::after,
 [class^='crayons'] *,
 [class^='crayons'] *::before,
-[class^='crayons'] *::after {
+[class^='crayons'] *::after,
+[class^='c-'],
+[class^='c-']::before,
+[class^='c-']::after,
+[class^='c-'] *,
+[class^='c-'] *::before,
+[class^='c-'] *::after {
   box-sizing: border-box;
 }
-
-// TODO: uncomment when we're ready!
-// *,
-// *::before,
-// *::after {
-//   box-sizing: border-box;
-// }
 
 // Remove default padding
 ul[class],

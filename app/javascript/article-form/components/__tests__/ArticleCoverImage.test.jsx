@@ -12,15 +12,34 @@ import { ArticleCoverImage } from '../ArticleCoverImage';
 
 global.fetch = fetch;
 
-describe('<ArticleCoverImage />', () => {
-  beforeEach(() => {
-    global.Runtime = {
-      isNativeIOS: jest.fn(() => {
-        return false;
-      }),
-    };
+const windowNavigator = window.navigator;
+const windowWebkit = window.webkit;
+
+const stubNativeIOSCapabilities = () => {
+  Object.defineProperty(window, 'navigator', {
+    value: { userAgent: 'DEV-Native-ios|ForemWebView' },
+    writable: true,
   });
 
+  Object.defineProperty(window, 'webkit', {
+    value: { messageHandlers: { imageUpload: true } },
+    writable: true,
+  });
+};
+
+const resetNativeIOSCapabilities = () => {
+  Object.defineProperty(window, 'navigator', {
+    value: windowNavigator,
+    writable: true,
+  });
+
+  Object.defineProperty(window, 'webkit', {
+    value: windowWebkit,
+    writable: true,
+  });
+};
+
+describe('<ArticleCoverImage />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
       <ArticleCoverImage
@@ -156,12 +175,12 @@ describe('<ArticleCoverImage />', () => {
   });
 
   describe('when rendered in native iOS with imageUpload support', () => {
-    beforeEach(() => {
-      global.Runtime = {
-        isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload';
-        }),
-      };
+    beforeAll(() => {
+      stubNativeIOSCapabilities();
+    });
+
+    afterAll(() => {
+      resetNativeIOSCapabilities();
     });
 
     it('should have no a11y violations when native iOS imageUpload support is available', async () => {
