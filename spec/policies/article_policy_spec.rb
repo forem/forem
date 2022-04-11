@@ -20,17 +20,20 @@ RSpec.describe ArticlePolicy do
   let(:policy) { described_class.new(user, resource) }
 
   describe ".scope_users_authorized_to_action" do
-    let!(:regular_user) { create(:user) }
-    let!(:super_admin_user) { create(:user, :super_admin) }
-
-    before { create(:user, :suspended) }
+    before do
+      User.destroy_all # For some reason I'm getting extra users than there should be
+      super_admin
+      author
+      suspended_user
+    end
 
     context "when limit_post_creation_to_admins is true" do
       before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true) }
 
       it "omits suspended and regular users" do
         results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
-        expect(results).to match_array([super_admin_user])
+
+        expect(results).to match_array([super_admin])
       end
     end
 
@@ -39,7 +42,24 @@ RSpec.describe ArticlePolicy do
 
       it "omits only suspended users" do
         results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
-        expect(results).to match_array([regular_user, super_admin_user])
+        expect(results).to match_array([author, super_admin])
+      end
+    end
+  end
+
+  describe ".include_hidden_dom_class_for?" do
+    [
+      [true, :create?, true],
+      [false, :create?, false],
+      [true, :edit?, false],
+      [false, :edit?, false],
+    ].each do |limit, query, expected_value|
+      context "when limit_post_creation_to_admins is #{limit} and query is #{query}" do
+        subject { described_class.include_hidden_dom_class_for?(query: query) }
+
+        before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(limit) }
+
+        it { is_expected.to eq(expected_value) }
       end
     end
   end
