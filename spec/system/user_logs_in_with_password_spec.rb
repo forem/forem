@@ -20,16 +20,16 @@ RSpec.describe "Authenticating with a password" do
     it "displays an error when the email address is wrong" do
       submit_login_form("wrong@example.com", password)
 
-      expect(page).to have_text("Invalid Email or password.")
+      expect(page).to have_text("Unable to login.")
     end
 
     it "displays an error when the password is wrong" do
       submit_login_form(user.email, "wr0ng")
-      expect(page).to have_text("Invalid Email or password.")
+      expect(page).to have_text("Unable to login.")
     end
 
-    it "sends an email with the unlock link if the uset gets locked out", :aggregate_failures do
-      allow(User).to receive(:maximum_attempts).and_return(1)
+    it "sends an email with the unlock link if the user gets locked out", :aggregate_failures do
+      allow(User).to receive(:maximum_attempts).and_return(0)
 
       assert_enqueued_with(job: Devise.mailer.delivery_job) do
         submit_login_form(user.email, "wr0ng")
