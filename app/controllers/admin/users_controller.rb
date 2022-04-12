@@ -94,7 +94,7 @@ module Admin
       @user = User.find(params[:id])
       begin
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
-        flash[:success] = "User has been updated"
+        flash[:success] = t("admin.users_controller.update_success")
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -118,7 +118,7 @@ module Admin
 
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
-      flash[:success] = "This user is being banished in the background. The job will complete soon."
+      flash[:success] = t("admin.users_controller.banish_user_success")
       redirect_to admin_user_path(params[:id])
     end
 
@@ -140,7 +140,7 @@ module Admin
 
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      flash[:success] = "Posts are being unpublished in the background. The job will complete soon."
+      flash[:success] = t("admin.users_controller.unpublish_posts_success")
       redirect_to admin_user_path(params[:id])
     end
 
@@ -249,7 +249,7 @@ module Admin
     def unlock_access
       @user = User.find(params[:id])
       @user.unlock_access!
-      flash[:success] = "Unlocked User account!"
+      flash[:success] = t("admin.users_controller.unlock_account_success")
       redirect_to admin_user_path(@user)
     end
 
@@ -310,10 +310,10 @@ module Admin
       case user_params[:credit_action]
       when "Add"
         credit_params[:add_credits] = user_params[:credit_amount]
-        flash[:success] = "Credits have been added!"
+        flash[:success] = t("admin.users_controller.add_credits_success")
       when "Remove"
         credit_params[:remove_credits] = user_params[:credit_amount]
-        flash[:success] = "Credits have been removed."
+        flash[:success] = t("admin.users_controller.remove_credits_success")
       else
         return user_params
       end
