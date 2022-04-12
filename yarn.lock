@@ -2499,10 +2499,10 @@
     webpack-hot-middleware "^2.25.1"
     webpack-virtual-modules "^0.2.2"
 
-"@storybook/builder-webpack5@^6.4.20":
-  version "6.4.20"
-  resolved "https://registry.yarnpkg.com/@storybook/builder-webpack5/-/builder-webpack5-6.4.20.tgz#a7e2253f02baf87acd5c5fc7047064a16c308098"
-  integrity sha512-VFhXNYfveUjsDlVdtPIq2heqmG2ISES/idg/2o29yK4BvqNLA7ojYttJJl1XKiW5QDwG4WdL/fM8BYMwfN5+zg==
+"@storybook/builder-webpack5@^6.4.21":
+  version "6.4.21"
+  resolved "https://registry.yarnpkg.com/@storybook/builder-webpack5/-/builder-webpack5-6.4.21.tgz#d601676083a263a1f03847b12fe2ad1ecd3865bb"
+  integrity sha512-pUD8+wL2LN1iFHAcpDo0E7lXkL5E6pCqmKmUbkgs1bPgvY0n9gyvDK46H70P/HWu+PGXKMXI/gofsF5ub1NaRQ==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-proposal-class-properties" "^7.12.1"
@@ -2524,21 +2524,21 @@
     "@babel/preset-env" "^7.12.11"
     "@babel/preset-react" "^7.12.10"
     "@babel/preset-typescript" "^7.12.7"
-    "@storybook/addons" "6.4.20"
-    "@storybook/api" "6.4.20"
-    "@storybook/channel-postmessage" "6.4.20"
-    "@storybook/channels" "6.4.20"
-    "@storybook/client-api" "6.4.20"
-    "@storybook/client-logger" "6.4.20"
-    "@storybook/components" "6.4.20"
-    "@storybook/core-common" "6.4.20"
-    "@storybook/core-events" "6.4.20"
-    "@storybook/node-logger" "6.4.20"
-    "@storybook/preview-web" "6.4.20"
-    "@storybook/router" "6.4.20"
+    "@storybook/addons" "6.4.21"
+    "@storybook/api" "6.4.21"
+    "@storybook/channel-postmessage" "6.4.21"
+    "@storybook/channels" "6.4.21"
+    "@storybook/client-api" "6.4.21"
+    "@storybook/client-logger" "6.4.21"
+    "@storybook/components" "6.4.21"
+    "@storybook/core-common" "6.4.21"
+    "@storybook/core-events" "6.4.21"
+    "@storybook/node-logger" "6.4.21"
+    "@storybook/preview-web" "6.4.21"
+    "@storybook/router" "6.4.21"
     "@storybook/semver" "^7.3.2"
-    "@storybook/store" "6.4.20"
-    "@storybook/theming" "6.4.20"
+    "@storybook/store" "6.4.21"
+    "@storybook/theming" "6.4.21"
     "@types/node" "^14.0.10"
     babel-loader "^8.0.0"
     babel-plugin-macros "^3.0.1"
@@ -2561,19 +2561,6 @@
     webpack-dev-middleware "^4.1.0"
     webpack-hot-middleware "^2.25.1"
     webpack-virtual-modules "^0.4.1"
-
-"@storybook/channel-postmessage@6.4.20":
-  version "6.4.20"
-  resolved "https://registry.yarnpkg.com/@storybook/channel-postmessage/-/channel-postmessage-6.4.20.tgz#ab7ced6d8c83cdc4ea661e055ac83f7b20c934ba"
-  integrity sha512-rKgQZ74WZhcpQY8I9SyMMADWbQ2GQopfzvE35qYJl/7mpEggXjY2nSP6PdQ7uIZzUSiwZFQ3tesCT5frEjF/DA==
-  dependencies:
-    "@storybook/channels" "6.4.20"
-    "@storybook/client-logger" "6.4.20"
-    "@storybook/core-events" "6.4.20"
-    core-js "^3.8.2"
-    global "^4.4.0"
-    qs "^6.10.0"
-    telejson "^5.3.2"
 
 "@storybook/channel-postmessage@6.4.21":
   version "6.4.21"
@@ -2621,32 +2608,6 @@
   integrity sha512-qgy8z3Hp04Q4p+E/8V9MamYYJLW8z1uv1Z+rvosNkg+eAApPg+Qe08BSj59OAUwPLrr2vpBW7WZ/BYSieW1tUg==
   dependencies:
     core-js "^3.8.2"
-    ts-dedent "^2.0.0"
-    util-deprecate "^1.0.2"
-
-"@storybook/client-api@6.4.20":
-  version "6.4.20"
-  resolved "https://registry.yarnpkg.com/@storybook/client-api/-/client-api-6.4.20.tgz#17a24af4bc047f7a6de647b9c1844ab4e40baf83"
-  integrity sha512-+AKAj+HoW2PVB58bDON+K484CHuywZegKMztoOzOltGP6c02gSf3Y/tiHg2ybRnq2qGNrypGgMKrX401yMEBmg==
-  dependencies:
-    "@storybook/addons" "6.4.20"
-    "@storybook/channel-postmessage" "6.4.20"
-    "@storybook/channels" "6.4.20"
-    "@storybook/client-logger" "6.4.20"
-    "@storybook/core-events" "6.4.20"
-    "@storybook/csf" "0.0.2--canary.87bc651.0"
-    "@storybook/store" "6.4.20"
-    "@types/qs" "^6.9.5"
-    "@types/webpack-env" "^1.16.0"
-    core-js "^3.8.2"
-    fast-deep-equal "^3.1.3"
-    global "^4.4.0"
-    lodash "^4.17.21"
-    memoizerific "^1.11.3"
-    qs "^6.10.0"
-    regenerator-runtime "^0.13.7"
-    store2 "^2.12.0"
-    synchronous-promise "^2.0.15"
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
@@ -3165,28 +3126,6 @@
     read-pkg-up "^7.0.1"
     regenerator-runtime "^0.13.7"
     ts-dedent "^2.0.0"
-
-"@storybook/preview-web@6.4.20":
-  version "6.4.20"
-  resolved "https://registry.yarnpkg.com/@storybook/preview-web/-/preview-web-6.4.20.tgz#3cf1507c63df376776d96bde7332439f177dcb47"
-  integrity sha512-rn06XQRLdlwGtmbqTRRq6fEWaNruxA2pQzdOqBSww30u6PMV8IE7RiAHYDbGwJOk5DatliU+16duRNVR4QoHcw==
-  dependencies:
-    "@storybook/addons" "6.4.20"
-    "@storybook/channel-postmessage" "6.4.20"
-    "@storybook/client-logger" "6.4.20"
-    "@storybook/core-events" "6.4.20"
-    "@storybook/csf" "0.0.2--canary.87bc651.0"
-    "@storybook/store" "6.4.20"
-    ansi-to-html "^0.6.11"
-    core-js "^3.8.2"
-    global "^4.4.0"
-    lodash "^4.17.21"
-    qs "^6.10.0"
-    regenerator-runtime "^0.13.7"
-    synchronous-promise "^2.0.15"
-    ts-dedent "^2.0.0"
-    unfetch "^4.2.0"
-    util-deprecate "^1.0.2"
 
 "@storybook/preview-web@6.4.21":
   version "6.4.21"
