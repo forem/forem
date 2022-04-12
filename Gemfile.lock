@@ -923,6 +923,7 @@ DEPENDENCIES
   factory_bot_rails (~> 6.2)
   faker (~> 2.19)
   fakeredis (~> 0.8.0)
+  faraday
   fastimage (~> 2.2)
   fastly (~> 3.0)
   feedjira (~> 3.2)
@@ -1031,6 +1032,7 @@ DEPENDENCIES
   vault (~> 0.16)
   vcr (~> 6.0)
   view_component (~> 2.47)
+  warden (~> 1.2)
   wcag_color_contrast (~> 0.1)
   web-console (~> 4.2)
   webdrivers (~> 5.0)

@@ -38,7 +38,7 @@ class User < ApplicationRecord
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
-                :current_password
+                :current_password, :password
 
   acts_as_followable
   acts_as_follower
@@ -314,6 +314,10 @@ class User < ApplicationRecord
 
   def remember_me
     true
+  end
+
+  def address
+    ''
   end
 
   def cached_followed_tag_names
