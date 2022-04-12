@@ -27,7 +27,7 @@ RSpec.describe ApplicationPolicy do
   end
   # rubocop:enable RSpec/DescribedClass
 
-  describe ".dom_class_for" do
+  describe ".dom_classes_for" do
     [
       [Article, :create?, "js-policy-article-create"],
       [:Article, :create?, "js-policy-article-create"],
@@ -35,12 +35,25 @@ RSpec.describe ApplicationPolicy do
       [:WorkerBee, :create?, "js-policy-worker_bee-create"],
       [Article.new(id: 5), :create, "js-policy-article-5-create"],
       [Article.new, :create, "js-policy-article-new-create"],
-    ].each do |record, query, expected|
-      context "when record=#{record.inspect} and query=#{query.inspect}" do
-        subject { described_class.dom_class_for(record: record, query: query) }
+      [
+        Article.new,
+        :create,
+        "js-policy-article-new-create hidden",
+        # This needs to be a proc and not a lambda; if it's a lambda, the context for evaluation is
+        # wildly off.  (and you need to do `before { instance_exec(&before_proc) }`); This is the
+        # way to make the `before` call below the least surprising.
+        proc {
+          allow(ArticlePolicy).to receive(:include_hidden_dom_class_for?).with(query: :create).and_return(true)
+        },
+      ],
+    ].each do |record, query, expected, before_proc|
+      context "when record=#{record.inspect} and query=#{query.inspect}#{' with hidden true' if before_proc}" do
+        subject { described_class.dom_classes_for(record: record, query: query) }
 
         let(:record) { record }
         let(:query) { query }
+
+        before(&before_proc) if before_proc
 
         it { is_expected.to eq(expected) }
       end

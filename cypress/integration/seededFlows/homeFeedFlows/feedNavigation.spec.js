@@ -123,7 +123,6 @@ describe('Home Feed Navigation', () => {
   it('shows the sidebar on all feed views', () => {
     // Default Feed view
     cy.findByRole('heading', { name: '#tag1' });
-    cy.findByRole('heading', { name: 'Listings' });
 
     cy.findByRole('navigation', { name: 'View posts by' }).within(() => {
       cy.findByRole('link', { name: 'Top' }).as('top');
@@ -137,30 +136,25 @@ describe('Home Feed Navigation', () => {
     cy.findByRole('link', { name: 'Week' }).click();
     cy.url().should('contain', '/top/week');
     cy.findByRole('heading', { name: '#tag1' });
-    cy.findByRole('heading', { name: 'Listings' });
 
     // Month view
     cy.findByRole('link', { name: 'Month' }).click();
     cy.url().should('contain', '/top/month');
     cy.findByRole('heading', { name: '#tag1' });
-    cy.findByRole('heading', { name: 'Listings' });
 
     // Year view
     cy.findByRole('link', { name: 'Year' }).click();
     cy.url().should('contain', '/top/year');
     cy.findByRole('heading', { name: '#tag1' });
-    cy.findByRole('heading', { name: 'Listings' });
 
     // Infinity view
     cy.findByRole('link', { name: 'Infinity' }).click();
     cy.url().should('contain', '/top/infinity');
     cy.findByRole('heading', { name: '#tag1' });
-    cy.findByRole('heading', { name: 'Listings' });
 
     // Latest view
     cy.findByRole('link', { name: 'Latest' }).click();
     cy.url().should('contain', '/latest');
     cy.findByRole('heading', { name: '#tag1' });
-    cy.findByRole('heading', { name: 'Listings' });
   });
 });

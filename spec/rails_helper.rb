@@ -147,6 +147,21 @@ RSpec.configure do |config|
     end
   end
 
+  # [@jeremyf] <2022-02-07 Mon> :: In https://github.com/forem/forem/pull/16423 we were discussing
+  #
+  # There are three use cases to consider regarding the Listing feature:
+  #
+  # - Those who will have it enabled (e.g., DEV.to), if they so choose to enable the flag.
+  # - Those who will not have it enabled (e.g., those that do nothing)
+  # - Our test suite
+  #
+  # We want our test suite to behave as though it's enabled by default.  This rspec configuration
+  # helps with that.  I envision this to be a placeholder.  But we need something to get the RFC out
+  # the door (https://github.com/forem/rfcs/issues/291).
+  config.before do
+    allow(Listing).to receive(:feature_enabled?).and_return(true)
+  end
+
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 

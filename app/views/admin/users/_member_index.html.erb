@@ -1,10 +1,12 @@
 <%= javascript_packs_with_chunks_tag "admin/users/memberIndex", defer: true %>
-<div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-4 xl:p-7">
-  <header class="flex flex-col l:flex-row justify-content-between l:items-center ">
+<div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-4 xl:p-0">
+  <header class="p-4 xl:p-7 pb-4">
+    <div class="flex flex-col l:flex-row justify-content-between l:items-center">
     <h1 class="crayons-title ml-2 m:ml-0">Members</h1>
     <%= render "admin/users/index/tabs" %>
-  </header>
+    </div>
     <%= render "admin/users/index/controls" %>
+  </header>
 
     <!-- Responsive screen (breakpoints below XL) data view start -->
     <div class="block xl:hidden fs-s">
@@ -57,20 +59,20 @@
     <!-- Responsive screen (breakpoints below XL) data view end -->
 
     <!-- XL screen data view start -->
-    <table class="crayons-table crayons-table__lowercase hidden xl:block" width="100%">
-      <thead>
+    <table class="crayons-table crayons-table--minimal w-100 hidden xl:table">
+      <thead class="member-data-heading">
         <tr>
-          <th scope="col" class="normal-case">Member</th>
+          <th scope="col" class="pl-7">Member</th>
           <th scope="col">Status</th>
           <th scope="col">Last activity & Joined on</th>
           <th scope="col">Organizations</th>
           <th scope="col" class="screen-reader-only">Actions</th>
         </tr>
       </thead>
-      <tbody class="crayons-card">
+      <tbody>
         <% @users.includes([:organizations]).each do |user| %>
         <tr>
-          <td>
+          <td class="pl-7">
             <div class="flex s:items-start flex-col s:flex-row">
               <%= render "admin/users/index/member_data", user: user %>
             </div>

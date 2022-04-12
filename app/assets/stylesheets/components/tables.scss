@@ -65,12 +65,6 @@
     }
   }
 
-  &__lowercase {
-    th {
-      text-transform: none;
-    }
-  }
-
   tbody {
     tr {
       &:first-child {
@@ -112,6 +106,16 @@
           background: var(--card-secondary-bg);
         }
       }
+    }
+  }
+
+  &--minimal {
+    th {
+      text-transform: none;
+    }
+
+    td {
+      border-bottom: none;
     }
   }
 }

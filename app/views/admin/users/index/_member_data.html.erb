@@ -7,7 +7,7 @@
         <span class="color-base-60">@<%= user.username %></span>
         <span class="hidden m:block">
             &nbsp;
-            <span class="c-indicator ml-2 crayons-hover-tooltip" data-tooltip="<%= cascading_high_level_roles(user) %>">
+            <span class="c-indicator ml-2 crayons-hover-tooltip crayons-hover-tooltip--right" data-tooltip="<%= format_role_tooltip(user) %>">
             <%= cascading_high_level_roles(user) %>
             </span>
         </span>

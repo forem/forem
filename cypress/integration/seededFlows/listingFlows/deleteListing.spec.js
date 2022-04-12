@@ -2,6 +2,7 @@ describe('Delete listing', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.viewport('macbook-16');
+    cy.enableFeatureFlag('listing_feature');
 
     cy.fixture('users/adminUser.json').as('user');
 
