@@ -103,7 +103,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
   end
 
   it "raises an error when Listings are disabled and a listing URL is embedded" do
-    allow(FeatureFlag).to receive(:accessible?).with(:listing_feature_enabled).and_return(false)
+    allow(Listing).to receive(:feature_enabled?).and_return(false)
     listing_url = "#{URL.url}/listings/#{listing.slug}"
 
     expect do

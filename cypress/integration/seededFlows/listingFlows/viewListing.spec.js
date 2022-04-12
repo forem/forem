@@ -2,6 +2,7 @@ describe('View listing', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.viewport('macbook-16');
+    cy.enableFeatureFlag('listing_feature');
     cy.visit('/');
   });
 
