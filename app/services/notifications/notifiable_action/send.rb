@@ -59,6 +59,17 @@ module Notifications
           unique_by: upsert_index,
           returning: %i[id],
         )
+
+        return unless action == "Published" && notifiable.is_a?(Article)
+
+        context_notification_attributes = {
+          context_id: notifiable.id,
+          context_type: notifiable.class.name,
+          action: action
+        }
+
+        ContextNotification.upsert(context_notification_attributes,
+                                   unique_by: :index_context_notification_on_context_and_action)
       end
 
       private
