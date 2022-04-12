@@ -332,7 +332,7 @@
   padding: 0.35em 0 1.35em;
   box-shadow: -0 -0 60px 42px var(--card-bg);
   position: relative;
-  z-index: 100;
+  z-index: var(--z-elevate);
 
   .gh-btn {
     @extend .crayons-btn;
