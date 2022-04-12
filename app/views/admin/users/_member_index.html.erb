@@ -44,7 +44,7 @@
                   </div>
                   <div>
                     <dt class="color-base-60 fw-normal">Joined on</dt>
-                    <dd><%= user.registered_at.strftime("%d %b, %Y") %></dd>
+                    <dd><%= user.registered_at&.strftime("%d %b, %Y") %></dd>
                   </div>
                 </dl>
                 <div>
@@ -83,7 +83,7 @@
           <td>
             <%= format_last_activity_timestamp(user.last_activity) %>
             <p class="fs-xs color-base-60">
-              <%= user.registered_at.strftime("%d %b, %Y") %>
+              <%= user.registered_at&.strftime("%d %b, %Y") %>
             </p>
           </td>
           <td>

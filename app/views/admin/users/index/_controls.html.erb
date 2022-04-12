@@ -24,6 +24,9 @@
         <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
           <%= render "admin/users/index/filter_role_field", f: f %>
         </div>
+        <div>
+          <%= render "admin/users/index/controls/export", f: f %>
+        </div>
       </div>
     <% end %>
 
@@ -35,6 +38,9 @@
         </div>
         <div class="crayons-field flex-row items-center gap-2">
           <%= render "admin/users/index/filter_role_field", f: f %>
+        </div>
+        <div>
+          <%= render "admin/users/index/controls/export", f: f %>
         </div>
       <% end %>
       <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
