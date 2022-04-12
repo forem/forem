@@ -5,7 +5,16 @@
         <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (Invitations)</span></h1>
         <%= render "admin/users/index/tabs" %>
       </div>
-      <%= render "admin/users/index/controls" %>
+      <div class="flex justify-content-between py-3">
+        <%= form_with url: admin_invitations_path, method: :get, local: true, class:"grow-1" do |f| %>
+          <% render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email" %>
+        <% end %>
+        <div class="flex grow-1 justify-content-end">
+          <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
+          <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded self-end" %>
+        </div>
+      </div>
+     
     </header>
     <table class="crayons-table crayons-table__lowercase" width="100%">
       <thead>

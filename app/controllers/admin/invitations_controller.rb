@@ -3,7 +3,10 @@ module Admin
     layout "admin"
 
     def index
-      @invitations = User.where(registered: false).page(params[:page]).per(50)
+      @invitations = Admin::UsersQuery.call(relation: User.invited,
+                                            options: params.permit(
+                                              :search,
+                                            )).page(params[:page]).per(50)
     end
 
     def new; end
