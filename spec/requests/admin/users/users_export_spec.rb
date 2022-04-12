@@ -18,7 +18,7 @@ RSpec.describe "/admin/users/export", type: :request do
   end
 
   it "renders successfully" do
-    expect(response).to be_successful
+    expect(response).to have_http_status :ok
   end
 
   it "renders the headers" do
