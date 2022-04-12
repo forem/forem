@@ -29,7 +29,7 @@ RSpec.describe "Authenticating with a password" do
     end
 
     it "sends an email with the unlock link if the user gets locked out", :aggregate_failures do
-      allow(User).to receive(:maximum_attempts).and_return(0)
+      allow(User).to receive(:maximum_attempts).and_return(1)
 
       assert_enqueued_with(job: Devise.mailer.delivery_job) do
         submit_login_form(user.email, "wr0ng")
