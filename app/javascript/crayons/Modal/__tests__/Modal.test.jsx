@@ -68,17 +68,17 @@ it('should close when the close button is clicked', async () => {
 
 it('should close when Escape is pressed', () => {
   const onClose = jest.fn();
-  const { container } = render(
+  render(
     <Modal title="This is a modal title" onClose={onClose}>
       This is the modal body content
     </Modal>,
   );
 
-  userEvent.type(container, '{esc}');
+  userEvent.keyboard('{Escape}');
   expect(onClose).toHaveBeenCalledTimes(1);
 });
 
-it("shouldn't close on outside click by default", () => {
+it("shouldn't close on outside click by default", async () => {
   const onClose = jest.fn();
   const { getByText } = render(
     <div>
@@ -89,11 +89,11 @@ it("shouldn't close on outside click by default", () => {
     </div>,
   );
 
-  userEvent.click(getByText('Outside content'));
+  await userEvent.click(getByText('Outside content'));
   expect(onClose).not.toHaveBeenCalled();
 });
 
-it('should close on click outside, if enabled', () => {
+it('should close on click outside, if enabled', async () => {
   const onClose = jest.fn();
   const { getByText } = render(
     <div>
@@ -108,7 +108,7 @@ it('should close on click outside, if enabled', () => {
     </div>,
   );
 
-  userEvent.click(getByText('Outside content'));
+  await userEvent.click(getByText('Outside content'));
   expect(onClose).toHaveBeenCalledTimes(1);
 });
 

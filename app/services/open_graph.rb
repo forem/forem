@@ -9,9 +9,11 @@ class OpenGraph
   attr_reader :page, :tags
 
   DEFAULT_METHODS = %i[description title url].freeze
+  CACHE_EXPIRY_IN_MINUTES = 15
 
   def initialize(url)
-    @page = MetaInspector.new(url)
+    html = fetch_html(url)
+    @page = MetaInspector.new(url, document: html)
     @tags = meta_tags
   end
 
@@ -79,6 +81,12 @@ class OpenGraph
   end
 
   private
+
+  def fetch_html(url)
+    Rails.cache.fetch("#{url}_open_graph_html", expires_in: CACHE_EXPIRY_IN_MINUTES.minutes) do
+      Net::HTTP.get(URI(url))
+    end
+  end
 
   def group(data)
     data.each_with_object({}) do |(key, value), hash|

@@ -5,3 +5,10 @@ fr:
       update_success: Les extensions ont été mises à jour.
     spaces_controller:
       update_success: L'espace a été mis à jour.
+    users_controller:
+      update_success: User has been updated
+      banish_user_success: This user is being banished in the background. The job will complete soon.
+      unpublish_posts_success: Posts are being unpublished in the background. The job will complete soon.
+      unlock_account_success: Unlocked User account!
+      add_credits_success: Credits have been added!
+      remove_credits_success: Credits have been removed.

@@ -110,6 +110,14 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:suspended) }
     end
 
+    trait :warned do
+      after(:build) { |user| user.add_role(:warned) }
+    end
+
+    trait :comment_suspended do
+      after(:build) { |user| user.add_role(:comment_suspended) }
+    end
+
     trait :invited do
       after(:build) do |user|
         user.registered = false

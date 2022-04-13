@@ -25,21 +25,23 @@ describe Admin::UsersHelper do
   end
 
   describe "#cascading_high_level_roles" do
+    let(:user) { create(:user) }
+
     it "renders the proper role for a Super Admin" do
-      super_admin = create(:user, :super_admin)
-      role = helper.cascading_high_level_roles(super_admin)
+      user.add_role(:super_admin)
+      role = helper.cascading_high_level_roles(user)
       expect(role).to eq "Super Admin"
     end
 
     it "renders the proper role for an Admin" do
-      admin = create(:user, :admin)
-      role = helper.cascading_high_level_roles(admin)
+      user.add_role(:admin)
+      role = helper.cascading_high_level_roles(user)
       expect(role).to eq "Admin"
     end
 
     it "renders the proper role for a Resource Admin" do
-      resource_admin = create(:user, :single_resource_admin)
-      role = helper.cascading_high_level_roles(resource_admin)
+      user.add_role(:single_resource_admin, Article)
+      role = helper.cascading_high_level_roles(user)
       expect(role).to eq "Resource Admin"
     end
 
@@ -47,6 +49,73 @@ describe Admin::UsersHelper do
       user = create(:user)
       role = helper.cascading_high_level_roles(user)
       expect(role).to be_nil
+    end
+  end
+
+  describe "#format_role_tooltip" do
+    let(:user) { create(:user) }
+
+    it "renders the proper tooltip for a Super Admin" do
+      user.add_role(:super_admin)
+      role = helper.format_role_tooltip(user)
+      expect(role).to eq "Super Admin"
+    end
+
+    it "renders the proper tooltip for an Admin" do
+      user.add_role(:admin)
+      role = helper.format_role_tooltip(user)
+      expect(role).to eq "Admin"
+    end
+
+    it "renders the proper tooltip for a Resource Admin" do
+      user.add_role(:single_resource_admin, Article)
+      role = helper.format_role_tooltip(user)
+      expect(role).to eq "Resource Admin: Article"
+    end
+
+    it "renders the proper, comma-separated tooltip for a Resource Admin with multiple resource_types" do
+      user.add_role(:single_resource_admin, Article)
+      user.add_role(:single_resource_admin, Badge)
+      role = helper.format_role_tooltip(user)
+      expect(role).to eq "Resource Admin: Article, Badge"
+    end
+
+    it "does not render a the resource_type for a Trusted user" do
+      user.add_role(:trusted)
+      role = helper.format_role_tooltip(user)
+      expect(role).to be_nil
+    end
+  end
+
+  describe "#user_status" do
+    it "renders the proper status for a user that is suspended" do
+      suspended_user = create(:user, :suspended)
+      status = helper.user_status(suspended_user)
+      expect(status).to eq "Suspended"
+    end
+
+    it "renders the proper status for a user that is warned" do
+      warned_user = create(:user, :warned)
+      status = helper.user_status(warned_user)
+      expect(status).to eq "Warned"
+    end
+
+    it "renders the proper status for a user that is comment suspended" do
+      comment_suspended_user = create(:user, :comment_suspended)
+      status = helper.user_status(comment_suspended_user)
+      expect(status).to eq "Comment Suspended"
+    end
+
+    it "renders the proper status for a user that is trusted" do
+      trusted_user = create(:user, :trusted)
+      status = helper.user_status(trusted_user)
+      expect(status).to eq "Trusted"
+    end
+
+    it "renders the proper status for a user that is good standing" do
+      good_standing_user = create(:user)
+      status = helper.user_status(good_standing_user)
+      expect(status).to eq "Good Standing"
     end
   end
 end

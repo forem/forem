@@ -170,6 +170,7 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  scope :invited, -> { where(registered: false) }
   # Unfortunately pg_search's default SQL query is not performant enough in this
   # particular case (~ 500ms). There are multiple reasons:
   # => creates a complex query like `SELECT FROM users INNER JOIN users` to compute ranking.
