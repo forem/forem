@@ -17,7 +17,7 @@ module DateHelper
   # Provides a formatted date value
   # @param datetime Date, DateTime or Time object.
   # @param show_year [Boolean] show the year in the formatted date string
-  # @return [String] example: "Mar 19, 2022" if the date is valid
+  # @return [String] example: "Mar 19, 2022" if valid date
   # @return [FalseClass] if datetime is nil
   def local_date(datetime, show_year: true)
     return if datetime.blank?
