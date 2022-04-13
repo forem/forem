@@ -12,7 +12,7 @@
     <div class="block xl:hidden fs-s">
       <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Members</h2>
       <ul class="list-none mx-2">
-        <% @users.includes([:organizations]).each do |user| %>
+        <% @users.each do |user| %>
           <li class="py-4">
             <article>
               <header class="flex items-center justify-between m:justify-start mb-2">
@@ -70,7 +70,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @users.includes([:organizations]).each do |user| %>
+        <% @users.each do |user| %>
         <tr>
           <td class="pl-7">
             <div class="flex s:items-start flex-col s:flex-row">

@@ -31,6 +31,7 @@ module Admin
 
     def index
       @users = Admin::UsersQuery.call(
+        relation: User.registered.includes([:organizations]),
         options: params.permit(:role, :search),
       ).page(params[:page]).per(50)
     end
