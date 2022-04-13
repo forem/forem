@@ -1,3 +1,5 @@
+<%= javascript_packs_with_chunks_tag "admin/users/controls", defer: true %>
+
 <% if FeatureFlag.enabled?(:member_index_view) %>
   <div class="crayons-card p-3 s:p-4 m:p-7">
     <header class="flex flex-col">
@@ -5,16 +7,33 @@
         <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (Invitations)</span></h1>
         <%= render "admin/users/index/tabs" %>
       </div>
-      <div class="flex justify-content-between py-3">
-        <%= form_with url: admin_invitations_path, method: :get, local: true, class:"grow-1" do |f| %>
+
+      <!-- Small screen layout start -->
+      <div class="m:hidden py-3">
+        <%= form_with url: admin_invitations_path, method: :get, local: true do |f| %>
+          <div class="flex justify-content-between">
+            <%= render "admin/users/index/expand_search_button" %>
+            <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
+          </div>
+          <div id="search-users" class="hidden mt-3">
+            <%= render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email" %>
+          </div>
+        <% end %>
+      </div>
+      <!-- Small screen layout end -->
+
+      <!-- Large screen layout start -->
+      <div class="hidden m:flex flex-col m:flex-row justify-content-between py-3">
+        <%= form_with url: admin_invitations_path, method: :get, local: true, class: "grow-1 mb-3 m:mb-0" do |f| %>
           <% render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email" %>
         <% end %>
         <div class="flex grow-1 justify-content-end">
           <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
-          <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded self-end" %>
+          <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded" %>
         </div>
       </div>
-     
+      <!-- Large screen layout end -->
+
     </header>
     <table class="crayons-table crayons-table__lowercase" width="100%">
       <thead>
