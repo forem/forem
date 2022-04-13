@@ -119,8 +119,21 @@ document.querySelectorAll('.js-export-csv-modal-trigger').forEach((item) => {
   });
 });
 
-document.querySelectorAll('.js-export-csv-modal-cancel').forEach((item) => {
+document.querySelectorAll('.js-export-csv-modal-trigger').forEach((item) => {
   item.addEventListener('click', () => {
-    closeWindowModal();
+    showWindowModal({
+      title: 'Download Member Data',
+      contentSelector: '#export-csv-modal',
+      overlay: true,
+      onOpen: () => {
+        document
+          .querySelectorAll('#window-modal .js-export-csv-modal-cancel')
+          .forEach((item) => {
+            item.addEventListener('click', () => {
+              closeWindowModal();
+            });
+          });
+      },
+    });
   });
 });
