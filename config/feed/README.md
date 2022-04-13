@@ -18,7 +18,7 @@ constraints.
 
 ## Glossary
 
-- **_Feed Experiment_:** A _feed experiment_ is the current _feed strategies_
+- **_Feed Experiment_:** A _feed experiment_ is the currently implemented set of _feed strategies_ -
   current configurations we're using to generate feeds
 - **_Feed Strategy_:** a configuration of _levers_ and _relevancy factors_,
   which can be used to generate the _relevancy feed_.
