@@ -9,8 +9,8 @@
       </div>
 
       <!-- Small screen layout start -->
-      <div class="m:hidden py-3">
-        <%= form_with url: admin_invitations_path, method: :get, local: true do |f| %>
+      <div class="m:hidden fs-s">
+        <%= form_with url: admin_invitations_path, method: :get, local: true, class: "py-3" do |f| %>
           <div class="flex justify-content-between">
             <%= render "admin/users/index/expand_search_button" %>
             <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
@@ -19,6 +19,30 @@
             <%= render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email" %>
           </div>
         <% end %>
+        <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Invited members</h2>
+
+        <ul class="list-none">
+          <% @invitations.each do |user| %>
+             <li class="py-4">
+              <article class="flex justify-content-between items-start">
+                <div class="flex">
+                  <%= render "admin/users/index/member_image", user: user %>
+                  <div class="flex flex-col gap-2">
+                    <%= render "admin/users/index/member_data", user: user %>
+                    <%= user.email %>
+                    <dl>
+                      <dt class="color-base-60 fw-normal">Invited on</dt>
+                      <dd><%= user.created_at.strftime("%d %b, %Y") %></dd>
+                    </dl>
+                  </div>
+                </div>
+                <button type="button" class="c-btn c-btn--icon-alone ml-auto" aria-label="Invitation actions: #{user.name}">
+                  <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
+                </button>
+              </article>
+             </li>
+          <% end %>
+        </ul>
       </div>
       <!-- Small screen layout end -->
 
