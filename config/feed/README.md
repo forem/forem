@@ -11,7 +11,7 @@ constraints.
   [Articles::Feeds::WeightedQueryStrategy](https://github.com/forem/forem/blob/de2edee07d824a34e5c5445d455b1f8086bd127d/app/services/articles/feeds/weighted_query_strategy.rb)
   is the precursor to the more robust feed configuration. It provides hints as
   to how we'll structure the feed configuration.
-- [These Are the [Feed] Levers I Know I Know - Forem Team 🌱](https://forem.team/jeremy/these-are-the-feed-levers-i-know-i-know-293m)
+- [These Are the [Feed] Levers I Know I Know - Forem Team 🌱](https://dev.to/devteam/these-are-the-feed-levers-i-know-i-know-3jj7)
 - [Creating a Catalog of Feed Levers and Configurations - Forem Team 🌱](https://forem.team/jeremy/creating-a-catalog-of-feed-levers-and-configurations-nnk)
 - On <2022-04-11 Mon>, [Jeremy, Jennie, Ella, and Michael T met over Zoom to talk
   through the current feed](https://forem.team/jeremy/lets-talk-about-the-feed-baby-54b1).
