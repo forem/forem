@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitFor, cleanup } from '@testing-library/preact';
+import { render, waitFor } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 
 import '@testing-library/jest-dom';
@@ -7,9 +7,6 @@ import '@testing-library/jest-dom';
 import { MultiSelectAutocomplete } from '../MultiSelectAutocomplete';
 
 describe('<MultiSelectAutocomplete />', () => {
-  afterEach(() => {
-    cleanup();
-  });
   it('renders default UI', () => {
     const { container } = render(
       <MultiSelectAutocomplete
