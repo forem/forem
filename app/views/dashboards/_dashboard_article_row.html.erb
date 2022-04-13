@@ -16,10 +16,10 @@
     <% if article.published %>
       <p class="fs-s color-base-60 js-dashboard-story-details">
         <strong class="fw-medium"><%= t("views.dashboard.article.published") %></strong>
-        <%= local_date(article.published_timestamp, show_year: article.displayable_published_at.year != Time.current.year) %>
+        <%= local_date_tag(article.published_timestamp, show_year: article.displayable_published_at.year != Time.current.year) %>
         <% if article.edited? %>
           <strong class="fw-medium pl-2"><%= t("views.dashboard.article.edited") %></strong>
-          <%= local_date(article.edited_at, show_year: article.edited_at.year != Time.current.year) %>
+          <%= local_date_tag(article.edited_at, show_year: article.edited_at.year != Time.current.year) %>
         <% end %>
         <% if article.collection_id %>
           <strong class="fw-medium pl-2"><%= t("views.dashboard.article.series") %></strong> <%= article.series %>

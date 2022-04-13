@@ -72,7 +72,7 @@
 
             <span class="profile-header__meta__item">
               <%= crayons_icon_tag(:cake, class: "mr-2 shrink-0", title: t("views.users.joined.icon")) %>
-              <%= t("views.users.joined.text_html", date: local_date(@user.created_at)) %>
+              <%= t("views.users.joined.text_html", date: local_date_tag(@user.created_at)) %>
             </span>
 
             <% if @user.setting.display_email_on_profile %>

@@ -43,7 +43,7 @@
 
           <span class="profile-header__meta__item">
             <%= crayons_icon_tag(:cake, class: "mr-2 shrink-0", title: t("views.organizations.joined.icon")) %>
-            <%= t("views.organizations.joined.text_html", date: local_date(@user.created_at)) %>
+            <%= t("views.organizations.joined.text_html", date: local_date_tag(@user.created_at)) %>
           </span>
 
           <span class="profile-header__meta__item -ml-1">
