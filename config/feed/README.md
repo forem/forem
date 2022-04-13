@@ -40,7 +40,7 @@ At a future point, we might allow for the site creators to pick one or more feed
 strategies for the _relevancy feed_ and even allow a member to specify their
 feed. It is possible that we would adjust the UI so that the feed formats
 (Relevant, Recent, and Top) also include things like "Active Discussions" or
-other emergent /feed strategies/.
+other emergent _feed strategies_.
 
 ## Configuration
 
