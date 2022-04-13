@@ -8,7 +8,7 @@ module Admin
       elsif timestamp.yesterday?
         "Yesterday, #{timestamp.strftime('%d %b')}"
       else
-        timestamp.strftime("%d %b, %Y")
+        local_date_tag(timestamp)
       end
     end
 
