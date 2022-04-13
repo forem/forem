@@ -219,14 +219,14 @@ module Articles
         },
         # Weight to give for the number of reactions on the article.
         reactions_factor: {
-          clause: "articles.reactions_count",
+          clause: "articles.public_reactions_count",
           cases: [
             [0, 0.9988], [1, 0.9988], [2, 0.9988],
             [3, 0.9988]
           ],
           fallback: 1,
           requires_user: false,
-          group_by: "articles.reactions_count"
+          group_by: "articles.public_reactions_count"
         },
         # Weight to give based on spaminess of the article.
         spaminess_factor: {
