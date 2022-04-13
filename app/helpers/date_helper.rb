@@ -12,14 +12,17 @@ module DateHelper
     )
   end
 
+  # Provides a formatted date value
+  # @param datetime Date, DateTime or Time object.
+  # @param show_year [Boolean] show the year in the formatted date string
+  # @return [String] example: "Mar 19, 2022" if the date is valid
+  # @return [FalseClass] if datetime is nil
   def local_date(datetime, show_year: true)
+    return if datetime.nil?
+
     datetime = Time.zone.parse(datetime) if datetime.is_a?(String)
     format = show_year ? :short_with_year : :short
 
-    tag.time(
-      l(datetime, format: format),
-      datetime: datetime.utc.iso8601,
-      class: "date#{'-no-year' unless show_year}",
-    )
+    l(datetime, format: format)
   end
 end
