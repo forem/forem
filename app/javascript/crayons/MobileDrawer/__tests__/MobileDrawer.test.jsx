@@ -54,18 +54,19 @@ describe('<MobileDrawer />', () => {
 
   it('should close when Escape is pressed', () => {
     const onClose = jest.fn();
-    const { container } = render(
+    render(
       <MobileDrawer title="Example MobileDrawer" onClose={onClose}>
         <button>Inner button</button>
       </MobileDrawer>,
     );
 
-    userEvent.type(container, '{esc}');
+    userEvent.keyboard('{Escape}');
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('should close on click outside', () => {
+  it('should close on click outside', async () => {
     const onClose = jest.fn();
+
     const { getByText } = render(
       <div>
         <p>Outside content</p>
@@ -76,7 +77,7 @@ describe('<MobileDrawer />', () => {
       </div>,
     );
 
-    userEvent.click(getByText('Outside content'));
+    await userEvent.click(getByText('Outside content'));
     expect(onClose).toHaveBeenCalled();
   });
 });

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitFor } from '@testing-library/preact';
+import { render, waitFor, cleanup } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 
 import '@testing-library/jest-dom';
@@ -7,6 +7,9 @@ import '@testing-library/jest-dom';
 import { MultiSelectAutocomplete } from '../MultiSelectAutocomplete';
 
 describe('<MultiSelectAutocomplete />', () => {
+  afterEach(() => {
+    cleanup();
+  });
   it('renders default UI', () => {
     const { container } = render(
       <MultiSelectAutocomplete
@@ -111,7 +114,7 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'a');
+    await userEvent.type(input, 'a');
 
     await waitFor(() =>
       expect(
@@ -225,7 +228,7 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example{space}');
+    await userEvent.type(input, 'example ');
 
     // It should now be added to the list of selected items
     await waitFor(() =>
@@ -273,7 +276,7 @@ describe('<MultiSelectAutocomplete />', () => {
     const input = getByLabelText('Example label');
     input.focus();
     // Try to select the same value by manually typing
-    userEvent.type(input, 'example,');
+    await userEvent.type(input, 'example,');
 
     expect(input).toHaveValue('');
     // Verify there is still only one selected 'example'
@@ -297,8 +300,8 @@ describe('<MultiSelectAutocomplete />', () => {
     );
 
     const input = getByLabelText('Example label');
-    input.focus();
-    userEvent.type(input, 'example,');
+
+    await userEvent.type(input, 'example,');
 
     // It should now be added to the list of selected items using the custom template
     await waitFor(() =>
@@ -425,7 +428,7 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'a');
+    await userEvent.type(input, 'a');
 
     await waitFor(() =>
       expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
@@ -458,13 +461,13 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'a');
+    await userEvent.type(input, 'a');
 
     await waitFor(() =>
       expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
     );
 
-    userEvent.type(input, '{esc}');
+    userEvent.keyboard('{Escape}');
 
     await waitFor(() =>
       expect(queryByRole('option', { name: 'option1' })).toBeNull(),
@@ -487,13 +490,13 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, '{backspace}');
+    await userEvent.type(input, '{backspace}');
 
     await waitFor(() => expect(input).toHaveValue('example'));
     expect(queryByRole('button', { name: 'Edit example' })).toBeNull();
   });
 
-  it('Prohibits entering special characters', () => {
+  it('Prohibits entering special characters', async () => {
     const { getByLabelText } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
@@ -502,7 +505,7 @@ describe('<MultiSelectAutocomplete />', () => {
     );
 
     const input = getByLabelText('Example label');
-    userEvent.type(input, '!@£$%^&*()a1');
+    await userEvent.type(input, '!@£$%^&*()a1');
     expect(input).toHaveValue('a1');
   });
 
@@ -534,7 +537,7 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(queryByText('Only 2 selections allowed')).toBeNull();
     expect(input).toHaveAttribute('aria-disabled', 'false');
 
-    userEvent.type(input, 'example,');
+    await userEvent.type(input, 'example,');
 
     // Make sure option has been selected
     await waitFor(() => getByRole('button', { name: 'Edit example' }));
@@ -545,12 +548,12 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(input).toHaveAttribute('aria-disabled', 'true');
 
     // Start typing and make sure further options not shown
-    userEvent.type(input, 'a');
+    await userEvent.type(input, 'a');
     expect(queryAllByRole('option')).toHaveLength(0);
     expect(getByText('Only 2 selections allowed')).toBeInTheDocument();
 
     // Try to select a value by typing a comma
-    userEvent.type(input, 'b,');
+    await userEvent.type(input, 'b,');
     // Verify the selection wasn't made, and the text is still in the input
     expect(input).toHaveValue('ab');
   });
