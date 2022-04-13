@@ -12,7 +12,6 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
 
       before do
         allow(BlackBox).to receive(:comment_quality_score).and_return(7)
-        allow(BlackBox).to receive(:calculate_spaminess).and_return(99)
       end
 
       it "updates the score" do
