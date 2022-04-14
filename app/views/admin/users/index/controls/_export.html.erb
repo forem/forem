@@ -1,6 +1,6 @@
 <%= javascript_packs_with_chunks_tag "admin/users/memberIndex", defer: true %>
 
-<button type="button" class="js-export-csv-modal-trigger c-btn w-100 align-left" data-modal-trigger data-modal-title="Download member data" data-modal-size="small" data-modal-content-selector="#export-csv-modal">
+<button type="button" class="js-export-csv-modal-trigger c-btn w-100 align-left" data-modal-trigger data-modal-title="Download member data" aria-label="Download member data" data-modal-size="small" data-modal-content-selector="#export-csv-modal">
   <%= crayons_icon_tag(:export, class: "c-btn__icon") %>
 </button>
 
