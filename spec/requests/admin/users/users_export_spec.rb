@@ -26,7 +26,6 @@ RSpec.describe "/admin/users/export", type: :request do
   end
 
   it "shows the correct number of total rows" do
-    # This takes into account empty lines after each row
     expect(response.body.lines.count).to eq(3)
   end
 
