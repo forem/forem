@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../../common-prop-types';
+import { userData } from '../../onboarding/utilities.js';
 
 export class SaveButton extends Component {
   constructor(props) {
@@ -34,13 +35,7 @@ export class SaveButton extends Component {
     };
 
     const articleOwnedByCurrentUser = function (article) {
-      if (localStorage && localStorage.getItem('current_user')) {
-        return (
-          article.user_id ===
-          JSON.parse(localStorage.getItem('current_user')).id
-        );
-      }
-      return null;
+      return article.user_id === userData().id;
     };
 
     if (
