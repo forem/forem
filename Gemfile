@@ -33,7 +33,7 @@ gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given i
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
-gem "flipper", "~> 0.24.0" # Feature flipping / flags for Ruby
+gem "flipper", "~> 0.24.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.24.0" # Store Flipper flags in ActiveRecord
 gem "flipper-active_support_cache_store", "~> 0.24.0" # Cache feature flags for a short time
 gem "flipper-ui", "~> 0.24.0"

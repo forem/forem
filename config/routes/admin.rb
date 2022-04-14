@@ -50,6 +50,9 @@ namespace :admin do
 
   resources :users, only: %i[index show update destroy] do
     resources :email_messages, only: :show
+    collection do
+      get "export"
+    end
 
     member do
       post "banish"

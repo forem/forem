@@ -86,4 +86,36 @@ describe Admin::UsersHelper do
       expect(role).to be_nil
     end
   end
+
+  describe "#user_status" do
+    it "renders the proper status for a user that is suspended" do
+      suspended_user = create(:user, :suspended)
+      status = helper.user_status(suspended_user)
+      expect(status).to eq "Suspended"
+    end
+
+    it "renders the proper status for a user that is warned" do
+      warned_user = create(:user, :warned)
+      status = helper.user_status(warned_user)
+      expect(status).to eq "Warned"
+    end
+
+    it "renders the proper status for a user that is comment suspended" do
+      comment_suspended_user = create(:user, :comment_suspended)
+      status = helper.user_status(comment_suspended_user)
+      expect(status).to eq "Comment Suspended"
+    end
+
+    it "renders the proper status for a user that is trusted" do
+      trusted_user = create(:user, :trusted)
+      status = helper.user_status(trusted_user)
+      expect(status).to eq "Trusted"
+    end
+
+    it "renders the proper status for a user that is good standing" do
+      good_standing_user = create(:user)
+      status = helper.user_status(good_standing_user)
+      expect(status).to eq "Good Standing"
+    end
+  end
 end

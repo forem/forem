@@ -12,7 +12,7 @@
     <div class="block xl:hidden fs-s">
       <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Members</h2>
       <ul class="list-none mx-2">
-        <% @users.includes([:organizations]).each do |user| %>
+        <% @users.each do |user| %>
           <li class="py-4">
             <article>
               <header class="flex items-center justify-between m:justify-start mb-2">
@@ -44,7 +44,7 @@
                   </div>
                   <div>
                     <dt class="color-base-60 fw-normal">Joined on</dt>
-                    <dd><%= user.registered_at.strftime("%d %b, %Y") %></dd>
+                    <dd><%= user.registered_at&.strftime("%d %b, %Y") %></dd>
                   </div>
                 </dl>
                 <div>
@@ -70,7 +70,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @users.includes([:organizations]).each do |user| %>
+        <% @users.each do |user| %>
         <tr>
           <td class="pl-7">
             <div class="flex s:items-start flex-col s:flex-row">
@@ -83,7 +83,7 @@
           <td>
             <%= format_last_activity_timestamp(user.last_activity) %>
             <p class="fs-xs color-base-60">
-              <%= user.registered_at.strftime("%d %b, %Y") %>
+              <%= user.registered_at&.strftime("%d %b, %Y") %>
             </p>
           </td>
           <td>
@@ -98,7 +98,7 @@
     </table>
     <!-- XL screen data view end -->
 
-    <div class="flex justify-end">
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+    <div class="flex justify-end xl:p-7">
+      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "bottom" %>
     </div>
 </div>
