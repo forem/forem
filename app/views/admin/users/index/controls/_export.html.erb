@@ -1,5 +1,3 @@
-<a href="<%= export_admin_users_path %>.csv">
-  <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M13 0L18 5V19.008C17.9997 19.2712 17.895 19.5235 17.7088 19.7095C17.5226 19.8955 17.2702 20 17.007 20H0.993C0.730378 19.9982 0.479017 19.8931 0.293218 19.7075C0.107418 19.5219 0.00209465 19.2706 0 19.008V0.992C0 0.444 0.445 0 0.993 0H13ZM10 10V6H8V10H5L9 14L13 10H10Z" fill="#404040" />
-  </svg>
-</a>
+<button type="button" class="js-export-csv-modal-trigger c-btn" data-modal-trigger data-modal-title="Download member data" aria-label="Download member data" data-modal-size="small" data-modal-content-selector="#export-csv-modal">
+  <%= crayons_icon_tag(:export, class: "c-btn__icon") %>
+</button>

@@ -4,7 +4,7 @@
   <% if params[:controller] == "admin/users" %>
     <!-- Small screen layout -->
     <%= form_with url: admin_users_path, method: :get, local: true, class: "m:hidden" do |f| %>
-      <div class="flex justify-between my-3">
+      <div class="flex justify-between align-items-center my-3">
         <div>
           <button type="button" id="expand-search-btn" class="relative c-btn c-btn--icon-alone indicator-btn" aria-label="Expand search" aria-expanded="false" aria-controls="search-users">
             <%= crayons_icon_tag("search", aria_hidden: true) %>
@@ -15,7 +15,10 @@
             <span class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
           </button>
         </div>
-        <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
+        <div class="flex">
+          <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
+          <%= render "admin/users/index/controls/export" %>
+        </div>
       </div>
       <div>
         <div id="search-users" class="hidden">
@@ -24,14 +27,11 @@
         <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
           <%= render "admin/users/index/filter_role_field", f: f, context: "small" %>
         </div>
-        <div>
-          <%= render "admin/users/index/controls/export", f: f %>
-        </div>
       </div>
     <% end %>
 
     <!-- Larger screen layout -->
-    <div class="hidden m:flex justify-between">
+    <div class="hidden m:flex justify-between align-items-center">
       <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center py-3" do |f| %>
         <div class="crayons-field flex-1 flex-row items-center gap-2">
           <%= render "admin/users/index/search_field", f: f, context: "medium", placeholder: "Search member...", aria_label: "Search member by name, username, email, or Twitter/GitHub usernames" %>
@@ -39,11 +39,12 @@
         <div class="crayons-field flex-row items-center gap-2">
           <%= render "admin/users/index/filter_role_field", f: f, context: "medium" %>
         </div>
-        <div>
-          <%= render "admin/users/index/controls/export", f: f %>
-        </div>
       <% end %>
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "medium" %>
+      <div class="flex">
+        <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "medium" %>
+        <%= render "admin/users/index/controls/export" %>
+      </div>
+
     </div>
   <% end %>
 
