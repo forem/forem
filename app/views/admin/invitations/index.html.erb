@@ -1,6 +1,8 @@
 <% if FeatureFlag.enabled?(:member_index_view) %>
-  <div class="crayons-card p-3 s:p-4 m:p-7">
-    <header class="flex flex-col">
+  <%= javascript_packs_with_chunks_tag "admin/users/memberIndex", defer: true %>
+
+  <div class="crayons-card p-3 p-4 xl:p-0">
+    <header class="flex flex-col p-4 xl:p-7 pb-4">
       <div class="flex flex-col l:flex-row justify-content-between l:items-center">
         <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (Invitations)</span></h1>
         <%= render "admin/users/index/tabs" %>
@@ -16,19 +18,19 @@
       </div>
 
     </header>
-    <table class="crayons-table crayons-table__lowercase" width="100%">
+    <table class="crayons-table crayons-table--minimal" width="100%">
       <thead>
         <tr>
-          <th scope="col">Invited member</th>
+          <th scope="col" class="pl-7">Invited member</th>
           <th scope="col">Email address</th>
           <th scope="col">Invited on</th>
           <th scope="col" class="screen-reader-only">Actions</th>
         </tr>
       </thead>
-      <tbody class="crayons-card">
+      <tbody id="member-index-content">
         <% @invitations.each do |user| %>
           <tr>
-            <td>
+            <td class="pl-7">
               <div class="flex">
                  <%= render "admin/users/index/member_data", user: user %>
               </div>
@@ -36,10 +38,19 @@
             <td><%= user.email %></td>
             <td><%= user.created_at.strftime("%d %b, %Y") %></td>
             <td>
-              <div class="flex">
-                <button type="button" class="c-btn c-btn--icon-alone ml-auto" aria-label="Invitation actions: #{user.name}">
+              <div class="relative flex">
+                <button type="button" id="<%= user.id %>-action-dropdown-btn" data-toggle-dropdown="<%= user.id %>-action-dropdown" aria-controls="<%= user.id %>-action-dropdown" aria-haspopup="true" aria-expanded="false"
+                  class="c-btn c-btn--icon-alone ml-auto" aria-label="Invitation actions: <%= user.name %>">
                   <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
                 </button>
+                <div id="<%= user.id %>-action-dropdown" class="crayons-dropdown right-0">
+                  <%= button_to resend_admin_invitation_path(user.id), class: "c-btn c-btn--icon-left w-100 align-left" do %>
+                   <%= crayons_icon_tag("send", aria_hidden: true) %> Resend invite
+                  <% end %>
+                  <%= button_to admin_invitation_path(user.id), method: :delete, class: "c-btn c-btn--icon-left w-100 align-left" do %>
+                    <%= crayons_icon_tag("x", aria_hidden: true) %> Cancel invite
+                  <% end %>
+                </div>
               </div>
             </td>
           </tr>
