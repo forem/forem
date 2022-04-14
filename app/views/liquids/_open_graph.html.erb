@@ -22,9 +22,9 @@
         <% if page.images.favicon %>
           <img
             alt="favicon"
-            class="m-0 mr-2 radius-0"
-            src="<%= Images::Optimizer.call(page.images.favicon, width: 48) %>"
-            width="24" height="24" loading="lazy" />
+            class="c-embed__favicon m-0 mr-2 radius-0"
+            src="<%= page.images.favicon %>"
+            loading="lazy" />
         <% end %>
         <%= url_domain %>
       </div>

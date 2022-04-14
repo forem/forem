@@ -348,4 +348,9 @@ body {
     margin: 0;
     margin-bottom: var(--su-2);
   }
+
+  &__favicon {
+    width: 32px;
+    height: auto;
+  }
 }
