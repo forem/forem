@@ -15,6 +15,9 @@ describe('Invited users', () => {
     });
   });
 
+  // Helper function for cypress-pipe
+  const click = (el) => el.click();
+
   it('searches for an invited user', () => {
     // The single invited user should be visible on the page
     cy.findByText('test@test.com').should('exist');
@@ -35,6 +38,33 @@ describe('Invited users', () => {
       .type('something');
     cy.findByRole('button', { name: 'Search' }).click();
     cy.url().should('contain', 'search=something');
+    cy.findByText('test@test.com').should('not.exist');
+  });
+
+  it('resends an invite', () => {
+    cy.findByText('test@test.com').should('exist');
+
+    cy.findByRole('button', { name: 'Invitation actions: Test user' })
+      .pipe(click)
+      .should('have.attr', 'aria-expanded', 'true');
+
+    cy.findByRole('button', { name: 'Resend invite' }).click();
+
+    cy.findByText('Invite resent to test@test.com.').should('exist');
+  });
+
+  it('cancels an invite', () => {
+    cy.findByText('test@test.com').should('exist');
+
+    cy.findByRole('button', { name: 'Invitation actions: Test user' })
+      .pipe(click)
+      .should('have.attr', 'aria-expanded', 'true');
+
+    cy.findByRole('button', { name: 'Cancel invite' }).click();
+
+    cy.findByText('Invite cancelled for test@test.com.').should('exist');
+
+    // Table entry should now be gone
     cy.findByText('test@test.com').should('not.exist');
   });
 });

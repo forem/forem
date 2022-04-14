@@ -1,5 +1,5 @@
 <div class="flex flex-col">
-    <h3 class="fs-base"><%= link_to user.name, admin_user_path(user) %></h3>
+    <h3 class="fs-base"><%= link_to user.name, admin_user_path(user), class: "c-link" %></h3>
     <div class="flex">
         <span class="color-base-60">@<%= user.username %></span>
         <span class="hidden m:block">
