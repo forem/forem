@@ -6,15 +6,15 @@
         <%= render "admin/users/index/tabs" %>
       </div>
       <div class="flex justify-content-between py-3">
-        <%= form_with url: admin_invitations_path, method: :get, local: true, class:"grow-1" do |f| %>
-          <% render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email" %>
+        <%= form_with url: admin_invitations_path, method: :get, local: true, class: "grow-1" do |f| %>
+          <% render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email", context: "invitations" %>
         <% end %>
         <div class="flex grow-1 justify-content-end">
-          <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
+          <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top" %>
           <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded self-end" %>
         </div>
       </div>
-     
+
     </header>
     <table class="crayons-table crayons-table__lowercase" width="100%">
       <thead>
@@ -47,7 +47,7 @@
       </tbody>
     </table>
     <div class="flex justify-end">
-      <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
+      <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "bottom" %>
     </div>
   <div>
 <% else %>

@@ -15,14 +15,14 @@
             <span class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
           </button>
         </div>
-        <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+        <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
       </div>
       <div>
         <div id="search-users" class="hidden">
-          <%= render "admin/users/index/search_field", f: f, placeholder: "Search member...", aria_label: "Search member by name, username, email, or Twitter/GitHub usernames" %>
+          <%= render "admin/users/index/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username, email, or Twitter/GitHub usernames" %>
         </div>
         <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
-          <%= render "admin/users/index/filter_role_field", f: f %>
+          <%= render "admin/users/index/filter_role_field", f: f, context: "small" %>
         </div>
         <div>
           <%= render "admin/users/index/controls/export", f: f %>
@@ -34,16 +34,16 @@
     <div class="hidden m:flex justify-between">
       <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center py-3" do |f| %>
         <div class="crayons-field flex-1 flex-row items-center gap-2">
-          <%= render "admin/users/index/search_field", f: f, placeholder: "Search member...", aria_label: "Search member by name, username, email, or Twitter/GitHub usernames" %>
+          <%= render "admin/users/index/search_field", f: f, context: "medium", placeholder: "Search member...", aria_label: "Search member by name, username, email, or Twitter/GitHub usernames" %>
         </div>
         <div class="crayons-field flex-row items-center gap-2">
-          <%= render "admin/users/index/filter_role_field", f: f %>
+          <%= render "admin/users/index/filter_role_field", f: f, context: "medium" %>
         </div>
         <div>
           <%= render "admin/users/index/controls/export", f: f %>
         </div>
       <% end %>
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "medium" %>
     </div>
   <% end %>
 

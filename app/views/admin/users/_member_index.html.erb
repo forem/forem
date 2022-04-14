@@ -98,7 +98,7 @@
     </table>
     <!-- XL screen data view end -->
 
-    <div class="flex justify-end">
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+    <div class="flex justify-end xl:p-7">
+      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "bottom" %>
     </div>
 </div>
