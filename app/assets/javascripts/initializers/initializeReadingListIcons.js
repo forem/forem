@@ -33,14 +33,17 @@ function highlightButton(button) {
 }
 
 function addReadingListCountToHomePage() {
-  var user = userData();
-  var readingListCount;
-  if (user && document.getElementById('reading-list-count')) {
-    readingListCount =
-      user.reading_list_ids.length > 0 ? user.reading_list_ids.length : '';
-    document.getElementById('reading-list-count').innerHTML = readingListCount;
-    document.getElementById('reading-list-count').dataset.count =
-      user.reading_list_ids.length;
+  const user = userData();
+  const readingListContainers = document.querySelectorAll(
+    '.js-reading-list-count',
+  );
+  if (user && readingListContainers) {
+    readingListContainers.forEach(function (e) {
+      const readingListCount =
+        user.reading_list_ids.length > 0 ? user.reading_list_ids.length : '';
+      e.innerHTML = readingListCount;
+      e.dataset.count = user.reading_list_ids.length;
+    });
   }
 }
 
@@ -83,17 +86,22 @@ function renderButtonState(button, json) {
 }
 
 function renderNewSidebarCount(button, json) {
-  var newCount;
-  var count = document.getElementById('reading-list-count').dataset.count;
-  count = parseInt(count, 10);
-  if (json.result === 'create') {
-    newCount = count + 1;
-  } else if (count !== 0) {
-    newCount = count - 1;
+  const readingListContainers = document.querySelectorAll(
+    '.js-reading-list-count',
+  );
+  if (readingListContainers) {
+    readingListContainers.forEach(function (e) {
+      const count = parseInt(e.dataset.count, 10);
+      let newCount;
+      if (json.result === 'create') {
+        newCount = count + 1;
+      } else if (count !== 0) {
+        newCount = count - 1;
+      }
+      e.dataset.count = newCount;
+      e.innerHTML = newCount > 0 ? newCount : '';
+    });
   }
-  document.getElementById('reading-list-count').dataset.count = newCount;
-  document.getElementById('reading-list-count').innerHTML =
-    newCount > 0 ? newCount : '';
 }
 
 function buttonFormData(button) {

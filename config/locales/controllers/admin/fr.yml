@@ -3,6 +3,10 @@ fr:
   admin:
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
+    invitations_controller:
+      create_success: The invite has been sent to the user's email.
+      destroy_success: Invite cancelled for %{email}.
+      resend_success: Invite resent to %{email}.
     spaces_controller:
       update_success: L'espace a été mis à jour.
     users_controller:

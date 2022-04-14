@@ -27,16 +27,26 @@ module Admin
                    username: username,
                    remote_profile_image_url: ::Users::ProfileImageGenerator.call,
                    registered: false)
-      flash[:success] = "The invite has been sent to the user's email."
+      flash[:success] = t("admin.invitations_controller.create_success")
       redirect_to admin_invitations_path
     end
 
     def destroy
       @invitation = User.where(registered: false).find(params[:id])
       if @invitation.destroy
-        flash[:success] = "The invitation has been deleted."
+        flash[:success] = t("admin.invitations_controller.destroy_success", email: @invitation.email)
       else
         flash[:danger] = @invitation.errors_as_sentence
+      end
+      redirect_to admin_invitations_path
+    end
+
+    def resend
+      @invited_user = User.where(registered: false).find(params[:id])
+      if @invited_user.invite!
+        flash[:success] = t("admin.invitations_controller.resend_success", email: @invited_user.email)
+      else
+        flash[:danger] = @invited_user.errors_as_sentence
       end
       redirect_to admin_invitations_path
     end
