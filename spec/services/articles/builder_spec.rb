@@ -24,7 +24,7 @@ RSpec.describe Articles::Builder, type: :service do
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(store_location).to be false
+      expect(store_location).to be true
     end
   end
 
@@ -43,7 +43,7 @@ RSpec.describe Articles::Builder, type: :service do
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(store_location).to be false
+      expect(store_location).to be true
     end
   end
 
@@ -65,7 +65,7 @@ RSpec.describe Articles::Builder, type: :service do
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(store_location).to be false
+      expect(store_location).to be true
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe Articles::Builder, type: :service do
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(store_location).to be false
+      expect(store_location).to be true
     end
   end
 
@@ -105,7 +105,7 @@ RSpec.describe Articles::Builder, type: :service do
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(store_location).to be true
+      expect(store_location).to be false
     end
   end
 
@@ -122,7 +122,7 @@ RSpec.describe Articles::Builder, type: :service do
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(store_location).to be true
+      expect(store_location).to be false
     end
   end
 
@@ -145,7 +145,7 @@ RSpec.describe Articles::Builder, type: :service do
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
-      expect(store_location).to be true
+      expect(store_location).to be false
     end
   end
 end
