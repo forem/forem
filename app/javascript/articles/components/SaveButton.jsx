@@ -33,7 +33,20 @@ export class SaveButton extends Component {
       });
     };
 
-    if (article.class_name === 'Article') {
+    const articleOwnedByCurrentUser = function (article) {
+      if (localStorage && localStorage.getItem('current_user')) {
+        return (
+          article.user_id ===
+          JSON.parse(localStorage.getItem('current_user')).id
+        );
+      }
+      return null;
+    };
+
+    if (
+      article.class_name === 'Article' &&
+      !articleOwnedByCurrentUser(article)
+    ) {
       return (
         <button
           type="button"
