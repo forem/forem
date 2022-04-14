@@ -3,7 +3,7 @@
 <% if FeatureFlag.enabled?(:member_index_view) %>
   <%= javascript_packs_with_chunks_tag "admin/users/memberIndex", defer: true %>
 
-  <div class="crayons-card p-3 p-4 xl:p-0">
+  <div class="crayons-card p-0">
     <header class="flex flex-col p-4 xl:p-7 pb-4">
       <div class="flex flex-col l:flex-row justify-content-between l:items-center">
         <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (Invitations)</span></h1>
@@ -11,16 +11,18 @@
       </div>
 
       <!-- Small screen layout start -->
-      <div class="m:hidden fs-s">
+      <div class="flex flex-col m:hidden fs-s">
         <%= form_with url: admin_invitations_path, method: :get, local: true, class: "py-3" do |f| %>
           <div class="flex justify-content-between">
             <%= render "admin/users/index/expand_search_button" %>
-            <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
+            <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-small" %>
           </div>
           <div id="search-users" class="hidden mt-3">
-            <%= render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email" %>
+            <%= render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email", context: "responsive" %>
           </div>
         <% end %>
+        <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded inline-block s:self-end" %>
+
         <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Invited members</h2>
 
         <ul class="list-none">
@@ -51,16 +53,16 @@
       <!-- Large screen layout start -->
       <div class="hidden m:flex flex-col m:flex-row justify-content-between py-3">
         <%= form_with url: admin_invitations_path, method: :get, local: true, class: "grow-1 mb-3 m:mb-0" do |f| %>
-          <% render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email" %>
+          <% render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email", context: "large" %>
         <% end %>
         <div class="flex grow-1 justify-content-end">
-          <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations" %>
-          <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded" %>
+          <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-large" %>
+          <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-3" %>
         </div>
       </div>
 
     </header>
-    <table class="crayons-table crayons-table--minimal" width="100%">
+    <table class="hidden m:table crayons-table crayons-table--minimal" width="100%">
       <thead>
         <tr>
           <th scope="col" class="pl-7">Invited member</th>
@@ -102,7 +104,7 @@
     </table>
 
     <!-- Large screen layout end -->
-    <div class="flex justify-end">
+    <div class="flex justify-end p-4 xl:p-7">
       <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "bottom" %>
     </div>
   <div>
