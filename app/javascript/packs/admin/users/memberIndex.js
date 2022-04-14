@@ -116,13 +116,9 @@ document.querySelectorAll('.js-export-csv-modal-trigger').forEach((item) => {
       contentSelector: '#export-csv-modal',
       overlay: true,
       onOpen: () => {
-        document
-          .querySelectorAll('#window-modal .js-export-csv-modal-cancel')
-          .forEach((item) => {
-            item.addEventListener('click', () => {
-              closeWindowModal();
-            });
-          });
+          document
+          .querySelector('#window-modal .js-export-csv-modal-cancel')
+          ?.addEventListener('click', closeWindowModal);
       },
     });
   });
