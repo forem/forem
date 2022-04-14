@@ -3,6 +3,10 @@ en:
   admin:
     extensions_controller:
       update_success: Extensions have been updated.
+    invitations_controller:
+      create_success: The invite has been sent to the user's email.
+      destroy_success: Invite cancelled for %{email}.
+      resend_success: Invite resent to %{email}.
     spaces_controller:
       update_success: Space has been updated.
     users_controller:

@@ -13,13 +13,13 @@ constraints.
   to how we'll structure the feed configuration.
 - [These Are the [Feed] Levers I Know I Know - Forem Team 🌱](https://dev.to/devteam/these-are-the-feed-levers-i-know-i-know-3jj7)
 - [Creating a Catalog of Feed Levers and Configurations - Forem Team 🌱](https://forem.team/jeremy/creating-a-catalog-of-feed-levers-and-configurations-nnk)
-- On <2022-04-11 Mon>, [Jeremy, Jennie, Ella, and Michael T met over Zoom to talk
-  through the current feed](https://forem.team/jeremy/lets-talk-about-the-feed-baby-54b1).
+- On <2022-04-11 Mon>,
+  [Jeremy, Jennie, Ella, and Michael T met over Zoom to talk through the current feed](https://forem.team/jeremy/lets-talk-about-the-feed-baby-54b1).
 
 ## Glossary
 
-- **_Feed Experiment_:** A _feed experiment_ is the currently implemented set of _feed strategies_ -
-  current configurations we're using to generate feeds
+- **_Feed Experiment_:** A _feed experiment_ is the currently implemented set of
+  _feed strategies_ - current configurations we're using to generate feeds
 - **_Feed Strategy_:** a configuration of _levers_ and _relevancy factors_,
   which can be used to generate the _relevancy feed_.
 - **_Lever_:** A _lever_ is a specific attribute we're querying from the
