@@ -557,9 +557,9 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     oj (3.13.11)
-    omniauth (2.0.4)
+    omniauth (2.1.0)
       hashie (>= 3.4.6)
-      rack (>= 1.6.2, < 3)
+      rack (>= 2.2.3)
       rack-protection
     omniauth-apple (1.0.2)
       jwt
@@ -1020,7 +1020,7 @@ DEPENDENCIES
   nokogiri (~> 1.13)
   octokit (~> 4.22)
   oj (~> 3.13)
-  omniauth (~> 2.0)
+  omniauth (~> 2.1)
   omniauth-apple (~> 1.0)
   omniauth-facebook (~> 9.0)
   omniauth-github (~> 2.0)
