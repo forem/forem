@@ -15,9 +15,9 @@
             <span class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
           </button>
         </div>
-          <div>
-            <%= render "admin/users/index/controls/export", f: f %>
-          </div>
+        <div>
+          <%= render "admin/users/index/controls/export", f: f %>
+        </div>
         <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
       </div>
       <div>
