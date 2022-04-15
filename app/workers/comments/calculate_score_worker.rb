@@ -10,7 +10,7 @@ module Comments
 
       score = BlackBox.comment_quality_score(comment)
 
-      comment.update(score: score)
+      comment.update_columns(score: score)
       comment.root.save! if !comment.is_root? && comment.root_exists?
     end
   end
