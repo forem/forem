@@ -32,9 +32,12 @@
                 <div>
                   <%= render "admin/users/index/status_indicator", user: user %>
                 </div>
+                <!-- %=
+                # TODO: [@forem/admin-experience] Uncomment this chunk of code containing role badges once we finalize which roles to include.
                 <span class="c-indicator ml-2 crayons-hover-tooltip crayons-hover-tooltip--right" data-tooltip="<%= format_role_tooltip(user) %>">
-                  <%= cascading_high_level_roles(user) %>
+                  <%#= cascading_high_level_roles(user) %>
                 </span>
+                % -->
               </div>
               <div class="flex justify-between items-end">
                 <dl class="flex gap-4">
@@ -98,7 +101,25 @@
     </table>
     <!-- XL screen data view end -->
 
-    <div class="flex justify-end">
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users" %>
+    <div class="flex justify-end xl:p-7">
+      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "bottom" %>
     </div>
+
+    <div id="export-csv-modal" class="hidden">
+      <div class="flex flex-col gap-4">
+        <p>
+          Your data will be downloaded as a Comma Separated Values (.csv) file.
+        </p>
+        <p>
+          Values listed are Name, Username, Email address, Status, Joining date, Last activity, and Organizations.
+        </p>
+        <div class="flex gap-2">
+          <%= link_to "Download", "#{export_admin_users_path}.csv", class: "c-cta c-cta--branded self-end" %>
+          <button class="js-export-csv-modal-cancel crayons-btn crayons-btn--ghost">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
 </div>

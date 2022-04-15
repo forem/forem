@@ -34,9 +34,9 @@ gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.2" # A feed fetching and parsing library
 gem "field_test", "~> 0.5" # A/B testing
 gem "flipper", "~> 0.24.1" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.24.0" # Store Flipper flags in ActiveRecord
-gem "flipper-active_support_cache_store", "~> 0.24.0" # Cache feature flags for a short time
-gem "flipper-ui", "~> 0.24.0"
+gem "flipper-active_record", "~> 0.24.1" # Store Flipper flags in ActiveRecord
+gem "flipper-active_support_cache_store", "~> 0.24.1" # Cache feature flags for a short time
+gem "flipper-ui", "~> 0.24.1"
 gem "fog-aws", "~> 3.13" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
@@ -60,7 +60,7 @@ gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Grap
 gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.22" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
-gem "omniauth", "~> 2.0" # A generalized Rack framework for multiple-provider authentication
+gem "omniauth", "~> 2.1" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 9.0" # OmniAuth strategy for Facebook
 gem "omniauth-github", "~> 2.0" # OmniAuth strategy for GitHub
@@ -75,7 +75,7 @@ gem "pg_search", "~> 2.3.6" # PgSearch builds Active Record named scopes that ta
 gem "pghero", "~> 2.8" # Dashboard for Postgres
 gem "puma", "~> 5.6.4" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
-gem "rack-attack", "~> 6.6.0" # Used to throttle requests to prevent brute force attacks
+gem "rack-attack", "~> 6.6.1" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.2.2" # Ruby on Rails
@@ -102,7 +102,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.49" # Ruby library for the Stripe API
+gem "stripe", "~> 5.50" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 1.0" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
