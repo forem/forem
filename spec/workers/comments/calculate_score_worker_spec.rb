@@ -12,15 +12,13 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
 
       before do
         allow(BlackBox).to receive(:comment_quality_score).and_return(7)
-        allow(BlackBox).to receive(:calculate_spaminess).and_return(99)
       end
 
-      it "updates score and spaminess_rating", :aggregate_failures do
+      it "updates the score" do
         worker.perform(comment.id)
 
         comment.reload
         expect(comment.score).to be(7)
-        expect(comment.spaminess_rating).to be(99)
       end
 
       it "calls save on the root comment when given a descendant comment" do

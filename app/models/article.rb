@@ -557,8 +557,7 @@ class Article < ApplicationRecord
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
-                   hotness_score: BlackBox.article_hotness_score(self),
-                   spaminess_rating: BlackBox.calculate_spaminess(self))
+                   hotness_score: BlackBox.article_hotness_score(self))
   end
 
   def co_author_ids_list=(list_of_co_author_ids)
@@ -903,7 +902,6 @@ class Article < ApplicationRecord
 
   def calculate_base_scores
     self.hotness_score = 1000 if hotness_score.blank?
-    self.spaminess_rating = 0 if new_record?
   end
 
   def create_conditional_autovomits

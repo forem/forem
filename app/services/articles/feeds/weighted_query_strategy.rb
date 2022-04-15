@@ -227,14 +227,6 @@ module Articles
           fallback: 1,
           requires_user: false,
           group_by: "articles.public_reactions_count"
-        },
-        # Weight to give based on spaminess of the article.
-        spaminess_factor: {
-          clause: "articles.spaminess_rating",
-          cases: [[0, 1]],
-          fallback: 0,
-          requires_user: false,
-          group_by: "articles.spaminess_rating"
         }
       }.freeze
 
