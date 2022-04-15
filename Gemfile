@@ -36,7 +36,7 @@ gem "field_test", "~> 0.5" # A/B testing
 gem "flipper", "~> 0.24.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.24.1" # Store Flipper flags in ActiveRecord
 gem "flipper-active_support_cache_store", "~> 0.24.1" # Cache feature flags for a short time
-gem "flipper-ui", "~> 0.24.0"
+gem "flipper-ui", "~> 0.24.1"
 gem "fog-aws", "~> 3.13" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
