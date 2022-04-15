@@ -4,6 +4,7 @@ import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
+import { userData } from '../onboarding/utilities.js';
 
 /**
  * Sends analytics about the featured article.
@@ -88,6 +89,8 @@ export const renderFeed = (timeFrame) => {
           sendFeaturedArticleAnalytics(featuredStory.id);
         }
 
+        const { id: currentUserId } = userData();
+
         // 1. Show the pinned article first
         // 2. Show the featured story next
         // 3. Podcast episodes out today
@@ -101,6 +104,7 @@ export const renderFeed = (timeFrame) => {
                 pinned={true}
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(pinnedArticle.id)}
+                saveable={pinnedArticle.user_id != currentUserId}
               />
             )}
             {featuredStory && (
@@ -110,6 +114,7 @@ export const renderFeed = (timeFrame) => {
                 isFeatured
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
+                saveable={featuredStory.user_id != currentUserId}
               />
             )}
             {podcastEpisodes.length > 0 && (
@@ -122,6 +127,7 @@ export const renderFeed = (timeFrame) => {
                 article={story}
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(story.id)}
+                saveable={story.user_id != currentUserId}
               />
             ))}
           </div>

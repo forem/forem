@@ -212,6 +212,7 @@ function insertArticles(articles) {
   }
   articles.forEach(function insertAnArticle(article) {
     var existingEl = document.getElementById('article-link-' + article.id);
+    var currentUserId = userData().id;
     if (
       ![
         '/',
@@ -226,9 +227,12 @@ function insertArticles(articles) {
       existingEl.parentElement.classList.contains('crayons-story') &&
       !document.getElementById('video-player-' + article.id)
     ) {
-      existingEl.parentElement.outerHTML = buildArticleHTML(article);
+      existingEl.parentElement.outerHTML = buildArticleHTML(
+        article,
+        currentUserId,
+      );
     } else if (!existingEl) {
-      var newHTML = buildArticleHTML(article);
+      var newHTML = buildArticleHTML(article, currentUserId);
       newArticlesHTML += newHTML;
       initializeReadingListIcons();
     }

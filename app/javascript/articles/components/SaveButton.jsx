@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../../common-prop-types';
-import { userData } from '../../onboarding/utilities.js';
 
 export class SaveButton extends Component {
   constructor(props) {
@@ -16,7 +15,7 @@ export class SaveButton extends Component {
 
   render() {
     const { buttonText } = this.state;
-    const { article, isBookmarked, onClick } = this.props;
+    const { article, isBookmarked, onClick, saveable } = this.props;
 
     const mouseMove = (_e) => {
       this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Save' });
@@ -34,14 +33,7 @@ export class SaveButton extends Component {
       });
     };
 
-    const articleOwnedByCurrentUser = function (article) {
-      return article.user_id === userData().id;
-    };
-
-    if (
-      article.class_name === 'Article' &&
-      !articleOwnedByCurrentUser(article)
-    ) {
+    if (article.class_name === 'Article' && saveable) {
       return (
         <button
           type="button"

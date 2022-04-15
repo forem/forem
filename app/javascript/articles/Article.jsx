@@ -23,6 +23,7 @@ export const Article = ({
   bookmarkClick,
   feedStyle,
   pinned,
+  saveable,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
@@ -133,6 +134,7 @@ export const Article = ({
                   article={article}
                   isBookmarked={isBookmarked}
                   onClick={bookmarkClick}
+                  saveable={saveable}
                 />
               </div>
             </div>
