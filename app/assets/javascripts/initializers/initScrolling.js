@@ -212,7 +212,8 @@ function insertArticles(articles) {
   }
   articles.forEach(function insertAnArticle(article) {
     var existingEl = document.getElementById('article-link-' + article.id);
-    var currentUserId = userData().id;
+    var currentUser = userData();
+    var currentUserId = currentUser && currentUser.id;
     if (
       ![
         '/',

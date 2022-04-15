@@ -89,7 +89,8 @@ export const renderFeed = (timeFrame) => {
           sendFeaturedArticleAnalytics(featuredStory.id);
         }
 
-        const { id: currentUserId } = userData();
+        const currentUser = userData();
+        const currentUserId = currentUser && currentUser.id;
 
         // 1. Show the pinned article first
         // 2. Show the featured story next
