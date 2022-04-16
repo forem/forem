@@ -43,7 +43,7 @@ module Stories
                  controller: self, user: current_user,
                  default_value: AbExperiment::ORIGINAL_VARIANT
                )
-               Articles::Feeds::WeightedQueryStrategy.new(
+               Articles::Feeds::VariantQuery.new(
                  user: current_user,
                  number_of_articles: 25,
                  page: @page,
@@ -68,7 +68,7 @@ module Stories
       strategy = AbExperiment.get(experiment: AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, controller: self,
                                   user: current_user, default_value: AbExperiment::ORIGINAL_VARIANT)
       feed = if strategy.weighted_query_strategy?
-               Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
+               Articles::Feeds::VariantQuery.new(user: current_user, page: @page, tags: params[:tag])
              elsif Settings::UserExperience.feed_strategy == "basic"
                # I'm a bit uncertain why we're skipping the user on this call.
                Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])

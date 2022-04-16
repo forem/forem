@@ -1,13 +1,13 @@
 require "rails_helper"
 
-RSpec.describe Articles::Feeds::WeightedQueryStrategy, type: :service do
+RSpec.describe Articles::Feeds::VariantQuery, type: :service do
   subject(:feed_strategy) { described_class.new(user: user) }
 
   let(:user) { nil }
 
   describe "#default_home_feed" do
     # This test helps test the common interface between the
-    # WeightedQueryStrategy and the LargeForemExperimental
+    # VariantQuery and the LargeForemExperimental
     it "receives `user_signed_in: false` and behaves" do
       response = feed_strategy.default_home_feed(user_signed_in: false)
       expect(response).to be_a(ActiveRecord::Relation)
@@ -53,7 +53,7 @@ RSpec.describe Articles::Feeds::WeightedQueryStrategy, type: :service do
         articles = create_list(:article, 3)
 
         # This scenario can happen with
-        # `Articles::Feeds::WeightedQueryStrategy#featured_story_and_default_home_feed`
+        # `Articles::Feeds::VariantQuery#featured_story_and_default_home_feed`
         # when we look for a "featured" article and don't find any.
         # So let's make sure we get back the articles we were
         # expecting instead of none of them.

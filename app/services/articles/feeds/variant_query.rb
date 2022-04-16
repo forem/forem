@@ -30,7 +30,7 @@ module Articles
     #       account for the Forem's administrators.
     # @note For those considering extending this, be very mindful of
     #       SQL injection.
-    class WeightedQueryStrategy
+    class VariantQuery
       # This constant defines the allowable relevance scoring methods.
       #
       # A scoring method should be a SQL fragment that produces a
@@ -310,7 +310,7 @@ module Articles
       # @example
       #
       #    user = User.first
-      #    strategy = Articles::Feed::WeightedQueryStrategy.new(user: user)
+      #    strategy = Articles::Feed::VariantQuery.new(user: user)
       #    puts strategy.call.to_sql
       #
       # rubocop:disable Layout/LineLength

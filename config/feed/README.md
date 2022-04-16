@@ -8,7 +8,7 @@ constraints.
 ## Historical Documents
 
 - The
-  [Articles::Feeds::WeightedQueryStrategy](https://github.com/forem/forem/blob/de2edee07d824a34e5c5445d455b1f8086bd127d/app/services/articles/feeds/weighted_query_strategy.rb)
+  [Articles::Feeds::VariantQuery](https://github.com/forem/forem/blob/main/app/services/articles/feeds/variant_query.rb)
   is the precursor to the more robust feed configuration. It provides hints as
   to how we'll structure the feed configuration.
 - [These Are the [Feed] Levers I Know I Know - Forem Team 🌱](https://dev.to/devteam/these-are-the-feed-levers-i-know-i-know-3jj7)
@@ -20,8 +20,8 @@ constraints.
 
 - **_Feed Experiment_:** A _feed experiment_ is the currently implemented set of
   _feed strategies_ - current configurations we're using to generate feeds
-- **_Feed Strategy_:** a configuration of _levers_ and _relevancy factors_,
-  which can be used to generate the _relevancy feed_.
+- **_Feed Variant_:** a configuration of _levers_ and _relevancy factors_, which
+  can be used to generate the _relevancy feed_.
 - **_Lever_:** A _lever_ is a specific attribute we're querying from the
   database.
 - **_Lever Range_:** The _lever range_ is the potential range of values that the
@@ -32,9 +32,9 @@ constraints.
 - **_Relevancy Feed_:** The _relevancy feed_ (or for this document the _feed_)
   builds the list of articles a user sees on the homepage of a Forem.
 - **_Relevancy Score_:** Each article is assigned a _relevancy score_ based on
-  the _lever_ configuration of the current _feed strategy_. It is the product of
+  the _lever_ configuration of the current _feed variant_. It is the product of
   all applicable _relevancy factors_ for each of the _levers_ in the _feed
-  strategy_.
+  variant_.
 
 At a future point, we might allow for the site creators to pick one or more feed
 strategies for the _relevancy feed_ and even allow a member to specify their
@@ -47,7 +47,7 @@ other emergent _feed strategies_.
 There are three layers of configuration, presented working from the inside out.
 
 1.  Lever
-2.  Feed Strategy
+2.  Feed Variant
 3.  Feed Experiment
 
 ### Lever Configuration
@@ -68,15 +68,15 @@ I believe the goal is to avoid changing the SQL implementation details of a
 lever; we would instead create a new lever. This way we can have consistent
 documentation for a given lever.
 
-### Feed Strategy
+### Feed Variant
 
-Each _feed strategy_ need not require engineering time to create and define.
-This involves:
+Each _feed variant_ need not require engineering time to create and define. This
+involves:
 
-- Defining the programmatic key for the _feed strategy_.
+- Defining the programmatic key for the _feed variant_.
 - Writing the human readable label.
-- Writing any notes around the _feed strategy_.
-- Defining which _lever_ this _feed strategy_ incorporates.
+- Writing any notes around the _feed variant_.
+- Defining which _lever_ this _feed variant_ incorporates.
 - For each _lever_,
   - Mapping the elements within the _lever range_ to the desired _relevancy
     factor_.
@@ -84,7 +84,7 @@ This involves:
   - Describing the intention of this mapping and fallback.
 
 From an application stand-point we want to run the queries for each _feed
-strategy_ (to ensure valid SQL).
+variant_ (to ensure valid SQL).
 
 ### Feed Experiment
 
@@ -104,15 +104,15 @@ While the application is running, either in _production_ or under a request or
 integration test, we should only load _feed strategies_ that are part of a _feed
 experiment_ and/or available for a Creator to select.
 
-To expose a new _feed strategy_ to a production instance will require a deploy
-of that instance. At a future point, we may look to allowing uploads of _feed
+To expose a new _feed variant_ to a production instance will require a deploy of
+that instance. At a future point, we may look to allowing uploads of _feed
 strategies_ but that is not the current path.
 
 Changing from one _feed experiment_ to another will require a new deploy. At a
 future point we might allow for live changes of the _feed experiment_ but that
 is outside the scope of present considerations.
 
-Each _feed strategy_ will be tested as part of unit testing; to ensure it
+Each _feed variant_ will be tested as part of unit testing; to ensure it
 generates valid SQL.
 
 Each _feed lever_ will be tested as part of unit testing to ensure it is well
