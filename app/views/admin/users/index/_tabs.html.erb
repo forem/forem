@@ -1,0 +1,19 @@
+<nav aria-label="Members" class="flex justify-between gap-4">
+  <ul class="crayons-navigation crayons-navigation--horizontal">
+    <li>
+      <%= link_to "Members", admin_users_path, class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:controller] == 'admin/users'}", "aria-current": ("page" if params[:controller] == "admin/users") %>
+    </li>
+    <li>
+      <%= link_to "Invited Members", admin_invitations_path, class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:controller] == 'admin/invitations'}", "aria-current": ("page" if params[:controller] == "admin/invitations") %>
+    </li>
+    <li>
+      <%= link_to admin_users_gdpr_delete_requests_path, class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:controller] == 'admin/users/gdpr_delete_requests'}", "aria-current": ("page" if params[:controller] == "admin/users/gdpr_delete_requests") do %>
+        GDPR Delete Requests
+        <% if Users::GdprDeleteRequest.any? %>
+          &nbsp;<span class="c-indicator c-indicator--danger"><%= Users::GdprDeleteRequest.count %></span>
+        <% end %>
+      <% end %>
+    </li>
+  </ul>
+
+</nav>

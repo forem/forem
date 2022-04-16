@@ -29,7 +29,7 @@ function sendFeaturedArticleAnalytics(articleId) {
 }
 
 const FeedLoading = () => (
-  <div>
+  <div data-testid="feed-loading">
     <LoadingArticle version="featured" />
     <LoadingArticle />
     <LoadingArticle />

@@ -1,18 +1,17 @@
-<!-- menu_items.is_a?(Hash) we have this condition because /reports changes to /feedback_messages  -->
-<% if menu_items.present? && menu_items.is_a?(Hash) && menu_items[:children].any? %>
+<% if menu_items&.has_children? %>
   <header class="mb-3 admin__tabbed-navbar">
-    <h1 class="crayons-title"><%= menu_items[:name].to_s.titleize %></h1>
+    <h1 class="crayons-title"><%= menu_items.name.to_s.titleize %></h1>
     <div class="block s:flex items-center space-between">
       <nav>
         <ul class="crayons-tabs crayons-tabs--wrapped">
-          <% menu_items[:children].each do |item| %>
-            <% if item[:visible] %>
+          <% menu_items.children.each do |item| %>
+            <% if item.visible? %>
               <li>
                 <a
-                  data-text="<%= item[:name].to_s.titleize %>"
-                  href="/admin/<%= deduced_scope(request) %>/<%= item[:controller] %>"
-                  class="crayons-tabs__item <%= "crayons-tabs__item--current" if deduced_controller(request)&.match?(item[:controller]) %>">
-                  <%= item[:name].to_s.titleize %>
+                  data-text="<%= item.name.to_s.titleize %>"
+                  href="/admin/<%= deduced_scope(request) %>/<%= item.controller %>"
+                  class="crayons-tabs__item <%= "crayons-tabs__item--current" if deduced_controller(request)&.match?(item.controller) %>">
+                  <%= item.name.to_s.titleize %>
                 </a>
               </li>
             <% end %>

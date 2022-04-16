@@ -1,30 +1,93 @@
-<header>
-  <h1 class="crayons-title">Invitations</h1>
-  <%= render "admin/users/menu" %>
-</header>
+<% if FeatureFlag.enabled?(:member_index_view) %>
+  <%= javascript_packs_with_chunks_tag "admin/users/memberIndex", defer: true %>
 
-<table class="crayons-table" width="100%">
-  <thead>
-    <tr>
-      <th scope="col">User</th>
-      <th scope="col">ID</th>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-    </tr>
-  </thead>
-  <tbody class="crayons-card">
-    <% @invitations.each do |user| %>
+  <div class="crayons-card p-3 p-4 xl:p-0">
+    <header class="flex flex-col p-4 xl:p-7 pb-4">
+      <div class="flex flex-col l:flex-row justify-content-between l:items-center">
+        <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (Invitations)</span></h1>
+        <%= render "admin/users/index/tabs" %>
+      </div>
+      <div class="flex justify-content-between py-3">
+        <%= form_with url: admin_invitations_path, method: :get, local: true, class: "grow-1" do |f| %>
+          <% render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email", context: "invitations" %>
+        <% end %>
+        <div class="flex grow-1 justify-content-end">
+          <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top" %>
+          <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded self-end" %>
+        </div>
+      </div>
+
+    </header>
+    <table class="crayons-table crayons-table--minimal" width="100%">
+      <thead>
+        <tr>
+          <th scope="col" class="pl-7">Invited member</th>
+          <th scope="col">Email address</th>
+          <th scope="col">Invited on</th>
+          <th scope="col" class="screen-reader-only">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="member-index-content">
+        <% @invitations.each do |user| %>
+          <tr>
+            <td class="pl-7">
+              <div class="flex">
+                 <%= render "admin/users/index/member_data", user: user %>
+              </div>
+            </td>
+            <td><%= user.email %></td>
+            <td><%= user.created_at.strftime("%d %b, %Y") %></td>
+            <td>
+              <div class="relative flex">
+                <button type="button" id="<%= user.id %>-action-dropdown-btn" data-toggle-dropdown="<%= user.id %>-action-dropdown" aria-controls="<%= user.id %>-action-dropdown" aria-haspopup="true" aria-expanded="false"
+                  class="c-btn c-btn--icon-alone ml-auto" aria-label="Invitation actions: <%= user.name %>">
+                  <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
+                </button>
+                <div id="<%= user.id %>-action-dropdown" class="crayons-dropdown right-0">
+                  <%= button_to resend_admin_invitation_path(user.id), class: "c-btn c-btn--icon-left w-100 align-left" do %>
+                   <%= crayons_icon_tag("send", aria_hidden: true) %> Resend invite
+                  <% end %>
+                  <%= button_to admin_invitation_path(user.id), method: :delete, class: "c-btn c-btn--icon-left w-100 align-left" do %>
+                    <%= crayons_icon_tag("x", aria_hidden: true) %> Cancel invite
+                  <% end %>
+                </div>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <div class="flex justify-end">
+      <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "bottom" %>
+    </div>
+  <div>
+<% else %>
+  <header>
+    <h1 class="crayons-title">Invitations</h1>
+    <%= render "admin/users/menu" %>
+  </header>
+  <table class="crayons-table" width="100%">
+    <thead>
       <tr>
-        <td><%= link_to user.username, admin_user_path(user) %></td>
-        <td><%= user.id %></td>
-        <td><%= user.name %></td>
-        <td><%= user.email %></td>
-        <h5>
-          <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %></td>
-        </h5>
+        <th scope="col">User</th>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<%= paginate @invitations, theme: "internal" %>
+    </thead>
+    <tbody class="crayons-card">
+      <% @invitations.each do |user| %>
+        <tr>
+          <td><%= link_to user.username, admin_user_path(user) %></td>
+          <td><%= user.id %></td>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <h5>
+            <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %></td>
+          </h5>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @invitations, theme: "internal" %>
+<% end %>

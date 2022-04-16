@@ -26,7 +26,7 @@ module Podcasts
       end
       podcast.update_columns(reachable: true, status_notice: "")
       feed.items.size
-    rescue Net::OpenTimeout, Errno::ECONNREFUSED, SocketError, HTTParty::RedirectionTooDeep
+    rescue Net::OpenTimeout, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, SocketError, HTTParty::RedirectionTooDeep
       set_unreachable(status: :unreachable, force_update: force_update)
     rescue OpenSSL::SSL::SSLError
       set_unreachable(status: :ssl_failed, force_update: force_update)

@@ -556,6 +556,9 @@ article {
 .ff-container {
   --gif-bg: rgb(var(--black));
   --gif-color: rgb(var(--white));
+  // freezeframe uses a z-index of 1 to control when the static image is visible.
+  // To avoid clashes with our wider system of z-index values, we define a custom one for this use-case only
+  --gif-btn-z-index: 2;
 
   width: fit-content;
 
@@ -583,7 +586,7 @@ article {
     bottom: 0;
     right: 0;
     margin: var(--su-1);
-    z-index: var(--z-elevate);
+    z-index: var(--gif-btn-z-index);
     display: flex;
     align-items: center;
     padding: var(--su-1) var(--su-2);
@@ -596,6 +599,7 @@ article {
       --bg-hover: var(--gif-bg);
       --color: var(--gif-color);
       --color-hover: var(--gif-color);
+      z-index: var(--gif-btn-z-index);
     }
   }
 

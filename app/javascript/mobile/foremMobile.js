@@ -1,5 +1,5 @@
-/* global Runtime */
 import { request } from '@utilities/http';
+import { isNativeIOS, isNativeAndroid } from '@utilities/runtime';
 
 export function foremMobileNamespace() {
   return {
@@ -64,9 +64,9 @@ export function foremMobileNamespace() {
     },
     injectNativeMessage(namespace, message) {
       try {
-        if (Runtime.isNativeIOS(namespace)) {
+        if (isNativeIOS(namespace)) {
           window.webkit.messageHandlers[namespace].postMessage(message);
-        } else if (Runtime.isNativeAndroid(`${namespace}Message`)) {
+        } else if (isNativeAndroid(`${namespace}Message`)) {
           AndroidBridge[`${namespace}Message`](JSON.stringify(message));
         }
       } catch (error) {

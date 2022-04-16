@@ -42,13 +42,12 @@ RSpec.describe "User edits their profile", type: :system do
 
   describe "editing admin created profile fields" do
     before do
-      allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
       Profile.refresh_attributes!
     end
 
     it "renders profile fields" do
-      expect(page).to have_text(left_sidebar_profile_field.attribute_name.titleize)
-      expect(page).to have_text(header_profile_field.attribute_name.titleize)
+      expect(page).to have_text(left_sidebar_profile_field.label.titleize)
+      expect(page).to have_text(header_profile_field.label.titleize)
     end
 
     it "reflects set profile fields in the interface" do
@@ -61,12 +60,12 @@ RSpec.describe "User edits their profile", type: :system do
       expect(page).not_to have_text("cthulhu")
 
       within(".crayons-layout__sidebar-left") do
-        expect(page).to have_text(left_sidebar_profile_field.attribute_name.titleize)
+        expect(page).to have_text(left_sidebar_profile_field.label.titleize)
         expect(page).to have_text("chocolate")
       end
 
       within(".profile-header") do
-        expect(page).to have_text(header_profile_field.attribute_name.titleize)
+        expect(page).to have_text(header_profile_field.label.titleize)
         expect(page).to have_text("pistachio")
       end
     end

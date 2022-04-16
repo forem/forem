@@ -67,7 +67,7 @@ RSpec.describe Organization, type: :model do
     it "generates a secret if set to nil" do
       organization.secret = nil
       organization.save
-      expect(organization.reload.secret).not_to be(nil)
+      expect(organization.reload.secret).not_to be_nil
     end
   end
 
@@ -247,6 +247,41 @@ RSpec.describe Organization, type: :model do
 
         article = Article.find_by(organization_id: organization.id)
         expect(article.path).to include(new_slug)
+      end
+
+      it "updates article's cached_organization profile image", :aggregate_failures do
+        # What is going on with this spec? Follow the comments.
+        #
+        # tl;dr - verifying fix for https://github.com/forem/forem/issues/17041
+
+        # Create an organization and article, verify the article has cached the initial profile
+        # image of the organization.
+        original_org = create(:organization, profile_image: File.open(Rails.root.join("app/assets/images/1.png")))
+        article = create(:article, organization: original_org)
+        expect(article.cached_organization.profile_image_url).to eq(original_org.profile_image_url)
+
+        # For good measure let's have two of these articles
+        create(:article, organization: original_org)
+
+        # A foible of CarrierWave is that I can't re-upload for the same model in memory.  I need to
+        # refind the record.  #reload does not work either.  (I lost sleep on this portion of the
+        # test)
+        organization = described_class.find(original_org.id)
+
+        # Verify that the organization's image changes.  See the above CarrierWave foible
+        expect do
+          organization.profile_image = File.open(Rails.root.join("app/assets/images/2.png"))
+          organization.save!
+        end.to change { organization.reload.profile_image_url }
+
+        # I want to collect reloaded versions of the organization's articles so I can see their
+        # cached organization profile image
+        articles_profile_image_urls = organization.articles
+          .map { |art| art.reload.cached_organization.profile_image_url }.uniq
+
+        # Because of the change `{ organization.reload... }` the organization's profile_image_url is
+        # the most recent change.
+        expect(articles_profile_image_urls).to eq([organization.profile_image_url])
       end
 
       it "updates article cached_organizations" do

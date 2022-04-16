@@ -1,17 +1,11 @@
+import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
+
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openRolesModal() {
   cy.getModal().should('not.exist');
   cy.findByRole('button', { name: 'Assign role' }).click();
 
   return cy.getModal();
-}
-
-function verifyAndDismissUserUpdatedMessage() {
-  cy.findByText('User has been updated').should('exist');
-  cy.findByRole('button', { name: 'Dismiss message' })
-    .should('have.focus')
-    .click();
-  cy.findByText('User has been updated').should('not.exist');
 }
 
 function checkUserStatus(status) {

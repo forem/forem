@@ -56,9 +56,9 @@ RSpec.describe "/creator_settings/new", type: :request do
       it "allows a creator to successfully fill out the creator setup form", :aggregate_failures do
         post admin_creator_settings_path, params: params
 
-        expect(current_user.saw_onboarding).to eq(true)
-        expect(current_user.checked_code_of_conduct).to eq(true)
-        expect(current_user.checked_terms_and_conditions).to eq(true)
+        expect(current_user.saw_onboarding).to be(true)
+        expect(current_user.checked_code_of_conduct).to be(true)
+        expect(current_user.checked_terms_and_conditions).to be(true)
         expect(response).to redirect_to(:root).and have_http_status(:found)
       end
 

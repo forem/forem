@@ -43,7 +43,7 @@
         <% header_fields.sort.each do |title, value| %>
           <li>
             <div class="key">
-              <%= t("views.users.profile_fields.#{title}") %>
+              <%= t("views.users.profile_fields.#{title.downcase}", default: title.titleize) %>
             </div>
             <div class="value">
               <%= value %>

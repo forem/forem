@@ -29,6 +29,9 @@ ProfileField
   .find_or_create_by(label: "Education")
 Profile.refresh_attributes!
 
+# extract generated attribute names
+work_attr = ProfileField.find_by(label: "Work").attribute_name
+education_attr = ProfileField.find_by(label: "Education").attribute_name
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
@@ -52,11 +55,11 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   )
 
   user.profile.update(
-    summary: "Admin user summary",
-    work: "Software developer at Company",
-    location: "Edinburgh",
-    education: "University of Life",
-    website_url: Faker::Internet.url,
+    :summary => "Admin user summary",
+    work_attr => "Software developer at Company",
+    :location => "Edinburgh",
+    education_attr => "University of Life",
+    :website_url => Faker::Internet.url,
   )
 
   user.add_role(:super_admin)
@@ -65,11 +68,6 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
 end
 
 admin_user = User.find_by(email: "admin@forem.local")
-
-##############################################################################
-
-# Enable Admin Member View feature flag for tests
-FeatureFlag.enable(:admin_member_view)
 
 ##############################################################################
 
@@ -555,11 +553,11 @@ seeder.create_if_doesnt_exist(User, "email", "series-user@forem.local") do
     checked_terms_and_conditions: true,
   )
   series_user.profile.update(
-    summary: "Series user summary",
-    work: "Software developer at Company",
-    location: "Edinburgh",
-    education: "University of Life",
-    website_url: Faker::Internet.url,
+    :summary => "Series user summary",
+    work_attr => "Software developer at Company",
+    :location => "Edinburgh",
+    education_attr => "University of Life",
+    :website_url => Faker::Internet.url,
   )
   series_user.notification_setting.update(
     email_comment_notifications: false,

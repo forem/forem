@@ -69,7 +69,7 @@ RSpec.describe Podcasts::GetEpisode, type: :service do
       allow(podcast).to receive(:existing_episode).and_return(ep)
       get_episode.call(item: item2)
       ep.reload
-      expect(ep.published_at).to eq(nil)
+      expect(ep.published_at).to be_nil
     end
 
     it "enqueues a worker when force_update is passed" do
