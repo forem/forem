@@ -3,18 +3,20 @@ require "rails_helper"
 RSpec.describe Articles::Feeds::LeverCatalogBuilder do
   let(:catalog) do
     described_class.new do
-      order_by_lever(Articles::Feeds::OrderByLever::DEFAULT_KEY,
+      order_by_lever(:order_by_this,
                      label: "Hello world",
                      order_by_fragment: "relevancy_score DESC")
 
       relevancy_lever(:my_key,
                       user_required: true,
                       label: "A label",
+                      range: "[-10..0]",
                       select_fragment: "articles.count")
 
       relevancy_lever(:my_other_key,
                       user_required: false,
                       label: "Another label",
+                      range: "[-10..0]",
                       select_fragment: "articles.reactions_count")
     end
   end
@@ -31,11 +33,13 @@ RSpec.describe Articles::Feeds::LeverCatalogBuilder do
           relevancy_lever(:my_key,
                           user_required: true,
                           label: "A label",
+                          range: "[-10..0]",
                           select_fragment: "articles.count")
 
           relevancy_lever(:my_key,
                           user_required: false,
                           label: "Another label",
+                          range: "[-10..0]",
                           select_fragment: "articles.reactions_count")
         end
       end.to raise_error(described_class::DuplicateLeverError)
@@ -57,17 +61,17 @@ RSpec.describe Articles::Feeds::LeverCatalogBuilder do
   end
 
   describe "#fetch_lever" do
-    subject { catalog.fetch_lever(lever) }
+    subject { catalog.fetch_lever(key) }
 
     context "when lever exists" do
-      let(:lever) { "my_key" }
+      let(:key) { "my_key" }
 
       it { is_expected.to be_a(Articles::Feeds::RelevancyLever) }
       it { is_expected.to be_frozen }
     end
 
     context "when lever does not exist" do
-      let(:lever) { "404" }
+      let(:key) { "404" }
 
       it { within_block_is_expected.to raise_error(KeyError) }
     end
@@ -77,15 +81,7 @@ RSpec.describe Articles::Feeds::LeverCatalogBuilder do
     subject { catalog.fetch_order_by(key) }
 
     context "when lever exists" do
-      let(:key) { Articles::Feeds::OrderByLever::DEFAULT_KEY }
-
-      it { is_expected.to be_a(Articles::Feeds::OrderByLever) }
-      it { is_expected.to be_frozen }
-    end
-
-    context "when given a nil key" do
-      # Note this assumes that we've configured the feed correctly
-      let(:key) { nil }
+      let(:key) { "order_by_this" }
 
       it { is_expected.to be_a(Articles::Feeds::OrderByLever) }
       it { is_expected.to be_frozen }

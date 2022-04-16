@@ -5,8 +5,6 @@ module Articles
     #
     # @see config/feed/README.md
     class OrderByLever
-      DEFAULT_KEY = :relevancy_score_and_publication_date
-
       # @param key [Symbol] the programmatic means of naming this
       #        lever. (e.g. "publication_date_decay_lever")
       # @param label [String] the "help text" for describing this lever.  (e.g. "How the
@@ -18,6 +16,10 @@ module Articles
         @order_by_fragment = order_by_fragment
       end
       attr_reader :key, :label, :order_by_fragment
+
+      def to_sql
+        Arel.sql(order_by_fragment)
+      end
     end
   end
 end
