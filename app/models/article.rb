@@ -352,7 +352,7 @@ class Article < ApplicationRecord
     kind, dir = value.split("-")
 
     dir = "desc" unless %w[asc desc].include?(dir)
-
+    dir = dir.to_sym
     column =
       case kind
       when "creation"  then :created_at
@@ -364,7 +364,7 @@ class Article < ApplicationRecord
         :created_at
       end
 
-    order(column => dir.to_sym)
+    order("#{column} #{dir}")
   }
 
   # @note This includes the `featured` scope, which may or may not be
