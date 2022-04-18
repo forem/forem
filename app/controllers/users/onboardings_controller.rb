@@ -2,12 +2,17 @@ module Users
   class OnboardingsController < ApplicationController
     before_action :set_no_cache_header
     before_action :authenticate_user!
-    after_action :verify_authorized
+    after_action :verify_authorized, except: [:show]
+    before_action :set_cache_control_headers, only: %i[show]
 
     ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
     ALLOWED_CHECKBOX_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
 
-    def onboarding_update
+    def show
+      set_surrogate_key_header "onboarding-slideshow"
+    end
+
+    def update
       authorize User
 
       user_params = {}
