@@ -1,6 +1,6 @@
 # This class is responsible for helping to build a menu.
 #
-# @see {AdminMenu}
+# @see AdminMenu
 class Menu
   # @return [Hash<Symbol, Menu::Scope>]
   def self.define(&block)
@@ -22,7 +22,7 @@ class Menu
     @items[name] = Scope.new(name: name, svg: "#{svg}.svg", children: children)
   end
 
-  # @see {Menu::Item#initialize} for details on the parameters.
+  # @see Menu::Item#initialize for details on the parameters.
   # @return [Menu::Item]
   def item(...)
     Item.new(...)

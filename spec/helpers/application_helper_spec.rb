@@ -317,4 +317,16 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(optimized_helper).to eq(cloudinary_image_tag)
     end
   end
+
+  describe "#application_policy_content_tag" do
+    subject(:content) do
+      application_policy_content_tag("p", record: Article, query: :create?, class: "something") do
+        "My Content"
+      end
+    end
+
+    it "adds the policy related classes to the HTML tag element element" do
+      expect(content).to include(%(<p class="something js-policy-article-create">My Content</p>))
+    end
+  end
 end

@@ -43,11 +43,13 @@ $breakpoint-xs: 480px;
 $breakpoint-s: 640px;
 $breakpoint-m: 768px;
 $breakpoint-l: 1024px;
+$breakpoint-xl: 1280px;
 
 $breakpoints: (
   's': $breakpoint-s,
   'm': $breakpoint-m,
   'l': $breakpoint-l,
+  'xl': $breakpoint-xl,
 );
 
 ////////////////////////////////////////////////////////////////////////////////////

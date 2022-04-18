@@ -11,6 +11,20 @@ class Article < ApplicationRecord
   include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
   DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
 
+  # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
+  # we cache.
+  #
+  # @note I would prefer that this constant were in the {Article::CachedEntity} namespace, but it
+  #       didn't work out well.  Further, since Organization doesn't really know about
+  #       Articles::CachedEntity, I'd rather it not "peek" into a class for which it has no
+  #       knowledge.
+  #
+  # @note [@jeremyf] I have added the profile_image attribute, even though that's not one of the
+  #       Articles::CachedEntity attributes.  This is necessary to detect the change.
+  #
+  # @see Articles::CachedEntity caching strategy for entity attributes
+  ATTRIBUTES_CACHED_FOR_RELATED_ENTITY = %i[name profile_image profile_image_url slug username].freeze
+
   attr_accessor :publish_under_org
   attr_writer :series
 
@@ -81,6 +95,7 @@ class Article < ApplicationRecord
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
+  has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -149,18 +164,19 @@ class Article < ApplicationRecord
   before_validation :evaluate_markdown, :create_slug
   before_validation :remove_prohibited_unicode_characters
   before_validation :normalize_title
-  before_save :update_cached_user
+  before_save :set_cached_entities
   before_save :set_all_dates
 
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
   before_create :create_password
+  after_create :notify_slack_channel_about_publication
+  after_update :notify_slack_channel_about_publication, if: -> { published && saved_change_to_published? }
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
   after_save :bust_cache
-  after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -542,8 +558,7 @@ class Article < ApplicationRecord
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
-                   hotness_score: BlackBox.article_hotness_score(self),
-                   spaminess_rating: BlackBox.calculate_spaminess(self))
+                   hotness_score: BlackBox.article_hotness_score(self))
   end
 
   def co_author_ids_list=(list_of_co_author_ids)
@@ -824,7 +839,7 @@ class Article < ApplicationRecord
     self.password = SecureRandom.hex(60)
   end
 
-  def update_cached_user
+  def set_cached_entities
     self.cached_organization = organization ? Articles::CachedEntity.from_object(organization) : nil
     self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
   end
@@ -888,7 +903,6 @@ class Article < ApplicationRecord
 
   def calculate_base_scores
     self.hotness_score = 1000 if hotness_score.blank?
-    self.spaminess_rating = 0 if new_record?
   end
 
   def create_conditional_autovomits

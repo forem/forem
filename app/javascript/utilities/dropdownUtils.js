@@ -53,7 +53,7 @@ const handleDropdownRepositions = () => {
 /**
  * Helper query string to identify interactive/focusable HTML elements
  */
-const INTERACTIVE_ELEMENTS_QUERY =
+export const INTERACTIVE_ELEMENTS_QUERY =
   'button, [href], input:not([type="hidden"]), select, textarea, [tabindex="0"]';
 
 /**
@@ -63,7 +63,7 @@ const INTERACTIVE_ELEMENTS_QUERY =
  * @param {string} args.triggerElementId The id of the button which activates the dropdown
  * @param {string} args.dropdownContent The id of the dropdown content element
  */
-const openDropdown = ({ triggerElementId, dropdownContentId }) => {
+export const openDropdown = ({ triggerElementId, dropdownContentId }) => {
   const dropdownContent = document.getElementById(dropdownContentId);
   const triggerElement = document.getElementById(triggerElementId);
 
@@ -84,7 +84,11 @@ const openDropdown = ({ triggerElementId, dropdownContentId }) => {
  * @param {string} args.dropdownContent The id of the dropdown content element
  * @param {Function} args.onClose Optional function for any side-effects which should occur on dropdown close
  */
-const closeDropdown = ({ triggerElementId, dropdownContentId, onClose }) => {
+export const closeDropdown = ({
+  triggerElementId,
+  dropdownContentId,
+  onClose,
+}) => {
   const dropdownContent = document.getElementById(dropdownContentId);
 
   if (!dropdownContent) {

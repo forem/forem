@@ -1,3 +1,5 @@
+require_relative "../../app/lib/honeycomb/noise_cancelling_sampler"
+
 if Rails.env.test?
   Honeycomb.configure do |config|
     config.client = Libhoney::TestClient.new
@@ -9,6 +11,7 @@ else
   # Honeycomb automatic Rails integration
   notification_events = %w[
     cache_read.active_support
+    cache_read_multi.active_support
     sql.active_record
     render_template.action_view
     render_partial.action_view
