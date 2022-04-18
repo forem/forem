@@ -1183,8 +1183,9 @@ RSpec.describe Article, type: :model do
         sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
 
-      it "queues a slack message to be sent for a new published article" do
-        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
+      # slack messages will be queued in a publish worker
+      it "doesn't queue a slack message to be sent for a new published article" do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           create(:article, user: user, published: true, published_at: Time.current)
         end
       end

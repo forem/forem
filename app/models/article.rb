@@ -99,6 +99,8 @@ class Article < ApplicationRecord
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
+  has_many :context_notifications_published, -> { where(context_notifications: { action: "Published" }) },
+           as: :context, inverse_of: :context, class_name: "ContextNotification"
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -175,7 +177,6 @@ class Article < ApplicationRecord
   before_save :fetch_video_duration
   before_save :set_caches
   before_create :create_password
-  after_create :notify_slack_channel_about_publication
   after_update :notify_slack_channel_about_publication, if: -> { published && saved_change_to_published? }
   before_destroy :before_destroy_actions, prepend: true
 
