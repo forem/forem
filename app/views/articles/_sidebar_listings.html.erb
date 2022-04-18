@@ -1,6 +1,6 @@
 <% @listings = Listing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at) %>
 <% if params[:timeframe].blank? && @listings.any? %>
-  <section class="crayons-card crayons-card--secondary">
+  <section class="crayons-card crayons-card--secondary crayons-layout__content">
     <header class="crayons-card__header">
       <h3 class="crayons-subtitle-2"><%= t("views.main.side.listings.heading") %></h3>
       <div class="crayons-card__actions">

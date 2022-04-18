@@ -38,7 +38,7 @@ en:
           submit: Delete Account
         export:
           heading: Export content
-          desc: You can request an export of all your content. Currently we only support the export of your posts and comments. They will be emailed to your inbox.
+          desc: You can request an export of all your content. Currently we only support the export of your posts and comments, if you have any. They will be emailed to your inbox.
           label: Request an export of your content
           requested: You have recently requested an export of your content. Please check your email.
           submit: Submit Data Request
@@ -130,14 +130,10 @@ en:
           remove: Remove
           save: Save template
           saved: Saved templates
-        generate: Generate a personal blog from your %{community} posts
         github:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
           desc2: Repositories will disappear from your profile if you remove the OAuth association with GitHub.
-        learn: Learn more
-        micro: 'Receive micropayments for time spent reading your posts directly. '
-        payment: Payment Pointer
         rss:
           heading: Publishing to %{community} from RSS
           desc1_html: Posts will land in your %{dashboard} <strong>as drafts</strong>, and then you can publish from there.
@@ -154,8 +150,12 @@ en:
           referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
           save: Save Feed Settings
           submit: Submit Feed Settings
-        save_web: Save Web Monetization Settings
-        web: Web monetization
+        web_monetization:
+          header: Web monetization
+          receive_payments: 'Receive micropayments for time spent reading your posts directly. '
+          learn_more: Learn more
+          payment_pointer: Payment Pointer
+          save_settings: Save Web Monetization Settings
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
       for_html: Settings for %{name}
       group:
@@ -180,7 +180,7 @@ en:
             button:
               aria_label: Copy organization secret code to clipboard
             icon: Copy to clipboard
-            input:  
+            input:
               aria_label: Organization secret (to be rotated regularly)
             text: Copied to clipboard!
           cta: Call-to-action box

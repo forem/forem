@@ -41,6 +41,8 @@ latest.dump
 /node_modules
 yarn-debug.log*
 .yarn-integrity
+.env.test.local
+.env.development*
 .env
 
 # Ignore storybook static site generation
@@ -104,8 +106,13 @@ dump.rdb
 # pry configuration file
 .pryrc
 
+<<<<<<< HEAD
 # QEMU core dumps
 qemu_*.core
 
 # Data
 data/
+=======
+# generated yarddoc
+doc/
+>>>>>>> 05d0464a78bb73e005b6713a868a2fa54beb91eb

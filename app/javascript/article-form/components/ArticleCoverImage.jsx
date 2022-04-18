@@ -1,5 +1,3 @@
-/* global Runtime */
-
 import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { addSnackbarItem } from '../../Snackbar';
@@ -9,6 +7,7 @@ import { onDragOver, onDragExit } from './dragAndDropHelpers';
 import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
+import { isNativeIOS } from '@utilities/runtime';
 
 const NativeIosImageUpload = ({
   extraProps,
@@ -95,10 +94,7 @@ export class ArticleCoverImage extends Component {
   };
 
   useNativeUpload = () => {
-    // This namespace is not implemented in the native side. This allows us to
-    // deploy our refactor and wait until our iOS app is approved by AppStore
-    // review. The old web implementation will be the fallback until then.
-    return Runtime.isNativeIOS('imageUpload_disabled');
+    return isNativeIOS('imageUpload');
   };
 
   initNativeImagePicker = (e) => {

@@ -302,7 +302,7 @@ RSpec.describe User, type: :model do
       it "sets email to nil if empty" do
         user.email = ""
         user.validate!
-        expect(user.email).to eq(nil)
+        expect(user.email).to be_nil
       end
 
       it "does not change a valid name" do
@@ -441,7 +441,7 @@ RSpec.describe User, type: :model do
       it "does not assign signup_cta_variant to non-new users for #{provider_name}" do
         returning_user = create(:user, signup_cta_variant: nil)
         new_user = user_from_authorization_service(provider_name, returning_user, "hey-hey-hey")
-        expect(new_user.signup_cta_variant).to be(nil)
+        expect(new_user.signup_cta_variant).to be_nil
       end
 
       it "assigns proper social username based on authentication for #{provider_name}" do
@@ -460,7 +460,7 @@ RSpec.describe User, type: :model do
 
       it "marks registered_at for newly registered user" do
         new_user = user_from_authorization_service(provider_name, nil, "navbar_basic")
-        expect(new_user.registered_at).not_to be nil
+        expect(new_user.registered_at).not_to be_nil
       end
 
       it "assigns modified username if the username is invalid for #{provider_name}" do
@@ -796,6 +796,15 @@ RSpec.describe User, type: :model do
       user = create(:user)
       expect(user.profile).to be_present
       expect(user.profile).to respond_to(:location)
+    end
+  end
+
+  describe "#last_activity" do
+    it "determines a user's last activity" do
+      Timecop.freeze do
+        user = create(:user, last_comment_at: 1.minute.ago)
+        expect(user.last_activity).to eq(Time.zone.now)
+      end
     end
   end
 end

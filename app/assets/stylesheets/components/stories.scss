@@ -152,6 +152,9 @@
     color: var(--card-color);
     line-height: var(--lh-tight);
     font-size: var(--title-font-size);
+
+    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+    overflow-wrap: break-word;
     overflow-wrap: anywhere;
     word-break: break-word;
     margin-bottom: var(--su-1);
@@ -238,6 +241,8 @@
       color: black;
       background: yellow;
     }
+    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+    overflow-wrap: break-word;
     overflow-wrap: anywhere;
     word-break: break-word;
   }

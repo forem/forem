@@ -1,17 +1,11 @@
+import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
+
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openCreditsModal() {
   cy.getModal().should('not.exist');
   cy.findByRole('button', { name: 'Adjust balance' }).click();
 
   return cy.getModal();
-}
-
-function verifyAndDismissUserUpdatedMessage(message) {
-  cy.findByText(message).should('exist');
-  cy.findByRole('button', { name: 'Dismiss message' })
-    .should('have.focus')
-    .click();
-  cy.findByText(message).should('not.exist');
 }
 
 describe('Manage User Credits', () => {

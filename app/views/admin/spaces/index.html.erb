@@ -1,0 +1,53 @@
+<div class="crayons-card p-7 mb-7">
+  <header class="mb-7">
+    <div class="flex justify-between gap-4 items-center">
+      <h1 class="crayons-title">Spaces</h1>
+      <button type="button" class="c-btn crayons-tooltip__activator opacity-100" disabled>
+        Create space
+        <span data-testid="tooltip" class="crayons-tooltip__content">
+          Coming soon. We're working on it.
+        </span>
+      </button>
+    </div>
+    <p class="color-secondary fs-l">Configure permissions for your different types of posts.</p>
+  </header>
+
+  <%# Note: With data remote false, we submit the form via a non-XHR request (e.g. boring old web). %>
+  <%= form_with model: @space, url: admin_space_path(@space), method: :put, data: { remote: false, confirm: "Are you sure?" }, class: "crayons-card p-6 flex flex-col gap-6" do |form| %>
+    <div class="flex items-center gap-4">
+      <span class="p-3 crayons-card shrink-0">
+        <%= crayons_icon_tag(:folder) %>
+      </span>
+      <div>
+        <h2 class="fs-l fw-bold lh-base">Uncategorized Posts</h2>
+        <p class="color-secondary lh-tight">All of your uncategorized posts will be in this space.</p>
+      </div>
+    </div>
+
+    <div class="flex justify-between gap-8 items-start">
+      <label for="space_limit_post_creation_to_admins">
+        <p class="fw-medium">Make this space comment-only for members</p>
+        <p class="fs-s color-secondary">Only admins can publish posts. Other members can only react to and comment on posts. Only admins will be able to post on behalf of organizations.</p>
+      </label>
+
+      <label class="c-toggle">
+        <%= form.check_box :limit_post_creation_to_admins %>
+        <span class="c-toggle__control"></span>
+      </label>
+    </div>
+
+    <div class="fs-s color-secondary">
+      <p><%= crayons_icon_tag("info") %> When you turn on comment-only for this space, it also means that for the time being…</p>
+      <ul>
+        <li>Active campaigns will be hidden.  <a href="https://admin.forem.com/docs/advanced-customization/config/campaigns">Learn more about Campaigns</a>.</li>
+        <li>Only admins who are part of an organization will be able to post on behalf of that organization.  <a href="https://admin.forem.com/docs/managing-your-community/organization-pages#overview.">Learn more about Organizations</a>.</li>
+        <li>It will take about <%= pluralize(AsyncInfoController::NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY, "minute") %> to propagate <abbr title="User Interface">UI</abbr> changes for all members. <a href="https://developers.forem.com/technical-overview/caching">Learn more about Caching.</a></li>
+      </ul>
+    </div>
+    <div>
+      <%= form.button "Save", type: "submit", class: "c-btn c-btn--primary" %>
+    </div>
+  <% end %>
+  <hr />
+  <p><a href="https://admin.forem.com/docs/advanced-customization/content-manager/spaces" target="_blank" rel="noopener">Learn more about Spaces in the Admin Guide</a>.</p>
+</div>

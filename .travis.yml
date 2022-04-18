@@ -52,7 +52,6 @@ install:
   - date --rfc-3339=seconds
   - nvm install
   - bundle config set path 'vendor/bundle'
-  - cp .env_sample .env
   - bin/ci-bundle
   - yarn install --frozen-lockfile
 script:

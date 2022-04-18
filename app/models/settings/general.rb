@@ -78,7 +78,7 @@ module Settings
     setting :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
     # Onboarding
-    setting :onboarding_background_image, type: :string, validates: { url: true }
+    setting :onboarding_background_image, type: :string, validates: { url: true, unless: -> { value.blank? } }
     setting :suggested_tags, type: :array, default: %w[]
     setting :suggested_users, type: :array, default: %w[]
     setting :prefer_manual_suggested_users, type: :boolean, default: false

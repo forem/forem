@@ -1,33 +1,37 @@
-<header>
-  <h1 class="crayons-title">People</h1>
-  <%= render "menu" %>
-</header>
+<% if FeatureFlag.enabled?(:member_index_view) %>
+  <%= render "admin/users/member_index" %>
+<% else %>
+  <header>
+    <h1 class="crayons-title">People</h1>
+    <%= render "menu" %>
+  </header>
 
-<%= paginate @users, theme: "internal" %>
+  <%= paginate @users, theme: "internal" %>
 
-<table class="crayons-table" width="100%">
-  <thead>
-    <tr>
-      <th scope="col">Username</th>
-      <th scope="col">ID</th>
-      <th scope="col">Name</th>
-      <th scope="col">Twitter</th>
-      <th scope="col">GitHub</th>
-      <th scope="col">Email</th>
-    </tr>
-  </thead>
-  <tbody class="crayons-card">
-    <% @users.each do |user| %>
-    <tr>
-      <td><%= link_to user.username, admin_user_path(user) %></td>
-      <td class="whitespace-nowrap"><%= user.id %></td>
-      <td><%= user.name %></td>
-      <td><%= user_twitter_link(user) %></td>
-      <td><%= user_github_link(user) %></td>
-      <td><%= user.email %></td>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
+  <table class="crayons-table" width="100%">
+    <thead>
+      <tr>
+        <th scope="col">Username</th>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Twitter</th>
+        <th scope="col">GitHub</th>
+        <th scope="col">Email</th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+      <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.username, admin_user_path(user) %></td>
+        <td class="whitespace-nowrap"><%= user.id %></td>
+        <td><%= user.name %></td>
+        <td><%= user_twitter_link(user) %></td>
+        <td><%= user_github_link(user) %></td>
+        <td><%= user.email %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<%= paginate @users, theme: "internal" %>
+  <%= paginate @users, theme: "internal" %>
+<% end %>

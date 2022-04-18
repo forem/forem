@@ -3,10 +3,6 @@ require "rails_helper"
 RSpec.describe ProfileFieldGroup, type: :model do
   subject { group }
 
-  before do
-    allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
-  end
-
   let!(:group) { create(:profile_field_group) }
 
   it { is_expected.to have_many(:profile_fields).dependent(:nullify) }
