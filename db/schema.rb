@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_23_185428) do
+ActiveRecord::Schema[7.0].define(version: 2022_04_01_071321) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -386,6 +386,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_23_185428) do
     t.string "team_id"
     t.datetime "updated_at", null: false
     t.index ["app_bundle", "platform"], name: "index_consumer_apps_on_app_bundle_and_platform", unique: true
+  end
+
+  create_table "context_notifications", force: :cascade do |t|
+    t.string "action"
+    t.integer "context_id"
+    t.string "context_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["context_id", "context_type", "action"], name: "index_context_notification_on_context_and_action", unique: true
   end
 
   create_table "credits", force: :cascade do |t|
