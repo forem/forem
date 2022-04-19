@@ -50,9 +50,9 @@
                     <dd><%= user.registered_at&.strftime("%d %b, %Y") %></dd>
                   </div>
                 </dl>
-              <div>
-                <%= render "admin/users/index/organizations", organizations: user.organizations.limit(3), overflow: overflow_count(user.organizations.count).to_s %>
-              </div>
+                <div>
+                  <%= render "admin/users/index/organizations", organizations: user.organizations.limit(3), overflow: overflow_count(user.organizations.count).to_s %>
+                </div>
               </div>
             </article>
           </li>
