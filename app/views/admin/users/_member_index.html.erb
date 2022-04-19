@@ -50,9 +50,9 @@
                     <dd><%= user.registered_at&.strftime("%d %b, %Y") %></dd>
                   </div>
                 </dl>
-              <div>
-                <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
-              </div>
+                <div>
+                  <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
+                </div>
               </div>
             </article>
           </li>
