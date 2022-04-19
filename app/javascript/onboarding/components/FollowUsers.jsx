@@ -31,7 +31,7 @@ export class FollowUsers extends Component {
       });
 
     const csrfToken = getContentOfToken('csrf-token');
-    fetch('/onboarding_update', {
+    fetch('/onboarding', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,

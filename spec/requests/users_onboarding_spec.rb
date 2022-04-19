@@ -8,7 +8,7 @@ RSpec.describe "UsersOnboarding", type: :request do
            profile: create(:profile, location: "Llama Town"))
   end
 
-  describe "PATCH /onboarding_update" do
+  describe "PATCH /onboarding" do
     context "when signed in" do
       before { sign_in user }
 
