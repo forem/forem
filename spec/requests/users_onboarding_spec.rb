@@ -49,7 +49,7 @@ RSpec.describe "UsersOnboarding", type: :request do
 
     context "when signed out" do
       it "returns a not found error if user is not signed in" do
-        patch "/onboarding", params: {}
+        patch "/onboarding.json", params: {}
         expect(response.parsed_body["error"]).to include("Please sign in")
       end
     end
