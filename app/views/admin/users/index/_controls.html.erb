@@ -6,10 +6,7 @@
     <%= form_with url: admin_users_path, method: :get, local: true, class: "m:hidden" do |f| %>
       <div class="flex justify-between align-items-center my-3">
         <div>
-          <button type="button" id="expand-search-btn" class="relative c-btn c-btn--icon-alone indicator-btn" aria-label="Expand search" aria-expanded="false" aria-controls="search-users">
-            <%= crayons_icon_tag("search", aria_hidden: true) %>
-            <span class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:search].blank? ? "hidden" : "" %>"></span>
-          </button>
+          <%= render "admin/users/index/expand_search_button" %>
           <button type="button" id="expand-filter-btn" class="c-btn c-btn--icon-alone indicator-btn" aria-label="Expand filter" aria-expanded="false" aria-controls="filter-users">
             <%= crayons_icon_tag("filter", aria_hidden: true) %>
             <span class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
