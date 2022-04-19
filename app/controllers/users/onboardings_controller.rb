@@ -13,7 +13,7 @@ module Users
     end
 
     def update
-      authorize User
+      authorize User, :onboarding_update?
 
       user_params = {}
 
