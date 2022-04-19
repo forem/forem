@@ -81,7 +81,7 @@ class CommentsController < ApplicationController
       message = @comment.errors_as_sentence
       render json: { error: message }, status: :unprocessable_entity
     end
-  # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
+  # See https://github.com/forem/forem/pull/5485#discussion_r366056925
   # for details as to why this is necessary
   rescue ModerationUnauthorizedError => e
     render json: { error: e.message }, status: :unprocessable_entity

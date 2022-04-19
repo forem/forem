@@ -68,7 +68,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       sign_in_and_redirect(@user, event: :authentication)
     # NOTE: I can't find a way to test this path
     # as `User` will assign a temporary username if the username already exists
-    # see https://github.com/thepracticaldev/dev.to/blob/27131f6f420df347a467f8e9afc84a6af2fcb13a/app/models/user.rb#L532-L555
+    # see https://github.com/forem/forem/blob/27131f6f420df347a467f8e9afc84a6af2fcb13a/app/models/user.rb#L532-L555
     elsif user_persisted_but_username_taken?
       redirect_to "/settings?state=previous-registration"
     # NOTE: I can't find a way to test this path
@@ -76,7 +76,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # raise errors for a validation error.
     # In the past we had 1 path (update_user) which would have ended up
     # here in case of validation errors, see:
-    # https://github.com/thepracticaldev/dev.to/blob/80737b540453afe8775128cb37bd379b7c09c7e8/app/services/authorization_service.rb#L77
+    # https://github.com/forem/forem/blob/80737b540453afe8775128cb37bd379b7c09c7e8/app/services/authorization_service.rb#L77
     else
       # Devise will clean this data when the user is not persisted
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
