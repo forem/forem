@@ -1,9 +1,9 @@
 module Users
   class OnboardingsController < ApplicationController
-    before_action :set_no_cache_header
     before_action :authenticate_user!
+    before_action :set_cache_control_headers, only: [:show]
+    before_action :set_no_cache_header, only: %i[update onboarding_checkbox_update]
     after_action :verify_authorized, except: [:show]
-    before_action :set_cache_control_headers, only: %i[show]
 
     ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
     ALLOWED_CHECKBOX_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze

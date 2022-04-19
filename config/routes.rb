@@ -196,7 +196,6 @@ Rails.application.routes.draw do
 
     scope module: "users" do
       resource :onboarding, only: %i[show update]
-      # patch "/onboarding_update", to: "onboardings#update"
       patch "/onboarding_checkbox_update", to: "onboardings#onboarding_checkbox_update"
     end
 
