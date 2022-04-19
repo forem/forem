@@ -48,7 +48,9 @@ module Admin
 
     # Provides the remaining count when a limit for a resource is imposed on the UI.
     #
-    # @return [Integer]
+    #  @param [Integer] The total count
+    #  @param [Integer] A limit that we show
+    # @return [Integer] The overflow that is calculated
     def overflow_count(count, imposed_limit: 0)
       return if count <= imposed_limit
 
@@ -59,13 +61,21 @@ module Admin
     # as a comma seperated values and then appending the remainding organizations (if any)
     # as a count.
     #
+    #  @param {Array} [array] The array of organization names
+    #  @param [Integer] The total count of organizations
+    #  @param [Integer] The limit of organizations that we show
     # @return [String]
     def organization_tooltip(organization_names, count, imposed_limit: 0)
-      str = organization_names.join(", ").to_s
+      str = organization_names.first(imposed_limit).join(", ").to_s
 
       return str unless count > imposed_limit
 
-      str + " & #{overflow_count(count, imposed_limit: imposed_limit)} others."
+      overflow = overflow_count(count, imposed_limit: imposed_limit)
+      if overflow == 1
+        str + " & #{overflow_count(count, imposed_limit: imposed_limit)} other."
+      else
+        str + " & #{overflow_count(count, imposed_limit: imposed_limit)} others."
+      end
     end
   end
 end
