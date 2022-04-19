@@ -113,7 +113,7 @@
     "@rails/webpacker": "5.4.3",
     "@reach/combobox": "^0.16.5",
     "@storybook/addon-backgrounds": "^6.4.21",
-    "@storybook/addon-controls": "^6.4.21",
+    "@storybook/addon-controls": "^6.4.22",
     "ahoy.js": "^0.4.0",
     "autoprefixer": "^10.4.4",
     "babel-plugin-inline-react-svg": "^2.0.1",
