@@ -58,7 +58,7 @@ module Admin
     end
 
     # Returns a string for the organization tooltip outlining the first three organizations
-    # as a comma seperated values and then appending the remainding organizations (if any)
+    # as comma seperated values and then appending the remaining organizations (if any)
     # as a count.
     #
     #  @param {Array} [array] The array of organization names
