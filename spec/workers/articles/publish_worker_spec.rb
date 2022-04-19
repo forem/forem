@@ -51,6 +51,7 @@ RSpec.describe Articles::PublishWorker, type: :worker do
 
     describe "creating notifications" do
       let!(:user2) { create(:user) }
+      let(:article2) { create(:article, published: true, user: user2) }
 
       before do
         user2.follow(article.user)
@@ -64,12 +65,32 @@ RSpec.describe Articles::PublishWorker, type: :worker do
         end.to change(Notification, :count).by(1)
       end
 
-      xit "creates a context notification as well" do
+      it "creates a context notification as well" do
         expect do
           sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
             worker.perform
           end
         end.to change(ContextNotification, :count).by(1)
+      end
+
+      it "creates a notification for each article" do
+        article2
+        article.user.follow(article2.user)
+        expect do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
+            worker.perform
+          end
+        end.to change(Notification, :count).by(2)
+      end
+
+      it "creates a ContextNotification for each article" do
+        article2
+        article.user.follow(article2.user)
+        expect do
+          sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
+            worker.perform
+          end
+        end.to change(ContextNotification, :count).by(2)
       end
     end
   end
