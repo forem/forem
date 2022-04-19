@@ -135,17 +135,17 @@ describe Admin::UsersHelper do
     context "when the limit is less than the total" do
       it "renders the correct tooltip when the array of items do not match the imposed limit" do
         tooltip = helper.organization_tooltip(%w[org1 org2 org3], 3, imposed_limit: 2)
-        expect(tooltip).to eq "org1, org2 & 1 other."
+        expect(tooltip).to eq "org1, org2 & 1 other"
       end
 
       it "renders the correct tooltip for an overflow of 1" do
         tooltip = helper.organization_tooltip(%w[org1 org2], 3, imposed_limit: 2)
-        expect(tooltip).to eq "org1, org2 & 1 other."
+        expect(tooltip).to eq "org1, org2 & 1 other"
       end
 
       it "renders the correct tooltip for an overflow of more than 1" do
         tooltip = helper.organization_tooltip(%w[org1 org2], 4, imposed_limit: 2)
-        expect(tooltip).to eq "org1, org2 & 2 others."
+        expect(tooltip).to eq "org1, org2 & 2 others"
       end
     end
 
