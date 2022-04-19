@@ -50,9 +50,9 @@
                     <dd><%= user.registered_at&.strftime("%d %b, %Y") %></dd>
                   </div>
                 </dl>
-                <div>
-                  <%= render "admin/users/index/organizations", organizations: user.organizations %>
-                </div>
+              <div>
+                <%= render "admin/users/index/organizations", organizations: user.organizations.limit(3), overflow: overflow_count(user.organizations.count).to_s %>
+              </div>
               </div>
             </article>
           </li>
@@ -90,7 +90,7 @@
             </p>
           </td>
           <td>
-            <%= render "admin/users/index/organizations", organizations: user.organizations %>
+            <%= render "admin/users/index/organizations", organizations: user.organizations.limit(3), overflow: overflow_count(user.organizations.count).to_s %>
           </td>
           <td>
             <%= render "admin/users/index/user_actions_dropdown", user: user, id: "xl-#{user.id}" %>

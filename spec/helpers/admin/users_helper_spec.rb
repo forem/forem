@@ -118,4 +118,11 @@ describe Admin::UsersHelper do
       expect(status).to eq "Good Standing"
     end
   end
+
+  describe "#overflow_count" do
+    it "renders an overflow count" do
+      overflow = helper.overflow_count(5, imposed_limit: 4)
+      expect(overflow).to eq "+ 1"
+    end
+  end
 end

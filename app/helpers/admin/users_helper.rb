@@ -45,5 +45,14 @@ module Admin
         "Good Standing"
       end
     end
+
+    # Provides the remaining count when a limit for a resource is imposed on the UI.
+    #
+    # @return [String]
+    def overflow_count(count, imposed_limit: 3)
+      return if count <= imposed_limit
+
+      "+ #{count - imposed_limit}"
+    end
   end
 end
