@@ -26,15 +26,17 @@ RSpec.describe "/admin/users/export", type: :request do
   end
 
   it "shows the correct number of total rows" do
-    # This takes into account empty lines after each row
     expect(response.body.lines.count).to eq(3)
   end
 
   it "shows the correct fields", :aggregate_failures do
-    expect(response.body).to include('Admin1,admin1,admin1@gmail.com,Good Standing,"06 May, 2020","06 May, 2020",[]')
+    admin_registered_at = admin.registered_at.strftime("%d %b, %Y")
+    user_registered_at = user.registered_at.strftime("%d %b, %Y")
+
     # rubocop:disable Style/PercentLiteralDelimiters, Layout/LineLength
+    expect(response.body).to include(%{Admin1,admin1,admin1@gmail.com,Good Standing,"#{admin_registered_at}","#{admin_registered_at}",[]})
     expect(response.body).to include(
-      %{John Doe,john_doe,john_doe@gmail.com,Good Standing,"08 Jun, 2020","08 Jun, 2020","[""#{user.organizations.first.name}""]"},
+      %{John Doe,john_doe,john_doe@gmail.com,Good Standing,"#{user_registered_at}","#{user_registered_at}","[""#{user.organizations.first.name}""]"},
     )
     # rubocop:enable Style/PercentLiteralDelimiters, Layout/LineLength
   end

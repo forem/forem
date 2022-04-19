@@ -1,5 +1,6 @@
 import { openDropdown, closeDropdown } from '@utilities/dropdownUtils';
 import { copyToClipboard } from '@utilities/runtime';
+import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 
 // We present up to 50 users in the UI at once, and for performance reasons we don't want to add individual click listeners to each dropdown menu or inner menu item
 // Instead we listen for click events anywhere in the table, and identify required actions based on data attributes of the target
@@ -105,3 +106,20 @@ const handleEmailCopy = (copyEmail) => {
       );
     });
 };
+
+// The reason that we loop through the elements is because we have alternate layouts
+// for different screen sizes
+document.querySelectorAll('.js-export-csv-modal-trigger').forEach((item) => {
+  item.addEventListener('click', () => {
+    showWindowModal({
+      title: 'Download Member Data',
+      contentSelector: '#export-csv-modal',
+      overlay: true,
+      onOpen: () => {
+          document
+          .querySelector('#window-modal .js-export-csv-modal-cancel')
+          ?.addEventListener('click', closeWindowModal);
+      },
+    });
+  });
+});

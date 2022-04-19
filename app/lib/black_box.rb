@@ -32,12 +32,7 @@ class BlackBox
       descendants_points = (comment.descendants.size / 2)
       rep_points = comment.reactions.sum(:points)
       bonus_points = calculate_bonus_score(comment.body_markdown)
-      spaminess_rating = calculate_spaminess(comment)
-      (rep_points + descendants_points + bonus_points - spaminess_rating).to_i
-    end
-
-    def calculate_spaminess(story)
-      story.user ? 0 : 100
+      (rep_points + descendants_points + bonus_points).to_i
     end
 
     private
@@ -52,8 +47,7 @@ class BlackBox
       score_from_epoch = article.featured_number.to_i - OUR_EPOCH_NUMBER # Approximate time of publish - epoch time
       (score_from_epoch / 1000) +
         ([article.score, 650].min * 2) +
-        ([article.comment_score, 650].min * 2) -
-        (article.spaminess_rating * 5)
+        ([article.comment_score, 650].min * 2)
     end
   end
 end

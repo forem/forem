@@ -180,5 +180,24 @@ describe('User index view', () => {
           .should('equal', 'admin@forem.local');
       });
     });
+
+    describe('Export CSV', () => {
+      it('Contains a link to download member data', () => {
+        cy.findByRole('button', { name: 'Download member data' }).click();
+
+        cy.getModal().within(() => {
+          cy.findByText(
+            'Your data will be downloaded as a Comma Separated Values (.csv) file.',
+          ).should('be.visible');
+          cy.findByText(
+            'Values listed are Name, Username, Email address, Status, Joining date, Last activity, and Organizations.',
+          ).should('be.visible');
+          cy.findByRole('link', {
+            name: 'Download',
+            href: '/admin/users/export.csv',
+          }).should('exist');
+        });
+      });
+    });
   });
 });

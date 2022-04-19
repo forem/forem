@@ -9,9 +9,8 @@ module Comments
       return unless comment
 
       score = BlackBox.comment_quality_score(comment)
-      spaminess_rating = BlackBox.calculate_spaminess(comment)
 
-      comment.update_columns(score: score, spaminess_rating: spaminess_rating)
+      comment.update_columns(score: score)
       comment.root.save! if !comment.is_root? && comment.root_exists?
     end
   end
