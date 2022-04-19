@@ -72,7 +72,7 @@ module Admin
 
       overflow = overflow_count(count, imposed_limit: imposed_limit)
       if overflow == 1
-        str + " & #{overflow_count(count, imposed_limit: imposed_limit)} other."
+        str + " & #{overflow_count(count, imposed_limit: imposed_limit)} other"
       else
         str + " & #{overflow_count(count, imposed_limit: imposed_limit)} others."
       end
