@@ -1472,10 +1472,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@etchteam/storybook-addon-css-variables-theme@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@etchteam/storybook-addon-css-variables-theme/-/storybook-addon-css-variables-theme-1.1.1.tgz#a339ad408061ca972584d74e60c2ebe017d2bbb9"
-  integrity sha512-AlI2ilReETqKVyYzM3RaJLzjhsOgkTn9alXGDw1nE1MceuldzEMS50NNyDBrdjqOAgJUgX0PJrp9lqgPn72A1A==
+"@etchteam/storybook-addon-css-variables-theme@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@etchteam/storybook-addon-css-variables-theme/-/storybook-addon-css-variables-theme-1.2.0.tgz#e78cc7eae9d8b8a404c6afcaf62bd4cf6c1887d6"
+  integrity sha512-4EqUAq0REgGMnCFPP5u9njM9jOQ2w5WlHEyDDnvfq4SHqIwlUA3rb7aVF8On8dbvc7uJvjWxMsI9RMC+aWdLzQ==
   dependencies:
     "@storybook/addons" "^6.2.9"
     "@storybook/api" "^6.2.9"
@@ -2582,10 +2582,10 @@
     webpack-hot-middleware "^2.25.1"
     webpack-virtual-modules "^0.2.2"
 
-"@storybook/builder-webpack5@^6.4.21":
-  version "6.4.21"
-  resolved "https://registry.yarnpkg.com/@storybook/builder-webpack5/-/builder-webpack5-6.4.21.tgz#d601676083a263a1f03847b12fe2ad1ecd3865bb"
-  integrity sha512-pUD8+wL2LN1iFHAcpDo0E7lXkL5E6pCqmKmUbkgs1bPgvY0n9gyvDK46H70P/HWu+PGXKMXI/gofsF5ub1NaRQ==
+"@storybook/builder-webpack5@^6.4.22":
+  version "6.4.22"
+  resolved "https://registry.yarnpkg.com/@storybook/builder-webpack5/-/builder-webpack5-6.4.22.tgz#cd10b3b307f4a6f9c474d3b72ba5555055395681"
+  integrity sha512-vvQ0HgkIIVz+cmaCXIRor0UFZbGZqh4aV0ISSof60BjdW5ld+R+XCr/bdTU6Zg8b2fL9CXh7/LE6fImnIMpRIA==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-proposal-class-properties" "^7.12.1"
@@ -2607,21 +2607,21 @@
     "@babel/preset-env" "^7.12.11"
     "@babel/preset-react" "^7.12.10"
     "@babel/preset-typescript" "^7.12.7"
-    "@storybook/addons" "6.4.21"
-    "@storybook/api" "6.4.21"
-    "@storybook/channel-postmessage" "6.4.21"
-    "@storybook/channels" "6.4.21"
-    "@storybook/client-api" "6.4.21"
-    "@storybook/client-logger" "6.4.21"
-    "@storybook/components" "6.4.21"
-    "@storybook/core-common" "6.4.21"
-    "@storybook/core-events" "6.4.21"
-    "@storybook/node-logger" "6.4.21"
-    "@storybook/preview-web" "6.4.21"
-    "@storybook/router" "6.4.21"
+    "@storybook/addons" "6.4.22"
+    "@storybook/api" "6.4.22"
+    "@storybook/channel-postmessage" "6.4.22"
+    "@storybook/channels" "6.4.22"
+    "@storybook/client-api" "6.4.22"
+    "@storybook/client-logger" "6.4.22"
+    "@storybook/components" "6.4.22"
+    "@storybook/core-common" "6.4.22"
+    "@storybook/core-events" "6.4.22"
+    "@storybook/node-logger" "6.4.22"
+    "@storybook/preview-web" "6.4.22"
+    "@storybook/router" "6.4.22"
     "@storybook/semver" "^7.3.2"
-    "@storybook/store" "6.4.21"
-    "@storybook/theming" "6.4.21"
+    "@storybook/store" "6.4.22"
+    "@storybook/theming" "6.4.22"
     "@types/node" "^14.0.10"
     babel-loader "^8.0.0"
     babel-plugin-macros "^3.0.1"
