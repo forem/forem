@@ -41,7 +41,9 @@ describe('Authentication Section', () => {
             );
           });
 
-          cy.url().should('contains', '/admin/customization/config');
+          // The next comment suggests this had reloaded the page
+          // instead of just showing the snackbar before.
+          cy.visit('/admin/customization/config');
 
           // Page reloaded so need to get a new reference to the form.
           cy.findByTestId('authSectionForm').as('authSectionForm');
