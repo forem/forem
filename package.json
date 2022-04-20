@@ -111,7 +111,7 @@
     "@hotwired/stimulus-webpack-helpers": "1.0.1",
     "@rails/ujs": "7.0.2",
     "@rails/webpacker": "5.4.3",
-    "@reach/combobox": "^0.16.5",
+    "@reach/combobox": "^0.17.0",
     "@storybook/addon-backgrounds": "^6.4.22",
     "@storybook/addon-controls": "^6.4.22",
     "ahoy.js": "^0.4.0",
