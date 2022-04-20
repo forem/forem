@@ -52,7 +52,7 @@
     "@storybook/addons": "^6.4.20",
     "@storybook/builder-webpack5": "^6.4.22",
     "@storybook/manager-webpack5": "^6.4.22",
-    "@storybook/preact": "^6.4.21",
+    "@storybook/preact": "^6.4.22",
     "@testing-library/cypress": "^7.0.7",
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.4",
