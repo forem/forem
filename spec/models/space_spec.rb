@@ -13,6 +13,10 @@ RSpec.describe Space do
   describe "#save" do
     subject(:save) { space.save }
 
+    before do
+      allow(Spaces::BustCachesForSpaceChangeWorker).to receive(:perform_async)
+    end
+
     it { is_expected.to be_truthy }
 
     context "when limit_post_creation_to_admins is true" do
@@ -31,6 +35,12 @@ RSpec.describe Space do
         save
         expect(FeatureFlag.enabled?(:limit_post_creation_to_admins)).to be(false)
       end
+    end
+
+    it "busts the caches that impact the space" do
+      save
+
+      expect(Spaces::BustCachesForSpaceChangeWorker).to have_received(:perform_async)
     end
   end
 end
