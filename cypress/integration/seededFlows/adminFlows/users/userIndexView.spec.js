@@ -91,6 +91,54 @@ describe('User index view', () => {
         cy.findByRole('button', { name: 'Search' }).should('not.exist');
       });
 
+      it('indicates filter is applied if filter options are collapsed', () => {
+        // Choose a filter
+        cy.findByRole('button', { name: 'Expand filter' })
+          .as('filterButton')
+          .should('have.attr', 'aria-expanded', 'false')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+        cy.findByRole('combobox').select('trusted');
+        // Indicator should not be shown while open
+        cy.get('@filterButton')
+          .findByTestId('search-indicator')
+          .should('not.be.visible');
+
+        // Collapse the filter field; indicator should now be shown
+        cy.get('@filterButton')
+          .click()
+          .should('have.attr', 'aria-expanded', 'false');
+        cy.get('@filterButton')
+          .findByTestId('search-indicator')
+          .should('be.visible');
+      });
+
+      it('indicates a search term is applied if search options are collapsed', () => {
+        // Enter some text in search term
+        cy.findByRole('button', { name: 'Expand search' })
+          .as('searchButton')
+          .should('have.attr', 'aria-expanded', 'false')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+        cy.findByRole('textbox', {
+          name: 'Search member by name, username, email, or Twitter/GitHub usernames',
+        })
+          .clear()
+          .type('something');
+        // Indicator should not be shown while open
+        cy.get('@searchButton')
+          .findByTestId('search-indicator')
+          .should('not.be.visible');
+
+        // Collapse the filter field; indicator should now be shown
+        cy.get('@searchButton')
+          .click()
+          .should('have.attr', 'aria-expanded', 'false');
+        cy.get('@searchButton')
+          .findByTestId('search-indicator')
+          .should('be.visible');
+      });
+
       it(`Clicks through to the Member Detail View`, () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
         cy.url().should('contain', '/admin/users/1');
