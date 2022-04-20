@@ -12,13 +12,13 @@ describe('User experience Section', () => {
     cy.get('#new_settings_user_experience').as('userExperienceSectionForm');
 
     cy.get('#new_settings_user_experience').within(() => {
-      cy.findByText('User Experience and Brand').click();
+      cy.findByText('User Experience and Brand').click({ force: true });
 
       cy.findByRole('combobox', { name: 'Default font' }).select(
         'open-dyslexic',
       );
 
-      cy.findByText('Update Settings').click();
+      cy.findByText('Update Settings').click({ force: true });
     });
 
     cy.findByTestId('snackbar').within(() => {
@@ -30,7 +30,7 @@ describe('User experience Section', () => {
 
     // Page reloaded so need to get a new reference to the form.
     cy.get('#new_settings_user_experience').within(() => {
-      cy.findByText('User Experience and Brand').click();
+      cy.findByText('User Experience and Brand').click({ force: true });
       cy.get('#settings_user_experience_default_font').should(
         'have.value',
         'open_dyslexic',
@@ -48,7 +48,7 @@ describe('User experience Section', () => {
         name: 'Primary brand color hex',
       }).enterIntoColorInput('#591803');
 
-      cy.findByText('Update Settings').click();
+      cy.findByText('Update Settings').click({ force: true });
     });
 
     cy.findByTestId('snackbar').within(() => {

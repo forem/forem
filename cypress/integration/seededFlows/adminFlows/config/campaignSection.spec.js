@@ -14,12 +14,16 @@ describe('Campaign Section', () => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_campaign').as('campaignSectionForm');
 
-        cy.get('@campaignSectionForm').findByText('Campaign').click();
+        cy.get('@campaignSectionForm')
+          .findByText('Campaign')
+          .click({ force: true });
         cy.get('@campaignSectionForm')
           .findByPlaceholderText('Used at the top of the campaign sidebar')
-          .type('example.com/image.png');
+          .type('example.com/image.png', { force: true });
 
-        cy.get('@campaignSectionForm').findByText('Update Settings').click();
+        cy.get('@campaignSectionForm')
+          .findByText('Update Settings')
+          .click({ force: true });
 
         cy.url().should('contains', '/admin/customization/config');
 
@@ -37,12 +41,16 @@ describe('Campaign Section', () => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_campaign').as('campaignSectionForm');
 
-        cy.get('@campaignSectionForm').findByText('Campaign').click();
+        cy.get('@campaignSectionForm')
+          .findByText('Campaign')
+          .click({ force: true });
         cy.get('@campaignSectionForm')
           .findByPlaceholderText('Used at the top of the campaign sidebar')
-          .type('https://example.com/image.png');
+          .type('https://example.com/image.png', { force: true });
 
-        cy.get('@campaignSectionForm').findByText('Update Settings').click();
+        cy.get('@campaignSectionForm')
+          .findByText('Update Settings')
+          .click({ force: true });
 
         cy.url().should('contains', '/admin/customization/config');
 

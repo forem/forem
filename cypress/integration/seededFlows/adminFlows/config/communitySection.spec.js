@@ -14,7 +14,9 @@ describe('Community Content Section', () => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
-        cy.get('@communitySectionForm').findByText('Community Content').click();
+        cy.get('@communitySectionForm')
+          .findByText('Community Content')
+          .click({ force: true });
         cy.get('@communitySectionForm')
           .get('#settings_community_community_emoji')
           .clear()
@@ -38,7 +40,9 @@ describe('Community Content Section', () => {
         cy.visit('/admin/customization/config');
         cy.get('#new_settings_community').as('communitySectionForm');
 
-        cy.get('@communitySectionForm').findByText('Community Content').click();
+        cy.get('@communitySectionForm')
+          .findByText('Community Content')
+          .click({ force: true });
         cy.get('@communitySectionForm')
           .get('#settings_community_community_emoji')
           .clear()

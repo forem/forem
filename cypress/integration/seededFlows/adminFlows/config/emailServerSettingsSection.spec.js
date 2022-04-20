@@ -13,12 +13,20 @@ describe('Email Server Settings Section', () => {
       cy.findByTestId('emailServerSettings').as('emailServerSettings');
 
       cy.get('@emailServerSettings').within(() => {
-        cy.findByText('Email Server Settings (SMTP)').click();
-        cy.findByLabelText('User name').clear().type('jane_doe');
-        cy.findByLabelText('Password').clear().type('abc123456');
-        cy.findByLabelText('Address').clear().type('smtp.gmail.com');
-        cy.findByLabelText('Authentication').clear().type('plain');
-        cy.findByText('Update Settings').click();
+        cy.findByText('Email Server Settings (SMTP)').click({ force: true });
+        cy.findByLabelText('User name')
+          .clear()
+          .type('jane_doe', { force: true });
+        cy.findByLabelText('Password')
+          .clear()
+          .type('abc123456', { force: true });
+        cy.findByLabelText('Address')
+          .clear()
+          .type('smtp.gmail.com', { force: true });
+        cy.findByLabelText('Authentication')
+          .clear()
+          .type('plain', { force: true });
+        cy.findByText('Update Settings').click({ force: true });
       });
 
       cy.url().should('contains', '/admin/customization/config');

@@ -4,7 +4,7 @@ function openUserOptions(callback) {
   cy.findByRole('button', { name: 'Options' })
     .should('have.attr', 'aria-haspopup', 'true')
     .should('have.attr', 'aria-expanded', 'false')
-    .click()
+    .click({ force: true })
     .then(([button]) => {
       expect(button.getAttribute('aria-expanded')).to.equal('true');
       const dropdownId = button.getAttribute('aria-controls');

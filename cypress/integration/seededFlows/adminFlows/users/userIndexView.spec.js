@@ -44,7 +44,7 @@ describe('User index view', () => {
           name: 'Search member by name, username, email, or Twitter/GitHub usernames',
         }).type('Admin McAdmin');
 
-        cy.findByRole('button', { name: 'Search' }).click();
+        cy.findByRole('button', { name: 'Search' }).click({ force: true });
 
         // Correct search result should appear
         cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
@@ -56,8 +56,10 @@ describe('User index view', () => {
           .pipe(click)
           .should('have.attr', 'aria-expanded', 'true');
 
-        cy.findByRole('combobox', { name: 'User role' }).select('super_admin');
-        cy.findByRole('button', { name: 'Filter' }).click();
+        cy.findByRole('combobox', { name: 'User role' }).select('super_admin', {
+          force: true,
+        });
+        cy.findByRole('button', { name: 'Filter' }).click({ force: true });
 
         // Filter results should include these two results
         cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
@@ -86,7 +88,7 @@ describe('User index view', () => {
         cy.findByRole('combobox').should('not.exist');
 
         // Now re-click filter options and check search options have closed
-        cy.get('@filterButton').click();
+        cy.get('@filterButton').click({ force: true });
         cy.get('@searchButton').should('have.attr', 'aria-expanded', 'false');
         cy.findByRole('button', { name: 'Search' }).should('not.exist');
       });
@@ -124,7 +126,7 @@ describe('User index view', () => {
           name: 'Search member by name, username, email, or Twitter/GitHub usernames',
         })
           .clear()
-          .type('something');
+          .type('something', { force: true });
         // Indicator should not be shown while open
         cy.get('@searchButton')
           .findByTestId('search-indicator')
@@ -208,9 +210,9 @@ describe('User index view', () => {
       it('Searches for a user', () => {
         cy.findByRole('textbox', {
           name: 'Search member by name, username, email, or Twitter/GitHub usernames',
-        }).type('Admin McAdmin');
+        }).type('Admin McAdmin', { force: true });
 
-        cy.findByRole('button', { name: 'Search' }).click();
+        cy.findByRole('button', { name: 'Search' }).click({ force: true });
 
         // Correct search result should appear
         cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
@@ -220,8 +222,10 @@ describe('User index view', () => {
       });
 
       it('Filters for a user', () => {
-        cy.findByRole('combobox', { name: 'User role' }).select('super_admin');
-        cy.findByRole('button', { name: 'Filter' }).click();
+        cy.findByRole('combobox', { name: 'User role' }).select('super_admin', {
+          force: true,
+        });
+        cy.findByRole('button', { name: 'Filter' }).click({ force: true });
 
         // Filter results should include these two results
         cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
@@ -267,7 +271,9 @@ describe('User index view', () => {
 
     describe('Export CSV', () => {
       it('Contains a link to download member data', () => {
-        cy.findByRole('button', { name: 'Download member data' }).click();
+        cy.findByRole('button', { name: 'Download member data' }).click({
+          force: true,
+        });
 
         cy.getModal().within(() => {
           cy.findByText(

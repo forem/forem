@@ -15,7 +15,7 @@ export function verifyAndDismissUserUpdatedMessage(
   cy.get('@success').within(() => {
     cy.findByRole('button', { name: 'Dismiss message' })
       .should('have.focus')
-      .click();
+      .click({ force: true });
   });
 
   cy.findByTestId('flash-success').should('not.exist');

@@ -23,7 +23,9 @@ describe('Authentication Section', () => {
           cy.visit('/admin/customization/config');
           cy.findByTestId('authSectionForm').as('authSectionForm');
 
-          cy.get('@authSectionForm').findByText('Authentication').click();
+          cy.get('@authSectionForm')
+            .findByText('Authentication')
+            .click({ force: true });
 
           cy.get('@authSectionForm')
             .findByRole('checkbox', { name: 'Invite-only mode' })
@@ -76,7 +78,9 @@ describe('Authentication Section', () => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('authSectionForm').as('authSectionForm');
 
-        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('@authSectionForm')
+          .findByText('Authentication')
+          .click({ force: true });
         cy.get('#facebook-auth-btn').click();
 
         cy.get('@authSectionForm').findByText('Update Settings').click();
@@ -94,7 +98,9 @@ describe('Authentication Section', () => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('authSectionForm').as('authSectionForm');
 
-        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('@authSectionForm')
+          .findByText('Authentication')
+          .click({ force: true });
         cy.get('#facebook-auth-btn').click();
         cy.get('#settings_authentication_facebook_key').type('randomkey');
         cy.get('#settings_authentication_facebook_secret').type('randomsecret');
@@ -116,7 +122,9 @@ describe('Authentication Section', () => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('authSectionForm').as('authSectionForm');
 
-        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('@authSectionForm')
+          .findByText('Authentication')
+          .click({ force: true });
         cy.get('#facebook-auth-btn').click();
         cy.get('#settings_authentication_facebook_key').type('randomkey');
         cy.get('#settings_authentication_facebook_secret').type('randomsecret');

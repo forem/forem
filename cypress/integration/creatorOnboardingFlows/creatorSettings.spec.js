@@ -201,9 +201,11 @@ describe('Admin -> Customization -> Config -> Images', () => {
   it('should upload an image from the admin -> customization -> config -> images section', () => {
     cy.visit(`/admin/customization/config`);
 
-    cy.findByText('Images').click();
+    cy.findByText('Images').click({ force: true });
     cy.findByLabelText(/^Logo$/i).attachFile('/images/admin-image.png');
-    cy.findByRole('button', { name: /Update image settings/i }).click();
+    cy.findByRole('button', { name: /Update image settings/i }).click({
+      force: true,
+    });
 
     cy.findByTestId('snackbar')
       .should('be.visible')
@@ -229,8 +231,10 @@ describe('Admin -> Customization -> Config -> Images', () => {
   it('should not upload an image from the admin -> customization -> config -> images section', () => {
     cy.visit(`/admin/customization/config`);
 
-    cy.findByText('Images').click();
-    cy.findByRole('button', { name: /Update image settings/i }).click();
+    cy.findByText('Images').click({ force: true });
+    cy.findByRole('button', { name: /Update image settings/i }).click({
+      force: true,
+    });
 
     cy.findByTestId('snackbar')
       .should('be.visible')

@@ -14,7 +14,9 @@ describe('Mascot Section', () => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
-        cy.get('@mascotSectionForm').findByText('Mascot').click();
+        cy.get('@mascotSectionForm')
+          .findByText('Mascot')
+          .click({ force: true });
         cy.get('@mascotSectionForm')
           .findByLabelText('Mascot Image URL')
           .clear()
@@ -38,7 +40,9 @@ describe('Mascot Section', () => {
         cy.visit('/admin/customization/config');
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
-        cy.get('@mascotSectionForm').findByText('Mascot').click();
+        cy.get('@mascotSectionForm')
+          .findByText('Mascot')
+          .click({ force: true });
         cy.get('@mascotSectionForm')
           .findByLabelText('Mascot Image URL')
           .clear()

@@ -3,7 +3,7 @@ import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openRolesModal() {
   cy.getModal().should('not.exist');
-  cy.findByRole('button', { name: 'Assign role' }).click();
+  cy.findByRole('button', { name: 'Assign role' }).click({ force: true });
 
   return cy.getModal();
 }
@@ -38,7 +38,7 @@ describe('Manage User Roles', () => {
           cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
             'some reason',
           );
-          cy.findByRole('button', { name: 'Add' }).click();
+          cy.findByRole('button', { name: 'Add' }).click({ force: true });
         });
 
         cy.getModal().should('not.exist');
@@ -55,7 +55,9 @@ describe('Manage User Roles', () => {
 
       it('should remove a role', () => {
         checkUserStatus('Trusted');
-        cy.findByRole('button', { name: 'Remove role: Trusted' }).click();
+        cy.findByRole('button', { name: 'Remove role: Trusted' }).click({
+          force: true,
+        });
         cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
           'not.exist',
         );
@@ -70,14 +72,14 @@ describe('Manage User Roles', () => {
           cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
             'some reason',
           );
-          cy.findByRole('button', { name: 'Add' }).click();
+          cy.findByRole('button', { name: 'Add' }).click({ force: true });
         });
 
         cy.findByRole('button', {
           name: `Super Admin You can't remove this role.`,
         })
           .as('superAdminButton')
-          .click()
+          .click({ force: true })
           .within(() => {
             cy.findByText(`You can't remove this role.`).should('exist');
           });
@@ -115,7 +117,7 @@ describe('Manage User Roles', () => {
           cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
             'some reason',
           );
-          cy.findByRole('button', { name: 'Add' }).click();
+          cy.findByRole('button', { name: 'Add' }).click({ force: true });
         });
 
         cy.getModal().should('not.exist');
@@ -131,7 +133,7 @@ describe('Manage User Roles', () => {
           cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
             'some reason',
           );
-          cy.findByRole('button', { name: 'Add' }).click();
+          cy.findByRole('button', { name: 'Add' }).click({ force: true });
         });
 
         cy.getModal().should('not.exist');

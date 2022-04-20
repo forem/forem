@@ -30,7 +30,9 @@ describe('Pin an article from the admin area', () => {
       statusCode: 404,
     });
 
-    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' })
+      .first()
+      .click({ force: true });
 
     // Verify that the form has submitted and the page has changed to the post page
     cy.url().should('contain', '/content_manager/articles/');
@@ -41,7 +43,9 @@ describe('Pin an article from the admin area', () => {
   });
 
   it('should display a warning modal when pinning an article, and one is already pinned', () => {
-    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' })
+      .first()
+      .click({ force: true });
 
     cy.createArticle({
       title: 'A new article',
@@ -67,7 +71,9 @@ describe('Pin an article from the admin area', () => {
   });
 
   it('should change the pinned article when choosing to pin a new article', () => {
-    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' })
+      .first()
+      .click({ force: true });
 
     cy.createArticle({
       title: 'A new article',
@@ -95,7 +101,9 @@ describe('Pin an article from the admin area', () => {
   });
 
   it('should show the pinned post to a logged out user', () => {
-    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' })
+      .first()
+      .click({ force: true });
 
     cy.signOutUser();
 

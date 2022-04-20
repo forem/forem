@@ -29,7 +29,9 @@ describe('Unpin an article from the admin area', () => {
   });
 
   it('should unpin the pinned article', () => {
-    cy.findAllByRole('button', { name: 'Pin post' }).first().click();
+    cy.findAllByRole('button', { name: 'Pin post' })
+      .first()
+      .click({ force: true });
 
     cy.findAllByRole('link', { name: 'Unpin post' }).first().click();
 

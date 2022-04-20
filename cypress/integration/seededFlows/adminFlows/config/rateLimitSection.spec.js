@@ -23,7 +23,9 @@ describe('Campaign Section', () => {
           .clear()
           .type('42');
 
-        cy.get('@rateLimitSectionForm').findByText('Update Settings').click();
+        cy.get('@rateLimitSectionForm')
+          .findByText('Update Settings')
+          .click({ force: true });
 
         cy.url().should('contains', '/admin/customization/config');
 
@@ -58,7 +60,9 @@ describe('Campaign Section', () => {
           .clear()
           .type('42');
 
-        cy.get('@rateLimitSectionForm').findByText('Update Settings').click();
+        cy.get('@rateLimitSectionForm')
+          .findByText('Update Settings')
+          .click({ force: true });
 
         cy.url().should('contains', '/admin/customization/config');
 
