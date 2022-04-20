@@ -52,7 +52,7 @@
                   </div>
                 </dl>
                 <div>
-                  <%= render "admin/users/index/organizations", organizations: user.organizations %>
+                  <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
                 </div>
               </div>
             </article>
@@ -92,7 +92,7 @@
             </p>
           </td>
           <td>
-            <%= render "admin/users/index/organizations", organizations: user.organizations %>
+            <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
           </td>
           <td>
             <%= render "admin/users/index/user_actions_dropdown", user: user, id: "xl-#{user.id}" %>

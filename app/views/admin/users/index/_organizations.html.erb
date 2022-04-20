@@ -1,9 +1,14 @@
 <% if organizations.any? %>
-  <% organizations.each do |organization| %>
-    <span class="crayons-hover-tooltip crayons-hover-tooltip--right" data-tooltip="<%= organization.name %>">
-      <img src="<%= organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= organization.name %>" class="c-link crayons-logo crayons-logo--l">
+    <span class="crayons-hover-tooltip crayons-hover-tooltip--right" data-tooltip="<%= organization_tooltip(organizations.pluck(:name), org_count, imposed_limit: @organization_limit) %>">
+      <% organizations.each do |organization| %>
+          <img src="<%= organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= organization.name %>" class="c-link crayons-logo crayons-logo--l">
+      <% end %>
     </span>
+
+  <% if org_count > @organization_limit %>
+    + <%= overflow_count(org_count, imposed_limit: @organization_limit) %>
   <% end %>
+
 <% else %>
   <span class="hidden xl:block">-</span>
 <% end %>
