@@ -49,10 +49,6 @@ module PracticalDeveloper
     config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
     ### END FRAMEWORK DEFAULT OVERIDES
 
-    # permit using a string uuid as namespace
-    # see https://github.com/rails/rails/pull/37682
-    config.active_support.use_rfc4122_namespaced_uuids = true
-
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when
     # resolving require calls with relative paths, and saves Bootsnap work and
