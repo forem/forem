@@ -1,7 +1,7 @@
 <%= javascript_packs_with_chunks_tag "admin/users/controls", "admin/users/memberIndex", defer: true %>
 
 <% if FeatureFlag.enabled?(:member_index_view) %>
-  <div id="member-index-content" class="crayons-card p-0">
+  <div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-0">
     <header class="flex flex-col p-4 xl:p-7 pb-4">
       <div class="flex flex-col l:flex-row justify-content-between l:items-center">
         <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (Invitations)</span></h1>
@@ -19,11 +19,11 @@
             <%= render "admin/users/index/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email", context: "responsive" %>
           </div>
         <% end %>
-        <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded inline-block s:self-end" %>
+        <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-2 inline-block s:self-end" %>
 
         <h2 class="member-data-heading fs-s py-2 mt-3 -mx-4 px-6 color-base-60">Invited members</h2>
 
-        <ul class="list-none">
+        <ul class="list-none mx-2">
           <% @invitations.each do |user| %>
              <li class="py-4">
               <article class="flex justify-content-between items-start">
