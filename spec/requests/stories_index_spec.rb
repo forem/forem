@@ -26,6 +26,12 @@ RSpec.describe "StoriesIndex", type: :request do
       renders_proper_sidebar(navigation_link)
     end
 
+    it "doesn't render a featured scheduled article" do
+      article = create(:article, featured: true, published_at: 1.hour.from_now)
+      get "/"
+      expect(response.body).not_to include(CGI.escapeHTML(article.title))
+    end
+
     def renders_proper_description
       expect(response.body).to include(Settings::Community.community_description)
     end
