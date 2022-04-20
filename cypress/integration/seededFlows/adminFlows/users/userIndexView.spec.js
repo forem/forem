@@ -11,6 +11,24 @@ describe('User index view', () => {
       cy.viewport('iphone-x');
     });
 
+    it('Displays expected data', () => {
+      // Find the specific article for a user, and check data inside of it
+      cy.findByRole('heading', { name: 'Many orgs user' })
+        .closest('article')
+        .within(() => {
+          cy.findByText('@many_orgs_user').should('exist');
+          cy.findAllByRole('link', { name: 'Many orgs user' }).should(
+            'have.length',
+            2,
+          );
+          cy.findByAltText('Many orgs user').should('exist');
+          cy.findAllByText('Good standing').should('exist');
+          cy.findByText('Last activity').should('exist');
+          cy.findByText('Joined on').should('exist');
+          cy.findByRole('figure').findByText('+ 1').should('exist');
+        });
+    });
+
     describe('Search and filter', () => {
       // Search and filter controls are initialized async.
       // This helper function allows us to use `pipe` to retry commands in case the test runner clicks before the JS has run
@@ -118,6 +136,24 @@ describe('User index view', () => {
           .then(() => cy.visitAndWaitForUserSideEffects('/admin/users'));
       });
       cy.viewport('macbook-16');
+    });
+
+    it('Displays expected data', () => {
+      // Find the specific table row for a user, and check data inside of it
+      cy.findByRole('table')
+        .findAllByRole('link', { name: 'Many orgs user' })
+        .first()
+        .closest('tr')
+        .within(() => {
+          cy.findByText('@many_orgs_user').should('exist');
+          cy.findAllByRole('link', { name: 'Many orgs user' }).should(
+            'have.length',
+            2,
+          );
+          cy.findByAltText('Many orgs user').should('exist');
+          cy.findAllByText('Good standing').should('exist');
+          cy.findByRole('figure').findByText('+ 1').should('exist');
+        });
     });
 
     describe('Search and filter', () => {
