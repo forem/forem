@@ -2,28 +2,35 @@ module Users
   class OnboardingsController < ApplicationController
     before_action :authenticate_user!
     before_action :set_cache_control_headers, only: [:show]
-    before_action :set_no_cache_header, only: %i[update onboarding_checkbox_update]
-    after_action :verify_authorized, except: [:show]
+    before_action :set_no_cache_header, only: [:update]
+    after_action :verify_authorized, only: [:update]
 
-    ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
-    ALLOWED_CHECKBOX_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
+    ALLOWED_USER_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions saw_onboarding last_onboarding_page
+                             username].freeze
 
     def show
       set_surrogate_key_header "onboarding-slideshow"
     end
 
     def update
-      authorize User, :onboarding_update?
+      authorize current_user
 
-      user_params = {}
+      if params[:user]
+        user_update
+      elsif params[:notifications]
+        notifications_update
+      end
+    end
 
+    private
+
+    def user_update
       if params[:user]
         if unset_username?
           return render json: { errors: I18n.t("users_controller.username_blank") }, status: :unprocessable_entity
         end
 
-        sanitize_user_params
-        user_params = params[:user].permit(ALLOWED_USER_PARAMS)
+        params[:user].compact_blank!
       end
 
       update_result = Users::Update.call(current_user, user: user_params, profile: profile_params)
@@ -33,31 +40,30 @@ module Users
       else
         render json: { errors: update_result.errors_as_sentence }, status: :unprocessable_entity
       end
+
     end
 
-    def onboarding_checkbox_update
-      if params[:user]
-        current_user.assign_attributes(params[:user].permit(ALLOWED_CHECKBOX_PARAMS))
-      end
+    def notifications_update
+      notification_setting = current_user.notification_setting
+      notification_setting.assign_attributes(notification_params)
 
-      current_user.saw_onboarding = true
-      authorize User
-
-      if current_user.save
+      if notification_setting.save
         render json: {}, status: :ok
       else
-        render json: { errors: errors }, status: :unprocessable_entity
+        render json: { errors: current_user.notification_setting.errors_as_sentence }, status: :unprocessable_entity
       end
     end
-
-    private
 
     def unset_username?
       params[:user].key?(:username) && params[:user][:username].blank?
     end
 
-    def sanitize_user_params
-      params[:user].compact_blank!
+    def user_params
+      params[:user].permit(ALLOWED_USER_PARAMS)
+    end
+
+    def notification_params
+      params[:notifications].permit(%i[email_newsletter email_digest_periodic])
     end
 
     def profile_params

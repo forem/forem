@@ -196,7 +196,6 @@ Rails.application.routes.draw do
 
     scope module: "users" do
       resource :onboarding, only: %i[show update]
-      patch "/onboarding_checkbox_update", to: "onboardings#onboarding_checkbox_update"
     end
 
     resources :profiles, only: %i[update]
@@ -215,8 +214,6 @@ Rails.application.routes.draw do
     get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
-    patch "/onboarding_notifications_checkbox_update",
-          to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
 
     get "/internal", to: redirect("/admin")
