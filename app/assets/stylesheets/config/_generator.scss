@@ -40,6 +40,13 @@
     false
   ),
   (
+    'box',
+    'box-sizing',
+    ('content': content-box, 'border': border-box),
+    (),
+    false
+  ),
+  (
     'cursor',
     'cursor',
     (
