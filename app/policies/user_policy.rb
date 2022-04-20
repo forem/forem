@@ -54,6 +54,14 @@ class UserPolicy < ApplicationPolicy
   # "duck-typing" on the tests.
   alias analytics? edit?
 
+  def onboarding_update?
+    true
+  end
+
+  alias onboarding_checkbox_update? onboarding_update?
+
+  alias onboarding_notifications_checkbox_update? onboarding_update?
+
   def update?
     edit? && !user_suspended?
   end

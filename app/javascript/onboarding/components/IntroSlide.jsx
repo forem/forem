@@ -16,7 +16,6 @@ export class IntroSlide extends Component {
     this.state = {
       checked_code_of_conduct: false,
       checked_terms_and_conditions: false,
-      saw_onboarding: true,
       text: null,
     };
   }
@@ -29,7 +28,7 @@ export class IntroSlide extends Component {
     const { next } = this.props;
     const csrfToken = getContentOfToken('csrf-token');
 
-    fetch('/onboarding', {
+    fetch('/onboarding_checkbox_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,

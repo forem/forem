@@ -24,7 +24,7 @@ export class EmailPreferencesForm extends Component {
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
 
-    fetch('/onboarding', {
+    fetch('/onboarding_notifications_checkbox_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,

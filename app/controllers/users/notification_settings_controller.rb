@@ -19,6 +19,7 @@ module Users
                         mod_roundrobin_notifications
                         reaction_notifications
                         welcome_notifications].freeze
+    ONBOARDING_ALLOWED_PARAMS = %i[email_newsletter email_digest_periodic].freeze
 
     def update
       authorize current_user, policy_class: UserPolicy
@@ -33,7 +34,27 @@ module Users
       redirect_to user_settings_path(:notifications)
     end
 
+    def onboarding_notifications_checkbox_update
+      authorize User
+
+      if params[:notifications]
+        current_user.notification_setting.assign_attributes(params[:notifications].permit(ONBOARDING_ALLOWED_PARAMS))
+      end
+
+      current_user.saw_onboarding = true
+      success = current_user.notification_setting.save
+      render_update_response(success, current_user.notification_setting.errors_as_sentence)
+    end
+
     private
+
+    def render_update_response(success, errors = nil)
+      status = success ? 200 : 422
+
+      respond_to do |format|
+        format.json { render json: { errors: errors }, status: status }
+      end
+    end
 
     def users_notification_setting_params
       params.require(:users_notification_setting).permit(ALLOWED_PARAMS)

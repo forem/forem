@@ -60,14 +60,14 @@ RSpec.describe "UsersOnboarding", type: :request do
       before { sign_in user }
 
       it "updates saw_onboarding boolean" do
-        patch "/onboarding.json", params: {}
+        patch "/onboarding_checkbox_update.json", params: {}
         expect(user.saw_onboarding).to be(true)
       end
     end
 
     context "when signed out" do
       it "returns a not found error if user is not signed in" do
-        patch "/onboarding.json", params: {}
+        patch "/onboarding_checkbox_update.json", params: {}
         expect(response.parsed_body["error"]).to include("Please sign in")
       end
     end
