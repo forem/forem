@@ -9,7 +9,7 @@
           <%= render "admin/users/index/expand_search_button" %>
           <button type="button" id="expand-filter-btn" class="c-btn c-btn--icon-alone indicator-btn" aria-label="Expand filter" aria-expanded="false" aria-controls="filter-users">
             <%= crayons_icon_tag("filter", aria_hidden: true) %>
-            <span class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
+            <span data-testid="search-indicator" class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
           </button>
         </div>
         <div class="flex">
