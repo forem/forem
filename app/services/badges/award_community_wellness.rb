@@ -22,7 +22,7 @@ module Badges
 
         next unless REWARD_STREAK_WEEKS.include?(week_streak)
 
-        Rails.logger.debug "SUCCESS: Awarding streak of #{week_streak} weeks to #{user.username}"
+        Rails.logger.debug { "SUCCESS: Awarding streak of #{week_streak} weeks to #{user.username}" }
 
         # TODO: Actually award the badge
 
