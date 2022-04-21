@@ -22,7 +22,12 @@ namespace :admin do
     mount PgHero::Engine, at: "pghero"
   end
 
-  resources :invitations, only: %i[index new create destroy]
+  resources :invitations, only: %i[index new create destroy] do
+    member do
+      post "resend"
+    end
+  end
+
   resources :organization_memberships, only: %i[update destroy create]
   resources :permissions, only: %i[index]
   resources :reactions, only: %i[update]
@@ -45,6 +50,9 @@ namespace :admin do
 
   resources :users, only: %i[index show update destroy] do
     resources :email_messages, only: :show
+    collection do
+      get "export"
+    end
 
     member do
       post "banish"
@@ -100,13 +108,8 @@ namespace :admin do
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]
-
-    # NOTE: The next two resources have a temporary constraint while profile
-    # generalization is still WIP
-    constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
-      resources :profile_field_groups, only: %i[update create destroy]
-      resources :profile_fields, only: %i[index update create destroy]
-    end
+    resources :profile_field_groups, only: %i[update create destroy]
+    resources :profile_fields, only: %i[index update create destroy]
   end
 
   scope :moderation do

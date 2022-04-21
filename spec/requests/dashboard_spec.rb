@@ -97,6 +97,25 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
 
+    context "when logged but has no articles nor can create them" do
+      it "redirects to /dashboard/following_tags" do
+        sign_in user
+
+        # [@jeremyf] I'm choosing not to setup the exact conditions of the data for this to be true.
+        # Instead, I'm relying on that function to already be tested.
+        #
+        # rubocop:disable RSpec/AnyInstance
+        # Pundit does not make it easy to stub the policy().method questions so I'm using the any instance antics.
+        allow_any_instance_of(ArticlePolicy)
+          .to receive(:has_existing_articles_or_can_create_new_ones?)
+          .and_return(false)
+        # rubocop:enable RSpec/AnyInstance
+
+        get dashboard_path
+        expect(response).to redirect_to("/dashboard/following_tags")
+      end
+    end
+
     context "when logged in as a super admin" do
       it "renders the specified user's articles" do
         article
@@ -149,6 +168,15 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/organization/#{organization.id}"
         expect(response.body).not_to include("Delete")
         expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
+      end
+    end
+
+    context "when logged in but not member of org" do
+      it "renders unauthorized" do
+        sign_in user
+        expect do
+          get "/dashboard/organization/#{organization.id}"
+        end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
@@ -289,7 +317,7 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
 
-    context "when user has is an org member" do
+    context "when user is an org member" do
       it "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org)

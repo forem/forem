@@ -11,7 +11,6 @@ class CommentsController < ApplicationController
   # GET /comments.json
   def index
     skip_authorization
-    @on_comments_page = true
     @comment = Comment.new
     @podcast = Podcast.find_by(slug: params[:username])
 
@@ -82,7 +81,7 @@ class CommentsController < ApplicationController
       message = @comment.errors_as_sentence
       render json: { error: message }, status: :unprocessable_entity
     end
-  # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
+  # See https://github.com/forem/forem/pull/5485#discussion_r366056925
   # for details as to why this is necessary
   rescue ModerationUnauthorizedError => e
     render json: { error: e.message }, status: :unprocessable_entity
@@ -143,7 +142,6 @@ class CommentsController < ApplicationController
       # cache.
       #
       # https://github.com/forem/forem/issues/10338#issuecomment-693401481
-      @on_comments_page = true
       @root_comment = @comment
       @commentable = @comment.commentable
       @commentable_type = @comment.commentable_type

@@ -5,10 +5,16 @@ module Admin
   class SpacesController < Admin::ApplicationController
     layout "admin"
 
-    # TODO: What kind of logging do we need?  Any?  Looking for guidance.  I can assume we want to
-    # log changes to a space.
+    after_action only: %i[update] do
+      Audit::Logger.log(:internal, current_user, params.dup)
+    end
+
+    # When we change the settings of a Space, this can impact what user's see.  Thus, we need to
+    # ensure we are busting the cache.
     #
-    # after_action only: %i[update] { Audit::Logger.log(:moderator, current_user, params.dup) }
+    # @see ApplicationHelper#release_adjusted_cache_key ApplicationHelper#release_adjusted_cache_key
+    #      produces the cache key we use for caching the homepage's top bar.
+    after_action :bust_content_change_caches, only: %i[update]
 
     # @note I'm instantiating the @space because in the index view I'm rendering a form that then
     # PUTs to the update action.
@@ -32,10 +38,10 @@ module Admin
 
       respond_to do |wants|
         wants.html do
-          redirect_to admin_spaces_path
+          redirect_to admin_spaces_path, notice: t("admin.spaces_controller.update_success")
         end
         wants.json do
-          render json: @space, status: :ok
+          render json: { message: t("admin.spaces_controller.update_success") }, status: :ok
         end
       end
     end
