@@ -126,41 +126,45 @@ module Mailchimp
     def unsub_sustaining_member
       return unless Settings::General.mailchimp_sustaining_members_id.present? && a_sustaining_member?
 
-      gibbon.lists(Settings::General.mailchimp_sustaining_members_id).members(target_md5_email).update(
-        body: {
-          status: "unsubscribed"
-        },
-      )
+      gibbon.lists(Settings::General.mailchimp_sustaining_members_id)
+        .members(target_md5_email).actions.delete_permanent.create
+    rescue Gibbon::MailChimpError => e
+      return if e.status_code == 404
+
+      report_error(e)
     end
 
     def unsub_community_mod
       return unless Settings::General.mailchimp_community_moderators_id.present? && user.trusted?
 
-      gibbon.lists(Settings::General.mailchimp_community_moderators_id).members(target_md5_email).update(
-        body: {
-          status: "unsubscribed"
-        },
-      )
+      gibbon.lists(Settings::General.mailchimp_community_moderators_id)
+        .members(target_md5_email).actions.delete_permanent.create
+    rescue Gibbon::MailChimpError => e
+      return if e.status_code == 404
+
+      report_error(e)
     end
 
     def unsub_tag_mod
       return unless Settings::General.mailchimp_tag_moderators_id.present? && user.tag_moderator?
 
-      gibbon.lists(Settings::General.mailchimp_tag_moderators_id).members(target_md5_email).update(
-        body: {
-          status: "unsubscribed"
-        },
-      )
+      gibbon.lists(Settings::General.mailchimp_tag_moderators_id)
+        .members(target_md5_email).actions.delete_permanent.create
+    rescue Gibbon::MailChimpError => e
+      return if e.status_code == 404
+
+      report_error(e)
     end
 
-    def unsubscribe_all_newsletters
+    def permanent_delete_from_mailchimp
       success = false
       begin
-        gibbon.lists(Settings::General.mailchimp_newsletter_id).members(target_md5_email).update(
-          body: {
-            status: "unsubscribed"
-          },
-        )
+        begin
+          gibbon.lists(Settings::General.mailchimp_newsletter_id)
+            .members(target_md5_email).actions.delete_permanent.create
+        rescue Gibbon::MailChimpError => e
+          return if e.status_code == 404
+        end
         unsub_tag_mod
         unsub_sustaining_member
         unsub_community_mod
