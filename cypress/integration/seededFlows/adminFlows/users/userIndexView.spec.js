@@ -11,6 +11,24 @@ describe('User index view', () => {
       cy.viewport('iphone-x');
     });
 
+    it('Displays expected data', () => {
+      // Find the specific article for a user, and check data inside of it
+      cy.findByRole('heading', { name: 'Many orgs user' })
+        .closest('article')
+        .within(() => {
+          cy.findByText('@many_orgs_user').should('exist');
+          cy.findAllByRole('link', { name: 'Many orgs user' }).should(
+            'have.length',
+            2,
+          );
+          cy.findByAltText('Many orgs user').should('exist');
+          cy.findAllByText('Good standing').should('exist');
+          cy.findByText('Last activity').should('exist');
+          cy.findByText('Joined on').should('exist');
+          cy.findByRole('figure').findByText('+ 1').should('exist');
+        });
+    });
+
     describe('Search and filter', () => {
       // Search and filter controls are initialized async.
       // This helper function allows us to use `pipe` to retry commands in case the test runner clicks before the JS has run
@@ -73,6 +91,54 @@ describe('User index view', () => {
         cy.findByRole('button', { name: 'Search' }).should('not.exist');
       });
 
+      it('indicates filter is applied if filter options are collapsed', () => {
+        // Choose a filter
+        cy.findByRole('button', { name: 'Expand filter' })
+          .as('filterButton')
+          .should('have.attr', 'aria-expanded', 'false')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+        cy.findByRole('combobox').select('trusted');
+        // Indicator should not be shown while open
+        cy.get('@filterButton')
+          .findByTestId('search-indicator')
+          .should('not.be.visible');
+
+        // Collapse the filter field; indicator should now be shown
+        cy.get('@filterButton')
+          .click()
+          .should('have.attr', 'aria-expanded', 'false');
+        cy.get('@filterButton')
+          .findByTestId('search-indicator')
+          .should('be.visible');
+      });
+
+      it('indicates a search term is applied if search options are collapsed', () => {
+        // Enter some text in search term
+        cy.findByRole('button', { name: 'Expand search' })
+          .as('searchButton')
+          .should('have.attr', 'aria-expanded', 'false')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+        cy.findByRole('textbox', {
+          name: 'Search member by name, username, email, or Twitter/GitHub usernames',
+        })
+          .clear()
+          .type('something');
+        // Indicator should not be shown while open
+        cy.get('@searchButton')
+          .findByTestId('search-indicator')
+          .should('not.be.visible');
+
+        // Collapse the filter field; indicator should now be shown
+        cy.get('@searchButton')
+          .click()
+          .should('have.attr', 'aria-expanded', 'false');
+        cy.get('@searchButton')
+          .findByTestId('search-indicator')
+          .should('be.visible');
+      });
+
       it(`Clicks through to the Member Detail View`, () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
         cy.url().should('contain', '/admin/users/1');
@@ -118,6 +184,24 @@ describe('User index view', () => {
           .then(() => cy.visitAndWaitForUserSideEffects('/admin/users'));
       });
       cy.viewport('macbook-16');
+    });
+
+    it('Displays expected data', () => {
+      // Find the specific table row for a user, and check data inside of it
+      cy.findByRole('table')
+        .findAllByRole('link', { name: 'Many orgs user' })
+        .first()
+        .closest('tr')
+        .within(() => {
+          cy.findByText('@many_orgs_user').should('exist');
+          cy.findAllByRole('link', { name: 'Many orgs user' }).should(
+            'have.length',
+            2,
+          );
+          cy.findByAltText('Many orgs user').should('exist');
+          cy.findAllByText('Good standing').should('exist');
+          cy.findByRole('figure').findByText('+ 1').should('exist');
+        });
     });
 
     describe('Search and filter', () => {
@@ -178,6 +262,25 @@ describe('User index view', () => {
           .its('navigator.clipboard')
           .invoke('readText')
           .should('equal', 'admin@forem.local');
+      });
+    });
+
+    describe('Export CSV', () => {
+      it('Contains a link to download member data', () => {
+        cy.findByRole('button', { name: 'Download member data' }).click();
+
+        cy.getModal().within(() => {
+          cy.findByText(
+            'Your data will be downloaded as a Comma Separated Values (.csv) file.',
+          ).should('be.visible');
+          cy.findByText(
+            'Values listed are Name, Username, Email address, Status, Joining date, Last activity, and Organizations.',
+          ).should('be.visible');
+          cy.findByRole('link', {
+            name: 'Download',
+            href: '/admin/users/export.csv',
+          }).should('exist');
+        });
       });
     });
   });

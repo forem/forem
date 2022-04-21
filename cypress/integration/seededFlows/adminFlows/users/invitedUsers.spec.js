@@ -18,53 +18,117 @@ describe('Invited users', () => {
   // Helper function for cypress-pipe
   const click = (el) => el.click();
 
-  it('searches for an invited user', () => {
-    // The single invited user should be visible on the page
-    cy.findByText('test@test.com').should('exist');
+  describe('small screens', () => {
+    beforeEach(() => {
+      cy.viewport('iphone-x');
+    });
 
-    // Search for a term that should match the entry
-    cy.findByRole('textbox', {
-      name: 'Search invited members by name, username, or email',
-    }).type('test');
-    cy.findByRole('button', { name: 'Search' }).click();
-    cy.url().should('contain', 'search=test');
-    cy.findByText('test@test.com').should('exist');
+    it('searches for invited user', () => {
+      // The single invited user should be visible on the page
+      cy.findByRole('article').findByText('test@test.com').should('exist');
 
-    // Search for a term that shouldn't match the entry
+      cy.findByRole('button', { name: 'Expand search' })
+        .should('have.attr', 'aria-expanded', 'false')
+        .pipe(click)
+        .should('have.attr', 'aria-expanded', 'true');
+
+      // Search for a term that should match the entry
+      searchForMember('test');
+
+      cy.url().should('contain', 'search=test');
+      cy.findByRole('article').findByText('test@test.com').should('exist');
+
+      // Search for a term that shouldn't match the entry
+      cy.findByRole('button', { name: 'Expand search' })
+        .should('have.attr', 'aria-expanded', 'false')
+        .pipe(click)
+        .should('have.attr', 'aria-expanded', 'true');
+
+      searchForMember('something');
+      cy.url().should('contain', 'search=something');
+      // No entries should exist
+      cy.findByRole('article').should('not.exist');
+    });
+
+    it('resends an invite', () => {
+      cy.findByRole('article').findByText('test@test.com').should('exist');
+      resendInviteForTestMember();
+      cy.findByText('Invite resent to test@test.com.').should('exist');
+    });
+
+    it('cancels an invite', () => {
+      cy.findByRole('article').findByText('test@test.com').should('exist');
+      cancelInviteForTestMember();
+
+      cy.findByText('Invite cancelled for test@test.com.').should('exist');
+
+      // No entries should exist
+      cy.findByRole('article').should('not.exist');
+    });
+  });
+
+  describe('large screens', () => {
+    beforeEach(() => {
+      cy.viewport('macbook-16');
+    });
+
+    it('searches for an invited user', () => {
+      // The single invited user should be visible on the page
+      cy.findByRole('table').findByText('test@test.com').should('exist');
+
+      // Search for a term that should match the entry
+      searchForMember('test');
+
+      cy.url().should('contain', 'search=test');
+      cy.findByRole('table').findByText('test@test.com').should('exist');
+
+      // Search for a term that shouldn't match the entry
+      searchForMember('something');
+      cy.url().should('contain', 'search=something');
+      cy.findByRole('table').findByText('test@test.com').should('not.exist');
+    });
+
+    it('resends an invite', () => {
+      cy.findByRole('table').findByText('test@test.com').should('exist');
+
+      resendInviteForTestMember();
+
+      cy.findByText('Invite resent to test@test.com.').should('exist');
+    });
+
+    it('cancels an invite', () => {
+      cy.findByRole('table').findByText('test@test.com').should('exist');
+      cancelInviteForTestMember();
+
+      cy.findByText('Invite cancelled for test@test.com.').should('exist');
+
+      // Table entry should now be gone
+      cy.findByRole('table').findByText('test@test.com').should('not.exist');
+    });
+  });
+
+  const searchForMember = (searchTerm) => {
     cy.findByRole('textbox', {
       name: 'Search invited members by name, username, or email',
     })
       .clear()
-      .type('something');
+      .type(searchTerm);
     cy.findByRole('button', { name: 'Search' }).click();
-    cy.url().should('contain', 'search=something');
-    cy.findByText('test@test.com').should('not.exist');
-  });
+  };
 
-  it('resends an invite', () => {
-    cy.findByText('test@test.com').should('exist');
-
+  const resendInviteForTestMember = () => {
     cy.findByRole('button', { name: 'Invitation actions: Test user' })
       .pipe(click)
       .should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('button', { name: 'Resend invite' }).click();
+  };
 
-    cy.findByText('Invite resent to test@test.com.').should('exist');
-  });
-
-  it('cancels an invite', () => {
-    cy.findByText('test@test.com').should('exist');
-
+  const cancelInviteForTestMember = () => {
     cy.findByRole('button', { name: 'Invitation actions: Test user' })
       .pipe(click)
       .should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('button', { name: 'Cancel invite' }).click();
-
-    cy.findByText('Invite cancelled for test@test.com.').should('exist');
-
-    // Table entry should now be gone
-    cy.findByText('test@test.com').should('not.exist');
-  });
+  };
 });

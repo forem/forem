@@ -136,6 +136,26 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "user-with-many-orgs@forem.local") do
+  User.create!(
+    name: "Many orgs user",
+    email: "user-with-many-orgs@forem.local",
+    username: "many_orgs_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+many_orgs_user = User.find_by(email: "user-with-many-orgs@forem.local")
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   organization = Organization.create!(
     name: "Bachmanity",
@@ -151,6 +171,12 @@ seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
     organization_id: organization.id,
     type_of_user: "admin",
   )
+
+  OrganizationMembership.create!(
+    user_id: many_orgs_user.id,
+    organization_id: organization.id,
+    type_of_user: "member",
+  )
 end
 
 seeder.create_if_doesnt_exist(Organization, "slug", "awesomeorg") do
@@ -165,6 +191,46 @@ seeder.create_if_doesnt_exist(Organization, "slug", "awesomeorg") do
 
   OrganizationMembership.create!(
     user_id: trusted_user.id,
+    organization_id: organization.id,
+    type_of_user: "member",
+  )
+
+  OrganizationMembership.create!(
+    user_id: many_orgs_user.id,
+    organization_id: organization.id,
+    type_of_user: "member",
+  )
+end
+
+seeder.create_if_doesnt_exist(Organization, "slug", "org3") do
+  organization = Organization.create!(
+    name: "Org 3",
+    summary: Faker::Company.bs,
+    profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    nav_image: logo,
+    url: Faker::Internet.url,
+    slug: "org3",
+  )
+
+  OrganizationMembership.create!(
+    user_id: many_orgs_user.id,
+    organization_id: organization.id,
+    type_of_user: "member",
+  )
+end
+
+seeder.create_if_doesnt_exist(Organization, "slug", "org4") do
+  organization = Organization.create!(
+    name: "Org 4",
+    summary: Faker::Company.bs,
+    profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    nav_image: logo,
+    url: Faker::Internet.url,
+    slug: "org4",
+  )
+
+  OrganizationMembership.create!(
+    user_id: many_orgs_user.id,
     organization_id: organization.id,
     type_of_user: "member",
   )
