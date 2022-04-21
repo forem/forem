@@ -352,19 +352,22 @@ class Article < ApplicationRecord
     kind, dir = value.split("-")
 
     dir = "desc" unless %w[asc desc].include?(dir)
-    dir = dir.to_sym
-    column =
-      case kind
-      when "creation"  then :created_at
-      when "views"     then :page_views_count
-      when "reactions" then :public_reactions_count
-      when "comments"  then :comments_count
-      when "published" then :published_at
-      else
-        :created_at
-      end
 
-    order("#{column} #{dir}")
+    case kind
+    when "creation"
+      order(created_at: dir)
+    when "views"
+      order(page_views_count: dir)
+    when "reactions"
+      order(public_reactions_count: dir)
+    when "comments"
+      order(comments_count: dir)
+    when "published"
+      # Note: For recently published, we further filter to only published posts
+      order(published_at: dir).published
+    else
+      order(created_at: dir)
+    end
   }
 
   # @note This includes the `featured` scope, which may or may not be
