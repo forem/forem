@@ -506,7 +506,7 @@ class User < ApplicationRecord
     return if email.blank?
     return if Settings::General.mailchimp_api_key.blank?
 
-    Mailchimp::Bot.new(self).permanent_delete_from_mailchimp
+    Mailchimp::Bot.new(self).remove_from_mailchimp
   end
 
   def enough_credits?(num_credits_needed)
