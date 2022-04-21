@@ -230,18 +230,13 @@ module Articles
         }
       }.freeze
 
-      DEFAULT_USER_EXPERIENCE_LEVEL = 5
-
-      DEFAULT_NEGATIVE_REACTION_THRESHOLD = -10
-      DEFAULT_POSITIVE_REACTION_THRESHOLD = 10
-
       # @param user [User] who are we querying for?
       # @param number_of_articles [Integer] how many articles are we
       #   returning
       # @param page [Integer] what is the pagination page
       # @param tag [String, nil] this isn't implemented in other feeds
       #   so we'll see
-      # @param strategy [String, "original"] pass a current a/b test in
+      # @param variant [String, "original"] pass a current a/b test in
       # @param config [Hash<Symbol, Object>] a list of configurations,
       #   see {#initialize} implementation details.
       # @option config [Array<Symbol>] :scoring_configs
@@ -260,13 +255,13 @@ module Articles
       #   those will likely need some kind of structured consideration.
       #
       # rubocop:disable Layout/LineLength
-      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
+      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, variant: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
         @page = (page || 1).to_i
         # TODO: The tag parameter is vestigial, there's no logic around this value.
         @tag = tag
-        @strategy = strategy
+        @variant = variant
         @default_user_experience_level = config.fetch(:default_user_experience_level) { DEFAULT_USER_EXPERIENCE_LEVEL }
         @negative_reaction_threshold = config.fetch(:negative_reaction_threshold, DEFAULT_NEGATIVE_REACTION_THRESHOLD)
         @positive_reaction_threshold = config.fetch(:positive_reaction_threshold, DEFAULT_POSITIVE_REACTION_THRESHOLD)
@@ -278,6 +273,8 @@ module Articles
           days_since_published: @days_since_published,
         )
       end
+      attr_reader :oldest_published_at, :positive_reaction_threshold, :negative_reaction_threshold, :default_user_experience_level
+
       # rubocop:enable Layout/LineLength
 
       # The goal of this query is to generate a list of articles that
@@ -316,9 +313,9 @@ module Articles
       # rubocop:disable Layout/LineLength
       def call(only_featured: false, must_have_main_image: false, limit: default_limit, offset: default_offset, omit_article_ids: [])
         repeated_query_variables = {
-          negative_reaction_threshold: @negative_reaction_threshold,
-          positive_reaction_threshold: @positive_reaction_threshold,
-          oldest_published_at: @oldest_published_at,
+          negative_reaction_threshold: negative_reaction_threshold,
+          positive_reaction_threshold: positive_reaction_threshold,
+          oldest_published_at: oldest_published_at,
           omit_article_ids: omit_article_ids,
           now: Time.current
         }
@@ -344,7 +341,7 @@ module Articles
                                   ),
                                   repeated_query_variables.merge({
                                                                    user_id: @user.id,
-                                                                   default_user_experience_level: @default_user_experience_level.to_i
+                                                                   default_user_experience_level: default_user_experience_level.to_i
                                                                  }),
                                 ]
                               end
@@ -359,10 +356,11 @@ module Articles
         # can use to help ensure that we can use all of the
         # ActiveRecord goodness of scopes (e.g.,
         # limited_column_select) and eager includes.
-        Article.joins(join_fragment)
+
+        results = Article.joins(join_fragment)
           .limited_column_select
           .includes(top_comments: :user)
-          .order("article_relevancies.relevancy_score DESC, articles.published_at DESC")
+        final_order_logic(results)
       end
       # rubocop:enable Layout/LineLength
 
@@ -437,6 +435,10 @@ module Articles
       end
 
       private
+
+      def final_order_logic(scope)
+        scope.order("article_relevancies.relevancy_score DESC, articles.published_at DESC")
+      end
 
       # Concatenate the required group by clauses.
       #
