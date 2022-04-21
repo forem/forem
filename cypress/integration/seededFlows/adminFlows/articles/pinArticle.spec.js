@@ -97,6 +97,7 @@ describe('Pin an article from the admin area', () => {
   it('should show the pinned post to a logged out user', () => {
     cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
+    cy.findByRole('link', { name: 'Unpin post' }).should('exist');
     cy.signOutUser();
 
     cy.findByRole('main').findByTestId('pinned-article').should('be.visible');
