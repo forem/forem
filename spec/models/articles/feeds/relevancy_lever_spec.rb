@@ -30,7 +30,7 @@ RSpec.describe Articles::Feeds::RelevancyLever do
     context "when fallback is not a number" do
       let(:fallback) { "nope" }
 
-      it { within_block_is_expected.to raise_error described_class::InvaidFallbackError }
+      it { within_block_is_expected.to raise_error described_class::InvalidFallbackError }
     end
 
     context "when cases is not an array" do

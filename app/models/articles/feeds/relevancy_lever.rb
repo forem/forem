@@ -8,7 +8,7 @@ module Articles
       class ConfigurationError < StandardError
       end
 
-      class InvaidFallbackError < ConfigurationError
+      class InvalidFallbackError < ConfigurationError
         def initialize(fallback:, key:)
           super("Expected fallback to be a Numeric value for lever #{key.inspect}, got #{fallback.inspect}")
         end
@@ -66,11 +66,11 @@ module Articles
       # @param fallback [Float]
       #
       # @return [Articles::Feeds::RelevancyLever::Configured]
-      # @raise [Articles::Feeds::RelevancyLever::InvaidFallbackError] when the given fallback is
+      # @raise [Articles::Feeds::RelevancyLever::InvalidFallbackError] when the given fallback is
       #        invalid.
       # @raise [Articles::Feeds::RelevancyLever::InvaidCasesError] when the given cases is invalid.
       def configure_with(cases:, fallback:)
-        raise InvaidFallbackError.new(fallback: fallback, key: key) unless valid_fallback?(fallback)
+        raise InvalidFallbackError.new(fallback: fallback, key: key) unless valid_fallback?(fallback)
         raise InvalidCasesError.new(cases: cases, key: key) unless valid_cases?(cases)
 
         Configured.new(
