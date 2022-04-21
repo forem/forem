@@ -118,4 +118,42 @@ describe Admin::UsersHelper do
       expect(status).to eq "Good Standing"
     end
   end
+
+  describe "#overflow_count" do
+    it "renders an overflow count" do
+      overflow = helper.overflow_count(5, imposed_limit: 4)
+      expect(overflow).to eq 1
+    end
+
+    it "renders nothing if the imposed limit is less than the count" do
+      overflow = helper.overflow_count(1, imposed_limit: 4)
+      expect(overflow).to be_nil
+    end
+  end
+
+  describe "#organization_tooltip" do
+    context "when the limit is less than the total" do
+      it "renders the correct tooltip when the array of items do not match the imposed limit" do
+        tooltip = helper.organization_tooltip(%w[org1 org2 org3], 3, imposed_limit: 2)
+        expect(tooltip).to eq "org1, org2 & 1 other"
+      end
+
+      it "renders the correct tooltip for an overflow of 1" do
+        tooltip = helper.organization_tooltip(%w[org1 org2], 3, imposed_limit: 2)
+        expect(tooltip).to eq "org1, org2 & 1 other"
+      end
+
+      it "renders the correct tooltip for an overflow of more than 1" do
+        tooltip = helper.organization_tooltip(%w[org1 org2], 4, imposed_limit: 2)
+        expect(tooltip).to eq "org1, org2 & 2 others"
+      end
+    end
+
+    context "when the limit is more than the total" do
+      it "renders the correct tooltip" do
+        tooltip = helper.organization_tooltip(%w[org1], 1, imposed_limit: 2)
+        expect(tooltip).to eq "org1"
+      end
+    end
+  end
 end
