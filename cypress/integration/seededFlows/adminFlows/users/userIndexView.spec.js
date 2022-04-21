@@ -4,9 +4,9 @@ describe('User index view', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginUser(user)
-          .then(() => cy.enableFeatureFlag('member_index_view'))
-          .then(() => cy.visitAndWaitForUserSideEffects('/admin/users'));
+        cy.loginUser(user).then(() =>
+          cy.visitAndWaitForUserSideEffects('/admin/users'),
+        );
       });
       cy.viewport('iphone-x');
     });
@@ -179,9 +179,9 @@ describe('User index view', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginUser(user)
-          .then(() => cy.enableFeatureFlag('member_index_view'))
-          .then(() => cy.visitAndWaitForUserSideEffects('/admin/users'));
+        cy.loginUser(user).then(() =>
+          cy.visitAndWaitForUserSideEffects('/admin/users'),
+        );
       });
       cy.viewport('macbook-16');
     });

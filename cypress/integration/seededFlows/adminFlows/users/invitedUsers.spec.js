@@ -4,7 +4,6 @@ describe('Invited users', () => {
     cy.fixture('users/adminUser.json').as('user');
     cy.get('@user').then((user) => {
       cy.loginUser(user)
-        .then(() => cy.enableFeatureFlag('member_index_view'))
         .then(() =>
           cy.inviteUser({
             name: 'Test user',
