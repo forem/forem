@@ -179,9 +179,11 @@ module Mailchimp
     end
 
     def permanent_delete_from_mailchimp(list_id)
-      gibbon.lists(list_id).mebers(target_md5_email).actions.delete_permanent.create
+      gibbon.lists(list_id).members(target_md5_email).actions.delete_permanent.create
     rescue Gibbon::MailChimpError => e
       return if e.status_code == 404
+
+      report_error(e)
     end
 
     def previously_subscribed?(error)
