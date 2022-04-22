@@ -49,15 +49,19 @@ export const useTagsField = ({ defaultValue, onInput }) => {
   };
 
   /**
-   * Fetches tags for a given search term
+   * Fetches tags for a given search term.
+   * If no matching tags are found, the user's own entry is suggested instead
    *
    * @param {string} searchTerm The text to search for
    * @returns {Promise} Promise which resolves to the tag search results
    */
   const fetchSuggestions = (searchTerm) =>
-    fetchSearch('tags', { name: searchTerm }).then(
-      (response) => response.result,
-    );
+    fetchSearch('tags', { name: searchTerm }).then(({ result }) => {
+      if (result.length === 0) {
+        return [{ name: searchTerm }];
+      }
+      return result;
+    });
 
   return {
     defaultSelections,

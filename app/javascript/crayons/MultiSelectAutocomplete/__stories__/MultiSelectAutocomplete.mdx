@@ -2,7 +2,7 @@
 
 The MultiSelectAutocomplete component can be used in situations where a user can search for matching options, and select multiple values.
 
-When the user starts typing, an async search will be triggered, and any fetched suggestions displayed in the dropdown. If no suggestions are available, the currently entered search term will be displayed as an option.
+When the user starts typing, an async search will be triggered, and any fetched suggestions displayed in the dropdown.
 
 ## Browsing and selecting an option
 
@@ -29,6 +29,8 @@ A `fetchSuggestions` prop **must** be passed in props to the component. This cal
 ```
 
 i.e. suggestions and selections are expected as `object`s with a `name` attribute.
+
+**NB: By default, the MultiSelectAutocomplete component will only allow suggested items to be selected (i.e. will not accept user's own text). If you would like to allow user-entered text to be selected, be sure to return it as an option in `fetchSuggestions`**
 
 ### Static suggestions
 

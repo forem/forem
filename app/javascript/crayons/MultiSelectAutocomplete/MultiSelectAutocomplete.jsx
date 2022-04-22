@@ -133,7 +133,21 @@ export const MultiSelectAutocomplete = ({
 
     // The input will blur when user selects an option from the dropdown via mouse click. The ignoreBlur boolean lets us know we can ignore this event.
     if (!ignoreBlur && allowSelections && currentValue !== '') {
-      selectByText({ textValue: currentValue, keepSelecting: false });
+      const matchingSuggestion = suggestions.find(
+        (suggestion) => suggestion.name === currentValue,
+      );
+
+      // If the user's current input matches a suggestion, we select it for them. Otherwise the input is cleared.
+      if (matchingSuggestion) {
+        selectItem({
+          selectedItem: matchingSuggestion,
+          nextInputValue: '',
+          keepSelecting: false,
+        });
+        return;
+      }
+      inputRef.current.value = '';
+      dispatch({ type: 'setSuggestions', payload: [] });
       return;
     }
     if (!ignoreBlur) {
@@ -200,13 +214,16 @@ export const MultiSelectAutocomplete = ({
     const matchingSuggestion = suggestions.find(
       (suggestion) => suggestion.name === textValue,
     );
-    selectItem({
-      selectedItem: matchingSuggestion
-        ? matchingSuggestion
-        : { name: textValue },
-      nextInputValue,
-      keepSelecting,
-    });
+
+    // A user may only select from the defined suggestions.
+    // The implementing component may choose to allow user-entered text by returning it as a suggestion in fetchSuggestions
+    if (matchingSuggestion) {
+      selectItem({
+        selectedItem: matchingSuggestion,
+        nextInputValue,
+        keepSelecting,
+      });
+    }
   };
 
   const enterEditState = (editItem, editItemIndex) => {
@@ -303,10 +320,6 @@ export const MultiSelectAutocomplete = ({
     }
 
     const results = await fetchSuggestions(value);
-    // If no results, display current search term as an option
-    if (results.length === 0 && value !== '') {
-      results.push({ name: value });
-    }
 
     dispatch({
       type: 'setSuggestions',
