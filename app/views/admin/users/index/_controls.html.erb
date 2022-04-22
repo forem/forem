@@ -29,7 +29,7 @@
   <div class="hidden m:flex justify-between align-items-center">
     <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center py-3" do |f| %>
       <div class="crayons-field flex-1 flex-row items-center gap-2">
-        <%= render "admin/users/controls/search_field", f: f, context: "medium", placeholder: "Search member...", aria_label: "Search member by name, username, email, or Twitter/GitHub usernames" %>
+        <%= render "admin/users/controls/search_field", f: f, context: "medium", placeholder: "Search member...", aria_label: "Search member by name, or username" %>
       </div>
       <div class="crayons-field flex-row items-center gap-2">
         <%= render "admin/users/controls/filter_role_field", f: f, context: "medium" %>
