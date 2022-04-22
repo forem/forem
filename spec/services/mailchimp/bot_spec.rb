@@ -84,11 +84,11 @@ RSpec.describe Mailchimp::Bot, type: :service do
       mc_error =
         Gibbon::MailChimpError.new("Error", status_code: 400, title: "Member In Compliance State")
       allow(mailchimp_bot.gibbon).to receive(:upsert).and_raise(mc_error)
-      allow(mailchimp_bot).to receive(:resubscribe_to_newsletter)
+      allow(mailchimp_bot).to receive(:resubscribe_as_pending)
 
       mailchimp_bot.upsert_to_newsletter
 
-      expect(mailchimp_bot).to have_received(:resubscribe_to_newsletter)
+      expect(mailchimp_bot).to have_received(:resubscribe_as_pending)
     end
 
     it "handles GibbonError" do
