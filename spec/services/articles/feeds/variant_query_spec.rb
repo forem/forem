@@ -9,7 +9,7 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
 
       let(:variant_query) {  described_class.build_for(variant: variant, user: user) }
 
-      context "for #{variant.inspect} and user is nil" do
+      context "for #call with #{variant.inspect} and user is nil" do
         let(:user) { nil }
 
         it "is a valid ActiveRecord::Relation" do
@@ -19,13 +19,29 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
         end
       end
 
-      context "for #{variant.inspect} and a non-nil user" do
+      context "for #call with #{variant.inspect} and a non-nil user" do
         let(:user) { create(:user) }
 
         it "is a valid ActiveRecord::Relation" do
           article = create(:article)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
+        end
+      end
+
+      context "for #featured_story_and_default_home_feed with #{variant.inspect}" do
+        let(:user) { nil }
+
+        it "returns an array with two elements and entries", aggregate_failures: true do
+          create_list(:article, 3)
+          response = variant_query.featured_story_and_default_home_feed(user_signed_in: false)
+          expect(response).to be_a(Array)
+          expect(response[0]).to be_a(Article)
+          expect(response[1]).to be_a(ActiveRecord::Relation)
+          # You cannot use "count" because the constructed query
+          # includes a select clause which gums up the counting
+          # mechanism.
+          expect(response[1].length).to eq(3)
         end
       end
     end
