@@ -189,7 +189,7 @@ module Articles
                                             AND comments.deleted = false
                                             AND comments.created_at > :oldest_published_at"])
 
-      relevancy_lever(:matching_negative_tag_intersection_count,
+      relevancy_lever(:matching_negative_tags_intersection_count,
                       label: "Weight to give the number of intersecting tags of the article and " \
                              "user negative follows",
                       range: "[0..4]",
