@@ -15,7 +15,7 @@ describe('Manage User Credits', () => {
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
         cy.loginAndVisit(user, '/admin/users');
-        cy.findByRole('link', { name: 'credits_user' }).click();
+        cy.findAllByText('Credits User').first().click();
       });
     });
 
