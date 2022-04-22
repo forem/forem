@@ -3,15 +3,11 @@ class UsersController < ApplicationController
   before_action :check_suspended, only: %i[update update_password]
   before_action :set_user,
                 only: %i[update update_password request_destroy full_delete remove_identity]
-  # rubocop:disable Layout/LineLength
-  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
-  # rubocop:enable Layout/LineLength
-  before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
+  after_action :verify_authorized,
+               except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
-  ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
-  ALLOWED_ONBOARDING_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -163,34 +159,6 @@ class UsersController < ApplicationController
     redirect_to user_settings_path(@tab)
   end
 
-  def onboarding_update
-    authorize User
-
-    user_params = {}
-
-    if params[:user]
-      if params[:user].key?(:username) && params[:user][:username].blank?
-        return render_update_response(false, I18n.t("users_controller.username_blank"))
-      end
-
-      sanitize_user_params
-      user_params = params[:user].permit(ALLOWED_USER_PARAMS)
-    end
-
-    update_result = Users::Update.call(current_user, user: user_params, profile: profile_params)
-    render_update_response(update_result.success?, update_result.errors_as_sentence)
-  end
-
-  def onboarding_checkbox_update
-    if params[:user]
-      current_user.assign_attributes(params[:user].permit(ALLOWED_ONBOARDING_PARAMS))
-    end
-
-    current_user.saw_onboarding = true
-    authorize User
-    render_update_response(current_user.save)
-  end
-
   def join_org
     authorize User
     if (@organization = Organization.find_by(secret: params[:org_secret].strip))
@@ -289,10 +257,6 @@ class UsersController < ApplicationController
 
   private
 
-  def sanitize_user_params
-    params[:user].delete_if { |_k, v| v.blank? }
-  end
-
   def set_suggested_users
     @suggested_users = Settings::General.suggested_users
   end
@@ -310,14 +274,6 @@ class UsersController < ApplicationController
     )
 
     recent_suggestions.presence || default_suggested_users
-  end
-
-  def render_update_response(success, errors = nil)
-    status = success ? 200 : 422
-
-    respond_to do |format|
-      format.json { render json: { errors: errors }, status: status }
-    end
   end
 
   def handle_organization_tab
@@ -375,10 +331,6 @@ class UsersController < ApplicationController
     return if user.setting.feed_url.blank?
 
     Feeds::ImportArticlesWorker.perform_async(user.id)
-  end
-
-  def profile_params
-    params[:profile] ? params[:profile].permit(Profile.static_fields + Profile.attributes) : nil
   end
 
   def password_params

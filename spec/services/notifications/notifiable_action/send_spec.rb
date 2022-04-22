@@ -43,18 +43,47 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       expect(notification.json_data["organization"]["name"]).to eq(organization.name)
     end
 
+    it "creates a context notification" do
+      expect do
+        described_class.call(article, "Published")
+      end.to change(ContextNotification, :count).by(1)
+    end
+
+    it "creates a correct context notification" do
+      described_class.call(article, "Published")
+      context_notifications = article.context_notifications
+      expect(context_notifications.pluck(:action)).to eq(["Published"])
+    end
+
     it "does not create a notification if the follower has muted the user" do
       user2.follows.first.update(subscription_status: "none")
       user3.stop_following(organization)
       described_class.call(article, "Published")
       expect(Notification.count).to eq(0)
+      expect(ContextNotification.count).to eq(0)
     end
 
     it "doesn't fail if the notification already exists" do
+      create(:notification, user: user2, action: "Published", notifiable: article)
+      expect do
+        described_class.call(article, "Published")
+      end.not_to raise_error
+    end
+
+    it "upserts the existing notification" do
+      time = Date.yesterday
       notification = create(:notification, user: user2, action: "Published", notifiable: article)
-      result = described_class.call(article, "Published")
-      ids = result.to_a.map { |r| r["id"] }
-      expect(ids).to include(notification.id)
+      notification.update_columns(updated_at: time, created_at: time)
+      described_class.call(article, "Published")
+      notification.reload
+      expect(notification.created_at).to be > time
+    end
+
+    it "doesn't fail if the context notification already exists" do
+      create(:context_notification, action: "Published", context: article)
+      expect do
+        described_class.call(article, "Published")
+      end.not_to raise_error
     end
   end
 
@@ -65,6 +94,7 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
 
       described_class.call(article, "Published")
       expect(Notification.count).to eq(0)
+      expect(ContextNotification.count).to eq(0)
     end
 
     it "does not create a notification when following an organization" do
@@ -73,6 +103,7 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
 
       described_class.call(article, "Published")
       expect(Notification.count).to eq(0)
+      expect(ContextNotification.count).to eq(0)
     end
   end
 

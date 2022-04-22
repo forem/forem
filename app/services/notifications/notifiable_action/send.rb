@@ -54,11 +54,23 @@ module Notifications
         return if notifications_attributes.blank?
 
         upsert_index = choose_upsert_index(action)
-        Notification.upsert_all(
-          notifications_attributes,
-          unique_by: upsert_index,
-          returning: %i[id],
-        )
+
+        context_notification_attributes = {
+          context_id: notifiable.id,
+          context_type: notifiable.class.name,
+          action: action
+        }
+
+        ActiveRecord::Base.transaction do
+          Notification.upsert_all(
+            notifications_attributes,
+            unique_by: upsert_index,
+            returning: %i[id],
+          )
+
+          ContextNotification.upsert(context_notification_attributes,
+                                     unique_by: :index_context_notification_on_context_and_action)
+        end
       end
 
       private

@@ -38,8 +38,9 @@ en:
       wrong: Something went wrong with deleting the HTML Variant.
     invitations_controller:
       duplicate: 'Invitation was not sent. There is already a registered user with the email: %{email}'
-      deleted: The invitation has been deleted.
-      success: The invite has been sent to the user's email.
+      create_success: The invite has been sent to the user's email.
+      destroy_success: Invite cancelled for %{email}.
+      resend_success: Invite resent to %{email}.
     listing_categories_controller:
       created: Listing Category has been created!
       updated: Listing Category has been updated!
@@ -98,6 +99,8 @@ en:
       value: "%{first8}******"
     settings_controller:
       confirmation: My username is @%{username} and this action is 100% safe and appropriate.
+    spaces_controller:
+      update_success: Space has been updated.
     sponsorships_controller:
       created: Sponsorship has been created!
       not_destroyed: Sponsorship was not destroyed

@@ -12,6 +12,21 @@ class ArticlePolicy < ApplicationPolicy
     FeatureFlag.enabled?(:limit_post_creation_to_admins)
   end
 
+  # @param query [Symbol] the name of one of the ArticlePolicy action predicates (e.g. :create?,
+  #        :new?) though as a convenience, we will also accept :new, and :create.
+  # @return [TrueClass] if this query should default to hidden
+  # @return [FalseClass] if this query should not be hidden in the UI.
+  #
+  # @note The symmetry of the case statement structure with .scope_users_authorized_to_action
+  def self.include_hidden_dom_class_for?(query:)
+    case query.to_sym
+    when :create?, :new?, :create, :new
+      limit_post_creation_to_admins?
+    else
+      false
+    end
+  end
+
   # Helps filter a `:users_scope` to those authorized to the `:action`.  I want a list of all users
   # who can create an Article.  This policy method can help with that.
   #
@@ -33,8 +48,10 @@ class ArticlePolicy < ApplicationPolicy
   #
   # @note Why isn't this a User.scope method?  Because the logic of who can take an action on the
   #       resource is the problem domain of the policy.
+  #
+  # @note The symmetry of the case statement structure with .include_hidden_dom_class_for?
   def self.scope_users_authorized_to_action(users_scope:, action:)
-    case action
+    case action.to_sym
     when :create?, :new?, :create, :new
       # Note the delicate dance to duplicate logic in a general sense.  [I hope that] this is a
       # stop-gap solution.
@@ -168,10 +185,10 @@ class ArticlePolicy < ApplicationPolicy
 
   alias edit? update?
 
-  # [@jeremyf] I made a decision to compress preview? into create?  However, someone editing a post
-  # should also be able to preview?  Perhaps it would make sense to be "preview? is create? ||
-  # update?".
-  alias preview? create?
+  # The ArticlesController#preview method is very complicated but aspirationally, we want to ensure
+  # that someone can preview an article of their if they already have a published article or they
+  # can create new ones.
+  alias preview? has_existing_articles_or_can_create_new_ones?
 
   def permitted_attributes
     %i[title body_html body_markdown main_image published canonical_url

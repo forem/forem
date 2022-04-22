@@ -40,6 +40,13 @@
     false
   ),
   (
+    'box',
+    'box-sizing',
+    ('content': content-box, 'border': border-box),
+    (),
+    false
+  ),
+  (
     'cursor',
     'cursor',
     (
@@ -263,7 +270,8 @@
       '100': 100%,
       'auto': auto,
       'full': 100vw,
-      'max': max-content
+      'max': max-content,
+      'fit': fit-content
     ),
     (),
     true
@@ -451,7 +459,8 @@
       'inline-block': inline-block,
       'flex': flex,
       'inline-flex': inline-flex,
-      'grid': grid
+      'grid': grid,
+      'table': table
     ),
     (),
     true,

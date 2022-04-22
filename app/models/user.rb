@@ -170,6 +170,7 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  scope :invited, -> { where(registered: false) }
   # Unfortunately pg_search's default SQL query is not performant enough in this
   # particular case (~ 500ms). There are multiple reasons:
   # => creates a complex query like `SELECT FROM users INNER JOIN users` to compute ranking.
@@ -552,6 +553,13 @@ class User < ApplicationRecord
 
   def reactions_to
     Reaction.for_user(self)
+  end
+
+  def last_activity
+    return unless registered == true
+
+    [registered_at, last_comment_at, last_article_at, latest_article_updated_at, last_reacted_at, profile_updated_at,
+     last_moderation_notification, last_notification_activity].compact.max
   end
 
   protected

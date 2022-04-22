@@ -86,11 +86,11 @@ module Articles
         daily_decay_factor: {
           clause: "(current_date - articles.published_at::date)",
           cases: [
-            [0, 1], [1, 0.99], [2, 0.985],
-            [3, 0.98], [4, 0.975], [5, 0.97],
-            [6, 0.965], [7, 0.96], [8, 0.955],
-            [9, 0.95], [10, 0.945], [11, 0.94],
-            [12, 0.935], [13, 0.93], [14, 0.925]
+            [0, 1], [1, 0.975], [2, 0.965],
+            [3, 0.955], [4, 0.945], [5, 0.935],
+            [6, 0.925], [7, 0.922], [8, 0.0919],
+            [9, 0.916], [10, 0.913], [11, 0.91],
+            [12, 0.907], [13, 0.904], [14, 0.901]
           ],
           fallback: 0.9,
           requires_user: false,
@@ -219,29 +219,16 @@ module Articles
         },
         # Weight to give for the number of reactions on the article.
         reactions_factor: {
-          clause: "articles.reactions_count",
+          clause: "articles.public_reactions_count",
           cases: [
             [0, 0.9988], [1, 0.9988], [2, 0.9988],
             [3, 0.9988]
           ],
           fallback: 1,
           requires_user: false,
-          group_by: "articles.reactions_count"
-        },
-        # Weight to give based on spaminess of the article.
-        spaminess_factor: {
-          clause: "articles.spaminess_rating",
-          cases: [[0, 1]],
-          fallback: 0,
-          requires_user: false,
-          group_by: "articles.spaminess_rating"
+          group_by: "articles.public_reactions_count"
         }
       }.freeze
-
-      DEFAULT_USER_EXPERIENCE_LEVEL = 5
-
-      DEFAULT_NEGATIVE_REACTION_THRESHOLD = -10
-      DEFAULT_POSITIVE_REACTION_THRESHOLD = 10
 
       # @param user [User] who are we querying for?
       # @param number_of_articles [Integer] how many articles are we
@@ -249,7 +236,7 @@ module Articles
       # @param page [Integer] what is the pagination page
       # @param tag [String, nil] this isn't implemented in other feeds
       #   so we'll see
-      # @param strategy [String, "original"] pass a current a/b test in
+      # @param variant [String, "original"] pass a current a/b test in
       # @param config [Hash<Symbol, Object>] a list of configurations,
       #   see {#initialize} implementation details.
       # @option config [Array<Symbol>] :scoring_configs
@@ -268,13 +255,13 @@ module Articles
       #   those will likely need some kind of structured consideration.
       #
       # rubocop:disable Layout/LineLength
-      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, strategy: AbExperiment::ORIGINAL_VARIANT, **config)
+      def initialize(user: nil, number_of_articles: 50, page: 1, tag: nil, variant: AbExperiment::ORIGINAL_VARIANT, **config)
         @user = user
         @number_of_articles = number_of_articles.to_i
         @page = (page || 1).to_i
         # TODO: The tag parameter is vestigial, there's no logic around this value.
         @tag = tag
-        @strategy = strategy
+        @variant = variant
         @default_user_experience_level = config.fetch(:default_user_experience_level) { DEFAULT_USER_EXPERIENCE_LEVEL }
         @negative_reaction_threshold = config.fetch(:negative_reaction_threshold, DEFAULT_NEGATIVE_REACTION_THRESHOLD)
         @positive_reaction_threshold = config.fetch(:positive_reaction_threshold, DEFAULT_POSITIVE_REACTION_THRESHOLD)
@@ -286,6 +273,8 @@ module Articles
           days_since_published: @days_since_published,
         )
       end
+      attr_reader :oldest_published_at, :positive_reaction_threshold, :negative_reaction_threshold, :default_user_experience_level
+
       # rubocop:enable Layout/LineLength
 
       # The goal of this query is to generate a list of articles that
@@ -324,9 +313,9 @@ module Articles
       # rubocop:disable Layout/LineLength
       def call(only_featured: false, must_have_main_image: false, limit: default_limit, offset: default_offset, omit_article_ids: [])
         repeated_query_variables = {
-          negative_reaction_threshold: @negative_reaction_threshold,
-          positive_reaction_threshold: @positive_reaction_threshold,
-          oldest_published_at: @oldest_published_at,
+          negative_reaction_threshold: negative_reaction_threshold,
+          positive_reaction_threshold: positive_reaction_threshold,
+          oldest_published_at: oldest_published_at,
           omit_article_ids: omit_article_ids,
           now: Time.current
         }
@@ -352,24 +341,26 @@ module Articles
                                   ),
                                   repeated_query_variables.merge({
                                                                    user_id: @user.id,
-                                                                   default_user_experience_level: @default_user_experience_level.to_i
+                                                                   default_user_experience_level: default_user_experience_level.to_i
                                                                  }),
                                 ]
                               end
+
+        # Following this blog post: https://pganalyze.com/blog/active-record-subqueries-rails#the-from-subquery
+        join_fragment = Arel.sql(
+          "INNER JOIN (#{Article.sanitize_sql(unsanitized_sub_sql)}) AS article_relevancies ON articles.id = article_relevancies.id",
+        )
 
         # This sub-query allows us to take the hard work of the
         # hand-coded unsanitized sql and create a sub-query that we
         # can use to help ensure that we can use all of the
         # ActiveRecord goodness of scopes (e.g.,
         # limited_column_select) and eager includes.
-        finalized_results = Article.where(
-          Article.arel_table[:id].in(
-            Arel.sql(
-              Article.sanitize_sql(unsanitized_sub_sql),
-            ),
-          ),
-        ).limited_column_select.includes(top_comments: :user)
-        final_order_logic(finalized_results)
+
+        results = Article.joins(join_fragment)
+          .limited_column_select
+          .includes(top_comments: :user)
+        final_order_logic(results)
       end
       # rubocop:enable Layout/LineLength
 
@@ -445,8 +436,8 @@ module Articles
 
       private
 
-      def final_order_logic(articles)
-        articles.order(Arel.sql("RANDOM() ^ (1.0 / greatest(articles.score, 0.1)) DESC"))
+      def final_order_logic(scope)
+        scope.order("article_relevancies.relevancy_score DESC, articles.published_at DESC")
       end
 
       # Concatenate the required group by clauses.
@@ -467,12 +458,12 @@ module Articles
           omit_article_ids: omit_article_ids,
         )
         <<~THE_SQL_STATEMENT
-          SELECT articles.id
+          SELECT articles.id, (#{relevance_score_components_as_sql}) as relevancy_score
           FROM articles
           #{joins_clauses_as_sql}
           WHERE #{where_clause}
-          GROUP BY articles.id
-          ORDER BY (#{relevance_score_components_as_sql}) DESC,
+          GROUP BY #{group_by_fields_as_sql}
+          ORDER BY relevancy_score DESC,
             articles.published_at DESC
           #{offset_and_limit_clause(offset: offset, limit: limit)}
         THE_SQL_STATEMENT
@@ -487,12 +478,12 @@ module Articles
           omit_article_ids: omit_article_ids,
         )
         <<~THE_SQL_STATEMENT
-          SELECT articles.id
+          SELECT articles.id, (#{relevance_score_components_as_sql}) as relevancy_score
           FROM articles
           #{joins_clauses_as_sql}
           WHERE #{where_clause}
           GROUP BY #{group_by_fields_as_sql}
-          ORDER BY (#{relevance_score_components_as_sql}) DESC,
+          ORDER BY relevancy_score DESC,
             articles.published_at DESC
             #{offset_and_limit_clause(offset: offset, limit: limit)}
         THE_SQL_STATEMENT
@@ -592,9 +583,6 @@ module Articles
           # then we'll use the default configuration.
           scoring_config = default_config unless scoring_config.is_a?(Hash)
 
-          # Change an alement of config via a/b test strategy
-          scoring_config = inject_config_ab_test(valid_method_name, scoring_config)
-
           # This scoring method requires a group by clause.
           @group_by_fields << default_config[:group_by] if default_config.key?(:group_by)
 
@@ -617,29 +605,6 @@ module Articles
             @days_since_published = scoring_config.fetch(:cases).count + 1
           end
         end
-      end
-
-      def inject_config_ab_test(valid_method_name, scoring_config)
-        return scoring_config unless valid_method_name == :daily_decay_factor # Only proceed on this one factor
-        return scoring_config if @strategy == AbExperiment::ORIGINAL_VARIANT # Don't proceed if not testing new strategy
-
-        # Rewards comment count with slightly more weight up to 10 comments.
-        # Testing two case weights beyond what we currently have
-        scoring_config[:cases] = case @strategy
-                                 when "slightly_more_recent_articles"
-                                   [[0, 1], [1, 0.98], [2, 0.975],
-                                    [3, 0.97], [4, 0.965], [5, 0.96],
-                                    [6, 0.955], [7, 0.95], [8, 0.945],
-                                    [9, 0.94], [10, 0.935], [11, 0.93],
-                                    [12, 0.925], [13, 0.92], [14, 0.915]]
-                                 else # much_more_recent_articles
-                                   [[0, 1], [1, 0.975], [2, 0.965],
-                                    [3, 0.955], [4, 0.945], [5, 0.935],
-                                    [6, 0.925], [7, 0.915], [8, 0.905],
-                                    [9, 0.895], [10, 0.885], [11, 0.875],
-                                    [12, 0.865], [13, 0.855], [14, 0.845]]
-                                 end
-        scoring_config
       end
 
       # Responsible for transforming the :clause, :cases, and

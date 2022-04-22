@@ -33,12 +33,6 @@ Rails.application.routes.draw do
       draw :listing
     end
 
-    namespace :authorization do
-      scope :articles do
-        get "create_post_button", controller: "articles"
-      end
-    end
-
     namespace :stories, defaults: { format: "json" } do
       resource :feed, only: [:show] do
         resource :pinned_article, only: %w[show update destroy]
@@ -217,8 +211,8 @@ Rails.application.routes.draw do
     get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
-    patch "/onboarding_update", to: "users#onboarding_update"
-    patch "/onboarding_checkbox_update", to: "users#onboarding_checkbox_update"
+    patch "/onboarding_update", to: "users/onboardings#onboarding_update"
+    patch "/onboarding_checkbox_update", to: "users/onboardings#onboarding_checkbox_update"
     patch "/onboarding_notifications_checkbox_update",
           to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
