@@ -51,6 +51,17 @@ RSpec.describe "/admin/invitations", type: :request do
     end
   end
 
+  describe "POST /admin/invitations/:id/resend" do
+    let!(:invitation) { create(:user, registered: false) }
+
+    it "enqueues an invitation email to be resent" do
+      assert_enqueued_with(job: Devise.mailer.delivery_job) do
+        post resend_admin_invitation_path(invitation.id)
+      end
+      expect(enqueued_jobs.last[:args]).to match(array_including("invitation_instructions"))
+    end
+  end
+
   describe "DELETE /admin/invitations" do
     let!(:invitation) { create(:user, registered: false) }
 

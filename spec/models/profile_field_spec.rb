@@ -52,7 +52,7 @@ RSpec.describe ProfileField, type: :model do
   describe "callbacks" do
     it "automatically generates an attribute name" do
       field = create(:profile_field, label: "Test? Test! 1")
-      expect(field.attribute_name).to eq "test_test1"
+      expect(field.attribute_name).to start_with("attribute_")
     end
 
     describe "#maximum_header_field_count" do

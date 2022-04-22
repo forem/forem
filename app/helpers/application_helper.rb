@@ -1,6 +1,8 @@
 module ApplicationHelper
   LARGE_USERBASE_THRESHOLD = 1000
 
+  # @return [Hash<String, String>] the key is the timeframe name and the corresponding is the
+  #         translated label.
   def subtitles
     {
       "week" => I18n.t("helpers.application_helper.subtitle.week"),
@@ -11,10 +13,18 @@ module ApplicationHelper
     }
   end
 
+  # Provides a status string for HTML data attributes.
+  #
+  # @return [String] "logged-in" or "logged-out" depending on the requesting user's current signin
+  #         status.
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
 
+  # Provides a string for HTML data attributes; comprised of the response's Rails controller name
+  # and action name.
+  #
+  # @return [String]
   def current_page
     "#{controller_name}-#{controller.action_name}"
   end
@@ -48,6 +58,11 @@ module ApplicationHelper
     true
   end
 
+  # @return [String] a string conformant to HTML class attribute
+  # @see ApplicationHelper#current_page defines the fallback
+  #
+  # @note This tests for the existence of two specific instance variables.
+  #
   # rubocop:disable Rails/HelperInstanceVariable
   def view_class
     if @podcast_episode_show # custom due to edge cases
@@ -55,11 +70,24 @@ module ApplicationHelper
     elsif @story_show
       "stories stories-show"
     else
-      "#{controller_name} #{controller_name}-#{controller.action_name}"
+      "#{controller_name} #{current_page}"
     end
   end
   # rubocop:enable Rails/HelperInstanceVariable
 
+  # This function derives the appropriate "title" given the page_title.  Further it assigns the
+  # `:title` content region.
+  #
+  # @param page_title [String] the proposed title
+  # @return [String] the derived title based on method implementation.
+  #
+  # @note In addition to returning the derived title, this function will call
+  #       {ActionView::Helpers::CaptureHelper#content_for} to set the `:title` "content" region.
+  #
+  # @see https://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html#method-i-content_for
+  #      API docs for `#content_for`
+  # @see https://guides.rubyonrails.org/layouts_and_rendering.html#using-the-content-for-method
+  #      Guide docs for `#content_for`
   def title(page_title)
     derived_title = if page_title.include?(community_name)
                       page_title
@@ -72,6 +100,14 @@ module ApplicationHelper
     derived_title
   end
 
+  # Derives a timeframe specific title based on the given parameters.
+  #
+  # @param page_title [String] the proposed title
+  # @param timeframe [String] a timeframe
+  # @param content_for [Boolean] when true, pass the derived title to the `#title` method.
+  #
+  # @see ApplicationHelper#subtitles `#subtitles` method for details around the timeframe.
+  # @see ApplicationHelper#title `#title` method for details on how we convert this title.
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
     if timeframe.blank? || subtitles[timeframe].blank?
       return content_for ? title(page_title) : page_title
@@ -82,6 +118,15 @@ module ApplicationHelper
     content_for ? title(title_text) : title_text
   end
 
+  # @param url [String, #presence]
+  # @param width [Integer]
+  # @param quality [Integer]
+  # @param fetch_format [String]
+  # @param random_fallback [Boolean]
+  #
+  # @return [String] if we have a URL or a fallback image
+  # @return [NilClass] if there is no given URL nor a fallback image
+  # @note This method uses different logic than {ApplicationHelper#optimized_image_tag}
   def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true)
     fallback_image = asset_path("#{rand(1..40)}.png") if random_fallback
 
@@ -91,6 +136,7 @@ module ApplicationHelper
     Images::Optimizer.call(normalized_url, width: width, quality: quality, fetch_format: fetch_format)
   end
 
+  # @todo Should this use {ApplicationHelper#optimized_image_url} logic?
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
     image_options[:width] ||= optimizer_options[:width]
     image_options[:height] ||= optimizer_options[:height]
@@ -325,5 +371,26 @@ module ApplicationHelper
 
     creator = User.with_role(:creator).first
     !creator.checked_code_of_conduct && !creator.checked_terms_and_conditions
+  end
+
+  # This function is responsible for adding a policy class (and possibly the hidden class).  It's
+  # applying some shortcuts to reduce the likelihood of any Cumulative Layout Shift.
+  #
+  # @param name [String,Symbol] the HTML element name (e.g. "li", "div", "a")
+  # @param record [Object] the record for which we're testing a policy
+  # @param query [Symbol, String] the query we're running on the policy
+  # @param kwargs [Hash] The arguments pass, with modifications to the given :class (see
+  #        implementation details).
+  #
+  # @yield the body of the HTML element
+  #
+  # @see ApplicationPolicy.dom_class_for
+  # @see https://api.rubyonrails.org/classes/ActionView/Helpers/TagHelper.html#method-i-content_tag
+  # @see ./app/javascript/packs/applyApplicationPolicyToggles.js
+  def application_policy_content_tag(name, record:, query:, **kwargs, &block)
+    dom_class = kwargs.delete(:class) || kwargs.delete("class") || ""
+    dom_class += " #{ApplicationPolicy.dom_classes_for(record: record, query: query)}"
+
+    content_tag(name, class: dom_class, **kwargs, &block)
   end
 end

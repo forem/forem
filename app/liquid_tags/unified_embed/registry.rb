@@ -41,7 +41,7 @@ module UnifiedEmbed
 
     def find_liquid_tag_for(link:)
       _regexp, klass = @registry.detect { |regexp, _tag_class| regexp.match?(link) }
-      klass
+      klass.presence || OpenGraphTag
     end
   end
 end

@@ -1,0 +1,15 @@
+<div class="flex flex-col">
+    <h3 class="fs-base"><%= link_to user.name, admin_user_path(user), class: "c-link" %></h3>
+    <div class="flex">
+        <span class="color-base-60">@<%= user.username %></span>
+        <!-- %=
+        # TODO: [@forem/admin-experience] Uncomment this chunk of code containing role badges once we finalize which roles to include.
+        <span class="hidden m:block">
+            &nbsp;
+            <span class="c-indicator ml-2 crayons-hover-tooltip crayons-hover-tooltip--right" data-tooltip="<%= format_role_tooltip(user) %>">
+            <%#= cascading_high_level_roles(user) %>
+            </span>
+        </span>
+        % -->
+    </div>
+</div>

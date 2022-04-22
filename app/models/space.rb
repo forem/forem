@@ -32,6 +32,8 @@ class Space
       FeatureFlag.disable(:limit_post_creation_to_admins)
     end
 
+    Spaces::BustCachesForSpaceChangeWorker.perform_async
+
     # I want to ensure that we're returning true, to communicate that the "save" was successful.
     true
   end
