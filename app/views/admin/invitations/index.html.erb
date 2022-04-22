@@ -14,7 +14,7 @@
           <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-small" %>
         </div>
         <div id="search-users" class="hidden mt-3">
-          <%= render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, username, or email", context: "responsive" %>
+          <%= render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, or username", context: "responsive" %>
         </div>
       <% end %>
       <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-2 inline-block s:self-end" %>
