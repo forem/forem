@@ -39,7 +39,7 @@ describe('User index view', () => {
           .should('have.attr', 'aria-expanded', 'true');
 
         cy.findByRole('textbox', {
-          name: 'Search member by name, username, email, or Twitter/GitHub usernames',
+          name: 'Search member by name, or username',
         }).type('Admin McAdmin');
 
         cy.findByRole('button', { name: 'Search' }).click();
@@ -119,7 +119,7 @@ describe('User index view', () => {
           .pipe(click)
           .should('have.attr', 'aria-expanded', 'true');
         cy.findByRole('textbox', {
-          name: 'Search member by name, username, email, or Twitter/GitHub usernames',
+          name: 'Search member by name, or username',
         })
           .clear()
           .type('something');
@@ -203,7 +203,7 @@ describe('User index view', () => {
     describe('Search and filter', () => {
       it('Searches for a user', () => {
         cy.findByRole('textbox', {
-          name: 'Search member by name, username, email, or Twitter/GitHub usernames',
+          name: 'Search member by name, or username',
         }).type('Admin McAdmin');
 
         cy.findByRole('button', { name: 'Search' }).click();
