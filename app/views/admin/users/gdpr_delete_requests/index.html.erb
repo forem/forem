@@ -28,7 +28,7 @@
               <%= link_to url_for(action: :destroy, id: r.id),
                           method: :delete,
                           data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
-                          aria: { label: "Mark done for #{r.username}" },
+                          aria: { label: "Mark deleted for #{r.username}" },
                           class: "c-link" do %>
                 <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Done
             <% end %>
