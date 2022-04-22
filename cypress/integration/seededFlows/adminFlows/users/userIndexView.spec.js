@@ -4,9 +4,7 @@ describe('User index view', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginUser(user).then(() =>
-          cy.visitAndWaitForUserSideEffects('/admin/users'),
-        );
+        cy.loginAndVisit(user, '/admin/users');
       });
       cy.viewport('iphone-x');
     });
