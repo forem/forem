@@ -33,6 +33,13 @@ RSpec.describe Articles::PublishWorker, type: :worker do
       expect(Notification).not_to have_received(:send_to_mentioned_users_and_followers).with(old_article)
     end
 
+    it "doesn't send notifications for a scheduled article" do
+      scheduled_article = create(:article, published: true, published_at: 1.day.from_now)
+      allow(Notification).to receive(:send_to_mentioned_users_and_followers)
+      worker.perform
+      expect(Notification).not_to have_received(:send_to_mentioned_users_and_followers).with(scheduled_article)
+    end
+
     context "with 2 articles" do
       let!(:article2) { create(:article, published: true) }
 
