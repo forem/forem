@@ -7,22 +7,38 @@ module Badges
     end
 
     def call
-      # These are the users 'eligible' to be awarded the badge, which attempts
-      # to make the subsequent queries/iterations more performant by using a
-      # subset of users and not large joins.
-      users = User.where(id: multiple_comment_user_ids)
+      # These are the users 'eligible' to be awarded the badge
+      results = Comments::CommunityWellnessQuery.call
 
-      users.find_each do |user|
-        week_streak = 0
-        (1..REWARD_STREAK_WEEKS.last).each do |week|
-          break unless wellness_goal_x_weeks_ago?(user, week)
+      results.each do |hash|
+        # Parse the serialized results that come from the query
+        weeks_ago = hash["serialized_weeks_ago"].split(",").map(&:to_i)
+        comment_counts = hash["serialized_comment_counts"].split(",").map(&:to_i)
 
-          week_streak += 1
+        # `weeks_ago` can have values like the following:
+        #    - [1,2,10,11,12]
+        #    - [5]
+        #    - [1,2,3,4,5,6,7,8]
+        #    - [1,4,17]
+        # We only care for active streak (starting at 1) so we need to filter
+        # these to check how far back the (continuous) streak goes
+        week_streak = []
+        weeks_ago.each_with_index do |week, index|
+          # Must have 2 or more non-flagged comments posted on that week
+          next unless comment_counts[index] > 1
+
+          # Must be a consecutive streak
+          next unless week_streak.last.to_i + 1 == week
+
+          week_streak << week
         end
 
-        next unless REWARD_STREAK_WEEKS.include?(week_streak)
+        Rails.logger.debug { "Current streak (user_id #{hash['user_id']}): #{week_streak}" }
 
-        p "SUCCESS: Awarding streak of #{week_streak} weeks to #{user.username}"
+        # Check if the current streak matches a reward level
+        next unless REWARD_STREAK_WEEKS.include?(week_streak.last)
+
+        Rails.logger.debug { "SUCCESS: Awarding streak of #{week_streak.last} weeks to user_id #{hash['user_id']}" }
 
         # TODO: Actually award the badge
 
@@ -37,38 +53,6 @@ module Badges
     end
 
     private
-
-    # user_ids that posted more than one comment last week
-    def multiple_comment_user_ids
-      Comment.select(:user_id, :created_at)
-        .where("created_at > ?", 1.week.ago)
-        .group(:user_id)
-        .having("COUNT(*) > ?", 1)
-        .pluck(:user_id)
-    end
-
-    # Returns whether or not a user qualifies for the badge for `num` week ago
-    def wellness_goal_x_weeks_ago?(user, num)
-      start_date = num.weeks.ago
-      end_date = (num - 1).weeks.ago
-
-      # Fetch all the user's comments in the `num` timeframe
-      user_comments = user.comments
-        .includes(:reactions)
-        .where("created_at > ? AND created_at < ?", start_date, end_date)
-
-      # Count the number of comments a user has made in this timeframe whoose
-      # reactions don't include a thumbsdown/vomit. It doesn't matter if the
-      # comment has many positive reactions, if the comment has one negative
-      # reaction it won't count for the wellness badge.
-      negative_reactions = %w[thumbsdown vomit]
-      unflagged_comments = user_comments.count do |c|
-        c.reactions.map(&:category).exclude?(negative_reactions)
-      end
-
-      # Two or more unflagged comments in this timeframe qualify for the badge
-      unflagged_comments > 1
-    end
 
     def generate_message
       # TODO: Use correct message
