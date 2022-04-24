@@ -1,6 +1,6 @@
 <%= javascript_packs_with_chunks_tag "admin/users/memberIndex", defer: true %>
 <div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-4 xl:p-0">
-  <header class="p-4 xl:p-7 pb-4">
+  <header class="xl:p-7 pb-4">
     <div class="flex flex-col l:flex-row justify-content-between l:items-center">
     <h1 class="crayons-title ml-2 m:ml-0">Members</h1>
     <%= render "admin/users/index/tabs" %>
@@ -17,6 +17,7 @@
             <article>
               <header class="flex items-center justify-between m:justify-start mb-2">
                 <div class="flex grow-1 mr-4 m:w-50 m:max-w-50">
+                  <%= render "admin/users/index/member_image", user: user %>
                   <%= render "admin/users/index/member_data", user: user %>
                 </div>
                 <div class="flex justify-between items-center grow-1">
@@ -51,7 +52,7 @@
                   </div>
                 </dl>
                 <div>
-                  <%= render "admin/users/index/organizations", organizations: user.organizations %>
+                  <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
                 </div>
               </div>
             </article>
@@ -77,6 +78,7 @@
         <tr>
           <td class="pl-7">
             <div class="flex s:items-start flex-col s:flex-row">
+              <%= render "admin/users/index/member_image", user: user %>
               <%= render "admin/users/index/member_data", user: user %>
             </div>
           </td>
@@ -90,7 +92,7 @@
             </p>
           </td>
           <td>
-            <%= render "admin/users/index/organizations", organizations: user.organizations %>
+            <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
           </td>
           <td>
             <%= render "admin/users/index/user_actions_dropdown", user: user, id: "xl-#{user.id}" %>

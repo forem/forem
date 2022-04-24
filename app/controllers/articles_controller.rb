@@ -313,7 +313,7 @@ class ArticlesController < ApplicationController
                      end
 
     # NOTE: the organization logic is still a little counter intuitive but this should
-    # fix the bug <https://github.com/thepracticaldev/dev.to/issues/2871>
+    # fix the bug <https://github.com/forem/forem/issues/2871>
     if params["article"]["user_id"] && org_admin_user_change_privilege
       allowed_params << :user_id
     elsif params["article"]["organization_id"] && allowed_to_change_org_id?
