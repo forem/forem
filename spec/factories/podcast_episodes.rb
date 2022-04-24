@@ -8,5 +8,7 @@ FactoryBot.define do
     website_url   { Faker::Internet.url }
     body          { Faker::Hipster.paragraph(sentence_count: 1) }
     podcast
+    reachable     { true }
+    published_at  { Time.current }
   end
 end

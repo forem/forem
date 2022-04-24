@@ -42,14 +42,14 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       allow(item).to receive(:pubDate).and_return("not a date, haha")
       episode = described_class.call(podcast.id, item)
       expect(episode).to be_persisted
-      expect(episode.published_at).to eq(nil)
+      expect(episode.published_at).to be_nil
     end
 
     it "rescues an exception when pubDate is nil" do
       allow(item).to receive(:pubDate).and_return(nil)
       episode = described_class.call(podcast.id, item)
       expect(episode).to be_persisted
-      expect(episode.published_at).to eq(nil)
+      expect(episode.published_at).to be_nil
     end
   end
 
@@ -95,6 +95,22 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
     it "updates columns" do
       new_episode = described_class.call(podcast.id, item)
       expect(new_episode.title).to eq(item.title)
+    end
+  end
+
+  context "when episodes contain non-latin script titles" do
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/design_takoy.rss", false).items.first }
+    let(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
+
+    before do
+      stub_request(:head, item.enclosure_url).to_return(status: 200)
+    end
+
+    it "transliterates title to build a slug" do
+      episode = described_class.call(podcast.id, item)
+
+      expect(episode.title).to start_with("Зачем режиссерам презентации и как их создают?")
+      expect(episode.slug).to start_with("zachiem-riezhissieram-priezientatsii-i-kak-ikh-sozdaiut")
     end
   end
 end

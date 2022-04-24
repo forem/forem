@@ -8,8 +8,8 @@ RSpec.describe ListingHelper, type: :helper do
     it "returns the correct options array" do
       expect(helper.select_options_for_categories).to match_array(
         [
-          ["#{cat1.name} (1 Credit)", cat1.id],
-          ["#{cat2.name} (5 Credits)", cat2.id],
+          ["#{cat1.name} (1 Credit)", cat1.slug, cat1.id],
+          ["#{cat2.name} (5 Credits)", cat2.slug, cat2.id],
         ],
       )
     end

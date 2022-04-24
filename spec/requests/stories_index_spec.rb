@@ -133,9 +133,9 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.status).to eq(200)
 
-      expect(response.headers["X-Accel-Expires"]).to eq(nil)
+      expect(response.headers["X-Accel-Expires"]).to be_nil
       expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
-      expect(response.headers["Surrogate-Key"]).to eq(nil)
+      expect(response.headers["Surrogate-Key"]).to be_nil
     end
 
     it "sets correct cache headers", :aggregate_failures do
@@ -300,6 +300,28 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "has proper locale content on page" do
         expect(response.body).to include("Recherche")
+      end
+    end
+  end
+
+  describe "GET stories index with timeframe" do
+    describe "/latest" do
+      it "includes a link to Relevant", :aggregate_failures do
+        get "/latest"
+
+        # The link should be `/`
+        expected_tag = "<a data-text=\"Relevant\" href=\"/\""
+        expect(response.body).to include(expected_tag)
+      end
+    end
+
+    describe "/top/week" do
+      it "includes a link to Relevant", :aggregate_failures do
+        get "/top/week"
+
+        # The link should be `/`
+        expected_tag = "<a data-text=\"Relevant\" href=\"/\""
+        expect(response.body).to include(expected_tag)
       end
     end
   end

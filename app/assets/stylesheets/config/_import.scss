@@ -43,16 +43,19 @@ $breakpoint-xs: 480px;
 $breakpoint-s: 640px;
 $breakpoint-m: 768px;
 $breakpoint-l: 1024px;
+$breakpoint-xl: 1280px;
 
 $breakpoints: (
   's': $breakpoint-s,
   'm': $breakpoint-m,
   'l': $breakpoint-l,
+  'xl': $breakpoint-xl,
 );
 
 ////////////////////////////////////////////////////////////////////////////////////
 
 $spacing-units: (
+  '05': var(--su-05),
   '1': var(--su-1),
   '2': var(--su-2),
   '3': var(--su-3),
@@ -68,6 +71,7 @@ $spacing-units: (
 ////////////////////////////////////////////////////////////////////////////////////
 
 $negative-spacing-units: (
+  '05': calc(var(--su-05) * -1),
   '1': calc(var(--su-1) * -1),
   '2': calc(var(--su-2) * -1),
   '3': calc(var(--su-3) * -1),

@@ -12,7 +12,7 @@
 /* eslint no-use-before-define: 0 */
 /* eslint no-param-reassign: 0 */
 /* eslint no-useless-escape: 0 */
-/* global jwplayer, ahoy, Runtime */
+/* global jwplayer, ahoy */
 
 function initializeVideoPlayback() {
   var currentTime = '0';
@@ -113,7 +113,7 @@ function initializeVideoPlayback() {
     getById('pause-butt').classList.add('active');
     getById('play-butt').classList.remove('active');
 
-    Runtime.videoMessage({
+    window.Forem.Runtime.videoMessage({
       action: 'play',
       url: metadata.video_source_url,
       seconds: currentTime,
@@ -151,9 +151,9 @@ function initializeVideoPlayback() {
     var seconds = timeToSeconds(getParameterByName('t') || '0');
     var metadata = videoMetadata(videoSource);
 
-    if (Runtime.isNativeIOS('video')) {
+    if (window.Forem.Runtime.isNativeIOS('video')) {
       deviceType = 'iOS';
-    } else if (Runtime.isNativeAndroid('videoMessage')) {
+    } else if (window.Forem.Runtime.isNativeAndroid('videoMessage')) {
       deviceType = 'Android';
     } else {
       // jwplayer is initialized and no further interaction is needed
@@ -161,7 +161,7 @@ function initializeVideoPlayback() {
       return;
     }
 
-    Runtime.videoMessage = (msg) => {
+    window.Forem.Runtime.videoMessage = (msg) => {
       window.ForemMobile.injectNativeMessage('video', msg);
     };
 

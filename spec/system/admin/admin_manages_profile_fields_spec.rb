@@ -8,9 +8,6 @@ RSpec.describe "Admin manages profile fields", type: :system do
   before do
     create(:profile_field, profile_field_group: profile_field_group, label: label)
     Profile.refresh_attributes!
-    allow(FeatureFlag).to receive(:enabled?).and_call_original
-    allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
-
     sign_in admin
     visit admin_profile_fields_path
   end
@@ -41,6 +38,8 @@ RSpec.describe "Admin manages profile fields", type: :system do
   it "deletes a profile_field" do
     profile_field = ProfileField.find_by(label: label)
     expect(page).to have_text(profile_field.label.to_s)
+    find("summary", text: profile_field.label.to_s).click
+
     find("#profile-field-#{profile_field.id}").click_button("Delete Profile Field")
     expect(page).to have_text("Profile field #{label} deleted")
   end

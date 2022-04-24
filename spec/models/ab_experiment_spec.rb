@@ -4,6 +4,19 @@ RSpec.describe AbExperiment do
   let(:controller) { ApplicationController.new }
   let(:user) { double }
 
+  describe ".get_feed_variant_for" do
+    before do
+      allow(controller).to receive(:field_test).with(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT,
+                                                     participant: user).and_return("special")
+    end
+
+    it "returns an inquirable string" do
+      result = described_class.get_feed_variant_for(user: user, controller: controller)
+      expect(result).to eq("special")
+      expect(result).to be_special
+    end
+  end
+
   describe ".get" do
     before do
       allow(controller).to receive(:field_test).with(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT,

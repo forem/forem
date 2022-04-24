@@ -4,8 +4,20 @@ module URL
     ApplicationConfig["APP_PROTOCOL"]
   end
 
+  def self.database_available?
+    ActiveRecord::Base.connected? && has_site_configs?
+  end
+
+  private_class_method :database_available?
+
+  def self.has_site_configs?
+    @has_site_configs ||= ActiveRecord::Base.connection.table_exists?("site_configs")
+  end
+
+  private_class_method :has_site_configs?
+
   def self.domain
-    if Rails.application&.initialized? && Settings::General.respond_to?(:app_domain)
+    if database_available?
       Settings::General.app_domain
     else
       ApplicationConfig["APP_DOMAIN"]
@@ -37,7 +49,9 @@ module URL
   #
   # A reaction URL is the URL of its reactable.
   #
-  # @param reactable [Reaction] the reaction to create the URL for
+  # @param reaction [Reaction, #reactable] the reaction to create the URL for
+  # @return [String]
+  # @see .url
   def self.reaction(reaction)
     url(reaction.reactable.path)
   end

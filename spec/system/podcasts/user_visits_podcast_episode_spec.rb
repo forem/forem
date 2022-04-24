@@ -8,9 +8,9 @@ RSpec.describe "User visits podcast show page", type: :system, js: true do
   it "doesn't detect native capabilities from a non-mobile web browser" do
     visit podcast_episode.path.to_s
 
-    result = execute_script("return Runtime.isNativeIOS('podcast')")
+    result = execute_script("return window.Forem.Runtime.isNativeIOS('podcast')")
     expect(result).to be false
-    result = execute_script("return Runtime.isNativeAndroid('podcast')")
+    result = execute_script("return window.Forem.Runtime.isNativeAndroid('podcast')")
     expect(result).to be false
   end
 
@@ -19,7 +19,6 @@ RSpec.describe "User visits podcast show page", type: :system, js: true do
 
     expect(page).to have_text(podcast_episode.title)
     expect(page).to have_css ".record"
-    expect(page).not_to have_css ".published-at"
   end
 
   it "see the new comment box on the page" do

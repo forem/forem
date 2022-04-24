@@ -11,16 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Automatic Comment
-        uses: peter-evans/create-or-update-comment@v1.4.5
+        uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Thanks for the issue, we will take it into consideration! Our team of engineers is busy working on many types of features, please give us time to get back to you.
             
-            Feature requests that require more discussion may be closed. Read more about our [feature request process](https://forem.dev/foremteam/internal-rfc-process-and-forem-dev-discussions-3gl4) on forem.dev.
+            Feature requests that require more discussion may be closed. Read more about our [feature request process](https://forem.dev/foremteam/heads-up-github-discussions-and-feature-requests-54ff) on forem.dev.
 
-            To our amazing contributors: issues labeled `type: bug` are always up for grabs, but for feature requests, please wait until we add a `ready for dev` before starting to work on it.
+            To our amazing contributors: [issues labeled `bug`](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3Abug) are always up for grabs, but for feature requests, please wait until we add a `ready for dev` before starting to work on it.
 
-            To claim an issue to work on, please leave a comment. If you've claimed the issue and need help, please ping @forem/oss. The OSS Community Manager or the engineers on OSS rotation will follow up.
+            To claim an issue to work on, please leave a comment. If you've claimed the issue and need help, please ping @forem-team. The OSS Community Manager or the engineers on OSS rotation will follow up.
 
             For full info on how to contribute, please check out our [contributors guide](https://github.com/forem/forem/blob/main/CONTRIBUTING.md).

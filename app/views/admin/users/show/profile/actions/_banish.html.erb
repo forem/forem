@@ -1,17 +1,10 @@
 <div id="banish-for-spam">
   <div class="flex flex-col gap-4">
-    <% if @user.comments.where("created_at < ?", 100.days.ago).empty? && @user.created_at < 100.days.ago %>
+    <% if @banishable_user %>
       <p>This action is irreversible.</p>
       <p>Once banished, we will delete all content created by <%= @user.name %> and change their username to @spam_###.</p>
       <p>Be careful with this action.</p>
-      <%= form_for(@user, url: banish_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This action is irreversible. Banishing will delete all content by #{@user.name} and change their username to @spam_###.')", id: nil }) do %>
-        <button class="c-btn c-btn--primary c-btn--destructive">Banish User for spam</button>
-      <% end %>
-    <% elsif current_user.super_admin? || current_user.support_admin? %>
-      <p>This action is irreversible.</p>
-      <p>Once banished, we will delete all content created by <%= @user.name %> and change their username to @spam_###.</p>
-      <p>Be careful with this action.</p>
-      <%= form_for(@user, url: banish_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This action is irreversible. Banishing will delete all content by #{@user.name} and change their username to @spam_###.')", id: nil }) do %>
+      <%= form_for(@user, url: banish_admin_user_path(@user), html: { method: :post, id: nil }) do %>
         <button class="c-btn c-btn--primary c-btn--destructive">Banish <%= @user.name %></button>
       <% end %>
     <% else %>

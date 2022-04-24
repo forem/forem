@@ -87,7 +87,7 @@ module Constants
         },
         payment_pointer: {
           description: "Used for site-wide web monetization. " \
-                       "See: https://github.com/thepracticaldev/dev.to/pull/6345",
+                       "See: https://github.com/forem/forem/pull/6345",
           placeholder: "$pay.somethinglikethis.co/value"
         },
         periodic_email_digest: {
