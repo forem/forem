@@ -46,20 +46,26 @@ RSpec.describe "Stories::Feeds", type: :request do
       )
     end
 
-    it "returns feed when feed_strategy is optimized" do
-      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("optimized")
+    %i[enable disable].each do |toggle|
+      context "when we #{toggle} :feed_uses_variant_query_feature" do
+        before { FeatureFlag.public_send(toggle, :feed_uses_variant_query_feature) }
 
-      get stories_feed_path
+        it "returns feed when feed_strategy is not basic" do
+          allow(Settings::UserExperience).to receive(:feed_strategy).and_return("optimized")
 
-      expect(response_article).to include(
-        "id" => article.id,
-        "title" => title,
-        "user_id" => user.id,
-        "user" => hash_including("name" => user.name),
-        "organization_id" => organization.id,
-        "organization" => hash_including("name" => organization.name),
-        "tag_list" => article.decorate.cached_tag_list_array,
-      )
+          get stories_feed_path
+
+          expect(response_article).to include(
+            "id" => article.id,
+            "title" => title,
+            "user_id" => user.id,
+            "user" => hash_including("name" => user.name),
+            "organization_id" => organization.id,
+            "organization" => hash_including("name" => organization.name),
+            "tag_list" => article.decorate.cached_tag_list_array,
+          )
+        end
+      end
     end
 
     context "when rendering an article that is pinned" do
