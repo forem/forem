@@ -11,8 +11,8 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
   let!(:user4) { create(:user) }
   let!(:flagged_categories) { %w[thumbsdown vomit] }
 
-  # Filler users that shouldn't appear in results because they don't meet the
-  # query criteria
+  # Pre-populate "filler users" that shouldn't appear in results because they
+  # don't meet the query criteria: min 2 comments in a week within last 32 weeks
   before do
     # User 3 - only one comment
     create_comment(user3.id, 4.days.ago)
@@ -30,6 +30,7 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
       user_id: user_id,
       created_at: time_ago,
     )
+    # User default self-like
     create(
       :reaction,
       user_id: user_id,
@@ -71,10 +72,6 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
 
     it "returns the correct data structure (array of hashes w/ correct keys)" do
       result = described_class.call
-      # p "RESULT: #{result}"
-      # Comment.all.each do |comment|
-      #   p "[#{comment.user_id}] #{time_ago_in_words(comment.created_at)}"
-      # end
 
       expect(result).to be_instance_of(Array)
       expect(result.count).to eq(2)
@@ -116,7 +113,7 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
       create_comment(user2.id, 6.days.ago)
       # User 1 - week 2
       create_comment(user2.id, 9.days.ago)
-      create_comment(user2.id, 13.days.ago, flagged: true) # flagged
+      create_comment(user2.id, 13.days.ago, flagged: true)
       # User 1 - week 3
       create_comment(user2.id, 17.days.ago)
       create_comment(user2.id, 17.days.ago)

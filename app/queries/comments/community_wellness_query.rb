@@ -26,10 +26,10 @@ module Comments
       # https://dev.to/admin/blazer/queries/677
       <<~SQL
         SELECT user_id,
-              /* A comma separated string of "weeks_ago" */
-              array_to_string(array_agg(weeks_ago), ',') AS serialized_weeks_ago,
-              /* A comma separated string of comment counts. The first value in this string happens on the week that is the first value in serialized_weeks_ago */
-              array_to_string(array_agg(number_of_comments_with_positive_reaction), ',') AS serialized_comment_counts
+               /* A comma separated string of "weeks_ago" */
+               array_to_string(array_agg(weeks_ago), ',') AS serialized_weeks_ago,
+               /* A comma separated string of comment counts. The first value in this string happens on the week that is the first value in serialized_weeks_ago */
+               array_to_string(array_agg(number_of_comments_with_positive_reaction), ',') AS serialized_comment_counts
         FROM
             (
                 SELECT user_id,
