@@ -40,7 +40,7 @@
   "homepage": "https://github.com/forem/forem#readme",
   "devDependencies": {
     "@babel/eslint-parser": "^7.17.0",
-    "@faker-js/faker": "^6.1.2",
+    "@faker-js/faker": "^6.2.0",
     "@knapsack-pro/cypress": "^4.5.0",
     "@storybook/addon-a11y": "^6.4.22",
     "@storybook/addon-actions": "^6.4.22",
