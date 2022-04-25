@@ -28,7 +28,7 @@ describe('<SearchFormSync />', () => {
   });
 
   it('should synchronize search forms', async () => {
-    const { getByRole, getAllByRole } = render(<SearchFormSync />);
+    const { getByRole } = render(<SearchFormSync />);
 
     // Only one input is rendered at this point because the synchSearchForms custom event is what
     // tells us that there is a new search form to sync with the existing one.
@@ -50,23 +50,22 @@ describe('<SearchFormSync />', () => {
       }),
     );
 
-    const [desktopSearch, mobileSearch] = await getAllByRole('textbox', {
+    const search = await getByRole('textbox', {
       name: /search/i,
     });
 
-    expect(desktopSearch.value).toEqual(searchTerm);
-    expect(mobileSearch.value).toEqual(searchTerm);
+    expect(search.value).toEqual(searchTerm);
   });
 
   it('should synchronize search forms on a subsequent search', async () => {
-    const { getByRole, getAllByRole } = render(<SearchFormSync />);
+    const { getByRole } = render(<SearchFormSync />);
 
     // Only one input is rendered at this point because the synchSearchForms custom event is what
     // tells us that there is a new search form to sync with the existing one.
-    const searchInput = await getByRole('textbox', { name: /search/i });
+    let search = await getByRole('textbox', { name: /search/i });
 
     // Because window.location has no search term in it's URL
-    expect(searchInput.value).toEqual('');
+    expect(search.value).toEqual('');
 
     // https://www.theatlantic.com/technology/archive/2012/09/here-it-is-the-best-word-ever/262348/
     const searchTerm = 'diphthong';
@@ -81,12 +80,11 @@ describe('<SearchFormSync />', () => {
       }),
     );
 
-    let [desktopSearch, mobileSearch] = await getAllByRole('textbox', {
+    search = await getByRole('textbox', {
       name: /search/i,
     });
 
-    expect(desktopSearch.value).toEqual(searchTerm);
-    expect(mobileSearch.value).toEqual(searchTerm);
+    expect(search.value).toEqual(searchTerm);
 
     const searchTerm2 = 'diphthong2';
 
@@ -111,11 +109,10 @@ describe('<SearchFormSync />', () => {
       }),
     );
 
-    [desktopSearch, mobileSearch] = await getAllByRole('textbox', {
+    search = await getByRole('textbox', {
       name: /search/i,
     });
 
-    expect(desktopSearch.value).toEqual(searchTerm2);
-    expect(mobileSearch.value).toEqual(searchTerm2);
+    expect(search.value).toEqual(searchTerm2);
   });
 });

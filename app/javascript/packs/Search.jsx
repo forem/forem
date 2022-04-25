@@ -2,7 +2,11 @@ import { h, render } from 'preact';
 import { SearchFormSync } from '../Search/SearchFormSync';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('header-search');
+  const headerSearch = document.getElementById('header-search');
+  const mobileSearchContainer = document.getElementById(
+    'mobile-search-container',
+  );
 
-  render(<SearchFormSync />, root);
+  render(<SearchFormSync />, headerSearch);
+  render(<SearchFormSync />, mobileSearchContainer);
 });
