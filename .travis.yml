@@ -8,7 +8,7 @@ cache:
   directories:
     - node_modules
 rvm:
-  - 3.0.2
+  - 3.0.4
 addons:
   postgresql: '13'
   apt:
