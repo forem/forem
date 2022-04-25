@@ -26,40 +26,43 @@ module Comments
       # https://dev.to/admin/blazer/queries/677
       <<~SQL
         SELECT user_id,
-             /* A comma separated string of "weeks_ago" */
-             array_to_string(array_agg(weeks_ago), ',') AS serialized_weeks_ago,
-             /* A comma separated string of comment counts.  The first value in this string happens on the week that is the first value in serialized_weeks_ago */
-             array_to_string(array_agg(number_of_comments_with_positive_reaction), ',') AS serialized_comment_counts
+              /* A comma separated string of "weeks_ago" */
+              array_to_string(array_agg(weeks_ago), ',') AS serialized_weeks_ago,
+              /* A comma separated string of comment counts. The first value in this string happens on the week that is the first value in serialized_weeks_ago */
+              array_to_string(array_agg(number_of_comments_with_positive_reaction), ',') AS serialized_comment_counts
         FROM
-        (SELECT user_id,
-             COUNT(user_id) as number_of_comments_with_positive_reaction,
-             /* Get the number of weeks, since today for posts */
-             (trunc((extract(epoch FROM (current_timestamp- created_at))) / 604800) + 1) AS weeks_ago
-        FROM comments
-        INNER JOIN
-            (SELECT DISTINCT reactable_id
-            FROM reactions
-            WHERE reactable_type = 'Comment'
-            AND created_at > (now() - interval '224' day)
-            EXCEPT
-        SELECT DISTINCT reactable_id
-        FROM reactions
-        WHERE reactable_type = 'Comment'
-        AND created_at > (now() - interval '224' day)
-        AND category IN ('thumbsdown', 'vomit')) AS positve_reactions
-            ON comments.id = positve_reactions.reactable_id
-        INNER JOIN
-            (SELECT count(id) AS number_of_comments,
-              user_id AS comment_counts_user_id
-        FROM comments
-        WHERE created_at >= (now() - interval '7' day)
-        GROUP BY user_id) AS comment_counts
-        ON comments.user_id = comment_counts_user_id
-        AND comment_counts.number_of_comments > 1
-
-        /* Don’t select anything older than 224 days ago, or 32 weeks ago */
-        WHERE created_at > (now() - interval '224' day)
-        GROUP BY user_id, weeks_ago) AS user_comment_counts_by_week GROUP BY user_id
+            (
+                SELECT user_id,
+                       COUNT(user_id) AS number_of_comments_with_positive_reaction,
+                       /* Get the number of weeks, since today for posts */
+                       (trunc((extract(epoch FROM (current_timestamp- created_at))) / 604800) + 1) AS weeks_ago
+                FROM comments
+                INNER JOIN
+                    (
+                          SELECT DISTINCT reactable_id
+                          FROM reactions
+                          WHERE reactable_type = 'Comment'
+                          AND created_at > (now() - interval '224' day)
+                          EXCEPT
+                          SELECT DISTINCT reactable_id
+                          FROM reactions
+                          WHERE reactable_type = 'Comment'
+                          AND created_at > (now() - interval '224' day)
+                          AND category IN ('thumbsdown', 'vomit')) AS negative_reactions
+                ON comments.id = negative_reactions.reactable_id
+                INNER JOIN
+                    (
+                          SELECT count(id) AS number_of_comments,
+                                 user_id AS comment_counts_user_id
+                          FROM comments
+                          WHERE created_at >= (now() - interval '7' day)
+                          GROUP BY user_id) AS comment_counts
+                          ON comments.user_id = comment_counts_user_id
+                          AND comment_counts.number_of_comments > 1
+                                /* Don’t select anything older than 224 days ago, or 32 weeks ago */
+                          WHERE created_at > (now() - interval '224' day)
+                          GROUP BY user_id, weeks_ago) AS user_comment_counts_by_week
+        GROUP BY user_id
       SQL
     end
   end
