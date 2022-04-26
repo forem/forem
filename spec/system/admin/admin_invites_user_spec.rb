@@ -35,7 +35,6 @@ RSpec.describe "Admin invites user", type: :system do
 
     it "does not contain any for fields" do
       expect(page).not_to have_field "Email"
-      expect(page).not_to have_field "Name"
     end
 
     it "does not contain any submit buttons" do
@@ -49,9 +48,8 @@ RSpec.describe "Admin invites user", type: :system do
       visit new_admin_invitation_path
     end
 
-    it "shows the input fields" do
+    it "shows the input field" do
       expect(page).to have_field "Email"
-      expect(page).to have_field "Name"
     end
 
     it "shows the submit button" do

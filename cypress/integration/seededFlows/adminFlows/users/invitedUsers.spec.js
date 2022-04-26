@@ -116,7 +116,7 @@ describe('Invited users', () => {
   };
 
   const resendInviteForTestMember = () => {
-    cy.findByRole('button', { name: 'Invitation actions: Test user' })
+    cy.findByRole('button', { name: 'Invitation actions: test@test.com' })
       .pipe(click)
       .should('have.attr', 'aria-expanded', 'true');
 
@@ -124,7 +124,7 @@ describe('Invited users', () => {
   };
 
   const cancelInviteForTestMember = () => {
-    cy.findByRole('button', { name: 'Invitation actions: Test user' })
+    cy.findByRole('button', { name: 'Invitation actions: test@test.com' })
       .pipe(click)
       .should('have.attr', 'aria-expanded', 'true');
 
