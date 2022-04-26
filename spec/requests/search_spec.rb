@@ -157,6 +157,21 @@ RSpec.describe "Search", type: :request, proper_status: true do
 
         expect(Search::Article).to have_received(:search_documents)
       end
+
+      it "nullifies invalid sort directions" do
+        allow(Search::Article).to receive(:search_documents).and_call_original
+        article = create(:article)
+
+        get search_feed_content_path(
+          class_name: "Article", page: 0, per_page: 1, search_fields: article.title,
+          sort_by: :published_at, sort_direction: :invalid
+        )
+
+        expect(response.parsed_body["result"].first["id"]).to eq(article.id)
+        expect(Search::Article)
+          .to have_received(:search_documents)
+          .with(hash_including(sort_direction: nil))
+      end
     end
 
     context "when searching for comments" do
