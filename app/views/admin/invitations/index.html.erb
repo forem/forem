@@ -28,7 +28,7 @@
               <div class="flex">
                 <%= render "admin/users/index/member_image", user: user %>
                 <div class="flex flex-col gap-2">
-                  <%= render "admin/users/index/member_data", user: user %>
+                  <span class="color-base-60">@<%= user.username %></span>
                   <%= user.email %>
                   <dl>
                     <dt class="color-base-60 fw-normal">Invited on</dt>
@@ -69,9 +69,9 @@
       <% @invitations.each do |user| %>
         <tr>
           <td class="pl-7">
-            <div class="flex">
+            <div class="flex items-center">
               <%= render "admin/users/index/member_image", user: user %>
-              <%= render "admin/users/index/member_data", user: user %>
+              <span class="color-base-60">@<%= user.username %></span>
             </div>
           </td>
           <td><%= user.email %></td>
