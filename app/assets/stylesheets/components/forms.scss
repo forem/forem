@@ -275,3 +275,88 @@ textarea.crayons-textfield.crayons-textfield--ghost {
     min-width: min-content;
   }
 }
+
+.c-date-picker {
+  // These class names come from the react-dates library we use for date pickers, overriding their defaults
+
+  // Edits the inputs
+  .DateRangePickerInput {
+    @extend .crayons-textfield;
+
+    .DateInput_input {
+      background-color: var(--form-bg);
+      color: var(--body-color);
+    }
+  }
+
+  // Edits the input styles when focus is anywhere within inputs or calendar widget
+  .DateRangePicker:focus-within {
+    .DateRangePickerInput {
+      border-color: var(--focus);
+    }
+  }
+
+  // The arrow SVG between the start and end date
+  .DateRangePickerInput_arrow_svg {
+    fill: var(--body-color);
+  }
+
+  // The "clear dates" icon button
+  .DateRangePickerInput_clearDates {
+    @extend .c-btn;
+    @extend .c-btn--icon-alone;
+    position: absolute;
+    margin: 0;
+  }
+
+  // Edits the indicator underneath the currently focused input
+  .DateInput_input__focused {
+    border-bottom-color: var(--accent-brand);
+  }
+
+  // Will edit everything selected including everything between a range of dates
+  .CalendarDay__selected_span {
+    background: var(--selected-range-bg);
+    color: var(--selected-range-color);
+    border-color: var(--selected-date-border);
+  }
+
+  .CalendarDay__selected_span:active,
+  .CalendarDay__selected_span:hover {
+    background: var(--selected-date-bg);
+    color: var(--selected-date-color);
+    border-color: var(--selected-date-border);
+  }
+
+  // Will edit selected date or the endpoints of a range of dates
+  .CalendarDay__selected {
+    background: var(--selected-date-bg);
+    color: var(--selected-date-color);
+    border-color: var(--selected-date-border);
+  }
+
+  // Will edit when hovered over
+  .CalendarDay__selected:hover {
+    background: var(--selected-date-bg);
+    color: var(--selected-date-color);
+    border-color: var(--selected-date-border);
+  }
+
+  // Will edit when the second date (end date) in a range of dates
+  // is not yet selected. Edits the dates between your mouse and said date
+  .CalendarDay__hovered_span:hover,
+  .CalendarDay__hovered_span {
+    background: var(--selected-range-bg);
+    color: var(--selected-range-color);
+    border-color: var(--selected-date-border);
+  }
+
+  // Edits the triangular ? button which shows keyboard shortcut information
+  .DayPickerKeyboardShortcuts_buttonReset::before {
+    border-right-color: var(--accent-brand);
+  }
+
+  .DayPickerKeyboardShortcuts_buttonReset:hover::before {
+    border-right-color: var(--accent-brand-lighter);
+  }
+}
