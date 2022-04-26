@@ -79,7 +79,7 @@ fr:
     podcasts_controller:
       new_owner_added: New owner added!
       no_such_user: No such user
-      scheduled: 'Podcast''s episodes fetching was scheduled (%{title}, #%{id})'
+      scheduled: "Podcast's episodes fetching was scheduled (%{title}, #%{id})"
       updated: Podcast updated
     profile_field_groups_controller:
       deleted: Group %{group} deleted
