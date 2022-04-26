@@ -23,7 +23,8 @@ module Admin
       TagModerators::AddTrustedRole.call(@user)
 
       redirect_to admin_mods_path(state: :potential),
-                  flash: { success: "#{@user.username} now has Trusted role!" }
+                  flash: { success: I18n.t("admin.mods_controller.trusted",
+                                           username: @user.username) }
     end
 
     private
