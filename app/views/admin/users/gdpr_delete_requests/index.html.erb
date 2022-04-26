@@ -1,116 +1,77 @@
-<% if FeatureFlag.enabled?(:member_index_view) %>
-  <div class="crayons-card overflow-admin-main-layout-padding p-4 m:p-0">
-    <header class="flex flex-col l:flex-row justify-content-between l:items-center p-0 m:p-7 pb-4">
-      <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (GDPR Delete Requests)</span></h1>
-      <%= render "admin/users/index/tabs" %>
-    </header>
-    <div class="flex justify-end px-2 m:px-7">
-      <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR delete requests", context: "top" %>
-    </div>
-    <div id="table-description" class="my-4  max-w-75 color-base-60 px-2 m:px-7">
-     These accounts have been deleted from the community. Ensure that any data held in external databases or mailing lists is deleted before marking as "Deleted."
-    </div>
+<div class="crayons-card overflow-admin-main-layout-padding p-4 m:p-0">
+  <header class="flex flex-col l:flex-row justify-content-between l:items-center p-0 m:p-7 pb-4">
+    <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (GDPR Delete Requests)</span></h1>
+    <%= render "admin/users/index/tabs" %>
+  </header>
+  <div class="flex justify-end px-2 m:px-7">
+    <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR delete requests", context: "top" %>
+  </div>
+  <div id="table-description" class="my-4  max-w-75 color-base-60 px-2 m:px-7">
+    These accounts have been deleted from the community. Ensure that any data held in external databases or mailing lists is deleted before marking as "Deleted."
+  </div>
 
-    <!-- Small layout start -->
-    <div class="m:hidden">
-      <h2 class="member-data-heading fs-s py-2 mt-3 -mx-4 px-6 color-base-60">Deleted members</h2>
-      <ul class="list-none mx-2">
-        <% @gdpr_delete_requests.each do |r| %>
-          <li>
-            <article class="fs-s py-4 flex justify-between">
-              <div class="flex flex-col gap-2">
-                <h3 class="fs-s color-base-60">@<%= r.username %></h3>
-                <%= r.email %>
-                <dl>
-                  <dt class="color-base-60 fw-normal">Deleted on</dt>
-                  <dd><%= r.created_at.strftime("%d %b, %Y") %></dd>
-                </dl>
-              </div>
-               <%= link_to url_for(action: :destroy, id: r.id),
-                           method: :delete,
-                           data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
-                           aria: { label: "Mark done for #{r.username}" },
-                           class: "c-link" do %>
-                  <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Done
-              <% end %>
-            </article>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-
-    <!-- Small layout end -->
-
-    <!-- Large layout start -->
-    <table aria-describedby="table-description" class="hidden m:table crayons-table crayons-table--minimal w-100">
-      <thead class="member-data-heading">
-        <tr>
-          <th scope="col" class="pl-7">Deleted member</th>
-          <th scope="col">Email address</th>
-          <th scope="col">Deleted on</th>
-          <th scope="col" class="screen-reader-only">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="fs-s">
-        <% @gdpr_delete_requests.each do |r| %>
-          <tr>
-            <td class="pl-7 color-base-60">@<%= r.username %></td>
-            <td><%= r.email %></td>
-            <td><%= r.created_at.strftime("%d %b, %Y") %></td>
-            <td class="align-center">
+  <!-- Small layout start -->
+  <div class="m:hidden">
+    <h2 class="member-data-heading fs-s py-2 mt-3 -mx-4 px-6 color-base-60">Deleted members</h2>
+    <ul class="list-none mx-2">
+      <% @gdpr_delete_requests.each do |r| %>
+        <li>
+          <article class="fs-s py-4 flex justify-between">
+            <div class="flex flex-col gap-2">
+              <h3 class="fs-s color-base-60">@<%= r.username %></h3>
+              <%= r.email %>
+              <dl>
+                <dt class="color-base-60 fw-normal">Deleted on</dt>
+                <dd><%= r.created_at.strftime("%d %b, %Y") %></dd>
+              </dl>
+            </div>
               <%= link_to url_for(action: :destroy, id: r.id),
                           method: :delete,
                           data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
                           aria: { label: "Mark deleted for #{r.username}" },
                           class: "c-link" do %>
-                           <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <!-- Large layout end -->
+                <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted
+            <% end %>
+          </article>
+        </li>
+      <% end %>
+    </ul>
+  </div>
 
-    <div class="flex justify-end p-4 m:px-7">
-      <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR delete requests", context: "bottom" %>
-    </div>
-  </div>
-<% else %>
-  <header class="mb-4">
-    <h1 class="crayons-title">GDPR Delete Requests</h1>
-    <%= render "admin/users/menu" %>
-  </header>
-  <div class="crayons-notice mb-4" aria-live="polite">
-    <strong>These users' accounts were deleted. Please, destroy GDPR data from external services (GA, Mailchimp) for them.</strong>
-  </div>
-  <table class="crayons-table" width="100%">
-    <thead>
+  <!-- Small layout end -->
+
+  <!-- Large layout start -->
+  <table aria-describedby="table-description" class="hidden m:table crayons-table crayons-table--minimal w-100">
+    <thead class="member-data-heading">
       <tr>
-        <th scope="col">User destroyed at</th>
-        <th scope="col">ID</th>
-        <th scope="col">Username</th>
-        <th scope="col">Email</th>
-        <th scope="col">Done</th>
+        <th scope="col" class="pl-7">Deleted member</th>
+        <th scope="col">Email address</th>
+        <th scope="col">Deleted on</th>
+        <th scope="col" class="screen-reader-only">Actions</th>
       </tr>
     </thead>
-    <tbody class="crayons-card">
+    <tbody class="fs-s">
       <% @gdpr_delete_requests.each do |r| %>
         <tr>
-          <td><%= r.created_at.strftime("%m-%d-%Y %H:%m") %></td>
-          <td><%= r.user_id %></td>
-          <td><%= r.username %></td>
+          <td class="pl-7 color-base-60">@<%= r.username %></td>
           <td><%= r.email %></td>
-          <td>
-            <%= link_to "Done!",
-                        url_for(action: :destroy, id: r.id),
+          <td><%= r.created_at.strftime("%d %b, %Y") %></td>
+          <td class="align-center">
+            <%= link_to url_for(action: :destroy, id: r.id),
                         method: :delete,
                         data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
-                        class: "btn btn-danger" %>
+                        aria: { label: "Mark deleted for #{r.username}" },
+                        class: "c-link" do %>
+                          <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted
+            <% end %>
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
-  <%= paginate @gdpr_delete_requests, theme: "internal" %>
-<% end %>
+  <!-- Large layout end -->
+
+  <div class="flex justify-end p-4 m:px-7">
+    <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR delete requests", context: "bottom" %>
+  </div>
+</div>

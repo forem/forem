@@ -70,16 +70,14 @@ describe('Creator Settings Page', () => {
     // should contain a 'I agree to uphold our Code of Conduct' checkbox field and allow selection upon click
     cy.findByRole('group', {
       name: /^finally, please agree to the following:/i,
-    }).should('be.visible');
-    cy.findAllByRole('checkbox').first().check();
-    cy.findAllByRole('checkbox').should('be.checked');
-
-    // should contain a 'I agree to our Terms and Conditions' checkbox field and allow selection upon click
-    cy.findByRole('group', {
-      name: /^finally, please agree to the following:/i,
-    }).should('be.visible');
-    cy.findAllByRole('checkbox').eq(1).check();
-    cy.findAllByRole('checkbox').should('be.checked');
+    }).within(() => {
+      cy.findByRole('checkbox', {
+        name: 'I agree to uphold our Code of Conduct.',
+      }).check();
+      cy.findByRole('checkbox', {
+        name: 'I agree to our Terms and Conditions.',
+      }).check();
+    });
 
     // should redirect the creator to the home page when the form is completely filled out and 'Finish' is clicked
     cy.findByRole('button', { name: 'Finish' }).click();

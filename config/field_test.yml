@@ -5,11 +5,13 @@ experiments:
   # Do not change the goals unless you intend to also change the corresponding code in
   # app/workers/users/record_field_test_event_worker.rb
 
-  feed_strategy_round_7:
+  feed_strategy_starting_20220422:
     variants:
-      - original
+      - 20220415-incumbent
+      - 20220422-jennie-variant
     weights:
-      - 100
+      - 80
+      - 20
     goals:
       - user_creates_comment
       - user_creates_comment_on_at_least_four_different_days_within_a_week

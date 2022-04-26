@@ -27,7 +27,7 @@
     <label for="space_limit_post_creation_to_admins" class="flex justify-between gap-8 items-start">
       <div>
         <p class="fw-medium">Make this space comment-only for members</p>
-        <p class="fs-s color-secondary">Only admins can publish posts. Other members can only react to and comment on posts. Only admins will be able to post on behalf of organizations.</p>
+        <p class="fs-s color-secondary">Only admins can publish posts. Other members can only react to and comment on posts.</p>
       </div>
 
       <span>
@@ -38,9 +38,9 @@
     <div class="fs-s color-secondary">
       <p><%= crayons_icon_tag("info") %> When you turn on comment-only for this space, it also means that for the time being…</p>
       <ul>
-        <li>Active campaigns will be hidden.  <a href="https://admin.forem.com/docs/advanced-customization/config/campaigns">Learn more about Campaigns</a>.</li>
-        <li>Only admins who are part of an organization will be able to post on behalf of that organization.  <a href="https://admin.forem.com/docs/managing-your-community/organization-pages#overview.">Learn more about Organizations</a>.</li>
-        <li>It will take about <%= pluralize(AsyncInfoController::NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY, "minute") %> to propagate <abbr title="User Interface">UI</abbr> changes for all members. <a href="https://developers.forem.com/technical-overview/caching">Learn more about Caching.</a></li>
+        <li>Active <a href="https://admin.forem.com/docs/advanced-customization/config/campaigns">campaigns</a> will be hidden.</li>
+        <li>Only admins who are part of an <a href="https://admin.forem.com/docs/managing-your-community/organization-pages#overview.">organization</a> will be able to post on behalf of that organization.</li>
+        <li>It will take about <%= pluralize(AsyncInfoController::NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY, "minute") %> for <abbr title="User Interface">UI</abbr> changes to take effect for all members. <a href="https://developers.forem.com/technical-overview/caching">Learn more about Caching.</a></li>
       </ul>
     </div>
     <div>
