@@ -196,6 +196,6 @@ class SearchController < ApplicationController
   # nil differently. This is a helper method to remove any params that are
   # blank before passing it to Elasticsearch.
   def sanitize_params
-    params.delete_if { |_k, v| v.blank? }
+    params.compact_blank!
   end
 end
