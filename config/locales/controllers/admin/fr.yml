@@ -50,7 +50,7 @@ fr:
       destroyed: "'%{title}' was destroyed successfully"
       no_credit: Not enough available credits
     mods_controller:
-      trusted: "%{username} now has Trusted role!"
+      trusted: "%{username} now has a Trusted role!"
     navigation_links_controller:
       deleted: Navigation Link %{link} deleted
       created: 'Successfully created navigation link: %{link}'

@@ -228,8 +228,6 @@ module Admin
       end
     end
 
-    # NOTE: [@rhymes] This should be eventually moved in Admin::Users::Tools::EmailsController
-    # once the HTML response isn't required anymore
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
