@@ -94,7 +94,7 @@ fr:
     removed: Votre carte a été retirée avec succès.
   tag_adjustments_controller:
     failure: 'Échec : %{errors}'
-    destroyed: Ajustement de l'étiquette détruite
+    destroyed: Tag détruit
   tags_controller:
     tag_successfully_updated: "Tag mis à jour avec succès ! 👍 "
   users_controller:
