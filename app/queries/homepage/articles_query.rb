@@ -17,7 +17,9 @@ module Homepage
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
+
     SORT_PARAMS = %i[hotness_score public_reactions_count published_at].freeze
+    DEFAULT_SORT_DIRECTION = :desc
 
     def self.call(...)
       new(...).call
@@ -44,7 +46,7 @@ module Homepage
       @tags = tags.presence || []
 
       @sort_by = sort_by
-      @sort_direction = sort_direction
+      @sort_direction = sort_direction || DEFAULT_SORT_DIRECTION
 
       @page = page.to_i + 1
       @per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
