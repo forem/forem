@@ -157,6 +157,7 @@ Article.defaultProps = {
   isBookmarked: false,
   isFeatured: false,
   feedStyle: 'basic',
+  saveable: true,
 };
 
 Article.propTypes = {
@@ -166,4 +167,5 @@ Article.propTypes = {
   feedStyle: PropTypes.string,
   bookmarkClick: PropTypes.func.isRequired,
   pinned: PropTypes.bool,
+  saveable: PropTypes.bool.isRequired,
 };

@@ -4,7 +4,7 @@ import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
-import { userData } from '../onboarding/utilities.js';
+import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 /**
  * Sends analytics about the featured article.
@@ -89,13 +89,15 @@ export const renderFeed = (timeFrame) => {
           sendFeaturedArticleAnalytics(featuredStory.id);
         }
 
-        const currentUser = userData();
+        const { currentUser } = getUserDataAndCsrfToken();
         const currentUserId = currentUser && currentUser.id;
 
         // 1. Show the pinned article first
         // 2. Show the featured story next
         // 3. Podcast episodes out today
         // 4. Rest of the stories for the feed
+        // For "saveable", "!=" is used instead of "!==" to compare user_id
+        // and currentUserId because currentUserId is a String while user_id is an Integer
         return (
           <div>
             {timeFrame === '' && pinnedArticle && (

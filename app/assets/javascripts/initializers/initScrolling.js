@@ -207,13 +207,13 @@ function insertArticles(articles) {
   var list = document.getElementById('substories');
   var newArticlesHTML = '';
   var el = document.getElementById('home-articles-object');
+  var currentUser = userData();
+  var currentUserId = currentUser && currentUser.id;
   if (el) {
     el.outerHTML = '';
   }
   articles.forEach(function insertAnArticle(article) {
     var existingEl = document.getElementById('article-link-' + article.id);
-    var currentUser = userData();
-    var currentUserId = currentUser && currentUser.id;
     if (
       ![
         '/',

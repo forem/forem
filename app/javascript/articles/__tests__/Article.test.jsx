@@ -183,7 +183,7 @@ describe('<Article /> component', () => {
 
     const reactions = getByTitle('Number of reactions');
 
-    expect(reactions.textContent).toEqual(`232 ${locale('core.reaction')}s`);
+    expect(reactions.textContent).toEqual(`232 ${locale('core.reaction')}s`);
   });
 
   it('should render with comments', () => {
@@ -197,7 +197,7 @@ describe('<Article /> component', () => {
 
     const comments = getByTitle('Number of comments');
 
-    expect(comments.textContent).toEqual(`213 ${locale('core.comment')}s`);
+    expect(comments.textContent).toEqual(`213 ${locale('core.comment')}s`);
   });
 
   it('should render with an add comment button when there are no comments', () => {
@@ -262,5 +262,26 @@ describe('<Article /> component', () => {
     const { queryByText } = render(<Article article={userArticle} />);
 
     expect(queryByText('person', { selector: 'span' })).toBeDefined();
+  });
+
+  it('should show bookmark button when article is saveable (default)', () => {
+    const { queryByTestId } = render(
+      <Article {...commonProps} isBookmarked={false} article={article} />,
+    );
+
+    expect(queryByTestId(`article-save-button-${article.id}`)).toBeDefined();
+  });
+
+  it('should hide bookmark button when article is not saveable', () => {
+    const { queryByTestId } = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={article}
+        saveable={false}
+      />,
+    );
+
+    expect(queryByTestId(`article-save-button-${article.id}`)).toBeNull();
   });
 });

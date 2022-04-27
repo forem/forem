@@ -237,6 +237,15 @@ Object {
                   >
                     1 min read
                   </small>
+                  <button
+                    class="crayons-btn crayons-btn--s crayons-btn--secondary"
+                    data-initial-feed="true"
+                    data-reactable-id="62407"
+                    id="article-save-button-62407"
+                    type="button"
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
             </div>
@@ -478,6 +487,15 @@ Object {
                 >
                   1 min read
                 </small>
+                <button
+                  class="crayons-btn crayons-btn--s crayons-btn--secondary"
+                  data-initial-feed="true"
+                  data-reactable-id="62407"
+                  id="article-save-button-62407"
+                  type="button"
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>

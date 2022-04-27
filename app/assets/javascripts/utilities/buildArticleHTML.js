@@ -278,6 +278,8 @@ function buildArticleHTML(article, currentUserId = null) {
     }
 
     var saveButton = '';
+    // "!=" instead of "!==" used to compare user_id and currentUserId because
+    // currentUserId is a String while user_id is an Integer
     if (article.class_name === 'Article' && article.user_id != currentUserId) {
       saveButton =
         '<button type="button" id="article-save-button-' +

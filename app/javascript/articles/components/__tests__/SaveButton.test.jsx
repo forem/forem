@@ -3,7 +3,7 @@ import { fireEvent, render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { SaveButton } from '../SaveButton';
 
-it('should not show button when post owned by current user', () => {
+it('should not show bookmark button when saveable is false', () => {
   const article = { class_name: 'Article', id: 1 };
   const { queryByText } = render(
     <SaveButton article={article} saveable={false} />,
@@ -15,9 +15,7 @@ it('should not show button when post owned by current user', () => {
 
 it('should have no a11y violations', async () => {
   const article = { class_name: 'Article', id: 1 };
-  const { container } = render(
-    <SaveButton article={article} saveable={true} />,
-  );
+  const { container } = render(<SaveButton article={article} />);
   const results = await axe(container);
 
   expect(results).toHaveNoViolations();
@@ -25,9 +23,7 @@ it('should have no a11y violations', async () => {
 
 it('should render button as bookmarked', () => {
   const article = { class_name: 'Article', id: 1 };
-  const { queryByText } = render(
-    <SaveButton article={article} saveable={true} isBookmarked />,
-  );
+  const { queryByText } = render(<SaveButton article={article} isBookmarked />);
   const saveButton = queryByText('Saved');
 
   expect(saveButton).not.toBeNull();
@@ -36,7 +32,7 @@ it('should render button as bookmarked', () => {
 it('should button as not being bookmarked', () => {
   const article = { class_name: 'Article', id: 1 };
   const { queryByText } = render(
-    <SaveButton article={article} saveable={true} isBookmarked={false} />,
+    <SaveButton article={article} isBookmarked={false} />,
   );
   const saveButton = queryByText('Save');
 
@@ -46,12 +42,7 @@ it('should button as not being bookmarked', () => {
 it('should bookmark when it previously was not', async () => {
   const article = { class_name: 'Article', id: 1 };
   const { getByText, findByText } = render(
-    <SaveButton
-      onClick={jest.fn()}
-      article={article}
-      saveable={true}
-      isBookmarked={false}
-    />,
+    <SaveButton onClick={jest.fn()} article={article} isBookmarked={false} />,
   );
   const saveButton = getByText('Save');
   saveButton.click();
@@ -64,12 +55,7 @@ it('should bookmark when it previously was not', async () => {
 it('should unbookmark when it previously was bookmarked', async () => {
   const article = { class_name: 'Article', id: 1 };
   const { getByText, findByText } = render(
-    <SaveButton
-      onClick={jest.fn()}
-      article={article}
-      saveable={true}
-      isBookmarked
-    />,
+    <SaveButton onClick={jest.fn()} article={article} isBookmarked />,
   );
 
   const savedButton = getByText('Saved');
@@ -83,12 +69,7 @@ it('should unbookmark when it previously was bookmarked', async () => {
 it('should change text to unbookmark when hovering over button and it is bookmarked', async () => {
   const article = { class_name: 'Article', id: 1 };
   const { getByText, findByText } = render(
-    <SaveButton
-      onClick={jest.fn()}
-      article={article}
-      saveable={true}
-      isBookmarked
-    />,
+    <SaveButton onClick={jest.fn()} article={article} isBookmarked />,
   );
 
   const savedButton = getByText('Saved');
@@ -102,12 +83,7 @@ it('should change text to unbookmark when hovering over button and it is bookmar
 it('should not change button text when hovering over button and it is not bookmarked', async () => {
   const article = { class_name: 'Article', id: 1 };
   const { getByText, findByText } = render(
-    <SaveButton
-      onClick={jest.fn()}
-      article={article}
-      saveable={true}
-      isBookmarked={false}
-    />,
+    <SaveButton onClick={jest.fn()} article={article} isBookmarked={false} />,
   );
 
   const savedButton = getByText('Save');
