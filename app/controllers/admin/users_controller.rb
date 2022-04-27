@@ -16,7 +16,7 @@ module Admin
       email_body
     ].freeze
 
-    ATTIBUTES_FOR_CSV = %i[
+    ATTRIBUTES_FOR_CSV = %i[
       id name username email registered_at
     ].freeze
 
@@ -84,7 +84,7 @@ module Admin
     end
 
     def export
-      @users = User.registered.select(ATTIBUTES_FOR_CSV + ATTRIBUTES_FOR_LAST_ACTIVITY).includes(:organizations)
+      @users = User.registered.select(ATTRIBUTES_FOR_CSV + ATTRIBUTES_FOR_LAST_ACTIVITY).includes(:organizations)
 
       respond_to do |format|
         format.csv do
