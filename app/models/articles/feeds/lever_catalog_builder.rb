@@ -9,15 +9,10 @@ module Articles
         end
       end
 
-      class ConfigurationError < StandardError
-      end
-
       # @yieldparam [Articles::Feeds::LeverCatalogBuilder]
       #
       # @raise [Articles::Feeds::LeverCatalogBuilder::DuplicateLeverError] when you attempt to
       #        register a lever with the same key.
-      # @raise [Articles::Feeds::LeverCatalogBuilder::ConfigurationError] when you fail to configure
-      #        the default order_by_lever
       #
       # @note Once initialized, this object and its constituent parts are frozen to prevent further
       #       modification.  In other words, once instantiated our published catalog has been
@@ -29,8 +24,6 @@ module Articles
         # In order to call the protected methods at instantiation time, we need to use the
         # `#instance_exec` method.
         instance_exec(&config)
-
-        raise ConfigurationError unless @order_by_levers.key?(OrderByLever::DEFAULT_KEY)
 
         @relevancy_levers.freeze
         @order_by_levers.freeze
@@ -46,17 +39,13 @@ module Articles
         @relevancy_levers.fetch(key.to_sym)
       end
 
-      # @param key [#to_sym, NilClass] when given nil fallback to the OrderByLever::DEFAULT_KEY.
+      # @param key [#to_sym]
       # @return [Articles::Feeds::OrderByLever]
       #
       # @raise [KeyError] if the given key is not found in the list of sort levers; in other words
       #        we have a configuration mismatch.
-      #
-      # @see Articles::Feeds::OrderByLever::DEFAULT_KEY
       def fetch_order_by(key)
-        key ||= OrderByLever::DEFAULT_KEY
-        key = key.to_sym
-        @order_by_levers.fetch(key)
+        @order_by_levers.fetch(key.to_sym)
       end
 
       protected
