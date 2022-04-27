@@ -1,4 +1,7 @@
 dist: focal
+branches:
+  only:
+    - main
 language: ruby
 cache:
   bundler: true
@@ -120,7 +123,8 @@ jobs:
         - yarn cypress install
         - CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
     - stage: Deploy
-      name: Deploy BenHalpern
+      name: Deploy DEV
+      if: type != pull_request
       install: skip
       script: skip
       after_script: skip
@@ -128,4 +132,17 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          mac/refactor/more-onboarding-controller: benhalpern-community
+          main: practicaldev
+      after_deploy:
+        - bash scripts/after_deploy.sh
+    - stage: Deploy
+      name: Deploy BenHalpern
+      if: type != pull_request
+      install: skip
+      script: skip
+      after_script: skip
+      deploy:
+        provider: heroku
+        api_key: '$HEROKU_AUTH_TOKEN'
+        app:
+          main: benhalpern-community
