@@ -183,7 +183,7 @@ describe('<Article /> component', () => {
 
     const reactions = getByTitle('Number of reactions');
 
-    expect(reactions.textContent).toEqual(`232 ${locale('core.reaction')}s`);
+    expect(reactions.textContent).toEqual(`232 ${locale('core.reaction')}s`);
   });
 
   it('should render with comments', () => {
@@ -197,7 +197,7 @@ describe('<Article /> component', () => {
 
     const comments = getByTitle('Number of comments');
 
-    expect(comments.textContent).toEqual(`213 ${locale('core.comment')}s`);
+    expect(comments.textContent).toEqual(`213 ${locale('core.comment')}s`);
   });
 
   it('should render with an add comment button when there are no comments', () => {
