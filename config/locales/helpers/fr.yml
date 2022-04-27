@@ -105,9 +105,9 @@ fr:
           default: Suivre
       required: Requis
       subtitle:
-        week: Principaux messages de la semaine
-        month: Principaux messages du mois
-        year: Les meilleurs messages de l'année
+        week: Les meilleurs articles de cette semaine
+        month: Les meilleurs articles de ce mois
+        year: Les meilleurs articles de cette année
         infinity: Tous les messages
         latest: Derniers messages
       title_text: "%{title} - %{timeframe}"
