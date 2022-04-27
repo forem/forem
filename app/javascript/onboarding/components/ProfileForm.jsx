@@ -50,7 +50,7 @@ export class ProfileForm extends Component {
     const { formValues, last_onboarding_page } = this.state;
     const { username, ...newFormValues } = formValues;
     try {
-      const response = await request('/onboarding_update', {
+      const response = await request('/onboarding', {
         method: 'PATCH',
         body: {
           user: { last_onboarding_page, username },
@@ -66,7 +66,7 @@ export class ProfileForm extends Component {
       Honeybadger.notify(error.statusText);
       let errorMessage = 'Unable to continue, please try again.';
       if (error.status === 422) {
-        // parse validation error messages from UsersController#onboarding_update
+        // parse validation error messages from UsersController#onboarding
         const errorData = await error.json();
         errorMessage = errorData.errors;
         this.setState({ error: true, errorMessage });
