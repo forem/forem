@@ -18,7 +18,7 @@ module Admin
       @badge = Badge.new(badge_params)
 
       if @badge.save
-        flash[:success] = "Badge has been created!"
+        flash[:success] = I18n.t("admin.badges_controller.created")
         redirect_to admin_badges_path
       else
         flash[:danger] = @badge.errors_as_sentence
@@ -30,7 +30,7 @@ module Admin
       @badge = Badge.find(params[:id])
 
       if @badge.update(badge_params)
-        flash[:success] = "Badge has been updated!"
+        flash[:success] = I18n.t("admin.badges_controller.updated")
         redirect_to admin_badges_path
       else
         flash[:danger] = @badge.errors_as_sentence

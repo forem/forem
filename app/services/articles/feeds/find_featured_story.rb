@@ -15,7 +15,7 @@ module Articles
       #       consideration for `featured == true`.  Perhaps that
       #       should change?  This has been reported in
       #       https://github.com/forem/forem/issues/15613 and impacts
-      #       Articles::Feeds::WeightedQueryStrategy.
+      #       Articles::Feeds::VariantQuery
       def self.call(stories, must_have_main_image: true)
         featured_story =
           if must_have_main_image

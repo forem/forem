@@ -8,7 +8,7 @@ module Users
       delete_comments
       delete_articles
       delete_user_activity
-      user.unsubscribe_from_newsletters
+      user.remove_from_mailchimp_newsletters
       EdgeCache::Bust.call("/#{user.username}")
       Users::SuspendedUsername.create_from_user(user) if user.suspended?
       user.destroy

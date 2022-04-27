@@ -18,6 +18,7 @@ fr:
     reaction: Réaction
     report_abuse: Signaler un abus
     search: Recherche
+    success_settings: Successfully updated settings.
   date:
     abbr_month_names:
     - 
