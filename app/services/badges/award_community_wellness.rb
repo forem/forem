@@ -38,10 +38,11 @@ module Badges
         next unless REWARD_STREAK_WEEKS.include?(@week_streak)
 
         badge_slug = "#{@week_streak}-week-community-wellness-streak"
-        next unless (badge_id = Badge.id_for_slug(badge_slug))
         next unless (user = User.find_by(id: hash["user_id"]))
 
         if FeatureFlag.enabled?(:community_wellness_badge)
+          next unless (badge_id = Badge.id_for_slug(badge_slug))
+
           user.badge_achievements.create(
             badge_id: badge_id,
             rewarding_context_message_markdown: generate_message,

@@ -79,8 +79,8 @@ award_contributor_badges_from_github:
     - award_contributor_from_github
     - ""
 award_community_wellness_badges:
-  description: "Awards 'Community Wellness' badges to users (runs at minute 25 past every 12th hour)"
-  cron: "25 */12 * * *"
+  description: "Awards 'Community Wellness' badges to users (runs daily at 00:45 UTC)"
+  cron: "45 0 * * *"
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
