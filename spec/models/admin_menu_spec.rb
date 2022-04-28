@@ -50,21 +50,7 @@ RSpec.describe AdminMenu do
 
     let(:content_manager) { described_class.navigation_items.fetch(:content_manager) }
 
-    context "when the :limit_post_creation_to_admins does not exist" do
-      it { is_expected.not_to be_visible }
-    end
-
-    context "when the :limit_post_creation_to_admins is enabled" do
-      before { FeatureFlag.enable(:limit_post_creation_to_admins) }
-
-      it { is_expected.to be_visible }
-    end
-
-    context "when the :limit_post_creation_to_admins is explicitly disabled" do
-      before { FeatureFlag.disable(:limit_post_creation_to_admins) }
-
-      it { is_expected.to be_visible }
-    end
+    it { is_expected.to be_visible }
   end
 
   describe "scope :customization" do
