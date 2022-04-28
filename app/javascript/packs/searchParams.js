@@ -185,8 +185,10 @@ function search(query, filters, sortBy, sortDirection) {
     .then((response) => response.json())
     .then((content) => {
       const resultDivs = [];
+      const currentUser = userData();
+      const currentUserId = currentUser && currentUser.id;
       content.result.forEach((story) => {
-        resultDivs.push(buildArticleHTML(story));
+        resultDivs.push(buildArticleHTML(story, currentUserId));
       });
       document.getElementById('substories').innerHTML = resultDivs.join('');
       initializeReadingListIcons();
