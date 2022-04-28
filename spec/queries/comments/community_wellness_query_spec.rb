@@ -9,72 +9,51 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
   let!(:user2) { create(:user) }
   let!(:user3) { create(:user) }
   let!(:user4) { create(:user) }
-  let!(:flagged_categories) { %w[thumbsdown vomit] }
+  let!(:user5) { create(:user) }
 
   # Pre-populate "filler users" that shouldn't appear in results because they
   # don't meet the query criteria: min 2 comments in a week within last 32 weeks
   before do
     # User 3 - only one comment
-    create_comment(user3.id, 4.days.ago)
+    create_comment_time_ago(user3.id, 5.days.ago, commentable: articles.sample)
 
     # User 4 - has 3 comments but doesn't meet criteria bc comments are too old
-    create_comment(user4.id, 226.days.ago)
-    create_comment(user4.id, 227.days.ago)
-    create_comment(user4.id, 227.days.ago)
-  end
-
-  def create_comment(user_id, time_ago, flagged: false)
-    comment = create(
-      :comment,
-      commentable: articles.sample,
-      user_id: user_id,
-      created_at: time_ago,
-    )
-    # User default self-like
-    create(
-      :reaction,
-      user_id: user_id,
-      reactable_id: comment.id,
-      reactable_type: "Comment",
-    )
-
-    return unless flagged
-
-    create(
-      :reaction,
-      user_id: mod.id,
-      category: flagged_categories.sample,
-      reactable_id: comment.id,
-      reactable_type: "Comment",
-    )
+    create_comment_time_ago(user4.id, 226.days.ago, commentable: articles.sample)
+    create_comment_time_ago(user4.id, 227.days.ago, commentable: articles.sample)
+    create_comment_time_ago(user4.id, 227.days.ago, commentable: articles.sample)
   end
 
   context "when multiple users match criteria" do
     before do
       # User 1 - week 1
-      create_comment(user1.id, 2.days.ago)
-      create_comment(user1.id, 4.days.ago)
+      create_comment_time_ago(user1.id, 5.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user1.id, 6.days.ago, commentable: articles.sample)
       # User 1 - week 2
-      create_comment(user1.id, 8.days.ago)
-      create_comment(user1.id, 11.days.ago)
+      create_comment_time_ago(user1.id, 8.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user1.id, 11.days.ago, commentable: articles.sample)
 
       # User 2 - week 1
-      create_comment(user2.id, 1.day.ago)
-      create_comment(user2.id, 6.days.ago)
+      create_comment_time_ago(user2.id, 4.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user2.id, 6.days.ago, commentable: articles.sample)
       # User 1 - week 2
-      create_comment(user2.id, 9.days.ago)
-      create_comment(user2.id, 13.days.ago)
+      create_comment_time_ago(user2.id, 9.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user2.id, 13.days.ago, commentable: articles.sample)
       # User 1 - week 3
-      create_comment(user2.id, 17.days.ago)
-      create_comment(user2.id, 17.days.ago)
-      create_comment(user2.id, 18.days.ago)
+      create_comment_time_ago(user2.id, 17.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user2.id, 17.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user2.id, 18.days.ago, commentable: articles.sample)
+
+      # User 5 - has 2 comments in the first week but too early to award because
+      # comments must be 3 days old or more to give mods time to flag before award
+      create_comment_time_ago(user5.id, 2.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user5.id, 6.days.ago, commentable: articles.sample)
     end
 
     it "returns the correct data structure (array of hashes w/ correct keys)" do
       result = described_class.call
 
       expect(result).to be_instance_of(Array)
-      expect(result.count).to eq(2)
+      expect(result.count).to eq(3)
 
       result.each do |hash|
         expect(hash["user_id"]).to be_instance_of(Integer)
@@ -87,7 +66,7 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
       result = described_class.call
 
       result_user_ids = result.map { |hash| hash["user_id"] }
-      expect(result_user_ids).to contain_exactly(user1.id, user2.id)
+      expect(result_user_ids).to contain_exactly(user1.id, user2.id, user5.id)
 
       index1 = result.index { |hash| hash["user_id"] == user1.id }
       expect(result[index1]["serialized_weeks_ago"]).to eq("1,2")
@@ -96,28 +75,34 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
       index2 = result.index { |hash| hash["user_id"] == user2.id }
       expect(result[index2]["serialized_weeks_ago"]).to eq("1,2,3")
       expect(result[index2]["serialized_comment_counts"]).to eq("2,2,3")
+
+      # user5 will still appear in the query because it has 2 comments in the
+      # week but the count will reflect only those that are 3+ days old
+      index5 = result.index { |hash| hash["user_id"] == user5.id }
+      expect(result[index5]["serialized_weeks_ago"]).to eq("1")
+      expect(result[index5]["serialized_comment_counts"]).to eq("1")
     end
   end
 
   context "when users match criteria but mod reaction reduces their comment counts" do
     before do
       # User 1 - week 1
-      create_comment(user1.id, 2.days.ago, flagged: true)
-      create_comment(user1.id, 4.days.ago)
+      create_comment_time_ago(user1.id, 5.days.ago, commentable: articles.sample, flagged_by: mod)
+      create_comment_time_ago(user1.id, 6.days.ago, commentable: articles.sample)
       # User 1 - week 2
-      create_comment(user1.id, 8.days.ago)
-      create_comment(user1.id, 11.days.ago)
+      create_comment_time_ago(user1.id, 8.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user1.id, 11.days.ago, commentable: articles.sample)
 
       # User 2 - week 1
-      create_comment(user2.id, 1.day.ago)
-      create_comment(user2.id, 6.days.ago)
+      create_comment_time_ago(user2.id, 4.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user2.id, 6.days.ago, commentable: articles.sample)
       # User 1 - week 2
-      create_comment(user2.id, 9.days.ago)
-      create_comment(user2.id, 13.days.ago, flagged: true)
+      create_comment_time_ago(user2.id, 9.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user2.id, 13.days.ago, commentable: articles.sample, flagged_by: mod)
       # User 1 - week 3
-      create_comment(user2.id, 17.days.ago)
-      create_comment(user2.id, 17.days.ago)
-      create_comment(user2.id, 18.days.ago)
+      create_comment_time_ago(user2.id, 17.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user2.id, 17.days.ago, commentable: articles.sample)
+      create_comment_time_ago(user2.id, 18.days.ago, commentable: articles.sample)
     end
 
     it "matches the correct comment count for each week in result hash" do

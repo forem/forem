@@ -61,6 +61,7 @@ module Comments
                           AND comment_counts.number_of_comments > 1
                                 /* Don’t select anything older than 224 days ago, or 32 weeks ago */
                           WHERE created_at > (now() - interval '224' day)
+                          AND created_at < (now() - interval '3' day)
                           GROUP BY user_id, weeks_ago) AS user_comment_counts_by_week
         GROUP BY user_id
       SQL

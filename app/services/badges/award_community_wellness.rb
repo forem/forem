@@ -37,15 +37,20 @@ module Badges
         # Otherwise continue with next iteration (next user in query results)
         next unless REWARD_STREAK_WEEKS.include?(@week_streak)
 
-        Rails.logger.debug { "SUCCESS: Awarding streak of #{@week_streak} weeks to user_id #{hash['user_id']}" }
-
-        badge_slug = "#{@week_streak}-week-wellness-streak"
+        badge_slug = "#{@week_streak}-week-community-wellness-streak"
         next unless (badge_id = Badge.id_for_slug(badge_slug))
+        next unless (user = User.find_by(id: hash["user_id"]))
 
-        user.badge_achievements.create(
-          badge_id: badge_id,
-          rewarding_context_message_markdown: generate_message,
-        )
+        if FeatureFlag.enabled?(:community_wellness_badge)
+          user.badge_achievements.create(
+            badge_id: badge_id,
+            rewarding_context_message_markdown: generate_message,
+          )
+        else
+          # If FeatureFlag isn't enabled only track which users would've
+          # received the badge to get an understanding of the service would work
+          Ahoy.instance&.track("Community Wellness Badge Award", user_id: user.id, week: @week_streak)
+        end
       end
     end
 
