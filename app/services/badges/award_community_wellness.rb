@@ -40,6 +40,7 @@ module Badges
         badge_slug = "#{@week_streak}-week-community-wellness-streak"
         next unless (user = User.find_by(id: hash["user_id"]))
 
+        # TODO: Remove FeatureFlag when truly ready for production use
         if FeatureFlag.enabled?(:community_wellness_badge)
           next unless (badge_id = Badge.id_for_slug(badge_slug))
 
@@ -48,8 +49,8 @@ module Badges
             rewarding_context_message_markdown: generate_message,
           )
         else
-          # If FeatureFlag isn't enabled only track which users would've
-          # received the badge to get an understanding of the service would work
+          # If the FeatureFlag isn't enabled only track which users would get
+          # the badge to get an understanding of how the service will work
           Ahoy.instance&.track("Community Wellness Badge Award", user_id: user.id, week: @week_streak)
         end
       end
