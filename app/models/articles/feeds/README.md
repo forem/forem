@@ -30,7 +30,7 @@ for further context.
 
 In
 [Diving into Dev's Relevancy Feed Builder](https://dev.to/devteam/diving-into-devs-relevancy-feed-builder-30m6)
-we explained the conceptual implementation; providing conceptual entity
+we explained the conceptual implementation; providing a conceptual entity
 relationship and sequence diagrams.
 
 The key thing to internalize is as follows: We want to create a SQL statement
