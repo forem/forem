@@ -164,8 +164,10 @@ RSpec.describe UnifiedEmbed::Registry do
     it "returns OpenGraphTag for pathless or invalid Forem url", :aggregate_failures do
       # for localhost, the first 2 cases are identical, due to no dots in URL.url
       invalid_forem_links = [
-        URL.url, # pathless domain
+        URL.url,
         URL.url.tr(".", "n"),
+        "#{URL.url}/",
+        "#{URL.url}////",
         "#{URL.url}something",
       ]
 
