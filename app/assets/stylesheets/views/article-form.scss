@@ -198,7 +198,7 @@
       width: 250px;
       height: 105px;
       border-radius: var(--radius);
-      object-fit: cover;
+      object-fit: scale-down;
       margin-bottom: var(--su-2);
 
       @media (min-width: $breakpoint-s) {
