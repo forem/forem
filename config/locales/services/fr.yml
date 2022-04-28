@@ -33,7 +33,7 @@ fr:
           welcome: 'Notification de bienvenue : %{key}'
     error_messages:
       clean:
-        parse_error: Il y a eu un problème pour analyser la matière première YAML. Vous devez peut-être échapper un guillemet, un deux-points ou autre chose. Envoyez un e-mail à %{email} si vous avez des problèmes.
+        parse_error: Il y a eu un problème pour analyser la matière première YAML. Vous devez peut-être échapper une citation, un deux-points ou autre chose. Envoyez un e-mail à %{email} si vous avez des problèmes.
     html:
       parser:
         enter_fullscreen_mode: Passer en mode plein écran
