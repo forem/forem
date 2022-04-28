@@ -35,5 +35,5 @@ relationship and sequence diagrams.
 
 The key thing to internalize is as follows: We want to create a SQL statement
 that calculates a `relevancy_score` for a given user and each article in the
-Forem instance. The higher the `relevancy_score` an article has, the closer to
+Forem instance. The higher the article's `relevancy_score`, the closer that article will be to
 the top that article will be.
