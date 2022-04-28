@@ -38,9 +38,6 @@ fr:
       parser:
         enter_fullscreen_mode: Passer en mode plein écran
         exit_fullscreen_mode: Sortir du mode en plein écran
-    mailchimp:
-      bot:
-        member_in_compliance_state: Membre en conformité
     markdown_processor:
       parser:
         invalid_markdown_detected: Markdown invalide détecté !

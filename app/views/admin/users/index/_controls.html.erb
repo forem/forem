@@ -1,65 +1,44 @@
 <%= javascript_packs_with_chunks_tag "admin/users/controls", defer: true %>
-
-<% if FeatureFlag.enabled?(:member_index_view) %>
-  <% if params[:controller] == "admin/users" %>
-    <!-- Small screen layout -->
-    <%= form_with url: admin_users_path, method: :get, local: true, class: "m:hidden" do |f| %>
-      <div class="flex justify-between align-items-center my-3">
-        <div>
-          <%= render "admin/users/index/expand_search_button" %>
-          <button type="button" id="expand-filter-btn" class="c-btn c-btn--icon-alone indicator-btn" aria-label="Expand filter" aria-expanded="false" aria-controls="filter-users">
-            <%= crayons_icon_tag("filter", aria_hidden: true) %>
-            <span data-testid="search-indicator" class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
-          </button>
-        </div>
-        <div class="flex">
-          <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
-          <%= render "admin/users/index/controls/export" %>
-        </div>
-      </div>
+<% if params[:controller] == "admin/users" %>
+  <!-- Small screen layout -->
+  <%= form_with url: admin_users_path, method: :get, local: true, class: "m:hidden" do |f| %>
+    <div class="flex justify-between align-items-center my-3">
       <div>
-        <div id="search-users" class="hidden">
-          <%= render "admin/users/index/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username, email, or Twitter/GitHub usernames" %>
-        </div>
-        <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
-          <%= render "admin/users/index/filter_role_field", f: f, context: "small" %>
-        </div>
+        <%= render "admin/users/controls/expand_search_button" %>
+        <button type="button" id="expand-filter-btn" class="c-btn c-btn--icon-alone indicator-btn" aria-label="Expand filter" aria-expanded="false" aria-controls="filter-users">
+          <%= crayons_icon_tag("filter", aria_hidden: true) %>
+          <span data-testid="search-indicator" class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
+        </button>
       </div>
-    <% end %>
-
-    <!-- Larger screen layout -->
-    <div class="hidden m:flex justify-between align-items-center">
-      <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center py-3" do |f| %>
-        <div class="crayons-field flex-1 flex-row items-center gap-2">
-          <%= render "admin/users/index/search_field", f: f, context: "medium", placeholder: "Search member...", aria_label: "Search member by name, username, email, or Twitter/GitHub usernames" %>
-        </div>
-        <div class="crayons-field flex-row items-center gap-2">
-          <%= render "admin/users/index/filter_role_field", f: f, context: "medium" %>
-        </div>
-      <% end %>
       <div class="flex">
-        <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "medium" %>
-        <%= render "admin/users/index/controls/export" %>
+        <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
+        <%= render "admin/users/controls/export" %>
       </div>
-
+    </div>
+    <div>
+      <div id="search-users" class="hidden">
+        <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, or username" %>
+      </div>
+      <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
+        <%= render "admin/users/controls/filter_role_field", f: f, context: "small" %>
+      </div>
     </div>
   <% end %>
 
-<% else %>
-  <% if params[:controller] == "admin/users" %>
-    <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center p-3" do |f| %>
+  <!-- Larger screen layout -->
+  <div class="hidden m:flex justify-between align-items-center">
+    <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center py-3" do |f| %>
       <div class="crayons-field flex-1 flex-row items-center gap-2">
-        <%= f.label :search, class: "crayons-field__label whitespace-nowrap" %>
-        <%= f.text_field :search, value: params[:search], class: "crayons-textfield mt-0", placeholder: "Name, username, email, or Twitter/GitHub usernames", aria: { label: "Filter by name, username, email, or Twitter/GitHub usernames" } %>
+        <%= render "admin/users/controls/search_field", f: f, context: "medium", placeholder: "Search member...", aria_label: "Search member by name, or username" %>
       </div>
       <div class="crayons-field flex-row items-center gap-2">
-        <%= f.label :role, "Filter by Role", class: "crayons-field__label whitespace-nowrap" %>
-        <%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: "All roles" }, class: "crayons-select mt-0" %>
+        <%= render "admin/users/controls/filter_role_field", f: f, context: "medium" %>
       </div>
-      <%= f.submit "Filter", class: "c-btn c-btn--secondary" %>
     <% end %>
-  <% end %>
-  <% if params[:controller] == "admin/invitations" %>
-    <%= link_to "New", new_admin_invitation_path, class: "c-cta self-end" %>
-  <% end %>
+    <div class="flex">
+      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "medium" %>
+      <%= render "admin/users/controls/export" %>
+    </div>
+
+  </div>
 <% end %>

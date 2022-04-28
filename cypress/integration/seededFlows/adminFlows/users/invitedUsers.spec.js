@@ -4,7 +4,6 @@ describe('Invited users', () => {
     cy.fixture('users/adminUser.json').as('user');
     cy.get('@user').then((user) => {
       cy.loginUser(user)
-        .then(() => cy.enableFeatureFlag('member_index_view'))
         .then(() =>
           cy.inviteUser({
             name: 'Test user',
@@ -109,7 +108,7 @@ describe('Invited users', () => {
 
   const searchForMember = (searchTerm) => {
     cy.findByRole('textbox', {
-      name: 'Search invited members by name, username, or email',
+      name: 'Search invited members by name, or username',
     })
       .clear()
       .type(searchTerm);

@@ -303,6 +303,12 @@ export const MultiSelectAutocomplete = ({
     }
 
     const results = await fetchSuggestions(value);
+
+    // It could be that while waiting on the network fetch, the user has already made a selection or otherwise cleared the input
+    if (inputRef.current.value === '') {
+      return;
+    }
+
     // If no results, display current search term as an option
     if (results.length === 0 && value !== '') {
       results.push({ name: value });

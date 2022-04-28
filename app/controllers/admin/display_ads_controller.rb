@@ -27,7 +27,7 @@ module Admin
       @display_ad = DisplayAd.new(display_ad_params)
 
       if @display_ad.save
-        flash[:success] = "Display Ad has been created!"
+        flash[:success] = I18n.t("admin.display_ads_controller.created")
         redirect_to edit_admin_display_ad_path(@display_ad.id)
       else
         flash[:danger] = @display_ad.errors_as_sentence
@@ -39,7 +39,7 @@ module Admin
       @display_ad = DisplayAd.find(params[:id])
 
       if @display_ad.update(display_ad_params)
-        flash[:success] = "Display Ad has been updated!"
+        flash[:success] = I18n.t("admin.display_ads_controller.updated")
         redirect_to edit_admin_display_ad_path(params[:id])
       else
         flash[:danger] = @display_ad.errors_as_sentence
@@ -51,9 +51,9 @@ module Admin
       @display_ad = DisplayAd.find(params[:id])
 
       if @display_ad.destroy
-        render json: { message: "Display Ad has been deleted!" }, status: :ok
+        render json: { message: I18n.t("admin.display_ads_controller.deleted") }, status: :ok
       else
-        render json: { error: "Something went wrong with deleting the Display Ad." }, status: :unprocessable_entity
+        render json: { error: I18n.t("admin.display_ads_controller.wrong") }, status: :unprocessable_entity
       end
     end
 

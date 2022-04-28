@@ -1,10 +1,7 @@
 module Admin
   class UsersQuery
     QUERY_CLAUSE = "users.name ILIKE :search OR " \
-                   "users.username ILIKE :search OR " \
-                   "users.github_username ILIKE :search OR " \
-                   "users.email ILIKE :search OR " \
-                   "users.twitter_username ILIKE :search".freeze
+                   "users.username ILIKE :search".freeze
 
     def self.call(relation: User.registered, options: {})
       role, search = options.values_at(:role, :search)

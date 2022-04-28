@@ -84,11 +84,11 @@ RSpec.describe Mailchimp::Bot, type: :service do
       mc_error =
         Gibbon::MailChimpError.new("Error", status_code: 400, title: "Member In Compliance State")
       allow(mailchimp_bot.gibbon).to receive(:upsert).and_raise(mc_error)
-      allow(mailchimp_bot).to receive(:resubscribe_to_newsletter)
+      allow(mailchimp_bot).to receive(:resubscribe_as_pending)
 
       mailchimp_bot.upsert_to_newsletter
 
-      expect(mailchimp_bot).to have_received(:resubscribe_to_newsletter)
+      expect(mailchimp_bot).to have_received(:resubscribe_as_pending)
     end
 
     it "handles GibbonError" do
@@ -143,18 +143,6 @@ RSpec.describe Mailchimp::Bot, type: :service do
                   status: "subscribed",
                 ),
               ))
-    end
-  end
-
-  describe "#unsubscribe_all_newsletters" do
-    context "when called" do
-      before { allow(my_gibbon_client).to receive(:update).and_return(true) }
-
-      it "unsubscribes the user from the weekly newsletter" do
-        described_class.new(user).unsubscribe_all_newsletters
-        expect(my_gibbon_client).to have_received(:update)
-          .with(hash_including(body: hash_including(status: "unsubscribed")))
-      end
     end
   end
 end
