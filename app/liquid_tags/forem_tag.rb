@@ -1,5 +1,5 @@
 module ForemTag
-  REGISTRY_REGEXP = %r{#{URL.protocol}\.#{URL.domain}/\b([\w-]+)?}
+  REGISTRY_REGEXP = %r{#{URL.url.gsub("\.", "\\.")}/\b([\w-]+)?}
   USER_ORG_REGEXP = %r{#{URL.url}/(?<name>[\w-]+)/?$}
   POST_PODCAST_REGEXP = %r{#{URL.url}/(?<podcast>[\w-]+)/[\w-]+/?}
   COMBINED_REGEXP = [USER_ORG_REGEXP, POST_PODCAST_REGEXP].freeze
