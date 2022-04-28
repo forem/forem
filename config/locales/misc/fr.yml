@@ -23,7 +23,7 @@ fr:
   errors:
     authentication:
       errors:
-        suspended: Il semble que votre ancien compte %{community_name} ait été suspendu. Nous avons donc pris des mesures pour vous empêcher de créer un nouveau compte auprès de %{community_name} et de sa communauté. Si vous pensez qu'il s'agit d'une erreur, veuillez nous envoyer un courriel à %{community_email}, et nous réexaminerons la situation.
+        suspended: Il semble que votre ancien compte %{community_name} ait été suspendu. Nous avons donc pris des mesures pour vous empêcher de créer un nouveau compte auprès de %{community_name} et de sa communauté. Si vous pensez qu'il s'agit d'une erreur, veuillez nous envoyer un e-mail à %{community_email}, et nous réexaminerons la situation.
     fastly_config:
       must_be_array: "configs : doit être un tableau de chaînes de caractères (Array of Strings)"
       invalid_config: Configuration Fastly invalide - %{invalid_config}. Seules les %{valid_configs_join} sont valides.

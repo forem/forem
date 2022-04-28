@@ -20,7 +20,7 @@ fr:
     markdown_html: "<p>😔 Il y a une erreur dans votre markdown</p><hr><p>%{error}</p>"
     moderated: Non autorisé en raison d'une action de modération.
   confirmations_controller:
-    email_sent: Courriel envoyé ! Veuillez contacter le service d'assistance à l'adresse %{email} si vous avez des difficultés à recevoir les instructions de confirmation.
+    email_sent: E-mail envoyé ! Veuillez contacter le service d'assistance à l'adresse %{email} si vous avez des difficultés à recevoir les instructions de confirmation.
   credits_controller:
     done:
       one: "%{count} nouveau crédit acheté !"
@@ -33,7 +33,7 @@ fr:
   email_subscriptions_controller:
     badge_notifications: notifications de badges
     comment_notifications: notifications de commentaires
-    digest_emails: "%{community} courriels récapitulatifs"
+    digest_emails: "%{community} e-mails récapitulatifs"
     follower_notifications: notifications de followers
     mention_notifications: notifications de mentions
     this_list: cette liste
@@ -103,7 +103,7 @@ fr:
     added_admin: "%{name} est maintenant un administrateur."
     provide_email: Veuillez fournir une adresse e-mail pour supprimer votre compte
     provide_email_delete: Veuillez fournir une adresse e-mail pour supprimer votre compte
-    send_export: " L'exportation vous sera envoyée par courriel sous peu."
+    send_export: " L'exportation vous sera envoyée par e-mail sous peu."
     invalid_secret: Le secret d'organisation donné n'est pas valide.
     username_blank: Le nom d'utilisateur ne peut pas être vide
     deletion_in_progress: Vous avez déjà demandé la suppression de votre compte. Veuillez vérifier votre e-mail pour de nouvelles instructions.

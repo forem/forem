@@ -20,7 +20,7 @@ fr:
       same_author: ne doit pas être le même utilisateur que l'auteur
       must_not_have_spaces: ne doit pas comporter d'espaces
       published: Publié
-      unique_url: a déjà été pris. Envoyez un courriel à %{email} pour plus de détails.
+      unique_url: a déjà été pris. Envoyez un e-mail à %{email} pour plus de détails.
       mention_too_many:
         one: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un article !
         other: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un message !
