@@ -60,8 +60,11 @@ PodcastEpisodes.propTypes = {
 /**
  * Renders the main feed.
  */
-export const renderFeed = (timeFrame) => {
+export const renderFeed = async (timeFrame) => {
   const feedContainer = document.getElementById('homepage-feed');
+
+  const { currentUser } = await getUserDataAndCsrfToken();
+  const currentUserId = currentUser && currentUser.id;
 
   render(
     <Feed
@@ -88,9 +91,6 @@ export const renderFeed = (timeFrame) => {
         if (featuredStory) {
           sendFeaturedArticleAnalytics(featuredStory.id);
         }
-
-        const { currentUser } = getUserDataAndCsrfToken();
-        const currentUserId = currentUser && currentUser.id;
 
         // 1. Show the pinned article first
         // 2. Show the featured story next
