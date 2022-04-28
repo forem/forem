@@ -36,12 +36,11 @@ module Badges
         # Check that the current streak matches a reward level
         # Otherwise continue with next iteration (next user in query results)
         next unless REWARD_STREAK_WEEKS.include?(@week_streak)
-
-        badge_slug = "#{@week_streak}-week-community-wellness-streak"
         next unless (user = User.find_by(id: hash["user_id"]))
 
         # TODO: Remove FeatureFlag when truly ready for production use
         if FeatureFlag.enabled?(:community_wellness_badge)
+          badge_slug = "#{@week_streak}-week-community-wellness-streak"
           next unless (badge_id = Badge.id_for_slug(badge_slug))
 
           user.badge_achievements.create(
