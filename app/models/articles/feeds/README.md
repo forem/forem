@@ -20,7 +20,7 @@ requests that introduced the VariantQuery:
 ## So You Want to Change the Relevancy Feed
 
 The [forem/forem#17406 pull request](https://github.com/forem/forem/pull/17406)
-contains an example of constructing a
+contains an example of configuring a
 [Articles::Feeds::VariantQuery](https://github.com/forem/forem/blob/main/app/services/articles/feeds/variant_query.rb)
 configuration. You can also read the
 [config/feed-variants/README.md](https://github.com/forem/forem/blob/main/config/feed-variants/README.md)
