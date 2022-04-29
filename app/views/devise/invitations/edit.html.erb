@@ -7,11 +7,16 @@
     <% end %>
   </div>
   <div class="mt-3 crayons-card p-7 align-left">
-    <h2>Set a password to access your account</h2>
+    <h2>Finish setting up your account</h2>
 
     <%= form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :put }) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>
       <%= f.hidden_field :invitation_token, readonly: true %>
+
+      <div class="crayons-field mt-5">
+          <%= f.label :name, class: "crayons-field__label" %>
+          <%= f.text_field :name, class: "crayons-textfield" %>
+        </div>
 
       <% if f.object.class.require_password_on_accepting %>
         <div class="crayons-field mt-5">
