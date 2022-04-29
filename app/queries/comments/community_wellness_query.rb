@@ -22,8 +22,6 @@ module Comments
     end
 
     def self.sql_query
-      # Based on the following Blazer query:
-      # https://dev.to/admin/blazer/queries/677
       <<~SQL
         SELECT user_id,
                /* A comma separated string of "weeks_ago" */

@@ -3,10 +3,6 @@ module Badges
     REWARD_STREAK_WEEKS = [1, 2, 4, 8, 16, 32].freeze
 
     def self.call
-      new.call
-    end
-
-    def call
       # These are the users 'eligible' to be awarded the badge
       results = Comments::CommunityWellnessQuery.call
 
