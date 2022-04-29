@@ -51,27 +51,32 @@ class DashboardsController < ApplicationController
   def following_tags
     fetch_and_authorize_user
     @followed_tags = follows_for(user: @user, type: "ActsAsTaggableOn::Tag", order_by: :points)
+    @collections_count = collections_count(@user)
   end
 
   def following_users
     fetch_and_authorize_user
     @follows = follows_for(user: @user, type: "User")
+    @collections_count = collections_count(@user)
   end
 
   def following_organizations
     fetch_and_authorize_user
     @followed_organizations = follows_for(user: @user, type: "Organization")
+    @collections_count = collections_count(@user)
   end
 
   def following_podcasts
     fetch_and_authorize_user
     @followed_podcasts = follows_for(user: @user, type: "Podcast")
+    @collections_count = collections_count(@user)
   end
 
   def followers
     fetch_and_authorize_user
     @follows = Follow.followable_user(@user.id)
       .includes(:follower).order(created_at: :desc).limit(follows_limit)
+    @collections_count = collections_count(@user)
   end
 
   def analytics
@@ -124,5 +129,9 @@ class DashboardsController < ApplicationController
     return max if per_page > max
 
     per_page
+  end
+
+  def collections_count(user)
+    user.collections.non_empty.count
   end
 end
