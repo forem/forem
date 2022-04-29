@@ -18,46 +18,48 @@ module Badges
         #    - [1,4,17]
         # We only care for active streak (starting at 1) so we need to filter
         # these to check how far back the (continuous) streak goes
-        @week_streak = 0
+        week_streak = 0
         weeks_ago.each_with_index do |week, index|
           # Must have 2 or more non-flagged comments posted on that week
           next unless comment_counts[index] > 1
 
           # Must be a consecutive streak
-          next unless @week_streak + 1 == week
+          next unless week_streak + 1 == week
 
-          @week_streak = week
+          week_streak = week
         end
 
         # Check that the current streak matches a reward level
         # Otherwise continue with next iteration (next user in query results)
-        next unless REWARD_STREAK_WEEKS.include?(@week_streak)
+        next unless REWARD_STREAK_WEEKS.include?(week_streak)
         next unless (user = User.find_by(id: hash["user_id"]))
 
         # TODO: Remove FeatureFlag when truly ready for production use
         if FeatureFlag.enabled?(:community_wellness_badge)
-          badge_slug = "#{@week_streak}-week-community-wellness-streak"
+          badge_slug = "#{week_streak}-week-community-wellness-streak"
           next unless (badge_id = Badge.id_for_slug(badge_slug))
 
           user.badge_achievements.create(
             badge_id: badge_id,
-            rewarding_context_message_markdown: generate_message,
+            rewarding_context_message_markdown: generate_message(weeks: week_streak),
           )
         else
           # If the FeatureFlag isn't enabled only track which users would get
           # the badge to get an understanding of how the service will work
-          Ahoy.instance&.track("Community Wellness Badge Award", user_id: user.id, week: @week_streak)
+          Ahoy.instance&.track("Community Wellness Badge Award", user_id: user.id, weeks: week_streak)
         end
       end
     end
 
-    private
-
-    def generate_message
-      return I18n.t("services.badges.community_wellness.first") if @week_streak == 1
-      return I18n.t("services.badges.community_wellness.longest") if @week_streak == REWARD_STREAK_WEEKS.last
-
-      I18n.t("services.badges.community_wellness.other", weeks: @week_streak)
+    def self.generate_message(weeks:)
+      case weeks
+      when 1
+        I18n.t("services.badges.community_wellness.first")
+      when REWARD_STREAK_WEEKS.last
+        I18n.t("services.badges.community_wellness.longest")
+      else
+        I18n.t("services.badges.community_wellness.other", weeks: weeks)
+      end
     end
   end
 end
