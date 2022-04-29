@@ -26,7 +26,7 @@ configuration. You can also read the
 [config/feed-variants/README.md](https://github.com/forem/forem/blob/main/config/feed-variants/README.md)
 for further context.
 
-## So You Want to Understand the Variant Query
+## Understanding the Variant Query
 
 In
 [Diving into Dev's Relevancy Feed Builder](https://dev.to/devteam/diving-into-devs-relevancy-feed-builder-30m6)
