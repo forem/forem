@@ -6,11 +6,11 @@ RSpec.describe "Dashboard", type: :system, js: true do
   let(:collection) { create(:collection, :with_articles) }
   let(:collection_user) { collection.user }
 
-  before do
-    sign_in user
-  end
-
   context "when looking at analytics counters" do
+    before do
+      sign_in user
+    end
+
     it "shows the count of unspent credits" do
       Credit.add_to(user, 2)
 
@@ -35,51 +35,22 @@ RSpec.describe "Dashboard", type: :system, js: true do
       sign_in collection_user
     end
 
-    it "shows the user-collections count on dashboard tab" do
-      visit dashboard_path
+    it "shows the user-collections count on current dashboard tab", :aggregate_failures do
+      dashboard_paths = [
+        dashboard_path,
+        dashboard_following_path,
+        dashboard_following_tags_path,
+        dashboard_following_users_path,
+        dashboard_following_organizations_path,
+        dashboard_following_podcasts_path,
+      ]
 
-      within "main#main-content nav" do
-        expect(page).to have_text(/Series\n1/)
-      end
-    end
+      dashboard_paths.each do |path|
+        visit path
 
-    it "shows the user-collections count on following tab" do
-      visit dashboard_following_path
-
-      within "main#main-content nav" do
-        expect(page).to have_text(/Series\n1/)
-      end
-    end
-
-    it "shows the user-collections count on following-tags tab" do
-      visit dashboard_following_tags_path
-
-      within "main#main-content nav" do
-        expect(page).to have_text(/Series\n1/)
-      end
-    end
-
-    it "shows the user-collections count on following-users tab" do
-      visit dashboard_following_users_path
-
-      within "main#main-content nav" do
-        expect(page).to have_text(/Series\n1/)
-      end
-    end
-
-    it "shows the user-collections count on following-orgs tab" do
-      visit dashboard_following_organizations_path
-
-      within "main#main-content nav" do
-        expect(page).to have_text(/Series\n1/)
-      end
-    end
-
-    it "shows the user-collections count on following-podcasts tab" do
-      visit dashboard_following_podcasts_path
-
-      within "main#main-content nav" do
-        expect(page).to have_text(/Series\n1/)
+        within "main#main-content nav" do
+          expect(page).to have_text(/Series\n1/)
+        end
       end
     end
   end
