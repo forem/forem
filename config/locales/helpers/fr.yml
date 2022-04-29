@@ -116,7 +116,7 @@ fr:
       most_reactions: Le plus de réactions
       most_views: Le plus de vues
       recently_created: Récemment créé
-      récemment_publié: Récemment publié
+      recently_published: Récemment publié
     authentification_helper:
       any_of_those: n'importe lequel de ces éléments
       email_password: Email et mot de passe
