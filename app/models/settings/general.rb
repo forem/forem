@@ -70,7 +70,6 @@ module Settings
     # <https://mailchimp.com/developer/>
     setting :mailchimp_api_key, type: :string, default: ApplicationConfig["MAILCHIMP_API_KEY"]
     setting :mailchimp_newsletter_id, type: :string, default: ""
-    setting :mailchimp_sustaining_members_id, type: :string, default: ""
     setting :mailchimp_tag_moderators_id, type: :string, default: ""
     setting :mailchimp_community_moderators_id, type: :string, default: ""
     # Mailchimp webhook secret. Part of the callback URL in the Mailchimp settings.

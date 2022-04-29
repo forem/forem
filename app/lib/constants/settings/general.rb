@@ -57,10 +57,6 @@ module Constants
           description: "Main Newsletter ID, also known as Audience ID",
           placeholder: ""
         },
-        mailchimp_sustaining_members_id: {
-          description: "Sustaining Members Newsletter ID",
-          placeholder: ""
-        },
         mailchimp_tag_moderators_id: {
           description: "Tag Moderators Newsletter ID",
           placeholder: ""

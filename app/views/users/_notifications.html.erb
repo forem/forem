@@ -13,12 +13,6 @@
       <%= f.check_box :email_digest_periodic, class: "crayons-checkbox" %>
       <%= f.label :email_digest_periodic, "Send me a periodic digest of top posts from my tags", class: "crayons-field__label" %>
     </div>
-    <% if current_user.a_sustaining_member? %>
-      <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box :email_membership_newsletter, class: "crayons-checkbox" %>
-        <%= f.label :email_membership_newsletter, "Send me sustaining membership newsletter emails", class: "crayons-field__label" %>
-      </div>
-    <% end %>
     <% if current_user.tag_moderator? %>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :email_tag_mod_newsletter, class: "crayons-checkbox" %>
