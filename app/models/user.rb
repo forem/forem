@@ -494,10 +494,6 @@ class User < ApplicationRecord
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
 
-  def a_sustaining_member?
-    monthly_dues.positive?
-  end
-
   def profile_image_90
     profile_image_url_for(length: 90)
   end

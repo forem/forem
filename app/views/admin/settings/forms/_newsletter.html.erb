@@ -22,14 +22,6 @@
         </div>
 
         <div class="crayons-field">
-          <%= admin_config_label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_sustaining_members_id][:description] %>
-          <%= f.text_field :mailchimp_sustaining_members_id,
-                           class: "crayons-textfield",
-                           value: Settings::General.mailchimp_sustaining_members_id %>
-        </div>
-
-        <div class="crayons-field">
           <%= admin_config_label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
           <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_tag_moderators_id][:description] %>
           <%= f.text_field :mailchimp_tag_moderators_id,

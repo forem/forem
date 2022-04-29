@@ -54,7 +54,6 @@ fr:
       users_notification_setting:
         email_newsletter: Send me weekly newsletter emails
         email_digest_periodic: Send me a periodic digest of top posts from my tags
-        email_membership_newsletter: Send me sustaining membership newsletter emails
         email_tag_mod_newsletter: Send me tag moderator newsletter emails
         email_community_mod_newsletter: Send me community moderator newsletter emails
         email_comment_notifications: Send me an email when someone replies to me in a comment thread

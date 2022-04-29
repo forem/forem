@@ -122,12 +122,6 @@ module Mailchimp
       success
     end
 
-    def remove_sustaining_member
-      return unless Settings::General.mailchimp_sustaining_members_id.present? && a_sustaining_member?
-
-      permanent_delete_from_mailchimp(Settings::General.mailchimp_sustaining_members_id)
-    end
-
     def remove_community_mod
       return unless Settings::General.mailchimp_community_moderators_id.present? && user.trusted?
 
@@ -145,7 +139,6 @@ module Mailchimp
       begin
         permanent_delete_from_mailchimp(Settings::General.mailchimp_newsletter_id)
         remove_tag_mod
-        remove_sustaining_member
         remove_community_mod
         success = true
       rescue Gibbon::MailChimpError => e
@@ -155,13 +148,6 @@ module Mailchimp
     end
 
     private
-
-    def a_sustaining_member?
-      # Reasoning for including => saved_changes["monthly_dues"]
-      # Is that mailchimp should be updated if a user decides to
-      # unsubscribes
-      user.monthly_dues.positive? || saved_changes["monthly_dues"]
-    end
 
     def md5_email(email)
       Digest::MD5.hexdigest(email.downcase)
