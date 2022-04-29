@@ -3,6 +3,10 @@ module Articles
     # This object is responsible for building the relevancy feed based on the given user and the
     # variant they are currently assigned.
     #
+    # This class uses the Articles::Feeds::VariantQuery::Config to create a SQL statement.  The SQL
+    # statement calculates a `relevancy_score` for each article based on the configuration of the
+    # chosen relevancy levers.
+    #
     # @see config/feed-variants/README.md
     # @see app/models/articles/feeds/README.md
     class VariantQuery

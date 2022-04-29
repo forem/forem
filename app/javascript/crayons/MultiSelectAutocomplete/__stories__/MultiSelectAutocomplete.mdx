@@ -2,7 +2,7 @@
 
 The MultiSelectAutocomplete component can be used in situations where a user can search for matching options, and select multiple values.
 
-When the user starts typing, an async search will be triggered, and any fetched suggestions displayed in the dropdown. If no suggestions are available, the currently entered search term will be displayed as an option.
+When the user starts typing, an async search will be triggered, and any fetched suggestions displayed in the dropdown.
 
 ## Browsing and selecting an option
 
@@ -17,6 +17,12 @@ Options can be selected in a few ways:
 When a user selects a suggestion, it will be displayed as a button group. The first button triggers an edit of the selection, and the second button triggers the removal of the selection.
 
 Both buttons appear in the tab order, and are semantically grouped together for assistive technology.
+
+## User-defined selections
+
+By default, only suggestions returned by the `fetchSuggestions` callback may be selected. However, an optional prop `allowUserDefinedSelections` may be passed in to allow a user to create their own values to select.
+
+If this is enabled, the user's current input will also be shown as a suggestion if the `fetchSuggestions` callback fails to return any options.
 
 ## Technical implementation notes
 

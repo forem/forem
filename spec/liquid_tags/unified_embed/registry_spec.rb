@@ -161,6 +161,22 @@ RSpec.describe UnifiedEmbed::Registry do
       end
     end
 
+    it "returns OpenGraphTag for pathless or invalid Forem url", :aggregate_failures do
+      # for localhost, the first 2 cases are identical, due to no dots in URL.url
+      invalid_forem_links = [
+        URL.url,
+        URL.url.tr(".", "n"),
+        "#{URL.url}/",
+        "#{URL.url}////",
+        "#{URL.url}something",
+      ]
+
+      invalid_forem_links.each do |url|
+        expect(described_class.find_liquid_tag_for(link: url))
+          .to eq(OpenGraphTag)
+      end
+    end
+
     it "returns GistTag for a gist url" do
       expect(described_class.find_liquid_tag_for(link: "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"))
         .to eq(GistTag)
