@@ -23,7 +23,7 @@ module Search
       # By skipping ordering, we rely on the custom ranking defined in the article's tsvector document
       return relation if term.present? && sort_by.blank?
 
-      return relation.reorder(sort_by => sort_direction) if sort_by&.to_sym == :published_at
+      return relation.reorder(sort_by => sort_direction) if sort_by&.to_sym == :published_at && sort_direction
 
       relation.reorder(DEFAULT_SORT_BY)
     end

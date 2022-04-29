@@ -3,6 +3,16 @@ import { fireEvent, render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { SaveButton } from '../SaveButton';
 
+it('should not show bookmark button when saveable is false', () => {
+  const article = { class_name: 'Article', id: 1 };
+  const { queryByText } = render(
+    <SaveButton article={article} saveable={false} />,
+  );
+  const saveButton = queryByText('Saved');
+
+  expect(saveButton).toBeNull();
+});
+
 it('should have no a11y violations', async () => {
   const article = { class_name: 'Article', id: 1 };
   const { container } = render(<SaveButton article={article} />);

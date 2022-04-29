@@ -10,6 +10,12 @@ export default {
     },
   },
   argTypes: {
+    allowUserDefinedSelections: {
+      table: {
+        defaultValue: { summary: false },
+      },
+      description: 'Whether or not a user can create new options to select',
+    },
     border: {
       table: {
         defaultValue: { summary: false },
@@ -73,6 +79,7 @@ Default.args = {
   placeholder: 'Add a number...',
   maxSelections: 4,
   staticSuggestionsHeading: 'Static suggestions',
+  allowUserDefinedSelections: false,
 };
 
 Default.story = {
