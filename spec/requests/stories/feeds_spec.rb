@@ -30,41 +30,37 @@ RSpec.describe "Stories::Feeds", type: :request do
       )
     end
 
-    it "returns feed when feed_strategy is basic" do
-      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
+    context "when there are no params passed (base feed) and user is NOT signed in" do
+      it "returns feed when feed_strategy is basic" do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
 
-      get stories_feed_path
+        get stories_feed_path
 
-      expect(response_article).to include(
-        "id" => article.id,
-        "title" => title,
-        "user_id" => user.id,
-        "user" => hash_including("name" => user.name),
-        "organization_id" => organization.id,
-        "organization" => hash_including("name" => organization.name),
-        "tag_list" => article.decorate.cached_tag_list_array,
-      )
-    end
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+        )
+      end
 
-    %i[enable disable].each do |toggle|
-      context "when we #{toggle} :feed_uses_variant_query_feature" do
-        before { FeatureFlag.public_send(toggle, :feed_uses_variant_query_feature) }
+      it "returns feed when feed_strategy is large_forem_experimental" do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("large_forem_experimental")
 
-        it "returns feed when feed_strategy is not basic" do
-          allow(Settings::UserExperience).to receive(:feed_strategy).and_return("optimized")
+        get stories_feed_path
 
-          get stories_feed_path
-
-          expect(response_article).to include(
-            "id" => article.id,
-            "title" => title,
-            "user_id" => user.id,
-            "user" => hash_including("name" => user.name),
-            "organization_id" => organization.id,
-            "organization" => hash_including("name" => organization.name),
-            "tag_list" => article.decorate.cached_tag_list_array,
-          )
-        end
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+        )
       end
     end
 
@@ -175,8 +171,8 @@ RSpec.describe "Stories::Feeds", type: :request do
         )
       end
 
-      it "returns feed when feed_strategy is optimized" do
-        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("optimized")
+      it "returns feed when feed_strategy is large_forem_experimental" do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("large_forem_experimental")
 
         get stories_feed_path
 
