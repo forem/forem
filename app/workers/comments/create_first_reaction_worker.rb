@@ -1,6 +1,6 @@
 module Comments
   class CreateFirstReactionWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :high_priority, retry: 10
 
