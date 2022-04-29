@@ -33,7 +33,7 @@ In
 we explained the conceptual implementation; providing a conceptual entity
 relationship and sequence diagrams.
 
-The key thing to internalize is as follows: We want to create a SQL statement
+The key thing to understand is as follows: We create a SQL statement
 that calculates a `relevancy_score` for a given user and each article in the
 Forem instance. The higher the article's `relevancy_score`, the closer that article will be to
 the top of the feed.
