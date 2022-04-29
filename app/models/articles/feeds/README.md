@@ -1,7 +1,7 @@
 # Feed Configuration
 
 Welcome to the technical documentation of the Feed Configuration. It's
-structured more as an index pointing you to related files.
+structured as an index pointing you to related files.
 
 ## Historical Documents
 
