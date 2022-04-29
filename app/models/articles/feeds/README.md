@@ -21,7 +21,7 @@ requests that introduced the VariantQuery:
 
 The [forem/forem#17406 pull request](https://github.com/forem/forem/pull/17406)
 contains an example of configuring a
-[Articles::Feeds::VariantQuery](https://github.com/forem/forem/blob/main/app/services/articles/feeds/variant_query.rb)
+[VariantQuery](https://github.com/forem/forem/blob/main/app/services/articles/feeds/variant_query.rb)
 You can also read the
 [config/feed-variants/README.md](https://github.com/forem/forem/blob/main/config/feed-variants/README.md)
 for further context.
