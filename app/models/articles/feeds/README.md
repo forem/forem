@@ -8,10 +8,10 @@ structured as an index pointing you to related files.
 - The
   [Articles::Feeds::WeightedQueryStrategy](https://github.com/forem/forem/blob/de2edee07d824a34e5c5445d455b1f8086bd127d/app/services/articles/feeds/weighted_query_variant.rb)
   is the precursor to the more robust feed configuration.
-- [These Are the [Feed] Levers I Know I Know](https://dev.to/devteam/these-are-the-feed-levers-i-know-i-know-3jj7)
+- [This post](https://dev.to/devteam/these-are-the-feed-levers-i-know-i-know-3jj7)
   walked through the meaning of each of the initial relevancy levers.
 
-In addition there are two code walk throughs explaining the two primary pull
+In addition there are two code walk throughs explaining the pull
 requests that introduced the VariantQuery:
 
 - [Introducing the concepts](https://www.loom.com/share/857cea3698f44a4f876a01fb4e72552c)
@@ -22,7 +22,7 @@ requests that introduced the VariantQuery:
 The [forem/forem#17406 pull request](https://github.com/forem/forem/pull/17406)
 contains an example of configuring a
 [Articles::Feeds::VariantQuery](https://github.com/forem/forem/blob/main/app/services/articles/feeds/variant_query.rb)
-configuration. You can also read the
+You can also read the
 [config/feed-variants/README.md](https://github.com/forem/forem/blob/main/config/feed-variants/README.md)
 for further context.
 
