@@ -118,7 +118,7 @@ fr:
       most_views: Le plus de vues
       recently_created: Récemment créé
       récemment_publié: Récemment publié
-    authentification_helper:
+    authentication_helper:
       any_of_those: n'importe lequel de ces éléments
       email_password: Email et mot de passe
       reminder:  'Rappel : vous avez utilisé %{method} pour authentifier votre compte, veuillez donc utiliser %{dem} pour vous connecter si vous y êtes invité'
