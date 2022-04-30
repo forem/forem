@@ -54,7 +54,6 @@ fr:
       users_notification_setting:
         email_newsletter: Envoyez-moi une newsletter hebdomadaire
         email_digest_periodic: Envoyez-moi un condensé périodique des meilleurs messages de mes tags
-        email_membership_newsletter: Envoyez-moi des e-mails d'information sur les membres de longue date
         email_tag_mod_newsletter: Envoyez-moi des e-mails de newsletter pour les modérateurs de tags
         email_community_mod_newsletter: Envoyez-moi les e-mails de la newsletter des modérateurs de communauté
         email_comment_notifications: Envoyez-moi un e-mail lorsque quelqu'un me répond dans un fil de commentaires
@@ -117,8 +116,8 @@ fr:
       most_reactions: Le plus de réactions
       most_views: Le plus de vues
       recently_created: Récemment créé
-      récemment_publié: Récemment publié
-    authentication_helper:
+      recently_published: Récemment publié
+    authentification_helper:
       any_of_those: n'importe lequel de ces éléments
       email_password: Email et mot de passe
       reminder:  'Rappel : vous avez utilisé %{method} pour authentifier votre compte, veuillez donc utiliser %{dem} pour vous connecter si vous y êtes invité'
