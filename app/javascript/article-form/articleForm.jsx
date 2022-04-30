@@ -18,7 +18,7 @@ import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 /* global activateRunkitTags */
 
 /*
-  Although the state fields: id, description, canonicalUrl, series, allSeries and
+  Although the state fields: id, description, canonicalUrl, publishedAt, series, allSeries and
   editing are not used in this file, they are important to the
   editor.
 */
@@ -102,6 +102,7 @@ export class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      publishedAt: this.article.published_at || '', // eslint-disable-line react/no-unused-state
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
@@ -314,6 +315,7 @@ export class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      publishedAt: this.article.published_at || '', // eslint-disable-line react/no-unused-state
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',

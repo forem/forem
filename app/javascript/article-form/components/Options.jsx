@@ -14,6 +14,7 @@ import CogIcon from '@images/cog.svg';
 export const Options = ({
   passedData: {
     published = false,
+    publishedAt = '',
     allSeries = [],
     canonicalUrl = '',
     series = '',
@@ -23,6 +24,18 @@ export const Options = ({
 }) => {
   let publishedField = '';
   let existingSeries = '';
+  const publishedDate = new Date(publishedAt);
+  const month = (publishedDate.getMonth() + 1).toString().padStart(2, '0');
+  const day = publishedDate.getDate().toString().padStart(2, '0');
+  const localPublishedAt = [
+    publishedDate.getFullYear(),
+    '-',
+    month,
+    '-',
+    day,
+    'T',
+    publishedDate.toLocaleTimeString(),
+  ].join('');
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name, index) => {
@@ -108,10 +121,20 @@ export const Options = ({
           </label>
           <input
             type="datetime-local"
+            value={localPublishedAt} // "2022-04-28T15:00:00"
             className="crayons-textfield"
-            name="published_at"
+            name="publishedAt"
             onKeyUp={onConfigChange}
-            id="published_at"
+            id="publishedAt"
+            placeholder="..."
+          />
+          <input
+            type="text"
+            value={Intl.DateTimeFormat().resolvedOptions().timeZone} // "2022-04-28T15:00:00"
+            className="crayons-textfield"
+            name="timezone"
+            onKeyUp={onConfigChange}
+            id="timezone"
             placeholder="..."
           />
         </div>
@@ -151,6 +174,7 @@ export const Options = ({
 Options.propTypes = {
   passedData: PropTypes.shape({
     published: PropTypes.bool.isRequired,
+    publishedAt: PropTypes.string.isRequired,
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired,
