@@ -79,7 +79,7 @@ gem "rack-attack", "~> 6.6.1" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.2.2" # Ruby on Rails
-gem "ransack", "~> 3.0" # Searching and sorting
+gem "ransack", "~> 3.1" # Searching and sorting
 gem "recaptcha", "~> 5.9", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
@@ -95,8 +95,8 @@ gem "rouge", "~> 3.28" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sidekiq", "~> 6.4.1" # Sidekiq is used to process background jobs with the help of Redis
-gem "sidekiq-cron", "~> 1.3" # Allows execution of scheduled cron jobs as specific times
+gem "sidekiq", "~> 6.4.2" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq-cron", "~> 1.4" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 7.1.19" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
@@ -145,7 +145,7 @@ group :development, :test do
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.27", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.28", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.14", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.10", require: false # Code style checking for RSpec files
