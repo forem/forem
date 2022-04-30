@@ -27,9 +27,9 @@ fr:
     broadcast:
       single_active: Vous ne pouvez avoir qu'une seule diffusion d'annonce active
     comment:
-      deleted: '[deleted]'
+      deleted: '[supprimé]'
       has_been_deleted: '%{type} a été supprimé'
-      hidden: "[hidden by post author]"
+      hidden: "[caché par l'auteur du message]"
       is_not_valid: n'est pas valide.
       locked: la discussion est verrouillée sur ce message
       type:
@@ -69,7 +69,7 @@ fr:
       cannot_vote_more_than_once: ne peut pas voter plus d'une fois dans un sondage
     poll_vote:
       cannot_vote_more_than_once: Impossible de voter plus d'une fois dans un sondage.
-    profil_pin:
+    profile_pin:
       only_five: ne peut pas avoir plus de cinq messages épinglés au total
       pin_unpermitted: doit avoir les autorisations appropriées pour l'épinglage
     rating_vote:
