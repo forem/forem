@@ -131,7 +131,7 @@ fr:
       less_than_x_minutes:
         one: Expire dans moins d'une minute
         other: Expire dans moins de %{count} minutes
-      over_x_yars:
+      over_x_years:
         one: Expire dans plus d'un an
         other: Expire dans plus de %{count} ans
       x_seconds:
