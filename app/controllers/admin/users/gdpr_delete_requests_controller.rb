@@ -21,7 +21,7 @@ module Admin
           },
         )
 
-        redirect_to admin_users_gdpr_delete_requests_path
+        redirect_to admin_gdpr_delete_requests_path
       end
     end
   end

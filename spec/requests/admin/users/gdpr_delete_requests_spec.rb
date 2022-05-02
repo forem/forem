@@ -11,17 +11,17 @@ RSpec.describe "/admin/users/gdpr_delete_requests", type: :request do
     let!(:gdr) { create(:gdpr_delete_request, email: "user@dev.to") }
 
     it "renders successfully" do
-      get admin_users_gdpr_delete_requests_path
+      get admin_gdpr_delete_requests_path
       expect(response).to be_successful
     end
 
     it "displays the gdpr delete requests" do
-      get admin_users_gdpr_delete_requests_path
+      get admin_gdpr_delete_requests_path
       expect(response.body).to include("user@dev.to")
     end
 
     it "displays the number of existing requests" do
-      get admin_users_gdpr_delete_requests_path
+      get admin_gdpr_delete_requests_path
       expect(response.body).to include("<span class=\"c-indicator c-indicator--danger\">1</span>")
     end
 
@@ -40,7 +40,7 @@ RSpec.describe "/admin/users/gdpr_delete_requests", type: :request do
 
   context "without gdpr request" do
     it "doesn't display the number of existing requests" do
-      get admin_users_gdpr_delete_requests_path
+      get admin_gdpr_delete_requests_path
       expect(response.body).not_to include("<span class=\"c-indicator c-indicator--danger\">0</span>")
     end
   end
