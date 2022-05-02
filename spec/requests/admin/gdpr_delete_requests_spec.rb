@@ -27,13 +27,13 @@ RSpec.describe "/admin/gdpr_delete_requests", type: :request do
 
     it "destroys the gdpr delete request on confirmation" do
       expect do
-        delete admin_users_gdpr_delete_request_path(gdr.id)
+        delete admin_gdpr_delete_request_path(gdr.id)
       end.to change(GdprDeleteRequest, :count).by(-1)
     end
 
     it "creates a corresponding audit_log on confirmation" do
       expect do
-        delete admin_users_gdpr_delete_request_path(gdr.id)
+        delete admin_gdpr_delete_request_path(gdr.id)
       end.to change(AuditLog, :count).by(1)
     end
   end
