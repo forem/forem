@@ -4,7 +4,7 @@ RSpec.describe "Dashboard", type: :system, js: true do
   let(:tag) { create(:tag) }
   let(:organization) { create(:organization) }
   let(:podcast) { create(:podcast) }
-  let(:listing) { create(:listing) }
+  let(:listing) { create(:listing, user: collection.user) }
   let(:collection) { create(:collection, :with_articles) }
   let(:user1) { collection.user }
   let(:user2) { create(:user) }
@@ -14,7 +14,7 @@ RSpec.describe "Dashboard", type: :system, js: true do
       sign_in user1
     end
 
-    it "shows the count of unspent credits" do
+    it "shows the count of unspent credits and listings created" do
       Credit.add_to(user1, 2)
 
       Credits::Buy.call(
@@ -23,12 +23,13 @@ RSpec.describe "Dashboard", type: :system, js: true do
         cost: 1,
       )
       Credit.counter_culture_fix_counts
-      user.reload
+      user1.reload
 
       visit dashboard_path
 
       within "main#main-content > header" do
         expect(page).to have_text(/1\nCredits available/)
+        expect(page).to have_text(/1\nListings created/)
       end
     end
   end
