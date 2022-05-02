@@ -1,6 +1,6 @@
 module Users
   class FollowWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: :high_priority, retry: 10, lock: :until_executed
 
     def perform(user_id, followable_id, followable_type)

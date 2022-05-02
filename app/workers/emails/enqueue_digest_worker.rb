@@ -1,6 +1,6 @@
 module Emails
   class EnqueueDigestWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :medium_priority, retry: 15
 
