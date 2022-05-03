@@ -21,6 +21,11 @@ describe ArticlesHelper do
       host = helper.get_host_without_www("www.example.com")
       expect(host).to eq "example.com"
     end
+
+    it "can handle URLs with leading and trailing whitespace" do
+      host = helper.get_host_without_www(" www.example.com ")
+      expect(host).to eq "example.com"
+    end
   end
 
   describe "#image_tag_or_inline_svg_tag" do
