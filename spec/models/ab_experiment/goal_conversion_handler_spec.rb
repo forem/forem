@@ -28,7 +28,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         field_test(experiment_name, participant: user)
       end
 
-      it "registers some events but not others" do
+      it "registers some events but not others", :aggregate_failures do
         7.times do |n|
           create(:comment, user_id: user.id, created_at: n.days.ago)
         end
@@ -49,13 +49,13 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
       end
 
-      it "records a conversion" do
+      it "records a conversion", :aggregate_failures do
         handler.call
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq(goal)
       end
 
-      it "records user_creates_comment_on_at_least_four_different_days_within_a_week field test conversion" do
+      it "records user_creates_comment_on_at_least_four_different_days_within_a_week field test conversion", :aggregate_failures do
         7.times do |n|
           create(:comment, user_id: user.id, created_at: n.days.ago)
         end
@@ -73,7 +73,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
       end
 
-      it "records user_views_pages_on_at_least_four_different_days_within_a_week field test conversion" do
+      it "records user_views_pages_on_at_least_four_different_days_within_a_week field test conversion", :aggregate_failures do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
@@ -83,7 +83,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
           .to include("user_views_pages_on_at_least_four_different_days_within_a_week")
       end
 
-      it "records user_views_pages_on_at_least_nine_different_days_within_two_weeks field test conversionn" do
+      it "records user_views_pages_on_at_least_nine_different_days_within_two_weeks field test conversionn", :aggregate_failures do
         10.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
@@ -93,7 +93,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
           .to include("user_views_pages_on_at_least_nine_different_days_within_two_weeks")
       end
 
-      it "records user_views_pages_on_at_least_twelve_different_hours_within_five_days field test conversion" do
+      it "records user_views_pages_on_at_least_twelve_different_hours_within_five_days field test conversion", :aggregate_failures do
         15.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
@@ -112,7 +112,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         expect(FieldTest::Event.all.size).to be(0)
       end
 
-      it "records user_views_pages_on_at_least_four_different_hours_within_a_day field test conversionn" do
+      it "records user_views_pages_on_at_least_four_different_hours_within_a_day field test conversionn", :aggregate_failures do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
