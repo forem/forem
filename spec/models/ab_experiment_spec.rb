@@ -5,7 +5,7 @@ RSpec.describe AbExperiment do
   let(:user) { double }
 
   describe ".register_conversions_for" do
-    it "forward forward delegates to Converter.call" do
+    it "forwards delegates to Converter.call" do
       allow(described_class::GoalConversionHandler).to receive(:call)
       described_class.register_conversions_for(user: user, goal: "goal")
       expect(described_class::GoalConversionHandler)
