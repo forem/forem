@@ -10,7 +10,7 @@ module SidekiqTestHelpers
     return Sidekiq::Queues.jobs_by_queue[queue.to_s] if queue
     return Sidekiq::Queues.jobs_by_worker[worker.to_s] if worker
 
-    Sidekiq::Worker.jobs
+    Sidekiq::Job.jobs
   end
 
   # Asserts that the number of enqueued jobs matches the given number.
@@ -89,7 +89,7 @@ module SidekiqTestHelpers
 
   # Perform all Sidekiq jobs until there are no longer any in the queues
   def drain_all_sidekiq_jobs
-    sidekiq_perform_enqueued_jobs while Sidekiq::Worker.jobs.any?
+    sidekiq_perform_enqueued_jobs while Sidekiq::Job.jobs.any?
   end
 
   class Utils
@@ -108,7 +108,7 @@ module SidekiqTestHelpers
       def enqueued_jobs_size(only: nil, except: nil, queue: nil)
         validate_option(only: only, except: except)
 
-        Sidekiq::Worker.jobs.count do |job|
+        Sidekiq::Job.jobs.count do |job|
           job_class = job.fetch("class")
           if only
             next false unless Array(only).include?(job_class.constantize)

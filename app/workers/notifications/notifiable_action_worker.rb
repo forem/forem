@@ -1,6 +1,6 @@
 module Notifications
   class NotifiableActionWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :low_priority, retry: 10
     def perform(notifiable_id, notifiable_type, action)

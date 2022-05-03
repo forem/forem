@@ -1,6 +1,6 @@
  <div class="relative flex">
     <button type="button" id="<%= user.id %>-action-dropdown-btn-<%= context %>" data-toggle-dropdown="<%= user.id %>-action-dropdown-<%= context %>" aria-controls="<%= user.id %>-action-dropdown-<%= context %>" aria-haspopup="true" aria-expanded="false"
-        class="c-btn c-btn--icon-alone ml-auto" aria-label="Invitation actions: <%= user.name %>">
+        class="c-btn c-btn--icon-alone ml-auto" aria-label="Invitation actions: <%= user.email %>">
         <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
     </button>
     <div id="<%= user.id %>-action-dropdown-<%= context %>" class="crayons-dropdown right-0">

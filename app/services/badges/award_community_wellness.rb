@@ -46,7 +46,8 @@ module Badges
         else
           # If the FeatureFlag isn't enabled only track which users would get
           # the badge to get an understanding of how the service will work
-          Ahoy.instance&.track("Community Wellness Badge Award", user_id: user.id, weeks: week_streak)
+          tags = ["user_id:#{user.id}", "weeks:#{week_streak}"]
+          ForemStatsClient.increment("community_wellness_badge.award", tags: tags)
         end
       end
     end

@@ -1,6 +1,6 @@
 module Notifications
   class MentionWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(mention_id)

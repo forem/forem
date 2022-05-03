@@ -1,6 +1,6 @@
 module Feeds
   class ImportArticlesWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :medium_priority, retry: 10, lock: :until_and_while_executing
 
@@ -34,7 +34,7 @@ module Feeds
     end
 
     class ForUser
-      include Sidekiq::Worker
+      include Sidekiq::Job
 
       def perform(user_ids, earlier_than)
         users_scope = User.where(id: user_ids)

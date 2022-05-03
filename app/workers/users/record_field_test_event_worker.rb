@@ -1,6 +1,6 @@
 module Users
   class RecordFieldTestEventWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     include FieldTest::Helpers
 
     sidekiq_options queue: :low_priority, retry: 10
