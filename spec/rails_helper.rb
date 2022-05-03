@@ -112,7 +112,7 @@ RSpec.configure do |config|
 
   config.before do
     # Worker jobs shouldn't linger around between tests
-    Sidekiq::Worker.clear_all
+    Sidekiq::Job.clear_all
     # Disable SSRF protection for CarrierWave specs
     # See: https://github.com/carrierwaveuploader/carrierwave/issues/2531
     # rubocop:disable RSpec/AnyInstance

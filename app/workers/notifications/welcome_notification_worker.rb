@@ -1,6 +1,6 @@
 module Notifications
   class WelcomeNotificationWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(receiver_id, broadcast_id)

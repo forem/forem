@@ -1,6 +1,6 @@
 module PushNotifications
   class CleanupWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :low_priority, retry: 10, lock: :until_and_while_executing
 

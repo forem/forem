@@ -80,7 +80,7 @@ gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compa
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.2.2" # Ruby on Rails
 gem "ransack", "~> 3.1" # Searching and sorting
-gem "recaptcha", "~> 5.9", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.6.0" # Redis ruby client
@@ -97,12 +97,12 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.4.2" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.4" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.1.19" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.1.21" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.52" # Ruby library for the Stripe API
+gem "stripe", "~> 5.53" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 1.0" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
