@@ -47,7 +47,7 @@ module Badges
           # If the FeatureFlag isn't enabled only track which users would get
           # the badge to get an understanding of how the service will work
           tags = ["user_id:#{user.id}", "weeks:#{week_streak}"]
-          ForemStatsClient.increment("consumer_apps.create", tags: tags)
+          ForemStatsClient.increment("community_wellness_badge.award", tags: tags)
         end
       end
     end
