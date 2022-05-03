@@ -131,7 +131,7 @@ module Admin
       @user = User.find(params[:id])
       begin
         Moderator::DeleteUser.call(user: @user)
-        link = helpers.tag.a(I18n.t("admin.users_controller.the_page"), href: admin_users_gdpr_delete_requests_path,
+        link = helpers.tag.a(I18n.t("admin.users_controller.the_page"), href: admin_gdpr_delete_requests_path,
                                                                         data: { "no-instant" => true })
         flash[:success] = I18n.t("admin.users_controller.full_delete_html",
                                  user: @user.username,

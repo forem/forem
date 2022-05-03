@@ -44,9 +44,7 @@ namespace :admin do
     resources :user_experiences, only: [:create]
   end
 
-  namespace :users do
-    resources :gdpr_delete_requests, only: %i[index destroy]
-  end
+  resources :gdpr_delete_requests, only: %i[index destroy]
 
   resources :users, only: %i[index show update destroy] do
     resources :email_messages, only: :show
