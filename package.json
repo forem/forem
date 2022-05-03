@@ -40,7 +40,7 @@
   "homepage": "https://github.com/forem/forem#readme",
   "devDependencies": {
     "@babel/eslint-parser": "^7.17.0",
-    "@faker-js/faker": "^6.2.0",
+    "@faker-js/faker": "^6.3.1",
     "@knapsack-pro/cypress": "^4.5.0",
     "@storybook/addon-a11y": "^6.4.22",
     "@storybook/addon-actions": "^6.4.22",
@@ -60,7 +60,7 @@
     "@testing-library/user-event": "^14.1.1",
     "@whitespace/storybook-addon-html": "^5.0.0",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^28.0.0",
+    "babel-jest": "^28.0.3",
     "babel-loader": "^8.2.5",
     "css-loader": "^5.2.7",
     "cssom": "^0.5.0",
