@@ -1,5 +1,5 @@
 class ExportContentWorker
-  include Sidekiq::Worker
+  include Sidekiq::Job
 
   sidekiq_options queue: :medium_priority, retry: 10, lock: :until_executed
 

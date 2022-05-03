@@ -2,7 +2,7 @@
 # and we gave self-hosters some time to run it to we should be able to remove
 # this.
 class MigrateDataToWorkFieldWorker
-  include Sidekiq::Worker
+  include Sidekiq::Job
 
   def perform(profile_id)
     profile = Profile.find_by(id: profile_id)
