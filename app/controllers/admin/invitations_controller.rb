@@ -13,7 +13,6 @@ module Admin
 
     def create
       email = params.dig(:user, :email)
-      name = params.dig(:user, :name)
 
       if User.exists?(email: email.downcase, registered: true)
         flash[:error] = I18n.t("admin.invitations_controller.duplicate", email: email)
@@ -21,9 +20,8 @@ module Admin
         return
       end
 
-      username = "#{name.downcase.tr(' ', '_').gsub(/[^0-9a-z ]/i, '')}_#{rand(1000)}"
+      username = "#{email.split('@').first.gsub(/[^0-9a-z ]/i, '')}_#{rand(1000)}"
       User.invite!(email: email,
-                   name: name,
                    username: username,
                    remote_profile_image_url: ::Users::ProfileImageGenerator.call,
                    registered: false)
