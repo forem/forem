@@ -66,6 +66,7 @@
       </tr>
     </thead>
     <tbody>
+    <% if @invitations.any? %>
       <% @invitations.each do |user| %>
         <tr>
           <td class="pl-7">
@@ -79,8 +80,19 @@
           <td>
             <%= render "admin/users/index/invitation_actions_dropdown", user: user, context: "large" %>
           </td>
-        </tr>
       <% end %>
+      <% else %>
+        <td>
+          <div class="align-center flex flex-col my-auto py-7">
+            <p class="fs-xl fw-normal mb-2">No members invited yet.</p>
+            <p class="color-secondary">Invite members and grow your community.</p>
+          </div>
+          <div class="flex grow-1 justify-content-center">
+            <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-3" %>
+          </div>
+        </td>
+      <% end %>
+      </tr>
     </tbody>
   </table>
 
