@@ -66,28 +66,26 @@
       </tr>
     </thead>
     <tbody>
-    <% if @invitations.any? %>
-      <% @invitations.each do |user| %>
-        <tr>
-          <td class="pl-7">
-            <div class="flex items-center">
-              <%= render "admin/users/index/member_image", user: user %>
-              <span class="color-base-60">@<%= user.username %></span>
-            </div>
-          </td>
-          <td><%= user.email %></td>
-          <td><%= user.created_at.strftime("%d %b, %Y") %></td>
-          <td>
-            <%= render "admin/users/index/invitation_actions_dropdown", user: user, context: "large" %>
-          </td>
-        </tr>
-      </tbody>
+      <% if @invitations.any? %>
+        <% @invitations.each do |user| %>
+          <tr>
+            <td class="pl-7">
+              <div class="flex items-center">
+                <%= render "admin/users/index/member_image", user: user %>
+                <span class="color-base-60">@<%= user.username %></span>
+              </div>
+            </td>
+            <td><%= user.email %></td>
+            <td><%= user.created_at.strftime("%d %b, %Y") %></td>
+            <td>
+              <%= render "admin/users/index/invitation_actions_dropdown", user: user, context: "large" %>
+            </td>
+          </tr>
+        <% end %>
+        <% else %>
+          <%= render "admin/invitations/empty_state" %>
       <% end %>
-      <% else %>
-      <td>
-        <%= render "admin/invitations/empty_state" %>
-      </td>
-      <% end %>
+    </tbody>
   </table>
 
   <!-- Large screen layout end -->
