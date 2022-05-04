@@ -30,8 +30,8 @@
                     <% end %>>
                     <%= item.name.to_s.titleize %>
                     <% if item.controller.to_s == "gdpr_delete_requests" %>
-                      <% if GdprDeleteRequest.any? %>
-                        &nbsp;<span class="c-indicator c-indicator--info fs-xs"><%= GdprDeleteRequest.count %></span>
+                      <% if GDPRDeleteRequest.any? %>
+                        &nbsp;<span class="c-indicator c-indicator--info fs-xs"><%= GDPRDeleteRequest.count %></span>
                       <% end %>
                     <% end %>
                   </a>
