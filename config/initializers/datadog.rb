@@ -2,7 +2,7 @@ Datadog.configure do |c|
   c.env = Rails.env
   c.tracing.enabled = ENV["DD_API_KEY"].present?
   c.tracing.partial_flush.enabled = true
-  # c.tracer priority_sampling: true ## Can't find this in the new api, and I think it's on by default
+  c.tracing.priority_sampling = true ## Can't find this in the new api, and I think it's on by default
 
   c.tracing.instrument :concurrent_ruby
   c.tracing.instrument :excon, split_by_domain: true
