@@ -38,10 +38,10 @@ module Admin
 
       respond_to do |wants|
         wants.html do
-          redirect_to admin_spaces_path
+          redirect_to admin_spaces_path, notice: t("admin.spaces_controller.update_success")
         end
         wants.json do
-          render json: @space, status: :ok
+          render json: { message: t("admin.spaces_controller.update_success") }, status: :ok
         end
       end
     end

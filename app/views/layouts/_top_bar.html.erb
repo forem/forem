@@ -29,11 +29,8 @@
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
-          <% if FeatureFlag.enabled?(:limit_post_creation_to_admins) %>
-            <turbo-frame id="authorization-articles-create-post-button" src="<%= authorization_create_post_button_path %>">
-            </turbo-frame>
-          <% else %>
-            <a href="<%= new_path %>" class="c-cta c-cta--branded mr-2 whitespace-nowrap"><%= t("views.main.create_post") %></a>
+          <%= application_policy_content_tag("a", record: Article, query: :create?, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
+            <%= t("views.main.create_post") %>
           <% end %>
 
           <span class="trusted-visible-block">

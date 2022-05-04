@@ -4,7 +4,7 @@ module Stories
 
     def index
       @query = I18n.t("stories_controller.searching")
-      @article_index = true
+
       @current_ordering = current_search_results_ordering
       set_surrogate_key_header "articles-page-with-query"
     end

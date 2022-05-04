@@ -1,5 +1,3 @@
-/* global Runtime */
-
 import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { addSnackbarItem } from '../../Snackbar';
@@ -9,6 +7,7 @@ import { onDragOver, onDragExit } from './dragAndDropHelpers';
 import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
+import { isNativeIOS } from '@utilities/runtime';
 
 const NativeIosImageUpload = ({
   extraProps,
@@ -95,7 +94,7 @@ export class ArticleCoverImage extends Component {
   };
 
   useNativeUpload = () => {
-    return Runtime.isNativeIOS('imageUpload');
+    return isNativeIOS('imageUpload');
   };
 
   initNativeImagePicker = (e) => {

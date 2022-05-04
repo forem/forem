@@ -51,4 +51,10 @@
       transition-delay: 0s;
     }
   }
+
+  // Variant allowing placement in line with right edge instead of left
+  &.crayons-hover-tooltip--right:after {
+    left: revert;
+    right: 0;
+  }
 }

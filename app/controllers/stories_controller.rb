@@ -25,7 +25,6 @@ class StoriesController < ApplicationController
 
   def index
     @page = (params[:page] || 1).to_i
-    @article_index = true
 
     return handle_user_or_organization_or_podcast_or_page_index if params[:username]
 
@@ -128,7 +127,7 @@ class StoriesController < ApplicationController
     assign_hero_html
     assign_podcasts
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
-    @article_index = true
+
     set_surrogate_key_header "main_app_home_page"
     set_cache_control_headers(600,
                               stale_while_revalidate: 30,
@@ -256,7 +255,7 @@ class StoriesController < ApplicationController
     @discussion_lock = @article.discussion_lock
     @user = @article.user
     @organization = @article.organization
-    @comments_order = fetch_sort_order
+
     if @article.collection
       @collection = @article.collection
 
@@ -413,11 +412,5 @@ class StoriesController < ApplicationController
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
       @user.profile.website_url,
     ].compact_blank
-  end
-
-  def fetch_sort_order
-    return params[:comments_sort] if Comment::VALID_SORT_OPTIONS.include? params[:comments_sort]
-
-    "top"
   end
 end

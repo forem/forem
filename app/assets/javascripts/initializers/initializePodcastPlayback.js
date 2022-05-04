@@ -161,8 +161,8 @@ function initializePodcastPlayback() {
   }
 
   function loadAudio(audio) {
-    if (Runtime.podcastMessage) {
-      Runtime.podcastMessage({
+    if (window.Forem.Runtime.podcastMessage) {
+      window.Forem.Runtime.podcastMessage({
         action: 'load',
         url: audio.getElementsByTagName('source')[0].src,
       });
@@ -218,8 +218,8 @@ function initializePodcastPlayback() {
     }
     saveMediaState(currentState);
 
-    if (Runtime.podcastMessage) {
-      Runtime.podcastMessage({
+    if (window.Forem.Runtime.podcastMessage) {
+      window.Forem.Runtime.podcastMessage({
         action: 'rate',
         rate: currentState.playbackRate.toString(),
       });
@@ -259,8 +259,8 @@ function initializePodcastPlayback() {
   function playAudio(audio) {
     return new Promise(function (resolve, reject) {
       var currentState = currentAudioState();
-      if (Runtime.podcastMessage) {
-        Runtime.podcastMessage({
+      if (window.Forem.Runtime.podcastMessage) {
+        window.Forem.Runtime.podcastMessage({
           action: 'play',
           url: audio.getElementsByTagName('source')[0].src,
           seconds: currentState.currentTime.toString(),
@@ -293,10 +293,10 @@ function initializePodcastPlayback() {
   }
 
   function sendMetadataMessage() {
-    if (Runtime.podcastMessage) {
+    if (window.Forem.Runtime.podcastMessage) {
       try {
         var metadata = JSON.parse(fetchMetadataString());
-        Runtime.podcastMessage({
+        window.Forem.Runtime.podcastMessage({
           action: 'metadata',
           episodeName: metadata.episodeName,
           podcastName: metadata.podcastName,
@@ -326,8 +326,8 @@ function initializePodcastPlayback() {
   }
 
   function pauseAudioPlayback(audio) {
-    if (Runtime.podcastMessage) {
-      Runtime.podcastMessage({ action: 'pause' });
+    if (window.Forem.Runtime.podcastMessage) {
+      window.Forem.Runtime.podcastMessage({ action: 'pause' });
     } else {
       audio.pause();
     }
@@ -378,8 +378,8 @@ function initializePodcastPlayback() {
     );
 
     currentState.muted = !currentState.muted;
-    if (Runtime.podcastMessage) {
-      Runtime.podcastMessage({
+    if (window.Forem.Runtime.podcastMessage) {
+      window.Forem.Runtime.podcastMessage({
         action: 'muted',
         muted: currentState.muted.toString(),
       });
@@ -392,8 +392,11 @@ function initializePodcastPlayback() {
   function updateVolume(e, audio) {
     var currentState = currentAudioState();
     currentState.volume = e.target.value / 100;
-    if (Runtime.podcastMessage) {
-      Runtime.podcastMessage({ action: 'volume', volume: currentState.volume });
+    if (window.Forem.Runtime.podcastMessage) {
+      window.Forem.Runtime.podcastMessage({
+        action: 'volume',
+        volume: currentState.volume,
+      });
     } else {
       audio.volume = currentState.volume;
     }
@@ -433,8 +436,8 @@ function initializePodcastPlayback() {
       var duration = currentState.duration;
       currentState.currentTime = duration * percent; // jumps to 29th secs
 
-      if (Runtime.podcastMessage) {
-        Runtime.podcastMessage({
+      if (window.Forem.Runtime.podcastMessage) {
+        window.Forem.Runtime.podcastMessage({
           action: 'seek',
           seconds: currentState.currentTime.toString(),
         });
@@ -468,8 +471,8 @@ function initializePodcastPlayback() {
     getById('audiocontent').innerHTML = '';
     stopRotatingActivePodcastIfExist();
     saveMediaState(newAudioState());
-    if (Runtime.podcastMessage) {
-      Runtime.podcastMessage({ action: 'terminate' });
+    if (window.Forem.Runtime.podcastMessage) {
+      window.Forem.Runtime.podcastMessage({ action: 'terminate' });
     }
   }
 
@@ -497,16 +500,16 @@ function initializePodcastPlayback() {
     saveMediaState(currentState);
   }
 
-  // When Runtime.podcastMessage is undefined we need to execute web logic
+  // When window.Forem.Runtime.podcastMessage is undefined we need to execute web logic
   function initRuntime() {
-    if (Runtime.isNativeIOS('podcast')) {
+    if (window.Forem.Runtime.isNativeIOS('podcast')) {
       deviceType = 'iOS';
-    } else if (Runtime.isNativeAndroid('podcastMessage')) {
+    } else if (window.Forem.Runtime.isNativeAndroid('podcastMessage')) {
       deviceType = 'Android';
     }
 
     if (deviceType !== 'web') {
-      Runtime.podcastMessage = (msg) => {
+      window.Forem.Runtime.podcastMessage = (msg) => {
         window.ForemMobile.injectNativeMessage('podcast', msg);
       };
     }
@@ -520,7 +523,7 @@ function initializePodcastPlayback() {
       audioInitialized = false;
       return;
     }
-    if (Runtime.podcastMessage) {
+    if (window.Forem.Runtime.podcastMessage) {
       audio.currentTime = currentState.currentTime || 0;
     }
     loadAudio(audio);

@@ -78,6 +78,14 @@ award_contributor_badges_from_github:
     - ""
     - award_contributor_from_github
     - ""
+award_community_wellness_badges:
+  description: "Awards 'Community Wellness' badges to users (runs daily at 00:45 UTC)"
+  cron: "45 0 * * *"
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_community_wellness
+    - ""
 remove_old_html_variant_data:
   description: "Deletes old HTML variants (runs hourly on the 10th minute after the hour)"
   cron: "10 * * * *"

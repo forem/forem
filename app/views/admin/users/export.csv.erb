@@ -1,0 +1,6 @@
+<%- headers = ["Name", "Username", "Email address", "Status", "Joining date", "Last activity", "Organizations"] -%>
+<%= CSV.generate_line headers -%>
+<%- @users.each do |user| -%>
+  <%- row = [user.name, user.username, user.email, user_status(user), user.registered_at&.strftime("%d %b, %Y"), user.last_activity&.strftime("%d %b, %Y"), user.organizations.pluck(:name)] -%>
+  <%= CSV.generate_line(row).html_safe -%>
+<%- end -%>

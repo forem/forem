@@ -1,4 +1,3 @@
-/* global Runtime */
 import { h } from 'preact';
 import {
   getLastIndexOfCharacter,
@@ -7,6 +6,7 @@ import {
   getNumberOfNewLinesPrecedingSelection,
   getSelectionData,
 } from '../../utilities/textAreaUtils';
+import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 import BoldIcon from '@images/bold.svg';
 import ItalicIcon from '@images/italic.svg';
 import LinkIcon from '@images/link.svg';
@@ -408,7 +408,7 @@ export const coreSyntaxFormatters = {
     icon: () => <Icon src={BoldIcon} />,
     label: 'Bold',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+b`,
         tooltipHint: `${modifier.toUpperCase()} + B`,
@@ -428,7 +428,7 @@ export const coreSyntaxFormatters = {
     icon: () => <Icon src={ItalicIcon} />,
     label: 'Italic',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+i`,
         tooltipHint: `${modifier.toUpperCase()} + I`,
@@ -448,7 +448,7 @@ export const coreSyntaxFormatters = {
     icon: () => <Icon src={LinkIcon} />,
     label: 'Link',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+k`,
         tooltipHint: `${modifier.toUpperCase()} + K`,
@@ -721,7 +721,7 @@ export const secondarySyntaxFormatters = {
     icon: () => <Icon src={UnderlineIcon} />,
     label: 'Underline',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+u`,
         tooltipHint: `${modifier.toUpperCase()} + U`,
@@ -740,7 +740,7 @@ export const secondarySyntaxFormatters = {
     icon: () => <Icon src={StrikethroughIcon} />,
     label: 'Strikethrough',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+shift+x`,
         tooltipHint: `${modifier.toUpperCase()} + SHIFT + X`,

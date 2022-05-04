@@ -1,6 +1,6 @@
 module Podcasts
   class EnqueueGetEpisodesWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :medium_priority, retry: 10
 

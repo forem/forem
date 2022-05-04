@@ -21,6 +21,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_one(:discussion_lock).dependent(:delete) }
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
+    it { is_expected.to have_many(:context_notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:mentions).dependent(:delete_all) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
@@ -266,7 +267,7 @@ RSpec.describe Article, type: :model do
     describe "tag validation" do
       let(:article) { build(:article, user: user) }
 
-      # See https://github.com/thepracticaldev/dev.to/pull/6302
+      # See https://github.com/forem/forem/pull/6302
       # rubocop:disable RSpec/VerifiedDoubles
       it "does not modify the tag list if there are no adjustments" do
         allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)

@@ -1,4 +1,3 @@
-/* global Runtime */
 import 'focus-visible';
 import {
   initializeMobileMenu,
@@ -6,9 +5,8 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
-
-// Unique ID applied to modals created using window.Forem.showModal
-const WINDOW_MODAL_ID = 'window-modal';
+import { showWindowModal, closeWindowModal } from '@utilities/showModal';
+import * as Runtime from '@utilities/runtime';
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
@@ -53,54 +51,9 @@ window.Forem = {
       originalTextArea,
     );
   },
-  modalImports: undefined,
-  getModalImports() {
-    if (!this.modalImports) {
-      this.modalImports = [import('@crayons/Modal'), this.getPreactImport()];
-    }
-    return Promise.all(this.modalImports);
-  },
-  showModal: async ({ title, contentSelector, size = 'small', onOpen }) => {
-    const [{ Modal }, { render, h }] = await window.Forem.getModalImports();
-
-    // Guard against two modals being opened at once
-    let currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
-    if (currentModalContainer) {
-      render(null, currentModalContainer);
-    } else {
-      currentModalContainer = document.createElement('div');
-      currentModalContainer.setAttribute('id', WINDOW_MODAL_ID);
-      document.body.appendChild(currentModalContainer);
-    }
-
-    render(
-      <Modal
-        title={title}
-        onClose={() => {
-          render(null, currentModalContainer);
-        }}
-        size={size}
-        focusTrapSelector={`#${WINDOW_MODAL_ID}`}
-      >
-        <div
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-            __html: document.querySelector(contentSelector).innerHTML,
-          }}
-        />
-      </Modal>,
-      currentModalContainer,
-    );
-
-    onOpen?.();
-  },
-  closeModal: async () => {
-    const currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
-    if (currentModalContainer) {
-      const { render } = await window.Forem.getPreactImport();
-      render(null, currentModalContainer);
-    }
-  },
+  showModal: showWindowModal,
+  closeModal: closeWindowModal,
+  Runtime,
 };
 
 function getPageEntries() {

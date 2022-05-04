@@ -15,7 +15,7 @@ module Stories
       end
 
       @page = (params[:page] || 1).to_i
-      @article_index = true
+
       @moderators = User.with_role(:tag_moderator, @tag).select(:username, :profile_image, :id)
 
       set_number_of_articles(tag: @tag)

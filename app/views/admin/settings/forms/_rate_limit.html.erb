@@ -15,6 +15,7 @@
         </div>
 
         <% configurable_rate_limits.each do |key, field_hash| %>
+          <% next unless field_hash[:enabled] %>
           <div class="crayons-field">
             <%= admin_config_label field_hash[:title], model: Settings::RateLimit %>
             <p class="crayons-field__description">

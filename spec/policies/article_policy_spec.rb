@@ -20,17 +20,20 @@ RSpec.describe ArticlePolicy do
   let(:policy) { described_class.new(user, resource) }
 
   describe ".scope_users_authorized_to_action" do
-    let!(:regular_user) { create(:user) }
-    let!(:super_admin_user) { create(:user, :super_admin) }
-
-    before { create(:user, :suspended) }
+    before do
+      User.destroy_all # For some reason I'm getting extra users than there should be
+      super_admin
+      author
+      suspended_user
+    end
 
     context "when limit_post_creation_to_admins is true" do
       before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true) }
 
       it "omits suspended and regular users" do
         results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
-        expect(results).to match_array([super_admin_user])
+
+        expect(results).to match_array([super_admin])
       end
     end
 
@@ -39,7 +42,24 @@ RSpec.describe ArticlePolicy do
 
       it "omits only suspended users" do
         results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
-        expect(results).to match_array([regular_user, super_admin_user])
+        expect(results).to match_array([author, super_admin])
+      end
+    end
+  end
+
+  describe ".include_hidden_dom_class_for?" do
+    [
+      [true, :create?, true],
+      [false, :create?, false],
+      [true, :edit?, false],
+      [false, :edit?, false],
+    ].each do |limit, query, expected_value|
+      context "when limit_post_creation_to_admins is #{limit} and query is #{query}" do
+        subject { described_class.include_hidden_dom_class_for?(query: query) }
+
+        before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(limit) }
+
+        it { is_expected.to eq(expected_value) }
       end
     end
   end
@@ -51,7 +71,7 @@ RSpec.describe ArticlePolicy do
     it { is_expected.to be_truthy }
   end
 
-  %i[create? new? preview?].each do |method_name|
+  %i[create? new?].each do |method_name|
     describe "##{method_name}" do
       let(:policy_method) { method_name }
 
@@ -63,32 +83,34 @@ RSpec.describe ArticlePolicy do
     end
   end
 
-  describe "#has_existing_articles_or_can_create_new_ones?" do
-    let(:policy_method) { :has_existing_articles_or_can_create_new_ones? }
+  %i[preview? has_existing_articles_or_can_create_new_ones?].each do |method_name|
+    describe method_name.to_s do
+      let(:policy_method) { method_name }
 
-    it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
-    it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
-    it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+      it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
+      it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
 
-    context "when user has published articles" do
-      before do
-        create(:article, published: true, user: user)
+      context "when user has published articles" do
+        before do
+          create(:article, published: true, user: user)
+        end
+
+        # Below are two scenarios: one with limit_post_creation_to_admins? as true and the other as
+        # limit_post_creation_to_admins? as false.  In both cases, when the user has published
+        # articles, it doesn't matter if they can create an article or not, the
+        # `has_existing_articles_or_can_create_new_ones?` should return true (which is what the
+        # "permitted roles" shared spec verifies).
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
       end
 
-      # Below are two scenarios: one with limit_post_creation_to_admins? as true and the other as
-      # limit_post_creation_to_admins? as false.  In both cases, when the user has published
-      # articles, it doesn't matter if they can create an article or not, the
-      # `has_existing_articles_or_can_create_new_ones?` should return true (which is what the
-      # "permitted roles" shared spec verifies).
-      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
-      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
-    end
+      context "when user has no published articles" do
+        before { user.articles.delete_all }
 
-    context "when user has no published articles" do
-      before { user.articles.delete_all }
-
-      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
-      it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+        it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+      end
     end
   end
 

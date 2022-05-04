@@ -418,7 +418,7 @@ var KEY_CODE_K = 75;
 var ENTER_KEY_CODE = 13;
 
 function handleKeyDown(event) {
-  if (Runtime.hasOSSpecificModifier(event)) {
+  if (window.Forem.Runtime.hasOSSpecificModifier(event)) {
     switch (event.keyCode) {
       case KEY_CODE_B:
         event.preventDefault();

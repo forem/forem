@@ -51,7 +51,7 @@ describe('Creator Signup Page', () => {
       .should('be.visible');
   });
 
-  it('should contain an password', () => {
+  it('should contain a password', () => {
     cy.findByTestId('creator-signup-form').as('creatorSignupForm');
     cy.get('@creatorSignupForm')
       .findByText(/^Password/)

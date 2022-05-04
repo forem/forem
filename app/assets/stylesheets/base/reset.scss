@@ -1,19 +1,8 @@
-// TODO: Remove this once we enable box-sixing: border-box globally.
-[class^='crayons'],
-[class^='crayons']::before,
-[class^='crayons']::after,
-[class^='crayons'] *,
-[class^='crayons'] *::before,
-[class^='crayons'] *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
-
-// TODO: uncomment when we're ready!
-// *,
-// *::before,
-// *::after {
-//   box-sizing: border-box;
-// }
 
 // Remove default padding
 ul[class],

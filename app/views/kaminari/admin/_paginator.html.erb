@@ -1,6 +1,6 @@
 <%= paginator.render do %>
   <nav aria-label="<%= label %>" class="admin-pagination flex fs-s items-center">
-    <span id="pagination-description">
+    <span id="pagination-description-<%= context %>">
       <span class="screen-reader-only">Currently showing: </span>
       <%= page_entries_info scope %>
     </span>

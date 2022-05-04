@@ -41,7 +41,9 @@ describe('Authentication Section', () => {
             );
           });
 
-          cy.url().should('contains', '/admin/customization/config');
+          // The page doesn't automatically reload on submission, 
+          // so we reload manually to check the settings have been persisted
+          cy.reload();
 
           // Page reloaded so need to get a new reference to the form.
           cy.findByTestId('authSectionForm').as('authSectionForm');

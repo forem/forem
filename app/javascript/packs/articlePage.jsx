@@ -4,8 +4,7 @@ import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitche
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
 import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
-
-/* global Runtime */
+import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
 
 const animatedImages = document.querySelectorAll('[data-animated="true"]');
 if (animatedImages.length > 0) {
@@ -42,7 +41,7 @@ function hideCopyLinkAnnouncerIfVisible() {
 const shareDropdownButton = document.getElementById('article-show-more-button');
 
 if (shareDropdownButton.dataset.initialized !== 'true') {
-  if (Runtime.isNativeAndroid('shareText')) {
+  if (isNativeAndroid('shareText')) {
     // Android native apps have enhanced sharing capabilities for Articles and don't use our standard dropdown
     shareDropdownButton.addEventListener('click', () =>
       AndroidBridge.shareText(location.href),
@@ -76,7 +75,7 @@ function copyArticleLink() {
   const postUrlValue = document
     .getElementById('copy-post-url-button')
     .getAttribute('data-postUrl');
-  Runtime.copyToClipboard(postUrlValue).then(() => {
+  copyToClipboard(postUrlValue).then(() => {
     showAnnouncer();
   });
 }

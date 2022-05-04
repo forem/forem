@@ -1,14 +1,19 @@
 describe('Edit listing category', () => {
   beforeEach(() => {
     cy.testSetup();
+    cy.enableFeatureFlag('listing_feature');
+
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/admin/apps/listings/categories/1/edit');
+      cy.loginAndVisit(user, '/admin/apps/listings');
     });
   });
 
-  it('Changes the social preview color', () => {
+  it('Navigate to a listing category and change the social preview color', () => {
+    cy.findByRole('link', { name: 'Listing Categories' }).click();
+    cy.findByRole('link', { name: 'Edit' }).click();
+
     // Both a button and an input should exist
     cy.findByRole('button', { name: 'Social preview color' });
     cy.findByRole('textbox', {

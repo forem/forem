@@ -1,4 +1,4 @@
 <li class="flex items-center">
   <%= link_to_unless current_page.first?, crayons_icon_tag("chevron-left", aria_hidden: true, class: ("admin-pagination--inactive mx-1" if current_page.first?).to_s), url, rel: "prev", remote: remote, class: "admin-pagination--link c-link c-link--icon-alone c-link--block",
-                                                                                                                                                                            aria: { label: t("views.pagination.aria_previous"), describedby: "pagination-description" } %>
+                                                                                                                                                                            aria: { label: t("views.pagination.aria_previous"), describedby: "pagination-description-#{context}" } %>
 </li>

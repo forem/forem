@@ -201,7 +201,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
 
           def shows_sign_in_notice
             expect(response.body).not_to include("crayons-navigation__item crayons-navigation__item--current")
-            expect(response.body).to include("for the ability sort posts by")
+            expect(response.body).to include("for the ability to sort posts by")
           end
 
           def does_not_include_current_page_link(tag)

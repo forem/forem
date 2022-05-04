@@ -96,6 +96,7 @@ export const ListingTagsField = ({
         onSelectionsChanged={syncSelections}
         inputId="tag-input"
         onFocus={onFocus}
+        allowUserDefinedSelections={true}
       />
       {/* Hidden input to store the selected tags and be sent via form data */}
       {name && <input type="hidden" name={name} value={defaultValue} />}

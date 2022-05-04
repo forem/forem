@@ -94,6 +94,21 @@ RSpec.describe Articles::Updater, type: :service do
         described_class.call(user, article, attributes)
         expect(Mentions::CreateAll).not_to have_received(:call).with(article)
       end
+
+      it "destroys the preexisting notifications" do
+        allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
+        described_class.call(user, article, attributes)
+        attrs = { notifiable_ids: article.id, notifiable_type: "Article", action: "Published" }
+        expect(Notification).to have_received(:remove_all_by_action_without_delay).with(attrs)
+        # expect(ContextNotification).to have_received(:delete_all)
+      end
+
+      it "destroys the prexexisting context notifications" do
+        create(:context_notification, context: article, action: "Published")
+        expect do
+          described_class.call(user, article, attributes)
+        end.to change(ContextNotification, :count).by(-1)
+      end
     end
 
     context "when an article is unpublished and contains comments" do

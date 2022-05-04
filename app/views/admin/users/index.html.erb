@@ -1,37 +1,127 @@
-<% if FeatureFlag.enabled?(:member_index_view) %>
-  <%= render "admin/users/member_index" %>
-<% else %>
-  <header>
-    <h1 class="crayons-title">People</h1>
-    <%= render "menu" %>
+<%= javascript_packs_with_chunks_tag "admin/users/memberIndex", defer: true %>
+<div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-4 xl:p-0">
+  <header class="xl:p-7 pb-4">
+    <div class="flex flex-col l:flex-row justify-content-between l:items-center">
+    <h1 class="crayons-title ml-2 m:ml-0">Members</h1>
+    <%= render "admin/users/index/tabs" %>
+    </div>
+    <%= render "admin/users/index/controls" %>
   </header>
 
-  <%= paginate @users, theme: "internal" %>
+    <!-- Responsive screen (breakpoints below XL) data view start -->
+    <div class="block xl:hidden fs-s">
+      <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Members</h2>
+      <ul class="list-none mx-2">
+        <% @users.each do |user| %>
+          <li class="py-4">
+            <article>
+              <header class="flex items-center justify-between m:justify-start mb-2">
+                <div class="flex grow-1 mr-4 m:w-50 m:max-w-50">
+                  <%= render "admin/users/index/member_image", user: user %>
+                  <%= render "admin/users/index/member_data", user: user %>
+                </div>
+                <div class="flex justify-between items-center grow-1">
+                  <div class="hidden m:block">
+                    <%= render "admin/users/index/status_indicator", user: user %>
+                  </div>
+                  <div class="ml-auto">
+                    <%= render "admin/users/index/user_actions_dropdown", user: user, id: "responsive-#{user.id}" %>
+                  </div>
+                </div>
+              </header>
+              <div class="flex justify-between mb-2 block m:hidden">
+                <div>
+                  <%= render "admin/users/index/status_indicator", user: user %>
+                </div>
+                <!-- %=
+                # TODO: [@forem/admin-experience] Uncomment this chunk of code containing role badges once we finalize which roles to include.
+                <span class="c-indicator ml-2 crayons-hover-tooltip crayons-hover-tooltip--right" data-tooltip="<%= format_role_tooltip(user) %>">
+                  <%#= cascading_high_level_roles(user) %>
+                </span>
+                % -->
+              </div>
+              <div class="flex justify-between items-end">
+                <dl class="flex gap-4">
+                  <div>
+                    <dt class="color-base-60 fw-normal">Last activity</dt>
+                    <dd><%= format_last_activity_timestamp(user.last_activity) %></dd>
+                  </div>
+                  <div>
+                    <dt class="color-base-60 fw-normal">Joined on</dt>
+                    <dd><%= user.registered_at&.strftime("%d %b, %Y") %></dd>
+                  </div>
+                </dl>
+                <div>
+                  <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
+                </div>
+              </div>
+            </article>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <!-- Responsive screen (breakpoints below XL) data view end -->
 
-  <table class="crayons-table" width="100%">
-    <thead>
-      <tr>
-        <th scope="col">Username</th>
-        <th scope="col">ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">Twitter</th>
-        <th scope="col">GitHub</th>
-        <th scope="col">Email</th>
-      </tr>
-    </thead>
-    <tbody class="crayons-card">
-      <% @users.each do |user| %>
-      <tr>
-        <td><%= link_to user.username, admin_user_path(user) %></td>
-        <td class="whitespace-nowrap"><%= user.id %></td>
-        <td><%= user.name %></td>
-        <td><%= user_twitter_link(user) %></td>
-        <td><%= user_github_link(user) %></td>
-        <td><%= user.email %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+    <!-- XL screen data view start -->
+    <table class="crayons-table crayons-table--minimal w-100 hidden xl:table">
+      <thead class="member-data-heading">
+        <tr>
+          <th scope="col" class="pl-7">Member</th>
+          <th scope="col">Status</th>
+          <th scope="col">Last activity & Joined on</th>
+          <th scope="col">Organizations</th>
+          <th scope="col" class="screen-reader-only">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+        <tr>
+          <td class="pl-7">
+            <div class="flex s:items-start flex-col s:flex-row">
+              <%= render "admin/users/index/member_image", user: user %>
+              <%= render "admin/users/index/member_data", user: user %>
+            </div>
+          </td>
+          <td>
+            <%= render "admin/users/index/status_indicator", user: user %>
+          </td>
+          <td>
+            <%= format_last_activity_timestamp(user.last_activity) %>
+            <p class="fs-xs color-base-60">
+              <%= user.registered_at&.strftime("%d %b, %Y") %>
+            </p>
+          </td>
+          <td>
+            <%= render "admin/users/index/organizations", organizations: user.organizations.limit(@organization_limit), org_count: user.organizations.count %>
+          </td>
+          <td>
+            <%= render "admin/users/index/user_actions_dropdown", user: user, id: "xl-#{user.id}" %>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <!-- XL screen data view end -->
 
-  <%= paginate @users, theme: "internal" %>
-<% end %>
+    <div class="flex justify-end xl:p-7">
+      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "bottom" %>
+    </div>
+
+    <div id="export-csv-modal" class="hidden">
+      <div class="flex flex-col gap-4">
+        <p>
+          Your data will be downloaded as a Comma Separated Values (.csv) file.
+        </p>
+        <p>
+          Values listed are Name, Username, Email address, Status, Joining date, Last activity, and Organizations.
+        </p>
+        <div class="flex gap-2">
+          <%= link_to "Download", "#{export_admin_users_path}.csv", class: "c-cta c-cta--branded self-end" %>
+          <button class="js-export-csv-modal-cancel crayons-btn crayons-btn--ghost">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+</div>

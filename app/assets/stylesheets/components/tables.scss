@@ -108,4 +108,14 @@
       }
     }
   }
+
+  &--minimal {
+    th {
+      text-transform: none;
+    }
+
+    td {
+      border-bottom: none;
+    }
+  }
 }

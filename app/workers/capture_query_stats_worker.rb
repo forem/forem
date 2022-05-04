@@ -1,5 +1,5 @@
 class CaptureQueryStatsWorker
-  include Sidekiq::Worker
+  include Sidekiq::Job
 
   def perform
     return unless ENV["PG_HERO_CAPTURE_QUERY_STATS"] == "true"

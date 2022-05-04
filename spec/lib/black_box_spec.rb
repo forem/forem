@@ -28,14 +28,4 @@ RSpec.describe BlackBox, type: :lib do
       expect(described_class.comment_quality_score(comment)).to eq(25)
     end
   end
-
-  describe "#calculate_spaminess" do
-    let(:user) { build_stubbed(:user) }
-    let(:comment) { build_stubbed(:comment, user: user) }
-
-    it "returns 100 if there is no user" do
-      story = instance_double("Comment", user: nil)
-      expect(described_class.calculate_spaminess(story)).to eq(100)
-    end
-  end
 end

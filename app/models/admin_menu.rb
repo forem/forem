@@ -9,7 +9,7 @@ class AdminMenu
     ]
 
     scope :content_manager, "dashboard-line", [
-      item(name: "spaces", controller: "spaces", visible: -> { FeatureFlag.exist?(:limit_post_creation_to_admins) }),
+      item(name: "spaces", controller: "spaces"),
       item(name: "posts", controller: "articles"),
       item(name: "comments", controller: "comments"),
       item(name: "badges", children: [
@@ -27,7 +27,7 @@ class AdminMenu
       item(name: "display ads"),
       item(name: "navigation links"),
       item(name: "pages"),
-      item(name: "profile fields", visible: -> { FeatureFlag.enabled?(:profile_admin) }),
+      item(name: "profile fields"),
     ]
 
     scope :admin_team, "user-line", [
@@ -55,7 +55,7 @@ class AdminMenu
 
     scope :apps, "palette-line", [
       item(name: "consumer apps", controller: "consumer_apps"),
-      item(name: "listings"),
+      item(name: "listings", visible: -> { Listing.feature_enabled? }),
       item(name: "welcome"),
     ]
   end.freeze

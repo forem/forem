@@ -13,16 +13,35 @@ import '@testing-library/jest-dom';
 
 global.fetch = fetch;
 
+const windowNavigator = window.navigator;
+const windowWebkit = window.webkit;
+
+const stubNativeIOSCapabilities = () => {
+  Object.defineProperty(window, 'navigator', {
+    value: { userAgent: 'DEV-Native-ios|ForemWebView' },
+    writable: true,
+  });
+
+  Object.defineProperty(window, 'webkit', {
+    value: { messageHandlers: { imageUpload: true } },
+    writable: true,
+  });
+};
+
+const resetNativeIOSCapabilities = () => {
+  Object.defineProperty(window, 'navigator', {
+    value: windowNavigator,
+    writable: true,
+  });
+
+  Object.defineProperty(window, 'webkit', {
+    value: windowWebkit,
+    writable: true,
+  });
+};
+
 describe('<ImageUploader />', () => {
   describe('Editor v1, not native iOS', () => {
-    beforeEach(() => {
-      global.Runtime = {
-        isNativeIOS: jest.fn(() => {
-          return false;
-        }),
-      };
-    });
-
     it('should have no a11y violations', async () => {
       const { container } = render(<ImageUploader editorVersion="v1" />);
       const results = await axe(container);
@@ -125,14 +144,13 @@ describe('<ImageUploader />', () => {
   });
 
   describe('Editor v1, native iOS with imageUpload support', () => {
-    beforeEach(() => {
-      global.Runtime = {
-        isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload';
-        }),
-      };
+    beforeAll(() => {
+      stubNativeIOSCapabilities();
     });
 
+    afterAll(() => {
+      resetNativeIOSCapabilities();
+    });
     it('does not display the file input', async () => {
       const { queryByLabelText } = render(<ImageUploader editorVersion="v1" />);
       expect(queryByLabelText(/Upload image/i)).not.toBeInTheDocument();
@@ -171,14 +189,6 @@ describe('<ImageUploader />', () => {
   });
 
   describe('Editor v2, not native iOS', () => {
-    beforeEach(() => {
-      global.Runtime = {
-        isNativeIOS: jest.fn(() => {
-          return false;
-        }),
-      };
-    });
-
     it('should have no a11y violations', async () => {
       const { container } = render(<ImageUploader editorVersion="v2" />);
       const results = await axe(container);
@@ -286,12 +296,12 @@ describe('<ImageUploader />', () => {
   });
 
   describe('Editor v2, native iOS with imageUpload support', () => {
-    beforeEach(() => {
-      global.Runtime = {
-        isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload';
-        }),
-      };
+    beforeAll(() => {
+      stubNativeIOSCapabilities();
+    });
+
+    afterAll(() => {
+      resetNativeIOSCapabilities();
     });
 
     it('triggers a webkit messageHandler call when isNativeIOS', async () => {

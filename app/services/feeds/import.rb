@@ -1,7 +1,7 @@
 module Feeds
   # Responsible for fetching RSS feeds for multiple users.
   #
-  # @see {Feeds::Import.call}
+  # @see Feeds::Import.call
   class Import
     # Fetch the feeds for the given users (with some filtering based on internal business logic).
     #

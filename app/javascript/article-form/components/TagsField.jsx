@@ -44,6 +44,7 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
       onSelectionsChanged={syncSelections}
       onFocus={switchHelpContext}
       inputId="tag-input"
+      allowUserDefinedSelections={true}
     />
   );
 };

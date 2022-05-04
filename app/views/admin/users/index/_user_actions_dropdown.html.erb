@@ -1,0 +1,9 @@
+<div class="relative">
+    <button type="button" id="<%= id %>-action-dropdown-btn" data-toggle-dropdown="<%= id %>-action-dropdown" class="c-btn c-btn--icon-alone ml-auto"
+        aria-expanded="false" aria-controls="<%= id %>-action-dropdown" aria-haspopup="true" aria-label="User actions: <%= user.name %>">
+        <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
+    </button>
+    <div id="<%= id %>-action-dropdown" class="crayons-dropdown right-0">
+        <button data-copy-email="<%= user.email %>" type="button" class="c-btn w-100 align-left"> <%= crayons_icon_tag("copy", aria_hidden: true) %>Copy email address</button>
+    </div>
+</div>

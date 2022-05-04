@@ -25,6 +25,8 @@ module Badges
     end
 
     def call
+      return unless Settings::Authentication.providers.include?(:github)
+
       REPOSITORIES.each do |repo|
         award_single_commit_contributors(repo)
         award_multi_commit_contributors(repo)

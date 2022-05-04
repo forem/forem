@@ -50,21 +50,7 @@ RSpec.describe AdminMenu do
 
     let(:content_manager) { described_class.navigation_items.fetch(:content_manager) }
 
-    context "when the :limit_post_creation_to_admins does not exist" do
-      it { is_expected.not_to be_visible }
-    end
-
-    context "when the :limit_post_creation_to_admins is enabled" do
-      before { FeatureFlag.enable(:limit_post_creation_to_admins) }
-
-      it { is_expected.to be_visible }
-    end
-
-    context "when the :limit_post_creation_to_admins is explicitly disabled" do
-      before { FeatureFlag.disable(:limit_post_creation_to_admins) }
-
-      it { is_expected.to be_visible }
-    end
+    it { is_expected.to be_visible }
   end
 
   describe "scope :customization" do
@@ -88,15 +74,22 @@ RSpec.describe AdminMenu do
     let(:customization) { described_class.navigation_items.fetch(:customization) }
 
     it { is_expected.to be_a(Menu::Item) }
+    it { is_expected.to be_visible }
+  end
 
-    context "when :profile_field FeatureFlag is enabled" do
-      before { allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true) }
+  describe "scope :apps" do
+    subject(:listing) { apps.children.detect { |child| child.name == "listings" } }
+
+    let(:apps) { described_class.navigation_items.fetch(:apps) }
+
+    context "when Listing.feature_enabled? is true" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(true) }
 
       it { is_expected.to be_visible }
     end
 
-    context "when :profile_field FeatureFlag is not enabled" do
-      before { allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false) }
+    context "when Listing.feature_enabled? is false" do
+      before { allow(Listing).to receive(:feature_enabled?).and_return(false) }
 
       it { is_expected.not_to be_visible }
     end

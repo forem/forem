@@ -32,20 +32,23 @@ RSpec.describe Profile, type: :model do
     end
 
     describe "validating text areas" do
+      let(:text_area_get) { ProfileField.find_by(label: "Test Text Area")&.attribute_name }
+      let(:text_area_set) { "#{text_area_get}=" }
+
       before do
         create(:profile_field, label: "Test Text Area", input_type: :text_area)
       end
 
       it "is valid if the text is short enough" do
-        profile.test_text_area = "Ruby"
+        profile.public_send(text_area_set, "Ruby")
         expect(profile).to be_valid
       end
 
       it "is invalid if the text is too long" do
-        profile.test_text_area = "x" * ProfileValidator::MAX_TEXT_AREA_LENGTH.next
+        profile.public_send(text_area_set, "x" * ProfileValidator::MAX_TEXT_AREA_LENGTH.next)
         expect(profile).not_to be_valid
         expect(profile.errors_as_sentence)
-          .to eq "Test text area is too long (maximum is 200 characters)"
+          .to include("is too long (maximum is 200 characters)")
       end
     end
 
@@ -89,9 +92,12 @@ RSpec.describe Profile, type: :model do
 
     let(:profile) { described_class.new }
 
+    let(:test1) { ProfileField.find_by(label: "Test 1").attribute_name }
+    let(:test2) { ProfileField.find_by(label: "Test 2").attribute_name }
+
     it "defines accessors for active profile fields", :aggregate_failures do
-      expect(profile).to respond_to(:test1)
-      expect(profile).to respond_to(:test2)
+      expect(profile).to respond_to(test1)
+      expect(profile).to respond_to(test2)
     end
   end
 end
