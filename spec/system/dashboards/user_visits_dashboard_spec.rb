@@ -56,7 +56,7 @@ RSpec.describe "Dashboard", type: :system, js: true do
       user2.reload
     end
 
-    it "shows the correct posts count on current dashboard tab", :aggregate_failures do
+    it "shows the correct counts on current dashboard tab", :aggregate_failures do
       DASHBOARD_PATHS.each do |path|
         sign_in user1
         visit path
@@ -64,71 +64,11 @@ RSpec.describe "Dashboard", type: :system, js: true do
         within "main#main-content nav" do
           # the collection contains 3 posts
           expect(page).to have_text(/Posts\n3/)
-        end
-      end
-    end
-
-    it "shows the correct series count on current dashboard tab", :aggregate_failures do
-      DASHBOARD_PATHS.each do |path|
-        sign_in user1
-        visit path
-
-        within "main#main-content nav" do
           expect(page).to have_text(/Series\n1/)
-        end
-      end
-    end
-
-    it "shows the correct followers count on current dashboard tab", :aggregate_failures do
-      DASHBOARD_PATHS.each do |path|
-        sign_in user1
-        visit path
-
-        within "main#main-content nav" do
           expect(page).to have_text(/Followers\n1/)
-        end
-      end
-    end
-
-    it "shows the correct following-tags count on current dashboard tab", :aggregate_failures do
-      DASHBOARD_PATHS.each do |path|
-        sign_in user1
-        visit path
-
-        within "main#main-content nav" do
           expect(page).to have_text(/Following tags\n1/)
-        end
-      end
-    end
-
-    it "shows the correct following-users count on current dashboard tab", :aggregate_failures do
-      DASHBOARD_PATHS.each do |path|
-        sign_in user1
-        visit path
-
-        within "main#main-content nav" do
           expect(page).to have_text(/Following users\n1/)
-        end
-      end
-    end
-
-    it "shows the correct following-organizations count on current dashboard tab", :aggregate_failures do
-      DASHBOARD_PATHS.each do |path|
-        sign_in user1
-        visit path
-
-        within "main#main-content nav" do
           expect(page).to have_text(/Following organizations\n1/)
-        end
-      end
-    end
-
-    it "shows the correct following-podcasts count on current dashboard tab", :aggregate_failures do
-      DASHBOARD_PATHS.each do |path|
-        sign_in user1
-        visit path
-
-        within "main#main-content nav" do
           expect(page).to have_text(/Following podcasts\n1/)
         end
       end
