@@ -79,7 +79,8 @@ transitioning to a [Preact](https://preactjs.com/)-first frontend.
 A more complete overview of our stack is available in
 [our docs](https://developers.forem.com/technical-overview/stack).
 
-To **launch Forem in Gitpod**, navigate to [https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
+To **launch Forem in Gitpod**, navigate to
+[https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
 
 ### Prerequisites
 
@@ -123,7 +124,6 @@ Please see our installation guides, such as the
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
-- [@atsmith813](https://dev.to/atsmith813)
 - [@joshpuetz](http://dev.to/joshpuetz)
 - [@juliannatetreault](https://dev.to/juliannatetreault)
 - [@ridhwana](https://dev.to/ridhwana)
