@@ -125,8 +125,6 @@ fr:
             description: Community Moderators Newsletter ID
           mailchimp_news:
             description: Main Newsletter ID, also known as Audience ID
-          mailchimp_sustaining:
-            description: Sustaining Members Newsletter ID
           mailchimp_tag_mod:
             description: Tag Moderators Newsletter ID
           main_social:
@@ -140,7 +138,7 @@ fr:
           onboarding:
             description: Background for onboarding splash page
           payment:
-            description: 'Used for site-wide web monetization. See: https://github.com/thepracticaldev/dev.to/pull/6345'
+            description: 'Used for site-wide web monetization. See: https://github.com/forem/forem/pull/6345'
           periodic:
             description: Determines how often periodic email digests are sent (in days)
           prefer_manual:
