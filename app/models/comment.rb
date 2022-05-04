@@ -346,7 +346,7 @@ class Comment < ApplicationRecord
     return if FieldTest.config["experiments"].nil?
 
     Users::RecordFieldTestEventWorker
-      .perform_async(user_id, "user_creates_comment")
+      .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_CREATES_COMMENT_GOAL)
   end
 
   def notify_slack_channel_about_warned_users
