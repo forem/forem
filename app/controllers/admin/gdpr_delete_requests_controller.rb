@@ -1,13 +1,13 @@
 module Admin
-  class GdprDeleteRequestsController < Admin::ApplicationController
+  class GDPRDeleteRequestsController < Admin::ApplicationController
     layout "admin"
 
     def index
-      @gdpr_delete_requests = ::GdprDeleteRequest.order(created_at: :desc).page(params[:page]).per(50)
+      @gdpr_delete_requests = ::GDPRDeleteRequest.order(created_at: :desc).page(params[:page]).per(50)
     end
 
     def destroy
-      @gdpr_delete_request = ::GdprDeleteRequest.find(params[:id])
+      @gdpr_delete_request = ::GDPRDeleteRequest.find(params[:id])
       @gdpr_delete_request.destroy
 
       AuditLog.create(
