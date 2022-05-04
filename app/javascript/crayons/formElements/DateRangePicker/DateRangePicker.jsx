@@ -6,6 +6,7 @@ import 'react-dates/lib/css/_datepicker.css';
 import moment from 'moment';
 import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
 import { START_DATE } from 'react-dates/constants';
+import { ButtonNew as Button } from '@crayons';
 
 /**
  * Used to facilitate picking a date range. This component is a wrapper around the one provided from react-dates.
@@ -51,6 +52,22 @@ export const DateRangePicker = ({
           });
         }}
         showClearDates
+        renderMonthElement={() => (
+          <div>
+            <select className="crayons-select w-auto">
+              <option value="1">January</option>
+            </select>
+            <select className="crayons-select w-auto">
+              <option value="1">2022</option>
+            </select>
+          </div>
+        )}
+        renderCalendarInfo={() => (
+          <div className="p-4 ">
+            <Button variant="secondary mr-2">Last week</Button>
+            <Button variant="secondary">Last month</Button>
+          </div>
+        )}
       />
     </span>
   );
