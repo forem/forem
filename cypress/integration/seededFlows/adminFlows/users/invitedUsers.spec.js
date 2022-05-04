@@ -131,3 +131,17 @@ describe('Invited users', () => {
     cy.findByRole('button', { name: 'Cancel invite' }).click();
   };
 });
+
+describe('No invited members', () => {
+  beforeEach(() => {
+    cy.testSetup();
+    cy.fixture('users/adminUser.json').as('user');
+    cy.get('@user').then((user) => {
+      cy.loginAndVisit(user, '/admin/invitations');
+    });
+  });
+
+  it('displays an empty state', () => {
+    cy.findByText('No members invited yet.').should('exist');
+  });
+});
