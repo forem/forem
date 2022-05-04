@@ -59,10 +59,6 @@ module Constants
             description: I18n.t("lib.constants.settings.general.mailchimp_news.description"),
             placeholder: ""
           },
-          mailchimp_sustaining_members_id: {
-            description: I18n.t("lib.constants.settings.general.mailchimp_sustaining.description"),
-            placeholder: ""
-          },
           mailchimp_tag_moderators_id: {
             description: I18n.t("lib.constants.settings.general.mailchimp_tag_mod.description"),
             placeholder: ""
