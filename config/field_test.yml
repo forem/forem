@@ -1,11 +1,10 @@
+# See AbExperiment namespace for details of goals and variants
 experiments:
-  # No field test running.
-  # To run a test, change the five variants here. You can create more than
-  # five, but five is our typical standard.
-  # Do not change the goals unless you intend to also change the corresponding code in
-  # app/workers/users/record_field_test_event_worker.rb
-
+  # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
   feed_strategy_starting_20220422:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    start_date: 2022-04-22
     variants:
       - 20220415-incumbent
       - 20220422-jennie-variant

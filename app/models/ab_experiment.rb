@@ -98,6 +98,20 @@ class AbExperiment < SimpleDelegator
       .public_send(method_name, user: user, default_value: default_value, experiment: experiment, config: config)
   end
 
+  # Responsible for checking if a given :user has "accomplished" the state :goal for any of the
+  # active :experiments.  We only consider events that occur on or after each experiment's given
+  # start_date.
+  #
+  # @param user [User]
+  # @param goal [String]
+  # @param experiments [Hash<String, Object>]
+  #
+  # @see AbExperiment::GoalConversionChecker
+  # @see FieldTest.config
+  def self.register_conversions_for(user:, goal:, experiments: FieldTest.config["experiments"])
+    GoalConversionHandler.call(user: user, goal: goal, experiments: experiments)
+  end
+
   # @api private
   # @param controller [ApplicationController] the current controller
   #        that's handling the current request.

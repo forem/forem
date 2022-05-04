@@ -202,15 +202,16 @@ RSpec.configure do |config|
     # Default to have field a field test available.
     if AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT.blank?
       config = { "experiments" =>
-        { "wut" =>
-          { "variants" => %w[base var_1],
-            "weights" => [50, 50],
-            "goals" => %w[user_creates_comment
-                          user_creates_comment_four_days_in_week
-                          user_views_article_four_days_in_week
-                          user_views_article_four_hours_in_day
-                          user_views_article_nine_days_in_two_week
-                          user_views_article_twelve_hours_in_five_days] } },
+                { "wut" =>
+                 { "start_date" => 30.days.ago,
+                   "variants" => %w[base var_1],
+                   "weights" => [50, 50],
+                   "goals" => %w[user_creates_comment
+                                 user_creates_comment_four_days_in_week
+                                 user_views_article_four_days_in_week
+                                 user_views_article_four_hours_in_day
+                                 user_views_article_nine_days_in_two_week
+                                 user_views_article_twelve_hours_in_five_days] } },
                  "exclude" => { "bots" => true },
                  "cache" => true,
                  "cookies" => false }
