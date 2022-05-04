@@ -1,4 +1,4 @@
-class GdprDeleteRequest < ApplicationRecord
+class GDPRDeleteRequest < ApplicationRecord
   validates :email, :user_id, presence: true
 
   def self.table_name_prefix

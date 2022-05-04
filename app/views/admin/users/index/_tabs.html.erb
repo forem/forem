@@ -9,8 +9,8 @@
     <li>
       <%= link_to admin_gdpr_delete_requests_path, class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:controller] == 'admin/gdpr_delete_requests'}", "aria-current": ("page" if params[:controller] == "admin/gdpr_delete_requests") do %>
         GDPR Delete Requests
-        <% if GdprDeleteRequest.any? %>
-          &nbsp;<span class="c-indicator c-indicator--danger"><%= GdprDeleteRequest.count %></span>
+        <% if GDPRDeleteRequest.any? %>
+          &nbsp;<span class="c-indicator c-indicator--danger"><%= GDPRDeleteRequest.count %></span>
         <% end %>
       <% end %>
     </li>
