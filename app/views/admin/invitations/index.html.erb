@@ -14,7 +14,7 @@
           <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-small" %>
         </div>
         <div id="search-users" class="hidden mt-3">
-          <%= render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, or username", context: "responsive" %>
+          <%= render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, email, or username", context: "responsive" %>
         </div>
       <% end %>
       <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-2 inline-block s:self-end" %>
@@ -47,7 +47,7 @@
     <!-- Large screen layout start -->
     <div class="hidden m:flex flex-col m:flex-row justify-content-between p-3 xl:px-0">
       <%= form_with url: admin_invitations_path, method: :get, local: true, class: "grow-1 mb-3 m:mb-0" do |f| %>
-        <% render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, or username", context: "large" %>
+        <% render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, email, or username", context: "large" %>
       <% end %>
       <div class="flex grow-1 justify-content-end">
         <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-large" %>
