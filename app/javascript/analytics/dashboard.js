@@ -45,15 +45,23 @@ function writeCards(data, timeRangeLabel) {
 }
 
 function drawChart({ id, showPoints = true, title, labels, datasets }) {
-  const chartOptions = showPoints
-    ? {}
-    : {
-        elements: {
-          point: {
-            radius: 0,
-          },
+  const chartOptions = {
+    elements: {
+      point: {
+        // The default is 3: https://www.chartjs.org/docs/latest/configuration/elements.html#point-configuration
+        radius: showPoints ? 3 : 0,
+      },
+    },
+    scales: {
+      y: {
+        type: 'linear',
+        suggestedMin: 0,
+        ticks: {
+          precision: 0,
         },
-      };
+      },
+    },
+  };
   const dataOptions = {
     plugins: {
       legend: {
@@ -64,16 +72,6 @@ function drawChart({ id, showPoints = true, title, labels, datasets }) {
     title: {
       display: true,
       text: title,
-    },
-    scales: {
-      y: {
-        type: 'linear',
-        suggestedMin: 0,
-
-        ticks: {
-          precision: 0,
-        },
-      },
     },
   };
 
