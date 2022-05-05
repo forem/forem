@@ -283,8 +283,12 @@ which may be more easily removed once we no longer wish admin layouts to have a 
 .admin-details {
   border-bottom: 1px solid var(--base-10);
 
-  summary {
-    list-style: none;
+  summary::marker {
+    display: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
   }
 
   &[open] .summary-icon {
