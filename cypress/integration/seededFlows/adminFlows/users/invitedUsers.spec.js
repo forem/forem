@@ -10,7 +10,11 @@ describe('Invited users', () => {
             email: 'test@test.com',
           }),
         )
-        .then(() => cy.visitAndWaitForUserSideEffects('/admin/invitations'));
+        .then(() =>
+          cy.visitAndWaitForUserSideEffects(
+            '/admin/member_manager/invitations',
+          ),
+        );
     });
   });
 
@@ -108,7 +112,7 @@ describe('Invited users', () => {
 
   const searchForMember = (searchTerm) => {
     cy.findByRole('textbox', {
-      name: 'Search invited members by name, or username',
+      name: 'Search invited members by name, email, or username',
     })
       .clear()
       .type(searchTerm);

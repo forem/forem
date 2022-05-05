@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/gdpr_delete_requests", type: :request do
+RSpec.describe "/admin/member_manager/gdpr_delete_requests", type: :request do
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -22,7 +22,7 @@ RSpec.describe "/admin/gdpr_delete_requests", type: :request do
 
     it "displays the number of existing requests" do
       get admin_gdpr_delete_requests_path
-      expect(response.body).to include("<span class=\"c-indicator c-indicator--danger\">1</span>")
+      expect(response.body).to include("<span class=\"c-indicator c-indicator--info fs-xs\">1</span>")
     end
 
     it "destroys the gdpr delete request on confirmation" do
@@ -41,7 +41,7 @@ RSpec.describe "/admin/gdpr_delete_requests", type: :request do
   context "without gdpr request" do
     it "doesn't display the number of existing requests" do
       get admin_gdpr_delete_requests_path
-      expect(response.body).not_to include("<span class=\"c-indicator c-indicator--danger\">0</span>")
+      expect(response.body).not_to include("<span class=\"c-indicator c-indicator--info fs-xs\">0</span>")
     end
   end
 end

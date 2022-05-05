@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/invitations", type: :request do
+RSpec.describe "/admin/member_manager/invitations", type: :request do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :super_admin) }
 
@@ -9,7 +9,7 @@ RSpec.describe "/admin/invitations", type: :request do
     allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
   end
 
-  describe "GET /admin/invitations" do
+  describe "GET /admin/member_manager/invitations" do
     it "renders to appropriate page" do
       user.update_column(:registered, false)
       get admin_invitations_path
@@ -17,14 +17,14 @@ RSpec.describe "/admin/invitations", type: :request do
     end
   end
 
-  describe "GET /admin/invitations/new" do
+  describe "GET /admin/member_manager/invitations/new" do
     it "renders to appropriate page" do
       get new_admin_invitation_path
       expect(response.body).to include("Email")
     end
   end
 
-  describe "POST /admin/invitations" do
+  describe "POST /admin/member_manager/invitations" do
     it "creates new invitation" do
       post admin_invitations_path,
            params: { user: { email: "hey#{rand(1000)}@email.co" } }
@@ -50,7 +50,7 @@ RSpec.describe "/admin/invitations", type: :request do
     end
   end
 
-  describe "POST /admin/invitations/:id/resend" do
+  describe "POST /admin/member_manager/invitations/:id/resend" do
     let!(:invitation) { create(:user, registered: false) }
 
     it "enqueues an invitation email to be resent" do
@@ -61,7 +61,7 @@ RSpec.describe "/admin/invitations", type: :request do
     end
   end
 
-  describe "DELETE /admin/invitations" do
+  describe "DELETE /admin/member_manager/invitations" do
     let!(:invitation) { create(:user, registered: false) }
 
     before do

@@ -46,10 +46,10 @@ module Stories
                  number_of_articles: 25,
                )
              end
-      Datadog.tracer.trace("feed.query",
-                           span_type: "db",
-                           resource: "#{self.class}.#{__method__}",
-                           tags: { feed_class: feed.class.to_s.dasherize }) do
+      Datadog::Tracing.trace("feed.query",
+                             span_type: "db",
+                             resource: "#{self.class}.#{__method__}",
+                             tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the
@@ -71,10 +71,10 @@ module Stories
                  number_of_articles: 25,
                )
              end
-      Datadog.tracer.trace("feed.query",
-                           span_type: "db",
-                           resource: "#{self.class}.#{__method__}",
-                           tags: { feed_class: feed.class.to_s.dasherize }) do
+      Datadog::Tracing.trace("feed.query",
+                             span_type: "db",
+                             resource: "#{self.class}.#{__method__}",
+                             tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the
