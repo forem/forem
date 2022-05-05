@@ -56,7 +56,7 @@
     </div>
 
   </header>
-  <table class="hidden m:table crayons-table crayons-table--minimal" width="100%" aria-describedby="empty-state-message-id">
+  <table class="hidden m:table crayons-table crayons-table--minimal" width="100%" <%= @invitations.empty? ?  ' aria-describedby="empty-state-message-id"'.html_safe : '' %>">
     <thead class="member-data-heading">
       <tr>
         <th scope="col" class="pl-7">Username</th>
