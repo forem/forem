@@ -19,6 +19,7 @@
       display: flex;
       justify-content: space-between;
       .ltag__stackexchange--title {
+        h1,
         .ltag__stackexchange--header {
           font-size: var(--fs-l);
           font-weight: var(--fw-normal);
