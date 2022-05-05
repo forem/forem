@@ -141,7 +141,7 @@ describe('No invited members', () => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
     cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/admin/invitations');
+      cy.loginAndVisit(user, '/admin/member_manager/invitations');
     });
   });
 
