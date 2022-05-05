@@ -154,8 +154,7 @@ PromptCentered.args = {
 export const Sheet = Template.bind({});
 Sheet.args = {
   size: undefined,
-  title:
-    'Are you sure you want to remove Paweł Ludwiczak from Design Department?',
+  title: 'Modal title',
   noBackdrop: false,
   backdropDismissible: false,
   prompt: false,
@@ -166,8 +165,7 @@ Sheet.args = {
 export const SheetLeftAligned = Template.bind({});
 SheetLeftAligned.args = {
   size: undefined,
-  title:
-    'Are you sure you want to remove Paweł Ludwiczak from Design Department?',
+  title: 'Modal title',
   noBackdrop: false,
   backdropDismissible: false,
   prompt: false,
@@ -179,8 +177,7 @@ SheetLeftAligned.args = {
 export const SheetRightAligned = Template.bind({});
 SheetRightAligned.args = {
   size: undefined,
-  title:
-    'Are you sure you want to remove Paweł Ludwiczak from Design Department?',
+  title: 'Modal title',
   noBackdrop: false,
   backdropDismissible: false,
   prompt: false,
