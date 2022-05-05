@@ -55,7 +55,7 @@
     </div>
 
   </header>
-  <table class="hidden m:table crayons-table crayons-table--minimal" width="100%">
+  <table class="hidden m:table crayons-table crayons-table--minimal" width="100%" <%= @invitations.empty? ? "aria-describedby='empty-state-message-id'".html_safe : "" %>>
     <thead class="member-data-heading">
       <tr>
         <th scope="col" class="pl-7">Username</th>
@@ -82,6 +82,16 @@
       <% end %>
     </tbody>
   </table>
+
+  <% if @invitations.empty? %>
+    <div class="align-center flex flex-col my-auto py-7" id="empty-state-message-id">
+      <p class="fs-xl fw-normal mb-2">No members invited yet.</p>
+      <p class="color-secondary">Invite members and grow your community.</p>
+    </div>
+    <div class="flex grow-1 justify-content-center">
+      <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-3" %>
+    </div>
+  <% end %>
 
   <!-- Large screen layout end -->
   <div class="flex justify-end p-4 xl:p-7">
