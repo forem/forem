@@ -61,14 +61,14 @@ export default {
     },
     sheet: {
       description:
-        'Special style to display the modal as full view height. Useful for larger chunks of content, and may be anchored to left or right of screen usingn the `align` prop',
+        'Special style to display the modal as full view height. Useful for larger chunks of content, and may be anchored to left or right of screen using the `align` prop',
       table: {
         defaultValue: { summary: false },
       },
     },
     centered: {
       description:
-        'In some cases it might be "nicer" to center Modals content. This will only work with `prompt` though.',
+        'In some cases it might be "nicer" to center modal content. This will only work with `prompt` though.',
       table: {
         defaultValue: { summary: false },
       },
