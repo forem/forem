@@ -10,7 +10,11 @@ describe('Invited users', () => {
             email: 'test@test.com',
           }),
         )
-        .then(() => cy.visitAndWaitForUserSideEffects('/admin/invitations'));
+        .then(() =>
+          cy.visitAndWaitForUserSideEffects(
+            '/admin/member_manager/invitations',
+          ),
+        );
     });
   });
 

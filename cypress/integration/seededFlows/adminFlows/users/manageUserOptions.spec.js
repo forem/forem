@@ -19,7 +19,7 @@ describe('Manage User Options', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/users/2');
+        cy.loginAndVisit(user, '/admin/member_manager/users/2');
       });
     });
 

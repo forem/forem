@@ -22,13 +22,18 @@
               <% if item.visible %>
                 <li>
                   <a
-                    class="c-link c-link--block"
+                    class="c-link c-link--block inline-block"
                     href="<%= admin_path %>/<%= group_name %>/<%= item.controller %>"
                     <% if deduced_controller(request) == item.controller.to_s %>
                       style="--bg: transparent"
                       aria-current="page"
                     <% end %>>
                     <%= item.name.to_s.titleize %>
+                    <% if item.controller.to_s == "gdpr_delete_requests" %>
+                      <% if GDPRDeleteRequest.any? %>
+                        &nbsp;<span class="c-indicator c-indicator--info fs-xs"><%= GDPRDeleteRequest.count %></span>
+                      <% end %>
+                    <% end %>
                   </a>
                 </li>
               <% end %>

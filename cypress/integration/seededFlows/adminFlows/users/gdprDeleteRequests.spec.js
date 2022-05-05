@@ -3,7 +3,7 @@ describe('GDPR Delete Requests', () => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
     cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/admin/gdpr_delete_requests');
+      cy.loginAndVisit(user, '/admin/member_manager/gdpr_delete_requests');
     });
   });
 
