@@ -28,7 +28,7 @@ RSpec.describe KatexTag, type: :liquid_tag do
     end
 
     it "generates Katex errors" do
-      content = "\\c = \\pm\\sqrt{a^2 + b^2}"
+      content = "c = \\pm\\sqrt{a{^2 + b^2}"
       rendered = generate_katex_liquid(content).render
       expect(rendered).to include("ParseError: KaTeX parse error: ")
     end
