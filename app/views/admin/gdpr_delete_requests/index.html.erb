@@ -1,4 +1,5 @@
-<div class="crayons-card overflow-admin-main-layout-padding p-4 m:p-0">
+<%= javascript_packs_with_chunks_tag "admin/users/gdprDeleteRequests", defer: true %>
+<div id="gdpr-delete-requests-content" class="crayons-card overflow-admin-main-layout-padding p-4 m:p-0">
   <header class="flex flex-col l:flex-row justify-content-between l:items-center p-0 m:p-7 pb-4">
     <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (GDPR Delete Requests)</span></h1>
     <%= render "admin/users/index/tabs" %>
@@ -16,7 +17,7 @@
     <ul class="list-none mx-2">
       <% @gdpr_delete_requests.each do |r| %>
         <li>
-          <article class="fs-s py-4 flex justify-between">
+          <article class="fs-s py-4 flex justify-between align-items-start">
             <div class="flex flex-col gap-2">
               <h3 class="fs-s color-base-60">@<%= r.username %></h3>
               <%= r.email %>
@@ -25,13 +26,7 @@
                 <dd><%= r.created_at.strftime("%d %b, %Y") %></dd>
               </dl>
             </div>
-              <%= link_to url_for(action: :destroy, id: r.id),
-                          method: :delete,
-                          data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
-                          aria: { label: "Mark deleted for #{r.username}" },
-                          class: "c-link" do %>
-                <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted
-            <% end %>
+            <button aria-label="Confirm user <%= r.username %> deleted" data-username="<%= r.username %>" data-gdpr-form-action="<%= url_for(action: :destroy, id: r.id) %>" class="c-btn"> <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted</button>
           </article>
         </li>
       <% end %>
@@ -57,13 +52,7 @@
           <td><%= r.email %></td>
           <td><%= r.created_at.strftime("%d %b, %Y") %></td>
           <td class="align-center">
-            <%= link_to url_for(action: :destroy, id: r.id),
-                        method: :delete,
-                        data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
-                        aria: { label: "Mark deleted for #{r.username}" },
-                        class: "c-link" do %>
-                          <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted
-            <% end %>
+            <button aria-label="Confirm user <%= r.username %> deleted" data-username="<%= r.username %>" data-gdpr-form-action="<%= url_for(action: :destroy, id: r.id) %>" class="c-btn"> <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted</button>
           </td>
         </tr>
       <% end %>
@@ -74,4 +63,11 @@
   <div class="flex justify-end p-4 m:px-7">
     <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR delete requests", context: "bottom" %>
   </div>
+</div>
+<div id="gdpr-confirm-delete-modal" class="hidden">
+  <%= form_for :gdpr_user, method: :delete  do |f| %>
+    <p class="mb-6">This action cannot be undone. Make sure you have deleted all external data before you mark this as deleted.</p>
+    <button class="c-btn c-btn--primary">Yes, mark as deleted</button>
+    <button type="button" class="js-gdpr-cancel-deleted c-btn">Cancel</button>
+  <% end %>
 </div>
