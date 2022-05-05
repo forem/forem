@@ -46,3 +46,19 @@ describe('GDPR Delete Requests', () => {
     cy.get('@confirmButton').should('exist').should('have.focus');
   });
 });
+
+describe('No GDPR delete requests', () => {
+  beforeEach(() => {
+    cy.testSetup();
+    cy.fixture('users/adminUser.json').as('user');
+    cy.get('@user').then((user) => {
+      cy.loginAndVisit(user, '/admin/member_manager/gdpr_delete_requests');
+    });
+  });
+
+  it('displays an empty state', () => {
+    cy.findByText(
+      'Awesome! All GDPR delete requests have been completed.',
+    ).should('exist');
+  });
+});
