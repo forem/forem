@@ -21,19 +21,16 @@ const getModalImports = () => {
 
 /**
  * This helper function finds the HTML with the given contentSelector, and presents it inside a Preact modal.
- * Only one modal will be presented at any given time.
+ * Only one modal will be presented at any given time. All additional props will be passed directly to the Modal component.
  *
  * @param {Object} args
- * @param {string} args.title The title of the modal (presented at the top of the modal dialog)
  * @param {string} args.contentSelector The CSS query to locate the HTML to be presented in the modal (e.g. '#my-modal-content')
- * @param {string} args.size The size prop for the modal ('small', 'medium', or 'large')
  * @param {Function} args.onOpen A callback function to run when the modal opens. This can be useful, for example, to attach any event listeners to items inside the modal.
  */
 export const showWindowModal = async ({
-  title,
   contentSelector,
-  size = 'small',
   onOpen,
+  ...modalProps
 }) => {
   const [{ Modal }, { render, h }] = await getModalImports();
 
@@ -49,14 +46,14 @@ export const showWindowModal = async ({
 
   render(
     <Modal
-      title={title}
       onClose={() => {
         render(null, currentModalContainer);
       }}
-      size={size}
       focusTrapSelector={`#${WINDOW_MODAL_ID}`}
+      {...modalProps}
     >
       <div
+        className="h-100 w-100"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: document.querySelector(contentSelector).innerHTML,
