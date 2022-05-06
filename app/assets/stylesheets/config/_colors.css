@@ -327,8 +327,8 @@
   ***********************************************/
 
   --selected-date-bg: var(--accent-brand);
-  --selected-range-bg: rgba(var(--accent-brand-rgb), 0.1);
-  --selected-date-border: rgba(var(--accent-brand-rgb), 0.1);
+  --selected-range-bg: rgb(var(--indigo-50));
+  --selected-date-border: rgb(var(--indigo-100));
   --selected-date-color: var(--base-0);
   --selected-range-color: var(--body-color);
 

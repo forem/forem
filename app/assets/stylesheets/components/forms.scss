@@ -283,9 +283,16 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   .DateRangePickerInput {
     @extend .crayons-textfield;
 
+    padding: var(--su-1);
+
+    &_calendarIcon {
+      padding: 0;
+    }
+
     .DateInput_input {
       background-color: var(--form-bg);
       color: var(--body-color);
+      font-size: var(--fs-base);
     }
   }
 
@@ -312,6 +319,20 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   // Edits the indicator underneath the currently focused input
   .DateInput_input__focused {
     border-bottom-color: var(--accent-brand);
+  }
+
+  .CalendarDay {
+    border-color: #e5e5e5;
+  }
+
+  .CalendarDay__default:hover {
+    // TODO: this looks gross
+    border-color: var(--accent-brand);
+  }
+
+  // Special style for today's date
+  .CalendarDay__today {
+    color: var(--accent-brand);
   }
 
   // Will edit everything selected including everything between a range of dates

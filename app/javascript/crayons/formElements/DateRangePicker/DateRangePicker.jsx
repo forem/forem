@@ -5,11 +5,11 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import moment from 'moment';
 import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
-import { START_DATE } from 'react-dates/constants';
+import { START_DATE, ICON_AFTER_POSITION } from 'react-dates/constants';
 import { ButtonNew as Button, Icon } from '@crayons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
-
+import Calendar from '@images/calendar.svg';
 const MONTH_NAMES = [...Array(12).keys()].map((key) =>
   new Date(0, key).toLocaleString('en', { month: 'long' }),
 );
@@ -101,6 +101,9 @@ export const DateRangePicker = ({
         focusedInput={focusedInput}
         navPrev={<Icon src={ChevronLeft} />}
         navNext={<Icon src={ChevronRight} />}
+        customInputIcon={<Icon src={Calendar} />}
+        inputIconPosition={ICON_AFTER_POSITION}
+        customArrowIcon="-"
         onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
         isOutsideRange={(date) =>
           isDateOutsideOfRange({
@@ -117,7 +120,6 @@ export const DateRangePicker = ({
             endDate: endDate.toDate(),
           });
         }}
-        showClearDates
         renderMonthElement={(props) => (
           <MonthYearPicker
             earliestDate={earliestDate}
