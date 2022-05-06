@@ -132,7 +132,8 @@ module Articles
                                              WHEN experience_level IS NULL THEN :default_user_experience_level
                                              ELSE experience_level END ) AS user_experience_level
                                           FROM users_settings WHERE users_settings.user_id = :user_id)))",
-                      group_by_fragment: "articles.experience_level_rating")
+                      group_by_fragment: "articles.experience_level_rating",
+                      query_parameter_names: [:default_user_experience_level])
 
       relevancy_lever(:featured_article,
                       label: "Weight to give for feature or unfeatured articles.  1 is featured.",
@@ -256,7 +257,8 @@ module Articles
                  WHEN articles.privileged_users_reaction_points_sum < :negative_reaction_threshold THEN -1
                  WHEN articles.privileged_users_reaction_points_sum > :positive_reaction_threshold THEN 1
                  ELSE 0 END)",
-                      group_by_fragment: "articles.privileged_users_reaction_points_sum")
+                      group_by_fragment: "articles.privileged_users_reaction_points_sum",
+                      query_parameter_names: %i[negative_reaction_threshold positive_reaction_threshold])
 
       relevancy_lever(:public_reactions,
                       label: "Weight to give for the number of unicorn, heart, reading list reactions for article.",

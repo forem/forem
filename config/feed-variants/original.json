@@ -87,7 +87,9 @@
         [-1, 0.2],
         [1, 1]
       ],
-      "fallback": 0.95
+      "fallback": 0.95,
+      "negative_reaction_threshold": -10,
+      "positive_reaction_threshold": 10
     },
     "public_reactions": {
       "cases": [

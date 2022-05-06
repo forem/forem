@@ -33,9 +33,6 @@ module Articles
         :levers, # Array <Articles::Feeds::RelevancyLever::Configured>
         :order_by, # Articles::Feeds::OrderByLever
         :max_days_since_published,
-        :default_user_experience_level,
-        :negative_reaction_threshold,
-        :positive_reaction_threshold,
         keyword_init: true,
       )
 
@@ -50,23 +47,15 @@ module Articles
         @page = page
         @tag = tag
         @config = config
-        @oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
+        oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
           user: @user,
-          days_since_published: max_days_since_published,
+          days_since_published: config.max_days_since_published,
         )
-
+        @query_parameters = { oldest_published_at: oldest_published_at }
         configure!
       end
 
-      attr_reader :oldest_published_at, :config
-
-      delegate(
-        :max_days_since_published,
-        :negative_reaction_threshold,
-        :positive_reaction_threshold,
-        :default_user_experience_level,
-        to: :config,
-      )
+      attr_reader :config, :query_parameters
 
       # Query for articles relevant to the user's interest.
       #
@@ -94,15 +83,11 @@ module Articles
         # rubocop:enable Layout/LineLength
 
         # These are the variables we'll pass to the SQL statement.
-        repeated_query_variables = {
-          negative_reaction_threshold: negative_reaction_threshold,
-          positive_reaction_threshold: positive_reaction_threshold,
-          oldest_published_at: oldest_published_at,
+        repeated_query_variables = query_parameters.merge(
           omit_article_ids: omit_article_ids,
           now: Time.current,
           user_id: @user&.id,
-          default_user_experience_level: default_user_experience_level.to_i
-        }
+        )
 
         # This needs to be an Array for Article.sanitize_sql.
         unsanitized_sql_sub_query = [
@@ -220,6 +205,9 @@ module Articles
             cases: lever.cases,
             fallback: lever.fallback,
           )
+
+          # As implemented, this is not looking for collisions of named parameters.
+          @query_parameters.merge!(lever.query_parameters)
         end
       end
 
