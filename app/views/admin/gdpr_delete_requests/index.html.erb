@@ -34,7 +34,7 @@
   <!-- Small layout end -->
 
   <!-- Large layout start -->
-  <table class="hidden m:table crayons-table crayons-table--minimal w-100" <%= @gdpr_delete_requests.empty? ? "aria-describedby='empty-state-message-id'".html_safe : "aria-describedby='table-description'".html_safe %>>
+  <table class="hidden m:table crayons-table crayons-table--minimal w-100" aria-describedby="table-description <%= @gdpr_delete_requests.empty? ? "empty-state-message-id" : "" %>">
     <thead class="member-data-heading">
       <tr>
         <th scope="col" class="pl-7">Deleted member</th>
