@@ -4,6 +4,7 @@ import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
+import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 /**
  * Sends analytics about the featured article.
@@ -59,8 +60,11 @@ PodcastEpisodes.propTypes = {
 /**
  * Renders the main feed.
  */
-export const renderFeed = (timeFrame) => {
+export const renderFeed = async (timeFrame) => {
   const feedContainer = document.getElementById('homepage-feed');
+
+  const { currentUser } = await getUserDataAndCsrfToken();
+  const currentUserId = currentUser && currentUser.id;
 
   render(
     <Feed
@@ -92,6 +96,8 @@ export const renderFeed = (timeFrame) => {
         // 2. Show the featured story next
         // 3. Podcast episodes out today
         // 4. Rest of the stories for the feed
+        // For "saveable", "!=" is used instead of "!==" to compare user_id
+        // and currentUserId because currentUserId is a String while user_id is an Integer
         return (
           <div>
             {timeFrame === '' && pinnedArticle && (
@@ -101,6 +107,7 @@ export const renderFeed = (timeFrame) => {
                 pinned={true}
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(pinnedArticle.id)}
+                saveable={pinnedArticle.user_id != currentUserId}
               />
             )}
             {featuredStory && (
@@ -110,6 +117,7 @@ export const renderFeed = (timeFrame) => {
                 isFeatured
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
+                saveable={featuredStory.user_id != currentUserId}
               />
             )}
             {podcastEpisodes.length > 0 && (
@@ -122,6 +130,7 @@ export const renderFeed = (timeFrame) => {
                 article={story}
                 feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(story.id)}
+                saveable={story.user_id != currentUserId}
               />
             ))}
           </div>

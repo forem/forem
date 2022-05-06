@@ -78,6 +78,20 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
     end
   end
 
+  context "when item is not a podcast episode" do
+    let(:items) { RSS::Parser.parse("spec/support/fixtures/podcasts/codepunk.rss", false).items }
+    let(:rss_item) { items.first }
+    let!(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
+
+    it "does not raise error" do
+      expect { described_class.call(podcast.id, item) }.not_to raise_error
+    end
+
+    it "does not create episode" do
+      expect { described_class.call(podcast.id, item) }.not_to change(PodcastEpisode, :count)
+    end
+  end
+
   context "when attempting to create duplicate episodes" do
     let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/developertea.rss", false).items.first }
     let(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }

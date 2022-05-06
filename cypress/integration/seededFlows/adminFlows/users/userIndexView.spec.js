@@ -4,9 +4,7 @@ describe('User index view', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginUser(user)
-          .then(() => cy.enableFeatureFlag('member_index_view'))
-          .then(() => cy.visitAndWaitForUserSideEffects('/admin/users'));
+        cy.loginAndVisit(user, '/admin/member_manager/users');
       });
       cy.viewport('iphone-x');
     });
@@ -41,7 +39,7 @@ describe('User index view', () => {
           .should('have.attr', 'aria-expanded', 'true');
 
         cy.findByRole('textbox', {
-          name: 'Search member by name, username, email, or Twitter/GitHub usernames',
+          name: 'Search member by name, username or email',
         }).type('Admin McAdmin');
 
         cy.findByRole('button', { name: 'Search' }).click();
@@ -121,7 +119,7 @@ describe('User index view', () => {
           .pipe(click)
           .should('have.attr', 'aria-expanded', 'true');
         cy.findByRole('textbox', {
-          name: 'Search member by name, username, email, or Twitter/GitHub usernames',
+          name: 'Search member by name, username or email',
         })
           .clear()
           .type('something');
@@ -141,7 +139,7 @@ describe('User index view', () => {
 
       it(`Clicks through to the Member Detail View`, () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
-        cy.url().should('contain', '/admin/users/1');
+        cy.url().should('contain', '/admin/member_manager/users/1');
       });
     });
 
@@ -179,9 +177,7 @@ describe('User index view', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginUser(user)
-          .then(() => cy.enableFeatureFlag('member_index_view'))
-          .then(() => cy.visitAndWaitForUserSideEffects('/admin/users'));
+        cy.loginAndVisit(user, '/admin/member_manager/users');
       });
       cy.viewport('macbook-16');
     });
@@ -207,7 +203,7 @@ describe('User index view', () => {
     describe('Search and filter', () => {
       it('Searches for a user', () => {
         cy.findByRole('textbox', {
-          name: 'Search member by name, username, email, or Twitter/GitHub usernames',
+          name: 'Search member by name, username or email',
         }).type('Admin McAdmin');
 
         cy.findByRole('button', { name: 'Search' }).click();
@@ -233,7 +229,7 @@ describe('User index view', () => {
 
       it(`Clicks through to the Member Detail View`, () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
-        cy.url().should('contain', '/admin/users/1');
+        cy.url().should('contain', '/admin/member_manager/users/1');
       });
     });
 
@@ -278,7 +274,7 @@ describe('User index view', () => {
           ).should('be.visible');
           cy.findByRole('link', {
             name: 'Download',
-            href: '/admin/users/export.csv',
+            href: '/admin/member_manager/users/export.csv',
           }).should('exist');
         });
       });

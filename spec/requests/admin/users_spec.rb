@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/users", type: :request do
+RSpec.describe "/admin/member_manager/users", type: :request do
   let!(:user) do
     omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
@@ -11,7 +11,7 @@ RSpec.describe "/admin/users", type: :request do
     sign_in(admin)
   end
 
-  describe "GET /admin/users" do
+  describe "GET /admin/member_manager/users" do
     it "renders to appropriate page" do
       get admin_users_path
       expect(response.body).to include(user.username)
@@ -32,7 +32,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "GET /admin/users/:id" do
+  describe "GET /admin/member_manager/users/:id" do
     it "renders to appropriate page" do
       get admin_user_path(user)
 
@@ -60,17 +60,17 @@ RSpec.describe "/admin/users", type: :request do
     end
 
     it "displays a user's current roles in the 'Emails' tab" do
-      get "/admin/users/#{user.id}?tab=emails"
+      get "#{admin_user_path(user.id)}?tab=emails"
       expect(response.body).to include("Previous emails")
     end
 
     it "displays a user's current flags in the 'Flags' tab" do
-      get "/admin/users/#{user.id}?tab=flags"
+      get "#{admin_user_path(user.id)}?tab=flags"
       expect(response.body).to include("Flags received")
     end
 
     it "displays a message when there are no related vomit reactions for a user" do
-      get "/admin/users/#{user.id}?tab=flags"
+      get "#{admin_user_path(user.id)}?tab=flags"
       expect(response.body).to include("No flags received against")
     end
 
@@ -81,12 +81,12 @@ RSpec.describe "/admin/users", type: :request do
     end
 
     it "displays a user's current reports in the 'Reports' tab" do
-      get "/admin/users/#{user.id}?tab=reports"
+      get "#{admin_user_path(user.id)}?tab=reports"
       expect(response.body).to include("Reports submitted by")
     end
 
     it "displays a message when there are no current reports for a user" do
-      get "/admin/users/#{user.id}?tab=reports"
+      get "#{admin_user_path(user.id)}?tab=reports"
       expect(response.body).to include("No comment or post has been reported yet.")
     end
 
@@ -97,7 +97,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/banish" do
+  describe "POST /admin/member_manager/users/:id/banish" do
     it "bans user for spam" do
       allow(Moderator::BanishUserWorker).to receive(:perform_async)
       post banish_admin_user_path(user.id)
@@ -106,7 +106,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/send_email" do
+  describe "POST /admin/member_manager/users/:id/send_email" do
     let(:params) do
       {
         email_body: "Body",
@@ -188,7 +188,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/verify_email_ownership" do
+  describe "POST /admin/member_manager/users/:id/verify_email_ownership" do
     let(:mailer) { double }
     let(:message_delivery) { double }
 
@@ -297,7 +297,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/unpublish_all_articles" do
+  describe "POST /admin/member_manager/users/:id/unpublish_all_articles" do
     let(:user) { create(:user) }
 
     it "unpublishes all articles" do
@@ -307,7 +307,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "DELETE /admin/users/:id/remove_identity" do
+  describe "DELETE /admin/member_manager/users/:id/remove_identity" do
     let(:provider) { Authentication::Providers.available.first }
     let(:user) do
       omniauth_mock_providers_payload
@@ -367,7 +367,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/export_data" do
+  describe "POST /admin/member_manager/users/:id/export_data" do
     it "redirects properly to the user edit page" do
       sign_in admin
       post export_data_admin_user_path(user), params: { send_to_admin: "true" }

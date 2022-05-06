@@ -24,7 +24,7 @@ describe('Manage User Roles', () => {
 
     describe('Changing Roles', () => {
       beforeEach(() => {
-        cy.visit('/admin/users/2');
+        cy.visit('/admin/member_manager/users/2');
       });
 
       it('should change a role', () => {
@@ -88,7 +88,7 @@ describe('Manage User Roles', () => {
 
     describe('Adding Roles', () => {
       beforeEach(() => {
-        cy.visit('/admin/users/3');
+        cy.visit('/admin/member_manager/users/3');
       });
 
       it('should not add a role if a reason is missing.', () => {

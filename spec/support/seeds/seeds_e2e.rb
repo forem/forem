@@ -156,6 +156,25 @@ many_orgs_user = User.find_by(email: "user-with-many-orgs@forem.local")
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "gdpr-delete-user@forem.local") do
+  gdpr_user = User.create!(
+    name: "GDPR delete user",
+    email: "gdpr-delete-user@forem.local",
+    username: "gdpr_delete_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+  Users::DeleteWorker.new.perform(gdpr_user.id, true)
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   organization = Organization.create!(
     name: "Bachmanity",

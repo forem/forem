@@ -213,7 +213,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
-  before_destroy :unsubscribe_from_newsletters, prepend: true
+  before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
   after_create_commit :send_welcome_notification
@@ -494,19 +494,15 @@ class User < ApplicationRecord
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
 
-  def a_sustaining_member?
-    monthly_dues.positive?
-  end
-
   def profile_image_90
     profile_image_url_for(length: 90)
   end
 
-  def unsubscribe_from_newsletters
+  def remove_from_mailchimp_newsletters
     return if email.blank?
     return if Settings::General.mailchimp_api_key.blank?
 
-    Mailchimp::Bot.new(self).unsubscribe_all_newsletters
+    Mailchimp::Bot.new(self).remove_from_mailchimp
   end
 
   def enough_credits?(num_credits_needed)

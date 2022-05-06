@@ -54,7 +54,7 @@ RSpec.describe Users::DeleteWorker, type: :worker do
       it "creates a gdpr-delete record" do
         expect do
           worker.perform(user.id, true)
-        end.to change(Users::GdprDeleteRequest, :count).by(1)
+        end.to change(GDPRDeleteRequest, :count).by(1)
       end
     end
 

@@ -11,7 +11,10 @@ module Podcasts
 
     def call
       attributes = podcast_episode_attributes
+
       attributes = add_media_url(attributes)
+      return unless attributes[:media_url]
+
       attributes = add_published_at(attributes)
 
       upsert_result = PodcastEpisode.upsert(

@@ -19,7 +19,7 @@ describe('Manage User Options', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/users/2');
+        cy.loginAndVisit(user, '/admin/member_manager/users/2');
       });
     });
 
@@ -88,7 +88,7 @@ describe('Manage User Options', () => {
       });
 
       verifyAndDismissUserUpdatedMessage(
-        '@trusted_user_1 (email: trusted-user-1@forem.local, user_id: 2) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics  and confirm on the page.',
+        '@trusted_user_1 (email: trusted-user-1@forem.local, user_id: 2) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on the page.',
       );
     });
 

@@ -9,7 +9,7 @@ export const getContentOfToken = (token) =>
 
 export const updateOnboarding = (lastPage) => {
   const csrfToken = getContentOfToken('csrf-token');
-  fetch('/onboarding_update', {
+  fetch('/onboarding', {
     method: 'PATCH',
     headers: {
       'X-CSRF-Token': csrfToken,

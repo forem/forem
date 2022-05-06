@@ -1,6 +1,6 @@
 module Articles
   class ScoreCalcWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :medium_priority, lock: :until_executing
 

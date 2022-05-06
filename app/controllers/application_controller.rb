@@ -260,9 +260,9 @@ class ApplicationController < ActionController::Base
     # Let's only redirect get requests for this purpose.
     return unless request.get? &&
       # If the request equals the original set domain, e.g. forem-x.forem.cloud.
-      request.host == ENV["APP_DOMAIN"] &&
+      request.host == ENV.fetch("APP_DOMAIN", nil) &&
       # If the app domain config has now been set, let's go there instead.
-      ENV["APP_DOMAIN"] != Settings::General.app_domain
+      ENV.fetch("APP_DOMAIN", nil) != Settings::General.app_domain
 
     redirect_to URL.url(request.fullpath)
   end
@@ -276,6 +276,7 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
   end
 
   def internal_nav_param

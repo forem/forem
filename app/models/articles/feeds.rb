@@ -58,30 +58,17 @@ module Articles
     # @param page [Integer] the page on which to start pagination
     # @param tag [NilClass, String] not used but carried forward for interface conformance
     #
-    # @return [Articles::Feeds::VariantQuery] if the :feed_uses_variant_query_feature feature is
-    #         enabled.
-    # @return [Articles::Feeds::WeightedQueryStrategy] if the :feed_uses_variant_query_feature
-    #         feature is not enabled.
+    # @return [Articles::Feeds::VariantQuery]
     def self.feed_for(controller:, user:, number_of_articles:, page:, tag:)
       variant = AbExperiment.get_feed_variant_for(controller: controller, user: user)
 
-      if FeatureFlag.enabled?(:feed_uses_variant_query_feature)
-        VariantQuery.build_for(
-          variant: variant,
-          user: user,
-          number_of_articles: number_of_articles,
-          page: page,
-          tag: tag,
-        )
-      else
-        WeightedQueryStrategy.new(
-          variant: variant,
-          user: user,
-          number_of_articles: number_of_articles,
-          page: page,
-          tag: tag,
-        )
-      end
+      VariantQuery.build_for(
+        variant: variant,
+        user: user,
+        number_of_articles: number_of_articles,
+        page: page,
+        tag: tag,
+      )
     end
 
     # The available feed levers for this Forem instance.
@@ -189,7 +176,7 @@ module Articles
                                             AND comments.deleted = false
                                             AND comments.created_at > :oldest_published_at"])
 
-      relevancy_lever(:matching_negative_tag_intersection_count,
+      relevancy_lever(:matching_negative_tags_intersection_count,
                       label: "Weight to give the number of intersecting tags of the article and " \
                              "user negative follows",
                       range: "[0..4]",

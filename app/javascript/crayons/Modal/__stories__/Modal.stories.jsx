@@ -26,6 +26,19 @@ export default {
         defaultValue: { summary: 'default' },
       },
     },
+    sheetAlign: {
+      type: 'select',
+      options: {
+        'Center (default)': 'center',
+        Left: 'left',
+        Right: 'right',
+      },
+      description:
+        'Modals will default to showing in the center of the screen. When using the `sheet` variant, it is possible to position to left or right of screen',
+      table: {
+        defaultValue: { summary: 'center' },
+      },
+    },
     noBackdrop: {
       description: 'Removes the default backdrop overlay.',
       table: {
@@ -46,9 +59,16 @@ export default {
         defaultValue: { summary: false },
       },
     },
+    sheet: {
+      description:
+        'Special style to display the modal as full view height. Useful for larger chunks of content, and may be anchored to left or right of screen using the `align` prop',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
     centered: {
       description:
-        'In some cases it might be "nicer" to center Modals content. This will only work with `prompt` though.',
+        'In some cases it might be "nicer" to center modal content. This will only work with `prompt` though.',
       table: {
         defaultValue: { summary: false },
       },
@@ -104,6 +124,7 @@ Default.args = {
   backdropDismissible: false,
   prompt: false,
   centered: false,
+  sheet: false,
 };
 
 export const Prompt = Template.bind({});
@@ -115,6 +136,7 @@ Prompt.args = {
   backdropDismissible: false,
   prompt: true,
   centered: false,
+  sheet: false,
 };
 
 export const PromptCentered = Template.bind({});
@@ -126,6 +148,42 @@ PromptCentered.args = {
   backdropDismissible: false,
   prompt: true,
   centered: true,
+  sheet: false,
+};
+
+export const Sheet = Template.bind({});
+Sheet.args = {
+  size: undefined,
+  title: 'Modal title',
+  noBackdrop: false,
+  backdropDismissible: false,
+  prompt: false,
+  centered: false,
+  sheet: true,
+};
+
+export const SheetLeftAligned = Template.bind({});
+SheetLeftAligned.args = {
+  size: undefined,
+  title: 'Modal title',
+  noBackdrop: false,
+  backdropDismissible: false,
+  prompt: false,
+  centered: false,
+  sheet: true,
+  sheetAlign: 'left',
+};
+
+export const SheetRightAligned = Template.bind({});
+SheetRightAligned.args = {
+  size: undefined,
+  title: 'Modal title',
+  noBackdrop: false,
+  backdropDismissible: false,
+  prompt: false,
+  centered: false,
+  sheet: true,
+  sheetAlign: 'right',
 };
 
 export const BackdropDismissible = Template.bind({});
@@ -136,6 +194,7 @@ BackdropDismissible.args = {
   backdropDismissible: true,
   prompt: false,
   centered: false,
+  sheet: false,
 };
 
 export const NoBackdrop = Template.bind({});
@@ -146,4 +205,5 @@ NoBackdrop.args = {
   backdropDismissible: false,
   prompt: false,
   centered: false,
+  sheet: false,
 };

@@ -15,7 +15,7 @@ export class SaveButton extends Component {
 
   render() {
     const { buttonText } = this.state;
-    const { article, isBookmarked, onClick } = this.props;
+    const { article, isBookmarked, onClick, saveable = true } = this.props;
 
     const mouseMove = (_e) => {
       this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Save' });
@@ -33,7 +33,7 @@ export class SaveButton extends Component {
       });
     };
 
-    if (article.class_name === 'Article') {
+    if (article.class_name === 'Article' && saveable) {
       return (
         <button
           type="button"
@@ -74,6 +74,7 @@ SaveButton.propTypes = {
   article: articlePropTypes.isRequired,
   isBookmarked: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
+  saveable: PropTypes.bool.isRequired,
 };
 
 SaveButton.displayName = 'SaveButton';

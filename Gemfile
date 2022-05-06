@@ -23,7 +23,7 @@ gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.23" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.54.2" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 1.0.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.6" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -54,7 +54,7 @@ gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
 gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
-gem "katex", "~> 0.8.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
+gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.3" # A secure, non-evaling end user template engine with aesthetic markup
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
 gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
@@ -79,8 +79,8 @@ gem "rack-attack", "~> 6.6.1" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.2.2" # Ruby on Rails
-gem "ransack", "~> 3.0" # Searching and sorting
-gem "recaptcha", "~> 5.9", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "ransack", "~> 3.1" # Searching and sorting
+gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
 gem "redis", "~> 4.6.0" # Redis ruby client
@@ -95,14 +95,14 @@ gem "rouge", "~> 3.28" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sidekiq", "~> 6.4.1" # Sidekiq is used to process background jobs with the help of Redis
-gem "sidekiq-cron", "~> 1.3" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.1.19" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq", "~> 6.4.2" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq-cron", "~> 1.4" # Allows execution of scheduled cron jobs as specific times
+gem "sidekiq-unique-jobs", "~> 7.1.22" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
-gem "stripe", "~> 5.52" # Ruby library for the Stripe API
+gem "stripe", "~> 5.55" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 1.0" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
@@ -145,7 +145,7 @@ group :development, :test do
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.27", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.28", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.14", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.10", require: false # Code style checking for RSpec files
