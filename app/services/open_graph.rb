@@ -41,6 +41,22 @@ class OpenGraph
     page.images.best
   end
 
+  def title
+    get_preferred_meta_value("title")
+  end
+
+  def preferred_desc
+    get_preferred_meta_value("description")
+  end
+
+  def get_preferred_meta_value(property)
+    open_graph_value = meta["og:#{property}"]
+    twitter_value = meta["twitter:#{property}"]
+    page_value = page.public_send(property)
+
+    open_graph_value || twitter_value || page_value
+  end
+
   def properties
     return {} if tags["property"].blank?
 
@@ -48,15 +64,11 @@ class OpenGraph
   end
 
   def main_properties
-    %w[og:title og:url]
+    [image, url, title, description]
   end
 
   def main_properties_present?
-    (main_properties - properties.keys).empty?
-  end
-
-  def preferred_desc
-    properties["og:description"].first || page.description
+    main_properties.all?(&:present?)
   end
 
   # this method groups like-properties, making it a little easier to determine
