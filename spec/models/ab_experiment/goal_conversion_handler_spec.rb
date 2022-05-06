@@ -67,7 +67,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         expect(FieldTest::Event.all.pluck(:name).sort)
           .to match_array([
             goal,
-            "publishes_post_at_least_two_times_within_two_weeks",
+            "user_publishes_post_at_least_two_times_within_two_weeks",
             "user_publishes_post_at_least_two_times_within_week",
           ].sort)
       end
