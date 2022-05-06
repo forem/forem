@@ -6,7 +6,9 @@ import 'react-dates/lib/css/_datepicker.css';
 import moment from 'moment';
 import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
 import { START_DATE } from 'react-dates/constants';
-import { ButtonNew as Button } from '@crayons';
+import { ButtonNew as Button, Icon } from '@crayons';
+import ChevronLeft from '@images/chevron-left.svg';
+import ChevronRight from '@images/chevron-right.svg';
 
 const MONTH_NAMES = [...Array(12).keys()].map((key) =>
   new Date(0, key).toLocaleString('en', { month: 'long' }),
@@ -33,7 +35,7 @@ const MonthYearPicker = ({
   return (
     <div>
       <select
-        className="crayons-select w-auto"
+        className="crayons-select w-auto mr-2 fs-s"
         onChange={(e) => onMonthSelect(month, e.target.value)}
         value={month.month()}
       >
@@ -44,7 +46,7 @@ const MonthYearPicker = ({
         ))}
       </select>
       <select
-        className="crayons-select w-auto"
+        className="crayons-select w-auto fs-s"
         onChange={(e) => onYearSelect(month, e.target.value)}
         value={month.year()}
       >
@@ -97,6 +99,8 @@ export const DateRangePicker = ({
         endDate={endDate}
         endDateId={endDateId}
         focusedInput={focusedInput}
+        navPrev={<Icon src={ChevronLeft} />}
+        navNext={<Icon src={ChevronRight} />}
         onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
         isOutsideRange={(date) =>
           isDateOutsideOfRange({

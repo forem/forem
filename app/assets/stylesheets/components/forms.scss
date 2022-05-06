@@ -359,4 +359,22 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   .DayPickerKeyboardShortcuts_buttonReset:hover::before {
     border-right-color: var(--accent-brand-lighter);
   }
+
+  .DayPickerNavigation {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .DayPickerNavigation_button {
+    @extend .c-btn;
+
+    margin: var(--su-6) var(--su-3) 0 var(--su-3);
+    height: min-content;
+    padding: var(--su-1);
+
+    &:hover,
+    &:focus {
+      background-color: var(--bg-hover);
+    }
+  }
 }
