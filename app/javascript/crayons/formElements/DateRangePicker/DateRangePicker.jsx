@@ -12,6 +12,9 @@ const MONTH_NAMES = [...Array(12).keys()].map((key) =>
   new Date(0, key).toLocaleString('en', { month: 'long' }),
 );
 
+const isDateOutsideOfRange = ({ date, minDate, maxDate }) =>
+  !date.isBetween(minDate, maxDate);
+
 // TODO: Some weirdness with validation? Not all months valid for all years :-/
 const MonthYearPicker = ({
   earliestDate,
@@ -35,7 +38,7 @@ const MonthYearPicker = ({
         value={month.month()}
       >
         {MONTH_NAMES.map((month, index) => (
-          <option value={index + 1} key={month}>
+          <option value={index} key={month}>
             {month}
           </option>
         ))}
@@ -95,6 +98,13 @@ export const DateRangePicker = ({
         endDateId={endDateId}
         focusedInput={focusedInput}
         onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
+        isOutsideRange={(date) =>
+          isDateOutsideOfRange({
+            date,
+            minDate: earliestDate,
+            maxDate: latestDate,
+          })
+        }
         onDatesChange={({ startDate, endDate }) => {
           setStartDate(startDate);
           setEndDate(endDate);

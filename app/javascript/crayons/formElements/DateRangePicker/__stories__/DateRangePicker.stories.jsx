@@ -34,5 +34,5 @@ Default.args = {
   startDateId: 'start-date',
   endDateId: 'end-date',
   defaultStartDate: new Date(),
-  minStartDate: new Date('01-01-2020'),
+  minStartDate: new Date(1, 0, 2020),
 };
