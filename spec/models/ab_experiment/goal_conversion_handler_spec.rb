@@ -3,9 +3,12 @@ RSpec.describe AbExperiment::GoalConversionHandler do
   include FieldTest::Helpers
 
   describe ".call" do
-    subject(:handler) { described_class.new(user: user, goal: goal, experiments: experiments) }
+    subject(:handler) do
+      described_class.new(user: user, goal: goal, experiments: experiments, start_date: start_date)
+    end
 
     let(:user) { create(:user) }
+    let(:start_date) { 16.days.ago }
     let(:goal) { "non_sense" }
     let(:experiments) { FieldTest.config["experiments"] }
 
@@ -21,8 +24,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
     context "with experiment that started to soon for some results" do
       let(:goal) { described_class::USER_CREATES_COMMENT_GOAL }
       let(:experiment_name) { AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT }
-      # NOTE: We're choosing a future date as a logic short-cut for comment tests
-      let(:experiments) { { experiment_name => { "start_date" => 8.days.from_now } } }
+      let(:start_date) { 8.days.from_now }
 
       before do
         field_test(experiment_name, participant: user)
