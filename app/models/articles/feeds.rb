@@ -269,8 +269,8 @@ module Articles
                  --- Very negative
                  WHEN articles.privileged_users_reaction_points_sum < :very_negative_reaction_threshold THEN -2
                  --- Negative
-                 WHEN articles.privileged_users_reaction_points_sum < :negative_reaction_threshold
-                      AND articles.privileged_users_reaction_points_sum >= :very_negative_reaction_threshold THEN -1
+                 WHEN articles.privileged_users_reaction_points_sum >= :very_negative_reaction_threshold
+                      AND articles.privileged_users_reaction_points_sum < :negative_reaction_threshold THEN -1
                  --- Neutral
                  WHEN articles.privileged_users_reaction_points_sum >= :negative_reaction_threshold
                       AND articles.privileged_users_reaction_points_sum < :positive_reaction_threshold THEN 0
