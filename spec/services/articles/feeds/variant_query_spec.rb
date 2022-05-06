@@ -23,7 +23,7 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
       describe "#call with a non-nil user" do
         let(:user) { create(:user) }
 
-        it "is a valid ActiveRecord::Relation", aggregate_failures: true do
+        it "is a valid ActiveRecord::Relation", :aggregate_failures do
           article = create(:article)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
