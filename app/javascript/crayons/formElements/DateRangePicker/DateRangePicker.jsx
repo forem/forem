@@ -8,6 +8,38 @@ import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
 import { START_DATE } from 'react-dates/constants';
 import { ButtonNew as Button } from '@crayons';
 
+const MONTH_NAMES = [...Array(12).keys()].map((key) =>
+  new Date(0, key).toLocaleString('en', { month: 'long' }),
+);
+
+const MonthYearPicker = ({ earliestDate, latestDate }) => {
+  const yearsDiff = latestDate.diff(earliestDate, 'years');
+
+  const years = [...Array(yearsDiff).keys()].map(
+    (key) => latestDate.year() - key,
+  );
+  years.push(earliestDate.year());
+
+  return (
+    <div>
+      <select className="crayons-select w-auto">
+        {MONTH_NAMES.map((month, index) => (
+          <option value={index + 1} key={month}>
+            {month}
+          </option>
+        ))}
+      </select>
+      <select className="crayons-select w-auto">
+        {years.map((year) => (
+          <option key={year} value={year}>
+            {year}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
 /**
  * Used to facilitate picking a date range. This component is a wrapper around the one provided from react-dates.
  *
@@ -23,6 +55,8 @@ export const DateRangePicker = ({
   endDateId,
   defaultStartDate,
   defaultEndDate,
+  maxEndDate = new Date(),
+  minStartDate = new Date(),
   onDatesChanged,
 }) => {
   const [focusedInput, setFocusedInput] = useState(START_DATE);
@@ -32,6 +66,9 @@ export const DateRangePicker = ({
   const [endDate, setEndDate] = useState(
     defaultEndDate ? moment(defaultEndDate) : null,
   );
+
+  const earliestDate = moment(minStartDate);
+  const latestDate = moment(maxEndDate);
 
   return (
     // We wrap in a span to assist with scoping CSS selectors & overriding styles from react-dates
@@ -53,19 +90,16 @@ export const DateRangePicker = ({
         }}
         showClearDates
         renderMonthElement={() => (
-          <div>
-            <select className="crayons-select w-auto">
-              <option value="1">January</option>
-            </select>
-            <select className="crayons-select w-auto">
-              <option value="1">2022</option>
-            </select>
-          </div>
+          <MonthYearPicker
+            earliestDate={earliestDate}
+            latestDate={latestDate}
+          />
         )}
         renderCalendarInfo={() => (
           <div className="p-4 ">
-            <Button variant="secondary mr-2">Last week</Button>
-            <Button variant="secondary">Last month</Button>
+            TODO
+            <Button>Last week</Button>
+            <Button>Last month</Button>
           </div>
         )}
       />
