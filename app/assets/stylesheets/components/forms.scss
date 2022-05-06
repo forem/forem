@@ -318,21 +318,32 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   // Edits the indicator underneath the currently focused input
   .DateInput_input__focused {
-    border-bottom-color: var(--accent-brand);
+    border-bottom-color: var(--focus);
   }
 
   .CalendarDay {
-    border-color: #e5e5e5;
+    border-color: var(--date-border-color);
   }
 
   .CalendarDay__default:hover {
-    // TODO: this looks gross
-    border-color: var(--accent-brand);
+    background-color: transparent;
+    position: relative;
+  }
+
+  // We set this in ::after selector to avoid neighbouring date borders overlapping our styles
+  .CalendarDay__default:hover::after {
+    border: 1px solid var(--hover-date-border-color);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: '';
   }
 
   // Special style for today's date
   .CalendarDay__today {
-    color: var(--accent-brand);
+    color: var(--current-date-color);
   }
 
   // Will edit everything selected including everything between a range of dates
@@ -344,8 +355,8 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   .CalendarDay__selected_span:active,
   .CalendarDay__selected_span:hover {
-    background: var(--selected-date-bg);
-    color: var(--selected-date-color);
+    background: var(--selected-range-bg);
+    color: var(--fs-base);
     border-color: var(--selected-date-border);
   }
 
@@ -353,7 +364,6 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   .CalendarDay__selected {
     background: var(--selected-date-bg);
     color: var(--selected-date-color);
-    border-color: var(--selected-date-border);
   }
 
   // Will edit when hovered over
