@@ -12,7 +12,14 @@ const MONTH_NAMES = [...Array(12).keys()].map((key) =>
   new Date(0, key).toLocaleString('en', { month: 'long' }),
 );
 
-const MonthYearPicker = ({ earliestDate, latestDate }) => {
+// TODO: Some weirdness with validation? Not all months valid for all years :-/
+const MonthYearPicker = ({
+  earliestDate,
+  latestDate,
+  onMonthSelect,
+  onYearSelect,
+  month,
+}) => {
   const yearsDiff = latestDate.diff(earliestDate, 'years');
 
   const years = [...Array(yearsDiff).keys()].map(
@@ -22,14 +29,22 @@ const MonthYearPicker = ({ earliestDate, latestDate }) => {
 
   return (
     <div>
-      <select className="crayons-select w-auto">
+      <select
+        className="crayons-select w-auto"
+        onChange={(e) => onMonthSelect(month, e.target.value)}
+        value={month.month()}
+      >
         {MONTH_NAMES.map((month, index) => (
           <option value={index + 1} key={month}>
             {month}
           </option>
         ))}
       </select>
-      <select className="crayons-select w-auto">
+      <select
+        className="crayons-select w-auto"
+        onChange={(e) => onYearSelect(month, e.target.value)}
+        value={month.year()}
+      >
         {years.map((year) => (
           <option key={year} value={year}>
             {year}
@@ -89,10 +104,11 @@ export const DateRangePicker = ({
           });
         }}
         showClearDates
-        renderMonthElement={() => (
+        renderMonthElement={(props) => (
           <MonthYearPicker
             earliestDate={earliestDate}
             latestDate={latestDate}
+            {...props}
           />
         )}
         renderCalendarInfo={() => (
