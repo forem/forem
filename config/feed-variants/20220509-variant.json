@@ -96,7 +96,7 @@
         [2, 1]
       ],
       "fallback": 0.9,
-      "very_negative_reaction_threshold": -5,
+      "very_negative_reaction_threshold": -10,
       "negative_reaction_threshold": 0,
       "positive_reaction_threshold": 5,
       "very_positive_reaction_threshold": 10
