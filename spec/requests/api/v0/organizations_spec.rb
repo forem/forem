@@ -22,7 +22,7 @@ RSpec.describe "Api::V0::Organizations", type: :request do
       )
 
       %w[
-        username name summary twitter_username github_username url location tech_stack tag_line story
+        id username name summary twitter_username github_username url location tech_stack tag_line story
       ].each do |attr|
         expect(response_organization[attr]).to eq(organization.public_send(attr))
       end
