@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, within } from '@testing-library/preact';
+import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
 import { Help } from '../Help';
 
@@ -22,11 +23,11 @@ describe('<Help />', () => {
     const { queryByTestId } = render(
       <Help previewShowing helpFor={null} helpPosition={null} version="v1" />,
     );
-    expect(queryByTestId('article-form__help-section')).toBeNull();
+    expect(queryByTestId('article-form__help-section')).not.toBeInTheDocument();
   });
 
   it('shows help for the given section when in edit mode', () => {
-    const { getByTestId, getByText } = render(
+    const { getByTestId, getByRole } = render(
       <Help
         previewShowing={false}
         helpFor="article-form-title"
@@ -34,26 +35,28 @@ describe('<Help />', () => {
         version="v1"
       />,
     );
-    const titleHelp = getByTestId('title-help');
+    const articleTitle = within(getByTestId('title-help'));
 
-    getByTestId('article-form__help-section');
-    getByText(/writing a great post title/i);
+    expect(getByTestId('article-form__help-section')).toBeInTheDocument();
+    expect(
+      getByRole('heading', { name: /writing a great post title/i }),
+    ).toBeInTheDocument();
 
     expect(
-      titleHelp.textContent.includes(
+      articleTitle.getByText(
         'Think of your post title as a super short (but compelling!) description — like an overview of the actual post in one short sentence.',
       ),
-    ).toEqual(true);
+    ).toBeInTheDocument();
 
     expect(
-      titleHelp.textContent.includes(
+      articleTitle.getByText(
         'Use keywords where appropriate to help ensure people can find your post by search.',
       ),
-    ).toEqual(true);
+    ).toBeInTheDocument();
   });
 
   it('shows the correct help for v1', () => {
-    const { queryByTestId } = render(
+    const { queryByTestId, getByTestId } = render(
       <Help
         previewShowing={false}
         helpFor={null}
@@ -62,16 +65,17 @@ describe('<Help />', () => {
       />,
     );
 
-    queryByTestId('article-form__help-section');
-    queryByTestId('basic-editor-help');
-    queryByTestId('format-help');
-    expect(queryByTestId('title-help')).toBeNull();
-    expect(queryByTestId('basic-tag-input-help')).toBeNull();
+    expect(getByTestId('article-form__help-section')).toBeInTheDocument();
+    expect(getByTestId('basic-editor-help')).toBeInTheDocument();
+    expect(getByTestId('format-help')).toBeInTheDocument();
+
+    expect(queryByTestId('title-help')).not.toBeInTheDocument();
+    expect(queryByTestId('basic-tag-input-help')).not.toBeInTheDocument();
   });
 
   describe('with the appropriate v2 help sections', () => {
     it('shows the article-form-title', () => {
-      const { queryByTestId } = render(
+      const { queryByTestId, getByTestId } = render(
         <Help
           previewShowing={false}
           helpFor="article-form-title"
@@ -80,15 +84,16 @@ describe('<Help />', () => {
         />,
       );
 
-      queryByTestId('article-form__help-section');
-      expect(queryByTestId('basic-editor-help')).toBeNull();
-      expect(queryByTestId('format-help')).toBeNull();
-      queryByTestId('title-help');
-      expect(queryByTestId('basic-tag-input-help')).toBeNull();
+      expect(getByTestId('article-form__help-section')).toBeInTheDocument();
+      expect(getByTestId('title-help')).toBeInTheDocument();
+
+      expect(queryByTestId('basic-editor-help')).not.toBeInTheDocument();
+      expect(queryByTestId('format-help')).not.toBeInTheDocument();
+      expect(queryByTestId('basic-tag-input-help')).not.toBeInTheDocument();
     });
 
     it('shows the article_body_markdown', () => {
-      const { queryByTestId } = render(
+      const { queryByTestId, getByTestId } = render(
         <Help
           previewShowing={false}
           helpFor="article_body_markdown"
@@ -97,15 +102,16 @@ describe('<Help />', () => {
         />,
       );
 
-      queryByTestId('article-form__help-section');
-      expect(queryByTestId('basic-editor-help')).toBeNull();
-      queryByTestId('format-help');
-      expect(queryByTestId('title-help')).toBeNull();
-      expect(queryByTestId('basic-tag-input-help')).toBeNull();
+      expect(getByTestId('article-form__help-section')).toBeInTheDocument();
+      expect(getByTestId('format-help')).toBeInTheDocument();
+
+      expect(queryByTestId('basic-editor-help')).not.toBeInTheDocument();
+      expect(queryByTestId('title-help')).not.toBeInTheDocument();
+      expect(queryByTestId('basic-tag-input-help')).not.toBeInTheDocument();
     });
 
     it('shows the tag-input', () => {
-      const { queryByTestId } = render(
+      const { queryByTestId, getByTestId } = render(
         <Help
           previewShowing={false}
           helpFor="tag-input"
@@ -114,11 +120,12 @@ describe('<Help />', () => {
         />,
       );
 
-      queryByTestId('article-form__help-section');
-      expect(queryByTestId('basic-editor-help')).toBeNull();
-      expect(queryByTestId('format-help')).toBeNull();
-      expect(queryByTestId('title-help')).toBeNull();
-      queryByTestId('basic-tag-input-help');
+      expect(queryByTestId('article-form__help-section')).toBeInTheDocument();
+      expect(getByTestId('basic-tag-input-help')).toBeInTheDocument();
+
+      expect(queryByTestId('basic-editor-help')).not.toBeInTheDocument();
+      expect(queryByTestId('format-help')).not.toBeInTheDocument();
+      expect(queryByTestId('title-help')).not.toBeInTheDocument();
     });
   });
 
