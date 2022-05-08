@@ -1,7 +1,8 @@
 import { h } from 'preact';
-import { render, queryByAttribute } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { PageTitle } from '../PageTitle';
+import '@testing-library/jest-dom';
 
 let organizations, organizationId, onToggle;
 
@@ -36,8 +37,7 @@ describe('<PageTitle/>', () => {
   });
 
   it('shows the picker if there is more than one organisation', () => {
-    const getById = queryByAttribute.bind(null, 'id');
-    const dom = render(
+    const { getByRole } = render(
       <PageTitle
         organizations={organizations}
         organizationId={organizationId}
@@ -45,16 +45,13 @@ describe('<PageTitle/>', () => {
       />,
     );
 
-    const organizationPicker = getById(
-      dom.container,
-      'article_publish_under_org',
-    );
-    expect(organizationPicker).toBeTruthy();
+    expect(
+      getByRole('combobox', { name: /select an organization/i }),
+    ).toBeInTheDocument();
   });
 
   it('does not show the picker if there is no organisations', () => {
-    const getById = queryByAttribute.bind(null, 'id');
-    const dom = render(
+    const { queryByRole } = render(
       <PageTitle
         organizations={[]}
         organizationId={organizationId}
@@ -62,10 +59,8 @@ describe('<PageTitle/>', () => {
       />,
     );
 
-    const organizationPicker = getById(
-      dom.container,
-      'article_publish_under_org',
-    );
-    expect(organizationPicker).toBeNull();
+    expect(
+      queryByRole('combobox', { name: /select an organization/i }),
+    ).not.toBeInTheDocument();
   });
 });
