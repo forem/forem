@@ -3,6 +3,7 @@ import { h, Fragment } from 'preact';
 import { axe } from 'jest-axe';
 import { render, getNodeText, waitFor } from '@testing-library/preact';
 import { SingleArticle } from '../index';
+import '@testing-library/jest-dom';
 
 const getTestArticle = () => ({
   id: 1,
@@ -39,9 +40,10 @@ describe('<SingleArticle />', () => {
   });
 
   it('renders the article title', () => {
-    const { queryByText } = render(
+    const articleProps = getTestArticle();
+    const { getByRole } = render(
       <Fragment>
-        <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
+        <SingleArticle {...articleProps} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
@@ -49,23 +51,9 @@ describe('<SingleArticle />', () => {
       </Fragment>,
     );
 
-    expect(queryByText(getTestArticle().title)).toBeDefined();
-  });
-
-  it('renders the new clickable article title', () => {
-    const { container } = render(
-      <Fragment>
-        <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
-      </Fragment>,
-    );
-    const text = getNodeText(
-      container.getElementsByClassName('article-title-heading')[0],
-    );
-    expect(text).toContain(getTestArticle().title);
+    expect(
+      getByRole('heading', { name: articleProps.title, level: 3 }),
+    ).toBeInTheDocument();
   });
 
   it('renders the tags', () => {
