@@ -1,4 +1,3 @@
-/* eslint-disable jest/expect-expect */
 import { h, Fragment } from 'preact';
 import { axe } from 'jest-axe';
 import { render, getNodeText, waitFor } from '@testing-library/preact';
@@ -57,7 +56,7 @@ describe('<SingleArticle />', () => {
   });
 
   it('renders the tags', () => {
-    const { queryByText } = render(
+    const { getByText } = render(
       <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         <div
@@ -67,9 +66,9 @@ describe('<SingleArticle />', () => {
       </Fragment>,
     );
 
-    expect(queryByText('discuss')).toBeDefined();
-    expect(queryByText('javascript')).toBeDefined();
-    expect(queryByText('beginners')).toBeDefined();
+    expect(getByText('discuss')).toBeInTheDocument();
+    expect(getByText('javascript')).toBeInTheDocument();
+    expect(getByText('beginners')).toBeInTheDocument();
   });
 
   it('renders no tags or # symbol when article has no tags', () => {
@@ -133,7 +132,7 @@ describe('<SingleArticle />', () => {
   });
 
   it('renders the correct formatted published date', () => {
-    const { queryByText } = render(
+    const { getByText } = render(
       <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         <div
@@ -143,7 +142,7 @@ describe('<SingleArticle />', () => {
       </Fragment>,
     );
 
-    expect(queryByText('Jun 22')).toBeDefined();
+    expect(getByText('Jun 22')).toBeInTheDocument();
   });
 
   it('renders the correct formatted published date as a time if the date is the same day', () => {
