@@ -17,10 +17,11 @@ class AbExperiment
       new(...).call
     end
 
-    def initialize(user:, goal:, experiments:)
+    def initialize(user:, goal:, experiments:, start_date: nil)
       @user = user
       @goal = goal
       @experiments = experiments
+      @start_date = start_date&.beginning_of_day
     end
 
     attr_reader :experiments, :user, :goal
@@ -30,7 +31,7 @@ class AbExperiment
       return if experiments.nil?
 
       experiments.each do |key, data|
-        experiment_start_date = data.fetch("start_date").beginning_of_day
+        experiment_start_date = @start_date || data.fetch("start_date").beginning_of_day
         experiment = key.to_sym
         convert(experiment: experiment, experiment_start_date: experiment_start_date)
       end
