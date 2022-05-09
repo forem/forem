@@ -31,11 +31,7 @@ RSpec.describe Badges::AwardCommunityWellness, type: :service do
   context "when user meets a new streak level" do
     # Test against each week that has a reward associated to it. All mock users
     # are expected to receive a badge in this spec (one per reward_weeks)
-    #
-    # TODO: When confirmed/tested we must remove the FeatureFlag
     it "awards a badge to each user with a streak of non-flagged comments" do
-      allow(FeatureFlag).to receive(:enabled?).with(:community_wellness_badge).and_return(true)
-
       expect do
         described_class.call
         users.each_with_index do |user, index|
@@ -49,7 +45,6 @@ RSpec.describe Badges::AwardCommunityWellness, type: :service do
 
     # TODO: When confirmed/tested we must remove the FeatureFlag and this spec
     it "tracks awards with Ahoy if FeatureFlag isn't enabled" do
-      allow(FeatureFlag).to receive(:enabled?).with(:community_wellness_badge).and_return(false)
       allow(ForemStatsClient).to receive(:increment)
 
       expect do
