@@ -151,5 +151,11 @@
   .ltag__stackexchange--btn {
     @extend .crayons-btn !optional;
     @extend .crayons-btn--secondary !optional;
+    
+    // A deprecated version of this liquid tag's HTML included a link _inside_ a button :-/
+    // This `revert` is needed to make sure the button click still opens the content
+    a {
+      pointer-events: revert;
+    }
   }
 }
