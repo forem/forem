@@ -42,15 +42,5 @@ RSpec.describe Badges::AwardCommunityWellness, type: :service do
         end
       end.to change(BadgeAchievement, :count).by(users.count)
     end
-
-    # TODO: When confirmed/tested we must remove the FeatureFlag and this spec
-    it "tracks awards with Ahoy if FeatureFlag isn't enabled" do
-      allow(ForemStatsClient).to receive(:increment)
-
-      expect do
-        described_class.call
-        expect(ForemStatsClient).to have_received(:increment).exactly(reward_weeks.count).times
-      end.to change(BadgeAchievement, :count).by(0)
-    end
   end
 end
