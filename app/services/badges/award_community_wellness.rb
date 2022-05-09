@@ -13,13 +13,16 @@ module Badges
 
         # `weeks_ago` can have values like the following:
         #    - [1,2,10,11,12]
-        #    - [5]
-        #    - [1,2,3,4,5,6,7,8]
+        #    - [0,5]
+        #    - [0,1,2,3,4,5,6,7,8]
         #    - [1,4,17]
         # We only care for active streak (starting at 1) so we need to filter
         # these to check how far back the (continuous) streak goes
         week_streak = 0
         weeks_ago.each_with_index do |week, index|
+          # Week 0 are comments that exist but aren't at least 1 week old yet
+          next if week.zero?
+
           # Must have 2 or more non-flagged comments posted on that week
           next unless comment_counts[index] > 1
 
