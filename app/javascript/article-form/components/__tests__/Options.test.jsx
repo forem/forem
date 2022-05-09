@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { Options } from '../Options';
+import '@testing-library/jest-dom';
 
 function getPassedData() {
   return {
@@ -60,7 +61,7 @@ describe('<Options />', () => {
     const passedData = getPassedData();
     passedData.published = true;
 
-    const { queryByTestId, getByText } = render(
+    const { getByText, getByTestId } = render(
       <Options
         passedData={passedData}
         onConfigChange={null}
@@ -70,10 +71,10 @@ describe('<Options />', () => {
       />,
     );
 
-    expect(queryByTestId('options__danger-zone')).toBeDefined();
-    expect(getByText(/danger zone/i)).toBeDefined();
-    expect(getByText(/unpublish post/i)).toBeDefined();
-    expect(getByText(/done/i)).toBeDefined();
+    expect(getByTestId('options__danger-zone')).toBeInTheDocument();
+    expect(getByText(/danger zone/i)).toBeInTheDocument();
+    expect(getByText(/unpublish post/i)).toBeInTheDocument();
+    expect(getByText(/done/i)).toBeInTheDocument();
   });
 
   it('unpublishes an article when the unpublish post button is clicked', () => {

@@ -3,6 +3,7 @@ import { JSDOM } from 'jsdom';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { Preview } from '../Preview';
+import '@testing-library/jest-dom';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;
@@ -81,7 +82,7 @@ describe('<Preview />', () => {
 
   it('shows the correct title', () => {
     const previewResponse = getPreviewResponse();
-    const { queryByText } = render(
+    const { getByText } = render(
       <Preview
         previewResponse={previewResponse}
         articleState={getArticleState()}
@@ -89,11 +90,11 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(queryByText(previewResponse.title)).toBeDefined();
+    expect(getByText(previewResponse.title)).toBeInTheDocument();
   });
 
   it('shows the correct tags', () => {
-    const { queryByText } = render(
+    const { getByText } = render(
       <Preview
         previewResponse={getPreviewResponse()}
         articleState={getArticleState()}
@@ -101,8 +102,8 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(queryByText(`javascript`)).toBeDefined();
-    expect(queryByText(`career`)).toBeDefined();
+    expect(getByText(`javascript`)).toBeInTheDocument();
+    expect(getByText(`career`)).toBeInTheDocument();
   });
 
   it('shows a cover image in the preview if one exists', () => {
@@ -116,7 +117,7 @@ describe('<Preview />', () => {
     );
     const coverImage = getByAltText(/post preview cover/i);
 
-    getByTestId('article-form__cover');
+    expect(getByTestId('article-form__cover')).toBeInTheDocument();
 
     expect(coverImage.src).toEqual('http://lorempixel.com/400/200/');
   });
@@ -132,7 +133,7 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(queryByTestId('article-form__cover')).toBeNull();
+    expect(queryByTestId('article-form__cover')).not.toBeInTheDocument();
   });
 
   // TODO: need to write a test for the cover image for v1

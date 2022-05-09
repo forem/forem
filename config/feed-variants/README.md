@@ -36,15 +36,7 @@ omitted for that variant (but available for other variants).
 The available sort order is also defined in `Articles::Feeds::LEVER_CATALOG`.
 
 The high level parameters are defined in `Aritcles::Feeds::VariantQuery::Config`
-and as of <2022-04-20 Wed> are:
+and as of <2022-05-06 Fri> are:
 
 - **_max_days_since_published_:** only consider articles that were published no
   more than the _max_days_since_published_.
-- **_default_user_experience_level_:** what do we consider to be the default
-  user experience level.
-- **_negative_reaction_threshold_:** if an article has less than this value for
-  it's trusted/privileged user reaction points, consider it a low quality
-  article.
-- **_positive_reaction_threshold_:** if an article has more than this value for
-  it's trusted/privileged user reaction points, consider it a low quality
-  article.

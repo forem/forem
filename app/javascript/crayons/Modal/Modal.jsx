@@ -12,14 +12,18 @@ export const Modal = ({
   className,
   title,
   prompt,
+  sheet,
   centered,
   noBackdrop,
+  sheetAlign = 'center',
   backdropDismissible = false,
   onClose = () => {},
   focusTrapSelector = '.crayons-modal__box',
 }) => {
   const classes = classNames('crayons-modal', {
     [`crayons-modal--${size}`]: size && size !== 'medium',
+    [`crayons-modal--${sheetAlign}`]: sheet && sheetAlign !== 'center',
+    'crayons-modal--sheet': sheet,
     'crayons-modal--prompt': prompt,
     'crayons-modal--centered': centered && prompt,
     'crayons-modal--bg-dismissible': !noBackdrop && backdropDismissible,
@@ -74,4 +78,6 @@ Modal.propTypes = {
   onClose: PropTypes.func,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   focusTrapSelector: PropTypes.string,
+  sheet: PropTypes.bool,
+  sheetAlign: PropTypes.oneOf(['center', 'left', 'right']),
 };

@@ -134,7 +134,6 @@ Please see our installation guides, such as the
 - [@andygeorge](https://dev.to/andygeorge)
 - [@phannon716](https://dev.to/phannon716)
 - [@s_aitchison](https://dev.to/s_aitchison)
-- [@jgaskins](https://dev.to/jgaskins)
 - [@rt4914](https://dev.to/rt4914)
 - [@jeremyf](https://dev.to/jeremyf)
 - [@dscottS3](https://dev.to/dscottS3)

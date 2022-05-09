@@ -1121,6 +1121,17 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "record field test event" do
+      it "enqueues Users::RecordFieldTestEventWorker" do
+        sidekiq_assert_enqueued_with(
+          job: Users::RecordFieldTestEventWorker,
+          args: [article.user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL],
+        ) do
+          article.save
+        end
+      end
+    end
+
     describe "async score calc" do
       it "enqueues Articles::ScoreCalcWorker if published" do
         sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do

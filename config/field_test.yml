@@ -1,13 +1,13 @@
 # See AbExperiment namespace for details of goals and variants
 experiments:
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
-  feed_strategy_starting_20220422:
+  feed_strategy_starting_20220509:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
-    start_date: 2022-04-22
+    start_date: 2022-05-09
     variants:
-      - 20220415-incumbent
-      - 20220422-jennie-variant
+      - 20220422-variant
+      - 20220509-variant
     weights:
       - 80
       - 20
@@ -18,6 +18,9 @@ experiments:
       - user_views_pages_on_at_least_four_different_hours_within_a_day
       - user_views_pages_on_at_least_nine_different_days_within_two_weeks
       - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_publishes_post
+      - user_publishes_post_at_least_two_times_within_week
+      - user_publishes_post_at_least_two_times_within_two_weeks
 exclude:
   bots: true
 

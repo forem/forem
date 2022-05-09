@@ -39,7 +39,6 @@
               </button>
 
               <div id="user-profile-dropdownmenu" class="crayons-dropdown left-2 right-2 s:right-0 s:left-auto top-100 mt-1">
-                <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
                 <% if user_signed_in? %>
                   <a href="javascript:void(0);" id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block"><%= t("views.users.block", user: @user.username) %></a>
                   <a
@@ -151,4 +150,4 @@
 </div>
 </main>
 
-<%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "hideBookmarkButtons", defer: true %>
+<%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "hideBookmarkButtons", "profileDropdown", defer: true %>
