@@ -104,7 +104,7 @@
     "@babel/preset-env": "^7.17.10",
     "@etchteam/storybook-addon-css-variables-theme": "^1.2.0",
     "@github/time-elements": "3.1.2",
-    "@honeybadger-io/js": "^3.2.9",
+    "@honeybadger-io/js": "^4.0.1",
     "@honeybadger-io/webpack": "^1.5.1",
     "@hotwired/stimulus": "3.0.1",
     "@hotwired/stimulus-webpack-helpers": "1.0.1",
