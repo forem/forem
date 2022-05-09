@@ -62,7 +62,7 @@ describe('<ImageUploader />', () => {
         }),
       );
 
-      const { getByLabelText, queryByText } = render(
+      const { getByLabelText, getByText } = render(
         <ImageUploader editorVersion="v1" />,
       );
 
@@ -73,9 +73,9 @@ describe('<ImageUploader />', () => {
 
       fireEvent.change(inputEl, { target: { files: [file] } });
 
-      const uploadingImage = queryByText(/uploading.../i);
+      const uploadingImage = getByText(/uploading.../i);
 
-      expect(uploadingImage).toBeDefined();
+      expect(uploadingImage).toBeInTheDocument();
     });
 
     it('displays text to copy after upload', async () => {
@@ -85,8 +85,13 @@ describe('<ImageUploader />', () => {
         }),
       );
 
-      const { findByTitle, getByDisplayValue, getByLabelText, queryByText } =
-        render(<ImageUploader editorVersion="v1" />);
+      const {
+        findByTitle,
+        getByDisplayValue,
+        getByLabelText,
+        queryByText,
+        getByText,
+      } = render(<ImageUploader editorVersion="v1" />);
       const inputEl = getByLabelText(/Upload image/i);
 
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
@@ -94,18 +99,18 @@ describe('<ImageUploader />', () => {
       });
 
       fireEvent.change(inputEl, { target: { files: [file] } });
-      const uploadingImage = queryByText(/uploading.../i);
+      const uploadingImage = getByText(/uploading.../i);
 
-      expect(uploadingImage).toBeDefined();
+      expect(uploadingImage).toBeInTheDocument();
 
       expect(inputEl.files[0]).toEqual(file);
       expect(inputEl.files).toHaveLength(1);
 
       waitForElementToBeRemoved(() => queryByText(/uploading.../i));
 
-      expect(await findByTitle(/copy markdown for image/i)).toBeDefined();
+      expect(await findByTitle(/copy markdown for image/i)).toBeInTheDocument();
 
-      getByDisplayValue(/fake-link.jpg/i);
+      expect(getByDisplayValue(/fake-link.jpg/i)).toBeInTheDocument();
     });
 
     // TODO: 'Copied!' is always in the DOM, and so we cannot test that the visual implications of the copy when clicking on the copy icon
@@ -115,7 +120,7 @@ describe('<ImageUploader />', () => {
         message: 'Some Fake Error',
       });
 
-      const { getByLabelText, findByText, queryByText } = render(
+      const { getByLabelText, findByText, queryByText, getByText } = render(
         <ImageUploader editorVersion="v1" />,
       );
       const inputEl = getByLabelText(/Upload image/i);
@@ -134,12 +139,12 @@ describe('<ImageUploader />', () => {
         },
       });
 
-      expect(await findByText(/uploading.../i)).not.toBeNull();
-
       // Upload is finished, so the message has disappeared.
-      expect(queryByText(/uploading.../i)).toBeNull();
+      await waitForElementToBeRemoved(() => getByText(/uploading.../i));
+      expect(queryByText(/uploading.../i)).not.toBeInTheDocument();
 
-      await findByText(/some fake error/i);
+      const errorMsg = await findByText(/some fake error/i);
+      expect(errorMsg).toBeInTheDocument();
     });
   });
 
@@ -184,7 +189,7 @@ describe('<ImageUploader />', () => {
       );
       fireEvent(document, event);
 
-      expect(await findByTitle(/copy markdown for image/i)).toBeDefined();
+      expect(await findByTitle(/copy markdown for image/i)).toBeInTheDocument();
     });
   });
 
@@ -212,11 +217,11 @@ describe('<ImageUploader />', () => {
         }),
       );
 
-      const { getAllByLabelText, queryByText } = render(
+      const { getAllByLabelText, queryByText, getByRole } = render(
         <ImageUploader editorVersion="v2" />,
       );
 
-      expect(queryByText('Cancel upload')).toBeNull();
+      expect(queryByText('Cancel upload')).not.toBeInTheDocument();
 
       const inputEl = getAllByLabelText(/Upload image/i)[0];
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
@@ -224,7 +229,10 @@ describe('<ImageUploader />', () => {
       });
 
       fireEvent.change(inputEl, { target: { files: [file] } });
-      expect(queryByText('Cancel upload')).toBeInTheDocument();
+
+      expect(
+        getByRole('button', { name: /Cancel image upload/i }),
+      ).toBeInTheDocument();
     });
 
     it('invokes upload start and success callbacks when image is uploaded', async () => {
@@ -237,7 +245,7 @@ describe('<ImageUploader />', () => {
       const uploadStartCallback = jest.fn();
       const uploadSuccessCallback = jest.fn();
 
-      const { getAllByLabelText, queryByText } = render(
+      const { getAllByLabelText, queryByRole, getByRole } = render(
         <ImageUploader
           editorVersion="v2"
           onImageUploadStart={uploadStartCallback}
@@ -254,7 +262,12 @@ describe('<ImageUploader />', () => {
 
       expect(uploadStartCallback).toHaveBeenCalled();
 
-      await waitFor(() => expect(queryByText('Cancel upload')).toBeNull());
+      await waitForElementToBeRemoved(() =>
+        getByRole('button', { name: /Cancel image upload/i }),
+      );
+      expect(
+        queryByRole('button', { name: /Cancel image upload/i }),
+      ).not.toBeInTheDocument();
 
       expect(uploadSuccessCallback).toHaveBeenCalledWith(
         '![Image description](/i/fake-link.jpg)',
@@ -268,7 +281,7 @@ describe('<ImageUploader />', () => {
 
       const uploadErrorCallback = jest.fn();
 
-      const { getAllByLabelText, queryByText } = render(
+      const { getAllByLabelText, getByRole, queryByRole } = render(
         <ImageUploader
           editorVersion="v2"
           onImageUploadError={uploadErrorCallback}
@@ -290,7 +303,13 @@ describe('<ImageUploader />', () => {
         },
       });
 
-      await waitFor(() => expect(queryByText('Cancel upload')).toBeNull());
+      await waitForElementToBeRemoved(() =>
+        getByRole('button', { name: /Cancel image upload/i }),
+      );
+      expect(
+        queryByRole('button', { name: /Cancel image upload/i }),
+      ).not.toBeInTheDocument();
+
       expect(uploadErrorCallback).toHaveBeenCalled();
     });
   });
