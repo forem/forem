@@ -79,7 +79,7 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.29.4",
-    "husky": "^7.0.4",
+    "husky": "^8.0.1",
     "jest": "27.5.1",
     "jest-axe": "^6.0.0",
     "jest-fetch-mock": "^3.0.3",
