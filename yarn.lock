@@ -3300,6 +3300,15 @@
     jest-diff "^27.0.0"
     pretty-format "^27.0.0"
 
+"@types/jsdom@^16.2.4":
+  version "16.2.14"
+  resolved "https://registry.yarnpkg.com/@types/jsdom/-/jsdom-16.2.14.tgz#26fe9da6a8870715b154bb84cd3b2e53433d8720"
+  integrity sha512-6BAy1xXEmMuHeAJ4Fv4yXKwBDTGTOseExKE3OaHiNycdHdZw59KfYzrt0DkDluvwmik1HRt6QS7bImxUmpSy+w==
+  dependencies:
+    "@types/node" "*"
+    "@types/parse5" "*"
+    "@types/tough-cookie" "*"
+
 "@types/json-schema@*", "@types/json-schema@^7.0.4", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.8", "@types/json-schema@^7.0.9":
   version "7.0.9"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
@@ -3364,6 +3373,11 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
+
+"@types/parse5@*":
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/@types/parse5/-/parse5-6.0.3.tgz#705bb349e789efa06f43f128cef51240753424cb"
+  integrity sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==
 
 "@types/parse5@^5.0.0":
   version "5.0.3"
@@ -3460,6 +3474,11 @@
   integrity sha512-Gk9vaXfbzc5zCXI9eYE9BI5BNHEp4D3FWjgqBE/ePGYElLAP+KvxBcsdkwfIVvezs605oiyd/VrpiHe3Oeg+Aw==
   dependencies:
     "@types/jest" "*"
+
+"@types/tough-cookie@*":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-4.0.2.tgz#6286b4c7228d58ab7866d19716f3696e03a09397"
+  integrity sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==
 
 "@types/uglify-js@*":
   version "3.13.1"
@@ -9632,6 +9651,20 @@ jest-each@^28.1.0:
     jest-get-type "^28.0.2"
     jest-util "^28.1.0"
     pretty-format "^28.1.0"
+
+jest-environment-jsdom@^28.1.0:
+  version "28.1.0"
+  resolved "https://registry.yarnpkg.com/jest-environment-jsdom/-/jest-environment-jsdom-28.1.0.tgz#1042cffd0343615c5fac2d2c8da20d1d43b73ef8"
+  integrity sha512-8n6P4xiDjNVqTWv6W6vJPuQdLx+ZiA3dbYg7YJ+DPzR+9B61K6pMVJrSs2IxfGRG4J7pyAUA5shQ9G0KEun78w==
+  dependencies:
+    "@jest/environment" "^28.1.0"
+    "@jest/fake-timers" "^28.1.0"
+    "@jest/types" "^28.1.0"
+    "@types/jsdom" "^16.2.4"
+    "@types/node" "*"
+    jest-mock "^28.1.0"
+    jest-util "^28.1.0"
+    jsdom "^19.0.0"
 
 jest-environment-node@^28.1.0:
   version "28.1.0"
