@@ -283,9 +283,10 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   .DateRangePickerInput {
     @extend .crayons-textfield;
 
-    padding: var(--su-1);
+    padding: var(--su-1) var(--su-2);
 
     &_calendarIcon {
+      @extend .c-btn;
       padding: 0;
     }
 
@@ -311,10 +312,15 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   // The "clear dates" icon button
   .DateRangePickerInput_clearDates {
     @extend .c-btn;
-    @extend .c-btn--icon-alone;
     position: absolute;
-    margin: 0;
+    padding: var(--su-2);
+
+    &:hover, &:focus-visible {
+      border-radius: var(--radius);
+    }
   }
+
+
 
   // Edits the indicator underneath the currently focused input
   .DateInput_input__focused {

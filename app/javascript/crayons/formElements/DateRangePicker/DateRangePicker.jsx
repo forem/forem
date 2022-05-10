@@ -5,11 +5,16 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import moment from 'moment';
 import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
-import { START_DATE, ICON_AFTER_POSITION } from 'react-dates/constants';
+import {
+  START_DATE,
+  ICON_AFTER_POSITION,
+  ICON_BEFORE_POSITION,
+} from 'react-dates/constants';
 import { ButtonNew as Button, Icon } from '@crayons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
 import Calendar from '@images/calendar.svg';
+
 const MONTH_NAMES = [...Array(12).keys()].map((key) =>
   new Date(0, key).toLocaleString('en', { month: 'long' }),
 );
@@ -17,20 +22,28 @@ const MONTH_NAMES = [...Array(12).keys()].map((key) =>
 const isDateOutsideOfRange = ({ date, minDate, maxDate }) =>
   !date.isBetween(minDate, maxDate);
 
-// TODO: Some weirdness with validation? Not all months valid for all years :-/
+// TODO:
+// - Consolidate styling
+// - Clarify if we can show calendar button and clear button
+// - Test in other browsers
+// - Test app start up OK
+// - Update story props and add documentation
+// - Snapshot tests
+// - Component tests
+
 const MonthYearPicker = ({
-  earliestDate,
-  latestDate,
+  earliestMoment,
+  latestMoment,
   onMonthSelect,
   onYearSelect,
   month,
 }) => {
-  const yearsDiff = latestDate.diff(earliestDate, 'years');
+  const yearsDiff = latestMoment.diff(earliestMoment, 'years');
 
   const years = [...Array(yearsDiff).keys()].map(
-    (key) => latestDate.year() - key,
+    (key) => latestMoment.year() - key,
   );
-  years.push(earliestDate.year());
+  years.push(earliestMoment.year());
 
   return (
     <div>
@@ -64,11 +77,13 @@ const MonthYearPicker = ({
  * Used to facilitate picking a date range. This component is a wrapper around the one provided from react-dates.
  *
  * @param {Object} props
- * @param {string} startDateId A unique ID for the start date input
- * @param {string} endDateId A unique ID for the end date input
- * @param {Date} defaultStartDate The optional initial value for the start date
- * @param {Date} defaultEndDate The optional initial value for the end date
- * @param {Function} onDatesChanged Callback function for when dates are selected. Receives an object with startDate and endDate values.
+ * @param {string} props.startDateId A unique ID for the start date input
+ * @param {string} props.endDateId A unique ID for the end date input
+ * @param {Date} props.defaultStartDate The optional initial value for the start date
+ * @param {Date} props.defaultEndDate The optional initial value for the end date
+ * @param {Date} props.maxEndDate The latest date that may be selected
+ * @param {Date} props.minStartDate The oldest date that may be selected
+ * @param {Function} props.onDatesChanged Callback function for when dates are selected. Receives an object with startDate and endDate values.
  */
 export const DateRangePicker = ({
   startDateId,
@@ -80,41 +95,43 @@ export const DateRangePicker = ({
   onDatesChanged,
 }) => {
   const [focusedInput, setFocusedInput] = useState(START_DATE);
-  const [startDate, setStartDate] = useState(
+  const [startMoment, setStartMoment] = useState(
     defaultStartDate ? moment(defaultStartDate) : null,
   );
-  const [endDate, setEndDate] = useState(
+  const [endMoment, setEndMoment] = useState(
     defaultEndDate ? moment(defaultEndDate) : null,
   );
 
-  const earliestDate = moment(minStartDate);
-  const latestDate = moment(maxEndDate);
+  const earliestMoment = moment(minStartDate);
+  const latestMoment = moment(maxEndDate);
 
   return (
     // We wrap in a span to assist with scoping CSS selectors & overriding styles from react-dates
     <span className="c-date-picker">
       <ReactDateRangePicker
         startDateId={startDateId}
-        startDate={startDate}
-        endDate={endDate}
+        startDate={startMoment}
+        endDate={endMoment}
         endDateId={endDateId}
         focusedInput={focusedInput}
         navPrev={<Icon src={ChevronLeft} />}
         navNext={<Icon src={ChevronRight} />}
         customInputIcon={<Icon src={Calendar} />}
-        inputIconPosition={ICON_AFTER_POSITION}
+        showDefaultInputIcon={!(startMoment || endMoment)}
+        inputIconPosition={ICON_BEFORE_POSITION}
+        showClearDates={startMoment || endMoment}
         customArrowIcon="-"
         onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
         isOutsideRange={(date) =>
           isDateOutsideOfRange({
             date,
-            minDate: earliestDate,
-            maxDate: latestDate,
+            minDate: earliestMoment,
+            maxDate: latestMoment,
           })
         }
         onDatesChange={({ startDate, endDate }) => {
-          setStartDate(startDate);
-          setEndDate(endDate);
+          setStartMoment(startDate);
+          setEndMoment(endDate);
           onDatesChanged?.({
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
@@ -122,8 +139,8 @@ export const DateRangePicker = ({
         }}
         renderMonthElement={(props) => (
           <MonthYearPicker
-            earliestDate={earliestDate}
-            latestDate={latestDate}
+            earliestMoment={earliestMoment}
+            latestMoment={latestMoment}
             {...props}
           />
         )}
