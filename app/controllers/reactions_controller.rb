@@ -51,10 +51,11 @@ class ReactionsController < ApplicationController
     set_surrogate_key_header params.to_s unless session_current_user_id
   end
 
+  # @todo Extract this method into a service class (or classes)
   def create
     remove_count_cache_key
 
-    if params[:reactable_type] == "Article" && params[:category].in?(MODERATION_CATEGORIES)
+    if params[:reactable_type] == "Article" && params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
       clear_moderator_reactions(
         params[:reactable_id],
         params[:reactable_type],
@@ -124,7 +125,7 @@ class ReactionsController < ApplicationController
       reactable_type: params[:reactable_type],
       category: category
     }
-    if current_user&.any_admin? && NEGATIVE_CATEGORIES.include?(category)
+    if current_user&.any_admin? && Reaction::NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
       create_params[:status] = "confirmed"
     end
     Reaction.new(create_params)
@@ -154,8 +155,9 @@ class ReactionsController < ApplicationController
 
   def clear_moderator_reactions(id, type, mod, category)
     reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: NEGATIVE_CATEGORIES)
-                elsif category.in?(NEGATIVE_CATEGORIES)
+                  Reaction.where(reactable_id: id, reactable_type: type, user: mod,
+                                 category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
+                elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
                 end
 
@@ -181,7 +183,10 @@ class ReactionsController < ApplicationController
   end
 
   def authorize_for_reaction
-    authorize Reaction
+    # A present assumption is that who can give a reaction is not dependent on the reactable;
+    # however it is dependent on the category of the reaction.
+    policy_query = ReactionPolicy.policy_query_for(category: params[:category])
+    authorize(Reaction, policy_query)
   end
 
   def remove_count_cache_key
