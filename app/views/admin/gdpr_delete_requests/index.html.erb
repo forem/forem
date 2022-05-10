@@ -31,11 +31,10 @@
       <% end %>
     </ul>
   </div>
-
   <!-- Small layout end -->
 
   <!-- Large layout start -->
-  <table aria-describedby="table-description" class="hidden m:table crayons-table crayons-table--minimal w-100">
+  <table class="hidden m:table crayons-table crayons-table--minimal w-100" aria-describedby="table-description <%= @gdpr_delete_requests.empty? ? "empty-state-message-id" : "" %>">
     <thead class="member-data-heading">
       <tr>
         <th scope="col" class="pl-7">Deleted member</th>
@@ -57,6 +56,13 @@
       <% end %>
     </tbody>
   </table>
+
+  <% if @gdpr_delete_requests.empty? %>
+    <div class="align-center flex flex-col my-auto py-7" id="empty-state-message-id">
+      <p class="fs-xl fw-normal mb-2">Awesome! All GDPR delete requests have been completed.</p>
+      <p class="color-secondary">Check back again when you delete a member.</p>
+    </div>
+  <% end %>
   <!-- Large layout end -->
 
   <div class="flex justify-end p-4 m:px-7">

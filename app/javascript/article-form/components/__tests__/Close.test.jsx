@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
+import '@testing-library/jest-dom';
 import { Close } from '../Close';
 
 describe('<Close />', () => {
@@ -12,9 +13,8 @@ describe('<Close />', () => {
   });
 
   it('renders the close button', () => {
-    const { getByTitle } = render(<Close />);
-    const icon = getByTitle(/Close the editor/i);
-
-    expect(icon).toBeDefined();
+    const { getByRole } = render(<Close />);
+    const icon = getByRole('button', { name: /Close the editor/i });
+    expect(icon).toBeInTheDocument();
   });
 });

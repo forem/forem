@@ -2,6 +2,7 @@ json.type_of "organization"
 
 json.extract!(
   @organization,
+  :id,
   :username,
   :name,
   :summary,

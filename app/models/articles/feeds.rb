@@ -132,7 +132,8 @@ module Articles
                                              WHEN experience_level IS NULL THEN :default_user_experience_level
                                              ELSE experience_level END ) AS user_experience_level
                                           FROM users_settings WHERE users_settings.user_id = :user_id)))",
-                      group_by_fragment: "articles.experience_level_rating")
+                      group_by_fragment: "articles.experience_level_rating",
+                      query_parameter_names: [:default_user_experience_level])
 
       relevancy_lever(:featured_article,
                       label: "Weight to give for feature or unfeatured articles.  1 is featured.",
@@ -256,8 +257,36 @@ module Articles
                  WHEN articles.privileged_users_reaction_points_sum < :negative_reaction_threshold THEN -1
                  WHEN articles.privileged_users_reaction_points_sum > :positive_reaction_threshold THEN 1
                  ELSE 0 END)",
-                      group_by_fragment: "articles.privileged_users_reaction_points_sum")
+                      group_by_fragment: "articles.privileged_users_reaction_points_sum",
+                      query_parameter_names: %i[negative_reaction_threshold positive_reaction_threshold])
 
+      # Note the symmetry of the < and >=; the smaller value is always "exclusive" and the larger value is "inclusive"
+      relevancy_lever(:privileged_user_reaction_granular,
+                      label: "A more granular configuration for privileged user reactions (see select_fragment)",
+                      user_required: false,
+                      range: "[-2..2]",
+                      select_fragment: "(CASE
+                 --- Very negative
+                 WHEN articles.privileged_users_reaction_points_sum < :very_negative_reaction_threshold THEN -2
+                 --- Negative
+                 WHEN articles.privileged_users_reaction_points_sum >= :very_negative_reaction_threshold
+                      AND articles.privileged_users_reaction_points_sum < :negative_reaction_threshold THEN -1
+                 --- Neutral
+                 WHEN articles.privileged_users_reaction_points_sum >= :negative_reaction_threshold
+                      AND articles.privileged_users_reaction_points_sum < :positive_reaction_threshold THEN 0
+                 --- Positive
+                 WHEN articles.privileged_users_reaction_points_sum >= :positive_reaction_threshold
+                      AND articles.privileged_users_reaction_points_sum < :very_positive_reaction_threshold THEN 1
+                 --- Very Positive
+                 WHEN articles.privileged_users_reaction_points_sum >= :very_positive_reaction_threshold THEN 2
+                 ELSE 0 END)",
+                      group_by_fragment: "articles.privileged_users_reaction_points_sum",
+                      query_parameter_names: %i[
+                        very_negative_reaction_threshold
+                        negative_reaction_threshold
+                        very_positive_reaction_threshold
+                        positive_reaction_threshold
+                      ])
       relevancy_lever(:public_reactions,
                       label: "Weight to give for the number of unicorn, heart, reading list reactions for article.",
                       range: "[0..∞)",

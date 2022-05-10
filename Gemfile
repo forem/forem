@@ -122,7 +122,7 @@ group :development do
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
   gem "guard", "~> 2.18", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
-  gem "i18n-tasks", "~> 1.0.9" # Helpers to find and manage missing and unused translations
+  gem "i18n-tasks", "~> 1.0.10" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "solargraph", "~> 0.44", require: false # For LSP support (such as symbol renaming, documentation lookup)
@@ -136,7 +136,7 @@ end
 group :development, :test do
   gem "amazing_print", "~> 1.4" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 7.0" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.36.0" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.37.1" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.5" # For end to end tests (E2E)
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
@@ -145,7 +145,7 @@ group :development, :test do
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.28", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.29", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.14", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.10", require: false # Code style checking for RSpec files

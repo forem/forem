@@ -211,7 +211,10 @@ RSpec.configure do |config|
                                  user_views_article_four_days_in_week
                                  user_views_article_four_hours_in_day
                                  user_views_article_nine_days_in_two_week
-                                 user_views_article_twelve_hours_in_five_days] } },
+                                 user_views_article_twelve_hours_in_five_days
+                                 user_publishes_post
+                                 user_publishes_post_at_least_two_times_within_week
+                                 user_publishes_post_at_least_two_times_within_two_weeks] } },
                  "exclude" => { "bots" => true },
                  "cache" => true,
                  "cookies" => false }
