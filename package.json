@@ -136,7 +136,7 @@
     "postcss-cssnext": "^3.1.0",
     "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
-    "preact": "^10.7.1",
+    "preact": "^10.7.2",
     "prop-types": "^15.8.1",
     "rails-erb-loader": "^5.5.2",
     "react-colorful": "^5.5.1",
