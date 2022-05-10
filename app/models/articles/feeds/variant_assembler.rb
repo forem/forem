@@ -48,7 +48,7 @@ module Articles
       def self.build_with(catalog:, config:, variant:)
         relevancy_levers = config.fetch("levers").map do |key, settings|
           lever = catalog.fetch_lever(key)
-          lever.configure_with(cases: settings.fetch("cases"), fallback: settings.fetch("fallback"))
+          lever.configure_with(**settings.symbolize_keys)
         end
 
         VariantQuery::Config.new(
@@ -56,9 +56,6 @@ module Articles
           levers: relevancy_levers,
           order_by: catalog.fetch_order_by(config.fetch("order_by")),
           max_days_since_published: config.fetch("max_days_since_published"),
-          default_user_experience_level: config.fetch("default_user_experience_level", DEFAULT_USER_EXPERIENCE_LEVEL),
-          negative_reaction_threshold: config.fetch("negative_reaction_threshold", DEFAULT_NEGATIVE_REACTION_THRESHOLD),
-          positive_reaction_threshold: config.fetch("positive_reaction_threshold", DEFAULT_POSITIVE_REACTION_THRESHOLD),
         )
       end
       private_class_method :build_with

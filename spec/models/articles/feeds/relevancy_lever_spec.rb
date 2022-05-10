@@ -44,5 +44,28 @@ RSpec.describe Articles::Feeds::RelevancyLever do
 
       it { within_block_is_expected.to raise_error described_class::InvalidCasesError }
     end
+
+    context "when lever has query parameters" do
+      let(:lever) do
+        described_class.new(
+          key: :my_key,
+          range: "[0..10)",
+          label: "My label",
+          select_fragment: "articles.reaction_count",
+          user_required: true,
+          query_parameter_names: [:threshold],
+        )
+      end
+
+      it "sets the configured query parameters" do
+        configuration = lever.configure_with(fallback: fallback, cases: cases, threshold: 1)
+        expect(configuration.query_parameters).to eq({ threshold: 1 })
+      end
+
+      it "raises InvalidQueryParametersError when not provided" do
+        expect { lever.configure_with(fallback: fallback, cases: cases) }
+          .to raise_error(described_class::InvalidQueryParametersError)
+      end
+    end
   end
 end

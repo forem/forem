@@ -22,12 +22,6 @@ namespace :admin do
     mount PgHero::Engine, at: "pghero"
   end
 
-  resources :invitations, only: %i[index new create destroy] do
-    member do
-      post "resend"
-    end
-  end
-
   resources :organization_memberships, only: %i[update destroy create]
   resources :permissions, only: %i[index]
   resources :reactions, only: %i[update]
@@ -44,28 +38,34 @@ namespace :admin do
     resources :user_experiences, only: [:create]
   end
 
-  namespace :users do
+  scope :member_manager do
+    resources :users, only: %i[index show update destroy] do
+      resources :email_messages, only: :show
+      collection do
+        get "export"
+      end
+
+      member do
+        post "banish"
+        post "export_data"
+        post "full_delete"
+        patch "user_status"
+        post "merge"
+        delete "remove_identity"
+        post "send_email"
+        post "verify_email_ownership"
+        patch "unlock_access"
+        post "unpublish_all_articles"
+      end
+    end
+
+    resources :invitations, only: %i[index new create destroy] do
+      member do
+        post "resend"
+      end
+    end
+
     resources :gdpr_delete_requests, only: %i[index destroy]
-  end
-
-  resources :users, only: %i[index show update destroy] do
-    resources :email_messages, only: :show
-    collection do
-      get "export"
-    end
-
-    member do
-      post "banish"
-      post "export_data"
-      post "full_delete"
-      patch "user_status"
-      post "merge"
-      delete "remove_identity"
-      post "send_email"
-      post "verify_email_ownership"
-      patch "unlock_access"
-      post "unpublish_all_articles"
-    end
   end
 
   scope :content_manager do

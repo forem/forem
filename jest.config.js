@@ -55,4 +55,6 @@ module.exports = {
     'jest-watch-typeahead/testname',
   ],
   testEnvironment: './customJsDomEnvironment.js',
+  // We occasionally need to allow transpiling of specific node_modules. See https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
+  transformIgnorePatterns: ['/node_modules/(?!(preact|react-colorful)/)'],
 };

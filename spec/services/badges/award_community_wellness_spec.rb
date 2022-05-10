@@ -21,7 +21,7 @@ RSpec.describe Badges::AwardCommunityWellness, type: :service do
       # Create 2 comments per-week to be tested, i.e. week 8 would create 2
       # comments on each of the 8 weeks (calculated on days_ago per week)
       reward_weeks[index].times do |week|
-        days_ago = (5 + (week * 7)).days.ago
+        days_ago = (8 + (week * 7)).days.ago
         create_comment_time_ago(users[index].id, days_ago, commentable: articles.sample)
         create_comment_time_ago(users[index].id, days_ago, commentable: articles.sample)
       end
@@ -50,9 +50,11 @@ RSpec.describe Badges::AwardCommunityWellness, type: :service do
     # TODO: When confirmed/tested we must remove the FeatureFlag and this spec
     it "tracks awards with Ahoy if FeatureFlag isn't enabled" do
       allow(FeatureFlag).to receive(:enabled?).with(:community_wellness_badge).and_return(false)
+      allow(ForemStatsClient).to receive(:increment)
 
       expect do
         described_class.call
+        expect(ForemStatsClient).to have_received(:increment).exactly(reward_weeks.count).times
       end.to change(BadgeAchievement, :count).by(0)
     end
   end

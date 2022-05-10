@@ -10,7 +10,11 @@ describe('Invited users', () => {
             email: 'test@test.com',
           }),
         )
-        .then(() => cy.visitAndWaitForUserSideEffects('/admin/invitations'));
+        .then(() =>
+          cy.visitAndWaitForUserSideEffects(
+            '/admin/member_manager/invitations',
+          ),
+        );
     });
   });
 
@@ -108,7 +112,7 @@ describe('Invited users', () => {
 
   const searchForMember = (searchTerm) => {
     cy.findByRole('textbox', {
-      name: 'Search invited members by name, or username',
+      name: 'Search invited members by name, email, or username',
     })
       .clear()
       .type(searchTerm);
@@ -116,7 +120,7 @@ describe('Invited users', () => {
   };
 
   const resendInviteForTestMember = () => {
-    cy.findByRole('button', { name: 'Invitation actions: Test user' })
+    cy.findByRole('button', { name: 'Invitation actions: test@test.com' })
       .pipe(click)
       .should('have.attr', 'aria-expanded', 'true');
 
@@ -124,10 +128,24 @@ describe('Invited users', () => {
   };
 
   const cancelInviteForTestMember = () => {
-    cy.findByRole('button', { name: 'Invitation actions: Test user' })
+    cy.findByRole('button', { name: 'Invitation actions: test@test.com' })
       .pipe(click)
       .should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('button', { name: 'Cancel invite' }).click();
   };
+});
+
+describe('No invited members', () => {
+  beforeEach(() => {
+    cy.testSetup();
+    cy.fixture('users/adminUser.json').as('user');
+    cy.get('@user').then((user) => {
+      cy.loginAndVisit(user, '/admin/member_manager/invitations');
+    });
+  });
+
+  it('displays an empty state', () => {
+    cy.findByText('No members invited yet.').should('exist');
+  });
 });
