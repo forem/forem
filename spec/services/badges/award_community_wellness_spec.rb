@@ -9,6 +9,8 @@ RSpec.describe Badges::AwardCommunityWellness, type: :service do
   let!(:articles) { create_list(:article, 4) }
 
   before do
+    allow(Comments::CommunityWellnessQuery).to receive(:limit_query_rollout?).and_return(false)
+
     reward_weeks.each do |week|
       create(
         :badge,
