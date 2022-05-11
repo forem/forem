@@ -20,18 +20,21 @@ Object {
         <div
           role="presentation"
         >
-          <a
-            class="crayons-story__cover"
-            href="/some-post/path"
-            style="background-image: url(/images/10.png);"
-            title="Unbranded Home Loan Account"
-          >
-            <span
-              class="hidden"
+          <div className="crayons-article__cover crayons-article__cover__image__feed">
+            <a
+              href="/some-post/path"
+              class="crayons-article__cover__image__feed crayons-story__cover__image"
+              title="Unbranded Home Loan Account"
             >
-              Unbranded Home Loan Account
-            </span>
-          </a>
+              <img
+                className="crayons-article__cover__image__feed"
+                src="/images/10.png"
+                width="650"
+                height="275"
+                alt="Cover for Unbranded Home Loan Account" />
+              <span class="hidden">Unbranded Home Loan Account</span>
+            </a>
+          </div>
           <div
             class="crayons-story__body"
           >
