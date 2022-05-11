@@ -200,11 +200,10 @@ class ArticlePolicy < ApplicationPolicy
   private
 
   def user_author?
-    if record.instance_of?(Article)
-      record.user_id == user.id
-    else
-      record.pluck(:user_id).uniq == [user.id]
-    end
+    # We might have the Article class (instead of the Article instance), so let's short circuit
+    return false unless record.respond_to?(:user_id)
+
+    record.user_id == user.id
   end
 
   def user_org_admin?
