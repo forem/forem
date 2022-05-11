@@ -7,7 +7,11 @@ module.exports = {
   ],
   '*.scss': ['prettier --write'],
   '*.svg': ['svgo --pretty'],
-  '*.{js,jsx}': ['prettier --write', 'eslint --fix', 'jest --findRelatedTests'],
+  '*.{js,jsx}': [
+    'prettier --write',
+    'eslint --fix',
+    'jest --findRelatedTests --passWithNoTests',
+  ],
   './Gemfile': [
     'bundle exec rubocop --require rubocop-rspec --auto-correct --enable-pending-cops',
   ],

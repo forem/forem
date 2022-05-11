@@ -37,7 +37,7 @@ gem "flipper", "~> 0.24.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.24.1" # Store Flipper flags in ActiveRecord
 gem "flipper-active_support_cache_store", "~> 0.24.1" # Cache feature flags for a short time
 gem "flipper-ui", "~> 0.24.1"
-gem "fog-aws", "~> 3.13" # 'fog' gem to support Amazon Web Services
+gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
@@ -79,7 +79,7 @@ gem "rack-attack", "~> 6.6.1" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.2.2" # Ruby on Rails
-gem "ransack", "~> 3.1" # Searching and sorting
+gem "ransack", "~> 3.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 

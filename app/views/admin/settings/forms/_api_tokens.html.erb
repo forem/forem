@@ -8,19 +8,19 @@
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :health_check_token %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:health_check_token][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:health_check_token][:description] %>
           <%= f.text_field :health_check_token,
                            class: "crayons-textfield",
                            value: Settings::General.health_check_token,
-                           placeholder: Constants::Settings::General::DETAILS[:health_check_token][:placeholder] %>
+                           placeholder: Constants::Settings::General.details[:health_check_token][:placeholder] %>
         </div>
         <div class="crayons-field">
           <%= admin_config_label :video_encoder_key %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:video_encoder_key][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:video_encoder_key][:description] %>
           <%= f.text_field :video_encoder_key,
                            class: "crayons-textfield",
                            value: Settings::General.video_encoder_key,
-                           placeholder: Constants::Settings::General::DETAILS[:video_encoder_key][:placeholder] %>
+                           placeholder: Constants::Settings::General.details[:video_encoder_key][:placeholder] %>
         </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>

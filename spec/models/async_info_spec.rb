@@ -12,12 +12,15 @@ RSpec.describe AsyncInfo do
     # controller, we should always have an authenticated user and it is not edge cached.
     before { allow(context).to receive(:current_user).and_return(user) }
 
-    it "has a policies key with an array of policies" do
+    it "has a policies key with an array of policies", :aggregate_failures do
       policies = async_info.fetch(:policies)
       expect(policies.length).to be > 0
 
       # All policy keys will have dom_class and forbidden
       expect(policies.map(&:keys).uniq).to eq([%i[dom_class visible]])
+
+      expect(policies.map { |p| p.fetch(:dom_class) }.sort)
+        .to eq(%w[js-policy-article-create js-policy-article-moderate])
     end
   end
 end

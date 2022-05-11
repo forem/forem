@@ -7,11 +7,11 @@
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :sidebar_tags %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:sidebar_tags][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:sidebar_tags][:description] %>
           <%= f.text_field :sidebar_tags,
                            class: "crayons-textfield",
                            value: Settings::General.sidebar_tags.join(","),
-                           placeholder: Constants::Settings::General::DETAILS[:sidebar_tags][:placeholder],
+                           placeholder: Constants::Settings::General.details[:sidebar_tags][:placeholder],
                            pattern: "[a-z0-9,]+" %>
         </div>
       </fieldset>
