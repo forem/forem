@@ -37,21 +37,13 @@ module Badges
         next unless REWARD_STREAK_WEEKS.include?(week_streak)
         next unless (user = User.find_by(id: hash["user_id"]))
 
-        # TODO: Remove FeatureFlag when truly ready for production use
-        if FeatureFlag.enabled?(:community_wellness_badge)
-          badge_slug = "#{week_streak}-week-community-wellness-streak"
-          next unless (badge_id = Badge.id_for_slug(badge_slug))
+        badge_slug = "#{week_streak}-week-community-wellness-streak"
+        next unless (badge_id = Badge.id_for_slug(badge_slug))
 
-          user.badge_achievements.create(
-            badge_id: badge_id,
-            rewarding_context_message_markdown: generate_message(weeks: week_streak),
-          )
-        else
-          # If the FeatureFlag isn't enabled only track which users would get
-          # the badge to get an understanding of how the service will work
-          tags = ["user_id:#{user.id}", "weeks:#{week_streak}"]
-          ForemStatsClient.increment("community_wellness_badge.award", tags: tags)
-        end
+        user.badge_achievements.create(
+          badge_id: badge_id,
+          rewarding_context_message_markdown: generate_message(weeks: week_streak),
+        )
       end
     end
 
