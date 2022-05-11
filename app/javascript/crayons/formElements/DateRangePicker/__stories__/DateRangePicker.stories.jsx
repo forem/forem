@@ -20,6 +20,16 @@ export default {
       description: 'The initial value of the end date of the range (optional)',
       control: 'date',
     },
+    minStartDate: {
+      description: 'The earliest date that may be selected',
+      control: 'date',
+      table: { defaultValue: { summary: 'Today' } },
+    },
+    maxEndDate: {
+      description: 'The latest date that may be selected',
+      control: 'date',
+      table: { defaultValue: { summary: 'Today' } },
+    },
     onDatesChanged: {
       description:
         'Callback function for when dates are selected. Receives an object with startDate and endDate values.',
@@ -33,6 +43,8 @@ export const Default = (args) => {
 Default.args = {
   startDateId: 'start-date',
   endDateId: 'end-date',
-  defaultStartDate: new Date(),
-  minStartDate: new Date(1, 0, 2020),
+  defaultStartDate: undefined,
+  defaultEndDate: undefined,
+  minStartDate: new Date(2020, 0, 1),
+  maxEndDate: new Date(),
 };

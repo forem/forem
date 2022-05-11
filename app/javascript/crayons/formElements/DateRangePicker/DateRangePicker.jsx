@@ -5,6 +5,7 @@ import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import moment from 'moment';
 import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
+import defaultPhrases from 'react-dates/lib/defaultPhrases';
 import {
   START_DATE,
   ICON_AFTER_POSITION,
@@ -14,6 +15,13 @@ import { ButtonNew as Button, Icon } from '@crayons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
 import Calendar from '@images/calendar.svg';
+
+const PICKER_PHRASES = {
+  ...defaultPhrases,
+  chooseAvailableStartDate: ({ date }) => `Choose ${date} as start date`,
+  chooseAvailableEndDate: ({ date }) => `Choose ${date} as end date`,
+  focusStartDate: 'Interact with the calendar and add your start date',
+};
 
 const MONTH_NAMES = [...Array(12).keys()].map((key) =>
   new Date(0, key).toLocaleString('en', { month: 'long' }),
@@ -25,11 +33,11 @@ const isDateOutsideOfRange = ({ date, minDate, maxDate }) =>
 // TODO:
 // - Consolidate styling
 // - Clarify if we can show calendar button and clear button
-// - Test in other browsers
 // - Test app start up OK
 // - Update story props and add documentation
 // - Snapshot tests
 // - Component tests
+// - Test with screen reader
 
 const MonthYearPicker = ({
   earliestMoment,
@@ -121,6 +129,7 @@ export const DateRangePicker = ({
         inputIconPosition={ICON_BEFORE_POSITION}
         showClearDates={startMoment || endMoment}
         customArrowIcon="-"
+        phrases={PICKER_PHRASES}
         onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
         isOutsideRange={(date) =>
           isDateOutsideOfRange({
