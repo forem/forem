@@ -36,8 +36,8 @@ module Constants
             placeholder: I18n.t("lib.constants.settings.campaign.sidebar_image.placeholder")
           },
           url: {
-            description: "https://url.com/lander",
-            placeholder: "URL campaign sidebar image will link to"
+            description: I18n.t("lib.constants.settings.campaign.url.description"),
+            placeholder: I18n.t("lib.constants.settings.campaign.url.placeholder")
           }
         }
       end
