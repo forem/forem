@@ -182,7 +182,9 @@ RSpec.describe "StoriesIndex", type: :request do
 
       allow(Settings::UserExperience).to receive(:feed_style).and_return("rich")
       get "/"
+      # rubocop:disable Layout/LineLength
       expect(response.body.scan(/(?=class="crayons-article__cover crayons-article__cover__image__feed)/).count).to be > 1
+      # rubocop:enable Layout/LineLength
     end
 
     context "with campaign hero" do
