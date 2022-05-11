@@ -15,6 +15,7 @@ export const Options = ({
   passedData: {
     published = false,
     publishedAt = '',
+    timezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
     allSeries = [],
     canonicalUrl = '',
     series = '',
@@ -129,8 +130,8 @@ export const Options = ({
             placeholder="..."
           />
           <input
-            type="text"
-            value={Intl.DateTimeFormat().resolvedOptions().timeZone} // "2022-04-28T15:00:00"
+            type="hidden"
+            value={timezone} // "Asia/Magadan"
             className="crayons-textfield"
             name="timezone"
             onKeyUp={onConfigChange}
@@ -175,6 +176,7 @@ Options.propTypes = {
   passedData: PropTypes.shape({
     published: PropTypes.bool.isRequired,
     publishedAt: PropTypes.string.isRequired,
+    timezone: PropTypes.string.isRequired,
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired,
