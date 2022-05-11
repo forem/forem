@@ -6,12 +6,8 @@ import 'react-dates/lib/css/_datepicker.css';
 import moment from 'moment';
 import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
 import defaultPhrases from 'react-dates/lib/defaultPhrases';
-import {
-  START_DATE,
-  ICON_AFTER_POSITION,
-  ICON_BEFORE_POSITION,
-} from 'react-dates/constants';
-import { ButtonNew as Button, Icon } from '@crayons';
+import { START_DATE, ICON_BEFORE_POSITION } from 'react-dates/constants';
+import { Icon } from '@crayons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
 import Calendar from '@images/calendar.svg';
@@ -35,9 +31,12 @@ const isDateOutsideOfRange = ({ date, minDate, maxDate }) =>
 // - Clarify if we can show calendar button and clear button
 // - Test app start up OK
 // - Update story props and add documentation
-// - Snapshot tests
-// - Component tests
+// - Tests
 // - Test with screen reader
+// - Check dark mode again
+// - Remove future/past arrow navigation when dates will be disabled
+// - More complex validation of months in picker vs current year and vice versa
+// - Quick selects with renderCalendarInfo prop
 
 const MonthYearPicker = ({
   earliestMoment,
@@ -152,13 +151,6 @@ export const DateRangePicker = ({
             latestMoment={latestMoment}
             {...props}
           />
-        )}
-        renderCalendarInfo={() => (
-          <div className="p-4 ">
-            TODO
-            <Button>Last week</Button>
-            <Button>Last month</Button>
-          </div>
         )}
       />
     </span>
