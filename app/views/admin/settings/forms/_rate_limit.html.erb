@@ -7,11 +7,11 @@
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :user_considered_new_days, model: Settings::RateLimit %>
-          <%= admin_config_description Constants::Settings::RateLimit::DETAILS[:user_considered_new_days][:description] %>
+          <%= admin_config_description Constants::Settings::RateLimit.details[:user_considered_new_days][:description] %>
           <%= f.number_field :user_considered_new_days,
                              class: "crayons-textfield",
                              value: Settings::RateLimit.user_considered_new_days,
-                             placeholder: Constants::Settings::RateLimit::DETAILS[:user_considered_new_days][:placeholder] %>
+                             placeholder: Constants::Settings::RateLimit.details[:user_considered_new_days][:placeholder] %>
         </div>
 
         <% configurable_rate_limits.each do |key, field_hash| %>
@@ -31,11 +31,11 @@
 
         <div class="crayons-field">
           <%= admin_config_label :spam_trigger_terms, model: Settings::RateLimit %>
-          <%= admin_config_description Constants::Settings::RateLimit::DETAILS[:spam_trigger_terms][:description] %>
+          <%= admin_config_description Constants::Settings::RateLimit.details[:spam_trigger_terms][:description] %>
           <%= f.text_area :spam_trigger_terms,
                           class: "crayons-textfield",
                           value: Settings::RateLimit.spam_trigger_terms.join(","),
-                          placeholder: Constants::Settings::RateLimit::DETAILS[:spam_trigger_terms][:placeholder] %>
+                          placeholder: Constants::Settings::RateLimit.details[:spam_trigger_terms][:placeholder] %>
         </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
@@ -52,11 +52,11 @@
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :twitter_hashtag %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:twitter_hashtag][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:twitter_hashtag][:description] %>
           <%= f.text_field :twitter_hashtag,
                            class: "crayons-textfield",
                            value: Settings::General.twitter_hashtag.to_s,
-                           placeholder: Constants::Settings::General::DETAILS[:twitter_hashtag][:placeholder] %>
+                           placeholder: Constants::Settings::General.details[:twitter_hashtag][:placeholder] %>
         </div>
         <%= f.fields_for :social_media_handles do |social_media_field| %>
           <% Settings::General.social_media_handles.each do |platform, username| %>

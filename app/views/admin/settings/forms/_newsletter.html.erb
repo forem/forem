@@ -7,7 +7,7 @@
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_api_key][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:mailchimp_api_key][:description] %>
           <%= f.text_field :mailchimp_api_key,
                            class: "crayons-textfield",
                            value: Settings::General.mailchimp_api_key %>
@@ -15,7 +15,7 @@
 
         <div class="crayons-field">
           <%= admin_config_label :mailchimp_newsletter_id, "Main Newsletter" %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_newsletter_id][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:mailchimp_newsletter_id][:description] %>
           <%= f.text_field :mailchimp_newsletter_id,
                            class: "crayons-textfield",
                            value: Settings::General.mailchimp_newsletter_id %>
@@ -23,7 +23,7 @@
 
         <div class="crayons-field">
           <%= admin_config_label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_tag_moderators_id][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:mailchimp_tag_moderators_id][:description] %>
           <%= f.text_field :mailchimp_tag_moderators_id,
                            class: "crayons-textfield",
                            value: Settings::General.mailchimp_tag_moderators_id %>
@@ -31,7 +31,7 @@
 
         <div class="crayons-field">
           <%= admin_config_label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:mailchimp_community_moderators_id][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:mailchimp_community_moderators_id][:description] %>
           <%= f.text_field :mailchimp_community_moderators_id,
                            class: "crayons-textfield",
                            value: Settings::General.mailchimp_community_moderators_id %>

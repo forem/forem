@@ -1,17 +1,18 @@
 module Constants
   module Settings
     module RateLimit
-      DETAILS = {
-        spam_trigger_terms: {
-          description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
-          placeholder: "used cars near you, pokemon go hack"
-        },
-        user_considered_new_days: {
-          description: "The number of days a user is considered new. The default is 3 days, but you "\
-                       "can disable this entirely by inputting 0.",
-          placeholder: ::Settings::RateLimit.user_considered_new_days
+      def self.details
+        {
+          spam_trigger_terms: {
+            description: I18n.t("lib.constants.settings.rate_limit.spam.description"),
+            placeholder: I18n.t("lib.constants.settings.rate_limit.spam.placeholder")
+          },
+          user_considered_new_days: {
+            description: I18n.t("lib.constants.settings.rate_limit.new_days.description"),
+            placeholder: ::Settings::RateLimit.user_considered_new_days
+          }
         }
-      }.freeze
+      end
     end
   end
 end

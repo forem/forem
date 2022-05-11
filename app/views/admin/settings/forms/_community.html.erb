@@ -7,65 +7,65 @@
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :community_name, model: Settings::Community %>
-          <%= admin_config_description Constants::Settings::Community::DETAILS[:community_name][:description] %>
+          <%= admin_config_description Constants::Settings::Community.details[:community_name][:description] %>
           <%= f.text_field :community_name,
                            class: "crayons-textfield",
                            value: Settings::Community.community_name,
-                           placeholder: Constants::Settings::Community::DETAILS[:community_name][:placeholder] %>
+                           placeholder: Constants::Settings::Community.details[:community_name][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :community_emoji, model: Settings::Community %>
-          <%= admin_config_description Constants::Settings::Community::DETAILS[:community_emoji][:description] %>
+          <%= admin_config_description Constants::Settings::Community.details[:community_emoji][:description] %>
           <%= f.text_field :community_emoji,
                            class: "crayons-textfield",
                            value: Settings::Community.community_emoji,
-                           placeholder: Constants::Settings::Community::DETAILS[:community_emoji][:placeholder] %>
+                           placeholder: Constants::Settings::Community.details[:community_emoji][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :tagline, model: Settings::Community %>
-          <%= admin_config_description Constants::Settings::Community::DETAILS[:tagline][:description] %>
+          <%= admin_config_description Constants::Settings::Community.details[:tagline][:description] %>
           <%= f.text_field :tagline,
                            class: "crayons-textfield",
                            value: Settings::Community.tagline,
-                           placeholder: Constants::Settings::Community::DETAILS[:tagline][:placeholder] %>
+                           placeholder: Constants::Settings::Community.details[:tagline][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :community_description, model: Settings::Community %>
-          <%= admin_config_description Constants::Settings::Community::DETAILS[:community_description][:description] %>
+          <%= admin_config_description Constants::Settings::Community.details[:community_description][:description] %>
           <%= f.text_field :community_description,
                            class: "crayons-textfield",
                            value: Settings::Community.community_description,
-                           placeholder: Constants::Settings::Community::DETAILS[:community_description][:placeholder] %>
+                           placeholder: Constants::Settings::Community.details[:community_description][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :member_label, model: Settings::Community %>
-          <%= admin_config_description Constants::Settings::Community::DETAILS[:member_label][:description] %>
+          <%= admin_config_description Constants::Settings::Community.details[:member_label][:description] %>
           <%= f.text_field :member_label,
                            class: "crayons-textfield",
                            value: Settings::Community.member_label,
-                           placeholder: Constants::Settings::Community::DETAILS[:member_label][:placeholder] %>
+                           placeholder: Constants::Settings::Community.details[:member_label][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :copyright_start_year, model: Settings::Community %>
-          <%= admin_config_description Constants::Settings::Community::DETAILS[:copyright_start_year][:description] %>
+          <%= admin_config_description Constants::Settings::Community.details[:copyright_start_year][:description] %>
           <%= f.text_field :copyright_start_year,
                            class: "crayons-textfield",
                            value: Settings::Community.copyright_start_year,
-                           placeholder: Constants::Settings::Community::DETAILS[:copyright_start_year][:placeholder] %>
+                           placeholder: Constants::Settings::Community.details[:copyright_start_year][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :staff_user_id, model: Settings::Community %>
-          <%= admin_config_description Constants::Settings::Community::DETAILS[:staff_user_id][:description] %>
+          <%= admin_config_description Constants::Settings::Community.details[:staff_user_id][:description] %>
           <%= f.text_field :staff_user_id,
                            class: "crayons-textfield",
                            value: Settings::Community.staff_user_id,
-                           placeholder: Constants::Settings::Community::DETAILS[:staff_user_id][:placeholder] %>
+                           placeholder: Constants::Settings::Community.details[:staff_user_id][:placeholder] %>
         </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
