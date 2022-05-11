@@ -1,5 +1,5 @@
 // Unique ID applied to modals created using the showWindowModal function
-const WINDOW_MODAL_ID = 'window-modal';
+export const WINDOW_MODAL_ID = 'window-modal';
 
 // We only import these modules if a user actually triggers a modal. Here we cache them so they are only imported once.
 let preactImport;

@@ -2,8 +2,8 @@
 # [
 #   {
 #     "user_id"=>11,
-#     "serialized_weeks_ago"=>"1,16,20",
-#     "serialized_comment_counts"=>"2,2,1"
+#     "serialized_weeks_ago"=>"0,1,16,20",
+#     "serialized_comment_counts"=>"2,2,1,3"
 #   },
 #   ...
 # ]
@@ -33,19 +33,19 @@ module Comments
                 SELECT user_id,
                        COUNT(user_id) AS number_of_comments_with_positive_reaction,
                        /* Get the number of weeks, since today for posts */
-                       (trunc((extract(epoch FROM (current_timestamp- created_at))) / 604800) + 1) AS weeks_ago
+                       trunc((extract(epoch FROM (current_timestamp- created_at))) / 604800) AS weeks_ago
                 FROM comments
                 INNER JOIN
                     (
                           SELECT DISTINCT reactable_id
                           FROM reactions
                           WHERE reactable_type = 'Comment'
-                          AND created_at > (now() - interval '224' day)
+                          AND created_at > (now() - interval '231' day)
                           EXCEPT
                           SELECT DISTINCT reactable_id
                           FROM reactions
                           WHERE reactable_type = 'Comment'
-                          AND created_at > (now() - interval '224' day)
+                          AND created_at > (now() - interval '231' day)
                           AND category IN ('thumbsdown', 'vomit')) AS negative_reactions
                 ON comments.id = negative_reactions.reactable_id
                 INNER JOIN
@@ -53,13 +53,14 @@ module Comments
                           SELECT count(id) AS number_of_comments,
                                  user_id AS comment_counts_user_id
                           FROM comments
-                          WHERE created_at >= (now() - interval '7' day)
+                          /* This interval filters week 1 (what we care about) */
+                          WHERE created_at >= (now() - interval '14' day)
+                          AND created_at <= (now() - interval '7' day)
                           GROUP BY user_id) AS comment_counts
                           ON comments.user_id = comment_counts_user_id
                           AND comment_counts.number_of_comments > 1
-                                /* Don’t select anything older than 224 days ago, or 32 weeks ago */
-                          WHERE created_at > (now() - interval '224' day)
-                          AND created_at < (now() - interval '3' day)
+                          /* Don’t select anything older than 231 days ago, or 33 weeks ago */
+                          WHERE created_at > (now() - interval '231' day)
                           GROUP BY user_id, weeks_ago) AS user_comment_counts_by_week
         GROUP BY user_id
       SQL

@@ -37,6 +37,7 @@ const StandardImageUpload = ({
       <label className="cursor-pointer crayons-btn crayons-btn--outlined">
         {uploadLabel}
         <input
+          data-testid="cover-image-input"
           id="cover-image-input"
           type="file"
           onChange={handleImageUpload}

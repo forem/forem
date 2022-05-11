@@ -1,6 +1,6 @@
 module Metrics
   class RecordDailyNotificationsWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: :low_priority, retry: 10
 
     EVENT_TITLES = %w[

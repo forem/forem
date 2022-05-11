@@ -395,7 +395,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('inviteUser', ({ name, email }) => {
   return cy.request(
     'POST',
-    '/admin/invitations',
+    '/admin/member_manager/invitations',
     `utf8=%E2%9C%93&user%5Bemail%5D=${email}&user%5Bname%5D=${name}&commit=Invite+User`,
   );
 });

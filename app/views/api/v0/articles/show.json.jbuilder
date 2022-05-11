@@ -3,7 +3,7 @@ json.partial! "article", article: @article
 # /api/articles and /api/articles/:id have opposite representations
 # of `tag_list` and `tags and we can't align them without breaking the API,
 # this is fully documented in the API docs
-# see <https://github.com/thepracticaldev/dev.to/issues/4206> for more details
+# see <https://github.com/forem/forem/issues/4206> for more details
 json.tag_list @article.cached_tag_list
 json.tags @article.cached_tag_list_array
 

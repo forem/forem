@@ -4,7 +4,7 @@ describe('User index view', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/users');
+        cy.loginAndVisit(user, '/admin/member_manager/users');
       });
       cy.viewport('iphone-x');
     });
@@ -139,7 +139,7 @@ describe('User index view', () => {
 
       it(`Clicks through to the Member Detail View`, () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
-        cy.url().should('contain', '/admin/users/1');
+        cy.url().should('contain', '/admin/member_manager/users/1');
       });
     });
 
@@ -177,7 +177,7 @@ describe('User index view', () => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/users');
+        cy.loginAndVisit(user, '/admin/member_manager/users');
       });
       cy.viewport('macbook-16');
     });
@@ -229,7 +229,7 @@ describe('User index view', () => {
 
       it(`Clicks through to the Member Detail View`, () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
-        cy.url().should('contain', '/admin/users/1');
+        cy.url().should('contain', '/admin/member_manager/users/1');
       });
     });
 
@@ -274,7 +274,7 @@ describe('User index view', () => {
           ).should('be.visible');
           cy.findByRole('link', {
             name: 'Download',
-            href: '/admin/users/export.csv',
+            href: '/admin/member_manager/users/export.csv',
           }).should('exist');
         });
       });

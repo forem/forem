@@ -72,7 +72,7 @@ RSpec.shared_examples "valid notifiable and has mentions" do
     expect do
       set_markdown_and_save(notifiable, "Hello, you are cool.")
       described_class.call(notifiable)
-      Sidekiq::Worker.drain_all
+      Sidekiq::Job.drain_all
     end
       .to change { Mention.all.size }.by(-1)
       .and change { Notification.all.size }.by(-1)

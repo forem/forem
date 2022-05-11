@@ -276,6 +276,7 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
   end
 
   def internal_nav_param

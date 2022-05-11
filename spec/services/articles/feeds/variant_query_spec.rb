@@ -2,34 +2,35 @@ require "rails_helper"
 
 RSpec.describe Articles::Feeds::VariantQuery, type: :service do
   # We're exercising each named feed variant to ensure that the queries are valid SQL.
-  describe ".build_for" do
-    Rails.root.glob(File.join(Articles::Feeds::VariantAssembler::DIRECTORY, "/*.json")).each do |pathname|
-      variant = pathname.basename(".json").to_s.to_sym
+  Rails.root.glob(File.join(Articles::Feeds::VariantAssembler::DIRECTORY, "/*.json")).each do |pathname|
+    variant = pathname.basename(".json").to_s.to_sym
+
+    describe ".build_for with #{variant} variant" do
       subject(:query_call) { variant_query.call }
 
       let(:variant_query) {  described_class.build_for(variant: variant, user: user) }
 
-      context "for #call with #{variant.inspect} and user is nil" do
+      describe "#call with nil user" do
         let(:user) { nil }
 
-        it "is a valid ActiveRecord::Relation" do
+        it "is a valid ActiveRecord::Relation", :aggregate_failures do
           article = create(:article)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
         end
       end
 
-      context "for #call with #{variant.inspect} and a non-nil user" do
+      describe "#call with a non-nil user" do
         let(:user) { create(:user) }
 
-        it "is a valid ActiveRecord::Relation" do
+        it "is a valid ActiveRecord::Relation", :aggregate_failures do
           article = create(:article)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
         end
       end
 
-      context "for #featured_story_and_default_home_feed with #{variant.inspect}" do
+      describe "#featured_story_and_default_home_feed" do
         let(:user) { nil }
 
         it "returns an array with two elements and entries", aggregate_failures: true do
@@ -45,28 +46,30 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
         end
       end
     end
+  end
 
-    Rails.root.glob("spec/fixtures/feed-variants/broken/*.json").each do |pathname|
-      variant = pathname.basename(".json").to_s.to_sym
+  Rails.root.glob("spec/fixtures/feed-variants/broken/*.json").each do |pathname|
+    variant = pathname.basename(".json").to_s.to_sym
+    describe ".build_for with broken #{variant} variant" do
+      subject(:query_call) { variant_query.call }
 
       let(:variant_config) do
         # Assembling the config and not polluting the variant cache with broken levers.
         Articles::Feeds::VariantAssembler.call(variant: variant, variants: {},
                                                dir: "spec/fixtures/feed-variants/broken")
       end
+      let(:variant_query) { described_class.build_for(variant: variant, user: user, assembler: stubbed_assembler) }
 
       # We already assembled the variant's config, let's short circuit that for the query
       let(:stubbed_assembler) { ->(*) { variant_config } }
 
-      context "for broken variant #{variant.inspect} and a non-nil user" do
-        let(:variant_query) { described_class.build_for(variant: variant, user: user, assembler: stubbed_assembler) }
+      context "with a non-nil user" do
         let(:user) { create(:user) }
 
         it { within_block_is_expected.to raise_error(Articles::Feeds::RelevancyLever::ConfigurationError) }
       end
 
-      context "for broken variant #{variant.inspect} and a nil user" do
-        let(:variant_query) { described_class.build_for(variant: variant, user: user, assembler: stubbed_assembler) }
+      context "with a nil user" do
         let(:user) { nil }
 
         it { within_block_is_expected.to raise_error(Articles::Feeds::RelevancyLever::ConfigurationError) }

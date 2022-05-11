@@ -1,6 +1,6 @@
 module Follows
   class SendEmailNotificationWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: :mailers, retry: 10
 
     def perform(follow_id, mailer = NotifyMailer.name)

@@ -1,7 +1,7 @@
 module Slack
   module Messengers
     class Worker
-      include Sidekiq::Worker
+      include Sidekiq::Job
 
       sidekiq_options queue: :default, retry: 10
 
