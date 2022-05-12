@@ -161,7 +161,7 @@ fr:
           Merci d'avoir été génial, et n'hésitez pas à nous envoyer un e-mail pour toute question ! Tous les commentaires et idées sont les bienvenus pour continuer à favoriser une communauté ouverte et inclusive.
 
           L'équipe %{community}
-        subject: Avis de courtoisie de %{communauté}
+        subject: Avis de courtoisie de %{community}
     listing_helper:
       option:
         one: "%{cl_name} (%{count} Crédit)"

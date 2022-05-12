@@ -10,8 +10,8 @@ fr:
       more_trending_posts_picked: plus de d'articles tendances sur %{community} choisie pour vous
       other_posts: autres articles que vous pourriez aimer
       other_community_posts: d'autres posts de la %{community} que vous pourriez aimer
-      other_top_posts: d'autres articles tendance de la %{communauté}
-      other_trending_posts: d'autres articles tendance de la %{communauté}.
+      other_top_posts: d'autres articles tendance de la %{community}
+      other_trending_posts: d'autres articles tendance de la %{community}.
     notify_mailer:
       account_deleted: "%{community} - Confirmation de la suppression du compte"
       deletion_requested: "%{community} - Suppression du compte demandée"
