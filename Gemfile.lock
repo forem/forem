@@ -95,8 +95,8 @@ GEM
     anyway_config (2.1.0)
       ruby-next-core (>= 0.11.0)
     ast (2.4.2)
-    aws-eventstream (1.1.1)
-    aws-sigv4 (1.2.3)
+    aws-eventstream (1.2.0)
+    aws-sigv4 (1.5.0)
       aws-eventstream (~> 1, >= 1.0.2)
     aws_cf_signer (0.1.3)
     backport (1.2.0)
@@ -890,7 +890,7 @@ GEM
     validate_url (1.0.13)
       activemodel (>= 3.0.0)
       public_suffix
-    vault (0.16.0)
+    vault (0.17.0)
       aws-sigv4
     vcr (6.1.0)
     warden (1.2.9)
@@ -1083,7 +1083,7 @@ DEPENDENCIES
   twitter (~> 7.0)
   uglifier (~> 4.2)
   validate_url (~> 1.0)
-  vault (~> 0.16)
+  vault (~> 0.17)
   vcr (~> 6.1)
   warning (~> 1.2)
   wcag_color_contrast (~> 0.1)
