@@ -41,10 +41,22 @@ describe('Moderation Tools for Posts', () => {
     });
   });
 
-  it('should not alter tags from a post if a reason is not specified', () => {
+  it("should not show moderation badge for a person's own posts", () => {
     cy.fixture('users/adminUser.json').as('user');
     cy.get('@user').then((user) => {
       cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article').then(() => {
+        cy.findByRole('button', { name: 'Moderation' }).should('not.exist');
+      });
+    });
+  });
+
+  it('should not alter tags from a post if a reason is not specified', () => {
+    cy.fixture('users/adminUser.json').as('user');
+    cy.get('@user').then((user) => {
+      cy.loginAndVisit(
+        user,
+        '/notifications_user/notification-article-slug',
+      ).then(() => {
         cy.findByRole('button', { name: 'Moderation' }).click();
 
         // Helper function for pipe command

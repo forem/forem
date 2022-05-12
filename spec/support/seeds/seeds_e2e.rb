@@ -392,6 +392,7 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
     markdown = <<~MARKDOWN
       ---
       title:  Notification article
+      tags: tag1
       published: true
       ---
       #{Faker::Hipster.paragraph(sentence_count: 2)}
