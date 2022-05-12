@@ -198,7 +198,7 @@ module ApplicationHelper
       data: {
         info: DataInfo.to_json(object: followable, className: followable_type, style: style)
       },
-      class: "c-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
+      class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
       aria: {
         label: I18n.t("helpers.application_helper.follow.aria_label.#{followable_type}",
                       name: followable_name,
