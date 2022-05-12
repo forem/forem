@@ -24,11 +24,10 @@ getCsrfToken().then(() => {
 
       // article show page
       if (canModerateArticles) {
-        // <2022-05-09 Mon> [@jeremyf] the user.id is an integer and
-        // articleAuthorId is a string so our logic is such that we always
-        // initializeActionsPanel and initializeFlagUserModal; I'm asking
-        // product to clarify if we want mods to boost their own posts.
-        if (user?.id !== articleAuthorId && !isModerationPage()) {
+        if (
+          parseInt(user?.id) !== parseInt(articleAuthorId) &&
+          !isModerationPage()
+        ) {
           initializeActionsPanel(user, path);
           initializeFlagUserModal(articleAuthorId);
           // "/mod" page
