@@ -55,7 +55,7 @@ describe('Moderation Tools for Posts', () => {
     cy.get('@user').then((user) => {
       cy.loginAndVisit(
         user,
-        '/notifications_user/notification-article-slug',
+        '/to_be_moderated_user/moderate-article-slug',
       ).then(() => {
         cy.findByRole('button', { name: 'Moderation' }).click();
 

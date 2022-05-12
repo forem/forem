@@ -392,7 +392,6 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
     markdown = <<~MARKDOWN
       ---
       title:  Notification article
-      tags: tag1
       published: true
       ---
       #{Faker::Hipster.paragraph(sentence_count: 2)}
@@ -428,6 +427,54 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
     reply = Comment.create!(reply_comment_attributes)
 
     Notification.send_new_comment_notifications_without_delay(reply)
+  end
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "to_be_moderated_user@forem.local") do
+  user = User.create!(
+    name: "Tobi M. Oderated \\:/",
+    email: "to_be_moderated_user@forem.local",
+    username: "to_be_moderated_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+  user.profile.update(
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    website_url: Faker::Internet.url,
+  )
+
+  # Create an article for moderation testing
+  seeder.create_if_doesnt_exist(Article, "slug", "moderate-article-slug") do
+    markdown = <<~MARKDOWN
+      ---
+      title:  Moderate article
+      tags: tag1
+      published: true
+      ---
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+      #{Faker::Markdown.random}
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+    MARKDOWN
+    Article.create!(
+      body_markdown: markdown,
+      featured: true,
+      show_comments: true,
+      user_id: user.id,
+      slug: "moderate-article-slug",
+    )
   end
 end
 
