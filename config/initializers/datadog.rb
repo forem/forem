@@ -1,23 +1,9 @@
 Datadog.configure do |c|
-  c.tracer env: Rails.env
   c.tracer enabled: ENV["DD_API_KEY"].present?
   c.tracer partial_flush: true
-  c.tracer priority_sampling: true
-
-  c.use :concurrent_ruby
-  c.use :excon, split_by_domain: true
-  c.use :faraday, split_by_domain: true
-  c.use :http, split_by_domain: false
-  c.use :httpclient, split_by_domain: false
-  c.use :httprb, split_by_domain: true
-  c.use :rails
-
-  c.use :rest_client
-  c.use :sidekiq
 
   # Multiple Redis integrations to split Redis usage per-instance to
   # accommodate having a different Redis instance for each use case.
-
   c.use :redis, service_name: "redis-rpush", describes: { url: ENV["REDIS_RPUSH_URL"] }
   c.use :redis, service_name: "redis-sessions", describes: { url: ENV["REDIS_SESSIONS_URL"] }
 
