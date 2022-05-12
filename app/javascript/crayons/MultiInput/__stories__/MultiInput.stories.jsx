@@ -1,10 +1,13 @@
 import { h } from 'preact';
+import MultiInputDoc from './MultiInput.mdx';
 
 export default {
   title: 'App Components/MultiInput',
   argTypes: {},
   parameters: {
-    docs: {},
+    docs: {
+      page: MultiInputDoc,
+    },
   },
 };
 
