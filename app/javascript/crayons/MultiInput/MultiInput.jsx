@@ -5,7 +5,7 @@ import { h, Fragment } from 'preact';
 export const MultiInput = ({}) => {
   return (
     <Fragment>
-      <div>Insert Multi Select Input</div>
+      <div className="c-multi-input">Insert Multi Select Input</div>
     </Fragment>
   );
 };
