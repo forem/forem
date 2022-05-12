@@ -676,7 +676,7 @@ GEM
       redis-store (>= 1.2, < 2)
     redis-store (1.9.0)
       redis (>= 4, < 5)
-    regexp_parser (2.3.1)
+    regexp_parser (2.4.0)
     reline (0.3.1)
       io-console (~> 0.5)
     request_store (1.5.1)
@@ -728,7 +728,7 @@ GEM
     rspec-support (3.11.0)
     rss (0.2.9)
       rexml
-    rubocop (1.29.0)
+    rubocop (1.29.1)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
