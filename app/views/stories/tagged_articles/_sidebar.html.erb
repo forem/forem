@@ -2,28 +2,32 @@
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <aside class="side-bar">
-      <% if @tag && @tag.rules_html.present? %>
+      <% if @tag %>
         <%= application_policy_content_tag("div", record: Article, query: :create?, class: "widget") do %>
-          <header>
-            <h4><%= t("views.tags.sidebar.guidelines") %></h4>
-          </header>
-          <div class="widget-body">
-            <%= sanitize @tag.rules_html %>
-            <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag.name %>">
-              <%= t("views.tags.sidebar.new") %>
-            </a>
+          <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag.name %>">
+            <%= t("views.tags.sidebar.new") %>
+          </a>
+        <% end %>
+        <% if @tag.rules_html.present? %>
+          <div class="widget">
+            <header>
+              <h4><%= t("views.tags.sidebar.guidelines") %></h4>
+            </header>
+            <div class="widget-body">
+              <%= sanitize @tag.rules_html %>
+            </div>
           </div>
         <% end %>
-      <% end %>
-      <% if @tag && @tag.wiki_body_html.present? %>
-        <div class="widget">
-          <header>
-            <h4><%= t("views.tags.sidebar.about", tag: @tag.name) %></h4>
-          </header>
-          <div class="widget-body">
-            <%= sanitize @tag.wiki_body_html %>
+        <% if @tag.wiki_body_html.present? %>
+          <div class="widget">
+            <header>
+              <h4><%= t("views.tags.sidebar.about", tag: @tag.name) %></h4>
+            </header>
+            <div class="widget-body">
+              <%= sanitize @tag.wiki_body_html %>
+            </div>
           </div>
-        </div>
+        <% end %>
       <% end %>
       <% if @tag.sponsorship && @tag.sponsorship.status == "live" && @tag.sponsorship.expires_at > Time.current %>
         <div class="widget">
