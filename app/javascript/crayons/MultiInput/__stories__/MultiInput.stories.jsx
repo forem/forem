@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { MultiInput } from '../MultiInput';
 import MultiInputDoc from './MultiInput.mdx';
 
 export default {
@@ -12,7 +13,7 @@ export default {
 };
 
 export const Default = () => {
-  return <div>Multi Input</div>;
+  return <MultiInput />;
 };
 
 Default.story = {
