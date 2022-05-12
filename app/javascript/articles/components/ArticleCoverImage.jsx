@@ -14,7 +14,7 @@ export const ArticleCoverImage = ({ article }) => {
           src={article.main_image}
           width="650"
           height="275"
-          alt={`Cover for ${article.title}`}
+          alt={article.title}
           style={{ backgroundColor: `${article.main_image_background_hex_color}` }} />
         <span class="hidden">{article.title}</span>
       </a>
