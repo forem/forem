@@ -1,4 +1,5 @@
 Datadog.configure do |c|
+  c.tracer env: Rails.env
   c.tracer enabled: ENV["DD_API_KEY"].present?
   c.tracer partial_flush: true
 
