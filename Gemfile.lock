@@ -887,7 +887,7 @@ GEM
     unf_ext (0.0.8.1)
     unicode-display_width (2.1.0)
     uniform_notifier (1.14.2)
-    validate_url (1.0.13)
+    validate_url (1.0.15)
       activemodel (>= 3.0.0)
       public_suffix
     vault (0.17.0)
