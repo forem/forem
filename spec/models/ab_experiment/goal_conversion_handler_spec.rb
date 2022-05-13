@@ -73,6 +73,24 @@ RSpec.describe AbExperiment::GoalConversionHandler do
             "user_publishes_post_at_least_two_times_within_week",
           ].sort)
       end
+
+      it "records a conversion when they post 4 within a week" do
+        create(:article, published_at: 25.hours.ago, user_id: user.id)
+        create(:article, published_at: 49.hours.ago, user_id: user.id)
+        create(:article, published_at: 73.hours.ago, user_id: user.id)
+        create(:article, published_at: 97.hours.ago, user_id: user.id)
+
+        handler.call
+
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
+        expect(FieldTest::Event.all.pluck(:name).sort)
+          .to match_array([
+            goal,
+            "user_publishes_post_at_least_two_times_within_two_weeks",
+            "user_publishes_post_at_least_two_times_within_week",
+            "user_publishes_post_on_four_different_days_within_a_week",
+          ].sort)
+      end
     end
 
     context "with user who is part of field test and user_creates_comment goal" do
@@ -166,6 +184,64 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         end
         handler.call
         expect(FieldTest::Event.all.size).to be(0)
+      end
+    end
+
+    context "with user who is part of field test and user_creates_article_reaction goal" do
+      let(:goal) { described_class::USER_CREATES_ARTICLE_REACTION_GOAL }
+      let(:user) { create(:user, :trusted) } # Because we want to test handling of privileged reactions
+
+      before do
+        field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
+      end
+
+      it "records a conversion", :aggregate_failures do
+        create(:reaction, user_id: user.id)
+        handler.call
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
+        expect(FieldTest::Event.last.name).to eq(goal)
+      end
+
+      it "records a conversion when they react 4 times within a week", :aggregate_failures do
+        create(:reaction, user_id: user.id, created_at: 25.hours.ago)
+        create(:reaction, user_id: user.id, created_at: 49.hours.ago)
+        create(:reaction, user_id: user.id, created_at: 73.hours.ago)
+        create(:reaction, user_id: user.id, created_at: 97.hours.ago)
+        handler.call
+
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
+        expect(FieldTest::Event.all.pluck(:name).sort)
+          .to match_array([
+            goal,
+            "user_creates_article_reaction_on_four_different_days_within_a_week",
+          ].sort)
+      end
+
+      it "does not record the conversion when they react to non-articles or non-public reactions" do
+        create(:reaction, user_id: user.id, created_at: 25.hours.ago)
+        create(:reaction, user_id: user.id, created_at: 49.hours.ago)
+        create(:reaction, user_id: user.id, created_at: 73.hours.ago, category: "vomit")
+        create(:reaction, user_id: user.id, created_at: 97.hours.ago, reactable: create(:comment))
+        create(:reaction, user_id: user.id, created_at: 121.hours.ago)
+
+        handler.call
+
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
+        expect(FieldTest::Event.all.pluck(:name))
+          .to match_array([goal])
+      end
+
+      it "does not record the conversion when their 4 reactions are not within a week" do
+        create(:reaction, user_id: user.id, created_at: 25.hours.ago)
+        create(:reaction, user_id: user.id, created_at: 49.hours.ago)
+        create(:reaction, user_id: user.id, created_at: 73.hours.ago)
+        create(:reaction, user_id: user.id, created_at: 217.hours.ago) # 9 days ago
+
+        handler.call
+
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
+        expect(FieldTest::Event.all.pluck(:name))
+          .to match_array([goal])
       end
     end
 

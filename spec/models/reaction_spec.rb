@@ -193,6 +193,36 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called after create" do
+    describe "field tests" do
+      let!(:user) { create(:user, :trusted) }
+
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: Users::RecordFieldTestEventWorker)
+      end
+
+      it "enqueues a Users::RecordFieldTestEventWorker for giving a like to an article" do
+        article = create(:article, user: user)
+        sidekiq_assert_enqueued_jobs(1, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: article, user: user, category: "like")
+        end
+      end
+
+      it "does not enqueue a Users::RecordFieldTestEventWorker for giving a privileged reaction to an article" do
+        article = create(:article, user: user)
+        sidekiq_assert_enqueued_jobs(0, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: article, user: user, category: "thumbsdown")
+        end
+      end
+
+      it "does not enqueue a Users::RecordFieldTestEventWorker for giving a like to a comment" do
+        comment = create(:comment, user: user)
+        sidekiq_assert_enqueued_jobs(0, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: comment, user: user, category: "like")
+        end
+      end
+    end
+
     describe "slack messages" do
       let!(:user) { create(:user, :trusted) }
       let!(:article) { create(:article, user: user) }

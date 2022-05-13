@@ -21,6 +21,9 @@ experiments:
       - user_publishes_post
       - user_publishes_post_at_least_two_times_within_week
       - user_publishes_post_at_least_two_times_within_two_weeks
+      - user_publishes_post_on_four_different_days_within_a_week
+      - user_creates_article_reaction
+      - user_creates_article_reaction_on_four_different_days_within_a_week
 exclude:
   bots: true
 
