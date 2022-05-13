@@ -3,10 +3,7 @@ module Admin
     layout "admin"
 
     def index
-      @gdpr_delete_requests = Admin::GDPRDeleteRequestsQuery.call(relation: ::GDPRDeleteRequest.all,
-                                                                  options: params.permit(
-                                                                    :search,
-                                                                  )).page(params[:page]).per(50)
+      @gdpr_delete_requests = Admin::GDPRDeleteRequestsQuery.call(**params.permit(:search)).page(params[:page]).per(50)
     end
 
     def destroy
