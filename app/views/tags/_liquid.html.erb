@@ -1,13 +1,6 @@
 <div class="ltag__tag ltag__tag__id__<%= tag.id %>" style="border-color:<%= dark_color %>;box-shadow: 3px 3px 0px <%= dark_color %>;">
-  <style>
-    .ltag__tag__id__<%= tag.id %> .follow-action-button{
-      background-color: <%= tag.bg_color_hex %> !important;
-      color: <%= tag.text_color_hex %> !important;
-      border-color: <%= tag.bg_color_hex.to_s.casecmp("#ffffff").zero? ? tag.text_color_hex : tag.bg_color_hex %> !important;
-    }
-  </style>
     <div class="ltag__tag__content">
-      <h2>#<a href="<%= URL.tag tag %>" class="ltag__tag__link"><%= tag.name %></a> <%= follow_btn %></h2>
+      <h2>#<a href="<%= URL.tag tag %>" class="ltag__tag__link"><%= tag.name %></a> <%= follow_button(tag, "full", "c-btn--secondary fs-base") %></h2>
       <div class="ltag__tag__summary">
         <%= tag.short_summary %>
       </div>

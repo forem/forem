@@ -8,7 +8,7 @@
         <%= f.fields_for :credit_prices_in_cents do |price_field| %>
           <div class="crayons-field">
             <%= admin_config_label "Credit price in cents (S)" %>
-            <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:small][:description] %>
+            <%= admin_config_description Constants::Settings::General.details[:credit_prices_in_cents][:small][:description] %>
             <%= price_field.number_field :small,
                                          class: "crayons-textfield",
                                          value: Settings::General.credit_prices_in_cents[:small] %>
@@ -16,14 +16,14 @@
 
           <div class="crayons-field">
             <%= admin_config_label "Credit price in cents (M)" %>
-            <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:medium][:description] %>
+            <%= admin_config_description Constants::Settings::General.details[:credit_prices_in_cents][:medium][:description] %>
             <%= price_field.number_field :medium,
                                          class: "crayons-textfield",
                                          value: Settings::General.credit_prices_in_cents[:medium] %>
           </div>
           <div class="crayons-field">
             <%= admin_config_label "Credit price in cents (L)" %>
-            <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:large][:description] %>
+            <%= admin_config_description Constants::Settings::General.details[:credit_prices_in_cents][:large][:description] %>
             <%= price_field.number_field :large,
                                          class: "crayons-textfield",
                                          value: Settings::General.credit_prices_in_cents[:large] %>
@@ -31,7 +31,7 @@
 
           <div class="crayons-field">
             <%= admin_config_label "Credit price in cents (XL)" %>
-            <%= admin_config_description Constants::Settings::General::DETAILS[:credit_prices_in_cents][:xlarge][:description] %>
+            <%= admin_config_description Constants::Settings::General.details[:credit_prices_in_cents][:xlarge][:description] %>
             <%= price_field.number_field :xlarge,
                                          class: "crayons-textfield",
                                          value: Settings::General.credit_prices_in_cents[:xlarge] %>

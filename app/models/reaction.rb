@@ -13,6 +13,8 @@ class Reaction < ApplicationRecord
 
   # These are categories of reactions that administrators can select
   PRIVILEGED_CATEGORIES = %w[thumbsup thumbsdown vomit].freeze
+  NEGATIVE_PRIVILEGED_CATEGORIES = %w[thumbsdown vomit].freeze
+
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -126,7 +128,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative?
-    category == "vomit" || category == "thumbsdown"
+    NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
   end
 
   private

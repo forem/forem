@@ -8,29 +8,29 @@
 
         <div class="crayons-field">
           <%= admin_config_label :stripe_api_key, "Stripe API key" %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:stripe_api_key][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:stripe_api_key][:description] %>
           <%= f.text_field :stripe_api_key,
                            class: "crayons-textfield",
                            value: Settings::General.stripe_api_key,
-                           placeholder: Constants::Settings::General::DETAILS[:stripe_api_key][:placeholder] %>
+                           placeholder: Constants::Settings::General.details[:stripe_api_key][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :stripe_publishable_key %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:stripe_publishable_key][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:stripe_publishable_key][:description] %>
           <%= f.text_field :stripe_publishable_key,
                            class: "crayons-textfield",
                            value: Settings::General.stripe_publishable_key,
-                           placeholder: Constants::Settings::General::DETAILS[:stripe_publishable_key][:placeholder] %>
+                           placeholder: Constants::Settings::General.details[:stripe_publishable_key][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :payment_pointer %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:payment_pointer][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:payment_pointer][:description] %>
           <%= f.text_field :payment_pointer,
                            class: "crayons-textfield",
                            value: Settings::General.payment_pointer,
-                           placeholder: Constants::Settings::General::DETAILS[:payment_pointer][:placeholder] %>
+                           placeholder: Constants::Settings::General.details[:payment_pointer][:placeholder] %>
         </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>

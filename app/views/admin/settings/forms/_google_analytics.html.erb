@@ -7,7 +7,7 @@
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :ga_tracking_id, "View ID" %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:ga_tracking_id][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:ga_tracking_id][:description] %>
           <%= f.text_field :ga_tracking_id,
                            class: "crayons-textfield",
                            value: Settings::General.ga_tracking_id %>
