@@ -11,6 +11,21 @@ import CogIcon from '@images/cog.svg';
  * @param {Function} props.onSaveDraft Callback for when the post draft is saved
  * @param {Function} props.onConfigChange Callback for when the config options have changed
  */
+
+function toISOStringLocal(datetime) {
+  const month = (datetime.getMonth() + 1).toString().padStart(2, '0');
+  const day = datetime.getDate().toString().padStart(2, '0');
+  return [
+    datetime.getFullYear(),
+    '-',
+    month,
+    '-',
+    day,
+    'T',
+    datetime.toLocaleTimeString(),
+  ].join('');
+}
+
 export const Options = ({
   passedData: {
     published = false,
@@ -26,17 +41,9 @@ export const Options = ({
   let publishedField = '';
   let existingSeries = '';
   const publishedDate = new Date(publishedAt);
-  const month = (publishedDate.getMonth() + 1).toString().padStart(2, '0');
-  const day = publishedDate.getDate().toString().padStart(2, '0');
-  const localPublishedAt = [
-    publishedDate.getFullYear(),
-    '-',
-    month,
-    '-',
-    day,
-    'T',
-    publishedDate.toLocaleTimeString(),
-  ].join('');
+
+  const localPublishedAt = toISOStringLocal(publishedDate);
+  const minPublishedAt = toISOStringLocal(new Date());
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name, index) => {
@@ -122,6 +129,7 @@ export const Options = ({
           </label>
           <input
             type="datetime-local"
+            min={minPublishedAt}
             value={localPublishedAt} // "2022-04-28T15:00:00"
             className="crayons-textfield"
             name="publishedAt"
