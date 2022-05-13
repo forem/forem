@@ -124,7 +124,7 @@ describe('Adjust post tags', () => {
       cy.fixture('users/adminUser.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article');
+        cy.loginAndVisit(user, '/to_be_moderated_user/tag-test-article');
       });
     });
 
