@@ -69,7 +69,9 @@ describe('Moderation Tools for Posts', () => {
             .pipe(click)
             .should('have.attr', 'aria-expanded', 'true');
 
-          cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
+          cy.findByRole('button', {
+            name: '#tagtomoderate Remove tag',
+          }).click();
           cy.findByRole('button', { name: 'Submit' }).click();
         });
 

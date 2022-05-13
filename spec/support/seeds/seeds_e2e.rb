@@ -461,7 +461,7 @@ seeder.create_if_doesnt_exist(User, "email", "to_be_moderated_user@forem.local")
     markdown = <<~MARKDOWN
       ---
       title:  Moderate article
-      tags: tag1
+      tags: tagtomoderate
       published: true
       ---
       #{Faker::Hipster.paragraph(sentence_count: 2)}
