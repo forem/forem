@@ -20,4 +20,6 @@ Rails.application.config.assets.paths << Rails.root.join("app/assets/xml")
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 Rails.application.config.assets.precompile += %w[markdown-it.min.js markdownlint-browser.min.js]
-# Rails.application.config.assets.precompile += %w( admin.js admin.css )
+Rails.application.config.assets.precompile += %w[jquery-3.5.1.slim.js jquery-3.6.0.min.js]
+Rails.application.config.assets.precompile += %w[bootstrap-4.5.3.min.js bootstrap-4.5.3.min.css]
+Rails.application.config.assets.precompile += %w[iframeResizer.contentWindow-4.1.1.min.js]
