@@ -32,6 +32,7 @@ Profile.refresh_attributes!
 # extract generated attribute names
 work_attr = ProfileField.find_by(label: "Work").attribute_name
 education_attr = ProfileField.find_by(label: "Education").attribute_name
+
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
@@ -68,6 +69,24 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
 end
 
 admin_user = User.find_by(email: "admin@forem.local")
+
+##############################################################################
+
+seeder.create_if_none(Tag) do
+  tags = %w[tag1 tag2]
+
+  tags.each do |tagname|
+    Tag.create!(
+      name: tagname,
+      bg_color_hex: "#672c99",
+      text_color_hex: Faker::Color.hex_color,
+      supported: true,
+    )
+  end
+end
+
+# Show the tag in the sidebar
+Settings::General.sidebar_tags = %i[tag1]
 
 ##############################################################################
 
@@ -750,26 +769,6 @@ seeder.create_if_none(Listing) do
     tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
   )
 end
-
-##############################################################################
-
-seeder.create_if_none(Tag) do
-  tags = %w[tag1 tag2]
-
-  tags.each do |tagname|
-    tag = Tag.create!(
-      name: tagname,
-      bg_color_hex: "#672c99",
-      text_color_hex: Faker::Color.hex_color,
-      supported: true,
-    )
-
-    admin_user.add_role(:tag_moderator, tag)
-  end
-end
-
-# Show the tag in the sidebar
-Settings::General.sidebar_tags = %i[tag1]
 
 ##############################################################################
 
