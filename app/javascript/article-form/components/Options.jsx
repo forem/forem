@@ -41,9 +41,12 @@ export const Options = ({
   let publishedField = '';
   let existingSeries = '';
   const publishedDate = new Date(publishedAt);
+  const currentDate = new Date();
 
   const localPublishedAt = toISOStringLocal(publishedDate);
-  const minPublishedAt = toISOStringLocal(new Date());
+  const minPublishedAt = toISOStringLocal(currentDate);
+
+  const readonlyPublishedAt = published && publishedDate < currentDate;
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name, index) => {
@@ -131,6 +134,7 @@ export const Options = ({
             type="datetime-local"
             min={minPublishedAt}
             value={localPublishedAt} // "2022-04-28T15:00:00"
+            readonly={readonlyPublishedAt}
             className="crayons-textfield"
             name="publishedAt"
             onKeyUp={onConfigChange}
