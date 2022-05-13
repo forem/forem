@@ -497,8 +497,6 @@ seeder.create_if_doesnt_exist(User, "email", "to_be_moderated_user@forem.local")
   end
 end
 
-to_be_moderated_user = User.find_by(email: "to_be_moderated_user@forem.local")
-
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "liquid-tags-user@forem.local") do
@@ -790,7 +788,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
     body_markdown: markdown,
     featured: true,
     show_comments: true,
-    user_id: to_be_moderated_user.id,
+    user_id: admin_user.id,
     slug: "tag-test-article",
   )
 end
