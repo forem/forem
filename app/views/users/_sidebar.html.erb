@@ -36,7 +36,7 @@
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-3">
-            <%= sanitized_sidebar t("views.users.profile_fields.#{title}", default: title.titleize) %>
+            <%= sanitized_sidebar t("views.users.profile_fields.#{title.downcase}", default: title.titleize) %>
           </h3>
         </header>
 
