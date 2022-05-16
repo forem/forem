@@ -49,7 +49,6 @@ module Admin
     end
 
     def handle_publish_status
-      @listing = Listing.find(params[:id])
       @listing.unpublish if listing_params[:published] == "0"
       @listing.publish if listing_params[:published] == "1"
     end
