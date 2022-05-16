@@ -155,8 +155,6 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
-  # @see https://github.com/forem/forem/blob/841491c6ee7f9a46d8033b4b55052316db251863/app/javascript/packs/articleModerationTools.js#L17-L27
-  #      for details regarding original authorization logic for this method.
   def moderate?
     # Technically, we could check the limit_post_creation_to_admins? first, but [@jeremyf]'s
     # operating on a "trying to maintain consistency" approach.
@@ -164,8 +162,7 @@ class ArticlePolicy < ApplicationPolicy
 
     return false if self.class.limit_post_creation_to_admins?
 
-    # Don't let a user moderate their own article.  See for prior UI logic reinforcing this
-    # https://github.com/forem/forem/blob/841491c6ee7f9a46d8033b4b55052316db251863/app/javascript/packs/articleModerationTools.js#L17-L27
+    # <2022-05-09 Mon> Don't let a user moderate their own article; though this may not be the desired behavior.
     return false if user_author?
 
     # Beware a trusted user does not guarantee that they are an admin.  And more specifically, being
@@ -200,11 +197,10 @@ class ArticlePolicy < ApplicationPolicy
   private
 
   def user_author?
-    if record.instance_of?(Article)
-      record.user_id == user.id
-    else
-      record.pluck(:user_id).uniq == [user.id]
-    end
+    # We might have the Article class (instead of the Article instance), so let's short circuit
+    return false unless record.respond_to?(:user_id)
+
+    record.user_id == user.id
   end
 
   def user_org_admin?

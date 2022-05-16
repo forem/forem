@@ -23,7 +23,7 @@ gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cloudinary", "~> 1.23" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 1.0.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.54.2", require: "ddtrace/auto_instrument" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.6" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -37,7 +37,7 @@ gem "flipper", "~> 0.24.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.24.1" # Store Flipper flags in ActiveRecord
 gem "flipper-active_support_cache_store", "~> 0.24.1" # Cache feature flags for a short time
 gem "flipper-ui", "~> 0.24.1"
-gem "fog-aws", "~> 3.13" # 'fog' gem to support Amazon Web Services
+gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
@@ -79,7 +79,7 @@ gem "rack-attack", "~> 6.6.1" # Used to throttle requests to prevent brute force
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.2.2" # Ruby on Rails
-gem "ransack", "~> 3.1" # Searching and sorting
+gem "ransack", "~> 3.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 
@@ -107,7 +107,7 @@ gem "strong_migrations", "~> 1.0" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
-gem "vault", "~> 0.16" # Used to store secrets
+gem "vault", "~> 0.17" # Used to store secrets
 gem "warning", "~> 1.2" # Adds custom processing for warnings, including the ability to ignore specific warning messages
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails

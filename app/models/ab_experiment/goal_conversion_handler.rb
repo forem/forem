@@ -12,6 +12,7 @@ class AbExperiment
     USER_PUBLISHES_POST_GOAL = "user_publishes_post".freeze
     USER_CREATES_PAGEVIEW_GOAL = "user_creates_pageview".freeze
     USER_CREATES_COMMENT_GOAL = "user_creates_comment".freeze
+    USER_CREATES_ARTICLE_REACTION_GOAL = "user_creates_article_reaction".freeze
 
     def self.call(...)
       new(...).call
@@ -49,6 +50,8 @@ class AbExperiment
         convert_comment_goal(experiment: experiment, experiment_start_date: experiment_start_date)
       when USER_PUBLISHES_POST_GOAL
         convert_post_goal(experiment: experiment, experiment_start_date: experiment_start_date)
+      when USER_CREATES_ARTICLE_REACTION_GOAL
+        convert_reaction_goal(experiment: experiment, experiment_start_date: experiment_start_date)
       else
         field_test_converted(experiment, participant: user, goal: goal) # base single comment goal.
       end
@@ -88,6 +91,11 @@ class AbExperiment
 
     def convert_post_goal(experiment:, experiment_start_date:)
       field_test_converted(experiment, participant: user, goal: goal) # base is we created a post
+      post_goal_with_group(experiment,
+                           [7.days.ago, experiment_start_date].max,
+                           "DATE(published_at)",
+                           4,
+                           "user_publishes_post_on_four_different_days_within_a_week")
       post_goal(experiment,
                 [7.days.ago, experiment_start_date].max,
                 2,
@@ -96,6 +104,15 @@ class AbExperiment
                 [14.days.ago, experiment_start_date].max,
                 2,
                 "user_publishes_post_at_least_two_times_within_two_weeks")
+    end
+
+    def convert_reaction_goal(experiment:, experiment_start_date:)
+      field_test_converted(experiment, participant: user, goal: goal) # base is we created a post
+      reaction_goal(experiment,
+                    [7.days.ago, experiment_start_date].max,
+                    "DATE(created_at)",
+                    4,
+                    "user_creates_article_reaction_on_four_different_days_within_a_week")
     end
 
     def pageview_goal(experiment, time_start, group_value, min_count, goal)
@@ -113,11 +130,30 @@ class AbExperiment
       field_test_converted(experiment, participant: user, goal: goal)
     end
 
+    def post_goal_with_group(experiment, time_start, group_value, min_count, goal)
+      post_publication_counts = user.articles.published.where("published_at > ?", time_start)
+        .group(group_value).count.values
+      return unless post_publication_counts.size >= min_count
+
+      field_test_converted(experiment, participant: user, goal: goal)
+    end
+
     def comment_goal(experiment, time_start, group_value, min_count, goal)
       comment_counts = user.comments.where("created_at > ?", time_start)
         .group(group_value).count.values
       comment_counts.delete(0)
       return unless comment_counts.size >= min_count
+
+      field_test_converted(experiment, participant: user, goal: goal)
+    end
+
+    def reaction_goal(experiment, time_start, group_value, min_count, goal)
+      reaction_counts = user.reactions
+        .only_articles # as per `Reaction#record_field_test_event` we only record reactions to articles
+        .public_category # as per `Reaction#record_field_test_event` we only record public category reactions
+        .where("created_at > ?", time_start)
+        .group(group_value).count.values
+      return unless reaction_counts.size >= min_count
 
       field_test_converted(experiment, participant: user, goal: goal)
     end

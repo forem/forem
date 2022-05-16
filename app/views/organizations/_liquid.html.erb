@@ -1,11 +1,4 @@
 <div class="<%= "ltag__user ltag__user__id__#{organization.id}" %>" style="<%= "border-color:#{organization.darker_color};box-shadow: 3px 3px 0px #{organization.darker_color};" %>">
-  <style>
-    .ltag__user__id__<%= organization.id %> .follow-action-button {
-      background-color: <%= organization_colors[:bg] %> !important;
-      color: <%= organization_colors[:text] %> !important;
-      border-color: <%= organization_colors[:bg].casecmp("#ffffff").zero? ? organization_colors[:text] : organization_colors[:bg] %> !important;
-    }
-  </style>
   <a href="<%= organization.path %>" class="ltag__user__link profile-image-link">
     <div class="ltag__user__pic">
       <img src="<%= organization.profile_image_url_for(length: 150) %>" alt="<%= "#{organization.slug} image" %>" />
@@ -14,7 +7,7 @@
   <div class="ltag__user__content">
     <h2>
       <a href="/<%= organization.slug %>" class="ltag__user__link"><%= organization.name %></a>
-      <%= follow_button(organization) %>
+      <%= follow_button(organization, "full", "c-btn--secondary fs-base") %>
     </h2>
     <div class="ltag__user__summary">
       <a href="/<%= organization.slug %>" class="ltag__user__link">
