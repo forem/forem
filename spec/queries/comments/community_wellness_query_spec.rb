@@ -49,10 +49,14 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
       weeks_ago_array = result[index6]["serialized_weeks_ago"].split(",")
       comment_counts_array = result[index6]["serialized_comment_counts"].split(",")
 
+      post_rollout_comments = user6.comments.where("created_at > ?", "2022-05-01").order(created_at: :asc)
+      oldest_comment_date_post_rollout = post_rollout_comments.first.created_at
+
       # If `1.34` weeks have passed we should get no more than 2 weeks in the
       # result arrays because of the `limit_release_date_sql_query`. That's what
       # is being calculated here and stored in `expected_weeks`
-      expected_weeks = ((Time.current - Time.zone.parse("2022-05-01")) / 7.days).ceil
+      expected_weeks = ((Time.current - oldest_comment_date_post_rollout) / 7.days).ceil
+
       expect(weeks_ago_array.count).to eq(expected_weeks)
       expect(comment_counts_array.count).to eq(expected_weeks)
     end
