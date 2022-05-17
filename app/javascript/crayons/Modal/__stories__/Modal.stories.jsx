@@ -45,6 +45,13 @@ export default {
         defaultValue: { summary: true },
       },
     },
+    showHeader: {
+      description:
+        'Whether or not to display the standard header (with title and close button). If `false`, make sure to provide an alternative close button.',
+      table: {
+        defaultValue: { summary: true },
+      },
+    },
     backdropDismissible: {
       description:
         'If `backdrop` is visible you can also make it clickable so clicking it would dismiss the Modal',
@@ -110,6 +117,11 @@ const Template = (args) => {
               </p>
             )}
           </div>
+          {!args.showHeader && (
+            <Button variant="primary" onClick={() => setIsModalOpen(false)}>
+              OK
+            </Button>
+          )}
         </Modal>
       )}
     </div>
@@ -125,6 +137,7 @@ Default.args = {
   prompt: false,
   centered: false,
   sheet: false,
+  showHeader: true,
 };
 
 export const Prompt = Template.bind({});
@@ -137,6 +150,7 @@ Prompt.args = {
   prompt: true,
   centered: false,
   sheet: false,
+  showHeader: true,
 };
 
 export const PromptCentered = Template.bind({});
@@ -149,6 +163,7 @@ PromptCentered.args = {
   prompt: true,
   centered: true,
   sheet: false,
+  showHeader: true,
 };
 
 export const Sheet = Template.bind({});
@@ -160,6 +175,7 @@ Sheet.args = {
   prompt: false,
   centered: false,
   sheet: true,
+  showHeader: true,
 };
 
 export const SheetLeftAligned = Template.bind({});
@@ -172,6 +188,7 @@ SheetLeftAligned.args = {
   centered: false,
   sheet: true,
   sheetAlign: 'left',
+  showHeader: true,
 };
 
 export const SheetRightAligned = Template.bind({});
@@ -184,6 +201,7 @@ SheetRightAligned.args = {
   centered: false,
   sheet: true,
   sheetAlign: 'right',
+  showHeader: true,
 };
 
 export const BackdropDismissible = Template.bind({});
@@ -195,6 +213,7 @@ BackdropDismissible.args = {
   prompt: false,
   centered: false,
   sheet: false,
+  showHeader: true,
 };
 
 export const NoBackdrop = Template.bind({});
@@ -206,4 +225,17 @@ NoBackdrop.args = {
   prompt: false,
   centered: false,
   sheet: false,
+  showHeader: true,
+};
+
+export const NoHeader = Template.bind({});
+NoHeader.args = {
+  size: undefined,
+  title: 'Modal title',
+  noBackdrop: false,
+  backdropDismissible: false,
+  prompt: false,
+  centered: false,
+  sheet: false,
+  showHeader: false,
 };
