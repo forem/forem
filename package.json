@@ -124,7 +124,7 @@
     "classnames": "^2.3.1",
     "core-js": "3",
     "file-loader": "^6.2.0",
-    "focus-trap": "^6.9.1",
+    "focus-trap": "^6.9.2",
     "focus-visible": "^5.2.0",
     "freezeframe": "^5.0.2",
     "he": "^1.2.0",
