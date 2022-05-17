@@ -57,7 +57,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
-    "@testing-library/user-event": "^14.1.1",
+    "@testing-library/user-event": "^14.2.0",
     "@whitespace/storybook-addon-html": "^5.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^28.1.0",
