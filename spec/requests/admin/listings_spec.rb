@@ -40,14 +40,14 @@ RSpec.describe "/admin/apps/listings", type: :request do
     end
 
     context "when attempting to publish" do
-      let!(:listing) { create(:listing, published: true) }
+      let!(:listing) { create(:listing, published: false) }
 
       it "publishes the listing" do
         expect do
           put admin_listing_path(id: listing.id), params: {
-            listing: { published: "0" }
+            listing: { published: "1" }
           }
-        end.to change { listing.reload.published? }.from(true).to(false)
+        end.to change { listing.reload.published? }.from(false).to(true)
       end
     end
 
