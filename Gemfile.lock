@@ -432,7 +432,7 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       sass (>= 3.2)
-    js-routes (2.2.3)
+    js-routes (2.2.4)
       railties (>= 4)
     json (2.6.1)
     jsonapi-serializer (2.2.0)
