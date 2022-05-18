@@ -8,6 +8,10 @@ export const GithubRepos = () => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  useEffect(() => {
+    getGithubRepos();
+  }, []);
+
   const getGithubRepos = async () => {
     try {
       const response = await request('/github_repos');
@@ -23,10 +27,6 @@ export const GithubRepos = () => {
       setErrorMessage(error.toString());
     }
   };
-
-  useEffect(() => {
-    getGithubRepos();
-  }, []);
 
   if (error) {
     return (
