@@ -148,7 +148,7 @@ group :development, :test do
   gem "rubocop", "~> 1.29", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.13", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.14", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.10", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.11", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
 end
 
