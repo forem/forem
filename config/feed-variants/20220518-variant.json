@@ -1,0 +1,109 @@
+{
+  "max_days_since_published": 15,
+  "order_by": "relevancy_score_and_publication_date",
+  "levers": {
+    "daily_decay": {
+      "cases": [
+        [0, 1],
+        [1, 0.975],
+        [2, 0.965],
+        [3, 0.955],
+        [4, 0.945],
+        [5, 0.935],
+        [6, 0.925],
+        [7, 0.922],
+        [8, 0.919],
+        [9, 0.916],
+        [10, 0.913],
+        [11, 0.91],
+        [12, 0.907],
+        [13, 0.904],
+        [14, 0.901]
+      ],
+      "fallback": 0.9
+    },
+    "comments_count_by_those_followed": {
+      "cases": [
+        [0, 0.95],
+        [1, 0.98],
+        [2, 0.99]
+      ],
+      "fallback": 0.93
+    },
+    "comments_count": {
+      "cases": [
+        [0, 0.8],
+        [1, 0.82],
+        [2, 0.84],
+        [3, 0.86],
+        [4, 0.88],
+        [5, 0.9],
+        [6, 0.92],
+        [7, 0.94],
+        [8, 0.96],
+        [9, 0.98]
+      ],
+      "fallback": 1
+    },
+    "featured_article": { "cases": [[1, 1]], "fallback": 0.85 },
+    "following_author": {
+      "cases": [
+        [1, 1],
+        [1, 1]
+      ],
+      "fallback": 1
+    },
+    "following_org": {
+      "cases": [
+        [1, 1],
+        [1, 1]
+      ],
+      "fallback": 1
+    },
+    "latest_comment": {
+      "cases": [
+        [0, 1],
+        [1, 0.9988]
+      ],
+      "fallback": 0.988
+    },
+    "matching_negative_tags_intersection_count": {
+      "cases": [
+        [0, 1],
+        [1, 0.5],
+        [2, 0.4],
+        [3, 0.3],
+        [4, 0.2]
+      ],
+      "fallback": 0
+    },
+    "matching_positive_tags_intersection_count": {
+      "cases": [
+        [0, 0.7],
+        [1, 0.85],
+        [2, 0.9],
+        [3, 0.95],
+        [4, 1]
+      ],
+      "fallback": 1
+    },
+    "privileged_user_reaction": {
+      "cases": [
+        [-1, 0.2],
+        [1, 1]
+      ],
+      "fallback": 0.95,
+      "negative_reaction_threshold": -10,
+      "positive_reaction_threshold": 10
+    },
+    "public_reactions": {
+      "cases": [
+        [0, 0.9988],
+        [1, 0.9988],
+        [2, 0.9988],
+        [3, 0.9988]
+      ],
+      "fallback": 1
+    }
+  }
+}
