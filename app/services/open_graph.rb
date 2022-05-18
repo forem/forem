@@ -48,6 +48,7 @@ class OpenGraph
   end
 
   def main_properties
+    # QUESTION: If we don't have `og:url` could we infer the url based on what was passed?
     %w[og:title og:url]
   end
 

@@ -58,6 +58,11 @@ class AbExperiment
     end
 
     def convert_pageview_goal(experiment:, experiment_start_date:)
+      # TODO: Remove once we know that this test is not over-heating the application.  That would be a
+      # few days after the deploy to DEV of this change.
+      if FeatureFlag.accessible?(:field_test_event_single_create_pageview)
+        field_test_converted(experiment, participant: user, goal: goal) # base is someone viewed a page
+      end
       pageview_goal(experiment,
                     [7.days.ago, experiment_start_date].max,
                     "DATE(created_at)",

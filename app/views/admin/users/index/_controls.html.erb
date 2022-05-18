@@ -38,6 +38,9 @@
     <div class="flex">
       <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "medium" %>
       <%= render "admin/users/controls/export" %>
+      <% if FeatureFlag.enabled?(:member_index_view) %>
+        <button aria-label="Filter" class="js-open-filter-modal-btn c-btn c-btn--icon-alone"><%= crayons_icon_tag("filter", aria_hidden: true) %></button>
+      <% end %>
     </div>
 
   </div>
