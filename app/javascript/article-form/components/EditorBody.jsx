@@ -13,7 +13,7 @@ import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
 // import { MentionAutocompleteTextArea } from '@crayons/MentionAutocompleteTextArea';
-import { AutocompleteTriggerTextArea } from '../../crayons/MentionAutocompleteTextArea/NewMentionAutocompleteTextArea';
+import { AutocompleteTriggerTextArea } from '@crayons/MentionAutocompleteTextArea/AutocompleteTriggerTextArea';
 
 function handleImageSuccess(textAreaRef) {
   return function (response) {

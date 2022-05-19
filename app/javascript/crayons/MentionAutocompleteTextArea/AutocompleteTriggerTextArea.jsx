@@ -1,7 +1,6 @@
 import { h } from 'preact';
 import { useRef, useLayoutEffect, useReducer } from 'preact/hooks';
 import { forwardRef } from 'preact/compat';
-// TODO: let this be passed in as a template like multi
 import { UserListItemContent } from './UserListItemContent';
 import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 
@@ -24,9 +23,41 @@ const KEYS = {
   ESCAPE: 'Escape',
 };
 
-// TODO: Use case 1: No existing text area e.g. EditorBody
+// TODO: Use case 2: replacing a text area - e.g. comment area
 // Future - Refactor of UserListItemContent props / pass in as template
-// Popover CSS in Safari missing styles
+
+/**
+ * Helper function to copy all styles and attributes from the original textarea to the new autocomplete one
+ *
+ * @param {object} options
+ * @param {element} options.originalTextArea The textarea DOM element that should be replaced/removed
+ * @param {element} options.newTextArea The textarea DOM element containing the autocomplete functionality. It will receive all attributes and styles of the original node.
+ */
+const replaceTextArea = ({ originalTextArea, newTextArea }) => {
+  const { attributes } = originalTextArea;
+  const { cssText } = document.defaultView.getComputedStyle(
+    originalTextArea,
+    '',
+  );
+
+  // Make sure all attributes are copied to the autocomplete & plain textareas
+  Object.keys(attributes).forEach((attributeKey) => {
+    newTextArea.setAttribute(
+      attributes[attributeKey].name,
+      attributes[attributeKey].value,
+    );
+  });
+
+  // Make sure all styles are copied to the autocomplete & plain textareas
+  newTextArea.style.cssText = cssText;
+  // Make sure no transition replays when the new textareas are mounted
+  newTextArea.style.transition = 'none';
+  // Copy any initial value
+  newTextArea.value = originalTextArea.value;
+
+  // We need to manually remove the original element, as Preact's diffing algorithm won't replace it in render
+  originalTextArea.remove();
+};
 
 /**
  * Helper function to merge any additional ref passed to the textArea with the ref used internally by this component.
@@ -80,6 +111,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
       onBlur,
       fetchSuggestions,
       searchInstructionsMessage,
+      replaceElement,
       ...inputProps
     },
     forwardedRef,
@@ -121,8 +153,21 @@ export const AutocompleteTriggerTextArea = forwardRef(
       }
     }, [autoResize, setTextArea]);
 
+    useLayoutEffect(() => {
+      const { current: enhancedTextArea } = inputRef;
+
+      if (enhancedTextArea && replaceElement) {
+        replaceTextArea({
+          originalTextArea: replaceElement,
+          newTextArea: enhancedTextArea,
+        });
+        enhancedTextArea.focus({ preventScroll: true });
+      }
+    }, [replaceElement]);
+
     const handleInputChange = () => {
       const { current: currentInput } = inputRef;
+
       const {
         isTriggered: isSearching,
         indexOfAutocompleteStart: indexOfSearchStart,
