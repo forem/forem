@@ -755,7 +755,7 @@ GEM
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.7.0, < 2.0)
-    rubocop-rspec (2.11.0)
+    rubocop-rspec (2.11.1)
       rubocop (~> 1.19)
     ruby-next-core (0.12.0)
     ruby-prof (1.4.3)
