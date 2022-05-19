@@ -25,8 +25,8 @@ const KEYS = {
 };
 
 // TODO: Use case 1: No existing text area e.g. EditorBody
-// Test with VoiceOver
-// Refactor of UserListItemContent props / pass in as template
+// Future - Refactor of UserListItemContent props / pass in as template
+// Popover CSS in Safari missing styles
 
 /**
  * Helper function to merge any additional ref passed to the textArea with the ref used internally by this component.
@@ -293,7 +293,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
       ? {
           role: 'combobox',
           'aria-haspopup': 'listbox',
-          'aria-expanded': suggestions.length > 0,
+          'aria-expanded': isComboboxMode,
           'aria-owns': `${id}-listbox`,
         }
       : {};
@@ -303,6 +303,10 @@ export const AutocompleteTriggerTextArea = forwardRef(
         ref={wrapperRef}
         className={`c-autocomplete relative${autoResize ? ' h-100' : ''}`}
       >
+        <span className="screen-reader-only" aria-live="polite">
+          {isComboboxMode ? searchInstructionsMessage : ''}
+        </span>
+
         <textarea
           {...inputProps}
           {...comboboxProps}
