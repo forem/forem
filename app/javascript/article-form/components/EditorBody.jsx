@@ -12,7 +12,6 @@ import {
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
-// import { MentionAutocompleteTextArea } from '@crayons/MentionAutocompleteTextArea';
 import { AutocompleteTriggerTextArea } from '@crayons/MentionAutocompleteTextArea/AutocompleteTriggerTextArea';
 
 function handleImageSuccess(textAreaRef) {
@@ -72,7 +71,7 @@ export const EditorBody = ({
   return (
     <div
       data-testid="article-form__body"
-      className="crayons-article-form__body drop-area text-padding"
+      className="crayons-article-form__body drop-area text-padding h-100"
     >
       <Toolbar version={version} textAreaId="article_body_markdown" />
       <AutocompleteTriggerTextArea

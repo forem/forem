@@ -29,8 +29,9 @@ export const getCursorXY = ({
   // create a dummy element with the computed style of the input
   const div = document.createElement('div');
   const copyStyle = getComputedStyle(input);
-  for (const prop of copyStyle) {
-    div.style[prop] = copyStyle[prop];
+
+  for (const property of Object.values(copyStyle)) {
+    div.style.setProperty(property, copyStyle.getPropertyValue(property));
   }
 
   // set the div to the correct position

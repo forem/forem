@@ -23,7 +23,10 @@ const KEYS = {
   ESCAPE: 'Escape',
 };
 
-// TODO: Use case 2: replacing a text area - e.g. comment area
+// TODO:
+// editor body should be expanding to fit this text area
+// All the testing
+// Rip out old version & its CSS
 // Future - Refactor of UserListItemContent props / pass in as template
 
 /**
@@ -40,7 +43,7 @@ const replaceTextArea = ({ originalTextArea, newTextArea }) => {
     '',
   );
 
-  // Make sure all attributes are copied to the autocomplete & plain textareas
+  // Make sure all attributes are copied over
   Object.keys(attributes).forEach((attributeKey) => {
     newTextArea.setAttribute(
       attributes[attributeKey].name,
@@ -48,9 +51,9 @@ const replaceTextArea = ({ originalTextArea, newTextArea }) => {
     );
   });
 
-  // Make sure all styles are copied to the autocomplete & plain textareas
+  // Make sure all styles are copied over
   newTextArea.style.cssText = cssText;
-  // Make sure no transition replays when the new textareas are mounted
+  // Make sure no transition replays when the new textarea is mounted
   newTextArea.style.transition = 'none';
   // Copy any initial value
   newTextArea.value = originalTextArea.value;
@@ -145,13 +148,14 @@ export const AutocompleteTriggerTextArea = forwardRef(
     const popoverRef = useRef(null);
     const wrapperRef = useRef(null);
 
-    const { setTextArea } = useTextAreaAutoResize();
+    const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
 
     useLayoutEffect(() => {
       if (autoResize && inputRef.current) {
         setTextArea(inputRef.current);
+        setAdditionalElements([wrapperRef.current]);
       }
-    }, [autoResize, setTextArea]);
+    }, [autoResize, setTextArea, setAdditionalElements]);
 
     useLayoutEffect(() => {
       const { current: enhancedTextArea } = inputRef;

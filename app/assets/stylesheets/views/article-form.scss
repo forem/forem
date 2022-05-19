@@ -72,6 +72,7 @@
   }
 
   &__content {
+    overflow: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
     );
