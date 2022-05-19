@@ -1,9 +1,11 @@
 import { h } from 'preact';
 import { render, waitFor } from '@testing-library/preact';
-import '@testing-library/jest-dom';
-import { MentionAutocompleteTextArea } from '../MentionAutocompleteTextArea';
+import userEvent from '@testing-library/user-event';
 
-describe('<MentionAutocompleteTextArea />', () => {
+import '@testing-library/jest-dom';
+import { AutocompleteTriggerTextArea } from '../AutocompleteTriggerTextArea';
+
+describe('<AutocompleteTriggerTextArea />', () => {
   const textArea = document.createElement('textarea');
   textArea.setAttribute('aria-label', 'test text area');
   textArea.setAttribute('id', 'test-text-area');
@@ -24,9 +26,23 @@ describe('<MentionAutocompleteTextArea />', () => {
     document.body.appendChild(textArea);
   });
 
-  it('should render', () => {
+  it('should render when not replacing an element', () => {
     const { container } = render(
-      <MentionAutocompleteTextArea
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
+        fetchSuggestions={async () => ({ result: [] })}
+      />,
+    );
+
+    expect(container.innerHTML).toMatchSnapshot();
+  });
+
+  it('should render when replacing an element', () => {
+    const { container } = render(
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
         replaceElement={textArea}
         fetchSuggestions={async () => ({ result: [] })}
       />,
@@ -35,25 +51,77 @@ describe('<MentionAutocompleteTextArea />', () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 
-  it('should replace the given textarea with a hidden combobox and a plain textarea', () => {
-    const { getByRole } = render(
-      <MentionAutocompleteTextArea
-        replaceElement={textArea}
+  it('should switch to combobox role when trigger character is typed', async () => {
+    const { queryByRole, getByRole } = render(
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
         fetchSuggestions={async () => ({ result: [] })}
+        aria-label="Example text area"
       />,
     );
 
-    const combobox = getByRole('combobox');
+    expect(queryByRole('combobox')).not.toBeInTheDocument();
+    userEvent.type(getByRole('textbox', { name: 'Example text area' }), '@');
 
-    waitFor(() => expect(combobox).not.toBeVisible());
-    expect(combobox.id).toEqual('test-text-area');
-    expect(combobox.value).toEqual('some text');
-    expect(combobox.getAttribute('aria-label')).toEqual('test text area');
+    await waitFor(() => expect(getByRole('combobox')).toBeInTheDocument());
+  });
 
-    const textarea = getByRole('textbox');
-    expect(textarea).toBeVisible();
-    expect(textarea.id).toEqual('test-text-area');
-    expect(textarea.value).toEqual('some text');
-    expect(textarea.getAttribute('aria-label')).toEqual('test text area');
+  it('should exit combobox mode and insert username when a selection is made', async () => {
+    const { queryByRole, getByRole } = render(
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
+        fetchSuggestions={async () => [{ name: 'option1', value: 'option1' }]}
+        aria-label="Example text area"
+      />,
+    );
+
+    expect(queryByRole('combobox')).not.toBeInTheDocument();
+    userEvent.type(getByRole('textbox', { name: 'Example text area' }), '@op');
+
+    await waitFor(() => expect(getByRole('option')).toBeInTheDocument());
+    getByRole('option').click();
+
+    await waitFor(() =>
+      expect(queryByRole('combobox')).not.toBeInTheDocument(),
+    );
+    expect(getByRole('textbox', { name: 'Example text area' })).toHaveValue(
+      '@option1 ',
+    );
+  });
+
+  it('should hide the pop-up options when Escape is pressed', async () => {
+    const { queryByRole, getByRole } = render(
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
+        fetchSuggestions={async () => [{ name: 'option1', value: 'option1' }]}
+        aria-label="Example text area"
+      />,
+    );
+
+    expect(queryByRole('combobox')).not.toBeInTheDocument();
+    userEvent.type(getByRole('textbox', { name: 'Example text area' }), '@op');
+
+    await waitFor(() => expect(getByRole('option')).toBeInTheDocument());
+
+    userEvent.type(
+      getByRole('combobox', { name: 'Example text area' }),
+      '{Escape}',
+    );
+    await waitFor(() => expect(queryByRole('option')).not.toBeInTheDocument());
+  });
+
+  it('should replace the given textarea', () => {
+    const { getAllByRole } = render(
+      <AutocompleteTriggerTextArea
+        replaceElement={textArea}
+        fetchSuggestions={async () => []}
+      />,
+    );
+
+    // We should still have the same number of textareas on the page
+    expect(getAllByRole('textbox')).toHaveLength(1);
   });
 });
