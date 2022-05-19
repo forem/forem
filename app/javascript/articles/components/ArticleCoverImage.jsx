@@ -15,8 +15,10 @@ export const ArticleCoverImage = ({ article }) => {
           width="650"
           height="275"
           alt={article.title}
-          style={{ backgroundColor: `${article.main_image_background_hex_color}` }} />
-        <span class="hidden">{article.title}</span>
+          style={{
+            backgroundColor: `${article.main_image_background_hex_color}`,
+          }}
+        />
       </a>
     </div>
   );

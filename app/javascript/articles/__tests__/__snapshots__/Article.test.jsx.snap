@@ -35,11 +35,6 @@ Object {
                 src="/images/10.png"
                 width="650"
               />
-              <span
-                class="hidden"
-              >
-                Unbranded Home Loan Account
-              </span>
             </a>
           </div>
           <div
@@ -295,11 +290,6 @@ Object {
               src="/images/10.png"
               width="650"
             />
-            <span
-              class="hidden"
-            >
-              Unbranded Home Loan Account
-            </span>
           </a>
         </div>
         <div
