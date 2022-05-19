@@ -20,18 +20,23 @@ Object {
         <div
           role="presentation"
         >
-          <a
-            class="crayons-story__cover"
-            href="/some-post/path"
-            style="background-image: url(/images/10.png);"
-            title="Unbranded Home Loan Account"
+          <div
+            class="crayons-article__cover crayons-article__cover__image__feed"
           >
-            <span
-              class="hidden"
+            <a
+              class="crayons-article__cover__image__feed crayons-story__cover__image"
+              href="/some-post/path"
+              title="Unbranded Home Loan Account"
             >
-              Unbranded Home Loan Account
-            </span>
-          </a>
+              <img
+                alt="Unbranded Home Loan Account"
+                class="crayons-article__cover__image__feed"
+                height="275"
+                src="/images/10.png"
+                width="650"
+              />
+            </a>
+          </div>
           <div
             class="crayons-story__body"
           >
@@ -270,18 +275,23 @@ Object {
       <div
         role="presentation"
       >
-        <a
-          class="crayons-story__cover"
-          href="/some-post/path"
-          style="background-image: url(/images/10.png);"
-          title="Unbranded Home Loan Account"
+        <div
+          class="crayons-article__cover crayons-article__cover__image__feed"
         >
-          <span
-            class="hidden"
+          <a
+            class="crayons-article__cover__image__feed crayons-story__cover__image"
+            href="/some-post/path"
+            title="Unbranded Home Loan Account"
           >
-            Unbranded Home Loan Account
-          </span>
-        </a>
+            <img
+              alt="Unbranded Home Loan Account"
+              class="crayons-article__cover__image__feed"
+              height="275"
+              src="/images/10.png"
+              width="650"
+            />
+          </a>
+        </div>
         <div
           class="crayons-story__body"
         >

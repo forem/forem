@@ -4,11 +4,11 @@
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
   <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
-    <a href="<%= story.path %>" title="<%= story.title %>" aria-label="article"
-      style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);"
-      class="crayons-story__cover crayons-story__cover__image">
-      <span class="hidden"><%= story.title %></span>
-    </a>
+    <div class="crayons-article__cover crayons-article__cover__image__feed">
+      <a href="<%= story.path %>" title="<%= story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
+        <img src="<%= cloud_cover_url(story.main_image) %>" width="650" height="275" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.title %>">
+      </a>
+    </div>
   <% end %>
 
   <% if story.video.present? && story.video_thumbnail_url.present? %>
