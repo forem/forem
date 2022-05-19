@@ -27,6 +27,7 @@ const KEYS = {
 // TODO: Use case 1: No existing text area e.g. EditorBody
 // Test with VoiceOver
 // Refactor of UserListItemContent props / pass in as template
+// Markdown insertion is broken
 
 /**
  * Helper function to merge any additional ref passed to the textArea with the ref used internally by this component.
@@ -306,6 +307,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
         <textarea
           {...inputProps}
           {...comboboxProps}
+          id={id}
           data-gramm_editor="false"
           ref={mergeInputRefs([inputRef, forwardedRef])}
           onChange={(e) => {
