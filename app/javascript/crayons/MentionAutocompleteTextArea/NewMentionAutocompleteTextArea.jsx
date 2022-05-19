@@ -25,7 +25,6 @@ const KEYS = {
 };
 
 // TODO: Use case 1: No existing text area e.g. EditorBody
-// Exit combobox mode on blur (but make sure blurring when clicking an option still functions OK)
 // Test with VoiceOver
 // Refactor of UserListItemContent props / pass in as template
 
@@ -56,6 +55,8 @@ const reducer = (state, action) => {
       return { ...state, suppressPopover: action.payload };
     case 'setEmptyStateMessage':
       return { ...state, emptyStateMessage: action.payload };
+    case 'setIgnoreBlur':
+      return { ...state, ignoreBlur: action.payload };
     case 'exitComboboxMode':
       return {
         ...state,
@@ -76,6 +77,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
       triggerCharacter,
       autoResize = false,
       onChange,
+      onBlur,
       fetchSuggestions,
       searchInstructionsMessage,
       ...inputProps
@@ -92,6 +94,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
       activeDescendentIndex: null,
       suppressPopover: false,
       emptyStateMessage: searchInstructionsMessage,
+      ignoreBlur: false,
     });
 
     const {
@@ -101,6 +104,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
       activeDescendentIndex,
       suppressPopover,
       emptyStateMessage,
+      ignoreBlur,
     } = state;
 
     const isSmallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Small}px)`);
@@ -227,6 +231,16 @@ export const AutocompleteTriggerTextArea = forwardRef(
       dispatch({ type: 'setSuppressPopover', payload: false });
     };
 
+    // The textarea blurs when an option is clicked from the dropdown suggestions, in which case we don't want to
+    // trigger the behaviour for the user having left the textarea completely, hence the `ignoreBlur` boolean.
+    const handleBlur = () => {
+      if (!ignoreBlur) {
+        dispatch({ type: 'exitComboboxMode' });
+        return;
+      }
+      dispatch({ type: 'setIgnoreBlur', payload: false });
+    };
+
     const selectSuggestion = (suggestion) => {
       const { current: currentInput } = inputRef;
       const { indexOfMentionStart: indexOfSearchStart } =
@@ -298,6 +312,10 @@ export const AutocompleteTriggerTextArea = forwardRef(
             onChange?.(e);
             handleInputChange(e);
           }}
+          onBlur={(e) => {
+            onBlur?.(e);
+            handleBlur();
+          }}
           onKeyDown={handleKeyDown}
         />
         {isComboboxMode && !suppressPopover ? (
@@ -321,6 +339,9 @@ export const AutocompleteTriggerTextArea = forwardRef(
                     aria-selected={index === activeDescendentIndex}
                     className="c-autocomplete__option flex items-center"
                     onClick={() => selectSuggestion(suggestion)}
+                    onMouseDown={() =>
+                      dispatch({ type: 'setIgnoreBlur', payload: true })
+                    }
                   >
                     <UserListItemContent {...suggestion} />
                   </li>
