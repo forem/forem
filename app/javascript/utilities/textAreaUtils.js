@@ -80,11 +80,11 @@ export const getMentionWordData = () => {};
  * A helper function that searches back to the beginning of the currently typed word (indicated by cursor position) and verifies whether it begins with an '@' symbol for user mention
  *
  * @param {element} textArea The text area or input to inspect the current word of
- * @returns {{isUserMention: boolean, indexOfMentionStart: number}} Object with the word's mention data
+ * @returns {{isTriggered: boolean, indexOfAutocompleteStart: number}} Object with the word's autocomplete data
  *
  * @example
- * const { isUserMention, indexOfMentionStart } = getMentionWordData(textArea);
- * if (isUserMention) {
+ * const { isTriggered, indexOfAutocompleteStart } = getAutocompleteWordData({textArea, triggerCharacter: '@'});
+ * if (isTriggered) {
  *  // Do something
  * }
  */
@@ -93,8 +93,8 @@ export const getAutocompleteWordData = ({ textArea, triggerCharacter }) => {
 
   if (selectionStart === 0 || valueBeforeKeystroke === '') {
     return {
-      isUserMention: false,
-      indexOfMentionStart: -1,
+      isTriggered: false,
+      indexOfAutocompleteStart: -1,
     };
   }
 
@@ -106,8 +106,8 @@ export const getAutocompleteWordData = ({ textArea, triggerCharacter }) => {
   });
 
   return {
-    isUserMention: indexOfAutocompleteStart !== -1,
-    indexOfMentionStart: indexOfAutocompleteStart,
+    isTriggered: indexOfAutocompleteStart !== -1,
+    indexOfAutocompleteStart,
   };
 };
 
