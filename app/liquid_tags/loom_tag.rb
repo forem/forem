@@ -20,7 +20,8 @@ class LoomTag < LiquidTagBase
   end
 
   def extract_video_id(input)
-    match = pattern_match_for(input, [REGISTRY_REGEXP])
+    input_params_removed = input.split("?")[0] # Loom URLs with params fail valid-URL check
+    match = pattern_match_for(input_params_removed, [REGISTRY_REGEXP])
     raise StandardError, I18n.t("liquid_tags.loom_tag.invalid_loom_url") unless match
 
     match[:video_id]

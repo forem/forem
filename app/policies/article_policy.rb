@@ -12,6 +12,60 @@ class ArticlePolicy < ApplicationPolicy
     FeatureFlag.enabled?(:limit_post_creation_to_admins)
   end
 
+  # @param query [Symbol] the name of one of the ArticlePolicy action predicates (e.g. :create?,
+  #        :new?) though as a convenience, we will also accept :new, and :create.
+  # @return [TrueClass] if this query should default to hidden
+  # @return [FalseClass] if this query should not be hidden in the UI.
+  #
+  # @note The symmetry of the case statement structure with .scope_users_authorized_to_action
+  def self.include_hidden_dom_class_for?(query:)
+    case query.to_sym
+    when :create?, :new?, :create, :new
+      limit_post_creation_to_admins?
+    else
+      false
+    end
+  end
+
+  # Helps filter a `:users_scope` to those authorized to the `:action`.  I want a list of all users
+  # who can create an Article.  This policy method can help with that.
+  #
+  # @param users_scope [ActiveRecord::Relation] a scope for querying user objects
+  # @param action [Symbol] the name of one of the ArticlePolicy action predicates (e.g. :create?,
+  #        :new?) though as a convenience, we will also accept :new, and :create.
+  #
+  # @return [ActiveRecord::Relation]
+  #
+  # @see https://api.rubyonrails.org/classes/ActiveRecord/Scoping/Named/ClassMethods.html#method-i-scope
+  #
+  # @note With this duplication it would be feasible to alter the instance method logics to use the
+  #       class method (e.g. `ArticlePolicy.scope_authorized(users_scope: User, action:
+  #       :create?).find_by(user.id)`) but that's a future consideration.
+  #
+  # @note This is not a Pundit scope (see https://github.com/varvet/pundit#scopes), as those methods
+  #       are for answering "What articles can I see?"  This method is for answering "Who all can
+  #       <action> on Articles?"
+  #
+  # @note Why isn't this a User.scope method?  Because the logic of who can take an action on the
+  #       resource is the problem domain of the policy.
+  #
+  # @note The symmetry of the case statement structure with .include_hidden_dom_class_for?
+  def self.scope_users_authorized_to_action(users_scope:, action:)
+    case action.to_sym
+    when :create?, :new?, :create, :new
+      # Note the delicate dance to duplicate logic in a general sense.  [I hope that] this is a
+      # stop-gap solution.
+      users_scope = users_scope.without_role(:suspended)
+      return users_scope unless limit_post_creation_to_admins?
+
+      # NOTE: Not a fan of reaching over to the constant of another class, but I digress.
+      users_scope.with_any_role(*Authorizer::RoleBasedQueries::ANY_ADMIN_ROLES)
+    else
+      # Not going to implement all of the use cases.
+      raise "Unhandled predicate: #{action} for #{self}.#{__method__}"
+    end
+  end
+
   # @note [@jeremyf] I am re-implemnenting the initialize method, but removing the Pundit
   #       authorization.  There's an assumption that all policy questions will require a user,
   #       unless you know specifically that they don't.
@@ -40,6 +94,33 @@ class ArticlePolicy < ApplicationPolicy
     true
   end
 
+  # Does the user already have existing articles?  Can they create an article?
+  #
+  # @return [TrueClass] They have existing published articles OR can create new ones.
+  # @return [FalseClass] They do not have published articles NOR can they create new ones.
+  #
+  # @note As part of our aspirations to only show users what is relevant to them and "hiding" what
+  #       is not, this method will help us with the edge case of "should we show the user a
+  #       dashboard listing of posts?"
+  #
+  # @note This handles the case in which a user has lost the ability to create posts (e.g. we've
+  #       toggled on the feature limiting posts to admins only) but they have at least one published
+  #       post.  In that case we want to show them things like "their posts's analytics" or a
+  #       dashboard of their published posts.
+  #
+  # @note This policy method is a bit different.  It is strictly meant to return true or false.
+  #       Other policies might raise exceptions, but the purpose of this method is for conditional
+  #       rendering.
+  def has_existing_articles_or_can_create_new_ones?
+    require_user!
+    return true if user.articles.published.exists?
+
+    create?
+  rescue ApplicationPolicy::NotAuthorizedError
+    false
+  end
+
+  # @see {ArticlePolicy.scope_users_authorized_to_action} for "mirrored" details.
   def create?
     require_user_in_good_standing!
     return true unless self.class.limit_post_creation_to_admins?
@@ -74,6 +155,21 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
+  def moderate?
+    # Technically, we could check the limit_post_creation_to_admins? first, but [@jeremyf]'s
+    # operating on a "trying to maintain consistency" approach.
+    require_user_in_good_standing!
+
+    return false if self.class.limit_post_creation_to_admins?
+
+    # <2022-05-09 Mon> Don't let a user moderate their own article; though this may not be the desired behavior.
+    return false if user_author?
+
+    # Beware a trusted user does not guarantee that they are an admin.  And more specifically, being
+    # an admin does not guarantee being trusted.
+    user.trusted?
+  end
+
   alias admin_featured_toggle? admin_unpublish?
 
   alias new? create?
@@ -86,10 +182,10 @@ class ArticlePolicy < ApplicationPolicy
 
   alias edit? update?
 
-  # [@jeremyf] I made a decision to compress preview? into create?  However, someone editing a post
-  # should also be able to preview?  Perhaps it would make sense to be "preview? is create? ||
-  # update?".
-  alias preview? create?
+  # The ArticlesController#preview method is very complicated but aspirationally, we want to ensure
+  # that someone can preview an article of their if they already have a published article or they
+  # can create new ones.
+  alias preview? has_existing_articles_or_can_create_new_ones?
 
   def permitted_attributes
     %i[title body_html body_markdown main_image published canonical_url
@@ -100,26 +196,11 @@ class ArticlePolicy < ApplicationPolicy
 
   private
 
-  def require_user_in_good_standing!
-    require_user!
-
-    return true unless user.suspended?
-
-    raise ApplicationPolicy::UserSuspendedError, I18n.t("policies.application_policy.your_account_is_suspended")
-  end
-
-  def require_user!
-    return true if user
-
-    raise ApplicationPolicy::UserRequiredError, I18n.t("policies.application_policy.you_must_be_logged_in")
-  end
-
   def user_author?
-    if record.instance_of?(Article)
-      record.user_id == user.id
-    else
-      record.pluck(:user_id).uniq == [user.id]
-    end
+    # We might have the Article class (instead of the Article instance), so let's short circuit
+    return false unless record.respond_to?(:user_id)
+
+    record.user_id == user.id
   end
 
   def user_org_admin?

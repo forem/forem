@@ -21,6 +21,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_one(:discussion_lock).dependent(:delete) }
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
+    it { is_expected.to have_many(:context_notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:mentions).dependent(:delete_all) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
@@ -155,9 +156,9 @@ RSpec.describe Article, type: :model do
     describe "#main_image_background_hex_color" do
       it "must have true hex for image background" do
         article.main_image_background_hex_color = "hello"
-        expect(article.valid?).to eq(false)
+        expect(article.valid?).to be(false)
         article.main_image_background_hex_color = "#fff000"
-        expect(article.valid?).to eq(true)
+        expect(article.valid?).to be(true)
       end
     end
 
@@ -184,9 +185,9 @@ RSpec.describe Article, type: :model do
     describe "#main_image" do
       it "must have url for main image if present" do
         article.main_image = "hello"
-        expect(article.valid?).to eq(false)
+        expect(article.valid?).to be(false)
         article.main_image = "https://image.com/image.png"
-        expect(article.valid?).to eq(true)
+        expect(article.valid?).to be(true)
       end
     end
 
@@ -195,13 +196,13 @@ RSpec.describe Article, type: :model do
 
       it "does not allow the use of admin-only liquid tags for non-admins" do
         article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
-        expect(article.valid?).to eq(false)
+        expect(article.valid?).to be(false)
       end
 
       it "allows admins" do
         article.user.add_role(:admin)
         article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
-        expect(article.valid?).to eq(true)
+        expect(article.valid?).to be(true)
       end
     end
 
@@ -222,6 +223,20 @@ RSpec.describe Article, type: :model do
     end
 
     describe "title validation" do
+      it "normalizes the title to a narrow set of allowable characters" do
+        article = create(:article, title: "I⠀⠀Am⠀⠀Warning⠀⠀You⠀⠀Don't⠀⠀Click!")
+
+        expect(article.title).to eq "I Am Warning You Don't Click!"
+      end
+
+      it "allows useful emojis and extended punctuation" do
+        allowed_title = "Hello! Title — Emdash⁉️ 🤖🤯🔥®™©👨‍👩🏾👦‍👦"
+
+        article = create(:article, title: allowed_title)
+
+        expect(article.title).to eq allowed_title
+      end
+
       it "produces a proper title" do
         test_article = build(:article, title: "An Article Title")
 
@@ -252,7 +267,7 @@ RSpec.describe Article, type: :model do
     describe "tag validation" do
       let(:article) { build(:article, user: user) }
 
-      # See https://github.com/thepracticaldev/dev.to/pull/6302
+      # See https://github.com/forem/forem/pull/6302
       # rubocop:disable RSpec/VerifiedDoubles
       it "does not modify the tag list if there are no adjustments" do
         allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
@@ -353,7 +368,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "parses does not assign canonical_url" do
-        expect(article.canonical_url).to eq(nil)
+        expect(article.canonical_url).to be_nil
       end
 
       it "parses canonical_url if canonical_url is present" do
@@ -395,7 +410,7 @@ RSpec.describe Article, type: :model do
       before { article_without_main_image.validate }
 
       it "can parse the main_image" do
-        expect(article_without_main_image.main_image).to eq(nil)
+        expect(article_without_main_image.main_image).to be_nil
       end
 
       it "can parse the main_image when added" do
@@ -421,7 +436,7 @@ RSpec.describe Article, type: :model do
         article_with_main_image.main_image = nil
         article_with_main_image.validate
 
-        expect(article_with_main_image.main_image).to eq(nil)
+        expect(article_with_main_image.main_image).to be_nil
       end
 
       it "can parse the main_image when changed" do
@@ -556,7 +571,7 @@ RSpec.describe Article, type: :model do
 
       it "properly converts underscores and still has a valid slug" do
         underscored_article = build(:article, title: "hey_hey_hey node_modules", published: false)
-        expect(underscored_article.valid?).to eq true
+        expect(underscored_article.valid?).to be true
       end
     end
 
@@ -574,7 +589,7 @@ RSpec.describe Article, type: :model do
 
       it "properly converts underscores and still has a valid slug" do
         underscored_article = build(:article, title: "hey_hey_hey node_modules", published: true)
-        expect(underscored_article.valid?).to eq true
+        expect(underscored_article.valid?).to be true
       end
 
       # rubocop:disable RSpec/NestedGroups
@@ -604,23 +619,23 @@ RSpec.describe Article, type: :model do
     it "returns true if the article has a frontmatter" do
       body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
       article.body_markdown = body
-      expect(article.has_frontmatter?).to eq(true)
+      expect(article.has_frontmatter?).to be(true)
     end
 
     it "returns false if the article does not have a frontmatter" do
       article.body_markdown = "Hey hey Ho Ho"
-      expect(article.has_frontmatter?).to eq(false)
+      expect(article.has_frontmatter?).to be(false)
     end
 
     it "returns true if parser raises a Psych::DisallowedClass error" do
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg"))
-      expect(article.has_frontmatter?).to eq(true)
+      expect(article.has_frontmatter?).to be(true)
     end
 
     it "returns true if parser raises a Psych::SyntaxError error" do
       syntax_error = Psych::SyntaxError.new("file", 1, 1, 0, "problem", "context")
       allow(FrontMatterParser::Parser).to receive(:new).and_raise(syntax_error)
-      expect(article.has_frontmatter?).to eq(true)
+      expect(article.has_frontmatter?).to be(true)
     end
   end
 
@@ -638,7 +653,7 @@ RSpec.describe Article, type: :model do
     it "shows year in readable time if not current year" do
       article.edited_at = 1.year.ago
       last_year = 1.year.ago.year % 100
-      expect(article.readable_edit_date.include?("'#{last_year}")).to eq(true)
+      expect(article.readable_edit_date.include?("'#{last_year}")).to be(true)
     end
   end
 
@@ -652,7 +667,7 @@ RSpec.describe Article, type: :model do
     it "shows year in readable time if not current year" do
       article.published_at = 1.year.ago
       last_year = 1.year.ago.year % 100
-      expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+      expect(article.readable_publish_date.include?("'#{last_year}")).to be(true)
     end
   end
 
@@ -726,7 +741,7 @@ RSpec.describe Article, type: :model do
         user: user,
         body_markdown: "---\ntitle: hey\npublished: false\ncover_image: #{Faker::Avatar.image}\n---\nYo",
       )
-      expect(article.main_image_from_frontmatter).to eq(true)
+      expect(article.main_image_from_frontmatter).to be(true)
     end
 
     context "when false" do
@@ -1106,6 +1121,17 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "record field test event" do
+      it "enqueues Users::RecordFieldTestEventWorker" do
+        sidekiq_assert_enqueued_with(
+          job: Users::RecordFieldTestEventWorker,
+          args: [article.user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL],
+        ) do
+          article.save
+        end
+      end
+    end
+
     describe "async score calc" do
       it "enqueues Articles::ScoreCalcWorker if published" do
         sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
@@ -1127,23 +1153,31 @@ RSpec.describe Article, type: :model do
         sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
 
-      it "queues a slack message to be sent" do
+      it "queues a slack message to be sent for a new published article" do
         sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-          article.update(published: true, published_at: Time.current)
+          create(:article, user: user, published: true, published_at: Time.current)
         end
       end
 
-      it "does not queue a message for an article published more than 30 seconds ago" do
+      it "does not queue a message for a new article published more than 30 seconds ago" do
         Timecop.freeze(Time.current) do
           sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-            article.update(published: true, published_at: 31.seconds.ago)
+            create(:article, published: true, published_at: 31.seconds.ago)
           end
         end
       end
 
       it "does not queue a message for a draft article" do
         sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-          article.update(body_markdown: "foobar", published: false)
+          markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nHey this is the article"
+          create(:article, body_markdown: markdown, published: false)
+        end
+      end
+
+      it "doesn't queue a message for an article that remains published" do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
+          markdown = "---\ntitle: Title\npublished: true\ndescription:\ntags: heytag\n---\n\nHey this is the article"
+          article.update(body_markdown: markdown, published: true)
         end
       end
 
@@ -1328,7 +1362,6 @@ RSpec.describe Article, type: :model do
       following_user.follow(user)
 
       expect(article.followers.length).to eq(1)
-      expect(article.followers.first.username).to eq(following_user.username)
     end
   end
 

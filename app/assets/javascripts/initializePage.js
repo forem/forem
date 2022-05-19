@@ -12,7 +12,6 @@
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
   initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
-  initializeColorPicker, Runtime
 */
 
 function callInitializers() {
@@ -35,7 +34,6 @@ function callInitializers() {
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
   initializeDateHelpers();
-  initializeColorPicker();
 }
 
 function initializePage() {
@@ -57,6 +55,9 @@ function initializePage() {
       }
       initializePodcastPlayback();
       initializeVideoPlayback();
+
+      // Initialize data-runtime context to the body data-attribute
+      document.body.dataset.runtime = window.Forem.Runtime.currentContext();
     }
   }, 1);
 
@@ -76,7 +77,4 @@ function initializePage() {
   if (!initScrolling.called) {
     initScrolling();
   }
-
-  // Initialize data-runtime context to the body data-attribute
-  document.body.dataset.runtime = Runtime.currentContext();
 }

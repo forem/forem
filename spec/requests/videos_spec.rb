@@ -4,6 +4,8 @@ RSpec.describe "Videos", type: :request do
   let(:unauthorized_user) { create(:user) }
   let(:authorized_user)   { create(:user, created_at: 1.month.ago) }
 
+  before { allow(Settings::General).to receive(:enable_video_upload).and_return(true) }
+
   describe "GET /videos" do
     it "shows video page" do
       get "/videos"

@@ -42,6 +42,8 @@ COPY . "${APP_HOME}"
 
 RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
+RUN NODE_ENV=production yarn install
+
 RUN RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile
 
 RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \

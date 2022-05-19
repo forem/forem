@@ -1,11 +1,10 @@
-/* global Runtime */
-
 import { Fragment, h } from 'preact';
 import { useReducer, useEffect, useState } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { addSnackbarItem } from '../../Snackbar';
 import { ClipboardButton } from './ClipboardButton';
+import { copyToClipboard, isNativeIOS } from '@utilities/runtime';
 import { ButtonNew as Button, Spinner, Icon } from '@crayons';
 import ImageIcon from '@images/image.svg';
 import CancelIcon from '@images/x.svg';
@@ -197,7 +196,7 @@ const V1EditorImageUpload = ({
       'image-markdown-copy-link-input',
     );
 
-    Runtime.copyToClipboard(imageMarkdownInput.value)
+    copyToClipboard(imageMarkdownInput.value)
       .then(() => {
         setShowCopiedImageText(true);
       })
@@ -273,6 +272,15 @@ export const ImageUploader = ({
   onImageUploadSuccess,
   onImageUploadError,
 }) => {
+  useEffect(() => {
+    // Native Bridge messages come through ForemMobile events
+    document.addEventListener('ForemMobile', handleNativeMessage);
+
+    // Cleanup afterwards
+    return () =>
+      document.removeEventListener('ForemMobile', handleNativeMessage);
+  }, []);
+
   const [state, dispatch] = useReducer(imageUploaderReducer, {
     insertionImageUrls: [],
     uploadErrorMessage: null,
@@ -334,6 +342,7 @@ export const ImageUploader = ({
         });
         break;
       case 'error':
+        onImageUploadError?.();
         dispatch({
           type: 'upload_error',
           payload: { errorMessage: message.error },
@@ -353,16 +362,7 @@ export const ImageUploader = ({
   // image picker for image upload we want to add the aria-label attr and the
   // onClick event to the UI button. This event will kick off the native UX.
   // The props are unwrapped (using spread operator) in the button below
-  //
-  //
-  //
-  // This namespace is not implemented in the native side. This allows us to
-  // deploy our refactor and wait until our iOS app is approved by AppStore
-  // review. The old web implementation will be the fallback until then.
-  const useNativeUpload = Runtime.isNativeIOS('imageUpload_disabled');
-
-  // Native Bridge messages come through ForemMobile events
-  document.addEventListener('ForemMobile', handleNativeMessage);
+  const useNativeUpload = isNativeIOS('imageUpload');
 
   return (
     <Fragment>

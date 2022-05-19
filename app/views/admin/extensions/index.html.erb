@@ -1,0 +1,16 @@
+<%= form_with(url: toggle_admin_extensions_path, method: :post, local: true) do |f| %>
+  <div class="crayons-card p-4 flex flex-col gap-4">
+    <% @extensions.each do |extension| %>
+      <div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box extension.feature_flag_name, class: "crayons-checkbox", checked: extension.enabled?, aria: { describedby: "#{extension.feature_flag_name}-description" } %>
+          <%= f.label extension.feature_flag_name, extension.name, class: "crayons-field__label" %>
+        </div>
+        <p id="<%= extension.feature_flag_name %>-description" class="pl-7 crayons-field__description">
+          <%= sanitize extension.description %>
+        </p>
+      </div>
+    <% end %>
+    <button class="c-btn c-btn--primary self-start">Save</button>
+  </div>
+<% end %>

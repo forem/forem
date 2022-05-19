@@ -147,7 +147,14 @@
           <small class="crayons-story__tertiary fs-xs mr-2">
             <%= t("views.articles.reading_time", count: story.reading_time < 1 ? 1 : story.reading_time) %>
           </small>
-          <button type="button" id="article-save-button-<%= story.id %>" class="crayons-btn crayons-btn--secondary crayons-btn--s w-max bookmark-button" data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.save.aria_label") %>" title="<%= t("views.articles.save.title") %>">
+          <button
+            type="button"
+            id="article-save-button-<%= story.id %>"
+            class="crayons-btn crayons-btn--secondary crayons-btn--s w-max bookmark-button"
+            data-reactable-id="<%= story.id %>"
+            data-article-author-id="<%= story.user_id %>"
+            aria-label="<%= t("views.articles.save.aria_label") %>"
+            title="<%= t("views.articles.save.title") %>">
             <span class="bm-initial"><%= t("views.articles.save.initial") %></span>
             <span class="bm-success"><%= t("views.articles.save.success") %></span>
           </button>

@@ -1,4 +1,4 @@
-const [ firstFlashDismissBtn ] =
+const [firstFlashDismissBtn] =
   document.getElementsByClassName('js-flash-close-btn');
 
 // This allows screen reader users to become aware of the message (as well as bringing focus to the top of the main content).

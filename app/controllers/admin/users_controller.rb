@@ -16,14 +16,26 @@ module Admin
       email_body
     ].freeze
 
+    ATTRIBUTES_FOR_CSV = %i[
+      id name username email registered_at
+    ].freeze
+
+    ATTRIBUTES_FOR_LAST_ACTIVITY = %i[
+      registered last_comment_at last_article_at latest_article_updated_at last_reacted_at profile_updated_at
+      last_moderation_notification last_notification_activity
+    ].freeze
+
     after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
     def index
       @users = Admin::UsersQuery.call(
+        relation: User.registered,
         options: params.permit(:role, :search),
       ).page(params[:page]).per(50)
+
+      @organization_limit = 3
     end
 
     def edit
@@ -35,12 +47,10 @@ module Admin
 
     def show
       @user = User.find(params[:id])
-
-      if FeatureFlag.enabled?(:admin_member_view)
-        set_current_tab(params[:tab])
-        set_feedback_messages
-        set_related_reactions
-      end
+      set_current_tab(params[:tab])
+      set_banishable_user
+      set_feedback_messages
+      set_related_reactions
       set_user_details
     end
 
@@ -64,18 +74,32 @@ module Admin
                                           resource_type: resource_type,
                                           admin: current_user)
       if response.success
-        flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
+        flash[:success] =
+          I18n.t("admin.users_controller.role_removed",
+                 role: role.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
       else
         flash[:danger] = response.error_message
       end
       redirect_to admin_user_path(params[:id])
     end
 
+    def export
+      @users = User.registered.select(ATTRIBUTES_FOR_CSV + ATTRIBUTES_FOR_LAST_ACTIVITY).includes(:organizations)
+
+      respond_to do |format|
+        format.csv do
+          response.headers["Content-Type"] = "text/csv"
+          response.headers["Content-Disposition"] = "attachment; filename=users.csv"
+          render template: "admin/users/export"
+        end
+      end
+    end
+
     def user_status
       @user = User.find(params[:id])
       begin
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
-        flash[:success] = "User has been updated"
+        flash[:success] = I18n.t("admin.users_controller.updated")
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -93,13 +117,13 @@ module Admin
         receiver = "user"
       end
       ExportContentWorker.perform_async(user.id, email)
-      flash[:success] = "Data exported to the #{receiver}. The job will complete momentarily."
+      flash[:success] = I18n.t("admin.users_controller.exported", receiver: receiver)
       redirect_to admin_user_path(params[:id])
     end
 
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
-      flash[:success] = "This user is being banished in the background. The job will complete soon."
+      flash[:success] = I18n.t("admin.users_controller.banished")
       redirect_to admin_user_path(params[:id])
     end
 
@@ -107,12 +131,13 @@ module Admin
       @user = User.find(params[:id])
       begin
         Moderator::DeleteUser.call(user: @user)
-        link = helpers.tag.a("the page", href: admin_users_gdpr_delete_requests_path, data: { "no-instant" => true })
-        message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-                  "has been fully deleted. " \
-                  "If this is a GDPR delete, delete them from Mailchimp & Google Analytics " \
-                  " and confirm on "
-        flash[:success] = helpers.safe_join([message, link, "."])
+        link = helpers.tag.a(I18n.t("admin.users_controller.the_page"), href: admin_gdpr_delete_requests_path,
+                                                                        data: { "no-instant" => true })
+        flash[:success] = I18n.t("admin.users_controller.full_delete_html",
+                                 user: @user.username,
+                                 email: @user.email.presence || I18n.t("admin.users_controller.no_email"),
+                                 id: @user.id,
+                                 the_page: link).html_safe # rubocop:disable Rails/OutputSafety
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -121,7 +146,7 @@ module Admin
 
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      flash[:success] = "Posts are being unpublished in the background. The job will complete soon."
+      flash[:success] = I18n.t("admin.users_controller.unpublished")
       redirect_to admin_user_path(params[:id])
     end
 
@@ -150,7 +175,9 @@ module Admin
         # We should delete them when a user unlinks their GitHub account.
         @user.github_repos.destroy_all if identity.provider.to_sym == :github
 
-        flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
+        flash[:success] =
+          I18n.t("admin.users_controller.identity_removed",
+                 provider: identity.provider.capitalize)
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -166,7 +193,7 @@ module Admin
 
       if NotifyMailer.with(email_params).user_contact_email.deliver_now
         respond_to do |format|
-          message = "Email sent!"
+          message = I18n.t("admin.users_controller.email_sent")
 
           format.html do
             flash[:success] = message
@@ -177,7 +204,7 @@ module Admin
         end
       else
         respond_to do |format|
-          message = "Email failed to send!"
+          message = I18n.t("admin.users_controller.email_fail")
 
           format.html do
             flash[:danger] = message
@@ -194,7 +221,7 @@ module Admin
     rescue ActionController::ParameterMissing
       respond_to do |format|
         format.json do
-          render json: { error: "Both subject and body are required!" },
+          render json: { error: I18n.t("admin.users_controller.parameter_missing") },
                  content_type: "application/json",
                  status: :unprocessable_entity
         end
@@ -204,7 +231,7 @@ module Admin
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
-          message = "Verification email sent!"
+          message = I18n.t("admin.users_controller.verify_sent")
 
           format.html do
             flash[:success] = message
@@ -214,7 +241,7 @@ module Admin
           format.js { render json: { result: message }, content_type: "application/json" }
         end
       else
-        message = "Email failed to send!"
+        message = I18n.t("admin.users_controller.email_fail")
 
         respond_to do |format|
           format.html do
@@ -230,7 +257,7 @@ module Admin
     def unlock_access
       @user = User.find(params[:id])
       @user.unlock_access!
-      flash[:success] = "Unlocked User account!"
+      flash[:success] = I18n.t("admin.users_controller.unlocked")
       redirect_to admin_user_path(@user)
     end
 
@@ -286,19 +313,18 @@ module Admin
     end
 
     def credit_params
-      return user_params unless FeatureFlag.enabled?(:admin_member_view)
-
       credit_params = {}
-      if user_params[:credit_action] == "Add"
+
+      case user_params[:credit_action]
+      when "Add"
         credit_params[:add_credits] = user_params[:credit_amount]
-        flash[:success] = "Credits have been added!"
-      end
-
-      if user_params[:credit_action] == "Remove"
+        flash[:success] = I18n.t("admin.users_controller.credits_added")
+      when "Remove"
         credit_params[:remove_credits] = user_params[:credit_amount]
-        flash[:success] = "Credits have been removed."
+        flash[:success] = I18n.t("admin.users_controller.credits_removed")
+      else
+        return user_params
       end
-
       credit_params
     end
 
@@ -308,6 +334,11 @@ module Admin
                      else
                        "overview"
                      end
+    end
+
+    def set_banishable_user
+      @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
+        @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
     end
   end
 end

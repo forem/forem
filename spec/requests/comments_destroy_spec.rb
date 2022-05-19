@@ -43,7 +43,7 @@ RSpec.describe "CommentsDestroy", type: :request do
       end
 
       it "marks the comment as deleted" do
-        expect(Comment.first.deleted).to eq(true)
+        expect(Comment.first.deleted).to be(true)
       end
 
       it "renders [deleted]" do

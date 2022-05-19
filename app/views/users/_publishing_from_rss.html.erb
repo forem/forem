@@ -1,3 +1,4 @@
+<% if policy(Article).create? %>
 <div class="crayons-card crayons-card--content-rows">
   <div class="grid gap-4">
     <h2 class="crayons-subtitle-1">
@@ -49,3 +50,4 @@
     <button class="crayons-btn w-max" type="submit"><%= button_text %></button>
   <% end %>
 </div>
+<% end %>

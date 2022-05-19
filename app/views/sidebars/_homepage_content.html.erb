@@ -11,7 +11,7 @@
     <%= render "articles/sidebar_listings" if Listing.feature_enabled? %>
 
     <% Settings::General.sidebar_tags.each do |tag| %>
-      <section class="crayons-card crayons-card--secondary">
+      <section class="crayons-card crayons-card--secondary crayons-layout__content">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2"><a href="/t/<%= tag %>" class="crayons-link">#<%= tag %></a></h3>
         </header>

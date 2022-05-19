@@ -7,6 +7,11 @@
  */
 export function brightness(color, amount = 1) {
   const rgbObj = hexToRgb(color);
+
+  if (!rgbObj) {
+    return null;
+  }
+
   Object.keys(rgbObj).forEach((key) => {
     rgbObj[key] = Math.round(rgbObj[key] * amount);
   });

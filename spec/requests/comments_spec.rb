@@ -364,7 +364,7 @@ RSpec.describe "Comments", type: :request do
       it "Delete notification when comment is hidden" do
         notification = user.notifications.last
         patch "/comments/#{comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
-        expect(Notification.exists?(id: notification.id)).to eq(false)
+        expect(Notification.exists?(id: notification.id)).to be(false)
       end
 
       it "deletes children notification when comment is hidden" do
@@ -375,7 +375,7 @@ RSpec.describe "Comments", type: :request do
                                               headers: { HTTP_ACCEPT: "application/json" }
         child_comment.reload
         expect(child_comment.hidden_by_commentable_user).to be true
-        expect(Notification.exists?(id: notification.id)).to eq(false)
+        expect(Notification.exists?(id: notification.id)).to be(false)
       end
     end
 

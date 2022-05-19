@@ -41,7 +41,6 @@ env:
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
-    - DISABLE_SPRING=true
 before_install:
   - sudo apt-get update
   - sudo apt-get -y install gsfonts
@@ -52,7 +51,6 @@ install:
   - date --rfc-3339=seconds
   - nvm install
   - bundle config set path 'vendor/bundle'
-  - cp .env_sample .env
   - bin/ci-bundle
   - yarn install --frozen-lockfile
 script:
@@ -84,7 +82,7 @@ jobs:
       script:
         - yarn lint:frontend
         - yarn test --colors
-        - bundle exec bundle-audit check --update
+        - bundle exec bundle-audit check --update --ignore=CVE-2022-27311
         - bin/test-console-check
         - yarn build-storybook
         - NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile

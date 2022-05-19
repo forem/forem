@@ -8,8 +8,22 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
-  include StringAttributeCleaner.for(:canonical_url, on: :before_save)
+  include StringAttributeCleaner.nullify_blanks_for(:canonical_url, on: :before_save)
   DEFAULT_FEED_PAGINATION_WINDOW_SIZE = 50
+
+  # When we cache an entity, either {User} or {Organization}, these are the names of the attributes
+  # we cache.
+  #
+  # @note I would prefer that this constant were in the {Article::CachedEntity} namespace, but it
+  #       didn't work out well.  Further, since Organization doesn't really know about
+  #       Articles::CachedEntity, I'd rather it not "peek" into a class for which it has no
+  #       knowledge.
+  #
+  # @note [@jeremyf] I have added the profile_image attribute, even though that's not one of the
+  #       Articles::CachedEntity attributes.  This is necessary to detect the change.
+  #
+  # @see Articles::CachedEntity caching strategy for entity attributes
+  ATTRIBUTES_CACHED_FOR_RELATED_ENTITY = %i[name profile_image profile_image_url slug username].freeze
 
   attr_accessor :publish_under_org
   attr_writer :series
@@ -31,6 +45,48 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
+  # Filter out anything that isn't a word, space, punctuation mark, or
+  # recognized emoji.
+  # See: https://github.com/forem/forem/pull/16787#issuecomment-1062044359
+  # rubocop:disable Lint/DuplicateRegexpCharacterClassElement
+  TITLE_CHARACTERS_ALLOWED = /[^
+    [:word:]
+    [:space:]
+    [:punct:]
+    \u00a3        # GBP symbol
+    \u00a9        # Copyright symbol
+    \u00ae        # Registered trademark symbol
+    \u200d        # Zero-width joiner, for multipart emojis such as family
+    \u203c        # !! emoji
+    \u20e3        # Combining enclosing keycap
+    \u2122        # Trademark symbol
+    \u2139        # Information symbol
+    \u2194-\u2199 # Arrow symbols
+    \u21a9-\u21aa # More arrows
+    \u231a        # Watch emoji
+    \u231b        # Hourglass emoji
+    \u2328        # Keyboard emoji
+    \u23cf        # Eject symbol
+    \u23e9-\u23f3 # Various VCR-actions emoji and clocks
+    \u23f8-\u23fa # More VCR emoji
+    \u24c2        # Blue circle with a white M in it
+    \u25aa        # Black box
+    \u25ab        # White box
+    \u25b6        # VCR-style play emoji
+    \u25c0        # VCR-style play backwards emoji
+    \u25fb-\u25fe # More black and white squares
+    \u2600-\u273f # Weather, zodiac, coffee, hazmat, cards, music, other misc emoji
+    \u2934        # Curved arrow pointing up to the right
+    \u2935        # Curved arrow pointing down to the right
+    \u2b00-\u2bff # More arrows, geometric shapes
+    \u3030        # Squiggly line
+    \u303d        # Either a line chart plummeting or the letter M, not sure
+    \u3297        # Circled Ideograph Congratulation
+    \u3299        # Circled Ideograph Secret
+    \u{1f000}-\u{1ffff} # More common emoji
+  ]+/m
+  # rubocop:enable Lint/DuplicateRegexpCharacterClassElement
+
   def self.unique_url_error
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
@@ -39,6 +95,7 @@ class Article < ApplicationRecord
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
+  has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -106,18 +163,20 @@ class Article < ApplicationRecord
 
   before_validation :evaluate_markdown, :create_slug
   before_validation :remove_prohibited_unicode_characters
-  before_save :update_cached_user
+  before_validation :normalize_title
+  before_save :set_cached_entities
   before_save :set_all_dates
 
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
   before_create :create_password
+  after_create :notify_slack_channel_about_publication
+  after_update :notify_slack_channel_about_publication, if: -> { published && saved_change_to_published? }
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
   after_save :bust_cache
-  after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -126,7 +185,8 @@ class Article < ApplicationRecord
     article.saved_change_to_user_id?
   }
 
-  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, on: %i[create update]
+  after_commit :async_score_calc, :touch_collection, :enrich_image_attributes, :record_field_test_event,
+               on: %i[create update]
 
   # The trigger `update_reading_list_document` is used to keep the `articles.reading_list_document` column updated.
   #
@@ -253,8 +313,7 @@ class Article < ApplicationRecord
     end
   }
 
-  # NOTE: @citizen428
-  # I'd usually avoid using Arel directly like this. However, none of the more
+  # We usually try to avoid using Arel directly like this. However, none of the more
   # straight-forward ways of negating the above scope worked:
   # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
   # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
@@ -296,18 +355,21 @@ class Article < ApplicationRecord
 
     dir = "desc" unless %w[asc desc].include?(dir)
 
-    column =
-      case kind
-      when "creation"  then :created_at
-      when "views"     then :page_views_count
-      when "reactions" then :public_reactions_count
-      when "comments"  then :comments_count
-      when "published" then :published_at
-      else
-        :created_at
-      end
-
-    order(column => dir.to_sym)
+    case kind
+    when "creation"
+      order(created_at: dir)
+    when "views"
+      order(page_views_count: dir)
+    when "reactions"
+      order(public_reactions_count: dir)
+    when "comments"
+      order(comments_count: dir)
+    when "published"
+      # NOTE: For recently published, we further filter to only published posts
+      order(published_at: dir).published
+    else
+      order(created_at: dir)
+    end
   }
 
   # @note This includes the `featured` scope, which may or may not be
@@ -500,8 +562,7 @@ class Article < ApplicationRecord
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
-                   hotness_score: BlackBox.article_hotness_score(self),
-                   spaminess_rating: BlackBox.calculate_spaminess(self))
+                   hotness_score: BlackBox.article_hotness_score(self))
   end
 
   def co_author_ids_list=(list_of_co_author_ids)
@@ -566,6 +627,16 @@ class Article < ApplicationRecord
     self.cached_user_name = user_name
     self.cached_user_username = user_username
     self.path = calculated_path.downcase
+  end
+
+  def normalize_title
+    return unless title
+
+    self.title = title
+      .gsub(TITLE_CHARACTERS_ALLOWED, " ")
+      # Coalesce runs of whitespace into a single space character
+      .gsub(/\s+/, " ")
+      .strip
   end
 
   def evaluate_markdown
@@ -772,7 +843,7 @@ class Article < ApplicationRecord
     self.password = SecureRandom.hex(60)
   end
 
-  def update_cached_user
+  def set_cached_entities
     self.cached_organization = organization ? Articles::CachedEntity.from_object(organization) : nil
     self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
   end
@@ -836,7 +907,6 @@ class Article < ApplicationRecord
 
   def calculate_base_scores
     self.hotness_score = 1000 if hotness_score.blank?
-    self.spaminess_rating = 0 if new_record?
   end
 
   def create_conditional_autovomits
@@ -865,5 +935,13 @@ class Article < ApplicationRecord
     return unless title&.match?(PROHIBITED_UNICODE_CHARACTERS_REGEX)
 
     self.title = title.gsub(PROHIBITED_UNICODE_CHARACTERS_REGEX, "")
+  end
+
+  def record_field_test_event
+    return unless published?
+    return if FieldTest.config["experiments"].nil?
+
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL)
   end
 end

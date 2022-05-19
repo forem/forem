@@ -12,15 +12,34 @@ import { ArticleCoverImage } from '../ArticleCoverImage';
 
 global.fetch = fetch;
 
-describe('<ArticleCoverImage />', () => {
-  beforeEach(() => {
-    global.Runtime = {
-      isNativeIOS: jest.fn(() => {
-        return false;
-      }),
-    };
+const windowNavigator = window.navigator;
+const windowWebkit = window.webkit;
+
+const stubNativeIOSCapabilities = () => {
+  Object.defineProperty(window, 'navigator', {
+    value: { userAgent: 'DEV-Native-ios|ForemWebView' },
+    writable: true,
   });
 
+  Object.defineProperty(window, 'webkit', {
+    value: { messageHandlers: { imageUpload: true } },
+    writable: true,
+  });
+};
+
+const resetNativeIOSCapabilities = () => {
+  Object.defineProperty(window, 'navigator', {
+    value: windowNavigator,
+    writable: true,
+  });
+
+  Object.defineProperty(window, 'webkit', {
+    value: windowWebkit,
+    writable: true,
+  });
+};
+
+describe('<ArticleCoverImage />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
       <ArticleCoverImage
@@ -42,43 +61,43 @@ describe('<ArticleCoverImage />', () => {
 
   describe('when an image is uploaded', () => {
     it('shows the uploaded image', () => {
-      const { getByAltText } = render(
+      const { getByRole } = render(
         <ArticleCoverImage
           mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={jest.fn()}
         />,
       );
-      const uploadInput = getByAltText('Post cover');
+      const uploadInput = getByRole('img', { name: 'Post cover' });
       expect(uploadInput.getAttribute('src')).toEqual('/some-fake-image.jpg');
     });
 
     it('shows the change and remove buttons', () => {
-      const { queryByText } = render(
+      const { getByRole, getByLabelText } = render(
         <ArticleCoverImage
           mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={jest.fn()}
         />,
       );
-      expect(queryByText('Change')).toBeDefined();
-      expect(queryByText('Remove')).toBeDefined();
+      expect(getByLabelText('Change')).toBeInTheDocument();
+      expect(getByRole('button', { name: 'Remove' })).toBeInTheDocument();
     });
 
     it('removes an existing cover image', async () => {
       const onMainImageUrlChange = jest.fn();
-      const { getByText, queryByLabelText, queryByText } = render(
-        <ArticleCoverImage
-          mainImage="/some-fake-image.jpg"
-          onMainImageUrlChange={onMainImageUrlChange}
-        />,
-      );
+      const { queryByLabelText, queryByText, getByLabelText, getByRole } =
+        render(
+          <ArticleCoverImage
+            mainImage="/some-fake-image.jpg"
+            onMainImageUrlChange={onMainImageUrlChange}
+          />,
+        );
 
-      expect(queryByText(/uploading.../i)).toBeNull();
+      expect(queryByText(/uploading.../i)).not.toBeInTheDocument();
+      expect(queryByLabelText('Add a cover image')).not.toBeInTheDocument();
+      expect(getByRole('img', { name: 'Post cover' })).toBeInTheDocument();
+      expect(getByLabelText('Change')).toBeInTheDocument();
 
-      expect(queryByLabelText('Add a cover image')).toBeNull();
-      expect(queryByLabelText('Post cover')).toBeDefined();
-      expect(queryByLabelText('Change')).toBeDefined();
-
-      const removeButton = getByText('Remove');
+      const removeButton = getByRole('button', { name: 'Remove' });
       removeButton.click();
 
       expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
@@ -95,15 +114,22 @@ describe('<ArticleCoverImage />', () => {
       );
 
       const onMainImageUrlChange = jest.fn();
-      const { getByLabelText, queryByLabelText, queryByText } = render(
+      const {
+        getByLabelText,
+        queryByLabelText,
+        queryByText,
+        getByText,
+        getByRole,
+        queryByRole,
+      } = render(
         <ArticleCoverImage
           mainImage="/some-fake-image.jpg"
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
 
-      expect(queryByLabelText('Post cover')).toBeDefined();
-      expect(queryByLabelText(/remove/i)).toBeDefined();
+      expect(getByRole('img', { name: 'Post cover' })).toBeInTheDocument();
+      expect(getByRole('button', { name: /remove/i })).toBeInTheDocument();
 
       const inputEl = getByLabelText('Change');
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
@@ -114,16 +140,20 @@ describe('<ArticleCoverImage />', () => {
       expect(inputEl.files[0]).toEqual(file);
       expect(inputEl.files).toHaveLength(1);
 
-      expect(queryByText(/uploading.../i)).toBeDefined();
-      expect(queryByLabelText('Post cover')).toBeNull();
-      expect(queryByLabelText('Change')).toBeNull();
-      expect(queryByLabelText(/remove/i)).toBeNull();
+      expect(getByText(/uploading.../i)).toBeInTheDocument();
+      expect(
+        queryByRole('img', { name: 'Post cover' }),
+      ).not.toBeInTheDocument();
+      expect(queryByLabelText('Change')).not.toBeInTheDocument();
+      expect(
+        queryByRole('button', { name: /remove/i }),
+      ).not.toBeInTheDocument();
 
       await waitForElementToBeRemoved(() => queryByText(/uploading.../i));
 
-      expect(queryByLabelText('Post cover')).toBeDefined();
-      expect(queryByLabelText('Change')).toBeDefined();
-      expect(queryByLabelText(/remove/i)).toBeDefined();
+      expect(getByRole('img', { name: 'Post cover' })).toBeInTheDocument();
+      expect(getByLabelText('Change')).toBeInTheDocument();
+      expect(getByRole('button', { name: /remove/i })).toBeInTheDocument();
 
       expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
     });
@@ -152,19 +182,20 @@ describe('<ArticleCoverImage />', () => {
     });
     fireEvent.change(inputEl, { target: { files: [file] } });
 
-    await findByText(/some fake error/i);
+    const fakeError = await findByText(/some fake error/i);
+    expect(fakeError).toBeInTheDocument();
   });
 
-  describe('when rendered in native iOS with imageUpload_disabled support', () => {
-    beforeEach(() => {
-      global.Runtime = {
-        isNativeIOS: jest.fn((namespace) => {
-          return namespace === 'imageUpload_disabled';
-        }),
-      };
+  describe('when rendered in native iOS with imageUpload support', () => {
+    beforeAll(() => {
+      stubNativeIOSCapabilities();
     });
 
-    it('should have no a11y violations when native iOS imageUpload_disabled support is available', async () => {
+    afterAll(() => {
+      resetNativeIOSCapabilities();
+    });
+
+    it('should have no a11y violations when native iOS imageUpload support is available', async () => {
       const { container } = render(
         <ArticleCoverImage
           mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
@@ -176,20 +207,20 @@ describe('<ArticleCoverImage />', () => {
     });
 
     it('does not contain the file input for uploading an image used only in the web browser experience', async () => {
-      const { queryByText } = render(
+      const { queryByTestId } = render(
         <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
       );
-      expect(queryByText(/Upload an image/i)).not.toBeInTheDocument();
+      expect(queryByTestId('cover-image-input')).not.toBeInTheDocument();
     });
 
     it('triggers a webkit messageHandler call when isNativeIOS', async () => {
       global.window.ForemMobile = { injectNativeMessage: jest.fn() };
 
-      const { queryByLabelText } = render(
+      const { getByRole } = render(
         <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
       );
-      const uploadButton = queryByLabelText(/Upload cover image/i);
-      uploadButton.click();
+      const uploadButton = getByRole('button', { name: /Upload cover image/i });
+      fireEvent.click(uploadButton);
       expect(
         global.window.ForemMobile.injectNativeMessage,
       ).toHaveBeenCalledTimes(1);
@@ -224,14 +255,12 @@ describe('<ArticleCoverImage />', () => {
 
       it('displays an upload error when necessary', async () => {
         const onMainImageUrlChange = jest.fn();
-        /* eslint-disable no-unused-vars  */
-        const { container, findByText } = render(
+        const { findByText } = render(
           <ArticleCoverImage
             mainImage=""
             onMainImageUrlChange={onMainImageUrlChange}
           />,
         );
-        /* eslint-enable no-unused-vars  */
 
         const error = 'oh no!';
 
@@ -249,21 +278,19 @@ describe('<ArticleCoverImage />', () => {
         );
         fireEvent(document, event);
 
-        await findByText(error);
-
+        const errorElement = await findByText(error);
+        expect(errorElement).toBeInTheDocument();
         expect(onMainImageUrlChange).not.toHaveBeenCalled();
       });
 
       it('displays an uploading message', async () => {
         const onMainImageUrlChange = jest.fn();
-        /* eslint-disable no-unused-vars  */
-        const { container, findByText } = render(
+        const { findByText } = render(
           <ArticleCoverImage
             mainImage=""
             onMainImageUrlChange={onMainImageUrlChange}
           />,
         );
-        /* eslint-enable no-unused-vars  */
 
         // Fire a change event in the hidden input with JSON payload for an error
         const fakeUploadingMessage = JSON.stringify({
@@ -278,7 +305,8 @@ describe('<ArticleCoverImage />', () => {
         );
         fireEvent(document, event);
 
-        await findByText(/Uploading.../i);
+        const uploadingText = await findByText(/Uploading.../i);
+        expect(uploadingText).toBeInTheDocument();
 
         expect(onMainImageUrlChange).not.toHaveBeenCalled();
       });

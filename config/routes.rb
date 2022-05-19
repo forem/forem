@@ -151,6 +151,7 @@ Rails.application.routes.draw do
       collection do
         get "/onboarding", to: "tags#onboarding"
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
+        get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
     end
     resources :stripe_active_cards, only: %i[create update destroy]
@@ -193,7 +194,11 @@ Rails.application.routes.draw do
       get :podcasts
     end
 
-    resource :onboarding, only: :show
+    scope module: "users" do
+      resource :onboarding, only: %i[show update]
+      patch "/onboarding_checkbox_update", to: "onboardings#onboarding_checkbox_update"
+    end
+
     resources :profiles, only: %i[update]
     resources :profile_field_groups, only: %i[index], defaults: { format: :json }
 
@@ -210,8 +215,6 @@ Rails.application.routes.draw do
     get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
-    patch "/onboarding_update", to: "users#onboarding_update"
-    patch "/onboarding_checkbox_update", to: "users#onboarding_checkbox_update"
     patch "/onboarding_notifications_checkbox_update",
           to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
@@ -375,7 +378,7 @@ Rails.application.routes.draw do
     get "/:username/comment/:id_code/settings", to: "comments#settings"
 
     get "/:username/:slug/:view", to: "stories#show",
-                                  constraints: { view: /moderate/ }
+                                  constraints: { view: /moderate|admin/ }
     get "/:username/:slug/mod", to: "moderations#article"
     get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
     get "/:username/:slug/manage", to: "articles#manage", as: :article_manage

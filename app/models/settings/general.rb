@@ -70,7 +70,6 @@ module Settings
     # <https://mailchimp.com/developer/>
     setting :mailchimp_api_key, type: :string, default: ApplicationConfig["MAILCHIMP_API_KEY"]
     setting :mailchimp_newsletter_id, type: :string, default: ""
-    setting :mailchimp_sustaining_members_id, type: :string, default: ""
     setting :mailchimp_tag_moderators_id, type: :string, default: ""
     setting :mailchimp_community_moderators_id, type: :string, default: ""
     # Mailchimp webhook secret. Part of the callback URL in the Mailchimp settings.
@@ -78,7 +77,7 @@ module Settings
     setting :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
     # Onboarding
-    setting :onboarding_background_image, type: :string, validates: { url: true }
+    setting :onboarding_background_image, type: :string, validates: { url: true, unless: -> { value.blank? } }
     setting :suggested_tags, type: :array, default: %w[]
     setting :suggested_users, type: :array, default: %w[]
     setting :prefer_manual_suggested_users, type: :boolean, default: false

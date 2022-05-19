@@ -27,7 +27,7 @@ en:
         invalid_github_issue_pull: Invalid GitHub issue, pull request or comment link
         posted_on: posted on
       github_readme_tag:
-        invalid_options: 'GitHub tag: invalid options: %{invalid} - supported options: %{valid}'
+        invalid_options: 'GitHub tag: invalid options: %{invalid} | supported options: %{valid}'
         invalid_github_repository: Invalid GitHub repository path or URL
     glitch_tag:
       invalid_glitch_id: Invalid Glitch ID
@@ -64,8 +64,6 @@ en:
       invalid_parler_url: Invalid Parler URL
     podcast_tag:
       invalid_podcast_link: Invalid podcast link
-    poll_tag:
-      invalid_poll_id: Invalid poll ID
     reddit_tag:
       invalid_reddit_link: 'Invalid Reddit link: %{url}'
     replit_tag:
@@ -99,7 +97,10 @@ en:
       invalid_url: Invalid Twitter Timeline URL
     unified_embed:
       tag:
-        invalid_url: Embed URL not valid
+        invalid_url: URL provided may have a typo or error; please check and try again
+        not_found: URL provided was not found; please check and try again
+        listings_disabled: Listings are disabled on this Forem; cannot embed a listing URL
+        too_many_redirects: Embedded link redirected too many times.
     user_subscription_tag:
       submit: Submit
       submitting: Submitting...

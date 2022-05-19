@@ -35,6 +35,15 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
       expect(unpodcast.status_notice).to include("is not reachable")
     end
 
+    it "sets reachable when hitting ip issue" do
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(
+        Errno::EHOSTUNREACH,
+      )
+      described_class.new(unpodcast).get_episodes(limit: 2)
+      unpodcast.reload
+      expect(unpodcast.reachable).to be false
+    end
+
     it "sets reachable when there redirection is too deep" do
       allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(
         HTTParty::RedirectionTooDeep, "too deep"

@@ -27,14 +27,14 @@ RSpec.describe "ArticleApprovals", type: :request do
 
       it "does allow update" do
         post "/article_approvals", params: { approved: true, id: article.id }
-        expect(article.reload.approved).to eq(true)
+        expect(article.reload.approved).to be(true)
       end
 
       it "does allow update when any tag requires approval" do
         second_tag = create(:tag, requires_approval: false)
         article = create(:article, tags: [tag.name, second_tag.name])
         post "/article_approvals", params: { approved: true, id: article.id }
-        expect(article.reload.approved).to eq(true)
+        expect(article.reload.approved).to be(true)
       end
 
       it "does not allow update when multiple tags and none require approval" do
@@ -62,7 +62,7 @@ RSpec.describe "ArticleApprovals", type: :request do
 
       it "does allow update" do
         post "/article_approvals", params: { approved: true, id: article.id }
-        expect(article.reload.approved).to eq(true)
+        expect(article.reload.approved).to be(true)
       end
     end
   end

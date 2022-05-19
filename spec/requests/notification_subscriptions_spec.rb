@@ -101,14 +101,14 @@ RSpec.describe "NotificationSubscriptions", type: :request do
         post "/notification_subscriptions/Article/#{article.id}",
              headers: headers,
              params: { config: "not_subscribed" }
-        expect(article.reload.receive_notifications).to eq false
+        expect(article.reload.receive_notifications).to be false
       end
 
       it "updates the comment.receive_notifications column correctly if the current_user is the commenter" do
         post "/notification_subscriptions/Comment/#{comment.id}",
              headers: headers,
              params: { config: "not_subscribed" }
-        expect(comment.reload.receive_notifications).to eq false
+        expect(comment.reload.receive_notifications).to be false
       end
     end
 

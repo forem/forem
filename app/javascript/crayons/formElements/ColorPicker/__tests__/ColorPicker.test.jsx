@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, waitFor } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { ColorPicker } from '@crayons';
 
@@ -45,5 +45,25 @@ describe('<ColorPicker />', () => {
       />,
     );
     expect(container.innerHTML).toMatchSnapshot();
+  });
+
+  it('converts 3 char hex codes to full 6 chars on blur', async () => {
+    const changeHandler = jest.fn();
+
+    const { getByRole } = render(
+      <ColorPicker
+        id="color-picker"
+        buttonLabelText="Choose a color"
+        defaultValue="#0B6"
+        inputProps={{ 'aria-label': 'Choose a color' }}
+        onChange={changeHandler}
+      />,
+    );
+
+    const input = getByRole('textbox', { name: 'Choose a color' });
+    input.focus();
+    input.blur();
+
+    await waitFor(() => expect(changeHandler).toHaveBeenCalledWith('#00BB66'));
   });
 });

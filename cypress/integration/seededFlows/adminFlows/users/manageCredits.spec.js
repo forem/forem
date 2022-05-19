@@ -1,3 +1,5 @@
+import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
+
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openCreditsModal() {
   cy.getModal().should('not.exist');
@@ -6,22 +8,14 @@ function openCreditsModal() {
   return cy.getModal();
 }
 
-function verifyAndDismissUserUpdatedMessage(message) {
-  cy.findByText(message).should('exist');
-  cy.findByRole('button', { name: 'Dismiss message' })
-    .should('have.focus')
-    .click();
-  cy.findByText(message).should('not.exist');
-}
-
 describe('Manage User Credits', () => {
   describe('As an admin', () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/users');
-        cy.findByRole('link', { name: 'credits_user' }).click();
+        cy.loginAndVisit(user, '/admin/member_manager/users');
+        cy.findAllByRole('link', { name: 'Credits User' }).first().click();
       });
     });
 
@@ -34,9 +28,9 @@ describe('Manage User Credits', () => {
           name: 'Amount of credits to add or remove',
         }).type('10');
         cy.findByRole('textbox', {
-          name: 'Why are you adjusting credits?',
+          name: 'Add a note to this action:',
         }).type('some reason');
-        cy.findByRole('button', { name: 'Adjust' }).click();
+        cy.findByRole('button', { name: 'Adjust balance' }).click();
       });
 
       cy.getModal().should('not.exist');
@@ -53,9 +47,9 @@ describe('Manage User Credits', () => {
           name: 'Amount of credits to add or remove',
         }).type('1');
         cy.findByRole('textbox', {
-          name: 'Why are you adjusting credits?',
+          name: 'Add a note to this action:',
         }).type('some reason');
-        cy.findByRole('button', { name: 'Adjust' }).click();
+        cy.findByRole('button', { name: 'Adjust balance' }).click();
       });
 
       cy.getModal().should('not.exist');
@@ -74,9 +68,9 @@ describe('Manage User Credits', () => {
           .as('credits')
           .type('10');
         cy.findByRole('textbox', {
-          name: 'Why are you adjusting credits?',
+          name: 'Add a note to this action:',
         }).type('some reason');
-        cy.findByRole('button', { name: 'Adjust' }).click();
+        cy.findByRole('button', { name: 'Adjust balance' }).click();
       });
 
       cy.getModal().should('exist');

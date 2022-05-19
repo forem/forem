@@ -22,19 +22,12 @@
                        pattern: "^#+([a-fA-F0-9]{6})$",
                        title: "Provide a valid HEX Color or pick your color from the color picker.",
                        placeholder: ::Settings::UserExperience.primary_brand_color_hex,
-                       class: "crayons-textfield js-color-field",
-                       "data-action": "change->creator-settings#handleValidationsAndUpdates",
-                       "data-creator-settings-target": "brandColor",
+                       class: "crayons-textfield",
                        "aria-describedby": "color-contrast-error" %>
-      <%= f.color_field :primary_brand_color_hex,
-                        pattern: "^#+([a-fA-F0-9]{6})$",
-                        placeholder: ::Settings::UserExperience.primary_brand_color_hex,
-                        class: "crayons-color-selector js-color-field ml-2",
-                        required: true,
-                        "data-action": "change->creator-settings#handleValidationsAndUpdates" %>
+
     </div>
   </div>
-  <div id="color-contrast-error" data-creator-settings-target="colorContrastError" aria-live="polite" class="mt-1 color-accent-danger"></div>
+  <div id="color-contrast-error" aria-live="polite" class="mt-1 color-accent-danger"></div>
 </div>
 
 <div class="crayons-field mt-6 align-left">
@@ -89,3 +82,4 @@
     </div>
   </fieldset>
 </div>
+<%= javascript_packs_with_chunks_tag "admin/creatorOnboarding", defer: true %>

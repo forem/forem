@@ -558,32 +558,52 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "POST /api/articles" do
+    # As written, it's envisioned that the subject and these "let" statements create a valid
+    # authentication and authorization.
+    subject(:the_response) do
+      # This looks a bit funny, I want to issue the request but test the response.  The "post"
+      # method does not return a "response" object.
+      post api_articles_path, params: { article: params }.to_json, headers: headers
+      response
+    end
+
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
+    let(:headers) { { "api-key" => api_secret.secret, "content-type" => "application/json" } }
+    let(:params) { {} }
 
-    context "when unauthorized" do
-      it "fails with no api key" do
-        post api_articles_path, headers: { "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
+    context "when user suspended" do
+      before { user.add_role(:suspended) }
 
-      it "fails with a suspended user" do
-        user.add_role(:suspended)
-        post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
 
-      it "fails with the wrong api key" do
-        post api_articles_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
+    context "when no api key provided" do
+      let(:headers) { { "content-type" => "application/json" } }
 
-      it "fails with a failing secure compare" do
-        allow(ActiveSupport::SecurityUtils)
-          .to receive(:secure_compare).and_return(false)
-        post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
+
+    context "when given invalid api key" do
+      let(:headers) { { "api-key" => "no you're never gonna get it", "content-type" => "application/json" } }
+
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
+
+    context "when security comparision fails" do
+      before { allow(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_return(false) }
+
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
+
+    context "when only admins can post to site" do
+      # [@jeremyf] Part of me loaths the idea of writing this specific policy implementation.
+      #            Another option is to do some "allow_any_instance_of" antics.  For now, this is
+      #            the concession, but as we move through further policy changes, I'm uncertain if
+      #            we want our requests to bombard the nuances of policy.
+      before { allow(ArticlePolicy).to receive(:limit_post_creation_to_admins?).and_return(true) }
+
+      it { is_expected.to have_http_status(:unauthorized) }
     end
 
     describe "when authorized" do
@@ -954,7 +974,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           body_markdown: body_markdown,
         )
         expect(response).to have_http_status(:ok)
-        expect(article.reload.main_image).to eq(nil)
+        expect(article.reload.main_image).to be_nil
       end
 
       it "updates the main_image to be empty if given a different cover_image" do
@@ -990,7 +1010,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
         end.to change(Collection, :count).by(1)
         expect(response).to have_http_status(:ok)
-        expect(article.reload.collection).not_to be(nil)
+        expect(article.reload.collection).not_to be_nil
       end
 
       it "assigns the article to an existing series belonging to the user" do

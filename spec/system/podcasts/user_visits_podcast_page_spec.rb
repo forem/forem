@@ -20,8 +20,8 @@ RSpec.describe "User visits a podcast page", type: :system do
   end
 
   it "displays podcast publish_at" do
-    expect(page).to have_selector("time.published-at", count: 1)
-    expect(page).to have_selector("span.time-ago-indicator-initial-placeholder", count: 1)
+    expect(page).to have_selector("time.published-at")
+    expect(page).to have_selector("span.time-ago-indicator-initial-placeholder")
   end
 
   it "displays correct episodes" do

@@ -1,4 +1,3 @@
-/* global Runtime */
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
@@ -14,6 +13,7 @@ import {
   noLevelOneHeadingsRule,
   headingIncrement,
 } from '@utilities/markdown/markdownLintCustomRules';
+import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 
 /* global activateRunkitTags */
 
@@ -477,7 +477,7 @@ export class ArticleForm extends Component {
 
         <KeyboardShortcuts
           shortcuts={{
-            [`${Runtime.getOSKeyboardModifierKeyString()}+shift+KeyP`]:
+            [`${getOSKeyboardModifierKeyString()}+shift+KeyP`]:
               this.fetchPreview,
           }}
         />

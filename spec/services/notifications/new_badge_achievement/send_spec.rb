@@ -42,7 +42,7 @@ RSpec.describe Notifications::NewBadgeAchievement::Send, type: :service do
 
   it "creates a notification with no action" do
     notification = described_class.call(badge_achievement)
-    expect(notification.action).to be(nil)
+    expect(notification.action).to be_nil
   end
 
   it "creates a notification with the proper json data" do

@@ -124,6 +124,31 @@
     }
   }
 
+  &--sheet {
+    height: 100%;
+
+    .crayons-modal__box {
+      height: 100%;
+      max-height: 100%;
+      border-radius: 0;
+      grid-template-rows: 1fr;
+    }
+
+    &.crayons-modal--left {
+      .crayons-modal__box {
+        position: absolute;
+        left: 0;
+      }
+    }
+
+    &.crayons-modal--right {
+      .crayons-modal__box {
+        position: absolute;
+        right: 0;
+      }
+    }
+  }
+
   &--prompt {
     @media (min-width: $breakpoint-s) {
       --modal-max-width: 480px;

@@ -30,7 +30,7 @@ RSpec.describe Credits::Ledger, type: :service do
       item = items.first
       expect(item.purchase.is_a?(Listing)).to be(true)
       expect(item.cost).to eq(3)
-      expect(item.purchased_at.to_i >= start.to_i).to eq(true)
+      expect(item.purchased_at.to_i >= start.to_i).to be(true)
     end
   end
 
@@ -45,7 +45,7 @@ RSpec.describe Credits::Ledger, type: :service do
     create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "member")
     buy(org, org_listing, 3)
     items = described_class.call(user)[[Organization.name, org.id]]
-    expect(items).to be(nil)
+    expect(items).to be_nil
   end
 
   it "returns sponsorships purchases" do

@@ -11,7 +11,7 @@
 
       <header class="mod-index-header hidden m:block">
         <h2 class="crayons-subtitle-1">
-          <%= @tag ? "##{@tag.name}" : t("views.moderations.all") %>
+          <%= @tag ? "##{@tag.accessible_name}" : t("views.moderations.all") %>
         </h2>
       </header>
 

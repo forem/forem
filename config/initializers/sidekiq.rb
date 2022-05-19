@@ -1,3 +1,6 @@
+require "sidekiq/honeycomb_middleware"
+require "sidekiq/worker_retries_exhausted_reporter"
+
 module Sidekiq
   module Cron
     class Job
@@ -13,12 +16,6 @@ module Sidekiq
         true
       end
     end
-  end
-end
-
-Rails.application.config.to_prepare do
-  Dir.glob(Rails.root.join("lib/sidekiq/*.rb")).each do |filename|
-    require_dependency filename
   end
 end
 

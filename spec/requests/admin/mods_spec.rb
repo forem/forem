@@ -70,7 +70,7 @@ RSpec.describe "/admin/moderation/mods", type: :request do
 
     it "displays mod user" do
       put admin_mod_path(regular_user.id)
-      expect(regular_user.reload.trusted?).to eq true
+      expect(regular_user.reload.trusted?).to be true
     end
   end
 end

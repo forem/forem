@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useState, useLayoutEffect } from 'preact/hooks';
+import { useState, useLayoutEffect, useRef } from 'preact/hooks';
 import { ImageUploader } from '../../article-form/components/ImageUploader';
 import {
   coreSyntaxFormatters,
@@ -59,7 +59,8 @@ const getPreviousMatchingSibling = (element, selector) => {
  * @param {string} props.textAreaId The ID of the textarea the markdown formatting should be added to
  */
 export const MarkdownToolbar = ({ textAreaId }) => {
-  const [textArea, setTextArea] = useState(null);
+  const textAreaRef = useRef(null);
+
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
   const [storedCursorPosition, setStoredCursorPosition] = useState({});
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
@@ -89,7 +90,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   );
 
   useLayoutEffect(() => {
-    setTextArea(document.getElementById(textAreaId));
+    textAreaRef.current = document.getElementById(textAreaId);
   }, [textAreaId]);
 
   useLayoutEffect(() => {
@@ -183,6 +184,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   const insertSyntax = (syntaxName) => {
     setOverflowMenuOpen(false);
 
+    const { current: textArea } = textAreaRef;
     const {
       newCursorStart,
       newCursorEnd,
@@ -221,6 +223,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   };
 
   const handleImageUploadStarted = () => {
+    const { current: textArea } = textAreaRef;
     const { textBeforeSelection, textAfterSelection } =
       getSelectionData(textArea);
 
@@ -241,6 +244,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
   };
 
   const handleImageUploadEnd = (imageMarkdown = '') => {
+    const { current: textArea } = textAreaRef;
+
     const {
       selectionStart,
       selectionEnd,
@@ -361,7 +366,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         buttonProps={{
           onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
           onClick: () => {
-            const { selectionStart, selectionEnd } = textArea;
+            const {
+              current: { selectionStart, selectionEnd },
+            } = textAreaRef;
             setStoredCursorPosition({ selectionStart, selectionEnd });
           },
           tooltip: smallScreen ? null : (
@@ -410,10 +417,10 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           />
         </div>
       )}
-      {textArea && (
+      {textAreaRef.current && (
         <KeyboardShortcuts
           shortcuts={keyboardShortcuts}
-          eventTarget={textArea}
+          eventTarget={textAreaRef.current}
         />
       )}
     </div>

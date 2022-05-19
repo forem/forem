@@ -4,6 +4,8 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
   describe "#id" do
     let(:valid_id_no_time) { "fhH5xX_yW6U" }
     let(:valid_id_with_time) { "fhH5xX_yW6U?t=0h5m0s" }
+    let(:valid_id_with_time_num) { "fhH5xX_yW6U?t=300" }
+    let(:valid_id_with_time_sec) { "fhH5xX_yW6U?t=300s" }
     let(:invalid_id) { Faker::Lorem.characters(number: rand(12..100)) }
 
     def generate_new_liquid(id)
@@ -26,6 +28,20 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
       expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
     end
 
+    it "accepts valid YouTube ID with starting time as integer" do
+      liquid = generate_new_liquid(valid_id_with_time_num).render
+
+      expect(liquid).to include('<iframe')
+      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    end
+
+    it "accepts valid YouTube ID with starting time in seconds" do
+      liquid = generate_new_liquid(valid_id_with_time_sec).render
+
+      expect(liquid).to include('<iframe')
+      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    end
+
     it "accepts YouTube ID with no start time and an empty space" do
       liquid = generate_new_liquid("#{valid_id_no_time} ").render
 
@@ -35,6 +51,20 @@ RSpec.describe YoutubeTag, type: :liquid_tag do
 
     it "accepts YouTube ID with start times and one empty space" do
       liquid = generate_new_liquid("#{valid_id_with_time} ").render
+
+      expect(liquid).to include('<iframe')
+      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    end
+
+    it "accepts YouTube ID with start time as integer and one empty space" do
+      liquid = generate_new_liquid("#{valid_id_with_time_num} ").render
+
+      expect(liquid).to include('<iframe')
+      expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')
+    end
+
+    it "accepts YouTube ID with start time in seconds and one empty space" do
+      liquid = generate_new_liquid("#{valid_id_with_time_sec} ").render
 
       expect(liquid).to include('<iframe')
       expect(liquid).to include('src="https://www.youtube.com/embed/fhH5xX_yW6U?start=300"')

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CloudCoverUrl, type: :view_object, cloudinary: true do
-  let(:article) { create(:article) }
+  let(:article) { create(:article, main_image: "https://robohash.org/articlefactory.png") }
   let(:cloudinary_prefix) { "https://res.cloudinary.com/#{Cloudinary.config.cloud_name}/image/fetch/" }
 
   it "returns proper url" do

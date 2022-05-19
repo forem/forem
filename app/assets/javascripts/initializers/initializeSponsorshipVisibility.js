@@ -1,6 +1,6 @@
 /*
  * kept as a stand function so it can be loaded again without issue
- * see: https://github.com/thepracticaldev/dev.to/issues/6468
+ * see: https://github.com/forem/forem/issues/6468
  */
 function sponsorClickHandler(event) {
   ga(

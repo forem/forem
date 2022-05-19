@@ -29,14 +29,14 @@ module Admin
 
       @listing.update(listing_params.compact)
       @listing.clear_cache
-      flash[:success] = "Listing updated successfully"
+      flash[:success] = I18n.t("admin.listings_controller.updated")
       redirect_to edit_admin_listing_path(@listing)
     end
 
     def destroy
       @listing = Listing.find(params[:id])
       @listing.destroy
-      flash[:warning] = "'#{@listing.title}' was destroyed successfully"
+      flash[:warning] = I18n.t("admin.listings_controller.destroyed", title: @listing.title)
       redirect_to admin_listings_path
     end
 
@@ -49,8 +49,8 @@ module Admin
     end
 
     def handle_publish_status
-      unpublish_listing if listing_params[:published] == "0"
-      publish_listing if listing_params[:published] == "1"
+      @listing.unpublish if listing_params[:published] == "0"
+      @listing.publish if listing_params[:published] == "1"
     end
 
     def include_unpublished?
@@ -58,7 +58,7 @@ module Admin
     end
 
     def process_no_credit_left
-      redirect_to admin_listings_path, notice: "Not enough available credits"
+      redirect_to admin_listings_path, notice: I18n.t("admin.listings_controller.no_credit")
     end
   end
 end

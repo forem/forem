@@ -1,6 +1,6 @@
 module Metrics
   class RecordBackgroundQueueStatsWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: :high_priority, retry: 10
 
     def perform

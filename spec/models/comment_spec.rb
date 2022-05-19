@@ -220,20 +220,20 @@ RSpec.describe Comment, type: :model do
 
         comment.body_markdown = "I like the part at 4:30 and 5:50"
         comment.validate!
-        expect(comment.processed_html.include?(">5:50</a>")).to eq(true)
+        expect(comment.processed_html.include?(">5:50</a>")).to be(true)
 
         comment.body_markdown = "I like the part at 5:30 and :55"
         comment.validate!
-        expect(comment.processed_html.include?(">:55</a>")).to eq(true)
+        expect(comment.processed_html.include?(">:55</a>")).to be(true)
 
         comment.body_markdown = "I like the part at 52:30"
         comment.validate!
-        expect(comment.processed_html.include?(">52:30</a>")).to eq(true)
+        expect(comment.processed_html.include?(">52:30</a>")).to be(true)
 
         comment.body_markdown = "I like the part at 1:52:30 and 1:20"
         comment.validate!
-        expect(comment.processed_html.include?(">1:52:30</a>")).to eq(true)
-        expect(comment.processed_html.include?(">1:20</a>")).to eq(true)
+        expect(comment.processed_html.include?(">1:52:30</a>")).to be(true)
+        expect(comment.processed_html.include?(">1:20</a>")).to be(true)
       end
       # rubocop:enable RSpec/ExampleLength
 
@@ -242,7 +242,7 @@ RSpec.describe Comment, type: :model do
 
         comment.body_markdown = "I like the part at 1:52:30 and 1:20"
         comment.validate!
-        expect(comment.processed_html.include?(">1:52:30</a>")).to eq(false)
+        expect(comment.processed_html.include?(">1:52:30</a>")).to be(false)
       end
 
       it "does not add DOCTYPE and html body to processed html" do
@@ -268,7 +268,7 @@ RSpec.describe Comment, type: :model do
     it "shows year in readable time if not current year" do
       comment.created_at = 1.year.ago
       last_year = 1.year.ago.year % 100
-      expect(comment.readable_publish_date.include?("'#{last_year}")).to eq(true)
+      expect(comment.readable_publish_date.include?("'#{last_year}")).to be(true)
     end
   end
 
@@ -533,12 +533,12 @@ RSpec.describe Comment, type: :model do
     let(:comment) { create(:comment, ancestry: root_comment.id) }
 
     it "returns true if root is present" do
-      expect(comment.root_exists?).to eq(true)
+      expect(comment.root_exists?).to be(true)
     end
 
     it "returns false if root has been deleted" do
       root_comment.destroy
-      expect(comment.reload.root_exists?).to eq(false)
+      expect(comment.reload.root_exists?).to be(false)
     end
   end
 end

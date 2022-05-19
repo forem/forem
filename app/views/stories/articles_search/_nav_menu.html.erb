@@ -14,7 +14,9 @@
   <li><a class="query-filter-button crayons-navigation__item" data-filter="class_name:Comment" href="javascript:;">
     <%= t("views.search.nav.comments") %>
   </a></li>
+  <% if policy(Article).has_existing_articles_or_can_create_new_ones? %>
   <li><a class="query-filter-button my-posts-query-button crayons-navigation__item" data-filter="MY_POSTS" href="javascript:;">
     <%= t("views.search.nav.my_posts") %>
   </a></li>
+  <% end %>
 </ul>

@@ -3,7 +3,7 @@
     <%= render partial: "form_errors", locals: { listing: listing } %>
 
     <div id="listingform-data"
-      data-listing="<%= listing.to_json(only: %i[id title body_markdown category cached_tag_list]) %>"
+      data-listing="<%= listing.to_json(only: %i[id title body_markdown listing_category_id category cached_tag_list]) %>"
       data-organizations="<%= @organizations.to_json(only: %i[id name]) %>"
       data-categories-for-select="<%= select_options_for_categories.to_json %>"
       data-categories-for-details="<%= categories_available.transform_values { |value_hash| value_hash.except(:cost) }.values.to_json %>">

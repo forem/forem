@@ -50,7 +50,7 @@
       <% @tags.each do |tag| %>
         <div class="tag-card crayons-card branded-4 p-3 pt-2 m:p-6 m:pt-4 relative" style="border-top-color: <%= tag.bg_color_hex %>; ">
           <h3 class="mb-1 -ml-2">
-            <%= render_tag_link(tag.name) %>
+            <%= render_tag_link(tag.accessible_name) %>
           </h3>
           <% if tag.short_summary.present? %>
             <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>

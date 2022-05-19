@@ -17,8 +17,8 @@ describe('Update profile settings', () => {
     cy.findByRole('textbox', { name: 'Brand color 2' }).as('brandColor2');
 
     // Verify that changing the value saves properly
-    cy.get('@brandColor1').clear().type('ababab');
-    cy.get('@brandColor2').clear().type('d22a2a');
+    cy.get('@brandColor1').enterIntoColorInput('ababab');
+    cy.get('@brandColor2').enterIntoColorInput('d22a2a');
 
     cy.findByRole('button', { name: 'Save Profile Information' }).click();
     cy.findByText('Your profile has been updated');

@@ -25,10 +25,10 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      statements: 41,
-      branches: 38,
-      functions: 40,
-      lines: 42,
+      statements: 43,
+      branches: 45,
+      functions: 42,
+      lines: 44,
     },
   },
   moduleNameMapper: {
@@ -55,4 +55,6 @@ module.exports = {
     'jest-watch-typeahead/testname',
   ],
   testEnvironment: './customJsDomEnvironment.js',
+  // We occasionally need to allow transpiling of specific node_modules. See https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
+  transformIgnorePatterns: ['/node_modules/(?!(preact|react-colorful)/)'],
 };

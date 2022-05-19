@@ -41,7 +41,7 @@ RSpec.describe HtmlVariant, type: :model do
   it "does not find if different tag targeted" do
     html_variant.target_tag = "different_tag_yolo"
     html_variant.save!
-    expect(described_class.find_for_test(["hello"])).to eq(nil)
+    expect(described_class.find_for_test(["hello"])).to be_nil
   end
 
   it "finds if no tag targeted and tag given" do

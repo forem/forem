@@ -1,3 +1,5 @@
+import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
+
 function openUserOptions(callback) {
   cy.findByRole('button', { name: 'Options' })
     .should('have.attr', 'aria-haspopup', 'true')
@@ -11,37 +13,14 @@ function openUserOptions(callback) {
     });
 }
 
-function verifyAndDismissUserUpdatedMessage(message) {
-  cy.findByTestId('flash-success')
-    .as('success')
-    .then((element) => {
-      expect(element.text().trim()).equal(message);
-    });
-
-  cy.get('@success').within(() => {
-    cy.findByRole('button', { name: 'Dismiss message' })
-      .should('have.focus')
-      .click();
-  });
-
-  cy.findByTestId('flash-success').should('not.exist');
-}
-
 describe('Manage User Options', () => {
   describe('As an admin', () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/users/2');
+        cy.loginAndVisit(user, '/admin/member_manager/users/2');
       });
-    });
-
-    it(`should verify a user's email address`, () => {
-      openUserOptions(() => {
-        cy.findByRole('button', { name: 'Verify email address' }).click();
-      });
-      verifyAndDismissUserUpdatedMessage('Verification email sent!');
     });
 
     it(`should export a user's data to an admin`, () => {
@@ -74,22 +53,22 @@ describe('Manage User Options', () => {
 
     it(`should merge a user's account with another account`, () => {
       openUserOptions(() => {
-        cy.findByRole('button', { name: 'Merge accounts' }).click();
+        cy.findByRole('button', { name: 'Merge users' }).click();
       });
 
       cy.getModal().within(() => {
         cy.findByRole('spinbutton', { name: 'User ID' }).type('3');
-        cy.findByRole('button', { name: 'Merge users' }).click();
+        cy.findByRole('button', { name: 'Merge and delete' }).click();
       });
     });
 
     it(`should banish a user for spam`, () => {
       openUserOptions(() => {
-        cy.findByRole('button', { name: 'Banish for spam' }).click();
+        cy.findByRole('button', { name: 'Banish user' }).click();
       });
 
       cy.getModal().within(() => {
-        cy.findByRole('button', { name: 'Banish User for spam' }).click();
+        cy.findByRole('button', { name: 'Banish Trusted User 1 \\:/' }).click();
       });
 
       verifyAndDismissUserUpdatedMessage(
@@ -104,12 +83,12 @@ describe('Manage User Options', () => {
 
       cy.getModal().within(() => {
         cy.findByRole('button', {
-          name: 'Fully Delete User & All Activity',
+          name: 'Delete now',
         }).click();
       });
 
       verifyAndDismissUserUpdatedMessage(
-        '@trusted_user_1 (email: trusted-user-1@forem.local, user_id: 2) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics  and confirm on the page.',
+        '@trusted_user_1 (email: trusted-user-1@forem.local, user_id: 2) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on the page.',
       );
     });
 

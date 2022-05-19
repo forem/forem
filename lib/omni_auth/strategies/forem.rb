@@ -6,7 +6,7 @@ module OmniAuth
       option :name, :forem
 
       option :client_options, {
-        site: ApplicationConfig["PASSPORT_OAUTH_URL"] || "https://passport.forem.com".freeze,
+        site: ApplicationConfig["FOREM_OAUTH_URL"] || "https://account.forem.com".freeze,
         authorize_url: "/oauth/authorize"
       }
 

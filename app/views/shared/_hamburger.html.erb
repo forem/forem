@@ -10,7 +10,7 @@
 
     <div class="p-2">
       <%= render partial: "shared/auth_widget" unless user_signed_in? %>
-      <%= render partial: "layouts/main_nav" %>
+      <%= render partial: "layouts/main_nav", locals: { context: "hamburger" } %>
     </div>
   </div>
   <div class="hamburger__overlay js-hamburger-trigger"></div>

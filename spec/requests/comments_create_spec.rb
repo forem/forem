@@ -84,7 +84,7 @@ RSpec.describe "CommentsCreate", type: :request do
 
       new_comment = Comment.last
       expect(new_comment.body_markdown).to eq("something allowed")
-      expect(new_comment.id).not_to eq(nil)
+      expect(new_comment.id).not_to be_nil
     end
   end
 

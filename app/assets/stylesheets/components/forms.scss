@@ -253,31 +253,6 @@ textarea.crayons-textfield.crayons-textfield--ghost {
   white-space: pre-wrap;
 }
 
-///////////////////////////////////////////////////
-.crayons-color-selector {
-  --swatch-width: var(--su-6);
-  --swatch-height: var(--su-6);
-  @extend %form-styling;
-  padding: calc(0.5em - var(--border-width)) 0.5em;
-  height: 40px;
-
-  &::-webkit-color-swatch-wrapper {
-    padding: 0;
-    width: var(--swatch-width);
-    height: var(--swatch-height);
-  }
-
-  &::-webkit-color-swatch {
-    border: 0;
-  }
-
-  &--full {
-    width: 100%;
-    --swatch-width: 100%;
-  }
-}
-
-// TODO: cleanup duplicated .crayons-color-selector styles once usages have been replaced with the new component
 .c-color-picker {
   --swatch-width: var(--su-7);
   --swatch-height: var(--su-7);

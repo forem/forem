@@ -460,6 +460,9 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-summary {
     margin: 0;
     line-height: var(--lh-tight);
+
+    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+    overflow-wrap: break-word;
     overflow-wrap: anywhere;
   }
 

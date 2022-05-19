@@ -22,7 +22,6 @@ namespace :admin do
     mount PgHero::Engine, at: "pghero"
   end
 
-  resources :invitations, only: %i[index new create destroy]
   resources :organization_memberships, only: %i[update destroy create]
   resources :permissions, only: %i[index]
   resources :reactions, only: %i[update]
@@ -39,28 +38,38 @@ namespace :admin do
     resources :user_experiences, only: [:create]
   end
 
-  namespace :users do
+  scope :member_manager do
+    resources :users, only: %i[index show update destroy] do
+      resources :email_messages, only: :show
+      collection do
+        get "export"
+      end
+
+      member do
+        post "banish"
+        post "export_data"
+        post "full_delete"
+        patch "user_status"
+        post "merge"
+        delete "remove_identity"
+        post "send_email"
+        post "verify_email_ownership"
+        patch "unlock_access"
+        post "unpublish_all_articles"
+      end
+    end
+
+    resources :invitations, only: %i[index new create destroy] do
+      member do
+        post "resend"
+      end
+    end
+
     resources :gdpr_delete_requests, only: %i[index destroy]
   end
 
-  resources :users, only: %i[index show edit update destroy] do
-    resources :email_messages, only: :show
-
-    member do
-      post "banish"
-      post "export_data"
-      post "full_delete"
-      patch "user_status"
-      post "merge"
-      delete "remove_identity"
-      post "send_email"
-      post "verify_email_ownership"
-      patch "unlock_access"
-      post "unpublish_all_articles"
-    end
-  end
-
   scope :content_manager do
+    resources :spaces, only: %i[index update]
     resources :articles, only: %i[index show update] do
       member do
         delete :unpin
@@ -96,13 +105,8 @@ namespace :admin do
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]
-
-    # NOTE: @citizen428 The next two resources have a temporary constraint
-    # while profile generalization is still WIP
-    constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
-      resources :profile_field_groups, only: %i[update create destroy]
-      resources :profile_fields, only: %i[index update create destroy]
-    end
+    resources :profile_field_groups, only: %i[update create destroy]
+    resources :profile_fields, only: %i[index update create destroy]
   end
 
   scope :moderation do
@@ -128,6 +132,12 @@ namespace :admin do
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
+      end
+    end
+
+    resources :extensions, only: %i[index] do
+      collection do
+        post "toggle", to: "extensions#toggle"
       end
     end
 

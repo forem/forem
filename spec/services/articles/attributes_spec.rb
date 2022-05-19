@@ -17,7 +17,7 @@ RSpec.describe Articles::Attributes, type: :service do
         few_attributes[:title] = nil
         attrs = described_class.new(few_attributes, user).for_update
         expect(attrs.key?(:title)).to be true
-        expect(attrs[:title]).to be nil
+        expect(attrs[:title]).to be_nil
       end
 
       it "doesn't have attributes that were not passed" do
@@ -34,13 +34,13 @@ RSpec.describe Articles::Attributes, type: :service do
     it "sets a collection when :series was passed" do
       series_attrs = described_class.new({ series: "slug", title: "title" }, user).for_update
       expect(series_attrs[:collection]).to be_a(Collection)
-      expect(series_attrs[:series]).to be nil
+      expect(series_attrs[:series]).to be_nil
     end
 
     it "resets the collection when empty :series was passed" do
       no_series_attrs = described_class.new({ series: "" }, user).for_update
-      expect(no_series_attrs[:collection]).to be nil
-      expect(no_series_attrs[:series]).to be nil
+      expect(no_series_attrs[:collection]).to be_nil
+      expect(no_series_attrs[:series]).to be_nil
     end
 
     it "does not reset the collection when no :series was passed" do

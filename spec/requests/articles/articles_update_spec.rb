@@ -51,7 +51,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
       # use empty string instead of nil to mock article form submission
       article: { organization_id: "" }
     }
-    expect(article.reload.organization_id).to eq nil
+    expect(article.reload.organization_id).to be_nil
   end
 
   it "does not modify the organization ID when the user neither adds nor removes the org" do
@@ -98,7 +98,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     put "/articles/#{article.id}", params: {
       article: { archived: true }
     }
-    expect(article.archived).to eq(false)
+    expect(article.archived).to be(false)
   end
 
   it "updates article collection when new series was passed" do
@@ -126,7 +126,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article: { series: "", body_markdown: "blah" }
     }
     article.reload
-    expect(article.collection).to eq(nil)
+    expect(article.collection).to be_nil
   end
 
   it "creates a notification job if published the first time" do

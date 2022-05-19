@@ -36,13 +36,13 @@ RSpec.describe EmailAuthorization, type: :model do
     let(:user) { create(:user) }
 
     it "returns nil if there are no email authorizations" do
-      expect(described_class.last_verification_date(user)).to be(nil)
+      expect(described_class.last_verification_date(user)).to be_nil
     end
 
     it "does not return unverified email authorizations" do
       create(:email_authorization, user: user, verified_at: nil)
 
-      expect(described_class.last_verification_date(user)).to be(nil)
+      expect(described_class.last_verification_date(user)).to be_nil
     end
 
     it "returns the last email authorization's date" do

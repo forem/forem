@@ -23,9 +23,8 @@ describe('Authentication Section', () => {
           cy.visit('/admin/customization/config');
           cy.findByTestId('authSectionForm').as('authSectionForm');
 
-          cy.get('@authSectionForm')
-            .findByRole('heading', { name: 'Authentication' })
-            .click();
+          cy.get('@authSectionForm').findByText('Authentication').click();
+
           cy.get('@authSectionForm')
             .findByRole('checkbox', { name: 'Invite-only mode' })
             .should('not.be.checked')
@@ -42,14 +41,14 @@ describe('Authentication Section', () => {
             );
           });
 
-          cy.url().should('contains', '/admin/customization/config');
+          // The page doesn't automatically reload on submission, 
+          // so we reload manually to check the settings have been persisted
+          cy.reload();
 
           // Page reloaded so need to get a new reference to the form.
           cy.findByTestId('authSectionForm').as('authSectionForm');
 
-          cy.get('@authSectionForm')
-            .findByRole('heading', { name: 'Authentication' })
-            .click();
+          cy.get('@authSectionForm').findByText('Authentication').click();
           cy.get('@authSectionForm')
             .findByRole('checkbox', { name: 'Invite-only mode' })
             .should('be.checked');
@@ -107,11 +106,6 @@ describe('Authentication Section', () => {
         cy.url().should('contains', '/admin/customization/config');
 
         cy.findByText('Successfully updated settings.').should('be.visible');
-
-        // Page reloaded so need to get a new reference to the form.
-        cy.findByTestId('authSectionForm').as('authSectionForm');
-        cy.get('@authSectionForm').findByText('Authentication').click();
-
         cy.findByLabelText('Facebook enabled').should('be.visible');
       });
     });

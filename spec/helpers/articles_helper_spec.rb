@@ -21,6 +21,11 @@ describe ArticlesHelper do
       host = helper.get_host_without_www("www.example.com")
       expect(host).to eq "example.com"
     end
+
+    it "can handle URLs with leading and trailing whitespace" do
+      host = helper.get_host_without_www(" www.example.com ")
+      expect(host).to eq "example.com"
+    end
   end
 
   describe "#image_tag_or_inline_svg_tag" do
@@ -61,7 +66,7 @@ describe ArticlesHelper do
     end
 
     it "returns nil if there is no timestamp" do
-      expect(helper.utc_iso_timestamp(nil)).to be nil
+      expect(helper.utc_iso_timestamp(nil)).to be_nil
     end
   end
 end

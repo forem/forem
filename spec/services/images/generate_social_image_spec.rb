@@ -29,7 +29,7 @@ RSpec.describe Images::GenerateSocialImage, type: :labor do
   it "creates various generated images of different title lengths" do
     [25, 49, 79, 99, 105].each do |n|
       article.assign_attributes(title: "0" * n, main_image: nil, cached_tag_list: "discuss, hello")
-      expect(described_class.call(article).include?(article.title)).to eq(true)
+      expect(described_class.call(article).include?(article.title)).to be(true)
     end
   end
 

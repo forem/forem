@@ -141,37 +141,25 @@ RSpec.describe Reaction, type: :model do
     let(:receiver) { build(:user) }
     let(:reaction) { build(:reaction, reactable: build(:article), user: nil) }
 
-    context "when false" do
-      it "is false when points are positive" do
-        reaction.points = 1
-        expect(reaction.skip_notification_for?(receiver)).to be(false)
-      end
-
-      it "is false when the person who reacted is not the same as the reactable owner" do
-        user_id = User.maximum(:id).to_i + 1
-        reaction.user_id = user_id
-        reaction.reactable.user_id = user_id + 1
-        expect(reaction.skip_notification_for?(user)).to be(false)
-      end
-
-      it "is false when receive_notifications is true" do
-        reaction.reactable.receive_notifications = true
-        expect(reaction.skip_notification_for?(receiver)).to be(false)
-      end
+    it "is normally false" do
+      expect(reaction.skip_notification_for?(receiver)).to be(false)
     end
 
-    context "when true" do
-      it "is true when points are negative" do
-        reaction.points = -2
-        expect(reaction.skip_notification_for?(receiver)).to be(true)
-      end
+    it "is true when points are negative" do
+      reaction.points = -2
+      expect(reaction.skip_notification_for?(receiver)).to be(true)
+    end
 
-      it "is true when the person who reacted is the same as the reactable owner" do
-        user_id = User.maximum(:id).to_i + 1
-        reaction.user_id = user_id
-        reaction.reactable.user_id = user_id
-        expect(reaction.skip_notification_for?(user)).to be(true)
-      end
+    it "is true when the person who reacted is the same as the reactable owner" do
+      user_id = User.maximum(:id).to_i + 1
+      reaction.user_id = user_id
+      reaction.reactable.user_id = user_id
+      expect(reaction.skip_notification_for?(user)).to be(true)
+    end
+
+    it "is true for inavlidated reactions" do
+      reaction.status = "invalid"
+      expect(reaction.skip_notification_for?(user)).to be(true)
     end
 
     context "when reactable is a user" do
@@ -205,6 +193,36 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called after create" do
+    describe "field tests" do
+      let!(:user) { create(:user, :trusted) }
+
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: Users::RecordFieldTestEventWorker)
+      end
+
+      it "enqueues a Users::RecordFieldTestEventWorker for giving a like to an article" do
+        article = create(:article, user: user)
+        sidekiq_assert_enqueued_jobs(1, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: article, user: user, category: "like")
+        end
+      end
+
+      it "does not enqueue a Users::RecordFieldTestEventWorker for giving a privileged reaction to an article" do
+        article = create(:article, user: user)
+        sidekiq_assert_enqueued_jobs(0, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: article, user: user, category: "thumbsdown")
+        end
+      end
+
+      it "does not enqueue a Users::RecordFieldTestEventWorker for giving a like to a comment" do
+        comment = create(:comment, user: user)
+        sidekiq_assert_enqueued_jobs(0, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: comment, user: user, category: "like")
+        end
+      end
+    end
+
     describe "slack messages" do
       let!(:user) { create(:user, :trusted) }
       let!(:article) { create(:article, user: user) }

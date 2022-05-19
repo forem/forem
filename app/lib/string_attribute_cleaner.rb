@@ -12,9 +12,9 @@ module StringAttributeCleaner
   # @return [void]
   #
   # @example Defining a list of attributes to be cleaned
-  #   include StringAttributeCleaner.for(:attribute1, :attribute2)
-  #   include StringAttributeCleaner.for(:attribute1, :attribute2, on: :before_save)
-  def self.for(*attributes, on: :before_validation)
+  #   include StringAttributeCleaner.nullify_blanks_for(:attribute1, :attribute2)
+  #   include StringAttributeCleaner.nullify_blanks_for(:attribute1, :attribute2, on: :before_save)
+  def self.nullify_blanks_for(*attributes, on: :before_validation)
     Module.new do
       define_singleton_method(:included) do |klass|
         return unless klass < ActiveRecord::Base

@@ -12,8 +12,8 @@
           <div class="py-2 flex">
             <a href="<%= user.path %>">@<%= user.username %></a> - <%= user.name %>
             <div class="ml-auto shrink-0">
-              <%= link_to "admin User", admin_user_path(user.id), class: "btn btn-secondary btn-sm" %>
-              <%= link_to "Destructive Actions", edit_admin_user_path(user.id), class: "btn btn-danger btn-sm" %>
+              <%= link_to "Admin User", admin_user_path(user.id), class: "btn btn-secondary btn-sm" %>
+              <%= link_to "Destructive Actions", admin_user_path(user.id), class: "btn btn-danger btn-sm" %>
             </div>
           </div>
         <% end %>

@@ -53,10 +53,6 @@ class GlitchTag < LiquidTagBase
     end
   end
 
-  def match_has_named_capture_group?(match, group_name)
-    match.names.include?(group_name)
-  end
-
   def parse_options(options, match)
     # 'app' and 'code' should cancel each other out
     options -= %w[app code] if options.include?("app") && options.include?("code")

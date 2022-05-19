@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/users", type: :request do
+RSpec.describe "/admin/member_manager/users", type: :request do
   let!(:user) do
     omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
@@ -11,108 +11,93 @@ RSpec.describe "/admin/users", type: :request do
     sign_in(admin)
   end
 
-  describe "GET /admin/users" do
+  describe "GET /admin/member_manager/users" do
     it "renders to appropriate page" do
       get admin_users_path
       expect(response.body).to include(user.username)
     end
+
+    context "when searching" do
+      it "finds the proper user by GitHub username" do
+        get "#{admin_users_path}?search=#{user.github_username}"
+        expect(response.body).to include(CGI.escapeHTML(user.github_username))
+      end
+    end
+
+    context "when filtering by role" do
+      it "filters and shows the proper user(s)" do
+        get "#{admin_users_path}?search&role=super_admin"
+        expect(response.body).to include(CGI.escapeHTML(admin.name))
+      end
+    end
   end
 
-  describe "GET /admin/users/:id" do
-    it "renders to appropriate page", :aggregate_failures do
+  describe "GET /admin/member_manager/users/:id" do
+    it "renders to appropriate page" do
       get admin_user_path(user)
 
       expect(response.body).to include(user.username)
-      expect(response.body).not_to include("Go back to All members")
     end
 
-    context "when a user is unregistered" do
-      it "renders a message stating that the user isn't registered" do
-        user.update_columns(registered: false)
-        get admin_user_path(user.id)
-        expect(response.body).to include("@#{user.username} has not accepted their invitation yet.")
-      end
-
-      it "only displays limited information about the user" do
-        user.update_columns(registered: false)
-        get admin_user_path(user.id)
-        expect(response.body).not_to include("Activity")
-      end
-    end
-
-    context "when a user is registered" do
-      it "renders the Admin User profile as expected" do
-        get admin_user_path(user.id)
-        expect(response.body).to include("Activity")
-      end
-    end
-
-    context "when a user has been sent an email" do
-      it "renders a link to the user email preview" do
-        email = create(:email_message, user: user, to: user.email)
-        get admin_user_path(user.id)
-
-        preview_path = admin_user_email_message_path(user, email)
-        expect(response.body).to include(preview_path)
-      end
-    end
-  end
-
-  describe "GET /admin/users/:id/edit" do
     it "redirects from /username/moderate" do
       get "/#{user.username}/moderate"
       expect(response).to redirect_to(admin_user_path(user.id))
     end
 
     it "shows banish button for new users" do
-      get edit_admin_user_path(user.id)
-      expect(response.body).to include("Banish User for Spam!")
+      get admin_user_path(user.id)
+      expect(response.body).to include("Banish user")
     end
 
     it "does not show banish button for non-admins" do
       sign_out(admin)
-      expect { get edit_admin_user_path(user.id) }.to raise_error(Pundit::NotAuthorizedError)
+      expect { get admin_user_path(user.id) }.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "displays the 'Current Roles' section" do
-      get edit_admin_user_path(user.id)
-      expect(response.body).to include("Current Roles")
+    it "displays a user's current roles in the 'Overview' tab" do
+      get admin_user_path(user.id)
+      expect(response.body).to include("Roles")
     end
 
-    it "displays the 'Recent Reactions' section" do
-      get edit_admin_user_path(user.id)
-      expect(response.body).to include("Recent Reactions")
+    it "displays a user's current roles in the 'Emails' tab" do
+      get "#{admin_user_path(user.id)}?tab=emails"
+      expect(response.body).to include("Previous emails")
+    end
+
+    it "displays a user's current flags in the 'Flags' tab" do
+      get "#{admin_user_path(user.id)}?tab=flags"
+      expect(response.body).to include("Flags received")
     end
 
     it "displays a message when there are no related vomit reactions for a user" do
-      get edit_admin_user_path(user.id)
-      expect(response.body).to include("Nothing negative to see here! 👀")
+      get "#{admin_user_path(user.id)}?tab=flags"
+      expect(response.body).to include("No flags received against")
     end
 
     it "displays a list of recent related vomit reactions for a user if any exist" do
       vomit = build(:reaction, category: "vomit", user_id: user.id, reactable_type: "Article", status: "valid")
-      get edit_admin_user_path(user.id)
+      get admin_user_path(user.id)
       expect(response.body).to include(vomit.reactable_type)
     end
 
-    it "displays the 'Recent Reports' section" do
-      get edit_admin_user_path(user.id)
-      expect(response.body).to include("Recent Reports")
+    it "displays a user's current reports in the 'Reports' tab" do
+      get "#{admin_user_path(user.id)}?tab=reports"
+      expect(response.body).to include("Reports submitted by")
     end
 
-    it "displays a message when there are no related reports for a user" do
-      get edit_admin_user_path(user.id)
-      expect(response.body).to include("Nothing to report here! 👀")
+    it "displays a message when there are no current reports for a user" do
+      get "#{admin_user_path(user.id)}?tab=reports"
+      expect(response.body).to include("No comment or post has been reported yet.")
     end
 
-    it "displays a list of recent reports for a user if any exist" do
+    it "displays a list of current reports for a user if any exist" do
       report = build(:feedback_message, category: "spam", affected_id: user.id, feedback_type: "spam", status: "Open")
-      get edit_admin_user_path(user.id)
+      get admin_user_path(user.id)
       expect(response.body).to include(report.feedback_type)
     end
   end
 
-  describe "POST /admin/users/:id/banish" do
+  describe "POST /admin/member_manager/users/:id/banish" do
     it "bans user for spam" do
       allow(Moderator::BanishUserWorker).to receive(:perform_async)
       post banish_admin_user_path(user.id)
@@ -121,7 +106,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/send_email" do
+  describe "POST /admin/member_manager/users/:id/send_email" do
     let(:params) do
       {
         email_body: "Body",
@@ -203,7 +188,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/verify_email_ownership" do
+  describe "POST /admin/member_manager/users/:id/verify_email_ownership" do
     let(:mailer) { double }
     let(:message_delivery) { double }
 
@@ -312,7 +297,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/unpublish_all_articles" do
+  describe "POST /admin/member_manager/users/:id/unpublish_all_articles" do
     let(:user) { create(:user) }
 
     it "unpublishes all articles" do
@@ -322,7 +307,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "DELETE /admin/users/:id/remove_identity" do
+  describe "DELETE /admin/member_manager/users/:id/remove_identity" do
     let(:provider) { Authentication::Providers.available.first }
     let(:user) do
       omniauth_mock_providers_payload
@@ -347,7 +332,7 @@ RSpec.describe "/admin/users", type: :request do
 
       delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
 
-      expect(user.public_send("#{identity.provider}_username")).to be(nil)
+      expect(user.public_send("#{identity.provider}_username")).to be_nil
     end
 
     it "does not remove GitHub repositories if the removed identity is not GitHub" do
@@ -382,7 +367,7 @@ RSpec.describe "/admin/users", type: :request do
     end
   end
 
-  describe "POST /admin/users/:id/export_data" do
+  describe "POST /admin/member_manager/users/:id/export_data" do
     it "redirects properly to the user edit page" do
       sign_in admin
       post export_data_admin_user_path(user), params: { send_to_admin: "true" }

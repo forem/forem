@@ -17,7 +17,9 @@ function titleArea({
       return (
         tag.length > 0 && (
           <a href={`/t/${tag}`} className="crayons-tag">
-            <span key={tag} className="crayons-tag__prefix">#</span>
+            <span key={tag} className="crayons-tag__prefix">
+              #
+            </span>
             {tag}
           </a>
         )

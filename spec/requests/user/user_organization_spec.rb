@@ -10,7 +10,7 @@ RSpec.describe "UserOrganization", type: :request do
     it "creates an organization_membership association" do
       post "/users/join_org", params: { org_secret: organization.secret }
       org_membership = OrganizationMembership.first
-      expect(org_membership.persisted?).to eq true
+      expect(org_membership.persisted?).to be true
       expect(org_membership.user).to eq user
       expect(org_membership.organization).to eq organization
       expect(org_membership.type_of_user).to eq "member"
@@ -23,7 +23,7 @@ RSpec.describe "UserOrganization", type: :request do
 
     it "correctly strips the secret of the org_secret param" do
       post "/users/join_org", params: { org_secret: "#{organization.secret}     " }
-      expect(OrganizationMembership.exists?(user: user, organization: organization)).to eq true
+      expect(OrganizationMembership.exists?(user: user, organization: organization)).to be true
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe "UserOrganization", type: :request do
     it "creates the correct organization_membership association" do
       create_org
       org_membership = OrganizationMembership.first
-      expect(org_membership.persisted?).to eq true
+      expect(org_membership.persisted?).to be true
       expect(org_membership.user).to eq user
       expect(org_membership.organization).to eq Organization.last
       expect(org_membership.type_of_user).to eq "admin"
@@ -98,7 +98,7 @@ RSpec.describe "UserOrganization", type: :request do
     it "leaves org and deletes the member's organization membership" do
       org_id = org_member.organizations.first.id
       post "/users/leave_org/#{org_id}"
-      expect(OrganizationMembership.exists?(user_id: org_member.id, organization_id: org_id)).to eq false
+      expect(OrganizationMembership.exists?(user_id: org_member.id, organization_id: org_id)).to be false
     end
   end
 
@@ -118,13 +118,13 @@ RSpec.describe "UserOrganization", type: :request do
     it "adds org admin" do
       org = org_admin.organizations.first
       add_org_admin
-      expect(user2.org_admin?(org)).to eq(true)
+      expect(user2.org_admin?(org)).to be(true)
     end
 
     it "creates the org_membership association" do
       add_org_admin
       org_membership = OrganizationMembership.last
-      expect(org_membership.persisted?).to eq true
+      expect(org_membership.persisted?).to be true
       expect(org_membership.user_id).to eq user2.id
       expect(org_membership.organization_id).to eq org_id
       expect(org_membership.type_of_user).to eq "admin"
@@ -150,7 +150,7 @@ RSpec.describe "UserOrganization", type: :request do
 
     it "removes org admin" do
       post "/users/remove_org_admin", params: { user_id: second_org_admin.id, organization_id: org_id }
-      expect(second_org_admin.org_admin?(org_id)).to eq false
+      expect(second_org_admin.org_admin?(org_id)).to be false
     end
 
     it "updates the correct org_membership association to a member level" do

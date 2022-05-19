@@ -22,7 +22,7 @@ class ProfileField < ApplicationRecord
   private
 
   def generate_attribute_name
-    self.attribute_name = label.titleize.scan(WORD_REGEX).join.underscore
+    self.attribute_name = "attribute_#{SecureRandom.hex}"
   end
 
   def maximum_header_field_count

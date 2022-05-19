@@ -51,6 +51,10 @@
     font-size: var(--fs-2xl);
     line-height: var(--lh-tight);
 
+    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+
     @media (min-width: $breakpoint-s) {
       font-size: var(--fs-3xl);
     }

@@ -14,9 +14,9 @@ RSpec.describe Listings::ExpireOldListingsWorker, type: :worker do
 
         worker.perform
 
-        expect(bumped_listing.reload.published).to eq(false)
-        expect(expired_listing.reload.published).to eq(false)
-        expect(valid_listing.reload.published).to eq(true)
+        expect(bumped_listing.reload.published).to be(false)
+        expect(expired_listing.reload.published).to be(false)
+        expect(valid_listing.reload.published).to be(true)
       end
     end
   end

@@ -1,13 +1,25 @@
 module Feeds
+  # Responsible for fetching RSS feeds for multiple users.
+  #
+  # @see Feeds::Import.call
   class Import
-    def self.call(users: nil, earlier_than: nil)
-      new(users: users, earlier_than: earlier_than).call
+    # Fetch the feeds for the given users (with some filtering based on internal business logic).
+    #
+    # @param users_scope [ActiveRecord::Relation<User>] the initial scope for determining the users
+    #        whose feeds we'll be fetching.
+    #
+    # @param earlier_than [NilClass, ActiveSupport::TimeWithZone] when given, use this to further
+    #        filter the user's who's articles we'll fetch.  That is to say, we won't fetch anyone's
+    #        feeds who's last fetch time was after our earlier_than parameter.
+    #
+    # @return [Integer] count of total articles fetched.
+    def self.call(users_scope: User, earlier_than: nil)
+      new(users_scope: users_scope, earlier_than: earlier_than).call
     end
 
-    def initialize(users: nil, earlier_than: nil)
-      # using nil here to avoid an unnecessary table count to check presence
-      @users = users || User.where(id: Users::Setting.with_feed.select(:user_id))
+    def initialize(users_scope: User, earlier_than: nil)
       @earlier_than = earlier_than
+      @users = filter_users_from(users_scope: users_scope, earlier_than: earlier_than)
 
       # NOTE: should these be configurable? Currently they are the result of empiric
       # tests trying to find a balance between memory occupation and speed
@@ -21,10 +33,8 @@ module Feeds
 
       users.in_batches(of: users_batch_size) do |batch_of_users|
         feeds_per_user_id = fetch_feeds(batch_of_users)
-        ForemStatsClient.count("feeds::import::fetch_feeds.count", feeds_per_user_id.length)
 
         feedjira_objects = parse_feeds(feeds_per_user_id)
-        ForemStatsClient.count("feeds::import::parse_feeds.count", feedjira_objects.length)
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
         # and unnecessary conflicts
@@ -33,9 +43,7 @@ module Feeds
           # only actually uses feed.url
           user = batch_of_users.detect { |u| u.id == user_id }
 
-          ForemStatsClient.time("feeds::import::create_articles_from_user_feed", tags: ["user_id:#{user_id}"]) do
-            create_articles_from_user_feed(user, feed)
-          end
+          create_articles_from_user_feed(user, feed)
         end
 
         total_articles_count += articles.length
@@ -46,20 +54,25 @@ module Feeds
         batch_of_users.update_all(feed_fetched_at: Time.current)
       end
 
-      ForemStatsClient.count("feeds::import::articles.count", total_articles_count)
       total_articles_count
     end
 
     private
 
-    attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers
+    attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers, :users
 
-    def users
-      return @users unless earlier_than
+    # @return [ActiveRecord::Relation<User>] you'll likely want to set @users from this, but
+    #         [@jeremyf]'s choosing not to do that as it makes the implementation just a bit
+    #         cleaner.
+    def filter_users_from(users_scope:, earlier_than:)
+      users_scope = ArticlePolicy.scope_users_authorized_to_action(users_scope: users_scope, action: :create)
+      users_scope = users_scope.where(id: Users::Setting.with_feed.select(:user_id))
+
+      return users_scope unless earlier_than
 
       # Filtering users whose feed hasn't been processed in the last `earlier_than` time span.
       # New users + any user whose feed was processed earlier than the given time
-      @users.where(feed_fetched_at: nil).or(@users.where(feed_fetched_at: ..earlier_than))
+      users_scope.where(feed_fetched_at: nil).or(users_scope.where(feed_fetched_at: ..earlier_than))
     end
 
     # TODO: put this in separate service object
@@ -70,11 +83,9 @@ module Feeds
         cleaned_url = url.to_s.strip
         next if cleaned_url.blank?
 
-        response = ForemStatsClient.time("feeds::import::fetch_feed", tags: ["user_id:#{user_id}", "url:#{url}"]) do
-          HTTParty.get(cleaned_url,
-                       timeout: 10,
-                       headers: { "User-Agent" => "Forem Feeds Importer" })
-        end
+        response = HTTParty.get(cleaned_url,
+                                timeout: 10,
+                                headers: { "User-Agent" => "Forem Feeds Importer" })
 
         [user_id, response.body]
       rescue StandardError => e
@@ -99,9 +110,7 @@ module Feeds
     # TODO: put this in separate service object
     def parse_feeds(feeds_per_user_id)
       result = Parallel.map(feeds_per_user_id, in_threads: num_parsers) do |user_id, feed_xml|
-        parsed_feed = ForemStatsClient.time("feeds::import::parse_feed", tags: ["user_id:#{user_id}"]) do
-          Feedjira.parse(feed_xml)
-        end
+        parsed_feed = Feedjira.parse(feed_xml)
 
         [user_id, parsed_feed]
       rescue StandardError => e

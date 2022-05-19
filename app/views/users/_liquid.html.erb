@@ -1,11 +1,4 @@
 <div class="<%= "ltag__user ltag__user__id__#{user.id}" %>" style="<%= "border-color:#{user.darker_color};box-shadow: 3px 3px 0px #{user.darker_color};" %>">
-  <style>
-    .ltag__user__id__<%= user.id %> .follow-action-button {
-      background-color: <%= user_colors[:bg] %> !important;
-      color: <%= user_colors[:text] %> !important;
-      border-color: <%= user_colors[:bg].casecmp("#ffffff").zero? ? user_colors[:text] : user_colors[:bg] %> !important;
-    }
-  </style>
   <% if user_path.present? %>
     <a href="<%= user_path %>" class="ltag__user__link profile-image-link">
       <div class="ltag__user__pic">
@@ -18,7 +11,7 @@
     </div>
   <% end %>
   <div class="ltag__user__content">
-    <h2><%= link_to_if user_path.present?, user.name, user_path, class: "ltag__user__link" %><%= follow_button(user) %></h2>
+    <h2><%= link_to_if user_path.present?, user.name, user_path, class: "ltag__user__link" %><%= follow_button(user, "full", "c-btn--secondary fs-base") %></h2>
     <div class="ltag__user__summary">
       <%= link_to_if user_path.present?, user.tag_line, user_path, class: "ltag__user__link" %>
     </div>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:content="http://purl.org/rss/1.0/modules/content/"
+    xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"
+    xmlns:media="http://search.yahoo.com/mrss/"
+    xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+    <channel>
+        <title><![CDATA[Codepunk]]></title>
+        <description><![CDATA[Life in the new Cyberia. A software engineering web site from Bill Ahern and Michael Szul that looks at the intersection of programming, technology, and the digital lifestyle.]]></description>
+        <link>https://codepunk.io/</link>
+        <generator>minerva-publish</generator>
+        <lastBuildDate>Fri, 15 Apr 2022 05:28:21 EST</lastBuildDate>
+        <atom:link href="https://codepunk.io/podcast/rss/codepunk.xml" rel="self" type="application/rss+xml"/>
+        <language><![CDATA[en]]></language>
+        <ttl>60</ttl>
+        <itunes:explicit>yes</itunes:explicit>
+        <itunes:summary>A cyberculture podcast from Bill Ahern and Michael Szul that looks at the intersection of programming, technology, and the digital lifestyle.</itunes:summary>
+        <itunes:author>Codepunk</itunes:author>
+        <itunes:owner>
+            <itunes:name>Codepunk</itunes:name>
+            <itunes:email>michael@szul.us</itunes:email>
+        </itunes:owner>
+        <itunes:email>michael@szul.us</itunes:email>
+        <itunes:keywords>software,programming,cyberculture,cyberpunk,technology,cyberia</itunes:keywords>
+        <itunes:image href="https://codepunk.io/images/assets/codepunk-logo-2018-square-black-2-scaled-higher.png"/>
+        <itunes:category text="Technology"></itunes:category>
+        <itunes:category text="Society &amp; Culture"></itunes:category>
+            <item>
+                <title>A Year of Transition</title>
+                <itunes:title>A Year of Transition</itunes:title>
+                <description>Yesterday I was going through my GitHub starred projects on my phone using the beta lists feature to organize them. In that process, I culled the stars, reducing them from ~530 to 237 (as of this writing). I posted the accomplishment to Phil Eaton&#x27;s excellent Discord. Later I mentioned...</description>
+                <itunes:summary>Yesterday I was going through my GitHub starred projects on my phone using the beta lists feature to organize them. In that process, I culled the stars, reducing them from ~530 to 237 (as of this writing). I posted the accomplishment to Phil Eaton&#x27;s excellent Discord. Later I mentioned...</itunes:summary>
+                <link>https://codepunk.io/2021/a-year-of-transition</link>
+                <guid isPermaLink="false">/2021/a-year-of-transition</guid>
+                <category><![CDATA[szul, michael szul, codepunk, 2021, 2022, the quiet math]]></category>
+                <dc:creator><![CDATA[Michael Szul]]></dc:creator>
+                <itunes:author><![CDATA[Michael Szul]]></itunes:author>
+                <pubDate>Fri, 31 Dec 2021 09:47:00 EST</pubDate>
+                <enclosure url="" length="" type=""/>
+                <media:content url="" medium="image"/>
+                <content:encoded><![CDATA[<p>Yesterday I was going through my GitHub "starred" projects on my phone using the beta "lists" feature to organize them. In that process, I culled the stars, reducing them from ~530 to 237 (as of this writing). I posted the accomplishment to <a href="https://notes.eatonphil.com">Phil Eaton's excellent Discord</a>. Later I mentioned:</p>
+<blockquote>
+  <p>I'm mostly trying to consolidate and tighten up my work, hobbies, and learning paths in 2022. I turn 43 in a few days. Would be nice to have a clear focus of what I want to accomplish before 50. That means coming to terms with some things I’ll likely never get to.</p>
+</blockquote>
+<p>That statement seems like a natural conclusion for 2021. There's been a lot of changes this year reducing the amount of projects, domain names, communities, social media, and just about anything else I read, watch, touch… I just never put it into a mission statement until just then.</p>
+<p>The biggest accomplishment this year was finishing the conversion of Codepunk from the Ghost blogging platform to a static site generator of my own making. This static site generator is a part of a larger project called Minerva, which includes a reader (RSS, etc.), a writer (markdown, latex), and a publisher. All parts of this project are open source, but just not completely public yet, and together, along with some hosting, emails, etc. form the foundation of <a href="https://quietmath.co/equations">Ambry</a>.</p>
+<p>Clicking on that link you should notice two things: For one, that page used to have more projects on it, but it's been reduced to a focus of just two, and both those projects are things that bring me utility first, but will provide utility for others as well. The other thing to note is the domain: <a href="https://quietmath.co">quietmath.co</a>. 2021 saw me move away from the idea of a personal brand. I quit doing speaking engagements pre-pandemic (for a number of reason), and although I had success with various writing projects, they were time consuming and took away from blogging here. I still own szul.us, but all HTTP traffic is forwarded to the Quiet Math web site. I still own a good chunk of domain names, but I've reduced them by about half and currently only maintain two.</p>
+<p>2021 saw me decide on a <em>write here first</em> rule. Instead of trying to write elsewhere or trying to write books. Blog on the blog. This rule includes the newsletter where I go rid of "special" newsletter issues in favor of blogging here and then sending the post out in email form. I don't like how newsletters have created a barrier to content.</p>
+<p>On the podcast side, we produced a couple of episodes in VR, but Bill had some (awesome) family news, so we've put that a bit on hiatus. But 2021 also saw the launch of <a href="/podcast/apotheosis/">Codepunk's Apotheosis</a>, our second podcast about the past (and future) of cyberculture. The <em>write here first</em> rule also dictated that each podcast episode comes with a full blog post attached.</p>
+<p><strong>Things I've started to stay away from</strong></p>
+<ul>
+<li>Facebook - I can't remember the last time I logged in.</li>
+<li>Twitter - I don't have it on my phone. I log in once in a while to tweet or retweet something, but am trying to be on it less and less. I also removed a lot of people I was following.</li>
+<li>LinkedIn - See Facebook.</li>
+<li>Politics - Adds too much stress to my life.</li>
+<li>The mainstream news - I only have the WaPo app installed and rarely open it.</li>
+</ul>
+<p><strong>Things I've returned to</strong></p>
+<ul>
+<li>Martials arts - Baguazhang specifically, but also began practicing Aikido again and started exploring a little Xingyi.</li>
+<li>Reading (a lot) - It's amazing how much time you have when you stay away from distracting applications on your cell phone.</li>
+<li>Role-playing games - Mostly cyberpunk ones.</li>
+</ul>
+<p><strong>Newsletters I read</strong></p>
+<ul>
+<li>Continuing Ed (Edward Snowden)</li>
+<li>Kneeling Bus</li>
+<li>Retro Sci-Fi Art</li>
+<li>New World Same Human</li>
+<li>TLDR</li>
+<li>Sentiers</li>
+<li>Future Crunch</li>
+<li>Phil Eaton</li>
+<li>Ben Evans</li>
+<li>Exponential View</li>
+<li>The Prepared</li>
+<li>Important, Not Important</li>
+</ul>
+<p><strong>Magazines I subscribe to</strong></p>
+<ul>
+<li>Cybr Magazine</li>
+<li>Logic Magazine</li>
+<li>Dark Mountain Project</li>
+<li>National Geographic</li>
+<li>Infinite Worlds</li>
+</ul>
+<p><strong>Communities I still lurk/participate in</strong></p>
+<ul>
+<li>Cybr</li>
+<li>Data Station</li>
+<li>The Prepared</li>
+</ul>
+<p><strong>Places/Projects I donate to</strong></p>
+<ul>
+<li>The Long Now Foundation</li>
+<li>Logic Foundation</li>
+<li>Internet Archive</li>
+<li>The National Geographic Society</li>
+<li>The Gnome Foundation</li>
+<li>Pop OS</li>
+<li>Geary</li>
+</ul>
+<p><strong>The best book I read this year:</strong> <em>The Red Web</em> by Andrei Soldatov &amp; Irina Borogan.</p>
+<p><strong>The best TV show I finished this year:</strong> Dark on Netflix.</p>]]></content:encoded>
+                <itunes:duration></itunes:duration>
+            </item>
+            <item>
+                <title>Codepunk 063 Proximity in Virtual Reality</title>
+                <itunes:title>Codepunk 063 Proximity in Virtual Reality</itunes:title>
+                <description>When discussing virtual reality (VR), there is a specific aspect of design involved&amp;mdash;whether world design, production design, or application design. These environments are not exempt from the same design principles available in 2D design environments.</description>
+                <itunes:summary>When discussing virtual reality (VR), there is a specific aspect of design involved&amp;mdash;whether world design, production design, or application design. These environments are not exempt from the same design principles available in 2D design environments.</itunes:summary>
+                <link>https://codepunk.io/codepunk/proximity-in-virtual-reality</link>
+                <guid isPermaLink="false">/codepunk/proximity-in-virtual-reality</guid>
+                <category><![CDATA[virtual reality, vr, proximity, augmented reality, ar, Codepunk]]></category>
+                <dc:creator><![CDATA[Bill Ahern, Michael Szul]]></dc:creator>
+                <itunes:author><![CDATA[Bill Ahern, Michael Szul]]></itunes:author>
+                <pubDate>Sat, 23 Oct 2021 08:00:00 EST</pubDate>
+                <enclosure url="https://archive.org/download/codepunk-063/codepunk-063.mp3" length="36300000" type="audio/mpeg"/>
+                <media:content url="https://codepunk.io/images/proximity-in-vr-01.png" medium="image"/>
+                <content:encoded><![CDATA[<audio controls="controls">
+<source src="https://archive.org/download/codepunk-063/codepunk-063.mp3" type="audio/mpeg" data-length="36300000" data-duration="44:40" />
+Your browser does not support the audio element.
+</audio>
+<p><em>This is a written extension of the <a href="/podcast/codepunk/">Codepunk podcast</a>. You can also listen to the audio version or watch the video version at the end of this article.</em></p>
+<p>When discussing virtual reality (VR), there is a specific aspect of design involved&mdash;whether world design, production design, or application design. These environments are not exempt from the same design principles available in 2D design environments. In fact, in many ways, some of the core principles of user experience design are even more relevant and important in virtual reality because much of the work we've done in 2D or computer application design has always attempted to take into account a spatial feel.</p>
+<p>As fate would dictate, multiple conversations around the topic of virtual reality, remote work, and faux conference rooms collided on the Internet in a matter of weeks. Between Ben Evans tweeting low-blow commentary on VR to Azeem Azhar asking about virtual conference rooms to the figurative explosion of augmented and virtual reality announcements and acquisitions from Snap and Facebook, virtual reality continues to have its moment. It's a moment of confusion, uncertainty, enthusiasm, and high use of the word "metaverse," but it's still a moment.</p>
+<p>Around this time, I left the following on a Friday members-only post from Azhar's <a href="https://exponentialview.co">Exponential View</a> web site:</p>
+<blockquote>
+  <p>I'll start with something Ben Evans tweeted where he said that working in VR seems like the opposite of "everything everyone has built in the last decade. It's not about a bigger screen." This is more a statement on the attempted solution and not an acknowledgment of the problem. Although it's true that progress in remote work (and work in general) has led us to mobility, increasing freedom of movement, productivity, etc., the trade-off is a loss in spatial interaction. Every conferencing software has attempted to solve the problems with spatial interaction and spatial awareness through hand-raising emojis, table and grid views, shared whiteboards, etc., and despite progress, we're still using a predominantly 2D interface and organizational system while working. We may have "layers" to our software, but movement and interaction within those layers still only incorporates 2 dimensions. VR/AR and the XR group in general (not to mention several other non-XR software applications) have been working on ways to solve this spatial deficit and eliminate some of the final barriers to a seamless remote work transition. WorkRooms isn't it, but is a good experiment for other initiatives to learn from.</p>
+</blockquote>
+<p>Evans has a habit of poking at VR because he sees it as little more than a subset of gaming. But Mark Zuckerberg wants to re-brand Facebook a metaverse company and sees the future through an augmented and virtual lens. The truth is somewhere in the middle for now, but technological progress dictates that it probably leans closer to Zuckerberg <em>eventually</em>.</p>
+<p>But what is this "spatial software?" What does that phrase actually mean?</p>
+<p>Think about this statement from <a href="https://darkblueheaven.com/spatialinterfaces/">John Palmer</a>:</p>
+<blockquote>
+  <p>Think about this: there is no app that replicates a deck of cards.</p>
+  <p>Go ahead and look on the app store, and you'll find a bunch of apps with bad reviews and extremely limited functionality.</p>
+  <p>If you start designing a deck of cards app as a traditional 2D app the way we think about them today, with 2D panes and menus and buttons, it becomes painfully difficult to think about.</p>
+</blockquote>
+<p>Palmer posits that although in several cases reducing something to a 2D interface might make it easier to understand, there are just as many cases where leaving something as a 3D interface makes it more intuitive since humans are inherently spatial thinkers.</p>
+<p>More from Palmer:</p>
+<blockquote>
+  <p>In particular, some applications use spatial relationships to suggest how they should be used. Incarnations of this thinking are called spatial affordances.</p>
+</blockquote>
+<p>It was once Palmer started talking about spatial affordances that I was reminded of another concept in user interface design: proximity. And this idea of proximity essentially makes his case for spatial needs in software.</p>
+<p>Proximity in design tells us that the closer elements are together the more they are functionally related, and as things become functionally similar in design they become closer together until they are right on top of each other. A good example is an elevator panel. There are three elements: the buttons, the numbers, and the lights. The button selects the floor. The number tells you which floor. The light confirms your choice. All three of these are highly integrated and thus the most pervasive elevator panel design has the button, light, and number integrated into one piece. It would make little sense to have a legend of number and button correspondences on the wall that you need to consult in order to know which button you need to select. To say that this would be bad design is an understatement.</p>
+<p>In 2D design proximity is determined on an x-axis and y-axis, so the expectation should be that related ideas and concepts should be closer together on the screen, and how we represent that closeness becomes the spatial aspect of a 2D design.</p>
+<p>It's important to note that spatial representation doesn't have to mean virtual reality or 3D software. A third dimension just makes it easier. However, you can represent spatial concepts in 2D and the success of this representation often determines the usability or intuitiveness of your software.</p>
+<p>Palmer gives a great example with the chat application <a href="https://www.sococo.com">Sococo</a>, but you can also look to the popular <a href="https://workadventu.re">WorkAdventure</a>. The chat applications are designed like old school video games, but interestingly enough, if used properly you can immediately tell at a glance what people are working on, who is chatting with whom, who is on break, and many other "presence" indicators with much greater accuracy and speed than a simple chat window.</p>
+<blockquote>
+  <p>[Sococo is] just a 2D floor plan of an office, with a bird's eye view. Every employee has an avatar. You can simply place your avatar in one of the rooms with other people. The room provides text and video chat for the people inside.</p>
+  <p>Now try to answer the same question with this software. "Who is everyone at my company meeting with right now?" All of a sudden, it's extremely easy. You just look at the rooms. At a glance, it's immediately obvious which people are working together. The floor plan is a skeuomorphic spatial affordance, one of the few I can recall seeing. It displays rich information and makes that information easier to understand by analogizing a real-world spatial environment.</p>
+</blockquote>
+<p>With 3D design, you now have a spatial environment to work with, but more importantly, when discussing conversational or social applications of 3D software such as virtual reality, spatial software takes on a dynamic much closer to real life.</p>
+<p><img src="/images/proximity-in-vr-01.png" alt="Bill Ahern in Facebook Horizon" /></p>
+<p>Proximity and presence are much more powerful in virtual environments. Augmented reality might add an extra layer to the physical universe (a meta layer), but virtual reality is about world-building and represents a different experience. When we use text messages, phone calls, and even video chats, there is a recognition of spatial barriers and distance between participants. But videos games started to break down this barrier as multi-player games, open worlds, and chat parties created an environment that could be internalized and create an imagined closeness. You feel like you're with your gamer friends in the same room/universe. Virtual reality takes that a step further. When we chat; When we Zoom&mdash;there is this perceived barrier&mdash;a screen between us. But when we're in virtual reality, we <em>feel</em> like we're with the other person. We perceive a closeness in proximity, and the best virtual software will fold this spatial dimension succinctly into their design.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PTh8GmE9tt4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>]]></content:encoded>
+                <itunes:duration>44:40</itunes:duration>
+            </item>
+            <item>
+                <title>Codepunk 062 Virtually Reality is Virtually Ready</title>
+                <itunes:title>Codepunk 062 Virtually Reality is Virtually Ready</itunes:title>
+                <description>With the launch of season 6 of the Codepunk podcast, we&#x27;ll be coalescing around a single theme since we&#x27;ll be producing less episodes at a higher quality with accompanying video inside of virtual reality.</description>
+                <itunes:summary>With the launch of season 6 of the Codepunk podcast, we&#x27;ll be coalescing around a single theme since we&#x27;ll be producing less episodes at a higher quality with accompanying video inside of virtual reality.</itunes:summary>
+                <link>https://codepunk.io/codepunk/virtual-reality-is-virtually-ready</link>
+                <guid isPermaLink="false">/codepunk/virtual-reality-is-virtually-ready</guid>
+                <category><![CDATA[virtual reality, vr, augmented reality, ar, caprica, tron, hololens, facebook horizon, oculus quest, Codepunk]]></category>
+                <dc:creator><![CDATA[Bill Ahern, Michael Szul]]></dc:creator>
+                <itunes:author><![CDATA[Bill Ahern, Michael Szul]]></itunes:author>
+                <pubDate>Fri, 13 Aug 2021 12:00:00 EST</pubDate>
+                <enclosure url="https://archive.org/download/codepunk-062/codepunk-062.mp3" length="28600000" type="audio/mpeg"/>
+                <media:content url="https://codepunk.io/images/vr3-oculus.jpg" medium="image"/>
+                <content:encoded><![CDATA[<audio controls="controls">
+   <source src="https://archive.org/download/codepunk-062/codepunk-062.mp3" type="audio/mpeg" data-length="28600000" data-duration="36:06" />
+ Your browser does not support the audio element.
+</audio>
+<p><em>This is a written extension of the <a href="/podcast/codepunk/">Codepunk podcast</a>. You can also listen to the audio version or watch the video version at the end of this article.</em></p>
+<p>With the launch of season 6 of the Codepunk podcast, we'll be coalescing around a single theme since we'll be producing less episodes at a higher quality with accompanying video inside of virtual reality. This builds on the <a href="https://youtu.be/-BKySvgYaY4">last</a> <a href="https://youtu.be/Kv-PTZmXt-U">two</a> episodes of the previous season where we recorded inside of AltSpaceVR exploring the ideas, themes, and feel of a digital space.</p>
+<p>With the new season, we're committed to exploring podcasting within virtual reality, and we'll be building out a space inside of <a href="https://www.oculus.com/facebook-horizon/">Facebook Horizon</a> as we progress through the episodes during the year. Essentially, <a href="https://twitter.com/neurothustra">Bill</a> and I are intent on understanding the new frontier and world-building of virtual reality and we're bringing you along for the ride.</p>
+<p>I'm sure it seems like we're beating the drum ad nauseam over virtual reality&mdash;and we've certainly been keen to <a href="/are-we-in-a-vr-winter">defend the technology</a> against economists and financial analyst naysayers&mdash;but the progress made thus far is <em>too far</em> not to see the promise beyond the horizon.</p>
+<p>Prior to the Oculus Quest, my primary experience with VR had been a few low-end Samsung devices that mostly stick a screen close to your eyeballs&mdash;neither enjoyable, nor comfortable&mdash;and it's important to realize that the Oculus Quest doesn't stray far from that, but the advances in that area alone have resulted in burgeoning experimentation for work, play, and every crevice between.</p>
+<p><img src="/images/vr3-oculus.jpg" alt="Oculus Quest at Wikimedia Commons" /></p>
+<p>As we turned the corner towards 2020 and slammed directly into a pandemic, I found myself spending way too much time backing almost anything on Kickstarter that had to do with cyberpunk as a genre. Why? I'm not sure. <a href="/apotheosis/cyberia-old-and-new">Maybe it's nostalgia</a>, but a couple of those campaigns were solid looking virtual reality games, so I jumped at the opportunity. I backed them even though I didn't have any VR equipment at the time. Once those campaigns started to succeed, I realized that it might be time to cross that chasm.</p>
+<p>At the same time that I was backing these Kickstarter campaigns, Facebook started promoting it's VR world Horizon. Facebook certainly hasn't been on my list of most ethical companies, but Horizon looked like a keen experiment, and ultimately brought me to the conclusion that although I probably won't spend too much time with games, the social experimentation of virtual reality worlds is a worthy pathway of investigation&mdash;<a href="https://about.fb.com/news/2020/08/facebook-horizon-welcomes-first-virtual-explorers/">presenting an evolving future of communication and commerce</a>.</p>
+<blockquote>
+  <p>Horizon invites you to explore an ever-expanding universe of virtual experiences designed and built by the entire community. Everything you see in Horizon, including the Plaza and worlds created by our teams at Facebook, has been built with the Horizon creation tools. In Horizon, you can build the things you want to see and places you want to visit. </p>
+  <p>Our mission is to create meaningful connections between people and foster a strong sense of community for everyone who joins Horizon. That’s why we’re excited to hear your feedback and work with early adopters to evolve Horizon as we begin to grow its community. Horizon is as much about meaningful connections as it is about creating VR worlds and expressing yourself. Eventually, we envision large spaces where many people can gather in Horizon, but for now, up to eight people can share a space.</p>
+</blockquote>
+<p>Although Horizon has seen significant delays and currently sits squarely on the shoulders of beta testers, the user experience is far superior than any other world-building application. It's clearly designed to push world-building into the virtual hands of casual users.</p>
+<p>Games, obviously, will not be left out in the cold&mdash;despite my personal ambivalence. One need only to look as far as massive multiplayer online (MMO) games to see the future of virtual warfare. In fact, there was an XBox game called <a href="https://en.wikipedia.org/wiki/Defiance_%28video_game%29">Defiance</a> (tied to a SyFy channel show) that Bill and I played for a period of time when it launched. The open world wasn't really one that lent itself to extensive hangout sessions, but that didn't stop people from standing their avatars next to each other in bars and safe havens, or having fun driving their quads off high-rise structures to see how many times they can turn in the air… all within a post-apocalyptic world.</p>
+<p>It was good fun that let the imagination run wild, and you see much of the same going on in other, more popular open worlds such as Fortnite, as well as niche genre games like Star Trek Online, where you can hang out on a planet without much to do other than pretend.</p>
+<p>In all of this we've said very little about augmented reality despite the recent <a href="https://newatlas.com/vr/facebook-wrist-ar-control-neuromotor/">Facebook investment in wearable devices to enhance AR experiences</a>. </p>
+<blockquote>
+  <p>In an online "Road to AR glasses" roundtable for global media, the Facebook Reality Labs (FRL) team laid out some of the eye-popping next-gen AR technology it's got up and running on the test bench.
+  […]
+  Camera-enabled hand tracking like what the Quest headsets are already doing will always be a little clunky, and for AR to take off as the next great leap in human-machine relations, it needs to operate with total precision, at the speed of thought, so smoothly and effortlessly that you can interact with it without breaking your stride or interrupting your conversations.
+  […]
+  To make that happen, the FRL team has been working on a next-level wrist-mounted controller that quietly sits there reading neural impulses as they go down your arm.</p>
+</blockquote>
+<p>And while Facebook continues to innovate and Apple attempts to break into the high end consumer market, Microsoft continues to pursue military contracts with cloud, artificial intelligence, and yes, <a href="https://www.cnbc.com/2021/03/31/microsoft-wins-contract-to-make-modified-hololens-for-us-army.html">virtual reality offerings</a>. Although virtual reality has been used for years to treat soldiers with PTSD, Microsoft and the U.S. military are taking things a step further with a large-scale HoloLens contract to blend augmented reality with warfare training.</p>
+<blockquote>
+  <p>The U.S. Army said Wednesday that Microsoft has won a contract to build more than custom HoloLens augmented reality headsets. The contract for over 120,000 headsets could be worth up to $21.88 billion over 10 years, a Microsoft spokesperson told CNBC.
+  […]
+  An IVAS prototype that a CNBC reporter tried out in 2019 displayed a map and a compass and had thermal imaging to reveal people in the dark. The system could also show the aim for a weapon.</p>
+</blockquote>
+<p><img src="/images/vr3-hololens.jpg" alt="Microsoft HoloLens at Wikimedia Commons" /></p>
+<p>VR has always been a great technology to follow as we move through science fiction, science, and cinema. It's evolved as much on screen, as it has in real life, and in the imaginations of those interested in carving out a place in the new cyberia. Although people raved about Battlestar Galactica (the remix), most forgot about the prequel: <a href="https://en.wikipedia.org/wiki/Caprica">Caprica</a>. Caprica was notable for a few things; Among them, the concept of the Holoband. This headband took wearers into a virtual world created for many things, but ultimately it had degraded into a virtual reality overrun by games and teenage clubs. The Holoband was easily hacked by would-be programmers, opening up new worlds for users to explore. It was essentially an evolving virtual hackerspace.</p>
+<p>This concept isn't new. The idea of a virtual world was explored heavily in other series and films such as Tron and Tron Legacy. Caprica also shared another concept with Tron: The idea of sentient avatars or programs. Tron Legacy even referred to isomorphic algorithms as spontaneously emergent programs and Kevin Flynn thoroughly believed that the discovery of these emergent entities was the key to changing society, medicine, and even religion.</p>
+<p>Whereas Tron was sci-fi on the "grid," what made Caprica different was its grounding in a near future coupled with the "realness" of the virtual worlds. </p>
+<p>Recently, entertainment has come a step forward in this concept with the way augmented reality is treated in <a href="https://en.wikipedia.org/wiki/The_Feed_(British_TV_series)">The Feed on Amazon Prime</a>. The Feed focuses on an Internet-enabled/cloud-enabled augmented reality feed directly embedded in people's brains. With the feed "on" not only do you have unlimited access to playback of your memories, news feeds, etc., but it also allows your brain to process QR codes that influence the world that the feed (and you) see, taking augmented reality to a new level, and furthering concepts of a programmable reality.</p>
+<p>And all of this innovation is without us even scratching the surface of initiatives like Elon Musk's NeuralLink&mdash;something that most dismissed when it was initially announced, but <a href="https://www.businessinsider.com/elon-musk-neuralink-video-monkey-games-pong-brain-chip-2021-4">recent news stories</a> suggest that progress is being made:</p>
+<blockquote>
+  <p>Neuralink, a company founded by Musk that is developing artificial-intelligence-powered microchips to go in people's brains, released a video Thursday appearing to show a macaque using the tech to play video games, including "Pong."
+  […]
+  In August 2020 the company did a live demonstration of the technology in a pig named Gertrude.</p>
+</blockquote>
+<p>To be sure, this progress is not exclusive to NeuralLink, as past researches have been highly successful in similar feats, but as the article states, it does show that the technology Musk is pursuing is proving out in tried-and-true areas, bringing the company closer to its science fiction ambitions.</p>
+<p>Although all of this is on the edge of science fiction… augmented reality and virtual reality are not, and we've finally reached the point where headsets and other devices are economically feasible, as well as entertaining, educational, and full of potential. A complete brain interface might be currently out of reach, but we don't need that to get closer to the world immersion that takes social networking and MMOs to a level of science previously only seen as science fiction.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hlMrxAFDFBI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>]]></content:encoded>
+                <itunes:duration>36:06</itunes:duration>
+            </item>
+            <item>
+                <title>Codepunk 061 Experiments in AltSpaceVR Part 2</title>
+                <itunes:title>Codepunk 061 Experiments in AltSpaceVR Part 2</itunes:title>
+                <description>Join us as we take the podcast into virtual reality. In this episode (part 2 of 2), we continue our experiments recording inside of virtual reality (VR)...</description>
+                <itunes:summary>Join us as we take the podcast into virtual reality. In this episode (part 2 of 2), we continue our experiments recording inside of virtual reality (VR)...</itunes:summary>
+                <link>https://codepunk.io/codepunk-061-experiments-in-altspacevr-part-2</link>
+                <guid isPermaLink="false">/codepunk-061-experiments-in-altspacevr-part-2</guid>
+                <category><![CDATA[Codepunk, Podcast, virtual reality, altspacevr]]></category>
+                <dc:creator><![CDATA[Bill Ahern]]></dc:creator>
+                <itunes:author><![CDATA[Bill Ahern]]></itunes:author>
+                <pubDate>Fri, 07 Aug 2020 07:27:57 EST</pubDate>
+                <enclosure url="https://archive.org/download/codepunk-episode-061/Codepunk-Episode-061.mp4" length="53900000" type="audio/mpeg"/>
+                <media:content url="" medium="image"/>
+                <content:encoded><![CDATA[<p>Part 2 of our experiments in virtual reality!</p>
+<p>Join us as we take the podcast into virtual reality. In this episode (part 2 of 2), we continue our experiments recording inside of virtual reality (VR) using the Oculus Quest. For this episode, we we stay inside of AltSpaceVR, but update our avatars, talk shop, and play some Bots + Beer on the integrate YouTube screen.</p>
+<audio controls="controls">
+   <source src="https://archive.org/download/codepunk-episode-061/Codepunk-Episode-061.mp4" type="audio/mpeg" data-length="53900000" data-duration="37:29" />
+</audio>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Kv-PTZmXt-U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>]]></content:encoded>
+                <itunes:duration>37:29</itunes:duration>
+            </item>
+            <item>
+                <title>Codepunk 060 Experiments in AltSpaceVR</title>
+                <itunes:title>Codepunk 060 Experiments in AltSpaceVR</itunes:title>
+                <description>Join us as we take the podcast into virtual reality. In this episode, we begin our experiments recording inside of virtual reality (VR) using the Oculus...</description>
+                <itunes:summary>Join us as we take the podcast into virtual reality. In this episode, we begin our experiments recording inside of virtual reality (VR) using the Oculus...</itunes:summary>
+                <link>https://codepunk.io/codepunk-060-experiments-in-altspacevr</link>
+                <guid isPermaLink="false">/codepunk-060-experiments-in-altspacevr</guid>
+                <category><![CDATA[Codepunk, Podcast, virtual reality, oculus, altspacevr]]></category>
+                <dc:creator><![CDATA[Bill Ahern]]></dc:creator>
+                <itunes:author><![CDATA[Bill Ahern]]></itunes:author>
+                <pubDate>Fri, 10 Jul 2020 01:00:22 EST</pubDate>
+                <enclosure url="https://archive.org/download/codepunk-episode-060/Codepunk-Episode-060.mp3" length="52300000" type="audio/mpeg"/>
+                <media:content url="" medium="image"/>
+                <content:encoded><![CDATA[<p>Join us as we take the podcast into virtual reality. In this episode, we begin our experiments recording inside of virtual reality (VR) using the Oculus Quest. Follow along as we try out different things, and listen as we discuss the future of virtual reality, why world-building is more important than gaming, and where we both think VR can go. For this particular episode, we explore the personal home rooms in AltSpaceVR and discuss some of the elements of the environment.</p>
+<audio controls="controls">
+   <source src="https://archive.org/download/codepunk-episode-060/Codepunk-Episode-060.mp3" type="audio/mpeg" data-length="52300000" data-duration="38:04" />
+</audio>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-BKySvgYaY4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>]]></content:encoded>
+                <itunes:duration>38:04</itunes:duration>
+            </item>
+            <item>
+                <title>Codepunk 059 Jerold Haas</title>
+                <itunes:title>Codepunk 059 Jerold Haas</itunes:title>
+                <description>In this episode of Codepunk, we take a look at this trend of &quot;genius&quot; programmers through the story of Jerold Haas—a programmer on his way to...</description>
+                <itunes:summary>In this episode of Codepunk, we take a look at this trend of &quot;genius&quot; programmers through the story of Jerold Haas—a programmer on his way to...</itunes:summary>
+                <link>https://codepunk.io/codepunk-059-jerold-haas</link>
+                <guid isPermaLink="false">/codepunk-059-jerold-haas</guid>
+                <category><![CDATA[Codepunk]]></category>
+                <dc:creator><![CDATA[Bill Ahern]]></dc:creator>
+                <itunes:author><![CDATA[Bill Ahern]]></itunes:author>
+                <pubDate>Fri, 29 May 2020 08:34:52 EST</pubDate>
+                <enclosure url="https://archive.org/download/codepunk-episode-059/Codepunk-Episode-059.mp3" length="68800000" type="audio/mpeg"/>
+                <media:content url="" medium="image"/>
+                <content:encoded><![CDATA[<p>A lot of articles today about burned-out programmers attribute the word "genius" to them prior to divulging their downfall. In this episode of Codepunk, we take a look at this trend of "genius" programmers through the story of <a href="https://www.wired.com/story/strange-life-mysterious-death-of-virtuoso-coder/">Jerold Haas</a>&mdash;a programmer on his way to cryptocurrency riches, but from a backstory filled with drugs, mental illness, and bad social relationships. The mystery of Haas' death is only trumped by the bizarre behavior in his past, as he hopped from house to house and job to job, sabotaging his own success by spiraling out of control until one day he walked out into the woods and disappeared.</p>
+<audio controls="controls">
+   <source src="https://archive.org/download/codepunk-episode-059/Codepunk-Episode-059.mp3" type="audio/mpeg" data-length="68800000" data-duration="50:04" />
+</audio>
+<p><p /></p>
+<p>Wired article by <a href="https://twitter.com/brendankoerner">Brendan I. Koerner</a>: <a href="https://www.wired.com/story/strange-life-mysterious-death-of-virtuoso-coder/">The Strange Life and Mysterious Death of a Virtuoso Coder</a>.</p>]]></content:encoded>
+                <itunes:duration>50:04</itunes:duration>
+            </item>
+    </channel>
+</rss>

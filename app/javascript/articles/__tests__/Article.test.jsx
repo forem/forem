@@ -263,4 +263,25 @@ describe('<Article /> component', () => {
 
     expect(queryByText('person', { selector: 'span' })).toBeDefined();
   });
+
+  it('should show bookmark button when article is saveable (default)', () => {
+    const { queryByTestId } = render(
+      <Article {...commonProps} isBookmarked={false} article={article} />,
+    );
+
+    expect(queryByTestId(`article-save-button-${article.id}`)).toBeDefined();
+  });
+
+  it('should hide bookmark button when article is not saveable', () => {
+    const { queryByTestId } = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={article}
+        saveable={false}
+      />,
+    );
+
+    expect(queryByTestId(`article-save-button-${article.id}`)).toBeNull();
+  });
 });

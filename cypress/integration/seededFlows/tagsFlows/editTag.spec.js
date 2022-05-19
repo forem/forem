@@ -33,7 +33,9 @@ describe('Edit tag', () => {
     // Make sure the enhanced component is now visible
     cy.findByRole('button', { name: 'Tag color' });
 
-    cy.findByRole('textbox', { name: 'Tag color' }).clear().type('ababab');
+    cy.findByRole('textbox', { name: 'Tag color' }).enterIntoColorInput(
+      'ababab',
+    );
     cy.findByRole('button', { name: 'Save' }).click();
 
     // Wait for confirmation

@@ -6,11 +6,12 @@ RSpec.describe ProfileFields::Add, type: :service do
 
   context "when successfully adding a new profile field" do
     it "creates a new profile field and adds a store accessor", :aggregate_failures do
-      expect(profile.respond_to?(:new_field)).to be false
       expect do
         described_class.call(label: "New Field", profile_field_group: group)
       end.to change(ProfileField, :count).by(1)
-      expect(profile.respond_to?(:new_field)).to be true
+
+      field = ProfileField.find_by(label: "New Field")
+      expect(profile.respond_to?(field.attribute_name)).to be true
     end
 
     it "returns the correct response object", :aggregate_failures do

@@ -44,8 +44,25 @@ function writeCards(data, timeRangeLabel) {
   followerCard.innerHTML = cardHTML(follows, `Followers ${timeRangeLabel}`);
 }
 
-function drawChart({ id, title, labels, datasets }) {
-  const options = {
+function drawChart({ id, showPoints = true, title, labels, datasets }) {
+  const chartOptions = {
+    elements: {
+      point: {
+        // The default is 3: https://www.chartjs.org/docs/latest/configuration/elements.html#point-configuration
+        radius: showPoints ? 3 : 0,
+      },
+    },
+    scales: {
+      y: {
+        type: 'linear',
+        suggestedMin: 0,
+        ticks: {
+          precision: 0,
+        },
+      },
+    },
+  };
+  const dataOptions = {
     plugins: {
       legend: {
         position: 'top',
@@ -55,16 +72,6 @@ function drawChart({ id, title, labels, datasets }) {
     title: {
       display: true,
       text: title,
-    },
-    scales: {
-      y: {
-        type: 'linear',
-        suggestedMin: 0,
-
-        ticks: {
-          precision: 0,
-        },
-      },
     },
   };
 
@@ -98,8 +105,9 @@ function drawChart({ id, title, labels, datasets }) {
         data: {
           labels,
           datasets,
-          options,
+          options: dataOptions,
         },
+        options: chartOptions,
       });
     },
   );
@@ -116,8 +124,12 @@ function drawCharts(data, timeRangeLabel) {
   const followers = parsedData.map((date) => date.follows.total);
   const readers = parsedData.map((date) => date.page_views.total);
 
+  // When timeRange is "Infinity" we hide the points to avoid over-crowding the UI
+  const showPoints = timeRangeLabel !== '';
+
   drawChart({
     id: 'reactions-chart',
+    showPoints,
     title: `Reactions ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -158,6 +170,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'comments-chart',
+    showPoints,
     title: `Comments ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -174,6 +187,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'followers-chart',
+    showPoints,
     title: `New Followers ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -190,6 +204,7 @@ function drawCharts(data, timeRangeLabel) {
 
   drawChart({
     id: 'readers-chart',
+    showPoints,
     title: `Reads ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -234,15 +249,39 @@ function renderReferrers(data) {
   container.innerHTML = tableBody.join('');
 }
 
-function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
-  callHistoricalAPI(date, { organizationId, articleId }, (data) => {
-    writeCards(data, timeRangeLabel);
-    drawCharts(data, timeRangeLabel);
-  });
+function removeCardElements() {
+  const el = document.getElementsByClassName("summary-stats")[0];
+  el && el.remove();
+}
 
-  callReferrersAPI(date, { organizationId, articleId }, (data) => {
-    renderReferrers(data);
+function showErrorsOnCharts() {
+  const target = ['reactions-chart', 'comments-chart', 'followers-chart', 'readers-chart'];
+  target.forEach(id => {
+    const el = document.getElementById(id);
+    el.outerHTML = `<p class="m-5" id="${id}">Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>`;
   });
+}
+
+function showErrorsOnReferrers() {
+  document.getElementById('referrers-container').outerHTML = '<p class="m-5" id="referrers-container">Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>';
+}
+
+function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
+  callHistoricalAPI(date, { organizationId, articleId })
+    .then((data) => {
+      writeCards(data, timeRangeLabel);
+      drawCharts(data, timeRangeLabel);
+    })
+    .catch((_err) => {
+      removeCardElements();
+      showErrorsOnCharts();
+    });
+
+  callReferrersAPI(date, { organizationId, articleId })
+    .then((data) => {
+      renderReferrers(data);
+    })
+    .catch((_err) => showErrorsOnReferrers());
 }
 
 function drawWeekCharts({ organizationId, articleId }) {

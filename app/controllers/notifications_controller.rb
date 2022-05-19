@@ -5,7 +5,6 @@ class NotificationsController < ApplicationController
   def index
     return unless user_signed_in?
 
-    @notifications_index = true
     @user = user_to_view
 
     @initial_page_size = 8

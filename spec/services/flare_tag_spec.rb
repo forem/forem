@@ -15,7 +15,7 @@ RSpec.describe FlareTag, type: :labor do
 
   describe "#flare_tag" do
     it "returns nil if there is no flare tag" do
-      expect(described_class.new(article).tag).to be nil
+      expect(described_class.new(article).tag).to be_nil
     end
 
     it "returns a flare tag if there is a flare tag in the list" do
@@ -25,7 +25,7 @@ RSpec.describe FlareTag, type: :labor do
 
     it "returns nil if an except is provided" do
       valid_article = create(:article, tags: "explainlikeimfive")
-      expect(described_class.new(valid_article, "explainlikeimfive").tag).to eq(nil)
+      expect(described_class.new(valid_article, "explainlikeimfive").tag).to be_nil
     end
 
     it "returns first found flare tag if there are 2 flare tags in the list" do
@@ -38,7 +38,7 @@ RSpec.describe FlareTag, type: :labor do
     let(:valid_article) { create(:article, tags: ama_tag.name) }
 
     it "returns nil if an article doesn't have a flare tag" do
-      expect(described_class.new(article).tag_hash).to be nil
+      expect(described_class.new(article).tag_hash).to be_nil
     end
 
     it "returns a hash with the flare tag's name" do

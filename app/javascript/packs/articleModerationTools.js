@@ -2,29 +2,43 @@
 import { isModerationPage } from '@utilities/moderation';
 
 getCsrfToken().then(() => {
-  const user = userData();
-  const { authorId: articleAuthorId, path } = document.getElementById(
-    'article-show-container',
-  ).dataset;
+  const articleContainer = document.getElementById('article-show-container');
 
-  const initializeModerationsTools = async () => {
-    const { initializeActionsPanel } = await import(
-      '../actionsPanel/initializeActionsPanelToggle'
-    );
-    const { initializeFlagUserModal } = await import('./flagUserModal');
+  if (articleContainer) {
+    const user = userData();
+    const { authorId: articleAuthorId, path } = articleContainer.dataset;
 
-    // article show page
-    if (user?.trusted) {
-      if (user?.id !== articleAuthorId && !isModerationPage()) {
-        initializeActionsPanel(user, path);
-        initializeFlagUserModal(articleAuthorId);
-        // dev.to/mod
-      } else if (isModerationPage()) {
-        initializeActionsPanel(user, path);
-        initializeFlagUserModal(articleAuthorId);
+    const initializeModerationsTools = async () => {
+      const { initializeActionsPanel } = await import(
+        '../actionsPanel/initializeActionsPanelToggle'
+      );
+      const { initializeFlagUserModal } = await import('./flagUserModal');
+
+      // If the user can moderate an article give them access to this panel.
+      // Note: this assumes we're within the article context (which is the case
+      // given the articleContainer)
+      const canModerateArticles = user?.policies?.find(
+        (o) =>
+          o.dom_class === 'js-policy-article-moderate' && o.visible === true,
+      );
+
+      // article show page
+      if (canModerateArticles) {
+        // <2022-05-09 Mon> [@jeremyf] the user.id is an integer and
+        // articleAuthorId is a string so our logic is such that we always
+        // initializeActionsPanel and initializeFlagUserModal; I'm asking
+        // product to clarify if we want mods to boost their own posts.
+        if (user?.id !== articleAuthorId && !isModerationPage()) {
+          initializeActionsPanel(user, path);
+          initializeFlagUserModal(articleAuthorId);
+          // "/mod" page
+        } else if (isModerationPage()) {
+          initializeActionsPanel(user, path);
+          initializeFlagUserModal(articleAuthorId);
+        }
       }
-    }
-  };
+    };
 
-  initializeModerationsTools();
+    initializeModerationsTools();
+  }
 });

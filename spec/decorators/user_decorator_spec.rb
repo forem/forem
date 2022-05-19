@@ -142,12 +142,12 @@ RSpec.describe UserDecorator, type: :decorator do
 
   describe "#fully_banished?" do
     it "returns not fully banished if in good standing" do
-      expect(user.decorate.fully_banished?).to eq(false)
+      expect(user.decorate.fully_banished?).to be(false)
     end
 
     it "returns fully banished if user has been banished" do
       Moderator::BanishUser.call(admin: user, user: user)
-      expect(user.decorate.fully_banished?).to eq(true)
+      expect(user.decorate.fully_banished?).to be(true)
     end
   end
 

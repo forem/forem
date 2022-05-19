@@ -9,7 +9,7 @@ class DiscussionLock < ApplicationRecord
   belongs_to :article
   belongs_to :locking_user, class_name: "User"
 
-  include StringAttributeCleaner.for(:notes, :reason)
+  include StringAttributeCleaner.nullify_blanks_for(:notes, :reason)
 
   validates :article_id, uniqueness: true
 end

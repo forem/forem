@@ -2,7 +2,7 @@
 
 /* eslint-disable no-multi-str */
 
-function buildArticleHTML(article) {
+function buildArticleHTML(article, currentUserId = null) {
   var tagIcon = `<svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg"><path d="M7.784 14l.42-4H4V8h4.415l.525-5h2.011l-.525 5h3.989l.525-5h2.011l-.525 5H20v2h-3.784l-.42 4H20v2h-4.415l-.525 5h-2.011l.525-5H9.585l-.525 5H7.049l.525-5H4v-2h3.784zm2.011 0h3.99l.42-4h-3.99l-.42 4z"/></svg>`;
   if (article && article.class_name === 'Tag') {
     return `<article class="crayons-story">
@@ -196,7 +196,12 @@ function buildArticleHTML(article) {
     var isArticle = article.class_name === 'Article';
 
     // We need to be able to set the data-info hash attribute with escaped characters.
-    var name = article.user.name.replace(/[\\"']/g, '\\$&');
+    // NB: Escaping apostrophes with a "/" does not have the desired effect, as we eventually render the name inside a double quoted string ""
+    // To avoid complications with single quotes inside double quotes inside single quotes, we instead replace any apostrophe with its encoded value
+    var name = article.user.name
+      .replace(/'/g, '&apos;')
+      .replace(/[\\"]/g, '\\$&');
+
     var previewCardContent = `
       <div id="story-author-preview-content-${article.id}" class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7" data-repositioning-dropdown="true" style="border-top-color: var(--card-color);" data-testid="profile-preview-card">
         <div class="gap-4 grid">
@@ -273,7 +278,9 @@ function buildArticleHTML(article) {
     }
 
     var saveButton = '';
-    if (article.class_name === 'Article') {
+    // "!=" instead of "!==" used to compare user_id and currentUserId because
+    // currentUserId is a String while user_id is an Integer
+    if (article.class_name === 'Article' && article.user_id != currentUserId) {
       saveButton =
         '<button type="button" id="article-save-button-' +
         article.id +

@@ -24,6 +24,9 @@
 
   &__title {
     grid-column-end: span 2;
+
+    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+    overflow-wrap: break-word;
     overflow-wrap: anywhere;
     word-break: break-word;
     @media (min-width: $breakpoint-m) {

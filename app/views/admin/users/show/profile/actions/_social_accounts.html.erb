@@ -1,21 +1,21 @@
 <div id="remove-social-accounts">
   <div class="flex flex-col gap-4">
-    <p>At times, removing a user's social account will resolve certain sign-in issues that a user may be experiencing.</p>
-    <p>For example, users may experience issues related to their UID when creating a <%= community_name %> account. If a user creates an account by, first, deleting their original social account and, then, creating their new account with the same Twitter/GitHub username,
-       the user may be unable to register their new account. This occurs when a user's Twitter/GitHub account's UID does not match their identity's UID. For more information on whether a user's UID does not match their identity UID, the following third party tools can be
-       helpful:
-      <a href="https://tweeterid.com/?username=<%= @user.twitter_username %>" target="_blank" rel="noopener nofollow">Tweeter ID for Twitter (username is in URL for reference)</a>
-      or <a href="https://caius.github.io/github_id/#<%= @user.github_username %>" target="_blank" rel="noopener nofollow">Caius's GitHub ID Lookup Tool</a>
-    </p>
+    <p>Sometimes users encounter sign-in issues when they....</p>
+    <ol>
+      <li>create an account on <%= community_name %> with a social account, and</li>
+      <li>remove the original social account, and</li>
+      <li>attempt to sign in again using the same, removed social account.</li>
+    </ol>
+    <p>If this is the case, removing the social accounts below can help restore their social accounts. To verify if this is the case, follow steps 1 and 2 below. If verified, follow through all steps to restore their social accounts.</p>
 
     <h3 class="crayons-subtitle-2">
-      How do I remove a social account?
+      How to restore a social account
     </h3>
     <ol>
-      <li>To start, click on one of the links provided above to check the user's social account UID.</li>
-      <li>Next, confirm whether or not the user's social account UID matches the user's identity UID.</li>
-      <li>If the social account UID does not match, delete the respective identity.</li>
-      <li>Finally, ask the user to reauthorize their social account via <%= app_url(user_settings_path(:account)) %></li>
+      <li>Check their social account's UID via these third party tools: <a href="https://tweeterid.com/?username=<%= @user.twitter_username %>" target="_blank" rel="noopener nofollow">Twitter UID</a> and <a href="https://caius.github.io/github_id/#<%= @user.github_username %>" target="_blank" rel="noopener nofollow">GitHub UID</a></li>
+      <li>Check whether or not it matches the corresponding UID below.</li>
+      <li>Remove the respective account if it doesn't match.</li>
+      <li>Ask the user to reauthorize their social account via <%= app_url(user_settings_path(:account)) %></li>
     </ol>
 
     <% @user.identities.each do |identity| %>

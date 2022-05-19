@@ -12,9 +12,7 @@ export const ErrorList = ({ errors }) => {
         {Object.keys(errors).map((key) => {
           return (
             <li key={key}>
-              {key}
-              {`: `}
-              {errors[key]}
+              {key === 'base' ? errors[key] : `${key}: ${errors[key]}`}
             </li>
           );
         })}

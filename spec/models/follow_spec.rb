@@ -16,7 +16,7 @@ RSpec.describe Follow, type: :model do
 
   it "follows user" do
     user.follow(user_2)
-    expect(user.following?(user_2)).to eq(true)
+    expect(user.following?(user_2)).to be(true)
   end
 
   it "calculates points with explicit and implicit combined" do

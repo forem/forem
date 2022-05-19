@@ -1,4 +1,4 @@
-/* global timestampToLocalDateTime InstantClick Runtime */
+/* global timestampToLocalDateTime InstantClick */
 
 function initializeSettings() {
   // initialize org secret copy to clipboard functionality
@@ -10,7 +10,7 @@ function initializeSettings() {
   if (settingsOrgSecretInput && settingsOrgSecretButton) {
     settingsOrgSecretButton.addEventListener('click', () => {
       const { value } = settingsOrgSecretInput;
-      Runtime.copyToClipboard(value).then(() => {
+      window.Forem.Runtime.copyToClipboard(value).then(() => {
         // Show the confirmation message
         document
           .getElementById('copy-text-announcer')
