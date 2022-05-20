@@ -26,8 +26,8 @@ const KEYS = {
 
 // TODO:
 // Cypress testing
+// Additional component tests - e.g. aria activedescendent
 // Storybook changes
-// Rip out old version & its CSS
 // Future - Refactor of UserListItemContent props / pass in as template
 
 /**
@@ -115,6 +115,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
       onBlur,
       fetchSuggestions,
       searchInstructionsMessage,
+      maxSuggestions = 6,
       replaceElement,
       ...inputProps
     },
@@ -214,9 +215,16 @@ export const AutocompleteTriggerTextArea = forwardRef(
       );
 
       if (searchTerm.length >= MINIMUM_SEARCH_CHARS) {
-        fetchSuggestions(searchTerm).then((suggestions) =>
-          dispatch({ type: 'setSuggestions', payload: suggestions }),
-        );
+        fetchSuggestions(searchTerm).then((suggestions) => {
+          if (suggestions.length > maxSuggestions) {
+            dispatch({
+              type: 'setSuggestions',
+              payload: suggestions.slice(0, maxSuggestions),
+            });
+            return;
+          }
+          dispatch({ type: 'setSuggestions', payload: suggestions });
+        });
 
         dispatch({
           type: 'setEmptyStateMessage',
@@ -294,6 +302,9 @@ export const AutocompleteTriggerTextArea = forwardRef(
       dispatch({ type: 'setSuppressPopover', payload: false });
     };
 
+    // If a user clicks away from an in-progress search, we can assume they no longer wish to keep searching
+    const handleTextAreaClicked = () => dispatch({ type: 'exitComboboxMode' });
+
     // The textarea blurs when an option is clicked from the dropdown suggestions, in which case we don't want to
     // trigger the behaviour for the user having left the textarea completely, hence the `ignoreBlur` boolean.
     const handleBlur = () => {
@@ -365,6 +376,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
       <div
         ref={wrapperRef}
         className={`c-autocomplete relative${autoResize ? ' h-100' : ''}`}
+        data-testid="autocomplete-wrapper"
       >
         <span className="screen-reader-only" aria-live="polite">
           {isComboboxMode ? searchInstructionsMessage : ''}
@@ -385,6 +397,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
             handleBlur();
           }}
           onKeyDown={handleKeyDown}
+          onClick={handleTextAreaClicked}
         />
         {isComboboxMode && !suppressPopover
           ? createPortal(
@@ -397,7 +410,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
                   left: `${dropdownPositionPoints.x}px`,
                 }}
               >
-                {suggestions.length > 0 ? (
+                {suggestions && suggestions.length > 0 ? (
                   <ul className="list-none" role="listbox" id={`${id}-listbox`}>
                     {suggestions.map((suggestion, index) => (
                       // Disabled as the key handler is attached to the textarea
