@@ -25,7 +25,6 @@ const KEYS = {
 };
 
 // TODO:
-// Cypress testing
 // Additional component tests - e.g. aria activedescendent
 // Storybook changes
 // Future - Refactor of UserListItemContent props / pass in as template
