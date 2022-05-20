@@ -76,6 +76,7 @@ export const EditorBody = ({
       <Toolbar version={version} textAreaId="article_body_markdown" />
       <AutocompleteTriggerTextArea
         triggerCharacter="@"
+        maxSuggestions={6}
         searchInstructionsMessage="Type to search for a user"
         ref={textAreaRef}
         fetchSuggestions={(username) =>

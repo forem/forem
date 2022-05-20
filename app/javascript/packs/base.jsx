@@ -47,6 +47,7 @@ window.Forem = {
     render(
       <AutocompleteTriggerTextArea
         replaceElement={originalTextArea}
+        maxSuggestions={6}
         fetchSuggestions={(username) =>
           fetchSearch('usernames', { username }).then(({ result }) =>
             result.map((user) => ({ ...user, value: user.username })),

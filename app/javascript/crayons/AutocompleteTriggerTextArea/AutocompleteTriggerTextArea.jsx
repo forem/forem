@@ -13,7 +13,6 @@ import {
 
 // Used to ensure dropdown appears just below search text
 const DROPDOWN_VERTICAL_OFFSET = '1.5rem';
-
 const EMPTY_STATE_MESSAGE = 'No results found';
 const MINIMUM_SEARCH_CHARS = 2;
 
@@ -25,9 +24,8 @@ const KEYS = {
 };
 
 // TODO:
-// Additional component tests - e.g. aria activedescendent
+
 // Storybook changes
-// Future - Refactor of UserListItemContent props / pass in as template
 
 /**
  * Helper function to copy all styles and attributes from the original textarea to the new autocomplete one
@@ -114,7 +112,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
       onBlur,
       fetchSuggestions,
       searchInstructionsMessage,
-      maxSuggestions = 6,
+      maxSuggestions,
       replaceElement,
       ...inputProps
     },
@@ -215,7 +213,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
 
       if (searchTerm.length >= MINIMUM_SEARCH_CHARS) {
         fetchSuggestions(searchTerm).then((suggestions) => {
-          if (suggestions.length > maxSuggestions) {
+          if (maxSuggestions && suggestions.length > maxSuggestions) {
             dispatch({
               type: 'setSuggestions',
               payload: suggestions.slice(0, maxSuggestions),
@@ -368,6 +366,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
           'aria-haspopup': 'listbox',
           'aria-expanded': isComboboxMode,
           'aria-owns': `${id}-listbox`,
+          'aria-activedescendant': `${id}-suggestion-${activeDescendentIndex}`,
         }
       : {};
 
@@ -416,6 +415,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
                       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
                       <li
                         key={`${id}-suggestion-${index}`}
+                        id={`${id}-suggestion-${index}`}
                         role="option"
                         aria-selected={index === activeDescendentIndex}
                         className="c-autocomplete__option flex items-center"

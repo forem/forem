@@ -51,20 +51,87 @@ describe('<AutocompleteTriggerTextArea />', () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 
-  it('should switch to combobox role when trigger character is typed', async () => {
+  it('should switch to a combobox when trigger character is typed', async () => {
     const { queryByRole, getByRole } = render(
       <AutocompleteTriggerTextArea
         triggerCharacter="@"
         searchInstructionsMessage="Type to search for a user"
         fetchSuggestions={async () => ({ result: [] })}
         aria-label="Example text area"
+        id="some-id"
       />,
     );
-
+    const textArea = getByRole('textbox', { name: 'Example text area' });
     expect(queryByRole('combobox')).not.toBeInTheDocument();
-    userEvent.type(getByRole('textbox', { name: 'Example text area' }), '@');
+    expect(textArea).not.toHaveAttribute('aria-haspopup');
+    expect(textArea).not.toHaveAttribute('aria-expanded');
+    expect(textArea).not.toHaveAttribute('aria-owns');
+
+    userEvent.type(textArea, '@');
 
     await waitFor(() => expect(getByRole('combobox')).toBeInTheDocument());
+    expect(textArea).toHaveAttribute('aria-haspopup', 'listbox');
+    expect(textArea).toHaveAttribute('aria-expanded', 'true');
+    expect(textArea).toHaveAttribute('aria-owns', 'some-id-listbox');
+  });
+
+  it('should update aria-activedescendent on arrow press', async () => {
+    const { getByRole, getAllByRole } = render(
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
+        fetchSuggestions={async () => [
+          { value: 'option1', name: 'option1', username: 'username' },
+          { value: 'option2', name: 'option2', username: 'username' },
+          { value: 'option3', name: 'option3', username: 'username' },
+        ]}
+        aria-label="Example text area"
+        id="some-id"
+      />,
+    );
+    const textArea = getByRole('textbox', { name: 'Example text area' });
+    userEvent.type(textArea, '@op');
+
+    await waitFor(() => expect(getAllByRole('option')).toHaveLength(3));
+
+    userEvent.keyboard('{arrowdown}');
+
+    await waitFor(() =>
+      expect(textArea).toHaveAttribute(
+        'aria-activedescendant',
+        'some-id-suggestion-0',
+      ),
+    );
+    expect(getByRole('option', { name: 'option1 @username' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    userEvent.keyboard('{arrowdown}');
+
+    await waitFor(() =>
+      expect(textArea).toHaveAttribute(
+        'aria-activedescendant',
+        'some-id-suggestion-1',
+      ),
+    );
+    expect(getByRole('option', { name: 'option2 @username' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    userEvent.keyboard('{arrowup}');
+
+    await waitFor(() =>
+      expect(textArea).toHaveAttribute(
+        'aria-activedescendant',
+        'some-id-suggestion-0',
+      ),
+    );
+    expect(getByRole('option', { name: 'option1 @username' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   });
 
   it('should exit combobox mode and insert username when a selection is made', async () => {
@@ -77,8 +144,8 @@ describe('<AutocompleteTriggerTextArea />', () => {
       />,
     );
 
-    expect(queryByRole('combobox')).not.toBeInTheDocument();
-    userEvent.type(getByRole('textbox', { name: 'Example text area' }), '@op');
+    const textArea = getByRole('textbox', { name: 'Example text area' });
+    userEvent.type(textArea, '@op');
 
     await waitFor(() => expect(getByRole('option')).toBeInTheDocument());
     getByRole('option').click();
@@ -86,9 +153,11 @@ describe('<AutocompleteTriggerTextArea />', () => {
     await waitFor(() =>
       expect(queryByRole('combobox')).not.toBeInTheDocument(),
     );
-    expect(getByRole('textbox', { name: 'Example text area' })).toHaveValue(
-      '@option1 ',
-    );
+    expect(textArea).not.toHaveAttribute('aria-haspopup');
+    expect(textArea).not.toHaveAttribute('aria-expanded');
+    expect(textArea).not.toHaveAttribute('aria-owns');
+
+    expect(textArea).toHaveValue('@option1 ');
   });
 
   it('should hide the pop-up options when Escape is pressed', async () => {
@@ -160,5 +229,31 @@ describe('<AutocompleteTriggerTextArea />', () => {
     renderedTextArea.blur();
 
     await waitFor(() => expect(mockOnBlur).toHaveBeenCalled());
+  });
+
+  it('should only show up to the maxSuggestions number, if specified', async () => {
+    const { getByRole, getAllByRole, queryByRole } = render(
+      <AutocompleteTriggerTextArea
+        fetchSuggestions={async () => [
+          { value: 'one' },
+          { value: 'two' },
+          { value: 'three' },
+        ]}
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
+        aria-label="Example text area"
+        maxSuggestions={2}
+      />,
+    );
+
+    userEvent.type(
+      getByRole('textbox', {
+        name: 'Example text area',
+      }),
+      '@ab',
+    );
+
+    await waitFor(() => expect(getAllByRole('option')).toHaveLength(2));
+    expect(queryByRole('option', { name: 'three' })).toBeNull();
   });
 });
