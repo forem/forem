@@ -369,7 +369,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
     return (
       <div
         ref={wrapperRef}
-        className={`c-autocomplete relative${autoResize ? ' h-100' : ''}`}
+        className={`c-autocomplete ${autoResize ? ' h-100' : ''}`}
         data-testid="autocomplete-wrapper"
       >
         <span className="screen-reader-only" aria-live="polite">
