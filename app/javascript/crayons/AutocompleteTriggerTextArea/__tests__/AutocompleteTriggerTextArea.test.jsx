@@ -124,4 +124,41 @@ describe('<AutocompleteTriggerTextArea />', () => {
     // We should still have the same number of textareas on the page
     expect(getAllByRole('textbox')).toHaveLength(1);
   });
+
+  it('should call onChange callback', async () => {
+    const mockOnChange = jest.fn();
+    const { getByRole } = render(
+      <AutocompleteTriggerTextArea
+        fetchSuggestions={async () => []}
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
+        aria-label="Example text area"
+        onChange={mockOnChange}
+      />,
+    );
+
+    userEvent.type(getByRole('textbox', { name: 'Example text area' }), 'x');
+    await waitFor(() => expect(mockOnChange).toHaveBeenCalled());
+  });
+
+  it('should call onBlur callback', async () => {
+    const mockOnBlur = jest.fn();
+    const { getByRole } = render(
+      <AutocompleteTriggerTextArea
+        fetchSuggestions={async () => []}
+        triggerCharacter="@"
+        searchInstructionsMessage="Type to search for a user"
+        aria-label="Example text area"
+        onBlur={mockOnBlur}
+      />,
+    );
+
+    const renderedTextArea = getByRole('textbox', {
+      name: 'Example text area',
+    });
+    renderedTextArea.focus();
+    renderedTextArea.blur();
+
+    await waitFor(() => expect(mockOnBlur).toHaveBeenCalled());
+  });
 });

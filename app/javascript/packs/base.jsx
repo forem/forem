@@ -21,9 +21,7 @@ window.Forem = {
   getMentionAutoCompleteImports() {
     if (!this.mentionAutoCompleteImports) {
       this.mentionAutoCompleteImports = [
-        import(
-          '@crayons/MentionAutocompleteTextArea/AutocompleteTriggerTextArea'
-        ),
+        import('@crayons/AutocompleteTriggerTextArea'),
         import('@utilities/search'),
         this.getPreactImport(),
       ];
