@@ -7,6 +7,10 @@ import {
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
+import * as Routes from '@routes';
+
+// Make the rails routes available to not ES module code.
+window.Routes = Routes;
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
@@ -123,6 +127,6 @@ async function loadCreatorSettings() {
   }
 }
 
-if (document.location.pathname === '/admin/creator_settings/new') {
+if (document.location.pathname === Routes.newAdminCreatorSettingPath()) {
   loadCreatorSettings();
 }
