@@ -23,10 +23,6 @@ const KEYS = {
   ESCAPE: 'Escape',
 };
 
-// TODO:
-
-// Storybook changes
-
 /**
  * Helper function to copy all styles and attributes from the original textarea to the new autocomplete one
  *
