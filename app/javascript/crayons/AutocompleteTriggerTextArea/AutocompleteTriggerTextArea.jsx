@@ -1,8 +1,9 @@
 import { h } from 'preact';
-import { useRef, useLayoutEffect, useReducer } from 'preact/hooks';
+import { useRef, useLayoutEffect, useReducer, useEffect } from 'preact/hooks';
 import { forwardRef, createPortal } from 'preact/compat';
 import { UserListItemContent } from './UserListItemContent';
 import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
+import { isInViewport } from '@utilities/viewport';
 
 import {
   useTextAreaAutoResize,
@@ -24,10 +25,9 @@ const KEYS = {
 };
 
 // TODO:
-// All the testing
+// Cypress testing
 // Storybook changes
 // Rip out old version & its CSS
-// Scroll items into view as navigated with keyboard
 // Future - Refactor of UserListItemContent props / pass in as template
 
 /**
@@ -150,6 +150,20 @@ export const AutocompleteTriggerTextArea = forwardRef(
     const wrapperRef = useRef(null);
 
     const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
+
+    useEffect(() => {
+      if (activeDescendentIndex !== null) {
+        const { current: popover } = popoverRef;
+        const activeItem = popover?.querySelector('[aria-selected="true"]');
+        if (!popover || !activeItem) {
+          return;
+        }
+
+        if (!isInViewport({ element: activeItem })) {
+          activeItem.scrollIntoView(false);
+        }
+      }
+    }, [activeDescendentIndex]);
 
     useLayoutEffect(() => {
       if (autoResize && inputRef.current) {
