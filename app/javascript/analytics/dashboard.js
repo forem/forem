@@ -249,15 +249,39 @@ function renderReferrers(data) {
   container.innerHTML = tableBody.join('');
 }
 
-function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
-  callHistoricalAPI(date, { organizationId, articleId }, (data) => {
-    writeCards(data, timeRangeLabel);
-    drawCharts(data, timeRangeLabel);
-  });
+function removeCardElements() {
+  const el = document.getElementsByClassName("summary-stats")[0];
+  el && el.remove();
+}
 
-  callReferrersAPI(date, { organizationId, articleId }, (data) => {
-    renderReferrers(data);
+function showErrorsOnCharts() {
+  const target = ['reactions-chart', 'comments-chart', 'followers-chart', 'readers-chart'];
+  target.forEach(id => {
+    const el = document.getElementById(id);
+    el.outerHTML = `<p class="m-5" id="${id}">Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>`;
   });
+}
+
+function showErrorsOnReferrers() {
+  document.getElementById('referrers-container').outerHTML = '<p class="m-5" id="referrers-container">Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>';
+}
+
+function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
+  callHistoricalAPI(date, { organizationId, articleId })
+    .then((data) => {
+      writeCards(data, timeRangeLabel);
+      drawCharts(data, timeRangeLabel);
+    })
+    .catch((_err) => {
+      removeCardElements();
+      showErrorsOnCharts();
+    });
+
+  callReferrersAPI(date, { organizationId, articleId })
+    .then((data) => {
+      renderReferrers(data);
+    })
+    .catch((_err) => showErrorsOnReferrers());
 }
 
 function drawWeekCharts({ organizationId, articleId }) {

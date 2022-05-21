@@ -15,6 +15,7 @@ export const Modal = ({
   sheet,
   centered,
   noBackdrop,
+  showHeader = true,
   sheetAlign = 'center',
   backdropDismissible = false,
   onClose = () => {},
@@ -43,15 +44,17 @@ export const Modal = ({
           aria-label="modal"
           className="crayons-modal__box"
         >
-          <header className="crayons-modal__box__header">
-            <h2 class="crayons-subtitle-2">{title}</h2>
-            <Button
-              icon={CloseIcon}
-              aria-label="Close"
-              className="crayons-modal__dismiss"
-              onClick={onClose}
-            />
-          </header>
+          {showHeader && (
+            <header className="crayons-modal__box__header">
+              <h2 class="crayons-subtitle-2">{title}</h2>
+              <Button
+                icon={CloseIcon}
+                aria-label="Close"
+                className="crayons-modal__dismiss"
+                onClick={onClose}
+              />
+            </header>
+          )}
           <div className="crayons-modal__box__body">{children}</div>
         </div>
         {!noBackdrop && (
@@ -80,4 +83,5 @@ Modal.propTypes = {
   focusTrapSelector: PropTypes.string,
   sheet: PropTypes.bool,
   sheetAlign: PropTypes.oneOf(['center', 'left', 'right']),
+  showHeader: PropTypes.bool,
 };

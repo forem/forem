@@ -124,3 +124,6 @@
     </div>
 
 </div>
+<% if FeatureFlag.enabled?(:member_index_view) %>
+ <%= render "admin/users/index/filters_modal" %>
+<% end %>

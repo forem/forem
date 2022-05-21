@@ -174,7 +174,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
       allow(Settings::UserExperience).to receive(:feed_style).and_return("basic")
       get "/"
-      expect(response.body.scan(/(?=class="crayons-story__cover crayons-story__cover__image)/).count).to be 1
+      expect(response.body.scan(/(?=class="crayons-article__cover crayons-article__cover__image__feed)/).count).to be 1
     end
 
     it "shows multiple cover images if rich feed style" do
@@ -182,7 +182,9 @@ RSpec.describe "StoriesIndex", type: :request do
 
       allow(Settings::UserExperience).to receive(:feed_style).and_return("rich")
       get "/"
-      expect(response.body.scan(/(?=class="crayons-story__cover crayons-story__cover__image)/).count).to be > 1
+      # rubocop:disable Layout/LineLength
+      expect(response.body.scan(/(?=class="crayons-article__cover crayons-article__cover__image__feed)/).count).to be > 1
+      # rubocop:enable Layout/LineLength
     end
 
     context "with campaign hero" do
