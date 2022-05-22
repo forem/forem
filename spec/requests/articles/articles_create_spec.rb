@@ -138,4 +138,41 @@ RSpec.describe "ArticlesCreate", type: :request do
       expect(published_at_utc).to eq("#{(tomorrow + 1.day).strftime('%m/%d/%Y')} 04:00")
     end
   end
+
+  context "when setting published_at from editor v1" do
+    it "sets current published_at when publishing and published_at not specified" do
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      post "/articles", params: { article: { body_markdown: body_markdown } }
+      a = Article.find_by(title: "super-article")
+      expect(a.published_at).to be_within(1.minute).of(Time.current)
+    end
+
+    it "doesn't set published_at for drafts when published_at is not specified" do
+      body_markdown = "---\ntitle: super-article\npublished: false\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      post "/articles", params: { article: { body_markdown: body_markdown } }
+      a = Article.find_by(title: "super-article")
+      expect(a.published_at).to be_nil
+    end
+
+    it "sets published_at from frontmatter" do
+      published_at = 10.days.from_now.in_time_zone("UTC")
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \npublished_at: #{published_at.strftime('%d/%m/%Y %H:%M')} UTC\n---\n\nHey this is the article"
+      post "/articles", params: { article: { body_markdown: body_markdown } }
+      a = Article.find_by(title: "super-article")
+      expect(a.published_at).to be_within(1.minute).of(published_at)
+    end
+
+    it "sets published_at with timezone from frontmatter" do
+      published_at = 10.days.from_now.in_time_zone("America/Caracas")
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \npublished_at: #{published_at.strftime('%d/%m/%Y %H:%M')} America/Caracas\n---\n\nHey this is the article"
+      post "/articles", params: { article: { body_markdown: body_markdown } }
+      a = Article.find_by(title: "super-article")
+      # binding.pry
+      expect(a.published_at).to be_within(1.minute).of(published_at)
+    end
+  end
 end

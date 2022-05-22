@@ -82,9 +82,10 @@ module Articles
     end
 
     def user_editor_v1
+      published_at = Time.current.strftime("%Y-%m-%d %H:%M %z")
       body = "---\ntitle: \npublished: false\ndescription: " \
              "\ntags: \n# cover_image: https://direct_url_to_image.jpg" \
-             "\n# Use a ratio of 100:42 for best results.\n---\n\n"
+             "\n# Use a ratio of 100:42 for best results.\n//published_at: #{published_at}\n---\n\n"
 
       Article.new(
         body_markdown: body,
