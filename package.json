@@ -142,6 +142,7 @@
     "prop-types": "^15.8.1",
     "rails-erb-loader": "^5.5.2",
     "react-colorful": "^5.5.1",
+    "react-dates": "^21.8.0",
     "web-share-wrapper": "^0.2.2"
   }
 }
