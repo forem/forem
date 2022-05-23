@@ -455,7 +455,7 @@ GEM
       execjs (~> 2.7)
     knapsack_pro (3.2.1)
       rake
-    kramdown (2.3.1)
+    kramdown (2.4.0)
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
@@ -829,7 +829,7 @@ GEM
     simplecov_json_formatter (0.1.2)
     slack-notifier (2.4.0)
     smart_properties (1.17.0)
-    solargraph (0.44.3)
+    solargraph (0.45.0)
       backport (~> 1.2)
       benchmark
       bundler (>= 1.17.2)
@@ -1078,7 +1078,7 @@ DEPENDENCIES
   sidekiq-unique-jobs (~> 7.1.22)
   simplecov (~> 0.21.2)
   slack-notifier (~> 2.4)
-  solargraph (~> 0.44)
+  solargraph (~> 0.45)
   solargraph-rails (~> 0.3.1)
   sprockets-rails (~> 3.4)
   staccato (~> 0.5)
