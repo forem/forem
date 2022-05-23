@@ -262,7 +262,7 @@ class ApplicationController < ActionController::Base
       # If the request equals the original set domain, e.g. forem-x.forem.cloud.
       request.host == ENV["APP_DOMAIN"] &&
       # If the app domain config has now been set, let's go there instead.
-      ENV.fetch("APP_DOMAIN", nil) != Settings::General.app_domain
+      ENV["APP_DOMAIN"] != Settings::General.app_domain
 
     redirect_to URL.url(request.fullpath)
   end
