@@ -407,6 +407,11 @@ textarea.crayons-textfield.crayons-textfield--ghost {
       &:focus {
         background-color: var(--bg-hover);
       }
+
+      &__disabled {
+        opacity: 0.2;
+        cursor: not-allowed;
+      }
     }
   }
 }

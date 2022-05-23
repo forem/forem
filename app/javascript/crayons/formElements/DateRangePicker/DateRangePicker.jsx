@@ -27,15 +27,10 @@ const isDateOutsideOfRange = ({ date, minDate, maxDate }) =>
   !date.isBetween(minDate, maxDate);
 
 // TODO:
-// - Consolidate styling
-// - Clarify if we can show calendar button and clear button
 // - Test app start up OK
 // - Update story props and add documentation
 // - Tests
 // - Test with screen reader
-// - Check dark mode again
-// - Remove future/past arrow navigation when dates will be disabled
-// - More complex validation of months in picker vs current year and vice versa
 // - Quick selects with renderCalendarInfo prop
 
 const MonthYearPicker = ({
@@ -45,6 +40,16 @@ const MonthYearPicker = ({
   onYearSelect,
   month,
 }) => {
+  const selectedMonth = month.month();
+  const selectedYear = month.year();
+
+  const latestYear = latestMoment.year();
+
+  // Make sure we only display the available months for the currently selected year
+  const latestMonthIndex =
+    latestYear === selectedYear ? latestMoment.month() : 11;
+  const availableMonths = MONTH_NAMES.slice(0, latestMonthIndex + 1);
+
   const yearsDiff = latestMoment.diff(earliestMoment, 'years');
 
   const years = [...Array(yearsDiff).keys()].map(
@@ -57,9 +62,9 @@ const MonthYearPicker = ({
       <select
         className="crayons-select w-auto mr-2 fs-s"
         onChange={(e) => onMonthSelect(month, e.target.value)}
-        value={month.month()}
+        value={selectedMonth}
       >
-        {MONTH_NAMES.map((month, index) => (
+        {availableMonths.map((month, index) => (
           <option value={index} key={month}>
             {month}
           </option>
@@ -68,7 +73,7 @@ const MonthYearPicker = ({
       <select
         className="crayons-select w-auto fs-s"
         onChange={(e) => onYearSelect(month, e.target.value)}
-        value={month.year()}
+        value={selectedYear}
       >
         {years.map((year) => (
           <option key={year} value={year}>
@@ -105,12 +110,19 @@ export const DateRangePicker = ({
   const [startMoment, setStartMoment] = useState(
     defaultStartDate ? moment(defaultStartDate) : null,
   );
+
   const [endMoment, setEndMoment] = useState(
     defaultEndDate ? moment(defaultEndDate) : null,
   );
 
   const earliestMoment = moment(minStartDate);
   const latestMoment = moment(maxEndDate);
+
+  const isMonthSameAsLatestMonth = (relevantDate) =>
+    relevantDate.year() === latestMoment.year() &&
+    relevantDate.month() === latestMoment.month();
+
+  const today = moment();
 
   return (
     // We wrap in a span to assist with scoping CSS selectors & overriding styles from react-dates
@@ -123,6 +135,15 @@ export const DateRangePicker = ({
         focusedInput={focusedInput}
         navPrev={<Icon src={ChevronLeft} />}
         navNext={<Icon src={ChevronRight} />}
+        minDate={earliestMoment}
+        maxDate={latestMoment}
+        initialVisibleMonth={() => {
+          const relevantDate = startMoment ? startMoment : today;
+
+          return isMonthSameAsLatestMonth(relevantDate)
+            ? relevantDate.clone().subtract(1, 'month')
+            : relevantDate;
+        }}
         customInputIcon={<Icon src={Calendar} />}
         showDefaultInputIcon={!(startMoment || endMoment)}
         inputIconPosition={ICON_BEFORE_POSITION}
@@ -162,5 +183,7 @@ DateRangePicker.propTypes = {
   endDateId: PropTypes.string.isRequired,
   defaultStartDate: PropTypes.instanceOf(Date),
   defaultEndDate: PropTypes.instanceOf(Date),
+  maxStartDate: PropTypes.instanceOf(Date),
+  maxEndDate: PropTypes.instanceOf(Date),
   onDatesChanged: PropTypes.func,
 };
