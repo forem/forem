@@ -11,8 +11,8 @@ structured as an index pointing you to related files.
 - [This post](https://dev.to/devteam/these-are-the-feed-levers-i-know-i-know-3jj7)
   walked through the meaning of each of the initial relevancy levers.
 
-In addition there are two code walk throughs explaining the pull requests that
-introduced the VariantQuery:
+In addition there are two code walk throughs explaining the pull
+requests that introduced the VariantQuery:
 
 - [Introducing the concepts](https://www.loom.com/share/857cea3698f44a4f876a01fb4e72552c)
 - [Walk through of code connecting concepts to production](https://www.loom.com/share/31f06224b61c4f7ca01c85e1fe0c239a)
@@ -33,7 +33,7 @@ In
 we explained the conceptual implementation; providing a conceptual entity
 relationship and sequence diagrams.
 
-The key thing to understand is as follows: We create a SQL statement that
-calculates a `relevancy_score` for a given user and each article in the Forem
-instance. The higher the article's `relevancy_score`, the closer that article
-will be to the top of the feed.
+The key thing to understand is as follows: We create a SQL statement
+that calculates a `relevancy_score` for a given user and each article in the
+Forem instance. The higher the article's `relevancy_score`, the closer that article will be to
+the top of the feed.
