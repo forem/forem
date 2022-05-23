@@ -6,6 +6,7 @@ class OpenGraphTag < LiquidTagBase
   def initialize(_tag_name, url, _parse_context)
     super
 
+    @url = url
     @page = OpenGraph.new url
     @url_domain = URI.parse(url).host.delete_prefix("www.")
   end
@@ -15,6 +16,7 @@ class OpenGraphTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         page: @page,
+        url: @url,
         url_domain: @url_domain
       },
     )

@@ -3,6 +3,40 @@ require "rails_helper"
 RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
   let(:listing) { create(:listing) }
 
+  # See https://github.com/forem/forem/issues/17679; Note the document has `og:title` but not
+  # `og:url`; should we fallback to the given URL instead?
+  # rubocop:disable RSpec/ExampleLength
+  it "handles https://guides.rubyonrails.org" do
+    link = "https://guides.rubyonrails.org/routing.html"
+    stub_request(:head, link)
+      .with(
+        headers: {
+          "Accept" => "*/*",
+          "User-Agent" => "DEV(local) (#{URL.url})"
+        },
+      )
+      .to_return(status: 200, body: "", headers: {})
+
+    stub_request(:get, link)
+      .with(
+        headers: {
+          "Accept" => "*/*",
+          "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+          "Host" => "guides.rubyonrails.org",
+          "User-Agent" => "Ruby"
+        },
+      )
+      .to_return(
+        status: 200,
+        body: Rails.root.join("spec/fixtures/files/guides.rubyonrails.org-routing.html").read,
+        headers: {},
+      )
+
+    parsed_tag = Liquid::Template.parse("{% embed #{link} %}")
+    expect(parsed_tag.render).to include("<a href=\"#{link}\"")
+  end
+  # rubocop:enable RSpec/ExampleLength
+
   it "delegates parsing to the link-matching class" do
     link = "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"
 

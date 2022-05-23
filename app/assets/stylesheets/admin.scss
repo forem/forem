@@ -279,3 +279,19 @@ which may be more easily removed once we no longer wish admin layouts to have a 
     display: none;
   }
 }
+
+.admin-details {
+  border-bottom: 1px solid var(--base-10);
+
+  summary::marker {
+    display: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  &[open] .summary-icon {
+    transform: rotate(180deg);
+  }
+}
