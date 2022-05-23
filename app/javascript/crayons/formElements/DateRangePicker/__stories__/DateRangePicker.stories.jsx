@@ -3,13 +3,13 @@ import { DateRangePicker } from '@crayons';
 
 export default {
   component: DateRangePicker,
-  title: 'components/Form Elements/DateRangePicker',
+  title: 'BETA/DateRangePicker',
   argTypes: {
     startDateId: {
-      description: 'A unique identifier for the start date input',
+      description: 'A unique identifier for the start date input (required)',
     },
     endDateId: {
-      description: 'A unique identifier for the end date input',
+      description: 'A unique identifier for the end date input (required)',
     },
     defaultStartDate: {
       description:
@@ -40,6 +40,7 @@ export default {
 export const Default = (args) => {
   return <DateRangePicker {...args} />;
 };
+
 Default.args = {
   startDateId: 'start-date',
   endDateId: 'end-date',

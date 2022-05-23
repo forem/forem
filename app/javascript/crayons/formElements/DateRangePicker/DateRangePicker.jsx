@@ -26,13 +26,6 @@ const MONTH_NAMES = [...Array(12).keys()].map((key) =>
 const isDateOutsideOfRange = ({ date, minDate, maxDate }) =>
   !date.isBetween(minDate, maxDate);
 
-// TODO:
-// - Test app start up OK
-// - Update story props and add documentation
-// - Tests
-// - Test with screen reader
-// - Quick selects with renderCalendarInfo prop
-
 const MonthYearPicker = ({
   earliestMoment,
   latestMoment,
@@ -60,6 +53,7 @@ const MonthYearPicker = ({
   return (
     <div>
       <select
+        aria-label="Navigate to month"
         className="crayons-select w-auto mr-2 fs-s"
         onChange={(e) => onMonthSelect(month, e.target.value)}
         value={selectedMonth}
@@ -71,6 +65,7 @@ const MonthYearPicker = ({
         ))}
       </select>
       <select
+        aria-label="Navigate to year"
         className="crayons-select w-auto fs-s"
         onChange={(e) => onYearSelect(month, e.target.value)}
         value={selectedYear}
@@ -133,8 +128,10 @@ export const DateRangePicker = ({
         endDate={endMoment}
         endDateId={endDateId}
         focusedInput={focusedInput}
-        navPrev={<Icon src={ChevronLeft} />}
-        navNext={<Icon src={ChevronRight} />}
+        // It is strange to add a tabindex to an icon, but react-dates renders these inside a role="button" which does not have a tabindex
+        // This is a workaround to make sure keyboard users can reach and interact with the nav buttons
+        navPrev={<Icon tabindex="0" src={ChevronLeft} />}
+        navNext={<Icon tabindex="0" src={ChevronRight} />}
         minDate={earliestMoment}
         maxDate={latestMoment}
         initialVisibleMonth={() => {
