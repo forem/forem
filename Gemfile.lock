@@ -178,7 +178,7 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    cypress-rails (0.5.3)
+    cypress-rails (0.5.4)
       puma (>= 3.8.0)
       railties (>= 5.2.0)
     dante (0.2.0)
