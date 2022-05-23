@@ -118,7 +118,7 @@ RSpec.describe "ArticlesCreate", type: :request do
     let(:tomorrow) { 1.day.from_now }
     let(:attributes) do
       { title: new_title, body_markdown: "Yo ho ho#{rand(100)}",
-        published_at: "#{tomorrow.strftime('%d.%m.%Y')} 18:00" }
+        published_at: "#{tomorrow.strftime('%Y-%m-%d')} 18:00" }
     end
 
     it "sets published_at according to the timezone" do
@@ -159,7 +159,7 @@ RSpec.describe "ArticlesCreate", type: :request do
     it "sets published_at from frontmatter" do
       published_at = 10.days.from_now.in_time_zone("UTC")
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
-      \npublished_at: #{published_at.strftime('%d/%m/%Y %H:%M')} UTC\n---\n\nHey this is the article"
+      \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
       post "/articles", params: { article: { body_markdown: body_markdown } }
       a = Article.find_by(title: "super-article")
       expect(a.published_at).to be_within(1.minute).of(published_at)
@@ -168,7 +168,7 @@ RSpec.describe "ArticlesCreate", type: :request do
     it "sets published_at with timezone from frontmatter" do
       published_at = 10.days.from_now.in_time_zone("America/Caracas")
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
-      \npublished_at: #{published_at.strftime('%d/%m/%Y %H:%M')} America/Caracas\n---\n\nHey this is the article"
+      \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
       post "/articles", params: { article: { body_markdown: body_markdown } }
       a = Article.find_by(title: "super-article")
       # binding.pry

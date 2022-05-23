@@ -189,4 +189,28 @@ RSpec.describe "ArticlesUpdate", type: :request do
       expect(draft.published).to be true
     end
   end
+
+  context "when setting published_at in editor v1" do
+    it "updates published_at from scheduled to scheduled with timezone" do
+      published_at = 3.days.from_now.in_time_zone("Asia/Dhaka")
+      article.update_columns(published: true, published_at: 1.day.from_now)
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
+
+      put "/articles/#{article.id}", params: { article: { body_markdown: body_markdown } }
+      article.reload
+      expect(article.published_at).to be_within(1.minute).of(published_at)
+    end
+
+    it "doesn't update published_at when published => published" do
+      published_at = DateTime.parse("2022-05-23 18:00 +0030")
+      article.update_columns(published: true, published_at: published_at)
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \npublished_at: #{1.day.from_now.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
+
+      put "/articles/#{article.id}", params: { article: { body_markdown: body_markdown } }
+      article.reload
+      expect(article.published_at).to eq(published_at)
+    end
+  end
 end
