@@ -7,7 +7,7 @@
 </header>
 <div class="flex justify-between items-center">
   <p data-testid="user-credits" class="fs-2xl fw-heavy"><%= @user.unspent_credits_count %></p>
-  <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Adjust balance" data-modal-size="small" data-modal-content-selector="js-adjust-balance">Adjust balance</button>
+  <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Adjust balance" data-modal-size="small" data-modal-content-selector=".js-adjust-balance">Adjust balance</button>
 </div>
 <% current_credits = @user.unspent_credits_count %>
 <div class="js-adjust-balance hidden">
