@@ -13,11 +13,11 @@ export default {
     },
     defaultStartDate: {
       description:
-        'The initial value of the start date of the range (optional)',
+        'A default value for the start date of the range (optional)',
       control: 'date',
     },
     defaultEndDate: {
-      description: 'The initial value of the end date of the range (optional)',
+      description: 'The default value for the end date of the range (optional)',
       control: 'date',
     },
     minStartDate: {
@@ -32,7 +32,7 @@ export default {
     },
     onDatesChanged: {
       description:
-        'Callback function for when dates are selected. Receives an object with startDate and endDate values.',
+        'A callback function for when dates are selected. It receives an object with startDate and endDate values.',
     },
   },
 };
