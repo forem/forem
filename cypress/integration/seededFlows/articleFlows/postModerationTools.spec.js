@@ -7,11 +7,7 @@ describe('Moderation Tools for Posts', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/').then(() => {
-        cy.findAllByRole('link', { name: 'Test article' })
-          .first()
-          .click({ force: true });
-
+      cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
         cy.findByRole('button', { name: 'Moderation' }).should('not.exist');
       });
     });
@@ -20,11 +16,7 @@ describe('Moderation Tools for Posts', () => {
   it('should not load moderation tools for a post when not logged in', () => {
     cy.fixture('users/articleEditorV1User.json').as('user');
 
-    cy.visit('/').then(() => {
-      cy.findAllByRole('link', { name: 'Test article' })
-        .first()
-        .click({ force: true });
-
+    cy.visit('/admin_mcadmin/test-article-slug').then(() => {
       cy.findByRole('button', { name: 'Moderation' }).should('not.exist');
     });
   });
@@ -57,26 +49,22 @@ describe('Moderation Tools for Posts', () => {
   it('should show Feature Post button on an unfeatured post for an admin user', () => {
     cy.fixture('users/adminUser.json').as('adminUser');
     cy.get('@adminUser').then((user) => {
-      cy.loginAndVisit(user, '/').then(() => {
-        cy.findAllByRole('link', { name: 'Unfeatured article' })
-          .first()
-          .click({ force: true });
-        cy.findByRole('button', { name: 'Moderation' }).click();
+      cy.loginAndVisit(user, '/admin_mcadmin/unfeatured-article-slug').then(
+        () => {
+          cy.findByRole('button', { name: 'Moderation' }).click();
 
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Feature Post' }).should('exist');
-        });
-      });
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            cy.findByRole('button', { name: 'Feature Post' }).should('exist');
+          });
+        },
+      );
     });
   });
 
   it('should show Unfeature Post button on a featured post for an admin user', () => {
     cy.fixture('users/adminUser.json').as('adminUser');
     cy.get('@adminUser').then((user) => {
-      cy.loginAndVisit(user, '/').then(() => {
-        cy.findAllByRole('link', { name: 'Test article' })
-          .first()
-          .click({ force: true });
+      cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
         cy.findByRole('button', { name: 'Moderation' }).click();
 
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
@@ -93,10 +81,7 @@ describe('Moderation Tools for Posts', () => {
 
     it('should load moderation tools on a post for a trusted user', () => {
       cy.get('@trustedUser').then((user) => {
-        cy.loginAndVisit(user, '/').then(() => {
-          cy.findAllByRole('link', { name: 'Test article' })
-            .first()
-            .click({ force: true });
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
           cy.findByRole('button', { name: 'Moderation' }).should('exist');
         });
       });
@@ -104,18 +89,19 @@ describe('Moderation Tools for Posts', () => {
 
     it('should not show Feature Post button on a post for a trusted user', () => {
       cy.get('@trustedUser').then((user) => {
-        cy.loginAndVisit(user, '/').then(() => {
-          cy.findAllByRole('link', { name: 'Unfeatured article' })
-            .first()
-            .click({ force: true });
-          cy.findByRole('button', { name: 'Moderation' }).click();
+        cy.loginAndVisit(user, '/admin_mcadmin/unfeatured-article-slug').then(
+          () => {
+            cy.findByRole('button', { name: 'Moderation' }).click();
 
-          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-            cy.findByRole('button', { name: 'Feature Post' }).should(
-              'not.exist',
+            cy.getIframeBody('[title="Moderation panel actions"]').within(
+              () => {
+                cy.findByRole('button', { name: 'Feature Post' }).should(
+                  'not.exist',
+                );
+              },
             );
-          });
-        });
+          },
+        );
       });
     });
   });
