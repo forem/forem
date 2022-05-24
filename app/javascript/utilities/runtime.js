@@ -145,3 +145,8 @@ export const hasOSSpecificModifier = (event) => {
  */
 export const getOSKeyboardModifierKeyString = () =>
   currentOS() === 'macOS' ? 'cmd' : 'ctrl';
+
+/**
+ * @returns {string} A string representing the locale as per the user's browser settings
+ */
+export const getCurrentLocale = () => navigator.language;
