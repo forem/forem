@@ -1,28 +1,23 @@
-<% current_credits = @user.unspent_credits_count %>
-
 <div class="js-adjust-balance hidden">
-  <%= form_with scope: :user, url: admin_user_path(@user), method: :patch, local: true, html: { class: "flex flex-col gap-4 fs-base" } do |f| %>
+  <%= form_with scope: :user, method: :patch, local: true, html: { class: "js-adjust-credits-form flex flex-col gap-4 fs-base" } do |f| %>
     <div class="flex items-center gap-2 color-secondary">
       <%= crayons_icon_tag(:wallet) %>
       <p>
-        <%= @user.name %> currently has <span class="color-primary"><%= @user.unspent_credits_count %> credits</span>.
+        <span class="js-user-name"></span> currently has <span class="color-primary"><span class="js-unspent-credits-count"></span> credits</span>.
       </p>
     </div>
     <div class="crayons-field">
       <%= f.label :credit_action, "Adjust balance", class: "crayons-field__label" %>
       <div class="flex gap-2 items-center">
-        <%= f.select :credit_action, options_for_select(current_credits.positive? ? %w[Add Remove] : %w[Add]), {}, class: "crayons-select w-auto" %>
+        <%= f.select :credit_action, options_for_select(%w[Add]), {}, class: "js-credit-action crayons-select w-auto" %>
         <%= f.text_field :credit_amount,
                          type: "number",
                          required: true,
-                         class: "crayons-textfield w-auto",
+                         class: "js-credit-amount crayons-textfield w-auto",
                          value: 1,
                          size: 5,
                          min: 1,
-                         max: 9999,
-                         data: {
-                           "unspent-credits": @user.unspent_credits_count
-                         } %>
+                         max: 9999 %>
       <%= f.label :credit_amount, "credits", class: "color-secondary flex-1", "aria-label": "Amount of credits to add or remove" %>
       </div>
     </div>

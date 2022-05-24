@@ -15,3 +15,50 @@ export const initializeAddOrganizationContent = ({ userName, userId }) => {
 export const initializeAddRoleContent = ({ formAction }) => {
   getModalContent().querySelector('.js-add-role-form').action = formAction;
 };
+
+export const initializeAdjustCreditBalanceContent = ({
+  userName,
+  unspentCreditsCount,
+  formAction,
+}) => {
+  const modalContent = getModalContent();
+
+  const form = modalContent.querySelector('.js-adjust-credits-form');
+  form.action = formAction;
+
+  const canRemoveCredits = unspentCreditsCount > 0;
+  if (canRemoveCredits) {
+    const remove = document.createElement('option');
+    remove.value = 'Remove';
+    remove.innerText = 'Remove';
+
+    modalContent.querySelector('.js-credit-action').appendChild(remove);
+  }
+
+  modalContent.querySelector('.js-user-name').innerText = userName;
+  modalContent.querySelector('.js-unspent-credits-count').innerText =
+    unspentCreditsCount;
+  modalContent.querySelector('.js-credit-amount').dataset.unspentCredits =
+    unspentCreditsCount;
+
+  form.addEventListener('change', ({ target: { value, name, form } }) => {
+    if (name === 'user[credit_action]') {
+      const creditAmount = form['user[credit_amount]'];
+
+      if (value === 'Add') {
+        if (creditAmount.getAttribute('data-old-max')) {
+          creditAmount.setAttribute(
+            'max',
+            creditAmount.getAttribute('data-old-max'),
+          );
+        }
+      } else {
+        creditAmount.setAttribute(
+          'data-old-max',
+          creditAmount.getAttribute('max'),
+        );
+        creditAmount.setAttribute('max', creditAmount.dataset.unspentCredits);
+      }
+    }
+  });
+};
