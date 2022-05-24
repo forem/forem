@@ -1,4 +1,5 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
+import { showWindowModal } from '@utilities/showModal';
 
 function adjustCreditRange(event) {
   const {
@@ -38,28 +39,11 @@ function enableEvents(key, enabled = true) {
   );
 }
 
-function getModalContents(modalContentSelector) {
-  if (!modalContents.has(modalContentSelector)) {
-    const modelContentElement = document.querySelector(modalContentSelector);
-    const modalContent = modelContentElement.innerHTML;
-
-    // Remove the element from the DOM to avoid duplicate ID errors in regards to a11y.
-    modelContentElement.remove();
-    modalContents.set(modalContentSelector, modalContent);
-  }
-
-  return modalContents.get(modalContentSelector);
-}
-
-let preact;
-let AdminModal;
-const modalContents = new Map();
-
 // Keys are the modalContentSelector data attribute on a button that opens a modal.
 // Values are a tuple containing the event type and handler to add to the modal container.
 const eventMap = new Map();
 
-eventMap.set('#adjust-balance', ['change', adjustCreditRange]);
+eventMap.set('.js-adjust-balance', ['change', adjustCreditRange]);
 
 // Append an empty div to the end of the document so that is does not affect the layout.
 const modalContainer = document.createElement('div');
@@ -80,38 +64,16 @@ const openModal = async (event) => {
 
   event.preventDefault();
 
-  // Only load Preact if we haven't already.
-  if (!preact) {
-    [preact, { Modal: AdminModal }] = await Promise.all([
-      import('preact'),
-      import('@crayons/Modal/Modal'),
-    ]);
-  }
-
-  const { h, render } = preact;
-
   const { modalTitle, modalSize, modalContentSelector } = dataset;
 
-  enableEvents(modalContentSelector);
-
-  render(
-    <AdminModal
-      title={modalTitle}
-      size={modalSize}
-      onClose={() => {
-        render(null, modalContainer);
-        enableEvents(modalContentSelector, false);
-      }}
-    >
-      <div
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: getModalContents(modalContentSelector),
-        }}
-      />
-    </AdminModal>,
-    modalContainer,
-  );
+  showWindowModal({
+    contentSelector: modalContentSelector,
+    title: modalTitle,
+    size: modalSize,
+    onOpen: () => {
+      enableEvents(modalContentSelector);
+    },
+  });
 };
 
 document.body.addEventListener('click', openModal);
