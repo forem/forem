@@ -93,6 +93,7 @@ seeder.create_if_doesnt_exist(User, "email", "moderator-user@forem.local") do
   user.profile.update(website_url: Faker::Internet.url)
 
   user.add_role(:moderator)
+  user.add_role(:trusted)
 end
 
 ##############################################################################
