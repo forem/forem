@@ -93,24 +93,6 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user.profile.update(website_url: Faker::Internet.url)
 
   user.add_role(:trusted)
-
-  seeder.create_if_doesnt_exist(Article, "slug", "unfeatured-article-slug") do
-    markdown = <<~MARKDOWN
-      ---
-      title:  Unfeatured article
-      published: true
-      ---
-      #{Faker::Hipster.paragraph(sentence_count: 2)}
-      #{Faker::Markdown.random}
-      #{Faker::Hipster.paragraph(sentence_count: 2)}
-    MARKDOWN
-    Article.create!(
-      body_markdown: markdown,
-      featured: false,
-      user_id: user.id,
-      slug: "unfeatured-article-slug",
-    )
-  end
 end
 
 trusted_user = User.find_by(email: "trusted-user-1@forem.local")
@@ -570,6 +552,26 @@ seeder.create_if_doesnt_exist(Article, "slug", "test-article-slug") do
   }
 
   Comment.create!(comment_attributes)
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "slug", "unfeatured-article-slug") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Unfeatured article
+    published: true
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create!(
+    body_markdown: markdown,
+    featured: false,
+    user_id: admin_user.id,
+    slug: "unfeatured-article-slug",
+  )
 end
 
 ##############################################################################
