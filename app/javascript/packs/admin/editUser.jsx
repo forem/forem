@@ -1,3 +1,4 @@
+import { initializeAddOrganizationContent } from './users/userModalActions';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 import { showWindowModal } from '@utilities/showModal';
 
@@ -45,6 +46,10 @@ const eventMap = new Map();
 
 eventMap.set('.js-adjust-balance', ['change', adjustCreditRange]);
 
+const modalContentInitializers = {
+  '.js-add-organization': initializeAddOrganizationContent,
+};
+
 // Append an empty div to the end of the document so that is does not affect the layout.
 const modalContainer = document.createElement('div');
 document.body.appendChild(modalContainer);
@@ -72,6 +77,7 @@ const openModal = async (event) => {
     size: modalSize,
     onOpen: () => {
       enableEvents(modalContentSelector);
+      modalContentInitializers[modalContentSelector]?.(dataset);
     },
   });
 };
