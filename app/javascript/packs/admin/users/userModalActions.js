@@ -11,3 +11,7 @@ export const initializeAddOrganizationContent = ({ userName, userId }) => {
   // Display the user's name in the modal
   modalContent.querySelector('.js-user-name').innerText = userName;
 };
+
+export const initializeAddRoleContent = ({ formAction }) => {
+  getModalContent().querySelector('.js-add-role-form').action = formAction;
+};

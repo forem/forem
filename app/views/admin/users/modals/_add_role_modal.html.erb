@@ -1,5 +1,5 @@
 <div class="js-add-role hidden">
-  <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4", id: nil }) do |f| %>
+  <%= form_for(:user, method: "patch", html: { class: "js-add-role-form flex flex-col gap-4", id: nil }) do |f| %>
     <div class="crayons-field">
       <%= f.label :user_status, "Role", class: "crayons-field__label" %>
       <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>

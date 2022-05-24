@@ -1,4 +1,7 @@
-import { initializeAddOrganizationContent } from './users/userModalActions';
+import {
+  initializeAddOrganizationContent,
+  initializeAddRoleContent,
+} from './users/userModalActions';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 import { showWindowModal } from '@utilities/showModal';
 
@@ -48,6 +51,7 @@ eventMap.set('.js-adjust-balance', ['change', adjustCreditRange]);
 
 const modalContentInitializers = {
   '.js-add-organization': initializeAddOrganizationContent,
+  '.js-add-role': initializeAddRoleContent,
 };
 
 // Append an empty div to the end of the document so that is does not affect the layout.
