@@ -8,7 +8,7 @@
 <% unless @user.roles.any? %>
   <div class="flex justify-between items-center">
     <p>No roles assigned yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="#add-role">Assign role</button>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="js-add-role">Assign role</button>
   </div>
 <% else %>
   <ul class="flex flex-wrap gap-2">
@@ -44,7 +44,7 @@
   </ul>
 <% end %>
 
-<div id="add-role" class="hidden">
+<div class="js-add-role hidden">
   <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4", id: nil }) do |f| %>
     <div class="crayons-field">
       <%= f.label :user_status, "Role", class: "crayons-field__label" %>
