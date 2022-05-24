@@ -56,6 +56,7 @@ Header.propTypes = {
   onAddTag: PropTypes.func.isRequired,
   currentUserId: PropTypes.number,
   onTitleClick: PropTypes.func.isRequired,
+  isModal: PropTypes.bool.isRequired,
 };
 
 Header.defaultProps = {

@@ -97,7 +97,7 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sidekiq", "~> 6.4.2" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.4" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.1.22" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.1.23" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
@@ -125,7 +125,7 @@ group :development do
   gem "i18n-tasks", "~> 1.0.10" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
-  gem "solargraph", "~> 0.44", require: false # For LSP support (such as symbol renaming, documentation lookup)
+  gem "solargraph", "~> 0.45", require: false # For LSP support (such as symbol renaming, documentation lookup)
   gem "solargraph-rails", "~> 0.3.1", require: false # For LSP support with Rails
   gem "web-console", "~> 4.2" # Rails Console on the Browser
   gem "yard", "~> 0.9" # Documentation format

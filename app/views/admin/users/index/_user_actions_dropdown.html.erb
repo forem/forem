@@ -7,7 +7,7 @@
         <ul class="list-none">
             <% if FeatureFlag.enabled?(:member_index_view) %>
                 <li><button class="c-btn align-left w-100 c-btn--icon-left"><%= crayons_icon_tag("badge", aria_hidden: true, class: "c-btn__icon") %>Assign role</button></li>
-                <li><button class="c-btn align-left w-100 c-btn--icon-left"><%= crayons_icon_tag("organization2", aria_hidden: true, class: "c-btn__icon") %>Add organization</button></li>
+                <li><button class="c-btn align-left w-100 c-btn--icon-left"><%= crayons_icon_tag("team", aria_hidden: true, class: "c-btn__icon") %>Add organization</button></li>
                 <li><button class="c-btn align-left w-100 c-btn--icon-left"><%= crayons_icon_tag("wallet", aria_hidden: true, class: "c-btn__icon") %>Adjust credit balance</button><hr /></li>
             <% end %>
             <li><button data-copy-email="<%= user.email %>" type="button" class="c-btn w-100 align-left c-btn--icon-left"> <%= crayons_icon_tag("copy", aria_hidden: true, class: "c-btn__icon") %>Copy email address</button></li>

@@ -1,19 +1,19 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 import { Header } from './Header';
 import { AuthorInfo } from './AuthorInfo';
 import { listingPropTypes } from './listingPropTypes';
 
-export class SingleListing extends Component {
-  listingContent = (
+export const SingleListing = ({ isOpen, ...props }) => {
+  const listingContent = ({
     listing,
     currentUserId,
     onChangeCategory,
     onOpenModal,
     onAddTag,
     isModal = false,
-  ) => {
+  }) => {
     return (
       <div className="relative">
         <Header
@@ -32,85 +32,42 @@ export class SingleListing extends Component {
     );
   };
 
-  listingInline = (
-    listing,
-    currentUserId,
-    onChangeCategory,
-    onOpenModal,
-    onAddTag,
-  ) => {
+  const listingInline = (props) => {
+    const { listing } = props;
     return (
       <div
         className="single-listing relative crayons-card"
         id={`single-listing-${listing.id}`}
         data-testid={`single-listing-${listing.id}`}
       >
-        <div className="listing-content p-4">
-          {this.listingContent(
-            listing,
-            currentUserId,
-            onChangeCategory,
-            onOpenModal,
-            onAddTag,
-          )}
-        </div>
+        <div className="listing-content p-4">{listingContent(props)}</div>
       </div>
     );
   };
 
-  listingModal = (
-    listing,
-    currentUserId,
-    onChangeCategory,
-    onOpenModal,
-    onAddTag,
-  ) => {
+  const listingModal = (props) => {
+    const { listing } = props;
     return (
       <div
         className="single-listing relative"
         id={`single-listing-${listing.id}`}
         data-testid={`single-listing-${listing.id}`}
       >
-        <div className="listing-content">
-          {this.listingContent(
-            listing,
-            currentUserId,
-            onChangeCategory,
-            onOpenModal,
-            onAddTag,
-            true,
-          )}
-        </div>
+        <div className="listing-content">{listingContent(props)}</div>
       </div>
     );
   };
 
-  render() {
-    const {
-      listing,
-      currentUserId,
-      onChangeCategory,
-      onOpenModal,
-      isOpen,
-      onAddTag,
-    } = this.props;
-    return isOpen
-      ? this.listingModal(
-          listing,
-          currentUserId,
-          onChangeCategory,
-          onOpenModal,
-          onAddTag,
-        )
-      : this.listingInline(
-          listing,
-          currentUserId,
-          onChangeCategory,
-          onOpenModal,
-          onAddTag,
-        );
-  }
-}
+  return isOpen
+    ? listingModal({
+        ...props,
+        isModal: true,
+      })
+    : listingInline({
+        ...props,
+        isModal: false,
+      });
+};
 
 SingleListing.propTypes = {
   listing: listingPropTypes.isRequired,

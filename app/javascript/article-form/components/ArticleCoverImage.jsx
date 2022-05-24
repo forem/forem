@@ -1,4 +1,5 @@
-import { h, Component, Fragment } from 'preact';
+import { h, Fragment } from 'preact';
+import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { addSnackbarItem } from '../../Snackbar';
 import { generateMainImage } from '../actions';
@@ -49,23 +50,21 @@ const StandardImageUpload = ({
     </Fragment>
   );
 
-export class ArticleCoverImage extends Component {
-  state = {
-    uploadError: false,
-    uploadErrorMessage: null,
-    uploadingImage: false,
+export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
+  const [uploadError, setUploadError] = useState(false);
+  const [uploadErrorMessage, setUploadErrorMessage] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const onImageUploadSuccess = (...args) => {
+    onMainImageUrlChange(...args);
+    setUploadingImage(false);
   };
 
-  onImageUploadSuccess = (...args) => {
-    this.props.onMainImageUrlChange(...args);
-    this.setState({ uploadingImage: false });
-  };
-
-  handleMainImageUpload = (event) => {
+  const handleMainImageUpload = (event) => {
     event.preventDefault();
 
-    this.setState({ uploadingImage: true });
-    this.clearUploadError();
+    setUploadingImage(true);
+    clearUploadError();
 
     if (validateFileInputs()) {
       const { files: image } = event.dataTransfer || event.target;
@@ -73,32 +72,28 @@ export class ArticleCoverImage extends Component {
 
       generateMainImage({
         payload,
-        successCb: this.onImageUploadSuccess,
-        failureCb: this.onUploadError,
+        successCb: onImageUploadSuccess,
+        failureCb: onUploadError,
       });
     }
   };
 
-  clearUploadError = () => {
-    this.setState({
-      uploadError: false,
-      uploadErrorMessage: null,
-    });
+  const clearUploadError = () => {
+    setUploadError(false);
+    setUploadErrorMessage(null);
   };
 
-  onUploadError = (error) => {
-    this.setState({
-      uploadingImage: false,
-      uploadError: true,
-      uploadErrorMessage: error.message,
-    });
+  const onUploadError = (error) => {
+    setUploadingImage(false);
+    setUploadError(true);
+    setUploadErrorMessage(error.message);
   };
 
-  useNativeUpload = () => {
+  const useNativeUpload = () => {
     return isNativeIOS('imageUpload');
   };
 
-  initNativeImagePicker = (e) => {
+  const initNativeImagePicker = (e) => {
     e.preventDefault();
     window.ForemMobile?.injectNativeMessage('coverUpload', {
       action: 'coverImageUpload',
@@ -106,7 +101,7 @@ export class ArticleCoverImage extends Component {
     });
   };
 
-  handleNativeMessage = (e) => {
+  const handleNativeMessage = (e) => {
     const message = JSON.parse(e.detail);
     if (message.namespace !== 'coverUpload') {
       return;
@@ -115,36 +110,32 @@ export class ArticleCoverImage extends Component {
     /* eslint-disable no-case-declarations */
     switch (message.action) {
       case 'uploading':
-        this.setState({ uploadingImage: true });
-        this.clearUploadError();
+        setUploadingImage(true);
+        clearUploadError();
         break;
       case 'error':
-        this.setState({
-          uploadingImage: false,
-          uploadError: true,
-          uploadErrorMessage: message.error,
-        });
+        setUploadingImage(false);
+        setUploadError(true);
+        setUploadErrorMessage(message.error);
         break;
       case 'success':
-        const { onMainImageUrlChange } = this.props;
         onMainImageUrlChange({
           links: [message.link],
         });
-        this.setState({ uploadingImage: false });
+        setUploadingImage(false);
         break;
     }
     /* eslint-enable no-case-declarations */
   };
 
-  triggerMainImageRemoval = (e) => {
+  const triggerMainImageRemoval = (e) => {
     e.preventDefault();
-    const { onMainImageUrlChange } = this.props;
     onMainImageUrlChange({
       links: [null],
     });
   };
 
-  onDropImage = (event) => {
+  const onDropImage = (event) => {
     onDragExit(event);
 
     if (event.dataTransfer.files.length > 1) {
@@ -155,84 +146,77 @@ export class ArticleCoverImage extends Component {
       return;
     }
 
-    this.handleMainImageUpload(event);
+    handleMainImageUpload(event);
   };
 
-  render() {
-    const { mainImage } = this.props;
-    const { uploadError, uploadErrorMessage, uploadingImage } = this.state;
-    const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
+  const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
 
-    // When the component is rendered in an environment that supports a native
-    // image picker for image upload we want to add the aria-label attr and the
-    // onClick event to the UI button. This event will kick off the native UX.
-    // The props are unwrapped (using spread operator) in the button below
-    const extraProps = this.useNativeUpload()
-      ? {
-          onClick: this.initNativeImagePicker,
-          'aria-label': 'Upload cover image',
-        }
-      : {};
+  // When the component is rendered in an environment that supports a native
+  // image picker for image upload we want to add the aria-label attr and the
+  // onClick event to the UI button. This event will kick off the native UX.
+  // The props are unwrapped (using spread operator) in the button below
+  const extraProps = useNativeUpload()
+    ? {
+        onClick: initNativeImagePicker,
+        'aria-label': 'Upload cover image',
+      }
+    : {};
 
-    // Native Bridge messages come through ForemMobile events
-    document.addEventListener('ForemMobile', this.handleNativeMessage);
+  // Native Bridge messages come through ForemMobile events
+  document.addEventListener('ForemMobile', handleNativeMessage);
 
-    return (
-      <DragAndDropZone
-        onDragOver={onDragOver}
-        onDragExit={onDragExit}
-        onDrop={this.onDropImage}
-      >
-        <div className="crayons-article-form__cover" role="presentation">
-          {!uploadingImage && mainImage && (
-            <img
-              src={mainImage}
-              className="crayons-article-form__cover__image"
-              width="250"
-              height="105"
-              alt="Post cover"
-            />
+  return (
+    <DragAndDropZone
+      onDragOver={onDragOver}
+      onDragExit={onDragExit}
+      onDrop={onDropImage}
+    >
+      <div className="crayons-article-form__cover" role="presentation">
+        {!uploadingImage && mainImage && (
+          <img
+            src={mainImage}
+            className="crayons-article-form__cover__image"
+            width="250"
+            height="105"
+            alt="Post cover"
+          />
+        )}
+        <div className="flex items-center">
+          {uploadingImage && (
+            <span class="lh-base pl-1 border-0 py-2 inline-block">
+              <Spinner /> Uploading...
+            </span>
           )}
-          <div className="flex items-center">
-            {uploadingImage && (
-              <span class="lh-base pl-1 border-0 py-2 inline-block">
-                <Spinner /> Uploading...
-              </span>
+
+          <Fragment>
+            {useNativeUpload() ? (
+              <NativeIosImageUpload
+                isUploadingImage={uploadingImage}
+                extraProps={extraProps}
+                uploadLabel={uploadLabel}
+              />
+            ) : (
+              <StandardImageUpload
+                isUploadingImage={uploadingImage}
+                uploadLabel={uploadLabel}
+                handleImageUpload={handleMainImageUpload}
+              />
             )}
 
-            <Fragment>
-              {this.useNativeUpload() ? (
-                <NativeIosImageUpload
-                  isUploadingImage={uploadingImage}
-                  extraProps={extraProps}
-                  uploadLabel={uploadLabel}
-                />
-              ) : (
-                <StandardImageUpload
-                  isUploadingImage={uploadingImage}
-                  uploadLabel={uploadLabel}
-                  handleImageUpload={this.handleMainImageUpload}
-                />
-              )}
-
-              {mainImage && !uploadingImage && (
-                <Button
-                  variant="ghost-danger"
-                  onClick={this.triggerMainImageRemoval}
-                >
-                  Remove
-                </Button>
-              )}
-            </Fragment>
-          </div>
-          {uploadError && (
-            <p className="articleform__uploaderror">{uploadErrorMessage}</p>
-          )}
+            {mainImage && !uploadingImage && (
+              <Button variant="ghost-danger" onClick={triggerMainImageRemoval}>
+                Remove
+              </Button>
+            )}
+          </Fragment>
         </div>
-      </DragAndDropZone>
-    );
-  }
-}
+        {uploadError && (
+          <p className="articleform__uploaderror">{uploadErrorMessage}</p>
+        )}
+      </div>
+    </DragAndDropZone>
+  );
+};
 
 ArticleCoverImage.propTypes = {
   mainImage: PropTypes.string,
