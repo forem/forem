@@ -556,6 +556,26 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(Article, "slug", "unfeatured-article-slug") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Unfeatured article
+    published: true
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create!(
+    body_markdown: markdown,
+    featured: false,
+    user_id: admin_user.id,
+    slug: "unfeatured-article-slug",
+  )
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "slug", "test-article-with-hidden-comments-slug") do
   markdown = <<~MARKDOWN
     ---
