@@ -2,9 +2,9 @@ import { h } from 'preact';
 import { render, fireEvent, cleanup, screen } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
+import '@testing-library/jest-dom';
 
 import '../../../assets/javascripts/utilities/localDateTime';
-
 import { ListingDashboard } from '../listingDashboard';
 
 const listingsForDataAttribute = [
@@ -148,30 +148,46 @@ describe('<ListingDashboard />', () => {
   });
 
   it('should render for user and org buttons', () => {
-    screen.getByText('Personal', { selector: '[role="button"]' });
-    const org1 = screen.getByText(listings.orgs[0].name, {
-      selector: '[role="button"]',
+    const secondOrg = screen.getByRole('button', {
+      name: listings.orgs[1].name,
     });
-    screen.getByText(listings.orgs[1].name, { selector: '[role="button"]' });
 
-    fireEvent.click(org1);
-
-    expect(org1.classList.contains('active')).toEqual(true);
+    expect(
+      screen.getByRole('button', { name: 'Personal' }),
+    ).toBeInTheDocument();
+    expect(secondOrg).toBeInTheDocument();
   });
 
-  it('should render for listing and credits header', () => {
-    screen.getByText('Listings', { selector: 'h3' });
+  it('should make button active when clicking on it', () => {
+    const firstOrg = screen.getByRole('button', {
+      name: listings.orgs[0].name,
+    });
+    fireEvent.click(firstOrg);
 
-    const createListing = screen.getByText('Create a Listing', {
-      selector: 'a',
+    expect(firstOrg.classList.contains('active')).toEqual(true);
+  });
+
+  it('should render listing and credits header with links', () => {
+    const listingHeading = screen.getByRole('heading', {
+      level: 3,
+      name: 'Listings',
+    });
+    const creditsHeading = screen.getByRole('heading', {
+      name: 'Credits',
+      level: 3,
     });
 
+    const createListing = screen.getByRole('link', {
+      name: 'Create a Listing',
+    });
+    const buyCredits = screen.getByRole('link', { name: 'Buy Credits' });
+
+    expect(listingHeading).toBeInTheDocument();
+    expect(creditsHeading).toBeInTheDocument();
+    expect(createListing).toBeInTheDocument();
+
     expect(createListing.getAttribute('href')).toEqual('/listings/new');
-
-    screen.getByText('Credits', { selector: 'h3' });
-
-    const buyCredits = screen.getByText('Buy Credits', { selector: 'a' });
-
+    expect(buyCredits).toBeInTheDocument();
     expect(buyCredits.getAttribute('href')).toEqual('/credits/purchase');
   });
 
