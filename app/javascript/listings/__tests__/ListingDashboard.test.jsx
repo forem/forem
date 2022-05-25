@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact';
+import { render, fireEvent, cleanup, screen } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
 
@@ -124,27 +124,35 @@ const listings = {
 /* eslint-disable no-unused-vars */
 /* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
 
+const setup = () => {
+  return render(<ListingDashboard />);
+};
+
 describe('<ListingDashboard />', () => {
   afterAll(() => {
     delete globalThis.timestampToLocalDateTimeLong;
     delete globalThis.timestampToLocalDateTimeShort;
   });
 
-  it('should have no a11y violations', async () => {
-    const { container } = render(<ListingDashboard />);
-    const results = await axe(container);
+  beforeEach(setup);
 
-    expect(results).toHaveNoViolations();
+  describe('Acessbility check', () => {
+    beforeAll(cleanup);
+
+    it('should have no a11y violations', async () => {
+      const { container } = render(<ListingDashboard />);
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
+    });
   });
 
   it('should render for user and org buttons', () => {
-    const { getByText } = render(<ListingDashboard />);
-
-    getByText('Personal', { selector: '[role="button"]' });
-    const org1 = getByText(listings.orgs[0].name, {
+    screen.getByText('Personal', { selector: '[role="button"]' });
+    const org1 = screen.getByText(listings.orgs[0].name, {
       selector: '[role="button"]',
     });
-    getByText(listings.orgs[1].name, { selector: '[role="button"]' });
+    screen.getByText(listings.orgs[1].name, { selector: '[role="button"]' });
 
     fireEvent.click(org1);
 
@@ -152,39 +160,40 @@ describe('<ListingDashboard />', () => {
   });
 
   it('should render for listing and credits header', () => {
-    const { getByText } = render(<ListingDashboard />);
+    screen.getByText('Listings', { selector: 'h3' });
 
-    getByText('Listings', { selector: 'h3' });
-
-    const createListing = getByText('Create a Listing', { selector: 'a' });
+    const createListing = screen.getByText('Create a Listing', {
+      selector: 'a',
+    });
 
     expect(createListing.getAttribute('href')).toEqual('/listings/new');
 
-    getByText('Credits', { selector: 'h3' });
+    screen.getByText('Credits', { selector: 'h3' });
 
-    const buyCredits = getByText('Buy Credits', { selector: 'a' });
+    const buyCredits = screen.getByText('Buy Credits', { selector: 'a' });
 
     expect(buyCredits.getAttribute('href')).toEqual('/credits/purchase');
   });
 
   it('should render for listingRow view', () => {
-    const { getByText } = render(<ListingDashboard />);
-
     // 1st listing
     const listing1GetByTextOptions = {
       selector: '[data-listing-id="23"] *',
     };
 
-    getByText('asdfasdf (expired)', listing1GetByTextOptions);
-    getByText('Jun 11, 2019', listing1GetByTextOptions);
+    screen.getByText('asdfasdf (expired)', listing1GetByTextOptions);
+    screen.getByText('Jun 11, 2019', listing1GetByTextOptions);
 
     // listing category
-    const listing1CfpCategory = getByText('cfp', listing1GetByTextOptions);
+    const listing1CfpCategory = screen.getByText(
+      'cfp',
+      listing1GetByTextOptions,
+    );
 
     expect(listing1CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
 
     // tags
-    const listing1ComputerScienceTag = getByText(
+    const listing1ComputerScienceTag = screen.getByText(
       '#computerscience',
       listing1GetByTextOptions,
     );
@@ -193,17 +202,17 @@ describe('<ListingDashboard />', () => {
       '/listings?t=computerscience',
     );
 
-    const careerTag = getByText('#career', listing1GetByTextOptions);
+    const careerTag = screen.getByText('#career', listing1GetByTextOptions);
 
     expect(careerTag.getAttribute('href')).toEqual('/listings?t=career');
 
     // edit and delete buttons
-    const editButton = getByText('Edit', listing1GetByTextOptions);
+    const editButton = screen.getByText('Edit', listing1GetByTextOptions);
 
     expect(editButton.nodeName).toEqual('A');
     expect(editButton.getAttribute('href')).toEqual('/listings/23/edit');
 
-    const deleteButton = getByText('Delete', listing1GetByTextOptions);
+    const deleteButton = screen.getByText('Delete', listing1GetByTextOptions);
 
     expect(deleteButton.nodeName).toEqual('A');
     expect(deleteButton.getAttribute('href')).toEqual(
@@ -215,11 +224,11 @@ describe('<ListingDashboard />', () => {
       selector: '[data-listing-id="24"] *',
     };
 
-    getByText('YOYOYOYOYOOOOOOOO (expired)', listing2GetByTextOptions);
-    getByText('May 11, 2019', listing2GetByTextOptions);
+    screen.getByText('YOYOYOYOYOOOOOOOO (expired)', listing2GetByTextOptions);
+    screen.getByText('May 11, 2019', listing2GetByTextOptions);
 
     // listing category
-    const listing2EventsCategory = getByText(
+    const listing2EventsCategory = screen.getByText(
       'events',
       listing2GetByTextOptions,
     );
@@ -229,7 +238,7 @@ describe('<ListingDashboard />', () => {
     );
 
     // tags
-    const listing2ComputerScienceTag = getByText(
+    const listing2ComputerScienceTag = screen.getByText(
       '#computerscience',
       listing2GetByTextOptions,
     );
@@ -238,26 +247,38 @@ describe('<ListingDashboard />', () => {
       '/listings?t=computerscience',
     );
 
-    const listing2careerTag = getByText('#career', listing2GetByTextOptions);
+    const listing2careerTag = screen.getByText(
+      '#career',
+      listing2GetByTextOptions,
+    );
 
     expect(listing2careerTag.getAttribute('href')).toEqual(
       '/listings?t=career',
     );
 
-    const conferenceTag = getByText('#conference', listing2GetByTextOptions);
+    const conferenceTag = screen.getByText(
+      '#conference',
+      listing2GetByTextOptions,
+    );
 
     expect(conferenceTag.getAttribute('href')).toEqual(
       '/listings?t=conference',
     );
 
     // edit and delete buttons
-    const listing2EditButton = getByText('Edit', listing2GetByTextOptions);
+    const listing2EditButton = screen.getByText(
+      'Edit',
+      listing2GetByTextOptions,
+    );
 
     expect(listing2EditButton.getAttribute('href')).toEqual(
       '/listings/24/edit',
     );
 
-    const listing2DeleteButton = getByText('Delete', listing2GetByTextOptions);
+    const listing2DeleteButton = screen.getByText(
+      'Delete',
+      listing2GetByTextOptions,
+    );
 
     expect(listing2DeleteButton.getAttribute('href')).toEqual(
       '/listings/events/yoyoyoyoyoooooooo-4jcb/delete_confirm',
@@ -268,24 +289,33 @@ describe('<ListingDashboard />', () => {
       selector: '[data-listing-id="25"] *',
     };
 
-    getByText('hehhehe (expired)', listing3GetByTextOptions);
-    getByText('Apr 11, 2019', listing3GetByTextOptions);
+    screen.getByText('hehhehe (expired)', listing3GetByTextOptions);
+    screen.getByText('Apr 11, 2019', listing3GetByTextOptions);
 
     // listing category
-    const listing3CfpCategory = getByText('cfp', listing3GetByTextOptions);
+    const listing3CfpCategory = screen.getByText(
+      'cfp',
+      listing3GetByTextOptions,
+    );
 
     expect(listing3CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
 
     // has no tags
 
     //     // edit and delete buttons
-    const listing3EditButton = getByText('Edit', listing3GetByTextOptions);
+    const listing3EditButton = screen.getByText(
+      'Edit',
+      listing3GetByTextOptions,
+    );
 
     expect(listing3EditButton.getAttribute('href')).toEqual(
       '/listings/25/edit',
     );
 
-    const listing3DeleteButton = getByText('Delete', listing3GetByTextOptions);
+    const listing3DeleteButton = screen.getByText(
+      'Delete',
+      listing3GetByTextOptions,
+    );
 
     expect(listing3DeleteButton.getAttribute('href')).toEqual(
       '/listings/cfp/hehhehe-5hld/delete_confirm',
