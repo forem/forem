@@ -13,7 +13,16 @@
         <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Export <%= @user.name %>'s data" data-modal-size="small" data-modal-content-selector=".js-export-data">Export data</button></li>
         <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Merge users" data-modal-size="small" data-modal-content-selector=".js-merge-accounts">Merge users</button></li>
         <% if @user.articles_count > 0 %>
-          <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Unpublish all posts" data-modal-size="small" data-modal-content-selector=".js-unpublish-all-posts">Unpublish all posts</button></li>
+          <li>
+            <button type="button"
+              class="c-btn w-100 align-left"
+              data-modal-trigger
+              data-modal-title="Unpublish all posts"
+              data-modal-size="small"
+              data-modal-content-selector=".js-unpublish-all-posts"
+              data-form-action="<%= unpublish_all_articles_admin_user_path(@user) %>"
+              data-user-name="<%= @user.name %>">Unpublish all posts</button>
+          </li>
         <% end %>
         <% if @user.identities.any? %>
           <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Remove social accounts" data-modal-size="medium" data-modal-content-selector=".js-remove-social-accounts">Remove social accounts</button></li>

@@ -62,3 +62,14 @@ export const initializeAdjustCreditBalanceContent = ({
     }
   });
 };
+
+export const initializeUnpublishAllPostsContent = ({
+  formAction,
+  userName,
+}) => {
+  const modalContent = getModalContent();
+  modalContent.querySelector('.js-unpublish-form').action = formAction;
+  modalContent
+    .querySelectorAll('.js-user-name')
+    .forEach((span) => (span.innerText = userName));
+};
