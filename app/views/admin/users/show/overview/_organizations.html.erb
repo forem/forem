@@ -8,7 +8,7 @@
 <% if @organization_memberships.load.empty? %>
   <div class="flex justify-between items-center gap-4">
     <p>Not part of any organization yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector=".js-add-organization" data-user-name="<%= @user.name %>" data-user-id="<%= @user.id %>">Add organization</button>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector=".js-add-organization" data-user-name="<%= @user.name %>" data-user-id="<%= @user.id %>">Add organization</button>
   </div>
 <% else %>
 <%# Used for aria-describedby on input fields, placed here to avoid duplicate IDs when mapping over orgs %>
@@ -28,7 +28,7 @@
       </div>
       <div class="c-card__revealable shrink-0">
         <button type="button" class="c-btn c-btn--icon-alone" aria-label="Edit <%= org_membership.organization.name %> organization membership"
-          data-modal-trigger data-modal-title="Edit <%= @user.name %>'s role at an organization" data-modal-size="small" data-modal-content-selector=".js-edit-organization-<%= org_membership.organization.id %>">
+          data-modal-title="Edit <%= @user.name %>'s role at an organization" data-modal-size="small" data-modal-content-selector=".js-edit-organization-<%= org_membership.organization.id %>">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon", aria_hidden: true) %>
         </button>
         <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
@@ -52,7 +52,6 @@
   <button
     class="c-btn c-btn--secondary whitespace-nowrap w-100"
     type="button"
-    data-modal-trigger
     data-modal-title="Add <%= @user.name %> to an organization"
     data-modal-size="small"
     data-modal-content-selector=".js-add-organization"

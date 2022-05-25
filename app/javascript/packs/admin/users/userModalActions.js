@@ -2,21 +2,20 @@ import { WINDOW_MODAL_ID } from '@utilities/showModal';
 
 const getModalContent = () => document.getElementById(WINDOW_MODAL_ID);
 
-export const initializeAddOrganizationContent = ({ userName, userId }) => {
+const initializeAddOrganizationContent = ({ userName, userId }) => {
   const modalContent = getModalContent();
 
-  // Set the user ID for the form
   modalContent.querySelector('#organization_membership_user_id').value =
     parseInt(userId, 10);
-  // Display the user's name in the modal
+
   modalContent.querySelector('.js-user-name').innerText = userName;
 };
 
-export const initializeAddRoleContent = ({ formAction }) => {
+const initializeAddRoleContent = ({ formAction }) => {
   getModalContent().querySelector('.js-add-role-form').action = formAction;
 };
 
-export const initializeAdjustCreditBalanceContent = ({
+const initializeAdjustCreditBalanceContent = ({
   userName,
   unspentCreditsCount,
   formAction,
@@ -63,10 +62,7 @@ export const initializeAdjustCreditBalanceContent = ({
   });
 };
 
-export const initializeUnpublishAllPostsContent = ({
-  formAction,
-  userName,
-}) => {
+const initializeUnpublishAllPostsContent = ({ formAction, userName }) => {
   const modalContent = getModalContent();
   modalContent.querySelector('.js-unpublish-form').action = formAction;
   modalContent
@@ -74,11 +70,7 @@ export const initializeUnpublishAllPostsContent = ({
     .forEach((span) => (span.innerText = userName));
 };
 
-export const initializeBanishContent = ({
-  formAction,
-  userName,
-  banishableUser,
-}) => {
+const initializeBanishContent = ({ formAction, userName, banishableUser }) => {
   const modalContent = getModalContent();
 
   const banishable = banishableUser === 'true';
@@ -99,4 +91,23 @@ export const initializeBanishContent = ({
   modalContent
     .querySelectorAll('.js-user-name')
     .forEach((span) => (span.innerText = userName));
+};
+
+const modalContentInitializers = {
+  '.js-add-organization': initializeAddOrganizationContent,
+  '.js-add-role': initializeAddRoleContent,
+  '.js-adjust-balance': initializeAdjustCreditBalanceContent,
+  '.js-unpublish-all-posts': initializeUnpublishAllPostsContent,
+  '.js-banish-for-spam': initializeBanishContent,
+};
+
+/**
+ * Initializes the content of a user action modal
+ *
+ * @param {Object} modalTriggerDataset the dataset containing the information required to initialize the modal (usually obtained from the the trigger button's dataset attribute)
+ */
+export const initializeUserModal = (modalTriggerDataset) => {
+  modalContentInitializers[modalTriggerDataset?.modalContentSelector]?.(
+    modalTriggerDataset,
+  );
 };

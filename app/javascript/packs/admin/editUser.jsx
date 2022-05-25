@@ -1,20 +1,6 @@
-import {
-  initializeAddOrganizationContent,
-  initializeAddRoleContent,
-  initializeAdjustCreditBalanceContent,
-  initializeUnpublishAllPostsContent,
-  initializeBanishContent,
-} from './users/userModalActions';
+import { initializeUserModal } from './users/userModalActions';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 import { showWindowModal } from '@utilities/showModal';
-
-const modalContentInitializers = {
-  '.js-add-organization': initializeAddOrganizationContent,
-  '.js-add-role': initializeAddRoleContent,
-  '.js-adjust-balance': initializeAdjustCreditBalanceContent,
-  '.js-unpublish-all-posts': initializeUnpublishAllPostsContent,
-  '.js-banish-for-spam': initializeBanishContent,
-};
 
 initializeDropdown({
   triggerElementId: 'options-dropdown-trigger',
@@ -24,7 +10,7 @@ initializeDropdown({
 const openModal = async (event) => {
   const { dataset } = event.target;
 
-  if (!Object.prototype.hasOwnProperty.call(dataset, 'modalTrigger')) {
+  if (!Object.prototype.hasOwnProperty.call(dataset, 'modalContentSelector')) {
     // We're not trying to trigger a modal.
     return;
   }
@@ -38,8 +24,7 @@ const openModal = async (event) => {
     title: modalTitle,
     size: modalSize,
     onOpen: () => {
-      // enableEvents(modalContentSelector);
-      modalContentInitializers[modalContentSelector]?.(dataset);
+      initializeUserModal(dataset);
     },
   });
 };

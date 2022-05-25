@@ -8,7 +8,7 @@
 <% unless @user.roles.any? %>
   <div class="flex justify-between items-center">
     <p>No roles assigned yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector=".js-add-role" data-form-action="<%= user_status_admin_user_path(@user) %>">Assign role</button>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add role" data-modal-size="m" data-modal-content-selector=".js-add-role" data-form-action="<%= user_status_admin_user_path(@user) %>">Assign role</button>
   </div>
 <% else %>
   <ul class="flex flex-wrap gap-2">
@@ -40,7 +40,7 @@
         <% end %>
       </li>
     <% end %>
-    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="small" data-modal-content-selector=".js-add-role" data-form-action="<%= user_status_admin_user_path(@user) %>">Assign role</button></li>
+    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add role" data-modal-size="small" data-modal-content-selector=".js-add-role" data-form-action="<%= user_status_admin_user_path(@user) %>">Assign role</button></li>
   </ul>
 <% end %>
 
