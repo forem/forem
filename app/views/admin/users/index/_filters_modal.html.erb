@@ -5,7 +5,7 @@
             <button type="button" class="c-btn">Clear filters</button>
         </div>
         <div class="py-4">
-            <details class="admin-details">
+            <details data-section="roles" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Member roles<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
                 <fieldset class="pb-4">
                     <legend class="screen-reader-only">Member roles</legend>
@@ -15,19 +15,19 @@
                     </div>
                 </fieldset>
             </details>
-            <details class="admin-details">
+            <details data-section="status" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Status<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
                 Status options
             </details>
-            <details class="admin-details">
+            <details data-section="joining-date" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Joining date<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
                 Joining date options
             </details>
-            <details class="admin-details">
+            <details data-section="last-activity" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Last activity<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
                 Last activity options
             </details>
-            <details class="admin-details">
+            <details data-section="organizations" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Organizations<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
                 Organizations options
             </details>

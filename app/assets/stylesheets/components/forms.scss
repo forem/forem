@@ -1,4 +1,6 @@
 @import '../config/import';
+@import './buttons';
+@import 'react-dates/lib/css/_datepicker.css';
 
 %form-styling {
   --border-width: 1px;
@@ -273,5 +275,144 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   &__popover {
     min-width: min-content;
+  }
+}
+
+.c-date-picker {
+  // The following class names come from the react-dates library we use for date pickers.
+  // We group them in the c-date-picker class so we can override styles via specificity.
+
+  .DateRangePickerInput {
+    @extend .crayons-textfield;
+
+    padding: var(--su-1) var(--su-2);
+
+    &_calendarIcon {
+      @extend .c-btn;
+      padding: 0;
+    }
+
+    .DateInput_input {
+      background-color: var(--form-bg);
+      color: var(--body-color);
+      font-size: var(--fs-base);
+
+      &__focused {
+        border-bottom-color: var(--focus);
+      }
+    }
+
+    &_arrow_svg {
+      fill: var(--body-color);
+    }
+
+    &_clearDates {
+      @extend .c-btn;
+      position: absolute;
+      padding: var(--su-2);
+
+      &:hover,
+      &:focus-visible {
+        border-radius: var(--radius);
+      }
+    }
+  }
+
+  .DateRangePicker:focus-within {
+    .DateRangePickerInput {
+      border-color: var(--focus);
+    }
+  }
+
+  .CalendarDay {
+    border-color: var(--date-border-color);
+
+    &__default:hover {
+      background-color: transparent;
+      position: relative;
+
+      // We set this in ::after selector to avoid neighbouring date borders overlapping our styles
+      &::after {
+        border: 1px solid var(--hover-date-border-color);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        content: '';
+      }
+    }
+
+    &__today {
+      color: var(--current-date-color);
+    }
+
+    // Everything selected including everything between a range of dates
+    &__selected_span {
+      background: var(--selected-range-bg);
+      color: var(--selected-range-color);
+      border-color: var(--selected-date-border);
+
+      &:active,
+      &:hover {
+        background: var(--selected-range-bg);
+        color: var(--fs-base);
+        border-color: var(--selected-date-border);
+      }
+    }
+
+    // The selected start and end dates
+    &__selected {
+      background: var(--selected-date-bg);
+      color: var(--selected-date-color);
+
+      &:hover {
+        background: var(--selected-date-bg);
+        color: var(--selected-date-color);
+        border-color: var(--selected-date-border);
+      }
+    }
+
+    // Used when end date is not yet selected. Targets dates between mouse and said end date
+    &__hovered_span,
+    &__hovered_span:hover {
+      background: var(--selected-range-bg);
+      color: var(--selected-range-color);
+      border-color: var(--selected-date-border);
+    }
+  }
+
+  // The triangular ? button which shows keyboard shortcut information
+  .DayPickerKeyboardShortcuts_buttonReset {
+    &::before {
+      border-right-color: var(--accent-brand);
+    }
+
+    &:hover::before {
+      border-right-color: var(--accent-brand-lighter);
+    }
+  }
+
+  .DayPickerNavigation {
+    display: flex;
+    justify-content: space-between;
+
+    &_button {
+      @extend .c-btn;
+
+      margin: var(--su-6) var(--su-3) 0 var(--su-3);
+      height: min-content;
+      padding: var(--su-1);
+
+      &:hover,
+      &:focus {
+        background-color: var(--bg-hover);
+      }
+
+      &__disabled {
+        opacity: 0.2;
+        cursor: not-allowed;
+      }
+    }
   }
 }
