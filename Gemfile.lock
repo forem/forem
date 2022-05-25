@@ -116,7 +116,7 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindex (0.8.1)
-    blazer (2.6.3)
+    blazer (2.6.4)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
