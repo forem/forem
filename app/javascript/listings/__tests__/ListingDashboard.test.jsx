@@ -7,8 +7,6 @@ import '../../../assets/javascripts/utilities/localDateTime';
 
 import { ListingDashboard } from '../listingDashboard';
 
-const doc = new JSDOM('<!doctype html><html><body></body></html>');
-global.document = doc;
 const listingsForDataAttribute = [
   {
     id: 23,
@@ -62,9 +60,8 @@ const listingsForDataAttribute = [
     },
   },
 ];
-global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${JSON.stringify(
-  listingsForDataAttribute,
-)} data-usercredits="3" data-orglistings=${JSON.stringify([
+
+const orgListing = [
   {
     id: 24,
     bumped_at: '2019-06-11T16:59:16.312Z',
@@ -99,86 +96,27 @@ global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${J
         '/uploads/organization/profile_image/3/04d4e1f1-c2e0-4147-81e2-bc8a2657296b.png',
     },
   },
-])} data-orgs=${JSON.stringify([
+];
+
+const orgs = [
   { id: 2, name: 'Yoyodyne', slug: 'org3737', unspent_credits_count: 1 },
   { id: 3, name: 'Infotrode', slug: 'org5254', unspent_credits_count: 1 },
-])} ></div>`;
+];
+
+const doc = new JSDOM('<!doctype html><html><body></body></html>');
+global.document = doc;
+
+global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${JSON.stringify(
+  listingsForDataAttribute,
+)} data-usercredits="3" data-orglistings=${JSON.stringify(
+  orgListing,
+)} data-orgs=${JSON.stringify(orgs)} ></div>`;
 global.window = doc.defaultView;
 
 const listings = {
-  listings: [
-    {
-      id: 23,
-      bumped_at: '2019-06-11T16:45:37.229Z',
-      category: 'cfp',
-      location: 'New York City',
-      organization_id: null,
-      slug: 'asdfasdf-2ea8',
-      title: 'asdfasdf',
-      updated_at: '2019-06-11T16:45:37.237Z',
-      user_id: 11,
-      tag_list: [Array],
-      author: [Object],
-    },
-    {
-      id: 24,
-      bumped_at: '2019-06-11T16:59:16.312Z',
-      category: 'events',
-      location: 'Denver',
-      organization_id: 2,
-      slug: 'yoyoyoyoyoooooooo-4jcb',
-      title: 'YOYOYOYOYOOOOOOOO',
-      updated_at: '2019-06-11T16:59:16.316Z',
-      user_id: 11,
-      tag_list: [Array],
-      author: [Object],
-    },
-    {
-      id: 25,
-      bumped_at: '2019-06-11T17:01:25.143Z',
-      category: 'cfp',
-      location: 'Seattle',
-      organization_id: 3,
-      slug: 'hehhehe-5hld',
-      title: 'hehhehe',
-      updated_at: '2019-06-11T17:01:25.169Z',
-      user_id: 11,
-      tag_list: [],
-      author: [Object],
-    },
-  ],
-  orgListings: [
-    {
-      id: 24,
-      bumped_at: '2019-06-11T16:59:16.312Z',
-      category: 'events',
-      location: 'Denver',
-      organization_id: 2,
-      slug: 'yoyoyoyoyoooooooo-4jcb',
-      title: 'YOYOYOYOYOOOOOOOO',
-      updated_at: '2019-06-11T16:59:16.316Z',
-      user_id: 11,
-      tag_list: [Array],
-      author: [Object],
-    },
-    {
-      id: 25,
-      bumped_at: '2019-06-11T17:01:25.143Z',
-      category: 'cfp',
-      location: 'Seattle',
-      organization_id: 3,
-      slug: 'hehhehe-5hld',
-      title: 'hehhehe',
-      updated_at: '2019-06-11T17:01:25.169Z',
-      user_id: 11,
-      tag_list: [],
-      author: [Object],
-    },
-  ],
-  orgs: [
-    { id: 2, name: 'Yoyodyne', slug: 'org3737', unspent_credits_count: 1 },
-    { id: 3, name: 'Infotrode', slug: 'org5254', unspent_credits_count: 1 },
-  ],
+  listings: listingsForDataAttribute,
+  orgListings: orgListing,
+  orgs,
   userCredits: '3',
   selectedListings: 'user',
 };
