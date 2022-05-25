@@ -3,6 +3,7 @@ import {
   initializeAddRoleContent,
   initializeAdjustCreditBalanceContent,
   initializeUnpublishAllPostsContent,
+  initializeBanishContent,
 } from './users/userModalActions';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 import { showWindowModal } from '@utilities/showModal';
@@ -12,6 +13,7 @@ const modalContentInitializers = {
   '.js-add-role': initializeAddRoleContent,
   '.js-adjust-balance': initializeAdjustCreditBalanceContent,
   '.js-unpublish-all-posts': initializeUnpublishAllPostsContent,
+  '.js-banish-for-spam': initializeBanishContent,
 };
 
 initializeDropdown({

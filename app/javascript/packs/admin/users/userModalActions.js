@@ -73,3 +73,30 @@ export const initializeUnpublishAllPostsContent = ({
     .querySelectorAll('.js-user-name')
     .forEach((span) => (span.innerText = userName));
 };
+
+export const initializeBanishContent = ({
+  formAction,
+  userName,
+  banishableUser,
+}) => {
+  const modalContent = getModalContent();
+
+  const banishable = banishableUser === 'true';
+  const banishableContent = modalContent.querySelector('.js-banishable-user');
+  const notBanishableContent = modalContent.querySelector(
+    '.js-not-banishable-user',
+  );
+
+  if (banishable) {
+    banishableContent.classList.remove('hidden');
+    notBanishableContent.classList.add('hidden');
+    modalContent.querySelector('.js-banish-form').action = formAction;
+  } else {
+    banishableContent.classList.add('hidden');
+    notBanishableContent.classList.remove('hidden');
+  }
+
+  modalContent
+    .querySelectorAll('.js-user-name')
+    .forEach((span) => (span.innerText = userName));
+};

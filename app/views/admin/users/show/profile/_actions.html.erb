@@ -27,7 +27,17 @@
         <% if @user.identities.any? %>
           <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Remove social accounts" data-modal-size="medium" data-modal-content-selector=".js-remove-social-accounts">Remove social accounts</button></li>
         <% end %>
-        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-trigger data-modal-title="Banish <%= @user.name %>" data-modal-size="small" data-modal-content-selector=".js-banish-for-spam">Banish user</button></li>
+        <li>
+          <button type="button"
+            class="c-btn c-btn--destructive w-100 align-left"
+            data-modal-trigger
+            data-modal-title="Banish <%= @user.name %>"
+            data-modal-size="small"
+            data-modal-content-selector=".js-banish-for-spam"
+            data-form-action="banish_admin_user_path(@user)"
+            data-user-name="<%= @user.name %>"
+            data-banishable-user="<%= @banishable_user %>">Banish user</button>
+        </li>
         <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-trigger data-modal-title="Delete <%= @user.name %>'s account" data-modal-size="small" data-modal-content-selector=".js-delete-user">Delete user</button></li>
       </ul>
     </div>
