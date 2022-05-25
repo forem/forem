@@ -82,9 +82,7 @@ export const ListingDashboard = () => {
     return displayedListings.map((listing) =>
       listing.organization_id === selected ? (
         <ListingRow listing={listing} />
-      ) : (
-        ''
-      ),
+      ) : null,
     );
   };
 

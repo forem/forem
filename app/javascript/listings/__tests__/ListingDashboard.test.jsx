@@ -1,5 +1,11 @@
 import { h } from 'preact';
-import { render, fireEvent, cleanup, screen } from '@testing-library/preact';
+import {
+  render,
+  fireEvent,
+  cleanup,
+  screen,
+  within,
+} from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
 import '@testing-library/jest-dom';
@@ -191,50 +197,69 @@ describe('<ListingDashboard />', () => {
     expect(buyCredits.getAttribute('href')).toEqual('/credits/purchase');
   });
 
+  describe('1st listing', () => {
+    it('should render the edit and delete buttons', () => {
+      const firstListing = screen.getByTestId('23');
+      const firstListingContainer = within(firstListing);
+
+      const editButton = firstListingContainer.getByRole('link', {
+        name: 'Edit',
+      });
+
+      expect(editButton.nodeName).toEqual('A');
+      expect(editButton.getAttribute('href')).toEqual('/listings/23/edit');
+
+      const deleteButton = firstListingContainer.getByRole('link', {
+        name: 'Delete',
+      });
+
+      expect(deleteButton.nodeName).toEqual('A');
+      expect(deleteButton.getAttribute('href')).toEqual(
+        '/listings/cfp/asdfasdf-2ea8/delete_confirm',
+      );
+    });
+
+    it('should render the listing title and the time', () => {
+      const title = screen.getByRole('heading', {
+        name: 'asdfasdf (expired)',
+        level: 2,
+      });
+      const timer = screen.getByTitle('Tuesday, June 11, 2019, 4:45:37 PM');
+
+      expect(title).toBeInTheDocument();
+      expect(timer).toBeInTheDocument();
+    });
+
+    it('should render the listing category', () => {
+      const firstListing = screen.getByTestId('23');
+      const firstListingContainer = within(firstListing);
+
+      const listing1CfpCategory = firstListingContainer.getByRole('link', {
+        name: 'cfp',
+      });
+      expect(listing1CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
+    });
+
+    it('should render the listing tags', () => {
+      const firstListing = screen.getByTestId('23');
+      const firstListingContainer = within(firstListing);
+
+      const listing1ComputerScienceTag = firstListingContainer.getByRole(
+        'link',
+        { name: '#computerscience' },
+      );
+      expect(listing1ComputerScienceTag.getAttribute('href')).toEqual(
+        '/listings?t=computerscience',
+      );
+
+      const careerTag = firstListingContainer.getByRole('link', {
+        name: '#career',
+      });
+      expect(careerTag.getAttribute('href')).toEqual('/listings?t=career');
+    });
+  });
+
   it('should render for listingRow view', () => {
-    // 1st listing
-    const listing1GetByTextOptions = {
-      selector: '[data-listing-id="23"] *',
-    };
-
-    screen.getByText('asdfasdf (expired)', listing1GetByTextOptions);
-    screen.getByText('Jun 11, 2019', listing1GetByTextOptions);
-
-    // listing category
-    const listing1CfpCategory = screen.getByText(
-      'cfp',
-      listing1GetByTextOptions,
-    );
-
-    expect(listing1CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
-
-    // tags
-    const listing1ComputerScienceTag = screen.getByText(
-      '#computerscience',
-      listing1GetByTextOptions,
-    );
-
-    expect(listing1ComputerScienceTag.getAttribute('href')).toEqual(
-      '/listings?t=computerscience',
-    );
-
-    const careerTag = screen.getByText('#career', listing1GetByTextOptions);
-
-    expect(careerTag.getAttribute('href')).toEqual('/listings?t=career');
-
-    // edit and delete buttons
-    const editButton = screen.getByText('Edit', listing1GetByTextOptions);
-
-    expect(editButton.nodeName).toEqual('A');
-    expect(editButton.getAttribute('href')).toEqual('/listings/23/edit');
-
-    const deleteButton = screen.getByText('Delete', listing1GetByTextOptions);
-
-    expect(deleteButton.nodeName).toEqual('A');
-    expect(deleteButton.getAttribute('href')).toEqual(
-      '/listings/cfp/asdfasdf-2ea8/delete_confirm',
-    );
-
     // 2nd listing
     const listing2GetByTextOptions = {
       selector: '[data-listing-id="24"] *',
