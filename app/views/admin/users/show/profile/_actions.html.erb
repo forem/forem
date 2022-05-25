@@ -32,7 +32,7 @@
             data-modal-title="Banish <%= @user.name %>"
             data-modal-size="small"
             data-modal-content-selector=".js-banish-for-spam"
-            data-form-action="banish_admin_user_path(@user)"
+            data-form-action="<%= banish_admin_user_path(@user) %>"
             data-user-name="<%= @user.name %>"
             data-banishable-user="<%= @banishable_user %>">Banish user</button>
         </li>
