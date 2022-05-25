@@ -1,4 +1,4 @@
-import { WINDOW_MODAL_ID } from '@utilities/showModal';
+import { WINDOW_MODAL_ID, showWindowModal } from '@utilities/showModal';
 
 const getModalContent = () => document.getElementById(WINDOW_MODAL_ID);
 
@@ -101,13 +101,39 @@ const modalContentInitializers = {
   '.js-banish-for-spam': initializeBanishContent,
 };
 
-/**
- * Initializes the content of a user action modal
- *
- * @param {Object} modalTriggerDataset the dataset containing the information required to initialize the modal (usually obtained from the the trigger button's dataset attribute)
- */
-export const initializeUserModal = (modalTriggerDataset) => {
-  modalContentInitializers[modalTriggerDataset?.modalContentSelector]?.(
-    modalTriggerDataset,
-  );
+const modalContents = new Map();
+const getModalContents = (modalContentSelector) => {
+  if (!modalContents.has(modalContentSelector)) {
+    const modalContentElement = document.querySelector(modalContentSelector);
+    const modalContent = modalContentElement.innerHTML;
+
+    // User modal content relies on IDs to label form controls. Since duplicate IDs in the DOM prevents
+    // proper form label associations, we remove the original hidden content from the DOM and cache it for any later use.
+    modalContentElement.remove();
+    modalContents.set(modalContentSelector, modalContent);
+  }
+
+  return modalContents.get(modalContentSelector);
+};
+
+export const showUserModal = (event) => {
+  const { dataset } = event.target;
+
+  if (!Object.prototype.hasOwnProperty.call(dataset, 'modalContentSelector')) {
+    // We're not trying to trigger a modal.
+    return;
+  }
+
+  event.preventDefault();
+
+  const { modalTitle, modalSize, modalContentSelector } = dataset;
+
+  showWindowModal({
+    modalContent: getModalContents(modalContentSelector),
+    title: modalTitle,
+    size: modalSize,
+    onOpen: () => {
+      modalContentInitializers[modalContentSelector]?.(dataset);
+    },
+  });
 };
