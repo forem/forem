@@ -34,6 +34,7 @@ work_attr = ProfileField.find_by(label: "Work").attribute_name
 education_attr = ProfileField.find_by(label: "Education").attribute_name
 ##############################################################################
 
+# admin-user needs to be the first user, to maintain specs validity
 seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user = User.create!(
     name: "Admin McAdmin",
@@ -71,33 +72,7 @@ admin_user = User.find_by(email: "admin@forem.local")
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(User, "email", "moderator-user@forem.local") do
-  user = User.create!(
-    name: "Moderator User",
-    email: "moderator-user@forem.local",
-    username: "moderator_user",
-    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-    confirmed_at: Time.current,
-    registered_at: Time.current,
-    password: "password",
-    password_confirmation: "password",
-    saw_onboarding: true,
-    checked_code_of_conduct: true,
-    checked_terms_and_conditions: true,
-  )
-  user.notification_setting.update(
-    email_comment_notifications: false,
-    email_follower_notifications: false,
-  )
-
-  user.profile.update(website_url: Faker::Internet.url)
-
-  user.add_role(:moderator)
-  user.add_role(:trusted)
-end
-
-##############################################################################
-
+# trusted-user-1 needs to be the second user, to maintain specs validity
 seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
   user = User.create!(
     name: "Trusted User 1 \\:/",
@@ -123,6 +98,33 @@ seeder.create_if_doesnt_exist(User, "email", "trusted-user-1@forem.local") do
 end
 
 trusted_user = User.find_by(email: "trusted-user-1@forem.local")
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "moderator-user@forem.local") do
+  user = User.create!(
+    name: "Moderator User",
+    email: "moderator-user@forem.local",
+    username: "moderator_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+  user.notification_setting.update(
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+  )
+
+  user.profile.update(website_url: Faker::Internet.url)
+
+  user.add_role(:moderator)
+  user.add_role(:trusted)
+end
 
 ##############################################################################
 
