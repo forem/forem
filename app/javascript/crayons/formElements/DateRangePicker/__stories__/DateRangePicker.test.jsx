@@ -6,6 +6,17 @@ import '@testing-library/jest-dom';
 const windowNavigator = window.navigator;
 
 describe('<DateRangePicker />', () => {
+  beforeAll(() => {
+    global.window.matchMedia = jest.fn((query) => {
+      return {
+        matches: false,
+        media: query,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+      };
+    });
+  });
+
   describe('Localization', () => {
     afterAll(() => {
       Object.defineProperty(window, 'navigator', {

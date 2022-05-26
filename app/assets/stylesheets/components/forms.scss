@@ -382,6 +382,21 @@ textarea.crayons-textfield.crayons-textfield--ghost {
     }
   }
 
+  .CalendarMonthGrid__vertical {
+    margin-top: var(--su-2);
+
+    .c-date-picker__month {
+      margin-top: var(--su-2);
+    }
+
+    .CalendarMonth {
+      &_caption {
+        padding-bottom: var(--su-2);
+        padding-top: var(--su-3);
+      }
+    }
+  }
+
   // The triangular ? button which shows keyboard shortcut information
   .DayPickerKeyboardShortcuts_buttonReset {
     &::before {
