@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div id="edit-organization-<%= org_membership.organization.id %> hidden">
+    <div id="edit-organization-<%= org_membership.organization.id %>" class="hidden">
       <%= form_with model: [:admin, org_membership], method: :patch, local: true do |f| %>
         <div class="crayons-field mb-4">
           <%= f.label "Role", class: "crayons-field__label", for: "edit_#{org_membership.organization.id}_type_of_user" %>
