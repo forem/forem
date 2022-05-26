@@ -1,4 +1,4 @@
-<div class="js-merge-accounts">
+<div id="merge-accounts">
   <%= form_for(@user, url: merge_admin_user_path(@user),
                       html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible. Merging will delete all the other users content and combine it with this user')", id: nil }) do |f| %>
     <p>This action is irreversible.</p>

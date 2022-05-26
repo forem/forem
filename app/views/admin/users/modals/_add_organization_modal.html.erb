@@ -1,4 +1,4 @@
-<div class="add-organization hidden">
+<div id="add-organization" class="hidden">
   <%= form_with model: [:admin, OrganizationMembership.new], local: true, html: { class: "flex flex-col gap-4" } do |f| %>
     <%= f.hidden_field :user_id %>
     <div class="crayons-field">
