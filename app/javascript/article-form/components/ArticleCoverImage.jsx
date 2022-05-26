@@ -47,7 +47,7 @@ const StandardImageUpload = ({
           data-max-file-size-mb="25"
         />
         <span data-testid="tooltip" className="crayons-tooltip__content">
-          Use 1000x420 for best results.
+          Use a ratio of 100:42 for best results.
         </span>
       </label>
     </Fragment>
