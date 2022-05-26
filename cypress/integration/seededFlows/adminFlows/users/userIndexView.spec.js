@@ -170,6 +170,29 @@ describe('User index view', () => {
           .should('equal', 'admin@forem.local');
       });
     });
+
+    describe('Empty state', () => {
+      it('Displays an empty state when no results are returned when searching for a user', () => {
+        cy.findByRole('textbox', {
+          name: 'Search member by name, username or email',
+        }).type('Not a User');
+
+        cy.findByRole('button', { name: 'Search' }).click();
+
+        // Since there aren't any results, the following message should be displayed
+        cy.findByText('No members found under these filters.').should('exist');
+      });
+
+      it('Displays an empty state when no results are returned when filtering for a user', () => {
+        cy.findByRole('combobox', { name: 'User role' }).select(
+          'codeland_admin',
+        );
+        cy.findByRole('button', { name: 'Filter' }).click();
+
+        // Since there aren't any results, the following message should be displayed
+        cy.findByText('No members found under these filters.').should('exist');
+      });
+    });
   });
 
   describe('large screens', () => {
@@ -230,6 +253,29 @@ describe('User index view', () => {
       it(`Clicks through to the Member Detail View`, () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
         cy.url().should('contain', '/admin/member_manager/users/1');
+      });
+    });
+
+    describe('Empty state', () => {
+      it('Displays an empty state when no results are returned when searching for a user', () => {
+        cy.findByRole('textbox', {
+          name: 'Search member by name, username or email',
+        }).type('Not a User');
+
+        cy.findByRole('button', { name: 'Search' }).click();
+
+        // Since there aren't any results, the following message should be displayed
+        cy.findByText('No members found under these filters.').should('exist');
+      });
+
+      it('Displays an empty state when no results are returned when filtering for a user', () => {
+        cy.findByRole('combobox', { name: 'User role' }).select(
+          'codeland_admin',
+        );
+        cy.findByRole('button', { name: 'Filter' }).click();
+
+        // Since there aren't any results, the following message should be displayed
+        cy.findByText('No members found under these filters.').should('exist');
       });
     });
 
