@@ -172,10 +172,19 @@ describe('User index view', () => {
     });
 
     describe('Empty state', () => {
+      // Search and filter controls are initialized async.
+      // This helper function allows us to use `pipe` to retry commands in case the test runner clicks before the JS has run
+      const click = (el) => el.click();
+
       it('Displays an empty state when no results are returned when searching for a user', () => {
+        cy.findByRole('button', { name: 'Expand search' })
+          .should('have.attr', 'aria-expanded', 'false')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
         cy.findByRole('textbox', {
           name: 'Search member by name, username or email',
-        }).type('Not a User');
+        }).type('Not a member');
 
         cy.findByRole('button', { name: 'Search' }).click();
 
@@ -184,6 +193,11 @@ describe('User index view', () => {
       });
 
       it('Displays an empty state when no results are returned when filtering for a user', () => {
+        cy.findByRole('button', { name: 'Expand filter' })
+          .should('have.attr', 'aria-expanded', 'false')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
         cy.findByRole('combobox', { name: 'User role' }).select(
           'codeland_admin',
         );
@@ -260,7 +274,7 @@ describe('User index view', () => {
       it('Displays an empty state when no results are returned when searching for a user', () => {
         cy.findByRole('textbox', {
           name: 'Search member by name, username or email',
-        }).type('Not a User');
+        }).type('Not a member');
 
         cy.findByRole('button', { name: 'Search' }).click();
 
