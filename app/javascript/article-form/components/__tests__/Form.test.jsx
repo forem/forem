@@ -166,7 +166,7 @@ describe('<Form />', () => {
       ).toBeInTheDocument();
       expect(getByTestId('article-form__body')).toBeInTheDocument();
 
-      const coverImageInput = getByLabelText('Change');
+      const coverImageInput = getByLabelText('Change', { exact: false });
 
       // Allow any image format
       expect(coverImageInput.getAttribute('accept')).toEqual('image/*');
