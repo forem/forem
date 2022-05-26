@@ -1,4 +1,4 @@
-<div class="js-adjust-balance hidden">
+<div id="adjust-balance" class="hidden">
   <%= form_with scope: :user, method: :patch, local: true, html: { class: "js-adjust-credits-form flex flex-col gap-4 fs-base" } do |f| %>
     <div class="flex items-center gap-2 color-secondary">
       <%= crayons_icon_tag(:wallet) %>

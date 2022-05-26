@@ -94,11 +94,11 @@ const initializeBanishContent = ({ formAction, userName, banishableUser }) => {
 };
 
 const modalContentInitializers = {
-  '.js-add-organization': initializeAddOrganizationContent,
-  '.js-add-role': initializeAddRoleContent,
-  '.js-adjust-balance': initializeAdjustCreditBalanceContent,
-  '.js-unpublish-all-posts': initializeUnpublishAllPostsContent,
-  '.js-banish-for-spam': initializeBanishContent,
+  '#add-organization': initializeAddOrganizationContent,
+  '#add-role-modal': initializeAddRoleContent,
+  '#adjust-balance': initializeAdjustCreditBalanceContent,
+  '#unpublish-all-posts': initializeUnpublishAllPostsContent,
+  '#banish-for-spam': initializeBanishContent,
 };
 
 const modalContents = new Map();

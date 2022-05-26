@@ -8,7 +8,7 @@
 <% if @organization_memberships.load.empty? %>
   <div class="flex justify-between items-center gap-4">
     <p>Not part of any organization yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector=".js-add-organization" data-user-name="<%= @user.name %>" data-user-id="<%= @user.id %>">Add organization</button>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization" data-user-name="<%= @user.name %>" data-user-id="<%= @user.id %>">Add organization</button>
   </div>
 <% else %>
 <%# Used for aria-describedby on input fields, placed here to avoid duplicate IDs when mapping over orgs %>
@@ -54,7 +54,7 @@
     type="button"
     data-modal-title="Add <%= @user.name %> to an organization"
     data-modal-size="small"
-    data-modal-content-selector=".js-add-organization"
+    data-modal-content-selector="#add-organization"
     data-user-name="<%= @user.name %>"
     data-user-id="<%= @user.id %>">Add organization</button>
 <% end %>

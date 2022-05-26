@@ -18,7 +18,7 @@
               class="c-btn w-100 align-left"
               data-modal-title="Unpublish all posts"
               data-modal-size="small"
-              data-modal-content-selector=".js-unpublish-all-posts"
+              data-modal-content-selector="#unpublish-all-posts"
               data-form-action="<%= unpublish_all_articles_admin_user_path(@user) %>"
               data-user-name="<%= @user.name %>">Unpublish all posts</button>
           </li>
@@ -31,7 +31,7 @@
             class="c-btn c-btn--destructive w-100 align-left"
             data-modal-title="Banish <%= @user.name %>"
             data-modal-size="small"
-            data-modal-content-selector=".js-banish-for-spam"
+            data-modal-content-selector="#banish-for-spam"
             data-form-action="<%= banish_admin_user_path(@user) %>"
             data-user-name="<%= @user.name %>"
             data-banishable-user="<%= @banishable_user %>">Banish user</button>

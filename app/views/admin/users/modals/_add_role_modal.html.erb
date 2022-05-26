@@ -1,4 +1,4 @@
-<div class="js-add-role hidden">
+<div id="add-role-modal" class="hidden">
   <%= form_for(:user, method: "patch", html: { class: "js-add-role-form flex flex-col gap-4", id: nil }) do |f| %>
     <div class="crayons-field">
       <%= f.label :user_status, "Role", class: "crayons-field__label" %>
