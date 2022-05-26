@@ -259,72 +259,81 @@ describe('<ListingDashboard />', () => {
     });
   });
 
+  describe('2nd listing', () => {
+    it('should render the edit and delete buttons', () => {
+      const secondListing = screen.getByTestId('24');
+      const secondListingContainer = within(secondListing);
+
+      const listing2EditLink = secondListingContainer.getByRole('link', {
+        name: 'Edit',
+      });
+
+      expect(listing2EditLink.getAttribute('href')).toEqual(
+        '/listings/24/edit',
+      );
+
+      const listing2DeleteLink = secondListingContainer.getByRole('link', {
+        name: 'Delete',
+      });
+
+      expect(listing2DeleteLink.getAttribute('href')).toEqual(
+        '/listings/events/yoyoyoyoyoooooooo-4jcb/delete_confirm',
+      );
+    });
+
+    it('should render the listing title and the time', () => {
+      const title = screen.getByRole('heading', {
+        name: 'YOYOYOYOYOOOOOOOO (expired)',
+        level: 2,
+      });
+      const timer = screen.getByTitle('Tuesday, June 11, 2019, 4:45:37 PM');
+
+      expect(title).toBeInTheDocument();
+      expect(timer).toBeInTheDocument();
+    });
+
+    it('should render the listing category', () => {
+      const secondListing = screen.getByTestId('24');
+      const secondListingContainer = within(secondListing);
+
+      const listing2EventsCategory = secondListingContainer.getByRole('link', {
+        name: 'events',
+      });
+      expect(listing2EventsCategory.getAttribute('href')).toEqual(
+        '/listings/events',
+      );
+    });
+
+    it('should render the listing tags', () => {
+      const secondListing = screen.getByTestId('24');
+      const secondListingContainer = within(secondListing);
+
+      const listing2ComputerScienceTag = secondListingContainer.getByRole(
+        'link',
+        {
+          name: '#computerscience',
+        },
+      );
+      const listing2careerTag = secondListingContainer.getByRole('link', {
+        name: '#career',
+      });
+      const conferenceTag = secondListingContainer.getByRole('link', {
+        name: '#conference',
+      });
+
+      expect(listing2ComputerScienceTag.getAttribute('href')).toEqual(
+        '/listings?t=computerscience',
+      );
+      expect(listing2careerTag.getAttribute('href')).toEqual(
+        '/listings?t=career',
+      );
+      expect(conferenceTag.getAttribute('href')).toEqual(
+        '/listings?t=conference',
+      );
+    });
+  });
+
   it('should render for listingRow view', () => {
-    // 2nd listing
-    const listing2GetByTextOptions = {
-      selector: '[data-listing-id="24"] *',
-    };
-
-    screen.getByText('YOYOYOYOYOOOOOOOO (expired)', listing2GetByTextOptions);
-    screen.getByText('May 11, 2019', listing2GetByTextOptions);
-
-    // listing category
-    const listing2EventsCategory = screen.getByText(
-      'events',
-      listing2GetByTextOptions,
-    );
-
-    expect(listing2EventsCategory.getAttribute('href')).toEqual(
-      '/listings/events',
-    );
-
-    // tags
-    const listing2ComputerScienceTag = screen.getByText(
-      '#computerscience',
-      listing2GetByTextOptions,
-    );
-
-    expect(listing2ComputerScienceTag.getAttribute('href')).toEqual(
-      '/listings?t=computerscience',
-    );
-
-    const listing2careerTag = screen.getByText(
-      '#career',
-      listing2GetByTextOptions,
-    );
-
-    expect(listing2careerTag.getAttribute('href')).toEqual(
-      '/listings?t=career',
-    );
-
-    const conferenceTag = screen.getByText(
-      '#conference',
-      listing2GetByTextOptions,
-    );
-
-    expect(conferenceTag.getAttribute('href')).toEqual(
-      '/listings?t=conference',
-    );
-
-    // edit and delete buttons
-    const listing2EditButton = screen.getByText(
-      'Edit',
-      listing2GetByTextOptions,
-    );
-
-    expect(listing2EditButton.getAttribute('href')).toEqual(
-      '/listings/24/edit',
-    );
-
-    const listing2DeleteButton = screen.getByText(
-      'Delete',
-      listing2GetByTextOptions,
-    );
-
-    expect(listing2DeleteButton.getAttribute('href')).toEqual(
-      '/listings/events/yoyoyoyoyoooooooo-4jcb/delete_confirm',
-    );
-
     // 3rd listing
     const listing3GetByTextOptions = {
       selector: '[data-listing-id="25"] *',
