@@ -28,7 +28,7 @@
       </div>
       <div class="c-card__revealable shrink-0">
         <button type="button" class="c-btn c-btn--icon-alone" aria-label="Edit <%= org_membership.organization.name %> organization membership"
-          data-modal-title="Edit <%= @user.name %>'s role at an organization" data-modal-size="small" data-modal-content-selector=".js-edit-organization-<%= org_membership.organization.id %>">
+          data-modal-title="Edit <%= @user.name %>'s role at an organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon", aria_hidden: true) %>
         </button>
         <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div class="js-edit-organization-<%= org_membership.organization.id %> hidden">
+    <div id="edit-organization-<%= org_membership.organization.id %> hidden">
       <%= form_with model: [:admin, org_membership], method: :patch, local: true do |f| %>
         <div class="crayons-field mb-4">
           <%= f.label "Role", class: "crayons-field__label", for: "edit_#{org_membership.organization.id}_type_of_user" %>
