@@ -3,7 +3,9 @@ class Role < ApplicationRecord
     admin
     codeland_admin
     comment_suspended
+    creator
     mod_relations_admin
+    moderator
     podcast_admin
     restricted_liquid_tag
     single_resource_admin
@@ -15,7 +17,6 @@ class Role < ApplicationRecord
     trusted
     warned
     workshop_pass
-    creator
   ].freeze
 
   has_and_belongs_to_many :users, join_table: :users_roles # rubocop:disable Rails/HasAndBelongsToMany
