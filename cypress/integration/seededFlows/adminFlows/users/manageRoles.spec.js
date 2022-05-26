@@ -27,7 +27,7 @@ describe('Manage User Roles', () => {
         cy.visit('/admin/member_manager/users/2');
       });
 
-      it('should change a role', () => {
+      it('Remove other roles and add a note when Warn role added', () => {
         checkUserStatus('Trusted');
 
         cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
@@ -51,6 +51,42 @@ describe('Manage User Roles', () => {
         cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
           'not.exist',
         );
+
+        cy.findByRole('navigation', { name: 'Member details' })
+          .findByRole('link', { name: 'Notes' })
+          .click();
+
+        cy.findByText('some reason').should('exist');
+        cy.findByText(/Warn by/).should('exist');
+      });
+
+      it('should remove other roles & add a note when Suspend role added', () => {
+        cy.findByRole('button', { name: 'Remove role: Trusted' });
+        openRolesModal().within(() => {
+          cy.findByRole('combobox', { name: 'Role' }).select('Suspend');
+          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
+            'some reason',
+          );
+          cy.findByRole('button', { name: 'Add' }).click();
+        });
+
+        cy.getModal().should('not.exist');
+        verifyAndDismissUserUpdatedMessage();
+
+        cy.findByRole('button', {
+          name: "Suspended You can't remove this role.",
+        }).should('exist');
+        checkUserStatus('Suspended');
+
+        cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
+          'not.exist',
+        );
+
+        cy.findByRole('navigation', { name: 'Member details' })
+          .findByRole('link', { name: 'Notes' })
+          .click();
+        cy.findByText('some reason').should('exist');
+        cy.findByText(/Suspend by/).should('exist');
       });
 
       it('should remove a role', () => {
