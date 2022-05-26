@@ -1,4 +1,4 @@
-import { showUserModal } from './users/userModalActions';
+import { showUserModal } from './users/editUserModals';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 initializeDropdown({
