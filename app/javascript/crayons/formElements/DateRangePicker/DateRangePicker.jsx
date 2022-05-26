@@ -10,6 +10,7 @@ import { Icon } from '@crayons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
 import Calendar from '@images/calendar.svg';
+import { getCurrentLocale } from '@utilities/runtime';
 
 const PICKER_PHRASES = {
   ...defaultPhrases,
@@ -117,6 +118,8 @@ export const DateRangePicker = ({
     relevantDate.month() === latestMoment.month();
 
   const today = moment();
+  const dateFormat =
+    getCurrentLocale().toLowerCase() === 'en-us' ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
 
   return (
     // We wrap in a span to assist with scoping CSS selectors & overriding styles from react-dates
@@ -126,6 +129,9 @@ export const DateRangePicker = ({
         startDate={startMoment}
         endDate={endMoment}
         endDateId={endDateId}
+        startDatePlaceholderText={dateFormat}
+        endDatePlaceholderText={dateFormat}
+        displayFormat={dateFormat}
         focusedInput={focusedInput}
         // It is strange to add a tabindex to an icon, but react-dates renders these inside a role="button" which does not have a tabindex
         // This is a workaround to make sure keyboard users can reach and interact with the nav buttons
@@ -134,7 +140,11 @@ export const DateRangePicker = ({
         minDate={earliestMoment}
         maxDate={latestMoment}
         initialVisibleMonth={() => {
-          const relevantDate = startMoment ? startMoment : today;
+          let relevantDate = startMoment;
+
+          if (!relevantDate) {
+            relevantDate = latestMoment ? latestMoment : today;
+          }
 
           return isMonthSameAsLatestMonth(relevantDate)
             ? relevantDate.clone().subtract(1, 'month')
