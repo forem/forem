@@ -333,42 +333,55 @@ describe('<ListingDashboard />', () => {
     });
   });
 
-  it('should render for listingRow view', () => {
-    // 3rd listing
-    const listing3GetByTextOptions = {
-      selector: '[data-listing-id="25"] *',
-    };
+  describe('3rd listing', () => {
+    it('should render the edit and delete buttons', () => {
+      const thirdListing = screen.getByTestId('25');
+      const thirdListingContainer = within(thirdListing);
 
-    screen.getByText('hehhehe (expired)', listing3GetByTextOptions);
-    screen.getByText('Apr 11, 2019', listing3GetByTextOptions);
+      const listing3EditButton = thirdListingContainer.getByRole('link', {
+        name: 'Edit',
+      });
+      const listing3DeleteButton = thirdListingContainer.getByRole('link', {
+        name: 'Delete',
+      });
 
-    // listing category
-    const listing3CfpCategory = screen.getByText(
-      'cfp',
-      listing3GetByTextOptions,
-    );
+      expect(listing3EditButton.getAttribute('href')).toEqual(
+        '/listings/25/edit',
+      );
+      expect(listing3DeleteButton.getAttribute('href')).toEqual(
+        '/listings/cfp/hehhehe-5hld/delete_confirm',
+      );
+    });
 
-    expect(listing3CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
+    it('should render the listing title and the time', () => {
+      const title = screen.getByRole('heading', {
+        name: 'hehhehe (expired)',
+        level: 2,
+      });
+      const time = screen.getByTitle('Thursday, April 11, 2019, 5:01:25 PM');
 
-    // has no tags
+      expect(title).toBeInTheDocument();
+      expect(time).toBeInTheDocument();
+    });
 
-    //     // edit and delete buttons
-    const listing3EditButton = screen.getByText(
-      'Edit',
-      listing3GetByTextOptions,
-    );
+    it('should render the listing category', () => {
+      const thirdListing = screen.getByTestId('25');
+      const thirdListingContainer = within(thirdListing);
 
-    expect(listing3EditButton.getAttribute('href')).toEqual(
-      '/listings/25/edit',
-    );
+      const listing3CfpCategory = thirdListingContainer.getByRole('link', {
+        name: 'cfp',
+      });
 
-    const listing3DeleteButton = screen.getByText(
-      'Delete',
-      listing3GetByTextOptions,
-    );
+      expect(listing3CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
+    });
 
-    expect(listing3DeleteButton.getAttribute('href')).toEqual(
-      '/listings/cfp/hehhehe-5hld/delete_confirm',
-    );
+    it('should NOT render the listing tags', () => {
+      const thirdListing = screen.getByTestId('25');
+      const thirdListingContainer = within(thirdListing);
+
+      expect(
+        thirdListingContainer.queryByRole('link', { name: /#/ }),
+      ).not.toBeInTheDocument();
+    });
   });
 });
