@@ -2,6 +2,13 @@ import { WINDOW_MODAL_ID, showWindowModal } from '@utilities/showModal';
 
 const getModalContent = () => document.getElementById(WINDOW_MODAL_ID);
 
+/**
+ * Populate the add organization modal with user data
+ *
+ * @param {Object} dataset
+ * @param {string} dataset.userName
+ * @param {string} dataset.userId
+ */
 const initializeAddOrganizationContent = ({ userName, userId }) => {
   const modalContent = getModalContent();
 
@@ -11,10 +18,24 @@ const initializeAddOrganizationContent = ({ userName, userId }) => {
   modalContent.querySelector('.js-user-name').innerText = userName;
 };
 
+/**
+ * Populate the add role modal with its action
+ *
+ * @param {Object} dataset
+ * @param {string} dataset.formAction The URL for the form action
+ */
 const initializeAddRoleContent = ({ formAction }) => {
   getModalContent().querySelector('.js-add-role-form').action = formAction;
 };
 
+/**
+ * Populate the adjust credits modal with user data
+ *
+ * @param {Object} dataset
+ * @param {string} dataset.userName
+ * @param {string} dataset.unspentCreditsCount The user's current credit balance
+ * @param {string} dataset.formAction The URL for the form action
+ */
 const initializeAdjustCreditBalanceContent = ({
   userName,
   unspentCreditsCount,
@@ -62,6 +83,13 @@ const initializeAdjustCreditBalanceContent = ({
   });
 };
 
+/**
+ * Populate the unpublish all posts model with user data
+ *
+ * @param {Object} dataset
+ * @param {string} dataset.formAction The URL for the form action
+ * @param {string} dataset.userName
+ */
 const initializeUnpublishAllPostsContent = ({ formAction, userName }) => {
   const modalContent = getModalContent();
   modalContent.querySelector('.js-unpublish-form').action = formAction;
@@ -70,6 +98,14 @@ const initializeUnpublishAllPostsContent = ({ formAction, userName }) => {
     .forEach((span) => (span.innerText = userName));
 };
 
+/**
+ * Populate the banish modal with user data
+ *
+ * @param {Object} dataset
+ * @param {string} dataset.formAction The URL for the form action
+ * @param {string} dataset.userName
+ * @param {string} dataset.banishableUser "true" or "false" - is it possible to banish this user
+ */
 const initializeBanishContent = ({ formAction, userName, banishableUser }) => {
   const modalContent = getModalContent();
 
@@ -102,13 +138,17 @@ const modalContentInitializers = {
 };
 
 const modalContents = new Map();
+/**
+ * Helper function to handle finding and caching modal content. Since our Preact modal helper works by duplicating HTML content,
+ * and our user modals rely on IDs to label form controls, we remove the original hidden content from the DOM to avoid ID conflicts.
+ *
+ * @param {string} modalContentSelector The CSS selector used to identify the correct modal content
+ */
 const getModalContents = (modalContentSelector) => {
   if (!modalContents.has(modalContentSelector)) {
     const modalContentElement = document.querySelector(modalContentSelector);
     const modalContent = modalContentElement.innerHTML;
 
-    // User modal content relies on IDs to label form controls. Since duplicate IDs in the DOM prevents
-    // proper form label associations, we remove the original hidden content from the DOM and cache it for any later use.
     modalContentElement.remove();
     modalContents.set(modalContentSelector, modalContent);
   }
@@ -116,6 +156,12 @@ const getModalContents = (modalContentSelector) => {
   return modalContents.get(modalContentSelector);
 };
 
+/**
+ * Helper function for views which use admin user modals. May be attached as an event listener, and its actions will only be triggered
+ * if the target of the event is a recognised user modal trigger.
+ *
+ * @param {Object} event
+ */
 export const showUserModal = (event) => {
   const { dataset } = event.target;
 
