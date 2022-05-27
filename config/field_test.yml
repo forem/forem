@@ -1,13 +1,13 @@
 # See AbExperiment namespace for details of goals and variants
 experiments:
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
-  feed_strategy_starting_20220518:
+  feed_strategy_starting_20220526:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
     start_date: 2022-05-09
     variants:
-      - 20220422-variant
       - 20220518-variant
+      - 20220525-variant
     weights:
       - 80
       - 20

@@ -1,0 +1,35 @@
+{
+  "max_days_since_published": 15,
+  "order_by": "relevancy_score_and_publication_date",
+  "levers": {
+    "featured_article": { "cases": [[1, 1]], "fallback": 0.85 },
+    "privileged_user_reaction": {
+      "cases": [
+        [-1, 0.2],
+        [1, 1]
+      ],
+      "fallback": 0.95,
+      "negative_reaction_threshold": -10,
+      "positive_reaction_threshold": 10
+    },
+    "matching_negative_tags_intersection_count": {
+      "cases": [
+        [0, 1],
+        [1, 0.5],
+        [2, 0.4],
+        [3, 0.3],
+        [4, 0.2]
+      ],
+      "fallback": 0
+    },
+    "public_reactions": {
+      "cases": [
+        [0, 0.9988],
+        [1, 0.9988],
+        [2, 0.9988],
+        [3, 0.9988]
+      ],
+      "fallback": 1
+    }
+  }
+}

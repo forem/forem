@@ -21,55 +21,94 @@ describe('Moderation Tools for Posts', () => {
     });
   });
 
-  it('should not alter tags from a post if a reason is not specified', () => {
-    cy.fixture('users/adminUser.json').as('adminUser');
-    cy.get('@adminUser').then((user) => {
-      cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article').then(() => {
-        cy.findByRole('button', { name: 'Moderation' }).click();
+  context('as admin user', () => {
+    beforeEach(() => {
+      cy.fixture('users/adminUser.json').as('adminUser');
+    });
 
-        // Helper function for pipe command
-        const click = ($el) => $el.click();
+    it('should not alter tags from a post if a reason is not specified', () => {
+      cy.get('@adminUser').then((user) => {
+        cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article').then(() => {
+          cy.findByRole('button', { name: 'Moderation' }).click();
 
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
-          cy.findByRole('button', { name: 'Open adjust tags section' })
-            .as('adjustTagsButton')
-            .pipe(click)
-            .should('have.attr', 'aria-expanded', 'true');
+          // Helper function for pipe command
+          const click = ($el) => $el.click();
 
-          cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
-          cy.findByRole('button', { name: 'Submit' }).click();
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
+            cy.findByRole('button', { name: 'Open adjust tags section' })
+              .as('adjustTagsButton')
+              .pipe(click)
+              .should('have.attr', 'aria-expanded', 'true');
+
+            cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
+            cy.findByRole('button', { name: 'Submit' }).click();
+          });
+
+          cy.findByTestId('snackbar').should('not.exist');
         });
+      });
+    });
 
-        cy.findByTestId('snackbar').should('not.exist');
+    it('should show Feature Post button on an unfeatured post for an admin user', () => {
+      cy.get('@adminUser').then((user) => {
+        cy.loginAndVisit(user, '/admin_mcadmin/unfeatured-article-slug').then(
+          () => {
+            cy.findByRole('button', { name: 'Moderation' }).click();
+
+            cy.getIframeBody('[title="Moderation panel actions"]').within(
+              () => {
+                cy.findByRole('button', { name: 'Feature Post' }).should(
+                  'exist',
+                );
+              },
+            );
+          },
+        );
+      });
+    });
+
+    it('should show Unfeature Post button on a featured post for an admin user', () => {
+      cy.get('@adminUser').then((user) => {
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
+          cy.findByRole('button', { name: 'Moderation' }).click();
+
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            cy.findByRole('button', { name: 'Unfeature Post' }).should('exist');
+          });
+        });
       });
     });
   });
 
-  it('should show Feature Post button on an unfeatured post for an admin user', () => {
-    cy.fixture('users/adminUser.json').as('adminUser');
-    cy.get('@adminUser').then((user) => {
-      cy.loginAndVisit(user, '/admin_mcadmin/unfeatured-article-slug').then(
-        () => {
-          cy.findByRole('button', { name: 'Moderation' }).click();
-
-          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-            cy.findByRole('button', { name: 'Feature Post' }).should('exist');
-          });
-        },
-      );
+  context('as moderator user', () => {
+    beforeEach(() => {
+      cy.fixture('users/moderatorUser.json').as('moderatorUser');
     });
-  });
 
-  it('should show Unfeature Post button on a featured post for an admin user', () => {
-    cy.fixture('users/adminUser.json').as('adminUser');
-    cy.get('@adminUser').then((user) => {
-      cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
-        cy.findByRole('button', { name: 'Moderation' }).click();
-
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Unfeature Post' }).should('exist');
+    it('should load moderation tools on a post for a moderator user', () => {
+      cy.get('@moderatorUser').then((user) => {
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
+          cy.findByRole('button', { name: 'Moderation' }).should('exist');
         });
+      });
+    });
+
+    it('should not show Feature Post button on a post for a moderator user', () => {
+      cy.get('@moderatorUser').then((user) => {
+        cy.loginAndVisit(user, '/admin_mcadmin/unfeatured-article-slug').then(
+          () => {
+            cy.findByRole('button', { name: 'Moderation' }).click();
+
+            cy.getIframeBody('[title="Moderation panel actions"]').within(
+              () => {
+                cy.findByRole('button', { name: 'Feature Post' }).should(
+                  'not.exist',
+                );
+              },
+            );
+          },
+        );
       });
     });
   });
