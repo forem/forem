@@ -16,6 +16,7 @@ import HeadingIcon from '@images/heading.svg';
 import QuoteIcon from '@images/quote.svg';
 import CodeIcon from '@images/code.svg';
 import CodeBlockIcon from '@images/codeblock.svg';
+import EmbedIcon from '@images/lightning.svg';
 import UnderlineIcon from '@images/underline.svg';
 import StrikethroughIcon from '@images/strikethrough.svg';
 import DividerIcon from '@images/divider.svg';
@@ -25,6 +26,9 @@ const ORDERED_LIST_ITEM_REGEX = /^\d+\.\s+.*/;
 const MARKDOWN_LINK_REGEX =
   /^\[([\w\s\d]*)\]\((url|(https?:\/\/[\w\d./?=#]+))\)$/;
 const URL_PLACEHOLDER_TEXT = 'url';
+
+const EMBED_SYNTAX_START = '{% embed ';
+const EMBED_SYNTAX_END = ' %}';
 
 const NUMBER_OF_NEW_LINES_BEFORE_BLOCK_SYNTAX = 2;
 const NUMBER_OF_NEW_LINES_BEFORE_AFTER_SYNTAX = 1;
@@ -55,6 +59,70 @@ const getNewLinePrefixSuffixes = ({ selectionStart, selectionEnd, value }) => {
       : '\n';
 
   return { newLinesPrefix, newLinesSuffix };
+};
+
+const handleEmbedFormattingForEmptyTextSelection = ({
+  textBeforeSelection,
+  textAfterSelection,
+  value,
+  selectionStart,
+  selectionEnd,
+}) => {
+  const basicFormattingForEmptySelection = {
+    editSelectionStart: selectionStart,
+    editSelectionEnd: selectionEnd,
+    replaceSelectionWith: `${EMBED_SYNTAX_START}https://...${EMBED_SYNTAX_END}`,
+    newCursorStart: selectionStart + 9,
+    newCursorEnd: selectionEnd + 20,
+  };
+
+  // Directly after inserting a link with a URL highlighted, cursor is inside the link description '[]'
+  // Check if we are inside empty link description remove the link syntax if so
+  const directlySurroundedByLinkStructure =
+    textBeforeSelection.slice(-1) === '[' &&
+    textAfterSelection.slice(0, 2) === '](';
+
+  if (!directlySurroundedByLinkStructure)
+    return basicFormattingForEmptySelection;
+
+  // Search for the closing bracket of markdown link
+  const indexOfLinkStructureEnd = getNextIndexOfCharacter({
+    content: value,
+    selectionIndex: selectionStart,
+    character: ')',
+    breakOnCharacters: [' ', '\n'],
+  });
+
+  if (indexOfLinkStructureEnd === -1) return basicFormattingForEmptySelection;
+
+  // Remove the markdown link structure, preserving the link text if it isn't the "url" placeholder
+  const urlText = value.slice(selectionEnd + 2, indexOfLinkStructureEnd);
+
+  return {
+    editSelectionStart: selectionStart - 1,
+    editSelectionEnd: indexOfLinkStructureEnd + 1,
+    replaceSelectionWith: urlText === URL_PLACEHOLDER_TEXT ? '' : urlText,
+    newCursorStart: selectionStart - 1,
+    newCursorEnd: selectionEnd - 1,
+  };
+};
+
+const handleUndoEmbedSelection = ({
+  selectionStart,
+  selectedText,
+  selectionEnd,
+}) => {
+  const textToReplaceMarkdown = selectedText.slice(
+    EMBED_SYNTAX_START.length,
+    selectedText.length - EMBED_SYNTAX_END.length,
+  );
+  return {
+    editSelectionStart: selectionStart,
+    editSelectionEnd: selectionEnd,
+    replaceSelectionWith: textToReplaceMarkdown,
+    newCursorStart: selectionStart,
+    newCursorEnd: selectionStart + textToReplaceMarkdown.length,
+  };
 };
 
 const handleLinkFormattingForEmptyTextSelection = ({
@@ -184,6 +252,13 @@ const handleUndoMarkdownLinkSelection = ({
     newCursorStart: selectionStart,
     newCursorEnd: selectionStart + textToReplaceMarkdown.length,
   };
+};
+
+const isStringEmbedSyntax = (string) => {
+  const startingText = string.substring(0, 9);
+  const endingText = string.substring(string.length - 3, string.length);
+
+  return startingText === EMBED_SYNTAX_START && endingText === EMBED_SYNTAX_END;
 };
 
 const isStringStartAUrl = (string) => {
@@ -713,6 +788,61 @@ export const coreSyntaxFormatters = {
         blockPrefix: '```\n',
         blockSuffix: '\n```',
       }),
+  },
+  embed: {
+    icon: () => <Icon src={EmbedIcon} />,
+    label: 'Embed',
+    getKeyboardShortcut: () => {
+      const modifier = getOSKeyboardModifierKeyString();
+      return {
+        command: `${modifier}+shift+k`,
+        tooltipHint: `${modifier.toUpperCase()} + SHIFT + K`,
+      };
+    },
+    getFormatting: ({ selectionStart, selectionEnd, value }) => {
+      const { selectedText, textBeforeSelection, textAfterSelection } =
+        getSelectionData({ selectionStart, selectionEnd, value });
+
+      if (selectedText === '') {
+        return handleEmbedFormattingForEmptyTextSelection({
+          textBeforeSelection,
+          textAfterSelection,
+          value,
+          selectionStart,
+          selectionEnd,
+        });
+      }
+      if (isStringEmbedSyntax(selectedText)) {
+        return handleUndoEmbedSelection({
+          textBeforeSelection,
+          textAfterSelection,
+          value,
+          selectionStart,
+          selectedText,
+          selectionEnd,
+        });
+      }
+
+      // If the whole selectedText matches markdown link formatting, undo it
+      if (selectedText.match(MARKDOWN_LINK_REGEX)) {
+        return handleUndoMarkdownLinkSelection({
+          selectedText,
+          selectionStart,
+          selectionEnd,
+          textBeforeSelection,
+          textAfterSelection,
+        });
+      }
+
+      // Finally, handle the case where link syntax is inserted for a selection other than a URL
+      return {
+        editSelectionStart: selectionStart,
+        editSelectionEnd: selectionEnd,
+        replaceSelectionWith: `[${selectedText}](${URL_PLACEHOLDER_TEXT})`,
+        newCursorStart: selectionStart + selectedText.length + 3,
+        newCursorEnd: selectionEnd + 6,
+      };
+    },
   },
 };
 
