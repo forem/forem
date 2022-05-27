@@ -107,7 +107,7 @@ const handleEmbedFormattingForEmptyTextSelection = ({
   };
 };
 
-const handleUndoEmbedForSyntaxSelection = ({
+const handleUndoForEmbedSyntaxSelection = ({
   selectionStart,
   selectedText,
   selectionEnd,
@@ -844,6 +844,7 @@ export const coreSyntaxFormatters = {
       const { selectedText, textBeforeSelection, textAfterSelection } =
         getSelectionData({ selectionStart, selectionEnd, value });
 
+      // If selected text is empty, then directly insert embed syntax
       if (selectedText === '') {
         return handleEmbedFormattingForEmptyTextSelection({
           textBeforeSelection,
@@ -853,14 +854,17 @@ export const coreSyntaxFormatters = {
           selectionEnd,
         });
       }
+
+      // If selected text is embed syntax, then replace selection with the value
       if (isStringEmbedSyntax(selectedText)) {
-        return handleUndoEmbedForSyntaxSelection({
+        return handleUndoForEmbedSyntaxSelection({
           selectionStart,
           selectedText,
           selectionEnd,
         });
       }
 
+      // If selected text is value inside embed syntax, then replace embed syntax with the value
       if (isStringInsideEmbedSyntax(textBeforeSelection, textAfterSelection)) {
         return handleUndoEmbedForValueSelection({
           value,
@@ -869,13 +873,13 @@ export const coreSyntaxFormatters = {
         });
       }
 
-      // Finally, handle the case where link syntax is inserted for a selection other than a URL
+      // Finally, handle the case where selected text needs to be converted to embeded syntax
       return {
         editSelectionStart: selectionStart,
         editSelectionEnd: selectionEnd,
-        replaceSelectionWith: `[${selectedText}](${URL_PLACEHOLDER_TEXT})`,
-        newCursorStart: selectionStart + selectedText.length + 3,
-        newCursorEnd: selectionEnd + 6,
+        replaceSelectionWith: `${EMBED_SYNTAX_START}${selectedText}${EMBED_SYNTAX_END}`,
+        newCursorStart: selectionStart + EMBED_SYNTAX_START.length,
+        newCursorEnd: selectionEnd + EMBED_SYNTAX_START.length,
       };
     },
   },
