@@ -212,5 +212,25 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article.reload
       expect(article.published_at).to eq(published_at)
     end
+
+    it "sets current published_at when draft => published and no published_at specified" do
+      draft = create(:article, published: false, user_id: user.id, published_at: nil)
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown } }
+      draft.reload
+      expect(draft.published_at).to be_within(1.minute).of(Time.current)
+    end
+
+    it "allows to set past published_at when publishing with date and no published_at (exported)" do
+      date = "2022-05-02 19:00:30 UTC"
+      draft = create(:article, published: false, user_id: user.id)
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \ndate: #{date}---\n\nHey this is the article"
+      put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown } }
+      draft.reload
+      expect(draft.published).to be true
+      expect(draft.published_at).to be_within(1.minute).of(DateTime.parse(date))
+    end
   end
 end
