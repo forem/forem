@@ -15,7 +15,7 @@ describe('Post Editor', () => {
 
     describe(`revert changes`, () => {
       it('should revert to the initial v1 editor template if it is a new post', () => {
-        const initialContent = `---\ntitle: \npublished: false\ndescription: \ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n`;
+        const initialContent = `---\ntitle: \npublished: false\ndescription: \ntags: \n//cover_image: https://direct_url_to_image.jpg\n//Use a ratio of 100:42 for best results.\n---\n\n`;
         const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
 
         cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
