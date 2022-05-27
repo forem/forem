@@ -130,8 +130,8 @@ RSpec.describe Articles::Builder, type: :service do
     let(:user) { create(:user) }
     let(:correct_attributes) do
       body = "---\ntitle: \npublished: false\ndescription: " \
-             "\ntags: \n//cover_image: https://direct_url_to_image.jpg" \
-             "\n//Use a ratio of 100:42 for best results.\n---\n\n"
+             "\ntags: \n# cover_image: https://direct_url_to_image.jpg" \
+             "\n# Use a ratio of 100:42 for best results.\n---\n\n"
 
       {
         body_markdown: body,
