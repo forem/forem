@@ -107,7 +107,7 @@ const handleEmbedFormattingForEmptyTextSelection = ({
   };
 };
 
-const handleUndoEmbedSelection = ({
+const handleUndoEmbedForSyntaxSelection = ({
   selectionStart,
   selectedText,
   selectionEnd,
@@ -122,6 +122,34 @@ const handleUndoEmbedSelection = ({
     replaceSelectionWith: textToReplaceMarkdown,
     newCursorStart: selectionStart,
     newCursorEnd: selectionStart + textToReplaceMarkdown.length,
+  };
+};
+
+const handleUndoEmbedForValueSelection = ({
+  value,
+  selectionStart,
+  selectedText,
+}) => {
+  // Get the index of where the current syntax opens so we can get the text inside the curly brackets
+  const indexOfSyntaxOpen = getLastIndexOfCharacter({
+    content: value,
+    selectionIndex: selectionStart,
+    character: '{',
+  });
+
+  // Get the index of where the current syntax closes so we can get the text inside the curly brackets
+  const indexOfSyntaxClose = getNextIndexOfCharacter({
+    content: value,
+    selectionIndex: selectionStart,
+    character: '}',
+  });
+
+  return {
+    editSelectionStart: indexOfSyntaxOpen,
+    editSelectionEnd: indexOfSyntaxClose + 1,
+    replaceSelectionWith: selectedText,
+    newCursorStart: indexOfSyntaxOpen,
+    newCursorEnd: indexOfSyntaxOpen + selectedText.length,
   };
 };
 
@@ -255,10 +283,23 @@ const handleUndoMarkdownLinkSelection = ({
 };
 
 const isStringEmbedSyntax = (string) => {
-  const startingText = string.substring(0, 9);
+  const startingText = string.substring(0, EMBED_SYNTAX_START.length);
   const endingText = string.substring(string.length - 3, string.length);
 
   return startingText === EMBED_SYNTAX_START && endingText === EMBED_SYNTAX_END;
+};
+
+const isStringInsideEmbedSyntax = (textBeforeSelection, textAfterSelection) => {
+  const textBeforeString = textBeforeSelection.slice(
+    textBeforeSelection.length - EMBED_SYNTAX_START.length,
+    textBeforeSelection.length,
+  );
+  const textAfterString = textAfterSelection.slice(0, EMBED_SYNTAX_END.length);
+
+  return (
+    textBeforeString === EMBED_SYNTAX_START &&
+    textAfterString === EMBED_SYNTAX_END
+  );
 };
 
 const isStringStartAUrl = (string) => {
@@ -813,24 +854,18 @@ export const coreSyntaxFormatters = {
         });
       }
       if (isStringEmbedSyntax(selectedText)) {
-        return handleUndoEmbedSelection({
-          textBeforeSelection,
-          textAfterSelection,
-          value,
+        return handleUndoEmbedForSyntaxSelection({
           selectionStart,
           selectedText,
           selectionEnd,
         });
       }
 
-      // If the whole selectedText matches markdown link formatting, undo it
-      if (selectedText.match(MARKDOWN_LINK_REGEX)) {
-        return handleUndoMarkdownLinkSelection({
-          selectedText,
+      if (isStringInsideEmbedSyntax(textBeforeSelection, textAfterSelection)) {
+        return handleUndoEmbedForValueSelection({
+          value,
           selectionStart,
-          selectionEnd,
-          textBeforeSelection,
-          textAfterSelection,
+          selectedText,
         });
       }
 
