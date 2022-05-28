@@ -93,7 +93,7 @@ export const isNativeAndroid = (namespace = null) => {
  *
  * @param {string} text to be copied to the clipboard
  *
- * @returns {Promise} Resolves when succesful in copying to clipboard
+ * @returns {Promise} Resolves when successful in copying to clipboard
  */
 export const copyToClipboard = (text) => {
   return new Promise((resolve, reject) => {
