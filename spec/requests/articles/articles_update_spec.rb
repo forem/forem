@@ -222,9 +222,9 @@ RSpec.describe "ArticlesUpdate", type: :request do
       expect(draft.published_at).to be_within(1.minute).of(Time.current)
     end
 
-    it "allows to set past published_at when publishing with date and no published_at (exported)" do
+    it "allows to set past published_at when publishing with date and no published_at for exported articles" do
       date = "2022-05-02 19:00:30 UTC"
-      draft = create(:article, published: false, user_id: user.id)
+      draft = create(:article, published: false, user_id: user.id, published_from_feed: true, published_at: nil)
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
       \ndate: #{date}---\n\nHey this is the article"
       put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown } }
