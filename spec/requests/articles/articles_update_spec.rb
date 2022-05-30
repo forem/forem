@@ -188,6 +188,15 @@ RSpec.describe "ArticlesUpdate", type: :request do
       expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 23:00")
       expect(draft.published).to be true
     end
+
+    it "doesn't update published_at when published => published" do
+      published_at = DateTime.parse("2022-01-01 15:00 -0400")
+      article.update_column(:published_at, published_at)
+      attributes[:time_zone] = "Europe/Moscow"
+      put "/articles/#{article.id}", params: { article: attributes }
+      article.reload
+      expect(article.published_at).to eq(published_at)
+    end
   end
 
   context "when setting published_at in editor v1" do

@@ -155,7 +155,7 @@ class Article < ApplicationRecord
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
-  # validate :has_correct_published_at?
+  validate :has_correct_published_at?
 
   validate :canonical_url_must_not_have_spaces
   # validate :past_or_present_date
@@ -720,8 +720,10 @@ class Article < ApplicationRecord
     self.title = front_matter["title"] if front_matter["title"].present?
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
+
     self.published_at = front_matter["published_at"] if front_matter["published_at"]
     self.published_at ||= parse_date(front_matter["date"]) if published
+
     set_main_image(front_matter)
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
 

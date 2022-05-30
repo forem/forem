@@ -499,24 +499,11 @@ RSpec.describe Article, type: :model do
       expect(article_with_published_at.published_at.strftime("%d/%m/%Y %H:%M")).to eq(published_at)
     end
 
-    xit "doesn't allow updating published_at if an article has already been published" do
+    it "doesn't allow updating published_at if an article has already been published" do
       article.published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
       expect(article.valid?).to be false
       expect(article.errors[:published_at])
         .to include("updating published_at for posts that have already been published is not allowed")
-    end
-
-    xit "rejects future dates set from frontmatter" do
-      invalid_article = build(:article, with_date: true, date: Date.tomorrow.strftime("%d/%m/%Y"), published_at: nil)
-      expect(invalid_article.valid?).to be(false)
-      expect(invalid_article.errors[:date_time])
-        .to include("must be entered in DD/MM/YYYY format with current or past date")
-    end
-
-    xit "rejects future dates even when it's published at" do
-      article.published_at = Date.tomorrow
-      expect(article.valid?).to be(false)
-      expect(article.errors[:date_time]).to include("must be entered in DD/MM/YYYY format with current or past date")
     end
   end
 
