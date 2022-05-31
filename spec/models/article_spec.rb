@@ -237,6 +237,14 @@ RSpec.describe Article, type: :model do
         expect(article.title).to eq allowed_title
       end
 
+      it "allows Euro symbol (€)" do
+        allowed_title = "Euro code €€€"
+
+        article = create(:article, title: allowed_title)
+
+        expect(article.title).to eq allowed_title
+      end
+
       it "produces a proper title" do
         test_article = build(:article, title: "An Article Title")
 
