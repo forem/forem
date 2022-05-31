@@ -120,7 +120,7 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-preset-preact": "^2.0.0",
     "canvas": "^2.9.1",
-    "chart.js": "^3.7.1",
+    "chart.js": "^3.8.0",
     "classnames": "^2.3.1",
     "core-js": "3",
     "file-loader": "^6.2.0",
