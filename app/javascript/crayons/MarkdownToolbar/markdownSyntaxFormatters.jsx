@@ -65,15 +65,13 @@ const handleEmbedFormattingForEmptyTextSelection = ({
   selectionStart,
   selectionEnd,
 }) => {
-  const basicFormattingForEmptySelection = {
+  return {
     editSelectionStart: selectionStart,
     editSelectionEnd: selectionEnd,
     replaceSelectionWith: `${EMBED_SYNTAX_PREFIX}https://...${EMBED_SYNTAX_SUFFIX}`,
     newCursorStart: selectionStart + 9,
     newCursorEnd: selectionEnd + 20,
   };
-
-  return basicFormattingForEmptySelection;
 };
 
 const handleUndoForEmbedSyntaxSelection = ({
