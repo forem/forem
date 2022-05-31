@@ -49,6 +49,11 @@
       <%= crayons_icon_tag(:checkmark, class: "vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </button>
     <% if current_user.any_admin? && @moderatable.published %>
+      <button
+        class="c-btn c-btn--primary c-btn--destructive w-100 my-4"
+        id="unpublish-article-btn">
+        <%= t("views.moderations.actions.unpublish") %>
+      </button>
       <% @recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
       <button
         class="c-btn c-btn--primary w-100"
@@ -190,19 +195,6 @@
           <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
         </div>
       </button>
-
-      <div id="admin-action-options" class="admin-action-options dropdown-options hidden">
-        <div class="article-admin-action">
-          <button
-            class="c-btn c-btn--primary c-btn--destructive w-100"
-            id="unpublish-article-btn"
-            data-article-id="<%= @moderatable.id %>"
-            data-article-author="<%= @moderatable.username %>"
-            data-article-slug="<%= @moderatable.slug %>">
-            <%= t("views.moderations.actions.unpublish") %>
-          </button>
-        </div>
-      </div>
     <% end %>
   </div>
 
