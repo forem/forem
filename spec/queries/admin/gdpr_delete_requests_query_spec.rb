@@ -18,25 +18,25 @@ RSpec.describe Admin::GDPRDeleteRequestsQuery, type: :query do
     end
 
     context "when searching for a user by username" do
-      let(:search) { { search: "delete_1" } }
+      let(:search) { "delete_2" }
 
-      it { is_expected.to match_array([gdpr_delete_request_1]) }
+      it { is_expected.to match_array([gdpr_delete_request_2]) }
     end
 
     context "when searching for a user by email" do
-      let(:search) { { search: "delete_1@test.com" } }
+      let(:search) { "delete_1@test.com" }
 
       it { is_expected.to match_array([gdpr_delete_request_1]) }
     end
 
     context "when searching for ambiguous terms that matches multiple users" do
-      let(:search) { { search: "delete_1" } }
+      let(:search) { "delete_1" }
 
       it { is_expected.to match_array([gdpr_delete_request_1, gdpr_delete_request_11]) }
     end
 
     context "when searching for ambiguous terms that matches both emails and usernames" do
-      let(:search) { { search: "delete" } }
+      let(:search) { "delete" }
 
       # rubocop:disable Layout/LineLength
       it { is_expected.to match_array([gdpr_delete_request_1, gdpr_delete_request_2, gdpr_delete_request_3, gdpr_delete_request_11]) }
@@ -44,7 +44,7 @@ RSpec.describe Admin::GDPRDeleteRequestsQuery, type: :query do
     end
 
     context "when passed a non-existent email or username" do
-      let(:search) { { search: "non_existent_email" } }
+      let(:search) { "non_existent_email" }
 
       it { is_expected.to match_array([]) }
     end
