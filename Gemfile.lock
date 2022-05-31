@@ -301,7 +301,7 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    field_test (0.5.2)
+    field_test (0.5.3)
       activerecord (>= 5.2)
       browser (>= 2.0)
       railties (>= 5.2)
@@ -623,7 +623,7 @@ GEM
       rspec-rails (>= 3.0.0)
     raabro (1.4.0)
     racc (1.6.0)
-    rack (2.2.3)
+    rack (2.2.3.1)
     rack-attack (6.6.1)
       rack (>= 1.0, < 3)
     rack-cors (1.1.1)
@@ -704,7 +704,7 @@ GEM
     reverse_markdown (2.1.1)
       nokogiri
     rexml (3.2.5)
-    rice (4.0.2)
+    rice (4.0.4)
     rolify (6.0.0)
     rouge (3.28.0)
     rpush (7.0.1)
