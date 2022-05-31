@@ -126,14 +126,14 @@
                               checked: profile.public_send(field.attribute_name),
                               class: "crayons-checkbox") %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
-              <%= field.label %>
+              <%= t("views.users.profile_fields.#{field.label.downcase}", default: field.label) %>
               <% if field.description.present? %>
                 <p class="crayons-field__description"><%= field.description %></p>
               <% end %>
             </label>
           <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
-              <%= field.label %>
+              <%= t("views.users.profile_fields.#{field.label.downcase}", default: field.label) %>
             </label>
             <% if field.description.present? %>
               <p class="crayons-field__description"><%= field.description %></p>

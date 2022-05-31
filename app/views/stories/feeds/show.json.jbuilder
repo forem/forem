@@ -6,7 +6,7 @@ article_attributes_to_include = %i[
 article_methods_to_include = %i[
   readable_publish_date flare_tag class_name
   cloudinary_video_url video_duration_in_minutes published_at_int
-  published_timestamp
+  published_timestamp main_image_background_hex_color
 ]
 
 json.array!(@stories) do |article|

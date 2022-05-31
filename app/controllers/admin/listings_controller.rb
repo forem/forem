@@ -49,8 +49,8 @@ module Admin
     end
 
     def handle_publish_status
-      unpublish_listing if listing_params[:published] == "0"
-      publish_listing if listing_params[:published] == "1"
+      @listing.unpublish if listing_params[:published] == "0"
+      @listing.publish if listing_params[:published] == "1"
     end
 
     def include_unpublished?

@@ -40,10 +40,10 @@ fr:
           label: Website URL
           placeholder: https://yoursite.com
         education: Education
-        currently_learning: Currently learning
-        currently_hacking_on: Currently hacking on
-        available_for: Available for
-        skills_languages: Skills/Languages
+        currently learning: Currently learning
+        currently hacking on: Currently hacking on
+        available for: Available for
+        skills/languages: Skills/Languages
         work: Work
       side:
         comment:

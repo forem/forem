@@ -38,14 +38,50 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
       expect(page).to have_css(".onboarding-task-card")
     end
 
-    it "can dismiss the onboarding task card" do
+    it "shows a call to action for creating a post and can dismiss the onboarding task card", :aggregate_failures do
       visit "/"
 
       wait_for_javascript
-      expect(page).to have_css(".onboarding-task-card")
+      # A two-for one test: do we have the onboarding-task-card AND does it have the call to action
+      # of creating a post
+      expect(page).to have_css(".onboarding-task-card .task-card-action.js-policy-article-create")
 
       find(".onboarding-task-card .close").click
       expect(page).not_to have_css(".onboarding-task-card")
+    end
+  end
+
+  context "when site limits article creation to admins" do
+    before do
+      allow(FeatureFlag).to receive(:enabled?).with(:limit_post_creation_to_admins).and_return(true)
+      user.update(saw_onboarding: true)
+
+      visit sign_up_path
+      log_in_user(user)
+    end
+
+    context "when user is admin", :aggregate_failures do
+      let(:user) { create(:user, :admin, password: password, password_confirmation: password) }
+
+      it "renders the feed and onboarding task card", :aggregate_failures do
+        visit "/"
+
+        wait_for_javascript
+        expect(page).to have_css(".onboarding-task-card")
+        expect(page).to have_css(".onboarding-task-card .task-card-action.js-policy-article-create")
+      end
+    end
+
+    context "when user is not an admin", :aggregate_failures do
+      let(:user) { create(:user, password: password, password_confirmation: password) }
+
+      it "does not render a Create a Post call to action in the onboarding task card", :aggregate_failures do
+        visit "/"
+
+        wait_for_javascript
+        expect(page).to have_css(".onboarding-task-card")
+        expect(page).not_to have_css(".onboarding-task-card .task-card-action.js-policy-article-create")
+      end
     end
   end
 

@@ -62,8 +62,8 @@ with general questions please visit our community at
 ## Contributing
 
 We encourage you to contribute to Forem! Please check out the
-[Contributing to Forem guide](CONTRIBUTING.md) for guidelines about how to
-proceed.
+[Contributing to Forem guide](https://developers.forem.com/contributing-guide/forem)
+for guidelines about how to proceed.
 
 ## Getting Started
 

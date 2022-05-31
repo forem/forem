@@ -3,12 +3,12 @@
     <header>
       <div class="ltag__stackexchange--title">
       <% logo_to_use = site == "stackoverflow" ? "stackoverflow-logo.svg" : "stackexchange-logo.svg" %>
-        <h1>
+        <div class="ltag__stackexchange--header">
           <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" alt="">
-            <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
-              <%= post_type == "question" ? CGI.unescapeHTML(title) : t("views.liquids.stackexchange.answer.text_html", answer: tag.span(t("views.liquids.stackexchange.answer.answer"), class: "title-flare"), title: CGI.unescapeHTML(title)) %>
-            </a>
-        </h1>
+          <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
+            <%= post_type == "question" ? CGI.unescapeHTML(title) : t("views.liquids.stackexchange.answer.text_html", answer: tag.span(t("views.liquids.stackexchange.answer.answer"), class: "title-flare"), title: CGI.unescapeHTML(title)) %>
+          </a>
+        </div>
         <div class="ltag__stackexchange--post-metadata">
           <span><%= Time.zone.at(created_at).strftime(t("time.formats.stackexchange")) %></span>
           <% if post_type == "question" %>
@@ -32,8 +32,6 @@
     </p>
   </div>
   <div class="ltag__stackexchange--btn--container">
-    <button class="ltag__stackexchange--btn" type="button">
-      <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer"><%= t("views.liquids.stackexchange.open.#{post_type}") %></a>
-    </button>
+    <a href="<%= post_url %>" class="ltag__stackexchange--btn" target="_blank" rel="noopener noreferrer"><%= t("views.liquids.stackexchange.open.#{post_type}") %></a>
   </div>
 </div>

@@ -1,3 +1,4 @@
+import { initializeFiltersModal } from './filtersModal';
 import { INTERACTIVE_ELEMENTS_QUERY } from '@utilities/dropdownUtils';
 
 const expandSearchButton = document.getElementById('expand-search-btn');
@@ -114,3 +115,4 @@ const toggleIndicator = ({ value, indicator }) => {
 
 initializeExpandingSections();
 initializeSectionIndicators();
+initializeFiltersModal();

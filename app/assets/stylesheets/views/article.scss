@@ -23,9 +23,18 @@
       border-radius: var(--radius-auto);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
-      object-fit: cover;
+      object-fit: scale-down;
       width: 100%;
       height: 100%;
+
+      &__feed {
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 100%;
+        width: 100%;
+        aspect-ratio: auto 650 / 275;
+        object-fit: scale-down;
+      }
     }
   }
 
