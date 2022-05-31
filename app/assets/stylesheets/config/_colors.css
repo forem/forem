@@ -323,6 +323,20 @@
   --toggle-knob-bg: rgb(var(--white));
 
   /***********************************************
+  ** Date Pickers ********************************
+  ***********************************************/
+
+  --date-border-color: var( --base-10);
+  --hover-date-border-color: var(--accent-brand);
+  --selected-date-bg: var(--accent-brand);
+  --selected-range-bg: rgb(var(--indigo-50));
+  --selected-date-border: rgb(var(--indigo-100));
+  --selected-date-color: var(--base-0);
+  --selected-range-color: var(--body-color);
+  --current-date-color: var(--accent-brand);
+
+
+  /***********************************************
   ** Utilities ***********************************
   ***********************************************/
 
