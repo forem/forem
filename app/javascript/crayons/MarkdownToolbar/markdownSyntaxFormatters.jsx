@@ -27,8 +27,8 @@ const MARKDOWN_LINK_REGEX =
   /^\[([\w\s\d]*)\]\((url|(https?:\/\/[\w\d./?=#]+))\)$/;
 const URL_PLACEHOLDER_TEXT = 'url';
 
-const EMBED_SYNTAX_START = '{% embed ';
-const EMBED_SYNTAX_END = ' %}';
+const EMBED_SYNTAX_PREFIX = '{% embed ';
+const EMBED_SYNTAX_SUFFIX = ' %}';
 
 const NUMBER_OF_NEW_LINES_BEFORE_BLOCK_SYNTAX = 2;
 const NUMBER_OF_NEW_LINES_BEFORE_AFTER_SYNTAX = 1;
@@ -71,7 +71,7 @@ const handleEmbedFormattingForEmptyTextSelection = ({
   const basicFormattingForEmptySelection = {
     editSelectionStart: selectionStart,
     editSelectionEnd: selectionEnd,
-    replaceSelectionWith: `${EMBED_SYNTAX_START}https://...${EMBED_SYNTAX_END}`,
+    replaceSelectionWith: `${EMBED_SYNTAX_PREFIX}https://...${EMBED_SYNTAX_SUFFIX}`,
     newCursorStart: selectionStart + 9,
     newCursorEnd: selectionEnd + 20,
   };
@@ -113,8 +113,8 @@ const handleUndoForEmbedSyntaxSelection = ({
   selectionEnd,
 }) => {
   const textToReplaceMarkdown = selectedText.slice(
-    EMBED_SYNTAX_START.length,
-    selectedText.length - EMBED_SYNTAX_END.length,
+    EMBED_SYNTAX_PREFIX.length,
+    selectedText.length - EMBED_SYNTAX_SUFFIX.length,
   );
   return {
     editSelectionStart: selectionStart,
@@ -283,22 +283,25 @@ const handleUndoMarkdownLinkSelection = ({
 };
 
 const isStringEmbedSyntax = (string) => {
-  const startingText = string.substring(0, EMBED_SYNTAX_START.length);
-  const endingText = string.substring(string.length - 3, string.length);
+  const startingText = string.substring(0, EMBED_SYNTAX_PREFIX.length);
+  const endingText = string.substring(
+    string.length - EMBED_SYNTAX_SUFFIX.length,
+    string.length,
+  );
 
-  return startingText === EMBED_SYNTAX_START && endingText === EMBED_SYNTAX_END;
+  return startingText === EMBED_SYNTAX_PREFIX && endingText === EMBED_SYNTAX_SUFFIX;
 };
 
 const isStringInsideEmbedSyntax = (textBeforeSelection, textAfterSelection) => {
   const textBeforeString = textBeforeSelection.slice(
-    textBeforeSelection.length - EMBED_SYNTAX_START.length,
+    textBeforeSelection.length - EMBED_SYNTAX_PREFIX.length,
     textBeforeSelection.length,
   );
-  const textAfterString = textAfterSelection.slice(0, EMBED_SYNTAX_END.length);
+  const textAfterString = textAfterSelection.slice(0, EMBED_SYNTAX_SUFFIX.length);
 
   return (
-    textBeforeString === EMBED_SYNTAX_START &&
-    textAfterString === EMBED_SYNTAX_END
+    textBeforeString === EMBED_SYNTAX_PREFIX &&
+    textAfterString === EMBED_SYNTAX_SUFFIX
   );
 };
 
@@ -855,7 +858,7 @@ export const coreSyntaxFormatters = {
         });
       }
 
-      // If selected text is embed syntax, then replace selection with the value
+      // If selected text is embed syntax, then replace selection with the url
       if (isStringEmbedSyntax(selectedText)) {
         return handleUndoForEmbedSyntaxSelection({
           selectionStart,
@@ -864,7 +867,7 @@ export const coreSyntaxFormatters = {
         });
       }
 
-      // If selected text is value inside embed syntax, then replace embed syntax with the value
+      // If selected text is url inside embed syntax, then replace embed syntax with the value
       if (isStringInsideEmbedSyntax(textBeforeSelection, textAfterSelection)) {
         return handleUndoEmbedForValueSelection({
           value,
@@ -872,14 +875,14 @@ export const coreSyntaxFormatters = {
           selectedText,
         });
       }
-
+      
       // Finally, handle the case where selected text needs to be converted to embeded syntax
       return {
         editSelectionStart: selectionStart,
         editSelectionEnd: selectionEnd,
-        replaceSelectionWith: `${EMBED_SYNTAX_START}${selectedText}${EMBED_SYNTAX_END}`,
-        newCursorStart: selectionStart + EMBED_SYNTAX_START.length,
-        newCursorEnd: selectionEnd + EMBED_SYNTAX_START.length,
+        replaceSelectionWith: `${EMBED_SYNTAX_PREFIX}${selectedText}${EMBED_SYNTAX_SUFFIX}`,
+        newCursorStart: selectionStart + EMBED_SYNTAX_PREFIX.length,
+        newCursorEnd: selectionEnd + EMBED_SYNTAX_PREFIX.length,
       };
     },
   },
