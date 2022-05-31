@@ -1,5 +1,4 @@
 import { h, render } from 'preact';
-// import { useState, useRef } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
 import { ButtonNew as Button } from '@crayons';
@@ -91,9 +90,6 @@ export function initializeUnpublishPostModal(
  * @param {string} props.articleSlug Slug of the article to be unpublished.
  */
 export function UnpublishPostModal({ articleId, authorUsername, articleSlug }) {
-  // const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
-  // const vomitAllRef = useRef(null);
-
   return (
     <div
       data-testid="unpublish-post-modal"
@@ -122,18 +118,12 @@ export function UnpublishPostModal({ articleId, authorUsername, articleSlug }) {
                 className="mr-2"
                 id="confirm-unpublish-post-action"
                 onClick={(_event) => {
-                  // const {
-                  //   current: { dataset: adminVomitReaction },
-                  // } = vomitAllRef;
-
                   confirmAdminUnpublishPost(
                     articleId,
                     authorUsername,
                     articleSlug,
                   );
-                  // enableConfirmButton(false);
                 }}
-                // disabled={!isConfirmButtonEnabled}
               >
                 Unpublish post
               </Button>
