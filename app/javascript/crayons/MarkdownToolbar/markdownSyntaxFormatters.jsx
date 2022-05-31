@@ -62,9 +62,6 @@ const getNewLinePrefixSuffixes = ({ selectionStart, selectionEnd, value }) => {
 };
 
 const handleEmbedFormattingForEmptyTextSelection = ({
-  textBeforeSelection,
-  textAfterSelection,
-  value,
   selectionStart,
   selectionEnd,
 }) => {
@@ -76,35 +73,7 @@ const handleEmbedFormattingForEmptyTextSelection = ({
     newCursorEnd: selectionEnd + 20,
   };
 
-  // Directly after inserting a link with a URL highlighted, cursor is inside the link description '[]'
-  // Check if we are inside empty link description remove the link syntax if so
-  const directlySurroundedByLinkStructure =
-    textBeforeSelection.slice(-1) === '[' &&
-    textAfterSelection.slice(0, 2) === '](';
-
-  if (!directlySurroundedByLinkStructure)
-    return basicFormattingForEmptySelection;
-
-  // Search for the closing bracket of markdown link
-  const indexOfLinkStructureEnd = getNextIndexOfCharacter({
-    content: value,
-    selectionIndex: selectionStart,
-    character: ')',
-    breakOnCharacters: [' ', '\n'],
-  });
-
-  if (indexOfLinkStructureEnd === -1) return basicFormattingForEmptySelection;
-
-  // Remove the markdown link structure, preserving the link text if it isn't the "url" placeholder
-  const urlText = value.slice(selectionEnd + 2, indexOfLinkStructureEnd);
-
-  return {
-    editSelectionStart: selectionStart - 1,
-    editSelectionEnd: indexOfLinkStructureEnd + 1,
-    replaceSelectionWith: urlText === URL_PLACEHOLDER_TEXT ? '' : urlText,
-    newCursorStart: selectionStart - 1,
-    newCursorEnd: selectionEnd - 1,
-  };
+  return basicFormattingForEmptySelection;
 };
 
 const handleUndoForEmbedSyntaxSelection = ({
@@ -289,7 +258,9 @@ const isStringEmbedSyntax = (string) => {
     string.length,
   );
 
-  return startingText === EMBED_SYNTAX_PREFIX && endingText === EMBED_SYNTAX_SUFFIX;
+  return (
+    startingText === EMBED_SYNTAX_PREFIX && endingText === EMBED_SYNTAX_SUFFIX
+  );
 };
 
 const isStringInsideEmbedSyntax = (textBeforeSelection, textAfterSelection) => {
@@ -297,7 +268,10 @@ const isStringInsideEmbedSyntax = (textBeforeSelection, textAfterSelection) => {
     textBeforeSelection.length - EMBED_SYNTAX_PREFIX.length,
     textBeforeSelection.length,
   );
-  const textAfterString = textAfterSelection.slice(0, EMBED_SYNTAX_SUFFIX.length);
+  const textAfterString = textAfterSelection.slice(
+    0,
+    EMBED_SYNTAX_SUFFIX.length,
+  );
 
   return (
     textBeforeString === EMBED_SYNTAX_PREFIX &&
@@ -850,9 +824,6 @@ export const coreSyntaxFormatters = {
       // If selected text is empty, then directly insert embed syntax
       if (selectedText === '') {
         return handleEmbedFormattingForEmptyTextSelection({
-          textBeforeSelection,
-          textAfterSelection,
-          value,
           selectionStart,
           selectionEnd,
         });
@@ -875,7 +846,7 @@ export const coreSyntaxFormatters = {
           selectedText,
         });
       }
-      
+
       // Finally, handle the case where selected text needs to be converted to embeded syntax
       return {
         editSelectionStart: selectionStart,
