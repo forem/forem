@@ -180,8 +180,9 @@
       </a>
     </div>
 
+    <%# Hiding this Admin Actions panel until Flag User, Unpublish All Posts and Suspend User are moved into it  %>
     <% if current_user.any_admin? && @moderatable.published %>
-      <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
+      <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action hidden" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
             <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
