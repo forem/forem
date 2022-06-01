@@ -153,8 +153,8 @@ RSpec.describe ArticlePolicy do
     it_behaves_like "disallowed roles", to: %i[admin org_admin other_users]
   end
 
-  %i[admin_unpublish? admin_featured_toggle?].each do |method_name|
-    describe "admin_unpublish?" do
+  %i[admin_unpublish? admin_featured_toggle? revoke_publication? toggle_featured_status?].each do |method_name|
+    describe "##{method_name}" do
       let(:policy_method) { method_name }
 
       it_behaves_like "it requires an authenticated user"

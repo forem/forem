@@ -144,7 +144,7 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin?
   end
 
-  def admin_unpublish?
+  def revoke_publication?
     require_user!
     user_any_admin?
   end
@@ -170,7 +170,11 @@ class ArticlePolicy < ApplicationPolicy
     user.trusted?
   end
 
-  alias admin_featured_toggle? admin_unpublish?
+  alias admin_featured_toggle? revoke_publication?
+
+  alias toggle_featured_status? revoke_publication?
+
+  alias admin_unpublish? revoke_publication?
 
   alias new? create?
 

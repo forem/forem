@@ -48,25 +48,29 @@
       <span></span>
       <%= crayons_icon_tag(:checkmark, class: "vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </button>
-    <% if current_user.any_admin? && @moderatable.published %>
-      <button
-        class="c-btn c-btn--primary c-btn--destructive w-100 my-4"
-        id="unpublish-article-btn">
-        <%= t("views.moderations.actions.unpublish") %>
-      </button>
-      <% @recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
-      <button
-        class="c-btn c-btn--primary w-100"
-        id="feature-article-btn"
-        data-article-featured="<%= @moderatable.featured %>"
-        data-article-id="<%= @moderatable.id %>"
-        data-article-author="<%= @moderatable.username %>"
-        data-article-slug="<%= @moderatable.slug %>">
-        <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
-      </button>
-      <div class="additional-subtext-section py-4 pt-2">
-        <%= t("views.moderations.actions.featured_past_day", count: @recent_featured_count) %>
-      </div>
+    <% if @moderatable.published? %>
+      <% if policy(@moderatable).revoke_publication? %>
+        <button
+          class="c-btn c-btn--primary c-btn--destructive w-100 my-4"
+          id="unpublish-article-btn">
+          <%= t("views.moderations.actions.unpublish") %>
+        </button>
+      <% end %>
+      <% if policy(@moderatable).toggle_featured_status? %>
+        <button
+          class="c-btn c-btn--primary w-100"
+          id="feature-article-btn"
+          data-article-featured="<%= @moderatable.featured %>"
+          data-article-id="<%= @moderatable.id %>"
+          data-article-author="<%= @moderatable.username %>"
+          data-article-slug="<%= @moderatable.slug %>">
+          <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
+        </button>
+        <div class="additional-subtext-section py-4 pt-2">
+          <% recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
+          <%= t("views.moderations.actions.featured_past_day", count: recent_featured_count) %>
+        </div>
+      <% end %>
     <% end %>
     <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
       <span class="additional-subtext-section py-3">
