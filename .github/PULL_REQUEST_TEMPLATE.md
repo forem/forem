@@ -91,5 +91,5 @@ will share this change with the people who need to know about it._
 ## [optional] What gif best describes this PR or how it makes you feel?
 
 <!-- ![gif-name](link)  or -->
-<img src="https://media.giphy.com/media/2KAGlmkPywhZS/giphy.gif" width="120" height="auto"/>
+<!-- <img src="gif-link" width="120" height="auto"/> -->
 
