@@ -48,9 +48,7 @@
   <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4", id: nil }) do |f| %>
     <div class="crayons-field">
       <%= f.label :user_status, "Role", class: "crayons-field__label" %>
-      <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>
-      <% options["Special Roles"] = Constants::Role::SPECIAL_ROLES if current_user.super_admin? %>
-      <%= f.select(:user_status, grouped_options_for_select(options), { include_blank: "Select role" }, class: "crayons-select") %>
+      <%= f.select(:user_status, grouped_options_for_select(role_options(current_user)), { include_blank: "Select role" }, class: "crayons-select") %>
     </div>
     <div class="crayons-field">
       <%= f.label :note_for_current_role, "Add a note to this action:", class: "crayons-field__label" %>

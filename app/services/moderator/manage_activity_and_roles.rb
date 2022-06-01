@@ -56,42 +56,45 @@ module Moderator
 
     def handle_user_status(role, note)
       case role
+      when "Admin"
+        assign_elevated_role_to_user(user, :admin)
+        TagModerators::AddTrustedRole.call(user)
+      when "Comment Suspend"
+        comment_suspended
       when "Suspend" || "Spammer"
         user.add_role(:suspended)
         remove_privileges
-      when "Warn"
-        warned
-      when "Comment Suspend"
-        comment_suspended
+      when "Moderator"
+        assign_elevated_role_to_user(user, :moderator)
+        TagModerators::AddTrustedRole.call(user)
       when "Regular Member"
         regular_member
-      when "Trusted"
-        remove_negative_roles
-        TagModerators::AddTrustedRole.call(user)
-      when "Admin"
-        check_super_admin
-        remove_negative_roles
-        user.add_role(:admin)
-        TagModerators::AddTrustedRole.call(user)
-      when "Super Admin"
-        check_super_admin
-        remove_negative_roles
-        user.add_role(:super_admin)
-        TagModerators::AddTrustedRole.call(user)
-      when "Tech Admin"
-        check_super_admin
-        remove_negative_roles
-        user.add_role(:tech_admin)
-        # DataUpdateScripts falls under the admin namespace
-        # and hence requires a single_resource_admin role to view
-        # this technical admin resource
-        user.add_role(:single_resource_admin, DataUpdateScript)
       when /^(Resource Admin: )/
         check_super_admin
         remove_negative_roles
         user.add_role(:single_resource_admin, role.split("Resource Admin: ").last.safe_constantize)
+      when "Super Admin"
+        assign_elevated_role_to_user(user, :super_admin)
+        TagModerators::AddTrustedRole.call(user)
+      when "Tech Admin"
+        assign_elevated_role_to_user(user, :tech_admin)
+        # DataUpdateScripts falls under the admin namespace
+        # and hence requires a single_resource_admin role to view
+        # this technical admin resource
+        user.add_role(:single_resource_admin, DataUpdateScript)
+      when "Trusted"
+        remove_negative_roles
+        TagModerators::AddTrustedRole.call(user)
+      when "Warn"
+        warned
       end
       create_note(role, note)
+    end
+
+    def assign_elevated_role_to_user(user, role)
+      check_super_admin
+      remove_negative_roles
+      user.add_role(role)
     end
 
     def check_super_admin

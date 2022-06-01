@@ -1,9 +1,5 @@
+import { initializeFiltersModal } from './filtersModal';
 import { INTERACTIVE_ELEMENTS_QUERY } from '@utilities/dropdownUtils';
-import {
-  showWindowModal,
-  closeWindowModal,
-  WINDOW_MODAL_ID,
-} from '@utilities/showModal';
 
 const expandSearchButton = document.getElementById('expand-search-btn');
 const expandFilterButton = document.getElementById('expand-filter-btn');
@@ -117,28 +113,6 @@ const toggleIndicator = ({ value, indicator }) => {
   }
 };
 
-/**
- * Controls the triggering of the filters popover modal
- */
-const initializeFilterPopoverButtons = () => {
-  document.querySelectorAll('.js-open-filter-modal-btn').forEach((button) => {
-    button.addEventListener('click', () => {
-      showWindowModal({
-        contentSelector: '.js-filters-modal',
-        showHeader: false,
-        sheet: true,
-        sheetAlign: 'right',
-        size: 'small',
-        onOpen: () => {
-          document
-            .querySelector(`#${WINDOW_MODAL_ID} .js-filter-modal-cancel-btn`)
-            .addEventListener('click', closeWindowModal);
-        },
-      });
-    });
-  });
-};
-
 initializeExpandingSections();
 initializeSectionIndicators();
-initializeFilterPopoverButtons();
+initializeFiltersModal();
