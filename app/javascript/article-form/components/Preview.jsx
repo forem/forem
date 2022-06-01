@@ -80,6 +80,7 @@ const previewResponsePropTypes = PropTypes.shape({
 });
 
 export const Preview = ({
+  previewLoadingShowing,
   previewResponse,
   articleState,
   errors,
@@ -90,6 +91,14 @@ export const Preview = ({
       attachTwitterTimelineScript();
     }
   }, [previewResponse]);
+
+  if (previewLoadingShowing) {
+    return (
+      <div className="crayons-article-form__content crayons-card">
+        <h1>Loading preview</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="crayons-article-form__content crayons-card">
@@ -123,6 +132,7 @@ function attachTwitterTimelineScript() {
 }
 
 Preview.propTypes = {
+  previewLoadingShowing: PropTypes.bool,
   previewResponse: previewResponsePropTypes.isRequired,
   errors: PropTypes.object,
   markdownLintErrors: PropTypes.arrayOf(PropTypes.object),

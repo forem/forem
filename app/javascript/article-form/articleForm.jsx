@@ -107,6 +107,7 @@ export class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
+      previewLoadingShowing: false,
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
@@ -161,11 +162,13 @@ export class ArticleForm extends Component {
 
   setCommonProps = ({
     previewShowing = false,
+    previewLoadingShowing = false,
     helpFor = null,
     helpPosition = null,
   }) => {
     return {
       previewShowing,
+      previewLoadingShowing,
       helpFor,
       helpPosition,
     };
@@ -179,6 +182,7 @@ export class ArticleForm extends Component {
         ...this.setCommonProps({}),
       });
     } else {
+      this.showLoadingPreview();
       previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
     }
   };
@@ -221,10 +225,22 @@ export class ArticleForm extends Component {
     }
   };
 
+  showLoadingPreview = () => {
+    this.setState({
+      ...this.setCommonProps({
+        previewShowing: false,
+        previewLoadingShowing: true,
+      }),
+    });
+  };
+
   showPreview = (response) => {
     this.fetchMarkdownLint();
     this.setState({
-      ...this.setCommonProps({ previewShowing: true }),
+      ...this.setCommonProps({
+        previewShowing: true,
+        previewLoadingShowing: false,
+      }),
       previewResponse: response,
       errors: null,
     });
@@ -237,6 +253,7 @@ export class ArticleForm extends Component {
 
   failedPreview = (response) => {
     this.setState({
+      ...this.setCommonProps({ previewLoadingShowing: false }),
       errors: response,
       submitting: false,
     });
@@ -319,6 +336,7 @@ export class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
+      previewLoadingShowing: false,
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
@@ -375,6 +393,7 @@ export class ArticleForm extends Component {
       bodyMarkdown,
       published,
       previewShowing,
+      previewLoadingShowing,
       previewResponse,
       submitting,
       organizations,
@@ -411,8 +430,9 @@ export class ArticleForm extends Component {
           displayModal={() => this.showModal(true)}
         />
 
-        {previewShowing ? (
+        {previewShowing || previewLoadingShowing ? (
           <Preview
+            previewLoadingShowing={previewLoadingShowing}
             previewResponse={previewResponse}
             articleState={this.state}
             errors={errors}
