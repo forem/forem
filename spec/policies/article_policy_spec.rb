@@ -158,7 +158,7 @@ RSpec.describe ArticlePolicy do
       let(:policy_method) { method_name }
 
       it_behaves_like "it requires an authenticated user"
-      it_behaves_like "permitted roles", to: %i[super_admin admin]
+      it_behaves_like "permitted roles", to: %i[super_admin admin moderator]
       it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
     end
   end

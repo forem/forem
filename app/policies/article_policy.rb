@@ -144,9 +144,12 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin?
   end
 
+  # this method performs the same checks that determine
+  # if the record can be featured
   def revoke_publication?
     require_user!
-    user_any_admin?
+    @record.published?
+    user_any_admin? || moderator?
   end
 
   def destroy?
@@ -174,6 +177,8 @@ class ArticlePolicy < ApplicationPolicy
 
   alias toggle_featured_status? revoke_publication?
 
+  # Due to the associated controller method "admin_unpublish", we
+  # alias "admin_ubpublish" to the "revoke_publication" method.
   alias admin_unpublish? revoke_publication?
 
   alias new? create?
