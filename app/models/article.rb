@@ -155,7 +155,8 @@ class Article < ApplicationRecord
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
-  validate :has_correct_published_at?
+  validate :future_or_current_published_at, on: :create
+  validate :has_correct_published_at?, on: :update
 
   validate :canonical_url_must_not_have_spaces
   # validate :past_or_present_date
@@ -167,7 +168,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
-  before_validation :evaluate_markdown, :create_slug
+  before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :remove_prohibited_unicode_characters
   before_validation :normalize_title
   before_save :set_cached_entities
@@ -821,13 +822,20 @@ class Article < ApplicationRecord
     errors.add(:date_time, I18n.t("models.article.invalid_date"))
   end
 
+  def future_or_current_published_at
+    # allow published_at in the future or within 15 minutes in the past
+    return if !published || published_at > Time.current - (15 * 60 * 60)
+
+    errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
+  end
+
   def has_correct_published_at?
     # don't allow editing published_at if an article has already been published
     # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
     return unless published_was && published_at_was < Time.current &&
       changes["published_at"] && !(published_at_was - published_at).between?(-60, 60)
 
-    errors.add(:published_at, I18n.t("models.article.invalid_published_at"))
+    errors.add(:published_at, I18n.t("models.article.immutable_published_at"))
   end
 
   def canonical_url_must_not_have_spaces
@@ -872,7 +880,7 @@ class Article < ApplicationRecord
   end
 
   def set_all_dates
-    set_published_date
+    # set_published_date
     set_featured_number
     set_crossposted_at
     set_last_comment_at

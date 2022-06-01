@@ -484,7 +484,7 @@ RSpec.describe Article, type: :model do
     end
 
     it "sets published_at from a valid frontmatter date" do
-      date = (Date.current - 5.days).strftime("%d/%m/%Y")
+      date = (Date.current + 5.days).strftime("%d/%m/%Y")
       article_with_date = build(:article, with_date: true, date: date, published_at: nil)
       expect(article_with_date.valid?).to be(true)
       expect(article_with_date.published_at.strftime("%d/%m/%Y")).to eq(date)
@@ -499,11 +499,18 @@ RSpec.describe Article, type: :model do
       expect(article_with_published_at.published_at.strftime("%d/%m/%Y %H:%M")).to eq(published_at)
     end
 
+    it "doesn't allow past published_at when publishing on create" do
+      article2 = build(:article, published_at: 10.days.ago, published: true)
+      expect(article2.valid?).to be false
+      expect(article2.errors[:published_at])
+        .to include("only future or current published_at allowed when publishing an article")
+    end
+
     it "doesn't allow updating published_at if an article has already been published" do
       article.published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
       expect(article.valid?).to be false
       expect(article.errors[:published_at])
-        .to include("updating published_at for posts that have already been published is not allowed")
+        .to include("updating published_at for articles that have already been published is not allowed")
     end
   end
 
