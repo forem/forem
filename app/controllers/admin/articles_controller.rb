@@ -18,8 +18,6 @@ module Admin
                                  published_at].freeze
 
     def index
-      @pinned_article = PinnedArticle.get
-
       case params[:state]
       when /top-/
         months_ago = params[:state].split("-")[1].to_i.months.ago
@@ -30,6 +28,9 @@ module Admin
         @articles = articles_mixed
         @featured_articles = articles_featured
       end
+
+      @pinned_article = PinnedArticle.get
+      @articles = @articles.where.not(id: @pinned_article) if @pinned_article
     end
 
     def show
