@@ -33,13 +33,7 @@ export const MultiInput = ({}) => {
         </div>
 
         <div class="c-autocomplete--multi relative">
-          <div
-            role="combobox"
-            aria-haspopup="listbox"
-            aria-expanded="false"
-            aria-owns="listbox1"
-            class="c-autocomplete--multi__wrapper-border crayons-textfield flex items-center cursor-text"
-          >
+          <div class="c-autocomplete--multi__wrapper-border crayons-textfield flex items-center cursor-text">
             <ul id="combo-selected" class="list-none flex flex-wrap w-100">
               <li
                 class="c-autocomplete--multi__selection-list-item w-max"
