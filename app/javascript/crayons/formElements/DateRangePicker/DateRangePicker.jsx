@@ -5,12 +5,18 @@ import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
 import defaultPhrases from 'react-dates/lib/defaultPhrases';
-import { START_DATE, ICON_BEFORE_POSITION } from 'react-dates/constants';
+import {
+  START_DATE,
+  ICON_BEFORE_POSITION,
+  VERTICAL_ORIENTATION,
+  HORIZONTAL_ORIENTATION,
+} from 'react-dates/constants';
 import { Icon } from '@crayons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
 import Calendar from '@images/calendar.svg';
 import { getCurrentLocale } from '@utilities/runtime';
+import { useMediaQuery, BREAKPOINTS } from '@components/useMediaQuery';
 
 const PICKER_PHRASES = {
   ...defaultPhrases,
@@ -51,7 +57,7 @@ const MonthYearPicker = ({
   years.push(earliestMoment.year());
 
   return (
-    <div>
+    <div className="c-date-picker__month">
       <select
         aria-label="Navigate to month"
         className="crayons-select w-auto mr-2 fs-s"
@@ -110,6 +116,10 @@ export const DateRangePicker = ({
     defaultEndDate ? moment(defaultEndDate) : null,
   );
 
+  const useCompactLayout = useMediaQuery(
+    `(max-width: ${BREAKPOINTS.Medium - 1}px)`,
+  );
+
   const earliestMoment = moment(minStartDate);
   const latestMoment = moment(maxEndDate);
 
@@ -153,6 +163,9 @@ export const DateRangePicker = ({
         customInputIcon={<Icon src={Calendar} />}
         showDefaultInputIcon={!(startMoment || endMoment)}
         inputIconPosition={ICON_BEFORE_POSITION}
+        orientation={
+          useCompactLayout ? VERTICAL_ORIENTATION : HORIZONTAL_ORIENTATION
+        }
         showClearDates={startMoment || endMoment}
         customArrowIcon="-"
         phrases={PICKER_PHRASES}
@@ -172,6 +185,7 @@ export const DateRangePicker = ({
             endDate: endDate.toDate(),
           });
         }}
+        small={useCompactLayout}
         renderMonthElement={(props) => (
           <MonthYearPicker
             earliestMoment={earliestMoment}
