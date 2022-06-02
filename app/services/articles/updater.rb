@@ -19,6 +19,7 @@ module Articles
       update_edited_at = article.user == user && article.published
       # TODO: move setting published_at to Articles::Attributes
       # when publishing (draft => published), and published_at is nil or is in the past, set it to Time.current
+      # except for exported articles
       publishing = !article.published && article_params[:published]
       past_published_at = !article_params[:published_at] || article_params[:published_at] < Time.current
       update_published_at = publishing && !article.published_from_feed && past_published_at

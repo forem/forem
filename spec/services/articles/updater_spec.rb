@@ -87,6 +87,14 @@ RSpec.describe Articles::Updater, type: :service do
         draft.reload
         expect(draft.published_at).to be_within(1.second).of(attributes[:published_at])
       end
+
+      it "doesn't update published_at when a past published_at is passed and an article was exported" do
+        past = 10.days.ago
+        draft.update_columns(published_at: past, published_from_feed: true)
+        attributes[:published_at] = past
+        described_class.call(user, draft, attributes)
+        expect(draft.published_at).to be_within(1.second).of(past)
+      end
     end
 
     context "when an article is being updated and has already been published" do
