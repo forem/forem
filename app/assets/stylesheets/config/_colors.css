@@ -335,6 +335,13 @@
   --selected-range-color: var(--body-color);
   --current-date-color: var(--accent-brand);
 
+  /***********************************************
+  ** Banners *************************************
+  ***********************************************/
+  
+  --banner-bg: rgb(var(--grey-800));
+  --banner-color: var(--white);
+  --banner-accent: var(--accent-brand);
 
   /***********************************************
   ** Utilities ***********************************
