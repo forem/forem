@@ -148,8 +148,9 @@ class ArticlePolicy < ApplicationPolicy
   # if the record can be featured
   def revoke_publication?
     require_user!
-    @record.published?
-    user_any_admin? || moderator?
+    return false unless @record.published?
+
+    user_any_admin? || user_moderator?
   end
 
   def destroy?
