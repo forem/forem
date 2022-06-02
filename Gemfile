@@ -58,7 +58,7 @@ gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 5.3" # A secure, non-evaling end user template engine with aesthetic markup
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
 gem "nokogiri", "~> 1.13" # HTML, XML, SAX, and Reader parser
-gem "octokit", "~> 4.22" # Simple wrapper for the GitHub API
+gem "octokit", "~> 4.23" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
 gem "omniauth", "~> 2.1" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
@@ -144,7 +144,7 @@ group :development, :test do
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.29", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.30", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.14", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.14", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.11", require: false # Code style checking for RSpec files
