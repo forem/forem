@@ -1,7 +1,12 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import { useState, useRef } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
+import {
+  changeFlagUserButtonLabel,
+  showSnackbarItem,
+  toggleFlagUserModal,
+} from '../flagUserModal/utils';
 import { ButtonNew as Button, Link } from '@crayons';
 import RemoveIcon from '@images/x.svg';
 
@@ -21,68 +26,21 @@ async function confirmFlagUser({ reactableType, category, reactableId }) {
     const outcome = await response.json();
 
     if (outcome.result === 'create') {
-      top.addSnackbarItem({
-        message: 'All posts by this author will be less visible.',
-        addCloseButton: true,
-      });
+      showSnackbarItem('All posts by this author will be less visible.');
     } else if (outcome.result === null) {
-      top.addSnackbarItem({
-        message:
-          "It seems you've already reduced the visibility of this author's posts.",
-        addCloseButton: true,
-      });
+      showSnackbarItem(
+        "It seems you've already reduced the visibility of this author's posts.",
+      );
+    } else if (outcome.result === 'destroy') {
+      showSnackbarItem('This article author was unflagged.');
     } else {
-      top.addSnackbarItem({
-        message: `Response from server: ${JSON.stringify(outcome)}`,
-        addCloseButton: true,
-      });
+      showSnackbarItem(`Response from server: ${JSON.stringify(outcome)}`);
     }
   } catch (error) {
-    top.addSnackbarItem({
-      message: error,
-      addCloseButton: true,
-    });
+    showSnackbarItem(error);
   }
 
   toggleFlagUserModal();
-}
-
-/**
- * Shows or hides the flag user modal.
- */
-export function toggleFlagUserModal() {
-  const modalContainer = top.document.getElementsByClassName(
-    'flag-user-modal-container',
-  )[0];
-  modalContainer.classList.toggle('hidden');
-
-  if (!modalContainer.classList.contains('hidden')) {
-    top.window.scrollTo(0, 0);
-    top.document.body.style.height = '100vh';
-    top.document.body.style.overflowY = 'hidden';
-  } else {
-    top.document.body.style.height = 'inherit';
-    top.document.body.style.overflowY = 'inherit';
-  }
-}
-
-/**
- * Initializes the flag user modal for the given author ID.
- *
- * @param {number} authorId
- */
-export function initializeFlagUserModal(authorId) {
-  // Check whether context is ModCenter or Friday-Night-Mode
-  const modContainer = document.getElementById('mod-container');
-
-  if (!modContainer) {
-    return;
-  }
-
-  render(
-    <FlagUserModal authorId={authorId} />,
-    document.getElementsByClassName('flag-user-modal-container')[0],
-  );
 }
 
 /**
@@ -92,11 +50,33 @@ export function initializeFlagUserModal(authorId) {
  * @param {string} props.modCenterUrl (optional) The article URL loaded when in the moderation center.
  * @param {number} props.authorId The author ID associated to the content being moderated.
  */
-export function FlagUserModal({ modCenterArticleUrl, authorId }) {
+export function FlagUserModal({
+  modCenterArticleUrl,
+  authorId,
+  flaggedUser: flaggedUserProp = false,
+}) {
   const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
+  const [flaggedUser, setFlaggedUser] = useState(flaggedUserProp);
   const vomitAllRef = useRef(null);
 
   const { communityName } = document.body.dataset;
+
+  const displayTitle = flaggedUser ? 'Unflag User' : 'Flag User';
+  const disabledConfirmActionButton = flaggedUser
+    ? false
+    : !isConfirmButtonEnabled;
+
+  const handleConfirmAction = async () => {
+    const {
+      current: { dataset: adminVomitReaction },
+    } = vomitAllRef;
+
+    await confirmFlagUser(adminVomitReaction);
+
+    enableConfirmButton(false);
+    setFlaggedUser((prevFlaggedUser) => !prevFlaggedUser);
+    changeFlagUserButtonLabel(!flaggedUser);
+  };
 
   return (
     <div
@@ -105,7 +85,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
     >
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header flag-user-modal-header">
-          <h2 class="crayons-modal__box__header__title">Flag User</h2>
+          <h2 class="crayons-modal__box__header__title">{displayTitle}</h2>
           <Button
             icon={RemoveIcon}
             className="inline-flex"
@@ -114,62 +94,70 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
         </header>
         <div class="crayons-modal__box__body">
           <div class="grid gap-4">
-            <p>
-              {`Thanks for keeping ${communityName} safe. Here is what you can do to flag this
-              user:`}
-            </p>
-            <div class="crayons-field crayons-field--radio">
-              <input
-                type="radio"
-                id="vomit-all"
+            {flaggedUser ? (
+              <p
                 ref={vomitAllRef}
-                name="flag-user"
-                class="crayons-radio"
                 data-reactable-id={authorId}
                 data-category="vomit"
                 data-reactable-type="User"
-                checked={isConfirmButtonEnabled}
-                onClick={(event) => {
-                  const { target } = event;
-
-                  enableConfirmButton(target.checked);
-                }}
-              />
-              <label htmlFor="vomit-all" class="crayons-field__label">
-                Make all posts by this author less visible
-                <p class="crayons-field__description">
-                  This author consistently posts content that violates DEV's
-                  code of conduct because it is harassing, offensive or spammy.
-                </p>
-              </label>
-            </div>
-            <p>
-              <Link
-                variant="branded"
-                href={`/report-abuse?url=${
-                  modCenterArticleUrl
-                    ? `${document.location.origin}${modCenterArticleUrl}`
-                    : document.location
-                }`}
               >
-                Report other inappropriate conduct
-              </Link>
-            </p>
+                Are you sure you want to unflag this article author? This will
+                make all of their posts visible again.
+              </p>
+            ) : (
+              <>
+                <p>
+                  {`Thanks for keeping ${communityName} safe. Here is what you can do to flag this user:`}
+                </p>
+                <div class="crayons-field crayons-field--radio">
+                  <input
+                    id="vomit-all"
+                    type="radio"
+                    aria-label="Make all posts by this author less visible"
+                    ref={vomitAllRef}
+                    name="flag-user"
+                    class="crayons-radio"
+                    data-reactable-id={authorId}
+                    data-category="vomit"
+                    data-reactable-type="User"
+                    checked={isConfirmButtonEnabled}
+                    onClick={(event) => {
+                      const { target } = event;
+
+                      enableConfirmButton(target.checked);
+                    }}
+                  />
+                  <label htmlFor="vomit-all" class="crayons-field__label">
+                    Make all posts by this author less visible
+                    <p class="crayons-field__description">
+                      This author consistently posts content that violates DEV's
+                      code of conduct because it is harassing, offensive or
+                      spammy.
+                    </p>
+                  </label>
+                </div>
+                <p>
+                  <Link
+                    variant="branded"
+                    href={`/report-abuse?url=${
+                      modCenterArticleUrl
+                        ? `${document.location.origin}${modCenterArticleUrl}`
+                        : document.location
+                    }`}
+                  >
+                    Report other inappropriate conduct
+                  </Link>
+                </p>
+              </>
+            )}
             <div>
               <Button
+                id="confirm-flag-user-action"
                 destructive
                 variant="primary"
                 className="mr-2"
-                id="confirm-flag-user-action"
-                onClick={(_event) => {
-                  const {
-                    current: { dataset: adminVomitReaction },
-                  } = vomitAllRef;
-
-                  confirmFlagUser(adminVomitReaction);
-                  enableConfirmButton(false);
-                }}
-                disabled={!isConfirmButtonEnabled}
+                onClick={handleConfirmAction}
+                disabled={disabledConfirmActionButton}
               >
                 Confirm action
               </Button>

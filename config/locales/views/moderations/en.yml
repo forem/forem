@@ -60,6 +60,7 @@ en:
           aria_label: Open admin actions
           icon: Crown
         flag: Flag user
+        unflag: Unflag user
         how: How does this work?
         hidden:
           subtitle: Hidden Comments

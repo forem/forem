@@ -1,5 +1,5 @@
-import { toggleFlagUserModal } from '../packs/flagUserModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
+import { toggleFlagUserModal } from '../flagUserModal/utils';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {

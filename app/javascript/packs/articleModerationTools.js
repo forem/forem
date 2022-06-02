@@ -19,9 +19,11 @@ getCsrfToken().then(() => {
       const { initializeActionsPanel } = await import(
         '../actionsPanel/initializeActionsPanelToggle'
       );
-      const { initializeFlagUserModal } = await import('./flagUserModal');
       const { initializeUnpublishPostModal } = await import(
         './unpublishPostModal.jsx'
+      );
+      const { initializeFlagUserModal } = await import(
+        '../flagUserModal/utils'
       );
 
       // If the user can moderate an article give them access to this panel.
