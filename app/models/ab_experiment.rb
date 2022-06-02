@@ -14,8 +14,10 @@ class AbExperiment < SimpleDelegator
   # @see ./config/feed-variants/README.md
   ORIGINAL_VARIANT = "original".freeze
 
-  CURRENT_FEED_STRATEGY_EXPERIMENT = FieldTest.config["experiments"]&.keys
-  &.detect { |e| e.start_with? "feed_strategy" }.freeze
+  # @note a present assumption is that we will have a feed_strategy oriented experiment.
+  CURRENT_FEED_STRATEGY_EXPERIMENT = FieldTest.config["experiments"].select do |key, value|
+    key.start_with?("feed_strategy") && !value["winner"]
+  end.keys.first
 
   # Sometimes we might want to repurpose the same AbExperiment logic
   # for different experiments.  This provides the tooling for that
