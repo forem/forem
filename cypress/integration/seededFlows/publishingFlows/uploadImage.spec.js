@@ -129,7 +129,7 @@ describe('Upload image', () => {
 
     it('Uploads a cover image in the editor', () => {
       cy.findByRole('form', { name: 'Edit post' }).within(() => {
-        cy.findByLabelText(/Add a cover image/).attachFile(
+        cy.findByLabelText(/Add a cover image.*/).attachFile(
           '/images/admin-image.png',
         );
 
