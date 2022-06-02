@@ -33,6 +33,8 @@ class StoriesController < ApplicationController
 
   def show
     @story_show = true
+    @is_user_flagged = Reaction.user_vomits.where(user_id: session_current_user_id, status: "confirmed").any?
+
     path = "/#{params[:username].downcase}/#{params[:slug]}"
     if (@article = Article.includes(:user).find_by(path: path)&.decorate)
       handle_article_show
