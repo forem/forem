@@ -12,8 +12,7 @@ export default {
       description: 'A unique identifier for the end date input (required)',
     },
     defaultStartDate: {
-      description:
-        'A default value for the start date of the range (optional)',
+      description: 'A default value for the start date of the range (optional)',
       control: 'date',
     },
     defaultEndDate: {

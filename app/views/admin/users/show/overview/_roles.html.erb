@@ -8,7 +8,7 @@
 <% unless @user.roles.any? %>
   <div class="flex justify-between items-center">
     <p>No roles assigned yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="#add-role">Assign role</button>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add role" data-modal-size="m" data-modal-content-selector="#add-role-modal" data-form-action="<%= user_status_admin_user_path(@user) %>">Assign role</button>
   </div>
 <% else %>
   <ul class="flex flex-wrap gap-2">
@@ -40,22 +40,8 @@
         <% end %>
       </li>
     <% end %>
-    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add role" data-modal-size="small" data-modal-content-selector="#add-role">Assign role</button></li>
+    <li><button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add role" data-modal-size="small" data-modal-content-selector="#add-role-modal" data-form-action="<%= user_status_admin_user_path(@user) %>">Assign role</button></li>
   </ul>
 <% end %>
 
-<div id="add-role" class="hidden">
-  <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "flex flex-col gap-4", id: nil }) do |f| %>
-    <div class="crayons-field">
-      <%= f.label :user_status, "Role", class: "crayons-field__label" %>
-      <%= f.select(:user_status, grouped_options_for_select(role_options(current_user)), { include_blank: "Select role" }, class: "crayons-select") %>
-    </div>
-    <div class="crayons-field">
-      <%= f.label :note_for_current_role, "Add a note to this action:", class: "crayons-field__label" %>
-      <%= f.text_area :note_for_current_role, required: true, class: "crayons-textfield", placeholder: "" %>
-    </div>
-    <div>
-      <%= f.button "Add", class: "c-btn c-btn--primary" %>
-    </div>
-  <% end %>
-</div>
+<%= render "admin/users/modals/add_role_modal" %>
