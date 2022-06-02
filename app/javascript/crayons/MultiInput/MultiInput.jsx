@@ -12,8 +12,8 @@ export const MultiInput = ({}) => {
         />
         {/* to fix */}
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label id="multi-select-label" className="">
-          Example multi select autocomplete
+        <label id="multi-input-label" className="">
+          Example multi input
         </label>
 
         <div class="c-input--multi relative">
@@ -52,7 +52,6 @@ export const MultiInput = ({}) => {
                 <input
                   autocomplete="off"
                   class="c-input--multi__input"
-                  aria-autocomplete="list"
                   aria-labelledby="multi-select-label selected-items-list"
                   aria-describedby="input-description"
                   aria-disabled="false"

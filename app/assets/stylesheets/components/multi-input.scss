@@ -23,15 +23,29 @@
     &:first-child {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
+      border: solid var(--base-10);
+      border-right: none;
+      color: var(--base-90);
     }
 
     &:last-child {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+      border: solid var(--base-10);
+      border-left: none;
+      color: var(--base-60);
+      background: none;
+    }
+
+    &:first-child:hover,
+    &:first-child:focus-visible {
+      background: none;
+      color: none;
     }
 
     &:last-child:hover,
     &:last-child:focus-visible {
+      background-color: none;
       color: var(--accent-danger);
     }
   }
