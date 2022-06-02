@@ -113,10 +113,10 @@ document.querySelectorAll('.js-export-csv-modal-trigger').forEach((item) => {
   item.addEventListener('click', () => {
     showWindowModal({
       title: 'Download Member Data',
-      contentSelector: '#export-csv-modal',
+      contentSelector: item.dataset.modalContentSelector,
       overlay: true,
       onOpen: () => {
-          document
+        document
           .querySelector('#window-modal .js-export-csv-modal-cancel')
           ?.addEventListener('click', closeWindowModal);
       },
