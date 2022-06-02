@@ -134,7 +134,7 @@ describe('Upload image', () => {
         );
 
         // Confirm the UI has updated to show the uploaded state
-        cy.findByLabelText('Change').should('exist');
+        cy.findByLabelText(/Change.*/).should('exist');
         cy.findByRole('button', { name: 'Remove' }).should('exist');
       });
     });
