@@ -79,6 +79,18 @@ describe('Moderation Tools for Posts', () => {
         });
       });
     });
+
+    it('should show Unpublish Post button on a published post for an admin user', () => {
+      cy.get('@adminUser').then((user) => {
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
+          cy.findByRole('button', { name: 'Moderation' }).click();
+
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
+          });
+        });
+      });
+    });
   });
 
   context('as moderator user', () => {
@@ -109,6 +121,18 @@ describe('Moderation Tools for Posts', () => {
             );
           },
         );
+      });
+    });
+
+    it('should show Unpublish Post button on a published post for a moderator user', () => {
+      cy.get('@moderatorUser').then((user) => {
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
+          cy.findByRole('button', { name: 'Moderation' }).click();
+
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
+          });
+        });
       });
     });
   });

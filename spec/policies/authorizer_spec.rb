@@ -4,14 +4,22 @@ require "rails_helper"
 RSpec.describe Authorizer, type: :policy do
   subject(:authorizer) { described_class.for(user: user) }
 
+  let(:authorizer_mod_role) { described_class.for(user: mod_user) }
   let(:user) { create(:user) }
+  let(:mod_user) { create(:user, :moderator) }
 
   describe "#any_admin?" do
-    # This test che
     it "queries the user's roles" do
       # I want to test `expect(authorizer.admin?)` but our rubocop
       # version squaks.
       expect(authorizer.admin?).to be_falsey
+    end
+  end
+
+  describe "#moderator?" do
+    it "queries the user's roles" do
+      expect(authorizer.moderator?).to be_falsey
+      expect(authorizer_mod_role.moderator?).to be_truthy
     end
   end
 
