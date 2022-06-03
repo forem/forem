@@ -3,6 +3,15 @@
 import { h, Fragment } from 'preact';
 import { useRef, useState } from 'preact/hooks';
 
+const KEYS = {
+  ENTER: 'Enter',
+  COMMA: ',',
+  SPACE: ' ',
+};
+// TODO: think about how this may change based on
+// a different usage. We may want this to be custom.
+const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
+
 export const MultiInput = ({}) => {
   const inputSizerRef = useRef(null);
   const inputRef = useRef(null);
@@ -18,6 +27,11 @@ export const MultiInput = ({}) => {
     //   resizeInputToContentSize();
     // }
 
+    addToList(value);
+    clearSelection();
+  };
+
+  const addToList = (value) => {
     // The spread operator is syntactic sugar for creating a new copy of a reference.
     const dupEmails = [...emails];
     dupEmails.push(value);
@@ -28,8 +42,23 @@ export const MultiInput = ({}) => {
     // setTodos([...todos, todo]);
     // }
     // console.log(emails)
+  };
 
-    clearSelection();
+  const handleKeyDown = (e) => {
+    switch (e.key) {
+      case KEYS.ENTER:
+      case KEYS.SPACE:
+      case KEYS.COMMA:
+        e.preventDefault();
+        // we probably want to add validation here
+        addToList(e.target.value);
+        clearSelection();
+        break;
+      default:
+        if (!ALLOWED_CHARS_REGEX.test(e.key)) {
+          e.preventDefault();
+        }
+    }
   };
 
   // TODO: rename email to item everywhere
@@ -106,6 +135,7 @@ export const MultiInput = ({}) => {
                   aria-disabled="false"
                   type="text"
                   onBlur={handleBlur}
+                  onKeyDown={handleKeyDown}
                   placeholder="Add another..."
                   ref={inputRef}
                 />
