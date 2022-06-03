@@ -1,7 +1,60 @@
 # See AbExperiment namespace for details of goals and variants
+#
+################################################################################
+################################################################################
+#
+# Checklist for creating a new feed experiment:
+#
+# - [ ] Create and/or reference the forem/forem issue with desired configuration
+# - [ ] Identifyer the winner for the past experiment by adding the `winner:
+#       <variant-name>` attribute to the past experiment.
+# - [ ] Copy the previous experiment and prepend and rename to
+#       `feed_strategy_starting_CCYYMMDD`
+# - [ ] Update the `start_date` to `CCYY-MM-DD`
+# - [ ] Assign the variants; the winner of the previous experiment SHOULD be in
+#       this array.
+# - [ ] Remove the winner from the newly copied `feed_strategy_starting_CCYYMMDD`
+# - [ ] Assign weights and make the corresponding
+#       `./config/feed-variants/*.json` files where * is the new named variants.
+# - [ ] Each newly named variant should have a description; typically briefly
+#       explaining the difference between it and the winner of the last experiment.
+# - [ ] Run `bin/rspec spec/services/articles/feeds/variant_query_spec.rb` to
+#       verify each newly added variant's SQL
+# - [ ] Submit a pull request and ping the Forem Core (in Slack) for a review.
+#
+################################################################################
+################################################################################
 experiments:
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
+  feed_strategy_starting_20220603:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    start_date: 2022-06-03
+    variants:
+      - 20220518-variant
+      - 20220603-variant-a
+      - 20220603-variant-b
+    weights:
+      - 50
+      - 25
+      - 25
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_publishes_post
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_publishes_post_on_four_different_days_within_a_week
+      # These are historical and may be userful
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_publishes_post_at_least_two_times_within_week
+      - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20220526:
+    winner: 20220518-variant
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
     start_date: 2022-05-09
