@@ -11,7 +11,7 @@ module Articles
       # The default extension for feed variants
       EXTENSION = "json".freeze
 
-      # Because we have a "historical variant" that we renamed, but we continue to have that name in
+      # We have a "historical variant" that we renamed, hence we continue to maintain that name in
       # our data.
       VARIANT_NAME_MAP = {
         "20220422-jennie-variant": :"20220422-variant"
