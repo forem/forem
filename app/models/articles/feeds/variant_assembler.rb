@@ -12,7 +12,7 @@ module Articles
       EXTENSION = "json".freeze
 
       # We have a "historical variant" that we renamed, hence we continue to maintain that name in
-      # our data.
+      # our data through the following map.
       VARIANT_NAME_MAP = {
         "20220422-jennie-variant": :"20220422-variant"
       }.freeze
