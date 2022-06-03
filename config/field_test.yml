@@ -26,9 +26,77 @@ experiments:
       - user_views_pages_on_at_least_nine_different_days_within_two_weeks
       - user_publishes_post_at_least_two_times_within_week
       - user_publishes_post_at_least_two_times_within_two_weeks
-exclude:
-  bots: true
-
+  feed_strategy_starting_20220518:
+    winner: 20220518-variant
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    start_date: 2022-05-09
+    variants:
+      - 20220422-variant
+      - 20220518-variant
+    weights:
+      - 80
+      - 20
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_publishes_post
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_publishes_post_on_four_different_days_within_a_week
+      # These are historical and may be userful
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_publishes_post_at_least_two_times_within_week
+  feed_strategy_starting_20220509:
+    winner: 20220422-variant
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    start_date: 2022-05-09
+    variants:
+      - 20220422-variant
+      - 20220509-variant
+    weights:
+      - 80
+      - 20
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_publishes_post
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_publishes_post_on_four_different_days_within_a_week
+      # These are historical and may be userful
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_publishes_post_at_least_two_times_within_week
+  feed_strategy_starting_20220422:
+    winner: 20220422-variant
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    start_date: 2022-04-22
+    variants:
+      - 20220415-incumbent
+      - 20220422-jennie-variant
+    weights:
+      - 80
+      - 20
+    goals:
+      - user_creates_comment
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_publishes_post
+      - user_publishes_post_at_least_two_times_within_week
+      - user_publishes_post_at_least_two_times_within_two_weeks
 # Dashboard performance
 cache: true
 precision: 2

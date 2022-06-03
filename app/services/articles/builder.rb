@@ -83,7 +83,8 @@ module Articles
 
     def user_editor_v1
       body = "---\ntitle: \npublished: false\ndescription: " \
-             "\ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n"
+             "\ntags: \n# cover_image: https://direct_url_to_image.jpg" \
+             "\n# Use a ratio of 100:42 for best results.\n---\n\n"
 
       Article.new(
         body_markdown: body,
