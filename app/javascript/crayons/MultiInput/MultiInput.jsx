@@ -5,9 +5,11 @@ import { useRef, useState } from 'preact/hooks';
 
 export const MultiInput = ({}) => {
   const inputSizerRef = useRef(null);
+  const inputRef = useRef(null);
+
   const [emails, setEmails] = useState(['dummy']);
 
-  const handleInputChange = ({ target: { value } }) => {
+  const handleBlur = ({ target: { value } }) => {
     // When the input appears inline in "edit" mode, we need to dynamically calculate the width to ensure it occupies the right space
     // (an input cannot resize based on its text content). We use a hidden <span> to track the size.
     inputSizerRef.current.innerText = value;
@@ -26,6 +28,13 @@ export const MultiInput = ({}) => {
     // setTodos([...todos, todo]);
     // }
     // console.log(emails)
+
+    clearSelection();
+  };
+
+  const clearSelection = () => {
+    // TODO: Investigate is it better to use a ref or set state
+    inputRef.current.value = '';
   };
 
   const listEmails = emails.map((email, index) => (
@@ -87,8 +96,9 @@ export const MultiInput = ({}) => {
                   aria-describedby="input-description"
                   aria-disabled="false"
                   type="text"
-                  onBlur={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Add another..."
+                  ref={inputRef}
                 />
               </li>
             </ul>
