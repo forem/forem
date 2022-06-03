@@ -30,6 +30,7 @@ module Articles
 
       Config = Struct.new(
         :variant,
+        :description,
         :levers, # Array <Articles::Feeds::RelevancyLever::Configured>
         :order_by, # Articles::Feeds::OrderByLever
         :max_days_since_published,
