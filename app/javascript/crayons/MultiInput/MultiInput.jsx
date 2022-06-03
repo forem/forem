@@ -32,6 +32,14 @@ export const MultiInput = ({}) => {
     clearSelection();
   };
 
+  // TODO: rename email to item everywhere
+  const handleClick = (clickedItem) => {
+    // get the email that we're trying to remove
+    // find and remove the selected item from the array
+    const newArr = emails.filter((item) => item !== clickedItem);
+    setEmails(newArr);
+  };
+
   const clearSelection = () => {
     // TODO: Investigate is it better to use a ref or set state
     inputRef.current.value = '';
@@ -55,6 +63,7 @@ export const MultiInput = ({}) => {
           type="button"
           class="c-btn c-input--multi__selected p-1"
           aria-label="Remove two"
+          onClick={() => handleClick(email)}
         >
           <svg
             class="crayons-icon"
