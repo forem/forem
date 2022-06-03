@@ -75,11 +75,19 @@ describe('<FlagUserModal />', () => {
 
       expect(screen.getByText('Unflag User')).toBeInTheDocument();
     });
+
+    it('should render Confirm button not disabled', async () => {
+      setup({ modCenterArticleUrl: '/', authorId: 12, flaggedUser: true });
+
+      const confirmActionButton = screen.getByText('Confirm action');
+
+      expect(confirmActionButton).toBeEnabled();
+    });
   });
 
   describe('When Confirm action button is clicked', () => {
     describe('When user is flagged', () => {
-      it("calls addSnackbarItem with message 'This article author was unflagged.'", async () => {
+      it("calls showSnackbarItem with message 'This article author was unflagged.'", async () => {
         requestMock('destroy');
 
         setup({
@@ -101,7 +109,7 @@ describe('<FlagUserModal />', () => {
     });
 
     describe('When user is unflagged', () => {
-      it("calls addSnackbarItem with message 'All posts by this author will be less visible.'", async () => {
+      it("calls showSnackbarItem with message 'All posts by this author will be less visible.'", async () => {
         requestMock('create');
 
         setup({
