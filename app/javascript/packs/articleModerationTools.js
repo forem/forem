@@ -10,6 +10,7 @@ getCsrfToken().then(() => {
       articleId,
       articleSlug,
       authorId: articleAuthorId,
+      authorName,
       authorUsername,
       path,
     } = articleContainer.dataset;
@@ -40,7 +41,12 @@ getCsrfToken().then(() => {
         if (user?.id !== articleAuthorId && !isModerationPage()) {
           initializeActionsPanel(user, path);
           initializeFlagUserModal(articleAuthorId);
-          initializeUnpublishPostModal(articleId, authorUsername, articleSlug);
+          initializeUnpublishPostModal(
+            articleId,
+            authorName,
+            authorUsername,
+            articleSlug,
+          );
           // "/mod" page
         } else if (isModerationPage()) {
           initializeActionsPanel(user, path);

@@ -61,6 +61,7 @@ export function toggleUnpublishPostModal() {
  */
 export function initializeUnpublishPostModal(
   articleId,
+  authorName,
   authorUsername,
   articleSlug,
 ) {
@@ -74,6 +75,7 @@ export function initializeUnpublishPostModal(
   render(
     <UnpublishPostModal
       articleId={articleId}
+      authorName={authorName}
       authorUsername={authorUsername}
       articleSlug={articleSlug}
     />,
@@ -89,7 +91,12 @@ export function initializeUnpublishPostModal(
  * @param {string} props.authorUsername Username of the article's author.
  * @param {string} props.articleSlug Slug of the article to be unpublished.
  */
-export function UnpublishPostModal({ articleId, authorUsername, articleSlug }) {
+export function UnpublishPostModal({
+  articleId,
+  authorName,
+  authorUsername,
+  articleSlug,
+}) {
   return (
     <div
       data-testid="unpublish-post-modal"
@@ -108,7 +115,7 @@ export function UnpublishPostModal({ articleId, authorUsername, articleSlug }) {
           <div class="grid gap-4">
             <p>
               Once unpublished, this post will become invisible to the public
-              and only accessible to Anuj.
+              and only accessible to {authorName}.
             </p>
             <p>They can still re-publish the post if they are not suspended.</p>
             <div>
