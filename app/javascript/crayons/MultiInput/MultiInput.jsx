@@ -11,7 +11,7 @@ const KEYS = {
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
 /**
- * Component allowing users to search and select multiple values
+ * Component allowing users to add multiple inputs that gets dislpayed as pills
  *
  * @param {Object} props
  * @param {string} props.placeholder Input placeholder text
