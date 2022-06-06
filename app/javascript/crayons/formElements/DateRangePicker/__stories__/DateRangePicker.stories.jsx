@@ -1,5 +1,12 @@
 import { h } from 'preact';
-import { DateRangePicker } from '@crayons';
+import {
+  LAST_FULL_MONTH,
+  LAST_FULL_QUARTER,
+  LAST_FULL_YEAR,
+  QUARTER_UNTIL_TODAY,
+  YEAR_UNTIL_TODAY,
+} from '../dateRangeUtils';
+import { DateRangePicker, MONTH_UNTIL_TODAY } from '@crayons';
 
 export default {
   component: DateRangePicker,
@@ -47,4 +54,25 @@ Default.args = {
   defaultEndDate: undefined,
   minStartDate: new Date(2020, 0, 1),
   maxEndDate: new Date(),
+};
+
+export const DateRangePickerWithPresetRanges = (args) => {
+  return <DateRangePicker {...args} />;
+};
+
+DateRangePickerWithPresetRanges.args = {
+  startDateId: 'start-date',
+  endDateId: 'end-date',
+  defaultStartDate: undefined,
+  defaultEndDate: undefined,
+  minStartDate: new Date(2020, 0, 1),
+  maxEndDate: new Date(),
+  presetRanges: [
+    MONTH_UNTIL_TODAY,
+    LAST_FULL_MONTH,
+    QUARTER_UNTIL_TODAY,
+    LAST_FULL_QUARTER,
+    YEAR_UNTIL_TODAY,
+    LAST_FULL_YEAR,
+  ],
 };

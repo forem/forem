@@ -1,9 +1,18 @@
 export const MONTH_UNTIL_TODAY = 'MONTH_UNTIL_TODAY';
 export const QUARTER_UNTIL_TODAY = 'QUARTER_UNTIL_TODAY';
 export const YEAR_UNTIL_TODAY = 'YEAR_UNTIL_TODAY';
-export const LAST_FULL_MONTH = 'LAST_FULL_CALENDAR_MONTH';
+export const LAST_FULL_MONTH = 'LAST_FULL_MONTH';
 export const LAST_FULL_QUARTER = 'LAST_FULL_QUARTER';
 export const LAST_FULL_YEAR = 'LAST_FULL_YEAR';
+
+export const RANGE_LABELS = {
+  MONTH_UNTIL_TODAY: 'This month',
+  QUARTER_UNTIL_TODAY: 'This quarter',
+  YEAR_UNTIL_TODAY: 'This year',
+  LAST_FULL_MONTH: 'Last month',
+  LAST_FULL_QUARTER: 'Last quarter',
+  LAST_FULL_YEAR: 'Last year',
+};
 
 const PERIODS = {
   DAY: 'day',

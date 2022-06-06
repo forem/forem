@@ -11,7 +11,8 @@ import {
   VERTICAL_ORIENTATION,
   HORIZONTAL_ORIENTATION,
 } from 'react-dates/constants';
-import { Icon } from '@crayons';
+import { getDateRangeStartAndEndDates, RANGE_LABELS } from './dateRangeUtils';
+import { Icon, ButtonNew as Button } from '@crayons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
 import Calendar from '@images/calendar.svg';
@@ -86,6 +87,53 @@ const MonthYearPicker = ({
   );
 };
 
+const PresetDateRangeOptions = ({
+  presetRanges = [],
+  earliestMoment,
+  latestMoment,
+  onPresetSelected,
+  today,
+}) => {
+  const presetsWithinPermittedDates = presetRanges.filter((rangeName) => {
+    const { start, end } = getDateRangeStartAndEndDates({
+      today,
+      dateRangeName: rangeName,
+    });
+
+    return (
+      start.isSameOrAfter(earliestMoment) &&
+      start.isSameOrBefore(latestMoment) &&
+      end.isSameOrBefore(latestMoment) &&
+      end.isSameOrAfter(earliestMoment)
+    );
+  });
+
+  if (presetsWithinPermittedDates.length === 0) {
+    return null;
+  }
+
+  return (
+    <ul className="flex flex-wrap p-3">
+      {presetsWithinPermittedDates.map((rangeName) => (
+        <li key={`quick-select-${rangeName}`}>
+          <Button
+            onClick={() => {
+              onPresetSelected(
+                getDateRangeStartAndEndDates({
+                  today,
+                  dateRangeName: rangeName,
+                }),
+              );
+            }}
+          >
+            {RANGE_LABELS[rangeName]}
+          </Button>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
 /**
  * Used to facilitate picking a date range. This component is a wrapper around the one provided from react-dates.
  *
@@ -97,6 +145,7 @@ const MonthYearPicker = ({
  * @param {Date} props.maxEndDate The latest date that may be selected
  * @param {Date} props.minStartDate The oldest date that may be selected
  * @param {Function} props.onDatesChanged Callback function for when dates are selected. Receives an object with startDate and endDate values.
+ * @param {[string]} props.presetRanges Quick-select preset date ranges to offer in the calendar. These will only be shown if they fall within the min and max dates.
  */
 export const DateRangePicker = ({
   startDateId,
@@ -106,6 +155,7 @@ export const DateRangePicker = ({
   maxEndDate = new Date(),
   minStartDate = new Date(),
   onDatesChanged,
+  presetRanges = [],
 }) => {
   const [focusedInput, setFocusedInput] = useState(START_DATE);
   const [startMoment, setStartMoment] = useState(
@@ -120,8 +170,8 @@ export const DateRangePicker = ({
     `(max-width: ${BREAKPOINTS.Medium - 1}px)`,
   );
 
-  const earliestMoment = moment(minStartDate);
-  const latestMoment = moment(maxEndDate);
+  const earliestMoment = moment(minStartDate).startOf('day');
+  const latestMoment = moment(maxEndDate).endOf('day');
 
   const isMonthSameAsLatestMonth = (relevantDate) =>
     relevantDate.year() === latestMoment.year() &&
@@ -191,6 +241,20 @@ export const DateRangePicker = ({
             earliestMoment={earliestMoment}
             latestMoment={latestMoment}
             {...props}
+          />
+        )}
+        renderCalendarInfo={() => (
+          <PresetDateRangeOptions
+            presetRanges={presetRanges}
+            earliestMoment={earliestMoment}
+            latestMoment={latestMoment}
+            onPresetSelected={({ start, end }) => {
+              setStartMoment(start);
+              setEndMoment(end);
+              // We force the calendar to close since we can't guarantee the selected dates are in the visible range
+              setFocusedInput(false);
+            }}
+            today={today}
           />
         )}
       />
