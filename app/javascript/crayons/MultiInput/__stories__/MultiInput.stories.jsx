@@ -3,7 +3,7 @@ import { MultiInput } from '../MultiInput';
 import MultiInputDoc from './MultiInput.mdx';
 
 export default {
-  title: 'App Components/MultiInput',
+  title: 'BETA/MultiInput',
   argTypes: {},
   parameters: {
     docs: {
