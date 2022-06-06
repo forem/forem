@@ -15,7 +15,7 @@ const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 export const MultiInput = ({}) => {
   const inputRef = useRef(null);
 
-  const [emails, setEmails] = useState(['dummy']);
+  const [items, setItems] = useState(['dummy']);
 
   const handleBlur = ({ target: { value } }) => {
     addToList(value);
@@ -23,7 +23,7 @@ export const MultiInput = ({}) => {
   };
 
   const addToList = (value) => {
-    setEmails([...emails, value]);
+    setItems([...items, value]);
   };
 
   const handleKeyDown = (e) => {
@@ -43,17 +43,16 @@ export const MultiInput = ({}) => {
     }
   };
 
-  // TODO: rename email to item everywhere
   const handleClick = (clickedItem) => {
-    const newArr = emails.filter((item) => item !== clickedItem);
-    setEmails(newArr);
+    const newArr = items.filter((item) => item !== clickedItem);
+    setItems(newArr);
   };
 
   const clearSelection = () => {
     inputRef.current.value = '';
   };
 
-  const listEmails = emails.map((email, index) => (
+  const listItems = items.map((item, index) => (
     <li
       key={index}
       class="c-input--multi__selection-list-item w-max"
@@ -65,7 +64,7 @@ export const MultiInput = ({}) => {
           type="button"
           aria-disabled="false"
         >
-          {email}
+          {item}
           <svg
             class="crayons-icon c-pill__action-icon"
             aria-hidden="true"
@@ -74,7 +73,7 @@ export const MultiInput = ({}) => {
             height="18"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
-            onClick={() => handleClick(email)}
+            onClick={() => handleClick(item)}
           >
             <path d="m12 10.586 4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -95,7 +94,7 @@ export const MultiInput = ({}) => {
         <div class="c-input--multi relative">
           <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text">
             <ul class="list-none flex flex-wrap w-100">
-              {listEmails}
+              {listItems}
               <li class="self-center" style="order: 3;">
                 <input
                   autocomplete="off"
