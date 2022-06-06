@@ -42,6 +42,20 @@ Rails.application.routes.draw do
     end
 
     namespace :api, defaults: { format: "json" } do
+      # API V1 is in pre-release: Available iff api_v1 FeatureFlag is enabled
+      constraints(->(_req) { FeatureFlag.enabled?(:api_v1) }) do
+        scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
+          resources :articles, only: %i[index show create update] do
+            collection do
+              get "/me(/:status)", to: "articles#me", constraints: { status: /published|unpublished|all/ }
+              get "/:username/:slug", to: "articles#show_by_slug"
+              get "/latest", to: "articles#index", defaults: { sort: "desc" }
+              post "/moderate", to: "articles#moderate"
+            end
+          end
+        end
+      end
+
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
         namespace :admin do
           resources :users, only: [:create]
