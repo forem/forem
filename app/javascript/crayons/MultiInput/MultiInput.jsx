@@ -7,11 +7,11 @@ const KEYS = {
   SPACE: ' ',
 };
 // TODO: think about how this may change based on
-// a different usage. We may want this to be passed in as a prop.
+// a different usage. We will most likely want this to be passed in as a prop.
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
 /**
- * Component allowing users to add multiple inputs that gets dislpayed as pills
+ * Component allowing users to add multiple inputs that gets displayed as desctructive pills
  *
  * @param {Object} props
  * @param {string} props.placeholder Input placeholder text
@@ -19,7 +19,6 @@ const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
 export const MultiInput = ({ placeholder }) => {
   const inputRef = useRef(null);
-
   const [items, setItems] = useState([]);
 
   const handleBlur = ({ target: { value } }) => {
@@ -99,9 +98,6 @@ export const MultiInput = ({ placeholder }) => {
               <input
                 autocomplete="off"
                 class="c-input--multi__input"
-                aria-labelledby="multi-select-label selected-items-list"
-                aria-describedby="input-description"
-                aria-disabled="false"
                 type="text"
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
