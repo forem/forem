@@ -102,7 +102,7 @@ export function FlagUserModal({
                 data-reactable-type="User"
               >
                 Are you sure you want to unflag this article author? This will
-                make all of their posts visible again.
+                reset their posts' visibility to default.
               </p>
             ) : (
               <>
