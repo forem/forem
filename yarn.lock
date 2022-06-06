@@ -3354,38 +3354,37 @@
     webpack-dev-middleware "^3.7.3"
     webpack-virtual-modules "^0.2.2"
 
-"@storybook/manager-webpack5@^6.4.22":
-  version "6.4.22"
-  resolved "https://registry.yarnpkg.com/@storybook/manager-webpack5/-/manager-webpack5-6.4.22.tgz#14b6c564692324e25084f699d599cd202659fe21"
-  integrity sha512-BMkOMselT4jOn7EQGt748FurM5ewtDfZtOQPCVK8MZX+HYE2AgjNOzm562TYODIxk12Fkhgj3EIz7GGMe1U3RA==
+"@storybook/manager-webpack5@^6.5.7":
+  version "6.5.7"
+  resolved "https://registry.yarnpkg.com/@storybook/manager-webpack5/-/manager-webpack5-6.5.7.tgz#a7446c86d96bb4b91e5dc554d21da8102795a11f"
+  integrity sha512-4TZKe71noCRui8sUxSuSqO6zMnCxCLn7dE1dOlCr/UvyZbCaGWACO5olUDQrT+n1glZL8i9L998JGQroksucNw==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-transform-template-literals" "^7.12.1"
     "@babel/preset-react" "^7.12.10"
-    "@storybook/addons" "6.4.22"
-    "@storybook/core-client" "6.4.22"
-    "@storybook/core-common" "6.4.22"
-    "@storybook/node-logger" "6.4.22"
-    "@storybook/theming" "6.4.22"
-    "@storybook/ui" "6.4.22"
-    "@types/node" "^14.0.10"
+    "@storybook/addons" "6.5.7"
+    "@storybook/core-client" "6.5.7"
+    "@storybook/core-common" "6.5.7"
+    "@storybook/node-logger" "6.5.7"
+    "@storybook/theming" "6.5.7"
+    "@storybook/ui" "6.5.7"
+    "@types/node" "^14.0.10 || ^16.0.0"
     babel-loader "^8.0.0"
     case-sensitive-paths-webpack-plugin "^2.3.0"
     chalk "^4.1.0"
     core-js "^3.8.2"
     css-loader "^5.0.1"
     express "^4.17.1"
-    file-system-cache "^1.0.5"
     find-up "^5.0.0"
     fs-extra "^9.0.1"
     html-webpack-plugin "^5.0.0"
-    node-fetch "^2.6.1"
+    node-fetch "^2.6.7"
     process "^0.11.10"
     read-pkg-up "^7.0.1"
     regenerator-runtime "^0.13.7"
     resolve-from "^5.0.0"
     style-loader "^2.0.0"
-    telejson "^5.3.2"
+    telejson "^6.0.8"
     terser-webpack-plugin "^5.0.3"
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
@@ -3624,7 +3623,7 @@
     read-pkg-up "^7.0.1"
     regenerator-runtime "^0.13.7"
 
-"@storybook/theming@6.4.22", "@storybook/theming@^6.2.9":
+"@storybook/theming@6.4.22":
   version "6.4.22"
   resolved "https://registry.yarnpkg.com/@storybook/theming/-/theming-6.4.22.tgz#19097eec0366447ddd0d6917b0e0f81d0ec5e51e"
   integrity sha512-NVMKH/jxSPtnMTO4VCN1k47uztq+u9fWv4GSnzq/eezxdGg9ceGL4/lCrNGoNajht9xbrsZ4QvsJ/V2sVGM8wA==
@@ -3651,7 +3650,7 @@
     core-js "^3.8.2"
     regenerator-runtime "^0.13.7"
 
-"@storybook/theming@6.5.7":
+"@storybook/theming@6.5.7", "@storybook/theming@^6.2.9":
   version "6.5.7"
   resolved "https://registry.yarnpkg.com/@storybook/theming/-/theming-6.5.7.tgz#63afa3838a9c1ba07d443ce6988f6ed99af62b75"
   integrity sha512-6zp1V84DSBcS8BtFOCJlF2/nIonjQmr+dILPxaM3lCm/X003i2jAQrBKTfPlmzCeDn07PBhzHaRJ3wJskfmeNw==
