@@ -49,7 +49,7 @@ module Articles
         @page = page
         @tag = tag
         @config = config
-        @seed = Float(seed || rand)
+        @seed = randomizer_seed_for(seed: seed, user: user)
         oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
           user: @user,
           days_since_published: config.max_days_since_published,
@@ -289,6 +289,31 @@ module Articles
         return 0 if @page == 1
 
         @page.to_i - (1 * default_limit)
+      end
+
+      # We want to ensure that we're not randomizing someone's feed all the time; and instead aiming
+      # for somewhat repeatable experiences (e.g. I refresh the page it is likely I will have the
+      # same order of pages even though we've randomized things a bit).
+      def randomizer_seed_for(seed:, user:)
+        return Float(seed) if seed
+
+        # This is added as a short-circuit in-case the caching proves to be non-performant.  Once
+        # this has been merged, given that it's part of the main loop, we can remove the FeatureFlag
+        # a week or so after we merge.
+        return rand if FeatureFlag.enabled?(:halt_caching_for_feeds_random_seed)
+
+        # From https://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html#method-i-fetch
+        #
+        # Setting :race_condition_ttl is very useful in situations where a cache entry is used very
+        # frequently and is under heavy load. If a cache expires and due to heavy load several
+        # different processes will try to read data natively and then they all will try to write to
+        # cache. To avoid that case the first process to find an expired cache entry will bump the
+        # cache expiration time by the value set in :race_condition_ttl.
+        Rails.cache.fetch(
+          "variant_query-for-#{user&.id || 'no-one'}",
+          race_condition_ttl: 10.seconds,
+          expires_in: 10.minutes,
+        ) { rand }
       end
 
       # Responsible for transforming the :select_fragment, :cases, and :fallback into a SQL fragment
