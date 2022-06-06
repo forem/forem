@@ -287,4 +287,5 @@ DateRangePicker.propTypes = {
   maxStartDate: PropTypes.instanceOf(Date),
   maxEndDate: PropTypes.instanceOf(Date),
   onDatesChanged: PropTypes.func,
+  presetRanges: PropTypes.arrayOf(PropTypes.string),
 };
