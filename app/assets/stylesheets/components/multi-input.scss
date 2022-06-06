@@ -1,3 +1,6 @@
+@import './forms';
+@import '../config/import';
+
 .c-input--multi {
   &__wrapper-border:focus-within {
     @extend %form-styling-focus;
