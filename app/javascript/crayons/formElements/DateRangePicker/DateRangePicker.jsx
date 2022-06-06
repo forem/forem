@@ -33,6 +33,14 @@ const MONTH_NAMES = [...Array(12).keys()].map((key) =>
 const isDateOutsideOfRange = ({ date, minDate, maxDate }) =>
   !date.isBetween(minDate, maxDate);
 
+/**
+ * Renders select elements allowing a user to jump to a given month/year
+ * @param {Object} earliestMoment Moment object representing the earliest permitted date
+ * @param {Object} latestMoment Moment object representing the latest permitted date
+ * @param {Function} onMonthSelect Callback passed by react-dates library
+ * @param {Function} onYearSelect Callback passed by react-dates library
+ * @param {Object} month Moment object passed by react-dates library, representing the currently visible calendar
+ */
 const MonthYearPicker = ({
   earliestMoment,
   latestMoment,
@@ -87,6 +95,15 @@ const MonthYearPicker = ({
   );
 };
 
+/**
+ * Renders preset date ranges as 'quick select' buttons, if the range falls within the permitted dates
+ *
+ * @param {[string]} presetRanges The preset range names requested
+ * @param {Object} earliestMoment Moment object representing earliest permitted date
+ * @param {Object} latestMoment Moment object representing latest permitted date
+ * @param {Function} onPresetSelected Callback which will receive start and end dates of selected preset
+ * @param {Object} today Moment object representing today's date
+ */
 const PresetDateRangeOptions = ({
   presetRanges = [],
   earliestMoment,
@@ -248,13 +265,13 @@ export const DateRangePicker = ({
             presetRanges={presetRanges}
             earliestMoment={earliestMoment}
             latestMoment={latestMoment}
+            today={today}
             onPresetSelected={({ start, end }) => {
               setStartMoment(start);
               setEndMoment(end);
-              // We force the calendar to close since we can't guarantee the selected dates are in the visible range
+              // Force the calendar to close, same as if user clicks an end date manually
               setFocusedInput(false);
             }}
-            today={today}
           />
         )}
       />
