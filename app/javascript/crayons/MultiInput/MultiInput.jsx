@@ -10,10 +10,17 @@ const KEYS = {
 // a different usage. We may want this to be passed in as a prop.
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
-export const MultiInput = ({}) => {
+/**
+ * Component allowing users to search and select multiple values
+ *
+ * @param {Object} props
+ * @param {string} props.placeholder Input placeholder text
+ */
+
+export const MultiInput = ({ placeholder }) => {
   const inputRef = useRef(null);
 
-  const [items, setItems] = useState(['dummy']);
+  const [items, setItems] = useState([]);
 
   const handleBlur = ({ target: { value } }) => {
     addItemToList(value);
@@ -42,7 +49,7 @@ export const MultiInput = ({}) => {
   };
 
   const addItemToList = (value) => {
-    // TODO: we may want to do some validation here based on a prop
+    // TODO: we will want to do some validation here based on a prop
     if (value.trim().length > 0) {
       setItems([...items, value]);
     }
@@ -98,7 +105,7 @@ export const MultiInput = ({}) => {
                 type="text"
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
-                placeholder="Add another..."
+                placeholder={placeholder}
                 ref={inputRef}
               />
             </li>

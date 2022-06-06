@@ -9,11 +9,21 @@ export default {
     docs: {
       page: MultiInputDoc,
     },
+    argTypes: {
+      placeholder: {
+        description:
+          'Placeholder text, shown when no selections have been made yet',
+      },
+    },
   },
 };
 
-export const Default = () => {
-  return <MultiInput />;
+export const Default = (args) => {
+  return <MultiInput {...args} />;
+};
+
+Default.args = {
+  placeholder: 'Add an email address...',
 };
 
 Default.story = {
