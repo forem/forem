@@ -42,12 +42,14 @@ module Articles
       # @param number_of_articles [Integer, #to_i]
       # @param page [Integer, #to_i]
       # @param tag [NilClass] not used
-      def initialize(config:, user: nil, number_of_articles: 50, page: 1, tag: nil)
+      # @param seed [Number] used in the `setseed` Postgresql function to set the randomization seed.
+      def initialize(config:, user: nil, number_of_articles: 50, page: 1, tag: nil, seed: nil)
         @user = user
         @number_of_articles = number_of_articles
         @page = page
         @tag = tag
         @config = config
+        @seed = Float(seed || rand)
         oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
           user: @user,
           days_since_published: config.max_days_since_published,
@@ -56,7 +58,7 @@ module Articles
         configure!
       end
 
-      attr_reader :config, :query_parameters
+      attr_reader :config, :query_parameters, :seed
 
       # Query for articles relevant to the user's interest.
       #
@@ -108,8 +110,17 @@ module Articles
         # articles and then sort on the attributes on either the article or the result set
         # (e.g. sort on the relevancy score).
         join_fragment = Arel.sql(
-          "INNER JOIN (#{Article.sanitize_sql(unsanitized_sql_sub_query)}) " \
-          "AS article_relevancies ON articles.id = article_relevancies.id",
+          "INNER JOIN (" \
+          "\n--- The setseed needs to be called independently; later we reference seeder \n" \
+          "WITH seeder AS (SELECT setseed(#{Float(@seed)})) "\
+          "\n--- We are using the inner logic to build relevancy score" \
+          "\n--- The outer part, with seeder, is to create a stable randomized number \n" \
+          "SELECT inner_article_relevancies.id, "\
+          "inner_article_relevancies.relevancy_score, " \
+          "RANDOM() AS randomized_value " \
+          "FROM seeder, " \
+          "(#{Article.sanitize_sql(unsanitized_sql_sub_query)}) AS inner_article_relevancies" \
+          ") AS article_relevancies ON articles.id = article_relevancies.id",
         )
 
         # This sub-query allows us to take the hard work of the hand-coded unsanitized sql and
