@@ -22,7 +22,7 @@ RSpec.describe "/admin", type: :request do
 
       get admin_path
 
-      expect(response.body).to include(ENV["HEROKU_RELEASE_CREATED_AT"])
+      expect(response.body).to include(ENV.fetch("HEROKU_RELEASE_CREATED_AT", nil))
     end
   end
 
