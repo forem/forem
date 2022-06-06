@@ -29,7 +29,6 @@ export const MultiInput = ({}) => {
   const handleKeyDown = (e) => {
     switch (e.key) {
       case KEYS.ENTER:
-      case KEYS.SPACE:
       case KEYS.COMMA:
         e.preventDefault();
         // we probably want to add validation here
