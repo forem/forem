@@ -92,7 +92,7 @@ export const MultiInput = ({ placeholder }) => {
   return (
     <Fragment>
       <div class="c-input--multi relative">
-        <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text">
+        <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text pb-9">
           <ul class="list-none flex flex-wrap w-100">
             {listItems}
             <li class="self-center" style="order: 3;">
