@@ -21,11 +21,14 @@ export const MultiInput = ({}) => {
   };
 
   const addToList = (value) => {
-    setItems([...items, value]);
+    if (value.trim().length > 0) {
+      setItems([...items, value]);
+    }
   };
 
   const handleKeyDown = (e) => {
     switch (e.key) {
+      case KEYS.SPACE:
       case KEYS.ENTER:
       case KEYS.COMMA:
         e.preventDefault();
