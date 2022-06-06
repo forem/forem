@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/interactive-supports-focus, jsx-a11y/role-has-required-aria-props */
-// Disabled due to the linter being out of date for combobox role: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/789
 import { h, Fragment } from 'preact';
 import { useRef, useState } from 'preact/hooks';
 
@@ -84,12 +82,6 @@ export const MultiInput = ({}) => {
   return (
     <Fragment>
       <div>
-        {/* TODO: */}
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label id="multi-input-label" className="">
-          Example multi input
-        </label>
-
         <div class="c-input--multi relative">
           <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text">
             <ul class="list-none flex flex-wrap w-100">
