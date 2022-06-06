@@ -7,7 +7,7 @@ const KEYS = {
   SPACE: ' ',
 };
 // TODO: think about how this may change based on
-// a different usage. We may want this to be custom.
+// a different usage. We may want this to be passed in as a prop.
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
 export const MultiInput = ({}) => {
@@ -16,14 +16,8 @@ export const MultiInput = ({}) => {
   const [items, setItems] = useState(['dummy']);
 
   const handleBlur = ({ target: { value } }) => {
-    addToList(value);
+    addItemToList(value);
     clearSelection();
-  };
-
-  const addToList = (value) => {
-    if (value.trim().length > 0) {
-      setItems([...items, value]);
-    }
   };
 
   const handleKeyDown = (e) => {
@@ -32,8 +26,7 @@ export const MultiInput = ({}) => {
       case KEYS.ENTER:
       case KEYS.COMMA:
         e.preventDefault();
-        // we probably want to add validation here
-        addToList(e.target.value);
+        addItemToList(e.target.value);
         clearSelection();
         break;
       default:
@@ -43,9 +36,16 @@ export const MultiInput = ({}) => {
     }
   };
 
-  const handleClick = (clickedItem) => {
+  const handleDestructiveClick = (clickedItem) => {
     const newArr = items.filter((item) => item !== clickedItem);
     setItems(newArr);
+  };
+
+  const addItemToList = (value) => {
+    // TODO: we may want to do some validation here based on a prop
+    if (value.trim().length > 0) {
+      setItems([...items, value]);
+    }
   };
 
   const clearSelection = () => {
@@ -73,7 +73,7 @@ export const MultiInput = ({}) => {
             height="18"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
-            onClick={() => handleClick(item)}
+            onClick={() => handleDestructiveClick(item)}
           >
             <path d="m12 10.586 4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -84,27 +84,25 @@ export const MultiInput = ({}) => {
 
   return (
     <Fragment>
-      <div>
-        <div class="c-input--multi relative">
-          <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text">
-            <ul class="list-none flex flex-wrap w-100">
-              {listItems}
-              <li class="self-center" style="order: 3;">
-                <input
-                  autocomplete="off"
-                  class="c-input--multi__input"
-                  aria-labelledby="multi-select-label selected-items-list"
-                  aria-describedby="input-description"
-                  aria-disabled="false"
-                  type="text"
-                  onBlur={handleBlur}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Add another..."
-                  ref={inputRef}
-                />
-              </li>
-            </ul>
-          </div>
+      <div class="c-input--multi relative">
+        <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text">
+          <ul class="list-none flex flex-wrap w-100">
+            {listItems}
+            <li class="self-center" style="order: 3;">
+              <input
+                autocomplete="off"
+                class="c-input--multi__input"
+                aria-labelledby="multi-select-label selected-items-list"
+                aria-describedby="input-description"
+                aria-disabled="false"
+                type="text"
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                placeholder="Add another..."
+                ref={inputRef}
+              />
+            </li>
+          </ul>
         </div>
       </div>
     </Fragment>
