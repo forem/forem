@@ -19,7 +19,7 @@ RSpec.describe ForemInstance, type: :model do
     it "sets the HEROKU_RELEASE_CREATED_AT if the RELEASE_FOOTPRINT is not present" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("")
       allow(ENV).to receive(:[]).with("HEROKU_RELEASE_CREATED_AT").and_return("A deploy date set on Heroku")
-      expect(described_class.deployed_at).to eq(ENV.fetch("HEROKU_RELEASE_CREATED_AT", nil))
+      expect(described_class.deployed_at).to eq("A deploy date set on Heroku")
     end
 
     it "sets to current time if HEROKU_RELEASE_CREATED_AT and RELEASE_FOOTPRINT are not present" do
