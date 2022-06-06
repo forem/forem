@@ -82,7 +82,7 @@ jobs:
       script:
         - yarn lint:frontend
         - yarn test --colors
-        - bundle exec bundle-audit check --update --ignore=CVE-2022-27311
+        - bundle exec bundle-audit check --update
         - bin/test-console-check
         - yarn build-storybook
         - NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile

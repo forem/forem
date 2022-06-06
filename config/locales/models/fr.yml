@@ -2,7 +2,7 @@
 fr:
   models:
     api_secret:
-      api_limit_reached: La limite API de 20 clés secrètes par utilisateur a été atteinte.
+      api_limit_reached: La limite API de 10 clés secrètes par utilisateur a été atteinte.
     application_record:
       uninferrable: Impossible de déduire un décorateur pour %{class}.
     article:

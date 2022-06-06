@@ -6,8 +6,8 @@
      commits if your PR already received reviews or comments.
 
      Before submitting a Pull Request, please ensure you've done the following:
-     - 📖 Read the Forem Contributing Guide: https://github.com/forem/forem/blob/main/CONTRIBUTING.md#create-a-pull-request.
-     - 📖 Read the Forem Code of Conduct: https://github.com/forem/forem/blob/main/CODE_OF_CONDUCT.md.
+     - 📖 Read the Forem Contributing Guide: https://developers.forem.com/contributing-guide/forem#create-a-pull-request
+     - 📖 Read the Forem Code of Conduct: https://github.com/forem/forem/blob/main/CODE_OF_CONDUCT.md
      - 👷‍♀️ Create small PRs. In most cases this will be possible.
      - ✅ Provide tests for your changes.
      - 📝 Use descriptive commit messages.
@@ -91,3 +91,4 @@ will share this change with the people who need to know about it._
 ## [optional] What gif best describes this PR or how it makes you feel?
 
 ![alt_text](gif_link)
+

@@ -92,6 +92,10 @@ module Authorizer
       has_role?(:trusted)
     end
 
+    def moderator?
+      has_role?(:moderator)
+    end
+
     def podcast_admin_for?(podcast)
       has_role?(:podcast_admin, podcast)
     end

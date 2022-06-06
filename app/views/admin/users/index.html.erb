@@ -100,6 +100,13 @@
         <% end %>
       </tbody>
     </table>
+
+    <% if @users.empty? %>
+      <div class="align-center flex flex-col my-auto py-7" id="empty-state-message-id">
+        <p class="fs-xl fw-normal mb-2">No members found under these filters.</p>
+        <p class="color-secondary">Try broadening or removing the filters.</p>
+      </div>
+    <% end %>
     <!-- XL screen data view end -->
 
     <div class="flex justify-end xl:p-7">

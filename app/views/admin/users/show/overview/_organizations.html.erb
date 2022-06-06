@@ -8,7 +8,7 @@
 <% if @organization_memberships.load.empty? %>
   <div class="flex justify-between items-center gap-4">
     <p>Not part of any organization yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-trigger data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add organization</button>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization" data-user-name="<%= @user.name %>" data-user-id="<%= @user.id %>">Add organization</button>
   </div>
 <% else %>
 <%# Used for aria-describedby on input fields, placed here to avoid duplicate IDs when mapping over orgs %>
@@ -28,7 +28,7 @@
       </div>
       <div class="c-card__revealable shrink-0">
         <button type="button" class="c-btn c-btn--icon-alone" aria-label="Edit <%= org_membership.organization.name %> organization membership"
-          data-modal-trigger data-modal-title="Edit <%= @user.name %>'s role at an organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
+          data-modal-title="Edit <%= @user.name %>'s role at an organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon", aria_hidden: true) %>
         </button>
         <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
@@ -49,23 +49,14 @@
       <% end %>
     </div>
   <% end %>
-  <button class="c-btn c-btn--secondary whitespace-nowrap w-100" type="button" data-modal-trigger data-modal-title="Add <%= @user.name %> to an organization" data-modal-size="small" data-modal-content-selector="#add-organization">Add organization</button>
+  <button
+    class="c-btn c-btn--secondary whitespace-nowrap w-100"
+    type="button"
+    data-modal-title="Add <%= @user.name %> to an organization"
+    data-modal-size="small"
+    data-modal-content-selector="#add-organization"
+    data-user-name="<%= @user.name %>"
+    data-user-id="<%= @user.id %>">Add organization</button>
 <% end %>
 
-<div id="add-organization" class="hidden">
-  <%= form_with model: [:admin, OrganizationMembership.new], local: true, html: { class: "flex flex-col gap-4" } do |f| %>
-    <%= f.hidden_field :user_id, value: @user.id %>
-    <div class="crayons-field">
-      <%= f.label :organization_id, "Organization ID", class: "crayons-field__label" %>
-      <%= f.text_field :organization_id, class: "crayons-textfield", size: 8, required: true, inputmode: "numeric", type: "number", placeholder: "1234" %>
-    </div>
-    <div class="crayons-field">
-      <%= f.label :type_of_user, "Role", class: "crayons-field__label" %>
-          <p id="add-org-permission-description" class="crayons-field__description">You can assign <%= @user.name %> to be an Admin or a regular member.</p>
-      <%= f.select(:type_of_user, options_for_select(%w[member admin]), {}, class: "crayons-select", aria: { describedby: "add-org-permission-description" }) %>
-    </div>
-    <div>
-      <%= f.submit "Add organization", class: "c-btn c-btn--primary" %>
-    </div>
-  <% end %>
-</div>
+<%= render "admin/users/modals/add_organization_modal" %>
