@@ -84,7 +84,7 @@
       </h3>
     </header>
 
-    <% if current_user.any_admin? || @should_show_adjust_tags %>
+    <% if policy(@moderatable).allow_tag_adjustment? %>
       <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
@@ -101,7 +101,7 @@
       </button>
 
       <div id="adjust-tags-options" class="adjust-tags-options dropdown-options hidden">
-        <% if current_user.any_admin? %>
+        <% if policy(@moderatable).elevated_user? %>
           <% if @moderatable.tag_list.size < 4 %>
             <div class="add-tag-container">
               <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">

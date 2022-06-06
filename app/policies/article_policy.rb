@@ -144,13 +144,36 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin?
   end
 
+  def elevated_user?
+    user_any_admin? || user_moderator?
+  end
+
   # this method performs the same checks that determine
   # if the record can be featured
   def revoke_publication?
     require_user!
     return false unless @record.published?
 
-    user_any_admin? || user_moderator?
+    elevated_user?
+  end
+
+  def allow_tag_adjustment?
+    require_user!
+
+    elevated_user? || should_show_adjust_tags(@record)
+  end
+
+  def should_show_adjust_tags(record)
+    @tag_moderator_tags = Tag.with_role(:tag_moderator, @user)
+    @adjustments = TagAdjustment.where(article_id: record.id)
+    tag_mod_tag_ids = @tag_moderator_tags.ids
+    has_room_for_tags = record.tag_list.size < 4
+    has_no_relevant_adjustments = @adjustments.pluck(:tag_id).intersection(tag_mod_tag_ids).size.zero?
+    can_be_adjusted = record.tags.ids.intersection(tag_mod_tag_ids).size.positive?
+
+    tag_mod_tag_ids.size.positive? &&
+      ((has_room_for_tags && has_no_relevant_adjustments) ||
+      (!has_room_for_tags && has_no_relevant_adjustments && can_be_adjusted))
   end
 
   def destroy?
