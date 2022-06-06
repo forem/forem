@@ -13,35 +13,17 @@ const KEYS = {
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
 export const MultiInput = ({}) => {
-  const inputSizerRef = useRef(null);
   const inputRef = useRef(null);
 
   const [emails, setEmails] = useState(['dummy']);
 
   const handleBlur = ({ target: { value } }) => {
-    // When the input appears inline in "edit" mode, we need to dynamically calculate the width to ensure it occupies the right space
-    // (an input cannot resize based on its text content). We use a hidden <span> to track the size.
-    inputSizerRef.current.innerText = value;
-    // TODO: let's deal with it at a later point
-    // if (inputPosition !== null) {
-    //   resizeInputToContentSize();
-    // }
-
     addToList(value);
     clearSelection();
   };
 
   const addToList = (value) => {
-    // The spread operator is syntactic sugar for creating a new copy of a reference.
-    const dupEmails = [...emails];
-    dupEmails.push(value);
-    setEmails(dupEmails);
-
-    // another wya to do it.
-    // const handleAdd = (todo) => {
-    // setTodos([...todos, todo]);
-    // }
-    // console.log(emails)
+    setEmails([...emails, value]);
   };
 
   const handleKeyDown = (e) => {
@@ -63,14 +45,11 @@ export const MultiInput = ({}) => {
 
   // TODO: rename email to item everywhere
   const handleClick = (clickedItem) => {
-    // get the email that we're trying to remove
-    // find and remove the selected item from the array
     const newArr = emails.filter((item) => item !== clickedItem);
     setEmails(newArr);
   };
 
   const clearSelection = () => {
-    // TODO: Investigate is it better to use a ref or set state
     inputRef.current.value = '';
   };
 
@@ -82,24 +61,20 @@ export const MultiInput = ({}) => {
     >
       <div role="group" aria-label="two" class="flex mr-1 mb-1 w-max">
         <button
+          class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
           type="button"
-          class="c-btn c-input--multi__selected p-1 cursor-text"
-          aria-label="Edit two"
+          aria-disabled="false"
         >
           {email}
-        </button>
-        <button
-          type="button"
-          class="c-btn c-input--multi__selected p-1"
-          aria-label="Remove two"
-          onClick={() => handleClick(email)}
-        >
           <svg
-            class="crayons-icon"
-            width="24"
-            height="24"
+            class="crayons-icon c-pill__action-icon"
+            aria-hidden="true"
+            focusable="false"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
+            onClick={() => handleClick(email)}
           >
             <path d="m12 10.586 4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -111,11 +86,6 @@ export const MultiInput = ({}) => {
   return (
     <Fragment>
       <div>
-        <span
-          ref={inputSizerRef}
-          aria-hidden="true"
-          class="absolute pointer-events-none opacity-0 p-2"
-        />
         {/* TODO: */}
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label id="multi-input-label" className="">
