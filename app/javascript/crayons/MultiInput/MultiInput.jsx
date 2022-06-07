@@ -68,7 +68,6 @@ export const MultiInput = ({ placeholder }) => {
         <button
           class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
           type="button"
-          aria-disabled="false"
         >
           {item}
           <svg
