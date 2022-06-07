@@ -39,10 +39,10 @@ module Api
 
       def all_cache_instances_connected?
         [
-          ENV["REDIS_URL"],
-          ENV["REDIS_SESSIONS_URL"],
-          ENV["REDIS_SIDEKIQ_URL"],
-          ENV["REDIS_RPUSH_URL"],
+          ENV.fetch("REDIS_URL", nil),
+          ENV.fetch("REDIS_SESSIONS_URL", nil),
+          ENV.fetch("REDIS_SIDEKIQ_URL", nil),
+          ENV.fetch("REDIS_RPUSH_URL", nil),
         ].compact.all? do |url|
           Redis.new(url: url).ping == "PONG"
         end

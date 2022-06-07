@@ -53,7 +53,7 @@ Rails.application.configure do
   config.assets.digest = true
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  config.action_controller.asset_host = ENV["FASTLY_CDN_URL"]
+  config.action_controller.asset_host = ENV.fetch("FASTLY_CDN_URL", nil)
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
@@ -64,15 +64,15 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = ENV["LOG_LEVEL"] || :error
+  config.log_level = ENV.fetch("LOG_LEVEL", :error)
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
-  redis_url = ENV["REDISCLOUD_URL"]
-  redis_url ||= ENV["REDIS_URL"]
+  redis_url = ENV.fetch("REDISCLOUD_URL", nil)
+  redis_url ||= ENV.fetch("REDIS_URL", nil)
   default_expiration = 24.hours.to_i
   config.cache_store = :redis_cache_store, { url: redis_url, expires_in: default_expiration }
 
@@ -120,7 +120,7 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  protocol = ENV["APP_PROTOCOL"] || "http://"
+  protocol = ENV.fetch("APP_PROTOCOL", "http://")
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = false
@@ -128,7 +128,7 @@ Rails.application.configure do
 
   if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
     config.middleware.use Rack::HostRedirect,
-                          ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
+                          ENV.fetch("HEROKU_APP_URL", nil) => ENV.fetch("APP_DOMAIN", nil)
   end
 
   # Inserts middleware to perform automatic connection switching.
@@ -155,5 +155,5 @@ end
 # rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = {
-  protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
+  protocol: (ENV.fetch("APP_PROTOCOL", "http://")).delete_suffix("://")
 }

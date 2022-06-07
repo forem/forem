@@ -5,7 +5,7 @@ RSpec.describe MediumTag, type: :liquid_tag do
 
   before { Liquid::Template.register_tag("medium", described_class) }
 
-  let(:stubbed_scraper) { instance_double("MediumArticleRetrievalService") }
+  let(:stubbed_scraper) { instance_double(MediumArticleRetrievalService) }
   let(:medium_link) { "https://medium.com/@edisonywh/my-ruby-journey-hooking-things-up-91d757e1c59c" }
   let(:response) do
     {
