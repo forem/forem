@@ -1,0 +1,24 @@
+@import './forms';
+@import '../config/import';
+
+.c-input--multi {
+  &__wrapper-border:focus-within {
+    @extend %form-styling-focus;
+
+    .c-input--multi__input {
+      background-color: var(--form-bg-focus);
+    }
+  }
+
+  &__input {
+    background-color: var(--bg-color);
+    color: var(--body-color);
+    border: none;
+  }
+
+  &__wrapper-border {
+    .c-input--multi__input {
+      background-color: var(--form-bg);
+    }
+  }
+}
