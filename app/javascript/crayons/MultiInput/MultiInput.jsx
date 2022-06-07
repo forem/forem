@@ -11,7 +11,7 @@ const KEYS = {
 const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
 /**
- * Component allowing users to add multiple inputs that gets displayed as desctructive pills
+ * Component allowing users to add multiple entries for a given input field that get displayed as destructive pills
  *
  * @param {Object} props
  * @param {string} props.placeholder Input placeholder text
