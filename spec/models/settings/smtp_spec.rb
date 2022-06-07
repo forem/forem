@@ -5,7 +5,7 @@ RSpec.describe Settings::SMTP do
 
   before do
     allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with("SENDGRID_API_KEY").and_return(key)
+    allow(ENV).to receive(:fetch).with("SENDGRID_API_KEY", nil).and_return(key)
   end
 
   after do

@@ -1,11 +1,11 @@
 Vault.configure do |config|
   # The address of the Vault server, also read as
-  config.address = ENV["VAULT_ADDR"] || "http://127.0.0.1:8200"
+  config.address = ENV.fetch("VAULT_ADDR", "http://127.0.0.1:8200")
 
   # The policy token to authenticate with Vault
   # Each app will get its own policy https://learn.hashicorp.com/vault/getting-started/policies#overview
   # Each policy comes with its own token to give the app access to ONLY its secrets
-  config.token = ENV["VAULT_TOKEN"]
+  config.token = ENV.fetch("VAULT_TOKEN", nil)
 
   # Mimic Paths for communities
 
@@ -26,7 +26,7 @@ Vault.configure do |config|
   # config.ssl_pem_contents = "-----BEGIN ENCRYPTED..."
 
   # Use SSL verification, also read as ENV["VAULT_SSL_VERIFY"]
-  config.ssl_verify = ENV["VAULT_SSL_VERIFY"] || true
+  config.ssl_verify = ENV.fetch("VAULT_SSL_VERIFY", true)
 
   # Timeout the connection after a certain amount of time (seconds), also read
   # as ENV["VAULT_TIMEOUT"]

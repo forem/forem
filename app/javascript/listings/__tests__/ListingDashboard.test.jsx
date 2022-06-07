@@ -1,14 +1,18 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact';
+import {
+  render,
+  fireEvent,
+  cleanup,
+  screen,
+  within,
+} from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
+import '@testing-library/jest-dom';
 
 import '../../../assets/javascripts/utilities/localDateTime';
-
 import { ListingDashboard } from '../listingDashboard';
 
-const doc = new JSDOM('<!doctype html><html><body></body></html>');
-global.document = doc;
 const listingsForDataAttribute = [
   {
     id: 23,
@@ -62,9 +66,8 @@ const listingsForDataAttribute = [
     },
   },
 ];
-global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${JSON.stringify(
-  listingsForDataAttribute,
-)} data-usercredits="3" data-orglistings=${JSON.stringify([
+
+const orgListing = [
   {
     id: 24,
     bumped_at: '2019-06-11T16:59:16.312Z',
@@ -99,86 +102,27 @@ global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${J
         '/uploads/organization/profile_image/3/04d4e1f1-c2e0-4147-81e2-bc8a2657296b.png',
     },
   },
-])} data-orgs=${JSON.stringify([
+];
+
+const orgs = [
   { id: 2, name: 'Yoyodyne', slug: 'org3737', unspent_credits_count: 1 },
   { id: 3, name: 'Infotrode', slug: 'org5254', unspent_credits_count: 1 },
-])} ></div>`;
+];
+
+const doc = new JSDOM('<!doctype html><html><body></body></html>');
+global.document = doc;
+
+global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${JSON.stringify(
+  listingsForDataAttribute,
+)} data-usercredits="3" data-orglistings=${JSON.stringify(
+  orgListing,
+)} data-orgs=${JSON.stringify(orgs)} ></div>`;
 global.window = doc.defaultView;
 
 const listings = {
-  listings: [
-    {
-      id: 23,
-      bumped_at: '2019-06-11T16:45:37.229Z',
-      category: 'cfp',
-      location: 'New York City',
-      organization_id: null,
-      slug: 'asdfasdf-2ea8',
-      title: 'asdfasdf',
-      updated_at: '2019-06-11T16:45:37.237Z',
-      user_id: 11,
-      tag_list: [Array],
-      author: [Object],
-    },
-    {
-      id: 24,
-      bumped_at: '2019-06-11T16:59:16.312Z',
-      category: 'events',
-      location: 'Denver',
-      organization_id: 2,
-      slug: 'yoyoyoyoyoooooooo-4jcb',
-      title: 'YOYOYOYOYOOOOOOOO',
-      updated_at: '2019-06-11T16:59:16.316Z',
-      user_id: 11,
-      tag_list: [Array],
-      author: [Object],
-    },
-    {
-      id: 25,
-      bumped_at: '2019-06-11T17:01:25.143Z',
-      category: 'cfp',
-      location: 'Seattle',
-      organization_id: 3,
-      slug: 'hehhehe-5hld',
-      title: 'hehhehe',
-      updated_at: '2019-06-11T17:01:25.169Z',
-      user_id: 11,
-      tag_list: [],
-      author: [Object],
-    },
-  ],
-  orgListings: [
-    {
-      id: 24,
-      bumped_at: '2019-06-11T16:59:16.312Z',
-      category: 'events',
-      location: 'Denver',
-      organization_id: 2,
-      slug: 'yoyoyoyoyoooooooo-4jcb',
-      title: 'YOYOYOYOYOOOOOOOO',
-      updated_at: '2019-06-11T16:59:16.316Z',
-      user_id: 11,
-      tag_list: [Array],
-      author: [Object],
-    },
-    {
-      id: 25,
-      bumped_at: '2019-06-11T17:01:25.143Z',
-      category: 'cfp',
-      location: 'Seattle',
-      organization_id: 3,
-      slug: 'hehhehe-5hld',
-      title: 'hehhehe',
-      updated_at: '2019-06-11T17:01:25.169Z',
-      user_id: 11,
-      tag_list: [],
-      author: [Object],
-    },
-  ],
-  orgs: [
-    { id: 2, name: 'Yoyodyne', slug: 'org3737', unspent_credits_count: 1 },
-    { id: 3, name: 'Infotrode', slug: 'org5254', unspent_credits_count: 1 },
-  ],
+  listings: listingsForDataAttribute,
+  orgListings: orgListing,
+  orgs,
   userCredits: '3',
   selectedListings: 'user',
 };
@@ -186,171 +130,258 @@ const listings = {
 /* eslint-disable no-unused-vars */
 /* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
 
+const setup = () => {
+  return render(<ListingDashboard />);
+};
+
 describe('<ListingDashboard />', () => {
   afterAll(() => {
     delete globalThis.timestampToLocalDateTimeLong;
     delete globalThis.timestampToLocalDateTimeShort;
   });
 
-  it('should have no a11y violations', async () => {
-    const { container } = render(<ListingDashboard />);
-    const results = await axe(container);
+  beforeEach(setup);
 
-    expect(results).toHaveNoViolations();
+  describe('Acessbility check', () => {
+    beforeAll(cleanup);
+
+    it('should have no a11y violations', async () => {
+      const { container } = render(<ListingDashboard />);
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
+    });
   });
 
   it('should render for user and org buttons', () => {
-    const { getByText } = render(<ListingDashboard />);
-
-    getByText('Personal', { selector: '[role="button"]' });
-    const org1 = getByText(listings.orgs[0].name, {
-      selector: '[role="button"]',
+    const secondOrg = screen.getByRole('button', {
+      name: listings.orgs[1].name,
     });
-    getByText(listings.orgs[1].name, { selector: '[role="button"]' });
 
-    fireEvent.click(org1);
-
-    expect(org1.classList.contains('active')).toEqual(true);
+    expect(
+      screen.getByRole('button', { name: 'Personal' }),
+    ).toBeInTheDocument();
+    expect(secondOrg).toBeInTheDocument();
   });
 
-  it('should render for listing and credits header', () => {
-    const { getByText } = render(<ListingDashboard />);
+  it('should make button active when clicking on it', () => {
+    const firstOrg = screen.getByRole('button', {
+      name: listings.orgs[0].name,
+    });
+    fireEvent.click(firstOrg);
 
-    getByText('Listings', { selector: 'h3' });
+    expect(firstOrg.classList.contains('active')).toEqual(true);
+  });
 
-    const createListing = getByText('Create a Listing', { selector: 'a' });
+  it('should render listing and credits header with links', () => {
+    const listingHeading = screen.getByRole('heading', {
+      level: 3,
+      name: 'Listings',
+    });
+    const creditsHeading = screen.getByRole('heading', {
+      name: 'Credits',
+      level: 3,
+    });
+
+    const createListing = screen.getByRole('link', {
+      name: 'Create a Listing',
+    });
+    const buyCredits = screen.getByRole('link', { name: 'Buy Credits' });
+
+    expect(listingHeading).toBeInTheDocument();
+    expect(creditsHeading).toBeInTheDocument();
+    expect(createListing).toBeInTheDocument();
 
     expect(createListing.getAttribute('href')).toEqual('/listings/new');
-
-    getByText('Credits', { selector: 'h3' });
-
-    const buyCredits = getByText('Buy Credits', { selector: 'a' });
-
+    expect(buyCredits).toBeInTheDocument();
     expect(buyCredits.getAttribute('href')).toEqual('/credits/purchase');
   });
 
-  it('should render for listingRow view', () => {
-    const { getByText } = render(<ListingDashboard />);
+  describe('1st listing', () => {
+    it('should render the edit and delete buttons', () => {
+      const firstListing = screen.getByTestId('23');
+      const firstListingContainer = within(firstListing);
 
-    // 1st listing
-    const listing1GetByTextOptions = {
-      selector: '[data-listing-id="23"] *',
-    };
+      const editButton = firstListingContainer.getByRole('link', {
+        name: 'Edit',
+      });
 
-    getByText('asdfasdf (expired)', listing1GetByTextOptions);
-    getByText('Jun 11, 2019', listing1GetByTextOptions);
+      expect(editButton.nodeName).toEqual('A');
+      expect(editButton.getAttribute('href')).toEqual('/listings/23/edit');
 
-    // listing category
-    const listing1CfpCategory = getByText('cfp', listing1GetByTextOptions);
+      const deleteButton = firstListingContainer.getByRole('link', {
+        name: 'Delete',
+      });
 
-    expect(listing1CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
+      expect(deleteButton.nodeName).toEqual('A');
+      expect(deleteButton.getAttribute('href')).toEqual(
+        '/listings/cfp/asdfasdf-2ea8/delete_confirm',
+      );
+    });
 
-    // tags
-    const listing1ComputerScienceTag = getByText(
-      '#computerscience',
-      listing1GetByTextOptions,
-    );
+    it('should render the listing title and the time', () => {
+      const title = screen.getByRole('heading', {
+        name: 'asdfasdf (expired)',
+        level: 2,
+      });
+      const timer = screen.getByTitle('Tuesday, June 11, 2019, 4:45:37 PM');
 
-    expect(listing1ComputerScienceTag.getAttribute('href')).toEqual(
-      '/listings?t=computerscience',
-    );
+      expect(title).toBeInTheDocument();
+      expect(timer).toBeInTheDocument();
+    });
 
-    const careerTag = getByText('#career', listing1GetByTextOptions);
+    it('should render the listing category', () => {
+      const firstListing = screen.getByTestId('23');
+      const firstListingContainer = within(firstListing);
 
-    expect(careerTag.getAttribute('href')).toEqual('/listings?t=career');
+      const listing1CfpCategory = firstListingContainer.getByRole('link', {
+        name: 'cfp',
+      });
+      expect(listing1CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
+    });
 
-    // edit and delete buttons
-    const editButton = getByText('Edit', listing1GetByTextOptions);
+    it('should render the listing tags', () => {
+      const firstListing = screen.getByTestId('23');
+      const firstListingContainer = within(firstListing);
 
-    expect(editButton.nodeName).toEqual('A');
-    expect(editButton.getAttribute('href')).toEqual('/listings/23/edit');
+      const listing1ComputerScienceTag = firstListingContainer.getByRole(
+        'link',
+        { name: '#computerscience' },
+      );
+      expect(listing1ComputerScienceTag.getAttribute('href')).toEqual(
+        '/listings?t=computerscience',
+      );
 
-    const deleteButton = getByText('Delete', listing1GetByTextOptions);
+      const careerTag = firstListingContainer.getByRole('link', {
+        name: '#career',
+      });
+      expect(careerTag.getAttribute('href')).toEqual('/listings?t=career');
+    });
+  });
 
-    expect(deleteButton.nodeName).toEqual('A');
-    expect(deleteButton.getAttribute('href')).toEqual(
-      '/listings/cfp/asdfasdf-2ea8/delete_confirm',
-    );
+  describe('2nd listing', () => {
+    it('should render the edit and delete buttons', () => {
+      const secondListing = screen.getByTestId('24');
+      const secondListingContainer = within(secondListing);
 
-    // 2nd listing
-    const listing2GetByTextOptions = {
-      selector: '[data-listing-id="24"] *',
-    };
+      const listing2EditLink = secondListingContainer.getByRole('link', {
+        name: 'Edit',
+      });
 
-    getByText('YOYOYOYOYOOOOOOOO (expired)', listing2GetByTextOptions);
-    getByText('May 11, 2019', listing2GetByTextOptions);
+      expect(listing2EditLink.getAttribute('href')).toEqual(
+        '/listings/24/edit',
+      );
 
-    // listing category
-    const listing2EventsCategory = getByText(
-      'events',
-      listing2GetByTextOptions,
-    );
+      const listing2DeleteLink = secondListingContainer.getByRole('link', {
+        name: 'Delete',
+      });
 
-    expect(listing2EventsCategory.getAttribute('href')).toEqual(
-      '/listings/events',
-    );
+      expect(listing2DeleteLink.getAttribute('href')).toEqual(
+        '/listings/events/yoyoyoyoyoooooooo-4jcb/delete_confirm',
+      );
+    });
 
-    // tags
-    const listing2ComputerScienceTag = getByText(
-      '#computerscience',
-      listing2GetByTextOptions,
-    );
+    it('should render the listing title and the time', () => {
+      const title = screen.getByRole('heading', {
+        name: 'YOYOYOYOYOOOOOOOO (expired)',
+        level: 2,
+      });
+      const timer = screen.getByTitle('Tuesday, June 11, 2019, 4:45:37 PM');
 
-    expect(listing2ComputerScienceTag.getAttribute('href')).toEqual(
-      '/listings?t=computerscience',
-    );
+      expect(title).toBeInTheDocument();
+      expect(timer).toBeInTheDocument();
+    });
 
-    const listing2careerTag = getByText('#career', listing2GetByTextOptions);
+    it('should render the listing category', () => {
+      const secondListing = screen.getByTestId('24');
+      const secondListingContainer = within(secondListing);
 
-    expect(listing2careerTag.getAttribute('href')).toEqual(
-      '/listings?t=career',
-    );
+      const listing2EventsCategory = secondListingContainer.getByRole('link', {
+        name: 'events',
+      });
+      expect(listing2EventsCategory.getAttribute('href')).toEqual(
+        '/listings/events',
+      );
+    });
 
-    const conferenceTag = getByText('#conference', listing2GetByTextOptions);
+    it('should render the listing tags', () => {
+      const secondListing = screen.getByTestId('24');
+      const secondListingContainer = within(secondListing);
 
-    expect(conferenceTag.getAttribute('href')).toEqual(
-      '/listings?t=conference',
-    );
+      const listing2ComputerScienceTag = secondListingContainer.getByRole(
+        'link',
+        {
+          name: '#computerscience',
+        },
+      );
+      const listing2careerTag = secondListingContainer.getByRole('link', {
+        name: '#career',
+      });
+      const conferenceTag = secondListingContainer.getByRole('link', {
+        name: '#conference',
+      });
 
-    // edit and delete buttons
-    const listing2EditButton = getByText('Edit', listing2GetByTextOptions);
+      expect(listing2ComputerScienceTag.getAttribute('href')).toEqual(
+        '/listings?t=computerscience',
+      );
+      expect(listing2careerTag.getAttribute('href')).toEqual(
+        '/listings?t=career',
+      );
+      expect(conferenceTag.getAttribute('href')).toEqual(
+        '/listings?t=conference',
+      );
+    });
+  });
 
-    expect(listing2EditButton.getAttribute('href')).toEqual(
-      '/listings/24/edit',
-    );
+  describe('3rd listing', () => {
+    it('should render the edit and delete buttons', () => {
+      const thirdListing = screen.getByTestId('25');
+      const thirdListingContainer = within(thirdListing);
 
-    const listing2DeleteButton = getByText('Delete', listing2GetByTextOptions);
+      const listing3EditButton = thirdListingContainer.getByRole('link', {
+        name: 'Edit',
+      });
+      const listing3DeleteButton = thirdListingContainer.getByRole('link', {
+        name: 'Delete',
+      });
 
-    expect(listing2DeleteButton.getAttribute('href')).toEqual(
-      '/listings/events/yoyoyoyoyoooooooo-4jcb/delete_confirm',
-    );
+      expect(listing3EditButton.getAttribute('href')).toEqual(
+        '/listings/25/edit',
+      );
+      expect(listing3DeleteButton.getAttribute('href')).toEqual(
+        '/listings/cfp/hehhehe-5hld/delete_confirm',
+      );
+    });
 
-    // 3rd listing
-    const listing3GetByTextOptions = {
-      selector: '[data-listing-id="25"] *',
-    };
+    it('should render the listing title and the time', () => {
+      const title = screen.getByRole('heading', {
+        name: 'hehhehe (expired)',
+        level: 2,
+      });
+      const time = screen.getByTitle('Thursday, April 11, 2019, 5:01:25 PM');
 
-    getByText('hehhehe (expired)', listing3GetByTextOptions);
-    getByText('Apr 11, 2019', listing3GetByTextOptions);
+      expect(title).toBeInTheDocument();
+      expect(time).toBeInTheDocument();
+    });
 
-    // listing category
-    const listing3CfpCategory = getByText('cfp', listing3GetByTextOptions);
+    it('should render the listing category', () => {
+      const thirdListing = screen.getByTestId('25');
+      const thirdListingContainer = within(thirdListing);
 
-    expect(listing3CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
+      const listing3CfpCategory = thirdListingContainer.getByRole('link', {
+        name: 'cfp',
+      });
 
-    // has no tags
+      expect(listing3CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
+    });
 
-    //     // edit and delete buttons
-    const listing3EditButton = getByText('Edit', listing3GetByTextOptions);
+    it('should NOT render the listing tags', () => {
+      const thirdListing = screen.getByTestId('25');
+      const thirdListingContainer = within(thirdListing);
 
-    expect(listing3EditButton.getAttribute('href')).toEqual(
-      '/listings/25/edit',
-    );
-
-    const listing3DeleteButton = getByText('Delete', listing3GetByTextOptions);
-
-    expect(listing3DeleteButton.getAttribute('href')).toEqual(
-      '/listings/cfp/hehhehe-5hld/delete_confirm',
-    );
+      expect(
+        thirdListingContainer.queryByRole('link', { name: /#/ }),
+      ).not.toBeInTheDocument();
+    });
   });
 });

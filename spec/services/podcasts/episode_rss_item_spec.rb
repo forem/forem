@@ -3,19 +3,19 @@ require "rss"
 
 RSpec.describe Podcasts::EpisodeRssItem, type: :service do
   let(:enclosure) do
-    instance_double("RSS::Rss::Channel::Item::Enclosure", url: "https://audio.simplecast.com/2330f132.mp3")
+    instance_double(RSS::Rss::Channel::Item::Enclosure, url: "https://audio.simplecast.com/2330f132.mp3")
   end
   let(:guid) { "<guid isPermaLink=\"false\">http://podcast.example/file.mp3</guid>" }
   let(:item) do
-    instance_double("RSS::Rss::Channel::Item", pubDate: "2019-06-19",
-                                               enclosure: enclosure,
-                                               description: "yet another podcast",
-                                               title: "lightalloy's podcast",
-                                               guid: guid,
-                                               itunes_subtitle: "hello",
-                                               content_encoded: nil,
-                                               itunes_summary: "world",
-                                               link: "https://litealloy.ru")
+    instance_double(RSS::Rss::Channel::Item, pubDate: "2019-06-19",
+                                             enclosure: enclosure,
+                                             description: "yet another podcast",
+                                             title: "lightalloy's podcast",
+                                             guid: guid,
+                                             itunes_subtitle: "hello",
+                                             content_encoded: nil,
+                                             itunes_summary: "world",
+                                             link: "https://litealloy.ru")
   end
 
   describe "#new" do

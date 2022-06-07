@@ -114,7 +114,7 @@ RSpec.describe Podcast, type: :model do
       expect do
         create(:podcast_episode, reachable: false)
         create(:podcast, published: true)
-      end.to change(described_class.reachable, :count).by(0)
+      end.not_to change(described_class.reachable, :count)
     end
   end
 
@@ -130,13 +130,13 @@ RSpec.describe Podcast, type: :model do
       expect do
         create(:podcast_episode, reachable: false)
         create(:podcast, published: true)
-      end.to change(described_class.available, :count).by(0)
+      end.not_to change(described_class.available, :count)
     end
 
     it "is not available when it is not published" do
       expect do
         create(:podcast, published: false)
-      end.to change(described_class.available, :count).by(0)
+      end.not_to change(described_class.available, :count)
     end
   end
 

@@ -173,9 +173,9 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "auto-populates forem_owner_secret if included in querystring params" do
-        get new_user_registration_path(forem_owner_secret: ENV["FOREM_OWNER_SECRET"])
+        get new_user_registration_path(forem_owner_secret: ENV.fetch("FOREM_OWNER_SECRET", nil))
         expect(response.body).not_to include("New Forem Secret")
-        expect(response.body).to include(ENV["FOREM_OWNER_SECRET"])
+        expect(response.body).to include(ENV.fetch("FOREM_OWNER_SECRET", nil))
       end
 
       it "shows forem_owner_secret field if it's not included in querystring params" do

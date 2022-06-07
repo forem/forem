@@ -4,7 +4,7 @@ Rpush.configure do |config|
   config.client = :redis
 
   # Options passed to Redis.new
-  config.redis_options = { url: ENV["REDIS_RPUSH_URL"] || ENV["REDIS_URL"], driver: :ruby }
+  config.redis_options = { url: ENV.fetch("REDIS_RPUSH_URL") { ENV.fetch("REDIS_URL", nil) }, driver: :ruby }
 
   # Frequency in seconds to check for new notifications.
   config.push_poll = 2
@@ -59,7 +59,7 @@ Rpush.reflect do |on|
       tags: [
         "app_bundle:#{notification.app&.bundle_id}",
         "type:#{JSON.parse(notification.payload).dig('data', 'type') || 'unknown'}",
-        "host:#{ENV['APP_DOMAIN']}",
+        "host:#{ENV.fetch('APP_DOMAIN', nil)}",
       ],
     )
   end
@@ -82,7 +82,7 @@ Rpush.reflect do |on|
         "app_bundle:#{notification.app&.bundle_id}",
         "error_code:#{notification.error_code}",
         "error_description:#{notification.error_description}",
-        "host:#{ENV['APP_DOMAIN']}",
+        "host:#{ENV.fetch('APP_DOMAIN', nil)}",
       ],
     )
   end

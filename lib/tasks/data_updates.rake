@@ -12,7 +12,7 @@ namespace :data_updates do
 
       # Use the env variable to delay running data update scripts if your
       # deploy strategy requires it
-      DataUpdateWorker.perform_in(ENV["WORKERS_DATA_UPDATE_DELAY_SECONDS"] || default_delay)
+      DataUpdateWorker.perform_in(ENV.fetch("WORKERS_DATA_UPDATE_DELAY_SECONDS") { default_delay })
     end
   end
 

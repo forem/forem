@@ -40,7 +40,7 @@ module Settings
           port: 587,
           authentication: :plain,
           user_name: "apikey",
-          password: ENV["SENDGRID_API_KEY"],
+          password: ENV.fetch("SENDGRID_API_KEY", nil),
           domain: ::Settings::General.app_domain
         }
       end
