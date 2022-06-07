@@ -10,7 +10,7 @@ import { DateRangePicker } from '@crayons';
 
 export default {
   component: DateRangePicker,
-  title: 'BETA/DateRangePicker',
+  title: 'Components/Form Elements/DateRangePicker',
   argTypes: {
     startDateId: {
       description: 'A unique identifier for the start date input (required)',
