@@ -26,62 +26,24 @@ const getPeriodUntilToday = (today, period) => ({
   end: today.clone(),
 });
 
-const getLastFullCalendarMonth = (today) => {
-  const start = today.clone().startOf(PERIODS.MONTH);
-  const end = today.clone().endOf(PERIODS.MONTH);
-
-  const isTodayLastDayOfMonth = end.isSame(today.endOf(PERIODS.DAY));
-
-  if (!isTodayLastDayOfMonth) {
-    start.subtract(1, PERIODS.MONTH);
-    end.subtract(1, PERIODS.MONTH).endOf(PERIODS.MONTH);
-  }
-
-  return { start, end };
-};
-
-const getLastFullQuarter = (today) => {
-  const start = today.clone();
-  const end = today.clone().endOf(PERIODS.QUARTER);
-  const isTodayEndOfQuarter = end.isSame(today.endOf(PERIODS.DAY));
-
-  if (!isTodayEndOfQuarter) {
-    start.subtract(1, PERIODS.QUARTER);
-    end.subtract(1, PERIODS.QUARTER);
-  }
-
-  return {
-    start: start.startOf(PERIODS.QUARTER),
-    end: end.endOf(PERIODS.QUARTER),
-  };
-};
-
-const getLastFullYear = (today) => {
-  const start = today.clone().startOf(PERIODS.YEAR);
-  const end = today.clone().endOf(PERIODS.YEAR);
-  const isTodayEndOfYear = end.isSame(today.endOf(PERIODS.DAY));
-
-  if (!isTodayEndOfYear) {
-    start.subtract(1, PERIODS.YEAR);
-    end.subtract(1, PERIODS.YEAR);
-  }
-
-  return { start: start.startOf(PERIODS.YEAR), end: end.endOf(PERIODS.YEAR) };
-};
+const getLastFullPeriod = (today, period) => ({
+  start: today.clone().subtract(1, period).startOf(period),
+  end: today.clone().subtract(1, period).endOf(period),
+});
 
 export const getDateRangeStartAndEndDates = ({ today, dateRangeName }) => {
   switch (dateRangeName) {
     case MONTH_UNTIL_TODAY:
       return getPeriodUntilToday(today, PERIODS.MONTH);
     case LAST_FULL_MONTH:
-      return getLastFullCalendarMonth(today);
+      return getLastFullPeriod(today, PERIODS.MONTH);
     case QUARTER_UNTIL_TODAY:
       return getPeriodUntilToday(today, PERIODS.QUARTER);
     case LAST_FULL_QUARTER:
-      return getLastFullQuarter(today);
+      return getLastFullPeriod(today, PERIODS.QUARTER);
     case YEAR_UNTIL_TODAY:
       return getPeriodUntilToday(today, PERIODS.YEAR);
     case LAST_FULL_YEAR:
-      return getLastFullYear(today);
+      return getLastFullPeriod(today, PERIODS.YEAR);
   }
 };

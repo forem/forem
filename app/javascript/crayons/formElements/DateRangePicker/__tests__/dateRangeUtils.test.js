@@ -65,13 +65,13 @@ describe('dateRangeUtils', () => {
         dateRangeName: LAST_FULL_MONTH,
       });
 
-      expect(start.month()).toEqual(0);
+      expect(start.month()).toEqual(11);
       expect(start.date()).toEqual(1);
-      expect(start.year()).toEqual(2022);
+      expect(start.year()).toEqual(2021);
 
-      expect(end.month()).toEqual(0);
+      expect(end.month()).toEqual(11);
       expect(end.date()).toEqual(31);
-      expect(end.year()).toEqual(2022);
+      expect(end.year()).toEqual(2021);
     });
 
     it('returns start and end moments across months with different day numbers', () => {
@@ -161,7 +161,7 @@ describe('dateRangeUtils', () => {
 
   describe('Last full quarter', () => {
     it('returns start and end moments when today is last day of a quarter', () => {
-      const today = moment('2022-03-31');
+      const today = moment('2022-06-30');
       const { start, end } = getDateRangeStartAndEndDates({
         today,
         dateRangeName: LAST_FULL_QUARTER,
@@ -202,11 +202,11 @@ describe('dateRangeUtils', () => {
 
       expect(start.month()).toEqual(0);
       expect(start.date()).toEqual(1);
-      expect(start.year()).toEqual(2022);
+      expect(start.year()).toEqual(2021);
 
       expect(end.month()).toEqual(11);
       expect(end.date()).toEqual(31);
-      expect(end.year()).toEqual(2022);
+      expect(end.year()).toEqual(2021);
     });
 
     it('returns start and end moments when today is in the middle of a year', () => {
