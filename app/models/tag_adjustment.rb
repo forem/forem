@@ -18,10 +18,14 @@ class TagAdjustment < ApplicationRecord
     errors.add(:user_id, I18n.t("models.tag_adjustment.unpermitted")) unless has_privilege_to_adjust?
   end
 
+  def elevated_user?
+    user.any_admin? || user.moderator?
+  end
+
   def has_privilege_to_adjust?
     return false unless user
 
-    user.tag_moderator?(tag: tag) || user.any_admin?
+    user.tag_moderator?(tag: tag) || elevated_user?
   end
 
   def article_tag_list
