@@ -314,9 +314,9 @@ describe('<DateRangePicker />', () => {
         <DateRangePicker
           startDateId="start-date"
           endDateId="end-date"
-          minStartDate={new Date(2020, 0, 1)}
-          maxEndDate={new Date(2020, 0, 31)}
-          todaysDate={new Date(2020, 0, 31)}
+          minStartDate={new Date('2020-01-01')}
+          maxEndDate={new Date('2020-01-31')}
+          todaysDate={new Date('2020-01-31')}
         />,
       );
 
@@ -346,9 +346,9 @@ describe('<DateRangePicker />', () => {
         <DateRangePicker
           startDateId="start-date"
           endDateId="end-date"
-          minStartDate={new Date(2020, 0, 1)}
-          maxEndDate={new Date(2020, 0, 31)}
-          todaysDate={new Date(2020, 0, 31)}
+          minStartDate={new Date('2020-01-01')}
+          maxEndDate={new Date('2020-01-31')}
+          todaysDate={new Date('2020-01-31')}
         />,
       );
 

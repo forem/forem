@@ -96,7 +96,8 @@ const MonthYearPicker = ({
 };
 
 /**
- * Renders preset date ranges as 'quick select' buttons, if the range falls within the permitted dates
+ * Renders preset date ranges as 'quick select' buttons, if the range falls within the permitted dates.
+ * Possible preset ranges are defined in ./dateRangeUtils.js
  *
  * @param {[string]} presetRanges The preset range names requested
  * @param {Object} earliestMoment Moment object representing earliest permitted date
@@ -111,17 +112,17 @@ const PresetDateRangeOptions = ({
   onPresetSelected,
   today,
 }) => {
-  const presetsWithinPermittedDates = presetRanges.filter((rangeName) => {
-    const { start, end } = getDateRangeStartAndEndDates({
+  // Filter out any requested ranges which extend beyond the valid time period
+  const presetsWithinPermittedDates = presetRanges.filter((dateRangeName) => {
+    const { start: rangeStart, end: rangeEnd } = getDateRangeStartAndEndDates({
       today,
-      dateRangeName: rangeName,
+      dateRangeName,
     });
 
     return (
-      start.isSameOrAfter(earliestMoment) &&
-      start.isSameOrBefore(latestMoment) &&
-      end.isSameOrBefore(latestMoment) &&
-      end.isSameOrAfter(earliestMoment)
+      rangeStart.isSameOrBefore(rangeEnd) &&
+      rangeStart.isSameOrAfter(earliestMoment) &&
+      rangeEnd.isSameOrBefore(latestMoment)
     );
   });
 
