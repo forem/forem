@@ -60,7 +60,11 @@ module Admin
       Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
 
-      redirect_to admin_user_path(params[:id])
+      if request.path == admin_users_path
+        redirect_to admin_users_path
+      else
+        redirect_to admin_user_path(params[:id])
+      end
     end
 
     def destroy
