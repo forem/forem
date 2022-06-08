@@ -49,7 +49,7 @@ RSpec.describe "Admin awards badges", type: :system do
   it "does not award badges if no badge is selected", js: true do
     expect do
       sidekiq_perform_enqueued_jobs { award_no_badges }
-    end.to change { user.badges.count }.by(0)
+    end.not_to change { user.badges.count }
 
     expect(page).to have_content("Please choose a badge to award")
   end

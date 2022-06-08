@@ -1,0 +1,32 @@
+<div id="adjust-balance" class="hidden">
+  <%= form_with scope: :user, method: :patch, local: true, html: { class: "js-adjust-credits-form flex flex-col gap-4 fs-base" } do |f| %>
+    <div class="flex items-center gap-2 color-secondary">
+      <%= crayons_icon_tag(:wallet) %>
+      <p>
+        <span class="js-user-name"></span> currently has <span class="color-primary"><span class="js-unspent-credits-count"></span> credits</span>.
+      </p>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :credit_action, "Adjust balance", class: "crayons-field__label" %>
+      <div class="flex gap-2 items-center">
+        <%= f.select :credit_action, options_for_select(%w[Add]), {}, class: "js-credit-action crayons-select w-auto" %>
+        <%= f.text_field :credit_amount,
+                         type: "number",
+                         required: true,
+                         class: "js-credit-amount crayons-textfield w-auto",
+                         value: 1,
+                         size: 5,
+                         min: 1,
+                         max: 9999 %>
+      <%= f.label :credit_amount, "credits", class: "color-secondary flex-1", "aria-label": "Amount of credits to add or remove" %>
+      </div>
+    </div>
+    <div class="crayons-field">
+      <label for="balance-note" class="crayons-field__label">Add a note to this action:</label>
+      <%= f.text_area :new_note, id: "balance-note", size: 50, required: true, class: "crayons-textfield" %>
+    </div>
+    <div>
+      <button type="submit" class="c-btn c-btn--primary">Adjust balance</button>
+    </div>
+  <% end %>
+</div>

@@ -7,7 +7,7 @@ require "active_support/core_ext/integer/time"
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
-  config.app_domain = ENV["APP_DOMAIN"] || "test.host"
+  config.app_domain = ENV.fetch("APP_DOMAIN", "test.host")
 
   # Settings specified here will take precedence over those in config/application.rb.
 

@@ -78,7 +78,7 @@ describe('<ArticleCoverImage />', () => {
           onMainImageUrlChange={jest.fn()}
         />,
       );
-      expect(getByLabelText('Change')).toBeInTheDocument();
+      expect(getByLabelText('Change', { exact: false })).toBeInTheDocument();
       expect(getByRole('button', { name: 'Remove' })).toBeInTheDocument();
     });
 
@@ -95,7 +95,7 @@ describe('<ArticleCoverImage />', () => {
       expect(queryByText(/uploading.../i)).not.toBeInTheDocument();
       expect(queryByLabelText('Add a cover image')).not.toBeInTheDocument();
       expect(getByRole('img', { name: 'Post cover' })).toBeInTheDocument();
-      expect(getByLabelText('Change')).toBeInTheDocument();
+      expect(getByLabelText('Change', { exact: false })).toBeInTheDocument();
 
       const removeButton = getByRole('button', { name: 'Remove' });
       removeButton.click();
@@ -131,7 +131,7 @@ describe('<ArticleCoverImage />', () => {
       expect(getByRole('img', { name: 'Post cover' })).toBeInTheDocument();
       expect(getByRole('button', { name: /remove/i })).toBeInTheDocument();
 
-      const inputEl = getByLabelText('Change');
+      const inputEl = getByLabelText('Change', { exact: false });
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
         type: 'image/png',
       });
@@ -152,7 +152,7 @@ describe('<ArticleCoverImage />', () => {
       await waitForElementToBeRemoved(() => queryByText(/uploading.../i));
 
       expect(getByRole('img', { name: 'Post cover' })).toBeInTheDocument();
-      expect(getByLabelText('Change')).toBeInTheDocument();
+      expect(getByLabelText('Change', { exact: false })).toBeInTheDocument();
       expect(getByRole('button', { name: /remove/i })).toBeInTheDocument();
 
       expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
@@ -167,7 +167,7 @@ describe('<ArticleCoverImage />', () => {
         onMainImageUrlChange={onMainImageUrlChange}
       />,
     );
-    const inputEl = getByLabelText('Change');
+    const inputEl = getByLabelText('Change', { exact: false });
 
     // Check the input validation settings
     expect(inputEl.getAttribute('accept')).toEqual('image/*');

@@ -35,7 +35,7 @@ const StandardImageUpload = ({
 }) =>
   isUploadingImage ? null : (
     <Fragment>
-      <label className="cursor-pointer crayons-btn crayons-btn--outlined">
+      <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator">
         {uploadLabel}
         <input
           data-testid="cover-image-input"
@@ -46,6 +46,9 @@ const StandardImageUpload = ({
           className="screen-reader-only"
           data-max-file-size-mb="25"
         />
+        <span data-testid="tooltip" className="crayons-tooltip__content">
+          Use a ratio of 100:42 for best results.
+        </span>
       </label>
     </Fragment>
   );

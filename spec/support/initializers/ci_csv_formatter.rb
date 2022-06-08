@@ -66,7 +66,7 @@ class CSVFormatter
     with_headers = { write_headers: true, headers: HEADERS }
     CSV.open(csv_filename, "w", **with_headers) do |csv|
       (@rows + RSpecRetryFormatterHelper.instance.rows).each do |row|
-        row += [@suite_status, suite_runtime, ENV["TRAVIS_BUILD_WEB_URL"], ENV["TRAVIS_BRANCH"]]
+        row += [@suite_status, suite_runtime, ENV.fetch("TRAVIS_BUILD_WEB_URL", nil), ENV.fetch("TRAVIS_BRANCH", nil)]
         csv << row
       end
     end

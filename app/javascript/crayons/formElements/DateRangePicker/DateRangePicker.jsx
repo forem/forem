@@ -11,7 +11,8 @@ import {
   VERTICAL_ORIENTATION,
   HORIZONTAL_ORIENTATION,
 } from 'react-dates/constants';
-import { Icon } from '@crayons';
+import { getDateRangeStartAndEndDates, RANGE_LABELS } from './dateRangeUtils';
+import { Icon, ButtonNew as Button } from '@crayons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
 import Calendar from '@images/calendar.svg';
@@ -32,6 +33,14 @@ const MONTH_NAMES = [...Array(12).keys()].map((key) =>
 const isDateOutsideOfRange = ({ date, minDate, maxDate }) =>
   !date.isBetween(minDate, maxDate);
 
+/**
+ * Renders select elements allowing a user to jump to a given month/year
+ * @param {Object} earliestMoment Moment object representing the earliest permitted date
+ * @param {Object} latestMoment Moment object representing the latest permitted date
+ * @param {Function} onMonthSelect Callback passed by react-dates library
+ * @param {Function} onYearSelect Callback passed by react-dates library
+ * @param {Object} month Moment object passed by react-dates library, representing the currently visible calendar
+ */
 const MonthYearPicker = ({
   earliestMoment,
   latestMoment,
@@ -87,6 +96,63 @@ const MonthYearPicker = ({
 };
 
 /**
+ * Renders preset date ranges as 'quick select' buttons, if the range falls within the permitted dates.
+ * Possible preset ranges are defined in ./dateRangeUtils.js
+ *
+ * @param {[string]} presetRanges The preset range names requested
+ * @param {Object} earliestMoment Moment object representing earliest permitted date
+ * @param {Object} latestMoment Moment object representing latest permitted date
+ * @param {Function} onPresetSelected Callback which will receive start and end dates of selected preset
+ * @param {Object} today Moment object representing today's date
+ */
+const PresetDateRangeOptions = ({
+  presetRanges = [],
+  earliestMoment,
+  latestMoment,
+  onPresetSelected,
+  today,
+}) => {
+  // Filter out any requested ranges which extend beyond the valid time period
+  const presetsWithinPermittedDates = presetRanges.filter((dateRangeName) => {
+    const { start: rangeStart, end: rangeEnd } = getDateRangeStartAndEndDates({
+      today,
+      dateRangeName,
+    });
+
+    return (
+      rangeStart.isSameOrBefore(rangeEnd) &&
+      rangeStart.isSameOrAfter(earliestMoment) &&
+      rangeEnd.isSameOrBefore(latestMoment)
+    );
+  });
+
+  if (presetsWithinPermittedDates.length === 0) {
+    return null;
+  }
+
+  return (
+    <ul className="flex flex-wrap p-3">
+      {presetsWithinPermittedDates.map((rangeName) => (
+        <li key={`quick-select-${rangeName}`}>
+          <Button
+            onClick={() => {
+              onPresetSelected(
+                getDateRangeStartAndEndDates({
+                  today,
+                  dateRangeName: rangeName,
+                }),
+              );
+            }}
+          >
+            {RANGE_LABELS[rangeName]}
+          </Button>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+/**
  * Used to facilitate picking a date range. This component is a wrapper around the one provided from react-dates.
  *
  * @param {Object} props
@@ -97,6 +163,8 @@ const MonthYearPicker = ({
  * @param {Date} props.maxEndDate The latest date that may be selected
  * @param {Date} props.minStartDate The oldest date that may be selected
  * @param {Function} props.onDatesChanged Callback function for when dates are selected. Receives an object with startDate and endDate values.
+ * @param {[string]} props.presetRanges Quick-select preset date ranges to offer in the calendar. These will only be shown if they fall within the min and max dates.
+ * @param {Date} props.todaysDate Optional param to pass in today's Date, primarily for testing purposes
  */
 export const DateRangePicker = ({
   startDateId,
@@ -106,6 +174,8 @@ export const DateRangePicker = ({
   maxEndDate = new Date(),
   minStartDate = new Date(),
   onDatesChanged,
+  presetRanges = [],
+  todaysDate = new Date(),
 }) => {
   const [focusedInput, setFocusedInput] = useState(START_DATE);
   const [startMoment, setStartMoment] = useState(
@@ -120,14 +190,15 @@ export const DateRangePicker = ({
     `(max-width: ${BREAKPOINTS.Medium - 1}px)`,
   );
 
-  const earliestMoment = moment(minStartDate);
-  const latestMoment = moment(maxEndDate);
+  const earliestMoment = moment(minStartDate).startOf('day');
+  const latestMoment = moment(maxEndDate).endOf('day');
 
   const isMonthSameAsLatestMonth = (relevantDate) =>
     relevantDate.year() === latestMoment.year() &&
     relevantDate.month() === latestMoment.month();
 
-  const today = moment();
+  const today = moment(todaysDate);
+
   const dateFormat =
     getCurrentLocale().toLowerCase() === 'en-us' ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
 
@@ -137,8 +208,10 @@ export const DateRangePicker = ({
       <ReactDateRangePicker
         startDateId={startDateId}
         startDate={startMoment}
+        startDateAriaLabel={`Start date (${dateFormat})`}
         endDate={endMoment}
         endDateId={endDateId}
+        endDateAriaLabel={`End date (${dateFormat})`}
         startDatePlaceholderText={dateFormat}
         endDatePlaceholderText={dateFormat}
         displayFormat={dateFormat}
@@ -150,11 +223,7 @@ export const DateRangePicker = ({
         minDate={earliestMoment}
         maxDate={latestMoment}
         initialVisibleMonth={() => {
-          let relevantDate = startMoment;
-
-          if (!relevantDate) {
-            relevantDate = latestMoment ? latestMoment : today;
-          }
+          const relevantDate = startMoment ? startMoment : today;
 
           return isMonthSameAsLatestMonth(relevantDate)
             ? relevantDate.clone().subtract(1, 'month')
@@ -181,8 +250,8 @@ export const DateRangePicker = ({
           setStartMoment(startDate);
           setEndMoment(endDate);
           onDatesChanged?.({
-            startDate: startDate.toDate(),
-            endDate: endDate.toDate(),
+            startDate: startDate?.toDate(),
+            endDate: endDate?.toDate(),
           });
         }}
         small={useCompactLayout}
@@ -191,6 +260,20 @@ export const DateRangePicker = ({
             earliestMoment={earliestMoment}
             latestMoment={latestMoment}
             {...props}
+          />
+        )}
+        renderCalendarInfo={() => (
+          <PresetDateRangeOptions
+            presetRanges={presetRanges}
+            earliestMoment={earliestMoment}
+            latestMoment={latestMoment}
+            today={today}
+            onPresetSelected={({ start, end }) => {
+              setStartMoment(start);
+              setEndMoment(end);
+              // Force the calendar to close, same as if user clicks an end date manually
+              setFocusedInput(false);
+            }}
           />
         )}
       />
@@ -206,4 +289,5 @@ DateRangePicker.propTypes = {
   maxStartDate: PropTypes.instanceOf(Date),
   maxEndDate: PropTypes.instanceOf(Date),
   onDatesChanged: PropTypes.func,
+  presetRanges: PropTypes.arrayOf(PropTypes.string),
 };

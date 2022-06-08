@@ -55,7 +55,7 @@ RSpec.describe Users::Delete, type: :service do
 
     expect do
       described_class.call(user)
-    end.to change(AuditLog, :count).by(0)
+    end.not_to change(AuditLog, :count)
 
     expect(audit_log.reload.user_id).to be_nil
   end
