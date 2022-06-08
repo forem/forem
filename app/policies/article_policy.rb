@@ -149,7 +149,8 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   # this method performs the same checks that determine
-  # if the record can be featured
+  # if the record can be featured or if user can adjust
+  # any tag
   def revoke_publication?
     require_user!
     return false unless @record.published?
@@ -160,28 +161,23 @@ class ArticlePolicy < ApplicationPolicy
   def allow_tag_adjustment?
     require_user!
 
-    elevated_user? || should_show_adjust_tags(@record)
+    elevated_user? || tag_moderator_user?
   end
 
-  # If this comes back false, the tags that display
-  # are just those that the user is a tag-mod for
-  def adjust_all_tags?
-    require_user!
+  # I need to really study what this does
+  def tag_moderator_user?
+    tag_moderator_tags = Tag.with_role(:tag_moderator, @user)
+    adjustments = TagAdjustment.where(article_id: @record.id)
+    tag_mod_tag_ids = tag_moderator_tags.ids
+    has_room_for_tags = @record.tag_list.size < 4
+    # ensures that mods cannot adjust an already-adjusted tag
+    has_no_relevant_adjustments = adjustments.pluck(:tag_id).intersection(tag_mod_tag_ids).size.zero?
+    can_be_adjusted = @record.tags.ids.intersection(tag_mod_tag_ids).size.positive?
 
-    elevated_user?
-  end
+    tags_can_be_added = has_room_for_tags && has_no_relevant_adjustments
+    tags_can_be_removed = !has_room_for_tags && has_no_relevant_adjustments && can_be_adjusted
 
-  def should_show_adjust_tags(record)
-    @tag_moderator_tags = Tag.with_role(:tag_moderator, @user)
-    @adjustments = TagAdjustment.where(article_id: record.id)
-    tag_mod_tag_ids = @tag_moderator_tags.ids
-    has_room_for_tags = record.tag_list.size < 4
-    has_no_relevant_adjustments = @adjustments.pluck(:tag_id).intersection(tag_mod_tag_ids).size.zero?
-    can_be_adjusted = record.tags.ids.intersection(tag_mod_tag_ids).size.positive?
-
-    tag_mod_tag_ids.size.positive? &&
-      ((has_room_for_tags && has_no_relevant_adjustments) ||
-      (!has_room_for_tags && has_no_relevant_adjustments && can_be_adjusted))
+    tag_mod_tag_ids.size.positive? && (tags_can_be_added || tags_can_be_removed)
   end
 
   def destroy?
@@ -208,6 +204,8 @@ class ArticlePolicy < ApplicationPolicy
   alias admin_featured_toggle? revoke_publication?
 
   alias toggle_featured_status? revoke_publication?
+
+  alias can_adjust_any_tag? revoke_publication?
 
   # Due to the associated controller method "admin_unpublish", we
   # alias "admin_ubpublish" to the "revoke_publication" method.
