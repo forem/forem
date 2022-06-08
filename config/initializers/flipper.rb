@@ -1,6 +1,6 @@
 Flipper.configure do |config|
   config.default do
-    adapter = if (cache_duration = ENV["CACHE_FEATURE_FLAGS_SECONDS"])
+    adapter = if (cache_duration = ENV.fetch("CACHE_FEATURE_FLAGS_SECONDS", nil))
                 Flipper::Adapters::ActiveSupportCacheStore.new(
                   Flipper::Adapters::ActiveRecord.new,
                   ActiveSupport::Cache::MemoryStore.new(expires_in: cache_duration.to_i.seconds),

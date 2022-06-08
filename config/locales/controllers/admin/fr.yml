@@ -4,6 +4,7 @@ fr:
     articles_controller:
       saved: Article saved!
       pinned: Article Pinned!
+      unpinned: Article Unpinned!
     badge_achievements_controller:
       deleted: Badge achievement has been deleted!
       rewarded: Badges are being rewarded. The task will finish shortly.

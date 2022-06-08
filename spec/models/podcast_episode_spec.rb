@@ -62,14 +62,14 @@ RSpec.describe PodcastEpisode, type: :model do
     it "is not available when unreachable" do
       expect do
         create(:podcast_episode, podcast: podcast, reachable: false)
-      end.to change(described_class.available, :count).by(0)
+      end.not_to change(described_class.available, :count)
     end
 
     it "is not available when podcast is unpublished" do
       expect do
         podcast = create(:podcast, published: false)
         create(:podcast_episode, podcast: podcast)
-      end.to change(described_class.available, :count).by(0)
+      end.not_to change(described_class.available, :count)
     end
   end
 
