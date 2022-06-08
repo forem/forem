@@ -127,6 +127,18 @@ RSpec.describe ArticlePolicy do
     it_behaves_like "disallowed roles", to: %i[trusted], limit_post_creation_to_admins?: true
   end
 
+  describe "#allow_tag_adjustment?" do
+    let(:policy_method) { :allow_tag_adjustment? }
+    let(:tag_mod) { create(:user, :tag_moderator) }
+    let(:tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
+    # need "create" (as opposed to "build") for the article to be published
+    let(:resource) { create(:article, tags: tag, user: author, organization: organization) }
+
+    it_behaves_like "it requires an authenticated user"
+    it_behaves_like "permitted roles", to: %i[super_admin admin moderator tag_mod]
+    it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
+  end
+
   %i[update? edit?].each do |method_name|
     describe "##{method_name}" do
       let(:policy_method) { method_name }
@@ -154,7 +166,8 @@ RSpec.describe ArticlePolicy do
     it_behaves_like "disallowed roles", to: %i[admin org_admin other_users]
   end
 
-  %i[admin_unpublish? admin_featured_toggle? revoke_publication? toggle_featured_status?].each do |method_name|
+  %i[admin_unpublish? admin_featured_toggle? revoke_publication? toggle_featured_status?
+     allow_tag_adjustment?].each do |method_name|
     describe "##{method_name}" do
       let(:policy_method) { method_name }
 

@@ -101,7 +101,7 @@
       </button>
 
       <div id="adjust-tags-options" class="adjust-tags-options dropdown-options hidden">
-        <% if policy(@moderatable).elevated_user? %>
+        <% if policy(@moderatable).adjust_all_tags? %>
           <% if @moderatable.tag_list.size < 4 %>
             <div class="add-tag-container">
               <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">

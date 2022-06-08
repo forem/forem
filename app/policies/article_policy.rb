@@ -163,6 +163,14 @@ class ArticlePolicy < ApplicationPolicy
     elevated_user? || should_show_adjust_tags(@record)
   end
 
+  # If this comes back false, the tags that display
+  # are just those that the user is a tag-mod for
+  def adjust_all_tags?
+    require_user!
+
+    elevated_user?
+  end
+
   def should_show_adjust_tags(record)
     @tag_moderator_tags = Tag.with_role(:tag_moderator, @user)
     @adjustments = TagAdjustment.where(article_id: record.id)
