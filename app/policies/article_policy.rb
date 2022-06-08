@@ -164,7 +164,6 @@ class ArticlePolicy < ApplicationPolicy
     elevated_user? || tag_moderator_user?
   end
 
-  # I need to really study what this does
   def tag_moderator_user?
     tag_moderator_tags = Tag.with_role(:tag_moderator, @user)
     adjustments = TagAdjustment.where(article_id: @record.id)
