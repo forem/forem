@@ -19,6 +19,7 @@ FactoryBot.define do
       with_user_subscription_tag { false }
       with_title { true }
       with_collection { nil }
+      past_published_at { Time.current }
     end
     co_author_ids { [] }
     association :user, factory: :user, strategy: :create
@@ -69,5 +70,11 @@ FactoryBot.define do
 
   trait :with_discussion_lock do
     after(:create) { |article| create(:discussion_lock, locking_user_id: article.user_id, article_id: article.id) }
+  end
+
+  trait :past do
+    after(:create) do |article, evaluator|
+      article.update_column(:published_at, evaluator.past_published_at)
+    end
   end
 end

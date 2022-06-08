@@ -128,13 +128,9 @@ RSpec.describe Articles::Builder, type: :service do
 
   context "when user_editor_v1" do
     let(:user) { create(:user) }
-    let(:correct_attributes) do
-      body = "---\ntitle: \npublished: false\ndescription: " \
-             "\ntags: \n# cover_image: https://direct_url_to_image.jpg" \
-             "\n# Use a ratio of 100:42 for best results.\n---\n\n"
 
+    let(:correct_attributes) do
       {
-        body_markdown: body,
         processed_html: "",
         user_id: user.id
       }
@@ -146,6 +142,17 @@ RSpec.describe Articles::Builder, type: :service do
 
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
+
+      date = Time.current.strftime("%Y-%m-%d")
+      zone = Time.current.strftime("%z")
+
+      body_start = "---\ntitle: \npublished: false\ndescription: " \
+                   "\ntags: \n# cover_image: https://direct_url_to_image.jpg" \
+                   "\n# Use a ratio of 100:42 for best results.\n//published_at: #{date} "
+
+      expect(subject.body_markdown).to start_with(body_start)
+      expect(subject.body_markdown).to end_with("#{zone}\n---\n\n")
+
       expect(needs_authorization).to be false
     end
   end

@@ -20,7 +20,7 @@ module Articles
       if update_published_at
         hash[:published_at] = Time.current
       elsif hash[:published_at]
-        hash[:published_at].to_datetime
+        hash[:published_at] = hash[:published_at].to_datetime
       end
       hash
     end
