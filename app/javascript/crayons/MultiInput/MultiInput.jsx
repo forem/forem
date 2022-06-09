@@ -1,6 +1,6 @@
 import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'preact/hooks';
+import { useRef, useState, useEffect } from 'preact/hooks';
 // TODO: change the path to a shared component
 import { DefaultSelectionTemplate } from '../MultiSelectAutocomplete/DefaultSelectionTemplate';
 
@@ -28,8 +28,29 @@ export const MultiInput = ({
   const [items, setItems] = useState([]);
 
   // TODO: possibly refactor into a reducer
-  // const [editValue, setEditValue] = useState(null)
-  // const [inputPosition, setInputPosition] = useState(null)
+  const [editValue, setEditValue] = useState(null)
+  const [inputPosition, setInputPosition] = useState(null)
+
+
+  useEffect(() => {
+    // editValue defaults to null when component is first rendered.
+    // This ensures we do not autofocus the input before the user has started interacting with the component.
+    if (editValue === null) {
+      return;
+    }
+
+    const { current: input } = inputRef;
+    if (input && inputPosition !== null) {
+      // Entering 'edit' mode
+      // resizeInputToContentSize();
+      input.value = editValue;
+      const { length: cursorPosition } = editValue;
+      input.focus();
+      // this will set the cursor position at the end of the text.
+      input.setSelectionRange(cursorPosition, cursorPosition);
+    }
+  }, [inputPosition, editValue]);
+
 
   const handleBlur = ({ target: { value } }) => {
     addItemToList(value);
@@ -115,11 +136,9 @@ export const MultiInput = ({
   })
 
   const enterEditState = (editItem, editItemIndex) => {
-    console.log("editing")
     deselectItem(editItem);
-    // setEditValue(editItem);
-    // setInputPosition(editItemIndex);
-    inputRef.current.value = editItem;
+    setEditValue(editItem);
+    setInputPosition(editItemIndex);
   }
 
 
