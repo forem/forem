@@ -104,7 +104,7 @@ module Admin
         flash[:danger] = e.message
       end
 
-      if request.referer&.include?(params[:id])
+      if request.referer&.include?(admin_user_path(params[:id]))
         redirect_to admin_user_path(params[:id])
       else
         redirect_to admin_users_path
