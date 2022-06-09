@@ -1,5 +1,8 @@
 import { h, Fragment } from 'preact';
+import PropTypes from 'prop-types';
 import { useRef, useState } from 'preact/hooks';
+// TODO: change the path to a shared component
+import { DefaultSelectionTemplate } from '../MultiSelectAutocomplete/DefaultSelectionTemplate';
 
 const KEYS = {
   ENTER: 'Enter',
@@ -17,7 +20,10 @@ const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
  * @param {string} props.placeholder Input placeholder text
  */
 
-export const MultiInput = ({ placeholder }) => {
+export const MultiInput = ({
+  placeholder,
+  SelectionTemplate = DefaultSelectionTemplate,
+}) => {
   const inputRef = useRef(null);
   const [items, setItems] = useState([]);
 
@@ -58,6 +64,7 @@ export const MultiInput = ({ placeholder }) => {
     inputRef.current.value = '';
   };
 
+  // TODO: remove once we use the shared component
   const listItems = items.map((item, index) => (
     <li
       key={index}
@@ -87,12 +94,36 @@ export const MultiInput = ({ placeholder }) => {
     </li>
   ));
 
+  const allSelectedItemElements = items.map((item, index) => {
+    return (
+      <li
+        key={index}
+        className="c-autocomplete--multi__selection-list-item w-max"
+        style={{ order: 1 }}
+      >
+        <SelectionTemplate
+          name = {item}
+          onEdit={() => enterEditState(item, index)}
+          onDeselect={() => deselectItem(item)}
+       />
+      </li>
+    )
+  })
+
+  const enterEditState = (item, index) => {
+    // console.log("edit");
+  }
+
+  const deselectItem = (item) => {
+    // console.log("deselect")
+  }
+
   return (
     <Fragment>
       <div class="c-input--multi relative">
         <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text pb-9">
           <ul class="list-none flex flex-wrap w-100">
-            {listItems}
+            {allSelectedItemElements}
             <li class="self-center" style="order: 3;">
               <input
                 autocomplete="off"
@@ -109,4 +140,9 @@ export const MultiInput = ({ placeholder }) => {
       </div>
     </Fragment>
   );
+};
+
+MultiInput.propTypes = {
+  placeholder: PropTypes.string,
+  SelectionTemplate: PropTypes.func,
 };
