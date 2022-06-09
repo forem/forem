@@ -59,6 +59,8 @@ module Authentication
         log_to_datadog = new_identity && successful_save
         id_provider = identity.provider
 
+        user.skip_confirmation!
+
         flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
 
         user.save!
