@@ -165,17 +165,21 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def tag_moderator_eligible?
-    adjustments = TagAdjustment.where(article_id: @record.id)
     tag_ids_moderated_by_user = Tag.with_role(:tag_moderator, @user).ids
+    return false unless tag_ids_moderated_by_user.size.positive?
+
+    adjustments = TagAdjustment.where(article_id: @record.id)
     has_room_for_tags = @record.tag_list.size < 4
     # ensures that mods cannot adjust an already-adjusted tag
     has_no_relevant_adjustments = adjustments.pluck(:tag_id).intersection(tag_ids_moderated_by_user).size.zero?
+
+    # tag_mod can add their moderated tags
+    return true if has_room_for_tags && has_no_relevant_adjustments
+
     authorized_to_adjust = @record.tags.ids.intersection(tag_ids_moderated_by_user).size.positive?
 
-    tags_can_be_added = has_room_for_tags && has_no_relevant_adjustments
-    tags_can_be_removed = !has_room_for_tags && has_no_relevant_adjustments && authorized_to_adjust
-
-    tag_ids_moderated_by_user.size.positive? && (tags_can_be_added || tags_can_be_removed)
+    # tag_mod can remove their moderated tags
+    !has_room_for_tags && has_no_relevant_adjustments && authorized_to_adjust
   end
 
   def destroy?

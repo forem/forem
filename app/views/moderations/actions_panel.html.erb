@@ -84,6 +84,7 @@
       </h3>
     </header>
 
+    <%# Checking if the user should see the "Adjust tags" dropdown %>
     <% if policy(@moderatable).allow_tag_adjustment? %>
       <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
         <div class="label-wrapper">
@@ -116,7 +117,7 @@
               </div>
             </button>
           <% end %>
-        <% else %>
+        <% elsif policy(@moderatable).tag_moderator_eligible? %>
           <% @tag_moderator_tags.each do |tag| %>
             <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
             <% subtract_or_plus_title = t("views.moderations.actions.adjust.#{subtract_or_plus == 'subtract' ? 'remove' : 'add'}") %>
