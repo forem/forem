@@ -59,7 +59,7 @@ RSpec.describe "UserSubscriptions", type: :request do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
              params: { user_subscription: invalid_source_type_attributes }.to_json
-      end.to change(UserSubscription, :count).by(0)
+      end.not_to change(UserSubscription, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to include("Invalid source_type.")
@@ -71,7 +71,7 @@ RSpec.describe "UserSubscriptions", type: :request do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
              params: { user_subscription: invalid_source_attributes }.to_json
-      end.to change(UserSubscription, :count).by(0)
+      end.not_to change(UserSubscription, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to include("Source not found.")
@@ -86,7 +86,7 @@ RSpec.describe "UserSubscriptions", type: :request do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
              params: { user_subscription: invalid_source_attributes }.to_json
-      end.to change(UserSubscription, :count).by(0)
+      end.not_to change(UserSubscription, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to include("Source not found. Please make sure your Article is active!")
@@ -100,7 +100,7 @@ RSpec.describe "UserSubscriptions", type: :request do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
              params: { user_subscription: invalid_source_attributes }.to_json
-      end.to change(UserSubscription, :count).by(0)
+      end.not_to change(UserSubscription, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to include("User subscriptions are not enabled for the source.")
@@ -124,7 +124,7 @@ RSpec.describe "UserSubscriptions", type: :request do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
              params: { user_subscription: invalid_source_attributes }.to_json
-      end.to change(UserSubscription, :count).by(0)
+      end.not_to change(UserSubscription, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to include("Subscriber has already been taken")
@@ -140,7 +140,7 @@ RSpec.describe "UserSubscriptions", type: :request do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
              params: { user_subscription: invalid_source_attributes }.to_json
-      end.to change(UserSubscription, :count).by(0)
+      end.not_to change(UserSubscription, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to include("Subscriber email mismatch.")
@@ -155,7 +155,7 @@ RSpec.describe "UserSubscriptions", type: :request do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
              params: { user_subscription: valid_source_attributes }.to_json
-      end.to change(UserSubscription, :count).by(0)
+      end.not_to change(UserSubscription, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       error_message = "Subscriber email Can't subscribe with an Apple private relay. Please update email."

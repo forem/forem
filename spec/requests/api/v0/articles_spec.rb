@@ -1021,7 +1021,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
             body_markdown: "Yo ho ho",
             series: collection.slug,
           )
-        end.to change(Collection, :count).by(0)
+        end.not_to change(Collection, :count)
         expect(response).to have_http_status(:ok)
         expect(article.reload.collection).to eq(collection)
       end
