@@ -189,9 +189,6 @@
     <% if policy(@moderatable).can_perform_moderator_actions? %>
       <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
         <div class="label-wrapper">
-          <div class="icon circle centered-icon">
-            <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
-          </div>
           <header>
             <h2><%= t("views.moderations.actions.admin.heading") %></h2>
             <h3><%= t("views.moderations.actions.admin.subtitle", user: user_username) %></h3>
