@@ -88,11 +88,16 @@ export const MultiInput = ({
   };
 
   const allSelectedItemElements = items.map((item, index) => {
+    // When we are in "edit mode" we visually display the input between the other selections
+    const defaultPosition = index + 1;
+    const appearsBeforeInput = inputPosition === null || index < inputPosition;
+    const position = appearsBeforeInput ? defaultPosition : defaultPosition + 1;
+
     return (
       <li
         key={index}
         className="c-autocomplete--multi__selection-list-item w-max"
-        style={{ order: 1 }}
+        style={{ order: position }}
       >
         <SelectionTemplate
           name={item}
@@ -115,7 +120,13 @@ export const MultiInput = ({
         <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text pb-9">
           <ul class="list-none flex flex-wrap w-100">
             {allSelectedItemElements}
-            <li class="self-center" style="order: 3;">
+            <li
+              class="self-center"
+              style={{
+                order:
+                  inputPosition === null ? items.length + 1 : inputPosition + 1,
+              }}
+            >
               <input
                 autocomplete="off"
                 class="c-input--multi__input"
