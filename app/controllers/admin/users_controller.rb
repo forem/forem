@@ -60,11 +60,7 @@ module Admin
       Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
 
-      if request.path == admin_users_path
-        redirect_to admin_users_path
-      else
-        redirect_to admin_user_path(params[:id])
-      end
+      redirect_to admin_user_path(params[:id])
     end
 
     def destroy
@@ -107,7 +103,12 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to admin_user_path(params[:id])
+
+      if request.referer&.include?(admin_users_path)
+        redirect_to admin_users_path
+      else
+        redirect_to admin_user_path(params[:id])
+      end
     end
 
     def export_data
