@@ -1,5 +1,5 @@
 module Api
-  module V0
+  module V1
     # This controller is used for toggling feature flags in the test
     # environment, specifically for Cypress tests.
     #

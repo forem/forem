@@ -1,9 +1,7 @@
 module Api
-  module V0
+  module V1
     class HealthChecksController < ApiController
       include Api::HealthChecksController
-
-      before_action :authenticate_with_token
     end
   end
 end

@@ -1,5 +1,5 @@
 module Api
-  module V0
+  module V1
     class AnalyticsController < ApiController
       respond_to :json
 
