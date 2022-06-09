@@ -28,9 +28,8 @@ export const MultiInput = ({
   const [items, setItems] = useState([]);
 
   // TODO: possibly refactor into a reducer
-  const [editValue, setEditValue] = useState(null)
-  const [inputPosition, setInputPosition] = useState(null)
-
+  const [editValue, setEditValue] = useState(null);
+  const [inputPosition, setInputPosition] = useState(null);
 
   useEffect(() => {
     // editValue defaults to null when component is first rendered.
@@ -50,7 +49,6 @@ export const MultiInput = ({
       input.setSelectionRange(cursorPosition, cursorPosition);
     }
   }, [inputPosition, editValue]);
-
 
   const handleBlur = ({ target: { value } }) => {
     addItemToList(value);
@@ -89,36 +87,6 @@ export const MultiInput = ({
     inputRef.current.value = '';
   };
 
-  // TODO: remove once we use the shared component
-  const listItems = items.map((item, index) => (
-    <li
-      key={index}
-      class="c-input--multi__selection-list-item w-max"
-      style="order: 1;"
-    >
-      <div role="group" aria-label="two" class="flex mr-1 mb-1 w-max">
-        <button
-          class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
-          type="button"
-        >
-          {item}
-          <svg
-            class="crayons-icon c-pill__action-icon"
-            aria-hidden="true"
-            focusable="false"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            onClick={() => deselectItem(item)}
-          >
-            <path d="m12 10.586 4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-          </svg>
-        </button>
-      </div>
-    </li>
-  ));
-
   const allSelectedItemElements = items.map((item, index) => {
     return (
       <li
@@ -127,20 +95,19 @@ export const MultiInput = ({
         style={{ order: 1 }}
       >
         <SelectionTemplate
-          name = {item}
+          name={item}
           onEdit={() => enterEditState(item, index)}
           onDeselect={() => deselectItem(item)}
-       />
+        />
       </li>
-    )
-  })
+    );
+  });
 
   const enterEditState = (editItem, editItemIndex) => {
     deselectItem(editItem);
     setEditValue(editItem);
     setInputPosition(editItemIndex);
-  }
-
+  };
 
   return (
     <Fragment>
