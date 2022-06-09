@@ -27,7 +27,7 @@ RSpec.describe Articles::PublishWorker, type: :worker do
     end
 
     it "doesn't send notifications for an old article" do
-      old_article = create(:article, published: true, published_at: 1.year.ago)
+      old_article = create(:article, :past, published: true, past_published_at: 1.year.ago)
       allow(Notification).to receive(:send_to_mentioned_users_and_followers)
       worker.perform
       expect(Notification).not_to have_received(:send_to_mentioned_users_and_followers).with(old_article)

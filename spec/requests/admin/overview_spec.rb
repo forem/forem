@@ -78,7 +78,7 @@ RSpec.describe "/admin", type: :request do
     end
 
     it "does not display data from previous weeks", :aggregate_failures do
-      create(:article, published_at: 8.days.ago)
+      create(:article, :past, past_published_at: 8.days.ago)
       create(:comment, created_at: 2.weeks.ago)
       create(:reaction, created_at: 1.month.ago)
       create(:user, registered_at: 10.days.ago)
