@@ -48,7 +48,7 @@ export const MultiInput = ({
     }
   };
 
-  const handleDestructiveClick = (clickedItem) => {
+  const deselectItem = (clickedItem) => {
     const newArr = items.filter((item) => item !== clickedItem);
     setItems(newArr);
   };
@@ -85,7 +85,7 @@ export const MultiInput = ({
             height="18"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
-            onClick={() => handleDestructiveClick(item)}
+            onClick={() => deselectItem(item)}
           >
             <path d="m12 10.586 4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -114,9 +114,6 @@ export const MultiInput = ({
     // console.log("edit");
   }
 
-  const deselectItem = (item) => {
-    // console.log("deselect")
-  }
 
   return (
     <Fragment>
