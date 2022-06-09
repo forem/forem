@@ -27,6 +27,10 @@ export const MultiInput = ({
   const inputRef = useRef(null);
   const [items, setItems] = useState([]);
 
+  // TODO: possibly refactor into a reducer
+  // const [editValue, setEditValue] = useState(null)
+  // const [inputPosition, setInputPosition] = useState(null)
+
   const handleBlur = ({ target: { value } }) => {
     addItemToList(value);
     clearSelection();
@@ -110,8 +114,12 @@ export const MultiInput = ({
     )
   })
 
-  const enterEditState = (item, index) => {
-    // console.log("edit");
+  const enterEditState = (editItem, editItemIndex) => {
+    console.log("editing")
+    deselectItem(editItem);
+    // setEditValue(editItem);
+    // setInputPosition(editItemIndex);
+    inputRef.current.value = editItem;
   }
 
 
