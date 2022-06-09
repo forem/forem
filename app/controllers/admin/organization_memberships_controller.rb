@@ -51,7 +51,11 @@ module Admin
             flash[:danger] = organization_membership.errors_as_sentence
           end
 
-          redirect_to admin_user_path(organization_membership.user_id)
+          if request.referer&.include?(admin_user_path(organization_membership.user_id))
+            redirect_to admin_user_path(organization_membership.user_id)
+          else
+            redirect_to admin_users_path
+          end
         end
 
         format.js do
