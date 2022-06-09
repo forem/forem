@@ -189,6 +189,9 @@
     <% if policy(@moderatable).can_perform_moderator_actions? %>
       <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
         <div class="label-wrapper">
+          <div class="icon circle centered-icon">
+            <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.moderator.icon")) %>
+          </div>
           <header>
             <h2><%= t("views.moderations.actions.admin.heading") %></h2>
             <h3><%= t("views.moderations.actions.admin.subtitle", user: user_username) %></h3>
@@ -207,6 +210,15 @@
           data-modal-title="<%= user_suspended ? "Unsuspend" : "Suspend" %> <%= user_username %>"
           data-modal-size="small" data-modal-content-selector="#<%= user_suspended ? "unsuspend" : "suspend" %>-modal-content" data-username="<%= user_username %>">
             <%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_user", username: user_username) %>
+        </button>
+
+        <button
+          class="c-btn c-btn--destructive align-center fs-s"
+          id="unpublish-article-btn"
+          data-article-id="<%= @moderatable.id %>"
+          data-article-author="<%= @moderatable.username %>"
+          data-article-slug="<%= @moderatable.slug %>">
+          <%= t("views.moderations.actions.unpublish") %>
         </button>
       </div>
     <% end %>
