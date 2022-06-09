@@ -82,9 +82,11 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "sets confirmed_at" do
-        user = service.call
+        expect do
+          user = service.call
 
-        expect(user.confirmed_at).to be_present
+          expect(user.confirmed_at).to be_present
+        end.not_to change(ActionMailer::Base.deliveries, :count)
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -297,9 +299,11 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "sets confirmed_at" do
-        user = service.call
+        expect do
+          user = service.call
 
-        expect(user.confirmed_at).to be_present
+          expect(user.confirmed_at).to be_present
+        end.not_to change(ActionMailer::Base.deliveries, :count)
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -509,9 +513,11 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "sets confirmed_at" do
-        user = service.call
+        expect do
+          user = service.call
 
-        expect(user.confirmed_at).to be_present
+          expect(user.confirmed_at).to be_present
+        end.not_to change(ActionMailer::Base.deliveries, :count)
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -600,9 +606,11 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "sets confirmed_at" do
-        user = service.call
+        expect do
+          user = service.call
 
-        expect(user.confirmed_at).to be_present
+          expect(user.confirmed_at).to be_present
+        end.not_to change(ActionMailer::Base.deliveries, :count)
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
