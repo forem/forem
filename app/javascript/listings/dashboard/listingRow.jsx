@@ -25,6 +25,7 @@ export const ListingRow = ({ listing }) => {
         isExpired ? 'expired' : ''
       }`}
       data-listing-id={listing.id}
+      data-testid={listing.id}
     >
       {listing.organization_id && (
         <span className="listing-org">{listing.author.name}</span>

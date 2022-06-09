@@ -47,6 +47,9 @@ module PracticalDeveloper
     ## Rails 6.1
     # This replaces the old config.active_support.use_sha1_digests from Rails 5.2
     config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
+
+    # Make `form_with` generate non-remote forms by default. We want this to be true as it was the default in 5.2
+    config.action_view.form_with_generates_remote_forms = true
     ### END FRAMEWORK DEFAULT OVERIDES
 
     # Disable auto adding of default load paths to $LOAD_PATH

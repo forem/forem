@@ -87,7 +87,8 @@ module Articles
 
       order_by_lever(:final_order_by_random_weighted_to_score,
                      label: "Order by conflating a random number and the score (see forem/forem#16128)",
-                     order_by_fragment: "RANDOM() ^ (1.0 / greatest(articles.score, 0.1)) DESC")
+                     order_by_fragment: "article_relevancies.randomized_value " \
+                                        "^ (1.0 / greatest(articles.score, 0.1)) DESC")
 
       relevancy_lever(:comments_count_by_those_followed,
                       label: "Weight to give for the number of comments on the article from other users" \

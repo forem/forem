@@ -83,6 +83,7 @@ class Article < ApplicationRecord
     \u303d        # Either a line chart plummeting or the letter M, not sure
     \u3297        # Circled Ideograph Congratulation
     \u3299        # Circled Ideograph Secret
+    \u20ac        # Euro symbol (€)
     \u{1f000}-\u{1ffff} # More common emoji
   ]+/m
   # rubocop:enable Lint/DuplicateRegexpCharacterClassElement
@@ -399,6 +400,8 @@ class Article < ApplicationRecord
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
+
+  self.ignored_columns = ["spaminess_rating"]
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date

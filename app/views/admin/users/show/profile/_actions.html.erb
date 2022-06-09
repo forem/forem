@@ -10,16 +10,33 @@
         <% if @user.access_locked? %>
           <li><%= link_to "Unlock access", unlock_access_admin_user_path(@user), method: :patch, class: "c-link c-link--block" %></li>
         <% end %>
-        <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Export <%= @user.name %>'s data" data-modal-size="small" data-modal-content-selector="#export-data">Export data</button></li>
-        <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Merge users" data-modal-size="small" data-modal-content-selector="#merge-accounts">Merge users</button></li>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="Export <%= @user.name %>'s data" data-modal-size="small" data-modal-content-selector="#export-data">Export data</button></li>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="Merge users" data-modal-size="small" data-modal-content-selector="#merge-accounts">Merge users</button></li>
         <% if @user.articles_count > 0 %>
-          <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Unpublish all posts" data-modal-size="small" data-modal-content-selector="#unpublish-all-posts">Unpublish all posts</button></li>
+          <li>
+            <button type="button"
+              class="c-btn w-100 align-left"
+              data-modal-title="Unpublish all posts"
+              data-modal-size="small"
+              data-modal-content-selector="#unpublish-all-posts"
+              data-form-action="<%= unpublish_all_articles_admin_user_path(@user) %>"
+              data-user-name="<%= @user.name %>">Unpublish all posts</button>
+          </li>
         <% end %>
         <% if @user.identities.any? %>
-          <li><button type="button" class="c-btn w-100 align-left" data-modal-trigger data-modal-title="Remove social accounts" data-modal-size="medium" data-modal-content-selector="#remove-social-accounts">Remove social accounts</button></li>
+          <li><button type="button" class="c-btn w-100 align-left" data-modal-title="Remove social accounts" data-modal-size="medium" data-modal-content-selector="#remove-social-accounts">Remove social accounts</button></li>
         <% end %>
-        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-trigger data-modal-title="Banish <%= @user.name %>" data-modal-size="small" data-modal-content-selector="#banish-for-spam">Banish user</button></li>
-        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-trigger data-modal-title="Delete <%= @user.name %>'s account" data-modal-size="small" data-modal-content-selector="#delete-user">Delete user</button></li>
+        <li>
+          <button type="button"
+            class="c-btn c-btn--destructive w-100 align-left"
+            data-modal-title="Banish <%= @user.name %>"
+            data-modal-size="small"
+            data-modal-content-selector="#banish-for-spam"
+            data-form-action="<%= banish_admin_user_path(@user) %>"
+            data-user-name="<%= @user.name %>"
+            data-banishable-user="<%= @banishable_user %>">Banish user</button>
+        </li>
+        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-title="Delete <%= @user.name %>'s account" data-modal-size="small" data-modal-content-selector="#delete-user">Delete user</button></li>
       </ul>
     </div>
   </div>
@@ -29,8 +46,8 @@
 <div class="hidden">
   <%= render "admin/users/show/profile/actions/export" %>
   <%= render "admin/users/show/profile/actions/merge" %>
-  <%= render "admin/users/show/profile/actions/unpublish" %>
+  <%= render "admin/users/modals/unpublish_modal" %>
   <%= render "admin/users/show/profile/actions/social_accounts" %>
-  <%= render "admin/users/show/profile/actions/banish" %>
+  <%= render "admin/users/modals/banish_modal" %>
   <%= render "admin/users/show/profile/actions/delete" %>
 </div>

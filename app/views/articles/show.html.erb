@@ -81,12 +81,15 @@
       <article class="crayons-card crayons-article mb-4"
         id="article-show-container"
         data-article-id="<%= @article.id %>"
+        data-article-slug="<%= @article.slug %>"
         data-author-id="<%= @article.user_id %>"
+        data-author-name="<%= @article.cached_user_name %>"
+        data-author-username="<%= @article.username %>"
         data-co-author-ids="<%= @article.co_author_ids.join(",") %>"
         data-path="<%= @article.path %>"
-        data-published="<%= @article.published? %>"
         data-pin-path="<%= stories_feed_pinned_article_path %>"
         data-pinned-article-id="<%= @pinned_article_id %>"
+        data-published="<%= @article.published? %>"
         <%= @article.pinned? ? "data-pinned" : " " %>>
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>
@@ -216,6 +219,7 @@
 
 <div class="mod-actions-menu print-hidden"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
+<div data-testid="unpublish-post-modal-container" class="unpublish-post-modal-container hidden"></div>
 
 <div class="fullscreen-code js-fullscreen-code"></div>
 <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>

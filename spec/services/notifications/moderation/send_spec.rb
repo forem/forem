@@ -53,6 +53,6 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
 
     expect do
       described_class.call(moderator, comment)
-    end.to change(Notification, :count).by(0)
+    end.not_to change(Notification, :count)
   end
 end

@@ -15,6 +15,7 @@ RSpec.describe ArticlePolicy do
   let(:trusted) { create(:user, :trusted) }
   let(:other_users) { create(:user) }
   let(:author) { create(:user) }
+  let(:moderator) { create(:user, :moderator) }
 
   let(:resource) { build(:article, user: author, organization: organization) }
   let(:policy) { described_class.new(user, resource) }
@@ -153,13 +154,28 @@ RSpec.describe ArticlePolicy do
     it_behaves_like "disallowed roles", to: %i[admin org_admin other_users]
   end
 
-  %i[admin_unpublish? admin_featured_toggle?].each do |method_name|
-    describe "admin_unpublish?" do
+  %i[admin_unpublish? admin_featured_toggle? revoke_publication? toggle_featured_status?].each do |method_name|
+    describe "##{method_name}" do
       let(:policy_method) { method_name }
 
-      it_behaves_like "it requires an authenticated user"
-      it_behaves_like "permitted roles", to: %i[super_admin admin]
-      it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
+      context "when published article" do
+        # need "create" (as opposed to "build") for the article to be published
+        let(:resource) { create(:article, user: author, organization: organization) }
+
+        it_behaves_like "it requires an authenticated user"
+        it_behaves_like "permitted roles", to: %i[super_admin admin moderator]
+        it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
+      end
+
+      context "when unpublished article" do
+        let(:resource) do
+          build(:article, user: author, organization: organization, published: false, published_at: nil)
+        end
+
+        it_behaves_like "it requires an authenticated user"
+        it_behaves_like "permitted roles", to: %i[]
+        it_behaves_like "disallowed roles", to: %i[super_admin admin moderator org_admin author other_users]
+      end
     end
   end
 

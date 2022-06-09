@@ -11,7 +11,7 @@ RSpec.describe ReleasePhaseNotifier, type: :lib do
     it "sends a failure message to slack" do
       allow(ENV).to receive(:[]).with("FAILED_COMMAND").and_return("rake db:migrate")
       mock_slack = Slack::Notifier.new("url")
-      failure_message = "Release Phase Failed: #{ENV['FAILED_COMMAND']}"
+      failure_message = "Release Phase Failed: #{ENV.fetch('FAILED_COMMAND', nil)}"
       allow(Slack::Notifier).to receive(:new) { mock_slack }
       allow(mock_slack).to receive(:ping)
 

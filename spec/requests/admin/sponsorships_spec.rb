@@ -130,7 +130,7 @@ RSpec.describe "/admin/advanced/sponsorships", type: :request do
       expect do
         post admin_sponsorships_path, params: { sponsorship: invalid_attributes }
         expect(response.body).to include("Status is not included in the list")
-      end.to change { Sponsorship.all.count }.by(0)
+      end.not_to change { Sponsorship.all.count }
     end
   end
 
