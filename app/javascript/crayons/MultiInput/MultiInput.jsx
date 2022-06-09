@@ -33,7 +33,7 @@ export const MultiInput = ({
 
   const handleBlur = ({ target: { value } }) => {
     addItemToList(value);
-    clearSelection();
+    clearInput();
   };
 
   const handleKeyDown = (e) => {
@@ -43,7 +43,7 @@ export const MultiInput = ({
       case KEYS.COMMA:
         e.preventDefault();
         addItemToList(e.target.value);
-        clearSelection();
+        clearInput();
         break;
       default:
         if (!ALLOWED_CHARS_REGEX.test(e.key)) {
@@ -64,7 +64,7 @@ export const MultiInput = ({
     }
   };
 
-  const clearSelection = () => {
+  const clearInput = () => {
     inputRef.current.value = '';
   };
 
