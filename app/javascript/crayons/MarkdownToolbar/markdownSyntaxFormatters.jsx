@@ -27,9 +27,6 @@ const MARKDOWN_LINK_REGEX =
   /^\[([\w\s\d]*)\]\((url|(https?:\/\/[\w\d./?=#]+))\)$/;
 const URL_PLACEHOLDER_TEXT = 'url';
 
-const EMBED_SYNTAX_PREFIX = '{% embed ';
-const EMBED_SYNTAX_SUFFIX = ' %}';
-
 const NUMBER_OF_NEW_LINES_BEFORE_BLOCK_SYNTAX = 2;
 const NUMBER_OF_NEW_LINES_BEFORE_AFTER_SYNTAX = 1;
 
@@ -59,61 +56,6 @@ const getNewLinePrefixSuffixes = ({ selectionStart, selectionEnd, value }) => {
       : '\n';
 
   return { newLinesPrefix, newLinesSuffix };
-};
-
-const handleEmbedFormattingForEmptyTextSelection = ({
-  selectionStart,
-  selectionEnd,
-}) => {
-  return {
-    editSelectionStart: selectionStart,
-    editSelectionEnd: selectionEnd,
-    replaceSelectionWith: `${EMBED_SYNTAX_PREFIX}${EMBED_SYNTAX_SUFFIX}`,
-    newCursorStart: selectionStart + 9,
-    newCursorEnd: selectionEnd + 9,
-  };
-};
-
-const handleUndoForEmbedSyntaxSelection = ({
-  selectionStart,
-  selectedText,
-  selectionEnd,
-}) => {
-  const textToReplaceMarkdown = selectedText.slice(
-    EMBED_SYNTAX_PREFIX.length,
-    selectedText.length - EMBED_SYNTAX_SUFFIX.length,
-  );
-  return {
-    editSelectionStart: selectionStart,
-    editSelectionEnd: selectionEnd,
-    replaceSelectionWith: textToReplaceMarkdown,
-    newCursorStart: selectionStart,
-    newCursorEnd: selectionStart + textToReplaceMarkdown.length,
-  };
-};
-
-const handleUndoEmbedForValue = ({ value, selectionStart, selectedText }) => {
-  // Get the index of where the current syntax opens so we can get the text inside the curly brackets
-  const indexOfSyntaxOpen = getLastIndexOfCharacter({
-    content: value,
-    selectionIndex: selectionStart,
-    character: '{',
-  });
-
-  // Get the index of where the current syntax closes so we can get the text inside the curly brackets
-  const indexOfSyntaxClose = getNextIndexOfCharacter({
-    content: value,
-    selectionIndex: selectionStart,
-    character: '}',
-  });
-
-  return {
-    editSelectionStart: indexOfSyntaxOpen,
-    editSelectionEnd: indexOfSyntaxClose + 1,
-    replaceSelectionWith: selectedText,
-    newCursorStart: indexOfSyntaxOpen,
-    newCursorEnd: indexOfSyntaxOpen + selectedText.length,
-  };
 };
 
 const handleLinkFormattingForEmptyTextSelection = ({
@@ -243,53 +185,6 @@ const handleUndoMarkdownLinkSelection = ({
     newCursorStart: selectionStart,
     newCursorEnd: selectionStart + textToReplaceMarkdown.length,
   };
-};
-
-const isStringEmbedSyntax = (string) => {
-  const startingText = string.substring(0, EMBED_SYNTAX_PREFIX.length);
-  const endingText = string.substring(
-    string.length - EMBED_SYNTAX_SUFFIX.length,
-    string.length,
-  );
-
-  return (
-    startingText === EMBED_SYNTAX_PREFIX && endingText === EMBED_SYNTAX_SUFFIX
-  );
-};
-
-const isCursorInsideEmptyEmbedSyntax = (
-  textBeforeSelection,
-  textAfterSelection,
-) => {
-  const textBeforeString = textBeforeSelection.slice(
-    textBeforeSelection.length - EMBED_SYNTAX_PREFIX.length,
-    textBeforeSelection.length,
-  );
-  const textAfterString = textAfterSelection.slice(
-    0,
-    EMBED_SYNTAX_SUFFIX.length,
-  );
-
-  return (
-    textBeforeString === EMBED_SYNTAX_PREFIX &&
-    textAfterString === EMBED_SYNTAX_SUFFIX
-  );
-};
-
-const isStringInsideEmbedSyntax = (textBeforeSelection, textAfterSelection) => {
-  const textBeforeString = textBeforeSelection.slice(
-    textBeforeSelection.length - EMBED_SYNTAX_PREFIX.length,
-    textBeforeSelection.length,
-  );
-  const textAfterString = textAfterSelection.slice(
-    0,
-    EMBED_SYNTAX_SUFFIX.length,
-  );
-
-  return (
-    textBeforeString === EMBED_SYNTAX_PREFIX &&
-    textAfterString === EMBED_SYNTAX_SUFFIX
-  );
 };
 
 const isStringStartAUrl = (string) => {
@@ -830,59 +725,14 @@ export const coreSyntaxFormatters = {
         tooltipHint: `${modifier.toUpperCase()} + SHIFT + K`,
       };
     },
-    getFormatting: ({ selectionStart, selectionEnd, value }) => {
-      const { selectedText, textBeforeSelection, textAfterSelection } =
-        getSelectionData({ selectionStart, selectionEnd, value });
-
-      if (selectedText === '') {
-        // If selected text is empty and cursor is inside empty embed syntax, then remove embed syntax completely
-        if (
-          isCursorInsideEmptyEmbedSyntax(
-            textBeforeSelection,
-            textAfterSelection,
-          )
-        ) {
-          return handleUndoEmbedForValue({
-            value,
-            selectionStart,
-            selectedText,
-          });
-        } 
-          // If selected text is empty, then directly insert embed syntax
-          return handleEmbedFormattingForEmptyTextSelection({
-            selectionStart,
-            selectionEnd,
-          });
-        
-      }
-
-      // If selected text is embed syntax, then replace selection with the url
-      if (isStringEmbedSyntax(selectedText)) {
-        return handleUndoForEmbedSyntaxSelection({
-          selectionStart,
-          selectedText,
-          selectionEnd,
-        });
-      }
-
-      // If selected text is url inside embed syntax, then replace embed syntax with the value
-      if (isStringInsideEmbedSyntax(textBeforeSelection, textAfterSelection)) {
-        return handleUndoEmbedForValue({
-          value,
-          selectionStart,
-          selectedText,
-        });
-      }
-
-      // Finally, handle the case where selected text needs to be converted to embeded syntax
-      return {
-        editSelectionStart: selectionStart,
-        editSelectionEnd: selectionEnd,
-        replaceSelectionWith: `${EMBED_SYNTAX_PREFIX}${selectedText}${EMBED_SYNTAX_SUFFIX}`,
-        newCursorStart: selectionStart + EMBED_SYNTAX_PREFIX.length,
-        newCursorEnd: selectionEnd + EMBED_SYNTAX_PREFIX.length,
-      };
-    },
+    getFormatting: ({ selectionStart, selectionEnd, value }) =>
+      undoOrAddFormattingForInlineSyntax({
+        value,
+        selectionStart,
+        selectionEnd,
+        prefix: '{% embed ',
+        suffix: ' %}',
+      }),
   },
 };
 
