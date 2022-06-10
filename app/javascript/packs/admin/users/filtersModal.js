@@ -40,11 +40,20 @@ const initializeModalCloseButton = () =>
     .querySelector(`#${WINDOW_MODAL_ID} .js-filter-modal-cancel-btn`)
     .addEventListener('click', closeWindowModal);
 
+let cachedFiltersModalContent;
+
 export const initializeFiltersModal = () => {
   document.querySelectorAll('.js-open-filter-modal-btn').forEach((button) => {
     button.addEventListener('click', () => {
+      // We need to remove the originally "hidden" modal content from the page to prevent conflicts with input IDs
+      if (!cachedFiltersModalContent) {
+        const filterModalContent = document.querySelector('.js-filters-modal');
+        cachedFiltersModalContent = filterModalContent.innerHTML;
+        filterModalContent.remove();
+      }
+
       showWindowModal({
-        contentSelector: '.js-filters-modal',
+        modalContent: cachedFiltersModalContent,
         showHeader: false,
         sheet: true,
         sheetAlign: 'right',
