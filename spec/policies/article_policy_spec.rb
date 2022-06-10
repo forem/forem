@@ -128,7 +128,6 @@ RSpec.describe ArticlePolicy do
   end
 
   describe "#allow_tag_adjustment?" do
-    Tag.destroy_all
     let(:policy_method) { :allow_tag_adjustment? }
     let(:tag_mod) { create(:user, :tag_moderator) }
     let(:tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
