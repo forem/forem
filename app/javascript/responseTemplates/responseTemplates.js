@@ -187,20 +187,17 @@ function fetchResponseTemplates(typeOf, formId) {
           const dataContainer = form.getElementsByClassName(containedIn)[0];
           dataContainer.innerHTML = buildHTML(response[typeOf], typeOf);
 
-          if (!revealed) {
-            revealed = dataContainer;
-            dataContainer.classList.remove('hidden');
-            topLevelData.classList.add(typeOf);
-            topLevelData.innerHTML = revealed.parentElement.innerHTML;
-          } else {
+          if (revealed) {
             topLevelData.classList.add(typeOf);
             dataContainer.classList.add('hidden');
             prepareHeaderButtons(form);
+          } else {
+            revealed = dataContainer;
+            dataContainer.classList.remove('hidden');
+            topLevelData.classList.add(typeOf);
           }
 
-          if (revealed) {
-            topLevelData.innerHTML = dataContainer.parentElement.innerHTML;
-          }
+          topLevelData.innerHTML = dataContainer.parentElement.innerHTML;
         }
       }
 
