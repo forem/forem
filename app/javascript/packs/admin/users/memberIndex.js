@@ -1,3 +1,4 @@
+import { showUserModal } from './editUserModals';
 import { openDropdown, closeDropdown } from '@utilities/dropdownUtils';
 import { copyToClipboard } from '@utilities/runtime';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
@@ -123,3 +124,5 @@ document.querySelectorAll('.js-export-csv-modal-trigger').forEach((item) => {
     });
   });
 });
+
+document.body.addEventListener('click', showUserModal);
