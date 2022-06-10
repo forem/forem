@@ -45,6 +45,8 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
+  MAX_TAG_LIST_SIZE = 4
+
   # Filter out anything that isn't a word, space, punctuation mark, or
   # recognized emoji.
   # See: https://github.com/forem/forem/pull/16787#issuecomment-1062044359
@@ -745,7 +747,7 @@ class Article < ApplicationRecord
     add_tag_adjustments_to_tag_list
 
     # check there are not too many tags
-    return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > 4
+    return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
     # check tags names aren't too long and don't contain non alphabet characters
     tag_list.each do |tag|

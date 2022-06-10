@@ -103,7 +103,7 @@
 
       <div id="adjust-tags-options" class="adjust-tags-options dropdown-options hidden">
         <% if policy(@moderatable).can_adjust_any_tag? %>
-          <% if @moderatable.tag_list.size < 4 %>
+          <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
             <div class="add-tag-container">
               <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
             </div>

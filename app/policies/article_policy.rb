@@ -1,4 +1,5 @@
 class ArticlePolicy < ApplicationPolicy
+  MAX_TAG_LIST_SIZE = 4
   # @return [TrueClass] when only Forem admins can post an Article.
   # @return [FalseClass] when most any Forem user can post an Article.
   #
@@ -169,7 +170,7 @@ class ArticlePolicy < ApplicationPolicy
     return false unless tag_ids_moderated_by_user.size.positive?
 
     adjustments = TagAdjustment.where(article_id: @record.id)
-    has_room_for_tags = @record.tag_list.size < 4
+    has_room_for_tags = @record.tag_list.size < MAX_TAG_LIST_SIZE
     # ensures that mods cannot adjust an already-adjusted tag
     has_no_relevant_adjustments = adjustments.pluck(:tag_id).intersection(tag_ids_moderated_by_user).size.zero?
 
