@@ -1632,7 +1632,7 @@ describe('markdownSyntaxFormatters', () => {
         );
       });
 
-      it('removes embed syntax and highlights url, when full embed syntax is selected', () => {
+      it('removes embed syntax and highlights the text, when full embed syntax is selected', () => {
         const textAreaValue = 'one {% embed https://example.com %} three';
         const expectedNewTextAreaValue = 'one https://example.com three';
 
