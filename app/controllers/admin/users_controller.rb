@@ -103,7 +103,12 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to admin_user_path(params[:id])
+
+      if request.referer&.include?(admin_user_path(params[:id]))
+        redirect_to admin_user_path(params[:id])
+      else
+        redirect_to admin_users_path
+      end
     end
 
     def export_data
