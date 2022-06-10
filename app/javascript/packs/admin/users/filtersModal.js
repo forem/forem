@@ -40,6 +40,26 @@ const initializeModalCloseButton = () =>
     .querySelector(`#${WINDOW_MODAL_ID} .js-filter-modal-cancel-btn`)
     .addEventListener('click', closeWindowModal);
 
+/**
+ * Roles list is dynamically expanded and collapsed by this toggle button
+ */
+const initializeShowHideRoles = () => {
+  document
+    .querySelector('.js-expand-roles-btn')
+    .addEventListener('click', ({ target }) => {
+      const initiallyHiddenRoles = document.querySelector(
+        '.js-initially-hidden-roles',
+      );
+
+      const isCurrentlyHidden =
+        initiallyHiddenRoles.classList.contains('hidden');
+
+      initiallyHiddenRoles.classList.toggle('hidden');
+      target.setAttribute('aria-pressed', isCurrentlyHidden ? 'true' : 'false');
+      target.innerText = `See ${isCurrentlyHidden ? 'fewer' : 'more'} roles`;
+    });
+};
+
 let cachedFiltersModalContent;
 
 export const initializeFiltersModal = () => {
@@ -61,6 +81,7 @@ export const initializeFiltersModal = () => {
         onOpen: () => {
           initializeModalCloseButton();
           initializeFilterDetailsToggles();
+          initializeShowHideRoles();
         },
       });
     });
