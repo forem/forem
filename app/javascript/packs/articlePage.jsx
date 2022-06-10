@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
@@ -71,6 +72,31 @@ function showAnnouncer() {
   document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
+// Temporary Ahoy Stats for comment section clicks
+function trackCommentSectionClicks() {
+  document.getElementById('comments')?.addEventListener('click', (event) => {
+    ahoy.track('Comment section click', {
+      page: location.href,
+      element: event.target.id,
+    });
+  });
+}
+
+// Temporary Ahoy Stats for scrolling to comments section
+function trackCommentSectionScroll() {
+  const callback = (entries, _observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        ahoy.track('Comment section scrolled to', { page: location.href });
+      }
+    });
+  };
+
+  const target = document.getElementById('comments');
+  const observer = new IntersectionObserver(callback, {});
+  observer.observe(target);
+}
+
 function copyArticleLink() {
   const postUrlValue = document
     .getElementById('copy-post-url-button')
@@ -135,3 +161,5 @@ const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
 
 initializeUserSubscriptionLiquidTagContent();
+trackCommentSectionClicks();
+trackCommentSectionScroll();
