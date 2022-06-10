@@ -42,10 +42,9 @@ class ModerationsController < ApplicationController
     has_no_relevant_adjustments = @adjustments.pluck(:tag_id).intersection(tag_mod_tag_ids).size.zero?
     can_be_adjusted = @moderatable.tags.ids.intersection(tag_mod_tag_ids).size.positive?
 
-    @is_user_flagged = Reaction.user_vomits.where(
+    @is_user_flagged ||= Reaction.user_vomits.valid_or_confirmed.where(
       user_id: session_current_user_id,
       reactable_id: @moderatable.user_id,
-      status: "confirmed",
     ).any?
 
     @should_show_adjust_tags = tag_mod_tag_ids.size.positive? &&

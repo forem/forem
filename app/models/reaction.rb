@@ -42,6 +42,7 @@ class Reaction < ApplicationRecord
   scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
   scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
   scope :user_vomits, -> { where(category: "vomit", reactable_type: "User") }
+  scope :valid_or_confirmed, -> { where(status: %w[valid confirmed]) }
   scope :related_negative_reactions_for_user, lambda { |user|
     article_vomits.where(reactable_id: user.article_ids)
       .or(comment_vomits.where(reactable_id: user.comment_ids))
