@@ -1518,9 +1518,9 @@ describe('markdownSyntaxFormatters', () => {
     });
 
     describe('embed', () => {
-      it('inserts embed syntax and highlights url, when no selection is given', () => {
+      it('inserts embed syntax and place cursor inside embed syntax, when no selection is given', () => {
         const textAreaValue = 'one two three';
-        const expectedNewTextAreaValue = 'one two {% embed https://... %}three';
+        const expectedNewTextAreaValue = 'one two {% embed  %}three';
 
         const {
           newCursorStart,
@@ -1543,11 +1543,11 @@ describe('markdownSyntaxFormatters', () => {
 
         expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
-          'https://...',
+          '',
         );
       });
 
-      it('inserts embed syntax and highlights text, when selected text does not begin with http:// or https://', () => {
+      it('inserts embed syntax and highlights text, when text is selected', () => {
         const textAreaValue = 'one two three';
         const expectedNewTextAreaValue = 'one {% embed two %} three';
 
@@ -1576,67 +1576,9 @@ describe('markdownSyntaxFormatters', () => {
         );
       });
 
-      it('inserts embed syntax and highlights url, when selected text begins with http://', () => {
-        const textAreaValue = 'one http://something.com three';
-        const expectedNewTextAreaValue =
-          'one {% embed http://something.com %} three';
-
-        const {
-          newCursorStart,
-          newCursorEnd,
-          editSelectionStart,
-          editSelectionEnd,
-          replaceSelectionWith,
-        } = coreSyntaxFormatters['embed'].getFormatting({
-          value: textAreaValue,
-          selectionStart: 4,
-          selectionEnd: 24,
-        });
-
-        const editedString = getNewTextAreaValueWithEdits({
-          textAreaValue,
-          editSelectionStart,
-          editSelectionEnd,
-          replaceSelectionWith,
-        });
-
-        expect(editedString).toEqual(expectedNewTextAreaValue);
-        expect(newCursorStart).toEqual(13);
-        expect(newCursorEnd).toEqual(33);
-      });
-
-      it('inserts embed syntax and highlights url, when selected text begins with https://', () => {
-        const textAreaValue = 'one https://something.com three';
-        const expectedNewTextAreaValue =
-          'one {% embed https://something.com %} three';
-
-        const {
-          newCursorStart,
-          newCursorEnd,
-          editSelectionStart,
-          editSelectionEnd,
-          replaceSelectionWith,
-        } = coreSyntaxFormatters['embed'].getFormatting({
-          value: textAreaValue,
-          selectionStart: 4,
-          selectionEnd: 25,
-        });
-
-        const editedString = getNewTextAreaValueWithEdits({
-          textAreaValue,
-          editSelectionStart,
-          editSelectionEnd,
-          replaceSelectionWith,
-        });
-
-        expect(editedString).toEqual(expectedNewTextAreaValue);
-        expect(newCursorStart).toEqual(13);
-        expect(newCursorEnd).toEqual(34);
-      });
-
-      it('removes embed syntax anfd highlights the placeholder url, when placeholder url is selected and embed syntax is present', () => {
-        const textAreaValue = 'one {% embed https://... %} three';
-        const expectedNewTextAreaValue = 'one https://... three';
+      it('removes embed syntax, when cursor is inside empty embed syntax', () => {
+        const textAreaValue = 'one {% embed  %} two';
+        const expectedNewTextAreaValue = 'one  two';
 
         const {
           newCursorStart,
@@ -1647,7 +1589,7 @@ describe('markdownSyntaxFormatters', () => {
         } = coreSyntaxFormatters['embed'].getFormatting({
           value: textAreaValue,
           selectionStart: 13,
-          selectionEnd: 24,
+          selectionEnd: 13,
         });
 
         const editedString = getNewTextAreaValueWithEdits({
@@ -1659,39 +1601,10 @@ describe('markdownSyntaxFormatters', () => {
 
         expect(editedString).toEqual(expectedNewTextAreaValue);
         expect(newCursorStart).toEqual(4);
-        expect(newCursorEnd).toEqual(15);
+        expect(newCursorEnd).toEqual(4);
       });
 
-      it('removes embed syntax and highlights the url, when selected text is url and embed syntax is present', () => {
-        const textAreaValue = 'one {% embed http://example.com %} three';
-        const expectedNewTextAreaValue = 'one http://example.com three';
-
-        const {
-          newCursorStart,
-          newCursorEnd,
-          editSelectionStart,
-          editSelectionEnd,
-          replaceSelectionWith,
-        } = coreSyntaxFormatters['embed'].getFormatting({
-          value: textAreaValue,
-          selectionStart: 13,
-          selectionEnd: 31,
-        });
-
-        const editedString = getNewTextAreaValueWithEdits({
-          textAreaValue,
-          editSelectionStart,
-          editSelectionEnd,
-          replaceSelectionWith,
-        });
-
-        expect(editedString).toEqual(expectedNewTextAreaValue);
-        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
-          'http://example.com',
-        );
-      });
-
-      it('removes embed syntax and highlights the selected text, when selected text is not a url and embed syntax is present', () => {
+      it('removes embed syntax and highlights the selected text, when selected text is inside embed syntax', () => {
         const textAreaValue = 'one {% embed random-selected-text %} three';
         const expectedNewTextAreaValue = 'one random-selected-text three';
 

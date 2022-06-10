@@ -68,9 +68,9 @@ const handleEmbedFormattingForEmptyTextSelection = ({
   return {
     editSelectionStart: selectionStart,
     editSelectionEnd: selectionEnd,
-    replaceSelectionWith: `${EMBED_SYNTAX_PREFIX}https://...${EMBED_SYNTAX_SUFFIX}`,
+    replaceSelectionWith: `${EMBED_SYNTAX_PREFIX}${EMBED_SYNTAX_SUFFIX}`,
     newCursorStart: selectionStart + 9,
-    newCursorEnd: selectionEnd + 20,
+    newCursorEnd: selectionEnd + 9,
   };
 };
 
@@ -92,11 +92,7 @@ const handleUndoForEmbedSyntaxSelection = ({
   };
 };
 
-const handleUndoEmbedForValueSelection = ({
-  value,
-  selectionStart,
-  selectedText,
-}) => {
+const handleUndoEmbedForValue = ({ value, selectionStart, selectedText }) => {
   // Get the index of where the current syntax opens so we can get the text inside the curly brackets
   const indexOfSyntaxOpen = getLastIndexOfCharacter({
     content: value,
@@ -258,6 +254,25 @@ const isStringEmbedSyntax = (string) => {
 
   return (
     startingText === EMBED_SYNTAX_PREFIX && endingText === EMBED_SYNTAX_SUFFIX
+  );
+};
+
+const isCursorInsideEmptyEmbedSyntax = (
+  textBeforeSelection,
+  textAfterSelection,
+) => {
+  const textBeforeString = textBeforeSelection.slice(
+    textBeforeSelection.length - EMBED_SYNTAX_PREFIX.length,
+    textBeforeSelection.length,
+  );
+  const textAfterString = textAfterSelection.slice(
+    0,
+    EMBED_SYNTAX_SUFFIX.length,
+  );
+
+  return (
+    textBeforeString === EMBED_SYNTAX_PREFIX &&
+    textAfterString === EMBED_SYNTAX_SUFFIX
   );
 };
 
@@ -819,12 +834,26 @@ export const coreSyntaxFormatters = {
       const { selectedText, textBeforeSelection, textAfterSelection } =
         getSelectionData({ selectionStart, selectionEnd, value });
 
-      // If selected text is empty, then directly insert embed syntax
       if (selectedText === '') {
-        return handleEmbedFormattingForEmptyTextSelection({
-          selectionStart,
-          selectionEnd,
-        });
+        // If selected text is empty and cursor is inside empty embed syntax, then remove embed syntax completely
+        if (
+          isCursorInsideEmptyEmbedSyntax(
+            textBeforeSelection,
+            textAfterSelection,
+          )
+        ) {
+          return handleUndoEmbedForValue({
+            value,
+            selectionStart,
+            selectedText,
+          });
+        } 
+          // If selected text is empty, then directly insert embed syntax
+          return handleEmbedFormattingForEmptyTextSelection({
+            selectionStart,
+            selectionEnd,
+          });
+        
       }
 
       // If selected text is embed syntax, then replace selection with the url
@@ -838,7 +867,7 @@ export const coreSyntaxFormatters = {
 
       // If selected text is url inside embed syntax, then replace embed syntax with the value
       if (isStringInsideEmbedSyntax(textBeforeSelection, textAfterSelection)) {
-        return handleUndoEmbedForValueSelection({
+        return handleUndoEmbedForValue({
           value,
           selectionStart,
           selectedText,
