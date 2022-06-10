@@ -25,7 +25,10 @@ class Article < ApplicationRecord
   # @see Articles::CachedEntity caching strategy for entity attributes
   ATTRIBUTES_CACHED_FOR_RELATED_ENTITY = %i[name profile_image profile_image_url slug username].freeze
 
-  attr_accessor :publish_under_org
+  # admin_update was added as a hack to bypass published_at validation when admin is updating
+  # TODO: [@lightalloy] remove published_at validation from the model and
+  # move it to the services where the create/update takes place to avoid using hacks
+  attr_accessor :publish_under_org, :admin_update
   attr_writer :series
 
   delegate :name, to: :user, prefix: true
@@ -156,7 +159,7 @@ class Article < ApplicationRecord
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validate :future_or_current_published_at, on: :create
-  validate :has_correct_published_at?, on: :update
+  validate :has_correct_published_at?, on: :update, unless: :admin_update
 
   validate :canonical_url_must_not_have_spaces
   # validate :past_or_present_date
