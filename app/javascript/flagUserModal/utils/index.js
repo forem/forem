@@ -5,10 +5,13 @@ import { FlagUserModal } from '../../packs/flagUserModal';
  * Shows or hides the flag user modal.
  */
 export function toggleFlagUserModal() {
-  const modalContainer = top.document.getElementsByClassName(
+  const modalContainer = window.parent.document?.getElementsByClassName(
     'flag-user-modal-container',
   )[0];
-  modalContainer.classList.toggle('hidden');
+
+  if (modalContainer) {
+    modalContainer.classList.toggle('hidden');
+  }
 
   if (!modalContainer.classList.contains('hidden')) {
     top.window.scrollTo(0, 0);

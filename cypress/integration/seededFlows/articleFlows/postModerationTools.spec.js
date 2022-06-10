@@ -31,14 +31,8 @@ describe('Moderation Tools for Posts', () => {
         cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
           cy.findByRole('button', { name: 'Moderation' }).click();
 
-          // Helper function for pipe command
-          const click = ($el) => $el.click();
-
           cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-            cy.findByRole('button', { name: 'Flag user' })
-              .as('flagUserButton')
-              .pipe(click);
-            // .should('have.attr', 'aria-expanded', 'true');
+            cy.findByRole('button', { name: 'Flag user' }).debug().click();
           });
         });
       });
