@@ -90,7 +90,7 @@ GEM
       device_detector
       safely_block (>= 0.2.1)
     amazing_print (1.4.0)
-    ancestry (4.1.0)
+    ancestry (4.2.0)
       activerecord (>= 5.2.6)
     anyway_config (2.1.0)
       ruby-next-core (>= 0.11.0)
@@ -961,7 +961,7 @@ DEPENDENCIES
   ahoy_email (~> 2.1.2)
   ahoy_matey (~> 4.0)
   amazing_print (~> 1.4)
-  ancestry (~> 4.1)
+  ancestry (~> 4.2)
   better_errors (~> 2.9)
   blazer (~> 2.6)
   bootsnap (>= 1.1.0)
