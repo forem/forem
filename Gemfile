@@ -95,15 +95,15 @@ gem "rouge", "~> 3.29" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
-gem "sidekiq", "~> 6.4.2" # Sidekiq is used to process background jobs with the help of Redis
-gem "sidekiq-cron", "~> 1.4" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 7.1.23" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq", "~> 6.5.0" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq-cron", "~> 1.5" # Allows execution of scheduled cron jobs as specific times
+gem "sidekiq-unique-jobs", "~> 7.1.24" # Ensures that Sidekiq jobs are unique when enqueued
 gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "stripe", "~> 5.55" # Ruby library for the Stripe API
-gem "strong_migrations", "~> 1.0" # Catch unsafe migrations
+gem "strong_migrations", "~> 1.1" # Catch unsafe migrations
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
