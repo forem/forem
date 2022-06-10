@@ -21,7 +21,7 @@ RSpec.describe "/admin/organization_memberships", type: :request do
           }
         end.to not_change(user.organizations, :count)
 
-        expect(response).to redirect_to(admin_user_path(user.id))
+        expect(response).to redirect_to(admin_users_path)
         expect(flash[:danger]).to include("does not exist")
       end
 
@@ -36,7 +36,7 @@ RSpec.describe "/admin/organization_memberships", type: :request do
           }
         end.to not_change(user.organizations, :count)
 
-        expect(response).to redirect_to(admin_user_path(user.id))
+        expect(response).to redirect_to(admin_users_path)
         expect(flash[:danger]).to include("not included in the list")
       end
 
@@ -51,7 +51,7 @@ RSpec.describe "/admin/organization_memberships", type: :request do
           }
         end.to change(user.organizations, :count).by(1)
 
-        expect(response).to redirect_to(admin_user_path(user.id))
+        expect(response).to redirect_to(admin_users_path)
         expect(flash[:success]).to include("successfully added")
       end
     end
