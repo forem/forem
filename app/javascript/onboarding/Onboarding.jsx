@@ -81,7 +81,10 @@ export class Onboarding extends Component {
             : null
         }
       >
-        <FocusTrap key={`onboarding-${currentSlide}`}>
+        <FocusTrap
+          key={`onboarding-${currentSlide}`}
+          clickOutsideDeactivates="true"
+        >
           {this.slides[currentSlide]}
         </FocusTrap>
       </main>
