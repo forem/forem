@@ -1634,7 +1634,7 @@ describe('markdownSyntaxFormatters', () => {
         expect(newCursorEnd).toEqual(34);
       });
 
-      it('removes embed syntax anfd highlights the placeholder url, when placeholder url is selected and embed syntax is present', () => {
+      it('removes embed syntax and highlights the placeholder url, when placeholder url is selected and embed syntax is present', () => {
         const textAreaValue = 'one {% embed https://... %} three';
         const expectedNewTextAreaValue = 'one https://... three';
 
