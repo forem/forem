@@ -1579,7 +1579,6 @@ describe('markdownSyntaxFormatters', () => {
       it('removes embed syntax, when cursor is inside empty embed syntax', () => {
         const textAreaValue = 'one {% embed  %} two';
         const expectedNewTextAreaValue = 'one  two';
-
         const {
           newCursorStart,
           newCursorEnd,
