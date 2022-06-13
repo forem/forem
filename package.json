@@ -133,7 +133,7 @@
     "linkstate": "^2.0.1",
     "lodash.debounce": "4.0.8",
     "moment": "^2.29.3",
-    "postcss": "^8.4.13",
+    "postcss": "^8.4.14",
     "postcss-cli": "^9.1.0",
     "postcss-cssnext": "^3.1.0",
     "postcss-smart-import": "^0.7.6",
