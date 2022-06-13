@@ -137,7 +137,7 @@ export const Options = ({
             readonly={readonlyPublishedAt}
             className="crayons-textfield"
             name="publishedAt"
-            onKeyUp={onConfigChange}
+            onChange={onConfigChange}
             id="publishedAt"
             placeholder="..."
           />

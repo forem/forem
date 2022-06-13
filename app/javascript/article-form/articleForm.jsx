@@ -378,6 +378,7 @@ export class ArticleForm extends Component {
       tagList,
       bodyMarkdown,
       published,
+      publishedAt,
       previewShowing,
       previewResponse,
       submitting,
@@ -469,6 +470,7 @@ export class ArticleForm extends Component {
 
         <EditorActions
           published={published}
+          publishedAt={publishedAt}
           version={version}
           onPublish={this.onPublish}
           onSaveDraft={this.onSaveDraft}

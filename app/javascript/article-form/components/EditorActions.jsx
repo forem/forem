@@ -8,6 +8,7 @@ export const EditorActions = ({
   onPublish,
   onClearChanges,
   published,
+  publishedAt,
   edited,
   version,
   passedData,
@@ -34,14 +35,24 @@ export const EditorActions = ({
     );
   }
 
+  const now = new Date();
+  const publishedAtDate = publishedAt ? new Date(publishedAt) : now;
+  const schedule = publishedAtDate > now;
+  const saveButtonText = schedule
+    ? 'Schedule'
+    : published || isVersion1
+    ? 'Save changes'
+    : 'Publish';
+
   return (
     <div className="crayons-article-form__footer">
       <Button
         variant="primary"
         className="mr-2 whitespace-nowrap"
         onClick={onPublish}
+        tooltip={saveButtonText}
       >
-        {published || isVersion1 ? 'Save changes' : 'Publish'}
+        {saveButtonText}
       </Button>
 
       {!(published || isVersion1) && (
@@ -74,6 +85,7 @@ EditorActions.propTypes = {
   onSaveDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   published: PropTypes.bool.isRequired,
+  publishedAt: PropTypes.object.isRequired,
   edited: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
   onClearChanges: PropTypes.func.isRequired,
