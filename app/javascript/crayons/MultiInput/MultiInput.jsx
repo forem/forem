@@ -88,7 +88,21 @@ export const MultiInput = ({
   const addItemToList = (value) => {
     // TODO: we will want to do some validation here based on a prop
     if (value.trim().length > 0) {
-      setItems([...items, value]);
+      // If an item was edited, we want to keep it in the same position in the list
+      const insertIndex = inputPosition !== null ? inputPosition : items.length;
+      const newSelections = [
+        ...items.slice(0, insertIndex),
+        value,
+        ...items.slice(insertIndex),
+      ];
+
+      // We update the hidden selected items list, so additions are announced to screen reader users
+      // const listItem = document.createElement('li');
+      // listItem.innerText = selectedItem.name;
+      // selectedItemsRef.current.appendChild(listItem);
+
+      setItems([...newSelections]);
+      exitEditState({});
     }
   };
 
@@ -98,10 +112,14 @@ export const MultiInput = ({
 
   const allSelectedItemElements = items.map((item, index) => {
     // When we are in "edit mode" we visually display the input between the other selections
+    // If the item being edited appears before the item being rendered then we set its position to
+    // the index + 1 which matches the order, however, any items that appear after the item that is
+    // being edited will need to increment their position by one to make place for the item being edited.
+
+    // at this point the position is already set
     const defaultPosition = index + 1;
     const appearsBeforeInput = inputPosition === null || index < inputPosition;
     const position = appearsBeforeInput ? defaultPosition : defaultPosition + 1;
-
     return (
       <li
         key={index}
@@ -122,6 +140,19 @@ export const MultiInput = ({
     deselectItem(editItem);
     setEditValue(editItem);
     setInputPosition(editItemIndex);
+  };
+
+  const exitEditState = ({ nextInputValue = '' }) => {
+    // Reset 'edit mode' input resizing
+    inputRef.current?.style?.removeProperty('width');
+
+    inputSizerRef.current.innerText = nextInputValue;
+    setEditValue(nextInputValue);
+    setInputPosition(nextInputValue === '' ? null : inputPosition + 1);
+    // Blurring away while clearing the input
+    if (nextInputValue === '') {
+      inputRef.current.value = '';
+    }
   };
 
   return (
