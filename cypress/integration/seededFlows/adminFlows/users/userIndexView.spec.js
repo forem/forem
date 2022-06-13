@@ -388,8 +388,8 @@ describe('User index view', () => {
             cy.findByRole('button', { name: 'Add organization' }).click();
 
             cy.getModal().within(() => {
-              cy.findByText('Add organization').should('be.visible');
-              cy.findByText('Organization').should('be.visible');
+              cy.findByText('Organization ID').should('be.visible');
+              cy.findByText('Role').should('be.visible');
               cy.findByRole('button', {
                 name: 'Add organization',
               }).should('exist');
@@ -446,8 +446,8 @@ describe('User index view', () => {
               cy.findByRole('button', { name: 'Add organization' }).click();
 
               cy.getModal().within(() => {
-                cy.findByText('Add organization').should('be.visible');
                 cy.findByText('Organization ID').should('be.visible');
+                cy.findByText('Role').should('be.visible');
                 cy.findByRole('button', {
                   name: 'Add organization',
                 }).should('exist');
