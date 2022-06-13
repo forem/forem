@@ -56,6 +56,16 @@ export const MultiInput = ({
     clearInput();
   };
 
+  const handleInputChange = async ({ target: { value } }) => {
+    // When the input appears inline in "edit" mode, we need to dynamically calculate the width to ensure it occupies the right space
+    // (an input cannot resize based on its text content). We use a hidden <span> to track the size.
+    inputSizerRef.current.innerText = value;
+
+    if (inputPosition !== null) {
+      resizeInputToContentSize();
+    }
+  };
+
   const handleKeyDown = (e) => {
     switch (e.key) {
       case KEYS.SPACE:
@@ -180,6 +190,7 @@ export const MultiInput = ({
                 onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
+                onChange={handleInputChange}
                 ref={inputRef}
               />
             </li>
