@@ -815,7 +815,7 @@ GEM
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
-    sidekiq-cron (1.5.0)
+    sidekiq-cron (1.5.1)
       fugit (~> 1)
       sidekiq (>= 4.2.1)
     sidekiq-unique-jobs (7.1.24)
