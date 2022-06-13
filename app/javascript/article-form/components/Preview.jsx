@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'preact/hooks';
 import { ErrorList } from './ErrorList';
 import { AccessibilitySuggestions } from './AccessibilitySuggestions';
+import { LoadingPreview } from './LoadingPreview';
 
 function titleArea({
   previewResponse,
@@ -93,9 +94,16 @@ export const Preview = ({
   }, [previewResponse]);
 
   if (previewLoadingShowing) {
+    const coverImage = articleState.mainImage;
+    let loadingPreview;
+    if (coverImage === null) {
+      loadingPreview = <LoadingPreview version="default" />;
+    } else {
+      loadingPreview = <LoadingPreview version="cover" />;
+    }
     return (
       <div className="crayons-article-form__content crayons-card">
-        <h1>Loading preview</h1>
+        {loadingPreview}
       </div>
     );
   }
