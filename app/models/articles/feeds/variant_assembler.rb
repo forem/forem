@@ -11,6 +11,12 @@ module Articles
       # The default extension for feed variants
       EXTENSION = "json".freeze
 
+      # We have a "historical variant" that we renamed, hence we continue to maintain that name in
+      # our data through the following map.
+      VARIANT_NAME_MAP = {
+        "20220422-jennie-variant": :"20220422-variant"
+      }.freeze
+
       # Assemble the named :variant based on the configuration of levers.
       #
       # @param variant [#to_sym,String,Symbol] the name of the variant we're assembling
@@ -23,20 +29,42 @@ module Articles
       #        words, we have a mismatch in configuration.
       #
       # @return [Articles::Feeds::VariantQuery::Config]
-      def self.call(variant:, catalog: Articles::Feeds.lever_catalog, variants: variants_cache, dir: DIRECTORY)
+      # @see .experiment_config_hash_for
+      def self.call(variant:, catalog: Articles::Feeds.lever_catalog, variants: pre_assembled_variants, **kwargs)
         variant = variant.to_sym
         variants[variant] ||= begin
-          content = Rails.root.join(dir, "#{variant}.#{EXTENSION}").read
-          config = JSON.parse(content)
+          config = user_config_hash_for(variant: variant, **kwargs)
           build_with(catalog: catalog, config: config, variant: variant)
         end
       end
 
-      # @return [Hash<Symbol, VariantQuery::Config>]
-      def self.variants_cache
-        @variants_cache ||= {}
+      # @param variant [#to_sym,String,Symbol] the name of the variant we're assembling
+      # @param dir [String] the relative directory that contains the variants.
+      #
+      # @return [Hash]
+      #
+      # @note Uses Rails.cache to minimize reads from file system.  The reason for the Rails.cache
+      #       and not leveraging the .pre_assembled_variants is that this method
+      #       (e.g. .experiment_config_hash_for) handles all possible variant configurations (in
+      #       contrast to the active variants).
+      #
+      # @see app/views/field_test/experiments/_experiments.html.erb
+      def self.user_config_hash_for(variant:, dir: DIRECTORY)
+        Rails.cache.fetch("feed-variant-#{variant}-#{ForemInstance.latest_commit_id}", expires_in: 24.hours) do
+          variant = VARIANT_NAME_MAP.fetch(variant.to_sym, variant)
+          content = Rails.root.join(dir, "#{variant}.#{EXTENSION}").read
+          JSON.parse(content)
+        end
       end
-      private_class_method :variants_cache
+
+      # A memoized (e.g. cached) module instance variable that provides the quickest access for
+      # already assembled and active variant configurations.
+      #
+      # @return [Hash<Symbol, # VariantQuery::Config>]
+      def self.pre_assembled_variants
+        @pre_assembled_variants ||= {}
+      end
+      private_class_method :pre_assembled_variants
 
       # @param catalog [Articles::Feeds::LeverCatalogBuilder]
       # @param variant [Symbol]
@@ -54,6 +82,7 @@ module Articles
         VariantQuery::Config.new(
           variant: variant,
           levers: relevancy_levers,
+          description: config.fetch("description", ""),
           order_by: catalog.fetch_order_by(config.fetch("order_by")),
           max_days_since_published: config.fetch("max_days_since_published"),
         )

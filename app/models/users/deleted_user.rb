@@ -12,17 +12,17 @@ module Users
 
     # [@jeremyf] Yeah, this looks funny; it's analogue to `def.self
     # method_name; nil; end`.
-    def self.deleted?() = true
-    def self.id() = nil
-    def self.darker_color() = Color::CompareHex.new(USER_COLORS).brightness
-    def self.username() = "[deleted user]"
-    def self.name() = I18n.t("models.users.deleted_user.name")
-    def self.summary() = nil
-    def self.twitter_username() = nil
-    def self.github_username() = nil
-    def self.profile_image_url() = nil
-    def self.path() = nil
-    def self.tag_line() = nil
+    def self.deleted? = true
+    def self.id = nil
+    def self.darker_color = Color::CompareHex.new(USER_COLORS).brightness
+    def self.username = "[deleted user]"
+    def self.name = I18n.t("models.users.deleted_user.name")
+    def self.summary = nil
+    def self.twitter_username = nil
+    def self.github_username = nil
+    def self.profile_image_url = nil
+    def self.path = nil
+    def self.tag_line = nil
 
     # @return [String]
     #

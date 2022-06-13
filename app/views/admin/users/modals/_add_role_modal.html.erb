@@ -1,0 +1,15 @@
+<div id="add-role-modal" class="hidden">
+  <%= form_for(:user, method: "patch", html: { class: "js-add-role-form flex flex-col gap-4", id: nil }) do |f| %>
+    <div class="crayons-field">
+      <%= f.label :user_status, "Role", class: "crayons-field__label" %>
+      <%= f.select(:user_status, grouped_options_for_select(role_options(current_user)), { include_blank: "Select role" }, class: "crayons-select") %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :note_for_current_role, "Add a note to this action:", class: "crayons-field__label" %>
+      <%= f.text_area :note_for_current_role, required: true, class: "crayons-textfield", placeholder: "" %>
+    </div>
+    <div>
+      <%= f.button "Add", class: "c-btn c-btn--primary" %>
+    </div>
+  <% end %>
+</div>

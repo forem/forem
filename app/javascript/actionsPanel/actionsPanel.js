@@ -1,4 +1,5 @@
 import { toggleFlagUserModal } from '../packs/flagUserModal';
+import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
@@ -148,33 +149,6 @@ export async function updateExperienceLevel(
     alert(error);
   }
 }
-
-const adminUnpublishArticle = async (id, username, slug) => {
-  try {
-    const response = await request(`/articles/${id}/admin_unpublish`, {
-      method: 'PATCH',
-      body: JSON.stringify({ id, username, slug }),
-      credentials: 'same-origin',
-    });
-
-    const outcome = await response.json();
-
-    /* eslint-disable no-restricted-globals */
-    if (outcome.message == 'success') {
-      window.top.location.assign(`${window.location.origin}${outcome.path}`);
-    } else {
-      top.addSnackbarItem({
-        message: `Error: ${outcome.message}`,
-        addCloseButton: true,
-      });
-    }
-  } catch (error) {
-    top.addSnackbarItem({
-      message: `Error: ${error}`,
-      addCloseButton: true,
-    });
-  }
-};
 
 const adminFeatureArticle = async (id, featured) => {
   try {
@@ -415,17 +389,7 @@ export function addBottomActionsListeners() {
 
   const unpublishArticleBtn = document.getElementById('unpublish-article-btn');
   if (unpublishArticleBtn) {
-    unpublishArticleBtn.addEventListener('click', () => {
-      const {
-        articleId: id,
-        articleAuthor: username,
-        articleSlug: slug,
-      } = unpublishArticleBtn.dataset;
-
-      if (confirm('You are unpublishing this post; are you sure?')) {
-        adminUnpublishArticle(id, username, slug);
-      }
-    });
+    unpublishArticleBtn.addEventListener('click', toggleUnpublishPostModal);
   }
 
   document

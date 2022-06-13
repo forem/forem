@@ -9,7 +9,7 @@ RSpec.describe "Metrics Overview task", type: :task do
   describe "#overview" do
     let(:event_name) { "Admin Overview Link Clicked" }
     let(:click_target) { "https://admin.forem.com/docs/quick-start-guide" }
-    let(:host) { ENV["APP_DOMAIN"] }
+    let(:host) { ENV.fetch("APP_DOMAIN", nil) }
 
     it "returns the event count and target for admin overview events" do
       create(:ahoy_event, name: event_name, properties: {

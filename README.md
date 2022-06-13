@@ -138,6 +138,7 @@ Please see our installation guides, such as the
 - [@jeremyf](https://dev.to/jeremyf)
 - [@dscottS3](https://dev.to/dscottS3)
 - [@asheren](https://dev.to/asheren)
+- [@jaw6](https://dev.to/jaw6)
 
 ## Vulnerability disclosure
 

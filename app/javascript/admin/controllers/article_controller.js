@@ -6,7 +6,6 @@ export default class ArticleController extends Controller {
     'featuredNumber',
     'cardBody',
     'pinnedCheckbox',
-    'unpinButton',
   ];
   static values = { id: Number, pinPath: String };
 
@@ -74,11 +73,15 @@ export default class ArticleController extends Controller {
     }
   }
 
-  ajaxSuccess(event) {
-    if (event.target !== this.unpinButtonTarget) {
-      return;
-    }
+  async unpinArticle(event) {
+    const unpinArticleForm = event.target;
+    // We dont want to submit the pin form here.
+    event.preventDefault();
 
+    unpinArticleForm.submit();
+  }
+
+  ajaxSuccess(event) {
     // Replace the current Article HTML with the HTML sent by the server
     const newArticle = document.createElement('div');
 

@@ -33,10 +33,10 @@
 <table class="crayons-table" width="100%">
   <thead>
     <tr>
-      <th scope="col"><%= sort_link(@q, :name, {}, { aria: { label: "Sort by Name" } }) %></th>
-      <th scope="col"><%= sort_link(@q, :id, {}, { aria: { label: "Sort by ID" } }) %></th>
-      <th scope="col"><%= sort_link(@q, :alias_for, {}, { aria: { label: "Sort by Alias For" } }) %></th>
-      <th scope="col"><%= sort_link(@q, :taggings_count, {}, { aria: { label: "Sort by Taggings Count" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :name, { aria: { label: "Sort by Name" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :id, { aria: { label: "Sort by ID" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :alias_for, { aria: { label: "Sort by Alias For" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :taggings_count, { aria: { label: "Sort by Taggings Count" } }) %></th>
       <th scope="col">Is Moderated?</th>
     </tr>
   </thead>

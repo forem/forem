@@ -25,15 +25,15 @@ describe('Unpin an article from the admin area', () => {
   });
 
   it('should not display the "Unpin post" button by default', () => {
-    cy.findByRole('link', { name: 'Unpin post' }).should('not.exist');
+    cy.findByRole('button', { name: 'Unpin post' }).should('not.exist');
   });
 
   it('should unpin the pinned article', () => {
     cy.findAllByRole('button', { name: 'Pin post' }).first().click();
 
-    cy.findAllByRole('link', { name: 'Unpin post' }).first().click();
+    cy.findAllByRole('button', { name: 'Unpin post' }).first().click();
 
-    cy.findAllByRole('link', { name: 'Unpin post' }).should('not.exist');
+    cy.findAllByRole('button', { name: 'Unpin post' }).should('not.exist');
     cy.findByTestId('pinned-indicator').should('not.exist');
   });
 });
