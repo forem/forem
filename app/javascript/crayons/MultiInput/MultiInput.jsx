@@ -25,6 +25,7 @@ export const MultiInput = ({
   SelectionTemplate = DefaultSelectionTemplate,
 }) => {
   const inputRef = useRef(null);
+  const inputSizerRef = useRef(null);
   const [items, setItems] = useState([]);
 
   // TODO: possibly refactor into a reducer
@@ -41,7 +42,7 @@ export const MultiInput = ({
     const { current: input } = inputRef;
     if (input && inputPosition !== null) {
       // Entering 'edit' mode
-      // resizeInputToContentSize();
+      resizeInputToContentSize();
       input.value = editValue;
       const { length: cursorPosition } = editValue;
       input.focus();
@@ -68,6 +69,14 @@ export const MultiInput = ({
         if (!ALLOWED_CHARS_REGEX.test(e.key)) {
           e.preventDefault();
         }
+    }
+  };
+
+  const resizeInputToContentSize = () => {
+    const { current: input } = inputRef;
+
+    if (input) {
+      input.style.width = `${inputSizerRef.current.clientWidth}px`;
     }
   };
 
@@ -109,6 +118,7 @@ export const MultiInput = ({
   });
 
   const enterEditState = (editItem, editItemIndex) => {
+    inputSizerRef.current.innerText = editItem;
     deselectItem(editItem);
     setEditValue(editItem);
     setInputPosition(editItemIndex);
