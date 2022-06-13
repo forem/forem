@@ -50,7 +50,7 @@ export const MultiInput = ({
     }
   }, [inputPosition, editValue]);
 
-  const handleBlur = ({ target: { value } }) => {
+  const handleInputBlur = ({ target: { value } }) => {
     addItemToList(value);
     clearInput();
   };
@@ -131,7 +131,7 @@ export const MultiInput = ({
                 autocomplete="off"
                 class="c-input--multi__input"
                 type="text"
-                onBlur={handleBlur}
+                onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 ref={inputRef}
