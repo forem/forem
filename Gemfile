@@ -15,7 +15,7 @@ gem "acts-as-taggable-on", "~> 9.0" # A tagging plugin for Rails applications th
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 2.1.3" # Email analytics for Rails
-gem "ahoy_matey", "~> 4.0" # Tracking analytics for Rails
+gem "ahoy_matey", "~> 4.1" # Tracking analytics for Rails
 gem "ancestry", "~> 4.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
