@@ -126,6 +126,11 @@ export const MultiInput = ({
 
   return (
     <Fragment>
+      <span
+        ref={inputSizerRef}
+        aria-hidden="true"
+        className="absolute pointer-events-none opacity-0 p-2"
+      />
       <div class="c-input--multi relative">
         <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text pb-9">
           <ul class="list-none flex flex-wrap w-100">
