@@ -6,11 +6,12 @@
 # Checklist for creating a new feed experiment:
 #
 # - [ ] Create and/or reference the forem/forem issue with desired configuration
-# - [ ] Identifyer the winner for the past experiment by adding the `winner:
+# - [ ] Identify the winner for the past experiment by adding the `winner:
 #       <variant-name>` attribute to the past experiment.
+# - [ ] Set the past experiments `ended_at` to the new experiments started_at.
 # - [ ] Copy the previous experiment and prepend and rename to
 #       `feed_strategy_starting_CCYYMMDD`
-# - [ ] Update the `start_date` to `CCYY-MM-DD`
+# - [ ] Update the `started_at` to `CCYY-MM-DD`
 # - [ ] Assign the variants; the winner of the previous experiment SHOULD be in
 #       this array.
 # - [ ] Remove the winner from the newly copied `feed_strategy_starting_CCYYMMDD`
@@ -29,7 +30,7 @@ experiments:
   feed_strategy_starting_20220603:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
-    start_date: 2022-06-03
+    started_at: 2022-06-03
     variants:
       - 20220518-variant
       - 20220603-variant-a
@@ -57,7 +58,8 @@ experiments:
     winner: 20220518-variant
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
-    start_date: 2022-05-09
+    started_at: 2022-05-26
+    ended_at: 2022-06-03
     variants:
       - 20220518-variant
       - 20220525-variant
@@ -83,7 +85,8 @@ experiments:
     winner: 20220518-variant
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
-    start_date: 2022-05-09
+    started_at: 2022-05-18
+    ended_at: 2022-06-26
     variants:
       - 20220422-variant
       - 20220518-variant
@@ -108,7 +111,8 @@ experiments:
     winner: 20220422-variant
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
-    start_date: 2022-05-09
+    started_at: 2022-05-09
+    ended_at: 2022-05-18
     variants:
       - 20220422-variant
       - 20220509-variant
@@ -130,10 +134,11 @@ experiments:
       - user_views_pages_on_at_least_nine_different_days_within_two_weeks
       - user_publishes_post_at_least_two_times_within_week
   feed_strategy_starting_20220422:
-    winner: 20220422-variant
+    winner: 20220422-jennie-variant
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
-    start_date: 2022-04-22
+    started_at: 2022-04-22
+    ended_at: 2022-05-09
     variants:
       - 20220415-incumbent
       - 20220422-jennie-variant
