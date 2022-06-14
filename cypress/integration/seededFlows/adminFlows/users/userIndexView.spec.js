@@ -339,45 +339,9 @@ describe('User index view', () => {
         });
       });
     });
-  });
 
-  describe('User index view with the member_index_view feature flag enabled', () => {
-    describe('small screens', () => {
-      beforeEach(() => {
-        cy.testSetup();
-        cy.fixture('users/adminUser.json').as('user');
-        cy.enableFeatureFlag('member_index_view')
-          .then(() => cy.get('@user'))
-          .then((user) =>
-            cy.loginAndVisit(user, '/admin/member_manager/users'),
-          );
-        cy.viewport('iphone-x');
-      });
-
-      describe('User actions', () => {
-        it('Opens the assign role modal', () => {
-          cy.enableFeatureFlag('member_index_view');
-          // Helper function for cypress-pipe
-          const click = (el) => el.click();
-
-          cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
-            .as('userActionsButton')
-            .pipe(click)
-            .should('have.attr', 'aria-expanded', 'true');
-
-          cy.findByRole('button', { name: 'Assign role' }).click();
-
-          cy.getModal().within(() => {
-            cy.findByText('Add role').should('be.visible');
-            cy.findByText('Add a note to this action:').should('be.visible');
-            cy.findByRole('button', {
-              name: 'Add',
-            }).should('exist');
-          });
-        });
-      });
-
-      describe('large screens', () => {
+    describe('User index view with the member_index_view feature flag enabled', () => {
+      describe('small screens', () => {
         beforeEach(() => {
           cy.testSetup();
           cy.fixture('users/adminUser.json').as('user');
@@ -386,7 +350,7 @@ describe('User index view', () => {
             .then((user) =>
               cy.loginAndVisit(user, '/admin/member_manager/users'),
             );
-          cy.viewport('macbook-16');
+          cy.viewport('iphone-x');
         });
 
         describe('User actions', () => {
@@ -408,6 +372,86 @@ describe('User index view', () => {
               cy.findByRole('button', {
                 name: 'Add',
               }).should('exist');
+            });
+          });
+
+          it('Opens the add organization modal', () => {
+            cy.enableFeatureFlag('member_index_view');
+            // Helper function for cypress-pipe
+            const click = (el) => el.click();
+
+            cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
+              .as('userActionsButton')
+              .pipe(click)
+              .should('have.attr', 'aria-expanded', 'true');
+
+            cy.findByRole('button', { name: 'Add organization' }).click();
+
+            cy.getModal().within(() => {
+              cy.findByText('Organization ID').should('be.visible');
+              cy.findByText('Role').should('be.visible');
+              cy.findByRole('button', {
+                name: 'Add organization',
+              }).should('exist');
+            });
+          });
+        });
+
+        describe('large screens', () => {
+          beforeEach(() => {
+            cy.testSetup();
+            cy.fixture('users/adminUser.json').as('user');
+            cy.enableFeatureFlag('member_index_view')
+              .then(() => cy.get('@user'))
+              .then((user) =>
+                cy.loginAndVisit(user, '/admin/member_manager/users'),
+              );
+            cy.viewport('macbook-16');
+          });
+
+          describe('User actions', () => {
+            it('Opens the assign role modal', () => {
+              cy.enableFeatureFlag('member_index_view');
+              // Helper function for cypress-pipe
+              const click = (el) => el.click();
+
+              cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
+                .as('userActionsButton')
+                .pipe(click)
+                .should('have.attr', 'aria-expanded', 'true');
+
+              cy.findByRole('button', { name: 'Assign role' }).click();
+
+              cy.getModal().within(() => {
+                cy.findByText('Add role').should('be.visible');
+                cy.findByText('Add a note to this action:').should(
+                  'be.visible',
+                );
+                cy.findByRole('button', {
+                  name: 'Add',
+                }).should('exist');
+              });
+            });
+
+            it('Opens the add organization modal', () => {
+              cy.enableFeatureFlag('member_index_view');
+              // Helper function for cypress-pipe
+              const click = (el) => el.click();
+
+              cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
+                .as('userActionsButton')
+                .pipe(click)
+                .should('have.attr', 'aria-expanded', 'true');
+
+              cy.findByRole('button', { name: 'Add organization' }).click();
+
+              cy.getModal().within(() => {
+                cy.findByText('Organization ID').should('be.visible');
+                cy.findByText('Role').should('be.visible');
+                cy.findByRole('button', {
+                  name: 'Add organization',
+                }).should('exist');
+              });
             });
           });
         });
