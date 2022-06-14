@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export const LoadingPreview = ({ version }) => {
   const cover = version === 'cover' && (
-    <div className="crayons-story__cover">
+    <div className="crayons-story__cover" data-testid="loading-preview__cover">
       <div
         className="crayons-scaffold crayons-story__cover__image"
         loading="lazy"
@@ -11,9 +11,9 @@ export const LoadingPreview = ({ version }) => {
     </div>
   );
   return (
-    <div className="crayons-story" title="Loading posts...">
+    <div data-testid="loading-preview" title="Loading preview...">
       {cover}
-      <div className="crayons-story__body mt-8" title="Loading preview...">
+      <div className="crayons-story__body mt-8">
         <div className="crayons-story__indention w-100">
           {/* top */}
           <div className="crayons-story__top w-50 mb-2">
@@ -37,5 +37,5 @@ export const LoadingPreview = ({ version }) => {
 };
 
 LoadingPreview.propTypes = {
-  version: PropTypes.String,
+  version: PropTypes.string,
 };
