@@ -81,7 +81,7 @@ const previewResponsePropTypes = PropTypes.shape({
 });
 
 export const Preview = ({
-  previewLoadingShowing,
+  previewLoading,
   previewResponse,
   articleState,
   errors,
@@ -93,7 +93,7 @@ export const Preview = ({
     }
   }, [previewResponse]);
 
-  if (previewLoadingShowing) {
+  if (previewLoading) {
     const coverImage = articleState.mainImage;
     let loadingPreview;
     if (coverImage === null) {
@@ -140,7 +140,7 @@ function attachTwitterTimelineScript() {
 }
 
 Preview.propTypes = {
-  previewLoadingShowing: PropTypes.bool,
+  previewLoading: PropTypes.bool,
   previewResponse: previewResponsePropTypes.isRequired,
   errors: PropTypes.object,
   markdownLintErrors: PropTypes.arrayOf(PropTypes.object),

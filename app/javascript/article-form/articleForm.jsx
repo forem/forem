@@ -107,7 +107,7 @@ export class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      previewLoadingShowing: false,
+      previewLoading: false,
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
@@ -162,13 +162,13 @@ export class ArticleForm extends Component {
 
   setCommonProps = ({
     previewShowing = false,
-    previewLoadingShowing = false,
+    previewLoading = false,
     helpFor = null,
     helpPosition = null,
   }) => {
     return {
       previewShowing,
-      previewLoadingShowing,
+      previewLoading,
       helpFor,
       helpPosition,
     };
@@ -228,8 +228,8 @@ export class ArticleForm extends Component {
   showLoadingPreview = () => {
     this.setState({
       ...this.setCommonProps({
-        previewShowing: false,
-        previewLoadingShowing: true,
+        previewShowing: true,
+        previewLoading: true,
       }),
     });
   };
@@ -239,7 +239,7 @@ export class ArticleForm extends Component {
     this.setState({
       ...this.setCommonProps({
         previewShowing: true,
-        previewLoadingShowing: false,
+        previewLoading: false,
       }),
       previewResponse: response,
       errors: null,
@@ -253,7 +253,7 @@ export class ArticleForm extends Component {
 
   failedPreview = (response) => {
     this.setState({
-      ...this.setCommonProps({ previewLoadingShowing: false }),
+      ...this.setCommonProps({ previewLoading: false }),
       errors: response,
       submitting: false,
     });
@@ -336,7 +336,7 @@ export class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      previewLoadingShowing: false,
+      previewLoading: false,
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
@@ -393,7 +393,7 @@ export class ArticleForm extends Component {
       bodyMarkdown,
       published,
       previewShowing,
-      previewLoadingShowing,
+      previewLoading,
       previewResponse,
       submitting,
       organizations,
@@ -430,9 +430,9 @@ export class ArticleForm extends Component {
           displayModal={() => this.showModal(true)}
         />
 
-        {previewShowing || previewLoadingShowing ? (
+        {previewShowing || previewLoading ? (
           <Preview
-            previewLoadingShowing={previewLoadingShowing}
+            previewLoading={previewLoading}
             previewResponse={previewResponse}
             articleState={this.state}
             errors={errors}
