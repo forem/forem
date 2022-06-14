@@ -49,7 +49,7 @@
     "@storybook/addon-links": "^6.5.6",
     "@storybook/addon-storysource": "^6.4.22",
     "@storybook/addons": "^6.4.20",
-    "@storybook/builder-webpack5": "^6.4.22",
+    "@storybook/builder-webpack5": "^6.5.9",
     "@storybook/manager-webpack5": "^6.5.9",
     "@storybook/preact": "^6.5.7",
     "@testing-library/cypress": "^8.0.2",
