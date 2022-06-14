@@ -146,7 +146,6 @@ class ArticlesController < ApplicationController
 
   def create
     authorize Article
-
     @user = current_user
     article = Articles::Creator.call(@user, article_params_json)
 
@@ -313,7 +312,7 @@ class ArticlesController < ApplicationController
                      else
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
-                         tag_list canonical_url series collection_id archived published_at time_zone
+                         tag_list canonical_url series collection_id archived published_at timezone
                        ]
                      end
 
@@ -326,7 +325,7 @@ class ArticlesController < ApplicationController
       allowed_params << :organization_id
     end
 
-    time_zone_str = params["article"].delete("time_zone")
+    time_zone_str = params["article"].delete("timezone")
     if params["article"]["published_at"]
       time_zone = Time.find_zone(time_zone_str)
       time_zone ||= Time.find_zone("UTC")
