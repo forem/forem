@@ -32,7 +32,7 @@ module Admin
     def index
       @users = Admin::UsersQuery.call(
         relation: User.registered,
-        options: params.permit(:role, :search),
+        options: params.permit(:role, { roles: [] }, :search),
       ).page(params[:page]).per(50)
 
       @organization_limit = 3

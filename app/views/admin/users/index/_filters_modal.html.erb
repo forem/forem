@@ -9,12 +9,12 @@
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Member roles<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
                 <fieldset class="pb-4 flex flex-col items-start">
                     <legend class="screen-reader-only">Member roles</legend>
-                    <% initially_visible_roles = Constants::Role::SPECIAL_ROLES.first(6) %>
-                    <% initially_hidden_roles = Constants::Role::SPECIAL_ROLES.slice(6, Constants::Role::SPECIAL_ROLES.length - 1) %>
+                    <% initially_visible_roles = Constants::Role::SPECIAL_ROLES[0..5] %>
+                    <% initially_hidden_roles = Constants::Role::SPECIAL_ROLES[6..] %>
                     <% initially_visible_roles.each_with_index do |role, index| %>
                         <div class="crayons-field crayons-field--checkbox">
-                            <%= f.check_box "role[]", { multiple: true, class: "crayons-checkbox", id: "filter-role-#{index}" }, role, false %>
-                            <%= f.label "role[]", for: "filter-role-#{index}", class: "crayons-field__label" do %><%= role %><% end %>
+                            <%= f.check_box :roles, { multiple: true, class: "crayons-checkbox", id: "filter-role-#{index}" }, role, false %>
+                            <%= f.label :roles, for: "filter-role-#{index}", class: "crayons-field__label" do %><%= role %><% end %>
                         </div>
                     <% end %>
                     <div class="hidden js-initially-hidden-roles">
