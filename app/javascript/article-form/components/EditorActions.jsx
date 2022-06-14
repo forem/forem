@@ -9,6 +9,7 @@ export const EditorActions = ({
   onClearChanges,
   published,
   publishedAt,
+  schedulingEnabled,
   edited,
   version,
   passedData,
@@ -64,6 +65,7 @@ export const EditorActions = ({
       {isVersion2 && (
         <Options
           passedData={passedData}
+          schedulingEnabled={schedulingEnabled}
           onConfigChange={onConfigChange}
           onSaveDraft={onSaveDraft}
         />
@@ -85,7 +87,8 @@ EditorActions.propTypes = {
   onSaveDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   published: PropTypes.bool.isRequired,
-  publishedAt: PropTypes.object.isRequired,
+  publishedAt: PropTypes.string.isRequired,
+  schedulingEnabled: PropTypes.bool.isRequired,
   edited: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
   onClearChanges: PropTypes.func.isRequired,

@@ -63,6 +63,7 @@ export class ArticleForm extends Component {
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
     siteLogo: PropTypes.string.isRequired,
+    schedulingEnabled: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -73,6 +74,7 @@ export class ArticleForm extends Component {
     super(props);
     const { article, version, siteLogo } = this.props;
     let { organizations } = this.props;
+    const { schedulingEnabled } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
     this.url = window.location.href;
@@ -109,6 +111,7 @@ export class ArticleForm extends Component {
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
+      schedulingEnabled,
       previewShowing: false,
       previewResponse: '',
       submitting: false,
@@ -381,6 +384,7 @@ export class ArticleForm extends Component {
       publishedAt,
       previewShowing,
       previewResponse,
+      schedulingEnabled,
       submitting,
       organizations,
       organizationId,
@@ -471,6 +475,7 @@ export class ArticleForm extends Component {
         <EditorActions
           published={published}
           publishedAt={publishedAt}
+          schedulingEnabled={schedulingEnabled}
           version={version}
           onPublish={this.onPublish}
           onSaveDraft={this.onSaveDraft}

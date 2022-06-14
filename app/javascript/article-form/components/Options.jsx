@@ -35,11 +35,13 @@ export const Options = ({
     canonicalUrl = '',
     series = '',
   },
+  schedulingEnabled,
   onSaveDraft,
   onConfigChange,
 }) => {
   let publishedField = '';
   let existingSeries = '';
+  let publishedAtField = '';
   const publishedDate = new Date(publishedAt);
   const currentDate = new Date();
 
@@ -89,6 +91,36 @@ export const Options = ({
       </div>
     );
   }
+  if (schedulingEnabled) {
+    publishedAtField = (
+      <div className="crayons-field mb-6">
+        <label htmlFor="publishedAt" className="crayons-field__label">
+          Schedule Publication
+        </label>
+        <input
+          type="datetime-local"
+          min={minPublishedAt}
+          value={localPublishedAt} // "2022-04-28T15:00:00"
+          readonly={readonlyPublishedAt}
+          className="crayons-textfield"
+          name="publishedAt"
+          onChange={onConfigChange}
+          id="publishedAt"
+          placeholder="..."
+        />
+        <input
+          type="hidden"
+          value={timezone} // "Asia/Magadan"
+          className="crayons-textfield"
+          name="timezone"
+          onKeyUp={onConfigChange}
+          id="timezone"
+          placeholder="..."
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="s:relative">
       <Button
@@ -126,31 +158,7 @@ export const Options = ({
             id="canonicalUrl"
           />
         </div>
-        <div className="crayons-field mb-6">
-          <label htmlFor="publishedAt" className="crayons-field__label">
-            Schedule Publication
-          </label>
-          <input
-            type="datetime-local"
-            min={minPublishedAt}
-            value={localPublishedAt} // "2022-04-28T15:00:00"
-            readonly={readonlyPublishedAt}
-            className="crayons-textfield"
-            name="publishedAt"
-            onChange={onConfigChange}
-            id="publishedAt"
-            placeholder="..."
-          />
-          <input
-            type="hidden"
-            value={timezone} // "Asia/Magadan"
-            className="crayons-textfield"
-            name="timezone"
-            onKeyUp={onConfigChange}
-            id="timezone"
-            placeholder="..."
-          />
-        </div>
+        {publishedAtField}
         <div className="crayons-field mb-6">
           <label htmlFor="series" className="crayons-field__label">
             Series
@@ -188,11 +196,13 @@ Options.propTypes = {
   passedData: PropTypes.shape({
     published: PropTypes.bool.isRequired,
     publishedAt: PropTypes.string.isRequired,
+    schedulingEnabled: PropTypes.bool.isRequired,
     timezone: PropTypes.string.isRequired,
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired,
   }).isRequired,
+  schedulingEnabled: PropTypes.bool.isRequired,
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,
 };

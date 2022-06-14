@@ -25,13 +25,15 @@ function loadForm() {
 
     const root = document.querySelector('main');
     const { article, organizations, version, siteLogo } = root.dataset;
-
+    let { schedulingEnabled } = root.dataset;
+    schedulingEnabled = schedulingEnabled == 'true';
     render(
       <ArticleForm
         article={article}
         organizations={organizations}
         version={version}
         siteLogo={siteLogo}
+        schedulingEnabled={schedulingEnabled}
       />,
       root,
       root.firstElementChild,
