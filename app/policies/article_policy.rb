@@ -172,7 +172,7 @@ class ArticlePolicy < ApplicationPolicy
     adjustments = TagAdjustment.where(article_id: @record.id)
     has_room_for_tags = @record.tag_list.size < MAX_TAG_LIST_SIZE
     # ensures that mods cannot adjust an already-adjusted tag
-    has_no_relevant_adjustments = adjustments.pluck(:tag_id).intersection(tag_ids_moderated_by_user).size.zero?
+    has_no_relevant_adjustments = adjustments.pluck(:tag_id).intersection(tag_ids_moderated_by_user).size.empty?
 
     # tag_mod can add their moderated tags
     return true if has_room_for_tags && has_no_relevant_adjustments
