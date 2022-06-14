@@ -138,6 +138,8 @@ RSpec.describe Articles::Builder, type: :service do
 
     it "initializes an article with the correct attributes and does not need authorization" do
       user.setting.update(editor_version: "v1")
+      allow(FeatureFlag).to receive(:enabled?).with(:schedule_articles).and_return(true)
+
       subject, needs_authorization = described_class.call(user, tag, prefill)
 
       expect(subject).to be_an_instance_of(Article)
