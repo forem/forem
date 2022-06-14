@@ -1,0 +1,20 @@
+@import '../config/import';
+.c-btn.default-selection-template__selected {
+  &:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: solid var(--base-10);
+    border-right: none;
+    color: var(--base-90);
+  }
+
+  &:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  &:last-child:hover,
+  &:last-child:focus-visible {
+    color: var(--accent-danger);
+  }
+}

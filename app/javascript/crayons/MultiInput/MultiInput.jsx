@@ -2,7 +2,7 @@ import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { useRef, useState, useEffect } from 'preact/hooks';
 // TODO: change the path to a shared component
-import { DefaultSelectionTemplate } from '../MultiSelectAutocomplete/DefaultSelectionTemplate';
+import { DefaultSelectionTemplate } from '../../shared/components/defaultSelectionTemplate';
 
 const KEYS = {
   ENTER: 'Enter',
@@ -133,7 +133,7 @@ export const MultiInput = ({
     return (
       <li
         key={index}
-        className="c-autocomplete--multi__selection-list-item w-max"
+        className="c-input--multi__selection-list-item w-max"
         style={{ order: position }}
       >
         <SelectionTemplate
