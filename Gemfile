@@ -146,7 +146,7 @@ group :development, :test do
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.30", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.14", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.14", require: false # Automatic Rails code style checking tool
+  gem "rubocop-rails", "~> 2.15", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.11", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
 end
