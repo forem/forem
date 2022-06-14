@@ -80,7 +80,7 @@
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.30.0",
     "husky": "^8.0.1",
-    "jest": "28.1.0",
+    "jest": "28.1.1",
     "jest-axe": "^6.0.0",
     "jest-environment-jsdom": "^28.1.0",
     "jest-fetch-mock": "^3.0.3",
