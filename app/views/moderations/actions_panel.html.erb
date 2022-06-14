@@ -84,7 +84,8 @@
       </h3>
     </header>
 
-    <% if current_user.any_admin? || @should_show_adjust_tags %>
+    <%# Checking if the user should see the "Adjust tags" dropdown %>
+    <% if policy(@moderatable).allow_tag_adjustment? %>
       <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
@@ -101,8 +102,8 @@
       </button>
 
       <div id="adjust-tags-options" class="adjust-tags-options dropdown-options hidden">
-        <% if current_user.any_admin? %>
-          <% if @moderatable.tag_list.size < 4 %>
+        <% if policy(@moderatable).can_adjust_any_tag? %>
+          <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
             <div class="add-tag-container">
               <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
             </div>
@@ -116,7 +117,7 @@
               </div>
             </button>
           <% end %>
-        <% else %>
+        <% elsif policy(@moderatable).tag_moderator_eligible? %>
           <% @tag_moderator_tags.each do |tag| %>
             <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
             <% subtract_or_plus_title = t("views.moderations.actions.adjust.#{subtract_or_plus == 'subtract' ? 'remove' : 'add'}") %>
