@@ -7,6 +7,7 @@
 <% end %>
 
 <%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
+<%= javascript_packs_with_chunks_tag "admin/editUser", defer: true %>
 
 <% user_suspended = @moderatable.user.suspended? %>
 <% user_username = @moderatable.username %>
@@ -227,4 +228,8 @@
   <div class="bottom-actions">
     <button id="open-flag-user-modal" type="button"><%= t("views.moderations.actions.flag") %></button>
   </div>
+</div>
+
+<div class="hidden">
+  <%= render "admin/users/modals/unpublish_modal" %>
 </div>
