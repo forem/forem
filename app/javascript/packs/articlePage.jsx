@@ -73,7 +73,7 @@ function showAnnouncer() {
 }
 
 // Temporary Ahoy Stats for comment section clicks
-function trackCommentSectionClicks() {
+function trackCommentsSectionClicks() {
   document.getElementById('comments')?.addEventListener('click', (event) => {
     ahoy.track('Comment section click', {
       page: location.href,
@@ -82,12 +82,12 @@ function trackCommentSectionClicks() {
   });
 }
 
-// Temporary Ahoy Stats for scrolling to comments section
-function trackCommentSectionScroll() {
+// Temporary Ahoy Stats for displaying comments section either on page load or after scrolling
+function trackCommentsSectionDisplayed() {
   const callback = (entries, _observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        ahoy.track('Comment section scrolled to', { page: location.href });
+        ahoy.track('Comment section viewable', { page: location.href });
       }
     });
   };
@@ -161,5 +161,5 @@ const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
 
 initializeUserSubscriptionLiquidTagContent();
-trackCommentSectionClicks();
-trackCommentSectionScroll();
+trackCommentsSectionClicks();
+trackCommentsSectionDisplayed();
