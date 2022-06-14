@@ -13,8 +13,8 @@
                     <% initially_hidden_roles = Constants::Role::SPECIAL_ROLES.slice(6, Constants::Role::SPECIAL_ROLES.length - 1) %>
                     <% initially_visible_roles.each_with_index do |role, index| %>
                         <div class="crayons-field crayons-field--checkbox">
-                            <%= f.check_box :role, { multiple: true, class: "crayons-checkbox", id: "filter-role-#{index}" }, role, false %>
-                            <%= f.label :role, for: "filter-role-#{index}", class: "crayons-field__label" do %><%= role %><% end %>
+                            <%= f.check_box "role[]", { multiple: true, class: "crayons-checkbox", id: "filter-role-#{index}" }, role, false %>
+                            <%= f.label "role[]", for: "filter-role-#{index}", class: "crayons-field__label" do %><%= role %><% end %>
                         </div>
                     <% end %>
                     <div class="hidden js-initially-hidden-roles">
