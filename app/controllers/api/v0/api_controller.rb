@@ -11,7 +11,7 @@ module Api
       # considered an api_action.
       self.api_action = true
 
-      after_action :add_missing_api_key_warning_header
+      after_action :add_missing_api_key_warning_header if FeatureFlag.enabled?(:api_v1)
 
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
@@ -84,7 +84,9 @@ module Api
       def add_missing_api_key_warning_header
         return if headers["Accept"]&.include?("application/vnd.forem.api-v#{@version}+json")
 
-        response.headers["Warning"] = "299 - This endpoint will require the `api-key` header to be set in future."
+        # rubocop:disable Layout/LineLength
+        response.headers["Warning"] = "299 - This endpoint will require the `api-key` header and the `Accept` header to be set to `application/vnd.forem.api-v1+json` in future."
+        # rubocop:enable Layout/LineLength
       end
 
       private
