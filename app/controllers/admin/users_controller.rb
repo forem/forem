@@ -32,7 +32,9 @@ module Admin
     def index
       @users = Admin::UsersQuery.call(
         relation: User.registered,
-        options: params.permit(:role, { roles: [] }, :search),
+        search: params[:search],
+        role: params[:role],
+        roles: params[:roles],
       ).page(params[:page]).per(50)
 
       @organization_limit = 3
@@ -103,7 +105,12 @@ module Admin
       rescue StandardError => e
         flash[:danger] = e.message
       end
-      redirect_to admin_user_path(params[:id])
+
+      if request.referer&.include?(admin_user_path(params[:id]))
+        redirect_to admin_user_path(params[:id])
+      else
+        redirect_to admin_users_path
+      end
     end
 
     def export_data

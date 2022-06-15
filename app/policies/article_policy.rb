@@ -1,4 +1,5 @@
 class ArticlePolicy < ApplicationPolicy
+  MAX_TAG_LIST_SIZE = 4
   # @return [TrueClass] when only Forem admins can post an Article.
   # @return [FalseClass] when most any Forem user can post an Article.
   #
@@ -144,13 +145,43 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin?
   end
 
+  def elevated_user?
+    user_any_admin? || user_moderator?
+  end
+
   # this method performs the same checks that determine
-  # if the record can be featured
+  # if the record can be featured or if user can adjust
+  # any tag
   def revoke_publication?
     require_user!
     return false unless @record.published?
 
-    user_any_admin? || user_moderator?
+    elevated_user?
+  end
+
+  def allow_tag_adjustment?
+    require_user!
+
+    elevated_user? || tag_moderator_eligible?
+  end
+
+  def tag_moderator_eligible?
+    tag_ids_moderated_by_user = Tag.with_role(:tag_moderator, @user).ids
+    return false unless tag_ids_moderated_by_user.size.positive?
+
+    adjustments = TagAdjustment.where(article_id: @record.id)
+    has_room_for_tags = @record.tag_list.size < MAX_TAG_LIST_SIZE
+    # ensures that mods cannot adjust an already-adjusted tag
+    # "zero?" because intersection has just one integer (0 or 1)
+    has_no_relevant_adjustments = adjustments.pluck(:tag_id).intersection(tag_ids_moderated_by_user).size.zero?
+
+    # tag_mod can add their moderated tags
+    return true if has_room_for_tags && has_no_relevant_adjustments
+
+    authorized_to_adjust = @record.tags.ids.intersection(tag_ids_moderated_by_user).size.positive?
+
+    # tag_mod can remove their moderated tags
+    !has_room_for_tags && has_no_relevant_adjustments && authorized_to_adjust
   end
 
   def destroy?
@@ -177,6 +208,8 @@ class ArticlePolicy < ApplicationPolicy
   alias admin_featured_toggle? revoke_publication?
 
   alias toggle_featured_status? revoke_publication?
+
+  alias can_adjust_any_tag? revoke_publication?
 
   # Due to the associated controller method "admin_unpublish", we
   # alias "admin_ubpublish" to the "revoke_publication" method.

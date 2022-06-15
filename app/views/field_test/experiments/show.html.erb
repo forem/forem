@@ -1,0 +1,117 @@
+<style>
+  details details { padding: 1em 0 0 1.5em; }
+</style>
+<% experiment = @experiment %>
+<h1><%= experiment.name %><% unless experiment.active? %> <small class="closed">Completed</small><% end %></h1>
+<%# NOTE: The root_path is the Rails's engine root path, not the application's root path (e.g. "/") %>
+<p><%= link_to "Back to Experiments", root_path %></p>
+<details<%= " open" if experiment.active? %>>
+  <summary>Experiment Details</summary>
+
+  <% if experiment.description %>
+    <p class="description"><%= experiment.description %></p>
+  <% end %>
+
+  <details<%= " open" if experiment.active? %>>
+    <summary>Goals for <%= experiment.name %></summary>
+    <% experiment.goals.each do |goal| %>
+      <% results = experiment.results(goal: goal) %>
+
+      <% if experiment.multiple_goals? %>
+        <h2><%= goal.titleize %></h2>
+      <% end %>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Variant</th>
+            <th style="width: 20%;">Participants</th>
+            <th style="width: 20%;">Conversions</th>
+            <th style="width: 20%;">Conversion Rate</th>
+            <th style="width: 20%;">Prob Winning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% results.each do |variant, result| %>
+            <tr>
+              <td>
+                <%= variant %>
+                <% if variant == experiment.winner %>
+                  <span class="check">✓</span>
+                <% end %>
+              </td>
+              <td><%= result[:participated] %></td>
+              <td><%= result[:converted] %></td>
+              <td>
+                <% if result[:conversion_rate] %>
+                  <%= (100.0 * result[:conversion_rate]).round(FieldTest.precision) %>%
+                <% else %>
+                  -
+                <% end %>
+              </td>
+              <td>
+                <% if result[:prob_winning] %>
+                  <% if result[:prob_winning] < 0.01 %>
+                    &lt; 1%
+                  <% else %>
+                    <%= (100.0 * result[:prob_winning]).round(FieldTest.precision) %>%
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </details>
+
+  <% if experiment.id.start_with?("feed_strategy") %>
+    <% experiment.variants.each do |variant| %>
+      <details>
+        <summary>Config for <%= variant %> <% if variant == experiment.winner %><span class="check">✓</span><% end %></summary>
+        <% config = Articles::Feeds::VariantAssembler.user_config_hash_for(variant: variant) %>
+        <dl>
+          <dt>Description</dt>
+          <dd><%= config["description"] || "n/a" %></dd>
+          <dt>Weight</dt>
+          <dd><%= experiment.weights[experiment.variants.index(variant)] %></dd>
+          <dt>Order Lever</dt>
+          <dd><%= config["order_by"] %></dd>
+          <% config["levers"].each do |lever_key, lever| %>
+            <% next unless lever.key?("query_parameters") %>
+            <dt>Parameters for <strong><%= lever_key %></strong> relevancy lever</dt>
+            <% lever["query_parameters"].each do |key, value| %>
+              <dd><strong><%= key %>:</strong> <%= value %></dd>
+            <% end %>
+          <% end %>
+        </dl>
+
+        <table>
+          <% lever_range = config["levers"].map { |_, lever| lever["cases"].map(&:first) }.flatten.uniq.sort %>
+          <caption>Relevency Lever(s): Fallback and Range Factors</caption>
+          <thead>
+            <tr>
+              <th>Lever</th>
+              <th>Fallback</th>
+              <% lever_range.each do |i| %>
+                <th><%= i %></th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% config["levers"].each do |lever_key, lever| %>
+              <% cases = lever["cases"].each_with_object({}) { |(key, value), mem| mem[key] = value } %>
+              <tr>
+                <th><%= lever_key %></th>
+                <td><%= lever["fallback"] %></th>
+                  <% lever_range.each do |i| %>
+                    <td><%= cases.fetch(i, "&nbsp;".html_safe) %></td>
+                  <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </details>
+    <% end %>
+  <% end %>
+</details>

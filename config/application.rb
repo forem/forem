@@ -25,7 +25,7 @@ module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
-    config.load_defaults 6.0
+    config.load_defaults 6.1
 
     ### FRAMEWORK DEFAULT OVERRIDES
     # Override new framework defaults to keep existing behavior.
