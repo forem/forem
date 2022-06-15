@@ -1,4 +1,5 @@
 require "rails_helper"
+require "requests/api/shared_examples/warning_missing_api_key"
 
 RSpec.describe "Api::V0::Articles", type: :request do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
@@ -10,6 +11,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
   describe "GET /api/articles" do
     before { article }
+
+    it_behaves_like "a legacy v0 API endpoint migrated to V1", :get, "/api/articles"
 
     it "returns CORS headers" do
       origin = "http://example.com"

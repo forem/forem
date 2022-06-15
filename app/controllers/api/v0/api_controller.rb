@@ -11,6 +11,8 @@ module Api
       # considered an api_action.
       self.api_action = true
 
+      after_action :add_missing_api_key_warning_header
+
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
       end
@@ -77,6 +79,12 @@ module Api
         # (namely should we use @user or current_user, which is a bit soupy in the API controller).
         user = authenticate_with_api_key_or_current_user
         error_unauthorized unless user
+      end
+
+      def add_missing_api_key_warning_header
+        return if headers["Accept"]&.include?("application/vnd.forem.api-v#{@version}+json")
+
+        response.headers["Warning"] = "299 - This endpoint will require the `api-key` header to be set in future."
       end
 
       private
