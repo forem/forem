@@ -493,6 +493,7 @@ export class ArticleForm extends Component {
           passedData={this.state}
           onConfigChange={this.handleConfigChange}
           submitting={submitting}
+          previewLoading={previewLoading}
         />
 
         <KeyboardShortcuts
