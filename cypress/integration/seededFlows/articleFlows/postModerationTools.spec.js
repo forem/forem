@@ -1,4 +1,7 @@
 describe('Moderation Tools for Posts', () => {
+  // Helper function for pipe command
+  const click = ($el) => $el.click();
+
   beforeEach(() => {
     cy.testSetup();
   });
@@ -30,9 +33,6 @@ describe('Moderation Tools for Posts', () => {
       cy.get('@adminUser').then((user) => {
         cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article').then(() => {
           cy.findByRole('button', { name: 'Moderation' }).click();
-
-          // Helper function for pipe command
-          const click = ($el) => $el.click();
 
           cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
             // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
@@ -131,6 +131,22 @@ describe('Moderation Tools for Posts', () => {
 
           cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
             cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
+          });
+        });
+      });
+    });
+
+    it('should show Adjust tags button on a published post for a moderator user', () => {
+      cy.get('@moderatorUser').then((user) => {
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
+          cy.findByRole('button', { name: 'Moderation' }).click();
+
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
+            cy.findByRole('button', { name: 'Open adjust tags section' })
+              .as('adjustTagsButton')
+              .pipe(click)
+              .should('have.attr', 'aria-expanded', 'true');
           });
         });
       });

@@ -88,8 +88,12 @@ class UserPolicy < ApplicationPolicy
     current_user? || user_super_admin? || user_any_admin?
   end
 
+  def elevated_user?
+    user_any_admin? || user_moderator?
+  end
+
   def moderation_routes?
-    (user.has_trusted_role? || user_any_admin?) && !user.suspended?
+    (user.has_trusted_role? || elevated_user?) && !user.suspended?
   end
 
   alias update_password? edit?
