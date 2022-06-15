@@ -100,14 +100,28 @@ module Admin
       begin
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
         flash[:success] = I18n.t("admin.users_controller.updated")
+        respond_to do |format|
+          format.html do
+            handle_admin_user_path_redirect(params[:id])
+          end
+          format.json do
+            render json: { success: true, message: "#{@user.username}'s status has been updated." }
+          end
+        end
       rescue StandardError => e
         flash[:danger] = e.message
-      end
-
-      if request.referer&.include?(admin_user_path(params[:id]))
-        redirect_to admin_user_path(params[:id])
-      else
-        redirect_to admin_users_path
+        respond_to do |format|
+          format.html do
+            handle_admin_user_path_redirect(params[:id])
+          end
+          format.json do
+            render json: {
+              success: false,
+              message: @user.errors_as_sentence,
+              status: :unprocessable_entity
+            }
+          end
+        end
       end
     end
 
@@ -267,6 +281,14 @@ module Admin
     end
 
     private
+
+    def handle_admin_user_path_redirect(id)
+      if request.referer&.include?(admin_user_path(id))
+        redirect_to admin_user_path(id)
+      else
+        redirect_to admin_users_path
+      end
+    end
 
     def set_user_details
       @organizations = @user.organizations.order(:name)
