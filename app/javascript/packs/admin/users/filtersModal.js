@@ -51,6 +51,7 @@ const initializeFilterClearButtons = () => {
       const {
         dataset: { checkboxFieldsetSelector },
       } = target;
+
       if (checkboxFieldsetSelector) {
         clearAllCheckboxesInFieldset(
           document.querySelector(
@@ -94,7 +95,7 @@ const areAnyCheckboxesInFieldsetChecked = (fieldset) =>
 const clearAllCheckboxesInFieldset = (fieldset) => {
   fieldset
     .querySelectorAll("input[type='checkbox']")
-    .forEach((checkbox) => checkbox.removeAttribute('checked'));
+    .forEach((checkbox) => (checkbox.checked = false));
   const event = new Event('change');
 
   // Trigger change event to make sure "clear filter" button updates
