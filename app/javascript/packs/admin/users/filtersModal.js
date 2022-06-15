@@ -35,6 +35,72 @@ const initializeFilterDetailsToggles = () => {
   });
 };
 
+/**
+ * Each filter section has a "Clear filter" button, visible only if one of its values is currently selected.
+ * Here we initialize the show/hide behaviour, as well as the "clear" behaviour.
+ */
+const initializeFilterClearButtons = () => {
+  // Handle clicks on clear filter buttons with a single listener on the modal
+  document
+    .getElementById(WINDOW_MODAL_ID)
+    .addEventListener('click', ({ target }) => {
+      if (!target.classList.contains('js-clear-filter-btn')) {
+        return;
+      }
+
+      const {
+        dataset: { checkboxFieldsetSelector },
+      } = target;
+      if (checkboxFieldsetSelector) {
+        clearAllCheckboxesInFieldset(
+          document.querySelector(
+            `#${WINDOW_MODAL_ID} ${checkboxFieldsetSelector}`,
+          ),
+        );
+      }
+    });
+
+  const clearFilterButtons = document.querySelectorAll('.js-clear-filter-btn');
+  clearFilterButtons.forEach((button) => {
+    const { checkboxFieldsetSelector, filterIndicatorSelector } =
+      button.dataset;
+
+    // Handle checkbox groups
+    document
+      .querySelector(`#${WINDOW_MODAL_ID} ${checkboxFieldsetSelector}`)
+      ?.addEventListener('change', ({ currentTarget }) => {
+        const anyFiltersApplied =
+          areAnyCheckboxesInFieldsetChecked(currentTarget);
+        const relatedIndicator = document.querySelector(
+          `#${WINDOW_MODAL_ID} ${filterIndicatorSelector}`,
+        );
+
+        if (anyFiltersApplied) {
+          button.classList.remove('hidden');
+          relatedIndicator.classList.remove('hidden');
+        } else {
+          button.classList.add('hidden');
+          relatedIndicator.classList.add('hidden');
+        }
+      });
+  });
+};
+
+const areAnyCheckboxesInFieldsetChecked = (fieldset) =>
+  Array.from(fieldset.querySelectorAll("input[type='checkbox']")).some(
+    (checkbox) => checkbox.checked,
+  );
+
+const clearAllCheckboxesInFieldset = (fieldset) => {
+  fieldset
+    .querySelectorAll("input[type='checkbox']")
+    .forEach((checkbox) => checkbox.removeAttribute('checked'));
+  const event = new Event('change');
+
+  // Trigger change event to make sure "clear filter" button updates
+  fieldset.dispatchEvent(event);
+};
+
 const initializeModalCloseButton = () =>
   document
     .querySelector(`#${WINDOW_MODAL_ID} .js-filter-modal-cancel-btn`)
@@ -82,6 +148,7 @@ export const initializeFiltersModal = () => {
           initializeModalCloseButton();
           initializeFilterDetailsToggles();
           initializeShowHideRoles();
+          initializeFilterClearButtons();
         },
       });
     });
