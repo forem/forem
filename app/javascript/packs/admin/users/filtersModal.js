@@ -60,12 +60,12 @@ const initializeFilterClearButtons = () => {
       }
     });
 
-  const clearFilterButtons = document.querySelectorAll('.js-clear-filter-btn');
-  clearFilterButtons.forEach((button) => {
+  // Set up change listeners on each form group so we can toggle the button/status indicator visibility
+  // TODO: The current setup assumes checkbox groups, but as we develop this modal we will need to consider the date picker ranges too
+  document.querySelectorAll('.js-clear-filter-btn').forEach((button) => {
     const { checkboxFieldsetSelector, filterIndicatorSelector } =
       button.dataset;
 
-    // Handle checkbox groups
     document
       .querySelector(`#${WINDOW_MODAL_ID} ${checkboxFieldsetSelector}`)
       ?.addEventListener('change', ({ currentTarget }) => {
