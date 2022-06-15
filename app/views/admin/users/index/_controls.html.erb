@@ -24,11 +24,11 @@
     </div>
   </div>
   <!-- Expandable sections -->
-  <div>
+  <div class="xl:flex xl:justify-end">
     <div id="search-users" class="hidden">
       <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
     </div>
-    <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
+    <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2 m:w-50">
       <%= render "admin/users/controls/filter_role_field", f: f, context: "small" %>
     </div>
   </div>
