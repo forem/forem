@@ -83,9 +83,8 @@ export class ArticleForm extends Component {
       JSON.parse(
         localStorage.getItem(`editor-${version}-${window.location.href}`),
       ) || {};
-    // const isLocalstorageNewer =
-    //   new Date(previousContent.updatedAt) > new Date(this.article.updated_at);
-    const isLocalstorageNewer = false;
+    const isLocalstorageNewer =
+      new Date(previousContent.updatedAt) > new Date(this.article.updated_at);
 
     const previousContentState =
       previousContent && isLocalstorageNewer
