@@ -13,7 +13,7 @@
                     <% initially_hidden_roles = Constants::Role::SPECIAL_ROLES[6..] %>
                     <% initially_visible_roles.each_with_index do |role, index| %>
                         <div class="crayons-field crayons-field--checkbox">
-                            <%= f.check_box :roles, { multiple: true, class: "crayons-checkbox", id: "filter-role-#{index}" }, role, false %>
+                            <%= f.check_box :roles, { multiple: true, class: "crayons-checkbox", id: "filter-role-#{index}", checked: params[:roles]&.include?(role) }, role, false %>
                             <%= f.label :roles, for: "filter-role-#{index}", class: "crayons-field__label" do %><%= role %><% end %>
                         </div>
                     <% end %>
