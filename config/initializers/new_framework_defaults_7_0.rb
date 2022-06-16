@@ -53,13 +53,7 @@
 # Rails.application.config.active_support.isolation_level = :thread
 
 # Set both the `:open_timeout` and `:read_timeout` values for `:smtp` delivery method.
-# Rails.application.config.action_mailer.smtp_timeout = 5
-
-# The ActiveStorage video previewer will now use scene change detection to generate
-# better preview images (rather than the previous default of using the first frame
-# of the video).
-# Rails.application.config.active_storage.video_preview_arguments =
-#   "-vf 'select=eq(n\\,0)+eq(key\\,1)+gt(scene\\,0.015),loop=loop=-1:size=2,trim=start_frame=1' -frames:v 1 -f image2"
+Rails.application.config.action_mailer.smtp_timeout = 5
 
 # Automatically infer `inverse_of` for associations with a scope.
 # Rails.application.config.active_record.automatic_scope_inversing = true
@@ -74,13 +68,6 @@
 #
 # Protect from open redirect attacks in `redirect_back_or_to` and `redirect_to`.
 # Rails.application.config.action_controller.raise_on_open_redirects = true
-
-# Change the variant processor for Active Storage.
-# Changing this default means updating all places in your code that
-# generate variants to use image processing macros and ruby-vips
-# operations. See the upgrading guide for detail on the changes required.
-# The `:mini_magick` option is not deprecated; it's fine to keep using it.
-# Rails.application.config.active_storage.variant_processor = :vips
 
 # If you're upgrading and haven't set `cookies_serializer` previously, your cookie serializer
 # was `:marshal`. Convert all cookies to JSON, using the `:hybrid` formatter.
