@@ -32,15 +32,8 @@ module Admin
     end
 
     def self.filter_organization_memberships(relation:, organizations:)
-      org_conditions = []
-      organizations.each do |org_id|
-        org_conditions << "organization_memberships.organization_id = #{org_id}"
-      end
-
-      relation.joins(
-        "INNER JOIN organization_memberships ON organization_memberships.user_id = users.id
-        AND (#{org_conditions.join(' OR ')})",
-      )
+      sub_query = OrganizationMembership.select(:user_id).where(organization_id: organizations)
+      relation.where(id: sub_query)
     end
 
     # Apply the "where" scope to the given relation for the given roles.
