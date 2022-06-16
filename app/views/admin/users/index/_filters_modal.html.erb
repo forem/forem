@@ -51,7 +51,16 @@
             </details>
             <details data-section="organizations" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Organizations<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
-                Organizations options
+
+                <fieldset class="pb-4 flex flex-col items-start">
+                    <legend class="screen-reader-only">Organizations</legend>
+                        <% @organizations.each_with_index do |org, index| %>
+                            <div class="crayons-field crayons-field--checkbox">
+                                <%= f.check_box :organizations, { multiple: true, class: "crayons-checkbox", id: "filter-org-#{index}", checked: params[:organizations]&.include?(org.name) }, org.name, false %>
+                                <%= f.label :organizations, for: "filter-org-#{index}", class: "crayons-field__label" do %><%= org.name %><% end %>
+                            </div>
+                     <% end %>
+                </fieldset>
             </details>
         </div>
         <div class="flex gap-2 mt-auto">
