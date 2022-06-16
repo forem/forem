@@ -57,7 +57,7 @@ describe('Manage User Roles', () => {
           .click();
 
         cy.findByText('some reason').should('exist');
-        cy.findByText(/Warn by/).should('exist');
+        cy.findByText(/Warned by/).should('exist');
       });
 
       it('should remove other roles & add a note when Suspend role added', () => {
@@ -86,7 +86,7 @@ describe('Manage User Roles', () => {
           .findByRole('link', { name: 'Notes' })
           .click();
         cy.findByText('some reason').should('exist');
-        cy.findByText(/Suspend by/).should('exist');
+        cy.findByText(/Suspended by/).should('exist');
       });
 
       it('should remove a role', () => {
