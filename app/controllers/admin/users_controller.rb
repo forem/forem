@@ -105,7 +105,7 @@ module Admin
             handle_admin_user_path_redirect(params[:id])
           end
           format.json do
-            render json: { success: true, message: "#{@user.username}'s status has been updated." }
+            render json: { success: true, status: :ok }
           end
         end
       rescue StandardError => e
