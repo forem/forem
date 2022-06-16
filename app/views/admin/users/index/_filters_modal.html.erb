@@ -6,13 +6,35 @@
         </div>
         <div class="py-4">
             <details data-section="roles" class="admin-details">
-                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Member roles<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
-                <fieldset class="pb-4">
+                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
+                    <span class="flex">
+                        Member roles
+                        <span class="js-filtered-indicator-roles relative ml-2 <%= params[:roles].blank? ? "hidden" : "" %>">
+                            <span class="block absolute c-indicator c-indicator--info"></span>
+                        </span>
+                    </span>
+                    <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
+                </summary>
+                <fieldset class="js-roles-fieldset pb-4 flex flex-col items-start">
                     <legend class="screen-reader-only">Member roles</legend>
-                    <div class="crayons-field crayons-field--radio">
-                      <%= f.radio_button :role, "admin", class: "crayons-radio", role: "radio", id: "admin" %>
-                      <%= label_tag "admin", "Admin", class: "crayons-field__label" %>
+                    <% initially_visible_roles = Constants::Role::SPECIAL_ROLES[0..5] %>
+                    <% initially_hidden_roles = Constants::Role::SPECIAL_ROLES[6..] %>
+                    <% initially_visible_roles.each_with_index do |role, index| %>
+                        <div class="crayons-field crayons-field--checkbox">
+                            <%= f.check_box :roles, { multiple: true, class: "crayons-checkbox", id: "filter-role-#{index}", checked: params[:roles]&.include?(role) }, role, false %>
+                            <%= f.label :roles, for: "filter-role-#{index}", class: "crayons-field__label" do %><%= role %><% end %>
+                        </div>
+                    <% end %>
+                    <div class="hidden js-initially-hidden-roles">
+                         <% initially_hidden_roles.each_with_index do |role, index| %>
+                        <div class="crayons-field crayons-field--checkbox">
+                            <%= f.check_box :roles, { multiple: true, class: "crayons-checkbox", id: "filter-role-#{6 + index}", checked: params[:roles]&.include?(role) }, role, false %>
+                            <%= f.label :roles, for: "filter-role-#{6 + index}", class: "crayons-field__label" do %><%= role %><% end %>
+                        </div>
+                    <% end %>
                     </div>
+                    <button type="button" class="js-expand-roles-btn c-btn mt-2" aria-label="See more roles" aria-pressed="false">See more roles</button>
+                    <button type="button" class="js-clear-filter-btn c-btn <%= params[:roles].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-roles-fieldset" data-filter-indicator-selector=".js-filtered-indicator-roles" aria-label="Clear member roles filter">Clear filter</button>
                 </fieldset>
             </details>
             <details data-section="status" class="admin-details">

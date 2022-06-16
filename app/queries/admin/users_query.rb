@@ -19,7 +19,7 @@ module Admin
       end
 
       relation = search_relation(relation, search) if search.presence
-      relation.order(created_at: :desc)
+      relation.distinct.order(created_at: :desc)
     end
 
     def self.search_relation(relation, search)
