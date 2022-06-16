@@ -150,7 +150,7 @@ RSpec.describe Articles::Builder, type: :service do
 
       body_start = "---\ntitle: \npublished: false\ndescription: " \
                    "\ntags: \n# cover_image: https://direct_url_to_image.jpg" \
-                   "\n# Use a ratio of 100:42 for best results.\n//published_at: #{date} "
+                   "\n# Use a ratio of 100:42 for best results.\n# published_at: #{date} "
 
       expect(subject.body_markdown).to start_with(body_start)
       expect(subject.body_markdown).to end_with("#{zone}\n---\n\n")
