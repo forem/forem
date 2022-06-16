@@ -39,6 +39,7 @@ export const EditorActions = ({
   const now = new Date();
   const publishedAtDate = publishedAt ? new Date(publishedAt) : now;
   const schedule = publishedAtDate > now;
+
   const saveButtonText = schedule
     ? 'Schedule'
     : published || isVersion1
@@ -51,7 +52,6 @@ export const EditorActions = ({
         variant="primary"
         className="mr-2 whitespace-nowrap"
         onClick={onPublish}
-        tooltip={saveButtonText}
       >
         {saveButtonText}
       </Button>
