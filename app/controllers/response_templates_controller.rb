@@ -6,6 +6,12 @@ class ResponseTemplatesController < ApplicationController
   MOD_TYPES = %w[mod_comment tag_adjustment].freeze
   ADMIN_TYPES = %w[email_reply abuse_report_email_reply].freeze
 
+  # This endpoint is called to provide a mix of personal & mod_comment templates
+  # when replying to a comment, it also might be called for Email and Abuse
+  # Report Email templates. To be compatible with both uses, it returns a Hash
+  # sometimes and an array at other times. When type_of is present, this returns
+  # an array of templates. When the type_of param is missing, this returns a
+  # hash, keys are type_ofs, values are an array of templates.
   def index
     @response_templates = policy_scope(ResponseTemplate).group_by(&:type_of)
     @response_templates = @response_templates.fetch(params[:type_of], []) if params[:type_of].present?
