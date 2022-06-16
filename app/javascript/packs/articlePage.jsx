@@ -72,22 +72,25 @@ function showAnnouncer() {
   document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
-// Temporary Ahoy Stats for comment section clicks
+// Temporary Ahoy Stats for comment section clicks on controls
 function trackCommentsSectionClicks() {
-  document.getElementById('comments')?.addEventListener('click', (event) => {
-    ahoy.track('Comment section click', {
-      page: location.href,
-      element: event.target.id,
+  document.querySelectorAll('[data-tracking-name]').forEach((entry) => {
+    entry.addEventListener('click', (_event) => {
+      ahoy.track('Comment section click', {
+        page: location.href,
+        element: entry.getAttribute('data-tracking-name'),
+      });
     });
   });
 }
 
 // Temporary Ahoy Stats for displaying comments section either on page load or after scrolling
 function trackCommentsSectionDisplayed() {
-  const callback = (entries, _observer) => {
+  const callback = (entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         ahoy.track('Comment section viewable', { page: location.href });
+        observer.disconnect();
       }
     });
   };

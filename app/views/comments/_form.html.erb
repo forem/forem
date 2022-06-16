@@ -32,7 +32,7 @@
     <img src="<%= Images::Optimizer.call(Settings::General.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar" loading="lazy" />
   </span>
   <div class="comment-form__inner">
-    <div class="comment-form__field">
+    <div class="comment-form__field" data-tracking-name="comment_form_textfield">
       <%= f.text_area :body_markdown,
                       placeholder: t("views.comments.write.field.placeholder"),
                       onfocus: "handleFocus(event)",
@@ -90,8 +90,8 @@
     <div class="comment-form__preview text-styles text-styles--secondary" id="preview-div"></div>
 
     <div class="comment-form__buttons mb-4">
-      <button type="submit" class="crayons-btn mr-2 js-btn-enable" onclick="validateField(event)" disabled><%= t("views.comments.write.submit") %></button>
-      <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview js-btn-enable mr-2" disabled><%= t("views.comments.write.preview") %></button>
+      <button type="submit" class="crayons-btn mr-2 js-btn-enable" onclick="validateField(event)" data-tracking-name="comment_submit_button" disabled><%= t("views.comments.write.submit") %></button>
+      <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview js-btn-enable mr-2" data-tracking-name="comment_preview_button" disabled><%= t("views.comments.write.preview") %></button>
       <a href="<%= @comment.path %>" class="dismiss-edit-comment crayons-btn crayons-btn--ghost js-btn-dismiss hidden"><%= t("views.comments.write.cancel") %></a>
     </div>
   </div>
