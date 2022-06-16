@@ -93,12 +93,20 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.remember_created_at).to be_present
       end
 
-      it "sets confirmed_at" do
-        expect do
+      it "sets confirmed_at and doesn't deliver email without SMTP enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+
+        sidekiq_assert_no_enqueued_jobs(only: Devise.mailer.delivery_job) do
           user = service.call
 
           expect(user.confirmed_at).to be_present
-        end.not_to change(ActionMailer::Base.deliveries, :count)
+        end
+      end
+
+      it "sets confirmed_at as nil when SMTP is enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        user = service.call
+        expect(user.confirmed_at).to be_nil
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -309,12 +317,20 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.remember_created_at).to be_present
       end
 
-      it "sets confirmed_at" do
-        expect do
+      it "sets confirmed_at and doesn't deliver email without SMTP enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+
+        sidekiq_assert_no_enqueued_jobs(only: Devise.mailer.delivery_job) do
           user = service.call
 
           expect(user.confirmed_at).to be_present
-        end.not_to change(ActionMailer::Base.deliveries, :count)
+        end
+      end
+
+      it "sets confirmed_at as nil when SMTP is enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        user = service.call
+        expect(user.confirmed_at).to be_nil
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -522,12 +538,20 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.remember_created_at).to be_present
       end
 
-      it "sets confirmed_at" do
-        expect do
+      it "sets confirmed_at and doesn't deliver email without SMTP enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+
+        sidekiq_assert_no_enqueued_jobs(only: Devise.mailer.delivery_job) do
           user = service.call
 
           expect(user.confirmed_at).to be_present
-        end.not_to change(ActionMailer::Base.deliveries, :count)
+        end
+      end
+
+      it "sets confirmed_at as nil when SMTP is enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        user = service.call
+        expect(user.confirmed_at).to be_nil
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -627,12 +651,20 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.remember_created_at).to be_present
       end
 
-      it "sets confirmed_at" do
-        expect do
+      it "sets confirmed_at and doesn't deliver email without SMTP enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+
+        sidekiq_assert_no_enqueued_jobs(only: Devise.mailer.delivery_job) do
           user = service.call
 
           expect(user.confirmed_at).to be_present
-        end.not_to change(ActionMailer::Base.deliveries, :count)
+        end
+      end
+
+      it "sets confirmed_at as nil when SMTP is enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        user = service.call
+        expect(user.confirmed_at).to be_nil
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
