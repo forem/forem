@@ -59,8 +59,6 @@ module Authentication
         log_to_datadog = new_identity && successful_save
         id_provider = identity.provider
 
-        user.skip_confirmation!
-
         flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
 
         user.save!
@@ -130,7 +128,10 @@ module Authentication
         user.assign_attributes(default_user_fields)
 
         user.set_remember_fields
-        user.skip_confirmation!
+
+        # If SMTP is enabled we require email confirmation to start onboarding.
+        # Otherwise we skip this required step because we can't confirm them.
+        user.skip_confirmation! unless ForemInstance.smtp_enabled?
 
         # The user must be saved in the database before
         # we assign the user to a new identity.

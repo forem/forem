@@ -58,6 +58,18 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.apple_username).to match(/#{info.first_name.downcase}_\w+/)
       end
 
+      it "persists the user as confirmed when SMTP isn't enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+        user = service.call
+        expect(user.confirmed?).to be(true)
+      end
+
+      it "persists the user as unconfirmed when SMTP is enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        user = service.call
+        expect(user.confirmed?).to be(false)
+      end
+
       it "sets default fields" do
         user = service.call
 
@@ -181,19 +193,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.remember_created_at).to be_present
       end
 
-      it "updates confirmed_at with the current UTC time" do
-        original_confirmed_at = user.confirmed_at
-
-        Timecop.travel(1.minute.from_now) do
-          service.call
-        end
-
-        user.reload
-        expect(
-          user.confirmed_at.utc.to_i > original_confirmed_at.utc.to_i,
-        ).to be(true)
-      end
-
       it "updates the username when it is changed on the provider" do
         new_username = "new_username#{rand(1000)}"
         auth_payload.info.first_name = new_username
@@ -261,6 +260,18 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect do
           service.call
         end.to change(Identity, :count).by(1)
+      end
+
+      it "persists the user as confirmed when SMTP isn't enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+        user = service.call
+        expect(user.confirmed?).to be(true)
+      end
+
+      it "persists the user as unconfirmed when SMTP is enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        user = service.call
+        expect(user.confirmed?).to be(false)
       end
 
       it "extracts the proper data from the auth payload" do
@@ -383,19 +394,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.remember_created_at).to be_present
       end
 
-      it "updates confirmed_at with the current UTC time" do
-        original_confirmed_at = user.confirmed_at
-
-        Timecop.travel(1.minute.from_now) do
-          service.call
-        end
-
-        user.reload
-        expect(
-          user.confirmed_at.utc.to_i > original_confirmed_at.utc.to_i,
-        ).to be(true)
-      end
-
       it "updates the username when it is changed on the provider" do
         new_username = "new_username#{rand(1000)}"
         auth_payload.info.nickname = new_username
@@ -475,6 +473,18 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect do
           service.call
         end.to change(Identity, :count).by(1)
+      end
+
+      it "persists the user as confirmed when SMTP isn't enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+        user = service.call
+        expect(user.confirmed?).to be(true)
+      end
+
+      it "persists the user as unconfirmed when SMTP is enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        user = service.call
+        expect(user.confirmed?).to be(false)
       end
 
       it "extracts the proper data from the auth payload" do
@@ -568,6 +578,18 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect do
           service.call
         end.to change(Identity, :count).by(1)
+      end
+
+      it "persists the user as confirmed when SMTP isn't enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
+        user = service.call
+        expect(user.confirmed?).to be(true)
+      end
+
+      it "persists the user as unconfirmed when SMTP is enabled" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        user = service.call
+        expect(user.confirmed?).to be(false)
       end
 
       it "extracts the proper data from the auth payload" do
@@ -685,19 +707,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.remember_me).to be(true)
         expect(user.remember_token).to be_present
         expect(user.remember_created_at).to be_present
-      end
-
-      it "updates confirmed_at with the current UTC time" do
-        original_confirmed_at = user.confirmed_at
-
-        Timecop.travel(1.minute.from_now) do
-          service.call
-        end
-
-        user.reload
-        expect(
-          user.confirmed_at.utc.to_i > original_confirmed_at.utc.to_i,
-        ).to be(true)
       end
 
       it "updates the username when it is changed on the provider" do
