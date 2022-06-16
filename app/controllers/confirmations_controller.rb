@@ -5,7 +5,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     yield resource if block_given?
 
     if resource.errors.empty?
-      set_flash_message!(:global_notice, :confirmed)
+      set_flash_message!(:notice, :confirmed)
       sign_in(resource)
 
       if resource.creator?
