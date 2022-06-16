@@ -93,7 +93,7 @@ en:
           create:
             subtitle: Create template
             desc: Templates let you quickly answer FAQs or store snippets for re-use.
-          moderator: Moderator
+          moderator: Trusted User
           personal: Personal
         submit: Submit
         preview: Preview
@@ -144,4 +144,3 @@ en:
           one: "%{count}%{start}\_comment%{end}"
           other: "%{count}%{start}\_comments%{end}"
         title: Comments
-

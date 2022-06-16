@@ -42,7 +42,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
         <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 fs-base comment-form__templates hidden">
           <header>
             <button type="button" class="personal-template-button active" data-target-type="personal" data-form-id="new_comment">Personal</button>
-            <button type="button" class="moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">Moderator</button>
+            <button type="button" class="moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">Trusted User</button>
           </header>
           <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading">
           <div class="personal-responses-container"></div>
