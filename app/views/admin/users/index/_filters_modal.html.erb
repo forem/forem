@@ -63,7 +63,7 @@
                     <legend class="screen-reader-only">Organizations</legend>
                         <% @organizations.each_with_index do |org, index| %>
                             <div class="crayons-field crayons-field--checkbox">
-                                <%= f.check_box :organizations, { multiple: true, class: "crayons-checkbox", id: "filter-org-#{index}", checked: params[:organizations]&.include?(org.name) }, org.name, false %>
+                                <%= f.check_box :organizations, { multiple: true, class: "crayons-checkbox", id: "filter-org-#{index}", checked: params[:organizations]&.include?(org.id.to_s) }, org.id, false %>
                                 <%= f.label :organizations, for: "filter-org-#{index}", class: "crayons-field__label" do %><%= org.name %><% end %>
                             </div>
                      <% end %>

@@ -35,6 +35,7 @@ module Admin
         search: params[:search],
         role: params[:role],
         roles: params[:roles],
+        organizations: params[:organizations],
       ).page(params[:page]).per(50)
 
       @organization_limit = 3
