@@ -131,7 +131,7 @@ module Authentication
 
         # If SMTP is enabled we require email confirmation to start onboarding.
         # Otherwise we skip this required step because we can't confirm them.
-        user.skip_confirmation! unless ForemInstance.smtp_enabled?
+        user.skip_confirmation! unless requires_email_confirmation?
 
         # The user must be saved in the database before
         # we assign the user to a new identity.
@@ -195,6 +195,10 @@ module Authentication
       else
         Time.current
       end
+    end
+
+    def requires_email_confirmation?
+      ForemInstance.smtp_enabled? && provider.class.name != "Authentication::Providers::Forem"
     end
 
     def flag_spam_user(user)

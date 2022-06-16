@@ -56,11 +56,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       cta_variant: cta_variant,
     )
 
-    if user_persisted_and_valid? && ForemInstance.smtp_enabled?
-      redirect_to confirm_email_path(email: @user.email)
-    elsif user_persisted_and_valid?
-      # User is allowed to start onboarding without email confirmation because
-      # SMTP isn't enabled
+    if user_persisted_and_valid? && @user.confirmed?
+      # User is allowed to start onboarding
       set_flash_message(:notice, :success, kind: provider.to_s.titleize) if is_navigational_format?
 
       # Devise's Omniauthable does not automatically remember users
@@ -68,6 +65,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       remember_me(@user)
 
       sign_in_and_redirect(@user, event: :authentication)
+    elsif user_persisted_and_valid?
+      redirect_to confirm_email_path(email: @user.email)
     else
       # Devise will clean this data when the user is not persisted
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
