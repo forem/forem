@@ -4,6 +4,28 @@ import {
   WINDOW_MODAL_ID,
 } from '@utilities/showModal';
 
+const initializeDateRangePickers = async () => {
+  const joiningRangeContainer = document.querySelector(
+    `#${WINDOW_MODAL_ID} .js-joining-date-range`,
+  );
+
+  const [{ render, h }, { DateRangePicker }] = await Promise.all([
+    import('preact'),
+    import('@crayons'),
+  ]);
+
+  render(
+    <DateRangePicker
+      startDateId="joining-start"
+      endDateId="joining-end"
+      startDate={new Date()}
+      endDate={new Date()}
+      onDatesChanged={() => {}}
+    />,
+    joiningRangeContainer,
+  );
+};
+
 /**
  * Details panels will automatically expand on click when required.
  * We want to make sure only _one_ panel is expanded at any given time,
@@ -144,12 +166,13 @@ export const initializeFiltersModal = () => {
         showHeader: false,
         sheet: true,
         sheetAlign: 'right',
-        size: 'small',
+        size: 'medium',
         onOpen: () => {
           initializeModalCloseButton();
           initializeFilterDetailsToggles();
           initializeShowHideRoles();
           initializeFilterClearButtons();
+          initializeDateRangePickers();
         },
       });
     });
