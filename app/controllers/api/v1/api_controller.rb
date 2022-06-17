@@ -38,27 +38,27 @@ module Api
       # @note This method is performing both authentication and authorization.  The user suspended
       #       should be something added to the corresponding pundit policy.
       def authenticate!
-        @api_user = authenticate_with_api_key
-        return error_unauthorized unless @api_user
-        return error_unauthorized if @api_user.suspended?
+        @user = authenticate_with_api_key
+        return error_unauthorized unless @user
+        return error_unauthorized if @user.suspended?
 
         true
       end
 
       def authorize_super_admin
-        error_unauthorized unless @api_user.super_admin?
+        error_unauthorized unless @user.super_admin?
       end
 
       private
 
       # @note By default pundit_user is an alias of "#current_user".  However, as "#current_user"
       #       only tells part of the story, we need to roll our own.  That means checking if we have
-      #       `@api_user` (which is set in #authenticate_with_api_key) but if that's not
+      #       `@user` (which is set in #authenticate_with_api_key) but if that's not
       #       present, call the method.
       #
       # @return [User, NilClass]
       #
-      # @note [@jeremyf] is choosing to reference the instance variable (e.g. `@api_user`) and if that's
+      # @note [@jeremyf] is choosing to reference the instance variable (e.g. `@user`) and if that's
       #       nil to call the `authenticate_with_api_key`.  This way I'm not
       #       altering the implementation details of the `authenticate_with_api_key`
       #       function by introducing memoization.
@@ -66,7 +66,7 @@ module Api
       # @see #authenticate_with_api_key
       def pundit_user
         # What's going on here?
-        @pundit_user ||= @api_user
+        @pundit_user ||= @user
       end
 
       def authenticate_with_api_key
