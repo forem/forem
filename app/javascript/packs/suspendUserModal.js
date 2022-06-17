@@ -1,9 +1,9 @@
-import { closeWindowModal, showWindowModal } from '@utilities/showModal';
+import { showWindowModal } from '@utilities/showModal';
 import { request } from '@utilities/http';
 
 const suspendUser = async ({ event, userId, username, suspensionReason }) => {
   event.preventDefault();
-  closeWindowModal({ document: window.parent.document });
+  closeSuspendUserModal();
 
   try {
     const response = await request(
@@ -43,9 +43,15 @@ const suspendUser = async ({ event, userId, username, suspensionReason }) => {
   }
 };
 
+function closeSuspendUserModal() {
+  window.parent.document
+    .querySelector('#window-modal .crayons-modal__dismiss')
+    .click();
+}
+
 const modalContents = new Map();
 
-const getModalContents = (modalContentSelector) => {
+function getModalContents(modalContentSelector) {
   if (!modalContents.has(modalContentSelector)) {
     const modalContentElement =
       window.parent.document.querySelector(modalContentSelector);
@@ -56,7 +62,7 @@ const getModalContents = (modalContentSelector) => {
   }
 
   return modalContents.get(modalContentSelector);
-};
+}
 
 function checkSuspensionReason(event) {
   const { userId, username, suspensionReasonSelector } = event.target.dataset;

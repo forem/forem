@@ -79,7 +79,7 @@ export const showWindowModal = async ({
 /**
  * This helper function closes any currently open window modal. This can be useful, for example, if your modal contains a "cancel" button.
  */
-export const closeWindowModal = async ({ document = window.document }) => {
+export const closeWindowModal = async () => {
   const currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
   if (currentModalContainer) {
     const { render } = await getPreactImport();
