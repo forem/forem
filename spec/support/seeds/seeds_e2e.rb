@@ -718,6 +718,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
     body_markdown: markdown,
     featured: true,
     show_comments: true,
+    slug: "series-test-article-slug",
     user_id: User.find_by(email: "series-user@forem.local").id,
   )
 end
