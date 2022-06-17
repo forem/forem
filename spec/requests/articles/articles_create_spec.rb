@@ -122,7 +122,7 @@ RSpec.describe "ArticlesCreate", type: :request do
     end
 
     it "sets published_at according to the timezone" do
-      attributes[:time_zone] = "Europe/Moscow"
+      attributes[:timezone] = "Europe/Moscow"
       post "/articles", params: { article: attributes }
       a = Article.find_by(title: new_title)
       published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
@@ -131,7 +131,7 @@ RSpec.describe "ArticlesCreate", type: :request do
 
     # crossing the date line
     it "sets published_at for another timezone" do
-      attributes[:time_zone] = "Pacific/Honolulu"
+      attributes[:timezone] = "Pacific/Honolulu"
       post "/articles", params: { article: attributes }
       a = Article.find_by(title: new_title)
       published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
