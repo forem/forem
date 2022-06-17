@@ -169,7 +169,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     # scheduled => scheduled
     it "updates published_at from scheduled to scheduled" do
       article.update_column(:published_at, 3.days.from_now)
-      attributes[:time_zone] = "Europe/Moscow"
+      attributes[:timezone] = "Europe/Moscow"
       put "/articles/#{article.id}", params: { article: attributes }
       article.reload
       published_at_utc = article.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
@@ -181,7 +181,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
       draft = create(:article, published: false, user_id: user.id)
       attributes[:published] = true
       attributes[:published_at] = "#{tomorrow.strftime('%d/%m/%Y')} 18:00"
-      attributes[:time_zone] = "America/Mexico_City"
+      attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }
       draft.reload
       published_at_utc = draft.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
@@ -192,7 +192,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     it "doesn't update published_at when published => published" do
       published_at = DateTime.parse("2022-01-01 15:00 -0400")
       article.update_column(:published_at, published_at)
-      attributes[:time_zone] = "Europe/Moscow"
+      attributes[:timezone] = "Europe/Moscow"
       put "/articles/#{article.id}", params: { article: attributes }
       article.reload
       expect(article.published_at).to eq(published_at)
