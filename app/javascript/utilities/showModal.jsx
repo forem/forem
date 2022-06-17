@@ -37,6 +37,7 @@ export const showWindowModal = async ({
   modalContent,
   contentSelector,
   onOpen,
+  document = window.document,
   ...modalProps
 }) => {
   const [{ Modal }, { render, h }] = await getModalImports();
@@ -46,9 +47,9 @@ export const showWindowModal = async ({
   if (currentModalContainer) {
     render(null, currentModalContainer);
   } else {
-    currentModalContainer = window.parent.document?.createElement('div');
+    currentModalContainer = document.createElement('div');
     currentModalContainer.setAttribute('id', WINDOW_MODAL_ID);
-    window.parent.document.body.appendChild(currentModalContainer);
+    document.body.appendChild(currentModalContainer);
   }
 
   render(
@@ -57,6 +58,7 @@ export const showWindowModal = async ({
         render(null, currentModalContainer);
       }}
       focusTrapSelector={`#${WINDOW_MODAL_ID}`}
+      document={document}
       {...modalProps}
     >
       <div
@@ -77,7 +79,7 @@ export const showWindowModal = async ({
 /**
  * This helper function closes any currently open window modal. This can be useful, for example, if your modal contains a "cancel" button.
  */
-export const closeWindowModal = async () => {
+export const closeWindowModal = async ({ document = window.document }) => {
   const currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
   if (currentModalContainer) {
     const { render } = await getPreactImport();

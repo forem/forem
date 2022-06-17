@@ -1,11 +1,9 @@
-import { showWindowModal } from '@utilities/showModal';
+import { closeWindowModal, showWindowModal } from '@utilities/showModal';
 import { request } from '@utilities/http';
 
-const suspendUser = async (event) => {
-  const { userId, username, suspensionReasonId } = event.target.dataset;
-  const suspensionReason = document.getElementById(suspensionReasonId).value;
-
+const suspendUser = async ({ event, userId, username, suspensionReason }) => {
   event.preventDefault();
+  closeWindowModal({ document: window.parent.document });
 
   try {
     const response = await request(
@@ -14,7 +12,7 @@ const suspendUser = async (event) => {
         method: 'PATCH',
         body: JSON.stringify({
           id: userId,
-          user_params: {
+          user: {
             note_for_current_role: suspensionReason,
             user_status: 'Suspend',
           },
@@ -60,14 +58,29 @@ const getModalContents = (modalContentSelector) => {
   return modalContents.get(modalContentSelector);
 };
 
-function activateSuspendBtn() {
-  const btn = window.parent.document.getElementById(
+function checkSuspensionReason(event) {
+  const { userId, username, suspensionReasonSelector } = event.target.dataset;
+  const suspendUserModal =
+    window.parent.document.getElementById('window-modal');
+  const suspensionReason = suspendUserModal.querySelector(
+    suspensionReasonSelector,
+  ).value;
+
+  if (!suspensionReason) {
+    suspendUserModal
+      .querySelector('#suspension-reason-error')
+      .classList.remove('hidden');
+  } else {
+    suspendUser({ event, userId, username, suspensionReason });
+  }
+}
+
+function activateSubmitSuspendBtn() {
+  const submitSuspendBtn = window.parent.document.getElementById(
     'submit-user-suspension-btn',
   );
 
-  if (btn) {
-    // console.log('we got a btn!');
-  }
+  submitSuspendBtn.addEventListener('click', checkSuspensionReason);
 }
 
 export function toggleSuspendUserModal() {
@@ -75,9 +88,10 @@ export function toggleSuspendUserModal() {
   const { modalTitle, modalSize, modalContentSelector } =
     suspendUserBtn.dataset;
   showWindowModal({
+    document: window.parent.document,
     modalContent: getModalContents(modalContentSelector),
     title: modalTitle,
     size: modalSize,
-    onOpen: activateSuspendBtn(),
+    onOpen: activateSubmitSuspendBtn,
   });
 }
