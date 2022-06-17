@@ -74,14 +74,23 @@ function showAnnouncer() {
 
 // Temporary Ahoy Stats for comment section clicks on controls
 function trackCommentsSectionClicks() {
-  document.querySelectorAll('[data-tracking-name]').forEach((entry) => {
-    entry.addEventListener('click', (_event) => {
+  document
+    .getElementById('comments')
+    .addEventListener('click', ({ target }) => {
+      // We check for any parent container with a data-tracking-name attribute, as otherwise
+      // SVGs inside buttons can cause events to be missed
+      const relevantNode = target.closest('[data-tracking-name]');
+
+      if (!relevantNode) {
+        // We don't want to track this click
+        return;
+      }
+
       ahoy.track('Comment section click', {
         page: location.href,
-        element: entry.getAttribute('data-tracking-name'),
+        element: relevantNode.dataset.trackingName,
       });
     });
-  });
 }
 
 // Temporary Ahoy Stats for displaying comments section either on page load or after scrolling
