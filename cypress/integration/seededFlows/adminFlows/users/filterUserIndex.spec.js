@@ -53,8 +53,8 @@ describe('Filter user index', () => {
       2,
     );
 
-    cy.findByRole('link', { name: 'Clear all filters' }).click();
-    cy.findByRole('link', { name: 'Clear all filters' }).should('not.exist');
+    cy.findByRole('button', { name: 'Clear all filters' }).click();
+    cy.findByRole('button', { name: 'Clear all filters' }).should('not.exist');
     cy.findByRole('button', { name: /Remove filter/ }).should('not.exist');
     cy.url().should(
       'equal',

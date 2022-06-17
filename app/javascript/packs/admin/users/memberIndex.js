@@ -4,9 +4,22 @@ import { copyToClipboard } from '@utilities/runtime';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 
 /**
- * Adds a single event listener to the "applied filters" section, allowing the user to remove a given filter
+ * Adds a single event listener to the "applied filters" section, allowing the user to remove a given filter.
+ *
+ * NB: We use buttons instead of links, since the redirection to a new URL is more of an implementation detail than something
+ * that makes sense semantically to users - e.g. a link to "remove filter: admin" is slightly less clear than understanding an
+ * in-page action of the same name.
  */
 const initializeFilterPills = () => {
+  // Add the listener to the "Clear all" button
+  document
+    .querySelector('.js-clear-filters-btn')
+    ?.addEventListener('click', () => {
+      const { search, href } = document.location;
+      const newUrl = href.replace(search, '');
+      document.location = newUrl;
+    });
+
   const filtersArea = document.querySelector('.js-applied-filters');
   filtersArea?.addEventListener('click', ({ target }) => {
     // We target closest data-filter-type to account for SVGs inside the button being the click target
