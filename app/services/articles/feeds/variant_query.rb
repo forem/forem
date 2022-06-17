@@ -34,15 +34,23 @@ module Articles
         :levers, # Array <Articles::Feeds::RelevancyLever::Configured>
         :order_by, # Articles::Feeds::OrderByLever
         :max_days_since_published,
+        # when true, each time you call the query you will get different randomized numbers; when
+        # false, the resulting randomized numbers will be the same within a window of time.
+        :reseed_randomizer_on_each_request,
         keyword_init: true,
-      )
+      ) do
+        alias_method :reseed_randomizer_on_each_request?, :reseed_randomizer_on_each_request
+      end
 
       # @param config [Articles::Feeds::VariantQuery::Config]
       # @param user [User,NilClass]
       # @param number_of_articles [Integer, #to_i]
       # @param page [Integer, #to_i]
       # @param tag [NilClass] not used
-      # @param seed [Number] used in the `setseed` Postgresql function to set the randomization seed.
+      #
+      # @param seed [Number] used in the `setseed` Postgresql function to set the randomization
+      #        seed.  This parameter allows the caller (and debugger) to use the same randomization
+      #        order in the queries; the hope being that this might help in any debugging.
       def initialize(config:, user: nil, number_of_articles: 50, page: 1, tag: nil, seed: nil)
         @user = user
         @number_of_articles = number_of_articles
@@ -296,6 +304,8 @@ module Articles
       # same order of pages even though we've randomized things a bit).
       def randomizer_seed_for(seed:, user:)
         return Float(seed) if seed
+
+        return rand if config.reseed_randomizer_on_each_request?
 
         # This is added as a short-circuit in-case the caching proves to be non-performant.  Once
         # this has been merged, given that it's part of the main loop, we can remove the FeatureFlag
