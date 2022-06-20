@@ -67,8 +67,6 @@ describe('<Preview />', () => {
     errors = null;
   });
 
-  // Add following tests:
-  // no a11y voilations for loading
   // no cover for loading
   // with cover for loading
 
@@ -115,7 +113,7 @@ describe('<Preview />', () => {
     expect(queryByTestId('loading-preview')).not.toBeInTheDocument();
   });
 
-  it('does show loading screen when preview is loading', () => {
+  it('shows loading screen when preview is loading', () => {
     const articleState = { ...getArticleState(), mainImage: null };
     const previewResponse = { ...getPreviewResponse(), cover_image: null };
     const { queryByTestId } = render(
@@ -130,7 +128,7 @@ describe('<Preview />', () => {
     expect(queryByTestId('loading-preview')).toBeInTheDocument();
   });
 
-  it('shows preview loading with cover image loading', () => {
+  it('shows loading with cover image when image is attached', () => {
     const { queryByTestId } = render(
       <Preview
         previewLoading={true}
@@ -211,7 +209,7 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(queryByTestId('article-form__cover')).not.toBeInTheDocument();
+    expect(queryByTestId('page-title__label')).not.toBeInTheDocument();
   });
 
   // TODO: need to write a test for the cover image for v1
