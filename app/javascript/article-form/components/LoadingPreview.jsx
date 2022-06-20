@@ -15,16 +15,13 @@ export const LoadingPreview = ({ version }) => {
       {cover}
       <div className="crayons-story__body mt-8">
         <div className="crayons-story__indention w-100">
-          {/* top */}
           <div className="crayons-story__top w-50 mb-2">
             <div className="crayons-scaffold-loading w-100 h-0 py-5" />
           </div>
-          {/* mid */}
           <div className="crayons-story__meta w-25 mb-5">
             <div className="crayons-scaffold-loading w-50 h-0 py-3 mr-2" />
             <div className="crayons-scaffold-loading w-50 h-0 py-3" />
           </div>
-          {/* bottom */}
           <div className="crayons-scaffold-loading w-75 h-0 py-3 mb-2" />
           <div className="crayons-story__meta w-75 mb-2">
             <div className="crayons-scaffold-loading w-50 h-0 py-3" />
