@@ -422,6 +422,7 @@ export class ArticleForm extends Component {
       >
         <Header
           onPreview={this.fetchPreview}
+          previewLoading={previewLoading}
           previewShowing={previewShowing}
           organizations={organizations}
           organizationId={organizationId}
