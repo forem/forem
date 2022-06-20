@@ -1,7 +1,9 @@
+
 {
   "max_days_since_published": 15,
-  "reseed_randomizer_on_each_request": false,
-  "order_by": "relevancy_score_and_publication_date",
+  "description": "Derived from 20220617-variant-a but with re-seeding every request",
+  "order_by": "final_order_by_random_weighted_to_score",
+  "reseed_randomizer_on_each_request": true,
   "levers": {
     "daily_decay": {
       "cases": [
@@ -47,20 +49,6 @@
       "fallback": 1
     },
     "featured_article": { "cases": [[1, 1]], "fallback": 0.85 },
-    "following_author": {
-      "cases": [
-        [0, 0.8],
-        [1, 1]
-      ],
-      "fallback": 1
-    },
-    "following_org": {
-      "cases": [
-        [0, 0.95],
-        [1, 1]
-      ],
-      "fallback": 1
-    },
     "latest_comment": {
       "cases": [
         [0, 1],
@@ -71,8 +59,8 @@
     "matching_negative_tags_intersection_count": {
       "cases": [
         [0, 1],
-        [1, 0.8],
-        [2, 0.5],
+        [1, 0.5],
+        [2, 0.4],
         [3, 0.3],
         [4, 0.2]
       ],
@@ -80,10 +68,10 @@
     },
     "matching_positive_tags_intersection_count": {
       "cases": [
-        [0, 0.7],
+        [0, 0.5],
         [1, 0.85],
-        [2, 0.93],
-        [3, 0.98],
+        [2, 0.9],
+        [3, 0.95],
         [4, 1]
       ],
       "fallback": 1

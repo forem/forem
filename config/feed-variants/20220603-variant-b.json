@@ -1,5 +1,6 @@
 {
   "max_days_since_published": 15,
+  "reseed_randomizer_on_each_request": false,
   "description": "As 202205518-variant but with modificiation to `order_by` lever.",
   "order_by": "final_order_by_random_weighted_to_score",
   "levers": {

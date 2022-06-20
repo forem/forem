@@ -1,5 +1,6 @@
 {
   "max_days_since_published": 15,
+  "reseed_randomizer_on_each_request": false,
   "order_by": "relevancy_score_and_publication_date",
   "levers": {
     "daily_decay": {

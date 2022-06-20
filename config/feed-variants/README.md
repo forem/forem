@@ -40,3 +40,7 @@ and as of <2022-05-06 Fri> are:
 
 - **_max_days_since_published_:** only consider articles that were published no
   more than the _max_days_since_published_.
+
+- **_reseed_randomizer_on_each_request_:** when true, each time you call the
+  query you will get different randomized numbers; when false, the resulting
+  randomized numbers will be the same within a window of time.

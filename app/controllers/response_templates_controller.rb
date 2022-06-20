@@ -6,18 +6,22 @@ class ResponseTemplatesController < ApplicationController
   MOD_TYPES = %w[mod_comment tag_adjustment].freeze
   ADMIN_TYPES = %w[email_reply abuse_report_email_reply].freeze
 
+  # This endpoint is called to provide a mix of personal & mod_comment templates
+  # when replying to a comment, it also might be called for Email and Abuse
+  # Report Email templates. To be compatible with both uses, it returns a Hash
+  # sometimes and an array at other times. When type_of is present, this returns
+  # an array of templates. When the type_of param is missing, this returns a
+  # hash, keys are type_ofs, values are an array of templates.
   def index
-    raise ArgumentError, "Missing param type_of" if params[:type_of].blank?
-
-    user_id = params[:type_of] == "personal_comment" ? current_user.id : nil
-    @response_templates = ResponseTemplate.where(type_of: params[:type_of], user_id: user_id)
+    @response_templates = policy_scope(ResponseTemplate).group_by(&:type_of)
+    @response_templates = @response_templates.fetch(params[:type_of], []) if params[:type_of].present?
 
     if MOD_TYPES.include?(params[:type_of])
-      authorize @response_templates, :moderator_index?
+      authorize :response_template, :moderator_index?
     elsif ADMIN_TYPES.include?(params[:type_of])
-      authorize @response_templates, :admin_index?
+      authorize :response_template, :admin_index?
     else
-      authorize @response_templates, :index?
+      authorize :response_template, :index?
     end
 
     respond_to do |format|

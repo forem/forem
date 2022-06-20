@@ -1,4 +1,4 @@
-<% display_tag_name = @tag.name.capitalize %>
+<% display_tag_name = @tag.pretty_name.presence || @tag.name.capitalize %>
 <% title_with_timeframe(
      page_title: display_tag_name + (@page.present? && @page > 1 ? t("views.stories.meta.page", page: @page) : ""),
      timeframe: params[:timeframe],
