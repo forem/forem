@@ -31,12 +31,6 @@ module Articles
       if success
         user.rate_limiter.track_limit_by_action(:article_update)
 
-        # if article.published && article.saved_change_to_published_at.present?
-        #   # The first time that an article is published, we want to send notifications to any mentioned users first,
-        #   # and then send notifications to any users who follow the article's author so as to avoid double mentions.
-        #   Notification.send_to_mentioned_users_and_followers(article)
-        # elsif
-
         if article.published && article.saved_change_to_published.blank?
           # If the article has already been published and is only being updated, then we need to create
           # mentions and send notifications to mentioned users inline via the Mentions::CreateAll service.
