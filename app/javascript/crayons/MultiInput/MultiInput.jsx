@@ -1,13 +1,13 @@
 import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { useRef, useState, useEffect } from 'preact/hooks';
-// TODO: change the path to a shared component
 import { DefaultSelectionTemplate } from '../../shared/components/defaultSelectionTemplate';
 
 const KEYS = {
   ENTER: 'Enter',
   COMMA: ',',
   SPACE: ' ',
+  DELETE: 'Backspace',
 };
 // TODO: think about how this may change based on
 // a different usage. We will most likely want this to be passed in as a prop.
@@ -67,6 +67,8 @@ export const MultiInput = ({
   };
 
   const handleKeyDown = (e) => {
+    const { value: currentValue } = inputRef.current;
+
     switch (e.key) {
       case KEYS.SPACE:
       case KEYS.ENTER:
@@ -74,6 +76,12 @@ export const MultiInput = ({
         e.preventDefault();
         addItemToList(e.target.value);
         clearInput();
+        break;
+      case KEYS.DELETE:
+        if (currentValue === '') {
+          e.preventDefault();
+          editPreviousSelectionIfExists();
+        }
         break;
       default:
         if (!ALLOWED_CHARS_REGEX.test(e.key)) {
@@ -93,6 +101,18 @@ export const MultiInput = ({
   const deselectItem = (clickedItem) => {
     const newArr = items.filter((item) => item !== clickedItem);
     setItems(newArr);
+  };
+
+  // If there is a previous selection, then pop it into edit mode
+  const editPreviousSelectionIfExists = () => {
+    if (items.length > 0 && inputPosition !== 0) {
+      const nextEditIndex =
+        inputPosition !== null ? inputPosition - 1 : items.length - 1;
+
+      const item = items[nextEditIndex];
+      deselectItem(item);
+      enterEditState(item, nextEditIndex);
+    }
   };
 
   const addItemToList = (value) => {
@@ -190,7 +210,7 @@ export const MultiInput = ({
                 type="text"
                 onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
-                placeholder={placeholder}
+                placeholder={inputPosition === null ? placeholder : null}
                 onChange={handleInputChange}
                 ref={inputRef}
               />
