@@ -26,6 +26,7 @@ export const MultiInput = ({
 }) => {
   const inputRef = useRef(null);
   const inputSizerRef = useRef(null);
+  const selectedItemsRef = useRef(null);
   const [items, setItems] = useState([]);
 
   // TODO: possibly refactor into a reducer
@@ -101,6 +102,13 @@ export const MultiInput = ({
   const deselectItem = (clickedItem) => {
     const newArr = items.filter((item) => item !== clickedItem);
     setItems(newArr);
+
+    // We also update the hidden selected items list, so removals are announced to screen reader users
+    selectedItemsRef.current.querySelectorAll('li').forEach((selectionNode) => {
+      if (selectionNode.innerText === clickedItem) {
+        selectionNode.remove();
+      }
+    });
   };
 
   // If there is a previous selection, then pop it into edit mode
@@ -125,6 +133,11 @@ export const MultiInput = ({
         value,
         ...items.slice(insertIndex),
       ];
+
+      // We update the hidden selected items list, so additions are announced to screen reader users
+      const listItem = document.createElement('li');
+      listItem.innerText = value;
+      selectedItemsRef.current.appendChild(listItem);
 
       // We update the hidden selected items list, so additions are announced to screen reader users
       // const listItem = document.createElement('li');
@@ -193,6 +206,19 @@ export const MultiInput = ({
         aria-hidden="true"
         className="absolute pointer-events-none opacity-0 p-2"
       />
+
+      {/* A visually hidden list provides confirmation messages to screen reader users as an item is selected or removed */}
+      <div className="">
+        <p>Selected items:</p>
+        <ul
+          ref={selectedItemsRef}
+          className=" list-none"
+          aria-live="assertive"
+          aria-atomic="false"
+          aria-relevant="additions removals"
+        />
+      </div>
+
       <div class="c-input--multi relative">
         <div class="c-input--multi__wrapper-border crayons-textfield flex items-center cursor-text pb-9">
           <ul class="list-none flex flex-wrap w-100">
