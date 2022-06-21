@@ -21,7 +21,7 @@
 
   <%= render "comments/comment_date", decorated_comment: decorated_comment %>
 
-  <div class="comment__dropdown">
+  <div class="comment__dropdown" data-tracking-name="comment_dropdown">
     <button id="comment-dropdown-trigger-<%= comment.id %>" aria-controls="comment-dropdown-<%= comment.id %>" aria-expanded="false"
       class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon <%= should_be_hidden?(comment, @root_comment) ? "element-hidden-by-commentable-user" : "" %>"
       aria-label="<%= t("views.comments.menu.aria_label") %>" aria-haspopup="true">
