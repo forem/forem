@@ -4,6 +4,9 @@ import {
   WINDOW_MODAL_ID,
 } from '@utilities/showModal';
 
+/**
+ * Some sections require the Preact DateRangePicker. This function imports the required packages and adds the pickers to the modal
+ */
 const initializeDateRangePickers = async () => {
   const joiningRangeContainer = document.querySelector(
     `#${WINDOW_MODAL_ID} .js-joining-date-range`,
@@ -14,13 +17,17 @@ const initializeDateRangePickers = async () => {
     import('@crayons'),
   ]);
 
+  const handleDateChange = ({ startDate, endDate }) => {
+    console.log({ startDate, endDate });
+  };
+
   render(
     <DateRangePicker
       startDateId="joining-start"
       endDateId="joining-end"
-      startDate={new Date()}
-      endDate={new Date()}
-      onDatesChanged={() => {}}
+      startDateAriaLabel="Joined after"
+      endDateAriaLabel="Joined before"
+      onDatesChanged={handleDateChange}
     />,
     joiningRangeContainer,
   );
@@ -166,7 +173,8 @@ export const initializeFiltersModal = () => {
         showHeader: false,
         sheet: true,
         sheetAlign: 'right',
-        size: 'medium',
+        size: 'small',
+        allowOverflow: true,
         onOpen: () => {
           initializeModalCloseButton();
           initializeFilterDetailsToggles();

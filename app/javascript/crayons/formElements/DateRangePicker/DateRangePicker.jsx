@@ -164,6 +164,8 @@ const PresetDateRangeOptions = ({
  * @param {Date} props.minStartDate The oldest date that may be selected
  * @param {Function} props.onDatesChanged Callback function for when dates are selected. Receives an object with startDate and endDate values.
  * @param {[string]} props.presetRanges Quick-select preset date ranges to offer in the calendar. These will only be shown if they fall within the min and max dates.
+ * @param {string} props.startDateAriaLabel Custom aria-label for start date input
+ * @param {string} props.endDateAriaLabel Custom aria-label for end date input
  * @param {Date} props.todaysDate Optional param to pass in today's Date, primarily for testing purposes
  */
 export const DateRangePicker = ({
@@ -175,6 +177,8 @@ export const DateRangePicker = ({
   minStartDate = new Date(),
   onDatesChanged,
   presetRanges = [],
+  startDateAriaLabel,
+  endDateAriaLabel,
   todaysDate = new Date(),
 }) => {
   const [focusedInput, setFocusedInput] = useState(START_DATE);
@@ -208,10 +212,12 @@ export const DateRangePicker = ({
       <ReactDateRangePicker
         startDateId={startDateId}
         startDate={startMoment}
-        startDateAriaLabel={`Start date (${dateFormat})`}
+        startDateAriaLabel={`${
+          startDateAriaLabel ?? 'Start date'
+        } (${dateFormat})`}
         endDate={endMoment}
         endDateId={endDateId}
-        endDateAriaLabel={`End date (${dateFormat})`}
+        endDateAriaLabel={`${endDateAriaLabel ?? 'End date'} (${dateFormat})`}
         startDatePlaceholderText={dateFormat}
         endDatePlaceholderText={dateFormat}
         displayFormat={dateFormat}
