@@ -85,6 +85,7 @@ module Articles
           description: config.fetch("description", ""),
           order_by: catalog.fetch_order_by(config.fetch("order_by")),
           max_days_since_published: config.fetch("max_days_since_published"),
+          reseed_randomizer_on_each_request: config.fetch("reseed_randomizer_on_each_request"),
         )
       end
       private_class_method :build_with

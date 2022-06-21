@@ -1,7 +1,7 @@
 <%= form_with(model: [:admin, response_template], local: true, html: { class: "crayons-card p-6" }) do |f| %>
   <div class="form-group">
     <%= f.label :type_of, "Type of Response Template" %>
-    <% type_of_options = [["Mod Comment", "mod_comment"], ["Personal Comment", "personal_comment"], %w[Email email_reply], ["Abuse Report Email", "abuse_report_email_reply"]] %>
+    <% type_of_options = [["Trusted User Comment", "mod_comment"], ["Personal Comment", "personal_comment"], %w[Email email_reply], ["Abuse Report Email", "abuse_report_email_reply"]] %>
     <%= f.select :type_of, options_for_select(type_of_options, response_template.type_of), html: { required: true }, class: "form-control" %>
   </div>
   <div class="form-group">
