@@ -822,7 +822,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.confirmed?).to be(true)
       end
 
-      it "extracts the proper data from the auth payload" do
+      it "extracts the proper data from the auth payload", :aggregate_failures do
         user = service.call
 
         info = auth_payload.info
@@ -834,7 +834,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.forem_username).to eq(info.user_nickname)
       end
 
-      it "sets default fields" do
+      it "sets default fields", :aggregate_failures do
         user = service.call
 
         expect(user.password).to be_present
@@ -849,7 +849,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.signup_cta_variant).to eq("awesome")
       end
 
-      it "sets remember_me for the new user" do
+      it "sets remember_me for the new user", :aggregate_failures do
         user = service.call
 
         expect(user.remember_me).to be(true)
@@ -890,7 +890,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         )
       end
 
-      it "increments identity.errors if any errors occur in the transaction" do
+      it "increments identity.errors if any errors occur in the transaction", :aggregate_failures do
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
         # rubocop:enable RSpec/AnyInstance
@@ -939,7 +939,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(ForemStatsClient).not_to have_received(:increment)
       end
 
-      it "sets remember_me for the existing user" do
+      it "sets remember_me for the existing user", :aggregate_failures do
         user.update_columns(remember_token: nil, remember_created_at: nil)
 
         service.call
@@ -975,7 +975,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         ).to be(true)
       end
 
-      it "increments identity.errors if any errors occur in the transaction" do
+      it "increments identity.errors if any errors occur in the transaction", :aggregate_failures do
         # rubocop:disable RSpec/AnyInstance
         allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
         # rubocop:enable RSpec/AnyInstance
