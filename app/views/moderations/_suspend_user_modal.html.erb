@@ -3,9 +3,19 @@
 
   <div class="crayons-field mt-4">
     <label for="suspend_reason_userid_<%= @article.user.id %>" class="crayons-field__label">Note:</label>
-    <textarea id="suspend_reason_userid_<%= @article.user.id %>" rows="4" cols="70" placeholder="Reason for suspension" class="crayons-textfield" required></textarea>
-    <p id="suspension-reason-error" class="crayons-field__description hidden" style="color: red;">
-      You must give a suspension reason.
+    <textarea
+      id="suspend_reason_userid_<%= @article.user.id %>"
+      rows="4"
+      cols="70"
+      placeholder="Reason for suspension"
+      class="crayons-textfield"
+      aria-describedby="suspension-reason-error"
+      required></textarea>
+    <p
+      id="suspension-reason-error"
+      class="crayons-field__description"
+      style="color: red;"
+      aria-live="assertive">
     </p>
   </div>
   <div class="mt-4">

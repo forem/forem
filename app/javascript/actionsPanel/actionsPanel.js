@@ -397,11 +397,9 @@ export function addBottomActionsListeners() {
     .getElementById('open-flag-user-modal')
     .addEventListener('click', toggleFlagUserModal);
 
-  if (document.getElementById('suspend-user-btn')) {
-    document
-      .getElementById('suspend-user-btn')
-      .addEventListener('click', toggleSuspendUserModal);
-  }
+  document
+    .getElementById('suspend-user-btn')
+    ?.addEventListener('click', toggleSuspendUserModal);
 }
 
 export function initializeActionsPanel() {

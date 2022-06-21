@@ -93,7 +93,7 @@ describe('Moderation Tools for Posts', () => {
     });
   });
 
-  context('as moderator user', () => {
+  describe('moderator user', () => {
     beforeEach(() => {
       cy.fixture('users/moderatorUser.json').as('moderatorUser');
     });
@@ -152,90 +152,70 @@ describe('Moderation Tools for Posts', () => {
       });
     });
 
-    it('should show Suspend User button for an unsuspended user', () => {
-      cy.get('@moderatorUser').then((user) => {
-        cy.loginAndVisit(user, '/series_user/series-test-article-slug').then(
-          () => {
-            cy.findByRole('button', { name: 'Moderation' }).click();
-
-            cy.getIframeBody('[title="Moderation panel actions"]').within(
-              () => {
-                cy.findByRole('button', { name: 'Open admin actions' })
-                  .as('moderatingActionsButton')
-                  .pipe(click)
-                  .should('have.attr', 'aria-expanded', 'true');
-
-                cy.findByRole('button', {
-                  name: 'Suspend series_user',
-                }).should('exist');
-              },
-            );
-          },
-        );
+    context('when suspending or unsuspending user', () => {
+      beforeEach(() => {
+        cy.get('@moderatorUser').then((user) => {
+          cy.loginAndVisit(user, '/series_user/series-test-article-slug');
+          cy.findByRole('heading', { level: 1, name: 'Series test article' });
+          cy.findByRole('button', { name: 'Moderation' }).click();
+        });
       });
-    });
 
-    it('should not suspend the user when no suspension reason given', () => {
-      cy.get('@moderatorUser').then((user) => {
-        cy.loginAndVisit(user, '/series_user/series-test-article-slug').then(
-          () => {
-            cy.findByRole('button', { name: 'Moderation' }).click();
+      it('should show Suspend User button for an unsuspended user', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
 
-            cy.getIframeBody('[title="Moderation panel actions"]').within(
-              () => {
-                cy.findByRole('button', { name: 'Open admin actions' })
-                  .as('moderatingActionsButton')
-                  .pipe(click)
-                  .should('have.attr', 'aria-expanded', 'true');
-
-                cy.findByRole('button', {
-                  name: 'Suspend series_user',
-                }).click();
-              },
-            );
-            cy.findByRole('dialog').within(() => {
-              cy.findByRole('button', { name: 'Submit & Suspend' }).click();
-
-              cy.get('#suspension-reason-error')
-                .contains('You must give a suspension reason.')
-                .should('exist');
-            });
-          },
-        );
+          cy.findByRole('button', {
+            name: 'Suspend series_user',
+          }).should('exist');
+        });
       });
-    });
 
-    it('should suspend the user when suspension reason given', () => {
-      cy.get('@moderatorUser').then((user) => {
-        cy.loginAndVisit(user, '/series_user/series-test-article-slug').then(
-          () => {
-            cy.findByRole('button', { name: 'Moderation' }).click();
+      it('should not suspend the user when no suspension reason given', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
 
-            cy.getIframeBody('[title="Moderation panel actions"]').within(
-              () => {
-                cy.findByRole('button', { name: 'Open admin actions' })
-                  .as('moderatingActionsButton')
-                  .pipe(click)
-                  .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', {
+            name: 'Suspend series_user',
+          }).click();
+        });
+        cy.findByRole('dialog').within(() => {
+          cy.findByRole('button', { name: 'Submit & Suspend' }).click();
 
-                cy.findByRole('button', {
-                  name: 'Suspend series_user',
-                }).click();
-              },
-            );
-            cy.findByRole('dialog').within(() => {
-              cy.findByRole('textbox', { name: 'Note:' }).type(
-                'My suspension reason',
-              );
+          cy.get('#suspension-reason-error')
+            .contains('You must give a suspension reason.')
+            .should('exist');
+        });
+      });
 
-              cy.findByRole('button', { name: 'Submit & Suspend' }).click();
-            });
+      it('should suspend the user when suspension reason given', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
 
-            cy.findByTestId('snackbar')
-              .contains('Success: "series_user" has been suspended.')
-              .should('exist');
-          },
-        );
+          cy.findByRole('button', {
+            name: 'Suspend series_user',
+          }).click();
+        });
+        cy.findByRole('dialog').within(() => {
+          cy.findByRole('textbox', { name: 'Note:' }).type(
+            'My suspension reason',
+          );
+
+          cy.findByRole('button', { name: 'Submit & Suspend' }).click();
+        });
+
+        cy.findByTestId('snackbar')
+          .contains('Success: "series_user" has been suspended.')
+          .should('exist');
       });
     });
   });

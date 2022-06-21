@@ -1,4 +1,9 @@
-import { showWindowModal } from '@utilities/showModal';
+/* eslint-disable no-restricted-globals */
+import {
+  closeWindowModal,
+  showWindowModal,
+  WINDOW_MODAL_ID,
+} from '@utilities/showModal';
 import { request } from '@utilities/http';
 
 const suspendUser = async ({ event, userId, username, suspensionReason }) => {
@@ -23,7 +28,6 @@ const suspendUser = async ({ event, userId, username, suspensionReason }) => {
 
     const outcome = await response.json();
 
-    /* eslint-disable no-restricted-globals */
     if (outcome.success) {
       top.addSnackbarItem({
         message: `Success: "${username}" has been suspended.`,
@@ -44,13 +48,17 @@ const suspendUser = async ({ event, userId, username, suspensionReason }) => {
 };
 
 function closeSuspendUserModal() {
-  window.parent.document
-    .querySelector('#window-modal .crayons-modal__dismiss')
-    .click();
+  closeWindowModal(window.parent.document);
 }
 
 const modalContents = new Map();
 
+/**
+ * Helper function to handle finding and caching modal content. Since our Preact modal helper works by duplicating HTML content,
+ * and our modals rely on IDs to label form controls, we remove the original hidden content from the DOM to avoid ID conflicts.
+ *
+ * @param {string} modalContentSelector The CSS selector used to identify the correct modal content
+ */
 function getModalContents(modalContentSelector) {
   if (!modalContents.has(modalContentSelector)) {
     const modalContentElement =
@@ -67,15 +75,14 @@ function getModalContents(modalContentSelector) {
 function checkSuspensionReason(event) {
   const { userId, username, suspensionReasonSelector } = event.target.dataset;
   const suspendUserModal =
-    window.parent.document.getElementById('window-modal');
+    window.parent.document.getElementById(WINDOW_MODAL_ID);
   const suspensionReason = suspendUserModal.querySelector(
     suspensionReasonSelector,
   ).value;
 
   if (!suspensionReason) {
-    suspendUserModal
-      .querySelector('#suspension-reason-error')
-      .classList.remove('hidden');
+    suspendUserModal.querySelector('#suspension-reason-error').innerText =
+      'You must give a suspension reason';
   } else {
     suspendUser({ event, userId, username, suspensionReason });
   }
