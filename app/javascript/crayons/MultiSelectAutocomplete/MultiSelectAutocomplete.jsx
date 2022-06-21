@@ -545,6 +545,7 @@ export const MultiSelectAutocomplete = ({
       >
         <SelectionTemplate
           {...item}
+          buttonVariant="secondary"
           onEdit={() => enterEditState(item, index)}
           onDeselect={() => deselectItem(item)}
         />

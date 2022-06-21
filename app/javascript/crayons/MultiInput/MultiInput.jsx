@@ -138,6 +138,7 @@ export const MultiInput = ({
       >
         <SelectionTemplate
           name={item}
+          className="c-input--multi__selected"
           onEdit={() => enterEditState(item, index)}
           onDeselect={() => deselectItem(item)}
         />

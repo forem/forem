@@ -1,20 +1,36 @@
 import { h } from 'preact';
+import PropTypes from 'prop-types';
 import { Icon, ButtonNew as Button } from '@crayons';
 import { Close } from '@images/x.svg';
 
-export const DefaultSelectionTemplate = ({ name, onEdit, onDeselect }) => (
+/**
+ * Responsible for the layout of a selected item in the crayons autocomplete and multi input components
+ *
+ * @param {string} name The selected item name
+ * @param {string} buttonVariant Optional button variant
+ * @param {string} className Optional classname for selected item
+ * @param {Function} onEdit Callback for edit click on the name of the selected item
+ * @param {Function} onDeselect Callback for deselect click on the close icon
+ */
+export const DefaultSelectionTemplate = ({
+  name,
+  buttonVariant = 'default',
+  className = 'c-autocomplete--multi__selected',
+  onEdit,
+  onDeselect,
+}) => (
   <div role="group" aria-label={name} className="flex mr-1 mb-1 w-max">
     <Button
-      variant="secondary"
-      className="default-selection-template__selected p-1 cursor-text"
+      variant={buttonVariant}
+      className={`${className} p-1 cursor-text`}
       aria-label={`Edit ${name}`}
       onClick={onEdit}
     >
       {name}
     </Button>
     <Button
-      variant="secondary"
-      className="default-selection-template__selected p-1"
+      variant={buttonVariant}
+      className={`${className} p-1`}
       aria-label={`Remove ${name}`}
       onClick={onDeselect}
     >
@@ -22,3 +38,11 @@ export const DefaultSelectionTemplate = ({ name, onEdit, onDeselect }) => (
     </Button>
   </div>
 );
+
+DefaultSelectionTemplate.propTypes = {
+  name: PropTypes.string.isRequired,
+  buttonVariant: PropTypes.string,
+  className: PropTypes.string,
+  onEdit: PropTypes.func.isRequired,
+  onDeselect: PropTypes.func.isRequired,
+};
