@@ -9,7 +9,8 @@ module Admin
     # @param role [String, nil]
     # @param search [String, nil]
     # @param roles [Array<String>, nil]
-    def self.call(relation: User.registered, role: nil, search: nil, roles: [])
+    # @param organizations [Array<String>, nil]
+    def self.call(relation: User.registered, role: nil, search: nil, roles: [], organizations: [])
       # We are at an interstitial moment where we are exposing both the role and roles param.  We
       # need to favor one or the other.
       if role.presence
@@ -18,12 +19,21 @@ module Admin
         relation = filter_roles(relation: relation, roles: roles)
       end
 
+      if organizations.presence
+        relation = filter_organization_memberships(relation: relation, organizations: organizations)
+      end
+
       relation = search_relation(relation, search) if search.presence
       relation.distinct.order(created_at: :desc)
     end
 
     def self.search_relation(relation, search)
       relation.where(QUERY_CLAUSE, search: "%#{search.strip}%")
+    end
+
+    def self.filter_organization_memberships(relation:, organizations:)
+      sub_query = OrganizationMembership.select(:user_id).where(organization_id: organizations)
+      relation.where(id: sub_query)
     end
 
     # Apply the "where" scope to the given relation for the given roles.

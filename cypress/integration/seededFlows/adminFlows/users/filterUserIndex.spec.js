@@ -29,20 +29,31 @@ describe('Filter user index', () => {
       cy.findAllByRole('button', { name: 'Filter' }).last().click();
       cy.getModal().within(() => {
         cy.findAllByText('Member roles').first().click();
-        cy.findByRole('group', { name: 'Member roles' }).should('be.visible');
+        cy.findByRole('group', { name: 'Member roles' })
+          .as('memberRoles')
+          .should('be.visible');
 
-        cy.findAllByRole('checkbox').should('have.length', 6);
+        cy.get('@memberRoles')
+          .findAllByRole('checkbox')
+          .should('have.length', 6);
+
         cy.findByRole('button', { name: 'See more roles' })
           .as('seeMoreButton')
           .should('have.attr', 'aria-pressed', 'false')
           .click()
           .should('have.attr', 'aria-pressed', 'true');
 
-        cy.findAllByRole('checkbox').should('have.length', 16);
+        cy.get('@memberRoles')
+          .findAllByRole('checkbox')
+          .should('have.length', 16);
+
         cy.get('@seeMoreButton')
           .click()
           .should('have.attr', 'aria-pressed', 'false');
-        cy.findAllByRole('checkbox').should('have.length', 6);
+
+        cy.get('@memberRoles')
+          .findAllByRole('checkbox')
+          .should('have.length', 6);
       });
     });
 
@@ -98,6 +109,42 @@ describe('Filter user index', () => {
           'not.exist',
         );
       });
+    });
+  });
+
+  describe('Organizations', () => {
+    it('filters by organizations', () => {
+      cy.findAllByRole('button', { name: 'Filter' }).last().click();
+      cy.getModal().within(() => {
+        cy.findAllByText('Organizations').first().click();
+        cy.findByRole('group', { name: 'Organizations' }).should('be.visible');
+
+        cy.findByRole('checkbox', { name: 'Bachmanity' }).check();
+        cy.findByRole('checkbox', { name: 'Awesome Org' }).check();
+        cy.findByRole('button', { name: 'Apply filters' }).click();
+      });
+
+      cy.findAllByRole('row').should('have.length', 4);
+    });
+  });
+
+  describe('Multiple filters', () => {
+    it('filters by multiple criteria', () => {
+      cy.findAllByRole('button', { name: 'Filter' }).last().click();
+      cy.getModal().within(() => {
+        cy.findAllByText('Member roles').first().click();
+        cy.findByRole('group', { name: 'Member roles' }).should('be.visible');
+        cy.findByRole('checkbox', { name: 'Super Admin' }).check();
+
+        cy.findAllByText('Organizations').first().click();
+        cy.findByRole('group', { name: 'Organizations' }).should('be.visible');
+
+        cy.findByRole('checkbox', { name: 'Bachmanity' }).check();
+        cy.findByRole('checkbox', { name: 'Awesome Org' }).check();
+        cy.findByRole('button', { name: 'Apply filters' }).click();
+      });
+
+      cy.findAllByRole('row').should('have.length', 2);
     });
   });
 });
