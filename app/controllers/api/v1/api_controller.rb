@@ -6,7 +6,7 @@ module Api
 
       self.api_action = true
 
-      # API V1 will require all endpoints to authenticate
+      # API V1 requires all endpoints to authenticate with an API Key
       before_action :authenticate!
 
       rescue_from ActionController::ParameterMissing do |exc|
@@ -38,6 +38,10 @@ module Api
       # @note This method is performing both authentication and authorization.  The user suspended
       #       should be something added to the corresponding pundit policy.
       def authenticate!
+        # FeatureFlag endpoints don't require authentication because they're
+        # only used in the test environment (Cypress test FeatureFlag toggle)
+        return true if params[:controller]&.match?(%r{^api/v1/(feature_flags|instances)$})
+
         @user = authenticate_with_api_key
         return error_unauthorized unless @user
         return error_unauthorized if @user.suspended?
