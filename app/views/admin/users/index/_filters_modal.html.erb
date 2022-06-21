@@ -43,7 +43,9 @@
             </details>
             <details data-section="joining-date" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Joining date<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
-                <div class="js-joining-date-range mb-4"></div>
+                <div class="js-joining-date-range mb-4 absolute"></div>
+                <%# This hidden field is only here to reserve the correct amount of vertical space %>
+                <input class="crayons-textfield p-4 mb-4 invisible">
             </details>
             <details data-section="last-activity" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Last activity<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
