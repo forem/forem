@@ -567,629 +567,635 @@ RSpec.describe "Api::V1::Articles", type: :request do
     end
   end
 
-  # describe "POST /api/articles" do
-  #   # As written, it's envisioned that the subject and these "let" statements create a valid
-  #   # authentication and authorization.
-  #   subject(:the_response) do
-  #     # This looks a bit funny, I want to issue the request but test the response.  The "post"
-  #     # method does not return a "response" object.
-  #     post api_articles_path, params: { article: params }.to_json, headers: v1_headers
-  #     response
-  #   end
+  describe "POST /api/articles" do
+    # As written, it's envisioned that the subject and these "let" statements create a valid
+    # authentication and authorization.
+    subject(:the_response) do
+      # This looks a bit funny, I want to issue the request but test the response.  The "post"
+      # method does not return a "response" object.
+      post api_articles_path, params: { article: params }.to_json, headers: post_headers
+      response
+    end
 
-  #   let(:user) { api_secret.user }
-  #   let(:params) { {} }
+    let(:user) { api_secret.user }
+    let(:post_headers) do
+      { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json",
+        "content-type" => "application/json" }
+    end
+    let(:params) { {} }
 
-  #   context "when user suspended" do
-  #     before { user.add_role(:suspended) }
+    context "when user suspended" do
+      before { user.add_role(:suspended) }
 
-  #     post api_articles_path, params: { article: params }.to_json, headers:
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
 
-  #     it { is_expected.to have_http_status(:unauthorized) }
-  #   end
+    context "when no api key provided" do
+      let(:post_headers) { { "Accept" => "application/vnd.forem.api-v1+json", "content-type" => "application/json" } }
 
-  #   context "when no api key provided" do
-  #     let(:headers) { { "content-type" => "application/json" } }
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
 
-  #     it { is_expected.to have_http_status(:unauthorized) }
-  #   end
+    context "when given invalid api key" do
+      let(:post_headers) do
+        { "api-key" => "no you're never gonna get it", "Accept" => "application/vnd.forem.api-v1+json",
+          "content-type" => "application/json" }
+      end
 
-  #   context "when given invalid api key" do
-  #     let(:headers) { { "api-key" => "no you're never gonna get it", "content-type" => "application/json" } }
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
 
-  #     it { is_expected.to have_http_status(:unauthorized) }
-  #   end
+    context "when security comparision fails" do
+      before { allow(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_return(false) }
 
-  #   context "when security comparision fails" do
-  #     before { allow(ActiveSupport::SecurityUtils).to receive(:secure_compare).and_return(false) }
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
 
-  #     it { is_expected.to have_http_status(:unauthorized) }
-  #   end
+    context "when only admins can post to site" do
+      # [@jeremyf] Part of me loaths the idea of writing this specific policy implementation.
+      #            Another option is to do some "allow_any_instance_of" antics.  For now, this is
+      #            the concession, but as we move through further policy changes, I'm uncertain if
+      #            we want our requests to bombard the nuances of policy.
+      before { allow(ArticlePolicy).to receive(:limit_post_creation_to_admins?).and_return(true) }
 
-  #   context "when only admins can post to site" do
-  #     # [@jeremyf] Part of me loaths the idea of writing this specific policy implementation.
-  #     #            Another option is to do some "allow_any_instance_of" antics.  For now, this is
-  #     #            the concession, but as we move through further policy changes, I'm uncertain if
-  #     #            we want our requests to bombard the nuances of policy.
-  #     before { allow(ArticlePolicy).to receive(:limit_post_creation_to_admins?).and_return(true) }
+      it { is_expected.to have_http_status(:unauthorized) }
+    end
 
-  #     it { is_expected.to have_http_status(:unauthorized) }
-  #   end
+    describe "when authorized" do
+      let(:default_params) { { body_markdown: "" } }
 
-  #   describe "when authorized" do
-  #     let(:default_params) { { body_markdown: "" } }
+      def post_article(**params)
+        params = default_params.merge params
+        post api_articles_path, params: { article: params }.to_json, headers: post_headers
+      end
 
-  #     def post_article(**params)
-  #       params = default_params.merge params
-  #       post api_articles_path, params: { article: params }.to_json, headers: v1_headers
-  #     end
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
 
-  #     it "returns a 429 status code if the rate limit is reached" do
-  #       rate_limit_checker = instance_double(RateLimitChecker)
-  #       retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
-  #       rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
-  #       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-  #       allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+        post_article
 
-  #       post_article
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
+      end
 
-  #       expect(response).to have_http_status(:too_many_requests)
-  #       expect(response.headers["retry-after"]).to eq(retry_after_val)
-  #     end
+      it "fails if no params are given" do
+        post_article
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
-  #     it "fails if no params are given" do
-  #       post_article
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #     end
+      it "fails if missing required params" do
+        tags = %w[meta discussion]
+        post_article(body_markdown: "Yo ho ho", tags: tags)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
 
-  #     it "fails if missing required params" do
-  #       tags = %w[meta discussion]
-  #       post_article(body_markdown: "Yo ho ho", tags: tags)
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.parsed_body["error"]).to be_present
-  #     end
+      it "fails if article contains tags with non-alphanumeric characters" do
+        tags = %w[#discuss .help]
+        post_article(title: "Test Article Title", tags: tags)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
-  #     it "fails if article contains tags with non-alphanumeric characters" do
-  #       tags = %w[#discuss .help]
-  #       post_article(title: "Test Article Title", tags: tags)
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #     end
+      it "fails if params are not a Hash" do
+        # Not using the nifty post_article helper method because it expects a Hash
+        string_params = "this_string_is_definitely_not_a_hash"
+        post api_articles_path, params: { article: string_params }.to_json, headers: post_headers
 
-  #     it "fails if params are not a Hash" do
-  #       # Not using the nifty post_article helper method because it expects a Hash
-  #       string_params = "this_string_is_definitely_not_a_hash"
-  #       post api_articles_path, params: { article: string_params }.to_json, headers: v1_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
 
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.parsed_body["error"]).to be_present
-  #     end
+      it "fails if params are unwrapped" do
+        post api_articles_path, params: { body_markdown: "Body", title: "Title" }.to_json, headers: post_headers
 
-  #     it "fails if params are unwrapped" do
-  #       post api_articles_path, params: { body_markdown: "Body", title: "Title" }.to_json, headers: v1_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
 
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.parsed_body["error"]).to be_present
-  #     end
+      it "creates an article belonging to the user" do
+        post_article(title: Faker::Book.title)
+        expect(response).to have_http_status(:created)
+        expect(Article.find(response.parsed_body["id"]).user).to eq(user)
+      end
 
-  #     it "creates an article belonging to the user" do
-  #       post_article(title: Faker::Book.title)
-  #       expect(response).to have_http_status(:created)
-  #       expect(Article.find(response.parsed_body["id"]).user).to eq(user)
-  #     end
+      it "creates an unpublished article by default" do
+        post_article(title: Faker::Book.title)
+        expect(response).to have_http_status(:created)
+        expect(Article.find(response.parsed_body["id"]).published).to be(false)
+      end
 
-  #     it "creates an unpublished article by default" do
-  #       post_article(title: Faker::Book.title)
-  #       expect(response).to have_http_status(:created)
-  #       expect(Article.find(response.parsed_body["id"]).published).to be(false)
-  #     end
+      it "returns the location of the article" do
+        post_article(title: Faker::Book.title)
+        expect(response).to have_http_status(:created)
+        expect(response.location).not_to be_blank
+      end
 
-  #     it "returns the location of the article" do
-  #       post_article(title: Faker::Book.title)
-  #       expect(response).to have_http_status(:created)
-  #       expect(response.location).not_to be_blank
-  #     end
+      it "creates an article with only a title" do
+        title = Faker::Book.title
+        expect do
+          post_article(title: title)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).title).to eq(title)
+      end
 
-  #     it "creates an article with only a title" do
-  #       title = Faker::Book.title
-  #       expect do
-  #         post_article(title: title)
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).title).to eq(title)
-  #     end
+      it "creates a published article" do
+        title = Faker::Book.title
+        expect do
+          post_article(title: title, published: true)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).published).to be(true)
+      end
 
-  #     it "creates a published article" do
-  #       title = Faker::Book.title
-  #       expect do
-  #         post_article(title: title, published: true)
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).published).to be(true)
-  #     end
+      it "creates an article with a title and the markdown body" do
+        body_markdown = "Yo ho ho"
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: body_markdown,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).body_markdown).to eq(body_markdown)
+      end
 
-  #     it "creates an article with a title and the markdown body" do
-  #       body_markdown = "Yo ho ho"
-  #       expect do
-  #         post_article(
-  #           title: Faker::Book.title,
-  #           body_markdown: body_markdown,
-  #         )
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).body_markdown).to eq(body_markdown)
-  #     end
+      it "creates an article with a title, body and a list of tags" do
+        tags = %w[meta discussion]
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
+            tags: tags,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).cached_tag_list).to eq(tags.join(", "))
+      end
 
-  #     it "creates an article with a title, body and a list of tags" do
-  #       tags = %w[meta discussion]
-  #       expect do
-  #         post_article(
-  #           title: Faker::Book.title,
-  #           body_markdown: "Yo ho ho",
-  #           tags: tags,
-  #         )
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).cached_tag_list).to eq(tags.join(", "))
-  #     end
+      it "creates an unpublished article with the front matter in the body" do
+        body_markdown = file_fixture("article_unpublished.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        article = Article.find(response.parsed_body["id"])
+        expect(article.title).to eq("Sample Article")
+        expect(article.published).to be(false)
+      end
 
-  #     it "creates an unpublished article with the front matter in the body" do
-  #       body_markdown = file_fixture("article_unpublished.txt").read
-  #       expect do
-  #         post_article(body_markdown: body_markdown)
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       article = Article.find(response.parsed_body["id"])
-  #       expect(article.title).to eq("Sample Article")
-  #       expect(article.published).to be(false)
-  #     end
+      it "creates published article with the front matter in the body" do
+        body_markdown = file_fixture("article_published.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        article = Article.find(response.parsed_body["id"])
+        expect(article.title).to eq("Sample Article")
+        expect(article.published).to be(true)
+      end
 
-  #     it "creates published article with the front matter in the body" do
-  #       body_markdown = file_fixture("article_published.txt").read
-  #       expect do
-  #         post_article(body_markdown: body_markdown)
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       article = Article.find(response.parsed_body["id"])
-  #       expect(article.title).to eq("Sample Article")
-  #       expect(article.published).to be(true)
-  #     end
+      it "creates an article within a series" do
+        series = "a series"
+        post_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+          series: series,
+        )
+        expect(response).to have_http_status(:created)
+        article = Article.find(response.parsed_body["id"])
+        expect(article.collection).to eq(Collection.find_by(slug: series))
+        expect(article.collection.user).to eq(user)
+      end
 
-  #     it "creates an article within a series" do
-  #       series = "a series"
-  #       post_article(
-  #         title: Faker::Book.title,
-  #         body_markdown: "Yo ho ho",
-  #         series: series,
-  #       )
-  #       expect(response).to have_http_status(:created)
-  #       article = Article.find(response.parsed_body["id"])
-  #       expect(article.collection).to eq(Collection.find_by(slug: series))
-  #       expect(article.collection.user).to eq(user)
-  #     end
+      it "creates article within a series using the front matter" do
+        body_markdown = file_fixture("article_published_series.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        article = Article.find(response.parsed_body["id"])
+        expect(article.collection).to eq(Collection.find_by(slug: "a series"))
+        expect(article.collection.user).to eq(user)
+      end
 
-  #     it "creates article within a series using the front matter" do
-  #       body_markdown = file_fixture("article_published_series.txt").read
-  #       expect do
-  #         post_article(body_markdown: body_markdown)
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       article = Article.find(response.parsed_body["id"])
-  #       expect(article.collection).to eq(Collection.find_by(slug: "a series"))
-  #       expect(article.collection.user).to eq(user)
-  #     end
+      it "creates an article on behalf of an organization" do
+        organization = create(:organization)
+        create(:organization_membership, user: user, organization: organization)
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            organization_id: organization.id,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).organization).to eq(organization)
+      end
 
-  #     it "creates an article on behalf of an organization" do
-  #       organization = create(:organization)
-  #       create(:organization_membership, user: user, organization: organization)
-  #       expect do
-  #         post_article(
-  #           title: Faker::Book.title,
-  #           organization_id: organization.id,
-  #         )
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).organization).to eq(organization)
-  #     end
+      it "creates an article with a main/cover image" do
+        image_url = "https://dummyimage.com/100x100"
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
+            main_image: image_url,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).main_image).to eq(image_url)
+      end
 
-  #     it "creates an article with a main/cover image" do
-  #       image_url = "https://dummyimage.com/100x100"
-  #       expect do
-  #         post_article(
-  #           title: Faker::Book.title,
-  #           body_markdown: "Yo ho ho",
-  #           main_image: image_url,
-  #         )
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).main_image).to eq(image_url)
-  #     end
+      it "creates an article with a main/cover image in the front matter" do
+        image_url = "https://dummyimage.com/100x100"
+        body_markdown = file_fixture("article_published_cover_image.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).main_image).to eq(image_url)
+      end
 
-  #     it "creates an article with a main/cover image in the front matter" do
-  #       image_url = "https://dummyimage.com/100x100"
-  #       body_markdown = file_fixture("article_published_cover_image.txt").read
-  #       expect do
-  #         post_article(body_markdown: body_markdown)
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).main_image).to eq(image_url)
-  #     end
+      it "creates an article with a canonical url" do
+        canonical_url = "https://example.com/"
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
+            canonical_url: canonical_url,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).canonical_url).to eq(canonical_url)
+      end
 
-  #     it "creates an article with a canonical url" do
-  #       canonical_url = "https://example.com/"
-  #       expect do
-  #         post_article(
-  #           title: Faker::Book.title,
-  #           body_markdown: "Yo ho ho",
-  #           canonical_url: canonical_url,
-  #         )
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).canonical_url).to eq(canonical_url)
-  #     end
+      it "creates an article with a canonical url in the front matter" do
+        canonical_url = "https://example.com/"
+        body_markdown = file_fixture("article_published_canonical_url.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).canonical_url).to eq(canonical_url)
+      end
 
-  #     it "creates an article with a canonical url in the front matter" do
-  #       canonical_url = "https://example.com/"
-  #       body_markdown = file_fixture("article_published_canonical_url.txt").read
-  #       expect do
-  #         post_article(body_markdown: body_markdown)
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).canonical_url).to eq(canonical_url)
-  #     end
+      it "creates an article with the given description" do
+        description = "this is a very interesting article"
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
+            description: description,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).description).to eq(description)
+      end
 
-  #     it "creates an article with the given description" do
-  #       description = "this is a very interesting article"
-  #       expect do
-  #         post_article(
-  #           title: Faker::Book.title,
-  #           body_markdown: "Yo ho ho",
-  #           description: description,
-  #         )
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).description).to eq(description)
-  #     end
+      it "creates an article with description in the front matter" do
+        description = "this is a very interesting article"
+        body_markdown = file_fixture("article_published_canonical_url.txt").read
+        expect do
+          post_article(
+            body_markdown: body_markdown,
+            description: description,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).description).not_to eq(description)
+      end
 
-  #     it "creates an article with description in the front matter" do
-  #       description = "this is a very interesting article"
-  #       body_markdown = file_fixture("article_published_canonical_url.txt").read
-  #       expect do
-  #         post_article(
-  #           body_markdown: body_markdown,
-  #           description: description,
-  #         )
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).description).not_to eq(description)
-  #     end
+      it "creates an article with a part of the body as a description" do
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "yoooo" * 100,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).description).to eq("#{'yoooo' * 20}y...")
+      end
 
-  #     it "creates an article with a part of the body as a description" do
-  #       expect do
-  #         post_article(
-  #           title: Faker::Book.title,
-  #           body_markdown: "yoooo" * 100,
-  #         )
-  #         expect(response).to have_http_status(:created)
-  #       end.to change(Article, :count).by(1)
-  #       expect(Article.find(response.parsed_body["id"]).description).to eq("#{'yoooo' * 20}y...")
-  #     end
+      it "does not raise an error if article params are missing" do
+        expect do
+          post api_articles_path, params: {}.to_json, headers: post_headers
+        end.not_to raise_error
+        expect(response.status).to eq(422)
+      end
 
-  #     it "does not raise an error if article params are missing" do
-  #       headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-  #       expect do
-  #         post api_articles_path, params: {}.to_json, headers: v1_headers
-  #       end.not_to raise_error
-  #       expect(response.status).to eq(422)
-  #     end
+      it "fails with a nil body markdown" do
+        post_article(title: Faker::Book.title, body_markdown: nil)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
+    end
+  end
 
-  #     it "fails with a nil body markdown" do
-  #       post_article(title: Faker::Book.title, body_markdown: nil)
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.parsed_body["error"]).to be_present
-  #     end
-  #   end
-  # end
-  #
-  # describe "PUT /api/articles/:id" do
-  #   let!(:api_secret)   { create(:api_secret) }
-  #   let!(:user)         { api_secret.user }
-  #   let(:article)       { create(:article, user: user, published: false, published_at: nil) }
-  #   let(:path)          { api_article_path(article.id) }
-  #   let!(:organization) { create(:organization) }
-  #
-  #   describe "when unauthorized" do
-  #     it "fails with no api key" do
-  #       put path, headers: { "content-type" => "application/json" }
-  #       expect(response).to have_http_status(:unauthorized)
-  #     end
-  #
-  #     it "fails with the wrong api key" do
-  #       put path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
-  #       expect(response).to have_http_status(:unauthorized)
-  #     end
-  #
-  #     it "fails with a failing secure compare" do
-  #       allow(ActiveSupport::SecurityUtils)
-  #         .to receive(:secure_compare).and_return(false)
-  #       put path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
-  #       expect(response).to have_http_status(:unauthorized)
-  #     end
-  #   end
-  #
-  #   describe "when authorized" do
-  #     let!(:headers) { { "api-key" => api_secret.secret, "content-type" => "application/json" } }
-  #
-  #     def put_article(**params)
-  #       headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-  #       put path, params: { article: params }.to_json, headers: headers
-  #     end
-  #
-  #     it "returns a 429 status code if the rate limit is reached" do
-  #       rate_limit_checker = instance_double(RateLimitChecker)
-  #       retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:article_update, :retry_after)
-  #       rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
-  #       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-  #       allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
-  #
-  #       put_article(title: Faker::Book.title, body_markdown: "foobar")
-  #
-  #       expect(response).to have_http_status(:too_many_requests)
-  #       expect(response.headers["retry-after"]).to eq(retry_after_val)
-  #     end
-  #
-  #     it "returns not found if the article does not belong to the user" do
-  #       article = create(:article, user: create(:user))
-  #       headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-  #       params = { article: { title: "foobar" } }.to_json
-  #       put "/api/articles/#{article.id}", params: params, headers: headers
-  #       expect(response).to have_http_status(:not_found)
-  #     end
-  #
-  #     it "lets a super admin update an article belonging to another user" do
-  #       user.add_role(:super_admin)
-  #       article = create(:article, user: create(:user))
-  #       headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-  #       params = { article: { title: "foobar" } }.to_json
-  #       put "/api/articles/#{article.id}", params: params, headers: headers
-  #       expect(response).to have_http_status(:ok)
-  #     end
-  #
-  #     it "does not update title if only given a title because the article has a front matter" do
-  #       put_article(title: Faker::Book.title)
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.title).to eq(article.title)
-  #       expect(response.parsed_body["title"]).to eq(article.title)
-  #     end
-  #
-  #     it "updates the title and the body if given a title and a body" do
-  #       title = Faker::Book.title
-  #       body_markdown = "foobar"
-  #       put_article(title: title, body_markdown: body_markdown)
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.title).to eq(title)
-  #       expect(article.body_markdown).to eq(body_markdown)
-  #     end
-  #
-  #     it "updates the main_image to be empty if given an empty cover_image" do
-  #       image = Faker::Avatar.image
-  #       article.update(main_image: image)
-  #       expect(article.main_image).to eq(image)
-  #
-  #       body_markdown = file_fixture("article_published_empty_cover_image.txt").read
-  #       put_article(
-  #         title: Faker::Book.title,
-  #         body_markdown: body_markdown,
-  #       )
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.main_image).to be_nil
-  #     end
-  #
-  #     it "updates the main_image to be empty if given a different cover_image" do
-  #       image = Faker::Avatar.image
-  #       article.update(main_image: image)
-  #       expect(article.main_image).to eq(image)
-  #
-  #       body_markdown = file_fixture("article_published_cover_image.txt").read
-  #       put_article(
-  #         title: Faker::Book.title,
-  #         body_markdown: body_markdown,
-  #       )
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
-  #     end
-  #
-  #     it "updates the tags" do
-  #       expect do
-  #         put_article(
-  #           body_markdown: "something else here",
-  #           tags: %w[meta discussion],
-  #         )
-  #         article.reload
-  #       end.to change(article, :body_markdown) && change(article, :cached_tag_list)
-  #     end
-  #
-  #     it "assigns the article to a new series belonging to the user" do
-  #       expect do
-  #         put_article(
-  #           title: Faker::Book.title,
-  #           body_markdown: "Yo ho ho",
-  #           series: "a series",
-  #         )
-  #       end.to change(Collection, :count).by(1)
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.collection).not_to be_nil
-  #     end
-  #
-  #     it "assigns the article to an existing series belonging to the user" do
-  #       collection = create(:collection, user: user)
-  #       expect do
-  #         put_article(
-  #           title: Faker::Book.title,
-  #           body_markdown: "Yo ho ho",
-  #           series: collection.slug,
-  #         )
-  #       end.to change(Collection, :count).by(0)
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.collection).to eq(collection)
-  #     end
-  #
-  #     it "does not remove the article from a series" do
-  #       collection = create(:collection, user: user)
-  #       body_markdown = "Yo ho ho"
-  #       article.update!(body_markdown: body_markdown, collection: collection)
-  #       expect(article.collection).not_to be_nil
-  #
-  #       put_article(
-  #         title: Faker::Book.title,
-  #         body_markdown: body_markdown,
-  #       )
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.collection).to eq(collection)
-  #     end
-  #
-  #     it "removes the article from a series if asked explicitly" do
-  #       body_markdown = "Yo ho ho"
-  #
-  #       article.update!(body_markdown: body_markdown, collection: create(:collection, user: user))
-  #       expect(article.collection).not_to be_nil
-  #
-  #       put_article(
-  #         title: Faker::Book.title,
-  #         body_markdown: body_markdown,
-  #         series: nil, # nil will assign the article to no collections
-  #       )
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.collection).to be_nil
-  #     end
-  #
-  #     it "assigns the article to a series belonging to the article's owner, not the admin" do
-  #       user.add_role(:super_admin)
-  #       article = create(:article, user: create(:user))
-  #       params = { article: { title: Faker::Book.title,
-  #                             body_markdown: "Yo ho ho",
-  #                             series: "a series" } }
-  #       expect do
-  #         put "/api/articles/#{article.id}", params: params, headers: { "api-key" => api_secret.secret }
-  #         expect(response).to have_http_status(:ok)
-  #       end.to change(Collection, :count).by(1)
-  #       expect(article.reload.collection.user).to eq(article.user)
-  #     end
-  #
-  #     it "publishes an article" do
-  #       expect(article.published).to be(false)
-  #       put_article(body_markdown: "Yo ho ho", published: true)
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.published).to be(true)
-  #     end
-  #
-  #     it "sends a notification when the article gets published" do
-  #       expect(article.published).to be(false)
-  #       allow(Notification).to receive(:send_to_followers)
-  #       put_article(body_markdown: "Yo ho ho", published: true)
-  #       expect(response).to have_http_status(:ok)
-  #       expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
-  #     end
-  #
-  #     it "only sends a notification the first time the article gets published" do
-  #       expect(article.published).to be(false)
-  #       allow(Notification).to receive(:send_to_followers)
-  #       put_article(body_markdown: "Yo ho ho", published: true)
-  #       expect(response).to have_http_status(:ok)
-  #
-  #       article.update_columns(published: false)
-  #       put_article(published: true)
-  #       expect(response).to have_http_status(:ok)
-  #
-  #       expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
-  #     end
-  #
-  #     it "does not update the editing time when updated before publication" do
-  #       article.update_columns(edited_at: nil)
-  #       expect(article.published).to be(false)
-  #       put_article(
-  #         title: Faker::Book.title,
-  #         body_markdown: "Yo ho ho",
-  #       )
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.edited_at).to be_nil
-  #     end
-  #
-  #     it "updates the editing time when updated after publication" do
-  #       article.update_columns(published: true)
-  #       put_article(
-  #         title: Faker::Book.title,
-  #         body_markdown: "Yo ho ho",
-  #       )
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.edited_at).not_to be_nil
-  #     end
-  #
-  #     it "does not update the editing time before publication if changed by an admin" do
-  #       article.update_columns(edited_at: nil)
-  #       expect(article.published).to be(false)
-  #       user.add_role(:super_admin)
-  #       article = create(:article, user: create(:user))
-  #       params = { article: { title: Faker::Book.title,
-  #                             body_markdown: "Yo ho ho" } }.to_json
-  #       put "/api/articles/#{article.id}", params: params, headers: headers
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.edited_at).to be_nil
-  #     end
-  #
-  #     it "does not update the editing time after publication if changed by an admin" do
-  #       user.add_role(:super_admin)
-  #       new_article = create(:article, user: create(:user))
-  #       params = { article: { title: Faker::Book.title } }.to_json
-  #       expect do
-  #         put "/api/articles/#{new_article.id}", params: params, headers: headers
-  #         article.reload
-  #       end.not_to change(article, :edited_at)
-  #     end
-  #
-  #     it "updates the editing time when updated after publication if the owner is an admin" do
-  #       user.add_role(:super_admin)
-  #       article.update_columns(edited_at: nil, published: true)
-  #       put_article(
-  #         title: Faker::Book.title,
-  #         body_markdown: "Yo ho ho",
-  #       )
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.edited_at).not_to be_nil
-  #     end
-  #
-  #     it "updates a description" do
-  #       description = "this is a very interesting article"
-  #       put_article(
-  #         body_markdown: "Yo ho ho bsddsdsobo",
-  #         description: description,
-  #       )
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.description).to eq(description)
-  #     end
-  #
-  #     it "assigns the article to the organization" do
-  #       expect(article.organization).to be_nil
-  #       create(:organization_membership, user: user, organization: organization)
-  #       put_article(organization_id: organization.id)
-  #       expect(response).to have_http_status(:ok)
-  #       expect(article.reload.organization).to eq(organization)
-  #     end
-  #
-  #     it "fails if params are not a Hash" do
-  #       # Not using the nifty put_article helper method because it expects a Hash
-  #       headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-  #       string_params = "this_string_is_definitely_not_a_hash"
-  #       put path, params: { article: string_params }.to_json, headers: headers
-  #
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.parsed_body["error"]).to be_present
-  #     end
-  #
-  #     it "fails when article is not saved" do
-  #       put_article(title: nil, body_markdown: nil)
-  #       expect(response).to have_http_status(:unprocessable_entity)
-  #       expect(response.parsed_body["error"]).to be_present
-  #     end
-  #   end
-  # end
+  describe "PUT /api/articles/:id" do
+    let!(:user)         { api_secret.user }
+    let(:article)       { create(:article, user: user, published: false, published_at: nil) }
+    let(:path)          { api_article_path(article.id) }
+    let!(:organization) { create(:organization) }
+
+    describe "when unauthorized" do
+      it "fails with no api key" do
+        put path, headers: { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails with the wrong api key" do
+        put path,
+            headers: { "api-key" => "foobar", "content-type" => "application/json",
+                       "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails with a failing secure compare" do
+        allow(ActiveSupport::SecurityUtils)
+          .to receive(:secure_compare).and_return(false)
+        put path,
+            headers: { "api-key" => api_secret.secret, "content-type" => "application/json",
+                       "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    describe "when authorized" do
+      let(:put_headers) do
+        { "api-key" => api_secret.secret, "content-type" => "application/json",
+          "Accept" => "application/vnd.forem.api-v1+json" }
+      end
+
+      def put_article(**params)
+        put path, params: { article: params }.to_json, headers: put_headers
+      end
+
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:article_update, :retry_after)
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        put_article(title: Faker::Book.title, body_markdown: "foobar")
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
+      end
+
+      it "returns not found if the article does not belong to the user" do
+        article = create(:article, user: create(:user))
+        params = { article: { title: "foobar" } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: put_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "lets a super admin update an article belonging to another user" do
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        params = { article: { title: "foobar" } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: put_headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not update title if only given a title because the article has a front matter" do
+        put_article(title: Faker::Book.title)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.title).to eq(article.title)
+        expect(response.parsed_body["title"]).to eq(article.title)
+      end
+
+      it "updates the title and the body if given a title and a body" do
+        title = Faker::Book.title
+        body_markdown = "foobar"
+        put_article(title: title, body_markdown: body_markdown)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.title).to eq(title)
+        expect(article.body_markdown).to eq(body_markdown)
+      end
+
+      it "updates the main_image to be empty if given an empty cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_empty_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to be_nil
+      end
+
+      it "updates the main_image to be empty if given a different cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
+      end
+
+      it "updates the tags" do
+        expect do
+          put_article(
+            body_markdown: "something else here",
+            tags: %w[meta discussion],
+          )
+          article.reload
+        end.to change(article, :body_markdown) && change(article, :cached_tag_list)
+      end
+
+      it "assigns the article to a new series belonging to the user" do
+        expect do
+          put_article(
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
+            series: "a series",
+          )
+        end.to change(Collection, :count).by(1)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.collection).not_to be_nil
+      end
+
+      it "assigns the article to an existing series belonging to the user" do
+        collection = create(:collection, user: user)
+        expect do
+          put_article(
+            title: Faker::Book.title,
+            body_markdown: "Yo ho ho",
+            series: collection.slug,
+          )
+        end.not_to change(Collection, :count)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.collection).to eq(collection)
+      end
+
+      it "does not remove the article from a series" do
+        collection = create(:collection, user: user)
+        body_markdown = "Yo ho ho"
+        article.update!(body_markdown: body_markdown, collection: collection)
+        expect(article.collection).not_to be_nil
+
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.collection).to eq(collection)
+      end
+
+      it "removes the article from a series if asked explicitly" do
+        body_markdown = "Yo ho ho"
+
+        article.update!(body_markdown: body_markdown, collection: create(:collection, user: user))
+        expect(article.collection).not_to be_nil
+
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+          series: nil, # nil will assign the article to no collections
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.collection).to be_nil
+      end
+
+      it "assigns the article to a series belonging to the article's owner, not the admin" do
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        params = { article: { title: Faker::Book.title,
+                              body_markdown: "Yo ho ho",
+                              series: "a series" } }
+        expect do
+          put "/api/articles/#{article.id}", params: params.to_json, headers: put_headers
+          expect(response).to have_http_status(:ok)
+        end.to change(Collection, :count).by(1)
+        expect(article.reload.collection.user).to eq(article.user)
+      end
+
+      it "publishes an article" do
+        expect(article.published).to be(false)
+        put_article(body_markdown: "Yo ho ho", published: true)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.published).to be(true)
+      end
+
+      it "sends a notification when the article gets published" do
+        expect(article.published).to be(false)
+        allow(Notification).to receive(:send_to_followers)
+        put_article(body_markdown: "Yo ho ho", published: true)
+        expect(response).to have_http_status(:ok)
+        expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
+      end
+
+      it "only sends a notification the first time the article gets published" do
+        expect(article.published).to be(false)
+        allow(Notification).to receive(:send_to_followers)
+        put_article(body_markdown: "Yo ho ho", published: true)
+        expect(response).to have_http_status(:ok)
+
+        article.update_columns(published: false)
+        put_article(published: true)
+        expect(response).to have_http_status(:ok)
+
+        expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
+      end
+
+      it "does not update the editing time when updated before publication" do
+        article.update_columns(edited_at: nil)
+        expect(article.published).to be(false)
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).to be_nil
+      end
+
+      it "updates the editing time when updated after publication" do
+        article.update_columns(published: true)
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).not_to be_nil
+      end
+
+      it "does not update the editing time before publication if changed by an admin" do
+        article.update_columns(edited_at: nil)
+        expect(article.published).to be(false)
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        params = { article: { title: Faker::Book.title,
+                              body_markdown: "Yo ho ho" } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: put_headers
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).to be_nil
+      end
+
+      it "does not update the editing time after publication if changed by an admin" do
+        user.add_role(:super_admin)
+        new_article = create(:article, user: create(:user))
+        params = { article: { title: Faker::Book.title } }.to_json
+        expect do
+          put "/api/articles/#{new_article.id}", params: params, headers: put_headers
+          article.reload
+        end.not_to change(article, :edited_at)
+      end
+
+      it "updates the editing time when updated after publication if the owner is an admin" do
+        user.add_role(:super_admin)
+        article.update_columns(edited_at: nil, published: true)
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: "Yo ho ho",
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).not_to be_nil
+      end
+
+      it "updates a description" do
+        description = "this is a very interesting article"
+        put_article(
+          body_markdown: "Yo ho ho bsddsdsobo",
+          description: description,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.description).to eq(description)
+      end
+
+      it "assigns the article to the organization" do
+        expect(article.organization).to be_nil
+        create(:organization_membership, user: user, organization: organization)
+        put_article(organization_id: organization.id)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.organization).to eq(organization)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty put_article helper method because it expects a Hash
+        string_params = "this_string_is_definitely_not_a_hash"
+        put path, params: { article: string_params }.to_json, headers: put_headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
+
+      it "fails when article is not saved" do
+        put_article(title: nil, body_markdown: nil)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
+    end
+  end
 end
