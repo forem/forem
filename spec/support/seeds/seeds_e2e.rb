@@ -673,6 +673,26 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "tech-admin-user@forem.local") do
+  tech_admin_user = User.create!(
+    name: "Tech admin User",
+    email: "tech-admin-user@forem.local",
+    username: "tech_admin_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  tech_admin_user.add_role(:tech_admin)
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(User, "email", "series-user@forem.local") do
   series_user = User.create!(
     name: "Series User",

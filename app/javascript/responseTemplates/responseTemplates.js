@@ -157,18 +157,15 @@ function addClickListeners(form) {
 
 function fetchResponseTemplates(typeOf, formId) {
   const form = document.getElementById(formId);
-  let dataContainer;
-  if (typeOf === 'personal_comment') {
-    dataContainer = form.getElementsByClassName(
-      'personal-responses-container',
-    )[0];
-  } else if (typeOf === 'mod_comment') {
-    dataContainer = form.getElementsByClassName(
-      'moderator-responses-container',
-    )[0];
-  }
+
+  const typesOf = [
+    ['personal_comment', 'personal-responses-container'],
+    ['mod_comment', 'moderator-responses-container'],
+  ];
+
   /* eslint-disable-next-line no-undef */
-  fetch(`/response_templates?type_of=${typeOf}`, {
+
+  fetch(`/response_templates`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -179,9 +176,31 @@ function fetchResponseTemplates(typeOf, formId) {
     .then((response) => response.json())
     .then((response) => {
       form.querySelector('img.loading-img').classList.toggle('hidden');
-      dataContainer.innerHTML = buildHTML(response, typeOf);
+
+      let revealed;
       const topLevelData = document.getElementById('response-templates-data');
-      topLevelData.innerHTML = dataContainer.parentElement.innerHTML;
+
+      for (const typesOfContainers of typesOf) {
+        const [typeOf, containedIn] = typesOfContainers;
+
+        if (typeof response[typeOf] != 'undefined') {
+          const dataContainer = form.getElementsByClassName(containedIn)[0];
+          dataContainer.innerHTML = buildHTML(response[typeOf], typeOf);
+
+          if (revealed) {
+            topLevelData.classList.add(typeOf);
+            dataContainer.classList.add('hidden');
+            prepareHeaderButtons(form);
+          } else {
+            revealed = dataContainer;
+            dataContainer.classList.remove('hidden');
+            topLevelData.classList.add(typeOf);
+          }
+
+          topLevelData.innerHTML = dataContainer.parentElement.innerHTML;
+        }
+      }
+
       addClickListeners(form);
     });
 }
@@ -197,28 +216,12 @@ function prepareHeaderButtons(form) {
   personalTemplateButton.addEventListener('click', (e) => {
     toggleTemplateTypeButton(form, e);
   });
+  personalTemplateButton.classList.remove('hidden');
+
   modTemplateButton.addEventListener('click', (e) => {
     toggleTemplateTypeButton(form, e);
   });
   modTemplateButton.classList.remove('hidden');
-
-  modTemplateButton.addEventListener(
-    'click',
-    () => {
-      const topLevelData = document.getElementById('response-templates-data');
-      const modDataNotFetched =
-        topLevelData.innerHTML !== ''
-          ? topLevelData.getElementsByClassName(
-              'moderator-responses-container',
-            )[0].childElementCount === 0
-          : false;
-      if (modDataNotFetched) {
-        form.querySelector('img.loading-img').classList.toggle('hidden');
-        fetchResponseTemplates('mod_comment', form.id);
-      }
-    },
-    { once: true },
-  );
 }
 
 function copyData(responsesContainer) {
@@ -236,8 +239,8 @@ function openButtonCallback(form) {
   const responsesContainer = form.getElementsByClassName(
     'response-templates-container',
   )[0];
-  const dataFetched =
-    document.getElementById('response-templates-data').innerHTML !== '';
+  const topLevelData = document.getElementById('response-templates-data');
+  const dataFetched = topLevelData.innerHTML !== '';
 
   responsesContainer.classList.toggle('hidden');
 
@@ -249,10 +252,24 @@ function openButtonCallback(form) {
   } else if (!dataFetched && !containerHidden) {
     loadData(form);
   }
-  /* eslint-disable-next-line no-undef */
-  if (userData().moderator_for_tags.length > 0) {
+
+  const hasBothTemplates =
+    topLevelData.classList.contains('personal_comment') &&
+    topLevelData.classList.contains('mod_comment');
+
+  if (hasBothTemplates) {
+    form
+      .getElementsByClassName('moderator-template-button')[0]
+      .classList.remove('hidden');
+    form
+      .getElementsByClassName('personal-template-button')[0]
+      .classList.remove('hidden');
+
     prepareHeaderButtons(form);
   } else {
+    form
+      .getElementsByClassName('moderator-template-button')[0]
+      .classList.add('hidden');
     form
       .getElementsByClassName('personal-template-button')[0]
       .classList.add('hidden');

@@ -1,6 +1,16 @@
 class ResponseTemplatePolicy < ApplicationPolicy
   PERMITTED_ATTRIBUTES = %i[content_type content title].freeze
 
+  class Scope < Scope
+    def resolve
+      if user.has_trusted_role? || user.any_admin? || user.moderator? || user.tag_moderator?
+        scope.where(user: user, type_of: "personal_comment") + scope.where.not(type_of: "personal_comment")
+      else
+        scope.where(user: user, type_of: "personal_comment")
+      end
+    end
+  end
+
   def index?
     true
   end
