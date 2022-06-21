@@ -6,7 +6,7 @@ import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 /**
  * Adds a single event listener to the "applied filters" section, allowing the user to remove a given filter.
  *
- * NB: We use buttons instead of links, since the redirection to a new URL is more of an implementation detail than something
+ * Note: We use buttons instead of links, since the redirection to a new URL is more of an implementation detail than something
  * that makes sense semantically to users - e.g. a link to "remove filter: admin" is slightly less clear than understanding an
  * in-page action of the same name.
  */
