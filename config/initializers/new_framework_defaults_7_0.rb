@@ -32,7 +32,7 @@ Rails.application.config.action_view.apply_stylesheet_media_default = false
 
 # Don't override ActiveSupport::TimeWithZone.name and use the default Ruby
 # implementation.
-# Rails.application.config.active_support.remove_deprecated_time_with_zone_name = true
+Rails.application.config.active_support.remove_deprecated_time_with_zone_name = true
 
 # Change the format of the cache entry.
 # Changing this default means that all new cache entries added to the cache
@@ -56,7 +56,7 @@ Rails.application.config.active_support.executor_around_test_case = true
 Rails.application.config.action_mailer.smtp_timeout = 5
 
 # Automatically infer `inverse_of` for associations with a scope.
-# Rails.application.config.active_record.automatic_scope_inversing = true
+Rails.application.config.active_record.automatic_scope_inversing = true
 
 # Raise when running tests if fixtures contained foreign key violations
 Rails.application.config.active_record.verify_foreign_keys_for_fixtures = true
