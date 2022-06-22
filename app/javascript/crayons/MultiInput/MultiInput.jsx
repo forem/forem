@@ -200,11 +200,11 @@ export const MultiInput = ({
       />
 
       {/* A visually hidden list provides confirmation messages to screen reader users as an item is selected or removed */}
-      <div className="">
+      <div className="screen-reader-only">
         <p>Selected items:</p>
         <ul
           ref={selectedItemsRef}
-          className=" list-none"
+          className="screen-reader-only list-none"
           aria-live="assertive"
           aria-atomic="false"
           aria-relevant="additions removals"
