@@ -41,6 +41,7 @@ module Admin
       ).page(params[:page]).per(50)
 
       @organization_limit = 3
+      @earliest_join_date = ::Settings::General.first.created_at.to_s
     end
 
     def edit

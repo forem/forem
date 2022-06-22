@@ -42,7 +42,7 @@ const initializeDateRangePickers = async () => {
   // TODO: minor updates to Storybook controls
   // TODO: Specs
 
-  const { defaultStart, defaultEnd, defaultDatesFormat } =
+  const { defaultStart, defaultEnd, defaultDatesFormat, earliestDate } =
     joiningRangeContainer.dataset;
 
   render(
@@ -60,7 +60,7 @@ const initializeDateRangePickers = async () => {
       defaultEndDate={
         defaultEnd && moment(defaultEnd, defaultDatesFormat).toDate()
       }
-      minStartDate={new Date('2020-01-01')}
+      minStartDate={new Date(earliestDate)}
       maxEndDate={new Date()}
       presetRanges={ALL_PRESET_RANGES}
     />,
