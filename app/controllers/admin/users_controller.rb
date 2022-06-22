@@ -184,8 +184,17 @@ module Admin
 
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      flash[:success] = I18n.t("admin.users_controller.unpublished")
-      redirect_to admin_user_path(params[:id])
+      message = I18n.t("admin.users_controller.unpublished")
+      respond_to do |format|
+        format.html do
+          flash[:success] = message
+          redirect_to admin_user_path(params[:id])
+        end
+
+        format.json do
+          render json: { message: message }
+        end
+      end
     end
 
     def merge
