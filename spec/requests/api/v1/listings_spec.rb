@@ -8,8 +8,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
     create(:listing_category)
   end
 
-  let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+  let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
@@ -17,6 +16,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
     let(:api_secret_org) { create(:api_secret, :org_admin) }
+    let(:headers) { v1_headers.merge({ "api-key" => api_secret }) }
   end
 
   shared_context "when param list is valid" do
@@ -62,80 +62,116 @@ RSpec.describe "Api::V1::Listings", type: :request do
   describe "GET /api/listings" do
     include_context "with 7 listings and 2 user"
 
-    it "returns json response and ok status" do
-      get api_listings_path
-
-      expect(response.media_type).to eq("application/json")
-      expect(response).to have_http_status(:ok)
+    xcontext "when unauthenticated" do
+      it "returns unauthorized" do
+        get api_listings_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
-    it "returns listings created" do
-      get api_listings_path
-      expect(response.parsed_body.size).to eq(7)
-      expect(response.parsed_body.first["type_of"]).to eq("listing")
-      expect(response.parsed_body.first["slug"]).to eq(Listing.last.slug)
-      expect(response.parsed_body.first["user"]).to include("username")
-      expect(response.parsed_body.first["user"]["username"]).not_to be_empty
+    xcontext "when unauthorized" do
+      it "returns unauthorized" do
+        get api_listings_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
-    it "supports pagination" do
-      get api_listings_path, params: { page: 2, per_page: 2 }
-      expect(response.parsed_body.length).to eq(2)
-      get api_listings_path, params: { page: 4, per_page: 2 }
-      expect(response.parsed_body.length).to eq(1)
-    end
+    context "when authorized" do
+      include_context "when user is authorized"
 
-    it "sets the correct caching headers" do
-      get api_listings_path
+      it "returns json response and ok status" do
+        get api_listings_path, headers: headers
 
-      expect(response.headers["cache-control"]).to be_present
-      expect(response.headers["x-accel-expires"]).to be_present
-      expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
-    end
+        expect(response.media_type).to eq("application/json")
+        expect(response).to have_http_status(:ok)
+      end
 
-    it "sets the correct edge caching surrogate key" do
-      get api_listings_path
+      it "returns listings created" do
+        get api_listings_path, headers: headers
+        expect(response.parsed_body.size).to eq(7)
+        expect(response.parsed_body.first["type_of"]).to eq("listing")
+        expect(response.parsed_body.first["slug"]).to eq(Listing.last.slug)
+        expect(response.parsed_body.first["user"]).to include("username")
+        expect(response.parsed_body.first["user"]["username"]).not_to be_empty
+      end
 
-      expected_key = (
-        ["classified_listings"] +
-        user1.listings.map(&:record_key) +
-        user2.listings.map(&:record_key)
-      ).to_set
-      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
-    end
+      it "supports pagination" do
+        get api_listings_path, params: { page: 2, per_page: 2 }, headers: headers
+        expect(response.parsed_body.length).to eq(2)
+        get api_listings_path, params: { page: 4, per_page: 2 }, headers: headers
+        expect(response.parsed_body.length).to eq(1)
+      end
 
-    it "does not return unpublished listings" do
-      listing = user1.listings.last
-      listing.update(published: false)
+      it "sets the correct caching headers" do
+        get api_listings_path, headers: headers
 
-      get api_listings_path
-      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
-    end
+        expect(response.headers["cache-control"]).to be_present
+        expect(response.headers["x-accel-expires"]).to be_present
+        expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
+      end
 
-    # Regression test for https://github.com/forem/forem/issues/14436
-    it "includes the created at timestamp for listings" do
-      get api_listings_path
-      listing = response.parsed_body.first
-      expect(listing["created_at"]).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
+      it "sets the correct edge caching surrogate key" do
+        get api_listings_path, headers: headers
+
+        expected_key = (
+          ["classified_listings"] +
+          user1.listings.map(&:record_key) +
+          user2.listings.map(&:record_key)
+        ).to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+      end
+
+      it "does not return unpublished listings" do
+        listing = user1.listings.last
+        listing.update(published: false)
+
+        get api_listings_path, headers: headers
+        expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+      end
+
+      # Regression test for https://github.com/forem/forem/issues/14436
+      it "includes the created at timestamp for listings" do
+        get api_listings_path, headers: headers
+        listing = response.parsed_body.first
+        expect(listing["created_at"]).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
+      end
     end
   end
 
   describe "GET /api/listings/category/:category" do
     include_context "with 7 listings and 2 user"
 
-    it "displays only listings from the cfp category" do
-      get api_listings_category_path("cfp")
-      expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.size).to eq(3)
+    xcontext "when unauthenticated" do
+      it "returns unauthorized" do
+        get api_listings_category_path("cfp"), headers: v1_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
-    it "does not return unpublished listings" do
-      category = "cfp"
-      listing = user1.listings.in_category(category).last
-      listing.update(published: false)
+    xcontext "when unauthorized" do
+      it "returns unauthorized" do
+        get api_listings_category_path("cfp"), headers: v1_headers.merge({ "api-key" => "invalid api key" })
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
 
-      get api_listings_category_path(category)
-      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+    context "when authorized" do
+      include_context "when user is authorized"
+
+      it "displays only listings from the cfp category" do
+        get api_listings_category_path("cfp"), headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(3)
+      end
+
+      it "does not return unpublished listings" do
+        category = "cfp"
+        listing = user1.listings.in_category(category).last
+        listing.update(published: false)
+
+        get api_listings_category_path(category), headers: headers
+        expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+      end
     end
   end
 
@@ -143,52 +179,27 @@ RSpec.describe "Api::V1::Listings", type: :request do
     include_context "with 7 listings and 2 user"
     let(:listing) { Listing.in_category("cfp").last }
 
-    context "when unauthenticated" do
-      it "returns a published listing" do
+    xcontext "when unauthenticated" do
+      it "returns unauthorized" do
         listing.update(published: true)
 
-        get api_listing_path(listing.id)
-        expect(response).to have_http_status(:ok)
-      end
+        get api_listing_path(listing.id), headers: v1_headers
 
-      it "returns a published listing on behalf of an organization" do
-        org = user_admin_organization(listing.user)
-        listing.update(published: true, organization: org)
-
-        get api_listing_path(listing.id)
-        expect(response).to have_http_status(:ok)
-      end
-
-      it "does not return an unpublished listing" do
-        listing.update(published: false)
-
-        get api_listing_path(listing.id)
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
-    context "when unauthorized" do
-      let(:headers) { { "api-key" => "invalid api key" } }
-
-      it "returns a published listing" do
+    xcontext "when unauthorized" do
+      it "returns unauthorized" do
         listing.update(published: true)
 
-        get api_listing_path(listing.id), headers: headers
-        expect(response).to have_http_status(:ok)
-      end
-
-      it "does not return an unpublished listing" do
-        listing.update(published: false)
-
-        get api_listing_path(listing.id), headers: headers
-        expect(response).to have_http_status(:not_found)
+        get api_listing_path(listing.id), headers: v1_headers.merge({ "api-key" => "invalid api key" })
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context "when authorized" do
       include_context "when user is authorized"
-
-      let(:headers) { { "api-key" => api_secret.secret } }
 
       it "returns a published listing" do
         listing.update(published: true)
@@ -204,44 +215,44 @@ RSpec.describe "Api::V1::Listings", type: :request do
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns an unpublished listing belonging to the authenticated user" do
+      xit "returns an unpublished listing belonging to the authenticated user" do
         listing.update(published: false, user: api_secret.user)
 
         get api_listing_path(listing.id), headers: headers
         expect(response).to have_http_status(:ok)
       end
-    end
 
-    it "returns the correct listing format" do
-      get api_listing_path(listing.id)
+      it "returns the correct listing format" do
+        get api_listing_path(listing.id), headers: headers
 
-      expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:ok)
 
-      expect(response.parsed_body["type_of"]).to eq("listing")
-      expect(response.parsed_body["slug"]).to eq(listing.slug)
-      expect(response.parsed_body["user"]).to include("username")
-      expect(response.parsed_body["user"]["username"]).not_to be_empty
-    end
+        expect(response.parsed_body["type_of"]).to eq("listing")
+        expect(response.parsed_body["slug"]).to eq(listing.slug)
+        expect(response.parsed_body["user"]).to include("username")
+        expect(response.parsed_body["user"]["username"]).not_to be_empty
+      end
 
-    it "sets the correct caching headers" do
-      get api_listing_path(listing.id)
+      it "sets the correct caching headers" do
+        get api_listing_path(listing.id), headers: headers
 
-      expect(response.headers["cache-control"]).to be_present
-      expect(response.headers["x-accel-expires"]).to be_present
-      expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
-    end
+        expect(response.headers["cache-control"]).to be_present
+        expect(response.headers["x-accel-expires"]).to be_present
+        expect(response.headers["surrogate-control"]).to match(/max-age/).and(match(/stale-if-error/))
+      end
 
-    it "sets the correct edge caching surrogate key" do
-      get api_listing_path(listing.id)
+      it "sets the correct edge caching surrogate key" do
+        get api_listing_path(listing.id), headers: headers
 
-      expected_key = [listing.record_key].to_set
-      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+        expected_key = [listing.record_key].to_set
+        expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+      end
     end
   end
 
   describe "POST /api/listings" do
     def post_listing(key: api_secret.secret, **params)
-      headers = { "api-key" => key, "content-type" => "application/json" }
+      headers = v1_headers.merge({ "api-key" => key })
       post api_listings_path, params: { listing: params }.to_json, headers: headers
     end
 
@@ -249,12 +260,12 @@ RSpec.describe "Api::V1::Listings", type: :request do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
-        post api_listings_path, headers: { "content-type" => "application/json" }
+        post api_listings_path, headers: v1_headers
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
-        post api_listings_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
+        post api_listings_path, headers: v1_headers.merge({ "api-key" => "foobar" })
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -450,7 +461,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
 
   describe "PUT /api/listings/:id" do
     def put_listing(id, **params)
-      headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+      headers = v1_headers.merge({ "api-key" => api_secret.secret })
       put api_listing_path(id), params: { classified_listing: params }.to_json, headers: headers
     end
 
@@ -472,12 +483,12 @@ RSpec.describe "Api::V1::Listings", type: :request do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
-        put api_listing_path(listing.id), headers: { "content-type" => "application/json" }
+        put api_listing_path(listing.id), headers: v1_headers
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
-        put api_listing_path(listing.id), headers: { "api-key" => "foobar", "content-type" => "application/json" }
+        put api_listing_path(listing.id), headers: v1_headers.merge({ "api-key" => "foobar" })
         expect(response).to have_http_status(:unauthorized)
       end
     end

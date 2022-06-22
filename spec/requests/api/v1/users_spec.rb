@@ -1,12 +1,35 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Users", type: :request do
+  let(:api_secret) { create(:api_secret) }
+  let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+
   describe "GET /api/users/:id" do
+    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+
     let!(:user) do
       create(:user,
              profile_image: "",
              _skip_creating_profile: true,
              profile: create(:profile, summary: "Something something"))
+    end
+
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        get api_user_path("by_username"),
+            params: { url: user.username },
+            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when unauthorized" do
+      it "returns unauthorized" do
+        get api_user_path("by_username"),
+            params: { url: user.username },
+            headers: v1_headers.merge({ "api-key" => "invalid api key" })
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     it "returns 404 if the user id is not found" do
@@ -58,18 +81,27 @@ RSpec.describe "Api::V0::Users", type: :request do
   end
 
   describe "GET /api/users/me" do
-    it "requires request to be authenticated" do
-      get me_api_users_path
-      expect(response).to have_http_status(:unauthorized)
+    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        get me_api_users_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when unauthorized" do
+      it "returns unauthorized" do
+        get me_api_users_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     context "when request is authenticated" do
-      let(:user) { create(:user) }
-      let(:api_secret) { create(:api_secret, user: user) }
-      let(:headers) { { "api-key" => api_secret.secret } }
+      let(:user) { api_secret.user }
 
       it "returns the correct json representation of the user", :aggregate_failures do
-        get me_api_users_path, headers: headers
+        get me_api_users_path, headers: v1_headers
 
         response_user = response.parsed_body
 
@@ -89,7 +121,7 @@ RSpec.describe "Api::V0::Users", type: :request do
 
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
-        get me_api_users_path, headers: headers
+        get me_api_users_path, headers: v1_headers
 
         response_user = response.parsed_body
 

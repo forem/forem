@@ -2,11 +2,14 @@ require "rails_helper"
 
 RSpec.describe "/api/admin/users", type: :request do
   let(:params) { { email: "test@example.com" } }
+  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   context "when unauthorized" do
+    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+
     it "rejects requests without an authorization token" do
       expect do
-        post api_admin_users_path, params: params
+        post api_admin_users_path, params: params, headers: v1_headers
       end.not_to change(User, :count)
 
       expect(response).to have_http_status(:unauthorized)
@@ -14,7 +17,7 @@ RSpec.describe "/api/admin/users", type: :request do
 
     it "rejects requests with a non-admin token" do
       api_secret = create(:api_secret, user: create(:user))
-      headers = { "api-key" => api_secret.secret }
+      headers = v1_headers.merge({ "api-key" => api_secret.secret })
 
       expect do
         post api_admin_users_path, params: params, headers: headers
@@ -25,7 +28,7 @@ RSpec.describe "/api/admin/users", type: :request do
 
     it "rejects requests with a regular admin token" do
       api_secret = create(:api_secret, user: create(:user, :admin))
-      headers = { "api-key" => api_secret.secret }
+      headers = v1_headers.merge({ "api-key" => api_secret.secret })
 
       expect do
         post api_admin_users_path, params: params, headers: headers
@@ -36,9 +39,11 @@ RSpec.describe "/api/admin/users", type: :request do
   end
 
   context "when authorized" do
+    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+
     let!(:super_admin) { create(:user, :super_admin) }
     let(:api_secret) { create(:api_secret, user: super_admin) }
-    let(:headers) { { "api-key" => api_secret.secret } }
+    let(:headers) { v1_headers.merge({ "api-key" => api_secret.secret }) }
 
     it "accepts reqeuest with a super-admin token" do
       expect do

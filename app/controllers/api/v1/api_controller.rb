@@ -40,7 +40,7 @@ module Api
       def authenticate!
         # FeatureFlag endpoints don't require authentication because they're
         # only used in the test environment (Cypress test FeatureFlag toggle)
-        return true if params[:controller]&.match?(%r{^api/v1/(feature_flags|instances)$})
+        return true if params[:controller]&.match?(%r{^api/v1/(feature_flags|instances|profile_images)$})
 
         @user = authenticate_with_api_key
         return error_unauthorized unless @user
