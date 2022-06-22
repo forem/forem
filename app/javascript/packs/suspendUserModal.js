@@ -19,7 +19,7 @@ const suspendUser = async ({ event, userId, username, suspensionReason }) => {
           id: userId,
           user: {
             note_for_current_role: suspensionReason,
-            user_status: 'Suspend',
+            user_status: 'Suspended',
           },
         }),
         credentials: 'same-origin',

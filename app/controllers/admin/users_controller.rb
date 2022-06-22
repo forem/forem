@@ -109,7 +109,7 @@ module Admin
             handle_admin_user_path_redirect(params[:id])
           end
           format.json do
-            render json: { success: true, status: :ok }
+            render json: { success: true }, status: :ok
           end
         end
       rescue StandardError => e
@@ -121,9 +121,8 @@ module Admin
           format.json do
             render json: {
               success: false,
-              message: @user.errors_as_sentence,
-              status: :unprocessable_entity
-            }
+              message: @user.errors_as_sentence
+            }, status: :unprocessable_entity
           end
         end
       end
