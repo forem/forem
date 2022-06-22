@@ -9,6 +9,9 @@ module Admin
     # @param role [String, nil]
     # @param search [String, nil]
     # @param roles [Array<String>, nil]
+    # @param joining_start [String, nil]
+    # @param joining_end [String, nil]
+    # @param date_format [String, nil]
     def self.call(relation: User.registered,
                   role: nil,
                   search: nil,
