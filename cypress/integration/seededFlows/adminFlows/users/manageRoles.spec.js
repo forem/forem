@@ -27,14 +27,14 @@ describe('Manage User Roles', () => {
         cy.visit('/admin/member_manager/users/2');
       });
 
-      it('Remove other roles and add a note when Warn role added', () => {
+      it('Remove other roles and add a note when Warned role added', () => {
         checkUserStatus('Trusted');
 
         cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
           'exist',
         );
         openRolesModal().within(() => {
-          cy.findByRole('combobox', { name: 'Role' }).select('Warn');
+          cy.findByRole('combobox', { name: 'Role' }).select('Warned');
           cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
             'some reason',
           );
@@ -57,13 +57,13 @@ describe('Manage User Roles', () => {
           .click();
 
         cy.findByText('some reason').should('exist');
-        cy.findByText(/Warn by/).should('exist');
+        cy.findByText(/Warned by/).should('exist');
       });
 
       it('should remove other roles & add a note when Suspend role added', () => {
         cy.findByRole('button', { name: 'Remove role: Trusted' });
         openRolesModal().within(() => {
-          cy.findByRole('combobox', { name: 'Role' }).select('Suspend');
+          cy.findByRole('combobox', { name: 'Role' }).select('Suspended');
           cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
             'some reason',
           );
@@ -86,7 +86,7 @@ describe('Manage User Roles', () => {
           .findByRole('link', { name: 'Notes' })
           .click();
         cy.findByText('some reason').should('exist');
-        cy.findByText(/Suspend by/).should('exist');
+        cy.findByText(/Suspended by/).should('exist');
       });
 
       it('should remove a role', () => {
@@ -132,7 +132,7 @@ describe('Manage User Roles', () => {
         cy.findByText('No roles assigned yet.').should('be.visible');
 
         openRolesModal().within(() => {
-          cy.findByRole('combobox', { name: 'Role' }).select('Warn');
+          cy.findByRole('combobox', { name: 'Role' }).select('Warned');
           cy.findByRole('button', { name: 'Add' }).click();
           cy.findByRole('button', { name: 'Close' }).click();
         });
@@ -147,7 +147,7 @@ describe('Manage User Roles', () => {
         cy.findByText('No roles assigned yet.').should('be.visible');
 
         openRolesModal().within(() => {
-          cy.findByRole('combobox', { name: 'Role' }).select('Warn');
+          cy.findByRole('combobox', { name: 'Role' }).select('Warned');
           cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
             'some reason',
           );
@@ -163,7 +163,9 @@ describe('Manage User Roles', () => {
         );
 
         openRolesModal().within(() => {
-          cy.findByRole('combobox', { name: 'Role' }).select('Comment Suspend');
+          cy.findByRole('combobox', { name: 'Role' }).select(
+            'Comment Suspended',
+          );
           cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
             'some reason',
           );

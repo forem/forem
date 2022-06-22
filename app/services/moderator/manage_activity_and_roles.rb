@@ -59,15 +59,15 @@ module Moderator
       when "Admin"
         assign_elevated_role_to_user(user, :admin)
         TagModerators::AddTrustedRole.call(user)
-      when "Comment Suspend"
+      when "Comment Suspended"
         comment_suspended
-      when "Suspend" || "Spammer"
+      when "Suspended" || "Spammer"
         user.add_role(:suspended)
         remove_privileges
       when "Moderator"
         assign_elevated_role_to_user(user, :moderator)
         TagModerators::AddTrustedRole.call(user)
-      when "Regular Member"
+      when "Good standing"
         regular_member
       when /^(Resource Admin: )/
         check_super_admin
@@ -85,7 +85,7 @@ module Moderator
       when "Trusted"
         remove_negative_roles
         TagModerators::AddTrustedRole.call(user)
-      when "Warn"
+      when "Warned"
         warned
       end
       create_note(role, note)

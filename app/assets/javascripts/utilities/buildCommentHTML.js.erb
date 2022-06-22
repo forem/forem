@@ -31,7 +31,7 @@ function buildCommentHTML(comment) {
   if (comment.depth < 3) {
     detailsStartHTML = `
       <details class="comment-wrapper comment-wrapper--deep-${ comment.depth } js-comment-wrapper" open>
-        <summary aria-label="Toggle this comment (and replies)">
+        <summary aria-label="Toggle this comment (and replies)" data-tracking-name="expand_comment_toggle">
           <span class="inline-block align-middle ${ comment.depth > 0 ? 'mx-0' : 'm:mx-1'}">
             ${ iconCollapse }
             ${ iconExpand }
@@ -62,7 +62,7 @@ function buildCommentHTML(comment) {
       </time>
     </a>
 
-    <div class="comment__dropdown">
+    <div class="comment__dropdown" data-tracking-name="comment_dropdown">
       <button  id="comment-dropdown-trigger-${comment.id}" aria-controls="comment-dropdown-${comment.id}" aria-expanded="false" class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" aria-label="Toggle dropdown menu" aria-haspopup="true">
         ${ iconSmallOverflowHorizontal }
       </button>
@@ -109,6 +109,7 @@ function reply(comment) {
     href="#${ comment.url }"
     data-comment-id="${ comment.id }"
     data-path="${ comment.url }"
+    data-tracking-name="comment_reply_button"
     rel="nofollow">
     ${ iconSmallComment }
     <span class="hidden m:inline-block">Reply</span>
@@ -132,7 +133,7 @@ function react(comment) {
     num = comment.public_reactions_count;
   }
 
-  var reactButton = `<button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button" id="button-for-comment-${ comment.id }" data-comment-id="${ comment.id }">
+  var reactButton = `<button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button" id="button-for-comment-${ comment.id }" data-comment-id="${ comment.id }" data-tracking-name="comment_heart_button">
     ${ iconSmallHeart }
     ${ iconSmallHeartFilled }
     <span class="reactions-count" id="reactions-count-${ comment.id }">${ num }</span>

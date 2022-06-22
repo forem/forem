@@ -6,7 +6,9 @@
     </div>
     <%= render "admin/users/index/controls" %>
   </header>
-
+    <% if FeatureFlag.enabled?(:member_index_view) %>
+      <%= render "admin/users/index/applied_filters" %>
+    <% end %>
     <!-- Responsive screen (breakpoints below XL) data view start -->
     <div class="block xl:hidden fs-s">
       <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Members</h2>

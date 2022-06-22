@@ -1,0 +1,17 @@
+<div role="group" aria-labelledby="applied-filters" class="js-applied-filters hidden m:flex flex-wrap items-center gap-2 mb-4 px-2 xl:px-7">
+    <h2 id="applied-filters" class="screen-reader-only">Applied filters</h2>
+    <% params[:roles]&.each do |role| %>
+        <button
+            data-filter-key="roles[]"
+            data-filter-value="<%= role %>"
+            aria-label="Remove filter: <%= role %>"
+            class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
+            type="button">
+            <%= role %>
+            <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
+        </button>
+    <% end %>
+    <% if params[:roles] %>
+        <button class="js-clear-filters-btn c-btn" aria-label="Clear all filters">Clear all</button>
+    <% end %>
+</div>

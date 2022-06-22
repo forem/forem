@@ -3,6 +3,54 @@ import { openDropdown, closeDropdown } from '@utilities/dropdownUtils';
 import { copyToClipboard } from '@utilities/runtime';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 
+/**
+ * Adds a single event listener to the "applied filters" section, allowing the user to remove a given filter.
+ *
+ * Note: We use buttons instead of links, since the redirection to a new URL is more of an implementation detail than something
+ * that makes sense semantically to users - e.g. a link to "remove filter: admin" is slightly less clear than understanding an
+ * in-page action of the same name.
+ */
+const initializeFilterPills = () => {
+  // Add the listener to the "Clear all" button
+  document
+    .querySelector('.js-clear-filters-btn')
+    ?.addEventListener('click', () => {
+      const { search, href } = document.location;
+      const newUrl = href.replace(search, '');
+      document.location = newUrl;
+    });
+
+  const filtersArea = document.querySelector('.js-applied-filters');
+  filtersArea?.addEventListener('click', ({ target }) => {
+    // We target closest data-filter-type to account for SVGs inside the button being the click target
+    const relevantElement = target.closest('[data-filter-key]');
+    if (!relevantElement) {
+      // Nothing to do here
+      return;
+    }
+
+    const {
+      dataset: { filterKey, filterValue },
+    } = relevantElement;
+
+    const urlParams = new URLSearchParams(document.location.search);
+    const allFiltersMatchingKey = urlParams.getAll(filterKey);
+
+    // Remove the clicked filter name from the array
+    allFiltersMatchingKey.splice(allFiltersMatchingKey.indexOf(filterValue), 1);
+    // Delete _all_ filters with given key
+    urlParams.delete(filterKey);
+    // Re-attach any filters with given key that we want to keep
+    allFiltersMatchingKey.forEach((filterVal) =>
+      urlParams.append(filterKey, filterVal),
+    );
+    // Redirect the page
+    document.location.search = urlParams;
+  });
+};
+
+initializeFilterPills();
+
 // We present up to 50 users in the UI at once, and for performance reasons we don't want to add individual click listeners to each dropdown menu or inner menu item
 // Instead we listen for click events anywhere in the table, and identify required actions based on data attributes of the target
 document

@@ -24,6 +24,44 @@ describe('Filter user index', () => {
     });
   });
 
+  it('Displays and clears applied filters', () => {
+    cy.findAllByRole('button', { name: 'Filter' }).last().click();
+
+    cy.getModal().within(() => {
+      cy.findAllByText('Member roles').first().click();
+      cy.findByRole('group', { name: 'Member roles' }).should('be.visible');
+
+      cy.findByRole('checkbox', { name: 'Admin' }).check();
+      cy.findByRole('checkbox', { name: 'Super Admin' }).check();
+      cy.findByRole('checkbox', { name: 'Tech Admin' }).check();
+      cy.findByRole('button', { name: 'Apply filters' }).click();
+    });
+
+    // Verify applied filter pills are visible
+    cy.findAllByRole('button', { name: /Remove filter/ }).should(
+      'have.length',
+      3,
+    );
+
+    cy.findByRole('button', { name: 'Remove filter: Admin' }).click();
+    // Filter should be removed and pill no longer visible
+    cy.findByRole('button', { name: 'Remove filter: Admin' }).should(
+      'not.exist',
+    );
+    cy.findAllByRole('button', { name: /Remove filter/ }).should(
+      'have.length',
+      2,
+    );
+
+    cy.findByRole('button', { name: 'Clear all filters' }).click();
+    cy.findByRole('button', { name: 'Clear all filters' }).should('not.exist');
+    cy.findByRole('button', { name: /Remove filter/ }).should('not.exist');
+    cy.url().should(
+      'equal',
+      `${Cypress.config().baseUrl}admin/member_manager/users`,
+    );
+  });
+
   describe('Member roles', () => {
     it('Expands and collapses list of roles', () => {
       cy.findAllByRole('button', { name: 'Filter' }).last().click();
