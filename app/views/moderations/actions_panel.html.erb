@@ -202,10 +202,10 @@
       <div id="admin-action-options" class="admin-action-options dropdown-options mt-4 hidden">
         <button
           type="button"
-          id="suspend-user-btn"
-          class="c-btn c-btn--destructive align-center fs-s"
+          id="<%= @moderatable.user.suspended? ? "unsuspend-user-btn" : "suspend-user-btn" %>"
+          class="suspend-flow-btn c-btn <%= @moderatable.user.suspended? ? "" : "c-btn--destructive" %> align-center fs-s"
           data-modal-title="<%= @moderatable.user.suspended? ? "Unsuspend" : "Suspend" %> <%= @moderatable.username %>"
-          data-modal-size="small" data-modal-content-selector="#suspend-user-modal" data-username="<%= @moderatable.username %>">
+          data-modal-size="small" data-modal-content-selector="#suspend-unsuspend-modal" data-username="<%= @moderatable.username %>">
             <%= @moderatable.user.suspended? ? "Unsuspend" : "Suspend" %> <%= @moderatable.username %>
         </button>
       </div>

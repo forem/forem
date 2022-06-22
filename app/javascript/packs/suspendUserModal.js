@@ -6,9 +6,15 @@ import {
 } from '@utilities/showModal';
 import { request } from '@utilities/http';
 
-const suspendUser = async ({ event, userId, username, suspensionReason }) => {
+const suspendOrUnsuspendUser = async ({
+  event,
+  btnAction,
+  userId,
+  username,
+  suspendOrUnsuspendReason,
+}) => {
   event.preventDefault();
-  closeSuspendUserModal();
+  closeModal();
 
   try {
     const response = await request(
@@ -18,8 +24,8 @@ const suspendUser = async ({ event, userId, username, suspensionReason }) => {
         body: JSON.stringify({
           id: userId,
           user: {
-            note_for_current_role: suspensionReason,
-            user_status: 'Suspended',
+            note_for_current_role: suspendOrUnsuspendReason,
+            user_status: btnAction == 'suspend' ? 'Suspended' : 'Good standing',
           },
         }),
         credentials: 'same-origin',
@@ -30,12 +36,12 @@ const suspendUser = async ({ event, userId, username, suspensionReason }) => {
 
     if (outcome.success) {
       top.addSnackbarItem({
-        message: `Success: "${username}" has been suspended.`,
+        message: `Success: "${username}" has been ${btnAction}ed.`,
         addCloseButton: true,
       });
     } else {
       top.addSnackbarItem({
-        message: `Error: something went wrong; ${username} NOT suspended.`,
+        message: `Error: something went wrong; ${username} NOT ${btnAction}ed.`,
         addCloseButton: true,
       });
     }
@@ -47,7 +53,7 @@ const suspendUser = async ({ event, userId, username, suspensionReason }) => {
   }
 };
 
-function closeSuspendUserModal() {
+function closeModal() {
   closeWindowModal(window.parent.document);
 }
 
@@ -72,39 +78,48 @@ function getModalContents(modalContentSelector) {
   return modalContents.get(modalContentSelector);
 }
 
-function checkSuspensionReason(event) {
-  const { userId, username, suspensionReasonSelector } = event.target.dataset;
-  const suspendUserModal =
+function checkReason(event) {
+  const { btnAction, reasonSelector, userId, username } = event.target.dataset;
+  const suspendUnsuspendModal =
     window.parent.document.getElementById(WINDOW_MODAL_ID);
-  const suspensionReason = suspendUserModal.querySelector(
-    suspensionReasonSelector,
-  ).value;
+  const suspendOrUnsuspendReason =
+    suspendUnsuspendModal.querySelector(reasonSelector).value;
 
-  if (!suspensionReason) {
-    suspendUserModal.querySelector('#suspension-reason-error').innerText =
-      'You must give a suspension reason.';
+  if (!suspendOrUnsuspendReason) {
+    suspendUnsuspendModal.querySelector(
+      '.suspend-unsuspend-reason-error',
+    ).innerText = 'You must give a reason for this action.';
   } else {
-    suspendUser({ event, userId, username, suspensionReason });
+    suspendOrUnsuspendUser({
+      event,
+      btnAction,
+      userId,
+      username,
+      suspendOrUnsuspendReason,
+    });
   }
 }
 
-function activateSubmitSuspendBtn() {
-  const submitSuspendBtn = window.parent.document.getElementById(
-    'submit-user-suspension-btn',
+function activateModalSubmitBtn() {
+  const suspendBtn = window.parent.document.getElementById(
+    'submit-user-suspend-btn',
+  );
+  const unsuspendBtn = window.parent.document.getElementById(
+    'submit-user-unsuspend-btn',
   );
 
-  submitSuspendBtn.addEventListener('click', checkSuspensionReason);
+  suspendBtn?.addEventListener('click', checkReason);
+  unsuspendBtn?.addEventListener('click', checkReason);
 }
 
-export function toggleSuspendUserModal() {
-  const suspendUserBtn = document.getElementById('suspend-user-btn');
-  const { modalTitle, modalSize, modalContentSelector } =
-    suspendUserBtn.dataset;
+export function toggleModal(event) {
+  event.preventDefault;
+  const { modalTitle, modalSize, modalContentSelector } = event.target.dataset;
   showWindowModal({
     document: window.parent.document,
     modalContent: getModalContents(modalContentSelector),
     title: modalTitle,
     size: modalSize,
-    onOpen: activateSubmitSuspendBtn,
+    onOpen: activateModalSubmitBtn,
   });
 }

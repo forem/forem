@@ -1,31 +1,65 @@
-<div id="suspend-user-modal" class="hidden">
-  <p>Once suspended, <%= @article.username %> will not be able to comment or publish posts until their suspension is removed.</p>
+<div id="suspend-unsuspend-modal" class="hidden">
+  <% if @article.user.suspended? %>
+    <p>Once unsuspended, <%= @article.username %> will be able to comment and publish posts again.</p>
 
-  <div class="crayons-field mt-4">
-    <label for="suspend_reason_userid_<%= @article.user.id %>" class="crayons-field__label">Note:</label>
-    <textarea
-      id="suspend_reason_userid_<%= @article.user.id %>"
-      rows="4"
-      cols="70"
-      placeholder="Reason for suspension"
-      class="crayons-textfield"
-      aria-describedby="suspension-reason-error"
-      required></textarea>
-    <p
-      id="suspension-reason-error"
-      class="crayons-field__description"
-      style="color: red;"
-      aria-live="assertive">
-    </p>
-  </div>
-  <div class="mt-4">
-    <button
-      id="submit-user-suspension-btn"
-      class="c-btn c-btn--destructive c-btn--primary"
-      data-suspension-reason-selector="#suspend_reason_userid_<%= @article.user.id %>"
-      data-username="<%= @article.username %>"
-      data-user-id="<%= @article.user.id %>">
-      Submit & Suspend
-    </button>
-  </div>
+    <div class="crayons-field mt-4">
+      <label for="unsuspend_reason_userid_<%= @article.user.id %>" class="crayons-field__label">Note:</label>
+      <textarea
+        id="unsuspend_reason_userid_<%= @article.user.id %>"
+        rows="4"
+        cols="70"
+        placeholder="Reason for unsuspension"
+        class="crayons-textfield"
+        aria-describedby="unsuspension-reason-error"
+        required></textarea>
+      <p
+        id="unsuspension-reason-error"
+        class="suspend-unsuspend-reason-error crayons-field__description"
+        style="color: red;"
+        aria-live="assertive">
+      </p>
+    </div>
+    <div class="mt-4">
+      <button
+        id="submit-user-unsuspend-btn"
+        class="c-btn c-btn--primary"
+        data-btn-action="unsuspend"
+        data-reason-selector="#unsuspend_reason_userid_<%= @article.user.id %>"
+        data-username="<%= @article.username %>"
+        data-user-id="<%= @article.user.id %>">
+        Submit & Unsuspend
+      </button>
+    </div>
+  <% else %>
+    <p>Once suspended, <%= @article.username %> will not be able to comment or publish posts until their suspension is removed.</p>
+
+    <div class="crayons-field mt-4">
+      <label for="suspend_reason_userid_<%= @article.user.id %>" class="crayons-field__label">Note:</label>
+      <textarea
+        id="suspend_reason_userid_<%= @article.user.id %>"
+        rows="4"
+        cols="70"
+        placeholder="Reason for suspension"
+        class="crayons-textfield"
+        aria-describedby="suspension-reason-error"
+        required></textarea>
+      <p
+        id="suspension-reason-error"
+        class="suspend-unsuspend-reason-error crayons-field__description"
+        style="color: red;"
+        aria-live="assertive">
+      </p>
+    </div>
+    <div class="mt-4">
+      <button
+        id="submit-user-suspend-btn"
+        class="c-btn c-btn--destructive c-btn--primary"
+        data-btn-action="suspend"
+        data-reason-selector="#suspend_reason_userid_<%= @article.user.id %>"
+        data-username="<%= @article.username %>"
+        data-user-id="<%= @article.user.id %>">
+        Submit & Suspend
+      </button>
+    </div>
+  <% end %>
 </div>

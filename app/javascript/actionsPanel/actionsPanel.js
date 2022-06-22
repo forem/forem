@@ -1,5 +1,5 @@
 import { toggleFlagUserModal } from '../packs/flagUserModal';
-import { toggleSuspendUserModal } from '../packs/suspendUserModal';
+import { toggleModal } from '../packs/suspendUserModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
 import { request } from '@utilities/http';
 
@@ -397,9 +397,11 @@ export function addBottomActionsListeners() {
     .getElementById('open-flag-user-modal')
     .addEventListener('click', toggleFlagUserModal);
 
-  document
-    .getElementById('suspend-user-btn')
-    ?.addEventListener('click', toggleSuspendUserModal);
+  const suspendFlowBtns = document.querySelectorAll('.suspend-flow-btn');
+
+  Array.from(suspendFlowBtns).forEach((btn) => {
+    btn.addEventListener('click', toggleModal);
+  });
 }
 
 export function initializeActionsPanel() {
