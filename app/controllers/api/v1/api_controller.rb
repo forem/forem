@@ -6,9 +6,6 @@ module Api
 
       self.api_action = true
 
-      # API V1 requires all endpoints to authenticate with an API Key
-      before_action :authenticate!
-
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
       end

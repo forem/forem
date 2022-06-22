@@ -4,6 +4,7 @@ module Api
       class UsersController < ApiController
         include Api::Admin::UsersController
 
+        before_action :authenticate!
         before_action :authorize_super_admin
       end
     end

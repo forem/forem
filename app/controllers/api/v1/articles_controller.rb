@@ -5,10 +5,9 @@ module Api
     class ArticlesController < ApiController
       include Api::ArticlesController
 
+      before_action :authenticate!
       before_action :validate_article_param_is_hash, only: %i[create update]
-
       before_action :set_cache_control_headers, only: %i[index show show_by_slug]
-
       after_action :verify_authorized, only: %i[create]
     end
   end
