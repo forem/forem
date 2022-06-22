@@ -5,29 +5,64 @@ import {
 } from '@utilities/showModal';
 
 /**
- * Some sections require the Preact DateRangePicker. This function imports the required packages and adds the pickers to the modal
+ * Show or hide the "filtered" indicator depending on current input values
+ */
+const handleDateInputChange = ({ startDate, endDate, indicator }) => {
+  const hasValues = startDate || endDate;
+  if (hasValues) {
+    indicator.classList.remove('hidden');
+  } else {
+    indicator.classList.add('hidden');
+  }
+};
+
+/**
+ * Some sections require the Preact DateRangePicker.
+ * This function imports the required packages and adds the pickers to the modal.
  */
 const initializeDateRangePickers = async () => {
   const joiningRangeContainer = document.querySelector(
     `#${WINDOW_MODAL_ID} .js-joining-date-range`,
   );
 
-  const [{ render, h }, { DateRangePicker }] = await Promise.all([
+  const joiningDateIndicator = document.querySelector(
+    `#${WINDOW_MODAL_ID} .js-filtered-indicator-joining-date`,
+  );
+
+  const [
+    { render, h },
+    { DateRangePicker, ALL_PRESET_RANGES },
+    { default: moment },
+  ] = await Promise.all([
     import('preact'),
     import('@crayons'),
+    import('moment'),
   ]);
 
-  const handleDateChange = ({ startDate, endDate }) => {
-    console.log({ startDate, endDate });
-  };
+  // TODO: minor updates to Storybook controls
+  // TODO: Specs
+
+  const { defaultStart, defaultEnd, defaultDatesFormat } =
+    joiningRangeContainer.dataset;
 
   render(
     <DateRangePicker
-      startDateId="joining-start"
-      endDateId="joining-end"
+      startDateId="joining_start"
+      endDateId="joining_end"
       startDateAriaLabel="Joined after"
       endDateAriaLabel="Joined before"
-      onDatesChanged={handleDateChange}
+      onDatesChanged={(dates) =>
+        handleDateInputChange({ ...dates, indicator: joiningDateIndicator })
+      }
+      defaultStartDate={
+        defaultStart && moment(defaultStart, defaultDatesFormat).toDate()
+      }
+      defaultEndDate={
+        defaultEnd && moment(defaultEnd, defaultDatesFormat).toDate()
+      }
+      minStartDate={new Date('2020-01-01')}
+      maxEndDate={new Date()}
+      presetRanges={ALL_PRESET_RANGES}
     />,
     joiningRangeContainer,
   );

@@ -35,6 +35,9 @@ module Admin
         search: params[:search],
         role: params[:role],
         roles: params[:roles],
+        joining_start: params[:joining_start],
+        joining_end: params[:joining_end],
+        date_format: params[:date_format],
       ).page(params[:page]).per(50)
 
       @organization_limit = 3

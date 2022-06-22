@@ -203,8 +203,9 @@ export const DateRangePicker = ({
 
   const today = moment(todaysDate);
 
-  const dateFormat =
-    getCurrentLocale().toLowerCase() === 'en-us' ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
+  const usFormat = getCurrentLocale().toLowerCase() === 'en-us';
+
+  const dateFormat = usFormat ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
 
   return (
     // We wrap in a span to assist with scoping CSS selectors & overriding styles from react-dates
@@ -283,6 +284,8 @@ export const DateRangePicker = ({
           />
         )}
       />
+      {/* This hidden input provides information that may be needed by implementing forms to properly parse dates */}
+      <input type="hidden" name="date_format" value={dateFormat} />
     </span>
   );
 };

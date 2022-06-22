@@ -9,7 +9,13 @@ module Admin
     # @param role [String, nil]
     # @param search [String, nil]
     # @param roles [Array<String>, nil]
-    def self.call(relation: User.registered, role: nil, search: nil, roles: [])
+    def self.call(relation: User.registered,
+                  role: nil,
+                  search: nil,
+                  roles: [],
+                  joining_start: nil,
+                  joining_end: nil,
+                  date_format: "DD/MM/YYYY")
       # We are at an interstitial moment where we are exposing both the role and roles param.  We
       # need to favor one or the other.
       if role.presence
@@ -18,12 +24,33 @@ module Admin
         relation = filter_roles(relation: relation, roles: roles)
       end
 
+      if joining_start.presence || joining_end.presence
+        relation = filter_joining_date(relation: relation, joining_start: joining_start, joining_end: joining_end,
+                                       date_format: date_format)
+      end
+
       relation = search_relation(relation, search) if search.presence
       relation.distinct.order(created_at: :desc)
     end
 
     def self.search_relation(relation, search)
       relation.where(QUERY_CLAUSE, search: "%#{search.strip}%")
+    end
+
+    def self.filter_joining_date(relation:, joining_start:, joining_end:, date_format:)
+      ui_formats_to_parse_format = {
+        "DD/MM/YYYY" => "%d/%m/%Y",
+        "MM/DD/YYYY" => "%m/%d/%Y"
+      }
+      parse_format = ui_formats_to_parse_format[date_format]
+
+      if joining_start.presence
+        relation = relation.where("registered_at >= ?", DateTime.strptime(joining_start, parse_format).beginning_of_day)
+      end
+
+      return unless joining_end.presence
+
+      relation.where("registered_at <= ?", DateTime.strptime(joining_end, parse_format).end_of_day)
     end
 
     # Apply the "where" scope to the given relation for the given roles.
