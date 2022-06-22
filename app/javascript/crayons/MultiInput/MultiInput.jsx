@@ -25,9 +25,8 @@ export const MultiInput = ({
   const inputRef = useRef(null);
   const inputSizerRef = useRef(null);
   const selectedItemsRef = useRef(null);
-  const [items, setItems] = useState([]);
 
-  // TODO: possibly refactor into a reducer
+  const [items, setItems] = useState([]);
   const [editValue, setEditValue] = useState(null);
   const [inputPosition, setInputPosition] = useState(null);
 
@@ -45,7 +44,7 @@ export const MultiInput = ({
       input.value = editValue;
       const { length: cursorPosition } = editValue;
       input.focus();
-      // this will set the cursor position at the end of the text.
+      // This will set the cursor position at the end of the text.
       input.setSelectionRange(cursorPosition, cursorPosition);
     }
   }, [inputPosition, editValue]);
@@ -89,6 +88,31 @@ export const MultiInput = ({
     }
   };
 
+  const addItemToList = (value) => {
+    // TODO: we will want to do some validation here based on a prop
+    if (value.trim().length > 0) {
+      // If an item was edited, we want to keep it in the same position in the list
+      const insertIndex = inputPosition !== null ? inputPosition : items.length;
+      const newSelections = [
+        ...items.slice(0, insertIndex),
+        value,
+        ...items.slice(insertIndex),
+      ];
+
+      // We update the hidden selected items list, so additions are announced to screen reader users
+      const listItem = document.createElement('li');
+      listItem.innerText = value;
+      selectedItemsRef.current.appendChild(listItem);
+
+      setItems([...newSelections]);
+      exitEditState({});
+    }
+  };
+
+  const clearInput = () => {
+    inputRef.current.value = '';
+  };
+
   const resizeInputToContentSize = () => {
     const { current: input } = inputRef;
 
@@ -121,34 +145,24 @@ export const MultiInput = ({
     }
   };
 
-  const addItemToList = (value) => {
-    // TODO: we will want to do some validation here based on a prop
-    if (value.trim().length > 0) {
-      // If an item was edited, we want to keep it in the same position in the list
-      const insertIndex = inputPosition !== null ? inputPosition : items.length;
-      const newSelections = [
-        ...items.slice(0, insertIndex),
-        value,
-        ...items.slice(insertIndex),
-      ];
-
-      // We update the hidden selected items list, so additions are announced to screen reader users
-      const listItem = document.createElement('li');
-      listItem.innerText = value;
-      selectedItemsRef.current.appendChild(listItem);
-
-      // We update the hidden selected items list, so additions are announced to screen reader users
-      // const listItem = document.createElement('li');
-      // listItem.innerText = selectedItem.name;
-      // selectedItemsRef.current.appendChild(listItem);
-
-      setItems([...newSelections]);
-      exitEditState({});
-    }
+  const enterEditState = (editItem, editItemIndex) => {
+    inputSizerRef.current.innerText = editItem;
+    deselectItem(editItem);
+    setEditValue(editItem);
+    setInputPosition(editItemIndex);
   };
 
-  const clearInput = () => {
-    inputRef.current.value = '';
+  const exitEditState = ({ nextInputValue = '' }) => {
+    // Reset 'edit mode' input resizing
+    inputRef.current?.style?.removeProperty('width');
+
+    inputSizerRef.current.innerText = nextInputValue;
+    setEditValue(nextInputValue);
+    setInputPosition(nextInputValue === '' ? null : inputPosition + 1);
+    // Blurring away while clearing the input
+    if (nextInputValue === '') {
+      inputRef.current.value = '';
+    }
   };
 
   const allSelectedItemElements = items.map((item, index) => {
@@ -176,26 +190,6 @@ export const MultiInput = ({
       </li>
     );
   });
-
-  const enterEditState = (editItem, editItemIndex) => {
-    inputSizerRef.current.innerText = editItem;
-    deselectItem(editItem);
-    setEditValue(editItem);
-    setInputPosition(editItemIndex);
-  };
-
-  const exitEditState = ({ nextInputValue = '' }) => {
-    // Reset 'edit mode' input resizing
-    inputRef.current?.style?.removeProperty('width');
-
-    inputSizerRef.current.innerText = nextInputValue;
-    setEditValue(nextInputValue);
-    setInputPosition(nextInputValue === '' ? null : inputPosition + 1);
-    // Blurring away while clearing the input
-    if (nextInputValue === '') {
-      inputRef.current.value = '';
-    }
-  };
 
   return (
     <Fragment>
