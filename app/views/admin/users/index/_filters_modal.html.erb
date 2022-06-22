@@ -50,8 +50,26 @@
                 Last activity options
             </details>
             <details data-section="organizations" class="admin-details">
-                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Organizations<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
-                Organizations options
+                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
+                    <span class="flex">
+                        Organizations
+                        <span class="js-filtered-indicator-organizations relative ml-2 <%= params[:organizations].blank? ? "hidden" : "" %>">
+                            <span class="block absolute c-indicator c-indicator--info"></span>
+                        </span>
+                    </span>
+                    <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
+                </summary>
+                <fieldset class="js-organizations-fieldset pb-4 flex flex-col items-start">
+                    <legend class="screen-reader-only">Organizations</legend>
+                        <% @organizations.each_with_index do |org, index| %>
+                            <div class="crayons-field crayons-field--checkbox">
+                                <%= f.check_box :organizations, { multiple: true, class: "crayons-checkbox", id: "filter-org-#{index}", checked: params[:organizations]&.include?(org.id.to_s) }, org.id, false %>
+                                <%= f.label :organizations, for: "filter-org-#{index}", class: "crayons-field__label" do %><%= org.name %><% end %>
+                            </div>
+                     <% end %>
+                </fieldset>
+                <button type="button" class="js-clear-filter-btn c-btn <%= params[:organizations].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-organizations-fieldset" data-filter-indicator-selector=".js-filtered-indicator-organizations" aria-label="Clear organizations filter">Clear filter</button>
+
             </details>
         </div>
         <div class="flex gap-2 mt-auto">

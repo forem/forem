@@ -3,7 +3,7 @@
     <details class="comment-wrapper js-comment-wrapper comment-wrapper--deep-<%= comment.depth %>
                     <%= comment_class(comment, is_view_root: is_view_root) %>
                     <%= should_be_hidden?(comment, @root_comment) ? "details-comment-hidden-by-commentable-user" : "" %>" open>
-      <summary>
+      <summary aria-label="Toggle this comment (and replies)" data-tracking-name="expand_comment_toggle">
         <span class="<% if comment.depth > 0 %>mx-0<% else %>m:mx-1<% end %> inline-block align-middle">
           <%= crayons_icon_tag(:collapse, class: "expanded", title: t("views.comments.collapse")) %>
           <%= crayons_icon_tag(:expand, class: "collapsed", title: t("views.comments.expand")) %>
