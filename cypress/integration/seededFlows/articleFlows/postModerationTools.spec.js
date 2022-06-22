@@ -152,7 +152,7 @@ describe('Moderation Tools for Posts', () => {
       });
     });
 
-    context('when suspending or unsuspending user', () => {
+    context('when suspending user', () => {
       beforeEach(() => {
         cy.get('@moderatorUser').then((user) => {
           cy.loginAndVisit(user, '/series_user/series-test-article-slug');
@@ -161,7 +161,7 @@ describe('Moderation Tools for Posts', () => {
         });
       });
 
-      it('should show Suspend User button for an unsuspended user', () => {
+      it('should show Suspend User button', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
           cy.findByRole('button', { name: 'Open admin actions' })
             .as('moderatingActionsButton')
@@ -174,7 +174,7 @@ describe('Moderation Tools for Posts', () => {
         });
       });
 
-      it('should not suspend the user when no suspension reason given', () => {
+      it('should not suspend the user when no reason given', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
           cy.findByRole('button', { name: 'Open admin actions' })
             .as('moderatingActionsButton')
@@ -189,7 +189,7 @@ describe('Moderation Tools for Posts', () => {
           cy.findByRole('button', { name: 'Submit & Suspend' }).click();
 
           cy.get('#suspension-reason-error')
-            .contains('You must give a suspension reason.')
+            .contains('You must give a reason for this action.')
             .should('exist');
         });
       });
@@ -215,6 +215,71 @@ describe('Moderation Tools for Posts', () => {
 
         cy.findByTestId('snackbar')
           .contains('Success: "series_user" has been suspended.')
+          .should('exist');
+      });
+    });
+
+    context('when unsuspending user', () => {
+      beforeEach(() => {
+        cy.get('@moderatorUser').then((user) => {
+          cy.loginAndVisit(user, '/suspended_user/suspended-user-article-slug');
+          cy.findByRole('heading', {
+            level: 1,
+            name: 'Suspended user article',
+          });
+          cy.findByRole('button', { name: 'Moderation' }).click();
+        });
+      });
+
+      it('should show Unsuspend User button', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+
+          cy.findByRole('button', {
+            name: 'Unsuspend suspended_user',
+          }).should('exist');
+        });
+      });
+
+      it('should not unsuspend the user when no reason given', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', {
+            name: 'Unsuspend suspended_user',
+          }).click();
+        });
+        cy.findByRole('dialog').within(() => {
+          cy.findByRole('button', { name: 'Submit & Unsuspend' }).click();
+          cy.get('#unsuspension-reason-error')
+            .contains('You must give a reason for this action.')
+            .should('exist');
+        });
+      });
+
+      it('should unsuspend the user when reason given', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', {
+            name: 'Unsuspend suspended_user',
+          }).click();
+        });
+        cy.findByRole('dialog').within(() => {
+          cy.findByRole('textbox', { name: 'Note:' }).type(
+            'My unsuspension reason',
+          );
+          cy.findByRole('button', { name: 'Submit & Unsuspend' }).click();
+        });
+        cy.findByTestId('snackbar')
+          .contains('Success: "suspended_user" has been unsuspended.')
           .should('exist');
       });
     });
