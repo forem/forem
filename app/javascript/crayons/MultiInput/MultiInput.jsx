@@ -9,9 +9,6 @@ const KEYS = {
   SPACE: ' ',
   DELETE: 'Backspace',
 };
-// TODO: think about how this may change based on
-// a different usage. We will most likely want this to be passed in as a prop.
-const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
 /**
  * Component allowing users to add multiple entries for a given input field that get displayed as destructive pills
@@ -22,6 +19,7 @@ const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9@.])/;
 
 export const MultiInput = ({
   placeholder,
+  regex,
   SelectionTemplate = DefaultSelectionTemplate,
 }) => {
   const inputRef = useRef(null);
@@ -85,7 +83,7 @@ export const MultiInput = ({
         }
         break;
       default:
-        if (!ALLOWED_CHARS_REGEX.test(e.key)) {
+        if (!regex.test(e.key)) {
           e.preventDefault();
         }
     }
@@ -250,5 +248,6 @@ export const MultiInput = ({
 
 MultiInput.propTypes = {
   placeholder: PropTypes.string,
+  regex: PropTypes.string,
   SelectionTemplate: PropTypes.func,
 };
