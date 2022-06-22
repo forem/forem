@@ -82,7 +82,7 @@ function checkSuspensionReason(event) {
 
   if (!suspensionReason) {
     suspendUserModal.querySelector('#suspension-reason-error').innerText =
-      'You must give a suspension reason';
+      'You must give a suspension reason.';
   } else {
     suspendUser({ event, userId, username, suspensionReason });
   }
