@@ -214,7 +214,7 @@ describe('Moderation Tools for Posts', () => {
         });
 
         cy.findByTestId('snackbar')
-          .contains('Success: "series_user" has been suspended.')
+          .contains('Success! series_user has been updated.')
           .should('exist');
       });
     });
@@ -279,7 +279,7 @@ describe('Moderation Tools for Posts', () => {
           cy.findByRole('button', { name: 'Submit & Unsuspend' }).click();
         });
         cy.findByTestId('snackbar')
-          .contains('Success: "suspended_user" has been unsuspended.')
+          .contains('Success! suspended_user has been updated.')
           .should('exist');
       });
     });

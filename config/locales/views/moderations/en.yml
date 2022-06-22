@@ -74,6 +74,13 @@ en:
             Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
         other: Other things you can do
         add_reaction: Add a reaction
+        suspend:
+          suspend_user: Suspend %{username}
+          suspend_modal_text: Once suspended, %{username} will not be able to comment or publish posts until their suspension is removed.
+          suspend_modal_button: Submit & Suspend
+          unsuspend_user: Unsuspend %{username}
+          unsuspend_modal_text: Once unsuspended, %{username} will be able to comment and publish posts again.
+          unsuspend_modal_button: Submit & Unsuspend
         suspicious: Suspicious
         tag:
           subtitle: Tag Adjustments

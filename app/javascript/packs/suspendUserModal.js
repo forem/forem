@@ -10,7 +10,6 @@ const suspendOrUnsuspendUser = async ({
   event,
   btnAction,
   userId,
-  username,
   suspendOrUnsuspendReason,
 }) => {
   event.preventDefault();
@@ -36,12 +35,12 @@ const suspendOrUnsuspendUser = async ({
 
     if (outcome.success) {
       top.addSnackbarItem({
-        message: `Success: "${username}" has been ${btnAction}ed.`,
+        message: outcome.message,
         addCloseButton: true,
       });
     } else {
       top.addSnackbarItem({
-        message: `Error: something went wrong; ${username} NOT ${btnAction}ed.`,
+        message: 'Error: something went wrong.',
         addCloseButton: true,
       });
     }
@@ -79,7 +78,7 @@ function getModalContents(modalContentSelector) {
 }
 
 function checkReason(event) {
-  const { btnAction, reasonSelector, userId, username } = event.target.dataset;
+  const { btnAction, reasonSelector, userId } = event.target.dataset;
   const suspendUnsuspendModal =
     window.parent.document.getElementById(WINDOW_MODAL_ID);
   const suspendOrUnsuspendReason =
@@ -94,7 +93,6 @@ function checkReason(event) {
       event,
       btnAction,
       userId,
-      username,
       suspendOrUnsuspendReason,
     });
   }

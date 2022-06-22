@@ -109,7 +109,10 @@ module Admin
             handle_admin_user_path_redirect(params[:id])
           end
           format.json do
-            render json: { success: true }, status: :ok
+            render json: {
+              success: true,
+              message: I18n.t("admin.users_controller.updated_json", username: @user.username)
+            }, status: :ok
           end
         end
       rescue StandardError => e

@@ -206,7 +206,9 @@
           class="suspend-flow-btn c-btn <%= @moderatable.user.suspended? ? "" : "c-btn--destructive" %> align-center fs-s"
           data-modal-title="<%= @moderatable.user.suspended? ? "Unsuspend" : "Suspend" %> <%= @moderatable.username %>"
           data-modal-size="small" data-modal-content-selector="#suspend-unsuspend-modal" data-username="<%= @moderatable.username %>">
-            <%= @moderatable.user.suspended? ? "Unsuspend" : "Suspend" %> <%= @moderatable.username %>
+            <%= @moderatable.user.suspended? ?
+              t("views.moderations.actions.suspend.unsuspend_user", username: @moderatable.username) :
+              t("views.moderations.actions.suspend.suspend_user", username: @moderatable.username) %>
         </button>
       </div>
     <% end %>
