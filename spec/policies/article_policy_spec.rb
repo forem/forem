@@ -230,7 +230,7 @@ RSpec.describe ArticlePolicy do
   end
 
   %i[admin_unpublish? admin_featured_toggle? revoke_publication? toggle_featured_status?
-     can_adjust_any_tag?].each do |method_name|
+     can_adjust_any_tag? can_perform_moderator_actions?].each do |method_name|
     describe "##{method_name}" do
       let(:policy_method) { method_name }
 
