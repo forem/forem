@@ -67,6 +67,7 @@ export function toggleUnpublishAllPostsModal() {
   const unpublishAllPostsBtn = document.getElementById(
     'unpublish-all-posts-btn',
   );
+
   const { modalTitle, modalSize, modalContentSelector } =
     unpublishAllPostsBtn.dataset;
 
