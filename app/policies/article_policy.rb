@@ -136,7 +136,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def manage?
-    update? && record.published && !record.scheduled?
+    update? && record.published? && !record.scheduled?
   end
 
   def stats?
