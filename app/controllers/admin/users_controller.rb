@@ -38,9 +38,11 @@ module Admin
         joining_start: params[:joining_start],
         joining_end: params[:joining_end],
         date_format: params[:date_format],
+        organizations: params[:organizations],
       ).page(params[:page]).per(50)
 
       @organization_limit = 3
+      @organizations = Organization.order(name: :desc)
       @earliest_join_date = ::Settings::General.first.created_at.to_s
     end
 

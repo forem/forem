@@ -1,4 +1,18 @@
+function openUserActionsDropdown() {
+  // This helper function allows us to use `pipe` to retry commands in case the test runner clicks before the JS has run
+  const click = (el) => el.click();
+
+  // This helper function opens and peforms actions within the actions dropdown menu
+  cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
+    .as('userActionsButton')
+    .pipe(click)
+    .should('have.attr', 'aria-expanded', 'true');
+}
+
 describe('User index view', () => {
+  // Helper function for cypress-pipe
+  const click = (el) => el.click();
+
   describe('small screens', () => {
     beforeEach(() => {
       cy.testSetup();
@@ -29,8 +43,6 @@ describe('User index view', () => {
 
     describe('Search and filter', () => {
       // Search and filter controls are initialized async.
-      // This helper function allows us to use `pipe` to retry commands in case the test runner clicks before the JS has run
-      const click = (el) => el.click();
 
       it('Searches for a user', () => {
         cy.findByRole('button', { name: 'Expand search' })
@@ -145,13 +157,7 @@ describe('User index view', () => {
 
     describe('User actions', () => {
       it('Copies user email to clipboard', () => {
-        // Helper function for cypress-pipe
-        const click = (el) => el.click();
-
-        cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
-          .as('userActionsButton')
-          .pipe(click)
-          .should('have.attr', 'aria-expanded', 'true');
+        openUserActionsDropdown();
 
         cy.findByRole('button', { name: 'Copy email address' }).click();
 
@@ -295,13 +301,7 @@ describe('User index view', () => {
 
     describe('User actions', () => {
       it('Copies user email to clipboard', () => {
-        // Helper function for cypress-pipe
-        const click = (el) => el.click();
-
-        cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
-          .as('userActionsButton')
-          .pipe(click)
-          .should('have.attr', 'aria-expanded', 'true');
+        openUserActionsDropdown();
 
         cy.findByRole('button', { name: 'Copy email address' }).click();
 
@@ -356,13 +356,8 @@ describe('User index view', () => {
         describe('User actions', () => {
           it('Opens the assign role modal', () => {
             cy.enableFeatureFlag('member_index_view');
-            // Helper function for cypress-pipe
-            const click = (el) => el.click();
 
-            cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
-              .as('userActionsButton')
-              .pipe(click)
-              .should('have.attr', 'aria-expanded', 'true');
+            openUserActionsDropdown();
 
             cy.findByRole('button', { name: 'Assign role' }).click();
 
@@ -377,13 +372,8 @@ describe('User index view', () => {
 
           it('Opens the add organization modal', () => {
             cy.enableFeatureFlag('member_index_view');
-            // Helper function for cypress-pipe
-            const click = (el) => el.click();
 
-            cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
-              .as('userActionsButton')
-              .pipe(click)
-              .should('have.attr', 'aria-expanded', 'true');
+            openUserActionsDropdown();
 
             cy.findByRole('button', { name: 'Add organization' }).click();
 
@@ -412,13 +402,8 @@ describe('User index view', () => {
           describe('User actions', () => {
             it('Opens the assign role modal', () => {
               cy.enableFeatureFlag('member_index_view');
-              // Helper function for cypress-pipe
-              const click = (el) => el.click();
 
-              cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
-                .as('userActionsButton')
-                .pipe(click)
-                .should('have.attr', 'aria-expanded', 'true');
+              openUserActionsDropdown();
 
               cy.findByRole('button', { name: 'Assign role' }).click();
 
@@ -435,13 +420,8 @@ describe('User index view', () => {
 
             it('Opens the add organization modal', () => {
               cy.enableFeatureFlag('member_index_view');
-              // Helper function for cypress-pipe
-              const click = (el) => el.click();
 
-              cy.findByRole('button', { name: 'User actions: Admin McAdmin' })
-                .as('userActionsButton')
-                .pipe(click)
-                .should('have.attr', 'aria-expanded', 'true');
+              openUserActionsDropdown();
 
               cy.findByRole('button', { name: 'Add organization' }).click();
 

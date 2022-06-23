@@ -9,6 +9,7 @@ module Admin
     # @param role [String, nil]
     # @param search [String, nil]
     # @param roles [Array<String>, nil]
+    # @param organizations [Array<String>, nil]
     # @param joining_start [String, nil]
     # @param joining_end [String, nil]
     # @param date_format [String, nil]
@@ -16,6 +17,7 @@ module Admin
                   role: nil,
                   search: nil,
                   roles: [],
+                  organizations: [],
                   joining_start: nil,
                   joining_end: nil,
                   date_format: "DD/MM/YYYY")
@@ -25,6 +27,10 @@ module Admin
         relation = relation.with_role(role, :any)
       elsif roles.presence
         relation = filter_roles(relation: relation, roles: roles)
+      end
+
+      if organizations.presence
+        relation = filter_organization_memberships(relation: relation, organizations: organizations)
       end
 
       if joining_start.presence || joining_end.presence
@@ -54,6 +60,11 @@ module Admin
       return unless joining_end.presence
 
       relation.where("registered_at <= ?", DateTime.strptime(joining_end, parse_format).end_of_day)
+    end
+
+    def self.filter_organization_memberships(relation:, organizations:)
+      sub_query = OrganizationMembership.select(:user_id).where(organization_id: organizations)
+      relation.where(id: sub_query)
     end
 
     # Apply the "where" scope to the given relation for the given roles.

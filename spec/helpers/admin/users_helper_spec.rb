@@ -4,18 +4,18 @@ describe Admin::UsersHelper do
   describe "#role_options" do
     let(:user) { create(:user) }
 
-    it "returns base roles", :aggregate_failures do
+    it "returns base roles as statuses", :aggregate_failures do
       user.add_role(:admin)
       roles = helper.role_options(user)
-      expect(roles).to have_key("Base Roles")
-      expect(roles["Base Roles"]).to eq Constants::Role::BASE_ROLES
+      expect(roles).to have_key("Statuses")
+      expect(roles["Statuses"]).to eq Constants::Role::BASE_ROLES
     end
 
-    it "returns special roles", :aggregate_failures do
+    it "returns special roles as roles", :aggregate_failures do
       user.add_role(:super_admin)
       roles = helper.role_options(user)
-      expect(roles).to have_key("Special Roles")
-      expect(roles["Special Roles"]).to eq Constants::Role::SPECIAL_ROLES
+      expect(roles).to have_key("Roles")
+      expect(roles["Roles"]).to eq Constants::Role::SPECIAL_ROLES
     end
 
     it "adds moderator role when feature flag enabled", :aggregate_failures do
@@ -23,8 +23,8 @@ describe Admin::UsersHelper do
       allow(FeatureFlag).to receive(:enabled?).with(:moderator_role).and_return(true)
 
       roles = helper.role_options(user)
-      expect(roles).to have_key("Special Roles")
-      expect(roles["Special Roles"]).to include "Moderator"
+      expect(roles).to have_key("Roles")
+      expect(roles["Roles"]).to include "Moderator"
     end
   end
 

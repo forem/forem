@@ -1,11 +1,15 @@
 require "rails_helper"
 
 RSpec.describe Admin::UsersQuery, type: :query do
-  subject { described_class.call(search: search, role: role, roles: roles) }
+  subject { described_class.call(search: search, role: role, roles: roles, organizations: organizations) }
 
   let(:role) { nil }
   let(:roles) { [] }
+  let(:organizations) { [] }
   let(:search) { [] }
+
+  let!(:org1) { create(:organization, name: "Org1") }
+  let!(:org2) { create(:organization, name: "Org2") }
 
   let!(:user)  { create(:user, :trusted, name: "Greg") }
   let!(:user2) { create(:user, :trusted, name: "Gregory") }
@@ -63,6 +67,29 @@ RSpec.describe Admin::UsersQuery, type: :query do
       let!(:user8) { create(:user).tap { |u| u.add_role(:single_resource_admin, DisplayAd) } }
 
       it { is_expected.to eq([user8, user7, user6, user5, user4]) }
+    end
+
+    context "when given organizations" do
+      before do
+        create(:organization_membership, user: user, organization: org1, type_of_user: "member")
+        create(:organization_membership, user: user2, organization: org2, type_of_user: "member")
+      end
+
+      let(:organizations) { [org1.id, org2.id] }
+
+      it { is_expected.to eq([user2, user]) }
+    end
+
+    context "when given organizations and roles" do
+      before do
+        create(:organization_membership, user: user, organization: org1, type_of_user: "member")
+        create(:organization_membership, user: user4, organization: org2, type_of_user: "member")
+      end
+
+      let(:organizations) { [org1.id, org2.id] }
+      let(:roles) { ["Admin"] }
+
+      it { is_expected.to eq([user4]) }
     end
   end
 end
