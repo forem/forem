@@ -15,7 +15,7 @@ export default {
           'Placeholder text, shown when no selections have been made yet',
       },
       regex: {
-        description: 'A regular expression to used to validate the input',
+        description: 'A regular expression used to validate the input',
       },
     },
   },
