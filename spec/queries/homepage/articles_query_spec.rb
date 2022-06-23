@@ -15,7 +15,7 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
     it "does not return scheduled articles" do
       scheduled_article = create(:article, published_at: Date.current + 5.days)
 
-      expect(described_class.call.ids).not_to eq([scheduled_article.id])
+      expect(described_class.call.ids).not_to include(scheduled_article.id)
     end
 
     it "does not return draft articles" do
