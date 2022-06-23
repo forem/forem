@@ -10,7 +10,10 @@ export const PageTitle = ({
 }) => {
   return (
     <div className="crayons-field__label flex items-center flex-1">
-      <span className="hidden s:inline-block mr-2 whitespace-nowrap">
+      <span
+        aria-live="polite"
+        className="hidden s:inline-block mr-2 whitespace-nowrap"
+      >
         {previewLoading ? 'Loading preview' : 'Create Post'}
       </span>
       {organizations && organizations.length > 0 && (
