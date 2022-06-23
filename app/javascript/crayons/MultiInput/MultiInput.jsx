@@ -15,6 +15,8 @@ const KEYS = {
  *
  * @param {Object} props
  * @param {string} props.placeholder Input placeholder text
+ * @param {string} props.regex Optional regular expression used to restrict the input
+ * @param {Function} props.SelectionTemplate Optional Preact component to render selected items
  */
 
 export const MultiInput = ({
