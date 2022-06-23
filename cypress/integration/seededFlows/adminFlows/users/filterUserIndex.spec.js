@@ -173,7 +173,7 @@ describe('Filter user index', () => {
         cy.findAllByText('Joining date').first().click();
 
         // We need to use a partial name match here, because we can't force the Cypress browser locale to e.g. en-us, and we
-        // want to void flake caused by DD/MM/YYYT format vs MM/DD/YYYY
+        // want to void flake caused by DD/MM/YYYY format vs MM/DD/YYYY
         cy.findByRole('textbox', { name: /Joined after/ }).type('01/01/2020');
         cy.findByRole('textbox', { name: /Joined before/ }).type('01/01/2020');
         cy.findByRole('button', { name: 'Apply filters' }).click();
