@@ -11,17 +11,18 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def current_state
-    if !published?
-      :unpublished
-    elsif scheduled?
-      :scheduled
-    else
-      :published
-    end
+    state = if !published?
+              "unpublished"
+            elsif scheduled?
+              "scheduled"
+            else
+              "published"
+            end
+    ActiveSupport::StringInquirer.new(state)
   end
 
   def current_state_path
-    published && !scheduled? ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
+    current_state.published? ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end
 
   def processed_canonical_url

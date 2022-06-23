@@ -65,7 +65,7 @@
 
   <main id="main-content" class="crayons-layout__content grid gap-4">
     <div class="article-wrapper">
-      <% unless @article.current_state == :published %>
+      <% unless @article.current_state.published? %>
         <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
           <strong><%= t("views.articles.#{@article.current_state}.subtitle") %></strong><%= t("views.articles.#{@article.current_state}.text") %>
           <% if user_signed_in? %>
