@@ -162,7 +162,6 @@ class Article < ApplicationRecord
   validate :has_correct_published_at?, on: :update, unless: :admin_update
 
   validate :canonical_url_must_not_have_spaces
-  # validate :past_or_present_date
   validate :validate_collection_permission
   validate :validate_tag
   validate :validate_video
@@ -817,12 +816,6 @@ class Article < ApplicationRecord
     return if User.where(id: co_author_ids).count == co_author_ids.count
 
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
-  end
-
-  def past_or_present_date
-    return unless published_at && published_at > Time.current
-
-    errors.add(:date_time, I18n.t("models.article.invalid_date"))
   end
 
   def future_or_current_published_at
