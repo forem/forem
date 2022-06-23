@@ -131,9 +131,15 @@ module Admin
     end
 
     def banish
+      set_banishable_user
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = I18n.t("admin.users_controller.banished")
-      redirect_to admin_user_path(params[:id])
+
+      if request.referer&.include?(admin_user_path(params[:id]))
+        redirect_to admin_user_path(params[:id])
+      else
+        redirect_to admin_users_path
+      end
     end
 
     def full_delete
