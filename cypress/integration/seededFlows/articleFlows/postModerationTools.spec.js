@@ -152,7 +152,7 @@ describe('Moderation Tools for Posts', () => {
       });
     });
 
-    context('unpublishing all posts', () => {
+    context('when unpublishing all posts', () => {
       beforeEach(() => {
         cy.get('@moderatorUser').then((user) => {
           cy.loginAndVisit(user, '/series_user/series-test-article-slug');
@@ -163,13 +163,10 @@ describe('Moderation Tools for Posts', () => {
 
       it('shows Unpublish All Posts button', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open moderator actions' }).click();
-
-          cy.findByRole('button', { name: 'Open moderator actions' }).should(
-            'have.attr',
-            'aria-expanded',
-            'true',
-          );
+          cy.findByRole('button', { name: 'Open moderator actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
 
           cy.findByRole('button', {
             name: /Unpublish all posts of series_user/i,
@@ -179,23 +176,25 @@ describe('Moderation Tools for Posts', () => {
 
       it('unpublishes all posts', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open moderator actions' }).click();
+          cy.findByRole('button', { name: 'Open moderator actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+
           cy.findByRole('button', {
             name: /Unpublish all posts of series_user/i,
           }).click();
-        });
-
-        cy.on('window:confirm', (text) => {
-          expect(text).to.contains(
-            'Are you sure you want to unpublish all posts?',
-          );
         });
 
         cy.findByRole('dialog').within(() => {
           cy.findByRole('button', { name: 'Unpublish all posts' }).click();
         });
 
-        cy.findByTestId('snackbar').should('exist');
+        cy.findByTestId('snackbar')
+          .contains(
+            'Posts are being unpublished in the background. The job will complete soon.',
+          )
+          .should('exist');
       });
     });
 

@@ -2,16 +2,26 @@
 import { closeWindowModal, showWindowModal } from '@utilities/showModal';
 import { request } from '@utilities/http';
 
-const unpublishAllPosts = async ({ event, endpoint }) => {
+const unpublishAllPosts = async (event) => {
   event.preventDefault();
-  event.target.disabled = true;
+  const { userId } = event.target.dataset;
 
   try {
-    const http_request = await request(endpoint, { method: 'POST' });
-    const response = await http_request.json();
+    // const http_request = await request(endpoint, { method: 'POST' });
+    // const response = await http_request.json();
+    const response = await request(
+      `/admin/member_manager/users/${userId}/unpublish_all_articles`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ id: userId }),
+        credentials: 'same-origin',
+      },
+    );
+
+    const outcome = await response.json();
 
     top.addSnackbarItem({
-      message: response.message,
+      message: outcome.message,
       addCloseButton: true,
     });
   } catch (error) {
@@ -21,20 +31,19 @@ const unpublishAllPosts = async ({ event, endpoint }) => {
     });
   }
 
-  event.target.disabled = false;
   closeWindowModal(window.parent.document);
 };
 
 const modalContents = new Map();
 
-function getConfirmation(event) {
-  const confirmation = confirm('Are you sure you want to unpublish all posts?');
-  const endpoint = event.target.dataset.formAction;
+// function getConfirmation(event) {
+//   const confirmation = confirm('Are you sure you want to unpublish all posts?');
+//   const endpoint = event.target.dataset.formAction;
 
-  if (confirmation) {
-    unpublishAllPosts({ event, endpoint });
-  }
-}
+//   if (confirmation) {
+//     unpublishAllPosts({ event, endpoint });
+//   }
+// }
 
 /**
  * Helper function to handle finding and caching modal content. Since our Preact modal helper works by duplicating HTML content,
@@ -60,7 +69,7 @@ function activateUnpublishAllPostsBtn() {
     'unpublish-all-posts-submit-btn',
   );
 
-  unpublishAllPostsBtn.addEventListener('click', getConfirmation);
+  unpublishAllPostsBtn.addEventListener('click', unpublishAllPosts);
 }
 
 export function toggleUnpublishAllPostsModal() {

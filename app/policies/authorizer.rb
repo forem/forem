@@ -46,7 +46,7 @@ module Authorizer
     def administrative_access_to?(resource:, role_name: :single_resource_admin)
       # The implementation details of rolify are such that we can't
       # quite combine these functions.
-      return true if has_any_role?(*ANY_ADMIN_ROLES)
+      return true if has_any_role?(*ANY_ADMIN_ROLES) || moderator?
 
       if resource
         has_role?(role_name, resource)

@@ -48,9 +48,9 @@ export const showWindowModal = async ({
   if (currentModalContainer) {
     render(null, currentModalContainer);
   } else {
-    currentModalContainer = window.parent.document?.createElement('div');
+    currentModalContainer = document.createElement('div');
     currentModalContainer.setAttribute('id', WINDOW_MODAL_ID);
-    window.parent.document.body.appendChild(currentModalContainer);
+    document.body.appendChild(currentModalContainer);
   }
 
   render(

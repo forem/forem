@@ -11,7 +11,7 @@
     <button
       id="unpublish-all-posts-submit-btn"
       class="c-btn c-btn--destructive c-btn--primary"
-      data-form-action="<%= unpublish_all_articles_admin_user_path(@article.user) %>">
+      data-user-id="<%= @article.user.id %>">
       Unpublish all posts
     </button>
   </div>
