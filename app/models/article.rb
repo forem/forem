@@ -884,7 +884,6 @@ class Article < ApplicationRecord
   end
 
   def set_all_dates
-    # set_published_date
     set_featured_number
     set_crossposted_at
     set_last_comment_at
