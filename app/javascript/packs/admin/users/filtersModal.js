@@ -4,10 +4,7 @@ import {
   WINDOW_MODAL_ID,
 } from '@utilities/showModal';
 
-/**
- * Show or hide the "filtered" indicator depending on current input values
- */
-const handleDateInputChange = ({ startDate, endDate, indicator }) => {
+const updateDateRangeFilterIndicator = ({ startDate, endDate, indicator }) => {
   const hasValues = startDate || endDate;
   if (hasValues) {
     indicator.classList.remove('hidden');
@@ -39,9 +36,6 @@ const initializeDateRangePickers = async () => {
     import('moment'),
   ]);
 
-  // TODO: minor updates to Storybook controls
-  // TODO: Specs
-
   const { defaultStart, defaultEnd, defaultDatesFormat, earliestDate } =
     joiningRangeContainer.dataset;
 
@@ -52,7 +46,10 @@ const initializeDateRangePickers = async () => {
       startDateAriaLabel="Joined after"
       endDateAriaLabel="Joined before"
       onDatesChanged={(dates) =>
-        handleDateInputChange({ ...dates, indicator: joiningDateIndicator })
+        updateDateRangeFilterIndicator({
+          ...dates,
+          indicator: joiningDateIndicator,
+        })
       }
       defaultStartDate={
         defaultStart && moment(defaultStart, defaultDatesFormat).toDate()

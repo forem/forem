@@ -52,7 +52,7 @@
                 <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
                 </summary>
                 <div class="js-joining-date-range mb-4 absolute" data-earliest-date="<%= @earliest_join_date %>" data-default-start="<%= params[:joining_start] %>" data-default-end="<%= params[:joining_end] %>" data-default-dates-format="<%= params[:date_format] %>"></div>
-                <%# This hidden field is only here to reserve the correct amount of vertical space %>
+                <%# This hidden field is only here to reserve the correct amount of vertical space for where we later add the Preact inputs %>
                 <input class="crayons-textfield p-4 mb-4 invisible">
             </details>
             <details data-section="last-activity" class="admin-details">

@@ -203,9 +203,8 @@ export const DateRangePicker = ({
 
   const today = moment(todaysDate);
 
-  const usFormat = getCurrentLocale().toLowerCase() === 'en-us';
-
-  const dateFormat = usFormat ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
+  const dateFormat =
+    getCurrentLocale().toLowerCase() === 'en-us' ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
 
   return (
     // We wrap in a span to assist with scoping CSS selectors & overriding styles from react-dates
