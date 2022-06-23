@@ -394,7 +394,7 @@ describe('User index view', () => {
             cy.findByRole('button', { name: 'Adjust credit balance' }).click();
 
             cy.getModal().within(() => {
-              cy.findByText('Adjust balance').should('be.visible');
+              cy.findAllByText('Adjust balance').should('be.visible');
               cy.findByText('Add a note to this action:').should('be.visible');
               cy.findByRole('button', {
                 name: 'Adjust balance',
@@ -460,7 +460,7 @@ describe('User index view', () => {
               }).click();
 
               cy.getModal().within(() => {
-                cy.findByText('Adjust balance').should('be.visible');
+                cy.findAllByText('Adjust balance').should('be.visible');
                 cy.findByText('Add a note to this action:').should(
                   'be.visible',
                 );
