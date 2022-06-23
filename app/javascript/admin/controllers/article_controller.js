@@ -2,11 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class ArticleController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];
-  static targets = [
-    'featuredNumber',
-    'cardBody',
-    'pinnedCheckbox',
-  ];
+  static targets = ['featuredNumber', 'cardBody', 'pinnedCheckbox'];
   static values = { id: Number, pinPath: String };
 
   increaseFeaturedNumber() {

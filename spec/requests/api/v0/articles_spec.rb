@@ -397,7 +397,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "GET /api/articles/:username/:slug" do
     it "returns CORS headers" do
       origin = "http://example.com"
-      get slug_api_articles_path(article.username, article.slug), headers: { origin: origin }
+      get "/api/articles/#{article.username}/#{article.slug}", headers: { origin: origin }
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
       expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
@@ -406,13 +406,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     it "returns correct tags" do
-      get slug_api_articles_path(username: article.username, slug: article.slug)
+      get "/api/articles/#{article.username}/#{article.slug}"
       expect(response.parsed_body["tags"]).to eq(article.tag_list)
       expect(response.parsed_body["tag_list"]).to eq(article.tags[0].name)
     end
 
     it "returns proper article" do
-      get slug_api_articles_path(username: article.username, slug: article.slug)
+      get "/api/articles/#{article.username}/#{article.slug}"
       expect(response.parsed_body).to include(
         "title" => article.title,
         "body_markdown" => article.body_markdown,
@@ -424,7 +424,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       article.update_columns(
         edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
       )
-      get slug_api_articles_path(username: article.username, slug: article.slug)
+      get "/api/articles/#{article.username}/#{article.slug}"
       expect(response.parsed_body).to include(
         "created_at" => article.created_at.utc.iso8601,
         "edited_at" => article.edited_at.utc.iso8601,
@@ -436,17 +436,17 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
     it "fails with an unpublished article" do
       article.update_columns(published: false, published_at: nil)
-      get slug_api_articles_path(username: article.username, slug: article.slug)
+      get "/api/articles/#{article.username}/#{article.slug}"
       expect(response).to have_http_status(:not_found)
     end
 
     it "fails with an unknown article path" do
-      get slug_api_articles_path(username: "chris evan", slug: article.slug)
+      get "/api/articles/chrisevans/#{article.slug}"
       expect(response).to have_http_status(:not_found)
     end
 
     it "sets the correct edge caching surrogate key" do
-      get slug_api_articles_path(username: article.username, slug: article.slug)
+      get "/api/articles/#{article.username}/#{article.slug}"
 
       expected_key = [article.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -461,7 +461,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       let(:user) { create(:user) }
 
       it "return unauthorized" do
-        get me_api_articles_path
+        get "/api/articles/me"
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -470,13 +470,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
       let(:user) { create(:user) }
 
       it "returns proper response specification" do
-        get me_api_articles_path, headers: headers
+        get "/api/articles/me", headers: headers
         expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
       it "returns success when requesting published articles with public token" do
-        get me_api_articles_path(status: :published), headers: headers
+        get "/api/articles/me/published", headers: headers
         expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
@@ -484,14 +484,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "return only user's articles including markdown" do
         create(:article, user: user)
         create(:article)
-        get me_api_articles_path, headers: headers
+        get "/api/articles/me", headers: headers
         expect(response.parsed_body.length).to eq(1)
         expect(response.parsed_body[0]["body_markdown"]).not_to be_nil
       end
 
       it "supports pagination" do
         create_list(:article, 3, user: user)
-        get me_api_articles_path, headers: headers, params: { page: 2, per_page: 2 }
+        get "/api/articles/me", headers: headers, params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
       end
 
@@ -499,7 +499,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         article = create(:article, user: user)
         article.update_columns(organization_id: organization.id)
 
-        get me_api_articles_path, headers: headers
+        get "/api/articles/me", headers: headers
 
         keys = %w[
           type_of id title description published published_at slug path url
@@ -513,19 +513,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "only includes published articles by default" do
         create(:article, published: false, published_at: nil, user: user)
-        get me_api_articles_path, headers: headers
+        get "/api/articles/me", headers: headers
         expect(response.parsed_body.length).to eq(0)
       end
 
       it "only includes published articles when asking for published articles" do
         create(:article, published: false, published_at: nil, user: user)
-        get me_api_articles_path(status: :published), headers: headers
+        get "/api/articles/me/published", headers: headers
         expect(response.parsed_body.length).to eq(0)
       end
 
       it "only includes unpublished articles when asking for unpublished articles" do
         create(:article, published: false, published_at: nil, user: user)
-        get me_api_articles_path(status: :unpublished), headers: headers
+        get "/api/articles/me/unpublished", headers: headers
         expect(response.parsed_body.length).to eq(1)
       end
 
@@ -535,7 +535,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         Timecop.travel(1.day.from_now) do
           newer = create(:article, published: false, published_at: nil, user: user)
         end
-        get me_api_articles_path(status: :unpublished), headers: headers
+        get "/api/articles/me/unpublished", headers: headers
         expected_order = response.parsed_body.map { |resp| resp["id"] }
         expect(expected_order).to eq([newer.id, older.id])
       end
@@ -543,7 +543,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "puts unpublished articles at the top when asking for all articles" do
         create(:article, user: user)
         create(:article, published: false, published_at: nil, user: user)
-        get me_api_articles_path(status: :all), headers: headers
+        get "/api/articles/me/all", headers: headers
         expected_order = response.parsed_body.map { |resp| resp["published"] }
         expect(expected_order).to eq([false, true])
       end
@@ -551,7 +551,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "correctly returns reading time in minutes" do
         create(:article, user: user)
 
-        get me_api_articles_path, headers: headers
+        get "/api/articles/me", headers: headers
         expect(response.parsed_body.first["reading_time_minutes"]).to eq(article.reading_time)
       end
     end

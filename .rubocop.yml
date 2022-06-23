@@ -832,6 +832,10 @@ Rails/Inquiry:
   StyleGuide: 'https://rails.rubystyle.guide/#inquiry'
   Enabled: true
 
+Rails/LexicallyScopedActionFilter:
+  Exclude:
+    - app/controllers/api/**/*
+
 Rails/MailerName:
   Description: 'Mailer should end with `Mailer` suffix.'
   StyleGuide: 'https://rails.rubystyle.guide/#mailer-name'
