@@ -82,7 +82,7 @@ export const MultiInput = ({
         }
         break;
       default:
-        if (!regex.test(e.key)) {
+        if (regex && !regex.test(e.key)) {
           e.preventDefault();
         }
     }
