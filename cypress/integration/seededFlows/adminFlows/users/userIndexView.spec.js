@@ -385,6 +385,22 @@ describe('User index view', () => {
               }).should('exist');
             });
           });
+
+          it('Opens the adjust credit balance modal', () => {
+            cy.enableFeatureFlag('member_index_view');
+
+            openUserActionsDropdown();
+
+            cy.findByRole('button', { name: 'Adjust credit balance' }).click();
+
+            cy.getModal().within(() => {
+              cy.findAllByText('Adjust balance').should('be.visible');
+              cy.findByText('Add a note to this action:').should('be.visible');
+              cy.findByRole('button', {
+                name: 'Adjust balance',
+              }).should('exist');
+            });
+          });
         });
 
         describe('large screens', () => {
@@ -430,6 +446,26 @@ describe('User index view', () => {
                 cy.findByText('Role').should('be.visible');
                 cy.findByRole('button', {
                   name: 'Add organization',
+                }).should('exist');
+              });
+            });
+
+            it('Opens the adjust credit balance modal', () => {
+              cy.enableFeatureFlag('member_index_view');
+
+              openUserActionsDropdown();
+
+              cy.findByRole('button', {
+                name: 'Adjust credit balance',
+              }).click();
+
+              cy.getModal().within(() => {
+                cy.findAllByText('Adjust balance').should('be.visible');
+                cy.findByText('Add a note to this action:').should(
+                  'be.visible',
+                );
+                cy.findByRole('button', {
+                  name: 'Adjust balance',
                 }).should('exist');
               });
             });
