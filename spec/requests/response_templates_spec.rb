@@ -30,7 +30,6 @@ RSpec.describe "ResponseTemplate", type: :request do
 
         headers = { HTTP_ACCEPT: "application/json" }
         get response_templates_path, params: { type_of: "personal_comment" }, headers: headers
-
         expect(response.parsed_body.class).to eq Array
         expect(response.parsed_body.length).to eq total_response_templates
       end

@@ -39,15 +39,14 @@ RSpec.describe ResponseTemplatePolicy, type: :policy do
     let(:user) { create(:user, :tag_moderator) }
     let(:response_template) { create(:response_template, type_of: "mod_comment", user: nil) }
 
-    it { is_expected.to permit_actions(%i[moderator_index create moderator_create]) }
-    it { is_expected.to forbid_actions(%i[update destroy admin_index]) }
+    it { is_expected.to permit_actions(%i[moderator_index create moderator_create update destroy]) }
+    it { is_expected.to forbid_actions(%i[admin_index]) }
   end
 
   context "when user is an admin" do
     let(:user) { create(:user, :admin) }
     let(:response_template) { create(:response_template, type_of: "mod_comment", user: nil) }
 
-    it { is_expected.to permit_actions(%i[moderator_index create moderator_create admin_index]) }
-    it { is_expected.to forbid_actions(%i[update destroy]) }
+    it { is_expected.to permit_actions(%i[moderator_index create moderator_create admin_index update destroy]) }
   end
 end

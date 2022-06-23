@@ -31,9 +31,12 @@ class ResponseTemplatesController < ApplicationController
 
   def create
     authorize ResponseTemplate
-    response_template.user_id = current_user.id
+
+    unless current_user.has_trusted_role? && params[:response_template][:type_of] == "mod_comment"
+      response_template.user_id = current_user.id
+      response_template.type_of = "personal_comment"
+    end
     response_template.content_type = "body_markdown"
-    response_template.type_of = "personal_comment"
 
     if response_template.save
       flash[:settings_notice] =
