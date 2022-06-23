@@ -108,6 +108,9 @@ module Admin
         flash[:danger] = e.message
       end
 
+      Credits::Manage.call(@user, credit_params)
+      add_note if user_params[:new_note]
+
       if request.referer&.include?(admin_user_path(params[:id]))
         redirect_to admin_user_path(params[:id])
       else

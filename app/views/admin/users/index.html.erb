@@ -134,8 +134,9 @@
 
 </div>
 <% if FeatureFlag.enabled?(:member_index_view) %>
- <%= render "admin/users/index/filters_modal" %>
- <%= render "admin/users/modals/add_organization_modal" %>
- <%= render "admin/users/modals/add_role_modal" %>
+  <%= render "admin/users/index/filters_modal" %>
+  <%= render "admin/users/modals/add_role_modal" %>
+  <%= render "admin/users/modals/add_organization_modal" %>
+  <%= render "admin/users/modals/adjust_credits_modal" %>
   <%= render "admin/users/modals/banish_modal" %>
 <% end %>

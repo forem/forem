@@ -11,7 +11,19 @@
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
-    <% if params[:roles] %>
+    <% params[:organizations]&.each do |org_id| %>
+        <% org = @organizations.find_by(id: org_id) %>
+        <button
+            data-filter-key="organizations[]"
+            data-filter-value="<%= org_id %>"
+            aria-label="Remove filter: <%= org.name %>"
+            class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
+            type="button">
+            <%= org.name %>
+            <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
+        </button>
+    <% end %>
+    <% if params[:roles] || params[:organizations] %>
         <button class="js-clear-filters-btn c-btn" aria-label="Clear all filters">Clear all</button>
     <% end %>
 </div>

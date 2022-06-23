@@ -28,7 +28,19 @@
                             Add organization
                     </button>
                 </li>
-                <li><button class="c-btn align-left w-100 c-btn--icon-left"><%= crayons_icon_tag("wallet", aria_hidden: true, class: "c-btn__icon") %>Adjust credit balance</button><hr /></li>
+                <li>
+                    <button class="c-btn align-left w-100 c-btn--icon-left"
+                            data-modal-title="Adjust balance"
+                            data-modal-size="small"
+                            data-modal-content-selector="#adjust-balance"
+                            data-user-name="<%= user.name %>"
+                            data-unspent-credits-count="<%= user.unspent_credits_count %>"
+                            data-form-action="<%= user_status_admin_user_path(user) %>">
+                            <%= crayons_icon_tag("wallet", aria_hidden: true, class: "c-btn__icon") %>
+                            Adjust credit balance
+                    </button>
+                    <hr />
+                </li>
             <% end %>
             <li><button data-copy-email="<%= user.email %>" type="button" class="c-btn w-100 align-left c-btn--icon-left"> <%= crayons_icon_tag("copy", aria_hidden: true, class: "c-btn__icon") %>Copy email address</button></li>
             <% if FeatureFlag.enabled?(:member_index_view) %>
