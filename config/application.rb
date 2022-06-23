@@ -52,8 +52,6 @@ module PracticalDeveloper
     config.action_view.form_with_generates_remote_forms = true
 
     ## Rails 7.0
-
-    # If you're confident all your cookies are JSON formatted, you can switch to the `:json` formatter.
     config.action_dispatch.cookies_serializer = :json
 
     # Enable parameter wrapping for JSON.
