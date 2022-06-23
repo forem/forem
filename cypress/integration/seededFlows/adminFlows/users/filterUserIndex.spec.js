@@ -166,6 +166,24 @@ describe('Filter user index', () => {
     });
   });
 
+  describe('Joining date', () => {
+    it('filters by joining date', () => {
+      cy.findByRole('button', { name: 'Filter' }).click();
+      cy.getModal().within(() => {
+        cy.findAllByText('Joining date').first().click();
+
+        // We need to use a partial name match here, because we can't force the Cypress browser locale to e.g. en-us, and we
+        // want to void flake caused by DD/MM/YYYT format vs MM/DD/YYYY
+        cy.findByRole('textbox', { name: /Joined after/ }).type('01/01/2020');
+        cy.findByRole('textbox', { name: /Joined before/ }).type('01/01/2020');
+        cy.findByRole('button', { name: 'Apply filters' }).click();
+      });
+
+      // Admin user is deliberately seeded with very early registered date, and should be the only result
+      cy.findAllByRole('row').should('have.length', 2);
+    });
+  });
+
   describe('Multiple filters', () => {
     it('filters by multiple criteria', () => {
       cy.findAllByRole('button', { name: 'Filter' }).last().click();

@@ -43,7 +43,7 @@ module Admin
 
       @organization_limit = 3
       @organizations = Organization.order(name: :desc)
-      @earliest_join_date = ::Settings::General.first.created_at.to_s
+      @earliest_join_date = User.first.registered_at.to_s
     end
 
     def edit
