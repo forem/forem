@@ -385,6 +385,22 @@ describe('User index view', () => {
               }).should('exist');
             });
           });
+
+          it('Opens the banish user modal', () => {
+            cy.enableFeatureFlag('member_index_view');
+
+            openUserActionsDropdown();
+
+            cy.findByRole('button', { name: 'Banish user' }).click();
+
+            cy.getModal().within(() => {
+              cy.findByText('Banish Admin McAdmin').should('be.visible');
+              cy.findByText('This action is irreversible').should('be.visible');
+              cy.findByRole('button', {
+                name: 'Banish Admin McAdmin',
+              }).should('exist');
+            });
+          });
         });
 
         describe('large screens', () => {
@@ -430,6 +446,24 @@ describe('User index view', () => {
                 cy.findByText('Role').should('be.visible');
                 cy.findByRole('button', {
                   name: 'Add organization',
+                }).should('exist');
+              });
+            });
+
+            it('Opens the banish user modal', () => {
+              cy.enableFeatureFlag('member_index_view');
+
+              openUserActionsDropdown();
+
+              cy.findByRole('button', { name: 'Banish user' }).click();
+
+              cy.getModal().within(() => {
+                cy.findByText('Banish Admin McAdmin').should('be.visible');
+                cy.findByText('This action is irreversible').should(
+                  'be.visible',
+                );
+                cy.findByRole('button', {
+                  name: 'Banish Admin McAdmin',
                 }).should('exist');
               });
             });
