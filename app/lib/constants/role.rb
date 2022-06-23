@@ -4,7 +4,7 @@ module Constants
       "Warned" => { name: "warned", resource_type: nil },
       "Comment Suspended" => { name: "comment_suspended", resource_type: nil },
       "Suspended" => { name: "suspended", resource_type: nil },
-      "Good standing" => { name: "regular_member", resource_type: nil },
+      "Good standing" => { name: nil, resource_type: nil },
       "Trusted" => { name: "trusted", resource_type: nil }
     }.freeze
 

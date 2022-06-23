@@ -56,8 +56,16 @@ module Admin
       roles.each do |role|
         where_clause = role_map.fetch(role)
         resource_type = where_clause.fetch(:resource_type, nil)
+        name = where_clause.fetch(:name)
+
+        if name.nil?
+          # TODO: When we filter by "Good standing" status, we want to filter by
+          # NOT any of [trusted, warned, suspended, comment_suspended]
+          next
+        end
+
         condition = "(#{Role.table_name}.name = ? AND #{Role.table_name}.resource_id IS NULL"
-        values << where_clause.fetch(:name)
+        values << name
 
         # We need to use `IS NULL` instead of `= NULL` as those are different meanings.
         if resource_type.nil?
