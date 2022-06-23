@@ -108,7 +108,7 @@ export class ArticleForm extends Component {
       published: this.article.published || false,
       previewShowing: false,
       previewLoading: false,
-      previewResponse: {},
+      previewResponse: { processed_html: '' },
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
