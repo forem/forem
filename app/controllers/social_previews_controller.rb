@@ -61,8 +61,9 @@ class SocialPreviewsController < ApplicationController
       end
       format.png do
         html = render_to_string(template, formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS,
-                                             google_fonts: I18n.t("social_previews_controller.fonts")), status: :found
+        url = HtmlCssToImage.fetch_url(html: html, css: PNG_CSS,
+                                       google_fonts: I18n.t("social_previews_controller.fonts"))
+        redirect_to url, allow_other_host: true, status: :found
       end
     end
   end
