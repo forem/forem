@@ -1,12 +1,14 @@
 module Constants
   module Role
-    BASE_ROLES = [
-      "Warned",
-      "Comment Suspended",
-      "Suspended",
-      "Good standing",
-      "Trusted",
-    ].freeze
+    BASE_ROLES_LABELS_TO_WHERE_CLAUSE = {
+      "Warned" => { name: "warned", resource_type: nil },
+      "Comment Suspended" => { name: "comment_suspended", resource_type: nil },
+      "Suspended" => { name: "suspended", resource_type: nil },
+      "Good standing" => { name: "regular_member", resource_type: nil },
+      "Trusted" => { name: "trusted", resource_type: nil }
+    }.freeze
+
+    BASE_ROLES = BASE_ROLES_LABELS_TO_WHERE_CLAUSE.keys.freeze
 
     SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE = {
       "Admin" => { name: "admin", resource_type: nil },
@@ -28,5 +30,8 @@ module Constants
     }.freeze
 
     SPECIAL_ROLES = SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.keys.freeze
+
+    ALL_ROLES_LABELS_TO_WHERE_CLAUSE =
+      SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.merge(BASE_ROLES_LABELS_TO_WHERE_CLAUSE).freeze
   end
 end

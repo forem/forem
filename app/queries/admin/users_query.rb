@@ -9,14 +9,16 @@ module Admin
     # @param role [String, nil]
     # @param search [String, nil]
     # @param roles [Array<String>, nil]
+    # @param statuses [Array<String>, nil]
     # @param organizations [Array<String>, nil]
-    def self.call(relation: User.registered, role: nil, search: nil, roles: [], organizations: [])
+    def self.call(relation: User.registered, role: nil, search: nil, roles: [], statuses: [], organizations: [])
       # We are at an interstitial moment where we are exposing both the role and roles param.  We
       # need to favor one or the other.
       if role.presence
         relation = relation.with_role(role, :any)
-      elsif roles.presence
-        relation = filter_roles(relation: relation, roles: roles)
+      elsif roles.presence || statuses.presence
+        # "statuses" are a subset of roles, so we can handle these filters together
+        relation = filter_roles(relation: relation, roles: [roles, statuses].compact.reduce([], :|))
       end
 
       if organizations.presence
@@ -46,7 +48,7 @@ module Admin
     #       query per role is inadequate.
     #
     # @see https://github.com/RolifyCommunity/rolify/blob/0c883f4173f409766338b9c6dfc64b0fc8ec8a52/lib/rolify/finders.rb#L26-L32
-    def self.filter_roles(relation:, roles:, role_map: Constants::Role::SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE)
+    def self.filter_roles(relation:, roles:, role_map: Constants::Role::ALL_ROLES_LABELS_TO_WHERE_CLAUSE)
       conditions = []
       values = []
 

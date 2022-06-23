@@ -35,6 +35,7 @@ module Admin
         search: params[:search],
         role: params[:role],
         roles: params[:roles],
+        statuses: params[:statuses],
         organizations: params[:organizations],
       ).page(params[:page]).per(50)
 
