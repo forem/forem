@@ -88,7 +88,7 @@ export const Preview = ({
   markdownLintErrors,
 }) => {
   useEffect(() => {
-    if (previewResponse.processed_html.includes('twitter-timeline')) {
+    if (previewResponse?.processed_html?.includes('twitter-timeline')) {
       attachTwitterTimelineScript();
     }
   }, [previewResponse]);
