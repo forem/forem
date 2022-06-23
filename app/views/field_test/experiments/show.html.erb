@@ -77,6 +77,8 @@
           <dd><%= experiment.weights[experiment.variants.index(variant)] %></dd>
           <dt>Order Lever</dt>
           <dd><%= config["order_by"] %></dd>
+          <dt>Reseed Randomizer on Each Request</dt>
+          <dd><%= config["reseed_randomizer_on_each_request"] %></dd>
           <% config["levers"].each do |lever_key, lever| %>
             <% next unless lever.key?("query_parameters") %>
             <dt>Parameters for <strong><%= lever_key %></strong> relevancy lever</dt>

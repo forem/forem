@@ -129,6 +129,8 @@ module Admin
           end
         end
       end
+      Credits::Manage.call(@user, credit_params)
+      add_note if user_params[:new_note]
     end
 
     def export_data
