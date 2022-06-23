@@ -12,7 +12,7 @@ module Admin
     # @param organizations [Array<String>, nil]
     # @param joining_start [String, nil]
     # @param joining_end [String, nil]
-    # @param date_format [String, nil]
+    # @param date_format [String]
     def self.call(relation: User.registered,
                   role: nil,
                   search: nil,
@@ -57,7 +57,7 @@ module Admin
         relation = relation.where("registered_at >= ?", DateTime.strptime(joining_start, parse_format).beginning_of_day)
       end
 
-      return unless joining_end.presence
+      return relation unless joining_end.presence
 
       relation.where("registered_at <= ?", DateTime.strptime(joining_end, parse_format).end_of_day)
     end
