@@ -23,7 +23,7 @@
                 </div>
                 <div class="flex justify-between items-center grow-1">
                   <div class="hidden m:block">
-                    <%= render "admin/users/index/status_indicator", user: user %>
+                    <%= render "admin/users/index/user_status_indicator", user: user %>
                   </div>
                   <div class="ml-auto">
                     <%= render "admin/users/index/user_actions_dropdown", user: user, id: "responsive-#{user.id}" %>
@@ -32,7 +32,7 @@
               </header>
               <div class="flex justify-between mb-2 block m:hidden">
                 <div>
-                  <%= render "admin/users/index/status_indicator", user: user %>
+                  <%= render "admin/users/index/user_status_indicator", user: user %>
                 </div>
                 <!-- %=
                 # TODO: [@forem/admin-experience] Uncomment this chunk of code containing role badges once we finalize which roles to include.
@@ -84,7 +84,7 @@
             </div>
           </td>
           <td>
-            <%= render "admin/users/index/status_indicator", user: user %>
+            <%= render "admin/users/index/user_status_indicator", user: user %>
           </td>
           <td>
             <%= format_last_activity_timestamp(user.last_activity) %>

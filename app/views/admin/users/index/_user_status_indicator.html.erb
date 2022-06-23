@@ -1,0 +1,11 @@
+<% if user.suspended? %>
+    <%= render "admin/users/index/status_indicator", status: "Suspended" %>
+<% elsif user.warned? %>
+    <%= render "admin/users/index/status_indicator", status: "Warned" %>
+<% elsif user.comment_suspended? %>
+    <%= render "admin/users/index/status_indicator", status: "Comment Suspended" %>
+<% elsif user.trusted? %>
+    <%= render "admin/users/index/status_indicator", status: "Trusted" %>
+<% else %>
+    <%= render "admin/users/index/status_indicator", status: "Good standing" %>
+<% end %>
