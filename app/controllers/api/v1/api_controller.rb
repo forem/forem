@@ -6,9 +6,6 @@ module Api
 
       self.api_action = true
 
-      # API V1 will require all endpoints to authenticate
-      before_action :authenticate!
-
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
       end
@@ -38,6 +35,10 @@ module Api
       # @note This method is performing both authentication and authorization.  The user suspended
       #       should be something added to the corresponding pundit policy.
       def authenticate!
+        # FeatureFlag endpoints don't require authentication because they're
+        # only used in the test environment (Cypress test FeatureFlag toggle)
+        return true if params[:controller]&.match?(%r{^api/v1/(feature_flags|instances|profile_images)$})
+
         @user = authenticate_with_api_key
         return error_unauthorized unless @user
         return error_unauthorized if @user.suspended?
