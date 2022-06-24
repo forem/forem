@@ -51,8 +51,7 @@ module Admin
         "DD/MM/YYYY" => "%d/%m/%Y",
         "MM/DD/YYYY" => "%m/%d/%Y"
       }
-      parse_format = ui_formats_to_parse_format[date_format]
-
+      parse_format = ui_formats_to_parse_format.fetch(date_format)
       if joining_start.presence
         relation = relation.where("registered_at >= ?", DateTime.strptime(joining_start, parse_format).beginning_of_day)
       end
