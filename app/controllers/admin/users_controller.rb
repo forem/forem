@@ -40,6 +40,11 @@ module Admin
 
       @organization_limit = 3
       @organizations = Organization.order(name: :desc)
+
+      @users.each do |user|
+        @banishable_user = (user.comments.where("created_at < ?", 100.days.ago).empty? &&
+          user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
+      end
     end
 
     def edit

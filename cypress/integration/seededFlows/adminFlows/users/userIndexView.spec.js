@@ -413,7 +413,7 @@ describe('User index view', () => {
               cy.findByText('Banish Admin McAdmin').should('be.visible');
               cy.findByText('This action is irreversible').should('be.visible');
               cy.findByRole('button', {
-                name: 'Banish Admin McAdmin',
+                name: 'Banish user',
               }).should('exist');
             });
           });
@@ -499,7 +499,7 @@ describe('User index view', () => {
                   'be.visible',
                 );
                 cy.findByRole('button', {
-                  name: 'Banish Admin McAdmin',
+                  name: 'Banish user',
                 }).should('exist');
               });
             });

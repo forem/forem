@@ -47,18 +47,20 @@
                 <li><button class="c-btn align-left w-100 c-btn--icon-left"><%= crayons_icon_tag("email", aria_hidden: true, class: "c-btn__icon") %>Send an email</button></li>
                 <li><button class="c-btn align-left w-100 c-btn--icon-left"><%= crayons_icon_tag("note", aria_hidden: true, class: "c-btn__icon") %>Write a note</button><hr /></li>
                 <li><button class="c-btn align-left w-100 c-btn--icon-left"><%= crayons_icon_tag("cloud-off", aria_hidden: true, class: "c-btn__icon") %>Unpublish all posts</button></li>
-                <li>
-                    <button class="c-btn align-left w-100 c-btn--icon-left"
-                            data-modal-title="Banish <%= user.name %>"
-                            data-modal-size="small"
-                            data-modal-content-selector="#banish-for-spam"
-                            data-user-name="<%= user.name %>"
-                            data-banishable-user="<%= @banishable_user %>"
-                            data-form-action="<%= banish_admin_user_path(user) %>">
-                            <%= crayons_icon_tag("warning", aria_hidden: true, class: "c-btn__icon") %>
-                            Banish user
-                    </button>
-                </li>
+                <% if !user.banished? %>
+                    <li>
+                        <button class="c-btn align-left w-100 c-btn--icon-left"
+                                data-modal-title="Banish <%= user.name %>"
+                                data-modal-size="small"
+                                data-modal-content-selector="#banish-for-spam"
+                                data-user-name="<%= user.name %>"
+                                data-banishable-user="<%= @banishable_user %>"
+                                data-form-action="<%= banish_admin_user_path(user) %>">
+                                <%= crayons_icon_tag("warning", aria_hidden: true, class: "c-btn__icon") %>
+                                Banish user
+                        </button>
+                    </li>
+                <% end %>
             <% end %>
         </ul>
     </div>
