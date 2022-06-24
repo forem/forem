@@ -33,7 +33,11 @@ describe('Filter user index', () => {
 
       cy.findByRole('checkbox', { name: 'Admin' }).check();
       cy.findByRole('checkbox', { name: 'Super Admin' }).check();
-      cy.findByRole('checkbox', { name: 'Tech Admin' }).check();
+
+      cy.findAllByText('Organizations').first().click();
+      cy.findByRole('group', { name: 'Organizations' }).should('be.visible');
+      cy.findByRole('checkbox', { name: 'Bachmanity' }).check();
+
       cy.findByRole('button', { name: 'Apply filters' }).click();
     });
 
