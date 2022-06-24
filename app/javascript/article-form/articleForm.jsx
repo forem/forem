@@ -138,7 +138,7 @@ export class ArticleForm extends Component {
   componentDidUpdate() {
     const { previewResponse } = this.state;
 
-    if (previewResponse) {
+    if (previewResponse?.processed_html) {
       embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
