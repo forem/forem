@@ -14,55 +14,14 @@
 
   <details<%= " open" if experiment.active? %>>
     <summary>Goals for <%= experiment.name %></summary>
-    <% experiment.goals.each do |goal| %>
-      <% results = experiment.results(goal: goal) %>
-
-      <% if experiment.multiple_goals? %>
-        <h2><%= goal.titleize %></h2>
+    <ul>
+      <% experiment.goals.each do |goal| %>
+        <%# I would love to use a route/path, but the router at runtime was
+          not recognizing it.  The `rails routes` would show it, but not
+          the view handler. %>
+        <li><%= link_to goal.titleize, "./#{experiment.id}/#{goal}" %></li>
       <% end %>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Variant</th>
-            <th style="width: 20%;">Participants</th>
-            <th style="width: 20%;">Conversions</th>
-            <th style="width: 20%;">Conversion Rate</th>
-            <th style="width: 20%;">Prob Winning</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% results.each do |variant, result| %>
-            <tr>
-              <td>
-                <%= variant %>
-                <% if variant == experiment.winner %>
-                  <span class="check">✓</span>
-                <% end %>
-              </td>
-              <td><%= result[:participated] %></td>
-              <td><%= result[:converted] %></td>
-              <td>
-                <% if result[:conversion_rate] %>
-                  <%= (100.0 * result[:conversion_rate]).round(FieldTest.precision) %>%
-                <% else %>
-                  -
-                <% end %>
-              </td>
-              <td>
-                <% if result[:prob_winning] %>
-                  <% if result[:prob_winning] < 0.01 %>
-                    &lt; 1%
-                  <% else %>
-                    <%= (100.0 * result[:prob_winning]).round(FieldTest.precision) %>%
-                  <% end %>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% end %>
+    </ul>
   </details>
 
   <% if experiment.id.start_with?("feed_strategy") %>
