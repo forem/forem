@@ -29,6 +29,17 @@ module Admin
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
+    # Having this method here (which also exists in admin/application_controller)
+    # allows us to authorize the moderator role specifically for the user_status
+    # action, while preserving the implementation for all other admin actions
+    def authorize_admin
+      if action_name == "user_status"
+        authorize(User, :toggle_suspension_status?)
+      else
+        super
+      end
+    end
+
     def index
       @users = Admin::UsersQuery.call(
         relation: User.registered,
