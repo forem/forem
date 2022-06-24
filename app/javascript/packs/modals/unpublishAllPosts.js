@@ -34,14 +34,6 @@ const unpublishAllPosts = async (event) => {
 
 const modalContents = new Map();
 
-// function getConfirmation(event) {
-//   const confirmation = confirm('Are you sure you want to unpublish all posts?');
-//   const endpoint = event.target.dataset.formAction;
-
-//   if (confirmation) {
-//     unpublishAllPosts({ event, endpoint });
-//   }
-// }
 
 /**
  * Helper function to handle finding and caching modal content. Since our Preact modal helper works by duplicating HTML content,
