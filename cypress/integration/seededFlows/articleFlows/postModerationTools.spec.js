@@ -194,7 +194,7 @@ describe('Moderation Tools for Posts', () => {
         });
       });
 
-      it('should suspend the user when suspension reason given', () => {
+      it('should suspend the user when suspension reason given, and hide suspend button', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
           cy.findByRole('button', { name: 'Open admin actions' })
             .as('moderatingActionsButton')
@@ -216,6 +216,21 @@ describe('Moderation Tools for Posts', () => {
         cy.findByTestId('snackbar')
           .contains('Success! series_user has been updated.')
           .should('exist');
+
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+
+          cy.findByRole('button', {
+            name: 'Suspend series_user',
+          }).should('not.exist');
+
+          cy.findByRole('button', {
+            name: 'Unsuspend series_user',
+          }).should('not.exist');
+        });
       });
     });
 

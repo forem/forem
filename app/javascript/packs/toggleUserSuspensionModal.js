@@ -49,7 +49,16 @@ const suspendOrUnsuspendUser = async ({
       addCloseButton: true,
     });
   }
+
+  hideSuspendBtn();
 };
+
+function hideSuspendBtn() {
+  const suspendBtn = window.parent.document
+    .getElementById('mod-container')
+    .contentDocument.querySelector('.js-suspend-unsuspend-flow-btn');
+  suspendBtn.classList.add('hidden');
+}
 
 function closeModal() {
   closeWindowModal(window.parent.document);
