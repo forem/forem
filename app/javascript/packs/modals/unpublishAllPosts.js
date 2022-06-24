@@ -7,8 +7,6 @@ const unpublishAllPosts = async (event) => {
   const { userId } = event.target.dataset;
 
   try {
-    // const http_request = await request(endpoint, { method: 'POST' });
-    // const response = await http_request.json();
     const response = await request(
       `/admin/member_manager/users/${userId}/unpublish_all_articles`,
       {
