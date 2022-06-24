@@ -343,7 +343,7 @@ export function addAdjustTagListeners() {
   }
 }
 
-export function addBottomActionsListeners() {
+export function addModActionsListeners() {
   addAdjustTagListeners();
   Array.from(document.getElementsByClassName('other-things-btn')).forEach(
     (btn) => {
@@ -401,5 +401,5 @@ export function initializeActionsPanel() {
   initializeHeight();
   addCloseListener();
   addReactionButtonListeners();
-  addBottomActionsListeners();
+  addModActionsListeners();
 }

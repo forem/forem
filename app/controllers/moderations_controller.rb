@@ -37,6 +37,10 @@ class ModerationsController < ApplicationController
 
   def actions_panel
     load_article
+    @author_unflagged ||= Reaction.user_vomits.valid_or_confirmed.where(
+      user_id: session_current_user_id,
+      reactable_id: @moderatable.user_id,
+    ).none?
     render template: "moderations/actions_panel"
   end
 
