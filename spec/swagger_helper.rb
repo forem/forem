@@ -13,7 +13,7 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a swagger_doc tag to the
   # the root example_group in your specs, e.g. describe "...", swagger_doc: "v2/swagger.json"
   config.swagger_docs = {
-    "v1/swagger.yaml" => {
+    "v1/swagger.json" => {
       openapi: "3.0.3",
       info: {
         title: "Forem API V1",
@@ -32,7 +32,34 @@ RSpec.configure do |config|
           description: "Production server"
         },
       ],
+      security: [{ "api-key": [] }],
       components: {
+        securitySchemes: {
+          "api-key": {
+            type: :apiKey,
+            name: "api-key",
+            in: :header,
+            description: "PI Key authentication.
+
+Authentication for some endpoints, like write operations on the
+Articles API require a DEV API key.
+
+All authenticated endpoints are CORS disabled, the API key is intended for non-browser scripts.
+
+### Getting an API key
+
+To obtain one, please follow these steps:
+
+  - visit https://dev.to/settings/extensions
+  - in the \"DEV API Keys\" section create a new key by adding a
+    description and clicking on \"Generate API Key\"
+
+    ![obtain a DEV API Key](https://user-images.githubusercontent.com/37842/172718105-bd93664e-76e0-477d-99c4-265dda0b06c5.png)
+
+  - You'll see the newly generated key in the same view
+    ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
+          }
+        },
         parameters: {
           pageParam: {
             in: :query,
@@ -204,7 +231,7 @@ RSpec.configure do |config|
   # The swagger_docs configuration option has the filename including format in
   # the key, this may want to be changed to avoid putting yaml in json files.
   # Defaults to json. Accepts ":json" and ":yaml".
-  config.swagger_format = :yaml
+  config.swagger_format = :json
 end
 
 # Convenience method for creating an example section for a response section

@@ -90,6 +90,7 @@ belonging to the requested collection, ordered by ascending publication date.",
                   example: 99
 
         response "200", "A List of Articles" do
+          let(:"api-key") { "valid" }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/ArticleIndex" }
           add_examples
@@ -99,6 +100,7 @@ belonging to the requested collection, ordered by ascending publication date.",
 
         response "401", "unauthorized" do
           let(:Accept) { "application/vnd.forem.api-v1+json" }
+          let(:"api-key") { "invalid" }
           run_test!
         end
       end
