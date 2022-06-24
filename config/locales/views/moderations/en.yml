@@ -55,8 +55,8 @@ en:
             Novice: Novice
         admin:
           heading: Moderating actions
-          heading2: Moderating actions to %{user}
-          subtitle: Moderating actions to %{user}
+          heading2: Moderating actions for %{user}
+          subtitle: Moderating actions for %{user}
           aria_label: Open admin actions
           icon: Crown
         flag: Flag user

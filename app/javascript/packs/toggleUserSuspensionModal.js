@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 import {
   closeWindowModal,
   showWindowModal,
@@ -56,7 +55,7 @@ function closeModal() {
   closeWindowModal(window.parent.document);
 }
 
-const modalContents = new Map();
+let modalContents;
 
 /**
  * Helper function to handle finding and caching modal content. Since our Preact modal helper works by duplicating HTML content,
@@ -65,16 +64,13 @@ const modalContents = new Map();
  * @param {string} modalContentSelector The CSS selector used to identify the correct modal content
  */
 function getModalContents(modalContentSelector) {
-  if (!modalContents.has(modalContentSelector)) {
+  if (!modalContents) {
     const modalContentElement =
       window.parent.document.querySelector(modalContentSelector);
-    const modalContent = modalContentElement.innerHTML;
-
+    modalContents = modalContentElement.innerHTML;
     modalContentElement.remove();
-    modalContents.set(modalContentSelector, modalContent);
   }
-
-  return modalContents.get(modalContentSelector);
+  return modalContents;
 }
 
 function checkReason(event) {

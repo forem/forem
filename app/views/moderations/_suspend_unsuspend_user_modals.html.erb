@@ -3,21 +3,17 @@
 <% user_username = @article.username %>
 <div id="suspend-unsuspend-modal" class="hidden">
   <p>
-    <% if user_suspended %>
-      <%= t("views.moderations.actions.suspend.unsuspend_modal_text", username: user_username) %>
-    <% else %>
-      <%= t("views.moderations.actions.suspend.suspend_modal_text", username: user_username) %>
-    <% end %>
+    <%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_modal_text", username: user_username) %>
   </p>
 
   <div class="crayons-field mt-4">
     <label
-      for="<%= user_suspended ? "unsuspend" : "suspend" %>_reason_userid_<%= user_id %>"
+      for="<%= user_suspended ? "unsuspend" : "suspend" %>-reason-userid-<%= user_id %>"
       class="crayons-field__label">
       Note:
     </label>
     <textarea
-      id="<%= user_suspended ? "unsuspend" : "suspend" %>_reason_userid_<%= user_id %>"
+      id="<%= user_suspended ? "unsuspend" : "suspend" %>-reason-userid-<%= user_id %>"
       rows="4"
       cols="70"
       placeholder="Reason for <%= user_suspended ? "unsuspension" : "suspension" %>"
@@ -34,15 +30,12 @@
   <div class="mt-4">
     <button
       id="submit-user-<%= user_suspended ? "unsuspend" : "suspend" %>-btn"
-      class="c-btn c-btn--primary"
+      class="c-btn <%= user_suspended ? "" : "c-btn--destructive" %> c-btn--primary"
       data-btn-action="<%= user_suspended ? "unsuspend" : "suspend" %>"
-      data-reason-selector="#<%= user_suspended ? "unsuspend" : "suspend" %>_reason_userid_<%= user_id %>"
-      data-user-id="<%= user_id %>">
-      <% if user_suspended %>
-        <%= t("views.moderations.actions.suspend.unsuspend_modal_button", username: user_username) %>
-      <% else %>
-        <%= t("views.moderations.actions.suspend.suspend_modal_button", username: user_username) %>
-      <% end %>
+      data-reason-selector="#<%= user_suspended ? "unsuspend" : "suspend" %>-reason-userid-<%= user_id %>"
+      data-user-id="<%= user_id %>"
+      data-username="<%= user_username %>">
+      <%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_modal_button", username: user_username) %>
     </button>
   </div>
 </div>
