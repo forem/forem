@@ -6,7 +6,13 @@ RSpec.describe "Api::V1::Articles", type: :request do
   let(:article) { create(:article, featured: true, tags: "discuss") }
   let(:new_article) { create(:article) }
   let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
+  let(:v1_headers) do
+    {
+      "content-type" => "application/json",
+      "Accept" => "application/vnd.forem.api-v1+json",
+      "api-key" => api_secret.secret
+    }
+  end
 
   before do
     stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
@@ -1195,6 +1201,53 @@ RSpec.describe "Api::V1::Articles", type: :request do
         put_article(title: nil, body_markdown: nil)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
+      end
+    end
+  end
+
+  describe "POST /api/articles/:id/unpublish" do
+    let(:user)            { api_secret.user }
+    let(:random_article)  { create(:article, :published?, feed_source_url: "dev.to") }
+    let(:path)            { api_article_unpublish_path(random_article.id) }
+
+    context "when unauthorized" do
+      it "fails with no api key" do
+        post path, headers: { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails with the wrong api key" do
+        post path,
+             headers: { "api-key" => "foobar", "content-type" => "application/json",
+                        "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails without elevated_user?" do
+        post path, headers: v1_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authorized as moderator" do
+      before { user.add_role(:moderator) }
+
+      it "unpublishes an article" do
+        expect do
+          post path, headers: v1_headers
+          expect(response).to have_http_status(:ok)
+        end.to change(:random_article, published?).from(true).to(false)
+      end
+    end
+
+    context "when authorized as super_admin" do
+      before { user.add_role(:super_admin) }
+
+      it "unpublishes an article" do
+        expect do
+          post path, headers: v1_headers
+          expect(response).to have_http_status(:ok)
+        end.to change(:random_article, published?).from(true).to(false)
       end
     end
   end

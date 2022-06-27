@@ -46,6 +46,9 @@ Rails.application.routes.draw do
       constraints(->(_req) { FeatureFlag.enabled?(:api_v1) }) do
         scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
           draw :api
+
+          # V1 only endpoints
+          post "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
         end
       end
 
