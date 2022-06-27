@@ -49,7 +49,8 @@ export function toggleUnpublishAllPostsModal() {
 
   showWindowModal({
     document: window.parent.document,
-    modalContent: window.parent.document.querySelector(modalContentSelector),
+    modalContent:
+      window.parent.document.querySelector(modalContentSelector).innerHTML,
     title: modalTitle,
     size: modalSize,
     onOpen: activateUnpublishAllPostsBtn,
