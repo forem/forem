@@ -19,7 +19,13 @@
   </div>
   <div class="form-group">
     <%= f.label :user_id, "User ID - Add ID to restrict usage for a single user" %>
-    <%= f.text_field :user_id, value: response_template.user_id, class: "form-control" %>
+    <%= f.text_field :user_id, value: response_template.user_id, class: "form-control",
+        data: {
+          "multi-select-autocomplete": true
+        }
+    %>
   </div>
   <%= f.submit class: "btn btn-primary" %>
 <% end %>
+<%= javascript_packs_with_chunks_tag "admin/editUser", defer: true %>
+<%= javascript_packs_with_chunks_tag "admin/enhanceMultiselectAutocomplete", defer: true %>
