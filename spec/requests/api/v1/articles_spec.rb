@@ -1206,9 +1206,10 @@ RSpec.describe "Api::V1::Articles", type: :request do
   end
 
   describe "POST /api/articles/:id/unpublish" do
-    let(:user)            { api_secret.user }
-    let(:random_article)  { create(:article, :published?, feed_source_url: "dev.to") }
-    let(:path)            { api_article_unpublish_path(random_article.id) }
+    let(:user) { api_secret.user }
+    let(:frontmatter) { "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello" }
+    let(:frontmatter_article) { create(:article, body_markdown: frontmatter) }
+    let(:path) { api_article_unpublish_path(frontmatter_article.id) }
 
     context "when unauthorized" do
       it "fails with no api key" do
@@ -1236,7 +1237,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect do
           post path, headers: v1_headers
           expect(response).to have_http_status(:ok)
-        end.to change(:random_article, published?).from(true).to(false)
+        end.to change(frontmatter_article, :published?).from(true).to(false)
       end
     end
 
@@ -1247,7 +1248,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect do
           post path, headers: v1_headers
           expect(response).to have_http_status(:ok)
-        end.to change(:random_article, published?).from(true).to(false)
+        end.to change(frontmatter_article, :published?).from(true).to(false)
       end
     end
   end
