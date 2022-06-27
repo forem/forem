@@ -188,7 +188,7 @@ describe('Moderation Tools for Posts', () => {
         cy.findByRole('dialog').within(() => {
           cy.findByRole('button', { name: 'Submit & Suspend' }).click();
 
-          cy.get('#suspension-reason-error')
+          cy.findByTestId('suspension-reason-error')
             .contains('You must give a reason for this action.')
             .should('exist');
         });
@@ -258,7 +258,7 @@ describe('Moderation Tools for Posts', () => {
         });
         cy.findByRole('dialog').within(() => {
           cy.findByRole('button', { name: 'Submit & Unsuspend' }).click();
-          cy.get('#unsuspension-reason-error')
+          cy.findByTestId('unsuspension-reason-error')
             .contains('You must give a reason for this action.')
             .should('exist');
         });
