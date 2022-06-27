@@ -211,6 +211,17 @@
           data-modal-size="small" data-modal-content-selector="#<%= user_suspended ? "unsuspend" : "suspend" %>-modal-content" data-username="<%= user_username %>">
             <%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_user", username: user_username) %>
         </button>
+
+        <button
+          type="button"
+          id="unpublish-all-posts-btn"
+          class="c-btn c-btn--destructive align-center fs-s"
+          data-modal-title="Unpublish all posts"
+          data-modal-size="small"
+          data-modal-content-selector="#unpublish-all-posts"
+          data-username="<%= @moderatable.username %>">
+          Unpublish all posts for <%= @moderatable.username %>
+        </button>
       </div>
     <% end %>
   </div>

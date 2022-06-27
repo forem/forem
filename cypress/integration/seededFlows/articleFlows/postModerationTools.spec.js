@@ -152,6 +152,38 @@ describe('Moderation Tools for Posts', () => {
       });
     });
 
+    context('when unpublishing all posts', () => {
+      beforeEach(() => {
+        cy.get('@moderatorUser').then((user) => {
+          cy.loginAndVisit(user, '/series_user/series-test-article-slug');
+          cy.findByRole('heading', { level: 1, name: 'Series test article' });
+          cy.findByRole('button', { name: 'Moderation' }).click();
+        });
+      });
+
+      it('unpublishes all posts', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', {
+            name: /Unpublish all posts for series_user/i,
+          }).click();
+        });
+
+        cy.findByRole('dialog').within(() => {
+          cy.findByRole('button', { name: 'Unpublish all posts' }).click();
+        });
+
+        cy.findByTestId('snackbar')
+          .contains(
+            'Posts are being unpublished in the background. The job will complete soon.',
+          )
+          .should('exist');
+      });
+    });
+
     context('when suspending user', () => {
       beforeEach(() => {
         cy.get('@moderatorUser').then((user) => {

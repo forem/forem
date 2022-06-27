@@ -25,16 +25,21 @@ module Admin
       last_moderation_notification last_notification_activity
     ].freeze
 
+    MODROLE_ACTIONS_TO_POLICIES = {
+      user_status: :toggle_suspension_status?,
+      unpublish_all_articles: :unpublish_all_articles?
+    }.freeze
+
     after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
     # Having this method here (which also exists in admin/application_controller)
-    # allows us to authorize the moderator role specifically for the user_status
-    # action, while preserving the implementation for all other admin actions
+    # allows us to authorize the actions of the moderator role specifically,
+    # while preserving the implementation for all other admin actions
     def authorize_admin
-      if action_name == "user_status"
-        authorize(User, :toggle_suspension_status?)
+      if MODROLE_ACTIONS_TO_POLICIES.key?(action_name.to_sym)
+        authorize(User, MODROLE_ACTIONS_TO_POLICIES[action_name.to_sym])
       else
         super
       end
@@ -184,8 +189,17 @@ module Admin
 
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      flash[:success] = I18n.t("admin.users_controller.unpublished")
-      redirect_to admin_user_path(params[:id])
+      message = I18n.t("admin.users_controller.unpublished")
+      respond_to do |format|
+        format.html do
+          flash[:success] = message
+          redirect_to admin_user_path(params[:id])
+        end
+
+        format.json do
+          render json: { message: message }
+        end
+      end
     end
 
     def merge
