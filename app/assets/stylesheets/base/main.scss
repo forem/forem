@@ -47,11 +47,6 @@ body {
 
   #main-content {
     scroll-margin-top: var(--header-height);
-  }
-
-  #main-content,
-  #sidebar-additional,
-  #sidebar-wrapper-left {
     max-height: 100vh;
     overflow-y: scroll;
   }
