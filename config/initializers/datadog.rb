@@ -12,8 +12,6 @@ Datadog.configure do |c|
   c.tracing.instrument :http, service_name: "#{service_name}-net_http"
   c.tracing.instrument :faraday, service_name: "#{service_name}-faraday"
 
-  # sidekiq-client
-
   # Multiple Redis integrations to split Redis usage per-instance to
   # accommodate having a different Redis instance for each use case.
   c.tracing.instrument :redis, service_name: "#{service_name}-redis-rpush",
