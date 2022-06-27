@@ -190,7 +190,7 @@
       <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
-            <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.moderator.icon")) %>
+            <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
           </div>
           <header>
             <h2><%= t("views.moderations.actions.admin.heading") %></h2>
@@ -213,12 +213,14 @@
         </button>
 
         <button
+          type="button"
+          id="unpublish-all-posts-btn"
           class="c-btn c-btn--destructive align-center fs-s"
-          id="unpublish-article-btn"
-          data-article-id="<%= @moderatable.id %>"
-          data-article-author="<%= @moderatable.username %>"
-          data-article-slug="<%= @moderatable.slug %>">
-          <%= t("views.moderations.actions.unpublish") %>
+          data-modal-title="Unpublish all posts"
+          data-modal-size="small"
+          data-modal-content-selector="#unpublish-all-posts"
+          data-username="<%= @moderatable.username %>">
+          Unpublish all posts for <%= @moderatable.username %>
         </button>
       </div>
     <% end %>
