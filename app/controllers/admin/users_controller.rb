@@ -117,7 +117,7 @@ module Admin
         flash[:success] = I18n.t("admin.users_controller.updated")
         respond_to do |format|
           format.html do
-            handle_admin_user_path_redirect(params[:id])
+            redirect_back_or_to admin_users_path
           end
           format.json do
             render json: {
@@ -130,7 +130,7 @@ module Admin
         flash[:danger] = e.message
         respond_to do |format|
           format.html do
-            handle_admin_user_path_redirect(params[:id])
+            redirect_back_or_to admin_users_path
           end
           format.json do
             render json: {
@@ -300,14 +300,6 @@ module Admin
     end
 
     private
-
-    def handle_admin_user_path_redirect(id)
-      if request.referer&.include?(admin_user_path(id))
-        redirect_to admin_user_path(id)
-      else
-        redirect_to admin_users_path
-      end
-    end
 
     def set_user_details
       @organizations = @user.organizations.order(:name)
