@@ -1,0 +1,41 @@
+<% user_id = @article.user.id %>
+<% author_username = @article.username %>
+<div id="unsuspend-modal-content" class="hidden">
+  <p>
+    <%= t("views.moderations.actions.suspend.unsuspend_modal_text", username: author_username) %>
+  </p>
+
+  <div class="crayons-field mt-4">
+    <label
+      for="unsuspend-reason-userid-<%= user_id %>"
+      class="crayons-field__label">
+      Note:
+    </label>
+    <textarea
+      id="unsuspend-reason-userid-<%= user_id %>"
+      rows="4"
+      cols="70"
+      placeholder="Reason for unsuspension"
+      class="crayons-textfield"
+      aria-describedby="unsuspension-reason-error"
+      required></textarea>
+    <p
+      id="unsuspension-reason-error"
+      data-testid="unsuspension-reason-error"
+      class="unsuspend-reason-error crayons-field__description"
+      style="color: red;"
+      aria-live="assertive">
+    </p>
+  </div>
+  <div class="mt-4">
+    <button
+      id="submit-user-unsuspend-btn"
+      class="c-btn c-btn--primary"
+      data-btn-action="unsuspend"
+      data-reason-selector="#unsuspend-reason-userid-<%= user_id %>"
+      data-user-id="<%= user_id %>"
+      data-username="<%= author_username %>">
+      <%= t("views.moderations.actions.suspend.unsuspend_modal_button", username: author_username) %>
+    </button>
+  </div>
+</div>

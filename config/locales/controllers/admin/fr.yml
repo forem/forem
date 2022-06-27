@@ -20,9 +20,9 @@ fr:
       updated: Broadcast has been updated!
       wrong: Something went wrong with deleting the broadcast.
     consumer_apps_controller:
-      created: "%{app} has been created!"
-      deleted: "%{app} has been deleted!"
-      updated: "%{app} has been updated!"
+      created: '%{app} has been created!'
+      deleted: '%{app} has been deleted!'
+      updated: '%{app} has been updated!'
       wrong: Something went wrong with deleting %{app}.
     display_ads_controller:
       created: Display Ad has been created!
@@ -32,9 +32,9 @@ fr:
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
     gdpr_delete_requests_controller:
-      deleted: Successfully marked as deleted 
+      deleted: Successfully marked as deleted
     html_variants_controller:
-      fork: "%{name} FORK-%{rand}"
+      fork: '%{name} FORK-%{rand}'
       created: HTML Variant has been created!
       deleted: HTML Variant has been deleted!
       updated: HTML Variant has been updated!
@@ -53,7 +53,7 @@ fr:
       destroyed: "'%{title}' was destroyed successfully"
       no_credit: Not enough available credits
     mods_controller:
-      trusted: "%{username} now has a Trusted role!"
+      trusted: '%{username} now has a Trusted role!'
     navigation_links_controller:
       deleted: Navigation Link %{link} deleted
       created: 'Successfully created navigation link: %{link}'
@@ -99,7 +99,7 @@ fr:
     secrets_controller:
       not_in_vault: Not In Vault
       updated: Secret %{key} was successfully updated in Vault.
-      value: "%{first8}******"
+      value: '%{first8}******'
     settings_controller:
       confirmation: My username is @%{username} and this action is 100% safe and appropriate.
     spaces_controller:
@@ -111,24 +111,24 @@ fr:
       destroyed: Sponsorship was successfully destroyed
     tags:
       moderators_controller:
-        not_found: "User ID #%{user_id} was not found"
+        not_found: 'User ID #%{user_id} was not found'
         not_found_or: 'User ID #%{user_id} was not found, or their account has errors: %{errors}'
-        removed: "@%{username} - ID #%{user_id} was removed as a tag moderator."
-        added: "%{username} was added as a tag moderator!"
+        removed: '@%{username} - ID #%{user_id} was removed as a tag moderator.'
+        added: '%{username} was added as a tag moderator!'
     tags_controller:
-      created: "%{tag_name} has been created!"
-      updated: "%{tag_name} tag successfully updated!"
+      created: '%{tag_name} has been created!'
+      updated: '%{tag_name} tag successfully updated!'
       update_fail: 'The tag update failed: %{errors}'
     tools_controller:
       article_busted: 'Article #%{article} was successfully busted'
       user_busted: 'User #%{user} was successfully busted'
-      link_busted: "%{link} was successfully busted"
+      link_busted: '%{link} was successfully busted'
     users_controller:
       exported: Data exported to the %{receiver}. The job will complete momentarily.
       email_fail: Email failed to send!
       email_sent: Email sent!
       verify_sent: Verification email sent!
-      full_delete_html: "@%{user} (email: %{email}, user_id: %{id}) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on %{the_page}."
+      full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on %{the_page}.'
       no_email: no email
       parameter_missing: Both subject and body are required!
       role_removed: 'Role: %{role} has been successfully removed from the user!'
@@ -138,6 +138,7 @@ fr:
       unlocked: Unlocked User account!
       unpublished: Posts are being unpublished in the background. The job will complete soon.
       updated: User has been updated
+      updated_json: Success! %{username} has been updated.
       credits_added: Credits have been added!
       credits_removed: Credits have been removed.
     welcome_controller:
