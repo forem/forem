@@ -9,7 +9,7 @@ Datadog.configure do |c|
   c.tracing.instrument :concurrent_ruby
   c.tracing.instrument :excon, service_name: "#{service_name}-excon"
   c.tracing.instrument :httprb, service_name: "#{service_name}-httprb"
-  c.tracing.instrument :net_http, service_name: "#{service_name}-net_http"
+  c.tracing.instrument :http, service_name: "#{service_name}-net_http"
   c.tracing.instrument :faraday, service_name: "#{service_name}-faraday"
 
   # sidekiq-client
