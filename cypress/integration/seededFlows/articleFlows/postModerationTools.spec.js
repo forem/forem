@@ -194,7 +194,7 @@ describe('Moderation Tools for Posts', () => {
         });
       });
 
-      it('should suspend the user when suspension reason given, and hide suspend button', () => {
+      it('should suspend the user when suspension reason given', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
           cy.findByRole('button', { name: 'Open admin actions' })
             .as('moderatingActionsButton')
@@ -229,7 +229,7 @@ describe('Moderation Tools for Posts', () => {
 
           cy.findByRole('button', {
             name: 'Unsuspend series_user',
-          }).should('not.exist');
+          }).should('exist');
         });
       });
     });
@@ -274,15 +274,32 @@ describe('Moderation Tools for Posts', () => {
             name: 'Unsuspend suspended_user',
           }).click();
         });
+
         cy.findByRole('dialog').within(() => {
           cy.findByRole('textbox', { name: 'Note:' }).type(
             'My unsuspension reason',
           );
           cy.findByRole('button', { name: 'Submit & Unsuspend' }).click();
         });
+
         cy.findByTestId('snackbar')
           .contains('Success! suspended_user has been updated.')
           .should('exist');
+
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+
+          cy.findByRole('button', {
+            name: 'Unsuspend suspended_user',
+          }).should('not.exist');
+
+          cy.findByRole('button', {
+            name: 'Suspend suspended_user',
+          }).should('exist');
+        });
       });
     });
   });

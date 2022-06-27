@@ -9,6 +9,7 @@ const suspendOrUnsuspendUser = async ({
   event,
   btnAction,
   userId,
+  username,
   suspendOrUnsuspendReason,
 }) => {
   event.preventDefault();
@@ -37,6 +38,8 @@ const suspendOrUnsuspendUser = async ({
         message: outcome.message,
         addCloseButton: true,
       });
+
+      updateBtnFlow(btnAction, username);
     } else {
       top.addSnackbarItem({
         message: 'Error: something went wrong.',
@@ -49,22 +52,34 @@ const suspendOrUnsuspendUser = async ({
       addCloseButton: true,
     });
   }
-
-  hideSuspendBtn();
 };
 
-function hideSuspendBtn() {
-  const suspendBtn = window.parent.document
+function capitalizeFirst(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function updateBtnFlow(btnAction, username) {
+  const btn = window.parent.document
     .getElementById('mod-container')
-    .contentDocument.querySelector('.js-suspend-unsuspend-flow-btn');
-  suspendBtn.classList.add('hidden');
+    .contentDocument.querySelector(`#${btnAction}-user-btn`);
+  const oppositeAction = btnAction == 'suspend' ? 'unsuspend' : 'suspend';
+
+  btn.textContent = `${capitalizeFirst(oppositeAction)} ${username}`;
+  btn.dataset.modalTitle = `${capitalizeFirst(oppositeAction)} ${username}`;
+  btn.id = `${oppositeAction}-user-btn`;
+  btn.dataset.modalContentSelector = `#${oppositeAction}-modal-content`;
+
+  oppositeAction == 'suspend'
+    ? btn.classList.add('c-btn--destructive')
+    : btn.classList.remove('c-btn--destructive');
 }
 
 function closeModal() {
   closeWindowModal(window.parent.document);
 }
 
-let modalContents;
+// let modalContents;
+const modalContents = new Map();
 
 /**
  * Helper function to handle finding and caching modal content. Since our Preact modal helper works by duplicating HTML content,
@@ -72,33 +87,34 @@ let modalContents;
  *
  * @param {string} modalContentSelector The CSS selector used to identify the correct modal content
  */
-function getModalContents(modalContentSelector) {
-  if (!modalContents) {
+const getModalContents = (modalContentSelector) => {
+  if (!modalContents.has(modalContentSelector)) {
     const modalContentElement =
       window.parent.document.querySelector(modalContentSelector);
-    modalContents = modalContentElement.innerHTML;
+    const modalContent = modalContentElement.innerHTML;
+
     modalContentElement.remove();
+    modalContents.set(modalContentSelector, modalContent);
   }
-  return modalContents;
-}
+
+  return modalContents.get(modalContentSelector);
+};
 
 function checkReason(event) {
-  const { btnAction, reasonSelector, userId } = event.target.dataset;
-  const suspendUnsuspendModal =
-    window.parent.document.getElementById(WINDOW_MODAL_ID);
-  const suspendOrUnsuspendReason =
-    suspendUnsuspendModal.querySelector(reasonSelector).value;
+  const { btnAction, reasonSelector, userId, username } = event.target.dataset;
+  const modal = window.parent.document.getElementById(WINDOW_MODAL_ID);
+  const actionReason = modal.querySelector(reasonSelector).value;
 
-  if (!suspendOrUnsuspendReason) {
-    suspendUnsuspendModal.querySelector(
-      '.suspend-unsuspend-reason-error',
-    ).innerText = 'You must give a reason for this action.';
+  if (!actionReason) {
+    modal.querySelector(`.${btnAction}-reason-error`).innerText =
+      'You must give a reason for this action.';
   } else {
     suspendOrUnsuspendUser({
       event,
       btnAction,
       userId,
-      suspendOrUnsuspendReason,
+      username,
+      actionReason,
     });
   }
 }
