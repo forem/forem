@@ -163,13 +163,12 @@ describe('Moderation Tools for Posts', () => {
 
       it('unpublishes all posts', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open moderator actions' })
+          cy.findByRole('button', { name: 'Open admin actions' })
             .as('moderatingActionsButton')
             .pipe(click)
             .should('have.attr', 'aria-expanded', 'true');
-
           cy.findByRole('button', {
-            name: /Unpublish all posts of series_user/i,
+            name: /Unpublish all posts for series_user/i,
           }).click();
         });
 
