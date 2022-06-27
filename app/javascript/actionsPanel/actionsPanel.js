@@ -1,4 +1,5 @@
 import { toggleFlagUserModal } from '../packs/flagUserModal';
+import { toggleModal } from '../packs/toggleUserSuspensionModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
 import { request } from '@utilities/http';
 
@@ -395,6 +396,14 @@ export function addBottomActionsListeners() {
   document
     .getElementById('open-flag-user-modal')
     .addEventListener('click', toggleFlagUserModal);
+
+  document
+    .getElementById('suspend-user-btn')
+    ?.addEventListener('click', toggleModal);
+
+  document
+    .getElementById('unsuspend-user-btn')
+    ?.addEventListener('click', toggleModal);
 }
 
 export function initializeActionsPanel() {

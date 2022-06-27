@@ -29,6 +29,17 @@ module Admin
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
+    # Having this method here (which also exists in admin/application_controller)
+    # allows us to authorize the moderator role specifically for the user_status
+    # action, while preserving the implementation for all other admin actions
+    def authorize_admin
+      if action_name == "user_status"
+        authorize(User, :toggle_suspension_status?)
+      else
+        super
+      end
+    end
+
     def index
       @users = Admin::UsersQuery.call(
         relation: User.registered,
@@ -104,18 +115,33 @@ module Admin
       begin
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
         flash[:success] = I18n.t("admin.users_controller.updated")
+        respond_to do |format|
+          format.html do
+            redirect_back_or_to admin_users_path
+          end
+          format.json do
+            render json: {
+              success: true,
+              message: I18n.t("admin.users_controller.updated_json", username: @user.username)
+            }, status: :ok
+          end
+        end
       rescue StandardError => e
         flash[:danger] = e.message
+        respond_to do |format|
+          format.html do
+            redirect_back_or_to admin_users_path
+          end
+          format.json do
+            render json: {
+              success: false,
+              message: @user.errors_as_sentence
+            }, status: :unprocessable_entity
+          end
+        end
       end
-
       Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
-
-      if request.referer&.include?(admin_user_path(params[:id]))
-        redirect_to admin_user_path(params[:id])
-      else
-        redirect_to admin_users_path
-      end
     end
 
     def export_data

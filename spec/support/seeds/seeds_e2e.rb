@@ -722,6 +722,48 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "suspended-user@forem.local") do
+  suspended_user = User.create!(
+    name: "Suspended User",
+    email: "suspended-user@forem.local",
+    username: "suspended_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  suspended_user.add_role(:suspended)
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "title", "Suspended user article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Suspended user article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create(
+    body_markdown: markdown,
+    featured: false,
+    show_comments: true,
+    slug: "suspended-user-article-slug",
+    user_id: User.find_by(email: "suspended-user@forem.local").id,
+  )
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
   markdown = <<~MARKDOWN
     ---
@@ -738,6 +780,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
     body_markdown: markdown,
     featured: true,
     show_comments: true,
+    slug: "series-test-article-slug",
     user_id: User.find_by(email: "series-user@forem.local").id,
   )
 end
