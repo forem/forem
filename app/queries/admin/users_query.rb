@@ -55,30 +55,33 @@ module Admin
       # Assemble the conditions and positional parameter values
       roles.each do |role|
         where_clause = role_map.fetch(role)
-        resource_type = where_clause.fetch(:resource_type, nil)
-        name = where_clause.fetch(:name)
 
-        if name.nil?
-          # TODO: When we filter by "Good standing" status, we want to filter by
-          # NOT any of [trusted, warned, suspended, comment_suspended]
-          next
-        end
-
-        condition = "(#{Role.table_name}.name = ? AND #{Role.table_name}.resource_id IS NULL"
-        values << name
-
-        # We need to use `IS NULL` instead of `= NULL` as those are different meanings.
-        if resource_type.nil?
-          condition += " AND #{Role.table_name}.resource_type IS NULL"
+        # TODO: When we filter by "Good standing" status, we want to filter by
+        # NOT any of [trusted, warned, suspended, comment_suspended]
+        if where_clause == Constants::Role::GOOD_STANDING_STATUS
+          conditions << "(#{Role.table_name}.name NOT IN (?))"
+          values << Constants::Role::FOLKS_WITH_THESE_ROLES_ARE_NOT_COUNTED_AS_IN_GOOD_STANDING
         else
-          condition += " AND #{Role.table_name}.resource_type = ?"
-          values << resource_type
+          resource_type = where_clause.fetch(:resource_type, nil)
+          name = where_clause.fetch(:name)
+
+          condition = "(#{Role.table_name}.name = ? AND #{Role.table_name}.resource_id IS NULL"
+          values << name
+
+          # We need to use `IS NULL` instead of `= NULL` as those are different meanings.
+          if resource_type.nil?
+            condition += " AND #{Role.table_name}.resource_type IS NULL"
+          else
+            condition += " AND #{Role.table_name}.resource_type = ?"
+            values << resource_type
+          end
+          condition += ")"
+          conditions << condition
         end
-        condition += ")"
-        conditions << condition
       end
 
-      relation.joins(:roles).where(%((#{conditions.join(') OR (')})), *values)
+      sub_query = User.select(:id).distinct.joins(:roles).where(%((#{conditions.join(') OR (')})), *values)
+      relation.where(id: sub_query)
     end
     private_class_method :filter_roles
   end
