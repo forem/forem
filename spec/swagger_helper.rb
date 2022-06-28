@@ -39,7 +39,7 @@ RSpec.configure do |config|
             type: :apiKey,
             name: "api-key",
             in: :header,
-            description: "PI Key authentication.
+            description: "API Key authentication.
 
 Authentication for some endpoints, like write operations on the
 Articles API require a DEV API key.
