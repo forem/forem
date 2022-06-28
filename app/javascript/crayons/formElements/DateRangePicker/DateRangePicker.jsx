@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { useState } from 'preact/hooks';
+import { useState, useLayoutEffect } from 'preact/hooks';
 import 'react-dates/initialize';
 import moment from 'moment';
 import { DateRangePicker as ReactDateRangePicker } from 'react-dates';
@@ -24,6 +24,12 @@ const PICKER_PHRASES = {
   chooseAvailableStartDate: ({ date }) => `Choose ${date} as start date`,
   chooseAvailableEndDate: ({ date }) => `Choose ${date} as end date`,
   focusStartDate: 'Interact with the calendar and add your start date',
+  invalidDateFormat: (format, errorPrefix) =>
+    `${errorPrefix} must be in the format ${format}`,
+  dateTooLate: (latestDate, errorPrefix) =>
+    `${errorPrefix} must be on or before ${latestDate}`,
+  dateTooEarly: (earliestDate, errorPrefix) =>
+    `${errorPrefix} must be on or after ${earliestDate}`,
 };
 
 const MONTH_NAMES = [...Array(12).keys()].map((key) =>
@@ -177,6 +183,8 @@ export const DateRangePicker = ({
   presetRanges = [],
   todaysDate = new Date(),
 }) => {
+  const [startDateError, setStartDateError] = useState('');
+  const [endDateError, setendDateError] = useState('');
   const [focusedInput, setFocusedInput] = useState(START_DATE);
   const [startMoment, setStartMoment] = useState(
     defaultStartDate ? moment(defaultStartDate) : null,
@@ -185,6 +193,75 @@ export const DateRangePicker = ({
   const [endMoment, setEndMoment] = useState(
     defaultEndDate ? moment(defaultEndDate) : null,
   );
+
+  const dateFormat =
+    getCurrentLocale().toLowerCase() === 'en-us' ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
+
+  // After the inputs are rendered we attach some listeners to conduct validation
+  useLayoutEffect(() => {
+    const setError = (error, inputId) =>
+      inputId === startDateId
+        ? setStartDateError(error ?? '')
+        : setendDateError(error ?? '');
+
+    // react-dates will not validate that a valid date has been entered into the input, so we do this manually
+    const handleBlur = ({ target: { value } }, inputId) => {
+      if (value === '') {
+        setError('', inputId);
+        return;
+      }
+
+      const errorPrefix = `${inputId === startDateId ? 'Start' : 'End'} date`;
+
+      const valueMoment = moment(value, dateFormat);
+      if (!valueMoment.isValid()) {
+        setError(
+          PICKER_PHRASES.invalidDateFormat(dateFormat, errorPrefix),
+          inputId,
+        );
+        return;
+      }
+
+      if (valueMoment.isBefore(earliestMoment)) {
+        setError(
+          PICKER_PHRASES.dateTooEarly(
+            earliestMoment.format(dateFormat),
+            errorPrefix,
+          ),
+          inputId,
+        );
+        return;
+      }
+
+      if (valueMoment.isAfter(latestMoment)) {
+        setError(
+          PICKER_PHRASES.dateTooLate(
+            earliestMoment.format(dateFormat),
+            errorPrefix,
+          ),
+          inputId,
+        );
+        return;
+      }
+
+      // Date is valid, remove any errors
+      setError('', inputId);
+    };
+
+    const startDateInput = document.getElementById(startDateId);
+    startDateInput.setAttribute('aria-describedby', 'start-date-error');
+
+    const endDateInput = document.getElementById(endDateId);
+    endDateInput.setAttribute('aria-describedby', 'end-date-error');
+
+    startDateInput.addEventListener('blur', (e) => handleBlur(e, startDateId));
+    endDateInput.addEventListener('blur', (e) => handleBlur(e, endDateId));
+
+    return () => {
+      startDateInput.removeEventListener('blur', handleBlur);
+      endDateInput.removeEventListener('blur', handleBlur);
+    };
+  }, [startDateId, endDateId, dateFormat, earliestMoment, latestMoment]);
 
   const useCompactLayout = useMediaQuery(
     `(max-width: ${BREAKPOINTS.Medium - 1}px)`,
@@ -199,12 +276,13 @@ export const DateRangePicker = ({
 
   const today = moment(todaysDate);
 
-  const dateFormat =
-    getCurrentLocale().toLowerCase() === 'en-us' ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
-
   return (
     // We wrap in a span to assist with scoping CSS selectors & overriding styles from react-dates
-    <span className="c-date-picker">
+    <span
+      className={`c-date-picker${
+        startDateError || endDateError ? ' c-date-picker--error' : ''
+      }`}
+    >
       <ReactDateRangePicker
         startDateId={startDateId}
         startDate={startMoment}
@@ -277,6 +355,13 @@ export const DateRangePicker = ({
           />
         )}
       />
+      <div
+        className="c-date-picker__errors crayons-field__description"
+        aria-live="assertive"
+      >
+        <div id="start-date-error">{startDateError}</div>
+        <div id="end-date-error">{endDateError}</div>
+      </div>
     </span>
   );
 };
