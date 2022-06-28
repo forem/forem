@@ -236,7 +236,7 @@ export const DateRangePicker = ({
       if (valueMoment.isAfter(latestMoment)) {
         setError(
           PICKER_PHRASES.dateTooLate(
-            earliestMoment.format(dateFormat),
+            latestMoment.format(dateFormat),
             errorPrefix,
           ),
           inputId,
