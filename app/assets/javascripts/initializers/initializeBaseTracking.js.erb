@@ -227,8 +227,6 @@ function trackAdImpression(token, adBox) {
 }
 
 function trackAdClick(token, clickedElement) {
-  console.log("CLICKED!", clickedElement);
-  return false;
   var adBox = clickedElement.closest('[data-display-unit]');
   if (!adClicked) {
     var dataBody = {
