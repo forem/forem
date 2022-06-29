@@ -57,7 +57,8 @@
 
       <% if current_user.has_trusted_role? && @response_template.new_record? %>
         <div class="crayons-field">
-          <div>
+          <fieldset>
+            <legend class="screen-reader-only">Template type</legend>
             <%= f.radio_button :type_of, "personal_comment",
                                checked: @response_template.type_of != "mod_comment",
                                class: "crayons-radio", role: "radio" %>
@@ -66,7 +67,7 @@
             <%= f.radio_button :type_of, "mod_comment",
                                class: "crayons-radio", role: "radio" %>
             <%= label_tag "response_template_type_of_mod_comment", "Trusted User" %>
-          </div>
+          </fieldset>
         </div>
       <% end %>
 
