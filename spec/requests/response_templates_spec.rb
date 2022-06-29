@@ -146,6 +146,19 @@ RSpec.describe "ResponseTemplate", type: :request do
         expect(response_template.type_of).to eq attributes[:type_of]
       end
 
+      it "can only create personal response templates" do
+        post response_templates_path, params: {
+          response_template: {
+            title: attributes[:title],
+            content: attributes[:content],
+            type_of: "mod_comment"
+          }
+        }
+
+        response_template = ResponseTemplate.last
+        expect(response_template.type_of).to eq "personal_comment"
+      end
+
       it "redirects to the edit page upon success" do
         post response_templates_path, params: {
           response_template: {
