@@ -1,8 +1,6 @@
 module Articles
-  module Unpublish
-    module_function
-
-    def call(article)
+  class Unpublish
+    def self.call(article)
       if article.has_frontmatter?
         article.body_markdown.sub!(/\npublished:\s*true\s*\n/, "\npublished: false\n")
       else

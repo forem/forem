@@ -1207,9 +1207,9 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
   describe "POST /api/articles/:id/unpublish" do
     let(:user) { api_secret.user }
-    let(:frontmatter) { "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello" }
-    let(:frontmatter_article) { create(:article, body_markdown: frontmatter) }
-    let(:path) { api_article_unpublish_path(frontmatter_article.id) }
+    # let(:frontmatter) { "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello" }
+    let(:published_article) { create(:article, published: true) }
+    let(:path) { api_article_unpublish_path(published_article.id) }
 
     context "when unauthorized" do
       it "fails with no api key" do
@@ -1237,7 +1237,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect do
           post path, headers: v1_headers
           expect(response).to have_http_status(:ok)
-        end.to change(frontmatter_article, :published?).from(true).to(false)
+        end.to change(published_article, :published?).from(true).to(false)
       end
     end
 
@@ -1248,7 +1248,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect do
           post path, headers: v1_headers
           expect(response).to have_http_status(:ok)
-        end.to change(frontmatter_article, :published?).from(true).to(false)
+        end.to change(published_article, :published?).from(true).to(false)
       end
     end
   end
