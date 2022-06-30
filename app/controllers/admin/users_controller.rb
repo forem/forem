@@ -25,8 +25,24 @@ module Admin
       last_moderation_notification last_notification_activity
     ].freeze
 
+    MODROLE_ACTIONS_TO_POLICIES = {
+      user_status: :toggle_suspension_status?,
+      unpublish_all_articles: :unpublish_all_articles?
+    }.freeze
+
     after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
+    end
+
+    # Having this method here (which also exists in admin/application_controller)
+    # allows us to authorize the actions of the moderator role specifically,
+    # while preserving the implementation for all other admin actions
+    def authorize_admin
+      if MODROLE_ACTIONS_TO_POLICIES.key?(action_name.to_sym)
+        authorize(User, MODROLE_ACTIONS_TO_POLICIES[action_name.to_sym])
+      else
+        super
+      end
     end
 
     def index
@@ -104,18 +120,33 @@ module Admin
       begin
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
         flash[:success] = I18n.t("admin.users_controller.updated")
+        respond_to do |format|
+          format.html do
+            redirect_back_or_to admin_users_path
+          end
+          format.json do
+            render json: {
+              success: true,
+              message: I18n.t("admin.users_controller.updated_json", username: @user.username)
+            }, status: :ok
+          end
+        end
       rescue StandardError => e
         flash[:danger] = e.message
+        respond_to do |format|
+          format.html do
+            redirect_back_or_to admin_users_path
+          end
+          format.json do
+            render json: {
+              success: false,
+              message: @user.errors_as_sentence
+            }, status: :unprocessable_entity
+          end
+        end
       end
-
       Credits::Manage.call(@user, credit_params)
       add_note if user_params[:new_note]
-
-      if request.referer&.include?(admin_user_path(params[:id]))
-        redirect_to admin_user_path(params[:id])
-      else
-        redirect_to admin_users_path
-      end
     end
 
     def export_data
@@ -158,8 +189,17 @@ module Admin
 
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      flash[:success] = I18n.t("admin.users_controller.unpublished")
-      redirect_to admin_user_path(params[:id])
+      message = I18n.t("admin.users_controller.unpublished")
+      respond_to do |format|
+        format.html do
+          flash[:success] = message
+          redirect_to admin_user_path(params[:id])
+        end
+
+        format.json do
+          render json: { message: message }
+        end
+      end
     end
 
     def merge
