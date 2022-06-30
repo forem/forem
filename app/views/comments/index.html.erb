@@ -129,9 +129,11 @@
     data-commentable-co-author-ids="<%= @commentable&.co_author_ids&.join(",") %>">
 
     <% unless @root_comment %>
-      <%= render "form",
-                 commentable: @commentable,
-                 commentable_type: "Article" %>
+      <% if @discussion_lock %>
+        <%= render "discussion_lock_reason" %>
+      <% else %>
+        <%= render "form", commentable: @commentable, commentable_type: "Article" %>
+      <% end %>
     <% end %>
 
     <div class="comments" id="comment-trees-container">
