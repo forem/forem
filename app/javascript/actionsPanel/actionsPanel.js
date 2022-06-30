@@ -389,11 +389,6 @@ export function addBottomActionsListeners() {
     });
   }
 
-  const unpublishArticleBtn = document.getElementById('unpublish-article-btn');
-  if (unpublishArticleBtn) {
-    unpublishArticleBtn.addEventListener('click', toggleUnpublishPostModal);
-  }
-
   document
     .getElementById('open-flag-user-modal')
     .addEventListener('click', toggleFlagUserModal);
@@ -406,8 +401,13 @@ export function addBottomActionsListeners() {
     .getElementById('unsuspend-user-btn')
     ?.addEventListener('click', toggleModal);
 
-  document.getElementById('unpublish-all-posts-btn')
+  document
+    .getElementById('unpublish-all-posts-btn')
     ?.addEventListener('click', toggleUnpublishAllPostsModal);
+
+  document
+    .getElementById('unpublish-article-btn')
+    ?.addEventListener('click', toggleUnpublishPostModal);
 }
 
 export function initializeActionsPanel() {

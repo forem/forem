@@ -79,7 +79,7 @@ export function toggleUnpublishPostModal(event) {
     document: window.parent.document,
     modalContent: getModalContents(modalContentSelector),
     title: 'Unpublish post',
-    size: 'size',
+    size: 'small',
     onOpen: () => {
       activateModalUnpublishBtn(articleId, authorUsername, articleSlug);
     },
