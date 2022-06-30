@@ -4,9 +4,13 @@ RSpec.describe "User discussion locks", type: :system, js: true do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:discussion_lock) { create(:discussion_lock, article: article, locking_user: user) }
+  let(:comment_one) { create(:comment, user: user, commentable: article) }
+  let(:comment_two) { create(:comment, user: user, commentable: article) }
 
   before do
     article
+    comment_one
+    comment_two
     sign_in user
   end
 
@@ -28,6 +32,37 @@ RSpec.describe "User discussion locks", type: :system, js: true do
     it "doesn't hide new comment box on the Article" do
       visit article.path
       expect(page).to have_selector("#new_comment")
+    end
+
+    it "doesn't hide reply button on each comment on the Article page" do
+      visit article.path
+      expect(page).to have_selector("[data-tracking-name='comment_reply_button']").twice
+    end
+
+    it "doesn't hide new commment box on the legacy Comments page" do
+      visit "#{article.path}/comments"
+      expect(page).to have_selector("#new_comment")
+    end
+
+    it "doesn't hide reply button on each comment on the legacy Comments page" do
+      visit "#{article.path}/comments"
+      expect(page).to have_selector("[data-tracking-name='comment_reply_button']").twice
+    end
+
+    it "doesn't hide reply button on each comment on a legacy Comment page" do
+      visit "#{article.path}/comments/#{comment_one.id.to_s(26)}"
+      expect(page).to have_selector("[data-tracking-name='comment_reply_button']")
+
+      visit "#{article.path}/comments/#{comment_two.id.to_s(26)}"
+      expect(page).to have_selector("[data-tracking-name='comment_reply_button']")
+    end
+
+    it "doesn't hide reply button on each comment on a Comment page" do
+      visit comment_one.path
+      expect(page).to have_selector("[data-tracking-name='comment_reply_button']")
+
+      visit comment_two.path
+      expect(page).to have_selector("[data-tracking-name='comment_reply_button']")
     end
   end
 
