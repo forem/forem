@@ -45,10 +45,10 @@ Rails.application.routes.draw do
       # API V1 is in pre-release: Available iff api_v1 FeatureFlag is enabled
       constraints(->(_req) { FeatureFlag.enabled?(:api_v1) }) do
         scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
-          draw :api
-
           # V1 only endpoints
           post "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
+
+          draw :api
         end
       end
 

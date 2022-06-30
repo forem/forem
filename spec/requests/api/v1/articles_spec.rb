@@ -1207,8 +1207,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
   describe "POST /api/articles/:id/unpublish" do
     let(:user) { api_secret.user }
-    # let(:frontmatter) { "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello" }
-    let(:published_article) { create(:article, published: true) }
+    let!(:published_article) { create(:article, published: true) }
     let(:path) { api_article_unpublish_path(published_article.id) }
 
     context "when unauthorized" do
@@ -1234,10 +1233,10 @@ RSpec.describe "Api::V1::Articles", type: :request do
       before { user.add_role(:moderator) }
 
       it "unpublishes an article" do
-        expect do
-          post path, headers: v1_headers
-          expect(response).to have_http_status(:ok)
-        end.to change(published_article, :published?).from(true).to(false)
+        expect(published_article.published).to be true
+        post path, headers: v1_headers
+        expect(response).to have_http_status(:ok)
+        expect(published_article.reload.published).to be false
       end
     end
 
@@ -1245,10 +1244,10 @@ RSpec.describe "Api::V1::Articles", type: :request do
       before { user.add_role(:super_admin) }
 
       it "unpublishes an article" do
-        expect do
-          post path, headers: v1_headers
-          expect(response).to have_http_status(:ok)
-        end.to change(published_article, :published?).from(true).to(false)
+        expect(published_article.published).to be true
+        post path, headers: v1_headers
+        expect(response).to have_http_status(:ok)
+        expect(published_article.reload.published).to be false
       end
     end
   end
