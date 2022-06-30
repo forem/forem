@@ -54,7 +54,11 @@
     <% if policy(@moderatable).revoke_publication? %>
       <button
         class="c-btn c-btn--primary c-btn--destructive w-100 my-4"
-        id="unpublish-article-btn">
+        id="unpublish-article-btn"
+        data-article-id="<%= @moderatable.id %>"
+        data-author-username="<%= @moderatable.username %>"
+        data-article-slug="<%= @moderatable.slug %>"
+        data-modal-content-selector="#unpublish-post-modal">
         <%= t("views.moderations.actions.unpublish") %>
       </button>
     <% end %>
