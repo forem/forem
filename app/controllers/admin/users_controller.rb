@@ -25,17 +25,21 @@ module Admin
       last_moderation_notification last_notification_activity
     ].freeze
 
-    ATTRIBUTES_FOR_USER_INDEX = %i[search role roles joining_start joining_end date_format organizations].freeze
-
     after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
     def index
-      # We could do `params.permit(ATTRIBUTES_FOR_USER_INDEX).to_h.symbolize_keys`
-      # but slice works with string/symbol keys
-      kwargs = params.permit(ATTRIBUTES_FOR_USER_INDEX).to_h.slice(ATTRIBUTES_FOR_USER_INDEX)
-      @users = Admin::UsersQuery.call(relation: User.registered, **kwargs).page(params[:page]).per(50)
+      @users = Admin::UsersQuery.call(
+        relation: User.registered,
+        search: params[:search],
+        role: params[:role],
+        roles: params[:roles],
+        joining_start: params[:joining_start],
+        joining_end: params[:joining_end],
+        date_format: params[:date_format],
+        organizations: params[:organizations],
+      ).page(params[:page]).per(50)
 
       @organization_limit = 3
       @organizations = Organization.order(name: :desc)
