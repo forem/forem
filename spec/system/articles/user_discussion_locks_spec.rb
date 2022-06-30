@@ -92,5 +92,36 @@ RSpec.describe "User discussion locks", type: :system, js: true do
       visit article.path
       expect(page).not_to have_selector("#new_comment")
     end
+
+    it "hides reply button on each comment on the Article page" do
+      visit article.path
+      expect(page).not_to have_selector("[data-tracking-name='comment_reply_button']")
+    end
+
+    it "hides new comment box on the legacy Comments page" do
+      visit "#{article.path}/comments"
+      expect(page).not_to have_selector("#new_comment")
+    end
+
+    it "hides reply button on each comment on the legacy Comments page" do
+      visit "#{article.path}/comments"
+      expect(page).not_to have_selector("[data-tracking-name='comment_reply_button']")
+    end
+
+    it "hides reply button on each comment on a legacy Comment page" do
+      visit "#{article.path}/comments/#{comment_one.id.to_s(26)}"
+      expect(page).not_to have_selector("[data-tracking-name='comment_reply_button']")
+
+      visit "#{article.path}/comments/#{comment_two.id.to_s(26)}"
+      expect(page).not_to have_selector("[data-tracking-name='comment_reply_button']")
+    end
+
+    it "hides reply button on each comment on a Comment page" do
+      visit comment_one.path
+      expect(page).not_to have_selector("[data-tracking-name='comment_reply_button']")
+
+      visit comment_two.path
+      expect(page).not_to have_selector("[data-tracking-name='comment_reply_button']")
+    end
   end
 end
