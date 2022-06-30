@@ -8,6 +8,9 @@
 
 <%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
 
+<% user_suspended = @moderatable.user.suspended? %>
+<% user_username = @moderatable.username %>
+
 <div class="container mod-container">
   <header class="top-header">
     <h1><%= t("views.moderations.actions.heading") %></h1>
@@ -61,7 +64,7 @@
         id="feature-article-btn"
         data-article-featured="<%= @moderatable.featured %>"
         data-article-id="<%= @moderatable.id %>"
-        data-article-author="<%= @moderatable.username %>"
+        data-article-author="<%= user_username %>"
         data-article-slug="<%= @moderatable.slug %>">
         <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
       </button>
@@ -183,22 +186,43 @@
       </a>
     </div>
 
-    <%# Hiding this Admin Actions panel until Flag User, Unpublish All Posts and Suspend User are moved into it  %>
-    <% if current_user.any_admin? %>
-      <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action hidden" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
+    <% if policy(@moderatable).can_perform_moderator_actions? %>
+      <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
             <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
           </div>
           <header>
             <h2><%= t("views.moderations.actions.admin.heading") %></h2>
-            <h3><%= t("views.moderations.actions.admin.subtitle") %></h3>
+            <h3><%= t("views.moderations.actions.admin.subtitle", user: user_username) %></h3>
           </header>
         </div>
         <div class="toggle-chevron-container">
           <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
         </div>
       </button>
+
+      <div id="admin-action-options" class="admin-action-options dropdown-options mt-4 hidden">
+        <button
+          type="button"
+          id="<%= user_suspended ? "unsuspend" : "suspend" %>-user-btn"
+          class="js-suspend-unsuspend-flow-btn c-btn <%= user_suspended ? "" : "c-btn--destructive" %> align-center fs-s"
+          data-modal-title="<%= user_suspended ? "Unsuspend" : "Suspend" %> <%= user_username %>"
+          data-modal-size="small" data-modal-content-selector="#<%= user_suspended ? "unsuspend" : "suspend" %>-modal-content" data-username="<%= user_username %>">
+            <%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_user", username: user_username) %>
+        </button>
+
+        <button
+          type="button"
+          id="unpublish-all-posts-btn"
+          class="c-btn c-btn--destructive align-center fs-s"
+          data-modal-title="Unpublish all posts"
+          data-modal-size="small"
+          data-modal-content-selector="#unpublish-all-posts"
+          data-username="<%= @moderatable.username %>">
+          Unpublish all posts for <%= @moderatable.username %>
+        </button>
+      </div>
     <% end %>
   </div>
 

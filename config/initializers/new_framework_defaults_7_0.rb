@@ -50,7 +50,7 @@ Rails.application.config.active_support.executor_around_test_case = true
 # Define the isolation level of most of Rails internal state.
 # If you use a fiber based server or job processor, you should set it to `:fiber`.
 # Otherwise the default of `:thread` if preferable.
-# Rails.application.config.active_support.isolation_level = :thread
+Rails.application.config.active_support.isolation_level = :thread
 
 # Set both the `:open_timeout` and `:read_timeout` values for `:smtp` delivery method.
 Rails.application.config.action_mailer.smtp_timeout = 5
@@ -64,27 +64,10 @@ Rails.application.config.active_record.verify_foreign_keys_for_fixtures = true
 # Disable partial inserts.
 # This default means that all columns will be referenced in INSERT queries
 # regardless of whether they have a default or not.
-# Rails.application.config.active_record.partial_inserts = false
+Rails.application.config.active_record.partial_inserts = false
 #
 # Protect from open redirect attacks in `redirect_back_or_to` and `redirect_to`.
-# Rails.application.config.action_controller.raise_on_open_redirects = true
-
-# If you're upgrading and haven't set `cookies_serializer` previously, your cookie serializer
-# was `:marshal`. Convert all cookies to JSON, using the `:hybrid` formatter.
-#
-# If you're confident all your cookies are JSON formatted, you can switch to the `:json` formatter.
-#
-# Continue to use `:marshal` for backward-compatibility with old cookies.
-#
-# If you have configured the serializer elsewhere, you can remove this.
-#
-# See https://guides.rubyonrails.org/action_controller_overview.html#cookies for more information.
-# Rails.application.config.action_dispatch.cookies_serializer = :hybrid
-
-# Enable parameter wrapping for JSON.
-# Previously this was set in an initializer. It's fine to keep using that initializer if you've customized it.
-# To disable parameter wrapping entirely, set this config to `false`.
-# Rails.application.config.action_controller.wrap_parameters_by_default = true
+Rails.application.config.action_controller.raise_on_open_redirects = true
 
 # Specifies whether generated namespaced UUIDs follow the RFC 4122 standard for namespace IDs provided as a
 # `String` to `Digest::UUID.uuid_v3` or `Digest::UUID.uuid_v5` method calls.

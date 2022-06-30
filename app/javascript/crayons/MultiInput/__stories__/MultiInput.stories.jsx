@@ -14,6 +14,9 @@ export default {
         description:
           'Placeholder text, shown when no selections have been made yet',
       },
+      regex: {
+        description: 'A regular expression used to validate the input',
+      },
     },
   },
 };
@@ -24,6 +27,7 @@ export const Default = (args) => {
 
 Default.args = {
   placeholder: 'Add an email address...',
+  regex: /([a-zA-Z0-9@.])/,
 };
 
 Default.story = {

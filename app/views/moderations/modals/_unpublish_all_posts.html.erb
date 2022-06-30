@@ -1,0 +1,18 @@
+<div id="unpublish-all-posts" class="hidden">
+  <p>
+    Once unpublished, all posts by <%= @article.username %>  will become
+    hidden and only accessible to themselves.
+  </p>
+  <p class="mt-2">
+    If <%= @article.username %> is not suspended, they can still re-publish
+    their posts from their dashboard.
+  </p>
+  <div class="mt-4">
+    <button
+      id="unpublish-all-posts-submit-btn"
+      class="c-btn c-btn--destructive c-btn--primary"
+      data-user-id="<%= @article.user.id %>">
+      Unpublish all posts
+    </button>
+  </div>
+</div>

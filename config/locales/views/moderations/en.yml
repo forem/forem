@@ -6,7 +6,7 @@ en:
       actions:
         meta:
           title: Moderating %{title}
-          title2: "[Moderate] %{title}"
+          title2: '[Moderate] %{title}'
         heading: Moderate Post
         subtitle: Rate the quality of this post
         abusive:
@@ -38,7 +38,7 @@ en:
           resource_admin: ResourceAdmin:Article
         errors:
           one: '1 error prohibited this block from being saved:'
-          other: "%{count} errors prohibited this block from being saved:"
+          other: '%{count} errors prohibited this block from being saved:'
         experience:
           heading: Set experience level
           heading2: Experience Level of Post
@@ -46,7 +46,7 @@ en:
           aria_label: Open experience level section
           icon: Book
           desc_html: Who <em>might</em> find this post most valuable, based on overall experience level?
-          from: "%{lvl} - "
+          from: '%{lvl} - '
           level:
             Advanced: Advanced
             Beginner: Beginner
@@ -54,9 +54,9 @@ en:
             Mid-level: Mid-level
             Novice: Novice
         admin:
-          heading: Admin actions
-          heading2: Higher permission post options
-          subtitle: Higher permission post options
+          heading: Moderating actions
+          heading2: Moderating actions for %{user}
+          subtitle: Moderating actions for %{user}
           aria_label: Open admin actions
           icon: Crown
         flag: Flag user
@@ -74,20 +74,27 @@ en:
             Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
         other: Other things you can do
         add_reaction: Add a reaction
+        suspend:
+          suspend_user: Suspend %{username}
+          suspend_modal_text: Once suspended, %{username} will not be able to comment or publish posts until their suspension is removed.
+          suspend_modal_button: Submit & Suspend
+          unsuspend_user: Unsuspend %{username}
+          unsuspend_modal_text: Once unsuspended, %{username} will be able to comment and publish posts again.
+          unsuspend_modal_button: Submit & Unsuspend
         suspicious: Suspicious
         tag:
           subtitle: Tag Adjustments
           add: Add
-          added_html: "<b>Currently added tag:</b> %{tag}"
-          live_html: "<b>Current live tags:</b> %{tags}"
+          added_html: '<b>Currently added tag:</b> %{tag}'
+          live_html: '<b>Current live tags:</b> %{tags}'
           reason: Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.
           remove: Remove
-          removed_html: "<b>Currently removed tag:</b> %{tag}"
+          removed_html: '<b>Currently removed tag:</b> %{tag}'
           select: Select Tag
           submit: Submit Tag Adjustment
           tag_name: Tag Name
           undo:
-            button: "×"
+            button: '×'
             confirm: Are you sure you want to undo the %{type} of the %{tag} tag?
             type:
               addition: addition
@@ -102,8 +109,8 @@ en:
         flag_to_admins: Flag to Admins
         vote_up: High Quality
         featured_past_day:
-          one: "%{count} post from the past day is featured."
-          other: "%{count} posts from the past day are featured."
+          one: '%{count} post from the past day is featured.'
+          other: '%{count} posts from the past day are featured.'
       all: All topics
       aside:
         all: All topics
@@ -112,7 +119,7 @@ en:
         feedback:
           subtitle: Have feedback to improve your Mod experience?
           description: Please email %{email}!
-        hello: "Hello! 👋"
+        hello: 'Hello! 👋'
         thanks: Thank you for helping to keep %{community} safe! ❤️
         inbox: Inbox
         resources: Resources
@@ -122,7 +129,7 @@ en:
       author: Author
       date: Date
       notice:
-        subtitle: "%{community} Mods"
+        subtitle: '%{community} Mods'
         desc1_html: We periodically award some %{community} members with heightened privileges to help moderate the community.
         desc2_html: Check out our %{code} and read through our %{trusted} and %{tag}.
         desc3_html: If you'd like to assist us as a trusted user or tag mod, please email us at %{email} and let us know which role you're interested in and why. If it's tag moderation, please tell us what tags you'd like to moderate for.

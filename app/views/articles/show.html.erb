@@ -220,6 +220,9 @@
 <div class="mod-actions-menu print-hidden"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 <div data-testid="unpublish-post-modal-container" class="unpublish-post-modal-container hidden"></div>
+<%= render "moderations/modals/suspend_user_modal" %>
+<%= render "moderations/modals/unsuspend_user_modal" %>
+<%= render "moderations/modals/unpublish_all_posts" %>
 
 <div class="fullscreen-code js-fullscreen-code"></div>
 <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
