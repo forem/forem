@@ -39,9 +39,9 @@
               <%= story.cached_user.name %>
             </a>
             <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
-              <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s p-1 -ml-1 -my-2 crayons-btn crayons-btn--ghost" aria-label="<%= t("views.users.details",
+              <button id="story-author-preview-trigger-<%= story.id %>" aria-controls="story-author-preview-content-<%= story.id %>" class="profile-preview-card__trigger fs-s p-1 -ml-1 -my-2 crayons-btn crayons-btn--ghost" aria-label="<%=h t("views.users.details",
                                                                                                                                                                                                                                                  user: story.cached_user.name) %>">
-                <%=h story.cached_user.name %>
+                <%= story.cached_user.name %>
               </button>
               <div
                 id="story-author-preview-content-<%= story.id %>"
