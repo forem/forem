@@ -196,7 +196,6 @@ Options.propTypes = {
   passedData: PropTypes.shape({
     published: PropTypes.bool.isRequired,
     publishedAt: PropTypes.string.isRequired,
-    schedulingEnabled: PropTypes.bool.isRequired,
     timezone: PropTypes.string.isRequired,
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
