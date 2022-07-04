@@ -72,9 +72,8 @@ export class ArticleForm extends Component {
 
   constructor(props) {
     super(props);
-    const { article, version, siteLogo } = this.props;
+    const { article, version, siteLogo, schedulingEnabled } = this.props;
     let { organizations } = this.props;
-    const { schedulingEnabled } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
     this.url = window.location.href;
