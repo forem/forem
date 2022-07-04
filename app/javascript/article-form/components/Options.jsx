@@ -113,7 +113,6 @@ export const Options = ({
           value={timezone} // "Asia/Magadan"
           className="crayons-textfield"
           name="timezone"
-          onKeyUp={onConfigChange}
           id="timezone"
           placeholder="..."
         />
