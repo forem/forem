@@ -91,7 +91,7 @@ export const Options = ({
       </div>
     );
   }
-  if (schedulingEnabled) {
+  if (schedulingEnabled && !readonlyPublishedAt) {
     publishedAtField = (
       <div className="crayons-field mb-6">
         <label htmlFor="publishedAt" className="crayons-field__label">
@@ -101,7 +101,6 @@ export const Options = ({
           type="datetime-local"
           min={minPublishedAt}
           value={localPublishedAt} // "2022-04-28T15:00:00"
-          readonly={readonlyPublishedAt}
           className="crayons-textfield"
           name="publishedAt"
           onChange={onConfigChange}
