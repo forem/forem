@@ -372,7 +372,8 @@ export const AutocompleteTriggerTextArea = forwardRef(
         className={`c-autocomplete ${autoResize ? ' h-100' : ''}`}
         data-testid="autocomplete-wrapper"
       >
-        <span className="screen-reader-only" aria-live="polite">
+        {/* We use an assertive live region to alert screen reader users typing will now result in a search */}
+        <span className="screen-reader-only" aria-live="assertive">
           {isComboboxMode ? searchInstructionsMessage : ''}
         </span>
 
