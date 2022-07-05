@@ -1,0 +1,3 @@
+database:
+  type: postgresql:12
+  disk: 256

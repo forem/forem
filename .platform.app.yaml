@@ -1,0 +1,4 @@
+name: 'forem-platform'
+type: 'ruby:3.0'
+relationships:
+    database: "database:postgresql"

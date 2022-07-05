@@ -1,0 +1,3 @@
+"https://{default}/":
+    type: upstream
+    upstream: "forem-platform:http"
