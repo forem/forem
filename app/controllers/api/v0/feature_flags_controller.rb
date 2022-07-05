@@ -8,20 +8,7 @@ module Api
     # disabling so we don't need conditional or boolean casting and these were
     # the most fitting actions.
     class FeatureFlagsController < ApiController
-      def create
-        FeatureFlag.enable(params[:flag])
-        head :ok
-      end
-
-      def show
-        flag = params[:flag]
-        render json: { flag => FeatureFlag.enabled?(flag) }
-      end
-
-      def destroy
-        FeatureFlag.disable(params[:flag])
-        head :ok
-      end
+      include Api::FeatureFlagsController
     end
   end
 end

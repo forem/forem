@@ -45,6 +45,8 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
+  MAX_TAG_LIST_SIZE = 4
+
   # Filter out anything that isn't a word, space, punctuation mark, or
   # recognized emoji.
   # See: https://github.com/forem/forem/pull/16787#issuecomment-1062044359
@@ -83,6 +85,7 @@ class Article < ApplicationRecord
     \u303d        # Either a line chart plummeting or the letter M, not sure
     \u3297        # Circled Ideograph Congratulation
     \u3299        # Circled Ideograph Secret
+    \u20ac        # Euro symbol (€)
     \u{1f000}-\u{1ffff} # More common emoji
   ]+/m
   # rubocop:enable Lint/DuplicateRegexpCharacterClassElement
@@ -399,6 +402,8 @@ class Article < ApplicationRecord
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
+
+  self.ignored_columns = ["spaminess_rating"]
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date
@@ -742,7 +747,7 @@ class Article < ApplicationRecord
     add_tag_adjustments_to_tag_list
 
     # check there are not too many tags
-    return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > 4
+    return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
     # check tags names aren't too long and don't contain non alphabet characters
     tag_list.each do |tag|

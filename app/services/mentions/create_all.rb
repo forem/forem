@@ -24,7 +24,7 @@ module Mentions
       mentioned_usernames = extract_usernames_from_mentions_in_text
 
       collect_existing_users(mentioned_usernames)
-        .yield_self do |existing_mentioned_users|
+        .then do |existing_mentioned_users|
           reject_notifiable_author(existing_mentioned_users)
         end
     end

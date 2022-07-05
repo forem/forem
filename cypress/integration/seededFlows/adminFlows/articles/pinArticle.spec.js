@@ -36,7 +36,7 @@ describe('Pin an article from the admin area', () => {
     cy.url().should('contain', '/content_manager/articles/');
 
     cy.findByRole('button', { name: 'Pin post' }).should('not.exist');
-    cy.findByRole('link', { name: 'Unpin post' }).should('exist');
+    cy.findByRole('button', { name: 'Unpin post' }).should('exist');
     cy.findByTestId('pinned-indicator').should('exist');
   });
 
@@ -96,7 +96,7 @@ describe('Pin an article from the admin area', () => {
 
   it('should show the pinned post to a logged out user', () => {
     cy.findAllByRole('button', { name: 'Pin post' }).first().click();
-    cy.findByRole('link', { name: 'Unpin post' }).should('exist');
+    cy.findByRole('button', { name: 'Unpin post' }).should('exist');
 
     cy.signOutUser();
     cy.findAllByRole('link', { name: 'Log in' }).first().should('exist');

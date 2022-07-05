@@ -25,7 +25,7 @@ module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
-    config.load_defaults 6.0
+    config.load_defaults 6.1
 
     ### FRAMEWORK DEFAULT OVERRIDES
     # Override new framework defaults to keep existing behavior.
@@ -47,6 +47,17 @@ module PracticalDeveloper
     ## Rails 6.1
     # This replaces the old config.active_support.use_sha1_digests from Rails 5.2
     config.active_support.hash_digest_class = ::Digest::MD5 # New default is ::Digest::SHA1
+
+    # Make `form_with` generate non-remote forms by default. We want this to be true as it was the default in 5.2
+    config.action_view.form_with_generates_remote_forms = true
+
+    ## Rails 7.0
+    config.action_dispatch.cookies_serializer = :json
+
+    # Enable parameter wrapping for JSON.
+    # Previously this was set in an initializer. It's fine to keep using that initializer if you've customized it.
+    # To disable parameter wrapping entirely, set this config to `false`.
+    config.action_controller.wrap_parameters_by_default = false
     ### END FRAMEWORK DEFAULT OVERIDES
 
     # Disable auto adding of default load paths to $LOAD_PATH

@@ -123,7 +123,7 @@ RSpec.describe "Admin::Users", type: :request do
 
   context "when managing activity and roles" do
     it "adds comment suspend role" do
-      params = { user: { user_status: "Comment Suspend", note_for_current_role: "comment suspend this user" } }
+      params = { user: { user_status: "Comment Suspended", note_for_current_role: "comment suspend this user" } }
       patch user_status_admin_user_path(user.id), params: params
 
       expect(user.roles.first.name).to eq("comment_suspended")
@@ -134,7 +134,7 @@ RSpec.describe "Admin::Users", type: :request do
       user.add_role(:trusted)
       user.reload
 
-      params = { user: { user_status: "Comment Suspend", note_for_current_role: "comment suspend this user" } }
+      params = { user: { user_status: "Comment Suspended", note_for_current_role: "comment suspend this user" } }
       patch user_status_admin_user_path(user.id), params: params
 
       expect(user.roles.count).to eq(1)

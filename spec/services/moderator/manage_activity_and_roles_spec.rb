@@ -10,7 +10,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     described_class.handle_user_roles(
       admin: admin,
       user: user,
-      user_params: { note_for_current_role: "warning user", user_status: "Warn" },
+      user_params: { note_for_current_role: "warning user", user_status: "Warned" },
     )
     expect(user.warned?).to be true
     expect(user.suspended?).to be false
@@ -78,7 +78,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     described_class.handle_user_roles(
       admin: admin,
       user: user,
-      user_params: { note_for_current_role: "user in good standing", user_status: "Regular Member" },
+      user_params: { note_for_current_role: "user in good standing", user_status: "Good standing" },
     )
     expect(user.suspended?).to be false
     expect(user.roles.count).to eq(0)
@@ -116,6 +116,16 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
           admin: admin,
           user: user,
           user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Resource Admin: Article" },
+        )
+      end.to raise_error(StandardError)
+    end
+
+    it "updates user to moderator" do
+      expect do
+        described_class.handle_user_roles(
+          admin: admin,
+          user: user,
+          user_params: { note_for_current_role: "Upgrading to moderator", user_status: "Moderator" },
         )
       end.to raise_error(StandardError)
     end

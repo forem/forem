@@ -13,6 +13,12 @@ RSpec.describe Article, type: :model do
   include_examples "#sync_reactions_count", :article
   it_behaves_like "UserSubscriptionSourceable"
 
+  describe "ignored columns" do
+    it "ignores spaminess rating" do
+      expect(described_class.ignored_columns).to eq ["spaminess_rating"]
+    end
+  end
+
   describe "validations" do
     it { is_expected.to belong_to(:collection).optional }
     it { is_expected.to belong_to(:organization).optional }
@@ -231,6 +237,14 @@ RSpec.describe Article, type: :model do
 
       it "allows useful emojis and extended punctuation" do
         allowed_title = "Hello! Title — Emdash⁉️ 🤖🤯🔥®™©👨‍👩🏾👦‍👦"
+
+        article = create(:article, title: allowed_title)
+
+        expect(article.title).to eq allowed_title
+      end
+
+      it "allows Euro symbol (€)" do
+        allowed_title = "Euro code €€€"
 
         article = create(:article, title: allowed_title)
 

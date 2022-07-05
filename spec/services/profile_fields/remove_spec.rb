@@ -27,7 +27,7 @@ RSpec.describe ProfileFields::Remove, type: :service do
     let(:id) { 428 }
 
     before do
-      profile_field = instance_double("ProfileField", destroy: false, errors_as_sentence: "Something went wrong")
+      profile_field = instance_double(ProfileField, destroy: false, errors_as_sentence: "Something went wrong")
       allow(ProfileField).to receive(:find).with(id).and_return(profile_field)
     end
 

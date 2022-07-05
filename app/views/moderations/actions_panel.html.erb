@@ -8,6 +8,9 @@
 
 <%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
 
+<% user_suspended = @moderatable.user.suspended? %>
+<% user_username = @moderatable.username %>
+
 <div class="container mod-container">
   <header class="top-header">
     <h1><%= t("views.moderations.actions.heading") %></h1>
@@ -48,6 +51,28 @@
       <span></span>
       <%= crayons_icon_tag(:checkmark, class: "vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </button>
+    <% if policy(@moderatable).revoke_publication? %>
+      <button
+        class="c-btn c-btn--primary c-btn--destructive w-100 my-4"
+        id="unpublish-article-btn">
+        <%= t("views.moderations.actions.unpublish") %>
+      </button>
+    <% end %>
+    <% if policy(@moderatable).toggle_featured_status? %>
+      <button
+        class="c-btn c-btn--primary w-100"
+        id="feature-article-btn"
+        data-article-featured="<%= @moderatable.featured %>"
+        data-article-id="<%= @moderatable.id %>"
+        data-article-author="<%= user_username %>"
+        data-article-slug="<%= @moderatable.slug %>">
+        <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
+      </button>
+      <div class="additional-subtext-section py-4 pt-2">
+        <% recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
+        <%= t("views.moderations.actions.featured_past_day", count: recent_featured_count) %>
+      </div>
+    <% end %>
     <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
       <span class="additional-subtext-section py-3">
         <%= t("views.moderations.actions.how") %>
@@ -62,7 +87,8 @@
       </h3>
     </header>
 
-    <% if current_user.any_admin? || @should_show_adjust_tags %>
+    <%# Checking if the user should see the "Adjust tags" dropdown %>
+    <% if policy(@moderatable).allow_tag_adjustment? %>
       <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
@@ -79,8 +105,8 @@
       </button>
 
       <div id="adjust-tags-options" class="adjust-tags-options dropdown-options hidden">
-        <% if current_user.any_admin? %>
-          <% if @moderatable.tag_list.size < 4 %>
+        <% if policy(@moderatable).can_adjust_any_tag? %>
+          <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
             <div class="add-tag-container">
               <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
             </div>
@@ -94,7 +120,7 @@
               </div>
             </button>
           <% end %>
-        <% else %>
+        <% elsif policy(@moderatable).tag_moderator_eligible? %>
           <% @tag_moderator_tags.each do |tag| %>
             <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
             <% subtract_or_plus_title = t("views.moderations.actions.adjust.#{subtract_or_plus == 'subtract' ? 'remove' : 'add'}") %>
@@ -160,7 +186,7 @@
       </a>
     </div>
 
-    <% if current_user.any_admin? && @moderatable.published %>
+    <% if policy(@moderatable).can_perform_moderator_actions? %>
       <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
@@ -168,7 +194,7 @@
           </div>
           <header>
             <h2><%= t("views.moderations.actions.admin.heading") %></h2>
-            <h3><%= t("views.moderations.actions.admin.subtitle") %></h3>
+            <h3><%= t("views.moderations.actions.admin.subtitle", user: user_username) %></h3>
           </header>
         </div>
         <div class="toggle-chevron-container">
@@ -176,33 +202,26 @@
         </div>
       </button>
 
-      <div id="admin-action-options" class="admin-action-options dropdown-options hidden">
-        <% @recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
-        <div class="article-admin-action mt-2">
-          <button
-            class="c-btn c-btn--primary w-100 <%= "crayons-btn--destructive" if @moderatable.featured %>"
-            id="feature-article-btn"
-            data-article-featured="<%= @moderatable.featured %>"
-            data-article-id="<%= @moderatable.id %>"
-            data-article-author="<%= @moderatable.username %>"
-            data-article-slug="<%= @moderatable.slug %>">
-            <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
-          </button>
-          <div class="block additional-subtext-section py-4 pt-2">
-            <%= t("views.moderations.actions.featured_past_day", count: @recent_featured_count) %>
-          </div>
+      <div id="admin-action-options" class="admin-action-options dropdown-options mt-4 hidden">
+        <button
+          type="button"
+          id="<%= user_suspended ? "unsuspend" : "suspend" %>-user-btn"
+          class="js-suspend-unsuspend-flow-btn c-btn <%= user_suspended ? "" : "c-btn--destructive" %> align-center fs-s"
+          data-modal-title="<%= user_suspended ? "Unsuspend" : "Suspend" %> <%= user_username %>"
+          data-modal-size="small" data-modal-content-selector="#<%= user_suspended ? "unsuspend" : "suspend" %>-modal-content" data-username="<%= user_username %>">
+            <%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_user", username: user_username) %>
+        </button>
 
-        </div>
-        <div class="article-admin-action">
-          <button
-            class="c-btn c-btn--primary c-btn--destructive w-100"
-            id="unpublish-article-btn"
-            data-article-id="<%= @moderatable.id %>"
-            data-article-author="<%= @moderatable.username %>"
-            data-article-slug="<%= @moderatable.slug %>">
-            <%= t("views.moderations.actions.unpublish") %>
-          </button>
-        </div>
+        <button
+          type="button"
+          id="unpublish-all-posts-btn"
+          class="c-btn c-btn--destructive align-center fs-s"
+          data-modal-title="Unpublish all posts"
+          data-modal-size="small"
+          data-modal-content-selector="#unpublish-all-posts"
+          data-username="<%= @moderatable.username %>">
+          Unpublish all posts for <%= @moderatable.username %>
+        </button>
       </div>
     <% end %>
   </div>

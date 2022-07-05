@@ -41,6 +41,7 @@ describe('<MarkdownToolbar />', () => {
     expect(getByLabelText('Quote')).toBeInTheDocument();
     expect(getByLabelText('Code')).toBeInTheDocument();
     expect(getByLabelText('Code block')).toBeInTheDocument();
+    expect(getByLabelText('Embed')).toBeInTheDocument();
   });
 
   it('should render an overflow menu with secondary formatters and help link', async () => {

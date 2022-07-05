@@ -1516,6 +1516,151 @@ describe('markdownSyntaxFormatters', () => {
         expect(newCursorEnd).toEqual(4);
       });
     });
+
+    describe('embed', () => {
+      it('inserts embed syntax and place cursor inside embed syntax, when no selection is given', () => {
+        const textAreaValue = 'one two three';
+        const expectedNewTextAreaValue = 'one two {% embed  %}three';
+
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 8,
+          selectionEnd: 8,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
+      });
+
+      it('inserts embed syntax and highlights text, when text is selected', () => {
+        const textAreaValue = 'one two three';
+        const expectedNewTextAreaValue = 'one {% embed two %} three';
+
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
+      });
+
+      it('removes embed syntax, when cursor is inside empty embed syntax', () => {
+        const textAreaValue = 'one {% embed  %} two';
+        const expectedNewTextAreaValue = 'one  two';
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 13,
+          selectionEnd: 13,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(4);
+        expect(newCursorEnd).toEqual(4);
+      });
+
+      it('removes embed syntax and highlights the selected text, when selected text is inside embed syntax', () => {
+        const textAreaValue = 'one {% embed random-selected-text %} three';
+        const expectedNewTextAreaValue = 'one random-selected-text three';
+
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 13,
+          selectionEnd: 33,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'random-selected-text',
+        );
+      });
+
+      it('removes embed syntax and highlights the text, when full embed syntax is selected', () => {
+        const textAreaValue = 'one {% embed https://example.com %} three';
+        const expectedNewTextAreaValue = 'one https://example.com three';
+
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = coreSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 35,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'https://example.com',
+        );
+      });
+    });
   });
 
   describe('multiline formatters', () => {

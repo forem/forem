@@ -35,6 +35,15 @@ RSpec.describe "ResponseTemplate", type: :request do
         expect(response.parsed_body.length).to eq total_response_templates
       end
 
+      it "returns a hash with personal response templates if type_of unspecified" do
+        create_list(:response_template, 2, user: nil, type_of: "mod_comment")
+        create_list(:response_template, 2, user: user, type_of: "personal_comment")
+        get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
+        json = JSON.parse(response.body)
+        expect(json.keys).to contain_exactly("personal_comment")
+        expect(json.values.flatten.count).to eq(2)
+      end
+
       it "returns only the users' response templates" do
         create(:response_template, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: user, type_of: "personal_comment")
@@ -75,6 +84,15 @@ RSpec.describe "ResponseTemplate", type: :request do
         create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
         get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
         expect(JSON.parse(response.body).length).to eq 2
+      end
+
+      it "returns both personal and moderator response templates if type_of unspecified" do
+        create_list(:response_template, 2, user: nil, type_of: "mod_comment")
+        create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
+        get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
+        json = JSON.parse(response.body)
+        expect(json.keys).to contain_exactly("mod_comment", "personal_comment")
+        expect(json.values.flatten.count).to eq(4)
       end
 
       it "raises unauthorized error if trying to view admin response templates" do

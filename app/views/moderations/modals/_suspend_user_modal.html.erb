@@ -1,0 +1,41 @@
+<% user_id = @article.user.id %>
+<% author_username = @article.username %>
+<div id="suspend-modal-content" class="hidden">
+  <p>
+    <%= t("views.moderations.actions.suspend.suspend_modal_text", username: author_username) %>
+  </p>
+
+  <div class="crayons-field mt-4">
+    <label
+      for="suspend-reason-userid-<%= user_id %>"
+      class="crayons-field__label">
+      Note:
+    </label>
+    <textarea
+      id="suspend-reason-userid-<%= user_id %>"
+      rows="4"
+      cols="70"
+      placeholder="Reason for suspension"
+      class="crayons-textfield"
+      aria-describedby="suspension-reason-error"
+      required></textarea>
+    <p
+      id="suspension-reason-error"
+      data-testid="suspension-reason-error"
+      class="suspend-reason-error crayons-field__description"
+      style="color: red;"
+      aria-live="assertive">
+    </p>
+  </div>
+  <div class="mt-4">
+    <button
+      id="submit-user-suspend-btn"
+      class="c-btn c-btn--primary c-btn--destructive"
+      data-btn-action="suspend"
+      data-reason-selector="#suspend-reason-userid-<%= user_id %>"
+      data-user-id="<%= user_id %>"
+      data-username="<%= author_username %>">
+      <%= t("views.moderations.actions.suspend.suspend_modal_button", username: author_username) %>
+    </button>
+  </div>
+</div>

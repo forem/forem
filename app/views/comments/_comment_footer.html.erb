@@ -3,7 +3,8 @@
     class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button"
     id="button-for-comment-<%= comment.id %>"
     data-comment-id="<%= comment.id %>"
-    title="heart">
+    title="heart"
+    data-tracking-name="comment_heart_button">
     <%= crayons_icon_tag("small-heart",
                          class: "reaction-icon not-reacted",
                          title: t("views.comments.footer.heart.icon")) %>
@@ -18,6 +19,7 @@
         href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>"
         data-comment-id="<%= comment.id %>"
         data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
+        data-tracking-name="comment_reply_button"
         rel="nofollow">
         <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", title: t("views.comments.footer.reply.icon")) %>
         <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>

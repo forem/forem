@@ -16,6 +16,7 @@ import HeadingIcon from '@images/heading.svg';
 import QuoteIcon from '@images/quote.svg';
 import CodeIcon from '@images/code.svg';
 import CodeBlockIcon from '@images/codeblock.svg';
+import EmbedIcon from '@images/lightning.svg';
 import UnderlineIcon from '@images/underline.svg';
 import StrikethroughIcon from '@images/strikethrough.svg';
 import DividerIcon from '@images/divider.svg';
@@ -712,6 +713,25 @@ export const coreSyntaxFormatters = {
         value,
         blockPrefix: '```\n',
         blockSuffix: '\n```',
+      }),
+  },
+  embed: {
+    icon: () => <Icon src={EmbedIcon} />,
+    label: 'Embed',
+    getKeyboardShortcut: () => {
+      const modifier = getOSKeyboardModifierKeyString();
+      return {
+        command: `${modifier}+shift+k`,
+        tooltipHint: `${modifier.toUpperCase()} + SHIFT + K`,
+      };
+    },
+    getFormatting: ({ selectionStart, selectionEnd, value }) =>
+      undoOrAddFormattingForInlineSyntax({
+        value,
+        selectionStart,
+        selectionEnd,
+        prefix: '{% embed ',
+        suffix: ' %}',
       }),
   },
 };

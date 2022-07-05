@@ -203,7 +203,7 @@ class ApplicationPolicy
 
   delegate :support_admin?, to: :user
 
-  delegate :super_admin?, :any_admin?, :suspended?, to: :user, prefix: true
+  delegate :moderator?, :super_admin?, :any_admin?, :suspended?, to: :user, prefix: true
 
   alias minimal_admin? user_any_admin?
   deprecate minimal_admin?: "Deprecating #{self}#minimal_admin?, use #{self}#user_any_admin?"

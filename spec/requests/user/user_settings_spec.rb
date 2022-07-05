@@ -64,7 +64,7 @@ RSpec.describe "UserSettings", type: :request do
       it "displays content on Account tab properly" do
         get user_settings_path(:account)
 
-        expect(response.body).to include("Set new password", "Account emails", "API Keys", "Danger Zone")
+        expect(response.body).to include("Set new password", "Account emails", "Danger Zone")
       end
 
       it "displays content on Billing tab properly" do
@@ -83,7 +83,7 @@ RSpec.describe "UserSettings", type: :request do
         get user_settings_path(:extensions)
 
         feed_section = "Publishing to #{Settings::Community.community_name} from RSS"
-        titles = ["Comment templates", feed_section, "Web monetization"]
+        titles = ["Comment templates", feed_section, "Web monetization", "API Keys"]
         expect(response.body).to include(*titles)
       end
 

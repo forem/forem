@@ -2,7 +2,7 @@
 fr:
   models:
     api_secret:
-      api_limit_reached: API secret limit of 20 per user has been reached
+      api_limit_reached: API secret limit of 10 per user has been reached
     application_record:
       uninferrable: Could not infer a decorator for %{class}.
     article:

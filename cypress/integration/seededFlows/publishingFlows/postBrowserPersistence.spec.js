@@ -15,8 +15,8 @@ describe('Post Editor', () => {
 
     describe(`revert changes`, () => {
       it('should revert to the initial v1 editor template if it is a new post', () => {
-        const initialContent = `---\ntitle: \npublished: false\ndescription: \ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n`;
-        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
+        const initialContent = `---\ntitle: \npublished: false\ndescription: \ntags: \n# cover_image: https://direct_url_to_image.jpg\n# Use a ratio of 100:42 for best results.\n---\n\n`;
+        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n# cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
 
         cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
@@ -38,8 +38,8 @@ describe('Post Editor', () => {
 
       it('should revert to the previously saved version of the post if the post was previously edited', () => {
         // Create an post and edit it.
-        const initialContent = `---\ntitle: Test Post\npublished: false\ndescription: \ntags: beginner, ruby, go\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is a Test Post's contents.`;
-        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
+        const initialContent = `---\ntitle: Test Post\npublished: false\ndescription: \ntags: beginner, ruby, go\n# cover_image: https://direct_url_to_image.jpg\n---\n\nThis is a Test Post's contents.`;
+        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n# cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
 
         cy.createArticle({
           content: initialContent,
@@ -82,7 +82,7 @@ describe('Post Editor', () => {
       });
 
       it('should not revert changes in the editor if the member clicks cancel in the confirmation dialog', () => {
-        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n//cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
+        const updatedContent = `---\ntitle: \npublished: true\ndescription: some description\ntags: tag1, tag2,tag3\n# cover_image: https://direct_url_to_image.jpg\n---\n\nThis is some text that should be reverted`;
 
         cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 

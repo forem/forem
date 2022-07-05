@@ -5,12 +5,12 @@ module SitemapGenerator
   # https://github.com/kjvarga/sitemap_generator/blob/master/lib/sitemap_generator/adapters/s3_adapter.rb
   class S3Adapter
     def initialize(opts = {}) # rubocop:disable Style/OptionHash
-      @aws_access_key_id = opts[:aws_access_key_id] || ENV["AWS_ACCESS_KEY_ID"]
-      @aws_secret_access_key = opts[:aws_secret_access_key] || ENV["AWS_SECRET_ACCESS_KEY"]
-      @fog_provider = opts[:fog_provider] || ENV["FOG_PROVIDER"]
-      @fog_directory = opts[:fog_directory] || ENV["FOG_DIRECTORY"]
-      @fog_region = opts[:fog_region] || ENV["FOG_REGION"]
-      @fog_path_style = opts[:fog_path_style] || ENV["FOG_PATH_STYLE"]
+      @aws_access_key_id = opts[:aws_access_key_id] || ENV.fetch("AWS_ACCESS_KEY_ID", nil)
+      @aws_secret_access_key = opts[:aws_secret_access_key] || ENV.fetch("AWS_SECRET_ACCESS_KEY", nil)
+      @fog_provider = opts[:fog_provider] || ENV.fetch("FOG_PROVIDER", nil)
+      @fog_directory = opts[:fog_directory] || ENV.fetch("FOG_DIRECTORY", nil)
+      @fog_region = opts[:fog_region] || ENV.fetch("FOG_REGION", nil)
+      @fog_path_style = opts[:fog_path_style] || ENV.fetch("FOG_PATH_STYLE", nil)
       @fog_storage_options = opts[:fog_storage_options] || {}
       @fog_public = opts[:fog_public].to_s.present? ? opts[:fog_public] : true # additional line
     end

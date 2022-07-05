@@ -1,0 +1,53 @@
+@import './forms';
+@import '../config/import';
+
+.c-input--multi {
+  &__wrapper-border:focus-within {
+    @extend %form-styling-focus;
+
+    .c-input--multi__input {
+      background-color: var(--form-bg-focus);
+    }
+  }
+
+  &__input {
+    background-color: var(--bg-color);
+    color: var(--body-color);
+    border: none;
+  }
+
+  &__wrapper-border {
+    .c-input--multi__input {
+      background-color: var(--form-bg);
+    }
+  }
+}
+
+.c-btn.c-input--multi__selected {
+  &:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: solid var(--base-10);
+    border-right: none;
+    color: var(--base-90);
+  }
+
+  &:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: solid var(--base-10);
+    border-left: none;
+  }
+
+  &:first-child:hover,
+  &:first-child:focus-visible {
+    background: none;
+    color: none;
+  }
+
+  &:last-child:hover,
+  &:last-child:focus-visible {
+    background: none;
+    color: var(--accent-danger);
+  }
+}
