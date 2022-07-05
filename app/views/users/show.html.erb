@@ -65,26 +65,34 @@
             <% if @user.profile.location.present? %>
               <span class="profile-header__meta__item">
                 <%= crayons_icon_tag(:location, class: "mr-2 shrink-0", title: t("views.users.location_icon")) %>
-                <%= @user.profile.location %>
+                <span>
+                  <%= @user.profile.location %>
+                <span>
               </span>
             <% end %>
 
             <span class="profile-header__meta__item">
               <%= crayons_icon_tag(:cake, class: "mr-2 shrink-0", title: t("views.users.joined.icon")) %>
-              <%= t("views.users.joined.text_html", date: local_date(@user.created_at)) %>
+              <span>
+                <%= t("views.users.joined.text_html", date: local_date(@user.created_at)) %>
+              </span>
             </span>
 
             <% if @user.setting.display_email_on_profile %>
               <a href="mailto:<%= @user.email %>" class="profile-header__meta__item">
                 <%= crayons_icon_tag(:email, class: "mr-2 shrink-0", title: t("views.users.email_icon")) %>
-                <%= @user.email %>
+                <span>
+                  <%= @user.email %>
+                </span>
               </a>
             <% end %>
 
             <% if @user.profile.website_url.present? %>
               <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener me <%= "ugc" unless @user.trusted? %>" class="profile-header__meta__item">
                 <%= crayons_icon_tag("external-link", class: "mr-2 shrink-0", title: t("views.users.website")) %>
-                <%= @user.profile.website_url %>
+                <span>
+                  <%= @user.profile.website_url %>
+                </span>
               </a>
             <% end %>
 
