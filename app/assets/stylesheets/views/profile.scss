@@ -73,6 +73,14 @@
       flex-wrap: nowrap;
       white-space: nowrap;
       padding: var(--su-2) var(--su-2);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      
+      & > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
       @media (min-width: $breakpoint-m) {
         padding: var(--su-1) var(--su-3);
