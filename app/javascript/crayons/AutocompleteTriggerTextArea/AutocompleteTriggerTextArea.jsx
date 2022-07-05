@@ -98,6 +98,11 @@ const reducer = (state, action) => {
   }
 };
 
+/**
+ * Renders a textarea with enhanced autocomplete functionality.
+ * Autocomplete searching will start when user types the given trigger character, with suggestions fetched via fetchSuggestions callback.
+ * Can optionally replace an existing textarea, passed as the replaceElement prop.
+ */
 export const AutocompleteTriggerTextArea = forwardRef(
   (
     {
