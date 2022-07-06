@@ -29,6 +29,7 @@ export const FocusTrap = ({
   children,
   onDeactivate,
   clickOutsideDeactivates = false,
+  document = window.document,
 }) => {
   const focusTrap = useRef(null);
   const deactivate = useCallback(() => onDeactivate(), [onDeactivate]);
@@ -51,6 +52,7 @@ export const FocusTrap = ({
       escapeDeactivates: false,
       clickOutsideDeactivates,
       onDeactivate: deactivate,
+      document,
     });
 
     focusTrap.current.activate();
@@ -62,7 +64,7 @@ export const FocusTrap = ({
       focusTrap.current.deactivate();
       routeChangeObserver.disconnect();
     };
-  }, [clickOutsideDeactivates, selector, deactivate]);
+  }, [clickOutsideDeactivates, selector, deactivate, document]);
 
   const shortcuts = {
     escape: onDeactivate,
