@@ -183,4 +183,34 @@ describe Admin::UsersHelper do
       end
     end
   end
+
+  describe "#banishable_user?" do
+    let(:user) { create(:user, created_at: 2.years.ago) }
+    let(:current_user) { create(:user) }
+
+    before { allow(helper).to receive(:current_user).and_return(current_user) }
+
+    context "when current user is not a super admin or support admin" do
+      it "returns true when the user was created before 100 days and they have no comments" do
+        expect(helper.banishable_user?(user)).to be true
+      end
+
+      it "returns false when they are created before 100 days and they have comments" do
+        article = create(:article)
+        create(:comment, user_id: user.id, commentable: article, created_at: 2.years.ago)
+
+        expect(helper.banishable_user?(user)).to be false
+      end
+    end
+
+    it "returns true when the current user is a super admin" do
+      current_user.add_role(:super_admin)
+      expect(helper.banishable_user?(user)).to be true
+    end
+
+    it "returns true when the current user is a support admin" do
+      current_user.add_role(:support_admin)
+      expect(helper.banishable_user?(user)).to be true
+    end
+  end
 end
