@@ -1,13 +1,15 @@
 module Articles
   class Unpublish
-    def self.call(article)
+    def self.call(user, article)
+      attributes = {}
       if article.has_frontmatter?
-        article.body_markdown.sub!(/\npublished:\s*true\s*\n/, "\npublished: false\n")
+        body_markdown = article.body_markdown.sub(/\npublished:\s*true\s*\n/, "\npublished: false\n")
+        attributes[:body_markdown] = body_markdown
       else
-        article.published = false
+        attributes[:published] = false
       end
 
-      article.save
+      Articles::Updater.call(user, article, attributes)
     end
   end
 end

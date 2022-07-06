@@ -214,7 +214,9 @@ class ArticlesController < ApplicationController
   def admin_unpublish
     authorize @article
 
-    if Articles::Unpublish.call(@article)
+    result = Articles::Unpublish.call(current_user, @article)
+
+    if result.success
       render json: { message: "success", path: @article.current_state_path }, status: :ok
     else
       render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
