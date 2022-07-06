@@ -54,7 +54,7 @@
                                 data-modal-size="small"
                                 data-modal-content-selector="#banish-for-spam"
                                 data-user-name="<%= user.name %>"
-                                data-banishable-user="<%= @banishable_user %>"
+                                data-banishable-user="<%= banishable_user?(user) %>"
                                 data-form-action="<%= banish_admin_user_path(user) %>">
                                 <%= crayons_icon_tag("warning", aria_hidden: true, class: "c-btn__icon") %>
                                 Banish user

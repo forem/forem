@@ -89,5 +89,25 @@ module Admin
         str + " & #{overflow_count(count, imposed_limit: imposed_limit)} others"
       end
     end
+
+    # Returns a boolean that indicates whether a user can be banished
+    # A user can be banished when:
+    # - the users account was created in the period before the last 100 days ago
+    # and there are no comments from the user in the period before the last 100 days.
+    # - if the logged in user is a super admin or support admin
+
+    # Some practical scenarios:
+    # Today is the 06 July:
+    # - if a user was created before the 27 March 2022 (101 days ago)
+    # and they had no comments before the 27 March 2022 then they can be banished.
+    # - if they have any comments before the 27 March 2022 then they cannot be banished
+    # - if they were created before the 27 March 2022 (101 days ago) and they have comments
+    # before the 27 March 2022 then they cannot be banished.
+    #  @param {Array} [array] the user
+    # @return [Boolean]
+    def banishable_user?(user)
+      (user.comments.where("created_at < ?", 100.days.ago).empty? && user.created_at < 100.days.ago) ||
+        current_user.super_admin? || current_user.support_admin?
+    end
   end
 end
