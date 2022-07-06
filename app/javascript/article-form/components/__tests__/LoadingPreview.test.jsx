@@ -16,4 +16,10 @@ describe('<LoadingPreview />', () => {
 
     expect(queryByTitle('Loading preview...')).toBeDefined();
   });
+
+  it('should render with cover image', () => {
+    const { queryByTitle } = render(<LoadingPreview version="cover" />);
+
+    expect(queryByTitle('Loading preview...')).toBeDefined();
+  });
 });

@@ -28,5 +28,5 @@ export const LoadingPreview = ({ version }) => {
 };
 
 LoadingPreview.propTypes = {
-  version: PropTypes.string,
+  version: PropTypes.oneOf(['default', 'cover']),
 };

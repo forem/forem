@@ -92,7 +92,7 @@ describe('<Options />', () => {
     expect(getByTitle('Post options')).toBeDisabled();
   });
 
-  it('shows the button is disabled when preview is not loading', () => {
+  it('shows the button is enabled when preview is not loading', () => {
     const passedData = getPassedData();
     passedData.published = true;
 

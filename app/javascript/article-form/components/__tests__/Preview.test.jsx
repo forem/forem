@@ -67,9 +67,6 @@ describe('<Preview />', () => {
     errors = null;
   });
 
-  // no cover for loading
-  // with cover for loading
-
   it('should have no a11y violations when preview is loading', async () => {
     const { container } = render(
       <Preview

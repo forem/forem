@@ -431,6 +431,11 @@ export class ArticleForm extends Component {
           displayModal={() => this.showModal(true)}
         />
 
+        <span aria-live="polite" className="screen-reader-only">
+          {previewLoading ? 'Loading preview' : null}
+          {previewShowing && !previewLoading ? 'Preview loaded' : null}
+        </span>
+
         {previewShowing || previewLoading ? (
           <Preview
             previewLoading={previewLoading}

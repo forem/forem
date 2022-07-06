@@ -95,12 +95,9 @@ export const Preview = ({
 
   if (previewLoading) {
     const coverImage = articleState.mainImage;
-    let loadingPreview;
-    if (coverImage === null) {
-      loadingPreview = <LoadingPreview version="default" />;
-    } else {
-      loadingPreview = <LoadingPreview version="cover" />;
-    }
+    const loadingPreview = (
+      <LoadingPreview version={coverImage === null ? 'default' : 'cover'} />
+    );
     return (
       <div className="crayons-article-form__content crayons-card">
         {loadingPreview}
