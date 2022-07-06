@@ -34,7 +34,7 @@
             data-modal-content-selector="#banish-for-spam"
             data-form-action="<%= banish_admin_user_path(@user) %>"
             data-user-name="<%= @user.name %>"
-            data-banishable-user="<%= @banishable_user %>">Banish user</button>
+            data-banishable-user="<%= banishable_user?(@user) %>">Banish user</button>
         </li>
         <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-title="Delete <%= @user.name %>'s account" data-modal-size="small" data-modal-content-selector="#delete-user">Delete user</button></li>
       </ul>
