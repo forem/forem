@@ -102,44 +102,44 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 11222,
-                    "title": "Such, Such Were the Joys6",
-                    "description": "Typewriter ramps stumptown tumblr vice whatever neutra. Pop-up disrupt yuccie cliche kitsch stumptown...",
-                    "readable_publish_date": "Jun 24",
-                    "slug": "such-such-were-the-joys6-4k2n",
-                    "path": "/username10/such-such-were-the-joys6-4k2n",
-                    "url": "http://localhost:3000/username10/such-such-were-the-joys6-4k2n",
+                    "id": 286,
+                    "title": "Terrible Swift Sword1",
+                    "description": "Cardigan taxidermy stumptown muggle magic. Tumblr lumbersexual yolo gluten-free taxidermy truffaut...",
+                    "readable_publish_date": "Jul 6",
+                    "slug": "terrible-swift-sword1-4gja",
+                    "path": "/username1/terrible-swift-sword1-4gja",
+                    "url": "http://localhost:3000/username1/terrible-swift-sword1-4gja",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-06-24T20:38:05Z",
+                    "published_timestamp": "2022-07-06T16:49:01Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
-                    "social_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
-                    "canonical_url": "http://localhost:3000/username10/such-such-were-the-joys6-4k2n",
-                    "created_at": "2022-06-24T20:38:05Z",
+                    "cover_image": "http://localhost:3000/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
+                    "social_image": "http://localhost:3000/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
+                    "canonical_url": "http://localhost:3000/username1/terrible-swift-sword1-4gja",
+                    "created_at": "2022-07-06T16:49:07Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-06-24T20:38:05Z",
-                    "last_comment_at": "2022-06-24T20:38:05Z",
+                    "published_at": "2022-07-06T16:49:01Z",
+                    "last_comment_at": "2022-07-06T16:49:01Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Valencia \"Maurita\" \\:/ Littel",
-                      "username": "username10",
-                      "twitter_username": "twitter10",
-                      "github_username": "github10",
+                      "name": "Malorie \"Herman\" \\:/ Trantow",
+                      "username": "username1",
+                      "twitter_username": "twitter1",
+                      "github_username": "github1",
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/26245/0cac5c69-c482-4ec6-9f9f-0eb59a76163a.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/26245/0cac5c69-c482-4ec6-9f9f-0eb59a76163a.jpeg"
+                      "profile_image": "/uploads/user/profile_image/407/bcaaa39b-60d0-4dc2-97d2-9ec5c9e05b47.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/407/bcaaa39b-60d0-4dc2-97d2-9ec5c9e05b47.jpeg"
                     },
                     "organization": {
-                      "name": "Bashirian, Schaden and Grady",
-                      "username": "org6",
-                      "slug": "org6",
-                      "profile_image": "/uploads/organization/profile_image/4599/6f75fc31-b958-4399-9758-e4ef005537c4.png",
-                      "profile_image_90": "/uploads/organization/profile_image/4599/6f75fc31-b958-4399-9758-e4ef005537c4.png"
+                      "name": "Stamm Group",
+                      "username": "org1",
+                      "slug": "org1",
+                      "profile_image": "/uploads/organization/profile_image/109/fb157fe5-9a66-4baf-91cb-216f0a206e5e.png",
+                      "profile_image_90": "/uploads/organization/profile_image/109/fb157fe5-9a66-4baf-91cb-216f0a206e5e.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -181,7 +181,7 @@
         "type": "apiKey",
         "name": "api-key",
         "in": "header",
-        "description": "PI Key authentication.\n\nAuthentication for some endpoints, like write operations on the\nArticles API require a DEV API key.\n\nAll authenticated endpoints are CORS disabled, the API key is intended for non-browser scripts.\n\n### Getting an API key\n\nTo obtain one, please follow these steps:\n\n  - visit https://dev.to/settings/extensions\n  - in the \"DEV API Keys\" section create a new key by adding a\n    description and clicking on \"Generate API Key\"\n\n    ![obtain a DEV API Key](https://user-images.githubusercontent.com/37842/172718105-bd93664e-76e0-477d-99c4-265dda0b06c5.png)\n\n  - You'll see the newly generated key in the same view\n    ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
+        "description": "API Key authentication.\n\nAuthentication for some endpoints, like write operations on the\nArticles API require a DEV API key.\n\nAll authenticated endpoints are CORS disabled, the API key is intended for non-browser scripts.\n\n### Getting an API key\n\nTo obtain one, please follow these steps:\n\n  - visit https://dev.to/settings/extensions\n  - in the \"DEV API Keys\" section create a new key by adding a\n    description and clicking on \"Generate API Key\"\n\n    ![obtain a DEV API Key](https://user-images.githubusercontent.com/37842/172718105-bd93664e-76e0-477d-99c4-265dda0b06c5.png)\n\n  - You'll see the newly generated key in the same view\n    ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
       }
     },
     "parameters": {
