@@ -14,6 +14,7 @@ namespace :admin do
 
     mount Sidekiq::Web => "sidekiq"
     mount FieldTest::Engine, at: "abtests"
+    get "abtests/experiments/:experiment_id/:goal", to: "/field_test/experiments#goal"
 
     flipper_ui = Flipper::UI.app(Flipper,
                                  { rack_protection: { except: %i[authenticity_token form_token json_csrf

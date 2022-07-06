@@ -1,5 +1,7 @@
 import { toggleFlagUserModal } from '../packs/flagUserModal';
+import { toggleModal } from '../packs/toggleUserSuspensionModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
+import { toggleUnpublishAllPostsModal } from '../packs/modals/unpublishAllPosts';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
@@ -395,6 +397,17 @@ export function addBottomActionsListeners() {
   document
     .getElementById('open-flag-user-modal')
     .addEventListener('click', toggleFlagUserModal);
+
+  document
+    .getElementById('suspend-user-btn')
+    ?.addEventListener('click', toggleModal);
+
+  document
+    .getElementById('unsuspend-user-btn')
+    ?.addEventListener('click', toggleModal);
+
+  document.getElementById('unpublish-all-posts-btn')
+    ?.addEventListener('click', toggleUnpublishAllPostsModal);
 }
 
 export function initializeActionsPanel() {
