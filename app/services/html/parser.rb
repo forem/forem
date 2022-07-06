@@ -226,7 +226,8 @@ module Html
 
         # only focus on portion of text with "@"
         node.xpath("text()[contains(.,'@')]").each do |el|
-          el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
+          new_el = CGI.escapeHTML(el.text).gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) }
+          el.replace(new_el)
         end
 
         # enqueue children that has @ in it's text
@@ -234,12 +235,11 @@ module Html
         targets.concat(children)
       end
 
-      @html =
-        if html_doc.at_css("body")
-          html_doc.at_css("body").inner_html
-        else
-          html_doc.to_html
-        end
+      @html = if html_doc.at_css("body")
+                html_doc.at_css("body").inner_html
+              else
+                html_doc.to_html
+              end
 
       self
     end
