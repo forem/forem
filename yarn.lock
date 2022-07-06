@@ -1975,10 +1975,10 @@
     axios-retry "^3.2.5"
     winston "^3.7.2"
 
-"@knapsack-pro/cypress@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-4.6.0.tgz#a317b41fc790cb4d9739fb7ea8cf8fe2958e9ecc"
-  integrity sha512-QTX6pkJ2dKPES52qhZzlOfo50ifd4UfB8Id9owmFUPANt/hG9dO26g5RZj1oQpqpAAMpZX/7F7+Y2WVVxtggag==
+"@knapsack-pro/cypress@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-5.1.0.tgz#bffb5e8ba56d225a594d2ed292681ef09edaf2ab"
+  integrity sha512-0R7Bd+lKH4cD/CbjKQyxbIw6YD+KgCzmFxeJByn7Tf0WfojPUg76FytgSc4XvFPdZFjUqa90mZjyUsmdLch6Iw==
   dependencies:
     "@knapsack-pro/core" "^3.2.0"
     glob "^8.0.3"
@@ -6474,10 +6474,10 @@ cypress-pipe@^2.0.0:
   resolved "https://registry.yarnpkg.com/cypress-pipe/-/cypress-pipe-2.0.0.tgz#577df7a70a8603d89a96dfe4092a605962181af8"
   integrity sha512-KW9s+bz4tFLucH3rBGfjW+Q12n7S4QpUSSyxiGrgPOfoHlbYWzAGB3H26MO0VTojqf9NVvfd5Kt0MH5XMgbfyg==
 
-cypress@^9.7.0:
-  version "9.7.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-9.7.0.tgz#bf55b2afd481f7a113ef5604aa8b693564b5e744"
-  integrity sha512-+1EE1nuuuwIt/N1KXRR2iWHU+OiIt7H28jJDyyI4tiUftId/DrXYEwoDa5+kH2pki1zxnA0r6HrUGHV5eLbF5Q==
+cypress@^10.3.0:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-10.3.0.tgz#fae8d32f0822fcfb938e79c7c31ef344794336ae"
+  integrity sha512-txkQWKzvBVnWdCuKs5Xc08gjpO89W2Dom2wpZgT9zWZT5jXxqPIxqP/NC1YArtkpmp3fN5HW8aDjYBizHLUFvg==
   dependencies:
     "@cypress/request" "^2.88.10"
     "@cypress/xvfb" "^1.2.4"

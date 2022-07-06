@@ -41,7 +41,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.2",
     "@faker-js/faker": "^7.3.0",
-    "@knapsack-pro/cypress": "^4.6.0",
+    "@knapsack-pro/cypress": "^5.1.0",
     "@storybook/addon-a11y": "^6.4.22",
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-docs": "^6.5.9",
@@ -63,7 +63,7 @@
     "babel-loader": "^8.2.5",
     "css-loader": "^5.2.7",
     "cssom": "^0.5.0",
-    "cypress": "^9.7.0",
+    "cypress": "^10.3.0",
     "cypress-failed-log": "^2.9.5",
     "cypress-file-upload": "^5.0.8",
     "cypress-pipe": "^2.0.0",
