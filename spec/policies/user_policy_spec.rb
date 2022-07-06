@@ -50,4 +50,10 @@ RSpec.describe UserPolicy, type: :policy do
 
     it { is_expected.to permit_actions(%i[moderation_routes]) }
   end
+
+  context "when the user is a moderator" do
+    let(:user) { build(:user, :moderator) }
+
+    it { is_expected.to permit_actions(%i[moderation_routes]) }
+  end
 end

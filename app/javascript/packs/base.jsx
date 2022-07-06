@@ -56,7 +56,7 @@ window.Forem = {
     );
   },
   showModal: showWindowModal,
-  closeModal: closeWindowModal,
+  closeModal: () => closeWindowModal(),
   Runtime,
 };
 

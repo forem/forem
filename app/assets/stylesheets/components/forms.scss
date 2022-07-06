@@ -318,6 +318,12 @@ textarea.crayons-textfield.crayons-textfield--ghost {
     }
   }
 
+  &--error {
+    .DateRangePickerInput {
+      border-color: var(--accent-danger);
+    }
+  }
+
   .DateRangePicker:focus-within {
     .DateRangePickerInput {
       border-color: var(--focus);
@@ -429,5 +435,9 @@ textarea.crayons-textfield.crayons-textfield--ghost {
         cursor: not-allowed;
       }
     }
+  }
+
+  &__errors {
+    color: var(--accent-danger);
   }
 }

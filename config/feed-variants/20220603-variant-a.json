@@ -1,5 +1,6 @@
 {
   "max_days_since_published": 15,
+  "reseed_randomizer_on_each_request": false,
   "description": "As 202205518-variant but with modificiation to `matching_positive_tags_intersection_count`.",
   "order_by": "relevancy_score_and_publication_date",
   "levers": {
