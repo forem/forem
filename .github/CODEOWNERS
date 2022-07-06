@@ -14,38 +14,38 @@
 # * `tree app | rg "\.\w+$" --only-matching | sort | uniq`
 # * `tree lib | rg "\.\w+$" --only-matching | sort | uniq`
 #
-**/*.builder                                        @forem/ruby
-**/*.css                                            @forem/css
-**/*.erb                                            @forem/ruby
-**/*.jbuilder                                       @forem/ruby
-**/*.js                                             @forem/javascript
-**/*.json                                           @forem/javascript @forem/ruby
-**/*.jsx                                            @forem/javascript
-**/*.md                                             @forem/oss
-**/*.rb                                             @forem/ruby
-**/*.scss                                           @forem/css
+**/*.builder                                        @forem/core-reviewers
+**/*.css                                            @forem/core-reviewers
+**/*.erb                                            @forem/core-reviewers
+**/*.jbuilder                                       @forem/core-reviewers
+**/*.js                                             @forem/core-reviewers
+**/*.json                                           @forem/core-reviewers
+**/*.jsx                                            @forem/core-reviewers
+**/*.md                                             @forem/core-reviewers
+**/*.rb                                             @forem/core-reviewers
+**/*.scss                                           @forem/core-reviewers
 
 # Context based ownership
-/app/assets/                                        @forem/frontend
+/app/assets/                                        @forem/core-reviewers
 /app/controllers/async_info_controller.rb           @forem/sre
-/app/javascript/                                    @forem/frontend
+/app/javascript/                                    @forem/core-reviewers
 /app/services/search/                               @forem/sre
 /app/workers/                                       @forem/sre
 /config/                                            @forem/sre
 /config/locales
-/db/                                                @forem/sre @forem/backend
+/db/                                                @forem/sre @forem/core-reviewers
 /lib/data_update_scripts/                           @forem/sre
 /lib/sidekiq/                                       @forem/sre
-/spec/rails_helper.rb                               @forem/sre @forem/backend
+/spec/rails_helper.rb                               @forem/sre @forem/core-reviewers
 /spec/support/                                      @forem/sre
 .buildkite/                                         @forem/systems @forem/sre
 .travis.yml                                         @forem/sre
 Containerfile                                       @forem/systems
 docker-compose.yml                                  @forem/systems
 Dockerfile                                          @forem/systems
-Gemfile                                             @forem/ruby @forem/sre @forem/backend
-Gemfile.lock                                        @forem/ruby @forem/sre @forem/backend
-package.json                                        @forem/frontend
+Gemfile                                             @forem/core-reviewers @forem/sre
+Gemfile.lock                                        @forem/core-reviewers @forem/sre 
+package.json                                        @forem/core-reviewers
 podman-compose.yml                                  @forem/systems
 scripts/                                            @forem/systems
-yarn.lock                                           @forem/frontend
+yarn.lock                                           @forem/core-reviewers
