@@ -91,26 +91,26 @@ module Articles
                                         "^ (1.0 / greatest(articles.score, 0.1)) DESC")
 
       order_by_lever(:published_at_with_randomization_favoring_public_reactions,
-                     label: "Favor recent articles with more reactions, "\
+                     label: "Favor recent articles with more reactions, " \
                             "but apply randomness to mitigate stagnation.",
-                     order_by_fragment: "(cast(extract(epoch FROM published_at) as integer)) * "\
-                                        "(article_relevancies.randomized_value ^ (1.0 /" \
-                                        " greatest(0.1, ln(1 + greatest(0, public_reactions_count))))) DESC")
+                     order_by_fragment: "(cast(extract(epoch FROM published_at) as integer)) * " \
+                                        "(article_relevancies.randomized_value ^ (1.0 / " \
+                                        "greatest(0.1, ln(1 + greatest(0, public_reactions_count))))) DESC")
 
       order_by_lever(:last_comment_at_with_randomization_favoring_public_reactions,
                      label: "Favor articles with recent comments and more reactions, " \
-                            " but apply randomness to mitigate stagnation.",
-                     order_by_fragment: "(cast(extract(epoch FROM last_comment_at) as integer)) * "\
+                            "but apply randomness to mitigate stagnation.",
+                     order_by_fragment: "(cast(extract(epoch FROM last_comment_at) as integer)) * " \
                                         "(article_relevancies.randomized_value ^ (1.0 / " \
                                         "greatest(0.1, ln(1 + greatest(0, public_reactions_count))))) DESC")
 
       order_by_lever(:random_pick_of_which_date_to_use_with_randomization_favoring_public_reactions,
                      label: "Favor articles with recent comments or published at and more reactions, " \
                             "but apply randomness to mitigate stagnation.",
-                     order_by_fragment: "(cast(extract(epoch FROM "\
+                     order_by_fragment: "(cast(extract(epoch FROM " \
                                         "(CASE WHEN RANDOM() > 0.5 THEN published_at ELSE last_comment_at END)) " \
-                                        "as integer)) * "\
-                                        "(article_relevancies.randomized_value ^ (1.0 / "\
+                                        "as integer)) * " \
+                                        "(article_relevancies.randomized_value ^ (1.0 / " \
                                         "greatest(0.1, ln(1 + greatest(0, public_reactions_count))))) DESC")
 
       relevancy_lever(:comments_count_by_those_followed,
