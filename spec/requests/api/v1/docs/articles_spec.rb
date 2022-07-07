@@ -5,8 +5,6 @@ RSpec.describe "Api::V1::Docs::Articles", type: :request do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, :with_colors, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss") }
-  let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
 
   before do
     stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
