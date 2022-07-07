@@ -24,14 +24,15 @@ function loadForm() {
     window.csrfToken = csrfToken;
 
     const root = document.querySelector('main');
-    const { article, organizations, version, siteLogo } = root.dataset;
-
+    const { article, organizations, version, siteLogo, schedulingEnabled } =
+      root.dataset;
     render(
       <ArticleForm
         article={article}
         organizations={organizations}
         version={version}
         siteLogo={siteLogo}
+        schedulingEnabled={schedulingEnabled == 'true'}
       />,
       root,
       root.firstElementChild,

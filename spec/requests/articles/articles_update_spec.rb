@@ -129,20 +129,11 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.collection).to be_nil
   end
 
-  it "creates a notification job if published the first time" do
-    draft = create(:article, published: false, published_at: nil, user_id: user.id)
-    sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
-      put "/articles/#{draft.id}", params: {
-        article: { published: true, body_markdown: "blah"  }
-      }
-    end
-  end
-
   it "does not create a notification job if published the second time" do
     article.update_column(:published, false)
     sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
       put "/articles/#{article.id}", params: {
-        article: { published: true, body_markdown: "blah"  }
+        article: { published: true, body_markdown: "blah" }
       }
     end
   end
@@ -166,5 +157,89 @@ RSpec.describe "ArticlesUpdate", type: :request do
     }
     expect(response).to redirect_to "#{article.path}/edit"
     expect(article.reload.video_thumbnail_url).to include "https://i.imgur.com/HPiu7N4.jpg"
+  end
+
+  context "when setting published_at in editor v2" do
+    let(:tomorrow) { 1.day.from_now }
+    let(:published_at) { "#{tomorrow.strftime('%d.%m.%Y')} 18:00" }
+    let(:attributes) do
+      { title: "NEW TITLE #{rand(100)}", body_markdown: "Yo ho ho#{rand(100)}", published_at: published_at }
+    end
+
+    # scheduled => scheduled
+    it "updates published_at from scheduled to scheduled" do
+      article.update_column(:published_at, 3.days.from_now)
+      attributes[:timezone] = "Europe/Moscow"
+      put "/articles/#{article.id}", params: { article: attributes }
+      article.reload
+      published_at_utc = article.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 15:00")
+    end
+
+    # draft => scheduled
+    it "sets published_at according to the timezone when updating draft => scheduled" do
+      draft = create(:article, published: false, user_id: user.id)
+      attributes[:published] = true
+      attributes[:published_at] = "#{tomorrow.strftime('%d/%m/%Y')} 18:00"
+      attributes[:timezone] = "America/Mexico_City"
+      put "/articles/#{draft.id}", params: { article: attributes }
+      draft.reload
+      published_at_utc = draft.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 23:00")
+      expect(draft.published).to be true
+    end
+
+    it "doesn't update published_at when published => published" do
+      published_at = DateTime.parse("2022-01-01 15:00 -0400")
+      article.update_column(:published_at, published_at)
+      attributes[:timezone] = "Europe/Moscow"
+      put "/articles/#{article.id}", params: { article: attributes }
+      article.reload
+      expect(article.published_at).to eq(published_at)
+    end
+  end
+
+  context "when setting published_at in editor v1" do
+    it "updates published_at from scheduled to scheduled with timezone" do
+      published_at = 3.days.from_now.in_time_zone("Asia/Dhaka")
+      article.update_columns(published: true, published_at: 1.day.from_now)
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
+
+      put "/articles/#{article.id}", params: { article: { body_markdown: body_markdown } }
+      article.reload
+      expect(article.published_at).to be_within(1.minute).of(published_at)
+    end
+
+    it "doesn't update published_at when published => published" do
+      published_at = DateTime.parse("2022-05-23 18:00 +0030")
+      article.update_columns(published: true, published_at: published_at)
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \npublished_at: #{1.day.from_now.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
+
+      put "/articles/#{article.id}", params: { article: { body_markdown: body_markdown } }
+      article.reload
+      expect(article.published_at).to eq(published_at)
+    end
+
+    it "sets current published_at when draft => published and no published_at specified" do
+      draft = create(:article, published: false, user_id: user.id, published_at: nil)
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown } }
+      draft.reload
+      expect(draft.published_at).to be_within(1.minute).of(Time.current)
+    end
+
+    it "allows to set past published_at when publishing with date and no published_at for exported articles" do
+      date = "2022-05-02 19:00:30 UTC"
+      draft = create(:article, published: false, user_id: user.id, published_from_feed: true, published_at: nil)
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \ndate: #{date}---\n\nHey this is the article"
+      put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown } }
+      draft.reload
+      expect(draft.published).to be true
+      expect(draft.published_at).to be_within(1.minute).of(DateTime.parse(date))
+    end
   end
 end

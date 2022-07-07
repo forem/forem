@@ -18,7 +18,7 @@ import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 /* global activateRunkitTags */
 
 /*
-  Although the state fields: id, description, canonicalUrl, series, allSeries and
+  Although the state fields: id, description, canonicalUrl, publishedAt, series, allSeries and
   editing are not used in this file, they are important to the
   editor.
 */
@@ -63,6 +63,7 @@ export class ArticleForm extends Component {
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
     siteLogo: PropTypes.string.isRequired,
+    schedulingEnabled: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -71,7 +72,7 @@ export class ArticleForm extends Component {
 
   constructor(props) {
     super(props);
-    const { article, version, siteLogo } = this.props;
+    const { article, version, siteLogo, schedulingEnabled } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
@@ -102,10 +103,13 @@ export class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      publishedAt: this.article.published_at || '', // eslint-disable-line react/no-unused-state
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '', // eslint-disable-line react/no-unused-state
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
+      schedulingEnabled,
       previewShowing: false,
       previewLoading: false,
       previewResponse: { processed_html: '' },
@@ -331,6 +335,7 @@ export class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      publishedAt: this.article.published_at || '', // eslint-disable-line react/no-unused-state
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
@@ -392,9 +397,11 @@ export class ArticleForm extends Component {
       tagList,
       bodyMarkdown,
       published,
+      publishedAt,
       previewShowing,
       previewLoading,
       previewResponse,
+      schedulingEnabled,
       submitting,
       organizations,
       organizationId,
@@ -491,6 +498,8 @@ export class ArticleForm extends Component {
 
         <EditorActions
           published={published}
+          publishedAt={publishedAt}
+          schedulingEnabled={schedulingEnabled}
           version={version}
           onPublish={this.onPublish}
           onSaveDraft={this.onSaveDraft}

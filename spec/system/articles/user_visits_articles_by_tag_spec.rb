@@ -6,10 +6,12 @@ RSpec.describe "User visits articles by tag", type: :system do
   let!(:func_tag) { create(:tag, name: "functional") }
 
   let(:author) { create(:user, profile_image: nil) }
-  let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: 2.days.ago, score: 5) }
+  let!(:article) do
+    create(:article, :past, past_published_at: 2.days.ago, tags: "javascript, IoT", user: author, score: 5)
+  end
   let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.current, score: 5) }
   let!(:article3) do
-    create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago, score: 5)
+    create(:article, :past, past_published_at: 2.weeks.ago, tags: "functional, javascript", user: author, score: 5)
   end
 
   context "when user hasn't logged in" do

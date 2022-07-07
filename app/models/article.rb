@@ -25,7 +25,10 @@ class Article < ApplicationRecord
   # @see Articles::CachedEntity caching strategy for entity attributes
   ATTRIBUTES_CACHED_FOR_RELATED_ENTITY = %i[name profile_image profile_image_url slug username].freeze
 
-  attr_accessor :publish_under_org
+  # admin_update was added as a hack to bypass published_at validation when admin is updating
+  # TODO: [@lightalloy] remove published_at validation from the model and
+  # move it to the services where the create/update takes place to avoid using hacks
+  attr_accessor :publish_under_org, :admin_update
   attr_writer :series
 
   delegate :name, to: :user, prefix: true
@@ -99,6 +102,8 @@ class Article < ApplicationRecord
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
+  has_many :context_notifications_published, -> { where(context_notifications: { action: "Published" }) },
+           as: :context, inverse_of: :context, class_name: "ContextNotification"
   has_many :html_variant_successes, dependent: :nullify
   has_many :html_variant_trials, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -153,9 +158,10 @@ class Article < ApplicationRecord
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
+  validate :future_or_current_published_at, on: :create
+  validate :has_correct_published_at?, on: :update, unless: :admin_update
 
   validate :canonical_url_must_not_have_spaces
-  validate :past_or_present_date
   validate :validate_collection_permission
   validate :validate_tag
   validate :validate_video
@@ -164,7 +170,7 @@ class Article < ApplicationRecord
   validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
-  before_validation :evaluate_markdown, :create_slug
+  before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :remove_prohibited_unicode_characters
   before_validation :normalize_title
   before_save :set_cached_entities
@@ -174,7 +180,6 @@ class Article < ApplicationRecord
   before_save :fetch_video_duration
   before_save :set_caches
   before_create :create_password
-  after_create :notify_slack_channel_about_publication
   after_update :notify_slack_channel_about_publication, if: -> { published && saved_change_to_published? }
   before_destroy :before_destroy_actions, prepend: true
 
@@ -440,6 +445,10 @@ class Article < ApplicationRecord
     end
   end
 
+  def scheduled?
+    published_at.future?
+  end
+
   def search_id
     "article_#{id}"
   end
@@ -476,7 +485,7 @@ class Article < ApplicationRecord
   end
 
   def current_state_path
-    published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
+    published && !scheduled? ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end
 
   def has_frontmatter?
@@ -714,7 +723,10 @@ class Article < ApplicationRecord
     self.title = front_matter["title"] if front_matter["title"].present?
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
-    self.published_at = parse_date(front_matter["date"]) if published
+
+    self.published_at = front_matter["published_at"] if front_matter["published_at"]
+    self.published_at ||= parse_date(front_matter["date"]) if published
+
     set_main_image(front_matter)
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
 
@@ -806,10 +818,21 @@ class Article < ApplicationRecord
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
 
-  def past_or_present_date
-    return unless published_at && published_at > Time.current
+  def future_or_current_published_at
+    # allow published_at in the future or within 15 minutes in the past
+    return if !published || published_at > Time.current - (15 * 60 * 60)
 
-    errors.add(:date_time, I18n.t("models.article.invalid_date"))
+    errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
+  end
+
+  def has_correct_published_at?
+    return unless published_at_was
+    # don't allow editing published_at if an article has already been published
+    # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
+    return unless published_was && published_at_was < Time.current &&
+      changes["published_at"] && !(published_at_was - published_at).between?(-60, 60)
+
+    errors.add(:published_at, I18n.t("models.article.immutable_published_at"))
   end
 
   def canonical_url_must_not_have_spaces
@@ -854,7 +877,6 @@ class Article < ApplicationRecord
   end
 
   def set_all_dates
-    set_published_date
     set_featured_number
     set_crossposted_at
     set_last_comment_at

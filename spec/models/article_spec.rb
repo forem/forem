@@ -484,23 +484,33 @@ RSpec.describe Article, type: :model do
     end
 
     it "sets published_at from a valid frontmatter date" do
-      date = (Date.current - 5.days).strftime("%d/%m/%Y")
+      date = (Date.current + 5.days).strftime("%d/%m/%Y")
       article_with_date = build(:article, with_date: true, date: date, published_at: nil)
       expect(article_with_date.valid?).to be(true)
       expect(article_with_date.published_at.strftime("%d/%m/%Y")).to eq(date)
     end
 
-    it "rejects future dates set from frontmatter" do
-      invalid_article = build(:article, with_date: true, date: Date.tomorrow.strftime("%d/%m/%Y"), published_at: nil)
-      expect(invalid_article.valid?).to be(false)
-      expect(invalid_article.errors[:date_time])
-        .to include("must be entered in DD/MM/YYYY format with current or past date")
+    it "sets published_at from frontmatter" do
+      published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
+      body_markdown = "---\ntitle: Title\npublished: false\npublished_at: #{published_at}\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      article_with_published_at = build(:article, body_markdown: body_markdown)
+      expect(article_with_published_at.valid?).to be(true)
+      expect(article_with_published_at.published_at.strftime("%d/%m/%Y %H:%M")).to eq(published_at)
     end
 
-    it "rejects future dates even when it's published at" do
-      article.published_at = Date.tomorrow
-      expect(article.valid?).to be(false)
-      expect(article.errors[:date_time]).to include("must be entered in DD/MM/YYYY format with current or past date")
+    it "doesn't allow past published_at when publishing on create" do
+      article2 = build(:article, published_at: 10.days.ago, published: true)
+      expect(article2.valid?).to be false
+      expect(article2.errors[:published_at])
+        .to include("only future or current published_at allowed when publishing an article")
+    end
+
+    it "doesn't allow updating published_at if an article has already been published" do
+      article.published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
+      expect(article.valid?).to be false
+      expect(article.errors[:published_at])
+        .to include("updating published_at for articles that have already been published is not allowed")
     end
   end
 
@@ -1167,8 +1177,9 @@ RSpec.describe Article, type: :model do
         sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
 
-      it "queues a slack message to be sent for a new published article" do
-        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
+      # slack messages will be queued in a publish worker
+      it "doesn't queue a slack message to be sent for a new published article" do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           create(:article, user: user, published: true, published_at: Time.current)
         end
       end

@@ -8,6 +8,8 @@ export const EditorActions = ({
   onPublish,
   onClearChanges,
   published,
+  publishedAt,
+  schedulingEnabled,
   edited,
   version,
   passedData,
@@ -35,6 +37,16 @@ export const EditorActions = ({
     );
   }
 
+  const now = new Date();
+  const publishedAtDate = publishedAt ? new Date(publishedAt) : now;
+  const schedule = publishedAtDate > now;
+
+  const saveButtonText = schedule
+    ? 'Schedule'
+    : published || isVersion1
+    ? 'Save changes'
+    : 'Publish';
+
   return (
     <div className="crayons-article-form__footer">
       <Button
@@ -43,7 +55,7 @@ export const EditorActions = ({
         onClick={onPublish}
         disabled={previewLoading}
       >
-        {published || isVersion1 ? 'Save changes' : 'Publish'}
+        {saveButtonText}
       </Button>
 
       {!(published || isVersion1) && (
@@ -59,6 +71,7 @@ export const EditorActions = ({
       {isVersion2 && (
         <Options
           passedData={passedData}
+          schedulingEnabled={schedulingEnabled}
           onConfigChange={onConfigChange}
           onSaveDraft={onSaveDraft}
           previewLoading={previewLoading}
@@ -82,6 +95,8 @@ EditorActions.propTypes = {
   onSaveDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   published: PropTypes.bool.isRequired,
+  publishedAt: PropTypes.string.isRequired,
+  schedulingEnabled: PropTypes.bool.isRequired,
   edited: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
   onClearChanges: PropTypes.func.isRequired,

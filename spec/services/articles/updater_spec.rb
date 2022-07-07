@@ -52,25 +52,66 @@ RSpec.describe Articles::Updater, type: :service do
     context "when an article is updated and published the first time" do
       before { attributes[:published] = true }
 
-      it "enqueues a job to send a notification" do
-        sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
-          described_class.call(user, draft, attributes)
-        end
+      # it "enqueues a job to send a notification" do
+      #   sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
+      #     described_class.call(user, draft, attributes)
+      #   end
+      # end
+
+      # it "delegates to the Mentions::CreateAll service to create mentions" do
+      #   allow(Mentions::CreateAll).to receive(:call)
+      #   described_class.call(user, draft, attributes)
+      #   expect(Mentions::CreateAll).to have_received(:call).with(draft)
+      # end
+
+      # in case the article was published and unpublished before
+      it "updates published_at to the current time when no published_at passed" do
+        attributes[:published_at] = nil
+        past_time = 1.year.ago
+        draft.update_column(:published_at, past_time)
+        described_class.call(user, draft, attributes)
+        draft.reload
+        expect(draft.published_at).to be_within(1.minute).of(Time.current)
       end
 
-      it "delegates to the Mentions::CreateAll service to create mentions" do
-        allow(Mentions::CreateAll).to receive(:call)
+      it "updates published_at to the current time when a past published_at is passed" do
+        attributes[:published_at] = "2020-04-05 20:20"
         described_class.call(user, draft, attributes)
-        expect(Mentions::CreateAll).to have_received(:call).with(draft)
+        draft.reload
+        expect(draft.published_at).to be_within(1.minute).of(Time.current)
+      end
+
+      it "doesn't update published_at when a future published_at is passed" do
+        attributes[:published_at] = 1.day.from_now
+        described_class.call(user, draft, attributes)
+        draft.reload
+        expect(draft.published_at).to be_within(1.second).of(attributes[:published_at])
+      end
+
+      it "doesn't update published_at when a past published_at is passed and an article was exported" do
+        past = 10.days.ago
+        draft.update_columns(published_at: past, published_from_feed: true)
+        attributes[:published_at] = past
+        described_class.call(user, draft, attributes)
+        expect(draft.published_at).to be_within(1.second).of(past)
       end
     end
 
     context "when an article is being updated and has already been published" do
-      it "doesn't enqueue a job to send a notification" do
+      # it "doesn't enqueue a job to send a notification" do
+      #   attributes[:published] = true
+      #   sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
+      #     described_class.call(user, article, attributes)
+      #   end
+      # end
+
+      it "doesn't update published_at" do
         attributes[:published] = true
-        sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
-          described_class.call(user, article, attributes)
-        end
+        past_time = 1.year.ago
+        article.update_column(:published_at, past_time)
+        described_class.call(user, article, attributes)
+        article.reload
+        expect(article.published_at).to be_within(1.second).of(past_time)
       end
 
       it "delegates to the Mentions::CreateAll service to create mentions" do
@@ -82,6 +123,14 @@ RSpec.describe Articles::Updater, type: :service do
 
     context "when an article is unpublished" do
       before { attributes[:published] = false }
+
+      it "doesn't update published_at" do
+        published_at = 1.day.ago
+        article.update_column(:published_at, published_at)
+        described_class.call(user, article, attributes)
+        article.reload
+        expect(article.published_at).to be_within(1.second).of(published_at)
+      end
 
       it "doesn't send any notifications" do
         sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
@@ -108,6 +157,15 @@ RSpec.describe Articles::Updater, type: :service do
         expect do
           described_class.call(user, article, attributes)
         end.to change(ContextNotification, :count).by(-1)
+      end
+    end
+
+    context "when an article is updated and remains unpublished" do
+      it "doesn't update published_at" do
+        attributes[:published] = false
+        described_class.call(user, draft, attributes)
+        article.reload
+        expect(draft.published_at).to be_nil
       end
     end
 

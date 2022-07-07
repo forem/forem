@@ -6,9 +6,9 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
   let!(:article) { create(:article) }
   let!(:hot_story) do
-    create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago, user_id: second_user.id)
+    create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago, user_id: second_user.id)
   end
-  let!(:old_story) { create(:article, published_at: 3.days.ago) }
+  let!(:old_story) { create(:article, :past, past_published_at: 3.days.ago) }
   let!(:low_scoring_article) { create(:article, score: -1000) }
 
   describe "#featured_story_and_default_home_feed" do
@@ -179,7 +179,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     context "when no hot stories or recently published articles" do
       before do
         Article.delete_all
-        create(:article, hotness_score: 0, score: 0, published_at: 3.days.ago)
+        create(:article, :past, hotness_score: 0, score: 0, past_published_at: 3.days.ago)
       end
 
       it "still returns articles" do
