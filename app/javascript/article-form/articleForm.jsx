@@ -107,7 +107,8 @@ export class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      previewResponse: '',
+      previewLoading: false,
+      previewResponse: { processed_html: '' },
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
@@ -137,7 +138,7 @@ export class ArticleForm extends Component {
   componentDidUpdate() {
     const { previewResponse } = this.state;
 
-    if (previewResponse) {
+    if (previewResponse?.processed_html) {
       embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
@@ -161,11 +162,13 @@ export class ArticleForm extends Component {
 
   setCommonProps = ({
     previewShowing = false,
+    previewLoading = false,
     helpFor = null,
     helpPosition = null,
   }) => {
     return {
       previewShowing,
+      previewLoading,
       helpFor,
       helpPosition,
     };
@@ -179,6 +182,7 @@ export class ArticleForm extends Component {
         ...this.setCommonProps({}),
       });
     } else {
+      this.showLoadingPreview();
       previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
     }
   };
@@ -221,10 +225,22 @@ export class ArticleForm extends Component {
     }
   };
 
+  showLoadingPreview = () => {
+    this.setState({
+      ...this.setCommonProps({
+        previewShowing: true,
+        previewLoading: true,
+      }),
+    });
+  };
+
   showPreview = (response) => {
     this.fetchMarkdownLint();
     this.setState({
-      ...this.setCommonProps({ previewShowing: true }),
+      ...this.setCommonProps({
+        previewShowing: true,
+        previewLoading: false,
+      }),
       previewResponse: response,
       errors: null,
     });
@@ -237,6 +253,7 @@ export class ArticleForm extends Component {
 
   failedPreview = (response) => {
     this.setState({
+      ...this.setCommonProps({ previewLoading: false }),
       errors: response,
       submitting: false,
     });
@@ -319,6 +336,7 @@ export class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
+      previewLoading: false,
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
@@ -375,6 +393,7 @@ export class ArticleForm extends Component {
       bodyMarkdown,
       published,
       previewShowing,
+      previewLoading,
       previewResponse,
       submitting,
       organizations,
@@ -403,6 +422,7 @@ export class ArticleForm extends Component {
       >
         <Header
           onPreview={this.fetchPreview}
+          previewLoading={previewLoading}
           previewShowing={previewShowing}
           organizations={organizations}
           organizationId={organizationId}
@@ -411,8 +431,14 @@ export class ArticleForm extends Component {
           displayModal={() => this.showModal(true)}
         />
 
-        {previewShowing ? (
+        <span aria-live="polite" className="screen-reader-only">
+          {previewLoading ? 'Loading preview' : null}
+          {previewShowing && !previewLoading ? 'Preview loaded' : null}
+        </span>
+
+        {previewShowing || previewLoading ? (
           <Preview
+            previewLoading={previewLoading}
             previewResponse={previewResponse}
             articleState={this.state}
             errors={errors}
@@ -473,6 +499,7 @@ export class ArticleForm extends Component {
           passedData={this.state}
           onConfigChange={this.handleConfigChange}
           submitting={submitting}
+          previewLoading={previewLoading}
         />
 
         <KeyboardShortcuts

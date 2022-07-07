@@ -13,6 +13,7 @@ export const EditorActions = ({
   passedData,
   onConfigChange,
   submitting,
+  previewLoading,
 }) => {
   const isVersion1 = version === 'v1';
   const isVersion2 = version === 'v2';
@@ -40,12 +41,17 @@ export const EditorActions = ({
         variant="primary"
         className="mr-2 whitespace-nowrap"
         onClick={onPublish}
+        disabled={previewLoading}
       >
         {published || isVersion1 ? 'Save changes' : 'Publish'}
       </Button>
 
       {!(published || isVersion1) && (
-        <Button className="mr-2 whitespace-nowrap" onClick={onSaveDraft}>
+        <Button
+          className="mr-2 whitespace-nowrap"
+          onClick={onSaveDraft}
+          disabled={previewLoading}
+        >
           Save <span className="hidden s:inline">draft</span>
         </Button>
       )}
@@ -55,6 +61,7 @@ export const EditorActions = ({
           passedData={passedData}
           onConfigChange={onConfigChange}
           onSaveDraft={onSaveDraft}
+          previewLoading={previewLoading}
         />
       )}
 
@@ -62,6 +69,7 @@ export const EditorActions = ({
         <Button
           onClick={onClearChanges}
           className="whitespace-nowrap fw-normal fs-s"
+          disabled={previewLoading}
         >
           Revert <span className="hidden s:inline">new changes</span>
         </Button>
@@ -80,6 +88,7 @@ EditorActions.propTypes = {
   passedData: PropTypes.object.isRequired,
   onConfigChange: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired,
+  previewLoading: PropTypes.bool.isRequired,
 };
 
 EditorActions.displayName = 'EditorActions';

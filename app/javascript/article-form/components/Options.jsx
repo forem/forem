@@ -20,6 +20,7 @@ export const Options = ({
   },
   onSaveDraft,
   onConfigChange,
+  previewLoading,
 }) => {
   let publishedField = '';
   let existingSeries = '';
@@ -72,6 +73,7 @@ export const Options = ({
         icon={CogIcon}
         title="Post options"
         aria-label="Post options"
+        disabled={previewLoading}
       />
 
       <Dropdown
@@ -144,6 +146,7 @@ Options.propTypes = {
   }).isRequired,
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,
+  previewLoading: PropTypes.bool.isRequired,
 };
 
 Options.displayName = 'Options';
