@@ -311,6 +311,16 @@ RSpec.describe "Articles", type: :request do
       expect(response.body).to include("Manage Your Post")
     end
 
+    it "returns unauthorized for a draft" do
+      draft = create(:article, published: false, user: user)
+      expect { get "#{draft.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "returns unauthorized for a scheduled article" do
+      scheduled_article = create(:article, published: true, user: user, published_at: 1.day.from_now)
+      expect { get "#{scheduled_article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
     it "returns unauthorized if the user is not the author" do
       second_user = create(:user)
       article = create(:article, user: second_user)

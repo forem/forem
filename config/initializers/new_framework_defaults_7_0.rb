@@ -77,11 +77,11 @@ Rails.application.config.action_controller.raise_on_open_redirects = true
 Rails.application.config.active_support.use_rfc4122_namespaced_uuids = true
 
 # Change the default headers to disable browsers' flawed legacy XSS protection.
-# Rails.application.config.action_dispatch.default_headers = {
-#   "X-Frame-Options" => "SAMEORIGIN",
-#   "X-XSS-Protection" => "0",
-#   "X-Content-Type-Options" => "nosniff",
-#   "X-Download-Options" => "noopen",
-#   "X-Permitted-Cross-Domain-Policies" => "none",
-#   "Referrer-Policy" => "strict-origin-when-cross-origin"
-# }
+Rails.application.config.action_dispatch.default_headers = {
+  "X-Frame-Options" => "SAMEORIGIN",
+  "X-XSS-Protection" => "0",
+  "X-Content-Type-Options" => "nosniff",
+  "X-Download-Options" => "noopen",
+  "X-Permitted-Cross-Domain-Policies" => "none",
+  "Referrer-Policy" => "strict-origin-when-cross-origin"
+}
