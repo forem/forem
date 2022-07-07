@@ -148,5 +148,5 @@ capture_query_stats:
   class: "CaptureQueryStatsWorker"
 notify_about_published_articles:
   description: "Sends notifications about the new published articles (runs every minute)"
-  cron: "* * * * *"
+  cron: "*/5 * * * *"
   class: "Articles::PublishWorker"
