@@ -70,6 +70,7 @@ module Admin
 
     def find_user_via_identifier(identifier)
       return if identifier.blank?
+
       UsersQuery.find identifier
     end
 
