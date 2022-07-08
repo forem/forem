@@ -211,15 +211,8 @@ class ArticlesController < ApplicationController
 
   def admin_unpublish
     authorize @article
-    attributes = {}
-    if @article.has_frontmatter?
-      body_markdown = @article.body_markdown.sub(/\npublished:\s*true\s*\n/, "\npublished: false\n")
-      attributes[:body_markdown] = body_markdown
-    else
-      attributes[:published] = false
-    end
 
-    result = Articles::Updater.call(current_user, @article, attributes)
+    result = Articles::Unpublish.call(current_user, @article)
 
     if result.success
       render json: { message: "success", path: @article.current_state_path }, status: :ok
