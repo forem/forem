@@ -1,18 +1,58 @@
 import { h } from 'preact';
-
-import { MentionAutocompleteTextArea, MarkdownToolbar } from '@crayons';
+import { useState } from 'preact/hooks';
+import {
+  MentionAutocompleteTextArea,
+  MarkdownToolbar,
+  Link,
+  ButtonNew as Button,
+} from '@crayons';
 import { fetchSearch } from '@utilities/search';
+import HelpIcon from '@images/help.svg';
+import Templates from '@images/templates.svg';
+
+const getClosestTemplatesContainer = (element) =>
+  element
+    .closest('.comment-form__inner')
+    ?.querySelector('.response-templates-container');
 
 export const CommentTextArea = ({ vanillaTextArea }) => {
-  // TODO: customise primary/secondary toolbar options
-  //   TODO: ability to apply classes to toolbar wrapper
+  const [templatesVisible, setTemplatesVisible] = useState(false);
+
+  const handleTemplatesClick = ({ target }) => {
+    const templatesContainer = getClosestTemplatesContainer(target);
+    if (templatesContainer) {
+      templatesContainer.classList.toggle('hidden');
+      setTemplatesVisible(!templatesVisible);
+    }
+  };
+
   return (
     <div>
       <MentionAutocompleteTextArea
         replaceElement={vanillaTextArea}
         fetchSuggestions={(username) => fetchSearch('usernames', { username })}
       />
-      <MarkdownToolbar textAreaId={vanillaTextArea.id} />
+      <MarkdownToolbar
+        textAreaId={vanillaTextArea.id}
+        additionalSecondaryToolbarElements={[
+          <Button
+            key="templates-btn"
+            onClick={handleTemplatesClick}
+            icon={Templates}
+            aria-label="Show templates"
+            aria-pressed={templatesVisible}
+          />,
+          <Link
+            key="help-link"
+            block
+            href="/p/editor_guide"
+            target="_blank"
+            rel="noopener noreferrer"
+            icon={HelpIcon}
+            aria-label="Help"
+          />,
+        ]}
+      />
     </div>
   );
 };
