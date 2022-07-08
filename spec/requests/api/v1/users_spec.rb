@@ -175,7 +175,6 @@ RSpec.describe "Api::V0::Users", type: :request do
       it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
         allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
         api_secret.user.add_role(:super_admin)
-        
         put api_user_unpublish_path(id: target_user.id),
             headers: v1_headers
 
