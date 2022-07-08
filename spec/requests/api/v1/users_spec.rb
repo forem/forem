@@ -185,6 +185,7 @@ RSpec.describe "Api::V0::Users", type: :request do
              params: payload,
              headers: v1_headers
 
+        expect(target_user.reload.suspended?).to be true
         expect(response).to have_http_status(:ok)
         expect(Note.last.content).to eq(payload[:note])
       end
