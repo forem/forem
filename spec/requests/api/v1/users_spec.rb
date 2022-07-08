@@ -103,6 +103,8 @@ RSpec.describe "Api::V0::Users", type: :request do
       it "returns the correct json representation of the user", :aggregate_failures do
         get me_api_users_path, headers: v1_headers
 
+        expect(response).to have_http_status(:ok)
+
         response_user = response.parsed_body
 
         expect(response_user["type_of"]).to eq("user")
