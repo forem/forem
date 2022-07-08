@@ -48,6 +48,10 @@ en:
         aria_label: Save to reading list
         initial: Save
         success: Saved
+      scheduled:
+        subtitle: Scheduled Post.
+        text: " This URL is public but secret, so share at your own discretion."
+        edit: Click to edit
       series:
         subtitle: "%{slug} (%{size})"
         size:

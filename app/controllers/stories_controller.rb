@@ -274,7 +274,7 @@ class StoriesController < ApplicationController
   end
 
   def permission_denied?
-    !@article.published && params[:preview] != @article.password
+    (!@article.published || @article.scheduled?) && params[:preview] != @article.password
   end
 
   def assign_co_authors

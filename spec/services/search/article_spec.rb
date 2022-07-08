@@ -125,7 +125,7 @@ RSpec.describe Search::Article, type: :service do
 
       it "supports sorting by published_at in ascending and descending order with a search term", :aggregate_failures do
         article1 = create(:article, tags: "ruby")
-        article2 = create(:article, tags: "ruby", published_at: 1.week.ago)
+        article2 = create(:article, :past, tags: "ruby", past_published_at: 1.week.ago)
 
         results = described_class.search_documents(term: "ruby", sort_by: :published_at, sort_direction: :asc)
         expect(results.pluck(:id)).to eq([article2.id, article1.id])
@@ -137,7 +137,7 @@ RSpec.describe Search::Article, type: :service do
       it "supports sorting by published_at in ascending and descending order without a search term",
          :aggregate_failures do
         article1 = create(:article)
-        article2 = create(:article, published_at: 1.week.ago)
+        article2 = create(:article, :past, past_published_at: 1.week.ago)
 
         results = described_class.search_documents(sort_by: :published_at, sort_direction: :asc)
         expect(results.pluck(:id)).to eq([article2.id, article1.id])
@@ -167,4 +167,5 @@ RSpec.describe Search::Article, type: :service do
     end
   end
 end
+
 # rubocop:enable Rails/PluckId

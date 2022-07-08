@@ -272,6 +272,30 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   end
 
   context "when provided with an @username" do
+    context "when html has injected styles" do
+      before do
+        create :user, username: "User1"
+      end
+
+      let(:suspicious) do
+        <<~HTML.strip
+          <style>x{animation:s}@User1 s{}
+          <style>{transition:color 1s}:hover{color:red}
+        HTML
+      end
+
+      it "strips the styles as expected" do
+        linked_user = %(<a class=\"mentioned-user\" href=\"http://localhost:3000/user1\">@user1</a>)
+        expected_result = <<~HTML.strip
+          <p>x{animation:s}#{linked_user} s{}&lt;br&gt;
+          &lt;style&gt;{transition:color 1s}:hover{color:red}&lt;/p&gt;
+          </p>
+        HTML
+        parsed = generate_and_parse_markdown(suspicious)
+        expect(parsed.strip).to eq(expected_result)
+      end
+    end
+
     it "links to a user if user exist" do
       username = create(:user).username
       with_user = "@#{username}"

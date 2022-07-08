@@ -10,8 +10,19 @@ class ArticleDecorator < ApplicationDecorator
     DataInfo.to_json(object: cached_user, class_name: "User", id: user_id, style: "full")
   end
 
+  def current_state
+    state = if !published?
+              "unpublished"
+            elsif scheduled?
+              "scheduled"
+            else
+              "published"
+            end
+    ActiveSupport::StringInquirer.new(state)
+  end
+
   def current_state_path
-    published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
+    current_state.published? ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end
 
   def processed_canonical_url

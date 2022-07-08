@@ -257,3 +257,20 @@
     }
   }
 }
+
+.crayons-preview {
+  // Image cover section for preview loading.
+  &__cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding-bottom: 42%;
+    background-size: cover;
+    background-color: var(--body-bg);
+    background-position: center center;
+
+    @media (min-width: $breakpoint-s) {
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+  }
+}

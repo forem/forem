@@ -211,7 +211,7 @@
           type="button"
           id="<%= user_suspended ? "unsuspend" : "suspend" %>-user-btn"
           class="js-suspend-unsuspend-flow-btn c-btn <%= user_suspended ? "" : "c-btn--destructive" %> align-center fs-s"
-          data-modal-title="<%= user_suspended ? "Unsuspend" : "Suspend" %> <%= user_username %>"
+          data-modal-title="<%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_title", username: user_username) %>"
           data-modal-size="small" data-modal-content-selector="#<%= user_suspended ? "unsuspend" : "suspend" %>-modal-content" data-username="<%= user_username %>">
             <%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_user", username: user_username) %>
         </button>
@@ -220,11 +220,11 @@
           type="button"
           id="unpublish-all-posts-btn"
           class="c-btn c-btn--destructive align-center fs-s"
-          data-modal-title="Unpublish all posts"
+          data-modal-title="<%= t("views.moderations.actions.unpublish_all.title") %>"
           data-modal-size="small"
           data-modal-content-selector="#unpublish-all-posts"
           data-username="<%= @moderatable.username %>">
-          Unpublish all posts for <%= @moderatable.username %>
+          <%= t("views.moderations.actions.unpublish_all.button", username: @moderatable.username) %>
         </button>
       </div>
     <% end %>
