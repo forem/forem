@@ -889,7 +889,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect do
           post api_articles_path, params: {}.to_json, headers: post_headers
         end.not_to raise_error
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "fails with a nil body markdown" do
@@ -1205,26 +1205,26 @@ RSpec.describe "Api::V1::Articles", type: :request do
     end
   end
 
-  describe "POST /api/articles/:id/unpublish" do
+  describe "PUT /api/articles/:id/unpublish" do
     let(:user) { api_secret.user }
     let!(:published_article) { create(:article, published: true) }
     let(:path) { api_article_unpublish_path(published_article.id) }
 
     context "when unauthorized" do
       it "fails with no api key" do
-        post path, headers: { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
+        put path, headers: { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
-        post path,
-             headers: { "api-key" => "foobar", "content-type" => "application/json",
-                        "Accept" => "application/vnd.forem.api-v1+json" }
+        put path,
+            headers: { "api-key" => "foobar", "content-type" => "application/json",
+                       "Accept" => "application/vnd.forem.api-v1+json" }
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails without elevated_user?" do
-        post path, headers: v1_headers
+        put path, headers: v1_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -1234,7 +1234,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
       it "unpublishes an article" do
         expect(published_article.published).to be true
-        post path, headers: v1_headers
+        put path, headers: v1_headers
         expect(response).to have_http_status(:ok)
         expect(published_article.reload.published).to be false
       end
@@ -1245,7 +1245,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
       it "unpublishes an article" do
         expect(published_article.published).to be true
-        post path, headers: v1_headers
+        put path, headers: v1_headers
         expect(response).to have_http_status(:ok)
         expect(published_article.reload.published).to be false
       end
