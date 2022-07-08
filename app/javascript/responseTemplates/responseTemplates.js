@@ -329,22 +329,21 @@ function handleLoggedOut() {
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */
 
+// TODO: attach this to the comment text area preact component
 export function loadResponseTemplates() {
-  const { userStatus } = document.body.dataset;
-
-  const form = document.getElementsByClassName('comment-form')[0];
-
-  if (document.getElementById('response-templates-data')) {
-    if (userStatus === 'logged-out') {
-      handleLoggedOut();
-    }
-    if (
-      form &&
-      form.getElementsByClassName('response-templates-button')[0].dataset
-        .hasListener === 'false'
-    ) {
-      prepareOpenButton(form);
-    }
-    observeForReplyClick();
-  }
+  // const { userStatus } = document.body.dataset;
+  // const form = document.getElementsByClassName('comment-form')[0];
+  // if (document.getElementById('response-templates-data')) {
+  //   if (userStatus === 'logged-out') {
+  //     handleLoggedOut();
+  //   }
+  //   if (
+  //     form &&
+  //     form.getElementsByClassName('response-templates-button')[0].dataset
+  //       .hasListener === 'false'
+  //   ) {
+  //     prepareOpenButton(form);
+  //   }
+  //   observeForReplyClick();
+  // }
 }
