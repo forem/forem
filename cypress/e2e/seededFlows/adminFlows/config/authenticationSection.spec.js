@@ -41,7 +41,7 @@ describe('Authentication Section', () => {
             );
           });
 
-          // The page doesn't automatically reload on submission, 
+          // The page doesn't automatically reload on submission,
           // so we reload manually to check the settings have been persisted
           cy.reload();
 

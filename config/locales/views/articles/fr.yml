@@ -73,6 +73,10 @@ fr:
         subtitle: Unpublished Post.
         text: " This URL is public but secret, so share at your own discretion."
         edit: Click to edit
+      scheduled:
+        subtitle: Scheduled Post.
+        text: " This URL is public but secret, so share at your own discretion."
+        edit: Click to edit
       co_authors_html: with %{names}
       crossposted:
         text_html: Originally published at %{url} %{on}

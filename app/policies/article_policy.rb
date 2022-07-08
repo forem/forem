@@ -135,6 +135,10 @@ class ArticlePolicy < ApplicationPolicy
     user_author? || user_super_admin? || user_org_admin? || user_any_admin?
   end
 
+  def manage?
+    update? && record.published? && !record.scheduled?
+  end
+
   def stats?
     require_user!
     user_author? || user_super_admin? || user_org_admin?
