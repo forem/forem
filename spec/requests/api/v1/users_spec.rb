@@ -143,7 +143,7 @@ RSpec.describe "Api::V0::Users", type: :request do
     end
   end
 
-  describe "POST /api/users/:id/suspend" do
+  describe "PUT /api/users/:id/suspend" do
     let(:target_user) { create(:user) }
     let(:payload) { { note: "Violated CoC despite multiple warnings" } }
 
@@ -151,9 +151,9 @@ RSpec.describe "Api::V0::Users", type: :request do
 
     context "when unauthenticated" do
       it "returns unauthorized" do
-        post api_user_suspend_path(id: target_user.id),
-             params: payload,
-             headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+        put api_user_suspend_path(id: target_user.id),
+            params: payload,
+            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -161,17 +161,17 @@ RSpec.describe "Api::V0::Users", type: :request do
 
     context "when unauthorized" do
       it "returns unauthorized if api key is invalid" do
-        post api_user_suspend_path(id: target_user.id),
-             params: payload,
-             headers: v1_headers.merge({ "api-key" => "invalid api key" })
+        put api_user_suspend_path(id: target_user.id),
+            params: payload,
+            headers: v1_headers.merge({ "api-key" => "invalid api key" })
 
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "returns unauthorized if api key belongs to non-admin user" do
-        post api_user_suspend_path(id: target_user.id),
-             params: payload,
-             headers: v1_headers
+        put api_user_suspend_path(id: target_user.id),
+            params: payload,
+            headers: v1_headers
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -181,9 +181,9 @@ RSpec.describe "Api::V0::Users", type: :request do
       it "is successful in suspending a user", :aggregate_failures do
         api_secret.user.add_role(:super_admin)
 
-        post api_user_suspend_path(id: target_user.id),
-             params: payload,
-             headers: v1_headers
+        put api_user_suspend_path(id: target_user.id),
+            params: payload,
+            headers: v1_headers
 
         expect(target_user.reload.suspended?).to be true
         expect(response).to have_http_status(:ok)
