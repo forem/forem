@@ -21,5 +21,10 @@ module Api
     def me
       render :show
     end
+
+    def unpublish
+      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+      render head: :ok
+    end
   end
 end
