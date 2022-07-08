@@ -36,7 +36,7 @@ module Api
           reason: "misc_note",
           content: params[:note],
         )
-        render json: { message: "success" }
+        render head: :ok
       rescue StandardError
         render json: {
           success: false,
