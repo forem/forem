@@ -1,6 +1,8 @@
 module Articles
-  class Unpublish
-    def self.call(user, article)
+  module Unpublish
+    module_function
+
+    def call(user, article)
       attributes = {}
       if article.has_frontmatter?
         body_markdown = article.body_markdown.sub(/\npublished:\s*true\s*\n/, "\npublished: false\n")
