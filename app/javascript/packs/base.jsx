@@ -33,7 +33,9 @@ window.Forem = {
   initializeMentionAutocompleteTextArea: async (originalTextArea) => {
     const parentContainer = originalTextArea.parentElement;
 
-    const alreadyInitialized = parentContainer.id === 'combobox-container';
+    const alreadyInitialized =
+      parentContainer.classList.contains('c-autocomplete');
+
     if (alreadyInitialized) {
       return;
     }
