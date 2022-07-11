@@ -122,11 +122,8 @@ function addClickListeners(form) {
   insertButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
       const { content } = event.target.dataset;
-      // TODO: we can remove this once change to mentionautocomplete is merged
-      // We need to grab the textarea that is not the comment mention auto-complete component
-      const textArea = event.target.form.querySelector(
-        '.comment-textarea:not([role=combobox])',
-      );
+
+      const textArea = event.target.form.querySelector('.comment-textarea');
       const textAreaReplaceable =
         textArea.value === null ||
         textArea.value === '' ||
@@ -232,17 +229,17 @@ function loadData(form) {
   fetchResponseTemplates('personal_comment', form.id);
 }
 
-function openButtonCallback(form) {
+/**
+ * This helper function makes sure the correct templates are inserted into the UI next to the given comment form.
+ *
+ * @param {HTMLElement} form the relevant comment form
+ */
+function requestTemplates(form) {
   const responsesContainer = form.getElementsByClassName(
     'response-templates-container',
   )[0];
   const topLevelData = document.getElementById('response-templates-data');
   const dataFetched = topLevelData.innerHTML !== '';
-
-  // responsesContainer.classList.toggle('hidden');
-
-  // TODO: investigate fallout of this
-  // const containerHidden = responsesContainer.classList.contains('hidden');
 
   if (dataFetched) {
     copyData(responsesContainer);
@@ -274,6 +271,6 @@ function openButtonCallback(form) {
   }
 }
 
-export function initializeTemplateFetching(form) {
-  openButtonCallback(form);
+export function showTemplates(form) {
+  requestTemplates(form);
 }
