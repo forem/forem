@@ -5,6 +5,8 @@ Datadog.configure do |c|
   service_name = ENV.fetch("DD_SERVICE") { "rails-#{Rails.env}" }
 
   c.tracing.instrument :rails, service_name: service_name
+  c.tracing.instrument :active_support, cache_service: "#{service_name}-cache"
+  c.tracing.instrument :active_record, service_name: "#{service_name}-db"
   c.tracing.instrument :sidekiq, service_name: "#{service_name}-sidekiq"
   c.tracing.instrument :concurrent_ruby
   c.tracing.instrument :excon, service_name: "#{service_name}-excon"
