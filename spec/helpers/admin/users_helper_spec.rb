@@ -201,6 +201,11 @@ describe Admin::UsersHelper do
 
         expect(helper.banishable_user?(user)).to be false
       end
+
+      it "returns false if the user was created less than 100 days ago" do
+        user.update_column(:created_at, 2.days.ago)
+        expect(helper.banishable_user?(user)).to be false
+      end
     end
 
     it "returns true when the current user is a super admin" do
