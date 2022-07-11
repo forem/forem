@@ -1,5 +1,7 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
+import { initializeTemplateFetching } from '../../responseTemplates/responseTemplates';
+
 import {
   MentionAutocompleteTextArea,
   MarkdownToolbar,
@@ -18,9 +20,13 @@ const getClosestTemplatesContainer = (element) =>
 export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
 
+  // Templates appear outside of the comment textarea, but we only want to load this data if it's requested by the user
   const handleTemplatesClick = ({ target }) => {
     const templatesContainer = getClosestTemplatesContainer(target);
-    if (templatesContainer) {
+    const relatedForm = target.closest('form');
+
+    if (templatesContainer && relatedForm) {
+      initializeTemplateFetching(relatedForm);
       templatesContainer.classList.toggle('hidden');
       setTemplatesVisible(!templatesVisible);
     }

@@ -1,7 +1,3 @@
-/* eslint-disable no-alert */
-/* eslint-disable no-restricted-globals */
-/* global showLoginModal */
-
 function toggleTemplateTypeButton(form, e) {
   const { targetType } = e.target.dataset;
   const activeType = targetType === 'personal' ? 'moderator' : 'personal';
@@ -126,6 +122,7 @@ function addClickListeners(form) {
   insertButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
       const { content } = event.target.dataset;
+      // TODO: we can remove this once change to mentionautocomplete is merged
       // We need to grab the textarea that is not the comment mention auto-complete component
       const textArea = event.target.form.querySelector(
         '.comment-textarea:not([role=combobox])',
@@ -242,14 +239,15 @@ function openButtonCallback(form) {
   const topLevelData = document.getElementById('response-templates-data');
   const dataFetched = topLevelData.innerHTML !== '';
 
-  responsesContainer.classList.toggle('hidden');
+  // responsesContainer.classList.toggle('hidden');
 
-  const containerHidden = responsesContainer.classList.contains('hidden');
+  // TODO: investigate fallout of this
+  // const containerHidden = responsesContainer.classList.contains('hidden');
 
-  if (dataFetched && !containerHidden) {
+  if (dataFetched) {
     copyData(responsesContainer);
     addClickListeners(form);
-  } else if (!dataFetched && !containerHidden) {
+  } else if (!dataFetched) {
     loadData(form);
   }
 
@@ -276,74 +274,6 @@ function openButtonCallback(form) {
   }
 }
 
-function prepareOpenButton(form) {
-  const button = form.getElementsByClassName('response-templates-button')[0];
-  if (!button) {
-    return;
-  }
-
-  button.addEventListener('click', () => {
-    openButtonCallback(form);
-  });
-
-  button.dataset.hasListener = 'true';
-}
-
-function observeForReplyClick() {
-  const config = { childList: true, subtree: true };
-
-  const callback = (mutations) => {
-    const form = Array.from(mutations[0].addedNodes).filter(
-      (node) => node.nodeName === 'FORM',
-    );
-    if (form.length > 0) {
-      prepareOpenButton(form[0]);
-    }
-  };
-
-  const observer = new MutationObserver(callback);
-
-  const commentTree = document.getElementById('comment-trees-container');
-  if (commentTree) {
-    observer.observe(commentTree, config);
-  }
-
-  window.addEventListener('beforeunload', () => {
-    observer.disconnect();
-  });
-
-  window.InstantClick.on('change', () => {
-    observer.disconnect();
-  });
-}
-
-function handleLoggedOut() {
-  document
-    .getElementsByClassName('response-templates-button')[0]
-    ?.addEventListener(
-      'click',
-      // eslint-disable-next-line no-undef
-      showLoginModal,
-    );
-}
-/* eslint-enable no-alert */
-/* eslint-enable no-restricted-globals */
-
-// TODO: attach this to the comment text area preact component
-export function loadResponseTemplates() {
-  // const { userStatus } = document.body.dataset;
-  // const form = document.getElementsByClassName('comment-form')[0];
-  // if (document.getElementById('response-templates-data')) {
-  //   if (userStatus === 'logged-out') {
-  //     handleLoggedOut();
-  //   }
-  //   if (
-  //     form &&
-  //     form.getElementsByClassName('response-templates-button')[0].dataset
-  //       .hasListener === 'false'
-  //   ) {
-  //     prepareOpenButton(form);
-  //   }
-  //   observeForReplyClick();
-  // }
+export function initializeTemplateFetching(form) {
+  openButtonCallback(form);
 }

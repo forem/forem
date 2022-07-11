@@ -89,7 +89,7 @@
     </article>
   <% else %>
     <div id="response-templates-data" class="hidden"></div>
-    <%= javascript_packs_with_chunks_tag "responseTemplates", "commentsDisplay", defer: true %>
+    <%= javascript_packs_with_chunks_tag "commentsDisplay", defer: true %>
     <header class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary crayons-layout__content s:mx-2 m:mx-4 -mb-1 z-0">
       <% if @commentable %>
       <h1 class="crayons-subtitle-1 mb-4">
