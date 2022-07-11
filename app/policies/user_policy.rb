@@ -95,7 +95,6 @@ class UserPolicy < ApplicationPolicy
 
   alias toggle_suspension_status? elevated_user?
   alias unpublish_all_articles? elevated_user?
-  alias suspend_user? elevated_user?
 
   def moderation_routes?
     (user.has_trusted_role? || elevated_user?) && !user.suspended?
