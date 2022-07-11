@@ -29,8 +29,7 @@ window.Forem = {
       this.getPreactImport(),
     ]);
   },
-  // TODO: rename to init comment text area
-  initializeMentionAutocompleteTextArea: async (originalTextArea) => {
+  initializeEnhancedCommentTextArea: async (originalTextArea) => {
     const parentContainer = originalTextArea.parentElement;
 
     const alreadyInitialized =
