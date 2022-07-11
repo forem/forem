@@ -71,7 +71,7 @@ export const MarkdownToolbar = ({
   const additionalSecondaryItems = additionalSecondaryToolbarElements.map(
     (SecondaryItem) =>
       cloneElement(SecondaryItem, {
-        role: 'menu-item',
+        role: 'menuitem',
         className: 'overflow-menu-btn',
         tabindex: '-1',
         onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'overflow-menu-btn'),

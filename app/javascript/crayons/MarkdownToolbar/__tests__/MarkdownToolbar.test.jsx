@@ -44,7 +44,7 @@ describe('<MarkdownToolbar />', () => {
     expect(getByLabelText('Embed')).toBeInTheDocument();
   });
 
-  it('should render an overflow menu with secondary formatters and help link', async () => {
+  it('should render an overflow menu with secondary formatters', async () => {
     const { getByLabelText } = render(<MarkdownToolbar />);
 
     getByLabelText('More options').click();
@@ -54,6 +54,5 @@ describe('<MarkdownToolbar />', () => {
     );
     expect(getByLabelText('Strikethrough')).toBeInTheDocument();
     expect(getByLabelText('Line divider')).toBeInTheDocument();
-    expect(getByLabelText('Help')).toBeInTheDocument();
   });
 });
