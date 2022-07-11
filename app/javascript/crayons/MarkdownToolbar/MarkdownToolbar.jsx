@@ -103,10 +103,7 @@ export const MarkdownToolbar = ({
   );
 
   useLayoutEffect(() => {
-    // textAreaRef.current = document.getElementById(textAreaId);
-    const allmatches = document.querySelectorAll(`#${textAreaId}`);
-    // TODO: temporary workaround for mention autocomplete behaviour
-    textAreaRef.current = document.querySelectorAll(`#${textAreaId}`)[1];
+    textAreaRef.current = document.getElementById(textAreaId);
   }, [textAreaId]);
 
   useLayoutEffect(() => {

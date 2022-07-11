@@ -3,7 +3,7 @@ import { useState } from 'preact/hooks';
 import { initializeTemplateFetching } from '../../responseTemplates/responseTemplates';
 
 import {
-  MentionAutocompleteTextArea,
+  AutocompleteTriggerTextArea,
   MarkdownToolbar,
   Link,
   ButtonNew as Button,
@@ -34,9 +34,16 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
 
   return (
     <div>
-      <MentionAutocompleteTextArea
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        maxSuggestions={6}
+        searchInstructionsMessage="Type to search for a user"
         replaceElement={vanillaTextArea}
-        fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+        fetchSuggestions={(username) =>
+          fetchSearch('usernames', { username }).then(({ result }) =>
+            result.map((user) => ({ ...user, value: user.username })),
+          )
+        }
       />
       <MarkdownToolbar
         textAreaId={vanillaTextArea.id}
