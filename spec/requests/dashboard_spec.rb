@@ -6,6 +6,7 @@ RSpec.describe "Dashboards", type: :request do
   let(:super_admin)   { create(:user, :super_admin) }
   let(:article)       { create(:article, user: user) }
   let(:unpublished_article) { create(:article, user: user, published: false) }
+  let(:scheduled_article) { create(:article, user: user, published_at: 2.days.from_now) }
   let(:organization) { create(:organization) }
 
   describe "GET /dashboard" do
@@ -37,6 +38,24 @@ RSpec.describe "Dashboards", type: :request do
 
       it "renders the delete button for drafts" do
         unpublished_article
+        get "/dashboard"
+        expect(response.body).to include "Delete"
+      end
+
+      it "renders the draft state indicator" do
+        unpublished_article
+        get "/dashboard"
+        expect(response.body).to include "Draft"
+      end
+
+      it "renders scheduled state indicator" do
+        scheduled_article
+        get "/dashboard"
+        expect(response.body).to include "Scheduled"
+      end
+
+      it "renders the delete button for scheduled article" do
+        scheduled_article
         get "/dashboard"
         expect(response.body).to include "Delete"
       end

@@ -8,11 +8,14 @@ export const EditorActions = ({
   onPublish,
   onClearChanges,
   published,
+  publishedAt,
+  schedulingEnabled,
   edited,
   version,
   passedData,
   onConfigChange,
   submitting,
+  previewLoading,
 }) => {
   const isVersion1 = version === 'v1';
   const isVersion2 = version === 'v2';
@@ -34,18 +37,33 @@ export const EditorActions = ({
     );
   }
 
+  const now = new Date();
+  const publishedAtDate = publishedAt ? new Date(publishedAt) : now;
+  const schedule = publishedAtDate > now;
+
+  const saveButtonText = schedule
+    ? 'Schedule'
+    : published || isVersion1
+    ? 'Save changes'
+    : 'Publish';
+
   return (
     <div className="crayons-article-form__footer">
       <Button
         variant="primary"
         className="mr-2 whitespace-nowrap"
         onClick={onPublish}
+        disabled={previewLoading}
       >
-        {published || isVersion1 ? 'Save changes' : 'Publish'}
+        {saveButtonText}
       </Button>
 
       {!(published || isVersion1) && (
-        <Button className="mr-2 whitespace-nowrap" onClick={onSaveDraft}>
+        <Button
+          className="mr-2 whitespace-nowrap"
+          onClick={onSaveDraft}
+          disabled={previewLoading}
+        >
           Save <span className="hidden s:inline">draft</span>
         </Button>
       )}
@@ -53,8 +71,10 @@ export const EditorActions = ({
       {isVersion2 && (
         <Options
           passedData={passedData}
+          schedulingEnabled={schedulingEnabled}
           onConfigChange={onConfigChange}
           onSaveDraft={onSaveDraft}
+          previewLoading={previewLoading}
         />
       )}
 
@@ -62,6 +82,7 @@ export const EditorActions = ({
         <Button
           onClick={onClearChanges}
           className="whitespace-nowrap fw-normal fs-s"
+          disabled={previewLoading}
         >
           Revert <span className="hidden s:inline">new changes</span>
         </Button>
@@ -74,12 +95,15 @@ EditorActions.propTypes = {
   onSaveDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   published: PropTypes.bool.isRequired,
+  publishedAt: PropTypes.string.isRequired,
+  schedulingEnabled: PropTypes.bool.isRequired,
   edited: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
   onClearChanges: PropTypes.func.isRequired,
   passedData: PropTypes.object.isRequired,
   onConfigChange: PropTypes.func.isRequired,
   submitting: PropTypes.bool.isRequired,
+  previewLoading: PropTypes.bool.isRequired,
 };
 
 EditorActions.displayName = 'EditorActions';

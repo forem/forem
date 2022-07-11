@@ -50,6 +50,9 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  alias remove_identity? edit?
+  alias update_password? edit?
+
   # The analytics? policy method is also on the OrganizationPolicy.  This exists specifically to allow for
   # "duck-typing" on the tests.
   alias analytics? edit?
@@ -82,8 +85,6 @@ class UserPolicy < ApplicationPolicy
     OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 
-  alias remove_identity? edit?
-
   def dashboard_show?
     current_user? || user_super_admin? || user_any_admin?
   end
@@ -92,11 +93,12 @@ class UserPolicy < ApplicationPolicy
     user_any_admin? || user_moderator?
   end
 
+  alias toggle_suspension_status? elevated_user?
+  alias unpublish_all_articles? elevated_user?
+
   def moderation_routes?
     (user.has_trusted_role? || elevated_user?) && !user.suspended?
   end
-
-  alias update_password? edit?
 
   def permitted_attributes
     PERMITTED_ATTRIBUTES

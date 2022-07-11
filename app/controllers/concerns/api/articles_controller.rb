@@ -103,6 +103,18 @@ module Api
         .decorate
     end
 
+    def unpublish
+      @article = Article.find(params[:id])
+
+      authorize @article, :revoke_publication?
+
+      if Articles::Unpublish.call(@user, @article)
+        render head: :ok
+      else
+        render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def article_params

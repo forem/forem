@@ -40,7 +40,7 @@ module Admin
     def update
       article = Article.find(params[:id])
 
-      if article.update(article_params)
+      if article.update(article_params.merge(admin_update: true))
         flash[:success] = I18n.t("admin.articles_controller.saved")
       else
         flash[:danger] = article.errors_as_sentence

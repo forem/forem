@@ -20,6 +20,7 @@ export const Modal = ({
   backdropDismissible = false,
   onClose = () => {},
   focusTrapSelector = '.crayons-modal__box',
+  document = window.document,
 }) => {
   const classes = classNames('crayons-modal', {
     [`crayons-modal--${size}`]: size && size !== 'medium',
@@ -36,6 +37,7 @@ export const Modal = ({
       onDeactivate={onClose}
       clickOutsideDeactivates={backdropDismissible}
       selector={focusTrapSelector}
+      document={document}
     >
       <div data-testid="modal-container" className={classes}>
         <div

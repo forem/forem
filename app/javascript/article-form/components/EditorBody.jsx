@@ -12,7 +12,7 @@ import {
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
-import { MentionAutocompleteTextArea } from '@crayons/MentionAutocompleteTextArea';
+import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextArea';
 
 function handleImageSuccess(textAreaRef) {
   return function (response) {
@@ -71,12 +71,19 @@ export const EditorBody = ({
   return (
     <div
       data-testid="article-form__body"
-      className="crayons-article-form__body drop-area text-padding"
+      className="crayons-article-form__body drop-area text-padding h-100"
     >
       <Toolbar version={version} textAreaId="article_body_markdown" />
-      <MentionAutocompleteTextArea
+      <AutocompleteTriggerTextArea
+        triggerCharacter="@"
+        maxSuggestions={6}
+        searchInstructionsMessage="Type to search for a user"
         ref={textAreaRef}
-        fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+        fetchSuggestions={(username) =>
+          fetchSearch('usernames', { username }).then(({ result }) =>
+            result.map((user) => ({ ...user, value: user.username })),
+          )
+        }
         autoResize
         onChange={onChange}
         onFocus={switchHelpContext}

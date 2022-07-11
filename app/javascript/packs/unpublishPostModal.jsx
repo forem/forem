@@ -1,8 +1,6 @@
-import { h, render } from 'preact';
-import PropTypes from 'prop-types';
-import { request } from '../utilities/http';
-import { ButtonNew as Button } from '@crayons';
-import RemoveIcon from '@images/x.svg';
+/* eslint-disable no-restricted-globals */
+import { closeWindowModal, showWindowModal } from '@utilities/showModal';
+import { request } from '@utilities/http';
 
 async function confirmAdminUnpublishPost(id, username, slug) {
   try {
@@ -30,127 +28,53 @@ async function confirmAdminUnpublishPost(id, username, slug) {
     });
   }
 
-  toggleUnpublishPostModal();
+  closeWindowModal(window.parent.document);
+}
+
+let modalContents;
+
+/**
+ * Helper function to handle finding and caching modal content. Since our Preact modal helper works by duplicating HTML content,
+ * and our modals rely on IDs to label form controls, we remove the original hidden content from the DOM to avoid ID conflicts.
+ *
+ * @param {string} modalContentSelector The CSS selector used to identify the correct modal content
+ */
+function getModalContents(modalContentSelector) {
+  if (!modalContents) {
+    const modalContentElement =
+      window.parent.document.querySelector(modalContentSelector);
+    modalContents = modalContentElement.innerHTML;
+    modalContentElement.remove();
+  }
+
+  return modalContents;
+}
+
+function activateModalUnpublishBtn(id, username, slug) {
+  const unpublishBtn = window.parent.document.getElementById(
+    'confirm-unpublish-post-action',
+  );
+
+  unpublishBtn?.addEventListener('click', () => {
+    confirmAdminUnpublishPost(id, username, slug);
+  });
 }
 
 /**
  * Shows or hides the flag user modal.
  */
-export function toggleUnpublishPostModal() {
-  const modalContainer = top.document.getElementsByClassName(
-    'unpublish-post-modal-container',
-  )[0];
-  modalContainer.classList.toggle('hidden');
+export function toggleUnpublishPostModal(event) {
+  event.preventDefault;
+  const { articleId, authorUsername, articleSlug, modalContentSelector } =
+    event.target.dataset;
 
-  if (!modalContainer.classList.contains('hidden')) {
-    top.window.scrollTo(0, 0);
-    top.document.body.style.height = '100vh';
-    top.document.body.style.overflowY = 'hidden';
-  } else {
-    top.document.body.style.height = 'inherit';
-    top.document.body.style.overflowY = 'inherit';
-  }
+  showWindowModal({
+    document: window.parent.document,
+    modalContent: getModalContents(modalContentSelector),
+    title: 'Unpublish post',
+    size: 'small',
+    onOpen: () => {
+      activateModalUnpublishBtn(articleId, authorUsername, articleSlug);
+    },
+  });
 }
-
-/**
- * Initializes the Unpublish Post modal for the given article ID, author username and article slug.
- *
- * @param {number} articleId
- * @param {string} authorUsername
- * @param {string} articleSlug
- */
-export function initializeUnpublishPostModal(
-  articleId,
-  authorName,
-  authorUsername,
-  articleSlug,
-) {
-  // Check whether context is ModCenter or Friday-Night-Mode
-  const modContainer = document.getElementById('mod-container');
-
-  if (!modContainer) {
-    return;
-  }
-
-  render(
-    <UnpublishPostModal
-      articleId={articleId}
-      authorName={authorName}
-      authorUsername={authorUsername}
-      articleSlug={articleSlug}
-    />,
-    document.getElementsByClassName('unpublish-post-modal-container')[0],
-  );
-}
-
-/**
- * A modal for unpublishing a post. This can be used in the moderation center
- * or on an article page.
- *
- * @param {number} props.articleId ID of the article to be unpublished.
- * @param {string} props.authorUsername Username of the article's author.
- * @param {string} props.articleSlug Slug of the article to be unpublished.
- */
-export function UnpublishPostModal({
-  articleId,
-  authorName,
-  authorUsername,
-  articleSlug,
-}) {
-  return (
-    <div
-      data-testid="unpublish-post-modal"
-      class="crayons-modal crayons-modal--small absolute unpublish-post-modal"
-    >
-      <div class="crayons-modal__box">
-        <header class="crayons-modal__box__header unpublish-post-modal-header">
-          <h2 class="crayons-modal__box__header__title">Unpublish post</h2>
-          <Button
-            icon={RemoveIcon}
-            className="inline-flex"
-            onClick={toggleUnpublishPostModal}
-          />
-        </header>
-        <div class="crayons-modal__box__body">
-          <div class="grid gap-4">
-            <p>
-              Once unpublished, this post will become invisible to the public
-              and only accessible to {authorName}.
-            </p>
-            <p>They can still re-publish the post if they are not suspended.</p>
-            <div>
-              <Button
-                destructive
-                variant="primary"
-                className="mr-2"
-                id="confirm-unpublish-post-action"
-                onClick={(_event) => {
-                  confirmAdminUnpublishPost(
-                    articleId,
-                    authorUsername,
-                    articleSlug,
-                  );
-                }}
-              >
-                Unpublish post
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        role="presentation"
-        class="crayons-modal__overlay"
-        onClick={toggleUnpublishPostModal}
-        onKeyUp={toggleUnpublishPostModal}
-      />
-    </div>
-  );
-}
-
-UnpublishPostModal.displayName = 'UnpublishPostModal';
-UnpublishPostModal.propTypes = {
-  articleId: PropTypes.number.isRequired,
-  authorUsername: PropTypes.string.isRequired,
-  articleSlug: PropTypes.string.isRequired,
-};

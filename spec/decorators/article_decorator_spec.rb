@@ -45,6 +45,12 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expected_result = "/#{article.username}/#{article.slug}?preview=#{article.password}"
       expect(article.current_state_path).to eq(expected_result)
     end
+
+    it "returns the path /:username/:slug?:password when scheduled" do
+      article = create_article(published: true, published_at: Date.tomorrow)
+      expected_result = "/#{article.username}/#{article.slug}?preview=#{article.password}"
+      expect(article.current_state_path).to eq(expected_result)
+    end
   end
 
   describe "has_recent_comment_activity?" do

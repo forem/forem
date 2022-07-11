@@ -69,23 +69,6 @@ Rails.application.config.active_record.partial_inserts = false
 # Protect from open redirect attacks in `redirect_back_or_to` and `redirect_to`.
 Rails.application.config.action_controller.raise_on_open_redirects = true
 
-# If you're upgrading and haven't set `cookies_serializer` previously, your cookie serializer
-# was `:marshal`. Convert all cookies to JSON, using the `:hybrid` formatter.
-#
-# If you're confident all your cookies are JSON formatted, you can switch to the `:json` formatter.
-#
-# Continue to use `:marshal` for backward-compatibility with old cookies.
-#
-# If you have configured the serializer elsewhere, you can remove this.
-#
-# See https://guides.rubyonrails.org/action_controller_overview.html#cookies for more information.
-# Rails.application.config.action_dispatch.cookies_serializer = :hybrid
-
-# Enable parameter wrapping for JSON.
-# Previously this was set in an initializer. It's fine to keep using that initializer if you've customized it.
-# To disable parameter wrapping entirely, set this config to `false`.
-# Rails.application.config.action_controller.wrap_parameters_by_default = true
-
 # Specifies whether generated namespaced UUIDs follow the RFC 4122 standard for namespace IDs provided as a
 # `String` to `Digest::UUID.uuid_v3` or `Digest::UUID.uuid_v5` method calls.
 #
@@ -94,11 +77,11 @@ Rails.application.config.action_controller.raise_on_open_redirects = true
 Rails.application.config.active_support.use_rfc4122_namespaced_uuids = true
 
 # Change the default headers to disable browsers' flawed legacy XSS protection.
-# Rails.application.config.action_dispatch.default_headers = {
-#   "X-Frame-Options" => "SAMEORIGIN",
-#   "X-XSS-Protection" => "0",
-#   "X-Content-Type-Options" => "nosniff",
-#   "X-Download-Options" => "noopen",
-#   "X-Permitted-Cross-Domain-Policies" => "none",
-#   "Referrer-Policy" => "strict-origin-when-cross-origin"
-# }
+Rails.application.config.action_dispatch.default_headers = {
+  "X-Frame-Options" => "SAMEORIGIN",
+  "X-XSS-Protection" => "0",
+  "X-Content-Type-Options" => "nosniff",
+  "X-Download-Options" => "noopen",
+  "X-Permitted-Cross-Domain-Policies" => "none",
+  "Referrer-Policy" => "strict-origin-when-cross-origin"
+}

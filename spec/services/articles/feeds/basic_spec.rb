@@ -6,11 +6,11 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
   let(:unique_tag_name) { "foo" }
   let!(:article) { create(:article, hotness_score: 10) }
   let!(:hot_story) do
-    create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago, user_id: second_user.id)
+    create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago, user_id: second_user.id)
   end
-  let!(:old_story) { create(:article, hotness_score: 500, published_at: 3.days.ago, tags: unique_tag_name) }
+  let!(:old_story) { create(:article, :past, hotness_score: 500, past_published_at: 3.days.ago, tags: unique_tag_name) }
   let!(:low_scoring_article) { create(:article, score: -1000) }
-  let!(:month_old_story) { create(:article, published_at: 1.month.ago) } # rubocop:disable RSpec/LetSetup
+  let!(:month_old_story) { create(:article, :past, past_published_at: 1.month.ago) } # rubocop:disable RSpec/LetSetup
 
   context "without a user" do
     let(:feed) { described_class.new(user: nil, number_of_articles: 100, page: 1) }
