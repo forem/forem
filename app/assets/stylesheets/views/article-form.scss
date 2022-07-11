@@ -165,6 +165,10 @@
       calc(var(--content-padding-x) * -1) var(--su-6)
       calc(var(--content-padding-x) * -1);
 
+    .editor-toolbar {
+      position: relative;
+    }
+
     > :first-child {
       @media (min-width: $breakpoint-m) {
         margin-left: calc(var(--su-2) * -1);

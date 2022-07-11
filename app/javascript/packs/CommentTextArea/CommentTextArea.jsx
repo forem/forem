@@ -36,7 +36,7 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
   };
 
   return (
-    <div>
+    <div className="w-100 relative">
       <AutocompleteTriggerTextArea
         triggerCharacter="@"
         maxSuggestions={6}

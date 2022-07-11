@@ -27,6 +27,12 @@
 
     .editor-toolbar {
       border-top: 1px solid var(--form-border);
+      overflow-x: auto;
+
+      &::-webkit-scrollbar {
+        background: transparent;
+        height: 0;
+      }
     }
   }
 

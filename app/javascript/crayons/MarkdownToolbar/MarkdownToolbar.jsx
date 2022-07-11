@@ -338,7 +338,7 @@ export const MarkdownToolbar = ({
 
   return (
     <div
-      className="editor-toolbar relative"
+      className="editor-toolbar"
       aria-label="Markdown formatting toolbar"
       role="toolbar"
       aria-controls={textAreaId}
@@ -395,7 +395,9 @@ export const MarkdownToolbar = ({
 
       {smallScreen ? getSecondaryFormatterButtons(false) : null}
 
-      {smallScreen ? null : (
+      {smallScreen ? (
+        additionalSecondaryItems
+      ) : (
         <Button
           id="overflow-menu-button"
           onClick={() => setOverflowMenuOpen(!overflowMenuOpen)}
