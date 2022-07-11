@@ -1,26 +1,29 @@
 describe('Comment on articles', () => {
-  // In these tests we have purposefully avoided the use of aliasing (https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Aliases)
-  // Making use of aliases is generally best practice, but due to the implementation of the autocomplete component (switching between two different textareas) it can cause flakiness in these particular tests
+  // TestId ensures we get a reference to the substituted text area with autocomplete features
+  const getEnhancedCommentTextBox = () =>
+    cy
+      .findByTestId('autocomplete-wrapper')
+      .findByRole('textbox', /name: ^Add a comment to the discussion$/i);
 
-  const getCommentCombobox = () =>
-    cy.findByRole('combobox', {
-      name: /^Add a comment to the discussion$/i,
-    });
+  const verifyComboboxMode = () =>
+    cy
+      .findByTestId('autocomplete-wrapper')
+      .findByRole('combobox', /name: ^Add a comment to the discussion$/i);
+
+  const verifyNotInComboboxMode = () =>
+    cy
+      .findByTestId('autocomplete-wrapper')
+      .findByRole('combobox', /name: ^Add a comment to the discussion$/i)
+      .should('not.exist');
 
   const getCommentDropdown = () => cy.findByRole('listbox');
 
-  // Check for the wrapper's test ID first, to make sure we don't grab a reference to a textarea that is being replaced
-  const getCommentPlainTextBox = () =>
-    cy.findByRole('textbox', {
-      name: /^Add a comment to the discussion$/i,
-    });
-
-  const getReplyPlainCommentBox = () =>
+  const getReplyCommentBox = () =>
     cy.findByRole('textbox', {
       name: /^Reply to a comment\.\.\.$/,
     });
 
-  const getReplyCombobox = () =>
+  const verifyReplyComentBoxIsComboboxMode = () =>
     cy.findByRole('combobox', { name: /^Reply to a comment\.\.\.$/ });
 
   beforeEach(() => {
@@ -53,20 +56,14 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
-        // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
-
         // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('Some text @s');
-
-        // Verify the combobox has appeared
-        getCommentCombobox();
-        getCommentCombobox().should('have.focus');
+        getEnhancedCommentTextBox().as('commentTextArea');
+        cy.get('@commentTextArea').type('Some text @s');
+        verifyComboboxMode();
       });
 
-      cy.findByText('Type to search for a user').should('exist');
-      getCommentCombobox().type('e');
+      cy.findAllByText('Type to search for a user').should('exist');
+      cy.get('@commentTextArea').type('e');
       getCommentDropdown().should('exist');
 
       const expectedUsernameMatches = [
@@ -83,18 +80,15 @@ describe('Comment on articles', () => {
         cy.findByRole('option', { name }).should('exist'),
       );
       cy.findByRole('option', { name: /@search_user_7/ }).should('not.exist');
-      cy.findByRole('option', { name: /@search_user_3/ }).focus();
       cy.findByRole('option', { name: /@search_user_3/ }).click();
 
       getCommentDropdown().should('not.exist');
+      verifyNotInComboboxMode();
 
-      cy.findByRole('main').within(() => {
-        getCommentPlainTextBox().should('have.focus');
-        getCommentPlainTextBox().should(
-          'have.value',
-          'Some text @search_user_3 ',
-        );
-      });
+      cy.get('@commentTextArea').should(
+        'have.value',
+        'Some text @search_user_3 ',
+      );
     });
 
     it('should select a mention autocomplete suggestion by keyboard', () => {
@@ -109,25 +103,19 @@ describe('Comment on articles', () => {
         }).click();
 
         // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
+        getEnhancedCommentTextBox().as('commentTextArea');
 
-        // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('Some text @s');
-
-        // Verify the combobox has appeared
-        getCommentCombobox();
-        getCommentCombobox().should('have.focus');
-        getCommentCombobox().type('e');
+        cy.get('@commentTextArea').type('Some text @s');
+        verifyComboboxMode();
+        cy.get('@commentTextArea').type('e');
       });
 
       cy.findByRole('option', { name: /@search_user_1/ });
 
       cy.findByRole('main').within(() => {
-        getCommentCombobox().type('{downarrow}{enter}');
-
-        getCommentPlainTextBox().should('have.focus');
-        getCommentPlainTextBox().should(
+        cy.get('@commentTextArea').type('{downarrow}{enter}');
+        verifyNotInComboboxMode();
+        cy.get('@commentTextArea').should(
           'have.value',
           'Some text @search_user_1 ',
         );
@@ -146,25 +134,19 @@ describe('Comment on articles', () => {
         }).click();
 
         // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
+        getEnhancedCommentTextBox().as('commentTextArea');
 
-        // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('Some text @u');
-
-        // Verify the combobox has appeared
-        getCommentCombobox();
-        getCommentCombobox().should('have.focus');
-
-        getCommentCombobox().type('s');
+        cy.get('@commentTextArea').type('Some text @u');
+        verifyComboboxMode();
+        cy.get('@commentTextArea').type('s');
       });
 
       cy.findByText('No results found').should('exist');
-      getCommentCombobox().type(' ');
+      cy.get('@commentTextArea').type(' ');
 
       cy.findByText('No results found').should('not.exist');
-      getCommentPlainTextBox().should('have.focus');
-      getCommentPlainTextBox().should('have.value', 'Some text @us ');
+      verifyNotInComboboxMode();
+      cy.get('@commentTextArea').should('have.value', 'Some text @us ');
     });
 
     it('should stop showing mention autocomplete suggestions on text delete', () => {
@@ -179,23 +161,17 @@ describe('Comment on articles', () => {
         }).click();
 
         // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
+        getEnhancedCommentTextBox().as('commentTextArea');
 
-        // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('Some text @s');
-
-        // Verify the combobox has appeared
-        getCommentCombobox();
-
-        getCommentCombobox().should('have.focus');
-        getCommentCombobox().type('e');
+        cy.get('@commentTextArea').type('Some text @s');
+        verifyComboboxMode();
+        cy.get('@commentTextArea').type('e');
       });
 
       getCommentDropdown();
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
 
-      getCommentCombobox().type('{backspace}{backspace}{backspace}');
+      cy.get('@commentTextArea').type('{backspace}{backspace}{backspace}');
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
     });
 
@@ -211,22 +187,16 @@ describe('Comment on articles', () => {
         }).click();
 
         // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
+        getEnhancedCommentTextBox().as('commentTextArea');
 
-        // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('Some text @se');
-
-        // Verify the combobox has appeared
-        getCommentCombobox();
-
-        getCommentCombobox().should('have.focus');
-        getCommentCombobox().type('{backspace}{backspace}');
+        cy.get('@commentTextArea').type('Some text @se');
+        verifyComboboxMode();
+        cy.get('@commentTextArea').type('{backspace}{backspace}');
       });
 
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
 
-      getCommentCombobox().type('se');
+      cy.get('@commentTextArea').type('se');
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
     });
 
@@ -242,26 +212,19 @@ describe('Comment on articles', () => {
         }).click();
 
         // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
-
-        // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('Some text @s');
-
-        // Verify the combobox has appeared
-        getCommentCombobox();
-
-        getCommentCombobox().type('e');
+        getEnhancedCommentTextBox().as('commentTextArea');
+        cy.get('@commentTextArea').type('Some text @se');
       });
 
       getCommentDropdown();
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
 
-      getCommentCombobox().type('{Esc}');
+      cy.get('@commentTextArea').type('{Esc}');
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
     });
 
-    it('should close the autocomplete suggestions and exit combobox on click outside', () => {
+    // TODO: fix
+    it('should close the autocomplete suggestions and exit combobox on click elsewhere in text area', () => {
       cy.intercept(
         { method: 'GET', url: '/search/usernames?username=se' },
         { fixture: 'search/usernames.json' },
@@ -273,27 +236,17 @@ describe('Comment on articles', () => {
         }).click();
 
         // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
-
-        // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('Some text @s');
-
-        // Verify the combobox has appeared
-        getCommentCombobox();
-
-        getCommentCombobox().type('e');
+        getEnhancedCommentTextBox().as('commentTextArea');
+        cy.get('@commentTextArea').type('Some text @se');
+        verifyComboboxMode();
       });
 
       getCommentDropdown();
       cy.findByRole('option', { name: /@search_user_1/ }).should('be.visible');
 
       // Click away from the dropdown
-      getCommentCombobox().click({ position: 'right' });
+      cy.get('@commentTextArea').click({ position: 'right' });
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
-
-      // Check the combobox has exited and we are returned to the plainTextArea
-      getCommentPlainTextBox().should('have.focus');
     });
 
     it('should exit combobox when blurred and refocused', () => {
@@ -308,19 +261,14 @@ describe('Comment on articles', () => {
         }).click();
 
         // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
+        getEnhancedCommentTextBox().as('commentTextArea');
 
-        // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('Some text @s');
+        cy.get('@commentTextArea').type('Some text @s');
+        verifyComboboxMode();
 
-        // Verify the combobox has appeared
-        getCommentCombobox();
-
-        // Blur the currently active textarea, and check that the blur results in the plainTextArea being restored
-        getCommentCombobox().blur();
-        getCommentCombobox().should('not.exist');
-        getCommentPlainTextBox().should('exist');
+        // Blur the textarea, and check that the blur results in exiting combobox mode
+        cy.get('@commentTextArea').blur();
+        verifyNotInComboboxMode();
       });
     });
 
@@ -335,11 +283,8 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
-        // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
-
         // Create a comment to test replying to
-        getCommentPlainTextBox().type('first comment');
+        getEnhancedCommentTextBox().type('first comment');
         cy.findByRole('button', { name: /^Submit$/i }).click();
 
         cy.findByRole('link', { name: /^Reply$/i }).click();
@@ -347,20 +292,16 @@ describe('Comment on articles', () => {
         // Make sure we wait until the reply comment box has been substituted with the autocomplete one
         cy.findAllByTestId('autocomplete-wrapper').should('have.length', 2);
 
-        getReplyPlainCommentBox().click();
-        getReplyPlainCommentBox().type('Some text @s');
-
-        // Verify the combobox has appeared
-        getReplyCombobox();
-        getReplyCombobox().type('e');
+        getReplyCommentBox().as('replyCommentBox');
+        cy.get('@replyCommentBox').type('Some text @se');
+        verifyReplyComentBoxIsComboboxMode();
       });
 
       // Pick an item from the dropdown
       getCommentDropdown();
-      cy.findByRole('option', { name: /@search_user_1/ }).focus();
       cy.findByRole('option', { name: /@search_user_1/ }).click();
 
-      getReplyPlainCommentBox().should(
+      cy.get('@replyCommentBox').should(
         'have.value',
         'Some text @search_user_1 ',
       );
@@ -372,12 +313,7 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).click();
 
-        // Make sure the comment box has been substituted with the autocomplete one
-        cy.findByTestId('autocomplete-wrapper');
-
-        // Get a handle to the newly substituted textbox
-        getCommentPlainTextBox();
-        getCommentPlainTextBox().type('first comment');
+        getEnhancedCommentTextBox().type('first comment');
 
         cy.findByRole('button', { name: /Submit/ }).click();
         cy.findByRole('link', { name: /Reply/ });

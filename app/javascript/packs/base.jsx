@@ -21,7 +21,7 @@ window.Forem = {
   getMentionAutoCompleteImports() {
     if (!this.mentionAutoCompleteImports) {
       this.mentionAutoCompleteImports = [
-        import('@crayons/MentionAutocompleteTextArea'),
+        import('@crayons/AutocompleteTriggerTextArea'),
         import('@utilities/search'),
         this.getPreactImport(),
       ];
@@ -34,18 +34,27 @@ window.Forem = {
   initializeMentionAutocompleteTextArea: async (originalTextArea) => {
     const parentContainer = originalTextArea.parentElement;
 
-    const alreadyInitialized = parentContainer.id === 'combobox-container';
+    const alreadyInitialized =
+      parentContainer.classList.contains('c-autocomplete');
+
     if (alreadyInitialized) {
       return;
     }
 
-    const [{ MentionAutocompleteTextArea }, { fetchSearch }, { render, h }] =
+    const [{ AutocompleteTriggerTextArea }, { fetchSearch }, { render, h }] =
       await window.Forem.getMentionAutoCompleteImports();
 
     render(
-      <MentionAutocompleteTextArea
+      <AutocompleteTriggerTextArea
         replaceElement={originalTextArea}
-        fetchSuggestions={(username) => fetchSearch('usernames', { username })}
+        maxSuggestions={6}
+        fetchSuggestions={(username) =>
+          fetchSearch('usernames', { username }).then(({ result }) =>
+            result.map((user) => ({ ...user, value: user.username })),
+          )
+        }
+        searchInstructionsMessage="Type to search for a user"
+        triggerCharacter="@"
       />,
       parentContainer,
       originalTextArea,
