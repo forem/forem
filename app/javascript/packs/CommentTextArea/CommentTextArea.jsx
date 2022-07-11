@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import { showTemplates } from '../../responseTemplates/responseTemplates';
+import { populateTemplates } from '../../responseTemplates/responseTemplates';
 
 import {
   AutocompleteTriggerTextArea,
@@ -26,7 +26,10 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
     const relatedForm = target.closest('form');
 
     if (templatesContainer && relatedForm) {
-      showTemplates(relatedForm);
+      populateTemplates(relatedForm, () => {
+        setTemplatesVisible(false);
+        templatesContainer.classList.add('hidden');
+      });
       templatesContainer.classList.toggle('hidden');
       setTemplatesVisible(!templatesVisible);
     }

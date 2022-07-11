@@ -106,7 +106,7 @@ Make sure this is the appropriate comment for the situation.
 
 This action is not reversible.`;
 
-function addClickListeners(form) {
+function addClickListeners(form, onTemplateSelected) {
   const responsesContainer = form.getElementsByClassName(
     'response-templates-container',
   )[0];
@@ -133,7 +133,7 @@ function addClickListeners(form) {
         textArea.value = content;
         textArea.dispatchEvent(new Event('input', { target: textArea }));
         textArea.focus();
-        responsesContainer.classList.toggle('hidden');
+        onTemplateSelected();
       }
     });
   });
@@ -149,15 +149,13 @@ function addClickListeners(form) {
   });
 }
 
-function fetchResponseTemplates(typeOf, formId) {
+function fetchResponseTemplates(formId, onTemplateSelected) {
   const form = document.getElementById(formId);
 
   const typesOf = [
     ['personal_comment', 'personal-responses-container'],
     ['mod_comment', 'moderator-responses-container'],
   ];
-
-  /* eslint-disable-next-line no-undef */
 
   fetch(`/response_templates`, {
     method: 'GET',
@@ -195,7 +193,7 @@ function fetchResponseTemplates(typeOf, formId) {
         }
       }
 
-      addClickListeners(form);
+      addClickListeners(form, onTemplateSelected);
     });
 }
 
@@ -224,17 +222,18 @@ function copyData(responsesContainer) {
   ).innerHTML;
 }
 
-function loadData(form) {
+function loadData(form, onTemplateSelected) {
   form.querySelector('img.loading-img').classList.toggle('hidden');
-  fetchResponseTemplates('personal_comment', form.id);
+  fetchResponseTemplates(form.id, onTemplateSelected);
 }
 
 /**
  * This helper function makes sure the correct templates are inserted into the UI next to the given comment form.
  *
- * @param {HTMLElement} form the relevant comment form
+ * @param {HTMLElement} form The relevant comment form
+ * @param {Function} onTemplateSelected Callback for when a template is inserted
  */
-function requestTemplates(form) {
+export function populateTemplates(form, onTemplateSelected) {
   const responsesContainer = form.getElementsByClassName(
     'response-templates-container',
   )[0];
@@ -243,9 +242,9 @@ function requestTemplates(form) {
 
   if (dataFetched) {
     copyData(responsesContainer);
-    addClickListeners(form);
+    addClickListeners(form, onTemplateSelected);
   } else if (!dataFetched) {
-    loadData(form);
+    loadData(form, onTemplateSelected);
   }
 
   const hasBothTemplates =
@@ -269,8 +268,4 @@ function requestTemplates(form) {
       .getElementsByClassName('personal-template-button')[0]
       .classList.add('hidden');
   }
-}
-
-export function showTemplates(form) {
-  requestTemplates(form);
 }
