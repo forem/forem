@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, cloneElement } from 'preact';
 import { useState, useLayoutEffect, useRef } from 'preact/hooks';
 import { ImageUploader } from '../../article-form/components/ImageUploader';
 import {
@@ -7,8 +7,7 @@ import {
   getNewTextAreaValueWithEdits,
 } from './markdownSyntaxFormatters';
 import OverflowIcon from '@images/overflow-vertical.svg';
-import HelpIcon from '@images/help.svg';
-import { ButtonNew as Button, Link } from '@crayons';
+import { ButtonNew as Button } from '@crayons';
 import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
@@ -58,12 +57,26 @@ const getPreviousMatchingSibling = (element, selector) => {
  * @param {object} props
  * @param {string} props.textAreaId The ID of the textarea the markdown formatting should be added to
  */
-export const MarkdownToolbar = ({ textAreaId }) => {
+export const MarkdownToolbar = ({
+  textAreaId,
+  additionalSecondaryToolbarElements = [],
+}) => {
   const textAreaRef = useRef(null);
 
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
   const [storedCursorPosition, setStoredCursorPosition] = useState({});
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
+
+  // Enhance any additional toolbar elements with the appropriate roles & listeners
+  const additionalSecondaryItems = additionalSecondaryToolbarElements.map(
+    (SecondaryItem) =>
+      cloneElement(SecondaryItem, {
+        role: 'menuitem',
+        className: 'overflow-menu-btn',
+        tabindex: '-1',
+        onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'overflow-menu-btn'),
+      }),
+  );
 
   const markdownSyntaxFormatters = {
     ...coreSyntaxFormatters,
@@ -325,7 +338,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
   return (
     <div
-      className="editor-toolbar relative"
+      className="editor-toolbar"
       aria-label="Markdown formatting toolbar"
       role="toolbar"
       aria-controls={textAreaId}
@@ -382,7 +395,9 @@ export const MarkdownToolbar = ({ textAreaId }) => {
 
       {smallScreen ? getSecondaryFormatterButtons(false) : null}
 
-      {smallScreen ? null : (
+      {smallScreen ? (
+        additionalSecondaryItems
+      ) : (
         <Button
           id="overflow-menu-button"
           onClick={() => setOverflowMenuOpen(!overflowMenuOpen)}
@@ -403,18 +418,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           className="crayons-dropdown flex p-2 min-w-unset right-0 top-100"
         >
           {getSecondaryFormatterButtons(true)}
-          <Link
-            block
-            role="menuitem"
-            href="/p/editor_guide"
-            target="_blank"
-            rel="noopener noreferrer"
-            icon={HelpIcon}
-            className="overflow-menu-btn"
-            tabindex="-1"
-            aria-label="Help"
-            onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'overflow-menu-btn')}
-          />
+          {additionalSecondaryItems}
         </div>
       )}
       {textAreaRef.current && (

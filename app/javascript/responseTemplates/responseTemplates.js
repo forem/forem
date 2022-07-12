@@ -1,7 +1,3 @@
-/* eslint-disable no-alert */
-/* eslint-disable no-restricted-globals */
-/* global showLoginModal */
-
 function toggleTemplateTypeButton(form, e) {
   const { targetType } = e.target.dataset;
   const activeType = targetType === 'personal' ? 'moderator' : 'personal';
@@ -110,7 +106,7 @@ Make sure this is the appropriate comment for the situation.
 
 This action is not reversible.`;
 
-function addClickListeners(form) {
+function addClickListeners(form, onTemplateSelected) {
   const responsesContainer = form.getElementsByClassName(
     'response-templates-container',
   )[0];
@@ -126,10 +122,8 @@ function addClickListeners(form) {
   insertButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
       const { content } = event.target.dataset;
-      // We need to grab the textarea that is not the comment mention auto-complete component
-      const textArea = event.target.form.querySelector(
-        '.comment-textarea:not([role=combobox])',
-      );
+
+      const textArea = event.target.form.querySelector('.comment-textarea');
       const textAreaReplaceable =
         textArea.value === null ||
         textArea.value === '' ||
@@ -139,7 +133,7 @@ function addClickListeners(form) {
         textArea.value = content;
         textArea.dispatchEvent(new Event('input', { target: textArea }));
         textArea.focus();
-        responsesContainer.classList.toggle('hidden');
+        onTemplateSelected();
       }
     });
   });
@@ -155,15 +149,13 @@ function addClickListeners(form) {
   });
 }
 
-function fetchResponseTemplates(typeOf, formId) {
+function fetchResponseTemplates(formId, onTemplateSelected) {
   const form = document.getElementById(formId);
 
   const typesOf = [
     ['personal_comment', 'personal-responses-container'],
     ['mod_comment', 'moderator-responses-container'],
   ];
-
-  /* eslint-disable-next-line no-undef */
 
   fetch(`/response_templates`, {
     method: 'GET',
@@ -201,7 +193,7 @@ function fetchResponseTemplates(typeOf, formId) {
         }
       }
 
-      addClickListeners(form);
+      addClickListeners(form, onTemplateSelected);
     });
 }
 
@@ -230,27 +222,29 @@ function copyData(responsesContainer) {
   ).innerHTML;
 }
 
-function loadData(form) {
+function loadData(form, onTemplateSelected) {
   form.querySelector('img.loading-img').classList.toggle('hidden');
-  fetchResponseTemplates('personal_comment', form.id);
+  fetchResponseTemplates(form.id, onTemplateSelected);
 }
 
-function openButtonCallback(form) {
+/**
+ * This helper function makes sure the correct templates are inserted into the UI next to the given comment form.
+ *
+ * @param {HTMLElement} form The relevant comment form
+ * @param {Function} onTemplateSelected Callback for when a template is inserted
+ */
+export function populateTemplates(form, onTemplateSelected) {
   const responsesContainer = form.getElementsByClassName(
     'response-templates-container',
   )[0];
   const topLevelData = document.getElementById('response-templates-data');
   const dataFetched = topLevelData.innerHTML !== '';
 
-  responsesContainer.classList.toggle('hidden');
-
-  const containerHidden = responsesContainer.classList.contains('hidden');
-
-  if (dataFetched && !containerHidden) {
+  if (dataFetched) {
     copyData(responsesContainer);
-    addClickListeners(form);
-  } else if (!dataFetched && !containerHidden) {
-    loadData(form);
+    addClickListeners(form, onTemplateSelected);
+  } else if (!dataFetched) {
+    loadData(form, onTemplateSelected);
   }
 
   const hasBothTemplates =
@@ -273,78 +267,5 @@ function openButtonCallback(form) {
     form
       .getElementsByClassName('personal-template-button')[0]
       .classList.add('hidden');
-  }
-}
-
-function prepareOpenButton(form) {
-  const button = form.getElementsByClassName('response-templates-button')[0];
-  if (!button) {
-    return;
-  }
-
-  button.addEventListener('click', () => {
-    openButtonCallback(form);
-  });
-
-  button.dataset.hasListener = 'true';
-}
-
-function observeForReplyClick() {
-  const config = { childList: true, subtree: true };
-
-  const callback = (mutations) => {
-    const form = Array.from(mutations[0].addedNodes).filter(
-      (node) => node.nodeName === 'FORM',
-    );
-    if (form.length > 0) {
-      prepareOpenButton(form[0]);
-    }
-  };
-
-  const observer = new MutationObserver(callback);
-
-  const commentTree = document.getElementById('comment-trees-container');
-  if (commentTree) {
-    observer.observe(commentTree, config);
-  }
-
-  window.addEventListener('beforeunload', () => {
-    observer.disconnect();
-  });
-
-  window.InstantClick.on('change', () => {
-    observer.disconnect();
-  });
-}
-
-function handleLoggedOut() {
-  document
-    .getElementsByClassName('response-templates-button')[0]
-    ?.addEventListener(
-      'click',
-      // eslint-disable-next-line no-undef
-      showLoginModal,
-    );
-}
-/* eslint-enable no-alert */
-/* eslint-enable no-restricted-globals */
-
-export function loadResponseTemplates() {
-  const { userStatus } = document.body.dataset;
-
-  const form = document.getElementsByClassName('comment-form')[0];
-
-  if (document.getElementById('response-templates-data')) {
-    if (userStatus === 'logged-out') {
-      handleLoggedOut();
-    }
-    if (
-      form &&
-      form.getElementsByClassName('response-templates-button')[0].dataset
-        .hasListener === 'false'
-    ) {
-      prepareOpenButton(form);
-    }
-    observeForReplyClick();
   }
 }
