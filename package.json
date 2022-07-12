@@ -132,7 +132,7 @@
     "lodash.debounce": "4.0.8",
     "moment": "^2.29.4",
     "postcss": "^8.4.14",
-    "postcss-cli": "^9.1.0",
+    "postcss-cli": "^10.0.0",
     "postcss-cssnext": "^3.1.0",
     "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
