@@ -40,13 +40,17 @@ describe('Filter user index', () => {
       cy.findByRole('group', { name: 'Organizations' }).should('be.visible');
       cy.findByRole('checkbox', { name: 'Bachmanity' }).check();
 
+      cy.findAllByText('Status').first().click();
+      cy.findByRole('group', { name: 'Status' }).should('be.visible');
+      cy.findByRole('checkbox', { name: 'Trusted' }).check();
+
       cy.findByRole('button', { name: 'Apply filters' }).click();
     });
 
     // Verify applied filter pills are visible
     cy.findAllByRole('button', { name: /Remove filter/ }).should(
       'have.length',
-      3,
+      4,
     );
 
     cy.findByRole('button', { name: 'Remove filter: Admin' }).click();
@@ -56,7 +60,7 @@ describe('Filter user index', () => {
     );
     cy.findAllByRole('button', { name: /Remove filter/ }).should(
       'have.length',
-      2,
+      3,
     );
 
     cy.findByRole('button', { name: 'Clear all filters' }).click();

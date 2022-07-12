@@ -11,6 +11,17 @@
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
+     <% params[:statuses]&.each do |status| %>
+        <button
+            data-filter-key="statuses[]"
+            data-filter-value="<%= status %>"
+            aria-label="Remove filter: <%= status %>"
+            class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
+            type="button">
+            <%= render "admin/users/index/status_indicator", status: status %>
+            <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
+        </button>
+    <% end %>
     <% params[:organizations]&.each do |org_id| %>
         <% org = @organizations.find_by(id: org_id) %>
         <button
