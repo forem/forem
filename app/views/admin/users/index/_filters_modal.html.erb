@@ -49,7 +49,7 @@
                 </summary>
                 <fieldset class="js-statuses-fieldset pb-4 flex flex-col items-start">
                     <legend class="screen-reader-only">Status</legend>
-                     <% Constants::Role::BASE_ROLES.each_with_index do |status, index| %>
+                     <% filterable_statuses.each_with_index do |status, index| %>
                         <div class="crayons-field crayons-field--checkbox">
                             <%= f.check_box :statuses, { multiple: true, class: "crayons-checkbox", id: "filter-status-#{index}", checked: params[:statuses]&.include?(status) }, status, false %>
                             <%= f.label :statuses, for: "filter-status-#{index}", class: "crayons-field__label" do %><%= render "admin/users/index/status_indicator", status: status %><% end %>

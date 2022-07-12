@@ -1,8 +1,6 @@
 module Constants
   module Role
     GOOD_STANDING_STATUS = :good_standing
-    FOLKS_WITH_THESE_ROLES_ARE_NOT_COUNTED_AS_IN_GOOD_STANDING =
-      %w[warned suspended comment_suspended trusted].freeze
 
     BASE_ROLES_LABELS_TO_WHERE_CLAUSE = {
       "Warned" => { name: "warned", resource_type: nil },
