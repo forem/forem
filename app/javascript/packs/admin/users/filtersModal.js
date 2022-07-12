@@ -105,7 +105,7 @@ const clearAllCheckboxesInFieldset = (fieldset) => {
 const initializeModalCloseButton = () =>
   document
     .querySelector(`#${WINDOW_MODAL_ID} .js-filter-modal-cancel-btn`)
-    .addEventListener('click', closeWindowModal);
+    .addEventListener('click', () => closeWindowModal());
 
 /**
  * Roles list is dynamically expanded and collapsed by this toggle button
