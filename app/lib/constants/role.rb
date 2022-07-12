@@ -1,13 +1,11 @@
 module Constants
   module Role
-    GOOD_STANDING_STATUS = :good_standing
-
     BASE_ROLES_LABELS_TO_WHERE_CLAUSE = {
       "Warned" => { name: "warned", resource_type: nil },
       "Comment Suspended" => { name: "comment_suspended", resource_type: nil },
       "Suspended" => { name: "suspended", resource_type: nil },
       # This "role" is a weird amalgamation of multiple roles.
-      "Good standing" => GOOD_STANDING_STATUS,
+      "Good standing" => :good_standing,
       "Trusted" => { name: "trusted", resource_type: nil }
     }.freeze
 
