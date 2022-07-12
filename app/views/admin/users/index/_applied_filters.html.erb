@@ -34,7 +34,7 @@
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
-    <% if params[:roles] || params[:organizations] %>
+    <% if params[:roles] || params[:organizations] || params[:statuses] %>
         <button class="js-clear-filters-btn c-btn" aria-label="Clear all filters">Clear all</button>
     <% end %>
 </div>
