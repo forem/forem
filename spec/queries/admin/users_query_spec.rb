@@ -90,19 +90,6 @@ RSpec.describe Admin::UsersQuery, type: :query do
       it { is_expected.to eq([user10, user5, user4]) }
     end
 
-    context "when given 'Good standing' and 'Trusted' it includes those with trusted roles" do
-      let(:statuses) { ["Good standing"] }
-      let(:roles) { ["Trusted"] }
-
-      it { is_expected.to eq([user7, user6, user5, user4, user3, user2, user]) }
-    end
-
-    context "when given 'Good standing' status, checks for absence of other base roles" do
-      let(:statuses) { ["Good standing"] }
-
-      it { is_expected.to eq([user7, user6, user5, user4, user3]) }
-    end
-
     context "when given organizations" do
       before do
         create(:organization_membership, user: user, organization: org1, type_of_user: "member")
