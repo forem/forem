@@ -15,7 +15,7 @@
     </h3>
     <% if article.published %>
       <p class="fs-s color-base-60 js-dashboard-story-details">
-        <strong class="fw-medium"><%= t("views.dashboard.article.published") %></strong>
+        <strong class="fw-medium"><%= t("views.dashboard.article.#{article.scheduled? ? 'scheduled_at' : 'published'}") %></strong>
         <%= local_date(article.published_timestamp, show_year: article.displayable_published_at.year != Time.current.year) %>
         <% if article.edited? %>
           <strong class="fw-medium pl-2"><%= t("views.dashboard.article.edited") %></strong>
@@ -31,6 +31,8 @@
   <div class="fs-s color-base-60">
     <% if !article.published? %>
       <a href="<%= article.path %>/edit" class="c-indicator c-indicator--warning"><%= t("views.dashboard.article.draft") %></a>
+    <% elsif article.scheduled? %>
+      <a href="<%= article.path %>/edit" class="c-indicator c-indicator--warning"><%= t("views.dashboard.article.scheduled") %></a>
     <% else %>
       <div class="flex flex-nowrap whitespace-nowrap" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="flex items-center p-1" title="<%= t("views.dashboard.article.reactions.title") %>">
@@ -86,7 +88,7 @@
           <button class="crayons-btn crayons-btn--ghost crayons-btn--s" title="<%= t("views.dashboard.article.pin.title") %>"><%= t("views.dashboard.article.pin.text") %></button>
         <% end %>
       <% end %>
-    <% elsif article.published %>
+    <% elsif article.published && !article.scheduled? %>
       <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s" aria-label="<%= t("views.dashboard.article.manage.aria_label", title: article.title) %>"><%= t("views.dashboard.article.manage.text") %></a>
     <% elsif @user == article.user %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s"><%= t("views.dashboard.article.delete") %></a>

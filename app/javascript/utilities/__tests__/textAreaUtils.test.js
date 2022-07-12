@@ -1,5 +1,5 @@
 import {
-  getMentionWordData,
+  getAutocompleteWordData,
   getLastIndexOfCharacter,
   getNextIndexOfCharacter,
   getSelectionData,
@@ -7,65 +7,75 @@ import {
   getNumberOfNewLinesFollowingSelection,
 } from '../textAreaUtils';
 
-describe('getMentionWordData', () => {
-  it('returns userMention false for cursor at start of input', () => {
-    const inputState = {
+describe('getAutocompleteWordData', () => {
+  it('returns isTriggered false for cursor at start of input', () => {
+    const textArea = {
       selectionStart: 0,
       value: 'text with @mention',
     };
 
-    const { isUserMention, indexOfMentionStart } =
-      getMentionWordData(inputState);
-    expect(isUserMention).toBe(false);
-    expect(indexOfMentionStart).toEqual(-1);
+    const { isTriggered, indexOfAutocompleteStart } = getAutocompleteWordData({
+      textArea,
+      triggerCharacter: '@',
+    });
+    expect(isTriggered).toBe(false);
+    expect(indexOfAutocompleteStart).toEqual(-1);
   });
 
-  it('returns userMention false for empty input value', () => {
-    const inputState = {
+  it('returns isTriggered false for empty input value', () => {
+    const textArea = {
       selectionStart: 10,
       value: '',
     };
 
-    const { isUserMention, indexOfMentionStart } =
-      getMentionWordData(inputState);
-    expect(isUserMention).toBe(false);
-    expect(indexOfMentionStart).toEqual(-1);
+    const { isTriggered, indexOfAutocompleteStart } = getAutocompleteWordData({
+      textArea,
+      triggerCharacter: '@',
+    });
+    expect(isTriggered).toBe(false);
+    expect(indexOfAutocompleteStart).toEqual(-1);
   });
 
-  it('returns userMention false if no @ symbol exists at start of word', () => {
-    const inputState = {
+  it('returns isTriggered false if no triggerCharacter exists at start of word', () => {
+    const textArea = {
       selectionStart: 13,
       value: 'text with no mention',
     };
 
-    const { isUserMention, indexOfMentionStart } =
-      getMentionWordData(inputState);
-    expect(isUserMention).toBe(false);
-    expect(indexOfMentionStart).toEqual(-1);
+    const { isTriggered, indexOfAutocompleteStart } = getAutocompleteWordData({
+      textArea,
+      triggerCharacter: '@',
+    });
+    expect(isTriggered).toBe(false);
+    expect(indexOfAutocompleteStart).toEqual(-1);
   });
 
-  it('returns userMention true and correct index for an @ mention at beginning of input', () => {
-    const inputState = {
+  it('returns isTriggered true and correct index for an @ mention at beginning of input', () => {
+    const textArea = {
       selectionStart: 3,
       value: '@mention',
     };
 
-    const { isUserMention, indexOfMentionStart } =
-      getMentionWordData(inputState);
-    expect(isUserMention).toBe(true);
-    expect(indexOfMentionStart).toEqual(0);
+    const { isTriggered, indexOfAutocompleteStart } = getAutocompleteWordData({
+      textArea,
+      triggerCharacter: '@',
+    });
+    expect(isTriggered).toBe(true);
+    expect(indexOfAutocompleteStart).toEqual(0);
   });
 
-  it('returns userMention true and correct index for @ mention in middle of input', () => {
-    const inputState = {
+  it('returns isTriggered true and correct index for @ mention in middle of input', () => {
+    const textArea = {
       selectionStart: 13,
       value: 'text with @mention',
     };
 
-    const { isUserMention, indexOfMentionStart } =
-      getMentionWordData(inputState);
-    expect(isUserMention).toBe(true);
-    expect(indexOfMentionStart).toEqual(10);
+    const { isTriggered, indexOfAutocompleteStart } = getAutocompleteWordData({
+      textArea,
+      triggerCharacter: '@',
+    });
+    expect(isTriggered).toBe(true);
+    expect(indexOfAutocompleteStart).toEqual(10);
   });
 });
 

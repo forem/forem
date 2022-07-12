@@ -5,16 +5,22 @@ import { calculateTextAreaHeight } from '@utilities/calculateTextAreaHeight';
  * A helper function to get the X/Y coordinates of the current cursor position within an element.
  * For a full explanation see the post by Jhey Tompkins: https://medium.com/@jh3y/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
  *
- * @param {element} input The DOM element the cursor is to be found within
- * @param {number} selectionPoint The current cursor position (e.g. either selectionStart or selectionEnd)
+ * @param {args}
+ * @param {args.element} input The DOM element the cursor is to be found within
+ * @param {args.number} selectionPoint The current cursor position (e.g. either selectionStart or selectionEnd)
+ * @param {args.element} relativeToElement The DOM element the position to be calculated relative to. Defaults to the document body
  *
  * @returns {object} An object with x and y properties (e.g. {x: 10, y: 0})
  *
  * @example
  * const coordinates = getCursorXY(elementRef.current, elementRef.current.selectionStart)
  */
-export const getCursorXY = (input, selectionPoint) => {
-  const bodyRect = document.body.getBoundingClientRect();
+export const getCursorXY = ({
+  input,
+  selectionPoint,
+  relativeToElement = document.body,
+}) => {
+  const bodyRect = relativeToElement.getBoundingClientRect();
   const elementRect = input.getBoundingClientRect();
 
   const inputY = elementRect.top - bodyRect.top - input.scrollTop;
@@ -23,8 +29,9 @@ export const getCursorXY = (input, selectionPoint) => {
   // create a dummy element with the computed style of the input
   const div = document.createElement('div');
   const copyStyle = getComputedStyle(input);
-  for (const prop of copyStyle) {
-    div.style[prop] = copyStyle[prop];
+
+  for (const property of Object.values(copyStyle)) {
+    div.style.setProperty(property, copyStyle.getPropertyValue(property));
   }
 
   // set the div to the correct position
@@ -52,13 +59,13 @@ export const getCursorXY = (input, selectionPoint) => {
 
   // append the span marker to the div and the dummy element to the body
   div.appendChild(span);
-  document.body.appendChild(div);
+  relativeToElement.appendChild(div);
 
   // get the marker position, this is the caret position top and left relative to the input
   const { offsetLeft: spanX, offsetTop: spanY } = span;
 
   // remove dummy element
-  document.body.removeChild(div);
+  relativeToElement.removeChild(div);
 
   // return object with the x and y of the caret. account for input positioning so that you don't need to wrap the input
   return {
@@ -67,38 +74,41 @@ export const getCursorXY = (input, selectionPoint) => {
   };
 };
 
+// TODO: Remove once MentionAutocompleteTextArea removed
+export const getMentionWordData = () => {};
+
 /**
  * A helper function that searches back to the beginning of the currently typed word (indicated by cursor position) and verifies whether it begins with an '@' symbol for user mention
  *
  * @param {element} textArea The text area or input to inspect the current word of
- * @returns {{isUserMention: boolean, indexOfMentionStart: number}} Object with the word's mention data
+ * @returns {{isTriggered: boolean, indexOfAutocompleteStart: number}} Object with the word's autocomplete data
  *
  * @example
- * const { isUserMention, indexOfMentionStart } = getMentionWordData(textArea);
- * if (isUserMention) {
+ * const { isTriggered, indexOfAutocompleteStart } = getAutocompleteWordData({textArea, triggerCharacter: '@'});
+ * if (isTriggered) {
  *  // Do something
  * }
  */
-export const getMentionWordData = (textArea) => {
+export const getAutocompleteWordData = ({ textArea, triggerCharacter }) => {
   const { selectionStart, value: valueBeforeKeystroke } = textArea;
 
   if (selectionStart === 0 || valueBeforeKeystroke === '') {
     return {
-      isUserMention: false,
-      indexOfMentionStart: -1,
+      isTriggered: false,
+      indexOfAutocompleteStart: -1,
     };
   }
 
   const indexOfAutocompleteStart = getLastIndexOfCharacter({
     content: valueBeforeKeystroke,
     selectionIndex: selectionStart,
-    character: '@',
+    character: triggerCharacter,
     breakOnCharacters: [' ', '', '\n'],
   });
 
   return {
-    isUserMention: indexOfAutocompleteStart !== -1,
-    indexOfMentionStart: indexOfAutocompleteStart,
+    isTriggered: indexOfAutocompleteStart !== -1,
+    indexOfAutocompleteStart,
   };
 };
 

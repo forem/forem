@@ -226,7 +226,7 @@ module Html
 
         # only focus on portion of text with "@"
         node.xpath("text()[contains(.,'@')]").each do |el|
-          el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
+          el.replace(el.to_s.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
         end
 
         # enqueue children that has @ in it's text
