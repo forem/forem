@@ -60,8 +60,9 @@ module Admin
 
     # We only allow users to filter by statuses other than "Good standing"
     def filterable_statuses
-      Constants::Role::BASE_ROLES.reject { |role|
- Constants::Role::BASE_ROLES_LABELS_TO_WHERE_CLAUSE.fetch(role) == Constants::Role::GOOD_STANDING_STATUS }
+      Constants::Role::BASE_ROLES.reject do |role|
+        Constants::Role::BASE_ROLES_LABELS_TO_WHERE_CLAUSE.fetch(role) == Constants::Role::GOOD_STANDING_STATUS
+      end
     end
 
     # Provides the remaining count when a limit for a resource is imposed on the UI.
