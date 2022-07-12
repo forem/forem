@@ -676,6 +676,7 @@ Style/TopLevelMethodDefinition:
   Exclude:
     - scripts/release
     - scripts/stage_release
+    - 'spec/**/*_spec.rb'
 
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
