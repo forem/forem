@@ -673,8 +673,9 @@ Style/SwapValues:
 Style/TopLevelMethodDefinition:
   Description: 'This cop looks for top-level method definitions.'
   Enabled: false
-# These files below were the original files excluded from this rule. We're disabling it for the time being
-# until a new version of rubocop (> 1.31.2) is released with a fix for false positives that are coming up
+# We're disabling it for the time being until a new version of rubocop 
+# (> 1.31.2) is released with a fix for false positives that are coming up.
+# These files below were the original files excluded from this rule.
 #  Exclude:
 #    - scripts/release
 #    - scripts/stage_release
