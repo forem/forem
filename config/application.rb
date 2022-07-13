@@ -62,7 +62,8 @@ module PracticalDeveloper
     config.active_record.yaml_column_permitted_classes = %w[Symbol Time OmniAuth::AuthHash Twitter::Entity::URI
                                                             Twitter::Entity::Hashtag Twitter::Entity::UserMention
                                                             Twitter::Entity::Cashtag Articles::CachedEntity
-                                                            OmniAuth::AuthHash::InfoHash OpenStruct]
+                                                            OmniAuth::AuthHash::InfoHash OpenStruct Hashie::Array
+                                                            OAuth::AccessToken]
 
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when
