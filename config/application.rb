@@ -60,7 +60,9 @@ module PracticalDeveloper
     config.action_controller.wrap_parameters_by_default = false
     ### END FRAMEWORK DEFAULT OVERIDES
     config.active_record.yaml_column_permitted_classes = %w[Symbol Time OmniAuth::AuthHash Twitter::Entity::URI
-                                                            Articles::CachedEntity OmniAuth::AuthHash::InfoHash]
+                                                            Twitter::Entity::Hashtag Twitter::Entity::UserMention
+                                                            Twitter::Entity::Cashtag Articles::CachedEntity
+                                                            OmniAuth::AuthHash::InfoHash OpenStruct]
 
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when
