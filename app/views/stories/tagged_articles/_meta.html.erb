@@ -22,8 +22,8 @@
 
 <% if @tag %>
   <meta name="twitter:card" content="summary_large_image">
-  <meta property="og:image" content="<%= tag_social_preview_url(@tag, format: :png) %>">
-  <meta name="twitter:image:src" content="<%= tag_social_preview_url(@tag, format: :png) %>">
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>">
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
 <% else %>
   <meta property="og:image" content="<%= Settings::General.main_social_image %>">
   <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
