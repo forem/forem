@@ -63,7 +63,7 @@ module PracticalDeveloper
                                                             Twitter::Entity::Hashtag Twitter::Entity::UserMention
                                                             Twitter::Entity::Cashtag Articles::CachedEntity
                                                             OmniAuth::AuthHash::InfoHash OpenStruct Hashie::Array
-                                                            OAuth::AccessToken OAuth::Consumer Struct]
+                                                            OAuth::AccessToken OAuth::Consumer Struct Net::HTTP]
 
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when
