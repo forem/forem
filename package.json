@@ -117,7 +117,7 @@
     "babel-plugin-inline-react-svg": "^2.0.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-preset-preact": "^2.0.0",
-    "canvas": "^2.9.1",
+    "canvas": "^2.9.3",
     "chart.js": "^3.8.0",
     "classnames": "^2.3.1",
     "core-js": "3",
