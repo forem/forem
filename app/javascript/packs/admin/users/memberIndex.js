@@ -40,7 +40,7 @@ const initializeFilterPills = () => {
       urlParams.delete('joining_end');
     } else {
       // In all other cases, we may have filters with a matching key that we want to keep
-      const allFiltersMatchingKey = filterKey === urlParams.getAll(filterKey);
+      const allFiltersMatchingKey = urlParams.getAll(filterKey);
 
       // Remove the clicked filter name from the array
       allFiltersMatchingKey.splice(
