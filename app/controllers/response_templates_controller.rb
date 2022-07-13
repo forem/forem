@@ -31,9 +31,12 @@ class ResponseTemplatesController < ApplicationController
 
   def create
     authorize ResponseTemplate
-    response_template.user_id = current_user.id
+
+    unless tries_to_create_a_mod_response_template? && can_create_mod_response_templates?
+      response_template.user_id = current_user.id
+      response_template.type_of = "personal_comment"
+    end
     response_template.content_type = "body_markdown"
-    response_template.type_of = "personal_comment"
 
     if response_template.save
       flash[:settings_notice] =
@@ -86,6 +89,18 @@ class ResponseTemplatesController < ApplicationController
   end
 
   private
+
+  def authorized_user
+    @authorized_user ||= Authorizer.for(user: current_user)
+  end
+
+  def can_create_mod_response_templates?
+    authorized_user.accesses_mod_response_templates?
+  end
+
+  def tries_to_create_a_mod_response_template?
+    params[:response_template][:type_of] == "mod_comment"
+  end
 
   def response_template
     @response_template ||= if params[:id].present?

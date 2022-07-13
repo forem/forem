@@ -24,6 +24,10 @@ module Moderator
       Users::DeleteActivity.call(user)
     end
 
+    def delete_user_podcasts
+      Users::DeletePodcasts.call(user)
+    end
+
     def remove_privileges
       @user.remove_role(:workshop_pass)
       remove_mod_roles
