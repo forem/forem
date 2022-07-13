@@ -75,6 +75,10 @@ module Authorizer
       has_role?(:creator)
     end
 
+    def accesses_mod_response_templates?
+      has_trusted_role? || any_admin? || moderator? || tag_moderator?
+    end
+
     # When you need to know if we trust the user, but don't want to
     # have stale information that the `trusted?` method might give
     # you.

@@ -44,7 +44,7 @@ describe('<MarkdownToolbar />', () => {
     expect(getByLabelText('Embed')).toBeInTheDocument();
   });
 
-  it('should render an overflow menu with secondary formatters and help link', async () => {
+  it('should render an overflow menu with secondary formatters', async () => {
     const { getByLabelText } = render(<MarkdownToolbar />);
 
     getByLabelText('More options').click();
@@ -54,6 +54,25 @@ describe('<MarkdownToolbar />', () => {
     );
     expect(getByLabelText('Strikethrough')).toBeInTheDocument();
     expect(getByLabelText('Line divider')).toBeInTheDocument();
-    expect(getByLabelText('Help')).toBeInTheDocument();
+  });
+
+  it('should render any custom secondary toolbar elements', async () => {
+    const exampleLink = <a href="/something">Some link</a>;
+    const exampleButton = <button>Some button</button>;
+
+    const { getByLabelText, getByRole } = render(
+      <MarkdownToolbar
+        additionalSecondaryToolbarElements={[exampleButton, exampleLink]}
+      />,
+    );
+
+    getByLabelText('More options').click();
+
+    await waitFor(() =>
+      expect(getByLabelText('Underline')).toBeInTheDocument(),
+    );
+
+    expect(getByRole('menuitem', { name: 'Some link' })).toBeInTheDocument();
+    expect(getByRole('menuitem', { name: 'Some button' })).toBeInTheDocument();
   });
 });

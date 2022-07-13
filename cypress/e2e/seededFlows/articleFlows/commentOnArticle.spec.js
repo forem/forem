@@ -381,7 +381,8 @@ describe('Comment on articles', () => {
           name: /^Add a comment to the discussion$/i,
         }).focus(); // Focus activates the Submit button and mini toolbar below a comment textbox
 
-        cy.findByRole('button', { name: /^Use a response template$/i }).click();
+        cy.findByRole('button', { name: 'More options' }).click();
+        cy.findByRole('menuitem', { name: 'Show templates' }).click();
 
         cy.findByRole('button', { name: /^Insert$/i }).click();
 
@@ -615,6 +616,22 @@ describe('Comment on articles', () => {
           expect($span.text().trim()).equal('Like');
         });
       });
+    });
+  });
+
+  it('should enhance the textarea with a markdown toolbar', () => {
+    cy.findByRole('main').within(() => {
+      cy.findByRole('heading', { name: 'Discussion (0)' });
+
+      cy.findByRole('textbox', {
+        name: /^Add a comment to the discussion$/i,
+      })
+        .as('textArea')
+        .focus();
+      cy.findByRole('toolbar').as('toolbar');
+
+      cy.get('@toolbar').findByRole('button', { name: 'Bold' }).click();
+      cy.get('@textArea').should('have.value', '****').should('have.focus');
     });
   });
 });

@@ -7,28 +7,23 @@
     </p>
   </header>
 
-  <% if @response_templates.present? %>
+  <% if @personal_response_templates.present? %>
     <section>
       <h3 class="crayons-subtitle-3">
         <%= t("views.settings.extensions.comment.saved") %>
       </h3>
-      <% @response_templates.each do |response_template| %>
-          <div class="<%= "github-repo-row-featured" if response_template.id == params[:id].to_i %> mb-4">
-            <div class="flex items-center py-2 mt-2">
-              <div class="flex-1 ff-monospace">
-                <%= response_template.title %>
-              </div>
-              <div class="flex">
-                <%= form_with url: response_template_path(response_template.id), method: :delete, local: true, html: { onsubmit: "return confirm('#{t('views.settings.extensions.comment.confirm', template: response_template.title)}');" } do %>
-                  <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.extensions.comment.remove") %></button>
-                <% end %>
-                <a class="crayons-btn crayons-btn--secondary ml-2" href="/settings/response-templates/<%= response_template.id %>" role="button"><%= t("views.settings.extensions.comment.edit") %></a>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      </section>
-    <% end %>
+      <%= render partial: "response_template", collection: @personal_response_templates %>
+    </section>
+  <% end %>
+
+  <% if @trusted_response_templates.present? %>
+    <section>
+      <h3 class="crayons-subtitle-3">
+        <%= t("views.settings.extensions.comment.trusted") %>
+      </h3>
+      <%= render partial: "response_template", collection: @trusted_response_templates %>
+    </section>
+  <% end %>
 
   <%= form_with model: @response_template do |f| %>
     <section class="grid gap-3">
@@ -59,6 +54,22 @@
         <%= f.label :content, "Comment body (Markdown)", class: "crayons-field__label" %>
         <%= f.text_area :content, value: content, class: "crayons-textfield" %>
       </div>
+
+      <% if current_user.has_trusted_role? && @response_template.new_record? %>
+        <div class="crayons-field">
+          <fieldset>
+            <legend class="screen-reader-only">Template type</legend>
+            <%= f.radio_button :type_of, "personal_comment",
+                               checked: @response_template.type_of != "mod_comment",
+                               class: "crayons-radio", role: "radio" %>
+            <%= label_tag "response_template_type_of_personal_comment", "Personal" %>
+
+            <%= f.radio_button :type_of, "mod_comment",
+                               class: "crayons-radio", role: "radio" %>
+            <%= label_tag "response_template_type_of_mod_comment", "Trusted User" %>
+          </fieldset>
+        </div>
+      <% end %>
 
       <div>
         <button type="submit" class="crayons-btn"><%= t("views.settings.extensions.comment.save") %></button>

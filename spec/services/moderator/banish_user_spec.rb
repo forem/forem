@@ -46,6 +46,16 @@ RSpec.describe Moderator::BanishUser, type: :service do
     expect(user.comments.count).to eq 0
   end
 
+  it "removes all their podcasts" do
+    podcast = create(:podcast, creator: user)
+    create(:podcast_ownership, owner: user, podcast: podcast)
+    expect do
+      sidekiq_perform_enqueued_jobs do
+        described_class.call(user: user, admin: admin)
+      end
+    end.to change(Podcast, :count).by(-1)
+  end
+
   it "creates a BanishedUser record with their original username" do
     original_username = user.username
     sidekiq_perform_enqueued_jobs do
