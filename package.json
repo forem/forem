@@ -81,7 +81,7 @@
     "husky": "^8.0.1",
     "jest": "28.1.1",
     "jest-axe": "^6.0.0",
-    "jest-environment-jsdom": "^28.1.0",
+    "jest-environment-jsdom": "^28.1.2",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^2.0.0",
     "jsdom": "^20.0.0",
