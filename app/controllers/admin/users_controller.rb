@@ -118,7 +118,9 @@ module Admin
     def user_status
       @user = User.find(params[:id])
       begin
-        Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
+        Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user,
+                                                            user: @user,
+                                                            user_params: user_params)
         flash[:success] = I18n.t("admin.users_controller.updated")
         respond_to do |format|
           format.html do

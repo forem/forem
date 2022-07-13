@@ -6,18 +6,19 @@ module Moderator
     attr_reader :user, :admin
 
     def self.call(admin:, user:)
-      new(user: user, admin: admin).banish
+      new(user: user, admin: admin, note: note).banish
     end
 
     def initialize(admin:, user:)
       super(user: user, admin: admin, user_params: {})
+      @note = I18n.t("services.moderator.banish_user.spam_account")
     end
 
     def banish
       BanishedUser.create(username: user.username, banished_by: admin)
       user.remove_from_mailchimp_newsletters if user.email?
       remove_profile_info
-      handle_user_status("Suspended", I18n.t("services.moderator.banish_user.spam_account"))
+      handle_user_status("Suspended", @note)
       delete_user_activity
       delete_comments
       delete_articles

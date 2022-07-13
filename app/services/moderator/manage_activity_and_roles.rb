@@ -2,14 +2,15 @@ module Moderator
   class ManageActivityAndRoles
     attr_reader :user, :admin, :user_params
 
-    def initialize(user:, admin:, user_params:)
+    def initialize(user:, admin:, user_params:, note: nil)
       @user = user
       @admin = admin
       @user_params = user_params
+      @note = note
     end
 
-    def self.handle_user_roles(admin:, user:, user_params:)
-      new(user: user, admin: admin, user_params: user_params).update_roles
+    def self.handle_user_roles(admin:, user:, user_params:, note:)
+      new(user: user, admin: admin, user_params: user_params, note: note).update_roles
     end
 
     def delete_comments
@@ -132,6 +133,7 @@ module Moderator
     def update_roles
       handle_user_status(user_params[:user_status], user_params[:note_for_current_role])
       update_trusted_cache
+      create_note("misc_note", @note) if @note
     end
   end
 end
