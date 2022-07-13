@@ -185,6 +185,40 @@ describe('Filter user index', () => {
 
       // Admin user is deliberately seeded with very early registered date, and should be the only result
       cy.findAllByRole('row').should('have.length', 2);
+      cy.findByRole('button', {
+        name: 'Remove filter: Joining date',
+      }).should('contain', '01/01/2020 - 01/01/2020');
+    });
+
+    it('shows community creation in filter pill if no start date selected', () => {
+      cy.findByRole('button', { name: 'Filter' }).click();
+      cy.getModal().within(() => {
+        cy.findAllByText('Joining date').first().click();
+
+        // We need to use a partial name match here, because we can't force the Cypress browser locale to e.g. en-us, and we
+        // want to void flake caused by DD/MM/YYYY format vs MM/DD/YYYY
+        cy.findByRole('textbox', { name: /Joined before/ }).type('01/01/2020');
+        cy.findByRole('button', { name: 'Apply filters' }).click();
+      });
+      cy.findByRole('button', {
+        name: 'Remove filter: Joining date',
+      }).should('contain', 'Community creation - 01/01/2020');
+    });
+
+    it('shows today in filter pill if no end date selected', () => {
+      cy.findByRole('button', { name: 'Filter' }).click();
+      cy.getModal().within(() => {
+        cy.findAllByText('Joining date').first().click();
+
+        // We need to use a partial name match here, because we can't force the Cypress browser locale to e.g. en-us, and we
+        // want to void flake caused by DD/MM/YYYY format vs MM/DD/YYYY
+        cy.findByRole('textbox', { name: /Joined after/ }).type('01/01/2020');
+        cy.findByRole('button', { name: 'Apply filters' }).click();
+      });
+      cy.findByRole('button', { name: 'Remove filter: Joining date' }).should(
+        'contain',
+        '01/01/2020 - Today',
+      );
     });
   });
 

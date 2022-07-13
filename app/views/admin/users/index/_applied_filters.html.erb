@@ -23,7 +23,7 @@
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
-    <% if params[:joining_start] || params[:joining_end] %>
+    <% if params[:joining_start]&.present? || params[:joining_end]&.present? %>
      <button
             data-filter-key="joining_date"
             aria-label="Remove filter: Joining date"
@@ -35,7 +35,7 @@
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
-    <% if params[:roles] || params[:organizations] %>
+    <% if params[:roles] || params[:organizations] || params[:joining_start]&.present? || params[:joining_end]&.present? %>
         <button class="js-clear-filters-btn c-btn" aria-label="Clear all filters">Clear all</button>
     <% end %>
 </div>
