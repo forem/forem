@@ -58,6 +58,7 @@ module Admin
       end
     end
 
+    # We de-scoped filtering by "Good standing" due to the complexity of it not mapping directly to a specific role
     def filterable_statuses
       Constants::Role::BASE_ROLES.reject { |status| status == "Good standing" }
     end
