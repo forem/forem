@@ -27,11 +27,17 @@
 
     .editor-toolbar {
       border-top: 1px solid var(--form-border);
+      overflow-x: auto;
 
       &::-webkit-scrollbar {
         background: transparent;
         height: 0;
       }
+    }
+  }
+  @media (min-width: $breakpoint-xl) {
+    .comment-form__field .editor-toolbar {
+      overflow-x: unset;
     }
   }
 
