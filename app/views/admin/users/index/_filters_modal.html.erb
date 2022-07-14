@@ -39,12 +39,39 @@
                 </fieldset>
             </details>
             <details data-section="status" class="admin-details">
-                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Status<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
-                Status options
+                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
+                    <span class="flex">
+                        Status
+                        <span class="js-filtered-indicator-statuses relative ml-2 <%= params[:statuses].blank? ? "hidden" : "" %>">
+                            <span class="block absolute c-indicator c-indicator--info"></span>
+                        </span>
+                    </span>
+                    <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
+                </summary>
+                <fieldset class="js-statuses-fieldset pb-4 flex flex-col items-start">
+                    <legend class="screen-reader-only">Status</legend>
+                     <% filterable_statuses.each_with_index do |status, index| %>
+                        <div class="crayons-field crayons-field--checkbox">
+                            <%= f.check_box :statuses, { multiple: true, class: "crayons-checkbox", id: "filter-status-#{index}", checked: params[:statuses]&.include?(status) }, status, false %>
+                            <%= f.label :statuses, for: "filter-status-#{index}", class: "crayons-field__label" do %><%= render "admin/users/index/status_indicator", status: status %><% end %>
+                        </div>
+                    <% end %>
+                    <button type="button" class="js-clear-filter-btn c-btn <%= params[:statuses].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-statuses-fieldset" data-filter-indicator-selector=".js-filtered-indicator-statuses" aria-label="Clear statuses filter">Clear filter</button>
+                </fieldset>
             </details>
             <details data-section="joining-date" class="admin-details">
-                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Joining date<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
-                Joining date options
+                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
+                   <span class="flex">
+                        Joining date
+                        <span class="js-filtered-indicator-joining-date relative ml-2 <%= params[:joining_start].blank? && params[:joining_end].blank? ? "hidden" : "" %>">
+                            <span class="block absolute c-indicator c-indicator--info"></span>
+                        </span>
+                    </span>
+                <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
+                </summary>
+                <div class="js-joining-date-range mb-4 absolute" data-earliest-date="<%= @earliest_join_date %>" data-default-start="<%= params[:joining_start] %>" data-default-end="<%= params[:joining_end] %>" data-default-dates-format="<%= params[:date_format] %>"></div>
+                <%# This hidden field is only here to reserve the correct amount of vertical space for where we later add the Preact inputs %>
+                <input class="crayons-textfield p-4 mb-4 invisible">
             </details>
             <details data-section="organizations" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
