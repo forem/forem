@@ -34,6 +34,12 @@
         height: 0;
       }
     }
+
+    @media (min-width: $breakpoint-m) {
+      .editor-toolbar {
+        overflow-x: unset;
+      }
+    }
   }
 
   &__inner {
