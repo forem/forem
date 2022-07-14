@@ -26,6 +26,7 @@ export const CommentsCount = ({ count, articlePath, articleTitle }) => {
         icon={commentsSVG}
         tagName="a"
         aria-label={commentsAriaLabelText}
+        tooltip={`Add a comment to post - ${articleTitle}`}
       >
         <span title="Number of comments">
           {count}
