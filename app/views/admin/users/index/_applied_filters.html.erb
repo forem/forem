@@ -34,7 +34,7 @@
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
-    <% if params[:joining_start]&.present? || params[:joining_end]&.present? %>
+    <% if params[:joining_start].present? || params[:joining_end].present? %>
      <button
             data-filter-key="joining_date"
             aria-label="Remove filter: Joining date"
