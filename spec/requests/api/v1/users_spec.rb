@@ -140,4 +140,47 @@ RSpec.describe "Api::V0::Users", type: :request do
       end
     end
   end
+
+  describe "PUT /api/users/:id/unpublish" do
+    let(:target_user) { create(:user) }
+
+    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        put api_user_unpublish_path(id: target_user.id),
+            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when unauthorized" do
+      it "returns unauthorized if api key is invalid" do
+        put api_user_unpublish_path(id: target_user.id),
+            headers: v1_headers.merge({ "api-key" => "invalid api key" })
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns unauthorized if api key belongs to non-admin user" do
+        put api_user_unpublish_path(id: target_user.id),
+            headers: v1_headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when request is authenticated" do
+      it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
+        allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
+        api_secret.user.add_role(:super_admin)
+        put api_user_unpublish_path(id: target_user.id),
+            headers: v1_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(target_user.id).once
+      end
+    end
+  end
 end
