@@ -8,7 +8,7 @@ import {
 } from './markdownSyntaxFormatters';
 import OverflowIcon from '@images/overflow-vertical.svg';
 import { ButtonNew as Button } from '@crayons';
-import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
+import { useKeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
 
@@ -101,6 +101,8 @@ export const MarkdownToolbar = ({
         ];
       }),
   );
+
+  useKeyboardShortcuts(keyboardShortcuts, textAreaRef.current);
 
   useLayoutEffect(() => {
     textAreaRef.current = document.getElementById(textAreaId);
@@ -420,12 +422,6 @@ export const MarkdownToolbar = ({
           {getSecondaryFormatterButtons(true)}
           {additionalSecondaryItems}
         </div>
-      )}
-      {textAreaRef.current && (
-        <KeyboardShortcuts
-          shortcuts={keyboardShortcuts}
-          eventTarget={textAreaRef.current}
-        />
       )}
     </div>
   );

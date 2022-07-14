@@ -143,9 +143,9 @@ export function useKeyboardShortcuts(
       setKeyChain(newChain);
     };
 
-    eventTarget.addEventListener('keydown', keyEvent);
+    eventTarget?.addEventListener('keydown', keyEvent);
 
-    return () => eventTarget.removeEventListener('keydown', keyEvent);
+    return () => eventTarget?.removeEventListener('keydown', keyEvent);
   }, [keyChain, storedShortcuts, eventTarget]);
 }
 
