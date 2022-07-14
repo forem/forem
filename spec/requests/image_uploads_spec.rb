@@ -76,6 +76,7 @@ RSpec.describe "ImageUploads", type: :request do
 
       it "returns error if image file is not a file" do
         allow(bad_image).to receive(:respond_to?).with(:original_filename).and_return(false)
+        allow(bad_image).to receive(:respond_to?).with(:to_ary, true).and_call_original
         post "/image_uploads", headers: headers, params: { image: bad_image }
         expect(response).to have_http_status(:unprocessable_entity)
       end

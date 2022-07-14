@@ -11,6 +11,17 @@
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
+     <% params[:statuses]&.each do |status| %>
+        <button
+            data-filter-key="statuses[]"
+            data-filter-value="<%= status %>"
+            aria-label="Remove filter: <%= status %>"
+            class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
+            type="button">
+            <%= render "admin/users/index/status_indicator", status: status %>
+            <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
+        </button>
+    <% end %>
     <% params[:organizations]&.each do |org_id| %>
         <% org = @organizations.find_by(id: org_id) %>
         <button
@@ -23,7 +34,19 @@
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
-    <% if params[:roles] || params[:organizations] %>
+    <% if params[:joining_start].present? || params[:joining_end].present? %>
+     <button
+            data-filter-key="joining_date"
+            aria-label="Remove filter: Joining date"
+            class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
+            type="button">
+            <% start_date = params[:joining_start].presence || "Community creation" %>
+            <% end_date = params[:joining_end].presence || "Today" %>
+            <%= start_date %> - <%= end_date %>
+            <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
+        </button>
+    <% end %>
+    <% if params[:roles] || params[:organizations] || params[:joining_start].present? || params[:joining_end].present? || params[:statuses] %>
         <button class="js-clear-filters-btn c-btn" aria-label="Clear all filters">Clear all</button>
     <% end %>
 </div>

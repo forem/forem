@@ -19,6 +19,12 @@ export default {
     endDateId: {
       description: 'A unique identifier for the end date input (required)',
     },
+    startDateAriaLabel: {
+      description: 'A custom aria-label for the start date input (optional)',
+    },
+    endDateAriaLabel: {
+      description: 'A custom aria-label for the end date input (optional)',
+    },
     defaultStartDate: {
       description: 'A default value for the start date of the range (optional)',
       control: 'date',
@@ -69,6 +75,8 @@ Default.args = {
   minStartDate: new Date(2020, 0, 1),
   maxEndDate: new Date(),
   presetRanges: [],
+  startDateAriaLabel: undefined,
+  endDateAriaLabel: undefined,
 };
 
 export const DateRangePickerWithPresetRanges = (args) => {
@@ -82,6 +90,8 @@ DateRangePickerWithPresetRanges.args = {
   defaultEndDate: undefined,
   minStartDate: new Date(2020, 0, 1),
   maxEndDate: new Date(),
+  startDateAriaLabel: undefined,
+  endDateAriaLabel: undefined,
   presetRanges: [
     MONTH_UNTIL_TODAY,
     LAST_FULL_MONTH,
