@@ -181,13 +181,15 @@ RSpec.describe "Api::V0::Users", type: :request do
       it "is successful in suspending a user", :aggregate_failures do
         api_secret.user.add_role(:super_admin)
 
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
-            headers: v1_headers
+        expect do
+          put api_user_suspend_path(id: target_user.id),
+              params: payload,
+              headers: v1_headers
 
-        expect(target_user.reload.suspended?).to be true
-        expect(response).to have_http_status(:ok)
-        expect(Note.last.content).to eq(payload[:note])
+          expect(response).to have_http_status(:ok)
+          expect(target_user.reload.suspended?).to be true
+          expect(Note.last.content).to eq(payload[:note])
+        end.to change(Note, :count).by(1)
       end
     end
   end
