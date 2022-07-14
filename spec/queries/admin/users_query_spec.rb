@@ -30,9 +30,9 @@ RSpec.describe Admin::UsersQuery, type: :query do
       u.add_role(:single_resource_admin, DataUpdateScript)
     end
   end
-  let!(:user8) { create(:user, :comment_suspended, name: "Bob") }
-  let!(:user9) { create(:user, name: "Lucia") }
-  let!(:user10) { create(:user, :warned, name: "Billie") }
+  let!(:user8) { create(:user, :comment_suspended, name: "Bob", registered_at: "2020-10-08T13:09:47+0000") }
+  let!(:user9) { create(:user, name: "Lucia",  registered_at: "2020-10-08T13:09:47+0000") }
+  let!(:user10) { create(:user, :warned, name: "Billie", registered_at: "2020-10-08T13:09:47+0000") }
 
   describe ".call" do
     context "when no arguments are given" do
