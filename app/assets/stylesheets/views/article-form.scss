@@ -72,7 +72,7 @@
   }
 
   &__content {
-    overflow: auto;
+    overflow-y: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
     );
@@ -164,6 +164,10 @@
     margin: calc(var(--content-padding-y) * -1)
       calc(var(--content-padding-x) * -1) var(--su-6)
       calc(var(--content-padding-x) * -1);
+
+    .editor-toolbar {
+      position: relative;
+    }
 
     > :first-child {
       @media (min-width: $breakpoint-m) {

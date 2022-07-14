@@ -4,6 +4,7 @@
             <h2 class="crayons-subtitle-2">Filters</h2>
             <button type="button" class="c-btn">Clear filters</button>
         </div>
+        <p id="filters-description" class="mt-4 crayons-field__description">Members who match any of the selected filters will be displayed</p>
         <div class="py-4">
             <details data-section="roles" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
@@ -45,10 +46,6 @@
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Joining date<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
                 Joining date options
             </details>
-            <details data-section="last-activity" class="admin-details">
-                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Last activity<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
-                Last activity options
-            </details>
             <details data-section="organizations" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
                     <span class="flex">
@@ -73,7 +70,7 @@
             </details>
         </div>
         <div class="flex gap-2 mt-auto">
-            <button class="c-btn c-btn--primary grow-1">Apply filters</button>
+            <button class="c-btn c-btn--primary grow-1" aria-describedby="filters-description">Apply filters</button>
             <button type="button" class="js-filter-modal-cancel-btn c-btn grow-1">Cancel</button>
         </div>
     <% end %>

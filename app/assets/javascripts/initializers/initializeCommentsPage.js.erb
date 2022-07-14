@@ -329,7 +329,7 @@ function handleFocus(event) {
       form.classList.add("comment-form--initiated");
     }
     handleSizeChange(event);
-    window.Forem.initializeMentionAutocompleteTextArea(area);
+    window.Forem.initializeEnhancedCommentTextArea(area);
   }
 }
 
@@ -485,71 +485,6 @@ function generateUploadFormdata(image) {
   formData.append('authenticity_token', token);
   formData.append('image', image[0]);
   return formData;
-}
-
-function handleImageUpload(event, randomIdNumber) {
-  var commentableId = document.getElementById('comments-container').dataset.commentableId;
-  event.preventDefault();
-  document.getElementById('image-upload-' + randomIdNumber).click();
-  document.getElementById('image-upload-' + randomIdNumber).onchange = function (e) {
-    var image = document.getElementById('image-upload-' + randomIdNumber).files;
-    if (image.length > 0) {
-      document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#888888';
-      document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = "Uploading...";
-      document.getElementById("image-upload-submit-" + randomIdNumber).value = "uploading";
-      setTimeout(function () {
-        document.getElementById("image-upload-submit-" + randomIdNumber).click(function () { });
-      }, 50)
-    }
-  }
-
-  document.getElementById("image-upload-submit-" + randomIdNumber).onclick = function (e) {
-    e.preventDefault();
-    var image = document.getElementById('image-upload-' + randomIdNumber).files;
-    if (image.length > 0) {
-      getCsrfToken()
-        .then(sendFetch("image-upload", generateUploadFormdata(image)))
-        .then(function (response) {
-          if (response.status === 200) {
-            response.json().then(
-              function uploadImageCb(json) {
-                var address = document.getElementById("uploaded-image-" + randomIdNumber);
-                var button = document.getElementById("image-upload-button-" + randomIdNumber);
-                var messageContainer = document.getElementById("image-upload-file-label-" + randomIdNumber)
-                // button.style.display = "none";
-                messageContainer.style.display = "none";
-                address.value = json.links[0];
-                address.classList.remove("hidden");;
-                address.select();
-
-                var uploadedMessage = 'Uploaded! Paste into editor';
-                messageContainer.innerHTML = uploadedMessage;
-                messageContainer.style.color = '#00c673';
-                messageContainer.style.position = "relative";
-                messageContainer.style.top = "5px";
-              }
-            );
-          } else if (response.status === 429) {
-            showRateLimitModal({
-              response,
-              element: 'image',
-              action_ing: 'uploading',
-              action_past: 'uploaded',
-            });
-          } else {
-            response.json().then(function(responseBody) {
-              var errorMessage = responseBody.error || 'Invalid file!';
-              document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = errorMessage;
-              document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#e05252';
-              document.getElementById("image-upload-submit-" + randomIdNumber).style.display = 'none';
-            });
-          }
-        })
-        .catch(function (err) {
-          // there's currently no error handling
-        })
-    }
-  }
 }
 
 function updateItemSummaryHtml(item) {

@@ -16,13 +16,7 @@ describe('Article Editor (Mention User)', () => {
       );
 
       cy.findByLabelText('Post Content').as('articleForm');
-      cy.get('@articleForm').type('Post content @s');
-
-      cy.findByLabelText('Mention user').as('autocompleteForm');
-      cy.get('@autocompleteForm').should('have.focus');
-      cy.findByText('Type to search for a user').should('exist');
-
-      cy.get('@autocompleteForm').type('e');
+      cy.get('@articleForm').type('Post content @se');
 
       const expectedUsernames = [
         '@search_user_1',
@@ -37,7 +31,6 @@ describe('Article Editor (Mention User)', () => {
       expectedUsernames.forEach((name) => cy.findByText(name).should('exist'));
       cy.findByText('@search_user_7').should('not.exist');
       cy.findByText('@search_user_3').click();
-      cy.get('@articleForm').should('have.focus');
 
       cy.get('@articleForm')
         .contains('Post content @search_user_3')
@@ -63,12 +56,8 @@ describe('Article Editor (Mention User)', () => {
 
       cy.findByLabelText('Post Content').as('articleForm');
       cy.get('@articleForm').type('Post content @s');
-
-      cy.findByLabelText('Mention user').as('autocompleteForm');
-      cy.get('@autocompleteForm').should('have.focus');
-      cy.findByText('Type to search for a user').should('exist');
-
-      cy.get('@autocompleteForm').type('e');
+      cy.findAllByText('Type to search for a user').should('exist');
+      cy.get('@articleForm').type('e');
 
       const expectedUsernames = [
         '@search_user_1',
