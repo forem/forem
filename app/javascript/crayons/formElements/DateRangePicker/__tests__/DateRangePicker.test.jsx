@@ -275,10 +275,8 @@ describe('<DateRangePicker />', () => {
     );
   });
 
-  // TODO: Flaking in CI
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('skips to a selected year', async () => {
-    const { getByRole, getAllByRole } = render(
+  it('skips to a selected year', async () => {
+    const { getByRole, queryByRole, getAllByRole } = render(
       <DateRangePicker
         startDateId="start-date"
         endDateId="end-date"
@@ -288,16 +286,23 @@ describe('<DateRangePicker />', () => {
       />,
     );
 
+    expect(
+      queryByRole('button', {
+        name: 'Choose Monday, January 25, 2021 as start date',
+      }),
+    ).not.toBeInTheDocument();
+
     // react-dates renders a hidden (by CSS) month/year picker for off screen previous and next month views
-    // testing library doesn't load the CSS, so we have to "skip over" the first matching select to get the correct visible one
+    // testing library doesn't load the CSS, so we need to skip the first "hidden" select
     const startYearPicker = getAllByRole('combobox', {
       name: 'Navigate to year',
     })[1];
-    expect(startYearPicker).toHaveDisplayValue('2022');
     userEvent.selectOptions(
       startYearPicker,
       within(startYearPicker).getByRole('option', { name: '2021' }),
     );
+
+    await waitFor(() => expect(startYearPicker).toHaveDisplayValue('2021'));
 
     await waitFor(() =>
       expect(
@@ -309,7 +314,7 @@ describe('<DateRangePicker />', () => {
   });
 
   it('skips to a selected month', async () => {
-    const { getByRole, getAllByRole } = render(
+    const { queryByRole, getByRole, getByDisplayValue } = render(
       <DateRangePicker
         startDateId="start-date"
         endDateId="end-date"
@@ -319,18 +324,23 @@ describe('<DateRangePicker />', () => {
       />,
     );
 
+    expect(
+      queryByRole('button', {
+        name: 'Choose Wednesday, April 6, 2022 as start date',
+      }),
+    ).not.toBeInTheDocument();
+
     // react-dates renders a hidden (by CSS) month/year picker for off screen previous and next month views
-    // testing library doesn't load the CSS, so we have to "skip over" the first matching select to get the correct visible one
-    const startMonthPicker = getAllByRole('combobox', {
-      name: 'Navigate to month',
-    })[1];
-    expect(startMonthPicker).toHaveDisplayValue('January');
-    userEvent.selectOptions(startMonthPicker, 'February');
+    // testing library doesn't load the CSS, so we grab the correct picker by displayValue rather than role/name
+    const startMonthPicker = getByDisplayValue('January');
+
+    userEvent.selectOptions(startMonthPicker, 'April');
+    await waitFor(() => expect(startMonthPicker).toHaveDisplayValue('April'));
 
     await waitFor(() =>
       expect(
         getByRole('button', {
-          name: 'Choose Wednesday, February 2, 2022 as start date',
+          name: 'Choose Wednesday, April 6, 2022 as start date',
         }),
       ).toBeInTheDocument(),
     );
