@@ -306,6 +306,7 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
+                         published_at_date published_at_time
                        ]
                      end
 
@@ -319,10 +320,14 @@ class ArticlesController < ApplicationController
     end
 
     time_zone_str = params["article"].delete("timezone")
-    if params["article"]["published_at"]
+
+    time = params["article"].delete("published_at_time")
+    date = params["article"].delete("published_at_date")
+
+    if date.present?
       time_zone = Time.find_zone(time_zone_str)
       time_zone ||= Time.find_zone("UTC")
-      params["article"]["published_at"] = time_zone.parse(params["article"]["published_at"])
+      params["article"]["published_at"] = time_zone.parse("#{date} #{time}")
     end
 
     @article_params_json = params.require(:article).permit(allowed_params)
