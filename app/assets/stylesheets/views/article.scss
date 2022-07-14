@@ -150,6 +150,18 @@
     flex-direction: column;
   }
 
+  .crayons-tooltip {
+    &__content {
+      @media (max-width: $breakpoint-m) {
+        top: -60%;
+      }
+    }
+  }
+
+  button {
+    background-color: transparent !important;
+  }
+
   &__icon {
     padding: var(--su-2);
     box-shadow: var(--reaction-border);
