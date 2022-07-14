@@ -3,11 +3,13 @@ require "rails_helper"
 RSpec.describe Admin::UsersQuery, type: :query do
   subject do
     described_class.call(search: search, role: role, roles: roles, organizations: organizations,
-                         joining_start: joining_start, joining_end: joining_end, date_format: date_format)
+                         joining_start: joining_start, joining_end: joining_end, date_format: date_format,
+                         statuses: statuses)
   end
 
   let(:role) { nil }
   let(:roles) { [] }
+  let(:statuses) { [] }
   let(:organizations) { [] }
   let(:search) { [] }
   let(:joining_start) { nil }
@@ -28,11 +30,14 @@ RSpec.describe Admin::UsersQuery, type: :query do
       u.add_role(:single_resource_admin, DataUpdateScript)
     end
   end
+  let!(:user8) { create(:user, :comment_suspended, name: "Bob", registered_at: "2020-10-08T13:09:47+0000") }
+  let!(:user9) { create(:user, name: "Lucia",  registered_at: "2020-10-08T13:09:47+0000") }
+  let!(:user10) { create(:user, :warned, name: "Billie", registered_at: "2020-10-08T13:09:47+0000") }
 
   describe ".call" do
     context "when no arguments are given" do
       it "returns all users" do
-        expect(described_class.call).to eq([user7, user6, user5, user4, user3, user2, user])
+        expect(described_class.call).to eq([user10, user9, user8, user7, user6, user5, user4, user3, user2, user])
       end
     end
 
@@ -75,8 +80,23 @@ RSpec.describe Admin::UsersQuery, type: :query do
     context "when given multiple single_resource_admin roles" do
       let(:roles) { ["Admin", "Super Admin", "Resource Admin: DataUpdateScript", "Resource Admin: DisplayAd"] }
       let!(:user8) { create(:user).tap { |u| u.add_role(:single_resource_admin, DisplayAd) } }
+      # This user is provided to ensure our test looks for unique users even if they have duplicate roles
+      let!(:user9) { create(:user, :super_admin).tap { |u| u.add_role(:single_resource_admin, DisplayAd) } }
 
-      it { is_expected.to eq([user8, user7, user6, user5, user4]) }
+      it { is_expected.to eq([user9, user8, user7, user6, user5, user4]) }
+    end
+
+    context "when given statuses" do
+      let(:statuses) { ["Warned", "Comment Suspended"] }
+
+      it { is_expected.to eq([user10, user8]) }
+    end
+
+    context "when given both roles and statuses" do
+      let(:statuses) { ["Warned"] }
+      let(:roles) { ["Admin"] }
+
+      it { is_expected.to eq([user10, user5, user4]) }
     end
 
     context "when given organizations" do

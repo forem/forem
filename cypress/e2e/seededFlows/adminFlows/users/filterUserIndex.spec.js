@@ -10,22 +10,24 @@ describe('Filter user index', () => {
       .then((user) => cy.loginAndVisit(user, '/admin/member_manager/users'));
   });
 
+  const openFiltersModal = () =>
+    cy.findByRole('button', { name: 'Filter' }).click();
+
   it('Collapses previously opened sections when a new section is expanded', () => {
-    //   TODO: When the V1 Filter input is removed, we can change this to cy.findByRole('button', { name: 'Filter' })
-    cy.findAllByRole('button', { name: 'Filter' }).last().click();
+    openFiltersModal();
 
     cy.getModal().within(() => {
       cy.findAllByText('Member roles').first().click();
       cy.findByRole('group', { name: 'Member roles' }).should('be.visible');
 
-      cy.findByText('Status').click();
-      cy.findByText('Status options').should('be.visible');
+      cy.findAllByText('Status').first().click();
+      cy.findByRole('group', { name: 'Status' }).should('be.visible');
       cy.findByRole('group', { name: 'Member roles' }).should('not.be.visible');
     });
   });
 
   it('Displays and clears applied filters', () => {
-    cy.findAllByRole('button', { name: 'Filter' }).last().click();
+    openFiltersModal();
 
     cy.getModal().within(() => {
       cy.findAllByText('Member roles').first().click();
@@ -38,13 +40,17 @@ describe('Filter user index', () => {
       cy.findByRole('group', { name: 'Organizations' }).should('be.visible');
       cy.findByRole('checkbox', { name: 'Bachmanity' }).check();
 
+      cy.findAllByText('Status').first().click();
+      cy.findByRole('group', { name: 'Status' }).should('be.visible');
+      cy.findByRole('checkbox', { name: 'Trusted' }).check();
+
       cy.findByRole('button', { name: 'Apply filters' }).click();
     });
 
     // Verify applied filter pills are visible
     cy.findAllByRole('button', { name: /Remove filter/ }).should(
       'have.length',
-      3,
+      4,
     );
 
     cy.findByRole('button', { name: 'Remove filter: Admin' }).click();
@@ -54,7 +60,7 @@ describe('Filter user index', () => {
     );
     cy.findAllByRole('button', { name: /Remove filter/ }).should(
       'have.length',
-      2,
+      3,
     );
 
     cy.findByRole('button', { name: 'Clear all filters' }).click();
@@ -68,7 +74,7 @@ describe('Filter user index', () => {
 
   describe('Member roles', () => {
     it('Expands and collapses list of roles', () => {
-      cy.findAllByRole('button', { name: 'Filter' }).last().click();
+      openFiltersModal();
       cy.getModal().within(() => {
         cy.findAllByText('Member roles').first().click();
         cy.findByRole('group', { name: 'Member roles' })
@@ -100,7 +106,7 @@ describe('Filter user index', () => {
     });
 
     it('Filters by a single role', () => {
-      cy.findAllByRole('button', { name: 'Filter' }).last().click();
+      openFiltersModal();
       cy.getModal().within(() => {
         cy.findAllByText('Member roles').first().click();
         cy.findByRole('group', { name: 'Member roles' }).should('be.visible');
@@ -113,7 +119,7 @@ describe('Filter user index', () => {
     });
 
     it('Filters by multiple roles', () => {
-      cy.findAllByRole('button', { name: 'Filter' }).last().click();
+      openFiltersModal();
       cy.getModal().within(() => {
         cy.findAllByText('Member roles').first().click();
         cy.findByRole('group', { name: 'Member roles' }).should('be.visible');
@@ -127,7 +133,7 @@ describe('Filter user index', () => {
     });
 
     it('Clears filters', () => {
-      cy.findAllByRole('button', { name: 'Filter' }).last().click();
+      openFiltersModal();
       cy.getModal().within(() => {
         cy.findAllByText('Member roles').first().click();
         cy.findByRole('group', { name: 'Member roles' }).should('be.visible');
@@ -156,7 +162,7 @@ describe('Filter user index', () => {
 
   describe('Organizations', () => {
     it('filters by organizations', () => {
-      cy.findAllByRole('button', { name: 'Filter' }).last().click();
+      openFiltersModal();
       cy.getModal().within(() => {
         cy.findAllByText('Organizations').first().click();
         cy.findByRole('group', { name: 'Organizations' }).should('be.visible');
@@ -167,6 +173,35 @@ describe('Filter user index', () => {
       });
 
       cy.findAllByRole('row').should('have.length', 4);
+    });
+  });
+
+  describe('Statuses', () => {
+    it('Filters by a single status', () => {
+      openFiltersModal();
+      cy.getModal().within(() => {
+        cy.findAllByText('Status').first().click();
+        cy.findByRole('group', { name: 'Status' }).should('be.visible');
+
+        cy.findByRole('checkbox', { name: 'Trusted' }).check();
+        cy.findByRole('button', { name: 'Apply filters' }).click();
+      });
+      // Check expected number of users appear in list
+      cy.findAllByRole('row').should('have.length', 4);
+    });
+
+    it('Filters by multiple statuses', () => {
+      openFiltersModal();
+      cy.getModal().within(() => {
+        cy.findAllByText('Status').first().click();
+        cy.findByRole('group', { name: 'Status' }).should('be.visible');
+
+        cy.findByRole('checkbox', { name: 'Trusted' }).check();
+        cy.findByRole('checkbox', { name: 'Suspended' }).check();
+        cy.findByRole('button', { name: 'Apply filters' }).click();
+      });
+      // Check expected number of users appear in list
+      cy.findAllByRole('row').should('have.length', 5);
     });
   });
 
@@ -224,7 +259,7 @@ describe('Filter user index', () => {
 
   describe('Multiple filters', () => {
     it('filters by multiple criteria', () => {
-      cy.findAllByRole('button', { name: 'Filter' }).last().click();
+      openFiltersModal();
       cy.getModal().within(() => {
         cy.findAllByText('Member roles').first().click();
         cy.findByRole('group', { name: 'Member roles' }).should('be.visible');

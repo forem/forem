@@ -51,6 +51,7 @@ module Admin
         search: params[:search],
         role: params[:role],
         roles: params[:roles],
+        statuses: params[:statuses],
         joining_start: params[:joining_start],
         joining_end: params[:joining_end],
         date_format: params[:date_format],

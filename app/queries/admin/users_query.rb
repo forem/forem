@@ -9,6 +9,7 @@ module Admin
     # @param role [String, nil]
     # @param search [String, nil]
     # @param roles [Array<String>, nil]
+    # @param statuses [Array<String>, nil]
     # @param organizations [Array<String>, nil]
     # @param joining_start [String, nil]
     # @param joining_end [String, nil]
@@ -18,6 +19,7 @@ module Admin
                   search: nil,
                   roles: [],
                   organizations: [],
+                  statuses: [],
                   joining_start: nil,
                   joining_end: nil,
                   date_format: "DD/MM/YYYY")
@@ -25,8 +27,9 @@ module Admin
       # need to favor one or the other.
       if role.presence
         relation = relation.with_role(role, :any)
-      elsif roles.presence
-        relation = filter_roles(relation: relation, roles: roles)
+      elsif roles.presence || statuses.presence
+        # "statuses" are a subset of roles, so we can handle these filters together
+        relation = filter_roles(relation: relation, roles: [roles, statuses].compact.reduce([], :|))
       end
 
       if organizations.presence
@@ -76,16 +79,19 @@ module Admin
     #       query per role is inadequate.
     #
     # @see https://github.com/RolifyCommunity/rolify/blob/0c883f4173f409766338b9c6dfc64b0fc8ec8a52/lib/rolify/finders.rb#L26-L32
-    def self.filter_roles(relation:, roles:, role_map: Constants::Role::SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE)
+    def self.filter_roles(relation:, roles:, role_map: Constants::Role::ALL_ROLES_LABELS_TO_WHERE_CLAUSE)
       conditions = []
       values = []
 
       # Assemble the conditions and positional parameter values
       roles.each do |role|
         where_clause = role_map.fetch(role)
+
         resource_type = where_clause.fetch(:resource_type, nil)
+        name = where_clause.fetch(:name)
+
         condition = "(#{Role.table_name}.name = ? AND #{Role.table_name}.resource_id IS NULL"
-        values << where_clause.fetch(:name)
+        values << name
 
         # We need to use `IS NULL` instead of `= NULL` as those are different meanings.
         if resource_type.nil?
@@ -98,7 +104,8 @@ module Admin
         conditions << condition
       end
 
-      relation.joins(:roles).where(%((#{conditions.join(') OR (')})), *values)
+      sub_query = User.select(:id).distinct.joins(:roles).where(%((#{conditions.join(') OR (')})), *values)
+      relation.where(id: sub_query)
     end
     private_class_method :filter_roles
   end

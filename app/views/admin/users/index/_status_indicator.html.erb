@@ -1,11 +1,1 @@
-<% if user.suspended? %>
-    <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Suspended
-<% elsif user.warned? %>
-    <span class="c-indicator mr-2 inline-block" style="--bg: #F59E0B"></span>Warned
-<% elsif user.comment_suspended? %>
-    <span class="c-indicator mr-2 inline-block" style="--bg: #DC2626"></span>Comment suspended
-<% elsif user.trusted? %>
-    <span class="c-indicator mr-2 inline-block" style="--bg: #059669"></span>Trusted
-<% else %>
-    <span class="c-indicator mr-2 inline-block" style="--bg: #A3A3A3"></span>Good standing
-<% end %>
+<span class="c-indicator mr-2 inline-block" style="--bg: <%= status_to_indicator_color(status) %>"></span><%= status %>
