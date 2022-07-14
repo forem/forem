@@ -4,6 +4,67 @@ import {
   WINDOW_MODAL_ID,
 } from '@utilities/showModal';
 
+const updateDateRangeFilterIndicator = ({ startDate, endDate, indicator }) => {
+  const hasValues = startDate || endDate;
+  if (hasValues) {
+    indicator.classList.remove('hidden');
+  } else {
+    indicator.classList.add('hidden');
+  }
+};
+
+/**
+ * Some sections require the Preact DateRangePicker.
+ * This function imports the required packages and adds the pickers to the modal.
+ */
+const initializeDateRangePickers = async () => {
+  const joiningRangeContainer = document.querySelector(
+    `#${WINDOW_MODAL_ID} .js-joining-date-range`,
+  );
+
+  const joiningDateIndicator = document.querySelector(
+    `#${WINDOW_MODAL_ID} .js-filtered-indicator-joining-date`,
+  );
+
+  const [
+    { render, h },
+    { DateRangePicker, ALL_PRESET_RANGES },
+    { default: moment },
+  ] = await Promise.all([
+    import('preact'),
+    import('@crayons'),
+    import('moment'),
+  ]);
+
+  const { defaultStart, defaultEnd, defaultDatesFormat, earliestDate } =
+    joiningRangeContainer.dataset;
+
+  render(
+    <DateRangePicker
+      startDateId="joining_start"
+      endDateId="joining_end"
+      startDateAriaLabel="Joined after"
+      endDateAriaLabel="Joined before"
+      onDatesChanged={(dates) =>
+        updateDateRangeFilterIndicator({
+          ...dates,
+          indicator: joiningDateIndicator,
+        })
+      }
+      defaultStartDate={
+        defaultStart && moment(defaultStart, defaultDatesFormat).toDate()
+      }
+      defaultEndDate={
+        defaultEnd && moment(defaultEnd, defaultDatesFormat).toDate()
+      }
+      minStartDate={new Date(earliestDate)}
+      maxEndDate={new Date()}
+      presetRanges={ALL_PRESET_RANGES}
+    />,
+    joiningRangeContainer,
+  );
+};
+
 /**
  * Details panels will automatically expand on click when required.
  * We want to make sure only _one_ panel is expanded at any given time,
@@ -145,11 +206,13 @@ export const initializeFiltersModal = () => {
         sheet: true,
         sheetAlign: 'right',
         size: 'small',
+        allowOverflow: true,
         onOpen: () => {
           initializeModalCloseButton();
           initializeFilterDetailsToggles();
           initializeShowHideRoles();
           initializeFilterClearButtons();
+          initializeDateRangePickers();
         },
       });
     });

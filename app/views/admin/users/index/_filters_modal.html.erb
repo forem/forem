@@ -43,8 +43,18 @@
                 Status options
             </details>
             <details data-section="joining-date" class="admin-details">
-                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">Joining date<%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %></summary>
-                Joining date options
+                <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
+                   <span class="flex">
+                        Joining date
+                        <span class="js-filtered-indicator-joining-date relative ml-2 <%= params[:joining_start].blank? && params[:joining_end].blank? ? "hidden" : "" %>">
+                            <span class="block absolute c-indicator c-indicator--info"></span>
+                        </span>
+                    </span>
+                <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
+                </summary>
+                <div class="js-joining-date-range mb-4 absolute" data-earliest-date="<%= @earliest_join_date %>" data-default-start="<%= params[:joining_start] %>" data-default-end="<%= params[:joining_end] %>" data-default-dates-format="<%= params[:date_format] %>"></div>
+                <%# This hidden field is only here to reserve the correct amount of vertical space for where we later add the Preact inputs %>
+                <input class="crayons-textfield p-4 mb-4 invisible">
             </details>
             <details data-section="organizations" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">

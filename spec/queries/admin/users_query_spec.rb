@@ -1,23 +1,33 @@
 require "rails_helper"
 
 RSpec.describe Admin::UsersQuery, type: :query do
-  subject { described_class.call(search: search, role: role, roles: roles, organizations: organizations) }
+  subject do
+    described_class.call(search: search, role: role, roles: roles, organizations: organizations,
+                         joining_start: joining_start, joining_end: joining_end, date_format: date_format)
+  end
 
   let(:role) { nil }
   let(:roles) { [] }
   let(:organizations) { [] }
   let(:search) { [] }
+  let(:joining_start) { nil }
+  let(:joining_end) { nil }
+  let(:date_format) { "DD/MM/YYYY" }
 
   let!(:org1) { create(:organization, name: "Org1") }
   let!(:org2) { create(:organization, name: "Org2") }
 
-  let!(:user)  { create(:user, :trusted, name: "Greg") }
-  let!(:user2) { create(:user, :trusted, name: "Gregory") }
-  let!(:user3) { create(:user, :tag_moderator, name: "Paul") }
-  let!(:user4) { create(:user, :admin, name: "Susi") }
-  let!(:user5) { create(:user, :trusted, :admin, name: "Beth") }
-  let!(:user6) { create(:user, :super_admin, name: "Jean") }
-  let!(:user7) { create(:user).tap { |u| u.add_role(:single_resource_admin, DataUpdateScript) } }
+  let!(:user)  { create(:user, :trusted, name: "Greg", registered_at: "2020-05-06T13:09:47+0000") }
+  let!(:user2) { create(:user, :trusted, name: "Gregory", registered_at: "2020-05-08T13:09:47+0000") }
+  let!(:user3) { create(:user, :tag_moderator, name: "Paul", registered_at: "2020-05-10T13:09:47+0000") }
+  let!(:user4) { create(:user, :admin, name: "Susi", registered_at: "2020-10-05T13:09:47+0000") }
+  let!(:user5) { create(:user, :trusted, :admin, name: "Beth", registered_at: "2020-10-07T13:09:47+0000") }
+  let!(:user6) { create(:user, :super_admin, name: "Jean", registered_at: "2020-10-08T13:09:47+0000") }
+  let!(:user7) do
+    create(:user, registered_at: "2020-12-05T13:09:47+0000").tap do |u|
+      u.add_role(:single_resource_admin, DataUpdateScript)
+    end
+  end
 
   describe ".call" do
     context "when no arguments are given" do
@@ -90,6 +100,39 @@ RSpec.describe Admin::UsersQuery, type: :query do
       let(:roles) { ["Admin"] }
 
       it { is_expected.to eq([user4]) }
+    end
+
+    context "when filtering by joining_start and default DD/MM/YYYY date format" do
+      let(:joining_start) { "01/12/2020" }
+
+      it { is_expected.to eq([user7]) }
+    end
+
+    context "when filtering by joining_start and alternative MM/DD/YYYY date format" do
+      let(:joining_start) { "12/01/2020" }
+      let(:date_format) { "MM/DD/YYYY" }
+
+      it { is_expected.to eq([user7]) }
+    end
+
+    context "when filtering by joining_end and default DD/MM/YYYY date format" do
+      let(:joining_end) { "07/05/2020" }
+
+      it { is_expected.to eq([user]) }
+    end
+
+    context "when filtering by joining_end and alternative MM/DD/YYYY date format" do
+      let(:joining_end) { "05/07/2020" }
+      let(:date_format) { "MM/DD/YYYY" }
+
+      it { is_expected.to eq([user]) }
+    end
+
+    context "when filtering by both joining_start and joining_end" do
+      let(:joining_start) { "01/05/2020" }
+      let(:joining_end) { "31/05/2020" }
+
+      it { is_expected.to eq([user3, user2, user]) }
     end
   end
 end
