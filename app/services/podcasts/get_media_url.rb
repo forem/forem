@@ -43,7 +43,7 @@ module Podcasts
 
     def url_reachable?(url)
       url = Addressable::URI.parse(url).normalize.to_s
-      HTTParty.head(url, timeout: 10).code == 200
+      HTTParty.head(url, timeout: 20).code == 200
     rescue *HANDLED_ERRORS
       false
     end
