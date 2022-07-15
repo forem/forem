@@ -12,7 +12,7 @@ module Articles
       def default_home_feed(**_kwargs)
         articles = Article.published
           .order(hotness_score: :desc)
-          .where(score: 0..)
+          .with_at_least_home_feed_minimum_score
           .limit(@number_of_articles)
           .limited_column_select.includes(top_comments: :user)
         return articles unless @user
