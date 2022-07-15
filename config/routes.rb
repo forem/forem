@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       constraints(->(_req) { FeatureFlag.enabled?(:api_v1) }) do
         scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
           # V1 only endpoints
+          put "/users/:id/suspend", to: "users#suspend", as: :user_suspend
           put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
           put "/users/:id/unpublish", to: "users#unpublish", as: :user_unpublish
 
