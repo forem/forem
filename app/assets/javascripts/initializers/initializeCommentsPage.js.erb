@@ -352,93 +352,11 @@ function handleSubmit(event) {
   }
 }
 
-// Handler when Ctrl+B/I OR Command+B/I is pressed
-function handleBoldAndItalic(event) {
-  var textArea = event.target;
-
-  var selection = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
-  var selectionStart = textArea.selectionStart;
-  var surroundingStr = event.keyCode === KEY_CODE_B ? "**" : "_";
-
-  replaceSelectedText(textArea, `${surroundingStr}${selection}${surroundingStr}`);
-
-  var selectionStartWithOffset = selectionStart + surroundingStr.length;
-  textArea.setSelectionRange(selectionStartWithOffset, selectionStartWithOffset + selection.length);
-}
-
-// Handler when Ctrl+K OR Command+K is pressed
-function handleLink(event) {
-  var textArea = event.target;
-
-  var selection = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
-  var selectionStart = textArea.selectionStart;
-
-  replaceSelectedText(textArea, `[${selection}](url)`);
-
-  // start position + length of selection + [](
-  var startOffset = selectionStart + selection.length + 3;
-
-  // start offset + 'url'.length
-  var endOffset = startOffset + 3;
-
-  textArea.setSelectionRange(startOffset, endOffset);
-}
-
-function replaceSelectedText(textArea, text) {
-  // Chrome and other modern browsers (except FF and IE 8,9,10,11)
-  if (document.execCommand('insertText', false, text)) {
-  }
-  // Firefox (non-standard method)
-  else if (typeof textArea.setRangeText === "function") {
-    textArea.setRangeText(text);
-  }
-
-  /*
-    Disabling IE 8-11 for now as there's no easy way to verify all this
-    We can revisit this if it's really needed and find a jQuery plugin to use
-
-    // IE 8-10
-    else if(document.selection) {
-      const ieRange = document.selection.createRange();
-      ieRange.text = text;
-
-      // Move cursor after the inserted text
-      ieRange.collapse(false); // to the end
-      ieRange.select();
-    }
-    else {
-      // Does not support IE 11 yet
-    }
-  */
-}
-
-var KEY_CODE_B = 66;
-var KEY_CODE_I = 73;
-var KEY_CODE_K = 75;
 var ENTER_KEY_CODE = 13;
-
 function handleKeyDown(event) {
-  if (window.Forem.Runtime.hasOSSpecificModifier(event)) {
-    switch (event.keyCode) {
-      case KEY_CODE_B:
-        event.preventDefault();
-        handleBoldAndItalic(event);
-        break;
-      case KEY_CODE_I:
-        event.preventDefault();
-        handleBoldAndItalic(event);
-        break;
-      case KEY_CODE_K:
-        event.preventDefault();
-        handleLink(event);
-        break;
-      case ENTER_KEY_CODE:
-        event.preventDefault();
-        handleSubmit(event);
-        break;
-      default:
-        break;
-    }
+  if (window.Forem.Runtime.hasOSSpecificModifier(event) && event.keyCode === ENTER_KEY_CODE) {
+    event.preventDefault();
+    handleSubmit(event);
   }
 }
 
