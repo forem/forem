@@ -199,37 +199,4 @@ RSpec.describe Admin::UsersQuery, type: :query do
       it { is_expected.to eq([user3, user2, user]) }
     end
   end
-
-  context "when filtering by joining_start and default DD/MM/YYYY date format" do
-    let(:joining_start) { "01/12/2020" }
-
-    it { is_expected.to eq([user7]) }
-  end
-
-  context "when filtering by joining_start and alternative MM/DD/YYYY date format" do
-    let(:joining_start) { "12/01/2020" }
-    let(:date_format) { "MM/DD/YYYY" }
-
-    it { is_expected.to eq([user7]) }
-  end
-
-  context "when filtering by joining_end and default DD/MM/YYYY date format" do
-    let(:joining_end) { "07/05/2020" }
-
-    it { is_expected.to eq([user]) }
-  end
-
-  context "when filtering by joining_end and alternative MM/DD/YYYY date format" do
-    let(:joining_end) { "05/07/2020" }
-    let(:date_format) { "MM/DD/YYYY" }
-
-    it { is_expected.to eq([user]) }
-  end
-
-  context "when filtering by both joining_start and joining_end" do
-    let(:joining_start) { "01/05/2020" }
-    let(:joining_end) { "31/05/2020" }
-
-    it { is_expected.to eq([user3, user2, user]) }
-  end
 end
