@@ -10,7 +10,7 @@
     <tr>
       <th scope="col">Title</th>
       <th scope="col">Type Of</th>
-      <th scope="col">User ID</th>
+      <th scope="col">User</th>
     </tr>
   </thead>
   <tbody class="crayons-card">
@@ -24,7 +24,7 @@
         </td>
         <td>
           <% if response_template.user_id.present? %>
-            <a href="<%= admin_user_path(response_template.user_id) %>"><%= response_template.user_id %></a>
+            <%= link_to "@#{response_template.user.username}", user_url(response_template.user), target: "_blank", rel: :noopener %>
           <% end %>
         </td>
       </tr>

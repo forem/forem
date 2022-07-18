@@ -1,8 +1,19 @@
 module Admin
   class UsersQuery
-    QUERY_CLAUSE = "users.name ILIKE :search OR " \
-                   "users.email ILIKE :search OR " \
-                   "users.username ILIKE :search".freeze
+    SEARCH_CLAUSE = "users.name ILIKE :search OR " \
+                    "users.email ILIKE :search OR " \
+                    "users.username ILIKE :search".freeze
+
+    # @api public
+    # @param relation [ActiveRecord::Relation<User>]
+    # @param identifier [String, nil]
+    def self.find(identifier, relation: User)
+      return if identifier.blank?
+
+      relation.where(id: identifier)
+        .or(relation.where(username: identifier))
+        .or(relation.where(email: identifier)).first
+    end
 
     # @api public
     # @param relation [ActiveRecord::Relation<User>]
@@ -46,7 +57,7 @@ module Admin
     end
 
     def self.search_relation(relation, search)
-      relation.where(QUERY_CLAUSE, search: "%#{search.strip}%")
+      relation.where(SEARCH_CLAUSE, search: "%#{search.strip}%")
     end
 
     def self.filter_joining_date(relation:, joining_start:, joining_end:, date_format:)
