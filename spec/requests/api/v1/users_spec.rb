@@ -189,7 +189,7 @@ RSpec.describe "Api::V0::Users", type: :request do
           expect(response).to have_http_status(:ok)
           expect(target_user.reload.suspended?).to be true
           expect(Note.last.content).to eq(payload[:note])
-        end.to change(Note, :count).by(1)
+        end.to change(Note, :count).by(2)
       end
     end
   end
