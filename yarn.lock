@@ -6092,10 +6092,10 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-failed-log@^2.9.5:
-  version "2.9.5"
-  resolved "https://registry.yarnpkg.com/cypress-failed-log/-/cypress-failed-log-2.9.5.tgz#eddb83615d0a97c6388e2b4c097c42d314ff3f1f"
-  integrity sha512-3Tw3V2VKp60zDZwvC7sIW+poULqOILf3MZYOtTq5UcLAruFFotY03YUwpvTeFgZ79+4NDZfOE2vm2Wbqb+g5mg==
+cypress-failed-log@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/cypress-failed-log/-/cypress-failed-log-2.10.0.tgz#dbbe9b57a55a7a204b2f7898eb17a2b34253d4fd"
+  integrity sha512-v+GsOcpCAgj335zfDy9jDnaujH31SM/6pEQBp0dH0clbYu4NSXirLRXW9WoKhd0j70UrAA0hTLNbS2oTt1Y5kA==
   dependencies:
     debug "4.3.4"
     logdown "3.3.1"
