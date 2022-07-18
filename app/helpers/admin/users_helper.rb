@@ -58,6 +58,11 @@ module Admin
       end
     end
 
+    # We de-scoped filtering by "Good standing" due to the complexity of it not mapping directly to a specific role
+    def filterable_statuses
+      Constants::Role::BASE_ROLES.reject { |status| status == "Good standing" }
+    end
+
     # Provides the remaining count when a limit for a resource is imposed on the UI.
     #
     #  @param [Integer] The total count
@@ -87,6 +92,22 @@ module Admin
         str + " & #{overflow_count(count, imposed_limit: imposed_limit)} other"
       else
         str + " & #{overflow_count(count, imposed_limit: imposed_limit)} others"
+      end
+    end
+
+    # Returns a string hex code representing the indicator color for the given status (also known as BASE_ROLE)
+    def status_to_indicator_color(status)
+      case status
+      when "Suspended"
+        "#DC2626"
+      when "Warned"
+        "#F59E0B"
+      when "Comment Suspended"
+        "#DC2626"
+      when "Trusted"
+        "#059669"
+      else
+        "#A3A3A3"
       end
     end
   end

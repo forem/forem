@@ -59,6 +59,7 @@ module PracticalDeveloper
     # To disable parameter wrapping entirely, set this config to `false`.
     config.action_controller.wrap_parameters_by_default = false
     ### END FRAMEWORK DEFAULT OVERIDES
+    config.active_record.use_yaml_unsafe_load = true
 
     # Disable auto adding of default load paths to $LOAD_PATH
     # Setting this to false saves Ruby from checking these directories when

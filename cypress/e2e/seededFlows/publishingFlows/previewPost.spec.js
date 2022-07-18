@@ -40,7 +40,7 @@ describe('Post Editor', () => {
       cy.get('@previewButton').click();
 
       cy.get('@previewButton').should('not.have.attr', 'aria-current');
-      cy.findByTestId('error-message').should('be.visible');
+      cy.findByTestId('error-message').scrollIntoView().should('be.visible');
     });
 
     it('should show the accessibility suggestions notice', () => {
@@ -144,7 +144,7 @@ describe('Post Editor', () => {
       cy.get('@previewButton').click();
 
       cy.get('@previewButton').should('not.have.attr', 'aria-current');
-      cy.findByTestId('error-message').should('be.visible');
+      cy.findByTestId('error-message').scrollIntoView().should('be.visible');
     });
 
     it('should show the accessibility suggestions notice', () => {
@@ -211,7 +211,7 @@ describe('Post Editor', () => {
         .findByRole('button', { name: /^Preview$/i })
         .click();
 
-      cy.findByTestId('error-message').should('be.visible');
+      cy.findByTestId('error-message').scrollIntoView().should('be.visible');
 
       cy.findByRole('heading', {
         name: 'Improve the accessibility of your post',

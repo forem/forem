@@ -218,8 +218,6 @@ class UsersController < ApplicationController
   def signout_confirm; end
 
   def handle_settings_tab
-    return @tab = "profile" if @tab.blank?
-
     case @tab
     when "profile"
       handle_integrations_tab
@@ -302,8 +300,10 @@ class UsersController < ApplicationController
   end
 
   def handle_response_templates_tab
-    @response_templates = current_user.response_templates
-    @response_template = ResponseTemplate.find_or_initialize_by(id: params[:id], user: current_user)
+    @personal_response_templates = current_user.response_templates
+    @trusted_response_templates = policy_scope(ResponseTemplate).where(type_of: "mod_comment")
+    @response_template = policy_scope(ResponseTemplate).find_by(id: params[:id]) ||
+      ResponseTemplate.new
   end
 
   def set_user

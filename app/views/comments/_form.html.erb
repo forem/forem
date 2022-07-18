@@ -1,5 +1,5 @@
 <div id="response-templates-data" class="hidden"></div>
-<%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
+<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
 
 <% if @comment.errors.any? %>
   <div class="crayons-notice crayons-notice--danger" role="alert">
@@ -43,27 +43,7 @@
                       required: true,
                       class: "crayons-textfield comment-textarea crayons-textfield--ghost",
                       "aria-label": t("views.comments.write.field.aria_label") %>
-      <div class="comment-form__toolbar">
-        <div class="editor-image-upload">
-          <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
-          <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed" onclick="handleImageUpload(event,'main')">
-            <%= crayons_icon_tag(:image) %>
-            <span class="hidden s:inline-block" aria-hidden="false"><%= t("views.comments.write.field.upload") %></span>
-          </button>
-          <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
-          <input type="submit" id='image-upload-submit-main' value="<%= t("views.comments.write.field.submit") %>" style="display:none">
-          <input class="hidden" id="uploaded-image-main" />
-        </div>
 
-        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button" title="<%= t("views.comments.write.field.use") %>" data-has-listener="false" data-form-id="new_comment">
-          <%= crayons_icon_tag(:templates) %>
-          <span class="hidden s:inline-block" aria-hidden="false"><%= t("views.comments.write.field.templates") %></span>
-        </button>
-
-        <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="<%= t("views.comments.write.field.guide.title") %>">
-          <%= crayons_icon_tag(:info, title: t("views.comments.write.field.guide.icon")) %>
-        </a>
-      </div>
     </div>
 
     <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 comment-form__templates fs-base hidden">
