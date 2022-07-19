@@ -199,7 +199,9 @@ export const MultiInput = ({
       >
         <SelectionTemplate
           name={item.value}
-          className="c-input--multi__selected"
+          className={`c-input--multi__selected ${
+            !item.valid ? 'c-input--multi__selected-invalid' : ''
+          }`}
           onEdit={() => enterEditState(item.value, index)}
           onDeselect={() => deselectItem(item.value)}
         />

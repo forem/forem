@@ -50,4 +50,8 @@
     background: none;
     color: var(--accent-danger);
   }
+
+  &-invalid {
+    background-color: red;
+  }
 }
