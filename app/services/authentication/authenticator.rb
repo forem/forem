@@ -194,13 +194,6 @@ module Authentication
       end
     end
 
-    # If SMTP is enabled we require email confirmation to start onboarding,
-    # otherwise we skip this required step because we can't confirm them.
-    # Forem Account auth doesn't require email confirmation (already confirmed)
-    def requires_email_confirmation?
-      ForemInstance.smtp_enabled? && provider.class.name != "Authentication::Providers::Forem"
-    end
-
     def flag_spam_user(user)
       Slack::Messengers::PotentialSpammer.call(user: user)
     end
