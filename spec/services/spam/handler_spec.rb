@@ -102,6 +102,7 @@ RSpec.describe Spam::Handler, type: :service do
 
     before do
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
+      allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(["Please Not This"])
     end
 
     context "when using :more_rigorous_user_profile_spam_checking but there's no spam" do
@@ -112,11 +113,10 @@ RSpec.describe Spam::Handler, type: :service do
       it { is_expected.to eq(:not_spam) }
     end
 
-    context "when using :more_rigorous_user_profile_spam_checking but there spam in the website_url" do
+    context "when using :more_rigorous_user_profile_spam_checking but there spam in the summary" do
       before do
         user.profile.update(summary: "Please Not This")
         allow(FeatureFlag).to receive(:enabled?).with(:more_rigorous_user_profile_spam_checking).and_return(true)
-        allow(Settings::RateLimit).to receive(:spam_trigger_terms).and_return(["Please Not This"])
       end
 
       it "creates a reaction but does not suspend the user" do
@@ -125,16 +125,12 @@ RSpec.describe Spam::Handler, type: :service do
     end
 
     context "when non-spammy content" do
-      before do
-        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
-      end
-
       it { is_expected.to eq(:not_spam) }
     end
 
     context "when first time spammy content" do
       before do
-        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
+        user.update(name: "Please Not This")
       end
 
       it "creates a reaction but does not suspend the user" do
