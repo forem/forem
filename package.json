@@ -64,7 +64,7 @@
     "css-loader": "^5.2.7",
     "cssom": "^0.5.0",
     "cypress": "^10.3.0",
-    "cypress-failed-log": "^2.9.5",
+    "cypress-failed-log": "^2.10.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-pipe": "^2.0.0",
     "eslint": "^8.19.0",
