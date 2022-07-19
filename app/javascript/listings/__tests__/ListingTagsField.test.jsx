@@ -79,17 +79,25 @@ describe('<ListingTagsField />', () => {
   });
 
   it('should show new selected tags', async () => {
-    const { getByLabelText, getByText, getByRole } = renderResult;
+    const { getByLabelText, getByRole } = renderResult;
 
     // New selected tags are expected to be shown
     const input = getByLabelText('Tags');
     input.focus();
 
-    await waitFor(() => expect(getByText('Top tags')).toBeInTheDocument());
+    // Make sure default state has loaded
+    await waitFor(() =>
+      expect(getByRole('group', { name: 'tag1' })).toBeInTheDocument(),
+    );
+
+    await waitFor(() =>
+      expect(getByRole('option', { name: '# remote' })).toBeInTheDocument(),
+    );
 
     userEvent.click(getByRole('option', { name: '# remote' }));
 
     // It should now be added to the list of selected items
+
     await waitFor(() =>
       expect(getByRole('group', { name: 'remote' })).toBeInTheDocument(),
     );
