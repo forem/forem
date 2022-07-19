@@ -2955,10 +2955,10 @@
   dependencies:
     "@testing-library/dom" "^7.16.2"
 
-"@testing-library/user-event@^14.2.6":
-  version "14.2.6"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.2.6.tgz#9ba313a212994eea66e018520e23542ac3eb6fbe"
-  integrity sha512-l/4W4x3Lm24wkWNkPasXqvEzG+a6n2X872XCUjhyfbNqcoOapaWyCxC5Fz+E4r7JPu8gysQKSSCrK0OO2x+D+A==
+"@testing-library/user-event@^14.3.0":
+  version "14.3.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.3.0.tgz#0a6750b94b40e4739706d41e8efc2ccf64d2aad9"
+  integrity sha512-P02xtBBa8yMaLhK8CzJCIns8rqwnF6FxhR9zs810flHOBXUYCFjLd8Io1rQrAkQRWEmW2PGdZIEdMxf/KLsqFA==
 
 "@tootallnate/once@2":
   version "2.0.0"
