@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useState, useRef } from 'preact/hooks';
+import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import { populateTemplates } from '../../responseTemplates/responseTemplates';
 import { handleImagePasted } from '../../article-form/components/pasteImageHelpers';
 import { handleImageFailure } from '../../article-form/components/dragAndDropHelpers';
@@ -65,17 +65,16 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
     ),
   });
 
-  const onchangeEvent = () => {
+  useLayoutEffect(() => {
     if (textAreaRef.current) {
       setPasteElement(textAreaRef.current);
     }
-  };
+  }, [setPasteElement]);
 
   return (
     <div className="w-100 relative">
       <AutocompleteTriggerTextArea
         ref={textAreaRef}
-        onChange={onchangeEvent}
         triggerCharacter="@"
         maxSuggestions={6}
         searchInstructionsMessage="Type to search for a user"
