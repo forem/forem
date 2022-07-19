@@ -104,6 +104,14 @@ RSpec.describe Spam::Handler, type: :service do
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
     end
 
+    context "when using :more_rigorous_user_profile_spam_checking" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:more_rigorous_user_profile_spam_checking).and_return(true)
+      end
+
+      it { is_expected.to eq(:not_spam) }
+    end
+
     context "when non-spammy content" do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
