@@ -118,6 +118,7 @@ en:
           aria_label: Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions
       footer:
         heart:
+          aria_label: like
           title: Like
           icon: 'Like comment: '
           count_html: "%{num}%{likes}"

@@ -3,7 +3,7 @@
     class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button"
     id="button-for-comment-<%= comment.id %>"
     data-comment-id="<%= comment.id %>"
-    aria-label="heart"
+    aria-label="<%= t("views.comments.footer.heart.aria_label") %>"
     data-tracking-name="comment_heart_button">
     <%= crayons_icon_tag("small-heart",
                          class: "reaction-icon not-reacted",

@@ -150,16 +150,19 @@
     flex-direction: column;
   }
 
-  .crayons-tooltip {
-    &__content {
-      @media (max-width: $breakpoint-m) {
-        top: -60%;
+  &.c-btn {
+    &:hover:enabled,
+    &:enabled,
+    &:active,
+    &[aria-pressed='true'] {
+      background-color: transparent;
+    }
+
+    @media (max-width: $breakpoint-m) and (hover: hover) {
+      .crayons-tooltip__content {
+        display: none;
       }
     }
-  }
-
-  button {
-    background-color: transparent !important;
   }
 
   &__icon {

@@ -576,7 +576,7 @@ describe('Comment on articles', () => {
     cy.findByRole('img', { name: 'Like comment:' });
 
     cy.findByTestId('comments-container').within(() => {
-      cy.findByRole('button', { name: /^heart$/i })
+      cy.findByRole('button', { name: /^like$/i })
         .as('likeButton')
         .should('exist')
         .and('have.attr', 'aria-pressed', 'false')

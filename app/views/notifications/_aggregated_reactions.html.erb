@@ -19,6 +19,7 @@
 
 <div class="notification__content pt-2">
   <% reaction_categories = siblings.map { |n| n["category"] } %>
+  <% crayons_icon_tag = crayons_icon_tag(image_path, class: "reaction-image mx-1 my-1 reaction-icon--#{cat}") %>
   <%= t("views.notifications.reacted.verb_html",
         count: actors.size,
         start: tag("span", { class: %w[inline-block py-1] }, true), # rubocop:disable Rails/ContentTag
@@ -40,7 +41,7 @@
           reaction_categories.filter_map do |cat|
             image_path = reaction_image(cat)
             if image_path.present?
-              crayons_icon_tag(image_path, class: "reaction-image mx-1 my-1 reaction-icon--#{cat}", title: t("views.reactions.category.#{cat}"))
+              "<span class='crayons-tooltip__activator' style='position: relative;'>#{crayons_icon_tag}<span class='crayons-tooltip__content'>#{t("views.reactions.category.#{cat}")}</span></span>".html_safe
             end
           end, "\n"
         )) %>
