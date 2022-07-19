@@ -128,7 +128,7 @@ module Authentication
         user.assign_attributes(default_user_fields)
 
         user.set_remember_fields
-        user.skip_confirmation! unless requires_email_confirmation?
+        user.skip_confirmation!
 
         # The user must be saved in the database before
         # we assign the user to a new identity.
