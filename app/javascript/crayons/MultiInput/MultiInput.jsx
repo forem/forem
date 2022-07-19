@@ -92,14 +92,28 @@ export const MultiInput = ({
 
   const addItemToList = (value) => {
     // TODO: we will want to do some validation here based on a prop
+
+    const regexProp = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    let valid = false;
+    if (regexProp.test(value)) {
+      valid = true;
+    }
+
     if (value.trim().length > 0) {
       // If an item was edited, we want to keep it in the same position in the list
       const insertIndex = inputPosition !== null ? inputPosition : items.length;
+
       const newSelections = [
         ...items.slice(0, insertIndex),
-        value,
+        { value, valid },
         ...items.slice(insertIndex),
       ];
+
+      // const newSelections = [
+      //   ...items.slice(0, insertIndex),
+      //   value,
+      //   ...items.slice(insertIndex),
+      // ];
 
       // We update the hidden selected items list, so additions are announced to screen reader users
       const listItem = document.createElement('li');
@@ -124,7 +138,7 @@ export const MultiInput = ({
   };
 
   const deselectItem = (clickedItem) => {
-    const newArr = items.filter((item) => item !== clickedItem);
+    const newArr = items.filter((item) => item.value !== clickedItem);
     setItems(newArr);
 
     // We also update the hidden selected items list, so removals are announced to screen reader users
@@ -142,8 +156,8 @@ export const MultiInput = ({
         inputPosition !== null ? inputPosition - 1 : items.length - 1;
 
       const item = items[nextEditIndex];
-      deselectItem(item);
-      enterEditState(item, nextEditIndex);
+      // deselectItem(item.value);
+      enterEditState(item.value, nextEditIndex);
     }
   };
 
@@ -184,10 +198,10 @@ export const MultiInput = ({
         style={{ order: position }}
       >
         <SelectionTemplate
-          name={item}
+          name={item.value}
           className="c-input--multi__selected"
-          onEdit={() => enterEditState(item, index)}
-          onDeselect={() => deselectItem(item)}
+          onEdit={() => enterEditState(item.value, index)}
+          onDeselect={() => deselectItem(item.value)}
         />
       </li>
     );
@@ -247,3 +261,7 @@ MultiInput.propTypes = {
   regex: PropTypes.string,
   SelectionTemplate: PropTypes.func,
 };
+
+// we input, then we validate, and then we add to the items
+// if the items are not valid then we cannot show the button to submit
+// hence for each value we would want to have the value and whtehre its valid or not.
