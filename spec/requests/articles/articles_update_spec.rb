@@ -184,7 +184,6 @@ RSpec.describe "ArticlesUpdate", type: :request do
     it "sets published_at according to the timezone when updating draft => scheduled" do
       draft = create(:article, published: false, user_id: user.id)
       attributes[:published] = true
-      # attributes[:published_at] = "#{tomorrow.strftime('%d/%m/%Y')} 18:00"
       attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }
       draft.reload
