@@ -178,9 +178,9 @@ RSpec.describe "Api::V0::Users", type: :request do
     end
 
     context "when request is authenticated" do
-      it "is successful in suspending a user", :aggregate_failures do
-        api_secret.user.add_role(:super_admin)
+      before { api_secret.user.add_role(:super_admin) }
 
+      it "is successful in suspending a user", :aggregate_failures do
         expect do
           put api_user_suspend_path(id: target_user.id),
               params: payload,
@@ -190,6 +190,14 @@ RSpec.describe "Api::V0::Users", type: :request do
           expect(target_user.reload.suspended?).to be true
           expect(Note.last.content).to eq(payload[:note])
         end.to change(Note, :count).by(1)
+      end
+
+      it "creates an audit log of the action taken" do
+        expect do
+          put api_user_suspend_path(id: target_user.id),
+              params: payload,
+              headers: v1_headers
+        end.to change(AuditLog, :count).by(1)
       end
     end
   end
@@ -225,14 +233,24 @@ RSpec.describe "Api::V0::Users", type: :request do
     end
 
     context "when request is authenticated" do
-      it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
+      before do
         allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
         api_secret.user.add_role(:super_admin)
+      end
+
+      it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
         put api_user_unpublish_path(id: target_user.id),
             headers: v1_headers
 
         expect(response).to have_http_status(:ok)
         expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(target_user.id).once
+      end
+
+      it "creates an audit log of the action taken" do
+        expect do
+          put api_user_unpublish_path(id: target_user.id),
+              headers: v1_headers
+        end.to change(AuditLog, :count).by(1)
       end
     end
   end

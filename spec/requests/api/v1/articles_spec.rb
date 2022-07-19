@@ -1228,6 +1228,10 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect(response).to have_http_status(:ok)
         expect(published_article.reload.published).to be false
       end
+
+      it "creates an audit log of the action taken" do
+        expect { put path, headers: v1_headers }.to change(AuditLog, :count).by(1)
+      end
     end
   end
 end
