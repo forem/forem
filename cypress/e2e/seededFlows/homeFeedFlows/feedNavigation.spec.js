@@ -167,6 +167,8 @@ describe('Home Feed Navigation', () => {
 
     cy.url().should('contain', '#comments');
 
-    cy.focused().should('have.id', 'text-area');
+    cy.findByRole('textbox', {
+      name: 'Add a comment to the discussion',
+    }).should('have.focus');
   });
 });

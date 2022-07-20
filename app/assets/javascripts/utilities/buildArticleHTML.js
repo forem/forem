@@ -88,12 +88,7 @@ function buildArticleHTML(article, currentUserId = null) {
       commentsCount = article.comments_count || '0';
     }
 
-    var commentsAriaLabelText =
-      ' aria-label="Comments for post ' +
-      article.title +
-      ' (' +
-      commentsCount +
-      ')" ';
+    var commentsAriaLabelText = `aria-label="Add a comment to post - ${article.title}"`;
 
     if (article.class_name !== 'User') {
       commentsDisplay =
