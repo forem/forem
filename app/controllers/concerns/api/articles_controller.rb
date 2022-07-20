@@ -109,7 +109,7 @@ module Api
       authorize @article, :revoke_publication?
 
       if Articles::Unpublish.call(@user, @article)
-        render head: :ok
+        render status: :no_content
       else
         render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
       end
