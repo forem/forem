@@ -390,7 +390,7 @@ export function addModActionsListeners() {
   }
 
   document
-    .getElementById('open-flag-user-modal')
+    .getElementById('toggle-flag-user-modal')
     .addEventListener('click', toggleFlagUserModal);
 
   document

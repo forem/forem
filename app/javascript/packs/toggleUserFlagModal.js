@@ -37,6 +37,7 @@ async function flagUser({ reactableType, category, reactableId }) {
         addCloseButton: true,
       });
     }
+    toggleFlagBtnContent(outcome.result);
   } catch (error) {
     top.addSnackbarItem({
       message: error,
@@ -51,6 +52,22 @@ function closeModal() {
   closeWindowModal();
 }
 
+// After the async call, use JS to update modal-title, content-selector, classes and inner Text
+// Need to pass in the username
+function toggleFlagBtnContent(result) {
+  const actionsPanel =
+    window.parent.document.getElementById('mod-container').contentWindow
+      .document;
+  const flagUserBtn = actionsPanel.getElementById('toggle-flag-user-modal');
+
+  if (result == 'create') {
+    console.log('Created a Flag!');
+    // flagUserBtn.setAttribute('data-modal-title', 'User');
+  } else if (result == 'destroy') {
+    console.log('Destroyed a Flag!');
+  }
+}
+
 function addModalListeners() {
   const modalWindow = window.parent.document;
   const modal = modalWindow.getElementById(WINDOW_MODAL_ID);
@@ -59,6 +76,9 @@ function addModalListeners() {
   );
   const confirmFlagUserBtn = modalWindow.getElementById(
     'confirm-flag-user-action',
+  );
+  const confirmUnflagUserBtn = modalWindow.getElementById(
+    'confirm-unflag-user-action',
   );
   const reportLink = modalWindow.getElementById('report-inappropriate-content');
   const errorMsg = modal.querySelector('#unselected-radio-error');
@@ -76,9 +96,18 @@ function addModalListeners() {
       errorMsg.innerText = 'You must check the radio button first.';
     }
   });
+
   reportLink?.addEventListener('click', (event) => {
     event.preventDefault();
     // console.log(event.target.dataset.reportAbuseLink);
+  });
+
+  confirmUnflagUserBtn?.addEventListener('click', () => {
+    flagUser({
+      category,
+      reactableType,
+      reactableId: userId,
+    });
   });
 }
 
