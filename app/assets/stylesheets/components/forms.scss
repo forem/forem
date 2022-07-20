@@ -275,6 +275,43 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   &__popover {
     min-width: min-content;
+    
+    & .react-colorful {
+      padding: var(--su-2);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      box-shadow: var(--shadow-1);
+      width: 220px;
+      height: 160px;
+      
+      &__pointer {
+        cursor: pointer;
+      }
+
+      &__saturation {
+        margin: 0 0 var(--su-2) 0;
+        border-radius: var(--radius);
+      }
+
+      &__saturation-pointer {
+        width: var(--fs-s);
+        height: var(--fs-s);
+        border: 2px solid var(--card-bg);
+        border-radius: 50%;
+      }
+
+      &__hue {
+        height: var(--fs-xs);
+        border-radius: var(--radius);
+      }
+
+      &__hue-pointer {
+        border: 2px solid var(--card-bg);
+        border-radius: 1px;
+        width: var(--fs-s);
+        height: calc(100% + 8px);
+      }
+    }
   }
 }
 
