@@ -73,7 +73,7 @@ function addModalListeners() {
         reactableId: userId,
       });
     } else {
-      errorMsg.innerText = 'You must check the radio button.';
+      errorMsg.innerText = 'You must check the radio button first.';
     }
   });
   reportLink?.addEventListener('click', (event) => {

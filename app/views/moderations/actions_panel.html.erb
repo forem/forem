@@ -207,14 +207,19 @@
 
     <div id="admin-action-options" class="admin-action-options dropdown-options mt-4 hidden">
       Author Flagged? <%= @author_flagged %>
+      <%# After the async call, use JS to update modal-title, content-selector, classes and inner Text %>
       <button
         type="button"
         id="open-flag-user-modal"
-        class="c-btn c-btn--destructive align-center fs-s"
-        data-modal-title="Flag <%= author_username %>"
+        class="c-btn <%= @author_flagged ? "" : "Flag" %> align-center fs-s"
+        data-modal-title="<%= @author_flagged ? "Unflag" : "Flag" %> <%= author_username %>"
         data-modal-size="small"
-        data-modal-content-selector="#flag-user-modal-content">
-        <%= t("views.moderations.actions.flag", username: author_username) %>
+        data-modal-content-selector="#<%= @author_flagged ? "unflag" : "flag" %>-user-modal-content">
+        <% if @author_flagged %>
+          <%= t("views.moderations.actions.unflag", username: author_username) %>
+        <% else %>
+          <%= t("views.moderations.actions.flag", username: author_username) %>
+        <% end %>
       </button>
       <% if policy(@moderatable).can_perform_moderator_actions? %>
         <button
