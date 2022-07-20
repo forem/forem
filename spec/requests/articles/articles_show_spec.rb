@@ -61,7 +61,7 @@ RSpec.describe "ArticlesShow", type: :request do
     it "renders 'posted on' information" do
       get article.path
       expect(response.body).to include("Posted on")
-      expect(response.body).not_to include("Scheduled to")
+      expect(response.body).not_to include("Scheduled for")
     end
   end
 
@@ -76,9 +76,9 @@ RSpec.describe "ArticlesShow", type: :request do
       expect(response.body).to include(scheduled_article.title)
     end
 
-    it "renders 'scheduled to' information" do
+    it "renders 'scheduled for' information" do
       get scheduled_article_path
-      expect(response.body).to include("Scheduled to")
+      expect(response.body).to include("Scheduled for")
       expect(response.body).not_to include("Posted on")
     end
 
