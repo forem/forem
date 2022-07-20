@@ -71,7 +71,7 @@ RSpec.describe Admin::UsersQuery, type: :query do
     let!(:user5) { create(:user, :trusted, :admin, name: "Beth", registered_at: "2020-10-07T13:09:47+0000") }
     let!(:user6) { create(:user, :super_admin, name: "Jean", registered_at: "2020-10-08T13:09:47+0000") }
     let!(:user7) do
-      create(:user, registered_at: "2020-12-05T13:09:47+0000").tap do |u|
+      create(:user, name: "Joanna", registered_at: "2020-12-05T13:09:47+0000").tap do |u|
         u.add_role(:single_resource_admin, DataUpdateScript)
       end
     end
