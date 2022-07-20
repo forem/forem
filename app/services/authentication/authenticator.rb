@@ -128,7 +128,7 @@ module Authentication
         user.assign_attributes(default_user_fields)
 
         user.set_remember_fields
-        user.skip_confirmation! unless requires_email_confirmation?
+        user.skip_confirmation!
 
         # The user must be saved in the database before
         # we assign the user to a new identity.
@@ -192,13 +192,6 @@ module Authentication
       else
         Time.current
       end
-    end
-
-    # If SMTP is enabled we require email confirmation to start onboarding,
-    # otherwise we skip this required step because we can't confirm them.
-    # Forem Account auth doesn't require email confirmation (already confirmed)
-    def requires_email_confirmation?
-      ForemInstance.smtp_enabled? && provider.class.name != "Authentication::Providers::Forem"
     end
 
     def flag_spam_user(user)
