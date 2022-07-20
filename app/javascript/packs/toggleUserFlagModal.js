@@ -5,7 +5,7 @@ import {
 } from '@utilities/showModal';
 import { request } from '@utilities/http';
 
-async function flagUser({ reactableType, category, reactableId }) {
+async function flagUser({ reactableType, category, reactableId, username }) {
   const body = JSON.stringify({
     category,
     reactable_type: reactableType,
@@ -37,7 +37,7 @@ async function flagUser({ reactableType, category, reactableId }) {
         addCloseButton: true,
       });
     }
-    toggleFlagBtnContent(outcome.result);
+    toggleFlagBtnContent(outcome.result, username);
   } catch (error) {
     top.addSnackbarItem({
       message: error,
@@ -52,19 +52,28 @@ function closeModal() {
   closeWindowModal();
 }
 
-// After the async call, use JS to update modal-title, content-selector, classes and inner Text
-// Need to pass in the username
-function toggleFlagBtnContent(result) {
+function toggleFlagBtnContent(result, username) {
   const actionsPanel =
     window.parent.document.getElementById('mod-container').contentWindow
       .document;
   const flagUserBtn = actionsPanel.getElementById('toggle-flag-user-modal');
 
   if (result == 'create') {
-    console.log('Created a Flag!');
-    // flagUserBtn.setAttribute('data-modal-title', 'User');
+    flagUserBtn.setAttribute('data-modal-title', `Unflag ${username}`);
+    flagUserBtn.setAttribute(
+      'data-modal-content-selector',
+      '#unflag-user-modal-content',
+    );
+    flagUserBtn.classList.remove('c-btn--destructive');
+    flagUserBtn.innerText = `Unflag ${username}`;
   } else if (result == 'destroy') {
-    console.log('Destroyed a Flag!');
+    flagUserBtn.setAttribute('data-modal-title', `Flag ${username}`);
+    flagUserBtn.setAttribute(
+      'data-modal-content-selector',
+      '#flag-user-modal-content',
+    );
+    flagUserBtn.classList.add('c-btn--destructive');
+    flagUserBtn.innerText = `Flag ${username}`;
   }
 }
 
@@ -82,15 +91,17 @@ function addModalListeners() {
   );
   const reportLink = modalWindow.getElementById('report-inappropriate-content');
   const errorMsg = modal.querySelector('#unselected-radio-error');
-  const { category, reactableType, userId } = confirmFlagUserBtn.dataset;
 
   confirmFlagUserBtn?.addEventListener('click', () => {
+    const { category, reactableType, userId, username } =
+      confirmFlagUserBtn.dataset;
     if (confirmFlagUserRadio.checked) {
       errorMsg.innerText = '';
       flagUser({
         category,
         reactableType,
         reactableId: userId,
+        username,
       });
     } else {
       errorMsg.innerText = 'You must check the radio button first.';
@@ -103,10 +114,13 @@ function addModalListeners() {
   });
 
   confirmUnflagUserBtn?.addEventListener('click', () => {
+    const { category, reactableType, userId, username } =
+      confirmUnflagUserBtn.dataset;
     flagUser({
       category,
       reactableType,
       reactableId: userId,
+      username,
     });
   });
 }
