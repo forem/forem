@@ -6,6 +6,8 @@ module Api
 
       self.api_action = true
 
+      skip_before_action :verify_authenticity_token
+
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
       end
