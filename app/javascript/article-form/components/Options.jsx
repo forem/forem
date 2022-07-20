@@ -96,6 +96,7 @@ export const Options = ({
           placeholder="..."
         />
         <input
+          aria-label="Schedule publication time"
           type="time"
           value={publishedAtTime} // "18:00"
           className="crayons-textfield"
