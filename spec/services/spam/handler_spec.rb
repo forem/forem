@@ -112,7 +112,7 @@ RSpec.describe Spam::Handler, type: :service do
       it { is_expected.to eq(:not_spam) }
     end
 
-    context "when using :more_rigorous_user_profile_spam_checking but there spam in the website_url" do
+    context "when using :more_rigorous_user_profile_spam_checking but there spam in the summary" do
       before do
         user.profile.update(summary: "Please Not This")
         allow(FeatureFlag).to receive(:enabled?).with(:more_rigorous_user_profile_spam_checking).and_return(true)
