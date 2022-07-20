@@ -89,6 +89,10 @@ RSpec.describe "Moderations", type: :request do
       let(:article1) { create(:article, tags: tag) }
       let(:article2) { create(:article, tags: "javascript, cool, beans") }
 
+      before do
+        Tag.destroy_all
+      end
+
       it "shows the option to remove the tag when the article has the tag" do
         tag_mod.add_role(:trusted)
         sign_in tag_mod

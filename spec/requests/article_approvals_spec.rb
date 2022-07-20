@@ -6,6 +6,10 @@ RSpec.describe "ArticleApprovals", type: :request do
     let(:user)           { create(:user) }
     let(:article)        { create(:article, tags: tag.name) }
 
+    before do
+      Tag.destroy_all
+    end
+
     context "when user is not tag mod" do
       before do
         sign_in user
