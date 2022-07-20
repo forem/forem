@@ -85,6 +85,7 @@ export const Options = ({
           Schedule Publication
         </label>
         <input
+          aria-label="Schedule publication date"
           type="date"
           min={currentDate}
           value={publishedAtDate} // ""
