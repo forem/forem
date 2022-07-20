@@ -289,13 +289,13 @@ function buildArticleHTML(article, currentUserId = null) {
         <button
           type="button"
           id="article-save-button-${article.id}"
-          class="crayons-btn c-btn c-btn--icon-alone bookmark-button"
+          class="c-btn c-btn--icon-alone bookmark-button"
           data-reactable-id="${article.id}"
           data-article-author-id="${article.user_id}"
           aria-label="Save to reading list">
           <span class="bm-initial">${saveSVG}</span>
           <span class="bm-success">${saveFilledSVG}</span>
-        </button>;
+        </button>
       `;
     } else if (article.class_name === 'User') {
       saveButton = `
