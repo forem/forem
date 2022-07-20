@@ -238,7 +238,7 @@ Object {
                   class="crayons-story__save"
                 >
                   <small
-                    class="crayons-story__tertiary mr-2"
+                    class="crayons-story__tertiary mr-2 fs-xs"
                   >
                     1 min read
                   </small>
@@ -507,7 +507,7 @@ Object {
                 class="crayons-story__save"
               >
                 <small
-                  class="crayons-story__tertiary mr-2"
+                  class="crayons-story__tertiary mr-2 fs-xs"
                 >
                   1 min read
                 </small>
