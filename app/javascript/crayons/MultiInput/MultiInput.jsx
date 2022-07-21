@@ -15,13 +15,13 @@ const KEYS = {
  *
  * @param {Object} props
  * @param {string} props.placeholder Input placeholder text
- * @param {string} props.regex Optional regular expression used to restrict the input
+ * @param {string} props.inputRegex Optional regular expression used to restrict the input
  * @param {Function} props.SelectionTemplate Optional Preact component to render selected items
  */
 
 export const MultiInput = ({
   placeholder,
-  regex,
+  inputRegex,
   SelectionTemplate = DefaultSelectionTemplate,
 }) => {
   const inputRef = useRef(null);
@@ -84,7 +84,7 @@ export const MultiInput = ({
         }
         break;
       default:
-        if (regex && !regex.test(e.key)) {
+        if (inputRegex && !inputRegex.test(e.key)) {
           e.preventDefault();
         }
     }
