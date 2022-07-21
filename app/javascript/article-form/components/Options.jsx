@@ -81,7 +81,7 @@ export const Options = ({
     const currentDate = moment().format('YYYY-MM-DD');
     publishedAtField = (
       <div className="crayons-field mb-6">
-        <label className="crayons-field__label">
+        <label htmlFor="publishedAtDate" className="crayons-field__label">
           Schedule Publication
         </label>
         <input
