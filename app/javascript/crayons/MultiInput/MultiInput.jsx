@@ -271,7 +271,3 @@ MultiInput.propTypes = {
   validationRegex: PropTypes.string,
   SelectionTemplate: PropTypes.func,
 };
-
-// we input, then we validate, and then we add to the items
-// if the items are not valid then we cannot show the button to submit
-// hence for each value we would want to have the value and whtehre its valid or not.
