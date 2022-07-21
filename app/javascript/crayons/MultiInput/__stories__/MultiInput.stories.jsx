@@ -17,6 +17,13 @@ export default {
       regex: {
         description: 'A regular expression used to validate the input',
       },
+      labelText: {
+        description: 'The label for the input',
+      },
+      showLabel: {
+        description:
+          'Should the label text be visible (it will always be available to assistive technology regardless)',
+      },
     },
   },
 };
@@ -28,6 +35,8 @@ export const Default = (args) => {
 Default.args = {
   placeholder: 'Add an email address...',
   regex: /([a-zA-Z0-9@.])/,
+  labelText: 'Example multi input',
+  showLabel: true,
 };
 
 Default.story = {
