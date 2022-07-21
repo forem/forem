@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "Api::V0::Users", type: :request do
   let(:api_secret) { create(:api_secret) }
   let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:listener) { :admin_api }
 
   describe "GET /api/users/:id" do
     before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
@@ -143,11 +144,14 @@ RSpec.describe "Api::V0::Users", type: :request do
     end
   end
 
-  describe "PUT /api/users/:id/suspend" do
+  describe "PUT /api/users/:id/suspend", :aggregate_failures do
     let(:target_user) { create(:user) }
     let(:payload) { { note: "Violated CoC despite multiple warnings" } }
 
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+    before do
+      allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
+      Audit::Subscribe.listen listener
+    end
 
     context "when unauthenticated" do
       it "returns unauthorized" do
@@ -193,19 +197,27 @@ RSpec.describe "Api::V0::Users", type: :request do
       end
 
       it "creates an audit log of the action taken" do
-        expect do
-          put api_user_suspend_path(id: target_user.id),
-              params: payload,
-              headers: v1_headers
-        end.to change(AuditLog, :count).by(1)
+        put api_user_suspend_path(id: target_user.id),
+            params: payload,
+            headers: v1_headers
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.data["action"]).to eq("api_user_suspend")
+        expect(log.data["target_user_id"]).to eq(target_user.id)
+        expect(log.user_id).to eq(api_secret.user.id)
       end
     end
   end
 
-  describe "PUT /api/users/:id/unpublish" do
+  describe "PUT /api/users/:id/unpublish", :aggregate_failures do
     let(:target_user) { create(:user) }
+    let!(:target_articles) { create_list(:article, 3, user_id: target_user.id) }
 
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+    before do
+      allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
+      Audit::Subscribe.listen listener
+    end
 
     context "when unauthenticated" do
       it "returns unauthorized" do
@@ -247,10 +259,14 @@ RSpec.describe "Api::V0::Users", type: :request do
       end
 
       it "creates an audit log of the action taken" do
-        expect do
-          put api_user_unpublish_path(id: target_user.id),
-              headers: v1_headers
-        end.to change(AuditLog, :count).by(1)
+        put api_user_unpublish_path(id: target_user.id),
+            headers: v1_headers
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.data["action"]).to eq("api_user_unpublish")
+        expect(log.data["target_article_ids"]).to match_array(target_articles.map(&:id))
+        expect(log.user_id).to eq(api_secret.user.id)
       end
     end
   end

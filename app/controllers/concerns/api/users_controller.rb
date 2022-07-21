@@ -47,10 +47,18 @@ module Api
 
     def unpublish
       authorize(@user, :unpublish_all_articles?)
-      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+      target_articles = Article.published.where(user_id: params[:id].to_i)
 
-      payload = { action: "api_user_unpublish", target_user_id: params[:id].to_i }
-      Audit::Logger.log(:admin_api, @user, payload)
+      unless target_articles.empty?
+        Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+
+        payload = {
+          action: "api_user_unpublish",
+          target_user_id: params[:id].to_i,
+          target_article_ids: target_articles.ids
+        }
+        Audit::Logger.log(:admin_api, @user, payload)
+      end
 
       render head: :ok
     end

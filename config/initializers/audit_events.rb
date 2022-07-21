@@ -8,4 +8,5 @@
 
 Rails.application.reloader.to_prepare do
   Audit::Subscribe.listen(:moderator, :internal) unless Rails.env.test?
+  Audit::Subscribe.listen(:admin_api, :internal) unless Rails.env.test?
 end
