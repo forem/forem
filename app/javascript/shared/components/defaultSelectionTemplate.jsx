@@ -32,7 +32,7 @@ export const DefaultSelectionTemplate = ({
     <>
       {enableValidation && (
         <div id="invalid-item" aria-live="assertive">
-          {!valid ? 'Invalid' : ''}
+          {!valid ? 'Invalid entry' : ''}
         </div>
       )}
       <div role="group" aria-label={name} className="flex mr-1 mb-1 w-max">
