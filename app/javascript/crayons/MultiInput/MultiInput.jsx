@@ -153,7 +153,6 @@ export const MultiInput = ({
         inputPosition !== null ? inputPosition - 1 : items.length - 1;
 
       const item = items[nextEditIndex];
-      // deselectItem(item.value);
       enterEditState(item.value, nextEditIndex);
     }
   };
