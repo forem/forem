@@ -42,7 +42,7 @@ function trackGoogleAnalytics4() {
       if (!addedGA4) {
         <%# Dynamically add the Google Analytics 4 script tag %>
         var script = document.createElement('script');
-        script.src = "http://www.googletagmanager.com/gtag/js?id=" + ga4MeasurementCode;
+        script.src = "//www.googletagmanager.com/gtag/js?id=" + ga4MeasurementCode;
         script.async = true;
         document.head.appendChild(script);
       }
