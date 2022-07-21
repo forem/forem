@@ -152,6 +152,16 @@ will remain."
           run_test!
         end
 
+        response "401", "unauthorized" do
+          let(:regular_user) { create(:user) }
+          let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
+          let(:"api-key") { low_security_api_secret.secret }
+          let(:id) { unpublished_aricle.id }
+          add_examples
+
+          run_test!
+        end
+
         response "404", "Not Found" do
           let(:"api-key") { api_secret.secret }
           let(:id) { 0 }
