@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Options } from './Options';
 import { ButtonNew as Button } from '@crayons';
@@ -8,7 +9,8 @@ export const EditorActions = ({
   onPublish,
   onClearChanges,
   published,
-  publishedAt,
+  publishedAtDate,
+  publishedAtTime,
   schedulingEnabled,
   edited,
   version,
@@ -37,9 +39,11 @@ export const EditorActions = ({
     );
   }
 
-  const now = new Date();
-  const publishedAtDate = publishedAt ? new Date(publishedAt) : now;
-  const schedule = publishedAtDate > now;
+  const now = moment();
+  const publishedAtObj = publishedAtDate
+    ? moment(`${publishedAtDate} ${publishedAtTime || '00:00'}`)
+    : now;
+  const schedule = publishedAtObj > now;
 
   const saveButtonText = schedule
     ? 'Schedule'
@@ -95,7 +99,8 @@ EditorActions.propTypes = {
   onSaveDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   published: PropTypes.bool.isRequired,
-  publishedAt: PropTypes.string.isRequired,
+  publishedAtTime: PropTypes.string.isRequired,
+  publishedAtDate: PropTypes.string.isRequired,
   schedulingEnabled: PropTypes.bool.isRequired,
   edited: PropTypes.bool.isRequired,
   version: PropTypes.string.isRequired,
