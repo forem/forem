@@ -254,7 +254,7 @@ export const MultiInput = ({
 
 MultiInput.propTypes = {
   placeholder: PropTypes.string,
-  regex: PropTypes.string,
+  inputRegex: PropTypes.string,
   SelectionTemplate: PropTypes.func,
 };
 
