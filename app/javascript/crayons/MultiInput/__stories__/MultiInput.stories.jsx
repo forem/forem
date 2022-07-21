@@ -18,7 +18,7 @@ export default {
         description: 'A regular expression used to restrict the input',
       },
       validationRegex: {
-        description: 'A regular expression used to validate the input',
+        description: 'A regular expression used to validate the value of input',
       },
     },
   },

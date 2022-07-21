@@ -18,7 +18,7 @@ const KEYS = {
  * @param {boolean} props.showLabel Whether the label text should be visible or hidden (for assistive tech users only)
  * @param {string} props.placeholder Input placeholder text
  * @param {string} props.inputRegex Optional regular expression used to restrict the input
- * @param {string} props.validationRegex Optional regular expression used to validate the input
+ * @param {string} props.validationRegex Optional regular expression used to validate the value of the input
  * @param {Function} props.SelectionTemplate Optional Preact component to render selected items
  */
 
