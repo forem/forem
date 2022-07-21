@@ -5,9 +5,9 @@ describe('Filter user index', () => {
     // The desktop view allows us to count table rows a bit more easily for validating filter results
     cy.viewport('macbook-16');
 
-    cy.enableFeatureFlag('member_index_view')
-      .then(() => cy.get('@user'))
-      .then((user) => cy.loginAndVisit(user, '/admin/member_manager/users'));
+    cy.get('@user').then((user) =>
+      cy.loginAndVisit(user, '/admin/member_manager/users'),
+    );
   });
 
   const openFiltersModal = () =>

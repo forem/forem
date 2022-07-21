@@ -345,18 +345,14 @@ describe('User index view', () => {
         beforeEach(() => {
           cy.testSetup();
           cy.fixture('users/adminUser.json').as('user');
-          cy.enableFeatureFlag('member_index_view')
-            .then(() => cy.get('@user'))
-            .then((user) =>
-              cy.loginAndVisit(user, '/admin/member_manager/users'),
-            );
+          cy.get('@user').then((user) =>
+            cy.loginAndVisit(user, '/admin/member_manager/users'),
+          );
           cy.viewport('iphone-x');
         });
 
         describe('User actions', () => {
           it('Opens the assign role modal', () => {
-            cy.enableFeatureFlag('member_index_view');
-
             openUserActionsDropdown();
 
             cy.findByRole('button', { name: 'Assign role' }).click();
@@ -371,10 +367,7 @@ describe('User index view', () => {
           });
 
           it('Opens the add organization modal', () => {
-            cy.enableFeatureFlag('member_index_view');
-
             openUserActionsDropdown();
-
             cy.findByRole('button', { name: 'Add organization' }).click();
 
             cy.getModal().within(() => {
@@ -387,10 +380,7 @@ describe('User index view', () => {
           });
 
           it('Opens the adjust credit balance modal', () => {
-            cy.enableFeatureFlag('member_index_view');
-
             openUserActionsDropdown();
-
             cy.findByRole('button', { name: 'Adjust credit balance' }).click();
 
             cy.getModal().within(() => {
@@ -406,8 +396,8 @@ describe('User index view', () => {
         describe('large screens', () => {
           beforeEach(() => {
             cy.testSetup();
-            cy.fixture('users/adminUser.json').as('user');
-            cy.enableFeatureFlag('member_index_view')
+            cy.fixture('users/adminUser.json')
+              .as('user')
               .then(() => cy.get('@user'))
               .then((user) =>
                 cy.loginAndVisit(user, '/admin/member_manager/users'),
@@ -417,8 +407,6 @@ describe('User index view', () => {
 
           describe('User actions', () => {
             it('Opens the assign role modal', () => {
-              cy.enableFeatureFlag('member_index_view');
-
               openUserActionsDropdown();
 
               cy.findByRole('button', { name: 'Assign role' }).click();
@@ -435,8 +423,6 @@ describe('User index view', () => {
             });
 
             it('Opens the add organization modal', () => {
-              cy.enableFeatureFlag('member_index_view');
-
               openUserActionsDropdown();
 
               cy.findByRole('button', { name: 'Add organization' }).click();
@@ -451,8 +437,6 @@ describe('User index view', () => {
             });
 
             it('Opens the adjust credit balance modal', () => {
-              cy.enableFeatureFlag('member_index_view');
-
               openUserActionsDropdown();
 
               cy.findByRole('button', {
