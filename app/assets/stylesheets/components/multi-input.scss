@@ -52,6 +52,29 @@
   }
 
   &-invalid {
-    background-color: var(--accent-danger-lighter);
+    &:first-child,
+    &:last-child {
+      background-color: var(--accent-danger-a10);
+      color: var(--accent-danger);
+      border: solid var(--accent-danger);
+    }
+
+    &:first-child {
+      border-right: none;
+    }
+
+    &:last-child {
+      border-left: none;
+    }
+
+    &:first-child:hover,
+    &:last-child:hover {
+      background-color: var(--accent-danger-a10);
+      color: var(--accent-danger);
+    }
   }
+}
+
+#invalid-item {
+  display: none;
 }
