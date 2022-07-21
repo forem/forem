@@ -14,14 +14,20 @@ const KEYS = {
  * Component allowing users to add multiple entries for a given input field that get displayed as destructive pills
  *
  * @param {Object} props
+ * @param {string} props.labelText The text for the input's label
+ * @param {boolean} props.showLabel Whether the label text should be visible or hidden (for assistive tech users only)
  * @param {string} props.placeholder Input placeholder text
  * @param {string} props.inputRegex Optional regular expression used to restrict the input
+ * @param {string} props.validationRegex Optional regular expression used to validate the input
  * @param {Function} props.SelectionTemplate Optional Preact component to render selected items
  */
 
 export const MultiInput = ({
   placeholder,
   inputRegex,
+  validationRegex,
+  showLabel = true,
+  labelText,
   SelectionTemplate = DefaultSelectionTemplate,
 }) => {
   const inputRef = useRef(null);
@@ -113,8 +119,7 @@ export const MultiInput = ({
   };
 
   const checkValidaty = (value) => {
-    const regexProp = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-    return regexProp.test(value);
+    return validationRegex.test(value);
   };
 
   const clearInput = () => {
@@ -210,6 +215,12 @@ export const MultiInput = ({
         aria-hidden="true"
         className="absolute pointer-events-none opacity-0 p-2"
       />
+      <label
+        id="multi-select-label"
+        className={showLabel ? '' : 'screen-reader-only'}
+      >
+        {labelText}
+      </label>
 
       {/* A visually hidden list provides confirmation messages to screen reader users as an item is selected or removed */}
       <div className="screen-reader-only">
@@ -238,6 +249,7 @@ export const MultiInput = ({
                 autocomplete="off"
                 class="c-input--multi__input"
                 type="text"
+                aria-labelledby="multi-select-label"
                 onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
                 placeholder={inputPosition === null ? placeholder : null}
@@ -253,8 +265,11 @@ export const MultiInput = ({
 };
 
 MultiInput.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  showLabel: PropTypes.bool,
   placeholder: PropTypes.string,
   inputRegex: PropTypes.string,
+  validationRegex: PropTypes.string,
   SelectionTemplate: PropTypes.func,
 };
 
