@@ -109,12 +109,6 @@ export const MultiInput = ({
         ...items.slice(insertIndex),
       ];
 
-      // const newSelections = [
-      //   ...items.slice(0, insertIndex),
-      //   value,
-      //   ...items.slice(insertIndex),
-      // ];
-
       // We update the hidden selected items list, so additions are announced to screen reader users
       const listItem = document.createElement('li');
       listItem.innerText = value;
@@ -202,6 +196,8 @@ export const MultiInput = ({
           className={`c-input--multi__selected ${
             !item.valid ? 'c-input--multi__selected-invalid' : ''
           }`}
+          enableValidation={true}
+          valid={item.valid}
           onEdit={() => enterEditState(item.value, index)}
           onDeselect={() => deselectItem(item.value)}
         />

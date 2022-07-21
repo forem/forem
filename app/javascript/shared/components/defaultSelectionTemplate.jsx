@@ -14,30 +14,49 @@ import { Close } from '@images/x.svg';
  */
 export const DefaultSelectionTemplate = ({
   name,
+  enableValidation = false,
+  valid = true,
   buttonVariant = 'default',
   className = 'c-autocomplete--multi__selected',
   onEdit,
   onDeselect,
-}) => (
-  <div role="group" aria-label={name} className="flex mr-1 mb-1 w-max">
-    <Button
-      variant={buttonVariant}
-      className={`${className} p-1 cursor-text`}
-      aria-label={`Edit ${name}`}
-      onClick={onEdit}
-    >
-      {name}
-    </Button>
-    <Button
-      variant={buttonVariant}
-      className={`${className} p-1`}
-      aria-label={`Remove ${name}`}
-      onClick={onDeselect}
-    >
-      <Icon src={Close} />
-    </Button>
-  </div>
-);
+}) => {
+  const conditionalAttributes = () => {
+    if (enableValidation) {
+      return { 'aria-describedby': 'invalid-item' };
+    }
+    return {};
+  };
+
+  return (
+    <>
+      {enableValidation && (
+        <div id="invalid-item" aria-live="assertive">
+          {!valid ? 'Invalid' : ''}
+        </div>
+      )}
+      <div role="group" aria-label={name} className="flex mr-1 mb-1 w-max">
+        <Button
+          variant={buttonVariant}
+          className={`${className} p-1 cursor-text`}
+          aria-label={`Edit ${name}`}
+          {...conditionalAttributes()}
+          onClick={onEdit}
+        >
+          {name}
+        </Button>
+        <Button
+          variant={buttonVariant}
+          className={`${className} p-1`}
+          aria-label={`Remove ${name}`}
+          onClick={onDeselect}
+        >
+          <Icon src={Close} />
+        </Button>
+      </div>
+    </>
+  );
+};
 
 DefaultSelectionTemplate.propTypes = {
   name: PropTypes.string.isRequired,
