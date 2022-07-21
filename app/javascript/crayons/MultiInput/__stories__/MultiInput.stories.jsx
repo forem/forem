@@ -20,6 +20,13 @@ export default {
       validationRegex: {
         description: 'A regular expression used to validate the value of input',
       },
+      labelText: {
+        description: 'The label for the input',
+      },
+      showLabel: {
+        description:
+          'Should the label text be visible (it will always be available to assistive technology regardless)',
+      },
     },
   },
 };
@@ -32,6 +39,8 @@ Default.args = {
   placeholder: 'Add an email address...',
   inputRegex: /([a-zA-Z0-9@_.+-])/,
   validationRegex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+  labelText: 'Example multi input',
+  showLabel: true,
 };
 
 Default.story = {
