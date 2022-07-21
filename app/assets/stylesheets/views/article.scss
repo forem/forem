@@ -34,6 +34,7 @@
         width: 100%;
         aspect-ratio: auto 650 / 273;
         object-fit: scale-down;
+        border-radius: var(--radius) var(--radius) 0 0;
       }
     }
   }

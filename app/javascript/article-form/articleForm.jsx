@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
+import moment from 'moment';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
@@ -18,7 +19,7 @@ import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 /* global activateRunkitTags */
 
 /*
-  Although the state fields: id, description, canonicalUrl, publishedAt, series, allSeries and
+  Although the state fields: id, description, canonicalUrl, publishedAtDate, publishedAtTime, series, allSeries and
   editing are not used in this file, they are important to the
   editor.
 */
@@ -96,6 +97,14 @@ export class ArticleForm extends Component {
           }
         : {};
 
+    this.publishedAtTime, (this.publishedAtDate = '');
+
+    if (this.article.published_at) {
+      const publishedAt = moment(this.article.published_at);
+      this.publishedAtTime = publishedAt.format('HH:mm');
+      this.publishedAtDate = publishedAt.format('YYYY-MM-DD');
+    }
+
     this.state = {
       formKey: new Date().toISOString(),
       id: this.article.id || null, // eslint-disable-line react/no-unused-state
@@ -103,7 +112,8 @@ export class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
-      publishedAt: this.article.published_at || '', // eslint-disable-line react/no-unused-state
+      publishedAtTime: this.publishedAtTime,
+      publishedAtDate: this.publishedAtDate,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '', // eslint-disable-line react/no-unused-state
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
@@ -335,7 +345,8 @@ export class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
-      publishedAt: this.article.published_at || '', // eslint-disable-line react/no-unused-state
+      publishedAtTime: this.publishedAtTime,
+      publishedAtDate: this.publishedAtDate,
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
@@ -397,7 +408,8 @@ export class ArticleForm extends Component {
       tagList,
       bodyMarkdown,
       published,
-      publishedAt,
+      publishedAtTime,
+      publishedAtDate,
       previewShowing,
       previewLoading,
       previewResponse,
@@ -498,7 +510,8 @@ export class ArticleForm extends Component {
 
         <EditorActions
           published={published}
-          publishedAt={publishedAt}
+          publishedAtTime={publishedAtTime}
+          publishedAtDate={publishedAtDate}
           schedulingEnabled={schedulingEnabled}
           version={version}
           onPublish={this.onPublish}

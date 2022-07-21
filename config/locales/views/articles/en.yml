@@ -85,7 +85,8 @@ en:
       edited_html: Updated on %{date}
       for_org_html: "%{start} for %{end}%{org}"
       missing: Article No Longer Available
-      posted_html: Posted on %{date}
+      published_html: Posted on %{date}
+      scheduled_html: Scheduled for %{date}
       read_next: Read next
       reading_time:
         one: "1 min read"

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, waitFor } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
@@ -65,6 +65,8 @@ describe('<Onboarding />', () => {
     // click to next step
     const nextButton = await findByText(/continue/i);
 
+    await waitFor(() => expect(nextButton).not.toHaveAttribute('disabled'));
+
     fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
 
@@ -82,12 +84,8 @@ describe('<Onboarding />', () => {
   });
 
   it("should skip the step when 'Skip for now' is clicked", async () => {
-    const {
-      getByTestId,
-      getByText,
-      findByText,
-      findByTestId,
-    } = renderOnboarding();
+    const { getByTestId, getByText, findByText, findByTestId } =
+      renderOnboarding();
     getByTestId('onboarding-intro-slide');
 
     fetch.mockResponseOnce({});
@@ -98,6 +96,7 @@ describe('<Onboarding />', () => {
 
     // click to next step
     const nextButton = await findByText(/continue/i);
+    await waitFor(() => expect(nextButton).not.toHaveAttribute('disabled'));
 
     fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
@@ -118,12 +117,8 @@ describe('<Onboarding />', () => {
   });
 
   it('should redirect the users to the correct steps every time', async () => {
-    const {
-      getByTestId,
-      getByText,
-      findByText,
-      findByTestId,
-    } = renderOnboarding();
+    const { getByTestId, getByText, findByText, findByTestId } =
+      renderOnboarding();
     getByTestId('onboarding-intro-slide');
 
     fetch.mockResponseOnce({});
@@ -134,6 +129,7 @@ describe('<Onboarding />', () => {
 
     // click to next step
     let nextButton = await findByText(/continue/i);
+    await waitFor(() => expect(nextButton).not.toHaveAttribute('disabled'));
 
     fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();

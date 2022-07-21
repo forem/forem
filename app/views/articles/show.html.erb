@@ -124,7 +124,7 @@
                   <% end %>
                   <p class="fs-xs color-base-60">
                     <% if @article.published_timestamp.present? %>
-                      <%= t("views.articles.posted_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %>
+                      <%= t("views.articles.#{@article.current_state}_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %>
                     <% end %>
                     <% if @article.co_author_ids.present? %>
                       <%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path.html_safe) %>
