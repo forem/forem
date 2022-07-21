@@ -91,18 +91,11 @@ export const MultiInput = ({
   };
 
   const addItemToList = (value) => {
-    // TODO: we will want to do some validation here based on a prop
-
-    const regexProp = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-    let valid = false;
-    if (regexProp.test(value)) {
-      valid = true;
-    }
-
     if (value.trim().length > 0) {
       // If an item was edited, we want to keep it in the same position in the list
       const insertIndex = inputPosition !== null ? inputPosition : items.length;
 
+      const valid = checkValidaty(value);
       const newSelections = [
         ...items.slice(0, insertIndex),
         { value, valid },
@@ -117,6 +110,11 @@ export const MultiInput = ({
       setItems([...newSelections]);
       exitEditState({});
     }
+  };
+
+  const checkValidaty = (value) => {
+    const regexProp = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    return regexProp.test(value);
   };
 
   const clearInput = () => {
