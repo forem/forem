@@ -101,7 +101,7 @@ export const MultiInput = ({
       // If an item was edited, we want to keep it in the same position in the list
       const insertIndex = inputPosition !== null ? inputPosition : items.length;
 
-      const valid = checkValidaty(value);
+      const valid = checkValidity(value);
       const newSelections = [
         ...items.slice(0, insertIndex),
         { value, valid },
@@ -118,7 +118,7 @@ export const MultiInput = ({
     }
   };
 
-  const checkValidaty = (value) => {
+  const checkValidity = (value) => {
     return validationRegex.test(value);
   };
 
