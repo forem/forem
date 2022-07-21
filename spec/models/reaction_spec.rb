@@ -17,6 +17,13 @@ RSpec.describe Reaction, type: :model do
     it "performs a valid query for the user" do
       expect { described_class.user_has_been_given_too_many_spammy_article_reactions?(user: user) }.not_to raise_error
     end
+
+    it "performs a valid query for the user with the include_user_profile logic" do
+      expect do
+        described_class.user_has_been_given_too_many_spammy_article_reactions?(user: user,
+                                                                               include_user_profile: true)
+      end.not_to raise_error
+    end
   end
 
   describe "counter_culture" do
