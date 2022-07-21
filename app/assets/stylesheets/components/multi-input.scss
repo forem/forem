@@ -68,7 +68,8 @@
     }
 
     &:first-child:hover,
-    &:last-child:hover {
+    &:first-child:focus-visible &:last-child:hover,
+    &:last-child:focus-visible {
       background-color: var(--accent-danger-a10);
       color: var(--accent-danger);
     }
