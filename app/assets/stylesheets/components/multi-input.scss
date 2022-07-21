@@ -52,6 +52,6 @@
   }
 
   &-invalid {
-    background-color: red;
+    background-color: var(--accent-danger-lighter);
   }
 }
