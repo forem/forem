@@ -13,13 +13,25 @@ function sponsorClickHandler(event) {
   );
 }
 
+function sponsorClickHandlerGA4(event) {
+  gtag('event', 'click sponsor link', {
+    event_category: 'click',
+    event_label: event.target.dataset.details,
+  });
+}
+
 function listenForSponsorClick() {
   setTimeout(() => {
-    if (window.ga) {
+    if (window.ga || window.gtag) {
       var links = document.getElementsByClassName('partner-link');
       // eslint-disable-next-line no-plusplus
       for (var i = 0; i < links.length; i++) {
-        links[i].onclick = sponsorClickHandler;
+        if (window.ga) {
+          links[i].onclick = sponsorClickHandler;
+        }
+        if (window.gtag) {
+          links[i].onclick = sponsorClickHandlerGA4;
+        }
       }
     }
   }, 400);
@@ -32,8 +44,8 @@ function initializeSponsorshipVisibility() {
   var user = userData();
   if (el) {
     setTimeout(() => {
-      if (window.ga) {
-        if (document.querySelectorAll('[data-partner-seen]').length === 0) {
+      if (document.querySelectorAll('[data-partner-seen]').length === 0) {
+        if (window.ga) {
           ga(
             'send',
             'event',
@@ -42,8 +54,14 @@ function initializeSponsorshipVisibility() {
             el.dataset.details,
             null,
           );
-          el.dataset.partnerSeen = 'true';
         }
+        if (window.gtag) {
+          gtag('event', 'sponsor displayed on page', {
+            event_category: 'view',
+            event_label: el.dataset.details,
+          });
+        }
+        el.dataset.partnerSeen = 'true';
       }
     }, 400);
   }

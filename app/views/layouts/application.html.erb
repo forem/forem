@@ -54,7 +54,9 @@
         data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
         data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
         data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
-        data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>">
+        data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
+        data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>"
+        >
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
         <div id="body-styles">
