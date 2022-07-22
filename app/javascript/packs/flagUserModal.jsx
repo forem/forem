@@ -44,13 +44,13 @@ async function confirmFlagUser({ reactableType, category, reactableId }) {
     });
   }
 
-  toggleOldFlagUserModal();
+  toggleFlagUserModal();
 }
 
 /**
  * Shows or hides the flag user modal.
  */
-export function toggleOldFlagUserModal() {
+export function toggleFlagUserModal() {
   const modalContainer = top.document.getElementsByClassName(
     'flag-user-modal-container',
   )[0];
@@ -109,7 +109,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
           <Button
             icon={RemoveIcon}
             className="inline-flex"
-            onClick={toggleOldFlagUserModal}
+            onClick={toggleFlagUserModal}
           />
         </header>
         <div class="crayons-modal__box__body">
@@ -175,7 +175,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
               </Button>
               <Button
                 id="cancel-flag-user-action"
-                onClick={toggleOldFlagUserModal}
+                onClick={toggleFlagUserModal}
               >
                 Cancel
               </Button>
@@ -186,8 +186,8 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
       <div
         role="presentation"
         class="crayons-modal__overlay"
-        onClick={toggleOldFlagUserModal}
-        onKeyUp={toggleOldFlagUserModal}
+        onClick={toggleFlagUserModal}
+        onKeyUp={toggleFlagUserModal}
       />
     </div>
   );
