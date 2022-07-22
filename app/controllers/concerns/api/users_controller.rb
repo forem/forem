@@ -49,19 +49,21 @@ module Api
       authorize(@user, :unpublish_all_articles?)
 
       target_user = User.find(params[:id].to_i)
-      target_articles = Article.published.where(user_id: target_user.id)
-      Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id)
-
       target_comments = target_user.comments.where(deleted: false)
-      # Keep track of the ids that will be affected for the AuditLog later
-      target_comment_ids = target_comments.ids
+
+      # Keep track of affected ids for AuditLog trail
+      article_ids = Article.published.where(user_id: target_user.id).ids
+      comment_ids = target_comments.ids
+
+      # Unpublish posts and delete comments w/ boolean attr to allow revert
+      Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id)
       target_comments.update(deleted: true)
 
       payload = {
         action: "api_user_unpublish",
         target_user_id: target_user.id,
-        target_article_ids: target_articles.ids,
-        target_comment_ids: target_comment_ids
+        target_article_ids: article_ids,
+        target_comment_ids: comment_ids
       }
       Audit::Logger.log(:admin_api, @user, payload)
 
