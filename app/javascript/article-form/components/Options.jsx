@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { Dropdown, ButtonNew as Button } from '@crayons';
 import CogIcon from '@images/cog.svg';
 
@@ -12,24 +13,11 @@ import CogIcon from '@images/cog.svg';
  * @param {Function} props.onConfigChange Callback for when the config options have changed
  */
 
-function toISOStringLocal(datetime) {
-  const month = (datetime.getMonth() + 1).toString().padStart(2, '0');
-  const day = datetime.getDate().toString().padStart(2, '0');
-  return [
-    datetime.getFullYear(),
-    '-',
-    month,
-    '-',
-    day,
-    'T',
-    datetime.toLocaleTimeString(),
-  ].join('');
-}
-
 export const Options = ({
   passedData: {
     published = false,
-    publishedAt = '',
+    publishedAtDate = '',
+    publishedAtTime = '',
     timezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
     allSeries = [],
     canonicalUrl = '',
@@ -43,13 +31,9 @@ export const Options = ({
   let publishedField = '';
   let existingSeries = '';
   let publishedAtField = '';
-  const publishedDate = new Date(publishedAt);
-  const currentDate = new Date();
 
-  const localPublishedAt = toISOStringLocal(publishedDate);
-  const minPublishedAt = toISOStringLocal(currentDate);
-
-  const readonlyPublishedAt = published && publishedDate < currentDate;
+  const readonlyPublishedAt =
+    published && moment(`${publishedAtDate} ${publishedAtTime}`) < moment();
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name, index) => {
@@ -92,20 +76,33 @@ export const Options = ({
       </div>
     );
   }
+
   if (schedulingEnabled && !readonlyPublishedAt) {
+    const currentDate = moment().format('YYYY-MM-DD');
     publishedAtField = (
       <div className="crayons-field mb-6">
-        <label htmlFor="publishedAt" className="crayons-field__label">
+        <label htmlFor="publishedAtDate" className="crayons-field__label">
           Schedule Publication
         </label>
         <input
-          type="datetime-local"
-          min={minPublishedAt}
-          value={localPublishedAt} // "2022-04-28T15:00:00"
+          aria-label="Schedule publication date"
+          type="date"
+          min={currentDate}
+          value={publishedAtDate} // ""
           className="crayons-textfield"
-          name="publishedAt"
+          name="publishedAtDate"
           onChange={onConfigChange}
-          id="publishedAt"
+          id="publishedAtDate"
+          placeholder="..."
+        />
+        <input
+          aria-label="Schedule publication time"
+          type="time"
+          value={publishedAtTime} // "18:00"
+          className="crayons-textfield"
+          name="publishedAtTime"
+          onChange={onConfigChange}
+          id="publishedAtTime"
           placeholder="..."
         />
         <input
@@ -195,7 +192,8 @@ export const Options = ({
 Options.propTypes = {
   passedData: PropTypes.shape({
     published: PropTypes.bool.isRequired,
-    publishedAt: PropTypes.string.isRequired,
+    publishedAtDate: PropTypes.string.isRequired,
+    publishedAtTime: PropTypes.string.isRequired,
     timezone: PropTypes.string.isRequired,
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,

@@ -118,10 +118,12 @@ RSpec.describe "ArticlesCreate", type: :request do
     let(:tomorrow) { 1.day.from_now }
     let(:attributes) do
       { title: new_title, body_markdown: "Yo ho ho#{rand(100)}",
-        published_at: "#{tomorrow.strftime('%Y-%m-%d')} 18:00" }
+        published: true,
+        published_at_date: tomorrow.strftime("%Y-%m-%d"),
+        published_at_time: "18:00" }
     end
 
-    it "sets published_at according to the timezone" do
+    it "sets published_at according to the timezone new" do
       attributes[:timezone] = "Europe/Moscow"
       post "/articles", params: { article: attributes }
       a = Article.find_by(title: new_title)
@@ -130,12 +132,31 @@ RSpec.describe "ArticlesCreate", type: :request do
     end
 
     # crossing the date line
-    it "sets published_at for another timezone" do
+    it "sets published_at for another timezone new" do
       attributes[:timezone] = "Pacific/Honolulu"
       post "/articles", params: { article: attributes }
       a = Article.find_by(title: new_title)
       published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
       expect(published_at_utc).to eq("#{(tomorrow + 1.day).strftime('%m/%d/%Y')} 04:00")
+    end
+
+    it "sets published_at when only date is passed" do
+      attributes[:published_at_date] = 2.days.from_now.strftime("%Y-%m-%d")
+      attributes[:published_at_time] = nil
+      attributes[:timezone] = "Europe/Moscow"
+      post "/articles", params: { article: attributes }
+      a = Article.find_by(title: new_title)
+      # 00:00 in user timezone (attributes[:timezone])
+      published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 21:00")
+    end
+
+    it "sets current published_at when only time is passed" do
+      attributes[:published_at_date] = nil
+      attributes[:timezone] = "Asia/Magadan"
+      post "/articles", params: { article: attributes }
+      a = Article.find_by(title: new_title)
+      expect(a.published_at).to be_within(1.minute).of(Time.current)
     end
   end
 

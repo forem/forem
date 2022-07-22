@@ -57,6 +57,12 @@ RSpec.describe "ArticlesShow", type: :request do
         "dateModified" => article.published_timestamp,
       )
     end
+
+    it "renders 'posted on' information" do
+      get article.path
+      expect(response.body).to include("Posted on")
+      expect(response.body).not_to include("Scheduled for")
+    end
   end
 
   describe "GET /:username/:slug (scheduled)" do
@@ -68,6 +74,12 @@ RSpec.describe "ArticlesShow", type: :request do
       get scheduled_article_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(scheduled_article.title)
+    end
+
+    it "renders 'scheduled for' information" do
+      get scheduled_article_path
+      expect(response.body).to include("Scheduled for")
+      expect(response.body).not_to include("Posted on")
     end
 
     it "doesn't show edit link when user is not signed in" do

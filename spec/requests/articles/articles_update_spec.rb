@@ -162,14 +162,18 @@ RSpec.describe "ArticlesUpdate", type: :request do
   context "when setting published_at in editor v2" do
     let(:tomorrow) { 1.day.from_now }
     let(:published_at) { "#{tomorrow.strftime('%d.%m.%Y')} 18:00" }
+    let(:published_at_date) { tomorrow.strftime("%d.%m.%Y") }
+    let(:published_at_time) { "18:00" }
     let(:attributes) do
-      { title: "NEW TITLE #{rand(100)}", body_markdown: "Yo ho ho#{rand(100)}", published_at: published_at }
+      { title: "NEW TITLE #{rand(100)}", body_markdown: "Yo ho ho#{rand(100)}",
+        published_at_date: published_at_date, published_at_time: published_at_time }
     end
 
     # scheduled => scheduled
     it "updates published_at from scheduled to scheduled" do
       article.update_column(:published_at, 3.days.from_now)
       attributes[:timezone] = "Europe/Moscow"
+      attributes[:published] = true
       put "/articles/#{article.id}", params: { article: attributes }
       article.reload
       published_at_utc = article.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
@@ -180,7 +184,6 @@ RSpec.describe "ArticlesUpdate", type: :request do
     it "sets published_at according to the timezone when updating draft => scheduled" do
       draft = create(:article, published: false, user_id: user.id)
       attributes[:published] = true
-      attributes[:published_at] = "#{tomorrow.strftime('%d/%m/%Y')} 18:00"
       attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }
       draft.reload
