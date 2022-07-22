@@ -30,35 +30,41 @@ describe('<MultiInput />', () => {
 
   describe('different keys', () => {
     it('adds selection when enter is pressed', async () => {
-      const { getByPlaceholderText, getByText } = renderMultiInput();
+      const { getByPlaceholderText, getByRole } = renderMultiInput();
       const input = setup(getByPlaceholderText);
 
       await waitFor(() => userEvent.type(input, 'forem@gmail.com'));
       userEvent.type(input, '{enter}');
       await waitFor(() =>
-        expect(getByText('forem@gmail.com')).toBeInTheDocument(),
+        expect(
+          getByRole('button', { name: 'Edit forem@gmail.com' }),
+        ).toBeInTheDocument(),
       );
     });
 
     it('adds selection when comma is pressed', async () => {
-      const { getByPlaceholderText, getByText } = renderMultiInput();
+      const { getByPlaceholderText, getByRole } = renderMultiInput();
       const input = setup(getByPlaceholderText);
 
       await waitFor(() => userEvent.type(input, 'forem@gmail.com'));
       userEvent.keyboard(',');
       await waitFor(() =>
-        expect(getByText('forem@gmail.com')).toBeInTheDocument(),
+        expect(
+          getByRole('button', { name: 'Edit forem@gmail.com' }),
+        ).toBeInTheDocument(),
       );
     });
 
     it('adds selection when space is pressed', async () => {
-      const { getByPlaceholderText, getByText } = renderMultiInput();
+      const { getByPlaceholderText, getByRole } = renderMultiInput();
       const input = setup(getByPlaceholderText);
 
       await waitFor(() => userEvent.type(input, 'forem@gmail.com'));
       userEvent.keyboard(' ');
       await waitFor(() =>
-        expect(getByText('forem@gmail.com')).toBeInTheDocument(),
+        expect(
+          getByRole('button', { name: 'Edit forem@gmail.com' }),
+        ).toBeInTheDocument(),
       );
     });
   });
@@ -194,5 +200,35 @@ describe('<MultiInput />', () => {
     expect(queryByRole('button', { name: 'Edit example' })).toBeNull();
   });
 
-  // TODO: add a test to validate the input.
+  it('Adds a description to invalid entries', async () => {
+    const { getByRole, getByPlaceholderText } = renderMultiInput();
+
+    const input = setup(getByPlaceholderText);
+    await waitFor(() => userEvent.type(input, 'example'));
+    userEvent.type(input, '{enter}');
+    await waitFor(() =>
+      expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument(),
+    );
+
+    expect(
+      getByRole('button', { name: 'Edit example' }),
+    ).toHaveAccessibleDescription('Invalid entry');
+  });
+
+  it('Does not add a description to valid entries', async () => {
+    const { getByRole, getByPlaceholderText } = renderMultiInput();
+
+    const input = setup(getByPlaceholderText);
+    await waitFor(() => userEvent.type(input, 'example@email.com'));
+    userEvent.type(input, '{enter}');
+    await waitFor(() =>
+      expect(
+        getByRole('button', { name: 'Edit example@email.com' }),
+      ).toBeInTheDocument(),
+    );
+
+    expect(
+      getByRole('button', { name: 'Edit example@email.com' }),
+    ).not.toHaveAccessibleDescription('Invalid entry');
+  });
 });
