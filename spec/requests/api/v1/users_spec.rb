@@ -196,6 +196,8 @@ RSpec.describe "Api::V0::Users", type: :request do
 
   describe "PUT /api/users/:id/unpublish" do
     let(:target_user) { create(:user) }
+    let!(:articles) { create_list(:article, 3, user: target_user, published: true) }
+    let!(:comments) { create_list(:comment, 3, user: target_user) }
 
     before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
@@ -226,13 +228,22 @@ RSpec.describe "Api::V0::Users", type: :request do
 
     context "when request is authenticated" do
       it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
-        allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
+        # User's articles are published and comments exist
+        expect(articles.map(&:reload).map(&:published?)).to match_array([true, true, true])
+        expect(comments.map(&:reload).map(&:deleted)).to match_array([false, false, false])
+
         api_secret.user.add_role(:super_admin)
+
         put api_user_unpublish_path(id: target_user.id),
             headers: v1_headers
-
         expect(response).to have_http_status(:ok)
-        expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(target_user.id).once
+
+        sidekiq_perform_enqueued_jobs
+
+        # Ensure article's aren't published and comments deleted
+        # (with boolean attribute so they can be reverted if needed)
+        expect(articles.map(&:reload).map(&:published?)).to match_array([false, false, false])
+        expect(comments.map(&:reload).map(&:deleted)).to match_array([true, true, true])
       end
     end
   end

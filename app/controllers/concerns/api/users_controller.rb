@@ -43,7 +43,11 @@ module Api
 
     def unpublish
       authorize(@user, :unpublish_all_articles?)
-      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+
+      target_user = User.find(params[:id].to_i)
+      Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id)
+      target_user.comments.update_all(deleted: true)
+
       render head: :ok
     end
   end
