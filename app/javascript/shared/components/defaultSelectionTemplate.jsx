@@ -23,7 +23,7 @@ export const DefaultSelectionTemplate = ({
 }) => {
   const conditionalAttributes = () => {
     if (enableValidation) {
-      return { 'aria-describedby': 'invalid-item' };
+      return { 'aria-describedby': `invalid-item-${name}` };
     }
     return {};
   };
@@ -31,7 +31,11 @@ export const DefaultSelectionTemplate = ({
   return (
     <>
       {enableValidation && (
-        <div id="invalid-item" aria-live="assertive">
+        <div
+          id={`invalid-item-${name}`}
+          className="screen-reader-only"
+          aria-live="assertive"
+        >
           {!valid ? 'Invalid entry' : ''}
         </div>
       )}
