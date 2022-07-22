@@ -6,6 +6,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
   let(:article) { create(:article, featured: true, tags: "discuss") }
   let(:new_article) { create(:article) }
   let(:api_secret) { create(:api_secret) }
+  let(:listener) { :admin_api }
   let(:v1_headers) do
     {
       "content-type" => "application/json",
@@ -1184,10 +1185,12 @@ RSpec.describe "Api::V1::Articles", type: :request do
     end
   end
 
-  describe "PUT /api/articles/:id/unpublish" do
+  describe "PUT /api/articles/:id/unpublish", :aggregate_failures do
     let(:user) { api_secret.user }
     let!(:published_article) { create(:article, published: true) }
     let(:path) { api_article_unpublish_path(published_article.id) }
+
+    before { Audit::Subscribe.listen listener }
 
     context "when unauthorized" do
       it "fails with no api key" do
@@ -1227,6 +1230,16 @@ RSpec.describe "Api::V1::Articles", type: :request do
         put path, headers: v1_headers
         expect(response).to have_http_status(:ok)
         expect(published_article.reload.published).to be false
+      end
+
+      it "creates an audit log of the action taken" do
+        put path, headers: v1_headers
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.data["action"]).to eq("api_article_unpublish")
+        expect(log.data["article_id"]).to eq(published_article.id)
+        expect(log.user_id).to eq(user.id)
       end
     end
   end

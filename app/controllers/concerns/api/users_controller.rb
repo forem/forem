@@ -32,6 +32,10 @@ module Api
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: @user,
                                                             user: target_user,
                                                             user_params: suspend_params)
+
+        payload = { action: "api_user_suspend", target_user_id: target_user.id }
+        Audit::Logger.log(:admin_api, @user, payload)
+
         render head: :ok
       rescue StandardError
         render json: {
@@ -43,7 +47,17 @@ module Api
 
     def unpublish
       authorize(@user, :unpublish_all_articles?)
+      target_articles = Article.published.where(user_id: params[:id].to_i)
+
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+
+      payload = {
+        action: "api_user_unpublish",
+        target_user_id: params[:id].to_i,
+        target_article_ids: target_articles.ids
+      }
+      Audit::Logger.log(:admin_api, @user, payload)
+
       render head: :ok
     end
   end
