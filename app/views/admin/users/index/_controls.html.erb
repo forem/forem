@@ -1,9 +1,8 @@
 <%= javascript_packs_with_chunks_tag "admin/users/controls", defer: true %>
 
-<%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
-  <div class="flex m:flex-col xl:flex-row justify-between m:items-end xl:justify-end xl:items-center mb-4">
-    <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
-
+<div class="flex m:flex-col xl:flex-row justify-between m:items-end xl:justify-end xl:items-center mb-4">
+  <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
+  <%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
     <div class="flex justify-between xl:justify-end m:w-100 xl:w-max">
       <div class="hidden m:block m:w-50 xl:w-max">
         <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
@@ -16,8 +15,10 @@
         <%= render "admin/users/controls/export" %>
       </div>
     </div>
-  </div>
-  <!-- Expandable sections -->
+  <% end %>
+</div>
+<!-- Expandable sections -->
+<%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
   <div class="xl:flex xl:justify-end">
     <div id="search-users" class="hidden">
       <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
