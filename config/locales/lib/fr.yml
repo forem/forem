@@ -108,7 +108,9 @@ fr:
           favicon:
             description: Used as the site favicon
           ga_tracking:
-            description: Google Analytics Tracking ID, e.g. UA-71991000-1
+            description: Google Universal Analytics Tracking ID, e.g. UA-XXXXXXXX-1
+          ga_analytics_4:
+            description: Google Analytics 4 Measurement ID, e.g. G-XXXXXXXXX
           hashtag:
             description: Used as the twitter hashtag of the community
             placeholder: '#DEVCommunity'

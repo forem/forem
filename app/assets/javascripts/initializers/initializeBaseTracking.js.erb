@@ -1,4 +1,10 @@
 function initializeBaseTracking() {
+  trackGoogleAnalytics3();
+  trackGoogleAnalytics4();
+  trackCustomImpressions();
+}
+
+function trackGoogleAnalytics3() {
   var wait = 0;
   var addedGA = false;
   var gaTrackingCode = document.body.dataset.gaTracking;
@@ -25,8 +31,47 @@ function initializeBaseTracking() {
     }, 25);
     eventListening();
   }
-  trackCustomImpressions();
 }
+
+function trackGoogleAnalytics4() {
+  var wait = 0;
+  var addedGA4 = false;
+  var ga4MeasurementCode = document.body.dataset.ga4TrackingId;
+  if (ga4MeasurementCode) {
+    var waitingOnGA4 = setInterval(function() {
+      if (!addedGA4) {
+        <%# Dynamically add the Google Analytics 4 script tag %>
+        var script = document.createElement('script');
+        script.src = "//www.googletagmanager.com/gtag/js?id=" + ga4MeasurementCode;
+        script.async = true;
+        document.head.appendChild(script);
+      }
+      addedGA4 = true;
+      wait++;
+      if (window.google_tag_manager) {
+        <%# Define the gtag function and call it. Adapted from https://stackoverflow.com/questions/22716542/google-analytics-code-explanation %>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+
+        window['gtag'] = window['gtag'] || function () {
+          dataLayer.push(arguments)
+        }
+
+        gtag('js', new Date());
+        gtag('config', ga4MeasurementCode, { 'anonymize_ip': true });
+        clearInterval(waitingOnGA4);
+      }
+      if (wait > 85) {
+        clearInterval(waitingOnGA4);
+        <%# The gem we're using server-side (Staccato) is not yet compatible with the Google Analytics 4 tracking code.
+        More details: https://github.com/tpitale/staccato/issues/97 %>
+        <%# fallbackActivityRecording(); %>
+      }
+    }, 25);
+    eventListening();
+  }
+}
+
 
 function fallbackActivityRecording() {
   var tokenMeta = document.querySelector("meta[name='csrf-token']")
@@ -65,6 +110,15 @@ function eventListening(){
   if (registerNowButt) {
     registerNowButt.onclick = function(){
       ga('send', 'event', 'click', 'register-now-click', null, null);
+    }
+  }
+}
+
+function ga4eventListening(){
+  var registerNowButt = document.getElementById("cta-comment-register-now-link");
+  if (registerNowButt) {
+    registerNowButt.onclick = function(){
+      gtag('event', 'register-now-click' );
     }
   }
 }

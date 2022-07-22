@@ -11,10 +11,10 @@ import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
  *
  * @param {number} articleId
  */
-function sendFeaturedArticleAnalytics(articleId) {
-  (function logFeaturedArticleImpression() {
+function sendFeaturedArticleGoogleAnalytics(articleId) {
+  (function logFeaturedArticleImpressionGA() {
     if (!window.ga || !ga.create) {
-      setTimeout(logFeaturedArticleImpression, 20);
+      setTimeout(logFeaturedArticleImpressionGA, 20);
       return;
     }
 
@@ -26,6 +26,20 @@ function sendFeaturedArticleAnalytics(articleId) {
       `articles-${articleId}`,
       null,
     );
+  })();
+}
+
+function sendFeaturedArticleAnalyticsGA4(articleId) {
+  (function logFeaturedArticleImpressionGA4() {
+    if (!window.gtag) {
+      setTimeout(logFeaturedArticleImpressionGA4, 20);
+      return;
+    }
+
+    gtag('event', 'featured-feed-impression', {
+      event_category: 'view',
+      event_label: `articles-${articleId}`,
+    });
   })();
 }
 
@@ -89,7 +103,8 @@ export const renderFeed = async (timeFrame) => {
 
         const [featuredStory, ...subStories] = feedItems;
         if (featuredStory) {
-          sendFeaturedArticleAnalytics(featuredStory.id);
+          sendFeaturedArticleGoogleAnalytics(featuredStory.id);
+          sendFeaturedArticleAnalyticsGA4(featuredStory.id);
         }
 
         // 1. Show the pinned article first

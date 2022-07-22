@@ -14,8 +14,11 @@ export default {
         description:
           'Placeholder text, shown when no selections have been made yet',
       },
-      regex: {
-        description: 'A regular expression used to validate the input',
+      inputRegex: {
+        description: 'A regular expression used to restrict the input',
+      },
+      validationRegex: {
+        description: 'A regular expression used to validate the value of input',
       },
       labelText: {
         description: 'The label for the input',
@@ -34,7 +37,8 @@ export const Default = (args) => {
 
 Default.args = {
   placeholder: 'Add an email address...',
-  regex: /([a-zA-Z0-9@.])/,
+  inputRegex: /([a-zA-Z0-9@_.+-])/,
+  validationRegex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
   labelText: 'Example multi input',
   showLabel: true,
 };

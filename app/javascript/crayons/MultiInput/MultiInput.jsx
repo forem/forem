@@ -17,13 +17,15 @@ const KEYS = {
  * @param {string} props.labelText The text for the input's label
  * @param {boolean} props.showLabel Whether the label text should be visible or hidden (for assistive tech users only)
  * @param {string} props.placeholder Input placeholder text
- * @param {string} props.regex Optional regular expression used to restrict the input
+ * @param {string} props.inputRegex Optional regular expression used to restrict the input
+ * @param {string} props.validationRegex Optional regular expression used to validate the value of the input
  * @param {Function} props.SelectionTemplate Optional Preact component to render selected items
  */
 
 export const MultiInput = ({
   placeholder,
-  regex,
+  inputRegex,
+  validationRegex,
   showLabel = true,
   labelText,
   SelectionTemplate = DefaultSelectionTemplate,
@@ -88,20 +90,22 @@ export const MultiInput = ({
         }
         break;
       default:
-        if (regex && !regex.test(e.key)) {
+        if (inputRegex && !inputRegex.test(e.key)) {
           e.preventDefault();
         }
     }
   };
 
   const addItemToList = (value) => {
-    // TODO: we will want to do some validation here based on a prop
     if (value.trim().length > 0) {
       // If an item was edited, we want to keep it in the same position in the list
       const insertIndex = inputPosition !== null ? inputPosition : items.length;
+
+      // if we do not pass in a validationRegex we can assume that anything is valid
+      const valid = validationRegex ? checkValidity(value) : true;
       const newSelections = [
         ...items.slice(0, insertIndex),
-        value,
+        { value, valid },
         ...items.slice(insertIndex),
       ];
 
@@ -113,6 +117,10 @@ export const MultiInput = ({
       setItems([...newSelections]);
       exitEditState({});
     }
+  };
+
+  const checkValidity = (value) => {
+    return validationRegex.test(value);
   };
 
   const clearInput = () => {
@@ -128,7 +136,7 @@ export const MultiInput = ({
   };
 
   const deselectItem = (clickedItem) => {
-    const newArr = items.filter((item) => item !== clickedItem);
+    const newArr = items.filter((item) => item.value !== clickedItem);
     setItems(newArr);
 
     // We also update the hidden selected items list, so removals are announced to screen reader users
@@ -146,8 +154,7 @@ export const MultiInput = ({
         inputPosition !== null ? inputPosition - 1 : items.length - 1;
 
       const item = items[nextEditIndex];
-      deselectItem(item);
-      enterEditState(item, nextEditIndex);
+      enterEditState(item.value, nextEditIndex);
     }
   };
 
@@ -188,10 +195,14 @@ export const MultiInput = ({
         style={{ order: position }}
       >
         <SelectionTemplate
-          name={item}
-          className="c-input--multi__selected"
-          onEdit={() => enterEditState(item, index)}
-          onDeselect={() => deselectItem(item)}
+          name={item.value}
+          className={`c-input--multi__selected ${
+            !item.valid ? 'c-input--multi__selected-invalid' : ''
+          }`}
+          enableValidation={true}
+          valid={item.valid}
+          onEdit={() => enterEditState(item.value, index)}
+          onDeselect={() => deselectItem(item.value)}
         />
       </li>
     );
@@ -257,6 +268,7 @@ MultiInput.propTypes = {
   labelText: PropTypes.string.isRequired,
   showLabel: PropTypes.bool,
   placeholder: PropTypes.string,
-  regex: PropTypes.string,
+  inputRegex: PropTypes.string,
+  validationRegex: PropTypes.string,
   SelectionTemplate: PropTypes.func,
 };

@@ -23,6 +23,7 @@ module Settings
 
     # Google Analytics Tracking ID, e.g. UA-71991000-1
     setting :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
+    setting :ga_analytics_4_id, type: :string, default: ApplicationConfig["GA_ANALYTICS_4_ID"]
 
     # Images
     setting :main_social_image,
