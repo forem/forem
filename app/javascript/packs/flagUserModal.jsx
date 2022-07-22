@@ -160,7 +160,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
                 destructive
                 variant="primary"
                 className="mr-2"
-                id="confirm-flag-user-action"
+                id="confirm-flag-user-action-inactive"
                 onClick={(_event) => {
                   const {
                     current: { dataset: adminVomitReaction },

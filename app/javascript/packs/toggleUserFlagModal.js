@@ -49,7 +49,7 @@ async function flagUser({ reactableType, category, reactableId, username }) {
 }
 
 function closeModal() {
-  closeWindowModal();
+  closeWindowModal(window.parent.document);
 }
 
 function toggleFlagBtnContent(result, username) {
@@ -109,8 +109,9 @@ function addModalListeners() {
   });
 
   reportLink?.addEventListener('click', (event) => {
-    event.preventDefault();
-    // console.log(event.target.dataset.reportAbuseLink);
+    // event.preventDefault();
+    // closeWindowModal();
+    // window.location.href = event.target.dataset.reportAbuseLink;
   });
 
   confirmUnflagUserBtn?.addEventListener('click', () => {

@@ -1,9 +1,9 @@
 import { toggleFlagUserModal } from '../packs/toggleUserFlagModal';
-import { toggleOldFlagUserModal } from '../packs/flagUserModal';
+// import { toggleOldFlagUserModal } from '../packs/flagUserModal';
 import { toggleSuspendUserModal } from '../packs/toggleUserSuspensionModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
 import { toggleUnpublishAllPostsModal } from '../packs/modals/unpublishAllPosts';
-import { isModerationPage } from '@utilities/moderation';
+// import { isModerationPage } from '@utilities/moderation';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
@@ -393,13 +393,7 @@ export function addModActionsListeners() {
 
   document
     .getElementById('toggle-flag-user-modal')
-    .addEventListener('click', (event) => {
-      if (isModerationPage(window.parent.location.pathname)) {
-        toggleOldFlagUserModal();
-      } else {
-        toggleFlagUserModal(event);
-      }
-    });
+    .addEventListener('click', toggleFlagUserModal);
 
   document
     .getElementById('suspend-user-btn')
