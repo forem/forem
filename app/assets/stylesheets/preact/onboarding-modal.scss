@@ -644,6 +644,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
         align-items: center;
       }
 
+      @media screen and (max-width: $breakpoint-xs) {
+        display: inline;
+      }
+
       &:hover {
         background: var(--body-bg);
         cursor: pointer;
