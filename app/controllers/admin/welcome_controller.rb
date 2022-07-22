@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     def index
-      @daily_threads = Article.where("title LIKE 'Welcome Thread - %'")
+      @daily_threads = Article.where("title LIKE 'Welcome Thread - %'").where(user_id: User.staff_account.id)
     end
 
     def create
