@@ -29,7 +29,7 @@ const handleConfirmDelete = (username, formAction) => {
       // Update cancel button to close the modal
       document
         .querySelector(`#${WINDOW_MODAL_ID} .js-gdpr-cancel-deleted`)
-        .addEventListener('click', closeWindowModal);
+        .addEventListener('click', () => closeWindowModal());
     },
   });
 };

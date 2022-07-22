@@ -20,6 +20,7 @@ module Admin
 
     def create
       @response_template = ResponseTemplate.new(permitted_params)
+      @response_template.user = find_user_via_identifier params[:response_template][:user_identifier]
       if @response_template.save
         flash[:success] =
           I18n.t("admin.response_templates_controller.saved",
@@ -38,6 +39,7 @@ module Admin
 
     def update
       @response_template = ResponseTemplate.find(params[:id])
+      @response_template.user = find_user_via_identifier params[:response_template][:user_identifier]
 
       if @response_template.update(permitted_attributes(ResponseTemplate))
         flash[:success] =
@@ -65,6 +67,12 @@ module Admin
     end
 
     private
+
+    def find_user_via_identifier(identifier)
+      return if identifier.blank?
+
+      UsersQuery.find identifier
+    end
 
     def permitted_params
       params.require(:response_template).permit(:body_markdown, :user_id, :content, :title, :type_of, :content_type)

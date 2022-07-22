@@ -9,6 +9,8 @@ module Podcasts
       OpenSSL::SSL::SSLError,
     ].freeze
 
+    TIMEOUT = 20
+
     def initialize(enclosure_url)
       @enclosure_url = enclosure_url.to_s
     end
@@ -43,7 +45,7 @@ module Podcasts
 
     def url_reachable?(url)
       url = Addressable::URI.parse(url).normalize.to_s
-      HTTParty.head(url).code == 200
+      HTTParty.head(url, timeout: TIMEOUT).code == 200
     rescue *HANDLED_ERRORS
       false
     end

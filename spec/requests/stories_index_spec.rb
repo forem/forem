@@ -20,10 +20,16 @@ RSpec.describe "StoriesIndex", type: :request do
 
       get "/"
       expect(response.body).to include(CGI.escapeHTML(article.title))
-      renders_ga_tracking_data
+      renders_ga_tracking_fields
       renders_proper_description
       renders_min_read_time
       renders_proper_sidebar(navigation_link)
+    end
+
+    it "doesn't render a featured scheduled article" do
+      article = create(:article, featured: true, published_at: 1.hour.from_now)
+      get "/"
+      expect(response.body).not_to include(CGI.escapeHTML(article.title))
     end
 
     def renders_proper_description
@@ -38,8 +44,9 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(navigation_link.name))
     end
 
-    def renders_ga_tracking_data
+    def renders_ga_tracking_fields
       expect(response.body).to include("data-ga-tracking=\"#{Settings::General.ga_tracking_id}\"")
+      expect(response.body).to include("data-ga4-tracking-id=\"#{Settings::General.ga_analytics_4_id}\"")
     end
 
     it "renders registration page if the Forem instance is private" do

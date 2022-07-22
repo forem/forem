@@ -41,6 +41,9 @@ function fetchBaseData() {
           if (typeof ga === 'function') {
             ga('set', 'userId', JSON.parse(user).id);
           }
+          if (typeof gtag === 'function') {
+            gtag('set', 'user_Id', JSON.parse(user).id);
+          }
         }, 400);
       } else {
         // Ensure user data is not exposed if no one is logged in

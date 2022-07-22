@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe AppSecrets, type: :lib do
   let(:namespace) { "secret-namespace" }
   let(:key) { "SECRET_KEY" }
-  let(:secret_stub) { instance_double("Vault::Kv", data: { value: 1 }) }
-  let(:vault_stub) { instance_double("Vault::Kv", read: secret_stub) }
+  let(:secret_stub) { instance_double(Vault::Secret, data: { value: 1 }) }
+  let(:vault_stub) { instance_double(Vault::KV, read: secret_stub) }
 
   before do
     allow(described_class).to receive(:namespace).and_return(namespace)
@@ -25,7 +25,7 @@ RSpec.describe AppSecrets, type: :lib do
       end
 
       it "fetches keys from ApplicationConfig if not in Vault" do
-        allow(Vault).to receive(:kv) { instance_double("Vault::Kv", read: nil) }
+        allow(Vault).to receive(:kv) { instance_double(Vault::KV, read: nil) }
 
         described_class[key]
         expect(ApplicationConfig).to have_received(:[]).with(key)
@@ -43,7 +43,7 @@ RSpec.describe AppSecrets, type: :lib do
       before { allow(described_class).to receive(:vault_enabled?).and_return(false) }
 
       it "fetches keys from ApplicationConfig" do
-        allow(Vault).to receive(:kv) { instance_double("Vault::Kv", read: nil) }
+        allow(Vault).to receive(:kv) { instance_double(Vault::KV, read: nil) }
 
         described_class[key]
         expect(ApplicationConfig).to have_received(:[]).with(key)
@@ -54,7 +54,7 @@ RSpec.describe AppSecrets, type: :lib do
 
   describe "[]=" do
     it "sets keys in Vault" do
-      write_stub = instance_double("Vault::Kv", write: nil)
+      write_stub = instance_double(Vault::KV, write: nil)
       allow(Vault).to receive(:kv) { write_stub }
 
       described_class[key] = "secret-value"

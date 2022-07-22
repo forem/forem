@@ -10,20 +10,6 @@ fr:
         primary: Primary email
         provider_email: "%{provider} email"
         provider_profile: "%{provider} profile settings"
-        api:
-          heading: "%{community} API Keys"
-          desc_html: You can generate personal API keys to use for authentication with the %{community} API.  The API is still in its beta stage. The %{doc} contains further information.
-          active:
-            heading: Active API keys (never share these!)
-            created: 'Created: %{time}'
-          doc: documentation
-          gen:
-            heading: Generate a new Key
-            label: Description
-            text: What's this API key for?
-            placeholder: My Project Name
-            submit: Generate API Key
-          revoke: Revoke
         delete:
           heading: Delete account
           desc1: 'Deleting your account will:'
@@ -118,6 +104,20 @@ fr:
           one: '1 error prohibited your profile from being saved:'
           other: "%{count} errors prohibited your profile from being saved:"
       extensions:
+        api:
+          heading: "%{community} API Keys"
+          desc_html: You can generate personal API keys to use for authentication with the %{community} API.  The API is still in its beta stage. The %{doc} contains further information.
+          active:
+            heading: Active API keys (never share these!)
+            created: 'Created: %{time}'
+          doc: documentation
+          gen:
+            heading: Generate a new Key
+            label: Description
+            text: What's this API key for?
+            placeholder: My Project Name
+            submit: Generate API Key
+          revoke: Revoke
         comment:
           heading: Comment templates
           desc_html: Create and save <strong>comment templates</strong> that you can reuse.

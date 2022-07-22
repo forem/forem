@@ -18,8 +18,10 @@ export const Modal = ({
   showHeader = true,
   sheetAlign = 'center',
   backdropDismissible = false,
+  allowOverflow = false,
   onClose = () => {},
   focusTrapSelector = '.crayons-modal__box',
+  document = window.document,
 }) => {
   const classes = classNames('crayons-modal', {
     [`crayons-modal--${size}`]: size && size !== 'medium',
@@ -28,6 +30,7 @@ export const Modal = ({
     'crayons-modal--prompt': prompt,
     'crayons-modal--centered': centered && prompt,
     'crayons-modal--bg-dismissible': !noBackdrop && backdropDismissible,
+    'crayons-modal--overflow-visible': allowOverflow,
     [className]: className,
   });
 
@@ -36,6 +39,7 @@ export const Modal = ({
       onDeactivate={onClose}
       clickOutsideDeactivates={backdropDismissible}
       selector={focusTrapSelector}
+      document={document}
     >
       <div data-testid="modal-container" className={classes}>
         <div

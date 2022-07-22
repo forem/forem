@@ -24,6 +24,22 @@
       border-color: var(--form-border-focus);
       box-shadow: 0 0 0 1px var(--form-border-focus);
     }
+
+    .editor-toolbar {
+      border-top: 1px solid var(--form-border);
+      overflow-x: auto;
+
+      &::-webkit-scrollbar {
+        background: transparent;
+        height: 0;
+      }
+    }
+
+    @media (min-width: $breakpoint-m) {
+      .editor-toolbar {
+        overflow-x: unset;
+      }
+    }
   }
 
   &__inner {

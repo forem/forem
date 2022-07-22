@@ -17,42 +17,39 @@ window.Forem = {
     }
     return this.preactImport;
   },
-  mentionAutoCompleteImports: undefined,
-  getMentionAutoCompleteImports() {
-    if (!this.mentionAutoCompleteImports) {
-      this.mentionAutoCompleteImports = [
-        import('@crayons/MentionAutocompleteTextArea'),
-        import('@utilities/search'),
-        this.getPreactImport(),
-      ];
+  enhancedCommentTextAreaImport: undefined,
+  getEnhancedCommentTextAreaImports() {
+    if (!this.enhancedCommentTextAreaImport) {
+      this.enhancedCommentTextAreaImport = import(
+        './CommentTextArea/CommentTextArea'
+      );
     }
-
-    // We're still returning Promises, but if the they have already been imported
-    // they will now be fulfilled instead of pending, i.e. a network request is no longer made.
-    return Promise.all(this.mentionAutoCompleteImports);
+    return Promise.all([
+      this.enhancedCommentTextAreaImport,
+      this.getPreactImport(),
+    ]);
   },
-  initializeMentionAutocompleteTextArea: async (originalTextArea) => {
+  initializeEnhancedCommentTextArea: async (originalTextArea) => {
     const parentContainer = originalTextArea.parentElement;
 
-    const alreadyInitialized = parentContainer.id === 'combobox-container';
+    const alreadyInitialized =
+      parentContainer.classList.contains('c-autocomplete');
+
     if (alreadyInitialized) {
       return;
     }
 
-    const [{ MentionAutocompleteTextArea }, { fetchSearch }, { render, h }] =
-      await window.Forem.getMentionAutoCompleteImports();
+    const [{ CommentTextArea }, { render, h }] =
+      await window.Forem.getEnhancedCommentTextAreaImports();
 
     render(
-      <MentionAutocompleteTextArea
-        replaceElement={originalTextArea}
-        fetchSuggestions={(username) => fetchSearch('usernames', { username })}
-      />,
+      <CommentTextArea vanillaTextArea={originalTextArea} />,
       parentContainer,
       originalTextArea,
     );
   },
   showModal: showWindowModal,
-  closeModal: closeWindowModal,
+  closeModal: () => closeWindowModal(),
   Runtime,
 };
 

@@ -7,6 +7,7 @@ module Users
     def call
       delete_comments
       delete_articles
+      delete_podcasts
       delete_user_activity
       user.remove_from_mailchimp_newsletters
       EdgeCache::Bust.call("/#{user.username}")
@@ -33,6 +34,10 @@ module Users
 
     def delete_articles
       DeleteArticles.call(user)
+    end
+
+    def delete_podcasts
+      DeletePodcasts.call(user)
     end
   end
 end

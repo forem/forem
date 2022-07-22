@@ -32,7 +32,10 @@ class AbExperiment
       return if experiments.nil?
 
       experiments.each do |key, data|
-        experiment_start_date = @start_date || data.fetch("start_date").beginning_of_day
+        # We've already declared a winner, let's not do any of the processing
+        next if data.key?("winner")
+
+        experiment_start_date = @start_date || data.fetch("started_at").beginning_of_day
         experiment = key.to_sym
         convert(experiment: experiment, experiment_start_date: experiment_start_date)
       end

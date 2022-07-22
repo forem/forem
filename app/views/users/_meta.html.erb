@@ -5,7 +5,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="<%= user_url(@user) %>" />
 <meta property="og:title" content="<%= t("views.users.meta.og.title", user: @user.name, community: community_name) %>" />
-<meta property="og:image" content="<%= user_social_image_url(@user) %>">
+<meta property="og:image" content="<%= Settings::General.main_social_image %>" />
 <meta property="og:description" content="<%= @user.tag_line %>" />
 <meta property="og:site_name" content="<%= community_name %>" />
 <meta name="twitter:card" content="summary_large_image">
@@ -13,7 +13,7 @@
 <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
 <meta name="twitter:title" content="<%= t("views.users.meta.og.title", user: @user.name, community: community_name) %>">
 <meta name="twitter:description" content="<%= @user.tag_line %>">
-<meta name="twitter:image:src" content="<%= user_social_image_url(@user) %>">
+<meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>" />
 <% if @stories.any? %>
   <%= auto_discovery_link_tag(:rss, app_url("/feed/#{@user.username}"), title: t("views.stories.meta.rss", name: community_name)) %>
 <% end %>

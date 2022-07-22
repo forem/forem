@@ -27,6 +27,12 @@ class ResponseTemplate < ApplicationRecord
   validate :user_nil_only_for_user_nil_types
   validate :template_count
 
+  attribute :user_identifier, :string
+
+  def user_identifier
+    user&.username
+  end
+
   private
 
   def user_nil_only_for_user_nil_types

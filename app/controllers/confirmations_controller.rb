@@ -6,8 +6,9 @@ class ConfirmationsController < Devise::ConfirmationsController
 
     if resource.errors.empty?
       set_flash_message!(:notice, :confirmed)
+      sign_in(resource)
+
       if resource.creator?
-        sign_in(resource)
         redirect_to new_admin_creator_setting_path
       else
         respond_with_navigational(resource) { redirect_to after_confirmation_path_for(resource_name, resource) }

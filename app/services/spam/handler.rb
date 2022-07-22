@@ -48,7 +48,23 @@ module Spam
     #
     # @param user [User] the user to check for spamminess
     def self.handle_user!(user:)
-      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: user.name)
+      text = [user.name]
+
+      if FeatureFlag.enabled?(:more_rigorous_user_profile_spam_checking)
+        text += [
+          user.email,
+          user.github_username,
+          user.profile&.website_url,
+          user.profile&.location,
+          user.profile&.summary,
+          user.twitter_username,
+          user.username,
+        ].compact
+      end
+
+      text = text.join("\n")
+
+      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: text)
 
       issue_spam_reaction_for!(reactable: user)
     end

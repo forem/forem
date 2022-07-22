@@ -42,7 +42,8 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     username: "Admin_McAdmin",
     profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
     confirmed_at: Time.current,
-    registered_at: Time.current,
+    registered_at: "2020-01-01T13:09:47+0000",
+    created_at: "2020-01-01T13:09:47+0000",
     password: "password",
     password_confirmation: "password",
     saw_onboarding: true,
@@ -538,9 +539,9 @@ end
 ##############################################################################
 
 seeder.create_if_doesnt_exist(NavigationLink, "url", "/contact") do
-  icon = '<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">'\
-         '<path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342'\
-         '7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"/>'\
+  icon = '<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' \
+         '<path d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342' \
+         '7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"/>' \
          '</svg>'
   6.times do |i|
     NavigationLink.create!(
@@ -673,6 +674,26 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "tech-admin-user@forem.local") do
+  tech_admin_user = User.create!(
+    name: "Tech admin User",
+    email: "tech-admin-user@forem.local",
+    username: "tech_admin_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  tech_admin_user.add_role(:tech_admin)
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(User, "email", "series-user@forem.local") do
   series_user = User.create!(
     name: "Series User",
@@ -702,6 +723,48 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "suspended-user@forem.local") do
+  suspended_user = User.create!(
+    name: "Suspended User",
+    email: "suspended-user@forem.local",
+    username: "suspended_user",
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  suspended_user.add_role(:suspended)
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "title", "Suspended user article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Suspended user article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create(
+    body_markdown: markdown,
+    featured: false,
+    show_comments: true,
+    slug: "suspended-user-article-slug",
+    user_id: User.find_by(email: "suspended-user@forem.local").id,
+  )
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
   markdown = <<~MARKDOWN
     ---
@@ -718,6 +781,7 @@ seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
     body_markdown: markdown,
     featured: true,
     show_comments: true,
+    slug: "series-test-article-slug",
     user_id: User.find_by(email: "series-user@forem.local").id,
   )
 end

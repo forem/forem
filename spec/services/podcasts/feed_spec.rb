@@ -64,18 +64,16 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     end
 
     it "re-checks episodes urls when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
-                                            httparty_options).and_raise(Errno::ECONNREFUSED)
-      episode = create(:podcast_episode, podcast: unpodcast, reachable: true,
-                                         media_url: "http://podcast.example.com/ep1.mp3")
-      allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
-      allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
+      options = { timeout: Podcasts::GetMediaUrl::TIMEOUT }
+      error = Errno::ECONNREFUSED
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(error)
+      allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3", options).and_raise(error)
+      allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3", options).and_raise(error)
 
-      sidekiq_perform_enqueued_jobs do
-        described_class.new(unpodcast).get_episodes
-      end
-
+      episode = create(:podcast_episode, podcast: unpodcast, reachable: true, media_url: "http://podcast.example.com/ep1.mp3")
+      sidekiq_perform_enqueued_jobs { described_class.new(unpodcast).get_episodes }
       episode.reload
+
       expect(episode.reachable).to be false
     end
 

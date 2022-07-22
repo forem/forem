@@ -1,0 +1,32 @@
+<h1>Experiments</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Experiment</th>
+      <th>Status</th>
+      <th>Started</th>
+      <th>Ended</th>
+      <th>Variants</th>
+      <tr>
+  </thead>
+  <tbody>
+    <% @experiments.each do |experiment| %>
+      <tr>
+        <td><%= link_to experiment.name, experiment_path(experiment.id) %></td>
+        <td><%= experiment.active? ? "Active" : "Completed" %></td>
+        <td><% if experiment.started_at %><time datetime="<%= experiment.started_at.to_date.to_fs(:iso8601) %>"><%= experiment.started_at.to_date.to_fs(:iso8601) %></time><% end %></td>
+        <td><% if experiment.ended_at %><time datetime="<%= experiment.ended_at.to_date.to_fs(:iso8601) %>"><%= experiment.ended_at.to_date.to_fs(:iso8601) %></time><% end %></td>
+        <td>
+          <ul>
+            <% experiment.variants.each do |variant| %>
+              <li>
+                <%= variant %><% if variant == experiment.winner %> <span class="check" aria-label="Winner">✓</span><% end %>
+              </li>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

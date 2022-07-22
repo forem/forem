@@ -35,7 +35,7 @@ RSpec.describe DeviseMailer, type: :mailer do
       let(:email) { described_class.confirmation_instructions(creator, "faketoken") }
 
       it "renders the correct body" do
-        expect(email.body.to_s).to include("Hello! Once you've confirmed your email address, you'll be able to setup "\
+        expect(email.body.to_s).to include("Hello! Once you've confirmed your email address, you'll be able to setup " \
                                            "your Forem Instance.")
       end
 

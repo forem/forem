@@ -4,36 +4,6 @@ describe SocialImageHelper do
   let(:user) { create(:user) }
   let(:article) { create(:article, main_image: nil) }
 
-  describe ".user_social_image_url" do
-    it "returns social preview path for newer users" do
-      url = helper.user_social_image_url(user)
-
-      expect(url).to eq user_social_preview_url(user, format: :png)
-    end
-
-    it "returns Organization social preview path for Orgs" do
-      organization = create(:organization)
-
-      url = helper.user_social_image_url(organization)
-
-      expect(url).to eq organization_social_preview_url(organization, format: :png)
-    end
-
-    it "returns older url2png image if already generated" do
-      user.updated_at = SocialImageHelper::SOCIAL_PREVIEW_MIGRATION_DATETIME - 1.week
-
-      url = helper.user_social_image_url(user)
-
-      expect(url).to eq Images::GenerateSocialImage.call(user)
-    end
-
-    it "returns social preview path for newer decorated users" do
-      url = helper.user_social_image_url(user.decorate)
-
-      expect(url).to eq user_social_preview_url(user, format: :png)
-    end
-  end
-
   describe ".article_social_image_url" do
     it "returns social preview path for newer articles" do
       allow(Settings::General).to receive(:app_domain).and_return("hello.com")
@@ -52,7 +22,7 @@ describe SocialImageHelper do
     end
 
     it "returns older url2png image if already generated" do
-      article.updated_at = SocialImageHelper::SOCIAL_PREVIEW_MIGRATION_DATETIME - 1.week
+      article.updated_at = Articles::SocialImage::SOCIAL_PREVIEW_MIGRATION_DATETIME - 1.week
 
       url = helper.article_social_image_url(article)
 

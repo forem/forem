@@ -5,48 +5,6 @@
 <%= render "users/account_providers_emails" %>
 
 <div class="crayons-card crayons-card--content-rows">
-  <header>
-    <h2 class="mb-2"><%= t("views.settings.account.api.heading", community: community_name) %></h2>
-    <p><%= t("views.settings.account.api.desc_html", community: community_name, doc: link_to(t("views.settings.account.api.doc"), "https://developers.forem.com/api")) %></p>
-  </header>
-
-  <div>
-    <h3 class="mb-2"><%= t("views.settings.account.api.gen.heading") %></h3>
-    <%= form_tag users_api_secrets_path, method: :post do %>
-      <%= fields_for :api_secret do |api_secret| %>
-        <div class="crayons-field mb-6">
-          <%= api_secret.label(:description, t("views.settings.account.api.gen.label"), class: "crayons-field__label") %>
-          <p class="crayons-field__description"><% t("views.settings.account.api.gen.text") %></p>
-          <%= api_secret.text_field(:description, placeholder: t("views.settings.account.api.gen.placeholder"), required: true, class: "crayons-textfield") %>
-        </div>
-      <% end %>
-      <button class="crayons-btn crayon-btn--secondary" type="submit"><%= t("views.settings.account.api.gen.submit") %></button>
-    <% end %>
-  </div>
-
-  <% unless @user.api_secrets.empty? %>
-    <div>
-      <h3><%= t("views.settings.account.api.active.heading") %></h3>
-
-      <% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
-        <details class="p-4 mt-2 crayons-card crayons-card--secondary">
-          <summary class="title fw-medium"><%= api_secret.description %></summary>
-          <div class="flex pt-2">
-            <div class="flex-1 pl-4">
-              <p class="ff-monospace"><%= api_secret.secret %></p>
-              <p class="fs-s"><%== t("views.settings.account.api.active.created", time: tag.time(api_secret.created_at.to_s, datetime: api_secret.created_at.rfc3339)) %></p>
-            </div>
-            <%= form_tag users_api_secret_path(api_secret.id), class: "api__secret__revoke", method: :delete do %>
-              <%= button_tag t("views.settings.account.api.revoke"), class: "crayons-btn crayons-btn--danger" %>
-            <% end %>
-          </div>
-        </details>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-
-<div class="crayons-card crayons-card--content-rows">
   <h2 class="crayons-subtitle-1">
     <%= t("views.settings.account.export.heading") %>
   </h2>

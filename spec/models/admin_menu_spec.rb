@@ -4,7 +4,7 @@ RSpec.describe AdminMenu do
   describe ".nested_menu_items_from_request" do
     subject(:method_call) { described_class.nested_menu_items_from_request(request) }
 
-    let(:request) { instance_double("ActionDispatch::Request", path: path) }
+    let(:request) { instance_double(ActionDispatch::Request, path: path) }
     let(:path) { "/admin" }
 
     context "when path is /admin/moderation/feedback_messages" do
