@@ -27,7 +27,7 @@
   &:first-child {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    border: solid var(--base-10);
+    border: 1px solid var(--base-10);
     border-right: none;
     color: var(--base-90);
   }
@@ -35,7 +35,7 @@
   &:last-child {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    border: solid var(--base-10);
+    border: 1px solid var(--base-10);
     border-left: none;
   }
 
@@ -49,5 +49,30 @@
   &:last-child:focus-visible {
     background: none;
     color: var(--accent-danger);
+  }
+
+  &-invalid {
+    &:first-child,
+    &:last-child {
+      background-color: var(--accent-danger-a10);
+      color: var(--accent-danger);
+      border: 1px solid var(--accent-danger);
+    }
+
+    &:first-child {
+      border-right: none;
+    }
+
+    &:last-child {
+      border-left: none;
+    }
+
+    &:first-child:hover,
+    &:first-child:focus-visible,
+    &:last-child:hover,
+    &:last-child:focus-visible {
+      background-color: var(--accent-danger-a10);
+      color: var(--accent-danger);
+    }
   }
 }
