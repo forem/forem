@@ -266,15 +266,24 @@ RSpec.describe "Api::V0::Users", type: :request do
       end
 
       it "creates an audit log of the action taken" do
+        # These deleted comments/articles are important so that the AuditLog trail won't
+        # include previously deleted resources like these in the log. Otherwise the revert
+        # action on these would have unintended consequences, i.e. revert a delete/unpublish
+        # that wasn't affected by the action taken in the API endpoint request.
+        create(:article, user: target_user, published: false)
+        create(:comment, user: target_user, deleted: true)
+
         put api_user_unpublish_path(id: target_user.id),
             headers: v1_headers
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
         expect(log.data["action"]).to eq("api_user_unpublish")
+        expect(log.user_id).to eq(api_secret.user.id)
+
+        # These ids match the affected articles/comments and not the ones created above
         expect(log.data["target_article_ids"]).to match_array(target_articles.map(&:id))
         expect(log.data["target_comment_ids"]).to match_array(target_comments.map(&:id))
-        expect(log.user_id).to eq(api_secret.user.id)
       end
     end
   end
