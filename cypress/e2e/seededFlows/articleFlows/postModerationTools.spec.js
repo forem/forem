@@ -366,5 +366,81 @@ describe('Moderation Tools for Posts', () => {
         );
       });
     });
+
+    describe('flag-user flow', () => {
+      beforeEach(() => {
+        cy.get('@trustedUser').then((user) => {
+          cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug');
+          cy.findByRole('heading', { level: 1, name: 'Test article' });
+          cy.findByRole('button', { name: 'Moderation' }).click();
+        });
+      });
+
+      it('should show error message if flag-user radio is unchecked', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
+        });
+        cy.findByRole('dialog').within(() => {
+          cy.findByRole('button', { name: 'Confirm Flag' }).click();
+          cy.findByTestId('unselected-radio-error')
+            .contains('You must check the radio button first.')
+            .should('exist');
+        });
+      });
+
+      it('should flag the user if flag-user radio is checked', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
+        });
+
+        cy.findByRole('dialog').within(() => {
+          cy.get('#flag-user-radio-input').check();
+          cy.findByRole('button', { name: 'Confirm Flag' }).click();
+        });
+
+        cy.findByTestId('snackbar')
+          .contains('All posts by this author will be less visible.')
+          .should('exist');
+      });
+
+      it('should unflag the user if user was previously flagged', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
+        });
+
+        cy.findByRole('dialog').within(() => {
+          cy.get('#flag-user-radio-input').check();
+          cy.findByRole('button', { name: 'Confirm Flag' }).click();
+        });
+
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', { name: 'Unflag admin_mcadmin' }).click();
+        });
+
+        cy.findByRole('dialog').within(() => {
+          cy.findByRole('button', { name: 'Confirm Unflag' }).click();
+        });
+
+        cy.findByTestId('snackbar')
+          .contains('You have unflagged this author successfully.')
+          .should('exist');
+      });
+    });
   });
 });
