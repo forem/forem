@@ -89,9 +89,7 @@ function addModalListeners() {
   const confirmUnflagUserBtn = modalWindow.getElementById(
     'confirm-unflag-user-action',
   );
-  const reportButton = modalWindow.getElementById(
-    'report-inappropriate-content',
-  );
+  const reportLink = modalWindow.getElementById('report-inappropriate-content');
   const errorMsg = modal.querySelector('#unselected-radio-error');
 
   confirmFlagUserBtn?.addEventListener('click', () => {
@@ -110,7 +108,7 @@ function addModalListeners() {
     }
   });
 
-  reportButton?.addEventListener('click', (event) => {
+  reportLink?.addEventListener('click', (event) => {
     window.parent.document.location.href = event.target.dataset.reportAbuseLink;
   });
 
