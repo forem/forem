@@ -102,44 +102,44 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 1297,
-                    "title": "All the King's Men171",
-                    "description": "Microdosing authentic master sriracha raw denim wolf skateboard. Vegan celiac mixtape. Mumblecore...",
-                    "readable_publish_date": "Jul 21",
-                    "slug": "all-the-kings-men171-2k6d",
-                    "path": "/username467/all-the-kings-men171-2k6d",
-                    "url": "http://localhost:3000/username467/all-the-kings-men171-2k6d",
+                    "id": 1553,
+                    "title": "The World, the Flesh and the Devil172",
+                    "description": "Pinterest tilde fingerstache tattooed cray listicle portland. +1 pour-over authentic vinegar 3 wolf...",
+                    "readable_publish_date": "Jul 26",
+                    "slug": "the-world-the-flesh-and-the-devil172-11ke",
+                    "path": "/username469/the-world-the-flesh-and-the-devil172-11ke",
+                    "url": "http://localhost:3000/username469/the-world-the-flesh-and-the-devil172-11ke",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-07-20T21:43:55Z",
+                    "published_timestamp": "2022-07-25T21:49:01Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/22-837b6c737e37b6d229b36d73e95ead7f26e0a346e0aa7dfbca74630ae161fb0d.png",
-                    "social_image": "http://localhost:3000/assets/22-837b6c737e37b6d229b36d73e95ead7f26e0a346e0aa7dfbca74630ae161fb0d.png",
-                    "canonical_url": "http://localhost:3000/username467/all-the-kings-men171-2k6d",
-                    "created_at": "2022-07-20T21:43:56Z",
+                    "cover_image": "http://localhost:3000/assets/14-5e64731cc7cd63e3b689647d9d3c3e4e1d907690c716d3dd1e356466726a2c2d.png",
+                    "social_image": "http://localhost:3000/assets/14-5e64731cc7cd63e3b689647d9d3c3e4e1d907690c716d3dd1e356466726a2c2d.png",
+                    "canonical_url": "http://localhost:3000/username469/the-world-the-flesh-and-the-devil172-11ke",
+                    "created_at": "2022-07-25T21:49:01Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-07-20T21:43:55Z",
-                    "last_comment_at": "2022-07-20T21:43:55Z",
+                    "published_at": "2022-07-25T21:49:01Z",
+                    "last_comment_at": "2022-07-25T21:49:01Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Emerson \"Steffanie\" \\:/ Kozey",
-                      "username": "username467",
-                      "twitter_username": "twitter467",
-                      "github_username": "github467",
+                      "name": "Janise \"Josiah\" \\:/ Sanford",
+                      "username": "username469",
+                      "twitter_username": "twitter469",
+                      "github_username": "github469",
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/2342/349e7a02-a83f-4d76-ab28-4de081d15fbd.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/2342/349e7a02-a83f-4d76-ab28-4de081d15fbd.jpeg"
+                      "profile_image": "/uploads/user/profile_image/3177/dc476e06-5025-4ab1-9fef-f3ddeef59649.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/3177/dc476e06-5025-4ab1-9fef-f3ddeef59649.jpeg"
                     },
                     "organization": {
-                      "name": "Greenholt Inc",
+                      "name": "Weimann-Kuhic",
                       "username": "org56",
                       "slug": "org56",
-                      "profile_image": "/uploads/organization/profile_image/409/e23e3d3a-c685-42a3-a83d-28f81ba974a0.png",
-                      "profile_image_90": "/uploads/organization/profile_image/409/e23e3d3a-c685-42a3-a83d-28f81ba974a0.png"
+                      "profile_image": "/uploads/organization/profile_image/520/b7d30194-84ea-4eb0-8dad-e53f1e551667.png",
+                      "profile_image_90": "/uploads/organization/profile_image/520/b7d30194-84ea-4eb0-8dad-e53f1e551667.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -167,7 +167,7 @@
       "put": {
         "summary": "Unpublish an article",
         "tags": ["articles"],
-        "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have either the 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain \nin the database and will set back to draft status on their posts dashboard. Any \nnotifications associated with the article will be deleted. Any comments on the article \nwill remain.",
+        "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have either the 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
         "operationId": "unpublishArticle",
         "parameters": [
           {
@@ -188,7 +188,7 @@
             "description": "Article successfully unpublished"
           },
           "401": {
-            "description": "unauthorized",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "example": {
@@ -199,7 +199,94 @@
             }
           },
           "404": {
-            "description": "Not Found",
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/unpublish": {
+      "put": {
+        "summary": "Unpublish an User's Articles and Comments",
+        "tags": ["articles", "comments", "users"],
+        "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have either the 'admin' or 'moderator' role.\n\nThis specified users's article and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
+        "operationId": "unpublishUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Unknown User ID (still accepted for async processing)"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/suspend": {
+      "put": {
+        "summary": "Suspend a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to a user.\n\nThe user associated with the API key must have either the 'admin' or 'moderator' role.\n\nThis specified users will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
+        "operationId": "suspendUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to suspend.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User successfully unpublished"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
             "content": {
               "application/json": {
                 "example": {
