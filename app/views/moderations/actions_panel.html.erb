@@ -53,7 +53,7 @@
     </button>
     <% if policy(@moderatable).revoke_publication? %>
       <button
-        class="c-btn c-btn--primary c-btn--destructive w-100 my-4"
+        class="c-btn c-btn--primary c-btn--destructive w-100 my-4 <%= is_mod_center == "true" ? "hidden" : "" %>"
         id="unpublish-article-btn"
         data-article-id="<%= @moderatable.id %>"
         data-author-username="<%= author_username %>"
@@ -190,7 +190,14 @@
       </a>
     </div>
 
-    <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
+    <button
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-controls="admin-action-options"
+      class="other-things-btn admin-action <%= is_mod_center == "true" ? "hidden" : "" %>"
+      type="button"
+      data-other-things-type="admin-action"
+      aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
           <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
