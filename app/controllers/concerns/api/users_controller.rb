@@ -32,7 +32,7 @@ module Api
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: @user,
                                                             user: target_user,
                                                             user_params: suspend_params)
-        render head: :ok
+        render status: :no_content
       rescue StandardError
         render json: {
           success: false,
@@ -44,7 +44,7 @@ module Api
     def unpublish
       authorize(@user, :unpublish_all_articles?)
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      render head: :ok
+      render status: :no_content
     end
   end
 end

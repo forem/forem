@@ -122,7 +122,7 @@ belonging to the requested collection, ordered by ascending publication date.",
 The user associated with the API key must have either the 'admin' or 'moderator' role.
 
 The article will be unpublished and will no longer be visible to the public. It will remain
-in the database and will set back to draft status on their posts dashboard. Any
+in the database and will set back to draft status on the author's posts dashboard. Any
 notifications associated with the article will be deleted. Any comments on the article
 will remain."
         operationId "unpublishArticle"
@@ -144,15 +144,15 @@ will remain."
           run_test!
         end
 
-        response "401", "unauthorized" do
-          let(:"api-key") { "invalid" }
+        response "401", "Article already unpublished" do
+          let(:"api-key") { api_secret.secret }
           let(:id) { unpublished_aricle.id }
           add_examples
 
           run_test!
         end
 
-        response "401", "unauthorized" do
+        response "401", "Unauthorized" do
           let(:regular_user) { create(:user) }
           let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
           let(:"api-key") { low_security_api_secret.secret }
@@ -162,7 +162,7 @@ will remain."
           run_test!
         end
 
-        response "404", "Not Found" do
+        response "404", "Article Not Found" do
           let(:"api-key") { api_secret.secret }
           let(:id) { 0 }
           add_examples
