@@ -124,10 +124,10 @@ RSpec.describe ArticlePolicy do
     it_behaves_like "it requires a user in good standing"
     it_behaves_like "it requires an authenticated user"
 
-    it_behaves_like "permitted roles", to: %i[trusted], limit_post_creation_to_admins?: false
+    it_behaves_like "permitted roles", to: %i[trusted super_admin admin], limit_post_creation_to_admins?: false
 
-    it_behaves_like "disallowed roles", to: %i[super_admin admin author], limit_post_creation_to_admins?: false
-    it_behaves_like "disallowed roles", to: %i[trusted], limit_post_creation_to_admins?: true
+    it_behaves_like "disallowed roles", to: %i[author], limit_post_creation_to_admins?: false
+    it_behaves_like "disallowed roles", to: %i[trusted super_admin admin], limit_post_creation_to_admins?: true
   end
 
   describe "#allow_tag_adjustment?" do
