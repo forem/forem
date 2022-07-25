@@ -29,10 +29,6 @@ RSpec.describe "Api::V0::ApiController", type: :request do
   end
 
   context "when API V1 is enabled" do
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-    end
-
     context "when request header is v0 and does not include an api key" do
       let(:headers) { { Accept: "application/v0+json" } }
 
@@ -91,10 +87,6 @@ RSpec.describe "Api::V0::ApiController", type: :request do
   end
 
   context "when API V1 is NOT enabled" do
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(false)
-    end
-
     context "when request header is v0" do
       let(:headers) { { Accept: "application/v0+json" } }
 

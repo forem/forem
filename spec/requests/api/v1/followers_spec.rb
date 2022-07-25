@@ -9,8 +9,6 @@ RSpec.describe "Api::V1::FollowersController", type: :request do
   let(:follower) { create(:user) }
   let(:follower2) { create(:user) }
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   describe "GET /api/followers/users" do
     before do
       follower.follow(user)

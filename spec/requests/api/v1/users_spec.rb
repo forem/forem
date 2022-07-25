@@ -6,8 +6,6 @@ RSpec.describe "Api::V0::Users", type: :request do
   let(:listener) { :admin_api }
 
   describe "GET /api/users/:id" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     let!(:user) do
       create(:user,
              profile_image: "",
@@ -82,8 +80,6 @@ RSpec.describe "Api::V0::Users", type: :request do
   end
 
   describe "GET /api/users/me" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     context "when unauthenticated" do
       it "returns unauthorized" do
         get me_api_users_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
@@ -148,10 +144,7 @@ RSpec.describe "Api::V0::Users", type: :request do
     let(:target_user) { create(:user) }
     let(:payload) { { note: "Violated CoC despite multiple warnings" } }
 
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-      Audit::Subscribe.listen listener
-    end
+    before { Audit::Subscribe.listen listener }
 
     context "when unauthenticated" do
       it "returns unauthorized" do
@@ -214,10 +207,7 @@ RSpec.describe "Api::V0::Users", type: :request do
     let(:target_user) { create(:user) }
     let!(:target_articles) { create_list(:article, 3, user_id: target_user.id) }
 
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-      Audit::Subscribe.listen listener
-    end
+    before { Audit::Subscribe.listen listener }
 
     context "when unauthenticated" do
       it "returns unauthorized" do

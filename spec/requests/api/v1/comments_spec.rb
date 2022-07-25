@@ -37,8 +37,6 @@ RSpec.describe "Api::V1::Comments", type: :request do
     end
   end
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   describe "GET /api/comments" do
     it "returns 401 when unauthenticated" do
       get api_comments_path(a_id: article.id), headers: { "Accept" => "application/vnd.forem.api-v1+json" }

@@ -11,7 +11,7 @@ module Api
       # considered an api_action.
       self.api_action = true
 
-      after_action :add_missing_api_key_warning_header, if: proc { FeatureFlag.enabled?(:api_v1) }
+      after_action :add_missing_api_key_warning_header
 
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)

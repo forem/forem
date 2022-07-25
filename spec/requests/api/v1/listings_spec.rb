@@ -10,8 +10,6 @@ RSpec.describe "Api::V1::Listings", type: :request do
 
   let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
@@ -62,14 +60,14 @@ RSpec.describe "Api::V1::Listings", type: :request do
   describe "GET /api/listings" do
     include_context "with 7 listings and 2 user"
 
-    xcontext "when unauthenticated" do
+    context "when unauthenticated" do
       it "returns unauthorized" do
         get api_listings_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
         expect(response).to have_http_status(:unauthorized)
       end
     end
 
-    xcontext "when unauthorized" do
+    context "when unauthorized" do
       it "returns unauthorized" do
         get api_listings_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
         expect(response).to have_http_status(:unauthorized)
@@ -141,14 +139,14 @@ RSpec.describe "Api::V1::Listings", type: :request do
   describe "GET /api/listings/category/:category" do
     include_context "with 7 listings and 2 user"
 
-    xcontext "when unauthenticated" do
+    context "when unauthenticated" do
       it "returns unauthorized" do
         get api_listings_category_path("cfp"), headers: v1_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
 
-    xcontext "when unauthorized" do
+    context "when unauthorized" do
       it "returns unauthorized" do
         get api_listings_category_path("cfp"), headers: v1_headers.merge({ "api-key" => "invalid api key" })
         expect(response).to have_http_status(:unauthorized)
@@ -179,7 +177,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
     include_context "with 7 listings and 2 user"
     let(:listing) { Listing.in_category("cfp").last }
 
-    xcontext "when unauthenticated" do
+    context "when unauthenticated" do
       it "returns unauthorized" do
         listing.update(published: true)
 
@@ -189,7 +187,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
       end
     end
 
-    xcontext "when unauthorized" do
+    context "when unauthorized" do
       it "returns unauthorized" do
         listing.update(published: true)
 

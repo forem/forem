@@ -3,8 +3,6 @@ require "rails_helper"
 RSpec.describe "Api::V1::Instances", type: :request do
   let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   describe "GET /api/instance" do
     it "returns the correct attributes", :aggregate_failures do
       create(:user)

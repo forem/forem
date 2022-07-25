@@ -15,10 +15,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     }
   end
 
-  before do
-    stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-  end
+  before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
   describe "GET /api/articles" do
     before { article }

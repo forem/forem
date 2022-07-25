@@ -6,8 +6,6 @@ RSpec.describe "Api::V1::FeatureFlagsController", type: :request do
   let(:api_secret) { create(:api_secret) }
   let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   it "is not available in the production environment" do
     # We really need an ActiveSupport::StringInquirer here
     # rubocop:disable Rails/Inquiry

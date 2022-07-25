@@ -6,10 +6,7 @@ RSpec.describe "Api::V1::Docs::Articles", type: :request do
   let(:tag) { create(:tag, :with_colors, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss") }
 
-  before do
-    stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-  end
+  before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
   # rubocop:disable RSpec/EmptyExampleGroup
   describe "GET /articles" do

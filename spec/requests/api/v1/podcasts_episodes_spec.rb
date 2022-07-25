@@ -6,8 +6,6 @@ RSpec.describe "Api::V1::PodcastEpisodes", type: :request do
   let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/podcast_episodes" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     context "when unauthenticated" do
       it "returns unauthorized" do
         create(:podcast_episode, podcast: podcast)

@@ -14,8 +14,6 @@ RSpec.describe "Api::V0::Videos", type: :request do
   end
 
   describe "GET /api/videos" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     context "when unauthenticated" do
       it "returns unauthorized" do
         create_article

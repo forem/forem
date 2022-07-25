@@ -9,8 +9,6 @@ RSpec.describe "Api::V0::ReadingList", type: :request do
   describe "GET /api/readinglist" do
     let(:readinglist) { create_list(:reading_reaction, 3, user: user) }
 
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     context "when unauthenticated" do
       it "returns unauthorized" do
         get api_readinglist_index_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
