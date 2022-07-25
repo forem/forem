@@ -207,7 +207,9 @@ class ArticlePolicy < ApplicationPolicy
 
     # Beware a trusted user does not guarantee that they are an admin.  And more specifically, being
     # an admin does not guarantee being trusted.
-    user.trusted?
+    return true if user.trusted?
+
+    elevated_user?
   end
 
   alias admin_featured_toggle? revoke_publication?
