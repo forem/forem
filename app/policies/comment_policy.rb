@@ -25,6 +25,12 @@ class CommentPolicy < ApplicationPolicy
     true
   end
 
+  def moderate?
+    return true if user.trusted?
+
+    moderator_create?
+  end
+
   def moderator_create?
     user_moderator? || user_any_admin?
   end
