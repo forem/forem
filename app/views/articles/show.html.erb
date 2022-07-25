@@ -190,6 +190,13 @@
       </article>
 
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>
+        <% @display_ad = DisplayAd.for_display("post_comments") %>
+        <% if @display_ad %>
+          <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-article" data-display-unit data-id="<%= @display_ad.id %>">
+            <%= @display_ad.processed_html.html_safe %>
+          </div>
+        <% end %>
+
         <% suggested_articles = Articles::Suggest.call(@article, max: 4) %>
         <%= render "articles/bottom_content", articles: suggested_articles %>
       <% end %>
