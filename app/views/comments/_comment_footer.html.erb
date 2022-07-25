@@ -20,6 +20,7 @@
         data-comment-id="<%= comment.id %>"
         data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
         data-tracking-name="comment_reply_button"
+        data-testid="reply-button-<%= comment.id %>"
         rel="nofollow">
         <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", title: t("views.comments.footer.reply.icon")) %>
         <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>
