@@ -87,7 +87,7 @@ request is completed on the server."
     path "/api/users/{id}/suspend" do
       put "Suspend a User" do
         tags "users"
-        description "This endpoint allows the client to a user.
+        description "This endpoint allows the client to suspend a user.
 
 The user associated with the API key must have either the 'admin' or 'moderator' role.
 
