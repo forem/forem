@@ -29,6 +29,11 @@ RSpec.describe Profile, type: :model do
         profile.summary = "Hello 👋"
         expect(profile).to be_valid
       end
+
+      it "counts line ending as a single character when summary is multi line" do
+        profile.summary = "#{'x' * ProfileValidator::MAX_SUMMARY_LENGTH.pred}\r\n"
+        expect(profile).to be_valid
+      end
     end
 
     describe "validating text areas" do
