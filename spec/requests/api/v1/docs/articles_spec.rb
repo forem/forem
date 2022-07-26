@@ -119,7 +119,7 @@ belonging to the requested collection, ordered by ascending publication date.",
         tags "articles"
         description "This endpoint allows the client to unpublish an article.
 
-The user associated with the API key must have either the 'admin' or 'moderator' role.
+The user associated with the API key must have any 'admin' or 'moderator' role.
 
 The article will be unpublished and will no longer be visible to the public. It will remain
 in the database and will set back to draft status on the author's posts dashboard. Any

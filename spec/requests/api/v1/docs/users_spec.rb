@@ -29,7 +29,7 @@ RSpec.describe "Api::V1::Docs::Users", type: :request do
         description "This endpoint allows the client to unpublish all of the articles and
 comments created by a user.
 
-The user associated with the API key must have either the 'admin' or 'moderator' role.
+The user associated with the API key must have any 'admin' or 'moderator' role.
 
 This specified user's articles and comments will be unpublished and will no longer be
 visible to the public. They will remain in the database and will set back to draft status
@@ -89,7 +89,7 @@ request is completed on the server."
         tags "users"
         description "This endpoint allows the client to suspend a user.
 
-The user associated with the API key must have either the 'admin' or 'moderator' role.
+The user associated with the API key must have any 'admin' or 'moderator' role.
 
 This specified user will be assigned the 'suspended' role. Suspending a user will stop the
 user from posting new posts and comments. It doesn't delete any of the user's content, just
