@@ -33,7 +33,7 @@ experiments:
     #       occurred on or after the given start_date.
     started_at: 2022-07-26
     variants:
-      - 20220719-variant-a
+      - 20220719-variant-b
       - 20220726-variant-a
       - 20220726-variant-b
     weights:
