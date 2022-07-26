@@ -94,7 +94,7 @@ module Api
 
       def api_usage_tracking
         usage_tags = ["endpoint:#{request.path}", "user_id:#{@user&.id || 'unauthenticated'}"]
-        ForemStatsClient.increment("api.usage.v1", tags: usage_tags)
+        ForemStatsClient.increment("api.usage.v0", tags: usage_tags)
       end
 
       private
