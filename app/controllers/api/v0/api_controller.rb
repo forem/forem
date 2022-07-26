@@ -12,6 +12,7 @@ module Api
       self.api_action = true
 
       after_action :add_missing_api_key_warning_header, if: proc { FeatureFlag.enabled?(:api_v1) }
+      after_action :api_usage_tracking, if: proc { FeatureFlag.enabled?(:track_api_usage) }
 
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
@@ -89,6 +90,11 @@ module Api
         # rubocop:disable Layout/LineLength
         response.headers["Warning"] = "299 - This endpoint will require the `api-key` header and the `Accept` header to be set to `application/vnd.forem.api-v1+json` in future."
         # rubocop:enable Layout/LineLength
+      end
+
+      def api_usage_tracking
+        usage_tags = ["endpoint:#{request.path}", "user_id:#{@user&.id || 'unauthenticated'}"]
+        ForemStatsClient.increment("api.usage.v1", tags: usage_tags)
       end
 
       private

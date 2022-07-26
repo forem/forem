@@ -41,6 +41,11 @@ module Api
         return error_unauthorized unless @user
         return error_unauthorized if @user.suspended?
 
+        if FeatureFlag.enabled?(:track_api_usage)
+          usage_tags = ["endpoint:#{request.path}", "user_id:#{@user.id}"]
+          ForemStatsClient.increment("api.usage.v1", tags: usage_tags)
+        end
+
         true
       end
 
