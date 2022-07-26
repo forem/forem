@@ -71,7 +71,7 @@ export const EditorBody = ({
   return (
     <div
       data-testid="article-form__body"
-      className="crayons-article-form__body drop-area text-padding h-100"
+      className="crayons-article-form__body drop-area text-padding"
     >
       <Toolbar version={version} textAreaId="article_body_markdown" />
       <AutocompleteTriggerTextArea

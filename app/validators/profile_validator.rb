@@ -31,10 +31,12 @@ class ProfileValidator < ActiveModel::Validator
   private
 
   def summary_too_long?(record)
+    record.summary&.gsub!(/\r\n/, "\n")
     return if record.summary.blank?
 
     # Grandfather in people who had a too long summary before
     previous_summary = record.summary_was
+    previous_summary&.gsub!(/\r\n/, "\n")
     return if previous_summary && previous_summary.size > MAX_SUMMARY_LENGTH
 
     record.summary.size > MAX_SUMMARY_LENGTH

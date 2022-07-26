@@ -1,10 +1,11 @@
 class DisplayAd < ApplicationRecord
   resourcify
 
-  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right].freeze
+  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right post_comments].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
-                                            "Sidebar Right"].freeze
+                                            "Sidebar Right",
+                                            "Below the comment section"].freeze
 
   belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy
