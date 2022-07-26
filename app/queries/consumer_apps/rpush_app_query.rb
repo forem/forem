@@ -18,10 +18,14 @@ module ConsumerApps
     def call
       if consumer_app.android?
         android_app = Rpush::Gcm::App.where(name: app_name).first
-        android_app || recreate_android_app!
+        return android_app unless stale?(rpush_app: android_app)
+
+        recreate_android_app!
       elsif consumer_app.ios?
         ios_app = Rpush::Apns2::App.where(name: app_name).first
-        ios_app || recreate_ios_app!
+        return ios_app unless stale?(rpush_app: ios_app)
+
+        recreate_ios_app!
       end
     end
 
@@ -29,13 +33,41 @@ module ConsumerApps
 
     attr_reader :app_bundle, :app_name, :consumer_app, :platform
 
+    # Returns whether the app is stale, which means it needs to be
+    # created or recreated if it already exists (credentials changed)
+    def stale?(rpush_app:)
+      # If the app doesn't exist => stale
+      return true if rpush_app.nil?
+
+      # If credentials have changed on either platform => stale (destroy + recreate)
+      if consumer_app.android? && rpush_app.auth_key != app_auth_credentials
+        rpush_app.destroy
+        return true
+      elsif consumer_app.ios? && rpush_app.certificate != app_auth_credentials
+        rpush_app.destroy
+        return true
+      end
+
+      # App exists and credentials still match => not stale
+      false
+    end
+
+    # Fetch credentials of the consumer_app loaded during initialization
+    def app_auth_credentials
+      if consumer_app.android?
+        consumer_app.auth_credentials.to_s
+      elsif consumer_app.ios?
+        consumer_app.auth_credentials.to_s.gsub("\\n", "\n")
+      end
+    end
+
     def recreate_ios_app!
       # If the ConsumerApp doesn't have credentials there's no need to create it
       return if consumer_app.auth_credentials.blank?
 
       app = Rpush::Apns2::App.new
       app.name = app_name
-      app.certificate = consumer_app.auth_credentials.to_s.gsub("\\n", "\n")
+      app.certificate = app_auth_credentials
       app.environment = Rails.env
       app.password = ""
       app.bundle_id = app_bundle
@@ -50,7 +82,7 @@ module ConsumerApps
 
       app = Rpush::Gcm::App.new
       app.name = app_name
-      app.auth_key = consumer_app.auth_credentials.to_s
+      app.auth_key = app_auth_credentials
       app.connections = 1
       app.save!
       app
