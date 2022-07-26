@@ -158,31 +158,25 @@
     top: 0;
     background: var(--base-0);
     padding: var(--su-2) var(--content-padding-x);
-    padding-right: var(--toolbar-padding-right, 0);
-    overflow-x: auto;
+    padding-right: var(--content-padding-x, 0);
     flex-shrink: 0;
     margin: calc(var(--content-padding-y) * -1)
       calc(var(--content-padding-x) * -1) var(--su-6)
       calc(var(--content-padding-x) * -1);
 
     .editor-toolbar {
-      position: relative;
+      overflow-x: auto;
+
+      @media (min-width: $breakpoint-xs) {
+        overflow-x: unset;
+        position: relative;
+      }
     }
 
     > :first-child {
       @media (min-width: $breakpoint-m) {
         margin-left: calc(var(--su-2) * -1);
       }
-    }
-
-    &::-webkit-scrollbar {
-      background: transparent;
-      height: 0;
-    }
-
-    @media (min-width: $breakpoint-m) {
-      --toolbar-padding-right: var(--content-padding-x);
-      overflow: visible;
     }
   }
 

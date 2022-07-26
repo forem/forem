@@ -28,14 +28,9 @@
     .editor-toolbar {
       border-top: 1px solid var(--form-border);
       overflow-x: auto;
-
-      &::-webkit-scrollbar {
-        background: transparent;
-        height: 0;
-      }
     }
 
-    @media (min-width: $breakpoint-m) {
+    @media (min-width: $breakpoint-xs) {
       .editor-toolbar {
         overflow-x: unset;
       }
