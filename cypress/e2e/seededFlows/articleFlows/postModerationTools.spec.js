@@ -172,7 +172,7 @@ describe('Moderation Tools for Posts', () => {
           }).click();
         });
 
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Unpublish all posts' }).click();
         });
 
@@ -217,7 +217,7 @@ describe('Moderation Tools for Posts', () => {
             name: 'Suspend series_user',
           }).click();
         });
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Submit & Suspend' }).click();
 
           cy.findByTestId('suspension-reason-error')
@@ -237,7 +237,7 @@ describe('Moderation Tools for Posts', () => {
             name: 'Suspend series_user',
           }).click();
         });
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('textbox', { name: 'Note:' }).type(
             'My suspension reason',
           );
@@ -288,7 +288,7 @@ describe('Moderation Tools for Posts', () => {
             name: 'Unsuspend suspended_user',
           }).click();
         });
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Submit & Unsuspend' }).click();
           cy.findByTestId('unsuspension-reason-error')
             .contains('You must give a reason for this action.')
@@ -307,7 +307,7 @@ describe('Moderation Tools for Posts', () => {
           }).click();
         });
 
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('textbox', { name: 'Note:' }).type(
             'My unsuspension reason',
           );
@@ -384,7 +384,7 @@ describe('Moderation Tools for Posts', () => {
             .should('have.attr', 'aria-expanded', 'true');
           cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
         });
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Confirm Flag' }).click();
           cy.findByTestId('unselected-radio-error')
             .contains('You must check the radio button first.')
@@ -401,8 +401,12 @@ describe('Moderation Tools for Posts', () => {
           cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
         });
 
-        cy.findByRole('dialog').within(() => {
-          cy.get('#flag-user-radio-input').check();
+        cy.getModal().within(() => {
+          const flagUserRadioName =
+            "Make all posts by admin_mcadmin less visible admin_mcadmin consistently posts content that violates DEV(local)'s code of conduct because it is harassing, offensive or spammy.";
+          cy.findByRole('radio', {
+            name: flagUserRadioName,
+          }).check();
           cy.findByRole('button', { name: 'Confirm Flag' }).click();
         });
 
@@ -420,7 +424,7 @@ describe('Moderation Tools for Posts', () => {
           cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
         });
 
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.get('#flag-user-radio-input').check();
           cy.findByRole('button', { name: 'Confirm Flag' }).click();
         });
@@ -433,7 +437,7 @@ describe('Moderation Tools for Posts', () => {
           cy.findByRole('button', { name: 'Unflag admin_mcadmin' }).click();
         });
 
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Confirm Unflag' }).click();
         });
 
