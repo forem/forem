@@ -52,7 +52,7 @@ module ConsumerApps
       false
     end
 
-    # Fetch credentials of the consumer_app loaded during initialization
+    # Fetch the current credentials of the consumer_app
     def app_auth_credentials
       if consumer_app.android?
         consumer_app.auth_credentials.to_s
