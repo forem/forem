@@ -146,3 +146,7 @@ capture_query_stats:
   description: "Collects Postgres query stats for PGHero (runs every 5 minutes)"
   cron: "*/5 * * * *"
   class: "CaptureQueryStatsWorker"
+notify_about_published_articles:
+  description: "Sends notifications about the new published articles (runs every minute)"
+  cron: "*/5 * * * *"
+  class: "Articles::PublishWorker"

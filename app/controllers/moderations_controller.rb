@@ -30,8 +30,9 @@ class ModerationsController < ApplicationController
   end
 
   def comment
-    authorize(User, :moderation_routes?)
+    authorize(Comment, :moderate?)
     @moderatable = Comment.find(params[:id_code].to_i(26))
+
     render template: "moderations/mod"
   end
 
@@ -43,7 +44,7 @@ class ModerationsController < ApplicationController
   private
 
   def load_article
-    authorize(User, :moderation_routes?)
+    authorize(Article, :moderate?)
 
     @tag_adjustment = TagAdjustment.new
     @moderatable = Article.find_by(slug: params[:slug])

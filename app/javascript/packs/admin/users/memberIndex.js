@@ -34,16 +34,27 @@ const initializeFilterPills = () => {
     } = relevantElement;
 
     const urlParams = new URLSearchParams(document.location.search);
-    const allFiltersMatchingKey = urlParams.getAll(filterKey);
 
-    // Remove the clicked filter name from the array
-    allFiltersMatchingKey.splice(allFiltersMatchingKey.indexOf(filterValue), 1);
-    // Delete _all_ filters with given key
-    urlParams.delete(filterKey);
-    // Re-attach any filters with given key that we want to keep
-    allFiltersMatchingKey.forEach((filterVal) =>
-      urlParams.append(filterKey, filterVal),
-    );
+    if (filterKey === 'joining_date') {
+      urlParams.delete('joining_start');
+      urlParams.delete('joining_end');
+    } else {
+      // In all other cases, we may have filters with a matching key that we want to keep
+      const allFiltersMatchingKey = urlParams.getAll(filterKey);
+
+      // Remove the clicked filter name from the array
+      allFiltersMatchingKey.splice(
+        allFiltersMatchingKey.indexOf(filterValue),
+        1,
+      );
+      // Delete _all_ filters with given key
+      urlParams.delete(filterKey);
+      // Re-attach any filters with given key that we want to keep
+      allFiltersMatchingKey.forEach((filterVal) =>
+        urlParams.append(filterKey, filterVal),
+      );
+    }
+
     // Redirect the page
     document.location.search = urlParams;
   });

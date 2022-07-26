@@ -1,36 +1,31 @@
 @import '../config/import';
 @import './forms';
-@import '@reach/combobox/styles';
 
-.crayons-autocomplete {
-  // Override of the default hidden class to make sure it takes priority over any display style attached to the 'replaceElement' textarea
-  .hidden {
-    display: none !important;
-  }
-
+.c-autocomplete {
   &__popover {
+    font-size: 0.85rem;
     padding: var(--su-1);
-    z-index: var(--z-elevate);
-
-    &[data-reach-popover] {
-      // Reach UI adds a width directly to this element as an inline style. !important is needed to make sure the size is constrained.
-      width: 250px !important;
-      background: var(--card-bg);
-      color: var(--card-color);
-      border-radius: var(--radius);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.1);
-      border: none;
-    }
+    z-index: var(--z-popover);
+    width: 250px;
+    background: var(--card-bg);
+    color: var(--card-color);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.1);
   }
 
   &__option {
+    cursor: pointer;
+    margin: 0;
+    padding: 0.25rem 0.5rem;
     border-bottom: 1px solid var(--base-10);
     padding-top: var(--su-2);
     padding-bottom: var(--su-2);
 
-    &[data-reach-combobox-option]:hover,
-    &[data-reach-combobox-option][aria-selected='true'] {
+    &:hover,
+    &[aria-selected='true'] {
+      background: hsl(211, 10%, 95%);
+
       & .crayons-autocomplete__name {
         color: var(--link-color-hover);
       }
@@ -39,16 +34,6 @@
     &:last-child {
       border-bottom: none;
     }
-  }
-
-  &__name {
-    font-size: var(--fs-m);
-    font-weight: var(--fw-medium);
-  }
-
-  &__username {
-    color: var(--base-60);
-    font-size: var(--fs-s);
   }
 
   &__empty {

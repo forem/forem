@@ -74,9 +74,11 @@ fr:
             Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
         other: Other things you can do
         suspend:
+          suspend_title: Suspend %{username}
           suspend_user: Suspend %{username}
           suspend_modal_text: Once suspended, %{username} will not be able to comment or publish posts until their suspension is removed.
           suspend_modal_button: Submit & Suspend
+          unsuspend_title: Unsuspend %{username}
           unsuspend_user: Unsuspend %{username}
           unsuspend_modal_text: Once unsuspended, %{username} will be able to comment and publish posts again.
           unsuspend_modal_button: Submit & Unsuspend
@@ -104,6 +106,12 @@ fr:
         feature: Feature Post
         unfeature: Unfeature Post
         unpublish: Unpublish Post
+        unpublish_all:
+          title: Unpublish all posts
+          button: Unpublish all posts for %{username}
+          modal_text1: Once unpublished, all posts by %{username} will become hidden and only accessible to themselves.
+          modal_text2: If %{username} is not suspended, they can still re-publish their posts from their dashboard.
+          modal_button: Unpublish all posts
         vote_down: Low Quality
         flag_to_admins: Flag to Admins
         vote_up: High Quality

@@ -18,8 +18,8 @@
     <%= f.select :content_type, options_for_select(content_type_options, response_template.content_type || "plain_text"), class: "form-control" %>
   </div>
   <div class="form-group">
-    <%= f.label :user_id, "User ID - Add ID to restrict usage for a single user" %>
-    <%= f.text_field :user_id, value: response_template.user_id, class: "form-control" %>
+    <%= f.label :user_identifier, "User - Specify a username, email or ID to restrict usage for a single user" %>
+    <%= f.text_field :user_identifier, value: response_template.user_identifier, class: "form-control" %>
   </div>
   <%= f.submit class: "btn btn-primary" %>
 <% end %>

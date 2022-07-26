@@ -10,6 +10,7 @@
     var(--modal-padding);
   --modal-alignment: unset;
   --modal-header-alignment: space-between;
+  --modal-overflow: hidden;
 
   @media (min-width: $breakpoint-s) {
     --modal-padding: var(--su-4);
@@ -80,7 +81,7 @@
     max-height: 100%;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: var(--modal-overflow);
     position: relative;
     pointer-events: auto;
     border-radius: var(--radius-large-auto);
@@ -147,6 +148,10 @@
         right: 0;
       }
     }
+  }
+
+  &--overflow-visible {
+    --modal-overflow: visible;
   }
 
   &--prompt {

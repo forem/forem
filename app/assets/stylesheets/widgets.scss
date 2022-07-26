@@ -301,6 +301,19 @@
   background: var(--card-secondary-bg);
 }
 
+.crayons-sponsorship-article {
+  margin-bottom: 10px;
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    display: block;
+    vertical-align: top;
+    margin: 10px auto;
+  }
+}
+
 .crayons-sponsorship-widget {
   img {
     width: 100%;

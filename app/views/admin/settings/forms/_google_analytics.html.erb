@@ -6,11 +6,18 @@
     <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
         <div class="crayons-field">
-          <%= admin_config_label :ga_tracking_id, "View ID" %>
+          <%= admin_config_label :ga_tracking_id, "Google Universal Analytics View ID" %>
           <%= admin_config_description Constants::Settings::General.details[:ga_tracking_id][:description] %>
           <%= f.text_field :ga_tracking_id,
                            class: "crayons-textfield",
                            value: Settings::General.ga_tracking_id %>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :ga_analytics_4_id, "Google Analytics 4 Measurement ID" %>
+          <%= admin_config_description Constants::Settings::General.details[:ga_analytics_4_id][:description] %>
+          <%= f.text_field :ga_analytics_4_id,
+                           class: "crayons-textfield",
+                           value: Settings::General.ga_analytics_4_id %>
         </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>

@@ -6,7 +6,14 @@ RSpec.describe "Api::V1::Articles", type: :request do
   let(:article) { create(:article, featured: true, tags: "discuss") }
   let(:new_article) { create(:article) }
   let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
+  let(:listener) { :admin_api }
+  let(:v1_headers) do
+    {
+      "content-type" => "application/json",
+      "Accept" => "application/vnd.forem.api-v1+json",
+      "api-key" => api_secret.secret
+    }
+  end
 
   before do
     stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
@@ -883,7 +890,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect do
           post api_articles_path, params: {}.to_json, headers: post_headers
         end.not_to raise_error
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "fails with a nil body markdown" do
@@ -1089,27 +1096,6 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect(article.reload.published).to be(true)
       end
 
-      it "sends a notification when the article gets published" do
-        expect(article.published).to be(false)
-        allow(Notification).to receive(:send_to_followers)
-        put_article(body_markdown: "Yo ho ho", published: true)
-        expect(response).to have_http_status(:ok)
-        expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
-      end
-
-      it "only sends a notification the first time the article gets published" do
-        expect(article.published).to be(false)
-        allow(Notification).to receive(:send_to_followers)
-        put_article(body_markdown: "Yo ho ho", published: true)
-        expect(response).to have_http_status(:ok)
-
-        article.update_columns(published: false)
-        put_article(published: true)
-        expect(response).to have_http_status(:ok)
-
-        expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
-      end
-
       it "does not update the editing time when updated before publication" do
         article.update_columns(edited_at: nil)
         expect(article.published).to be(false)
@@ -1195,6 +1181,65 @@ RSpec.describe "Api::V1::Articles", type: :request do
         put_article(title: nil, body_markdown: nil)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
+      end
+    end
+  end
+
+  describe "PUT /api/articles/:id/unpublish", :aggregate_failures do
+    let(:user) { api_secret.user }
+    let!(:published_article) { create(:article, published: true) }
+    let(:path) { api_article_unpublish_path(published_article.id) }
+
+    before { Audit::Subscribe.listen listener }
+
+    context "when unauthorized" do
+      it "fails with no api key" do
+        put path, headers: { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails with the wrong api key" do
+        put path,
+            headers: { "api-key" => "foobar", "content-type" => "application/json",
+                       "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails without elevated_user?" do
+        put path, headers: v1_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authorized as moderator" do
+      before { user.add_role(:moderator) }
+
+      it "unpublishes an article" do
+        expect(published_article.published).to be true
+        put path, headers: v1_headers
+        expect(response).to have_http_status(:ok)
+        expect(published_article.reload.published).to be false
+      end
+    end
+
+    context "when authorized as super_admin" do
+      before { user.add_role(:super_admin) }
+
+      it "unpublishes an article" do
+        expect(published_article.published).to be true
+        put path, headers: v1_headers
+        expect(response).to have_http_status(:ok)
+        expect(published_article.reload.published).to be false
+      end
+
+      it "creates an audit log of the action taken" do
+        put path, headers: v1_headers
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.data["action"]).to eq("api_article_unpublish")
+        expect(log.data["article_id"]).to eq(published_article.id)
+        expect(log.user_id).to eq(user.id)
       end
     end
   end

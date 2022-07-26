@@ -18,6 +18,7 @@ export const Modal = ({
   showHeader = true,
   sheetAlign = 'center',
   backdropDismissible = false,
+  allowOverflow = false,
   onClose = () => {},
   focusTrapSelector = '.crayons-modal__box',
   document = window.document,
@@ -29,6 +30,7 @@ export const Modal = ({
     'crayons-modal--prompt': prompt,
     'crayons-modal--centered': centered && prompt,
     'crayons-modal--bg-dismissible': !noBackdrop && backdropDismissible,
+    'crayons-modal--overflow-visible': allowOverflow,
     [className]: className,
   });
 

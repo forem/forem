@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { render, fireEvent, waitFor } from '@testing-library/preact';
 import { ModerationArticles } from '../moderationArticles';
+import '@testing-library/jest-dom';
 
 const getTestArticles = () => {
   const articles = [
@@ -107,11 +108,10 @@ describe('<ModerationArticles />', () => {
     // We need the iframe to load first before checking for the modal having been loaded.
     await findByTestId(`mod-iframe-${expectedArticleId}`);
 
-    const flagUserModal = document.querySelector(
-      '[data-testid="flag-user-modal"]',
+    await waitFor(() =>
+      expect(getByTestId('flag-user-modal')).toBeInTheDocument(),
     );
-
-    expect(flagUserModal).not.toBeNull();
+    const flagUserModal = getByTestId('flag-user-modal');
 
     const actualArticleId = Number(
       flagUserModal.getElementsByTagName('input')[0].dataset.reactableId,

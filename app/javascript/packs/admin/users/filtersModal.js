@@ -4,6 +4,67 @@ import {
   WINDOW_MODAL_ID,
 } from '@utilities/showModal';
 
+const updateDateRangeFilterIndicator = ({ startDate, endDate, indicator }) => {
+  const hasValues = startDate || endDate;
+  if (hasValues) {
+    indicator.classList.remove('hidden');
+  } else {
+    indicator.classList.add('hidden');
+  }
+};
+
+/**
+ * Some sections require the Preact DateRangePicker.
+ * This function imports the required packages and adds the pickers to the modal.
+ */
+const initializeDateRangePickers = async () => {
+  const joiningRangeContainer = document.querySelector(
+    `#${WINDOW_MODAL_ID} .js-joining-date-range`,
+  );
+
+  const joiningDateIndicator = document.querySelector(
+    `#${WINDOW_MODAL_ID} .js-filtered-indicator-joining-date`,
+  );
+
+  const [
+    { render, h },
+    { DateRangePicker, ALL_PRESET_RANGES },
+    { default: moment },
+  ] = await Promise.all([
+    import('preact'),
+    import('@crayons'),
+    import('moment'),
+  ]);
+
+  const { defaultStart, defaultEnd, defaultDatesFormat, earliestDate } =
+    joiningRangeContainer.dataset;
+
+  render(
+    <DateRangePicker
+      startDateId="joining_start"
+      endDateId="joining_end"
+      startDateAriaLabel="Joined after"
+      endDateAriaLabel="Joined before"
+      onDatesChanged={(dates) =>
+        updateDateRangeFilterIndicator({
+          ...dates,
+          indicator: joiningDateIndicator,
+        })
+      }
+      defaultStartDate={
+        defaultStart && moment(defaultStart, defaultDatesFormat).toDate()
+      }
+      defaultEndDate={
+        defaultEnd && moment(defaultEnd, defaultDatesFormat).toDate()
+      }
+      minStartDate={new Date(earliestDate)}
+      maxEndDate={new Date()}
+      presetRanges={ALL_PRESET_RANGES}
+    />,
+    joiningRangeContainer,
+  );
+};
+
 /**
  * Details panels will automatically expand on click when required.
  * We want to make sure only _one_ panel is expanded at any given time,
@@ -37,13 +98,34 @@ const initializeFilterDetailsToggles = () => {
 
 /**
  * Each filter section has a "Clear filter" button, visible only if one of its values is currently selected.
- * Here we initialize the show/hide behaviour, as well as the "clear" behaviour.
+ * There is also a "Clear all filters" button.
+ * We use a single listener on the modal to handle all clear button clicks.
  */
 const initializeFilterClearButtons = () => {
-  // Handle clicks on clear filter buttons with a single listener on the modal
   document
     .getElementById(WINDOW_MODAL_ID)
     .addEventListener('click', ({ target }) => {
+      if (target.classList.contains('js-clear-all-filters-btn')) {
+        // Execute the related "clear" action for all checkbox groups
+        document
+          .querySelectorAll(`#${WINDOW_MODAL_ID} .js-clear-filter-btn`)
+          .forEach((button) => {
+            const {
+              dataset: { checkboxFieldsetSelector },
+            } = button;
+
+            clearAllCheckboxesInFieldset(
+              document.querySelector(
+                `#${WINDOW_MODAL_ID} ${checkboxFieldsetSelector}`,
+              ),
+            );
+          });
+
+        // Clear the date range picker
+        document.querySelector(`#${WINDOW_MODAL_ID} #joining_start`).value = '';
+        document.querySelector(`#${WINDOW_MODAL_ID} #joining_end`).value = '';
+      }
+
       if (!target.classList.contains('js-clear-filter-btn')) {
         return;
       }
@@ -61,8 +143,7 @@ const initializeFilterClearButtons = () => {
       }
     });
 
-  // Set up change listeners on each form group so we can toggle the button/status indicator visibility
-  // TODO: The current setup assumes checkbox groups, but as we develop this modal we will need to consider the date picker ranges too
+  // Set up change listeners on each checkbox group so we can toggle the button/status indicator visibility
   document.querySelectorAll('.js-clear-filter-btn').forEach((button) => {
     const { checkboxFieldsetSelector, filterIndicatorSelector } =
       button.dataset;
@@ -105,7 +186,7 @@ const clearAllCheckboxesInFieldset = (fieldset) => {
 const initializeModalCloseButton = () =>
   document
     .querySelector(`#${WINDOW_MODAL_ID} .js-filter-modal-cancel-btn`)
-    .addEventListener('click', closeWindowModal);
+    .addEventListener('click', () => closeWindowModal());
 
 /**
  * Roles list is dynamically expanded and collapsed by this toggle button
@@ -145,11 +226,13 @@ export const initializeFiltersModal = () => {
         sheet: true,
         sheetAlign: 'right',
         size: 'small',
+        allowOverflow: true,
         onOpen: () => {
           initializeModalCloseButton();
           initializeFilterDetailsToggles();
           initializeShowHideRoles();
           initializeFilterClearButtons();
+          initializeDateRangePickers();
         },
       });
     });
