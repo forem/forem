@@ -130,7 +130,12 @@ function buildSortString(sortBy, sortDirection) {
 function search(query, filters, sortBy, sortDirection) {
   const hashtags = query.match(/#\w+/g);
   const searchTerm = query.replace(/#/g, '').trim();
-  const searchHash = { per_page: 60, page: 0 };
+  let page = parseInt(
+    filterXSS(getQueryParams(document.location.search).page),
+    10,
+  );
+  page = Number.isNaN(page) ? 0 : page;
+  const searchHash = { per_page: 2, page: page ? page : 0 };
 
   if (sortBy && sortDirection) {
     searchHash.sort_by = sortBy;
@@ -199,7 +204,98 @@ function search(query, filters, sortBy, sortDirection) {
         document.getElementById('substories').innerHTML =
           '<div class="p-9 align-center crayons-card">No results match that query</div>';
       }
+
+      //puts paginator indicators
+      if (content.links !== null) {
+        //prev and next buttons onclick event
+        if (content.links.prev) {
+          const url = new URL(content.links.prev);
+          const page = new URLSearchParams(url.search).get('page');
+
+          document.getElementById('previous-page').onclick = change_page(
+            query,
+            filters,
+            sortBy,
+            sortDirection,
+            page,
+          );
+        }
+        if (content.links.next) {
+          const url = new URL(content.links.next);
+          const page = new URLSearchParams(url.search).get('page');
+          document.getElementById('next-page').onclick = change_page(
+            query,
+            filters,
+            sortBy,
+            sortDirection,
+            page,
+          );
+        }
+
+        const page_btns = [];
+        if (content.links.total_pages > 5) {
+          const interval = `<button class="crayons-btn crayons-btn--outlined" type="button">...</button>`;
+          page_btns.push(
+            `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="0" type="button">1</button>`,
+          );
+          let i = 1;
+          let j = 3;
+          if (page > 2) {
+            page_btns.push(interval);
+            i = page - 1;
+            j = page + 1 < content.links.total_pages ? page + 1 : page;
+          }
+
+          for (i; i <= j && i !== content.links.total_pages - 1; i++) {
+            page_btns.push(
+              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button">${
+                i + 1
+              }</button>`,
+            );
+          }
+
+          if (j < content.links.total_pages - 2) {
+            page_btns.push(interval);
+          }
+
+          page_btns.push(
+            `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${
+              content.links.total_pages - 1
+            }" type="button">${content.links.total_pages}</button>`,
+          );
+        } else {
+          for (let i = 0; i < content.links.total_pages; i++) {
+            page_btns.push(
+              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button">${
+                i + 1
+              }</button>`,
+            );
+          }
+        }
+
+        document.getElementsByClassName('page-btn-container-js')[0].innerHTML =
+          page_btns.join('');
+        for (const dom_btn of document.getElementsByClassName('page-btn-js')) {
+          dom_btn.onclick = change_page(
+            query,
+            filters,
+            sortBy,
+            sortDirection,
+            dom_btn.dataset.page,
+          );
+        }
+      }
     });
+}
+
+function change_page(query, filters, sortBy, sortDirection, target_page) {
+  return function () {
+    const current_params = new URLSearchParams(document.location.search);
+    current_params.set('page', target_page);
+    window.history.pushState(null, null, `?${current_params.toString()}`);
+    window.history.replaceState(null, null, `?${current_params.toString()}`);
+    search(query, filters, sortBy, sortDirection);
+  };
 }
 
 const waitingOnSearch = setInterval(() => {
