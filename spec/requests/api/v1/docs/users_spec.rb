@@ -31,7 +31,7 @@ comments created by a user.
 
 The user associated with the API key must have either the 'admin' or 'moderator' role.
 
-This specified users's article and comments will be unpublished and will no longer be
+This specified user's articles and comments will be unpublished and will no longer be
 visible to the public. They will remain in the database and will set back to draft status
 on the specified user's  dashboard. Any notifications associated with the specified user's
 articles and comments will be deleted.
