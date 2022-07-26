@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::Docs::Users", type: :request do
     end
 
     path "/api/users/{id}/unpublish" do
-      put "Unpublish an User's Articles and Comments" do
+      put "Unpublish a User's Articles and Comments" do
         tags "articles", "comments", "users"
         description "This endpoint allows the client to unpublish all of the articles and
 comments created by a user.
