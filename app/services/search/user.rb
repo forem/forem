@@ -33,7 +33,10 @@ module Search
 
       relation = relation.page(page).per(per_page)
 
-      serialize(relation)
+      {
+        relation: relation,
+        serialize_result: serialize(relation)
+      }
     end
 
     # `User.without_role` generates a subquery + 2 inner joins.

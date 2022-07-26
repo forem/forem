@@ -31,7 +31,10 @@ module Homepage
         per_page: per_page,
       )
 
-      Homepage::ArticleSerializer.serialized_collection_from(relation: articles)
+      {
+        relation: articles,
+        serialize_result: Homepage::ArticleSerializer.serialized_collection_from(relation: articles)
+      }
     end
   end
 end

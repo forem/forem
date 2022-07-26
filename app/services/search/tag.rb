@@ -12,7 +12,10 @@ module Search
     )
       results = ::Tag.search_by_name(term).supported.includes(:badge)
         .reorder(hotness_score: :desc).page(page).per(per_page).select(*ATTRIBUTES)
-      serialize(results)
+      {
+        relation: results,
+        serialize_result: serialize(results)
+      }
     end
 
     def self.serialize(results)

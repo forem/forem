@@ -54,7 +54,7 @@ class SearchController < ApplicationController
 
   def tags
     result = Search::Tag.search_documents(term: params[:name])
-    render json: { result: result }
+    render json: { result: result[:serialize_result] }
   end
 
   def listings
@@ -98,7 +98,7 @@ class SearchController < ApplicationController
         # => profile page
         # => organization page
         # => tag index page
-        Homepage::FetchArticles.call(
+        fetch_articles = Homepage::FetchArticles.call(
           approved: feed_params[:approved],
           published_at: published_at,
           user_id: feed_params[:user_id],
@@ -109,40 +109,62 @@ class SearchController < ApplicationController
           page: params[:page],
           per_page: params[:per_page],
         )
+
+        {
+          links: pagination_links(fetch_articles[:relation]),
+          result: fetch_articles[:serialize_result]
+        }
       elsif class_name.Comment?
-        Search::Comment.search_documents(
+        search_comments = Search::Comment.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
           sort_by: feed_params[:sort_by],
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
         )
+        {
+          links: pagination_links(search_comments[:relation]),
+          result: search_comments[:serialize_result]
+        }
       elsif class_name.PodcastEpisode?
-        Search::PodcastEpisode.search_documents(
+        search_podcasts = Search::PodcastEpisode.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
           sort_by: feed_params[:sort_by],
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
         )
+        {
+          links: pagination_links(search_podcasts[:relation]),
+          result: search_podcasts[:serialize_result]
+        }
       elsif class_name.User?
-        Search::User.search_documents(
+        search_users = Search::User.search_documents(
           term: feed_params[:search_fields],
           page: feed_params[:page],
           per_page: feed_params[:per_page],
           sort_by: feed_params[:sort_by] == "published_at" ? :created_at : nil,
           sort_direction: feed_params[:sort_direction],
         )
+        {
+          links: pagination_links(search_users[:relation]),
+          result: search_users[:serialize_result]
+        }
       elsif class_name.Article?
         search_postgres_article
       elsif class_name.Tag?
-        Search::Tag.search_documents(
+        search_tags = Search::Tag.search_documents(
           term: feed_params[:search_fields],
           page: feed_params[:page],
           per_page: feed_params[:per_page],
         )
+        {
+          links: pagination_links(search_tags[:relation]),
+          result: search_tags[:serialize_result]
+        }
       end
-    render json: { result: result }
+
+    render json: { result: result[:result], links: result[:links] }
   end
 
   def reactions
@@ -163,7 +185,7 @@ class SearchController < ApplicationController
   private
 
   def search_postgres_article
-    Search::Article.search_documents(
+    search_article = Search::Article.search_documents(
       term: feed_params[:search_fields],
       user_id: feed_params[:user_id],
       sort_by: feed_params[:sort_by],
@@ -171,6 +193,30 @@ class SearchController < ApplicationController
       page: feed_params[:page],
       per_page: feed_params[:per_page],
     )
+
+    {
+      links: pagination_links(search_article[:relation]),
+      result: search_article[:serialize_result]
+    }
+  end
+
+  def pagination_links(relation)
+    return if relation.blank?
+
+    query_params = feed_params.except(:page).to_query
+    controller = params[:controller]
+    action = params[:action]
+
+    url = URL.url("#{controller}/#{action}?#{query_params}")
+
+    {
+      self: "#{url}&page=#{relation.current_page - 1}",
+      next: relation.last_page? ? nil : "#{url}&page=#{relation.next_page - 1}",
+      prev: relation.first_page? ? nil : "#{url}&page=#{relation.prev_page - 1}",
+      first: "#{url}&page=0",
+      last: "#{url}&page=#{relation.total_pages - 1}",
+      total_pages: relation.total_pages
+    }
   end
 
   def listing_params
@@ -183,6 +229,7 @@ class SearchController < ApplicationController
 
   def feed_params
     params.permit(FEED_PARAMS)
+    # params.permit(FEED_PARAMS).tap { |fp| fp[:per_page] = 2 }
   end
 
   def reaction_params

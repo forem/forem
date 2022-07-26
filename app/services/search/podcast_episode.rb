@@ -39,7 +39,10 @@ module Search
       relation = sort(relation, sort_by, sort_direction)
       results = relation.page(page).per(per_page)
 
-      serialize(results)
+      {
+        relation: results,
+        serialize_result: serialize(results)
+      }
     end
 
     def self.sort(relation, sort_by, sort_direction)

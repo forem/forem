@@ -61,7 +61,10 @@ module Search
 
       results = relation.page(page).per(per_page)
 
-      serialize(results)
+      {
+        relation: results,
+        serialize_result: serialize(results)
+      }
     end
 
     def self.serialize(results)

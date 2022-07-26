@@ -16,7 +16,10 @@ module Search
 
       relation = sort(relation, term, sort_by, sort_direction)
 
-      Homepage::ArticleSerializer.serialized_collection_from(relation: relation)
+      {
+        relation: relation,
+        serialize_result: Homepage::ArticleSerializer.serialized_collection_from(relation: relation)
+      }
     end
 
     def self.sort(relation, term, sort_by, sort_direction)
