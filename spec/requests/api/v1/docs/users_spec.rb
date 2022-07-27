@@ -25,7 +25,7 @@ RSpec.describe "Api::V1::Docs::Users", type: :request do
 
     path "/api/users/{id}/unpublish" do
       put "Unpublish a User's Articles and Comments" do
-        tags "articles", "comments", "users"
+        tags "users"
         description "This endpoint allows the client to unpublish all of the articles and
 comments created by a user.
 
@@ -68,7 +68,7 @@ request is completed on the server."
           run_test!
         end
 
-        response "204", "Unknown User ID (still accepted for async processing)" do
+        response "404", "Unknown User ID (still accepted for async processing)" do
           let(:"api-key") { api_secret.secret }
           let(:id) { 10_000 }
           add_examples
