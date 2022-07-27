@@ -471,19 +471,6 @@
       }
     }
   }
-  .bottom-actions {
-    display: flex;
-    justify-content: center;
-    padding-bottom: var(--su-4);
-    margin-top: auto;
-    button {
-      display: initial;
-      font-size: var(--fs-base);
-      color: var(--accent-brand);
-      border: none;
-      background: none;
-    }
-  }
 
   h2 {
     a {

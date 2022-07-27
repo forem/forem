@@ -1,0 +1,19 @@
+<% user_id = @article.user.id %>
+<% author_username = @article.username %>
+<div id="unflag-user-modal-content" class="hidden">
+  <p>
+    Unflagging <%= author_username %> will restore default visibility to their posts.
+  </p>
+
+  <div class="mt-6">
+    <button
+      id="confirm-unflag-user-action"
+      class="c-btn c-btn--primary"
+      data-category="vomit"
+      data-reactable-type="User"
+      data-user-id="<%= user_id %>"
+      data-username="<%= author_username %>">
+      Confirm Unflag
+    </button>
+  </div>
+</div>

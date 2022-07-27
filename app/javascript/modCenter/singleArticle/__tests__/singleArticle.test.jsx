@@ -27,11 +27,6 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
-        <div
-          data-testid="flag-user-modal-container"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
     const results = await axe(container, { rules: customAxeRules });
@@ -43,10 +38,6 @@ describe('<SingleArticle />', () => {
     const { getByRole } = render(
       <Fragment>
         <SingleArticle {...articleProps} toggleArticle={jest.fn()} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
 
@@ -59,10 +50,6 @@ describe('<SingleArticle />', () => {
     const { getByText } = render(
       <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
 
@@ -87,10 +74,6 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <Fragment>
         <SingleArticle {...article} toggleArticle={jest.fn()} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
     const text = getNodeText(
@@ -103,10 +86,6 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
     const text = getNodeText(
@@ -119,10 +98,6 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
     const text = getNodeText(
@@ -135,10 +110,6 @@ describe('<SingleArticle />', () => {
     const { getByText } = render(
       <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
 
@@ -153,10 +124,6 @@ describe('<SingleArticle />', () => {
     render(
       <Fragment>
         <SingleArticle {...article} toggleArticle={jest.fn()} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
 
@@ -177,10 +144,6 @@ describe('<SingleArticle />', () => {
     const { getByTestId } = render(
       <Fragment>
         <SingleArticle {...article} toggleArticle={toggleArticle} />
-        <div
-          data-testid="flag-user-modal"
-          class="flag-user-modal-container hidden"
-        />
       </Fragment>,
     );
 
