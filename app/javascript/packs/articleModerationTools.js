@@ -12,6 +12,7 @@ getCsrfToken().then(() => {
       const { initializeActionsPanel } = await import(
         '../actionsPanel/initializeActionsPanelToggle'
       );
+      const { initializeFlagUserModal } = await import('./flagUserModal');
 
       // If the user can moderate an article give them access to this panel.
       // Note: this assumes we're within the article context (which is the case
@@ -29,9 +30,11 @@ getCsrfToken().then(() => {
         // product to clarify if we want mods to boost their own posts.
         if (user?.id !== articleAuthorId && !isModerationPage()) {
           initializeActionsPanel(user, path);
+          initializeFlagUserModal(articleAuthorId);
           // "/mod" page
         } else if (isModerationPage()) {
           initializeActionsPanel(user, path);
+          initializeFlagUserModal(articleAuthorId);
         }
       }
     };
