@@ -865,7 +865,7 @@ GEM
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.7)
     staccato (0.5.3)
-    stackprof (0.2.19)
+    stackprof (0.2.20)
     sterile (1.0.23)
       nokogiri (>= 1.11.7)
     stripe (5.55.0)
