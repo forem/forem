@@ -59,8 +59,7 @@ en:
           subtitle: Moderating actions for %{user}
           aria_label: Open admin actions
           icon: Crown
-        flag: Flag %{username}
-        unflag: Unflag %{username}
+        flag: Flag user
         how: How does this work?
         hidden:
           subtitle: Hidden Comments

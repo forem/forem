@@ -78,6 +78,7 @@ function closeModal() {
   closeWindowModal(window.parent.document);
 }
 
+// let modalContents;
 const modalContents = new Map();
 
 /**
@@ -130,7 +131,7 @@ function activateModalSubmitBtn() {
   unsuspendBtn?.addEventListener('click', checkReason);
 }
 
-export function toggleSuspendUserModal(event) {
+export function toggleModal(event) {
   event.preventDefault;
   const { modalTitle, modalSize, modalContentSelector } = event.target.dataset;
   showWindowModal({

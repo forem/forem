@@ -38,11 +38,7 @@ class ModerationsController < ApplicationController
 
   def actions_panel
     load_article
-    @author_flagged ||= Reaction.user_vomits.valid_or_confirmed.where(
-      user_id: session_current_user_id,
-      reactable_id: @moderatable.user_id,
-    ).any?
-    render template: "moderations/actions_panel", locals: { is_mod_center: params[:is_mod_center] }
+    render template: "moderations/actions_panel"
   end
 
   private
