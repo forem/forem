@@ -22,6 +22,7 @@ class CommentsController < ApplicationController
     else
       set_user
       set_commentable
+      @discussion_lock = @commentable.discussion_lock if @commentable.is_a?(Article)
       not_found unless comment_should_be_visible?
     end
 
