@@ -135,7 +135,7 @@ function search(query, filters, sortBy, sortDirection) {
     10,
   );
   page = Number.isNaN(page) ? 0 : page;
-  const searchHash = { per_page: 2, page: page ? page : 0 };
+  const searchHash = { per_page: 30, page: page ? page : 0 };
 
   if (sortBy && sortDirection) {
     searchHash.sort_by = sortBy;
@@ -240,7 +240,7 @@ function search(query, filters, sortBy, sortDirection) {
         const page_btns = [];
         if (content.links.total_pages > 5) {
           page_btns.push(
-            `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="0" type="button">1</button>`,
+            `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="0" type="button" aria-label="First page">1</button>`,
           );
 
           let i = 1;
@@ -255,34 +255,36 @@ function search(query, filters, sortBy, sortDirection) {
             page_btns.push(
               `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${
                 i - 1
-              }" type="button">...</button>`,
+              }" type="button" aria-label="Page ${i - 1}">...</button>`,
             );
           }
           for (i; i <= j && i !== content.links.total_pages - 1; i++) {
             page_btns.push(
-              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button">${
+              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button" aria-label="Page ${
                 i + 1
-              }</button>`,
+              }">${i + 1}</button>`,
             );
           }
 
           if (j < content.links.total_pages - 2) {
             page_btns.push(
-              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button">...</button>`,
+              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button" aria-label="Page ${i}">...</button>`,
             );
           }
 
           page_btns.push(
             `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${
               content.links.total_pages - 1
-            }" type="button">${content.links.total_pages}</button>`,
+            }" type="button" aria-label="Last page">${
+              content.links.total_pages
+            }</button>`,
           );
         } else {
           for (let i = 0; i < content.links.total_pages; i++) {
             page_btns.push(
-              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button">${
+              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button" aria-label="Page ${
                 i + 1
-              }</button>`,
+              }">${i + 1}</button>`,
             );
           }
         }
