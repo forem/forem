@@ -207,6 +207,10 @@ function search(query, filters, sortBy, sortDirection) {
 
       //puts paginator indicators
       if (content.links !== null) {
+        document
+          .getElementById('btn-pagination-container')
+          .classList.remove('hidden');
+
         //prev and next buttons onclick event
         if (content.links.prev) {
           const url = new URL(content.links.prev);
@@ -232,20 +236,28 @@ function search(query, filters, sortBy, sortDirection) {
           );
         }
 
+        //create pagination number buttons
         const page_btns = [];
         if (content.links.total_pages > 5) {
-          const interval = `<button class="crayons-btn crayons-btn--outlined" type="button">...</button>`;
           page_btns.push(
             `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="0" type="button">1</button>`,
           );
+
           let i = 1;
           let j = 3;
           if (page > 2) {
-            page_btns.push(interval);
-            i = page - 1;
+            i =
+              page >= content.links.total_pages - 3
+                ? content.links.total_pages - 4
+                : page - 1;
             j = page + 1 < content.links.total_pages ? page + 1 : page;
-          }
 
+            page_btns.push(
+              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${
+                i - 1
+              }" type="button">...</button>`,
+            );
+          }
           for (i; i <= j && i !== content.links.total_pages - 1; i++) {
             page_btns.push(
               `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button">${
@@ -255,7 +267,9 @@ function search(query, filters, sortBy, sortDirection) {
           }
 
           if (j < content.links.total_pages - 2) {
-            page_btns.push(interval);
+            page_btns.push(
+              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button">...</button>`,
+            );
           }
 
           page_btns.push(
@@ -273,6 +287,7 @@ function search(query, filters, sortBy, sortDirection) {
           }
         }
 
+        //adds buttons onclick event
         document.getElementsByClassName('page-btn-container-js')[0].innerHTML =
           page_btns.join('');
         for (const dom_btn of document.getElementsByClassName('page-btn-js')) {
@@ -284,6 +299,10 @@ function search(query, filters, sortBy, sortDirection) {
             dom_btn.dataset.page,
           );
         }
+      } else {
+        document
+          .getElementById('btn-pagination-container')
+          .classList.add('hidden');
       }
     });
 }
