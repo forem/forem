@@ -74,17 +74,27 @@ describe('Lock discussion', () => {
             content: `This is a test article's contents.`,
             published: true,
           }).then((response) => {
-            const articlePath = response.body.current_state_path;
-            cy.visit(`${articlePath}/manage`);
-            getDiscussionLockButton().click();
-            cy.get('#discussion_lock_reason')
-              .should('be.visible')
-              .type(exampleReason);
-            cy.get('#discussion_lock_notes')
-              .should('be.visible')
-              .type(exampleNotes);
-            getDiscussionLockSubmitButton().click();
-            cy.visit(articlePath);
+            cy.createComment({
+              content: 'This is a test comment.',
+              commentableId: response.body.id,
+              commentableType: 'Article',
+            }).then((commentResponse) => {
+              cy.wrap(commentResponse.body.url).as('commentUrl');
+              cy.wrap(commentResponse.body.id).as('commentId');
+            });
+            cy.wrap(response.body.current_state_path).as('articlePath');
+            cy.get('@articlePath').then((articlePath) => {
+              cy.visit(`${articlePath}/manage`);
+              getDiscussionLockButton().click();
+              cy.get('#discussion_lock_reason')
+                .should('be.visible')
+                .type(exampleReason);
+              cy.get('#discussion_lock_notes')
+                .should('be.visible')
+                .type(exampleNotes);
+              getDiscussionLockSubmitButton().click();
+              cy.visit(articlePath);
+            });
           });
         });
       });
@@ -104,6 +114,31 @@ describe('Lock discussion', () => {
 
     it('should not show the new comment box', () => {
       cy.get('#new_comment').should('not.exist');
+    });
+
+    it('should not show reply button on comments on the Article page', function () {
+      cy.get(`[data-testid="reply-button-${this.commentId}"]`).should(
+        'not.exist',
+      );
+    });
+
+    it('should not show reply button on comments on a Comment page', function () {
+      cy.visit(this.commentUrl);
+      cy.get(`[data-testid="reply-button-${this.commentId}"]`).should(
+        'not.exist',
+      );
+    });
+
+    it('should not show the new comment box on the legacy Comment page', function () {
+      cy.visit(`${this.articlePath}/comments`);
+      cy.get('#new_comment').should('not.exist');
+    });
+
+    it('should not show reply button on comments on the legacy Comment page', function () {
+      cy.visit(`${this.articlePath}/comments`);
+      cy.get(`[data-testid="reply-button-${this.commentId}"]`).should(
+        'not.exist',
+      );
     });
   });
 });

@@ -569,7 +569,7 @@ seeder.create_if_none(Page) do
       body_markdown: Faker::Markdown.random,
       slug: Faker::Internet.slug,
       description: Faker::Books::Dune.quote,
-      template: %w[contained full_within_layout].sample,
+      template: %w[contained full_within_layout nav_bar_included].sample,
     )
   end
 end
