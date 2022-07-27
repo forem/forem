@@ -212,7 +212,8 @@ RSpec.describe "Api::V0::Users", type: :request do
 
   describe "PUT /api/users/:id/unpublish", :aggregate_failures do
     let(:target_user) { create(:user) }
-    let!(:target_articles) { create_list(:article, 3, user_id: target_user.id) }
+    let!(:target_articles) { create_list(:article, 3, user: target_user, published: true) }
+    let!(:target_comments) { create_list(:comment, 3, user: target_user) }
 
     before do
       allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
@@ -245,28 +246,44 @@ RSpec.describe "Api::V0::Users", type: :request do
     end
 
     context "when request is authenticated" do
-      before do
-        allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
-        api_secret.user.add_role(:super_admin)
-      end
+      before { api_secret.user.add_role(:super_admin) }
 
       it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
+        # User's articles are published and comments exist
+        expect(target_articles.map(&:published?)).to match_array([true, true, true])
+        expect(target_comments.map(&:deleted)).to match_array([false, false, false])
+
         put api_user_unpublish_path(id: target_user.id),
             headers: v1_headers
-
         expect(response).to have_http_status(:ok)
-        expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(target_user.id).once
+
+        sidekiq_perform_enqueued_jobs
+
+        # Ensure article's aren't published and comments deleted
+        # (with boolean attribute so they can be reverted if needed)
+        expect(target_articles.map(&:reload).map(&:published?)).to match_array([false, false, false])
+        expect(target_comments.map(&:reload).map(&:deleted)).to match_array([true, true, true])
       end
 
       it "creates an audit log of the action taken" do
+        # These deleted comments/articles are important so that the AuditLog trail won't
+        # include previously deleted resources like these in the log. Otherwise the revert
+        # action on these would have unintended consequences, i.e. revert a delete/unpublish
+        # that wasn't affected by the action taken in the API endpoint request.
+        create(:article, user: target_user, published: false)
+        create(:comment, user: target_user, deleted: true)
+
         put api_user_unpublish_path(id: target_user.id),
             headers: v1_headers
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
         expect(log.data["action"]).to eq("api_user_unpublish")
-        expect(log.data["target_article_ids"]).to match_array(target_articles.map(&:id))
         expect(log.user_id).to eq(api_secret.user.id)
+
+        # These ids match the affected articles/comments and not the ones created above
+        expect(log.data["target_article_ids"]).to match_array(target_articles.map(&:id))
+        expect(log.data["target_comment_ids"]).to match_array(target_comments.map(&:id))
       end
     end
   end
