@@ -214,7 +214,8 @@ class SearchController < ApplicationController
       next: relation.last_page? ? nil : "#{url}&page=#{relation.next_page - 1}",
       prev: relation.first_page? ? nil : "#{url}&page=#{relation.prev_page - 1}",
       first: "#{url}&page=0",
-      last: "#{url}&page=#{relation.total_pages - 1}"
+      last: "#{url}&page=#{relation.total_pages - 1}",
+      pages: relation.total_pages
     }
   end
 

@@ -22,14 +22,56 @@ function searchMain(substories) {
   const filters = filterXSS(params.filters || 'class_name:Article');
   const sortBy = filterXSS(params.sort_by || '');
   const sortDirection = filterXSS(params.sort_direction || '');
+  const page = parseInt(filterXSS(params.page || '0'), 10);
 
   substories.innerHTML =
     '<div class="p-9 align-center crayons-card"><br></div>';
   if (document.getElementById('query-wrapper')) {
-    search(query, filters, sortBy, sortDirection);
+    search(query, filters, sortBy, sortDirection, page);
     initializeFilters(query, filters);
     initializeSortingTabs(query);
   }
+}
+
+function fetchRecords(url) {
+  fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then((response) => response.json())
+    .then((content) => {
+      const resultDivs = [];
+      const currentUser = userData();
+      const currentUserId = currentUser && currentUser.id;
+      const { pages } = content.links ?? 0;
+      content.result.forEach((story) => {
+        resultDivs.push(buildArticleHTML(story, currentUserId));
+      });
+      document.getElementById('substories').innerHTML = resultDivs.join('');
+      initializeReadingListIcons();
+      document
+        .getElementById('substories')
+        .classList.add('search-results-loaded');
+      if (content.result.length === 0) {
+        document.getElementById('substories').innerHTML =
+          '<div class="p-9 align-center crayons-card">No results match that query</div>';
+      }
+      if (pages > 1) {
+        initializePagination(content.links);
+        document
+          .getElementById('btn-pagination-container')
+          .classList.remove('hidden');
+      } else {
+        document
+          .getElementById('btn-pagination-container')
+          .classList.add('hidden');
+      }
+    });
 }
 
 function initializeSortingTabs(query) {
@@ -127,15 +169,11 @@ function buildSortString(sortBy, sortDirection) {
     : '';
 }
 
-function search(query, filters, sortBy, sortDirection) {
+function search(query, filters, sortBy, sortDirection, page = 0) {
   const hashtags = query.match(/#\w+/g);
   const searchTerm = query.replace(/#/g, '').trim();
-  let page = parseInt(
-    filterXSS(getQueryParams(document.location.search).page),
-    10,
-  );
-  page = Number.isNaN(page) ? 0 : page;
-  const searchHash = { per_page: 30, page: page ? page : 0 };
+  // The user pagination starts at 1 but in backend starts at zero.
+  const searchHash = { per_page: 2, page: page === 0 ? page : page - 1 };
 
   if (sortBy && sortDirection) {
     searchHash.sort_by = sortBy;
@@ -178,162 +216,133 @@ function search(query, filters, sortBy, sortDirection) {
     }
   });
 
-  fetch(`/search/feed_content?${searchParams.toString()}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-  })
-    .then((response) => response.json())
-    .then((content) => {
-      const resultDivs = [];
-      const currentUser = userData();
-      const currentUserId = currentUser && currentUser.id;
-      content.result.forEach((story) => {
-        resultDivs.push(buildArticleHTML(story, currentUserId));
-      });
-      document.getElementById('substories').innerHTML = resultDivs.join('');
-      initializeReadingListIcons();
-      document
-        .getElementById('substories')
-        .classList.add('search-results-loaded');
-      if (content.result.length === 0) {
-        document.getElementById('substories').innerHTML =
-          '<div class="p-9 align-center crayons-card">No results match that query</div>';
-      }
-
-      //puts paginator indicators
-      if (content.links !== null) {
-        document
-          .getElementById('btn-pagination-container')
-          .classList.remove('hidden');
-
-        //prev and next buttons onclick event
-        if (content.links.prev) {
-          document.getElementById('previous-page').classList.remove('hidden');
-
-          const url = new URL(content.links.prev);
-          const page = new URLSearchParams(url.search).get('page');
-
-          document.getElementById('previous-page').onclick = change_page(
-            query,
-            filters,
-            sortBy,
-            sortDirection,
-            page,
-          );
-        } else {
-          document.getElementById('previous-page').classList.add('hidden');
-        }
-
-        if (content.links.next) {
-          document.getElementById('next-page').classList.add('remove');
-
-          const url = new URL(content.links.next);
-          const page = new URLSearchParams(url.search).get('page');
-          document.getElementById('next-page').onclick = change_page(
-            query,
-            filters,
-            sortBy,
-            sortDirection,
-            page,
-          );
-        } else {
-          document.getElementById('next-page').classList.add('hidden');
-        }
-
-        const last_url = new URL(content.links.last);
-        const total_pages = parseInt(
-          new URLSearchParams(last_url.search).get('page'),
-          10,
-        );
-
-        //create pagination number buttons
-        const page_btns = [];
-        if (total_pages > 5) {
-          page_btns.push(
-            `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="0" type="button" aria-label="Page 1">1</button>`,
-          );
-
-          let i = 1;
-          let j = 3;
-          if (page > 2) {
-            i = page >= total_pages - 3 ? total_pages - 4 : page - 1;
-            j = page + 1 < total_pages ? page + 1 : page;
-
-            page_btns.push(
-              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${
-                i - 1
-              }" type="button" aria-label="Page ${i - 1}">...</button>`,
-            );
-          }
-          for (i; i <= j && i !== total_pages - 1; i++) {
-            page_btns.push(
-              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button" aria-label="Page ${
-                i + 1
-              }">${i + 1}</button>`,
-            );
-          }
-
-          if (j < total_pages - 2) {
-            page_btns.push(
-              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button" aria-label="Page ${i}">...</button>`,
-            );
-          }
-
-          page_btns.push(
-            `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${
-              total_pages - 1
-            }" type="button" aria-label="Page ${total_pages}">${total_pages}</button>`,
-          );
-        } else {
-          for (let i = 0; i < total_pages; i++) {
-            page_btns.push(
-              `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${i}" type="button" aria-label="Page ${
-                i + 1
-              }">${i + 1}</button>`,
-            );
-          }
-        }
-
-        //adds buttons onclick event
-        document.getElementsByClassName('page-btn-container-js')[0].innerHTML =
-          page_btns.join('');
-        for (const dom_btn of document.getElementsByClassName('page-btn-js')) {
-          dom_btn.onclick = change_page(
-            query,
-            filters,
-            sortBy,
-            sortDirection,
-            dom_btn.dataset.page,
-          );
-        }
-
-        //indicate current page
-        const page_btn = document.querySelectorAll(
-          `.page-btn-js[data-page="${page}"]`,
-        )[0];
-        page_btn.classList.remove('crayons-btn--outlined');
-        page_btn.classList.add('crayons-btn');
-      } else {
-        document
-          .getElementById('btn-pagination-container')
-          .classList.add('hidden');
-      }
-    });
+  const feedContentURL = `/search/feed_content?${searchParams.toString()}`;
+  fetchRecords(feedContentURL);
 }
 
-function change_page(query, filters, sortBy, sortDirection, target_page) {
-  return function () {
-    const current_params = new URLSearchParams(document.location.search);
-    current_params.set('page', target_page);
-    window.history.pushState(null, null, `?${current_params.toString()}`);
-    window.history.replaceState(null, null, `?${current_params.toString()}`);
-    search(query, filters, sortBy, sortDirection);
+function initializePagination(links) {
+  const { first, last, next, prev, self, pages: totalPages } = links;
+
+  const { pathname, search } = new URL(self);
+  const currentPage = parseInt(new URLSearchParams(search).get('page'), 10);
+  const previousButton = document.getElementById('previous-page');
+  const nextButton = document.getElementById('next-page');
+  const pageButtonContainer = document.getElementsByClassName(
+    'page-btn-container-js',
+  )[0];
+  const pageButtons = () => {
+    const firstPageButton = `<button
+        id="first-page"
+        class="crayons-btn crayons-btn--outlined"
+        type="button"
+        data-page="0"
+        aria-label="Page 1">
+          1
+      </button>`;
+    const lastPageButton = `<button
+        id="last-page"
+        class="crayons-btn crayons-btn--outlined"
+        data-page="${totalPages - 1}"
+        type="button" aria-label="Page ${totalPages}"
+      >
+          ${totalPages}
+      </button>`;
+    const numberPageButton = (pageNumber, isInterval) => {
+      const buttonText = isInterval ? '...' : pageNumber;
+      return `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${
+        pageNumber - 1
+      }" aria-label="Page ${pageNumber}" type="button">${buttonText}</button>`;
+    };
+    let pageNumberButtons;
+
+    if (totalPages <= 5) {
+      pageNumberButtons = [...Array(totalPages - 2)].map((_, index) =>
+        numberPageButton(index + 2),
+      );
+    } else if (currentPage <= 3) {
+      pageNumberButtons = [...Array(4)].map((_, index) => {
+        const pageNumber = index + 2;
+        return index === 3
+          ? numberPageButton(pageNumber, true)
+          : numberPageButton(pageNumber);
+      });
+    } else if (currentPage >= totalPages - 4) {
+      pageNumberButtons = [...Array(4)].map((_, index) => {
+        const pageNumber = index + totalPages - 4;
+        return index === 0
+          ? numberPageButton(pageNumber, true)
+          : numberPageButton(pageNumber);
+      });
+    } else {
+      pageNumberButtons = [...Array(5)].map((_, index) => {
+        const pageNumber = index + currentPage - 1;
+        return index === 0 || index === 4
+          ? numberPageButton(pageNumber, true)
+          : numberPageButton(pageNumber);
+      });
+    }
+
+    return [firstPageButton, ...pageNumberButtons, lastPageButton].join('');
   };
+  const updatePage = (targetPage) => {
+    const newURL = new URLSearchParams(document.location.search);
+    newURL.set('page', targetPage);
+    window.history.pushState(null, null, `?${newURL.toString()}`);
+    window.history.replaceState(null, null, `?${newURL.toString()}`);
+  };
+
+  pageButtonContainer.innerHTML = pageButtons();
+  const pageButtonsElements = document.getElementsByClassName('page-btn-js');
+  const activePageButton = document.querySelectorAll(
+    `[data-page="${currentPage}"]`,
+  )[0];
+
+  // prev, next, first and last buttons onclick event
+  !!prev &&
+    (previousButton.onclick = () => {
+      updatePage(currentPage);
+      fetchRecords(prev);
+    });
+  !!next &&
+    (nextButton.onclick = () => {
+      updatePage(currentPage + 2);
+      fetchRecords(next);
+    });
+  !!first &&
+    (document.getElementById('first-page').onclick = () => {
+      updatePage(1);
+      fetchRecords(first);
+    });
+  !!last &&
+    (document.getElementById('last-page').onclick = () => {
+      updatePage(totalPages);
+      fetchRecords(last);
+    });
+
+  // Page number buttons
+  for (const button of pageButtonsElements) {
+    const targetPage = button.dataset.page;
+    const currentPage = new URLSearchParams(search);
+    currentPage.set('page', targetPage);
+    const destinationPageURL = `${pathname}?${currentPage.toString()}`;
+
+    button.onclick = () => {
+      updatePage(parseInt(targetPage, 10) + 1);
+      fetchRecords(destinationPageURL);
+    };
+  }
+
+  // Hide prev or next buttons
+  currentPage === 0
+    ? previousButton.classList.add('hidden')
+    : previousButton.classList.remove('hidden');
+  currentPage === totalPages - 1
+    ? nextButton.classList.add('hidden')
+    : nextButton.classList.remove('hidden');
+
+  // Indicate current page
+  activePageButton.classList.remove('crayons-btn--outlined');
+  activePageButton.classList.add('crayons-btn');
 }
 
 const waitingOnSearch = setInterval(() => {
