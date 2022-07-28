@@ -138,7 +138,7 @@ group :development, :test do
   gem "capybara", "~> 3.37.1" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.5" # For end to end tests (E2E)
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
-  gem "dotenv-rails", "~> 2.8.0" # For loading ENV variables locally
+  gem "dotenv-rails", "~> 2.8.1" # For loading ENV variables locally
   gem "faker", "~> 2.21" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 3.3.1" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
