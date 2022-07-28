@@ -102,44 +102,44 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 286,
-                    "title": "Terrible Swift Sword1",
-                    "description": "Cardigan taxidermy stumptown muggle magic. Tumblr lumbersexual yolo gluten-free taxidermy truffaut...",
-                    "readable_publish_date": "Jul 6",
-                    "slug": "terrible-swift-sword1-4gja",
-                    "path": "/username1/terrible-swift-sword1-4gja",
-                    "url": "http://localhost:3000/username1/terrible-swift-sword1-4gja",
+                    "id": 2661,
+                    "title": "To a God Unknown172",
+                    "description": "Thundercats kitsch park bespoke scenester cray irony occupy. Crucifix salvia vegan. Disrupt offal 3...",
+                    "readable_publish_date": "Jul 27",
+                    "slug": "to-a-god-unknown172-3lh1",
+                    "path": "/username469/to-a-god-unknown172-3lh1",
+                    "url": "http://localhost:3000/username469/to-a-god-unknown172-3lh1",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-07-06T16:49:01Z",
+                    "published_timestamp": "2022-07-27T20:31:54Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
-                    "social_image": "http://localhost:3000/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
-                    "canonical_url": "http://localhost:3000/username1/terrible-swift-sword1-4gja",
-                    "created_at": "2022-07-06T16:49:07Z",
+                    "cover_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
+                    "social_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
+                    "canonical_url": "http://localhost:3000/username469/to-a-god-unknown172-3lh1",
+                    "created_at": "2022-07-27T20:31:54Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-07-06T16:49:01Z",
-                    "last_comment_at": "2022-07-06T16:49:01Z",
+                    "published_at": "2022-07-27T20:31:54Z",
+                    "last_comment_at": "2022-07-27T20:31:54Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Malorie \"Herman\" \\:/ Trantow",
-                      "username": "username1",
-                      "twitter_username": "twitter1",
-                      "github_username": "github1",
+                      "name": "Carey \"Maya\" \\:/ Corwin",
+                      "username": "username469",
+                      "twitter_username": "twitter469",
+                      "github_username": "github469",
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/407/bcaaa39b-60d0-4dc2-97d2-9ec5c9e05b47.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/407/bcaaa39b-60d0-4dc2-97d2-9ec5c9e05b47.jpeg"
+                      "profile_image": "/uploads/user/profile_image/6332/5475485a-eb89-4e7f-b2d2-c548389462e8.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/6332/5475485a-eb89-4e7f-b2d2-c548389462e8.jpeg"
                     },
                     "organization": {
-                      "name": "Stamm Group",
-                      "username": "org1",
-                      "slug": "org1",
-                      "profile_image": "/uploads/organization/profile_image/109/fb157fe5-9a66-4baf-91cb-216f0a206e5e.png",
-                      "profile_image_90": "/uploads/organization/profile_image/109/fb157fe5-9a66-4baf-91cb-216f0a206e5e.png"
+                      "name": "Blanda, Barton and Tremblay",
+                      "username": "org56",
+                      "slug": "org56",
+                      "profile_image": "/uploads/organization/profile_image/934/ba061551-7cbe-4adc-80d0-bc60abcdaa32.png",
+                      "profile_image_90": "/uploads/organization/profile_image/934/ba061551-7cbe-4adc-80d0-bc60abcdaa32.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -159,6 +159,153 @@
           },
           "401": {
             "description": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/articles/{id}/unpublish": {
+      "put": {
+        "summary": "Unpublish an article",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
+        "operationId": "unpublishArticle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the article to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Article successfully unpublished"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/unpublish": {
+      "put": {
+        "summary": "Unpublish a User's Articles and Comments",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
+        "operationId": "unpublishUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User's articles and comments successfully unpublished"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID (still accepted for async processing)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/suspend": {
+      "put": {
+        "summary": "Suspend a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
+        "operationId": "suspendUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to suspend.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User successfully unpublished"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }

@@ -190,7 +190,7 @@ RSpec.describe "Api::V0::Users", type: :request do
               params: payload,
               headers: v1_headers
 
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_http_status(:no_content)
           expect(target_user.reload.suspended?).to be true
           expect(Note.last.content).to eq(payload[:note])
         end.to change(Note, :count).by(1)
@@ -255,7 +255,7 @@ RSpec.describe "Api::V0::Users", type: :request do
 
         put api_user_unpublish_path(id: target_user.id),
             headers: v1_headers
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:no_content)
 
         sidekiq_perform_enqueued_jobs
 

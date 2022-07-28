@@ -1217,7 +1217,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "unpublishes an article" do
         expect(published_article.published).to be true
         put path, headers: v1_headers
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:no_content)
         expect(published_article.reload.published).to be false
       end
     end
@@ -1228,7 +1228,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "unpublishes an article" do
         expect(published_article.published).to be true
         put path, headers: v1_headers
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:no_content)
         expect(published_article.reload.published).to be false
       end
 

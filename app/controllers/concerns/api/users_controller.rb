@@ -36,7 +36,7 @@ module Api
         payload = { action: "api_user_suspend", target_user_id: target_user.id }
         Audit::Logger.log(:admin_api, @user, payload)
 
-        render head: :ok
+        render status: :no_content
       rescue StandardError
         render json: {
           success: false,
@@ -67,7 +67,7 @@ module Api
       }
       Audit::Logger.log(:admin_api, @user, payload)
 
-      render head: :ok
+      render status: :no_content
     end
   end
 end
