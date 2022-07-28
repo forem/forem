@@ -213,6 +213,8 @@ function search(query, filters, sortBy, sortDirection) {
 
         //prev and next buttons onclick event
         if (content.links.prev) {
+          document.getElementById('previous-page').classList.remove('hidden');
+
           const url = new URL(content.links.prev);
           const page = new URLSearchParams(url.search).get('page');
 
@@ -223,8 +225,13 @@ function search(query, filters, sortBy, sortDirection) {
             sortDirection,
             page,
           );
+        } else {
+          document.getElementById('previous-page').classList.add('hidden');
         }
+
         if (content.links.next) {
+          document.getElementById('next-page').classList.add('remove');
+
           const url = new URL(content.links.next);
           const page = new URLSearchParams(url.search).get('page');
           document.getElementById('next-page').onclick = change_page(
@@ -234,13 +241,15 @@ function search(query, filters, sortBy, sortDirection) {
             sortDirection,
             page,
           );
+        } else {
+          document.getElementById('next-page').classList.add('hidden');
         }
 
         //create pagination number buttons
         const page_btns = [];
         if (content.links.total_pages > 5) {
           page_btns.push(
-            `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="0" type="button" aria-label="First page">1</button>`,
+            `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="0" type="button" aria-label="Page 1">1</button>`,
           );
 
           let i = 1;
@@ -275,7 +284,7 @@ function search(query, filters, sortBy, sortDirection) {
           page_btns.push(
             `<button class="crayons-btn crayons-btn--outlined page-btn-js" data-page="${
               content.links.total_pages - 1
-            }" type="button" aria-label="Last page">${
+            }" type="button" aria-label="Page ${content.links.total_pages}">${
               content.links.total_pages
             }</button>`,
           );
@@ -301,6 +310,13 @@ function search(query, filters, sortBy, sortDirection) {
             dom_btn.dataset.page,
           );
         }
+
+        //indicate current page
+        const page_btn = document.querySelectorAll(
+          `.page-btn-js[data-page="${page}"]`,
+        )[0];
+        page_btn.classList.remove('crayons-btn--outlined');
+        page_btn.classList.add('crayons-btn');
       } else {
         document
           .getElementById('btn-pagination-container')

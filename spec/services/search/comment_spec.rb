@@ -4,6 +4,11 @@ RSpec.describe Search::Comment, type: :service do
   let(:comment) { create(:comment) }
 
   describe "::search_documents" do
+    it "returns the correct keys with empty results" do
+      expect(described_class.search_documents[:serialize_result]).to be_empty
+      expect(described_class.search_documents[:relation]).to be_empty
+    end
+
     context "when filtering Commentables" do
       it "does not include comments from Articles that are unpublished", :aggregate_failures do
         comment_text = "Ruby on Rails rocks!"
@@ -13,7 +18,7 @@ RSpec.describe Search::Comment, type: :service do
         comment_on_unpublished_article = create(:comment, body_markdown: comment_text, commentable: unpublished_article)
         unpublished_article.update_columns(published: false)
 
-        result = described_class.search_documents(term: "rails")
+        result = described_class.search_documents(term: "rails")[:serialize_result]
         # rubocop:disable Rails/PluckId
         ids = result.pluck(:id)
         # rubocop:enable Rails/PluckId
@@ -24,7 +29,7 @@ RSpec.describe Search::Comment, type: :service do
     end
 
     context "when describing the result format" do
-      let(:result) { described_class.search_documents(term: comment.body_markdown) }
+      let(:result) { described_class.search_documents(term: comment.body_markdown)[:serialize_result] }
 
       it "returns the correct attributes for the result" do
         expected_keys = %i[
@@ -53,7 +58,7 @@ RSpec.describe Search::Comment, type: :service do
         comment = create(:comment, body_markdown: comment_text, score: 0)
         hotter_comment = create(:comment, body_markdown: comment_text, score: 99)
 
-        result = described_class.search_documents(term: "rails")
+        result = described_class.search_documents(term: "rails")[:serialize_result]
         scores = result.pluck(:hotness_score)
 
         expect(scores).to eq([hotter_comment.score, comment.score])
@@ -64,7 +69,8 @@ RSpec.describe Search::Comment, type: :service do
         comment = create(:comment, body_markdown: comment_text, score: 0)
         older_comment = create(:comment, body_markdown: comment_text, score: 99, created_at: 1.day.ago)
 
-        result = described_class.search_documents(sort_by: "published_at", sort_direction: "desc", term: "rails")
+        result = described_class.search_documents(sort_by: "published_at", sort_direction: "desc",
+                                                  term: "rails")[:serialize_result]
         # rubocop:disable Rails/PluckId
         ids = result.pluck(:id)
         # rubocop:enable Rails/PluckId
@@ -77,7 +83,8 @@ RSpec.describe Search::Comment, type: :service do
         comment = create(:comment, body_markdown: comment_text, score: 0)
         older_comment = create(:comment, body_markdown: comment_text, score: 99, created_at: 1.day.ago)
 
-        result = described_class.search_documents(sort_by: "published_at", sort_direction: "asc", term: "rails")
+        result = described_class.search_documents(sort_by: "published_at", sort_direction: "asc",
+                                                  term: "rails")[:serialize_result]
         # rubocop:disable Rails/PluckId
         ids = result.pluck(:id)
         # rubocop:enable Rails/PluckId
@@ -89,11 +96,11 @@ RSpec.describe Search::Comment, type: :service do
     context "when searching for a term" do
       it "matches against the comment's body_markdown (body_text)", :aggregate_failures do
         comment.update_columns(body_markdown: "Ruby on Rails rocks!")
-        result = described_class.search_documents(term: "rails")
+        result = described_class.search_documents(term: "rails")[:serialize_result]
 
         expect(result.first[:body_text]).to eq comment.body_markdown
 
-        result = described_class.search_documents(term: "javascript")
+        result = described_class.search_documents(term: "javascript")[:serialize_result]
         expect(result).to be_empty
       end
     end
@@ -102,15 +109,15 @@ RSpec.describe Search::Comment, type: :service do
       before { create_list(:comment, 2) }
 
       it "returns no results when out of pagination bounds" do
-        result = described_class.search_documents(page: 99)
+        result = described_class.search_documents(page: 99)[:serialize_result]
         expect(result).to be_empty
       end
 
       it "returns paginated results", :aggregate_failures do
-        result = described_class.search_documents(page: 0, per_page: 1)
+        result = described_class.search_documents(page: 0, per_page: 1)[:serialize_result]
         expect(result.length).to eq(1)
 
-        result = described_class.search_documents(page: 1, per_page: 1)
+        result = described_class.search_documents(page: 1, per_page: 1)[:serialize_result]
         expect(result.length).to eq(1)
       end
     end

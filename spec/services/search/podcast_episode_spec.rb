@@ -5,6 +5,11 @@ RSpec.describe Search::PodcastEpisode, type: :service do
   let(:podcast_episode) { create(:podcast_episode) }
 
   describe "::search_documents" do
+    it "returns the correct keys with empty results" do
+      expect(described_class.search_documents[:serialize_result]).to be_empty
+      expect(described_class.search_documents[:relation]).to be_empty
+    end
+
     context "when filtering PodcastEpisodes" do
       it "does not include PodcastEpisodes from Podcasts that are unpublished", :aggregate_failures do
         body_text = "DHH talks about how Ruby on Rails rocks!"
@@ -25,7 +30,7 @@ RSpec.describe Search::PodcastEpisode, type: :service do
           podcast_id: unpublished_podcast.id,
         )
 
-        result = described_class.search_documents(term: "rails")
+        result = described_class.search_documents(term: "rails")[:serialize_result]
         # rubocop:disable Rails/PluckId
         ids = result.pluck(:id)
         # rubocop:enable Rails/PluckId
@@ -54,7 +59,7 @@ RSpec.describe Search::PodcastEpisode, type: :service do
           reachable: false,
         )
 
-        result = described_class.search_documents(term: "rails")
+        result = described_class.search_documents(term: "rails")[:serialize_result]
         # rubocop:disable Rails/PluckId
         ids = result.pluck(:id)
         # rubocop:enable Rails/PluckId
@@ -65,7 +70,7 @@ RSpec.describe Search::PodcastEpisode, type: :service do
     end
 
     context "when describing the result format" do
-      let(:result) { described_class.search_documents(term: podcast_episode.body) }
+      let(:result) { described_class.search_documents(term: podcast_episode.body)[:serialize_result] }
 
       it "returns the correct attributes for the result" do
         expected_keys = %i[
@@ -97,7 +102,8 @@ RSpec.describe Search::PodcastEpisode, type: :service do
         older_podcast_episode = create(:podcast_episode, body: body_text, processed_html: body_text,
                                                          published_at: 1.day.ago)
 
-        result = described_class.search_documents(sort_by: "published_at", sort_direction: "desc", term: "rails")
+        result = described_class.search_documents(sort_by: "published_at", sort_direction: "desc",
+                                                  term: "rails")[:serialize_result]
         # rubocop:disable Rails/PluckId
         ids = result.pluck(:id)
         # rubocop:enable Rails/PluckId
@@ -111,7 +117,8 @@ RSpec.describe Search::PodcastEpisode, type: :service do
         older_podcast_episode = create(:podcast_episode, body: body_text, processed_html: body_text,
                                                          published_at: 1.day.ago)
 
-        result = described_class.search_documents(sort_by: "published_at", sort_direction: "asc", term: "rails")
+        result = described_class.search_documents(sort_by: "published_at", sort_direction: "asc",
+                                                  term: "rails")[:serialize_result]
         # rubocop:disable Rails/PluckId
         ids = result.pluck(:id)
         # rubocop:enable Rails/PluckId
@@ -124,31 +131,31 @@ RSpec.describe Search::PodcastEpisode, type: :service do
       it "matches against the podcast episode's body (body_text)", :aggregate_failures do
         body_text = "DHH talks about how Ruby on Rails rocks!"
         podcast_episode.update_columns(body: body_text, processed_html: body_text)
-        result = described_class.search_documents(term: "rails")
+        result = described_class.search_documents(term: "rails")[:serialize_result]
 
         expect(result.first[:body_text]).to eq podcast_episode.body_text
 
-        result = described_class.search_documents(term: "javascript")
+        result = described_class.search_documents(term: "javascript")[:serialize_result]
         expect(result).to be_empty
       end
 
       it "matches against the podcast episode's title", :aggregate_failures do
         podcast_episode.update_columns(title: "What's new in RoR?")
-        result = described_class.search_documents(term: "RoR")
+        result = described_class.search_documents(term: "RoR")[:serialize_result]
 
         expect(result.first[:title]).to eq podcast_episode.title
 
-        result = described_class.search_documents(term: "javascript")
+        result = described_class.search_documents(term: "javascript")[:serialize_result]
         expect(result).to be_empty
       end
 
       it "matches against the podcast episode's subtitle", :aggregate_failures do
         podcast_episode.update_columns(subtitle: "DHH's latest thoughts")
-        result = described_class.search_documents(term: "DHH")
+        result = described_class.search_documents(term: "DHH")[:serialize_result]
 
         expect(result.first[:subtitle]).to eq podcast_episode.subtitle
 
-        result = described_class.search_documents(term: "javascript")
+        result = described_class.search_documents(term: "javascript")[:serialize_result]
         expect(result).to be_empty
       end
     end
@@ -157,15 +164,15 @@ RSpec.describe Search::PodcastEpisode, type: :service do
       before { create_list(:podcast_episode, 2) }
 
       it "returns no results when out of pagination bounds" do
-        result = described_class.search_documents(page: 99)
+        result = described_class.search_documents(page: 99)[:serialize_result]
         expect(result).to be_empty
       end
 
       it "returns paginated results", :aggregate_failures do
-        result = described_class.search_documents(page: 0, per_page: 1)
+        result = described_class.search_documents(page: 0, per_page: 1)[:serialize_result]
         expect(result.length).to eq(1)
 
-        result = described_class.search_documents(page: 1, per_page: 1)
+        result = described_class.search_documents(page: 1, per_page: 1)[:serialize_result]
         expect(result.length).to eq(1)
       end
     end

@@ -5,26 +5,31 @@ require "rails_helper"
 RSpec.describe Search::Article, type: :service do
   describe "::search_documents" do
     it "returns an empty result if there are no articles" do
-      expect(described_class.search_documents).to be_empty
+      expect(described_class.search_documents[:serialize_result]).to be_empty
+      expect(described_class.search_documents[:relation]).to be_empty
+    end
+
+    it "returns ActiveRecord class on relation key" do
+      expect(described_class.search_documents[:relation]).to be_a(ActiveRecord::Relation)
     end
 
     it "does not return unpublished articles" do
       article = create(:article, published: false)
 
-      expect(described_class.search_documents.pluck(:id)).not_to include(article.id)
+      expect(described_class.search_documents[:serialize_result].pluck(:id)).not_to include(article.id)
     end
 
     it "returns published articles" do
       article = create(:article)
 
-      expect(described_class.search_documents.pluck(:id)).to include(article.id)
+      expect(described_class.search_documents[:serialize_result].pluck(:id)).to include(article.id)
     end
 
     context "when describing the result format" do
       it "does not include a highlight attribute" do
         create(:article)
 
-        expect(described_class.search_documents.first.key?(:highlight)).to be(false)
+        expect(described_class.search_documents[:serialize_result].first.key?(:highlight)).to be(false)
       end
     end
 
@@ -34,7 +39,7 @@ RSpec.describe Search::Article, type: :service do
         articles = create_list(:article, 2, user: user)
         article = create(:article)
 
-        results = described_class.search_documents(user_id: user.id).pluck(:id)
+        results = described_class.search_documents(user_id: user.id)[:serialize_result].pluck(:id)
         expect(results).not_to include(article.id)
         expect(results).to match_array(articles.pluck(:id))
       end
@@ -46,30 +51,30 @@ RSpec.describe Search::Article, type: :service do
       it "matches against the article's body_markdown", :aggregate_failures do
         article.update_columns(body_markdown: "Life of the party")
 
-        result = described_class.search_documents(term: "part").first
+        result = described_class.search_documents(term: "part")[:serialize_result].first
         expect(result[:path]).to eq(article.path)
 
-        results = described_class.search_documents(term: "fiesta")
+        results = described_class.search_documents(term: "fiesta")[:serialize_result]
         expect(results).to be_empty
       end
 
       it "matches against the article's title", :aggregate_failures do
         article.update_columns(title: "Life of the party")
 
-        result = described_class.search_documents(term: "part").first
+        result = described_class.search_documents(term: "part")[:serialize_result].first
         expect(result[:path]).to eq(article.path)
 
-        results = described_class.search_documents(term: "fiesta")
+        results = described_class.search_documents(term: "fiesta")[:serialize_result]
         expect(results).to be_empty
       end
 
       it "matches against the article's tags", :aggregate_failures do
         article.update_columns(cached_tag_list: "javascript, beginners, ruby")
 
-        result = described_class.search_documents(term: "beginner").first
+        result = described_class.search_documents(term: "beginner")[:serialize_result].first
         expect(result[:path]).to eq(article.path)
 
-        results = described_class.search_documents(term: "newbie")
+        results = described_class.search_documents(term: "newbie")[:serialize_result]
         expect(results).to be_empty
       end
 
@@ -77,26 +82,26 @@ RSpec.describe Search::Article, type: :service do
         article.organization = create(:organization, name: "ACME corp")
         article.save!
 
-        result = described_class.search_documents(term: "ACME").first
+        result = described_class.search_documents(term: "ACME")[:serialize_result].first
         expect(result[:path]).to eq(article.path)
 
-        results = described_class.search_documents(term: "ECMA")
+        results = described_class.search_documents(term: "ECMA")[:serialize_result]
         expect(results).to be_empty
       end
 
       it "matches against the article's user's name", :aggregate_failures do
-        result = described_class.search_documents(term: article.user_name.first(3)).first
+        result = described_class.search_documents(term: article.user_name.first(3))[:serialize_result].first
         expect(result[:path]).to eq(article.path)
 
-        results = described_class.search_documents(term: "notaname")
+        results = described_class.search_documents(term: "notaname")[:serialize_result]
         expect(results).to be_empty
       end
 
       it "matches against the article's user's username", :aggregate_failures do
-        result = described_class.search_documents(term: article.user_username.first(3)).first
+        result = described_class.search_documents(term: article.user_username.first(3))[:serialize_result].first
         expect(result[:path]).to eq(article.path)
 
-        results = described_class.search_documents(term: "notausername")
+        results = described_class.search_documents(term: "notausername")[:serialize_result]
         expect(results).to be_empty
       end
     end
@@ -108,7 +113,7 @@ RSpec.describe Search::Article, type: :service do
         article_tag = create(:article, tags: "consequatur")
         article_title = create(:article, title: "The Other Side of Silence Impedit consequatur")
 
-        results = described_class.search_documents(term: "consequatur")
+        results = described_class.search_documents(term: "consequatur")[:serialize_result]
         expect(results.pluck(:id)).to eq([article_title.id, article_tag.id, article_body.id])
       end
 
@@ -119,7 +124,7 @@ RSpec.describe Search::Article, type: :service do
         article2.update_columns(hotness_score: 10, comments_count: 11)
         article3.update_columns(hotness_score: 9, comments_count: 20)
 
-        results = described_class.search_documents
+        results = described_class.search_documents[:serialize_result]
         expect(results.pluck(:id)).to eq([article2.id, article1.id, article3.id])
       end
 
@@ -127,10 +132,12 @@ RSpec.describe Search::Article, type: :service do
         article1 = create(:article, tags: "ruby")
         article2 = create(:article, :past, tags: "ruby", past_published_at: 1.week.ago)
 
-        results = described_class.search_documents(term: "ruby", sort_by: :published_at, sort_direction: :asc)
+        results = described_class.search_documents(term: "ruby", sort_by: :published_at,
+                                                   sort_direction: :asc)[:serialize_result]
         expect(results.pluck(:id)).to eq([article2.id, article1.id])
 
-        results = described_class.search_documents(term: "ruby", sort_by: :published_at, sort_direction: :desc)
+        results = described_class.search_documents(term: "ruby", sort_by: :published_at,
+                                                   sort_direction: :desc)[:serialize_result]
         expect(results.pluck(:id)).to eq([article1.id, article2.id])
       end
 
@@ -139,10 +146,10 @@ RSpec.describe Search::Article, type: :service do
         article1 = create(:article)
         article2 = create(:article, :past, past_published_at: 1.week.ago)
 
-        results = described_class.search_documents(sort_by: :published_at, sort_direction: :asc)
+        results = described_class.search_documents(sort_by: :published_at, sort_direction: :asc)[:serialize_result]
         expect(results.pluck(:id)).to eq([article2.id, article1.id])
 
-        results = described_class.search_documents(sort_by: :published_at, sort_direction: :desc)
+        results = described_class.search_documents(sort_by: :published_at, sort_direction: :desc)[:serialize_result]
         expect(results.pluck(:id)).to eq([article1.id, article2.id])
       end
     end
@@ -151,17 +158,17 @@ RSpec.describe Search::Article, type: :service do
       it "returns no items when out of pagination bounds" do
         create(:article)
 
-        result = described_class.search_documents(page: 99)
+        result = described_class.search_documents(page: 99)[:serialize_result]
         expect(result).to be_empty
       end
 
       it "returns paginated items", :aggregate_failures do
         create_list(:article, 2)
 
-        result = described_class.search_documents(page: 0, per_page: 1)
+        result = described_class.search_documents(page: 0, per_page: 1)[:serialize_result]
         expect(result.length).to eq(1)
 
-        result = described_class.search_documents(page: 1, per_page: 1)
+        result = described_class.search_documents(page: 1, per_page: 1)[:serialize_result]
         expect(result.length).to eq(1)
       end
     end

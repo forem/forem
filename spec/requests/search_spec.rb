@@ -179,6 +179,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
         create(:comment, body_markdown: "Ruby on Rails rocks!")
         get search_feed_content_path(search_fields: "rails", class_name: "Comment")
         expect(response.parsed_body["result"]).to be_present
+        expect(response.parsed_body["links"]).to be_present
       end
 
       it "supports the search params for comments" do
@@ -201,6 +202,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
         get search_feed_content_path(class_name: "User")
 
         expect(response.parsed_body["result"]).to be_present
+        expect(response.parsed_body["links"]).to be_present
       end
 
       it "supports the search params" do
@@ -220,6 +222,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
         create(:podcast_episode, body: "DHH talks about how Ruby on Rails rocks!")
         get search_feed_content_path(search_fields: "rails", class_name: "PodcastEpisode")
         expect(response.parsed_body["result"]).to be_present
+        expect(response.parsed_body["links"]).to be_present
       end
 
       it "supports the search params for podcasts" do
@@ -241,6 +244,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       it "returns the correct keys for tags" do
         get search_feed_content_path(search_fields: "web", class_name: "Tag")
         expect(response.parsed_body["result"]).to be_present
+        expect(response.parsed_body["links"]).to be_present
       end
 
       it "supports the search params for tags" do
