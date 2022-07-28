@@ -214,8 +214,7 @@ class SearchController < ApplicationController
       next: relation.last_page? ? nil : "#{url}&page=#{relation.next_page - 1}",
       prev: relation.first_page? ? nil : "#{url}&page=#{relation.prev_page - 1}",
       first: "#{url}&page=0",
-      last: "#{url}&page=#{relation.total_pages - 1}",
-      total_pages: relation.total_pages
+      last: "#{url}&page=#{relation.total_pages - 1}"
     }
   end
 
@@ -229,7 +228,6 @@ class SearchController < ApplicationController
 
   def feed_params
     params.permit(FEED_PARAMS)
-    # params.permit(FEED_PARAMS).tap { |fp| fp[:per_page] = 2 }
   end
 
   def reaction_params
