@@ -157,4 +157,18 @@ describe('Home Feed Navigation', () => {
     cy.url().should('contain', '/latest');
     cy.findByRole('heading', { name: '#tag1' });
   });
+
+  it('should navigate to article comment area', function () {
+    cy.get('article.crayons-story')
+      .first()
+      .within(() => {
+        cy.findByRole('link', { name: /^Add a comment to post -/ }).click();
+      });
+
+    cy.url().should('contain', '#comments');
+
+    cy.findByRole('textbox', {
+      name: 'Add a comment to the discussion',
+    }).should('have.focus');
+  });
 });
