@@ -1,0 +1,38 @@
+name: mapi
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Start the service
+        run: docker-compose up -d
+
+      - name: Wait for service to be started
+        run: while ! curl -s http://localhost:3000; do echo "waiting for api server"; sleep 1; done
+
+      - name: Run Mayhem for API
+        uses: ForAllSecure/mapi-action@v1
+        continue-on-error: true
+        with:
+          mapi-token: ${{ secrets.MAPI_TOKEN }}
+          api-url: http://localhost:3000
+          api-spec: swagger/v1/swagger.json
+          target: mayhemheroes/forem
+          duration: auto
+          sarif-report: mapi.sarif
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: mapi.sarif
