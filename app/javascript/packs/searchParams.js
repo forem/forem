@@ -173,7 +173,7 @@ function search(query, filters, sortBy, sortDirection, page = 0) {
   const hashtags = query.match(/#\w+/g);
   const searchTerm = query.replace(/#/g, '').trim();
   // The user pagination starts at 1 but in backend starts at zero.
-  const searchHash = { per_page: 2, page: page === 0 ? page : page - 1 };
+  const searchHash = { per_page: 30, page: page === 0 ? page : page - 1 };
 
   if (sortBy && sortDirection) {
     searchHash.sort_by = sortBy;
