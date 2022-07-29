@@ -20,10 +20,11 @@ RSpec.configure do |config|
         version: "1.0.0",
         description: "Access Forem articles, users and other resources via API.
         For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
-        All endpoints require an 'api-key' header and a accept header.
 
-        Dates and date times, unless otherwise specified, must be in
-        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
+All endpoints require an 'api-key' header and a accept header set to `application/vnd.forem.api-v1+json`.
+
+Dates and date times, unless otherwise specified, must be in
+the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
       },
       paths: {},
       servers: [

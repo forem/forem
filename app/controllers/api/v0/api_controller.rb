@@ -87,7 +87,7 @@ module Api
           headers["api-key"].present?
 
         # rubocop:disable Layout/LineLength
-        response.headers["Warning"] = "299 - This endpoint will require the `api-key` header and the `Accept` header to be set to `application/vnd.forem.api-v1+json` in future."
+        response.headers["Warning"] = "299 - This endpoint will require the `api-key` header and the `Accept` header to be set to `application/vnd.forem.api-v1+json` in future. Visit https://developers.forem.com/api for more information."
         # rubocop:enable Layout/LineLength
       end
 
