@@ -76,7 +76,7 @@
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
-    "eslint-plugin-no-only-tests": "^2.6.0",
+    "eslint-plugin-no-only-tests": "^3.0.0",
     "eslint-plugin-react": "^7.30.1",
     "husky": "^8.0.1",
     "jest": "28.1.3",
