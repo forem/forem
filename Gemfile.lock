@@ -341,6 +341,7 @@ GEM
     gibbon (3.4.4)
       faraday (>= 1.0)
       multi_json (>= 1.11.0)
+    glob (0.2.2)
     globalid (1.0.0)
       activesupport (>= 5.0)
     google-protobuf (3.19.4)
@@ -397,8 +398,9 @@ GEM
       activerecord (>= 5)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    i18n-js (3.9.2)
-      i18n (>= 0.6.6)
+    i18n-js (4.0.0)
+      glob
+      i18n
     i18n-tasks (1.0.11)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
@@ -1016,7 +1018,7 @@ DEPENDENCIES
   httparty (~> 0.20)
   httpclient (~> 2.8.3)
   hypershield (~> 0.2.2)
-  i18n-js (~> 3.9.2)
+  i18n-js (~> 4.0.0)
   i18n-tasks (~> 1.0.11)
   imgproxy (~> 2.1)
   inline_svg (~> 1.8)
