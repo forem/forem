@@ -1438,10 +1438,10 @@
   resolved "https://registry.yarnpkg.com/@github/time-elements/-/time-elements-3.1.2.tgz#cc36d7a34ff2033d7f0b216f1a724405b8fbc201"
   integrity sha512-YVtZVLBikP6I7na22kfB9PKIseISwX41MFJ7lPuNz1VVH2IR5cpRRU6F1X6kcchPChljuvMUR4OiwMWHOJQ8kQ==
 
-"@honeybadger-io/js@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-4.0.4.tgz#dbfaaa384dda2ba3cc2c9365da0a64de59e50ced"
-  integrity sha512-DruCw6FSkL9tHo+C/qaIG2wGEAZ5To4ToGZG8o0WtbMZpvIR0IYPTPGoOQH0TPn83F2crSv0oziZtwUCtUJshw==
+"@honeybadger-io/js@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-4.0.5.tgz#b5751f8a7713799c744271087ace1f5a5821720e"
+  integrity sha512-HxFLGoNjnahzumvvyRNfUL7GfCJ4Cwbvr9X6dhBTK2OELMaQi/lEQM+clHxELWFuddaf3kwxvhl7SKdviUIZLA==
   dependencies:
     stacktrace-parser "^0.1.10"
 
