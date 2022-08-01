@@ -9,7 +9,7 @@ RSpec.describe Homepage::FetchArticles, type: :service do
 
       stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "ama" => tag.id })
 
-      result = described_class.call.first
+      result = described_class.call[:serialize_result].first
 
       keys = %i[
         class_name cloudinary_video_url comments_count flare_tag id path public_reactions_count
@@ -40,7 +40,7 @@ RSpec.describe Homepage::FetchArticles, type: :service do
     it "returns the user object in the correct format", :aggregate_failures do
       article = create(:article)
 
-      result = described_class.call.first
+      result = described_class.call[:serialize_result].first
       user = result[:user]
 
       expect(user[:name]).to eq(article.user.name)
@@ -51,7 +51,7 @@ RSpec.describe Homepage::FetchArticles, type: :service do
     it "returns the organization object in the correct format", :aggregate_failures do
       article = create(:article, organization: create(:organization))
 
-      result = described_class.call.first
+      result = described_class.call[:serialize_result].first
       organization = result[:organization]
 
       expect(organization[:name]).to eq(article.organization.name)
