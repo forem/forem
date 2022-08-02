@@ -129,8 +129,6 @@ Please see our installation guides, such as the
 - [@andygeorge](https://dev.to/andygeorge)
 - [@s_aitchison](https://dev.to/s_aitchison)
 - [@rt4914](https://dev.to/rt4914)
-- [@jeremyf](https://dev.to/jeremyf)
-- [@asheren](https://dev.to/asheren)
 - [@jaw6](https://dev.to/jaw6)
 
 ## Vulnerability disclosure
