@@ -5,7 +5,7 @@ class Role < ApplicationRecord
     comment_suspended
     creator
     mod_relations_admin
-    moderator
+    super_moderator
     podcast_admin
     restricted_liquid_tag
     single_resource_admin

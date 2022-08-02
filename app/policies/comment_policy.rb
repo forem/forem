@@ -32,7 +32,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
-    user_moderator? || user_any_admin?
+    user_super_moderator? || user_any_admin?
   end
 
   def hide?
