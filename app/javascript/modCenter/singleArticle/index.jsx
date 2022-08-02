@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 import { h, Fragment } from 'preact';
-import { createPortal } from 'preact/compat';
-import { FlagUserModal } from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
 export const SingleArticle = ({
@@ -31,17 +29,9 @@ export const SingleArticle = ({
   const tags = cachedTagList.split(', ').map((tag) => tagsFormat(tag, key));
 
   const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
-  const modContainer = id
-    ? document.getElementById(`mod-iframe-${id}`)
-    : document.getElementById('mod-container');
 
   return (
     <Fragment>
-      {modContainer &&
-        createPortal(
-          <FlagUserModal moderationUrl={path} authorId={user.id} />,
-          document.getElementsByClassName('flag-user-modal-container')[0],
-        )}
       <details
         id={`mod-article-${id}`}
         data-testid={`mod-article-${id}`}

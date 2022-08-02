@@ -41,8 +41,8 @@ describe('User index view', () => {
         });
     });
 
-    describe('Search and filter', () => {
-      // Search and filter controls are initialized async.
+    describe('Search', () => {
+      // Search controls are initialized async.
 
       it('Searches for a user', () => {
         cy.findByRole('button', { name: 'Expand search' })
@@ -58,69 +58,6 @@ describe('User index view', () => {
 
         // Correct search result should appear
         cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
-      });
-
-      it('Filters for a user', () => {
-        cy.findByRole('button', { name: 'Expand filter' })
-          .should('have.attr', 'aria-expanded', 'false')
-          .pipe(click)
-          .should('have.attr', 'aria-expanded', 'true');
-
-        cy.findByRole('combobox', { name: 'User role' }).select('super_admin');
-        cy.findByRole('button', { name: 'Filter' }).click();
-
-        // Filter results should include these two results
-        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
-        cy.findAllByText('Apple Auth Admin User').should('exist');
-      });
-
-      it('Prevents both search and filter widgets being visible at the same time', () => {
-        // Open the filter options
-        cy.findByRole('button', { name: 'Expand filter' })
-          .as('filterButton')
-          .should('have.attr', 'aria-expanded', 'false')
-          .pipe(click)
-          .should('have.attr', 'aria-expanded', 'true');
-        cy.findByRole('combobox').should('exist');
-
-        // Now click to open the search options
-        cy.findByRole('button', { name: 'Expand search' })
-          .as('searchButton')
-          .should('have.attr', 'aria-expanded', 'false')
-          .pipe(click)
-          .should('have.attr', 'aria-expanded', 'true');
-        cy.findByRole('button', { name: 'Search' }).should('exist');
-
-        // Verify the filter options have now closed
-        cy.get('@filterButton').should('have.attr', 'aria-expanded', 'false');
-        cy.findByRole('combobox').should('not.exist');
-
-        // Now re-click filter options and check search options have closed
-        cy.get('@filterButton').click();
-        cy.get('@searchButton').should('have.attr', 'aria-expanded', 'false');
-        cy.findByRole('button', { name: 'Search' }).should('not.exist');
-      });
-
-      it('indicates filter is applied if filter options are collapsed', () => {
-        // Choose a filter
-        cy.findByRole('button', { name: 'Expand filter' })
-          .as('filterButton')
-          .should('have.attr', 'aria-expanded', 'false')
-          .pipe(click)
-          .should('have.attr', 'aria-expanded', 'true');
-        cy.findByRole('combobox').select('trusted');
-        // Indicator should not be shown while open
-        cy.get('@filterButton')
-          .findByTestId('search-indicator')
-          .should('not.be.visible');
-
-        // Collapse the filter field; indicator should now be shown
-        cy.get('@filterButton')
-          .click()
-          .should('have.attr', 'aria-expanded', 'false');
-        cy.get('@filterButton')
-          .findByTestId('search-indicator')
-          .should('be.visible');
       });
 
       it('indicates a search term is applied if search options are collapsed', () => {
@@ -149,9 +86,11 @@ describe('User index view', () => {
           .should('be.visible');
       });
 
-      it(`Clicks through to the Member Detail View`, () => {
+      it('Clicks through to the Member Detail View', () => {
         cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
-        cy.url().should('contain', '/admin/member_manager/users/1');
+        cy.findByRole('heading', { name: 'Admin McAdmin', level: 1 }).should(
+          'exist',
+        );
       });
     });
 
@@ -197,21 +136,6 @@ describe('User index view', () => {
         // Since there aren't any results, the following message should be displayed
         cy.findByText('No members found under these filters.').should('exist');
       });
-
-      it('Displays an empty state when no results are returned when filtering for a user', () => {
-        cy.findByRole('button', { name: 'Expand filter' })
-          .should('have.attr', 'aria-expanded', 'false')
-          .pipe(click)
-          .should('have.attr', 'aria-expanded', 'true');
-
-        cy.findByRole('combobox', { name: 'User role' }).select(
-          'codeland_admin',
-        );
-        cy.findByRole('button', { name: 'Filter' }).click();
-
-        // Since there aren't any results, the following message should be displayed
-        cy.findByText('No members found under these filters.').should('exist');
-      });
     });
   });
 
@@ -243,7 +167,7 @@ describe('User index view', () => {
         });
     });
 
-    describe('Search and filter', () => {
+    describe('Search', () => {
       it('Searches for a user', () => {
         cy.findByRole('textbox', {
           name: 'Search member by name, username or email',
@@ -258,25 +182,6 @@ describe('User index view', () => {
         cy.findAllByRole('row').should('have.length', 2);
       });
 
-      it('Filters for a user', () => {
-        cy.findByRole('combobox', { name: 'User role' }).select('super_admin');
-        cy.findByRole('button', { name: 'Filter' }).click();
-
-        // Filter results should include these two results
-        cy.findByRole('heading', { name: 'Admin McAdmin' }).should('exist');
-        cy.findAllByText('Apple Auth Admin User').should('exist');
-
-        // Table header, 'normal' admin and apple auth admin
-        cy.findAllByRole('row').should('have.length', 3);
-      });
-
-      it(`Clicks through to the Member Detail View`, () => {
-        cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
-        cy.url().should('contain', '/admin/member_manager/users/1');
-      });
-    });
-
-    describe('Empty state', () => {
       it('Displays an empty state when no results are returned when searching for a user', () => {
         cy.findByRole('textbox', {
           name: 'Search member by name, username or email',
@@ -288,14 +193,11 @@ describe('User index view', () => {
         cy.findByText('No members found under these filters.').should('exist');
       });
 
-      it('Displays an empty state when no results are returned when filtering for a user', () => {
-        cy.findByRole('combobox', { name: 'User role' }).select(
-          'codeland_admin',
+      it('Clicks through to the Member Detail View', () => {
+        cy.findAllByRole('link', { name: 'Admin McAdmin' }).first().click();
+        cy.findByRole('heading', { name: 'Admin McAdmin', level: 1 }).should(
+          'exist',
         );
-        cy.findByRole('button', { name: 'Filter' }).click();
-
-        // Since there aren't any results, the following message should be displayed
-        cy.findByText('No members found under these filters.').should('exist');
       });
     });
 
@@ -319,6 +221,46 @@ describe('User index view', () => {
           .invoke('readText')
           .should('equal', 'admin@forem.local');
       });
+
+      it('Opens the assign role modal', () => {
+        openUserActionsDropdown();
+
+        cy.findByRole('button', { name: 'Assign role' }).click();
+
+        cy.getModal().within(() => {
+          cy.findByText('Add role').should('be.visible');
+          cy.findByText('Add a note to this action:').should('be.visible');
+          cy.findByRole('button', {
+            name: 'Add',
+          }).should('exist');
+        });
+      });
+
+      it('Opens the add organization modal', () => {
+        openUserActionsDropdown();
+        cy.findByRole('button', { name: 'Add organization' }).click();
+
+        cy.getModal().within(() => {
+          cy.findByText('Organization ID').should('be.visible');
+          cy.findByText('Role').should('be.visible');
+          cy.findByRole('button', {
+            name: 'Add organization',
+          }).should('exist');
+        });
+      });
+
+      it('Opens the adjust credit balance modal', () => {
+        openUserActionsDropdown();
+        cy.findByRole('button', { name: 'Adjust credit balance' }).click();
+
+        cy.getModal().within(() => {
+          cy.findAllByText('Adjust balance').should('be.visible');
+          cy.findByText('Add a note to this action:').should('be.visible');
+          cy.findByRole('button', {
+            name: 'Adjust balance',
+          }).should('exist');
+        });
+      });
     });
 
     describe('Export CSV', () => {
@@ -336,140 +278,6 @@ describe('User index view', () => {
             name: 'Download',
             href: '/admin/member_manager/users/export.csv',
           }).should('exist');
-        });
-      });
-    });
-
-    describe('User index view with the member_index_view feature flag enabled', () => {
-      describe('small screens', () => {
-        beforeEach(() => {
-          cy.testSetup();
-          cy.fixture('users/adminUser.json').as('user');
-          cy.enableFeatureFlag('member_index_view')
-            .then(() => cy.get('@user'))
-            .then((user) =>
-              cy.loginAndVisit(user, '/admin/member_manager/users'),
-            );
-          cy.viewport('iphone-x');
-        });
-
-        describe('User actions', () => {
-          it('Opens the assign role modal', () => {
-            cy.enableFeatureFlag('member_index_view');
-
-            openUserActionsDropdown();
-
-            cy.findByRole('button', { name: 'Assign role' }).click();
-
-            cy.getModal().within(() => {
-              cy.findByText('Add role').should('be.visible');
-              cy.findByText('Add a note to this action:').should('be.visible');
-              cy.findByRole('button', {
-                name: 'Add',
-              }).should('exist');
-            });
-          });
-
-          it('Opens the add organization modal', () => {
-            cy.enableFeatureFlag('member_index_view');
-
-            openUserActionsDropdown();
-
-            cy.findByRole('button', { name: 'Add organization' }).click();
-
-            cy.getModal().within(() => {
-              cy.findByText('Organization ID').should('be.visible');
-              cy.findByText('Role').should('be.visible');
-              cy.findByRole('button', {
-                name: 'Add organization',
-              }).should('exist');
-            });
-          });
-
-          it('Opens the adjust credit balance modal', () => {
-            cy.enableFeatureFlag('member_index_view');
-
-            openUserActionsDropdown();
-
-            cy.findByRole('button', { name: 'Adjust credit balance' }).click();
-
-            cy.getModal().within(() => {
-              cy.findAllByText('Adjust balance').should('be.visible');
-              cy.findByText('Add a note to this action:').should('be.visible');
-              cy.findByRole('button', {
-                name: 'Adjust balance',
-              }).should('exist');
-            });
-          });
-        });
-
-        describe('large screens', () => {
-          beforeEach(() => {
-            cy.testSetup();
-            cy.fixture('users/adminUser.json').as('user');
-            cy.enableFeatureFlag('member_index_view')
-              .then(() => cy.get('@user'))
-              .then((user) =>
-                cy.loginAndVisit(user, '/admin/member_manager/users'),
-              );
-            cy.viewport('macbook-16');
-          });
-
-          describe('User actions', () => {
-            it('Opens the assign role modal', () => {
-              cy.enableFeatureFlag('member_index_view');
-
-              openUserActionsDropdown();
-
-              cy.findByRole('button', { name: 'Assign role' }).click();
-
-              cy.getModal().within(() => {
-                cy.findByText('Add role').should('be.visible');
-                cy.findByText('Add a note to this action:').should(
-                  'be.visible',
-                );
-                cy.findByRole('button', {
-                  name: 'Add',
-                }).should('exist');
-              });
-            });
-
-            it('Opens the add organization modal', () => {
-              cy.enableFeatureFlag('member_index_view');
-
-              openUserActionsDropdown();
-
-              cy.findByRole('button', { name: 'Add organization' }).click();
-
-              cy.getModal().within(() => {
-                cy.findByText('Organization ID').should('be.visible');
-                cy.findByText('Role').should('be.visible');
-                cy.findByRole('button', {
-                  name: 'Add organization',
-                }).should('exist');
-              });
-            });
-
-            it('Opens the adjust credit balance modal', () => {
-              cy.enableFeatureFlag('member_index_view');
-
-              openUserActionsDropdown();
-
-              cy.findByRole('button', {
-                name: 'Adjust credit balance',
-              }).click();
-
-              cy.getModal().within(() => {
-                cy.findAllByText('Adjust balance').should('be.visible');
-                cy.findByText('Add a note to this action:').should(
-                  'be.visible',
-                );
-                cy.findByRole('button', {
-                  name: 'Adjust balance',
-                }).should('exist');
-              });
-            });
-          });
         });
       });
     });

@@ -42,6 +42,7 @@ class Reaction < ApplicationRecord
   scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
   scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
   scope :user_vomits, -> { where(category: "vomit", reactable_type: "User") }
+  scope :valid_or_confirmed, -> { where(status: %w[valid confirmed]) }
   scope :related_negative_reactions_for_user, lambda { |user|
     article_vomits.where(reactable_id: user.article_ids)
       .or(comment_vomits.where(reactable_id: user.comment_ids))
@@ -86,19 +87,32 @@ class Reaction < ApplicationRecord
     end
 
     # @param user [User] the user who might be spamming the system
+    # @param threshold [Integer] the number of strikes before they are spam
+    # @param include_user_profile [Boolean] do we include the user's profile as part of the "check
+    #        for spamminess"
     #
     # @return [TrueClass] yup, they're spamming the system.
     # @return [FalseClass] they're not (yet) spamming the system
-    def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2)
+    def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2, include_user_profile: false)
+      threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
       article_vomits.where(reactable_id: user.articles.ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
+    # @param threshold [Integer] the number of strikes before they are spam
+    # @param include_user_profile [Boolean] do we include the user's profile as part of the "check
+    #        for spamminess"
     #
     # @return [TrueClass] yup, they're spamming the system.
     # @return [FalseClass] they're not (yet) spamming the system
-    def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2)
+    def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2, include_user_profile: false)
+      threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
       comment_vomits.where(reactable_id: user.comments.ids).size > threshold
+    end
+
+    # @param user [User] the user who might be spamming the system
+    def user_has_spammy_profile_reaction?(user:)
+      user_vomits.exists?(reactable_id: user.id)
     end
   end
 

@@ -1,2 +1,0 @@
-<%= f.select :role, options_for_select(Role::ROLES, params[:role]), { include_blank: "All roles" }, aria: { label: "User role" }, class: "crayons-select", id: "filter-#{context}" %>
-<%= f.submit "Filter", class: "c-btn c-btn--secondary mt-0" %>

@@ -172,7 +172,7 @@ describe('Moderation Tools for Posts', () => {
           }).click();
         });
 
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Unpublish all posts' }).click();
         });
 
@@ -217,7 +217,7 @@ describe('Moderation Tools for Posts', () => {
             name: 'Suspend series_user',
           }).click();
         });
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Submit & Suspend' }).click();
 
           cy.findByTestId('suspension-reason-error')
@@ -237,7 +237,7 @@ describe('Moderation Tools for Posts', () => {
             name: 'Suspend series_user',
           }).click();
         });
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('textbox', { name: 'Note:' }).type(
             'My suspension reason',
           );
@@ -288,7 +288,7 @@ describe('Moderation Tools for Posts', () => {
             name: 'Unsuspend suspended_user',
           }).click();
         });
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Submit & Unsuspend' }).click();
           cy.findByTestId('unsuspension-reason-error')
             .contains('You must give a reason for this action.')
@@ -307,7 +307,7 @@ describe('Moderation Tools for Posts', () => {
           }).click();
         });
 
-        cy.findByRole('dialog').within(() => {
+        cy.getModal().within(() => {
           cy.findByRole('textbox', { name: 'Note:' }).type(
             'My unsuspension reason',
           );
@@ -364,6 +364,86 @@ describe('Moderation Tools for Posts', () => {
             );
           },
         );
+      });
+    });
+
+    describe('flag-user flow', () => {
+      beforeEach(() => {
+        cy.get('@trustedUser').then((user) => {
+          cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug');
+          cy.findByRole('heading', { level: 1, name: 'Test article' });
+          cy.findByRole('button', { name: 'Moderation' }).click();
+        });
+      });
+
+      it('should show error message if flag-user radio is unchecked', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
+        });
+        cy.getModal().within(() => {
+          cy.findByRole('button', { name: 'Confirm Flag' }).click();
+          cy.findByTestId('unselected-radio-error')
+            .contains('You must check the radio button first.')
+            .should('exist');
+        });
+      });
+
+      it('should flag the user if flag-user radio is checked', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
+        });
+
+        cy.getModal().within(() => {
+          const flagUserRadioName =
+            "Make all posts by admin_mcadmin less visible admin_mcadmin consistently posts content that violates DEV(local)'s code of conduct because it is harassing, offensive or spammy.";
+          cy.findByRole('radio', {
+            name: flagUserRadioName,
+          }).check();
+          cy.findByRole('button', { name: 'Confirm Flag' }).click();
+        });
+
+        cy.findByTestId('snackbar')
+          .contains('All posts by this author will be less visible.')
+          .should('exist');
+      });
+
+      it('should unflag the user if user was previously flagged', () => {
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
+        });
+
+        cy.getModal().within(() => {
+          cy.get('#flag-user-radio-input').check();
+          cy.findByRole('button', { name: 'Confirm Flag' }).click();
+        });
+
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Open admin actions' })
+            .as('moderatingActionsButton')
+            .pipe(click)
+            .should('have.attr', 'aria-expanded', 'true');
+          cy.findByRole('button', { name: 'Unflag admin_mcadmin' }).click();
+        });
+
+        cy.getModal().within(() => {
+          cy.findByRole('button', { name: 'Confirm Unflag' }).click();
+        });
+
+        cy.findByTestId('snackbar')
+          .contains('You have unflagged this author successfully.')
+          .should('exist');
       });
     });
   });

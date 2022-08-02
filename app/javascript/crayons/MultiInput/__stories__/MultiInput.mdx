@@ -1,1 +1,30 @@
 # Multi-Input
+
+The MultiInput component can be used in situations where a user wants to capture/add multiple entries.
+It allows the ability to add, edit, remove and capture and validate each entry before submitting the form.
+
+## Adding an entry
+
+Once a user types their entry, they may submit it by pressing Enter, Comma or Space.
+
+## Editing and removing an entry
+
+When a user adds an entry, it will be displayed as a button group. The first button triggers an edit, and the second button triggers the removal of the entry.
+
+Both buttons appear in the tab order, and are semantically grouped together for assistive technology.
+
+## Technical implementation notes
+
+### Styling
+
+The component comes with some default styling for selected options, but the layout of selections can be customised by passing in a Preact component `SelectionTemplate`.
+
+If the template is passed, it will receive in props the full option object in props e.g. `{ name: 'option one', someOtherProperty: 'foo' }`.
+
+### Accessibility
+
+Selected items appear as a button group with further context provided in `aria-label`s for screen reader users (Edit/Remove). As selections are made from the list, or removed from the selected items, they are announced to screen reader users via a visually hidden `aria-live` region.
+
+### Additional
+
+In the future, we may want to compare the MultiSelectAutocomplete Component, the AutocompleteTriggerTextArea and the MultiInput Component to look for abstractions and possibly move them into Custom Hooks.

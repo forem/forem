@@ -101,6 +101,12 @@ function trackCommentsSectionDisplayed() {
         ahoy.track('Comment section viewable', { page: location.href });
         observer.disconnect();
       }
+      if (location.hash === '#comments') {
+        //handle focus event on text area
+        const element = document.getElementById('text-area');
+        const event = new FocusEvent('focus');
+        element.dispatchEvent(event);
+      }
     });
   };
 

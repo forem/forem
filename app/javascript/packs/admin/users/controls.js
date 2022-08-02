@@ -2,48 +2,18 @@ import { initializeFiltersModal } from './filtersModal';
 import { INTERACTIVE_ELEMENTS_QUERY } from '@utilities/dropdownUtils';
 
 const expandSearchButton = document.getElementById('expand-search-btn');
-const expandFilterButton = document.getElementById('expand-filter-btn');
 const searchSection = document.getElementById('search-users');
-const filterSection = document.getElementById('filter-users');
 
 /**
- * Sets up the expand/collapse behavior used on the small-screen layout for Search and Filter form sections
+ * Sets up the expand/collapse behavior used on the small-screen layout for Search form section
  */
 const initializeExpandingSections = () => {
   expandSearchButton?.addEventListener('click', () => {
-    collapseControlsSection({
-      section: filterSection,
-      triggerButton: expandFilterButton,
-    });
-
     expandOrCollapseControlsSection({
       section: searchSection,
       triggerButton: expandSearchButton,
     });
   });
-
-  expandFilterButton?.addEventListener('click', () => {
-    collapseControlsSection({
-      section: searchSection,
-      triggerButton: expandSearchButton,
-    });
-
-    expandOrCollapseControlsSection({
-      section: filterSection,
-      triggerButton: expandFilterButton,
-    });
-  });
-};
-
-/**
- * Ensures the given controls section is closed.
- *
- * @param {HTMLElement} section The controls section to be closed
- * @param {HTMLElement} triggerButton The button responsible for opening and closing the section
- */
-const collapseControlsSection = ({ section, triggerButton }) => {
-  section?.classList.add('hidden');
-  triggerButton?.setAttribute('aria-expanded', false);
 };
 
 /**
@@ -65,7 +35,7 @@ const expandOrCollapseControlsSection = ({ section, triggerButton }) => {
 };
 
 /**
- * Helps provide a more seamless search/filter experience by sending keyboard focus directly to a newly expanded form
+ * Helps provide a more seamless search experience by sending keyboard focus directly to the newly expanded form
  *
  * @param {HTMLElement} element The element to send focus into (e.g. search form)
  */
@@ -74,25 +44,16 @@ const sendFocusToFirstInteractiveItem = (element) => {
 };
 
 /**
- * Ensures that search/filter button indicators in mobile view stay in sync with the user's current selections.
- * Indicators may become visible when a search term or filter option is input (although they are only displayed via CSS
+ * Ensures that search button indicator in mobile view stays in sync with the user's current selections.
+ * Indicators may become visible when a search term is input (although it is only displayed via CSS
  * when the section is collapsed).
  */
-const initializeSectionIndicators = () => {
+const initializeSearchIndicator = () => {
   document
     .getElementById('search-small')
     ?.addEventListener('change', ({ target: { value } }) => {
       toggleIndicator({
         indicator: expandSearchButton?.querySelector('.search-indicator'),
-        value,
-      });
-    });
-
-  document
-    .getElementById('filter-small')
-    ?.addEventListener('change', ({ target: { value } }) => {
-      toggleIndicator({
-        indicator: expandFilterButton?.querySelector('.search-indicator'),
         value,
       });
     });
@@ -114,5 +75,5 @@ const toggleIndicator = ({ value, indicator }) => {
 };
 
 initializeExpandingSections();
-initializeSectionIndicators();
+initializeSearchIndicator();
 initializeFiltersModal();
