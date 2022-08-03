@@ -38,7 +38,7 @@ RSpec.describe "Api::V0::ApiController", type: :request do
         expect(response).to have_http_status(:success)
         # rubocop:disable Layout/LineLength
         expect(response.headers["Warning"])
-          .to eq("299 - This endpoint will require the `api-key` header and the `Accept` header to be set to `application/vnd.forem.api-v1+json` in future.")
+          .to eq("299 - This endpoint is part of the V0 (beta) API. To start using the V1 endpoints add the `Accept` header and set it to `application/vnd.forem.api-v1+json`. Visit https://developers.forem.com/api for more information.")
         # rubocop:enable Layout/LineLength
       end
     end
@@ -52,7 +52,7 @@ RSpec.describe "Api::V0::ApiController", type: :request do
         expect(response).to have_http_status(:success)
         # rubocop:disable Layout/LineLength
         expect(response.headers["Warning"])
-          .to eq("299 - This endpoint will require the `api-key` header and the `Accept` header to be set to `application/vnd.forem.api-v1+json` in future.")
+          .to eq("299 - This endpoint is part of the V0 (beta) API. To start using the V1 endpoints add the `Accept` header and set it to `application/vnd.forem.api-v1+json`. Visit https://developers.forem.com/api for more information.")
         # rubocop:enable Layout/LineLength
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe "Api::V0::ApiController", type: :request do
         expect(response).to have_http_status(:success)
         # rubocop:disable Layout/LineLength
         expect(response.headers["Warning"])
-          .to eq("299 - This endpoint will require the `api-key` header and the `Accept` header to be set to `application/vnd.forem.api-v1+json` in future.")
+          .to eq("299 - This endpoint is part of the V0 (beta) API. To start using the V1 endpoints add the `Accept` header and set it to `application/vnd.forem.api-v1+json`. Visit https://developers.forem.com/api for more information.")
         # rubocop:enable Layout/LineLength
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe "Api::V0::ApiController", type: :request do
         expect(response).to have_http_status(:success)
         # rubocop:disable Layout/LineLength
         expect(response.headers["Warning"])
-          .to eq("299 - This endpoint will require the `api-key` header and the `Accept` header to be set to `application/vnd.forem.api-v1+json` in future.")
+          .to eq("299 - This endpoint is part of the V0 (beta) API. To start using the V1 endpoints add the `Accept` header and set it to `application/vnd.forem.api-v1+json`. Visit https://developers.forem.com/api for more information.")
         # rubocop:enable Layout/LineLength
       end
     end
