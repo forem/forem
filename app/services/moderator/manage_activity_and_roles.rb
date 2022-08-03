@@ -68,7 +68,7 @@ module Moderator
       when "Suspended" || "Spammer"
         user.add_role(:suspended)
         remove_privileges
-      when "Moderator"
+      when "Super Moderator"
         assign_elevated_role_to_user(user, :moderator)
         TagModerators::AddTrustedRole.call(user)
       when "Good standing"
