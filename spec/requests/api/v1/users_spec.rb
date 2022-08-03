@@ -103,7 +103,7 @@ RSpec.describe "Api::V1::Users", type: :request do
 
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
-        get me_api_users_path, headers: headers
+        get me_api_users_path, headers: auth_headers
 
         response_user = response.parsed_body
 
