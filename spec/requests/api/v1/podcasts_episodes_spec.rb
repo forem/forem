@@ -2,30 +2,9 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::PodcastEpisodes", type: :request do
   let(:podcast) { create(:podcast) }
-  let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/podcast_episodes" do
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        create(:podcast_episode, podcast: podcast)
-
-        get api_podcast_episodes_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        create(:podcast_episode, podcast: podcast)
-
-        get api_podcast_episodes_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns json response" do
       get api_podcast_episodes_path, headers: v1_headers
 

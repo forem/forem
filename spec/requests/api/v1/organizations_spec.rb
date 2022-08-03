@@ -1,25 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Organizations", type: :request do
-  let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/organizations/:username" do
     let(:organization) { create(:organization) }
-
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get "/api/organizations/invalid-username", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get "/api/organizations/invalid-username", headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
 
     it "returns 404 if the organizations username is not found" do
       get "/api/organizations/invalid-username", headers: v1_headers
@@ -49,20 +34,6 @@ RSpec.describe "Api::V1::Organizations", type: :request do
   describe "GET /api/organizations/:username/users" do
     let!(:org_user) { create(:user, :org_member) }
     let(:organization) { org_user.organizations.first }
-
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get "/api/organizations/invalid-username/users", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get "/api/organizations/invalid-username/users", headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
 
     it "returns 404 if the organizations username is not found" do
       get "/api/organizations/invalid-username/users", headers: v1_headers
@@ -107,22 +78,6 @@ RSpec.describe "Api::V1::Organizations", type: :request do
     let(:org_user) { create(:user, :org_member) }
     let(:organization) { org_user.organizations.first }
     let!(:listing) { create(:listing, user: org_user, organization: organization) }
-
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get api_organization_listings_path(organization.username),
-            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get api_organization_listings_path(organization.username),
-            headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
 
     it "returns 404 if the organizations username is not found" do
       get "/api/organizations/invalid-username/listings", headers: v1_headers
@@ -176,22 +131,6 @@ RSpec.describe "Api::V1::Organizations", type: :request do
     let(:org_user) { create(:user, :org_member) }
     let(:organization) { org_user.organizations.first }
     let!(:article) { create(:article, user: org_user, organization: organization) }
-
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get api_organization_articles_path(organization.username),
-            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get api_organization_articles_path(organization.username),
-            headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
 
     it "returns 404 if the organizations articles is not found" do
       get "/api/organizations/invalid-username/articles", headers: v1_headers

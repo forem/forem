@@ -34,14 +34,48 @@ module Api
         render json: { error: "not found", status: 404 }, status: :not_found
       end
 
+      # @note This method is used in ApplicationController. We override it to
+      #       use authenticate_with_api_key_or_current_user! for it to work in
+      #       the API context with either API key or current user auth
+      def authenticate!
+        authenticate_with_api_key_or_current_user!
+      end
+
       # @note This method is performing both authentication and authorization.  The user suspended
       #       should be something added to the corresponding pundit policy.
-      def authenticate!
+      def authenticate_with_api_key!
         @user = authenticate_with_api_key
         return error_unauthorized unless @user
         return error_unauthorized if @user.suspended?
 
         true
+      end
+
+      # @note This method is performing both authentication and authorization.  The user suspended
+      #       should be something added to the corresponding pundit policy.
+      def authenticate_with_api_key_or_current_user!
+        @user = authenticate_with_api_key_or_current_user
+        return error_unauthorized unless @user
+        return error_unauthorized if @user.suspended?
+
+        true
+      end
+
+      # Checks if the user is authenticated, sets @user to nil otherwise
+      #
+      # @return [User, NilClass]
+      #
+      # @see #pundit_user
+      # @see #authenticate_with_api_key_or_current_user
+      #
+      # @note We could memoize the `@user ||=` but Rubocop wants to rename that to
+      #       `authenticate_with_api_key_or_current_user` which would be bad as descendant classes
+      #       have chosen to reference the `@user` instance variable.  Intsead [@jeremyf] is
+      #       favoring leaving this method as is to reduce impact, and having `#pundit_user` do the
+      #       memoization.
+      #
+      def authenticate_with_api_key_or_current_user
+        @user = authenticate_with_api_key || current_user
       end
 
       def authorize_super_admin

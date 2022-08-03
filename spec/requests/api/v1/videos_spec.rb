@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Videos", type: :request do
+RSpec.describe "Api::V1::Videos", type: :request do
   let(:user) { create(:user, created_at: 1.month.ago) }
   let(:api_secret) { create(:api_secret, user: user) }
-  let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   def create_article(article_params = {})
     default_params = {
@@ -14,26 +14,6 @@ RSpec.describe "Api::V0::Videos", type: :request do
   end
 
   describe "GET /api/videos" do
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        create_article
-
-        get api_videos_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        create_article
-
-        get api_videos_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns articles with videos" do
       create_article
 

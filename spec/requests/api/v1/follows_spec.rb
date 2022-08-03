@@ -1,9 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::FollowsController", type: :request do
-  let(:api_secret) { create(:api_secret) }
-  let(:user) { api_secret.user }
-
   describe "POST /api/follows" do
     it "returns unauthorized if user is not signed in" do
       post "/api/follows", params: { users: [] }

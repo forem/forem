@@ -85,28 +85,4 @@ RSpec.describe "Api::V0::ApiController", type: :request do
       end
     end
   end
-
-  context "when API V1 is NOT enabled" do
-    context "when request header is v0" do
-      let(:headers) { { Accept: "application/v0+json" } }
-
-      it "responds with a Success code and no warning header" do
-        get path, headers: headers
-
-        expect(response).to have_http_status(:success)
-        expect(response.headers["Warning"]).to be_nil
-      end
-    end
-
-    context "when request header is missing" do
-      let(:headers) { {} }
-
-      it "responds with a Success code and no warning header" do
-        get path, headers: headers
-
-        expect(response).to have_http_status(:success)
-        expect(response.headers["Warning"]).to be_nil
-      end
-    end
-  end
 end
