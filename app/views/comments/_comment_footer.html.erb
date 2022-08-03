@@ -1,15 +1,18 @@
 <footer class="comment__footer print-hidden">
   <button
-    class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button"
+    class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button"
     id="button-for-comment-<%= comment.id %>"
     data-comment-id="<%= comment.id %>"
-    title="heart"
+    aria-label="<%= t("views.comments.footer.heart.aria_label") %>"
     data-tracking-name="comment_heart_button">
     <%= crayons_icon_tag("small-heart",
                          class: "reaction-icon not-reacted",
                          title: t("views.comments.footer.heart.icon")) %>
     <%= crayons_icon_tag("small-heart-filled", class: "crayons-icon reaction-icon--like reaction-icon reacted", title: t("views.comments.footer.heart.icon")) %>
     <%= t("views.comments.footer.heart.count_html", num: tag.span((comment.public_reactions_count if comment.public_reactions_count.positive?), class: "reactions-count"), likes: tag.span(like_button_text(comment).html_safe, class: "reactions-label hidden m:inline-block")) %>
+    <span data-testid="tooltip" class="crayons-tooltip__content">
+      <%= t("views.comments.footer.heart.title") %>
+    </span>
   </button>
 
   <% unless @discussion_lock %>
