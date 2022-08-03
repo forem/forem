@@ -147,7 +147,7 @@
           <small class="crayons-story__tertiary fs-xs mr-2">
             <%= t("views.articles.reading_time", count: story.reading_time < 1 ? 1 : story.reading_time) %>
           </small>
-          <% if story.user_id != @user.id %>
+          <% if !@user or story.user_id != @user.id %>
             <button
               type="button"
               id="article-save-button-<%= story.id %>"
