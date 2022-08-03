@@ -34,9 +34,13 @@ module Api
         render json: { error: "not found", status: 404 }, status: :not_found
       end
 
-      # @note This method is used in ApplicationController. We override it to
-      #       use authenticate_with_api_key_or_current_user! for it to work in
-      #       the API context with either API key or current user auth
+      # @note This method is used in ApplicationController within the
+      #       `verify_private_forem` method (read more in annotations there).
+      #       It uses `authenticate_with_api_key_or_current_user!` under the
+      #       hood to ensure the request is authenticated (on private forems in
+      #       this case). We recommend API::V1 controllers rely on the methods
+      #       below to check for either API key or API key + current_user.
+      #       They're more verbose but they convey the auth method clearly.
       def authenticate!
         authenticate_with_api_key_or_current_user!
       end
