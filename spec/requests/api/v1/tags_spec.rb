@@ -2,14 +2,14 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Tags", type: :request do
   describe "GET /api/tags" do
-    let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
+    let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
     before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
     it "returns tags" do
       create(:tag, taggings_count: 10)
 
-      get api_tags_path, headers: v1_headers
+      get api_tags_path, headers: headers
 
       expect(response.parsed_body.size).to eq(1)
     end
@@ -19,7 +19,7 @@ RSpec.describe "Api::V1::Tags", type: :request do
       tag = create(:tag, taggings_count: 10)
       tag_with_badge = create(:tag, taggings_count: 5, badge: badge)
 
-      get api_tags_path, headers: v1_headers
+      get api_tags_path, headers: headers
 
       response_tag = response.parsed_body.first
       response_tag_with_badge = response.parsed_body.last
@@ -31,7 +31,7 @@ RSpec.describe "Api::V1::Tags", type: :request do
       tag = create(:tag, taggings_count: 10)
       other_tag = create(:tag, taggings_count: tag.taggings_count + 1)
 
-      get api_tags_path, headers: v1_headers
+      get api_tags_path, headers: headers
 
       expected_result = [other_tag.id, tag.id]
       expect(response.parsed_body.map { |t| t["id"] }).to eq(expected_result)
@@ -40,17 +40,17 @@ RSpec.describe "Api::V1::Tags", type: :request do
     it "supports pagination" do
       create_list(:tag, 3)
 
-      get api_tags_path, params: { page: 1, per_page: 2 }, headers: v1_headers
+      get api_tags_path, params: { page: 1, per_page: 2 }, headers: headers
       expect(response.parsed_body.length).to eq(2)
 
-      get api_tags_path, params: { page: 2, per_page: 2 }, headers: v1_headers
+      get api_tags_path, params: { page: 2, per_page: 2 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
     end
 
     it "sets the correct edge caching surrogate key for all tags" do
       tag = create(:tag, taggings_count: 10)
 
-      get api_tags_path, headers: v1_headers
+      get api_tags_path, headers: headers
 
       expected_key = ["tags", tag.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)

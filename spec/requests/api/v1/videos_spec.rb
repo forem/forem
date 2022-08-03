@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Api::V1::Videos", type: :request do
   let(:user) { create(:user, created_at: 1.month.ago) }
   let(:api_secret) { create(:api_secret, user: user) }
-  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   def create_article(article_params = {})
     default_params = {
@@ -17,7 +17,7 @@ RSpec.describe "Api::V1::Videos", type: :request do
     it "returns articles with videos" do
       create_article
 
-      get api_videos_path, headers: v1_headers
+      get api_videos_path, headers: headers
 
       expect(response.parsed_body.size).to eq(1)
     end
@@ -26,7 +26,7 @@ RSpec.describe "Api::V1::Videos", type: :request do
       article = create_article
       article.update(published: false)
 
-      get api_videos_path, headers: v1_headers
+      get api_videos_path, headers: headers
 
       expect(response.parsed_body.size).to eq(1)
     end
@@ -34,7 +34,7 @@ RSpec.describe "Api::V1::Videos", type: :request do
     it "does not return regular articles without videos" do
       create(:article)
 
-      get api_videos_path, headers: v1_headers
+      get api_videos_path, headers: headers
 
       expect(response.parsed_body.size).to eq(0)
     end
@@ -42,7 +42,7 @@ RSpec.describe "Api::V1::Videos", type: :request do
     it "does not return video articles with a score that is too low" do
       create_article(score: -4)
 
-      get api_videos_path, headers: v1_headers
+      get api_videos_path, headers: headers
 
       expect(response.parsed_body.size).to eq(0)
     end
@@ -50,7 +50,7 @@ RSpec.describe "Api::V1::Videos", type: :request do
     it "returns video articles with the correct json representation", :aggregate_failures do
       video_article = create_article
 
-      get api_videos_path, headers: v1_headers
+      get api_videos_path, headers: headers
 
       response_video = response.parsed_body.first
       expected_keys = %w[type_of id path cloudinary_video_url title user_id video_duration_in_minutes video_source_url
@@ -68,7 +68,7 @@ RSpec.describe "Api::V1::Videos", type: :request do
       video_article = create_article(hotness_score: 10)
       other_video_article = create_article(hotness_score: 9)
 
-      get api_videos_path, headers: v1_headers
+      get api_videos_path, headers: headers
 
       expected_result = [video_article.id, other_video_article.id]
       expect(response.parsed_body.map { |a| a["id"] }).to eq(expected_result)
@@ -80,17 +80,17 @@ RSpec.describe "Api::V1::Videos", type: :request do
         user: user, video: "https://example.com", video_thumbnail_url: "https://example.com", title: "video"
       )
 
-      get api_videos_path, params: { page: 1, per_page: 2 }, headers: v1_headers
+      get api_videos_path, params: { page: 1, per_page: 2 }, headers: headers
       expect(response.parsed_body.length).to eq(2)
 
-      get api_videos_path, params: { page: 2, per_page: 2 }, headers: v1_headers
+      get api_videos_path, params: { page: 2, per_page: 2 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
     end
 
     it "sets the correct edge caching surrogate key for all video articles" do
       video_article = create_article
 
-      get api_videos_path, headers: v1_headers
+      get api_videos_path, headers: headers
 
       expected_key = ["videos", "articles", video_article.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
