@@ -59,6 +59,7 @@ experiments:
     #       occurred on or after the given start_date.
     started_at: 2022-07-26
     ended_at: 2022-08-01
+	  winner: 20220726-variant-b
     variants:
       - 20220719-variant-b
       - 20220726-variant-a
