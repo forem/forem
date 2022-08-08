@@ -37,12 +37,9 @@ en:
       icon_left: Left menu
       icon_right: Right menu
     logo:
-      color_1:
-        label: Brand color 1
+      color:
+        label: Brand color
         description: Used for backgrounds, borders etc.
-      color_2:
-        label: Brand color 2
-        description_html: Used for texts (usually put on <em>Brand color 1</em>).
       preview:
         icon: App logo
         text: 'Preview:'
