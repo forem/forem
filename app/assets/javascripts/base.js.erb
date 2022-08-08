@@ -424,6 +424,7 @@ var instantClick
 
       for (i = 0; i < scriptElementsToCopy.length; i++) {
         originalElement = scriptElementsToCopy[i]
+        if(originalElement.id === 'gist-ltag') continue;
         if (!originalElement) { // Might have disappeared, see previous comment
           continue
         }
