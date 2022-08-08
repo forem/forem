@@ -42,10 +42,6 @@ const handleImageSuccess = (textAreaRef) => {
     editableBodyElement.selectionStart =
       selectionStart + markdownImageLink.length;
     editableBodyElement.selectionEnd = editableBodyElement.selectionStart;
-
-    // Dispatching a new event so that linkstate, https://github.com/developit/linkstate,
-    // the function used to create the onChange prop gets called correctly.
-    editableBodyElement.dispatchEvent(new Event('input'));
   };
 };
 
