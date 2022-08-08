@@ -443,7 +443,7 @@ class Article < ApplicationRecord
   end
 
   def scheduled?
-    published_at.future?
+    published_at? && published_at.future?
   end
 
   def search_id
