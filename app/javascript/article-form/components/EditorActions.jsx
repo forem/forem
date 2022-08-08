@@ -44,12 +44,19 @@ export const EditorActions = ({
     ? moment(`${publishedAtDate} ${publishedAtTime || '00:00'}`)
     : now;
   const schedule = publishedAtObj > now;
+  const wasScheduled = passedData.publishedAtWas > now;
 
-  const saveButtonText = schedule
-    ? 'Schedule'
-    : published || isVersion1
-    ? 'Save changes'
-    : 'Publish';
+  // if the article was saved as scheduled, and the user clears publishedAt in the post options, the save button text is changed to "Publish"
+  // to make it clear that the article is going to be published right away
+
+  let saveButtonText;
+  if (schedule) {
+    saveButtonText = 'Schedule';
+  } else if (wasScheduled || (!published && !isVersion1)) {
+    saveButtonText = 'Publish';
+  } else {
+    saveButtonText = 'Save changes';
+  }
 
   return (
     <div className="crayons-article-form__footer">

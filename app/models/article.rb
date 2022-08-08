@@ -180,7 +180,6 @@ class Article < ApplicationRecord
   before_save :fetch_video_duration
   before_save :set_caches
   before_create :create_password
-  after_update :notify_slack_channel_about_publication, if: -> { published && saved_change_to_published? }
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
@@ -444,7 +443,7 @@ class Article < ApplicationRecord
   end
 
   def scheduled?
-    published_at.future?
+    published_at? && published_at.future?
   end
 
   def search_id
@@ -944,10 +943,6 @@ class Article < ApplicationRecord
 
   def touch_collection
     collection.touch if collection && previous_changes.present?
-  end
-
-  def notify_slack_channel_about_publication
-    Slack::Messengers::ArticlePublished.call(article: self)
   end
 
   def enrich_image_attributes

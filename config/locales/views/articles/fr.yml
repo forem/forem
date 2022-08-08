@@ -7,7 +7,7 @@ fr:
       actions:
         aria_label: Article actions
       comments:
-        aria_label: Comments for post %{title} (%{num})
+        aria_label: Add a comment to post - %{title}
         subtitle_html: Discussion %{num}
         num: "(%{num})"
         subscribe: Subscribe

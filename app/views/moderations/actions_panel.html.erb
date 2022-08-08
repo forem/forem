@@ -8,8 +8,8 @@
 
 <%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
 
-<% user_suspended = @moderatable.user.suspended? %>
-<% user_username = @moderatable.username %>
+<% author_suspended = @moderatable.user.suspended? %>
+<% author_username = @moderatable.username %>
 
 <div class="container mod-container">
   <header class="top-header">
@@ -53,10 +53,10 @@
     </button>
     <% if policy(@moderatable).revoke_publication? %>
       <button
-        class="c-btn c-btn--primary c-btn--destructive w-100 my-4"
+        class="c-btn c-btn--primary c-btn--destructive w-100 my-4 <%= is_mod_center == "true" ? "hidden" : "" %>"
         id="unpublish-article-btn"
         data-article-id="<%= @moderatable.id %>"
-        data-author-username="<%= @moderatable.username %>"
+        data-author-username="<%= author_username %>"
         data-article-slug="<%= @moderatable.slug %>"
         data-modal-content-selector="#unpublish-post-modal">
         <%= t("views.moderations.actions.unpublish") %>
@@ -68,7 +68,7 @@
         id="feature-article-btn"
         data-article-featured="<%= @moderatable.featured %>"
         data-article-id="<%= @moderatable.id %>"
-        data-article-author="<%= user_username %>"
+        data-article-author="<%= author_username %>"
         data-article-slug="<%= @moderatable.slug %>">
         <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
       </button>
@@ -190,30 +190,50 @@
       </a>
     </div>
 
-    <% if policy(@moderatable).can_perform_moderator_actions? %>
-      <button aria-haspopup="true" aria-expanded="false" aria-controls="admin-action-options" class="other-things-btn admin-action" type="button" data-other-things-type="admin-action" aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
-        <div class="label-wrapper">
-          <div class="icon circle centered-icon">
-            <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
-          </div>
-          <header>
-            <h2><%= t("views.moderations.actions.admin.heading") %></h2>
-            <h3><%= t("views.moderations.actions.admin.subtitle", user: user_username) %></h3>
-          </header>
+    <button
+      aria-haspopup="true"
+      aria-expanded="false"
+      aria-controls="admin-action-options"
+      class="other-things-btn admin-action <%= is_mod_center == "true" ? "hidden" : "" %>"
+      type="button"
+      data-other-things-type="admin-action"
+      aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
+      <div class="label-wrapper">
+        <div class="icon circle centered-icon">
+          <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
         </div>
-        <div class="toggle-chevron-container">
-          <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
-        </div>
-      </button>
+        <header>
+          <h2><%= t("views.moderations.actions.admin.heading") %></h2>
+          <h3><%= t("views.moderations.actions.admin.subtitle", user: author_username) %></h3>
+        </header>
+      </div>
+      <div class="toggle-chevron-container">
+        <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
+      </div>
+    </button>
 
-      <div id="admin-action-options" class="admin-action-options dropdown-options mt-4 hidden">
+    <div id="admin-action-options" class="admin-action-options dropdown-options mt-4 hidden">
+      <button
+        type="button"
+        id="toggle-flag-user-modal"
+        class="c-btn <%= @author_flagged ? "" : "c-btn--destructive" %> align-center fs-s"
+        data-modal-title="<%= @author_flagged ? "Unflag" : "Flag" %> <%= author_username %>"
+        data-modal-size="small"
+        data-modal-content-selector="#<%= @author_flagged ? "unflag" : "flag" %>-user-modal-content">
+        <% if @author_flagged %>
+          <%= t("views.moderations.actions.unflag", username: author_username) %>
+        <% else %>
+          <%= t("views.moderations.actions.flag", username: author_username) %>
+        <% end %>
+      </button>
+      <% if policy(@moderatable).can_perform_moderator_actions? %>
         <button
           type="button"
-          id="<%= user_suspended ? "unsuspend" : "suspend" %>-user-btn"
-          class="js-suspend-unsuspend-flow-btn c-btn <%= user_suspended ? "" : "c-btn--destructive" %> align-center fs-s"
-          data-modal-title="<%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_title", username: user_username) %>"
-          data-modal-size="small" data-modal-content-selector="#<%= user_suspended ? "unsuspend" : "suspend" %>-modal-content" data-username="<%= user_username %>">
-            <%= t("views.moderations.actions.suspend.#{user_suspended ? 'unsuspend' : 'suspend'}_user", username: user_username) %>
+          id="<%= author_suspended ? "unsuspend" : "suspend" %>-user-btn"
+          class="js-suspend-unsuspend-flow-btn c-btn <%= author_suspended ? "" : "c-btn--destructive" %> align-center fs-s"
+          data-modal-title="<%= t("views.moderations.actions.suspend.#{author_suspended ? 'unsuspend' : 'suspend'}_title", username: author_username) %>"
+          data-modal-size="small" data-modal-content-selector="#<%= author_suspended ? "unsuspend" : "suspend" %>-modal-content" data-username="<%= author_username %>">
+            <%= t("views.moderations.actions.suspend.#{author_suspended ? 'unsuspend' : 'suspend'}_user", username: author_username) %>
         </button>
 
         <button
@@ -223,14 +243,10 @@
           data-modal-title="<%= t("views.moderations.actions.unpublish_all.title") %>"
           data-modal-size="small"
           data-modal-content-selector="#unpublish-all-posts"
-          data-username="<%= @moderatable.username %>">
-          <%= t("views.moderations.actions.unpublish_all.button", username: @moderatable.username) %>
+          data-username="<%= author_username %>">
+          <%= t("views.moderations.actions.unpublish_all.button", username: author_username) %>
         </button>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="bottom-actions">
-    <button id="open-flag-user-modal" type="button"><%= t("views.moderations.actions.flag") %></button>
+      <% end %>
+    </div>
   </div>
 </div>

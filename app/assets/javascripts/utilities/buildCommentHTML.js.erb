@@ -133,11 +133,12 @@ function react(comment) {
     num = comment.public_reactions_count;
   }
 
-  var reactButton = `<button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button" id="button-for-comment-${ comment.id }" data-comment-id="${ comment.id }" data-tracking-name="comment_heart_button">
+  var reactButton = `<button class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button" id="button-for-comment-${ comment.id }" data-comment-id="${ comment.id }" data-tracking-name="comment_heart_button">
     ${ iconSmallHeart }
     ${ iconSmallHeartFilled }
     <span class="reactions-count" id="reactions-count-${ comment.id }">${ num }</span>
     <span class="reactions-label hidden m:inline-block">like</span>
+    <span data-testid="tooltip" class="crayons-tooltip__content">Like</span>
   </button>`;
 
   return reactButton;

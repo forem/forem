@@ -404,7 +404,7 @@ export const getNewTextAreaValueWithEdits = ({
     editSelectionStart,
   )}${replaceSelectionWith}${textAreaValue.substring(editSelectionEnd)}`;
 
-export const coreSyntaxFormatters = {
+export const markdownSyntaxFormatters = {
   bold: {
     icon: () => <Icon src={BoldIcon} />,
     label: 'Bold',
@@ -734,9 +734,6 @@ export const coreSyntaxFormatters = {
         suffix: ' %}',
       }),
   },
-};
-
-export const secondarySyntaxFormatters = {
   underline: {
     icon: () => <Icon src={UnderlineIcon} />,
     label: 'Underline',

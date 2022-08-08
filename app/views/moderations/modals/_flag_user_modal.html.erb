@@ -1,0 +1,55 @@
+<% user_id = @article.user.id %>
+<% author_username = @article.username %>
+<% article_url = URL.url + @article.path %>
+<% community_name = Settings::Community.community_name %>
+<div id="flag-user-modal-content" class="hidden">
+  <p>
+    Thanks for keeping <%= community_name %> safe. Here is what you can do to flag <%= author_username %>:
+  </p>
+
+  <div class="crayons-field crayons-field--radio mt-4">
+    <input
+      type="radio"
+      id="flag-user-radio-input"
+      name="flag-user-radio-input"
+      class="crayons-radio"
+      data-reactable-id="<%= user_id %>"
+      data-category="vomit"
+      data-reactable-type="User" />
+    <label for="flag-user-radio-input" class="crayons-field__label">
+      Make all posts by <%= author_username %> less visible
+      <p class="crayons-field__description">
+        <%= author_username %> consistently posts content that violates <%= community_name %>'s
+        code of conduct because it is harassing, offensive or spammy.
+      </p>
+    </label>
+  </div>
+
+  <div class="mt-4">
+    <a
+      href="javascript:void(0);"
+      id="report-inappropriate-content"
+      data-report-abuse-link="/report-abuse?url=<%= article_url %>">
+      Report other inappropriate conduct
+    </a>
+  </div>
+
+  <div class="mt-6">
+    <p
+      id="unselected-radio-error"
+      data-testid="unselected-radio-error"
+      class="crayons-field__description mb-4"
+      style="color: red;"
+      aria-live="assertive">
+    </p>
+    <button
+      id="confirm-flag-user-action"
+      class="c-btn c-btn--primary c-btn--destructive"
+      data-category="vomit"
+      data-reactable-type="User"
+      data-user-id="<%= user_id %>"
+      data-username="<%= author_username %>">
+      Confirm Flag
+    </button>
+  </div>
+</div>

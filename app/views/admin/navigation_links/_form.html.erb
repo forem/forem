@@ -49,11 +49,23 @@
     <p class="crayons-field__description">Determines the order placement of the links in the sidebar</p>
     <%= form.number_field :position, class: "crayons-textfield" %>
   </div>
-  <div class="crayons-field crayons-field--checkbox">
-    <%= form.check_box :display_only_when_signed_in, class: "crayons-checkbox" %>
-    <%= form.label :display_only_when_signed_in, class: "crayons-field__label" do %>
-        Display only when signed in
-      <p class="crayons-field__description">Determines whether the link should only be shown after the user has signed into their account.</p>
-    <% end %>
+  <div class="crayons-field mb-2">
+    <fieldset aria-describedby="section-description" aria-describedby="display-to-description">
+      <legend class="crayons-field__label pl-0">User group</legend>
+      <p id="display-to-description" class="crayons-field__description mb-2">Determines which users will be able to see the link</p>
+      <label class="rich-selector crayons-field crayons-field--radio">
+        <%= form.radio_button :display_to, "all", class: "crayons-radio" %>
+        <div class="crayons-field__label">All users</div>
+      </label>
+      <label class="rich-selector crayons-field crayons-field--radio">
+        <%= form.radio_button :display_to, "logged_in", class: "crayons-radio" %>
+        <div class="crayons-field__label">Only logged in users</div>
+      </label>
+
+      <label class="rich-selector crayons-field crayons-field--radio">
+        <%= form.radio_button :display_to, "logged_out", class: "crayons-radio" %>
+        <div class="crayons-field__label">Only logged out users</div>
+      </label>
+    </fieldset>
   </div>
 </div>

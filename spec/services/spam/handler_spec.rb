@@ -23,7 +23,7 @@ RSpec.describe Spam::Handler, type: :service do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
-          .with(user: article.user).and_return(false)
+          .with(user: article.user, include_user_profile: false).and_return(false)
       end
 
       it "creates a reaction but does not suspend the user" do
@@ -36,12 +36,21 @@ RSpec.describe Spam::Handler, type: :service do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
-          .with(user: article.user).and_return(true)
+          .with(user: article.user, include_user_profile: false).and_return(true)
       end
 
       it "creates a reaction, suspends the user, and creates a note for the user" do
         expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
         expect(article.user.reload).to be_suspended
+        expect(Note.where(noteable: article.user, reason: "automatic_suspend").count).to eq(1)
+      end
+
+      it "creates a reaction, notes, suspends, and unpublishes all posts when applicable" do
+        allow(described_class).to receive(:unpublish_all_posts_when_user_auto_suspended?).and_return(true)
+        expect(article).to be_published
+        expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        expect(article.user.reload).to be_suspended
+        expect(article.reload).not_to be_published
         expect(Note.where(noteable: article.user, reason: "automatic_suspend").count).to eq(1)
       end
     end
@@ -70,7 +79,7 @@ RSpec.describe Spam::Handler, type: :service do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
-          .with(user: comment.user).and_return(false)
+          .with(user: comment.user, include_user_profile: false).and_return(false)
       end
 
       it "creates a reaction but does not suspend the user" do
@@ -83,7 +92,7 @@ RSpec.describe Spam::Handler, type: :service do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_comment_reactions?)
-          .with(user: comment.user).and_return(true)
+          .with(user: comment.user, include_user_profile: false).and_return(true)
       end
 
       it "creates a reaction, suspends the user, and creates a note for the user" do

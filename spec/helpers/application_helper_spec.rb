@@ -31,7 +31,7 @@ RSpec.describe ApplicationHelper, type: :helper do
   describe "#display_navigation_link?" do
     subject(:method_call) { helper.display_navigation_link?(link: link) }
 
-    let(:link) { build(:navigation_link, display_only_when_signed_in: display_only_when_signed_in) }
+    let(:link) { build(:navigation_link, display_to: display_to) }
 
     before do
       allow(helper).to receive(:user_signed_in?).and_return(user_signed_in)
@@ -42,14 +42,14 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when user signed in and link requires signin and feature enabled" do
       let(:navigation_link_is_for_an_enabled_feature) { true }
-      let(:display_only_when_signed_in) { true }
+      let(:display_to) { :logged_in }
       let(:user_signed_in) { true }
 
       it { is_expected.to be_truthy }
     end
 
     context "when user signed in and link requires signin and feature disabled" do
-      let(:display_only_when_signed_in) { false }
+      let(:display_to) { :all }
       let(:user_signed_in) { true }
       let(:navigation_link_is_for_an_enabled_feature) { false }
 
@@ -58,15 +58,31 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when user signed in and link **does not** require signin and feature enabled" do
       let(:navigation_link_is_for_an_enabled_feature) { true }
-      let(:display_only_when_signed_in) { false }
+      let(:display_to) { :all }
       let(:user_signed_in) { true }
 
       it { is_expected.to be_truthy }
     end
 
+    context "when user signed in and link requires signout and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_to) { :logged_out }
+      let(:user_signed_in) { true }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when user signed in and link requires signout and feature disabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { false }
+      let(:display_to) { :logged_out }
+      let(:user_signed_in) { true }
+
+      it { is_expected.to be_falsey }
+    end
+
     context "when user signed in and link **does not** require signin and feature disabled" do
       let(:navigation_link_is_for_an_enabled_feature) { false }
-      let(:display_only_when_signed_in) { false }
+      let(:display_to) { :all }
       let(:user_signed_in) { true }
 
       it { is_expected.to be_falsey }
@@ -74,7 +90,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when user **not** signed in and link requires signin and feature enabled" do
       let(:navigation_link_is_for_an_enabled_feature) { true }
-      let(:display_only_when_signed_in) { true }
+      let(:display_to) { :logged_in }
       let(:user_signed_in) { false }
 
       it { is_expected.to be_falsey }
@@ -82,7 +98,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when user **not** signed in and link **does not** require signin and feature enabled" do
       let(:navigation_link_is_for_an_enabled_feature) { true }
-      let(:display_only_when_signed_in) { false }
+      let(:display_to) { :all }
       let(:user_signed_in) { false }
 
       it { is_expected.to be_truthy }
@@ -90,7 +106,23 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when user **not** signed in and link **does not** require signin and feature disabled" do
       let(:navigation_link_is_for_an_enabled_feature) { false }
-      let(:display_only_when_signed_in) { false }
+      let(:display_to) { :all }
+      let(:user_signed_in) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context "when user **not** signed in and link requires signout and feature enabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { true }
+      let(:display_to) { :logged_out }
+      let(:user_signed_in) { false }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "when user **not** signed in and link requires signout and feature disabled" do
+      let(:navigation_link_is_for_an_enabled_feature) { false }
+      let(:display_to) { :logged_out }
       let(:user_signed_in) { false }
 
       it { is_expected.to be_falsey }

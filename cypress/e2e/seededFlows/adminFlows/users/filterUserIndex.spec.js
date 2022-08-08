@@ -5,9 +5,9 @@ describe('Filter user index', () => {
     // The desktop view allows us to count table rows a bit more easily for validating filter results
     cy.viewport('macbook-16');
 
-    cy.enableFeatureFlag('member_index_view')
-      .then(() => cy.get('@user'))
-      .then((user) => cy.loginAndVisit(user, '/admin/member_manager/users'));
+    cy.get('@user').then((user) =>
+      cy.loginAndVisit(user, '/admin/member_manager/users'),
+    );
   });
 
   const openFiltersModal = () =>
@@ -70,6 +70,42 @@ describe('Filter user index', () => {
       'equal',
       `${Cypress.config().baseUrl}admin/member_manager/users`,
     );
+  });
+
+  it('Clears all filters', () => {
+    openFiltersModal();
+    cy.getModal().within(() => {
+      cy.findAllByText('Joining date').first().click();
+      cy.findByRole('textbox', { name: /Joined after/ })
+        .as('joinStart')
+        .type('01/01/2020');
+      cy.findByRole('textbox', { name: /Joined before/ })
+        .as('joinEnd')
+        .type('01/01/2020');
+
+      cy.findAllByText('Member roles').first().click();
+      cy.findByRole('group', { name: 'Member roles' }).should('be.visible');
+      cy.findByRole('checkbox', { name: 'Super Admin' }).as('role').check();
+
+      cy.findAllByText('Status').first().click();
+      cy.findByRole('group', { name: 'Status' }).should('be.visible');
+      cy.findByRole('checkbox', { name: 'Trusted' }).as('status').check();
+
+      cy.findAllByText('Organizations').first().click();
+      cy.findByRole('group', { name: 'Organizations' }).should('be.visible');
+      cy.findByRole('checkbox', { name: 'Bachmanity' })
+        .as('organization')
+        .check();
+
+      cy.findByRole('button', { name: 'Clear filters' }).click();
+
+      // Check the selected filters are no longer applied
+      cy.get('@joinStart').should('have.value', '');
+      cy.get('@joinEnd').should('have.value', '');
+      cy.get('@role').should('not.be.checked');
+      cy.get('@status').should('not.be.checked');
+      cy.get('@organization').should('not.be.checked');
+    });
   });
 
   describe('Member roles', () => {

@@ -35,7 +35,7 @@ export class ModerationArticles extends Component {
       </div>
       <div class="iframes-container">
         <iframe class="article-iframe" src="${path}"></iframe>
-        <iframe data-testid="mod-iframe-${id}" id="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>
+        <iframe data-testid="mod-iframe-${id}" id="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel/?is_mod_center=true"></iframe>
       </div>`;
 
       this.setState({ prevSelectedArticleId: id });

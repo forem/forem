@@ -73,7 +73,18 @@ describe('Unlock discussion', () => {
             content: `This is a test article's contents.`,
             published: true,
           }).then((response) => {
-            cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
+            cy.createComment({
+              content: 'This is a test comment.',
+              commentableId: response.body.id,
+              commentableType: 'Article',
+            }).then((commentResponse) => {
+              cy.wrap(commentResponse.body.url).as('commentUrl');
+              cy.wrap(commentResponse.body.id).as('commentId');
+            });
+            cy.wrap(response.body.current_state_path).as('articlePath');
+            cy.get('@articlePath').then((articlePath) => {
+              cy.visitAndWaitForUserSideEffects(articlePath);
+            });
           });
         });
       });
@@ -85,6 +96,31 @@ describe('Unlock discussion', () => {
 
     it('should not show a discussion lock', () => {
       cy.get('#discussion-lock').should('not.exist');
+    });
+
+    it('should show reply button on comments on the Article page', function () {
+      cy.get(`[data-testid="reply-button-${this.commentId}"]`).should(
+        'be.visible',
+      );
+    });
+
+    it('should show reply button on comments on a Comment page', function () {
+      cy.visit(this.commentUrl);
+      cy.get(`[data-testid="reply-button-${this.commentId}"]`).should(
+        'be.visible',
+      );
+    });
+
+    it('should show the new comment box on the legacy Comment page', function () {
+      cy.visit(`${this.articlePath}/comments`);
+      cy.get('#new_comment').should('be.visible');
+    });
+
+    it('should show reply button on comments on the legacy Comment page', function () {
+      cy.visit(`${this.articlePath}/comments`);
+      cy.get(`[data-testid="reply-button-${this.commentId}"]`).should(
+        'be.visible',
+      );
     });
   });
 });

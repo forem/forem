@@ -1,73 +1,29 @@
 <%= javascript_packs_with_chunks_tag "admin/users/controls", defer: true %>
 
- <% if FeatureFlag.enabled?(:member_index_view) %>
-  <%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
-    <div class="flex m:flex-col xl:flex-row justify-between m:items-end xl:justify-end xl:items-center mb-4">
+<%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
+  <div class="flex m:flex-col xl:flex-row justify-between m:items-end xl:justify-end xl:items-center mb-4">
+    <div>
       <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
-
-      <div class="flex justify-between xl:justify-end m:w-100 xl:w-max">
-        <div class="hidden m:block m:w-50 xl:w-max">
-          <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
-        </div>
-        <div class="flex xl:ml-2">
-          <div class="m:hidden">
-            <%= render "admin/users/controls/expand_search_button" %>
-          </div>
-          <button type="button" aria-label="Filter" class="js-open-filter-modal-btn c-btn c-btn--icon-alone"><%= crayons_icon_tag("filter", aria_hidden: true) %></button>
-          <%= render "admin/users/controls/export" %>
-        </div>
-      </div>
     </div>
-    <!-- Expandable sections -->
-    <div class="xl:flex xl:justify-end">
-      <div id="search-users" class="hidden">
-        <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
+    <div class="flex justify-between xl:justify-end m:w-100 xl:w-max">
+      <div class="hidden m:block m:w-50 xl:w-max">
+        <%= render "admin/users/controls/search_field", f: f, context: "large", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
       </div>
-      <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2 m:w-50">
-        <%= render "admin/users/controls/filter_role_field", f: f, context: "small" %>
-      </div>
-    </div>
-  <% end %>
-<% else %>
-<!-- TODO: "Phase 1" view, to be removed when Phase 2 ships -->
- <!-- Small screen layout -->
-  <%= form_with url: admin_users_path, method: :get, local: true, class: "m:hidden" do |f| %>
-    <div class="flex justify-between align-items-center my-3">
-      <div>
-        <%= render "admin/users/controls/expand_search_button" %>
-        <button type="button" id="expand-filter-btn" class="c-btn c-btn--icon-alone indicator-btn" aria-label="Expand filter" aria-expanded="false" aria-controls="filter-users">
-          <%= crayons_icon_tag("filter", aria_hidden: true) %>
-          <span data-testid="search-indicator" class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:role].blank? ? "hidden" : "" %>"></span>
-        </button>
-      </div>
-      <div class="flex">
-        <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
+      <div class="flex xl:ml-2">
+        <div class="m:hidden">
+          <%= render "admin/users/controls/expand_search_button" %>
+        </div>
+        <button type="button" aria-label="Filter" class="js-open-filter-modal-btn c-btn c-btn--icon-alone"><%= crayons_icon_tag("filter", aria_hidden: true) %></button>
         <%= render "admin/users/controls/export" %>
       </div>
     </div>
-    <div>
-      <div id="search-users" class="hidden">
-        <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
-      </div>
-      <div id="filter-users" class="hidden crayons-field flex-row items-center gap-2">
-        <%= render "admin/users/controls/filter_role_field", f: f, context: "small" %>
-      </div>
-    </div>
+  </div>
   <% end %>
-
-  <!-- Larger screen layout -->
-  <div class="hidden m:flex justify-between align-items-center">
-    <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col m:flex-row gap-3 m:items-center py-3" do |f| %>
-      <div class="crayons-field flex-1 flex-row items-center gap-2">
-        <%= render "admin/users/controls/search_field", f: f, context: "medium", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
-      </div>
-      <div class="crayons-field flex-row items-center gap-2">
-        <%= render "admin/users/controls/filter_role_field", f: f, context: "medium" %>
-      </div>
-    <% end %>
-    <div class="flex">
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "medium" %>
-      <%= render "admin/users/controls/export" %>
+<!-- Expandable sections -->
+<%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
+  <div class="m:hidden">
+    <div id="search-users" class="hidden">
+      <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
     </div>
   </div>
 <% end %>

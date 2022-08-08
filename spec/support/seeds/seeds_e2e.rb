@@ -530,7 +530,7 @@ seeder.create_if_none(NavigationLink) do
     name: "Reading List",
     url: "#{base_url}/readinglist",
     icon: reading_icon,
-    display_only_when_signed_in: true,
+    display_to: :logged_in,
     position: 0,
     section: :default,
   )

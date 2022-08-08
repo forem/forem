@@ -30,20 +30,25 @@ class ModerationsController < ApplicationController
   end
 
   def comment
-    authorize(User, :moderation_routes?)
+    authorize(Comment, :moderate?)
     @moderatable = Comment.find(params[:id_code].to_i(26))
+
     render template: "moderations/mod"
   end
 
   def actions_panel
     load_article
-    render template: "moderations/actions_panel"
+    @author_flagged ||= Reaction.user_vomits.valid_or_confirmed.where(
+      user_id: session_current_user_id,
+      reactable_id: @moderatable.user_id,
+    ).any?
+    render template: "moderations/actions_panel", locals: { is_mod_center: params[:is_mod_center] }
   end
 
   private
 
   def load_article
-    authorize(User, :moderation_routes?)
+    authorize(Article, :moderate?)
 
     @tag_adjustment = TagAdjustment.new
     @moderatable = Article.find_by(slug: params[:slug])

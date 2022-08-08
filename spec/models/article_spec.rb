@@ -1165,51 +1165,6 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "slack messages" do
-      before do
-        # making sure there are no other enqueued jobs from other tests
-        sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
-      end
-
-      # slack messages will be queued in a publish worker
-      it "doesn't queue a slack message to be sent for a new published article" do
-        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-          create(:article, user: user, published: true, published_at: Time.current)
-        end
-      end
-
-      it "does not queue a message for a new article published more than 30 seconds ago" do
-        Timecop.freeze(Time.current) do
-          sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-            create(:article, published: true, published_at: 31.seconds.ago)
-          end
-        end
-      end
-
-      it "does not queue a message for a draft article" do
-        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-          markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nHey this is the article"
-          create(:article, body_markdown: markdown, published: false)
-        end
-      end
-
-      it "doesn't queue a message for an article that remains published" do
-        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-          markdown = "---\ntitle: Title\npublished: true\ndescription:\ntags: heytag\n---\n\nHey this is the article"
-          article.update(body_markdown: markdown, published: true)
-        end
-      end
-
-      it "queues a message for a draft article that gets published" do
-        Timecop.freeze(Time.current) do
-          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
-            article.update_columns(published: false)
-            article.update(published: true, published_at: Time.current)
-          end
-        end
-      end
-    end
-
     describe "enrich image attributes" do
       it "enqueues Articles::EnrichImageAttributesWorker if the HTML has changed" do
         sidekiq_assert_enqueued_with(job: Articles::EnrichImageAttributesWorker, args: [article.id]) do

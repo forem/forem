@@ -28,7 +28,7 @@ RSpec.describe CommentPolicy, type: :policy do
     let!(:user) { create(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
-    it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm hide unhide moderator_create]) }
+    it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm hide unhide moderator_create moderate]) }
     it { is_expected.to forbid_actions(%i[admin_delete]) }
 
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
@@ -37,12 +37,14 @@ RSpec.describe CommentPolicy, type: :policy do
       before { user.add_role(:suspended) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide admin_delete]) }
+      it { is_expected.to forbid_actions(%i[moderate]) }
     end
 
     context "with comment_suspended role" do
       before { user.add_role(:comment_suspended) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide admin_delete]) }
+      it { is_expected.to forbid_actions(%i[moderate]) }
     end
 
     context "when user is a tag moderator" do
@@ -51,7 +53,7 @@ RSpec.describe CommentPolicy, type: :policy do
         user.add_role(:tag_moderator, tag)
       end
 
-      it { is_expected.to permit_actions(%i[create moderator_create]) }
+      it { is_expected.to permit_actions(%i[create moderator_create moderate]) }
 
       it do
         expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create)
@@ -62,7 +64,7 @@ RSpec.describe CommentPolicy, type: :policy do
     context "when user is an admin or super_admin" do
       before { user.add_role(:admin) }
 
-      it { is_expected.to permit_actions(%i[create moderator_create admin_delete]) }
+      it { is_expected.to permit_actions(%i[create moderator_create admin_delete moderate]) }
 
       it do
         expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create)
@@ -75,7 +77,7 @@ RSpec.describe CommentPolicy, type: :policy do
     let(:user) { comment.user }
 
     it { is_expected.to permit_actions(%i[edit update new create delete_confirm destroy]) }
-    it { is_expected.to forbid_actions(%i[moderator_create admin_delete]) }
+    it { is_expected.to forbid_actions(%i[moderator_create admin_delete moderate]) }
 
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update) }
@@ -84,7 +86,7 @@ RSpec.describe CommentPolicy, type: :policy do
       before { user.add_role(:suspended) }
 
       it { is_expected.to permit_actions(%i[preview destroy delete_confirm]) }
-      it { is_expected.to forbid_actions(%i[edit update create hide unhide moderator_create admin_delete]) }
+      it { is_expected.to forbid_actions(%i[edit update create hide unhide moderator_create admin_delete moderate]) }
 
       it do
         expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
@@ -95,7 +97,7 @@ RSpec.describe CommentPolicy, type: :policy do
       before { user.add_role(:comment_suspended) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
-      it { is_expected.to forbid_actions(%i[create hide unhide moderator_create admin_delete]) }
+      it { is_expected.to forbid_actions(%i[create hide unhide moderator_create admin_delete moderate]) }
 
       it do
         expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
@@ -108,7 +110,7 @@ RSpec.describe CommentPolicy, type: :policy do
         user.add_role(:tag_moderator, tag)
       end
 
-      it { is_expected.to permit_actions(%i[edit update destroy delete_confirm moderator_create create]) }
+      it { is_expected.to permit_actions(%i[edit update destroy delete_confirm moderator_create create moderate]) }
       it { is_expected.to forbid_actions(%i[admin_delete]) }
 
       it do
@@ -126,7 +128,7 @@ RSpec.describe CommentPolicy, type: :policy do
     let(:comment) { build_stubbed(:comment, commentable: article) }
 
     it { is_expected.to permit_actions(%i[hide unhide create]) }
-    it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm]) }
+    it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm moderate]) }
     it { is_expected.to forbid_actions(%i[moderator_create admin_delete]) }
   end
 end

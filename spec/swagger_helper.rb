@@ -13,11 +13,11 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a swagger_doc tag to the
   # the root example_group in your specs, e.g. describe "...", swagger_doc: "v2/swagger.json"
   config.swagger_docs = {
-    "v1/swagger.json" => {
+    "v1/api_v1.json" => {
       openapi: "3.0.3",
       info: {
         title: "Forem API V1",
-        version: "v1",
+        version: "1.0.0",
         description: "Access Forem articles, users and other resources via API.
         For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
         All endpoints require an 'api-key' header and a accept header.

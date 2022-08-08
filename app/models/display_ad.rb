@@ -1,10 +1,14 @@
 class DisplayAd < ApplicationRecord
   resourcify
 
-  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right].freeze
+  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right post_comments].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
-                                            "Sidebar Right"].freeze
+                                            "Sidebar Right",
+                                            "Below the comment section"].freeze
+
+  POST_WIDTH = 775
+  SIDEBAR_WIDTH = 350
 
   belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy
@@ -40,6 +44,11 @@ class DisplayAd < ApplicationRecord
                                                             tags: MarkdownProcessor::AllowedTags::DISPLAY_AD,
                                                             attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD
     html = stripped_html.delete("\n")
-    self.processed_html = Html::Parser.new(html).prefix_all_images(350, synchronous_detail_detection: true).html
+    self.processed_html = Html::Parser.new(html)
+      .prefix_all_images(prefix_width, synchronous_detail_detection: true).html
+  end
+
+  def prefix_width
+    placement_area.to_s == "post_comments" ? POST_WIDTH : SIDEBAR_WIDTH
   end
 end

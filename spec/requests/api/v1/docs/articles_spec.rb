@@ -1,23 +1,28 @@
 require "rails_helper"
 require "swagger_helper"
 
+# rubocop:disable RSpec/EmptyExampleGroup
+# rubocop:disable RSpec/VariableName
+
 RSpec.describe "Api::V1::Docs::Articles", type: :request do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, :with_colors, name: "discuss") }
-  let(:article) { create(:article, featured: true, tags: "discuss") }
+  let(:article) { create(:article, featured: true, tags: "discuss", published: true) }
+  let(:unpublished_aricle) { create(:article, published: false) }
+  let(:api_secret) { create(:api_secret) }
+  let(:user) { api_secret.user }
+  let(:Accept) { "application/vnd.forem.api-v1+json" }
 
   before do
     stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
     allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
   end
 
-  # rubocop:disable RSpec/EmptyExampleGroup
   describe "GET /articles" do
     before do
       article.update_columns(organization_id: organization.id)
     end
 
-    # rubocop:disable RSpec/VariableName
     path "/api/articles" do
       get "Published articles" do
         tags "articles"
@@ -88,7 +93,7 @@ belonging to the requested collection, ordered by ascending publication date.",
                   example: 99
 
         response "200", "A List of Articles" do
-          let(:"api-key") { "valid" }
+          let(:"api-key") { api_secret.secret }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/ArticleIndex" }
           add_examples
@@ -97,13 +102,76 @@ belonging to the requested collection, ordered by ascending publication date.",
         end
 
         response "401", "unauthorized" do
-          let(:Accept) { "application/vnd.forem.api-v1+json" }
           let(:"api-key") { "invalid" }
           run_test!
         end
       end
     end
-    # rubocop:enable RSpec/VariableName
   end
+
+  describe "PUT /articles/:id/unpublish" do
+    before do
+      user.add_role(:admin)
+    end
+
+    path "/api/articles/{id}/unpublish" do
+      put "Unpublish an article" do
+        tags "articles"
+        description "This endpoint allows the client to unpublish an article.
+
+The user associated with the API key must have any 'admin' or 'moderator' role.
+
+The article will be unpublished and will no longer be visible to the public. It will remain
+in the database and will set back to draft status on the author's posts dashboard. Any
+notifications associated with the article will be deleted. Any comments on the article
+will remain."
+        operationId "unpublishArticle"
+        produces "application/json"
+        parameter name: :id, in: :path, required: true,
+                  description: "The ID of the article to unpublish.",
+                  schema: {
+                    type: :integer,
+                    format: :int32,
+                    minimum: 1
+                  },
+                  example: 1
+
+        response "204", "Article successfully unpublished" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { article.id }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Article already unpublished" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { unpublished_aricle.id }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:regular_user) { create(:user) }
+          let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
+          let(:"api-key") { low_security_api_secret.secret }
+          let(:id) { unpublished_aricle.id }
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "Article Not Found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { 0 }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
+  # rubocop:enable RSpec/VariableName
   # rubocop:enable RSpec/EmptyExampleGroup
 end
