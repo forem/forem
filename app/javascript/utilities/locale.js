@@ -10,7 +10,7 @@ if (translationsDiv) {
 i18n.defaultLocale = 'en';
 const { locale: userLocale } = document.body.dataset;
 if (userLocale) {
-  i18n.locale(userLocale);
+  i18n.locale = userLocale;
 }
 export function locale(term) {
   return i18n.t(term);
