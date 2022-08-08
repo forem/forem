@@ -163,7 +163,7 @@
         <%= t("views.logo.color.label") %>
       </label>
       <p class="crayons-field__description"><%= t("views.logo.color.description") %></p>
-      <div class="flex items-center w-100 m:w-50">
+      <div class="flex items-center m:w-50 w-100">
         <%= f.public_send(:text_field, "users_setting[brand_color1]",
                           value: users_setting.public_send(:brand_color1),
                           placeholder: "#000000",
