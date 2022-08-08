@@ -1,26 +1,23 @@
 class OrganizationDecorator < ApplicationDecorator
   def darker_color(adjustment = 0.88)
-    Color::CompareHex.new([enriched_colors[:bg], enriched_colors[:text]]).brightness(adjustment)
+    Color::CompareHex.new([enriched_colors[:bg]]).brightness(adjustment)
   end
 
   def enriched_colors
     if bg_color_hex.blank?
       {
-        bg: assigned_color[:bg],
-        text: assigned_color[:text]
+        bg: assigned_color[:bg]
       }
     else
       {
-        bg: bg_color_hex,
-        text: text_color_hex.presence || assigned_color[:text]
+        bg: bg_color_hex
       }
     end
   end
 
   def assigned_color
     {
-      bg: "#0a0a0a",
-      text: "#ffffff"
+      bg: "#0a0a0a"
     }
   end
 
