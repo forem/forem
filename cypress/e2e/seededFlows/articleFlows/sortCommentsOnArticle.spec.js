@@ -18,9 +18,9 @@ describe('Sort Comments in an Article', () => {
       .should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
-      cy.findByRole('link', { name: 'Top' });
-      cy.findByRole('link', { name: 'Oldest' });
-      cy.findByRole('link', { name: 'Latest' });
+      cy.findByRole('link', { name: /Top/ });
+      cy.findByRole('link', { name: /Oldest/ });
+      cy.findByRole('link', { name: /Latest/ });
     });
   });
 
@@ -29,11 +29,11 @@ describe('Sort Comments in an Article', () => {
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
       cy.findByRole('link', {
-        name: 'Top',
+        name: /Top/,
       }).should('have.attr', 'aria-current', 'page');
 
       cy.findByRole('link', {
-        name: 'Top',
+        name: /Top/,
       }).should('have.focus');
     });
 
@@ -45,7 +45,7 @@ describe('Sort Comments in an Article', () => {
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
       cy.findByRole('link', {
-        name: 'Latest',
+        name: /Latest/,
       }).click();
     });
 
@@ -56,7 +56,7 @@ describe('Sort Comments in an Article', () => {
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
       cy.findByRole('link', {
-        name: 'Latest',
+        name: /Latest/,
       }).should('have.attr', 'aria-current', 'page');
     });
   });
@@ -66,7 +66,7 @@ describe('Sort Comments in an Article', () => {
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
       cy.findByRole('link', {
-        name: 'Oldest',
+        name: /Oldest/,
       }).click();
     });
 
@@ -77,7 +77,7 @@ describe('Sort Comments in an Article', () => {
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
       cy.findByRole('link', {
-        name: 'Oldest',
+        name: /Oldest/,
       }).should('have.attr', 'aria-current', 'page');
     });
   });
