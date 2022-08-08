@@ -120,12 +120,12 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       end.to raise_error(StandardError)
     end
 
-    it "updates user to moderator" do
+    it "updates user to super moderator" do
       expect do
         described_class.handle_user_roles(
           admin: admin,
           user: user,
-          user_params: { note_for_current_role: "Upgrading to moderator", user_status: "Moderator" },
+          user_params: { note_for_current_role: "Upgrading to super_moderator", user_status: "Super Moderator" },
         )
       end.to raise_error(StandardError)
     end
