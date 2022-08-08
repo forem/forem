@@ -3,7 +3,6 @@ module DataUpdateScripts
     OBSOLETE_FIELDS = %w[
       behance_url
       brand_color1
-      brand_color2
       display_email_on_profile
       dribbble_url
       facebook_url

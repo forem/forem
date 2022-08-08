@@ -20,7 +20,6 @@ class CreateUsersSettings < ActiveRecord::Migration[6.0]
 
       t.boolean "permit_adjacent_sponsors", default: true
       t.string "brand_color1", default: "#000000"
-      t.string "brand_color2", default: "#ffffff"
       t.boolean "display_email_on_profile", default: false, null: false
 
       t.timestamps

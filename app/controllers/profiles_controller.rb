@@ -2,7 +2,7 @@ class ProfilesController < ApplicationController
   before_action :authenticate_user!
 
   ALLOWED_USER_PARAMS = %i[name email username profile_image].freeze
-  ALLOWED_USERS_SETTING_PARAMS = %i[display_email_on_profile brand_color1 brand_color2].freeze
+  ALLOWED_USERS_SETTING_PARAMS = %i[display_email_on_profile brand_color1].freeze
 
   def update
     update_result = Users::Update.call(current_user, update_params)
