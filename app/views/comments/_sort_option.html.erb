@@ -1,0 +1,13 @@
+<li class="comment-sort-option mt-2 pl-7">
+  <a
+    href="<%= @article.path %>?comments_sort=<%= sort_order %>"
+    class="comment-sort-option__header"
+    aria-describedby="<%= sort_order %>-description-text"
+    aria-current="<%= "page" if show_selected %>">
+    <%= crayons_icon_tag(:checkmark, title: "Selected Sort Option", aria_hidden: true) if show_selected %>
+    <%= sort_title %>
+  </a>
+  <div id="<%= sort_order %>-description-text" class="crayons-field__description">
+    <%= sort_description %>
+  </div>
+</li>
