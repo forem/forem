@@ -144,7 +144,7 @@ RSpec.describe Articles::Updater, type: :service do
         expect(Mentions::CreateAll).not_to have_received(:call).with(article)
       end
 
-      it "destroys the preexisting notifications" do
+      it "destroys the pre-existing notifications" do
         allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
         described_class.call(user, article, attributes)
         attrs = { notifiable_ids: article.id, notifiable_type: "Article", action: "Published" }
@@ -152,7 +152,7 @@ RSpec.describe Articles::Updater, type: :service do
         # expect(ContextNotification).to have_received(:delete_all)
       end
 
-      it "destroys the prexexisting context notifications" do
+      it "destroys the pre-existing context notifications" do
         create(:context_notification, context: article, action: "Published")
         expect do
           described_class.call(user, article, attributes)
@@ -180,7 +180,7 @@ RSpec.describe Articles::Updater, type: :service do
         allow(Notification).to receive(:remove_all).and_call_original
       end
 
-      it "removes any preexisting comment notifications but does not delete the comment" do
+      it "removes any pre-existing comment notifications but does not delete the comment" do
         described_class.call(user, article, attributes)
 
         expect(Notification).to have_received(:remove_all).with(
@@ -201,7 +201,7 @@ RSpec.describe Articles::Updater, type: :service do
         allow(Notification).to receive(:remove_all).and_call_original
       end
 
-      it "removes any preexisting mention notifications but does not delete the mention" do
+      it "removes any pre-existing mention notifications but does not delete the mention" do
         described_class.call(user, article, attributes)
 
         expect(Notification).to have_received(:remove_all).with(
