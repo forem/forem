@@ -63,7 +63,7 @@
     "babel-loader": "^8.2.5",
     "css-loader": "^5.2.7",
     "cssom": "^0.5.0",
-    "cypress": "^10.3.1",
+    "cypress": "^10.4.0",
     "cypress-failed-log": "^2.10.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-pipe": "^2.0.0",
