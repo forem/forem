@@ -17,7 +17,7 @@ RSpec.describe Moderator::UnpublishAllArticlesWorker, type: :worker do
       expect(Article.last.body_markdown).not_to include("published: true")
     end
 
-    it "destroys the prexexisting notifications" do
+    it "destroys the pre-existing notifications" do
       allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
       described_class.new.perform(user.id)
       articles.map(&:id).each do |id|
