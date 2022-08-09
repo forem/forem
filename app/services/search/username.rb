@@ -32,7 +32,7 @@ module Search
       ::User.search_by_name_and_username(term).select(*ATTRIBUTES)
     end
 
-    def self.search_with_context(_term, context)
+    def self.search_with_context(term, context)
       join_sql = JOIN_COMMENT_CONTEXT[context]
       selects = ATTRIBUTES.map { |sym| "users.#{sym}".to_sym }
       selects << "(users.id = #{context.user_id}) as is_author"
@@ -41,6 +41,7 @@ module Search
       # (users.id = 1) as is_author, count(comments.id) as comments_count, MAX(comments.created_at) as comment_at
 
       ::User.joins(join_sql)
+        .search_by_name_and_username(term)
         .group("users.id")
         .select(*selects)
         .order("is_author DESC, comments_count DESC, comment_at ASC")
