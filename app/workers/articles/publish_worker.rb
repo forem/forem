@@ -6,7 +6,7 @@ module Articles
 
     def perform
       # find published articles for which notifications were not set yet (so the context notifications were not created)
-      published_articles =  Article.where(published: true, published_at: 30.minutes.ago..Time.current)
+      published_articles = Article.where(published: true, published_at: 30.minutes.ago..Time.current)
         .where.missing(:context_notifications_published)
       published_articles.each do |article|
         # send slack notifications
