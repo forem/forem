@@ -13206,10 +13206,10 @@ postscribe@^2.0.8:
   dependencies:
     prescribe ">=1.1.2"
 
-preact@^10.10.0:
-  version "10.10.0"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.10.0.tgz#7434750a24b59dae1957d95dc0aa47a4a8e9a180"
-  integrity sha512-fszkg1iJJjq68I4lI8ZsmBiaoQiQHbxf1lNq+72EmC/mZOsFF5zn3k1yv9QGoFgIXzgsdSKtYymLJsrJPoamjQ==
+preact@^10.10.1:
+  version "10.10.1"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.10.1.tgz#df67e4348f50fc6ad2e11e813553f15c6543176b"
+  integrity sha512-cXljG59ylGtSLismoLojXPAGvnh2ipQr3BYz9KZQr+1sdASCT+sR/v8dSMDS96xGCdtln2wHfAHCnLJK+XcBNg==
 
 prelude-ls@^1.2.1:
   version "1.2.1"
