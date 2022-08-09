@@ -26,7 +26,7 @@ RSpec.describe Moderator::UnpublishAllArticlesWorker, type: :worker do
       end
     end
 
-    it "destroys the prexexisting context notifications" do
+    it "destroys the pre-existing context notifications" do
       articles.each do |article|
         create(:context_notification, context: article, action: "Published")
       end
