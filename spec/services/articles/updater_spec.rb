@@ -124,12 +124,12 @@ RSpec.describe Articles::Updater, type: :service do
     context "when an article is unpublished" do
       before { attributes[:published] = false }
 
-      it "doesn't update published_at" do
+      it "nullifies published_at" do
         published_at = 1.day.ago
         article.update_column(:published_at, published_at)
         described_class.call(user, article, attributes)
         article.reload
-        expect(article.published_at).to be_within(1.second).of(published_at)
+        expect(article.published_at).to be_nil
       end
 
       it "doesn't send any notifications" do

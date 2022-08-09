@@ -11,6 +11,9 @@ module Moderator
       user.articles.published.find_each do |article|
         if article.has_frontmatter?
           article.body_markdown.sub!(/^published:\s*true\s*$/, "published: false")
+        else
+          # nullify published_at when unpublishing for the articles published in a rich markdown editor
+          article.published_at = nil
         end
         article.published = false
         article.save(validate: false)

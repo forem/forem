@@ -78,6 +78,12 @@ RSpec.describe Articles::Attributes, type: :service do
       expect(attrs[:published_at]).to be_falsey
     end
 
+    it "nullifies published_at if nullify_publlished_at is passed" do
+      attrs = described_class.new({ title: "title", published_at: Time.current }, user)
+        .for_update(nullify_published_at: true)
+      expect(attrs[:published_at]).to be_nil
+    end
+
     it "sets published_at correctly" do
       attrs = described_class.new({ title: "title", published_at: "2022-04-25" }, user).for_update
       expect(attrs[:published_at]).to eq(DateTime.new(2022, 4, 25))
