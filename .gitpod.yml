@@ -15,13 +15,13 @@ tasks:
   - name: Forem Server
     before: >
       redis-server &
-      gp await-port 5432 &&
+      gp ports await 5432 &&
       sleep 1
     init: ./gitpod-init.sh
     command: bin/startup
   - name: Open Site
     command: >
-      gp await-port 3000 &&
+      gp ports await 3000 &&
       printf "Waiting for local Forem development environment to load in the browser..." &&
       gp preview $(gp url 3000)
 
