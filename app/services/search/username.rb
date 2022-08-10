@@ -27,25 +27,37 @@ module Search
     # @param context [Article] or [PodcastEpisode]
     #   - used to rank search results by prior comment activity
     #   - connected to comment via polymorphic Commentable
-    def self.search_documents(term, context: nil)
-      results = context ? search_with_context(term, context) : search_without_context(term)
-      serialize results.limit(MAX_RESULTS)
+    def self.search_documents(term, context: nil, limit: MAX_RESULTS)
+      results = new(context: context).search(term).limit(limit)
+      serialize results
     end
 
-    def self.search_without_context(term)
-      ::User.search_by_name_and_username(term).select(*ATTRIBUTES)
+    def initialize(context: nil)
+      @scope = scope_with_context(context) if context
+      @scope ||= scope_without_context
     end
 
-    def self.search_with_context(term, context)
+    def search(term)
+      scope.search_by_name_and_username(term)
+    end
+
+    private
+
+    attr_reader :scope
+
+    def scope_without_context
+      ::User.select(*ATTRIBUTES)
+    end
+
+    def scope_with_context(context)
       join_sql = JOIN_COMMENT_CONTEXT[context]
       selects = ATTRIBUTES.map { |sym| "users.#{sym}".to_sym }
       # PodcastEpisodes are also commentable but have more complex authorship
-      selects << "(users.id = #{context.try(:user_id) || 0}) as is_author"
+      selects << "(users.id = #{context.try(:user_id).to_i}) as is_author"
       selects << "COUNT(comments.id) as comments_count"
       selects << "MAX(comments.created_at) as comment_at"
 
       ::User.joins(join_sql)
-        .search_by_name_and_username(term)
         .group("users.id")
         .select(*selects)
         .order("is_author DESC, comments_count DESC, comment_at ASC")
