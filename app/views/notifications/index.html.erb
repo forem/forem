@@ -16,7 +16,7 @@
   <meta name="twitter:title" content="<%= t("views.notifications.meta.og.title", community: community_name) %>">
   <meta name="twitter:description" content="<%= t("views.notifications.meta.description", community: community_name) %>">
 
-   <%= javascript_packs_with_chunks_tag "notificationPage", defer: true %>
+   <%= append_javascript_pack_tag "notificationPage", defer: true %>
 <% end %>
 
 <script>
@@ -67,7 +67,7 @@
     </div>
     <%= render "articles/fitvids" %>
   </main>
-  <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+  <%= append_javascript_pack_tag "followButtons", defer: true %>
   <script>
     <%== RunkitTag.script %>
   </script>

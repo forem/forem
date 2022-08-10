@@ -1,10 +1,28 @@
 /* eslint-env node */
 
 const path = require('path');
-const { environment } = require('@rails/webpacker');
-// const { webpackConfig: baseWebpackConfig, merge } = require('shakapacker')
-const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack');
+// const { environment } = require('@rails/webpacker');
+const { webpackConfig: baseWebpackConfig, merge } = require('shakapacker');
+// const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack');
 const erb = require('./loaders/erb');
+
+let options = {
+  loader: { erb: erb },
+  resolve: {
+    alias: {
+      '@crayons': path.resolve(__dirname, '../../app/javascript/crayons'),
+      '@utilities': path.resolve(__dirname, '../../app/javascript/utilities'),
+      '@images': path.resolve(__dirname, '../../app/assets/images'),
+      '@admin': path.resolve(__dirname, '../../app/javascript/admin'),
+      '@components': path.resolve(
+        __dirname,
+        '../../app/javascript/shared/components',
+      ),
+      react: 'preact/compat',
+      'react-dom': 'preact/compat',
+    },
+  },
+};
 
 /*
 The customizations below are to create the vendor chunk. The vendor chunk is no longer consumed like it was in webpacker 3.
@@ -15,47 +33,50 @@ The cache groups section is the default cache groups in webpack 4. See https://w
 It does not appear to be the default with webpacker 4.
 */
 
-environment.splitChunks((config) => {
-  return {
-    ...config,
-    resolve: {
-      ...config.resolve,
-      alias: {
-        ...(config.resolve ? config.resolve.alias : {}),
-        '@crayons': path.resolve(__dirname, '../../app/javascript/crayons'),
-        '@utilities': path.resolve(__dirname, '../../app/javascript/utilities'),
-        '@images': path.resolve(__dirname, '../../app/assets/images'),
-        '@admin': path.resolve(__dirname, '../../app/javascript/admin'),
-        '@components': path.resolve(
-          __dirname,
-          '../../app/javascript/shared/components',
-        ),
-        react: 'preact/compat',
-        'react-dom': 'preact/compat',
-      },
-    },
-  };
-});
+// environment.splitChunks((config) => {
+//   return {
+//     ...config,
+//     resolve: {
+//       ...config.resolve,
+//       alias: {
+//         ...(config.resolve ? config.resolve.alias : {}),
+//         '@crayons': path.resolve(__dirname, '../../app/javascript/crayons'),
+//         '@utilities': path.resolve(__dirname, '../../app/javascript/utilities'),
+//         '@images': path.resolve(__dirname, '../../app/assets/images'),
+//         '@admin': path.resolve(__dirname, '../../app/javascript/admin'),
+//         '@components': path.resolve(
+//           __dirname,
+//           '../../app/javascript/shared/components',
+//         ),
+//         react: 'preact/compat',
+//         'react-dom': 'preact/compat',
+//       },
+//     },
+//   };
+// });
 
-// We don't want babel-loader running on the node_modules folder.
-environment.loaders.delete('nodeModules');
+// // We don't want babel-loader running on the node_modules folder.
+// environment.loaders.delete('nodeModules');
 
-environment.loaders.append('erb', erb);
+// environment.loaders.append('erb', erb);
 
-if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
-  environment.plugins.append(
-    'HoneybadgerSourceMap',
-    new HoneybadgerSourceMapPlugin({
-      apiKey: process.env.HONEYBADGER_API_KEY,
-      assetsUrl: process.env.ASSETS_URL,
-      silent: false,
-      ignoreErrors: false,
-      revision:
-        process.env.RELEASE_FOOTPRINT ||
-        process.env.HEROKU_SLUG_COMMIT ||
-        'main',
-    }),
-  );
-}
+// if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
+//   options = merge({}, options, {'HoneybadgerSourceMap': new HoneybadgerSourceMapPlugin(
+//     {
+//       apiKey: process.env.HONEYBADGER_API_KEY,
+//       assetsUrl: process.env.ASSETS_URL,
+//       silent: false,
+//       ignoreErrors: false,
+//       revision:
+//         process.env.RELEASE_FOOTPRINT ||
+//         process.env.HEROKU_SLUG_COMMIT ||
+//         'main',
+//     }
+//   )})
+//   // environment.plugins.append(
+//   //   ,
+//   //   ,
+//   // );
+// }
 
-module.exports = environment;
+module.exports = merge({}, baseWebpackConfig, options);

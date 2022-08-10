@@ -36,7 +36,7 @@
     </div>
 
     <% if @articles.any? %>
-      <%= javascript_packs_with_chunks_tag "dashboardDropdowns", defer: true %>
+      <%= append_javascript_pack_tag "dashboardDropdowns", defer: true %>
       <div class="crayons-card mb-6 mt-3">
         <% @articles.each do |article| %>
           <% if params[:which] == "organization" %>

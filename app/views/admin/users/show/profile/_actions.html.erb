@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "admin/editUser", defer: true %>
+<%= append_javascript_pack_tag "admin/editUser", defer: true %>
 <div class="flex relative justify-between s:justify-end gap-2 my-2 s:my-0">
   <%= link_to "Visit profile", @user.path, class: "c-cta", target: "_blank", rel: "noopener" %>
   <div class="dropdown-trigger-container">

@@ -13,7 +13,7 @@
     </div>
     <div class="crayons-layout__content mb-5" id="user-dashboard">
       <% if @followed_tags.any? %>
-        <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
+        <%= append_javascript_pack_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
 
         <div class="crayons-notice crayons-notice--info p-4 mx-3 s:mx-0 mb-3" aria-live="polite">
             <%= t("views.dashboard.following_tags.adjust") %>
