@@ -163,5 +163,13 @@ RSpec.describe Search::Username, type: :service do
 
       expect(results.pluck(:username)).to eq(%w[author commentator unrelated])
     end
+
+    it "does not have authorship ranking for PodcastEpisode (yet)" do
+      pod_ep = create :podcast_episode
+
+      results = search("Per", context: pod_ep)
+
+      expect(results.pluck(:username)).not_to be_empty
+    end
   end
 end

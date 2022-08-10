@@ -42,6 +42,7 @@ const handleImageSuccess = (textAreaRef) => {
 export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
   const textAreaRef = useRef(null);
+  const contextData = document.getElementById('comments-container').dataset;
 
   // Templates appear outside of the comment textarea, but we only want to load this data if it's requested by the user
   const handleTemplatesClick = ({ target }) => {
@@ -80,7 +81,11 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
         searchInstructionsMessage="Type to search for a user"
         replaceElement={vanillaTextArea}
         fetchSuggestions={(username) =>
-          fetchSearch('usernames', { username }).then(({ result }) =>
+          fetchSearch('usernames', {
+            username,
+            context_type: contextData['commentableType'],
+            context_id: contextData['commentableId'],
+          }).then(({ result }) =>
             result.map((user) => ({ ...user, value: user.username })),
           )
         }

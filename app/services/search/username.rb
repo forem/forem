@@ -23,6 +23,10 @@ module Search
       format(JOIN_COMMENTS, commentable_type: commentable_type, commentable_id: commentable_id)
     }
 
+    # @param term [String] searches on username and name
+    # @param context [Article] or [PodcastEpisode]
+    #   - used to rank search results by prior comment activity
+    #   - connected to comment via polymorphic Commentable
     def self.search_documents(term, context: nil)
       results = context ? search_with_context(term, context) : search_without_context(term)
       serialize results.limit(MAX_RESULTS)
@@ -35,7 +39,8 @@ module Search
     def self.search_with_context(term, context)
       join_sql = JOIN_COMMENT_CONTEXT[context]
       selects = ATTRIBUTES.map { |sym| "users.#{sym}".to_sym }
-      selects << "(users.id = #{context.user_id}) as is_author"
+      # PodcastEpisodes are also commentable but have more complex authorship
+      selects << "(users.id = #{context.try(:user_id) || 0}) as is_author"
       selects << "COUNT(comments.id) as comments_count"
       selects << "MAX(comments.created_at) as comment_at"
 
