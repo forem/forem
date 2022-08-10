@@ -2,6 +2,7 @@
 
 const path = require('path');
 const { environment } = require('@rails/webpacker');
+// const { webpackConfig: baseWebpackConfig, merge } = require('shakapacker')
 const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack');
 const erb = require('./loaders/erb');
 
@@ -13,6 +14,7 @@ the existing configuration and only override/add what is necessary.
 The cache groups section is the default cache groups in webpack 4. See https://webpack.js.org/plugins/split-chunks-plugin/#optimizationsplitchunks.
 It does not appear to be the default with webpacker 4.
 */
+
 environment.splitChunks((config) => {
   return {
     ...config,
