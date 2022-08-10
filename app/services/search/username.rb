@@ -38,7 +38,6 @@ module Search
       selects << "(users.id = #{context.user_id}) as is_author"
       selects << "COUNT(comments.id) as comments_count"
       selects << "MAX(comments.created_at) as comment_at"
-      # (users.id = 1) as is_author, count(comments.id) as comments_count, MAX(comments.created_at) as comment_at
 
       ::User.joins(join_sql)
         .search_by_name_and_username(term)
