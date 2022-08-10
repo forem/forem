@@ -1,14 +1,27 @@
-# Note: You must restart bin/webpack-dev-server for changes to take effect
+# Note: You must restart bin/webpacker-dev-server for changes to take effect
 
 default: &default
   source_path: app/javascript
+
+  # You can have a subdirectory of the source_path, like 'packs' (recommended).
+  # Alternatively, you can use '/' to use the whole source_path directory.
   source_entry_path: packs
+
+  # If nested_entries is true, then we'll pick up subdirectories within the source_entry_path.
+  # You cannot set this option to true if you set source_entry_path to '/'
+  nested_entries: true
+
   public_root_path: public
   public_output_path: packs
   cache_path: tmp/cache/webpacker
   webpack_compile_output: true
+  # See https://github.com/shakacode/shakapacker#deployment
+  webpacker_precompile: true
 
-  # Additional paths webpack should lookup modules
+  # Location for manifest.json, defaults to {public_output_path}/manifest.json if unset
+  # manifest_path: public/packs/manifest.json
+
+  # Additional paths webpack should look up modules
   # ['app/assets', 'engine/foo/app/assets']
   additional_paths: ['app/assets']
 
@@ -49,33 +62,69 @@ default: &default
     - .jpeg
     - .jpg
 
+  # Select loader to use, available options are 'babel' (default), 'swc' or 'esbuild'
+  webpack_loader: 'babel'
+
+  # Set to true to enable check for matching versions of shakapacker gem and NPM package - will raise an error if there is a mismatch or wildcard versioning is used
+  ensure_consistent_versioning: true
+
+  # Select whether the compiler will use SHA digest ('digest' option) or most most recent modified timestamp ('mtime') to determine freshness
+  compiler_strategy: digest
+
 development:
   <<: *default
   compile: true
+  compiler_strategy: mtime
 
   # Reference: https://webpack.js.org/configuration/dev-server/
   dev_server:
     https: false
     host: 0.0.0.0
-    port: 3035
     public: 0.0.0.0:3035
+    port: 3035
+    # Hot Module Replacement updates modules while the application is running without a full reload
     hmr: false
     # Inline should be set to true if using HMR
     inline: true
     overlay: true
+    # If HMR is on, CSS will by inlined by delivering it as part of the script payload via style-loader. Be sure
+    # that you add style-loader to your project dependencies.
+    #
+    # If you want to instead deliver CSS via <link> with the mini-extract-css-plugin, set inline_css to false.
+    # In that case, style-loader is not needed as a dependency.
+    #
+    # mini-extract-css-plugin is a required dependency in both cases.
+    inline_css: true
+    # Defaults to the inverse of hmr. Uncomment to manually set this.
+    # live_reload: true
+    client:
+      # Should we show a full-screen overlay in the browser when there are compiler errors or warnings?
+      overlay: true
+      # May also be a string
+      # webSocketURL:
+      #  hostname: "0.0.0.0"
+      #  pathname: "/ws"
+      #  port: 8080
+    # Should we use gzip compression?
     compress: true
     disable_host_check: true
     use_local_ip: false
     quiet: false
     pretty: false
+    # Note that apps that do not check the host are vulnerable to DNS rebinding attacks
+    allowed_hosts: "all"
     headers:
       'Access-Control-Allow-Origin': '*'
-    watch_options:
-      ignored: '**/node_modules/**'
+    static:
+      watch:
+        ignored: '**/node_modules/**'
 
 test:
   <<: *default
   compile: true
+
+  # Extract and emit a css file
+  extract_css: true
 
   # Compile test packs to a separate directory
   public_output_path: packs-test
@@ -85,9 +134,6 @@ production:
 
   # Production depends on precompilation of packs prior to booting for performance.
   compile: false
-
-  # Extract and emit a css file
-  extract_css: true
 
   # Cache manifest.json for performance
   cache_manifest: true

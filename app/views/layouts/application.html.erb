@@ -43,6 +43,7 @@
       <meta property="forem:logo" content="<%= optimized_image_url(Settings::General.logo_png, width: 512, fetch_format: "png") %>" />
       <meta property="forem:domain" content="<%= Settings::General.app_domain %>" />
     <% end %>
+    <%= javascript_pack_tag "application" %>
   </head>
   <% unless internal_navigation? %>
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
@@ -55,8 +56,7 @@
         data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
         data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
         data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
-        data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>"
-        >
+        data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
         <div id="body-styles">
