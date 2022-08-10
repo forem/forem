@@ -22,6 +22,9 @@ module Moderator
       Notification.remove_all_by_action_without_delay(notifiable_ids: article.id,
                                                       notifiable_type: "Article",
                                                       action: "Published")
+
+      ContextNotification.delete_by(context_id: article.id, context_type: "Article", action: "Published")
+
       return unless article.comments.exists?
 
       Notification.remove_all(notifiable_ids: article.comments.ids, notifiable_type: "Comment")
