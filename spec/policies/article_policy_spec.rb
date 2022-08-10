@@ -15,7 +15,7 @@ RSpec.describe ArticlePolicy do
   let(:trusted) { create(:user, :trusted) }
   let(:other_users) { create(:user) }
   let(:author) { create(:user) }
-  let(:moderator) { create(:user, :moderator) }
+  let(:moderator) { create(:user, :super_moderator) }
   let(:tag_mod) { create(:user, :tag_moderator) }
   let(:tagmod_tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
   let(:random_tag) { create(:tag, name: "randomtag") }

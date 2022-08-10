@@ -1212,7 +1212,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     end
 
     context "when authorized as moderator" do
-      before { user.add_role(:moderator) }
+      before { user.add_role(:super_moderator) }
 
       it "unpublishes an article" do
         expect(published_article.published).to be true
