@@ -328,7 +328,7 @@ class ArticlesController < ApplicationController
       time_zone = Time.find_zone(time_zone_str)
       time_zone ||= Time.find_zone("UTC")
       params["article"]["published_at"] = time_zone.parse("#{date} #{time}")
-    else
+    elsif params["article"]["version"] != "v1"
       params["article"]["published_at"] = nil
     end
 
