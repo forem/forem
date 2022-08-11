@@ -42,7 +42,8 @@ const handleImageSuccess = (textAreaRef) => {
 export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
   const textAreaRef = useRef(null);
-  const contextData = document.getElementById('comments-container').dataset;
+  const contextData =
+    document.getElementById('comments-container')?.dataset || {};
 
   // Templates appear outside of the comment textarea, but we only want to load this data if it's requested by the user
   const handleTemplatesClick = ({ target }) => {
