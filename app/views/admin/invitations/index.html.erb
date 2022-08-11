@@ -1,30 +1,100 @@
-<header>
-  <h1 class="crayons-title">Invitations</h1>
-  <%= render "admin/users/menu" %>
-</header>
+<%= javascript_packs_with_chunks_tag "admin/users/controls", "admin/users/memberIndex", defer: true %>
+<div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-0">
+  <header class="flex flex-col p-4 xl:p-7 pb-4">
+    <div class="flex flex-col l:flex-row justify-content-between l:items-center">
+      <h1 class="crayons-title ml-3 xl:ml-0">Members<span class="screen-reader-only"> (Invitations)</span></h1>
+    </div>
 
-<table class="crayons-table" width="100%">
-  <thead>
-    <tr>
-      <th scope="col">User</th>
-      <th scope="col">ID</th>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-    </tr>
-  </thead>
-  <tbody class="crayons-card">
-    <% @invitations.each do |user| %>
+    <!-- Small screen layout start -->
+    <div class="flex flex-col m:hidden fs-s">
+      <%= form_with url: admin_invitations_path, method: :get, local: true, class: "py-3" do |f| %>
+        <div class="flex justify-content-between">
+          <%= render "admin/users/controls/expand_search_button" %>
+          <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-small" %>
+        </div>
+        <div id="search-users" class="hidden mt-3">
+          <%= render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, email, or username", context: "responsive" %>
+        </div>
+      <% end %>
+      <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-2 inline-block s:self-end" %>
+
+      <h2 class="member-data-heading fs-s py-2 mt-3 -mx-4 px-6 color-base-60">Invited members</h2>
+
+      <ul class="list-none mx-2">
+        <% @invitations.each do |user| %>
+            <li class="py-4">
+            <article class="flex justify-content-between items-start">
+              <div class="flex">
+                <%= render "admin/users/index/member_image", user: user %>
+                <div class="flex flex-col gap-2">
+                  <span class="color-base-60">@<%= user.username %></span>
+                  <%= user.email %>
+                  <dl>
+                    <dt class="color-base-60 fw-normal">Invited on</dt>
+                    <dd><%= user.created_at.strftime("%d %b, %Y") %></dd>
+                  </dl>
+                </div>
+              </div>
+              <%= render "admin/users/index/invitation_actions_dropdown", user: user, context: "small" %>
+            </article>
+            </li>
+        <% end %>
+      </ul>
+    </div>
+    <!-- Small screen layout end -->
+
+    <!-- Large screen layout start -->
+    <div class="hidden m:flex flex-col m:flex-row justify-content-between p-3 xl:px-0">
+      <%= form_with url: admin_invitations_path, method: :get, local: true, class: "grow-1 mb-3 m:mb-0" do |f| %>
+        <% render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, email, or username", context: "large" %>
+      <% end %>
+      <div class="flex grow-1 justify-content-end">
+        <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-large" %>
+        <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-3" %>
+      </div>
+    </div>
+
+  </header>
+  <table class="hidden m:table crayons-table crayons-table--minimal" width="100%" <%= @invitations.empty? ? "aria-describedby='empty-state-message-id'".html_safe : "" %>>
+    <thead class="member-data-heading">
       <tr>
-        <td><%= link_to user.username, admin_user_path(user) %></td>
-        <td><%= user.id %></td>
-        <td><%= user.name %></td>
-        <td><%= user.email %></td>
-        <h5>
-          <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %></td>
-        </h5>
+        <th scope="col" class="pl-7">Username</th>
+        <th scope="col">Email address</th>
+        <th scope="col">Invited on</th>
+        <th scope="col" class="screen-reader-only">Actions</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @invitations.each do |user| %>
+        <tr>
+          <td class="pl-7">
+            <div class="flex items-center">
+              <%= render "admin/users/index/member_image", user: user %>
+              <span class="color-base-60">@<%= user.username %></span>
+            </div>
+          </td>
+          <td><%= user.email %></td>
+          <td><%= user.created_at.strftime("%d %b, %Y") %></td>
+          <td>
+            <%= render "admin/users/index/invitation_actions_dropdown", user: user, context: "large" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<%= paginate @invitations, theme: "internal" %>
+  <% if @invitations.empty? %>
+    <div class="align-center flex flex-col my-auto py-7" id="empty-state-message-id">
+      <p class="fs-xl fw-normal mb-2">No members invited yet.</p>
+      <p class="color-secondary">Invite members and grow your community.</p>
+    </div>
+    <div class="flex grow-1 justify-content-center">
+      <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-3" %>
+    </div>
+  <% end %>
+
+  <!-- Large screen layout end -->
+  <div class="flex justify-end p-4 xl:p-7">
+    <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "bottom" %>
+  </div>
+<div>

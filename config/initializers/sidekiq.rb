@@ -1,3 +1,6 @@
+require "sidekiq/honeycomb_middleware"
+require "sidekiq/worker_retries_exhausted_reporter"
+
 module Sidekiq
   module Cron
     class Job
@@ -8,17 +11,11 @@ module Sidekiq
         # sidekiq workers, we need to ensure any job scheduled during that down time
         # is run once Sidekiq boots back up
         # https://github.com/ondrejbartas/sidekiq-cron/blob/074a87546f16122c1f508bb2805b9951588f2510/lib/sidekiq/cron/job.rb#L593
-        return false if (current_time.to_i - last_cron_time.to_i) > (ENV["CRON_LOOKBACK_TIME"] || 60).to_i
+        return false if (current_time.to_i - last_cron_time.to_i) > ENV.fetch("CRON_LOOKBACK_TIME", 60).to_i
 
         true
       end
     end
-  end
-end
-
-Rails.application.config.to_prepare do
-  Dir.glob(Rails.root.join("lib/sidekiq/*.rb")).each do |filename|
-    require_dependency filename
   end
 end
 

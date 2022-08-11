@@ -1,7 +1,7 @@
 module Feeds
   # Responsible for fetching RSS feeds for multiple users.
   #
-  # @see {Feeds::Import.call}
+  # @see Feeds::Import.call
   class Import
     # Fetch the feeds for the given users (with some filtering based on internal business logic).
     #
@@ -33,10 +33,8 @@ module Feeds
 
       users.in_batches(of: users_batch_size) do |batch_of_users|
         feeds_per_user_id = fetch_feeds(batch_of_users)
-        ForemStatsClient.count("feeds::import::fetch_feeds.count", feeds_per_user_id.length)
 
         feedjira_objects = parse_feeds(feeds_per_user_id)
-        ForemStatsClient.count("feeds::import::parse_feeds.count", feedjira_objects.length)
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
         # and unnecessary conflicts
@@ -45,9 +43,7 @@ module Feeds
           # only actually uses feed.url
           user = batch_of_users.detect { |u| u.id == user_id }
 
-          ForemStatsClient.time("feeds::import::create_articles_from_user_feed", tags: ["user_id:#{user_id}"]) do
-            create_articles_from_user_feed(user, feed)
-          end
+          create_articles_from_user_feed(user, feed)
         end
 
         total_articles_count += articles.length
@@ -58,7 +54,6 @@ module Feeds
         batch_of_users.update_all(feed_fetched_at: Time.current)
       end
 
-      ForemStatsClient.count("feeds::import::articles.count", total_articles_count)
       total_articles_count
     end
 
@@ -88,11 +83,9 @@ module Feeds
         cleaned_url = url.to_s.strip
         next if cleaned_url.blank?
 
-        response = ForemStatsClient.time("feeds::import::fetch_feed", tags: ["user_id:#{user_id}", "url:#{url}"]) do
-          HTTParty.get(cleaned_url,
-                       timeout: 10,
-                       headers: { "User-Agent" => "Forem Feeds Importer" })
-        end
+        response = HTTParty.get(cleaned_url,
+                                timeout: 10,
+                                headers: { "User-Agent" => "Forem Feeds Importer" })
 
         [user_id, response.body]
       rescue StandardError => e
@@ -117,9 +110,7 @@ module Feeds
     # TODO: put this in separate service object
     def parse_feeds(feeds_per_user_id)
       result = Parallel.map(feeds_per_user_id, in_threads: num_parsers) do |user_id, feed_xml|
-        parsed_feed = ForemStatsClient.time("feeds::import::parse_feed", tags: ["user_id:#{user_id}"]) do
-          Feedjira.parse(feed_xml)
-        end
+        parsed_feed = Feedjira.parse(feed_xml)
 
         [user_id, parsed_feed]
       rescue StandardError => e

@@ -21,6 +21,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_one(:discussion_lock).dependent(:delete) }
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
+    it { is_expected.to have_many(:context_notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:mentions).dependent(:delete_all) }
     it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
     it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
@@ -236,6 +237,14 @@ RSpec.describe Article, type: :model do
         expect(article.title).to eq allowed_title
       end
 
+      it "allows Euro symbol (€)" do
+        allowed_title = "Euro code €€€"
+
+        article = create(:article, title: allowed_title)
+
+        expect(article.title).to eq allowed_title
+      end
+
       it "produces a proper title" do
         test_article = build(:article, title: "An Article Title")
 
@@ -266,7 +275,7 @@ RSpec.describe Article, type: :model do
     describe "tag validation" do
       let(:article) { build(:article, user: user) }
 
-      # See https://github.com/thepracticaldev/dev.to/pull/6302
+      # See https://github.com/forem/forem/pull/6302
       # rubocop:disable RSpec/VerifiedDoubles
       it "does not modify the tag list if there are no adjustments" do
         allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
@@ -469,23 +478,33 @@ RSpec.describe Article, type: :model do
     end
 
     it "sets published_at from a valid frontmatter date" do
-      date = (Date.current - 5.days).strftime("%d/%m/%Y")
+      date = (Date.current + 5.days).strftime("%d/%m/%Y")
       article_with_date = build(:article, with_date: true, date: date, published_at: nil)
       expect(article_with_date.valid?).to be(true)
       expect(article_with_date.published_at.strftime("%d/%m/%Y")).to eq(date)
     end
 
-    it "rejects future dates set from frontmatter" do
-      invalid_article = build(:article, with_date: true, date: Date.tomorrow.strftime("%d/%m/%Y"), published_at: nil)
-      expect(invalid_article.valid?).to be(false)
-      expect(invalid_article.errors[:date_time])
-        .to include("must be entered in DD/MM/YYYY format with current or past date")
+    it "sets published_at from frontmatter" do
+      published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
+      body_markdown = "---\ntitle: Title\npublished: false\npublished_at: #{published_at}\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      article_with_published_at = build(:article, body_markdown: body_markdown)
+      expect(article_with_published_at.valid?).to be(true)
+      expect(article_with_published_at.published_at.strftime("%d/%m/%Y %H:%M")).to eq(published_at)
     end
 
-    it "rejects future dates even when it's published at" do
-      article.published_at = Date.tomorrow
-      expect(article.valid?).to be(false)
-      expect(article.errors[:date_time]).to include("must be entered in DD/MM/YYYY format with current or past date")
+    it "doesn't allow past published_at when publishing on create" do
+      article2 = build(:article, published_at: 10.days.ago, published: true)
+      expect(article2.valid?).to be false
+      expect(article2.errors[:published_at])
+        .to include("only future or current published_at allowed when publishing an article")
+    end
+
+    it "doesn't allow updating published_at if an article has already been published" do
+      article.published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
+      expect(article.valid?).to be false
+      expect(article.errors[:published_at])
+        .to include("updating published_at for articles that have already been published is not allowed")
     end
   end
 
@@ -1120,6 +1139,17 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "record field test event" do
+      it "enqueues Users::RecordFieldTestEventWorker" do
+        sidekiq_assert_enqueued_with(
+          job: Users::RecordFieldTestEventWorker,
+          args: [article.user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL],
+        ) do
+          article.save
+        end
+      end
+    end
+
     describe "async score calc" do
       it "enqueues Articles::ScoreCalcWorker if published" do
         sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
@@ -1131,42 +1161,6 @@ RSpec.describe Article, type: :model do
         article = build(:article, published: false)
         sidekiq_assert_no_enqueued_jobs(only: Articles::ScoreCalcWorker) do
           article.save
-        end
-      end
-    end
-
-    describe "slack messages" do
-      before do
-        # making sure there are no other enqueued jobs from other tests
-        sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
-      end
-
-      it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-          article.update(published: true, published_at: Time.current)
-        end
-      end
-
-      it "does not queue a message for an article published more than 30 seconds ago" do
-        Timecop.freeze(Time.current) do
-          sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-            article.update(published: true, published_at: 31.seconds.ago)
-          end
-        end
-      end
-
-      it "does not queue a message for a draft article" do
-        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-          article.update(body_markdown: "foobar", published: false)
-        end
-      end
-
-      it "queues a message for a draft article that gets published" do
-        Timecop.freeze(Time.current) do
-          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
-            article.update_columns(published: false)
-            article.update(published: true, published_at: Time.current)
-          end
         end
       end
     end
@@ -1342,7 +1336,6 @@ RSpec.describe Article, type: :model do
       following_user.follow(user)
 
       expect(article.followers.length).to eq(1)
-      expect(article.followers.first.username).to eq(following_user.username)
     end
   end
 

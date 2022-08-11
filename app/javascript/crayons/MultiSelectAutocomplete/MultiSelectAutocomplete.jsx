@@ -3,7 +3,7 @@
 import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useReducer } from 'preact/hooks';
-import { DefaultSelectionTemplate } from './DefaultSelectionTemplate';
+import { DefaultSelectionTemplate } from '../../shared/components/defaultSelectionTemplate';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -66,6 +66,7 @@ const reducer = (state, action) => {
  * @param {number} props.maxSelections Optional maximum number of allowed selections
  * @param {Function} props.onSelectionsChanged Callback for when selections are added or removed
  * @param {Function} props.onFocus Callback for when the component receives focus
+ * @param {boolean} props.allowUserDefinedSelections Whether a user can create new selections other than the defined suggestions
  * @param {Function} props.SuggestionTemplate Optional Preact component to render suggestion items
  * @param {Function} props.SelectionTemplate Optional Preact component to render selected items
  */
@@ -82,6 +83,7 @@ export const MultiSelectAutocomplete = ({
   maxSelections,
   onSelectionsChanged,
   onFocus,
+  allowUserDefinedSelections = false,
   SuggestionTemplate,
   SelectionTemplate = DefaultSelectionTemplate,
 }) => {
@@ -200,13 +202,31 @@ export const MultiSelectAutocomplete = ({
     const matchingSuggestion = suggestions.find(
       (suggestion) => suggestion.name === textValue,
     );
-    selectItem({
-      selectedItem: matchingSuggestion
-        ? matchingSuggestion
-        : { name: textValue },
-      nextInputValue,
-      keepSelecting,
-    });
+
+    if (matchingSuggestion) {
+      selectItem({
+        selectedItem: matchingSuggestion,
+        nextInputValue,
+        keepSelecting,
+      });
+      return;
+    }
+
+    // If we allow user's own input as a selection, fallback to that
+    if (allowUserDefinedSelections) {
+      selectItem({
+        selectedItem: { name: textValue },
+        nextInputValue,
+        keepSelecting,
+      });
+      return;
+    }
+
+    // If we couldn't select any valid input, and search is terminated, clear the input
+    if (!keepSelecting) {
+      inputRef.current.value = '';
+      dispatch('setSuggestions', { payload: [] });
+    }
   };
 
   const enterEditState = (editItem, editItemIndex) => {
@@ -303,8 +323,14 @@ export const MultiSelectAutocomplete = ({
     }
 
     const results = await fetchSuggestions(value);
-    // If no results, display current search term as an option
-    if (results.length === 0 && value !== '') {
+
+    // It could be that while waiting on the network fetch, the user has already made a selection or otherwise cleared the input
+    if (inputRef.current.value === '') {
+      return;
+    }
+
+    // If no results, and user-generated selections are allowed, display current search term as an option
+    if (allowUserDefinedSelections && results.length === 0 && value !== '') {
       results.push({ name: value });
     }
 
@@ -519,6 +545,7 @@ export const MultiSelectAutocomplete = ({
       >
         <SelectionTemplate
           {...item}
+          buttonVariant="secondary"
           onEdit={() => enterEditState(item, index)}
           onDeselect={() => deselectItem(item)}
         />

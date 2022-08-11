@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, waitFor } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
@@ -97,6 +97,6 @@ describe('IntroSlide', () => {
     termsCheckbox.click();
 
     const nextButton = await findByText(/continue/i);
-    expect(nextButton).not.toBeDisabled();
+    await waitFor(() => expect(nextButton).not.toBeDisabled());
   });
 });

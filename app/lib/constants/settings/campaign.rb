@@ -1,44 +1,46 @@
 module Constants
   module Settings
     module Campaign
-      DETAILS = {
-        articles_expiry_time: {
-          description: "Sets the expiry time for articles (in weeks) to be displayed in campaign sidebar",
-          placeholder: ""
-        },
-        articles_require_approval: {
-          description: "",
-          placeholder: "Campaign stories show up on sidebar with approval?"
-        },
-        display_name: {
-          description: "This text is displayed in reference to the campaign in titles, etc.",
-          placeholder: "My great campaign"
-        },
-        call_to_action: {
-          description: "This text populates the call to action button on the campaign sidebar",
-          placeholder: "Share your project"
-        },
-        featured_tags: {
-          description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
-          placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded"
-        },
-        hero_html_variant_name: {
-          description: "Hero HtmlVariant name",
-          placeholder: ""
-        },
-        sidebar_enabled: {
-          description: "",
-          placeholder: "Campaign sidebar enabled or not"
-        },
-        sidebar_image: {
-          description: ::Constants::Settings::General::IMAGE_PLACEHOLDER,
-          placeholder: "Used at the top of the campaign sidebar"
-        },
-        url: {
-          description: "https://url.com/lander",
-          placeholder: "URL campaign sidebar image will link to"
+      def self.details
+        {
+          articles_expiry_time: {
+            description: I18n.t("lib.constants.settings.campaign.articles_expiry.description"),
+            placeholder: ""
+          },
+          articles_require_approval: {
+            description: "",
+            placeholder: I18n.t("lib.constants.settings.campaign.articles_approval.placeholder")
+          },
+          call_to_action: {
+            description: I18n.t("lib.constants.settings.campaign.call_to_action.description"),
+            placeholder: I18n.t("lib.constants.settings.campaign.call_to_action.placeholder")
+          },
+          display_name: {
+            description: I18n.t("lib.constants.settings.campaign.display_name.description"),
+            placeholder: I18n.t("lib.constants.settings.campaign.display_name.placeholder")
+          },
+          featured_tags: {
+            description: I18n.t("lib.constants.settings.campaign.featured.description"),
+            placeholder: I18n.t("lib.constants.settings.campaign.featured.placeholder")
+          },
+          hero_html_variant_name: {
+            description: I18n.t("lib.constants.settings.campaign.hero_html.description"),
+            placeholder: ""
+          },
+          sidebar_enabled: {
+            description: "",
+            placeholder: I18n.t("lib.constants.settings.campaign.sidebar_enabled.placeholder")
+          },
+          sidebar_image: {
+            description: ::Constants::Settings::General::IMAGE_PLACEHOLDER,
+            placeholder: I18n.t("lib.constants.settings.campaign.sidebar_image.placeholder")
+          },
+          url: {
+            description: I18n.t("lib.constants.settings.campaign.url.description"),
+            placeholder: I18n.t("lib.constants.settings.campaign.url.placeholder")
+          }
         }
-      }.freeze
+      end
     end
   end
 end

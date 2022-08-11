@@ -9,7 +9,8 @@ RSpec.describe UserSubscription, type: :model do
   describe "validations" do
     it { is_expected.to validate_presence_of(:user_subscription_sourceable_type) }
     it { is_expected.to validate_presence_of(:subscriber_email) }
-    it { is_expected.to validate_inclusion_of(:user_subscription_sourceable_type).in_array(%w[Article]) }
+    # Disabled to Rails 7 compatibility. See https://github.com/thoughtbot/shoulda-matchers/issues/1433
+    xit { is_expected.to validate_inclusion_of(:user_subscription_sourceable_type).in_array(%w[Article]) }
 
     # rubocop:disable RSpec/NamedSubject
     it {

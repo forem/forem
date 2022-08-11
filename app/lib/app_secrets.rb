@@ -23,7 +23,7 @@ class AppSecrets
   end
 
   def self.namespace
-    ENV["VAULT_SECRET_NAMESPACE"]
+    ENV.fetch("VAULT_SECRET_NAMESPACE", nil)
   end
   private_class_method :namespace
 end

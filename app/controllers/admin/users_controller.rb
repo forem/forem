@@ -16,14 +16,51 @@ module Admin
       email_body
     ].freeze
 
+    ATTRIBUTES_FOR_CSV = %i[
+      id name username email registered_at
+    ].freeze
+
+    ATTRIBUTES_FOR_LAST_ACTIVITY = %i[
+      registered last_comment_at last_article_at latest_article_updated_at last_reacted_at profile_updated_at
+      last_moderation_notification last_notification_activity
+    ].freeze
+
+    MODROLE_ACTIONS_TO_POLICIES = {
+      user_status: :toggle_suspension_status?,
+      unpublish_all_articles: :unpublish_all_articles?
+    }.freeze
+
     after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
+    # Having this method here (which also exists in admin/application_controller)
+    # allows us to authorize the actions of the moderator role specifically,
+    # while preserving the implementation for all other admin actions
+    def authorize_admin
+      if MODROLE_ACTIONS_TO_POLICIES.key?(action_name.to_sym)
+        authorize(User, MODROLE_ACTIONS_TO_POLICIES[action_name.to_sym])
+      else
+        super
+      end
+    end
+
     def index
       @users = Admin::UsersQuery.call(
-        options: params.permit(:role, :search),
+        relation: User.registered,
+        search: params[:search],
+        role: params[:role],
+        roles: params[:roles],
+        statuses: params[:statuses],
+        joining_start: params[:joining_start],
+        joining_end: params[:joining_end],
+        date_format: params[:date_format],
+        organizations: params[:organizations],
       ).page(params[:page]).per(50)
+
+      @organization_limit = 3
+      @organizations = Organization.order(name: :desc)
+      @earliest_join_date = User.first.registered_at.to_s
     end
 
     def edit
@@ -36,6 +73,7 @@ module Admin
     def show
       @user = User.find(params[:id])
       set_current_tab(params[:tab])
+      set_banishable_user
       set_feedback_messages
       set_related_reactions
       set_user_details
@@ -61,22 +99,59 @@ module Admin
                                           resource_type: resource_type,
                                           admin: current_user)
       if response.success
-        flash[:success] = "Role: #{role.to_s.humanize.titlecase} has been successfully removed from the user!"
+        flash[:success] =
+          I18n.t("admin.users_controller.role_removed",
+                 role: role.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
       else
         flash[:danger] = response.error_message
       end
       redirect_to admin_user_path(params[:id])
     end
 
+    def export
+      @users = User.registered.select(ATTRIBUTES_FOR_CSV + ATTRIBUTES_FOR_LAST_ACTIVITY).includes(:organizations)
+
+      respond_to do |format|
+        format.csv do
+          response.headers["Content-Type"] = "text/csv"
+          response.headers["Content-Disposition"] = "attachment; filename=users.csv"
+          render template: "admin/users/export"
+        end
+      end
+    end
+
     def user_status
       @user = User.find(params[:id])
       begin
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
-        flash[:success] = "User has been updated"
+        flash[:success] = I18n.t("admin.users_controller.updated")
+        respond_to do |format|
+          format.html do
+            redirect_back_or_to admin_users_path
+          end
+          format.json do
+            render json: {
+              success: true,
+              message: I18n.t("admin.users_controller.updated_json", username: @user.username)
+            }, status: :ok
+          end
+        end
       rescue StandardError => e
         flash[:danger] = e.message
+        respond_to do |format|
+          format.html do
+            redirect_back_or_to admin_users_path
+          end
+          format.json do
+            render json: {
+              success: false,
+              message: @user.errors_as_sentence
+            }, status: :unprocessable_entity
+          end
+        end
       end
-      redirect_to admin_user_path(params[:id])
+      Credits::Manage.call(@user, credit_params)
+      add_note if user_params[:new_note]
     end
 
     def export_data
@@ -90,13 +165,13 @@ module Admin
         receiver = "user"
       end
       ExportContentWorker.perform_async(user.id, email)
-      flash[:success] = "Data exported to the #{receiver}. The job will complete momentarily."
+      flash[:success] = I18n.t("admin.users_controller.exported", receiver: receiver)
       redirect_to admin_user_path(params[:id])
     end
 
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
-      flash[:success] = "This user is being banished in the background. The job will complete soon."
+      flash[:success] = I18n.t("admin.users_controller.banished")
       redirect_to admin_user_path(params[:id])
     end
 
@@ -104,12 +179,13 @@ module Admin
       @user = User.find(params[:id])
       begin
         Moderator::DeleteUser.call(user: @user)
-        link = helpers.tag.a("the page", href: admin_users_gdpr_delete_requests_path, data: { "no-instant" => true })
-        message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-                  "has been fully deleted. " \
-                  "If this is a GDPR delete, delete them from Mailchimp & Google Analytics " \
-                  " and confirm on "
-        flash[:success] = helpers.safe_join([message, link, "."])
+        link = helpers.tag.a(I18n.t("admin.users_controller.the_page"), href: admin_gdpr_delete_requests_path,
+                                                                        data: { "no-instant" => true })
+        flash[:success] = I18n.t("admin.users_controller.full_delete_html",
+                                 user: @user.username,
+                                 email: @user.email.presence || I18n.t("admin.users_controller.no_email"),
+                                 id: @user.id,
+                                 the_page: link).html_safe # rubocop:disable Rails/OutputSafety
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -118,8 +194,17 @@ module Admin
 
     def unpublish_all_articles
       Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      flash[:success] = "Posts are being unpublished in the background. The job will complete soon."
-      redirect_to admin_user_path(params[:id])
+      message = I18n.t("admin.users_controller.unpublished")
+      respond_to do |format|
+        format.html do
+          flash[:success] = message
+          redirect_to admin_user_path(params[:id])
+        end
+
+        format.json do
+          render json: { message: message }
+        end
+      end
     end
 
     def merge
@@ -147,7 +232,9 @@ module Admin
         # We should delete them when a user unlinks their GitHub account.
         @user.github_repos.destroy_all if identity.provider.to_sym == :github
 
-        flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
+        flash[:success] =
+          I18n.t("admin.users_controller.identity_removed",
+                 provider: identity.provider.capitalize)
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -163,7 +250,7 @@ module Admin
 
       if NotifyMailer.with(email_params).user_contact_email.deliver_now
         respond_to do |format|
-          message = "Email sent!"
+          message = I18n.t("admin.users_controller.email_sent")
 
           format.html do
             flash[:success] = message
@@ -174,7 +261,7 @@ module Admin
         end
       else
         respond_to do |format|
-          message = "Email failed to send!"
+          message = I18n.t("admin.users_controller.email_fail")
 
           format.html do
             flash[:danger] = message
@@ -191,7 +278,7 @@ module Admin
     rescue ActionController::ParameterMissing
       respond_to do |format|
         format.json do
-          render json: { error: "Both subject and body are required!" },
+          render json: { error: I18n.t("admin.users_controller.parameter_missing") },
                  content_type: "application/json",
                  status: :unprocessable_entity
         end
@@ -201,7 +288,7 @@ module Admin
     def verify_email_ownership
       if VerificationMailer.with(user_id: params[:id]).account_ownership_verification_email.deliver_now
         respond_to do |format|
-          message = "Verification email sent!"
+          message = I18n.t("admin.users_controller.verify_sent")
 
           format.html do
             flash[:success] = message
@@ -211,7 +298,7 @@ module Admin
           format.js { render json: { result: message }, content_type: "application/json" }
         end
       else
-        message = "Email failed to send!"
+        message = I18n.t("admin.users_controller.email_fail")
 
         respond_to do |format|
           format.html do
@@ -227,7 +314,7 @@ module Admin
     def unlock_access
       @user = User.find(params[:id])
       @user.unlock_access!
-      flash[:success] = "Unlocked User account!"
+      flash[:success] = I18n.t("admin.users_controller.unlocked")
       redirect_to admin_user_path(@user)
     end
 
@@ -288,10 +375,10 @@ module Admin
       case user_params[:credit_action]
       when "Add"
         credit_params[:add_credits] = user_params[:credit_amount]
-        flash[:success] = "Credits have been added!"
+        flash[:success] = I18n.t("admin.users_controller.credits_added")
       when "Remove"
         credit_params[:remove_credits] = user_params[:credit_amount]
-        flash[:success] = "Credits have been removed."
+        flash[:success] = I18n.t("admin.users_controller.credits_removed")
       else
         return user_params
       end
@@ -304,6 +391,11 @@ module Admin
                      else
                        "overview"
                      end
+    end
+
+    def set_banishable_user
+      @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
+        @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
     end
   end
 end

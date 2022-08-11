@@ -29,9 +29,9 @@ module DataUpdateScripts
       Rails.logger.error("Could not convert logo_svg for #{Settings::Community.community_name} Forem to a PNG.")
 
       Honeybadger.notify(e, context: {
-                           community_name: Settings::Community.community_name,
-                           app_domain: Settings::General.app_domain
-                         },
+                              community_name: Settings::Community.community_name,
+                              app_domain: Settings::General.app_domain
+                            },
                             tags: "failed_svg_conversion")
     end
   end

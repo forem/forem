@@ -7,6 +7,32 @@ RSpec.describe ReactionPolicy do
   let(:reaction) { create(:reaction, reactable: comment) }
   let!(:user) { create(:user) }
 
+  describe ".policy_query_for" do
+    subject { described_class.policy_query_for(category: category) }
+
+    Reaction::PRIVILEGED_CATEGORIES.each do |category|
+      context "when #{category} cateogry" do
+        let(:category) { category }
+
+        it { is_expected.to eq(:privileged_create?) }
+      end
+    end
+
+    (Reaction::CATEGORIES - Reaction::PRIVILEGED_CATEGORIES).each do |category|
+      context "when #{category} cateogry" do
+        let(:category) { category }
+
+        it { is_expected.to eq(:create?) }
+      end
+    end
+
+    context "when nil category" do
+      let(:category) { nil }
+
+      it { is_expected.to eq(:create?) }
+    end
+  end
+
   context "when user is not signed in" do
     let(:user) { nil }
 
@@ -20,6 +46,30 @@ RSpec.describe ReactionPolicy do
       before { user.add_role(:suspended) }
 
       it { is_expected.to permit_actions(%i[index create]) }
+      it { is_expected.to forbid_actions(%i[privileged_create]) }
+    end
+
+    context "when user is unadorned with roles" do
+      it { is_expected.to permit_actions(%i[index create]) }
+      it { is_expected.to forbid_actions(%i[privileged_create]) }
+    end
+
+    context "when user is trusted" do
+      before { user.add_role(:trusted) }
+
+      it { is_expected.to permit_actions(%i[index create privileged_create]) }
+    end
+
+    context "when user is super admin" do
+      let(:user) { create(:user, :super_admin) }
+
+      it { is_expected.to permit_actions(%i[index create privileged_create]) }
+    end
+
+    context "when user is admin" do
+      let(:user) { create(:user, :admin) }
+
+      it { is_expected.to permit_actions(%i[index create privileged_create]) }
     end
   end
 end

@@ -1,7 +1,7 @@
 module ListingHelper
   def select_options_for_categories
-    ListingCategory.select(:id, :name, :cost).map do |cl|
-      [I18n.t("helpers.listing_helper.option", cl_name: cl.name, count: cl.cost), cl.id]
+    ListingCategory.select(:id, :slug, :name, :cost).map do |cl|
+      [I18n.t("helpers.listing_helper.option", cl_name: cl.name, count: cl.cost), cl.slug, cl.id]
     end
   end
 

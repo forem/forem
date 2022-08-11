@@ -13,17 +13,12 @@ class Organization < ApplicationRecord
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
-  # TODO: [@rhymes] revisit this callback and `update_articles_cached_organization`
-  # when we remove Elasticsearch
-  before_save :update_articles
   before_save :remove_at_from_usernames
   before_save :generate_secret
 
   after_save :bust_cache
 
-  # This callback will eventually invoke Article.update_cached_user to update the organization.name
-  # only when it has been changed, thus invoking the trigger on Article.reading_list_document
-  after_update_commit :update_articles_cached_organization
+  after_update_commit :conditionally_update_articles
   after_destroy_commit :bust_cache
 
   has_many :articles, dependent: :nullify
@@ -141,16 +136,10 @@ class Organization < ApplicationRecord
     self.slug = slug&.downcase
   end
 
-  def update_articles
-    return unless saved_change_to_slug || saved_change_to_name || saved_change_to_profile_image
+  def conditionally_update_articles
+    return unless Article::ATTRIBUTES_CACHED_FOR_RELATED_ENTITY.detect { |attr| saved_change_to_attribute?(attr) }
 
-    articles.update(cached_organization: Articles::CachedEntity.from_object(self))
-  end
-
-  def update_articles_cached_organization
-    return unless saved_change_to_attribute?(:name)
-
-    articles.update(cached_organization: Articles::CachedEntity.from_object(self))
+    articles.each(&:save)
   end
 
   def bust_cache

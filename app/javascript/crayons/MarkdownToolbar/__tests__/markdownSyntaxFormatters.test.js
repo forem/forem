@@ -1,6 +1,5 @@
 import {
-  coreSyntaxFormatters,
-  secondarySyntaxFormatters,
+  markdownSyntaxFormatters,
   getNewTextAreaValueWithEdits,
 } from '../markdownSyntaxFormatters';
 
@@ -17,7 +16,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['bold'].getFormatting({
+        } = markdownSyntaxFormatters['bold'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -46,7 +45,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['bold'].getFormatting({
+        } = markdownSyntaxFormatters['bold'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -74,7 +73,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['bold'].getFormatting({
+        } = markdownSyntaxFormatters['bold'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 11,
@@ -103,7 +102,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['bold'].getFormatting({
+        } = markdownSyntaxFormatters['bold'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 9,
@@ -132,7 +131,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['bold'].getFormatting({
+        } = markdownSyntaxFormatters['bold'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 9,
@@ -161,7 +160,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['bold'].getFormatting({
+        } = markdownSyntaxFormatters['bold'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 11,
@@ -190,7 +189,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['bold'].getFormatting({
+        } = markdownSyntaxFormatters['bold'].getFormatting({
           value: textAreaValue,
           selectionStart: 6,
           selectionEnd: 9,
@@ -219,7 +218,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['bold'].getFormatting({
+        } = markdownSyntaxFormatters['bold'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -250,7 +249,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['italic'].getFormatting({
+        } = markdownSyntaxFormatters['italic'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -279,7 +278,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['italic'].getFormatting({
+        } = markdownSyntaxFormatters['italic'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -307,7 +306,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['italic'].getFormatting({
+        } = markdownSyntaxFormatters['italic'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 9,
@@ -336,7 +335,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['italic'].getFormatting({
+        } = markdownSyntaxFormatters['italic'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 8,
@@ -365,7 +364,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['italic'].getFormatting({
+        } = markdownSyntaxFormatters['italic'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 8,
@@ -394,7 +393,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['italic'].getFormatting({
+        } = markdownSyntaxFormatters['italic'].getFormatting({
           value: textAreaValue,
           selectionStart: 5,
           selectionEnd: 8,
@@ -423,7 +422,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['italic'].getFormatting({
+        } = markdownSyntaxFormatters['italic'].getFormatting({
           value: textAreaValue,
           selectionStart: 5,
           selectionEnd: 8,
@@ -452,7 +451,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['italic'].getFormatting({
+        } = markdownSyntaxFormatters['italic'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -483,7 +482,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['code'].getFormatting({
+        } = markdownSyntaxFormatters['code'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -512,7 +511,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['code'].getFormatting({
+        } = markdownSyntaxFormatters['code'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -540,7 +539,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['code'].getFormatting({
+        } = markdownSyntaxFormatters['code'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 9,
@@ -569,7 +568,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['code'].getFormatting({
+        } = markdownSyntaxFormatters['code'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 8,
@@ -598,7 +597,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['code'].getFormatting({
+        } = markdownSyntaxFormatters['code'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 8,
@@ -627,7 +626,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['code'].getFormatting({
+        } = markdownSyntaxFormatters['code'].getFormatting({
           value: textAreaValue,
           selectionStart: 5,
           selectionEnd: 8,
@@ -656,7 +655,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['code'].getFormatting({
+        } = markdownSyntaxFormatters['code'].getFormatting({
           value: textAreaValue,
           selectionStart: 5,
           selectionEnd: 8,
@@ -685,7 +684,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['code'].getFormatting({
+        } = markdownSyntaxFormatters['code'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -716,7 +715,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['underline'].getFormatting({
+        } = markdownSyntaxFormatters['underline'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -745,7 +744,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['underline'].getFormatting({
+        } = markdownSyntaxFormatters['underline'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -773,7 +772,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['underline'].getFormatting({
+        } = markdownSyntaxFormatters['underline'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 14,
@@ -802,7 +801,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['underline'].getFormatting({
+        } = markdownSyntaxFormatters['underline'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 10,
@@ -831,7 +830,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['underline'].getFormatting({
+        } = markdownSyntaxFormatters['underline'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 11,
@@ -860,7 +859,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['underline'].getFormatting({
+        } = markdownSyntaxFormatters['underline'].getFormatting({
           value: textAreaValue,
           selectionStart: 7,
           selectionEnd: 10,
@@ -889,7 +888,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['underline'].getFormatting({
+        } = markdownSyntaxFormatters['underline'].getFormatting({
           value: textAreaValue,
           selectionStart: 7,
           selectionEnd: 10,
@@ -918,7 +917,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['underline'].getFormatting({
+        } = markdownSyntaxFormatters['underline'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -949,7 +948,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+        } = markdownSyntaxFormatters['strikethrough'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -978,7 +977,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+        } = markdownSyntaxFormatters['strikethrough'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -1006,7 +1005,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+        } = markdownSyntaxFormatters['strikethrough'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 11,
@@ -1035,7 +1034,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+        } = markdownSyntaxFormatters['strikethrough'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 9,
@@ -1064,7 +1063,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+        } = markdownSyntaxFormatters['strikethrough'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 9,
@@ -1093,7 +1092,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+        } = markdownSyntaxFormatters['strikethrough'].getFormatting({
           value: textAreaValue,
           selectionStart: 6,
           selectionEnd: 9,
@@ -1122,7 +1121,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+        } = markdownSyntaxFormatters['strikethrough'].getFormatting({
           value: textAreaValue,
           selectionStart: 6,
           selectionEnd: 9,
@@ -1151,7 +1150,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['strikethrough'].getFormatting({
+        } = markdownSyntaxFormatters['strikethrough'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -1182,7 +1181,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 8,
           selectionEnd: 8,
@@ -1211,7 +1210,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -1240,7 +1239,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 24,
@@ -1268,7 +1267,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 25,
@@ -1296,7 +1295,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 5,
           selectionEnd: 5,
@@ -1324,7 +1323,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 7,
           selectionEnd: 10,
@@ -1352,7 +1351,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 16,
           selectionEnd: 19,
@@ -1381,7 +1380,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 7,
           selectionEnd: 25,
@@ -1410,7 +1409,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 16,
           selectionEnd: 34,
@@ -1440,7 +1439,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 42,
@@ -1469,7 +1468,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 26,
@@ -1498,7 +1497,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['link'].getFormatting({
+        } = markdownSyntaxFormatters['link'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 11,
@@ -1516,6 +1515,151 @@ describe('markdownSyntaxFormatters', () => {
         expect(newCursorEnd).toEqual(4);
       });
     });
+
+    describe('embed', () => {
+      it('inserts embed syntax and place cursor inside embed syntax, when no selection is given', () => {
+        const textAreaValue = 'one two three';
+        const expectedNewTextAreaValue = 'one two {% embed  %}three';
+
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = markdownSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 8,
+          selectionEnd: 8,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          '',
+        );
+      });
+
+      it('inserts embed syntax and highlights text, when text is selected', () => {
+        const textAreaValue = 'one two three';
+        const expectedNewTextAreaValue = 'one {% embed two %} three';
+
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = markdownSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 7,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'two',
+        );
+      });
+
+      it('removes embed syntax, when cursor is inside empty embed syntax', () => {
+        const textAreaValue = 'one {% embed  %} two';
+        const expectedNewTextAreaValue = 'one  two';
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = markdownSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 13,
+          selectionEnd: 13,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(newCursorStart).toEqual(4);
+        expect(newCursorEnd).toEqual(4);
+      });
+
+      it('removes embed syntax and highlights the selected text, when selected text is inside embed syntax', () => {
+        const textAreaValue = 'one {% embed random-selected-text %} three';
+        const expectedNewTextAreaValue = 'one random-selected-text three';
+
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = markdownSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 13,
+          selectionEnd: 33,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'random-selected-text',
+        );
+      });
+
+      it('removes embed syntax and highlights the text, when full embed syntax is selected', () => {
+        const textAreaValue = 'one {% embed https://example.com %} three';
+        const expectedNewTextAreaValue = 'one https://example.com three';
+
+        const {
+          newCursorStart,
+          newCursorEnd,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        } = markdownSyntaxFormatters['embed'].getFormatting({
+          value: textAreaValue,
+          selectionStart: 4,
+          selectionEnd: 35,
+        });
+
+        const editedString = getNewTextAreaValueWithEdits({
+          textAreaValue,
+          editSelectionStart,
+          editSelectionEnd,
+          replaceSelectionWith,
+        });
+
+        expect(editedString).toEqual(expectedNewTextAreaValue);
+        expect(editedString.substring(newCursorStart, newCursorEnd)).toEqual(
+          'https://example.com',
+        );
+      });
+    });
   });
 
   describe('multiline formatters', () => {
@@ -1530,7 +1674,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -1559,7 +1703,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 13,
@@ -1588,7 +1732,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -1617,7 +1761,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 10,
@@ -1646,7 +1790,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 9,
           selectionEnd: 9,
@@ -1674,7 +1818,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 22,
@@ -1703,7 +1847,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 19,
@@ -1732,7 +1876,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -1761,7 +1905,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 1,
           selectionEnd: 4,
@@ -1790,7 +1934,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -1819,7 +1963,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -1848,7 +1992,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['orderedList'].getFormatting({
+        } = markdownSyntaxFormatters['orderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -1879,7 +2023,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -1908,7 +2052,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 13,
@@ -1937,7 +2081,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -1966,7 +2110,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 9,
@@ -1995,7 +2139,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 7,
           selectionEnd: 7,
@@ -2023,7 +2167,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 20,
@@ -2052,7 +2196,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 17,
@@ -2081,7 +2225,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2110,7 +2254,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 1,
           selectionEnd: 4,
@@ -2139,7 +2283,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -2168,7 +2312,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2197,7 +2341,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['unorderedList'].getFormatting({
+        } = markdownSyntaxFormatters['unorderedList'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2228,7 +2372,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -2256,7 +2400,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -2284,7 +2428,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 11,
           selectionEnd: 11,
@@ -2312,7 +2456,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 8,
           selectionEnd: 11,
@@ -2340,7 +2484,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 12,
           selectionEnd: 12,
@@ -2368,7 +2512,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 9,
           selectionEnd: 12,
@@ -2396,7 +2540,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 13,
           selectionEnd: 13,
@@ -2424,7 +2568,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 10,
           selectionEnd: 13,
@@ -2452,7 +2596,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2481,7 +2625,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 1,
           selectionEnd: 4,
@@ -2510,7 +2654,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -2539,7 +2683,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2568,7 +2712,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['heading'].getFormatting({
+        } = markdownSyntaxFormatters['heading'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2599,7 +2743,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -2628,7 +2772,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 13,
@@ -2657,7 +2801,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -2686,7 +2830,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 9,
@@ -2715,7 +2859,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 7,
           selectionEnd: 7,
@@ -2743,7 +2887,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 20,
@@ -2772,7 +2916,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 17,
@@ -2801,7 +2945,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2830,7 +2974,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 1,
           selectionEnd: 4,
@@ -2859,7 +3003,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -2888,7 +3032,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2917,7 +3061,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['quote'].getFormatting({
+        } = markdownSyntaxFormatters['quote'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -2948,7 +3092,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -2977,7 +3121,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 13,
@@ -3006,7 +3150,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -3035,7 +3179,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 9,
           selectionEnd: 12,
@@ -3064,7 +3208,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 9,
           selectionEnd: 18,
@@ -3093,7 +3237,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 9,
           selectionEnd: 9,
@@ -3122,7 +3266,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 5,
           selectionEnd: 16,
@@ -3151,7 +3295,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -3180,7 +3324,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 1,
           selectionEnd: 4,
@@ -3209,7 +3353,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -3238,7 +3382,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -3267,7 +3411,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = coreSyntaxFormatters['codeBlock'].getFormatting({
+        } = markdownSyntaxFormatters['codeBlock'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -3298,7 +3442,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['divider'].getFormatting({
+        } = markdownSyntaxFormatters['divider'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 4,
@@ -3327,7 +3471,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['divider'].getFormatting({
+        } = markdownSyntaxFormatters['divider'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -3355,7 +3499,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['divider'].getFormatting({
+        } = markdownSyntaxFormatters['divider'].getFormatting({
           value: textAreaValue,
           selectionStart: 9,
           selectionEnd: 9,
@@ -3383,7 +3527,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['divider'].getFormatting({
+        } = markdownSyntaxFormatters['divider'].getFormatting({
           value: textAreaValue,
           selectionStart: 9,
           selectionEnd: 12,
@@ -3412,7 +3556,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['divider'].getFormatting({
+        } = markdownSyntaxFormatters['divider'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,
@@ -3441,7 +3585,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['divider'].getFormatting({
+        } = markdownSyntaxFormatters['divider'].getFormatting({
           value: textAreaValue,
           selectionStart: 1,
           selectionEnd: 4,
@@ -3470,7 +3614,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['divider'].getFormatting({
+        } = markdownSyntaxFormatters['divider'].getFormatting({
           value: textAreaValue,
           selectionStart: 4,
           selectionEnd: 7,
@@ -3499,7 +3643,7 @@ describe('markdownSyntaxFormatters', () => {
           editSelectionStart,
           editSelectionEnd,
           replaceSelectionWith,
-        } = secondarySyntaxFormatters['divider'].getFormatting({
+        } = markdownSyntaxFormatters['divider'].getFormatting({
           value: textAreaValue,
           selectionStart: 0,
           selectionEnd: 3,

@@ -37,7 +37,7 @@ RSpec.describe Podcast, type: :model do
     # Couldn't use shoulda uniqueness matchers for these tests because:
     # Shoulda uses `save(validate: false)` which skips validations
     # So an invalid record is trying to be saved but fails because of the db constraints
-    # https://git.io/fjg2g
+    # https://github.com/thoughtbot/shoulda-matchers/blob/9f0def1/lib/shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb#L549-L552
 
     it "validates slug uniqueness" do
       podcast2 = build(:podcast, slug: podcast.slug)
@@ -114,7 +114,7 @@ RSpec.describe Podcast, type: :model do
       expect do
         create(:podcast_episode, reachable: false)
         create(:podcast, published: true)
-      end.to change(described_class.reachable, :count).by(0)
+      end.not_to change(described_class.reachable, :count)
     end
   end
 
@@ -130,13 +130,13 @@ RSpec.describe Podcast, type: :model do
       expect do
         create(:podcast_episode, reachable: false)
         create(:podcast, published: true)
-      end.to change(described_class.available, :count).by(0)
+      end.not_to change(described_class.available, :count)
     end
 
     it "is not available when it is not published" do
       expect do
         create(:podcast, published: false)
-      end.to change(described_class.available, :count).by(0)
+      end.not_to change(described_class.available, :count)
     end
   end
 

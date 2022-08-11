@@ -1,4 +1,3 @@
-/* global Runtime */
 import { h } from 'preact';
 import {
   getLastIndexOfCharacter,
@@ -7,6 +6,7 @@ import {
   getNumberOfNewLinesPrecedingSelection,
   getSelectionData,
 } from '../../utilities/textAreaUtils';
+import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 import BoldIcon from '@images/bold.svg';
 import ItalicIcon from '@images/italic.svg';
 import LinkIcon from '@images/link.svg';
@@ -16,6 +16,7 @@ import HeadingIcon from '@images/heading.svg';
 import QuoteIcon from '@images/quote.svg';
 import CodeIcon from '@images/code.svg';
 import CodeBlockIcon from '@images/codeblock.svg';
+import EmbedIcon from '@images/lightning.svg';
 import UnderlineIcon from '@images/underline.svg';
 import StrikethroughIcon from '@images/strikethrough.svg';
 import DividerIcon from '@images/divider.svg';
@@ -403,12 +404,12 @@ export const getNewTextAreaValueWithEdits = ({
     editSelectionStart,
   )}${replaceSelectionWith}${textAreaValue.substring(editSelectionEnd)}`;
 
-export const coreSyntaxFormatters = {
+export const markdownSyntaxFormatters = {
   bold: {
     icon: () => <Icon src={BoldIcon} />,
     label: 'Bold',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+b`,
         tooltipHint: `${modifier.toUpperCase()} + B`,
@@ -428,7 +429,7 @@ export const coreSyntaxFormatters = {
     icon: () => <Icon src={ItalicIcon} />,
     label: 'Italic',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+i`,
         tooltipHint: `${modifier.toUpperCase()} + I`,
@@ -448,7 +449,7 @@ export const coreSyntaxFormatters = {
     icon: () => <Icon src={LinkIcon} />,
     label: 'Link',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+k`,
         tooltipHint: `${modifier.toUpperCase()} + K`,
@@ -714,14 +715,30 @@ export const coreSyntaxFormatters = {
         blockSuffix: '\n```',
       }),
   },
-};
-
-export const secondarySyntaxFormatters = {
+  embed: {
+    icon: () => <Icon src={EmbedIcon} />,
+    label: 'Embed',
+    getKeyboardShortcut: () => {
+      const modifier = getOSKeyboardModifierKeyString();
+      return {
+        command: `${modifier}+shift+k`,
+        tooltipHint: `${modifier.toUpperCase()} + SHIFT + K`,
+      };
+    },
+    getFormatting: ({ selectionStart, selectionEnd, value }) =>
+      undoOrAddFormattingForInlineSyntax({
+        value,
+        selectionStart,
+        selectionEnd,
+        prefix: '{% embed ',
+        suffix: ' %}',
+      }),
+  },
   underline: {
     icon: () => <Icon src={UnderlineIcon} />,
     label: 'Underline',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+u`,
         tooltipHint: `${modifier.toUpperCase()} + U`,
@@ -740,7 +757,7 @@ export const secondarySyntaxFormatters = {
     icon: () => <Icon src={StrikethroughIcon} />,
     label: 'Strikethrough',
     getKeyboardShortcut: () => {
-      const modifier = Runtime.getOSKeyboardModifierKeyString();
+      const modifier = getOSKeyboardModifierKeyString();
       return {
         command: `${modifier}+shift+x`,
         tooltipHint: `${modifier.toUpperCase()} + SHIFT + X`,

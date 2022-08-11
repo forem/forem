@@ -1,20 +1,37 @@
-import { h } from 'preact';
+import { h, cloneElement } from 'preact';
 import { useState, useLayoutEffect, useRef } from 'preact/hooks';
 import { ImageUploader } from '../../article-form/components/ImageUploader';
 import {
-  coreSyntaxFormatters,
-  secondarySyntaxFormatters,
+  markdownSyntaxFormatters,
   getNewTextAreaValueWithEdits,
 } from './markdownSyntaxFormatters';
 import OverflowIcon from '@images/overflow-vertical.svg';
-import HelpIcon from '@images/help.svg';
-import { ButtonNew as Button, Link } from '@crayons';
-import { KeyboardShortcuts } from '@components/useKeyboardShortcuts';
+import { ButtonNew as Button } from '@crayons';
+import { useKeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
 
 // Placeholder text displayed while an image is uploading
 const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
+
+const MAX_CORE_FORMATTERS_BY_SCREEN_SIZE = {
+  small: 5,
+  large: 7,
+  extraLarge: 10,
+};
+
+const getNumberOfIconsToDisplayInToolbar = ({
+  isSmallScreen,
+  isLargeScreen,
+}) => {
+  if (isSmallScreen) {
+    return MAX_CORE_FORMATTERS_BY_SCREEN_SIZE.small;
+  }
+  if (isLargeScreen) {
+    return MAX_CORE_FORMATTERS_BY_SCREEN_SIZE.large;
+  }
+  return MAX_CORE_FORMATTERS_BY_SCREEN_SIZE.extraLarge;
+};
 
 /**
  * Returns the next sibling in the DOM which matches the given CSS selector.
@@ -58,17 +75,33 @@ const getPreviousMatchingSibling = (element, selector) => {
  * @param {object} props
  * @param {string} props.textAreaId The ID of the textarea the markdown formatting should be added to
  */
-export const MarkdownToolbar = ({ textAreaId }) => {
+export const MarkdownToolbar = ({
+  textAreaId,
+  additionalSecondaryToolbarElements = [],
+}) => {
   const textAreaRef = useRef(null);
 
   const [overflowMenuOpen, setOverflowMenuOpen] = useState(false);
   const [storedCursorPosition, setStoredCursorPosition] = useState({});
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
+  const largeScreen = useMediaQuery(
+    `(min-width: ${BREAKPOINTS.Large}px) and (max-width: ${
+      BREAKPOINTS.ExtraLarge - 1
+    }px)`,
+  );
 
-  const markdownSyntaxFormatters = {
-    ...coreSyntaxFormatters,
-    ...secondarySyntaxFormatters,
-  };
+  const overflowMenuRows = smallScreen ? 2 : 1;
+
+  // Enhance any additional toolbar elements with the appropriate roles & listeners
+  const additionalSecondaryItems = additionalSecondaryToolbarElements.map(
+    (SecondaryItem) =>
+      cloneElement(SecondaryItem, {
+        role: 'menuitem',
+        className: 'overflow-menu-btn',
+        tabindex: '-1',
+        onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'overflow-menu-btn'),
+      }),
+  );
 
   const keyboardShortcuts = Object.fromEntries(
     Object.keys(markdownSyntaxFormatters)
@@ -89,6 +122,8 @@ export const MarkdownToolbar = ({ textAreaId }) => {
       }),
   );
 
+  useKeyboardShortcuts(keyboardShortcuts, textAreaRef.current);
+
   useLayoutEffect(() => {
     textAreaRef.current = document.getElementById(textAreaId);
   }, [textAreaId]);
@@ -101,7 +136,7 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     if (!focusableToolbarButton) {
       document.querySelector('.toolbar-btn').setAttribute('tabindex', '0');
     }
-  }, [smallScreen]);
+  }, [smallScreen, largeScreen]);
 
   useLayoutEffect(() => {
     const clickOutsideHandler = ({ target }) => {
@@ -283,29 +318,32 @@ export const MarkdownToolbar = ({ textAreaId }) => {
     );
   };
 
-  const getSecondaryFormatterButtons = (isOverflow) =>
-    Object.keys(secondarySyntaxFormatters).map((controlName, index) => {
+  const numberOfCoreFormatters = getNumberOfIconsToDisplayInToolbar({
+    isSmallScreen: smallScreen,
+    isLargeScreen: largeScreen,
+  });
+
+  const coreSyntaxFormatters = Object.fromEntries(
+    Object.entries(markdownSyntaxFormatters).slice(0, numberOfCoreFormatters),
+  );
+  const secondarySyntaxFormatters = Object.fromEntries(
+    Object.entries(markdownSyntaxFormatters).slice(numberOfCoreFormatters),
+  );
+
+  const secondaryFormatterButtons = Object.keys(secondarySyntaxFormatters).map(
+    (controlName, index) => {
       const { icon, label, getKeyboardShortcut } =
         secondarySyntaxFormatters[controlName];
 
       return (
         <Button
           key={`${controlName}-btn`}
-          role={isOverflow ? 'menuitem' : 'button'}
+          role="menuitem"
           icon={icon}
-          className={
-            isOverflow
-              ? 'overflow-menu-btn hidden m:block mr-1'
-              : 'toolbar-btn m:hidden mr-1'
-          }
-          tabindex={isOverflow && index === 0 ? '0' : '-1'}
+          className="overflow-menu-btn mr-1"
+          tabindex={index === 0 ? '0' : '-1'}
           onClick={() => insertSyntax(controlName)}
-          onKeyUp={(e) =>
-            handleToolbarButtonKeyPress(
-              e,
-              isOverflow ? 'overflow-menu-btn' : 'toolbar-btn',
-            )
-          }
+          onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'overflow-menu-btn')}
           aria-label={label}
           tooltip={
             smallScreen ? null : (
@@ -321,11 +359,12 @@ export const MarkdownToolbar = ({ textAreaId }) => {
           }
         />
       );
-    });
+    },
+  );
 
   return (
     <div
-      className="editor-toolbar relative"
+      className="editor-toolbar"
       aria-label="Markdown formatting toolbar"
       role="toolbar"
       aria-controls={textAreaId}
@@ -380,48 +419,27 @@ export const MarkdownToolbar = ({ textAreaId }) => {
         }}
       />
 
-      {smallScreen ? getSecondaryFormatterButtons(false) : null}
-
-      {smallScreen ? null : (
-        <Button
-          id="overflow-menu-button"
-          onClick={() => setOverflowMenuOpen(!overflowMenuOpen)}
-          onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
-          aria-expanded={overflowMenuOpen ? 'true' : 'false'}
-          aria-haspopup="true"
-          icon={OverflowIcon}
-          className="toolbar-btn ml-auto hidden m:block"
-          tabindex="-1"
-          aria-label="More options"
-        />
-      )}
+      <Button
+        id="overflow-menu-button"
+        onClick={() => setOverflowMenuOpen(!overflowMenuOpen)}
+        onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'toolbar-btn')}
+        aria-expanded={overflowMenuOpen ? 'true' : 'false'}
+        aria-haspopup="true"
+        icon={OverflowIcon}
+        className="toolbar-btn ml-auto"
+        tabindex="-1"
+        aria-label="More options"
+      />
 
       {overflowMenuOpen && (
         <div
           id="overflow-menu"
           role="menu"
-          className="crayons-dropdown flex p-2 min-w-unset right-0 top-100"
+          className={`crayons-dropdown grid grid-rows-${overflowMenuRows} grid-flow-col p-2 min-w-unset right-0 top-100`}
         >
-          {getSecondaryFormatterButtons(true)}
-          <Link
-            block
-            role="menuitem"
-            href="/p/editor_guide"
-            target="_blank"
-            rel="noopener noreferrer"
-            icon={HelpIcon}
-            className="overflow-menu-btn"
-            tabindex="-1"
-            aria-label="Help"
-            onKeyUp={(e) => handleToolbarButtonKeyPress(e, 'overflow-menu-btn')}
-          />
+          {secondaryFormatterButtons}
+          {additionalSecondaryItems}
         </div>
-      )}
-      {textAreaRef.current && (
-        <KeyboardShortcuts
-          shortcuts={keyboardShortcuts}
-          eventTarget={textAreaRef.current}
-        />
       )}
     </div>
   );

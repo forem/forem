@@ -7,7 +7,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url(@page.path) %>" />
   <meta property="og:title" content="<%= @page.title %> — <%= community_name %>" />
-  <meta property="og:image" content="<%= @page.social_image_url || Settings::General.main_social_image %>" />
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>">
   <meta property="og:description" content="<%= @page.description %>" />
   <meta property="og:site_name" content="<%= community_name %>" />
 
@@ -15,7 +15,7 @@
   <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= @page.title %> — <%= community_name %>">
   <meta name="twitter:description" content="<%= @page.description %>">
-  <meta name="twitter:image:src" content="<%= @page.social_image_url || Settings::General.main_social_image %>">
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
 <% end %>
 
 <main id="main-content">
@@ -24,6 +24,16 @@
       <div class="crayons-card text-styles text-padding">
         <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= @page.title %></h1>
 
+        <%= @page.processed_html.html_safe %>
+      </div>
+    </div>
+  <% elsif @page.template == "nav_bar_included" %>
+    <div class="crayons-layout crayons-layout--2-cols">
+      <div class="hidden m:block">
+        <%= render "articles/sidebar" %>
+      </div>
+      <div class="crayons-card text-styles text-padding">
+        <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= @page.title %></h1>
         <%= @page.processed_html.html_safe %>
       </div>
     </div>

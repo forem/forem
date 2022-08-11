@@ -45,7 +45,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
         Timecop.freeze(1.week.ago + 4.hours) do
           sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
         end
-      end.to change(user.notifications, :count).by(0)
+      end.not_to change(user.notifications, :count)
     end
 
     # rubocop:disable RSpec/ExampleLength

@@ -11,10 +11,13 @@ class AbExperiment < SimpleDelegator
   # public
   private_class_method :new
 
+  # @see ./config/feed-variants/README.md
   ORIGINAL_VARIANT = "original".freeze
 
-  CURRENT_FEED_STRATEGY_EXPERIMENT = FieldTest.config["experiments"]&.keys
-    &.detect { |e| e.start_with? "feed_strategy" }.freeze
+  # @note a present assumption is that we will have a feed_strategy oriented experiment.
+  CURRENT_FEED_STRATEGY_EXPERIMENT = FieldTest.config["experiments"].select do |key, value|
+    key.start_with?("feed_strategy") && !value["winner"]
+  end.keys.first
 
   # Sometimes we might want to repurpose the same AbExperiment logic
   # for different experiments.  This provides the tooling for that
@@ -32,6 +35,23 @@ class AbExperiment < SimpleDelegator
   # @see EXPERIMENT_TO_METHOD_NAME_MAP
   def self.method_name_for(experiment)
     EXPERIMENT_TO_METHOD_NAME_MAP.fetch(experiment, experiment)
+  end
+
+  # A convenience method for retrieving the feed variant
+  # @param controller [ApplicationController] the request context of
+  #        the experiment.
+  # @param user [User] who are we running the experiment with
+  #
+  # @return [Object] a variant that the experimenter should know what it wants
+  #
+  # @see .get
+  def self.get_feed_variant_for(controller:, user:)
+    get(
+      controller: controller,
+      user: user,
+      default_value: ORIGINAL_VARIANT,
+      experiment: CURRENT_FEED_STRATEGY_EXPERIMENT,
+    )
   end
 
   def self.variants_for_experiment(experiment)
@@ -64,7 +84,7 @@ class AbExperiment < SimpleDelegator
   #        on a configured set of values.  They know which one they
   #        likely want.  Let them give us a hint.
   #
-  # @return [Object] the experimenter should know what it wants
+  # @return [Object] a variant that the experimenter should know what it wants
   #
   # @see config/field_test.yml file for configured experiments.
   #
@@ -78,6 +98,20 @@ class AbExperiment < SimpleDelegator
     method_name = method_name_for(experiment)
     new(controller: controller)
       .public_send(method_name, user: user, default_value: default_value, experiment: experiment, config: config)
+  end
+
+  # Responsible for checking if a given :user has "accomplished" the state :goal for any of the
+  # active :experiments.  We only consider events that occur on or after each experiment's given
+  # start_date.
+  #
+  # @param user [User]
+  # @param goal [String]
+  # @param experiments [Hash<String, Object>]
+  #
+  # @see AbExperiment::GoalConversionChecker
+  # @see FieldTest.config
+  def self.register_conversions_for(user:, goal:, experiments: FieldTest.config["experiments"])
+    GoalConversionHandler.call(user: user, goal: goal, experiments: experiments)
   end
 
   # @api private

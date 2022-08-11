@@ -38,23 +38,18 @@ module Stories
       feed = if Settings::UserExperience.feed_strategy == "basic"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              else
-               strategy = AbExperiment.get(
-                 experiment: AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT,
-                 controller: self, user: current_user,
-                 default_value: AbExperiment::ORIGINAL_VARIANT
-               )
-               Articles::Feeds::WeightedQueryStrategy.new(
+               Articles::Feeds.feed_for(
                  user: current_user,
-                 number_of_articles: 25,
+                 controller: self,
                  page: @page,
-                 tags: params[:tag],
-                 strategy: strategy,
+                 tag: params[:tag],
+                 number_of_articles: 25,
                )
              end
-      Datadog.tracer.trace("feed.query",
-                           span_type: "db",
-                           resource: "#{self.class}.#{__method__}",
-                           tags: { feed_class: feed.class.to_s.dasherize }) do
+      Datadog::Tracing.trace("feed.query",
+                             span_type: "db",
+                             resource: "#{self.class}.#{__method__}",
+                             tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the
@@ -65,20 +60,21 @@ module Stories
     end
 
     def signed_out_base_feed
-      strategy = AbExperiment.get(experiment: AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, controller: self,
-                                  user: current_user, default_value: AbExperiment::ORIGINAL_VARIANT)
-      feed = if strategy.weighted_query_strategy?
-               Articles::Feeds::WeightedQueryStrategy.new(user: current_user, page: @page, tags: params[:tag])
-             elsif Settings::UserExperience.feed_strategy == "basic"
-               # I'm a bit uncertain why we're skipping the user on this call.
+      feed = if Settings::UserExperience.feed_strategy == "basic"
                Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
              else
-               Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+               Articles::Feeds.feed_for(
+                 user: current_user,
+                 controller: self,
+                 page: @page,
+                 tag: params[:tag],
+                 number_of_articles: 25,
+               )
              end
-      Datadog.tracer.trace("feed.query",
-                           span_type: "db",
-                           resource: "#{self.class}.#{__method__}",
-                           tags: { feed_class: feed.class.to_s.dasherize }) do
+      Datadog::Tracing.trace("feed.query",
+                             span_type: "db",
+                             resource: "#{self.class}.#{__method__}",
+                             tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the

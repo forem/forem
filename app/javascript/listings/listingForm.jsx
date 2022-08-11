@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
-import { Tags, DEFAULT_TAG_FORMAT } from '../shared/components/tags';
+import { ListingTagsField } from '../listings/components/ListingTagsField';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
 import { Title } from './components/Title';
 import { BodyMarkdown } from './components/BodyMarkdown';
@@ -28,7 +28,9 @@ export class ListingForm extends Component {
     this.state = {
       id: this.listing.id || null,
       title: this.listing.title || '',
-      category: this.listing.category || '',
+      categoryId: this.listing.listing_category_id || '',
+      categorySlug:
+        this.listing.category || this.categoriesForSelect[0][1] || '',
       tagList: this.listing.cached_tag_list || '',
       bodyMarkdown: this.listing.body_markdown || '',
       categoriesForSelect: this.categoriesForSelect,
@@ -50,7 +52,8 @@ export class ListingForm extends Component {
       title,
       bodyMarkdown,
       tagList,
-      category,
+      categoryId,
+      categorySlug,
       categoriesForDetails,
       categoriesForSelect,
       organizations,
@@ -90,20 +93,19 @@ export class ListingForm extends Component {
           <Categories
             categoriesForSelect={categoriesForSelect}
             categoriesForDetails={categoriesForDetails}
-            onChange={linkState(this, 'category')}
-            category={category}
+            onChange={(e) => {
+              const categoryId = e.target.value;
+              const categorySlug = e.target.selectedOptions[0].dataset.slug;
+              this.setState({ categoryId, categorySlug });
+            }}
+            categoryId={categoryId}
           />
           <div className="relative">
-            <Tags
+            <ListingTagsField
               defaultValue={tagList}
-              category={category}
+              categorySlug={categorySlug}
+              name="listing[tag_list]"
               onInput={linkState(this, 'tagList')}
-              classPrefix="listingform"
-              fieldClassName="crayons-textfield"
-              maxTags={8}
-              autocomplete="off"
-              listing
-              pattern={DEFAULT_TAG_FORMAT}
             />
           </div>
           <ExpireDate
@@ -122,7 +124,10 @@ export class ListingForm extends Component {
           defaultValue={bodyMarkdown}
           onChange={linkState(this, 'bodyMarkdown')}
         />
-        <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+        <ListingTagsField
+          defaultValue={tagList}
+          onInput={linkState(this, 'tagList')}
+        />
         {selectOrg}
       </div>
     );

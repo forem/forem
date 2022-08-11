@@ -14,7 +14,7 @@ RSpec.describe OrganizationPolicy, type: :policy do
   context "when a non-org user" do
     let(:user) { build_stubbed(:user) }
 
-    it { is_expected.to forbid_action(:update) }
+    it { is_expected.to forbid_actions(%i[update analytics]) }
     it { is_expected.to permit_action(:create) }
   end
 
@@ -34,9 +34,20 @@ RSpec.describe OrganizationPolicy, type: :policy do
       create(:organization_membership, user: user, organization: org, type_of_user: "admin")
     end
 
-    it "allows the user to update their own org" do
-      expect(organization_policy).to permit_action(:update)
+    it { is_expected.to permit_actions(%i[analytics update]) }
+  end
+
+  context "when user is a member of an org org" do
+    subject(:organization_policy) { described_class.new(user, org) }
+
+    let(:user) { create(:user) }
+    let(:org)  { create(:organization) }
+
+    before do
+      create(:organization_membership, user: user, organization: org)
     end
+
+    it { is_expected.to permit_actions(%i[analytics]) }
   end
 
   context "when user is an org admin of another org" do
@@ -48,8 +59,6 @@ RSpec.describe OrganizationPolicy, type: :policy do
 
     before { create(:organization_membership, user: user, organization: org, type_of_user: "admin") }
 
-    it "does not allow the user to update another org" do
-      expect(organization_policy).to forbid_action(:update)
-    end
+    it { is_expected.to forbid_actions(%i[analytics update]) }
   end
 end

@@ -27,6 +27,10 @@ fr:
           other: Happy %{community} birthday! Can you believe it's been %{count} years already?!
       congrats: Congrats!!!
       thank_you: Thank you so much for your contributions!
+      community_wellness:
+        first: Thank you for participating in constructive conversation! You posted two or more comments this week. Keep it up to continue the streak!
+        longest: 32 weeks! You've achieved the longest streak possible for the Community Wellness badge. Amazing job engaging in the community and keep up your amazing contributions to our community!
+        other: Congrats on achieving a %{weeks} week streak for the Community Wellness Badge! Keep the constructive comments flowing to continue the streak!
     broadcasts:
       welcome_notification:
         generator:
@@ -38,9 +42,6 @@ fr:
       parser:
         enter_fullscreen_mode: Enter fullscreen mode
         exit_fullscreen_mode: Exit fullscreen mode
-    mailchimp:
-      bot:
-        member_in_compliance_state: Member In Compliance State
     markdown_processor:
       parser:
         invalid_markdown_detected: Invalid markdown detected!

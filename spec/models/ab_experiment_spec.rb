@@ -4,6 +4,49 @@ RSpec.describe AbExperiment do
   let(:controller) { ApplicationController.new }
   let(:user) { double }
 
+  describe "CURRENT_FEED_STRATEGY_EXPERIMENT" do
+    subject(:variant) { described_class::CURRENT_FEED_STRATEGY_EXPERIMENT }
+
+    it { is_expected.to be_a String }
+
+    it "is a key in the FieldTest.config['experiments']" do
+      expect(FieldTest.config["experiments"].keys).to include(variant)
+    end
+  end
+
+  describe "validate field test experiment configuration" do
+    it "only allow at most one active feed_strategy (e.g. an experiment without a winner)" do
+      field_tests = Psych.load(Rails.root.join("config/field_test.yml").read)
+      active_field_tests = field_tests.fetch("experiments", {})
+        .select { |key, values| key.start_with?("feed_strategy") && !values["winner"] }
+
+      # We are only going to allow
+      expect(active_field_tests.size).to be <= 1
+    end
+  end
+
+  describe ".register_conversions_for" do
+    it "forwards delegates to Converter.call" do
+      allow(described_class::GoalConversionHandler).to receive(:call)
+      described_class.register_conversions_for(user: user, goal: "goal")
+      expect(described_class::GoalConversionHandler)
+        .to have_received(:call).with(user: user, goal: "goal", experiments: FieldTest.config["experiments"])
+    end
+  end
+
+  describe ".get_feed_variant_for" do
+    before do
+      allow(controller).to receive(:field_test).with(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT,
+                                                     participant: user).and_return("special")
+    end
+
+    it "returns an inquirable string" do
+      result = described_class.get_feed_variant_for(user: user, controller: controller)
+      expect(result).to eq("special")
+      expect(result).to be_special
+    end
+  end
+
   describe ".get" do
     before do
       allow(controller).to receive(:field_test).with(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT,

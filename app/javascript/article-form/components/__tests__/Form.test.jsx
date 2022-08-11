@@ -71,28 +71,28 @@ describe('<Form />', () => {
     });
 
     it('renders the v1 form', () => {
-      const { queryByTestId, queryByLabelText, queryByAltText } = render(
-        <Form
-          titleDefaultValue="Test Title v1"
-          titleOnChange={null}
-          tagsDefaultValue="javascript, career"
-          tagsOnInput={null}
-          bodyDefaultValue={bodyMarkdown}
-          bodyOnChange={null}
-          bodyHasFocus={false}
-          version="v1"
-          mainImage={mainImage}
-          onMainImageUrlChange={null}
-          errors={null}
-          switchHelpContext={null}
-        />,
-      );
+      const { queryByTestId, queryByLabelText, queryByAltText, getByTestId } =
+        render(
+          <Form
+            titleDefaultValue="Test Title v1"
+            titleOnChange={null}
+            tagsDefaultValue="javascript, career"
+            tagsOnInput={null}
+            bodyDefaultValue={bodyMarkdown}
+            bodyOnChange={null}
+            bodyHasFocus={false}
+            version="v1"
+            mainImage={mainImage}
+            onMainImageUrlChange={null}
+            errors={null}
+            switchHelpContext={null}
+          />,
+        );
 
-      queryByTestId('article-form__body');
-
-      expect(queryByAltText(/post cover/i)).toBeNull();
-      expect(queryByTestId('article-form__title')).toBeNull();
-      expect(queryByLabelText('Post Tags')).toBeNull();
+      expect(getByTestId('article-form__body')).toBeInTheDocument();
+      expect(queryByAltText(/post cover/i)).not.toBeInTheDocument();
+      expect(queryByTestId('article-form__title')).not.toBeInTheDocument();
+      expect(queryByLabelText('Post Tags')).not.toBeInTheDocument();
     });
   });
 
@@ -142,7 +142,7 @@ describe('<Form />', () => {
     });
 
     it('renders the v2 form', () => {
-      const { queryByTestId, getByLabelText, getByAltText } = render(
+      const { getByTestId, getByRole, getByLabelText } = render(
         <Form
           titleDefaultValue="Test Title v2"
           titleOnChange={null}
@@ -159,12 +159,14 @@ describe('<Form />', () => {
         />,
       );
 
-      getByAltText(/post cover/i);
-      queryByTestId('article-form__title');
-      getByLabelText('Add up to 4 tags');
-      queryByTestId('article-form__body');
+      expect(getByRole('img', { name: /post cover/i })).toBeInTheDocument();
+      expect(getByRole('textbox', { name: /post title/i })).toBeInTheDocument();
+      expect(
+        getByRole('textbox', { name: 'Add up to 4 tags' }),
+      ).toBeInTheDocument();
+      expect(getByTestId('article-form__body')).toBeInTheDocument();
 
-      const coverImageInput = getByLabelText('Change');
+      const coverImageInput = getByLabelText('Change', { exact: false });
 
       // Allow any image format
       expect(coverImageInput.getAttribute('accept')).toEqual('image/*');
@@ -174,7 +176,7 @@ describe('<Form />', () => {
     });
 
     it('renders a toolbar of markdown formatters', () => {
-      const { getByRole, getByLabelText } = render(
+      const { getByRole } = render(
         <Form
           titleDefaultValue="Test Title v2"
           titleOnChange={null}
@@ -191,7 +193,7 @@ describe('<Form />', () => {
         />,
       );
 
-      const textArea = getByLabelText('Post Content');
+      const textArea = getByRole('textbox', { name: /Post Content/ });
 
       getByRole('button', { name: 'Bold' }).click();
       expect(textArea.value).toEqual('****');
@@ -231,7 +233,7 @@ describe('<Form />', () => {
     });
 
     it('renders an overflow menu of markdown formatters', async () => {
-      const { getByRole, getByLabelText } = render(
+      const { getByRole } = render(
         <Form
           titleDefaultValue="Test Title v2"
           titleOnChange={null}
@@ -248,7 +250,7 @@ describe('<Form />', () => {
         />,
       );
 
-      const textArea = getByLabelText('Post Content');
+      const textArea = getByRole('textbox', { name: 'Post Content' });
       const overflowMenuButton = getByRole('button', { name: 'More options' });
 
       overflowMenuButton.click();
@@ -317,8 +319,8 @@ describe('<Form />', () => {
       />,
     );
 
-    getByTestId('error-message');
-    expect(getByTestId('error-message').textContent).toContain('title');
-    expect(getByTestId('error-message').textContent).toContain('main_image');
+    const errorMsg = getByTestId('error-message');
+    expect(errorMsg.textContent).toContain('title');
+    expect(errorMsg.textContent).toContain('main_image');
   });
 });

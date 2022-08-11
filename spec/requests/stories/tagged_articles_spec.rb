@@ -13,6 +13,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
         let(:tag) { create(:tag) }
         let(:org) { create(:organization) }
         let(:article) { create(:article, tags: tag.name, score: 5) }
+        let(:unsupported_tag) { create(:tag, supported: false) }
 
         before do
           stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 10)
@@ -62,23 +63,32 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
         end
 
         it "renders page when tag is not supported but has at least one approved article" do
-          unsupported_tag = create(:tag, supported: false)
-          create(:article, published: true, approved: true, tags: unsupported_tag)
+          create(:article, :past, published: true, approved: true, tags: unsupported_tag,
+                                  past_published_at: 5.years.ago)
 
           get "/t/#{unsupported_tag.name}/top/week"
-          expect(response.body).to include(unsupported_tag.name)
+
+          expect(response).to be_successful
+
           get "/t/#{unsupported_tag.name}/top/month"
-          expect(response.body).to include(unsupported_tag.name)
+          expect(response).to be_successful
+
           get "/t/#{unsupported_tag.name}/top/year"
-          expect(response.body).to include(unsupported_tag.name)
+          expect(response).to be_successful
+
           get "/t/#{unsupported_tag.name}/top/infinity"
-          expect(response.body).to include(unsupported_tag.name)
+          expect(response).to be_successful
         end
 
         it "returns not found if no published posts and tag not supported" do
           Article.destroy_all
           tag.update_column(:supported, false)
           expect { get "/t/#{tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        it "renders not found if there are approved but scheduled posts" do
+          create(:article, published: true, approved: true, tags: unsupported_tag, published_at: 1.hour.from_now)
+          expect { get "/t/#{unsupported_tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
         it "renders normal page if no articles but tag is supported" do
@@ -172,6 +182,14 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
             get "/t/#{tag.name}"
             expect(response.body).not_to include('<span class="olderposts-pagenumber">')
           end
+
+          it "includes a link to Relevant", :aggregate_failures do
+            get "/t/#{tag.name}/latest"
+
+            # The link should be `/t/tag2` (without a trailing slash) instead of `/t/tag2/`
+            expected_tag = "<a data-text=\"Relevant\" href=\"/t/#{tag.name}\""
+            expect(response.body).to include(expected_tag)
+          end
         end
 
         context "without user signed in" do
@@ -189,7 +207,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
 
           def shows_sign_in_notice
             expect(response.body).not_to include("crayons-navigation__item crayons-navigation__item--current")
-            expect(response.body).to include("for the ability sort posts by")
+            expect(response.body).to include("for the ability to sort posts by")
           end
 
           def does_not_include_current_page_link(tag)

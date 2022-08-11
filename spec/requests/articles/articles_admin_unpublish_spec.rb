@@ -20,4 +20,16 @@ RSpec.describe "ArticlesAdminUnpublish", type: :request do
     article.reload
     expect(article.published).to be false
   end
+
+  it "removes the related notifications when unpublishing" do
+    expect(article.published).to be true
+    create(:notification, notifiable: article, action: "Published")
+    expect do
+      patch "/articles/#{article.id}/admin_unpublish", params: {
+        id: article.id,
+        username: user.username,
+        slug: article.slug
+      }
+    end.to change(Notification, :count).by(-1)
+  end
 end

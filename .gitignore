@@ -41,6 +41,8 @@ latest.dump
 /node_modules
 yarn-debug.log*
 .yarn-integrity
+.env.test.local
+.env.development*
 .env
 
 # Ignore storybook static site generation
@@ -103,3 +105,6 @@ dump.rdb
 
 # pry configuration file
 .pryrc
+
+# generated yarddoc
+doc/

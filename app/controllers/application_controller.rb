@@ -51,6 +51,25 @@ class ApplicationController < ActionController::Base
   ].freeze
   private_constant :CONTENT_CHANGE_PATHS
 
+  # @!scope class
+  # @!attribute [w] api_action
+  #   If set to true, all actions on the class (and subclasses) will be considered "api_actions"
+  #
+  #   @param input [Boolean]
+  #   @see ApplicationController#api_action?
+  #   @see ApplicationController#verify_private_forem
+  #   @see https://api.rubyonrails.org/classes/Class.html#method-i-class_attribute Class.class_attribute
+  class_attribute :api_action, default: false, instance_writer: false
+
+  # @!scope instance
+  # @!attribute [r] api_action?
+  #   By default, all actions are *not* an `api_action?`
+  #   @return [TrueClass] if the current requested action is for the API
+  #   @return [FalseClass] if the current requested action is not part of the API
+  #   @see Api::V0::ApiController
+  #   @see ApplicationController.api_action
+  #   @see ApplicationController#verify_private_forem
+
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
     return if self.class.module_parent.to_s == "Admin"
@@ -66,14 +85,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # When called, raise ActiveRecord::RecordNotFound.
+  #
+  # @raise [ActiveRecord::RecordNotFound] when called
   def not_found
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
 
+  # When called, raise ActionController::RoutingError.
+  # @raise [ActionController::RoutingError] when called
   def routing_error
     raise ActionController::RoutingError, "Routing Error"
   end
 
+  # When called render unauthorized JSON status and raise Pundit::NotAuthorizedError
+  #
+  # @raise [Pundit::NotAuthorizedError]
+  #
+  # @note [@jeremyf] It's a little surprising that we both render a JSON response and raise an
+  #       exception.
   def not_authorized
     render json: { error: I18n.t("application_controller.not_authorized") }, status: :unauthorized
     raise Pundit::NotAuthorizedError, "Unauthorized"
@@ -200,10 +230,6 @@ class ApplicationController < ActionController::Base
     User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"] || request.env["HTTP_X_FORWARDED_FOR"])
   end
 
-  def api_action?
-    self.class.to_s.start_with?("Api::")
-  end
-
   def initialize_stripe
     Stripe.api_key = Settings::General.stripe_api_key
 
@@ -250,6 +276,7 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: %i[name])
   end
 
   def internal_nav_param

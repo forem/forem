@@ -134,7 +134,7 @@ RSpec.describe "/admin/advanced/broadcasts", type: :request do
       it "does not allow a second broadcast to be set to active" do
         expect do
           post_resource
-        end.to change { Broadcast.all.count }.by(0)
+        end.not_to change { Broadcast.all.count }
       end
     end
 

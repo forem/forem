@@ -16,6 +16,8 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       allow(Settings::SMTP).to receive(:user_name).and_return(nil)
       allow(Settings::SMTP).to receive(:password).and_return(nil)
       visit admin_config_path
+
+      find("summary", text: "Email Server Settings (SMTP)").click
     end
 
     it "does not show the 'Use my own email server' checkbox" do
@@ -40,6 +42,7 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       allow(Settings::SMTP).to receive(:user_name).and_return(nil)
       allow(Settings::SMTP).to receive(:password).and_return(nil)
       visit admin_config_path
+      find("summary", text: "Email Server Settings (SMTP)").click
     end
 
     it "shows the checkbox to allow one to toggle ones own server" do
@@ -70,6 +73,7 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       allow(Settings::SMTP).to receive(:user_name).and_return("jane_doe")
       allow(Settings::SMTP).to receive(:password).and_return("abc123456")
       visit admin_config_path
+      find("summary", text: "Email Server Settings (SMTP)").click
     end
 
     it "does not show the 'Use my own email server' checkbox" do
@@ -93,6 +97,7 @@ RSpec.describe "Admin updates SMTP Settings", type: :system do
       allow(Settings::SMTP).to receive(:user_name).and_return("jane_doe")
       allow(Settings::SMTP).to receive(:password).and_return("abc123456")
       visit admin_config_path
+      find("summary", text: "Email Server Settings (SMTP)").click
     end
 
     it "shows the 'Use my own email server' checkbox" do

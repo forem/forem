@@ -16,18 +16,18 @@ module AdminHelper
   end
 
   def current?(request, group, group_name)
-    deduced_scope(request).to_s == (group[:children][0][:parent] || group_name).to_s
-  end
-
-  def children?(group)
-    group[:children].length > 1
+    deduced_scope(request).to_s == (group.children.first&.parent || group_name).to_s
   end
 
   def nav_path(group, group_name)
-    if children?(group)
-      "#{admin_path}/#{group_name}/#{group[:children].detect { |child| child[:visible] }[:controller]}"
+    if group.has_multiple_children?
+      # NOTE: [@jeremyf] I'm unclear what to do if we have no match; this logic
+      # carries forward the prior implementation.
+      visible_child_controller = group.children.detect(&:visible?)&.controller
+      "#{admin_path}/#{group_name}/#{visible_child_controller}"
     else
-      "#{admin_path}/#{group[:children][0][:controller]}"
+      # NOTE: We assume that if there's only one child that it is visible
+      "#{admin_path}/#{group.children.first&.controller}"
     end
   end
 end

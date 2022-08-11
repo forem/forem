@@ -45,7 +45,7 @@ module Settings
     def self.trigger_spam_for?(text:)
       return false if spam_trigger_terms.empty?
 
-      regexp = Regexp.new("(#{spam_trigger_terms.join('|')})", true)
+      regexp = Regexp.new("(#{spam_trigger_terms.map { |term| Regexp.escape(term) }.join('|')})", true)
       regexp.match?(text)
     end
   end

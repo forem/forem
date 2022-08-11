@@ -1,0 +1,48 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://takeonrules.com/not-allowed-response
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 301
+      message: Moved Permanently
+    headers:
+      Date:
+      - Thu, 07 Apr 2022 19:16:52 GMT
+      Server:
+      - Apache
+      Via:
+      - e3s
+      X-Content-Type-Options:
+      - nosniff
+      Location:
+      - http://takeonrules.com/not-allowed-response/
+      Content-Type:
+      - text/html; charset=iso-8859-1
+      Vary:
+      - Accept-Encoding
+      Content-Length:
+      - '208'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+        <html><head>
+        <title>301 Moved Permanently</title>
+        </head><body>
+        <h1>Moved Permanently</h1>
+        <p>The document has moved <a href="http://takeonrules.com/not-allowed-response/">here</a>.</p>
+        </body></html>
+  recorded_at: Thu, 07 Apr 2022 19:16:52 GMT
+recorded_with: VCR 6.1.0

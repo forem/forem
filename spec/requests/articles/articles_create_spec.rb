@@ -3,13 +3,13 @@ require "rails_helper"
 RSpec.describe "ArticlesCreate", type: :request do
   let(:user) { create(:user, :org_member) }
   let(:template) { file_fixture("article_published.txt").read }
+  let(:new_title) { "NEW TITLE #{rand(100)}" }
 
   before do
     sign_in user
   end
 
   it "creates ordinary article with proper params" do
-    new_title = "NEW TITLE #{rand(100)}"
     post "/articles", params: {
       article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
     }
@@ -17,7 +17,6 @@ RSpec.describe "ArticlesCreate", type: :request do
   end
 
   it "properly downcase tags" do
-    new_title = "NEW TITLE #{rand(100)}"
     post "/articles", params: {
       article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "What" }
     }
@@ -112,6 +111,89 @@ RSpec.describe "ArticlesCreate", type: :request do
       expect(response).to have_http_status(:too_many_requests)
       expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
       expect(response.headers["Retry-After"]).to eq(expected_retry_after)
+    end
+  end
+
+  context "when setting published_at in editor v2" do
+    let(:tomorrow) { 1.day.from_now }
+    let(:attributes) do
+      { title: new_title, body_markdown: "Yo ho ho#{rand(100)}",
+        published: true,
+        published_at_date: tomorrow.strftime("%Y-%m-%d"),
+        published_at_time: "18:00" }
+    end
+
+    it "sets published_at according to the timezone new" do
+      attributes[:timezone] = "Europe/Moscow"
+      post "/articles", params: { article: attributes }
+      a = Article.find_by(title: new_title)
+      published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 15:00")
+    end
+
+    # crossing the date line
+    it "sets published_at for another timezone new" do
+      attributes[:timezone] = "Pacific/Honolulu"
+      post "/articles", params: { article: attributes }
+      a = Article.find_by(title: new_title)
+      published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      expect(published_at_utc).to eq("#{(tomorrow + 1.day).strftime('%m/%d/%Y')} 04:00")
+    end
+
+    it "sets published_at when only date is passed" do
+      attributes[:published_at_date] = 2.days.from_now.strftime("%Y-%m-%d")
+      attributes[:published_at_time] = nil
+      attributes[:timezone] = "Europe/Moscow"
+      post "/articles", params: { article: attributes }
+      a = Article.find_by(title: new_title)
+      # 00:00 in user timezone (attributes[:timezone])
+      published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 21:00")
+    end
+
+    it "sets current published_at when only time is passed" do
+      attributes[:published_at_date] = nil
+      attributes[:timezone] = "Asia/Magadan"
+      post "/articles", params: { article: attributes }
+      a = Article.find_by(title: new_title)
+      expect(a.published_at).to be_within(1.minute).of(Time.current)
+    end
+  end
+
+  context "when setting published_at from editor v1" do
+    it "sets current published_at when publishing and published_at not specified" do
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      post "/articles", params: { article: { body_markdown: body_markdown } }
+      a = Article.find_by(title: "super-article")
+      expect(a.published_at).to be_within(1.minute).of(Time.current)
+    end
+
+    it "doesn't set published_at for drafts when published_at is not specified" do
+      body_markdown = "---\ntitle: super-article\npublished: false\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      post "/articles", params: { article: { body_markdown: body_markdown } }
+      a = Article.find_by(title: "super-article")
+      expect(a.published_at).to be_nil
+    end
+
+    it "sets published_at from frontmatter" do
+      published_at = 10.days.from_now.in_time_zone("UTC")
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
+      post "/articles", params: { article: { body_markdown: body_markdown } }
+      a = Article.find_by(title: "super-article")
+      expect(a.published_at).to be_within(1.minute).of(published_at)
+    end
+
+    it "sets published_at with timezone from frontmatter" do
+      published_at = 10.days.from_now.in_time_zone("America/Caracas")
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
+      post "/articles", params: { article: { body_markdown: body_markdown } }
+      a = Article.find_by(title: "super-article")
+      # binding.pry
+      expect(a.published_at).to be_within(1.minute).of(published_at)
     end
   end
 end

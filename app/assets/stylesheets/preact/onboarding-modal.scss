@@ -637,12 +637,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
       border-radius: var(--radius);
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
       padding: 0 var(--su-1);
       width: 100%;
-
-      @media screen and (min-width: $breakpoint-s) {
-        align-items: center;
-      }
 
       &:hover {
         background: var(--body-bg);

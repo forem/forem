@@ -5,14 +5,14 @@
 </div>
 <br>
 <p align="center">
-  <a href="https://travis-ci.com/forem/forem">
-    <img src="https://travis-ci.com/forem/forem.svg?branch=main" alt="Travis Status for forem/forem">
+  <a href="https://app.travis-ci.com/github/forem/forem">
+    <img src="https://api.travis-ci.com/forem/forem.svg?branch=main" alt="Build Status">
   </a>
   <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
     <img src="https://img.shields.io/github/issues/forem/forem/ready for dev" alt="GitHub issues ready for dev">
   </a>
-  <a href="https://gitpod.io/from-referrer/">
+  <a href="https://gitpod.io/#https://github.com/forem/forem">
     <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
   </a>
 </p>
@@ -62,8 +62,8 @@ with general questions please visit our community at
 ## Contributing
 
 We encourage you to contribute to Forem! Please check out the
-[Contributing to Forem guide](CONTRIBUTING.md) for guidelines about how to
-proceed.
+[Contributing to Forem guide](https://developers.forem.com/contributing-guide/forem)
+for guidelines about how to proceed.
 
 ## Getting Started
 
@@ -78,6 +78,9 @@ transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
 A more complete overview of our stack is available in
 [our docs](https://developers.forem.com/technical-overview/stack).
+
+To **launch Forem in Gitpod**, navigate to
+[https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
 
 ### Prerequisites
 
@@ -119,26 +122,14 @@ Please see our installation guides, such as the
 - [@jessleenyc](https://dev.to/jess)
 - [@peterkimfrank](https://dev.to/peter)
 - [@maestromac](https://dev.to/maestromac)
-- [@zhao-andy](https://dev.to/andy)
 - [@lightalloy](https://dev.to/lightalloy)
-- [@atsmith813](https://dev.to/atsmith813)
-- [@nickytonline](https://dev.to/nickytonline)
 - [@joshpuetz](http://dev.to/joshpuetz)
-- [@juliannatetreault](https://dev.to/juliannatetreault)
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)
-- [@msarit](https://dev.to/msarit)
-- [@jdoss](https://dev.to/jdoss)
-- [@cmgorton](https://dev.to/coffeecraftcode)
 - [@andygeorge](https://dev.to/andygeorge)
-- [@phannon716](https://dev.to/phannon716)
 - [@s_aitchison](https://dev.to/s_aitchison)
-- [@jgaskins](https://dev.to/jgaskins)
-- [@djuber](https://dev.to/djuber)
 - [@rt4914](https://dev.to/rt4914)
-- [@jeremyf](https://dev.to/jeremyf)
-- [@dscottS3](https://dev.to/dscottS3)
-- [@asheren](https://dev.to/asheren)
+- [@jaw6](https://dev.to/jaw6)
 
 ## Vulnerability disclosure
 

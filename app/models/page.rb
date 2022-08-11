@@ -1,5 +1,5 @@
 class Page < ApplicationRecord
-  TEMPLATE_OPTIONS = %w[contained full_within_layout json].freeze
+  TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json].freeze
 
   TERMS_SLUG = "terms".freeze
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze

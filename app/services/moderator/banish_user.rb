@@ -15,12 +15,13 @@ module Moderator
 
     def banish
       BanishedUser.create(username: user.username, banished_by: admin)
-      user.unsubscribe_from_newsletters if user.email?
+      user.remove_from_mailchimp_newsletters if user.email?
       remove_profile_info
-      handle_user_status("Suspend", I18n.t("services.moderator.banish_user.spam_account"))
+      handle_user_status("Suspended", I18n.t("services.moderator.banish_user.spam_account"))
       delete_user_activity
       delete_comments
       delete_articles
+      delete_user_podcasts
       reassign_and_bust_username
       delete_vomit_reactions
     end

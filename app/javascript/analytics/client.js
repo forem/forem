@@ -1,6 +1,6 @@
 import { handleFetchAPIErrors } from '../utilities/http';
 
-function callAnalyticsAPI(path, date, { organizationId, articleId }, callback) {
+function callAnalyticsAPI(path, date, { organizationId, articleId }) {
   let url = `${path}?start=${date.toISOString().split('T')[0]}`;
 
   if (organizationId) {
@@ -10,36 +10,29 @@ function callAnalyticsAPI(path, date, { organizationId, articleId }, callback) {
     url = `${url}&article_id=${articleId}`;
   }
 
-  fetch(url)
+  return fetch(url)
     .then(handleFetchAPIErrors)
-    .then((response) => response.json())
-    .then(callback)
-    // eslint-disable-next-line no-console
-    .catch((error) => console.error(error)); // we should come up with better error handling
+    .then((response) => response.json());
 }
 
 export function callHistoricalAPI(
   date,
   { organizationId, articleId },
-  callback,
 ) {
-  callAnalyticsAPI(
+  return callAnalyticsAPI(
     '/api/analytics/historical',
     date,
     { organizationId, articleId },
-    callback,
   );
 }
 
 export function callReferrersAPI(
   date,
   { organizationId, articleId },
-  callback,
 ) {
-  callAnalyticsAPI(
+  return callAnalyticsAPI(
     '/api/analytics/referrers',
     date,
     { organizationId, articleId },
-    callback,
   );
 }

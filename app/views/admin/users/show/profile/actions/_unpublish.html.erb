@@ -1,9 +1,0 @@
-<div id="unpublish-all-posts">
-  <%= form_for(@user, url: unpublish_all_articles_admin_user_path(@user), html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('Are you sure? All posts will be unavailable to the community.')", id: nil }) do |f| %>
-    <p>Once unpublished, all posts by <%= @user.name %> will become hidden and only accessible to themselves.</p>
-    <p>If <%= @user.name %> is not suspended, they can still re-publish their posts from their dashboard.</p>
-    <div>
-      <button class="c-btn c-btn--destructive c-btn--primary">Unpublish all posts</button>
-    </div>
-  <% end %>
-</div>

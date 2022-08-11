@@ -31,7 +31,7 @@
   box-shadow: -0px -0px 60px 42px #fff;
   box-shadow: -0px -0px 60px 42px var(--card-bg);
   position: relative;
-  z-index: 100;
+  z-index: var(--z-elevate);
 }
 
 .tt-btn {

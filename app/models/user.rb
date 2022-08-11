@@ -170,6 +170,7 @@ class User < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  scope :invited, -> { where(registered: false) }
   # Unfortunately pg_search's default SQL query is not performant enough in this
   # particular case (~ 500ms). There are multiple reasons:
   # => creates a complex query like `SELECT FROM users INNER JOIN users` to compute ranking.
@@ -212,7 +213,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
-  before_destroy :unsubscribe_from_newsletters, prepend: true
+  before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
   after_create_commit :send_welcome_notification
@@ -401,6 +402,7 @@ class User < ApplicationRecord
     :comment_suspended?,
     :creator?,
     :has_trusted_role?,
+    :moderator?,
     :podcast_admin_for?,
     :restricted_liquid_tag_for?,
     :single_resource_admin_for?,
@@ -493,30 +495,15 @@ class User < ApplicationRecord
     Users::SubscribeToMailchimpNewsletterWorker.perform_async(id)
   end
 
-  def a_sustaining_member?
-    monthly_dues.positive?
-  end
-
-  def resave_articles
-    articles.find_each do |article|
-      if article.path
-        cache_bust = EdgeCache::Bust.new
-        cache_bust.call(article.path)
-        cache_bust.call("#{article.path}?i=i")
-      end
-      article.save
-    end
-  end
-
   def profile_image_90
     profile_image_url_for(length: 90)
   end
 
-  def unsubscribe_from_newsletters
+  def remove_from_mailchimp_newsletters
     return if email.blank?
     return if Settings::General.mailchimp_api_key.blank?
 
-    Mailchimp::Bot.new(self).unsubscribe_all_newsletters
+    Mailchimp::Bot.new(self).remove_from_mailchimp
   end
 
   def enough_credits?(num_credits_needed)
@@ -563,6 +550,13 @@ class User < ApplicationRecord
 
   def reactions_to
     Reaction.for_user(self)
+  end
+
+  def last_activity
+    return unless registered == true
+
+    [registered_at, last_comment_at, last_article_at, latest_article_updated_at, last_reacted_at, profile_updated_at,
+     last_moderation_notification, last_notification_activity].compact.max
   end
 
   protected
