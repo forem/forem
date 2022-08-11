@@ -90,7 +90,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def elevated_user?
-    user_any_admin? || user_moderator?
+    user_any_admin? || user_super_moderator?
   end
 
   alias toggle_suspension_status? elevated_user?

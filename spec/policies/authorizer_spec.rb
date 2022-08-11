@@ -6,7 +6,7 @@ RSpec.describe Authorizer, type: :policy do
 
   let(:authorizer_mod_role) { described_class.for(user: mod_user) }
   let(:user) { create(:user) }
-  let(:mod_user) { create(:user, :moderator) }
+  let(:mod_user) { create(:user, :super_moderator) }
 
   describe "#any_admin?" do
     it "queries the user's roles" do
@@ -16,10 +16,10 @@ RSpec.describe Authorizer, type: :policy do
     end
   end
 
-  describe "#moderator?" do
+  describe "#super_moderator?" do
     it "queries the user's roles" do
-      expect(authorizer.moderator?).to be_falsey
-      expect(authorizer_mod_role.moderator?).to be_truthy
+      expect(authorizer.super_moderator?).to be_falsey
+      expect(authorizer_mod_role.super_moderator?).to be_truthy
     end
   end
 

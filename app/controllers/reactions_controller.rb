@@ -125,7 +125,7 @@ class ReactionsController < ApplicationController
       reactable_type: params[:reactable_type],
       category: category
     }
-    if (current_user&.any_admin? || current_user&.moderator?) &&
+    if (current_user&.any_admin? || current_user&.super_moderator?) &&
         Reaction::NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
       create_params[:status] = "confirmed"
     end

@@ -200,7 +200,7 @@ seeder.create_if_doesnt_exist(User, "email", "moderator-user@forem.local") do
 
   user.profile.update(website_url: Faker::Internet.url)
 
-  user.add_role(:moderator)
+  user.add_role(:super_moderator)
   user.add_role(:trusted)
 end
 
@@ -530,7 +530,7 @@ seeder.create_if_none(NavigationLink) do
     name: "Reading List",
     url: "#{base_url}/readinglist",
     icon: reading_icon,
-    display_only_when_signed_in: true,
+    display_to: :logged_in,
     position: 0,
     section: :default,
   )
