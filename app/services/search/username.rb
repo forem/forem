@@ -50,17 +50,18 @@ module Search
     end
 
     def scope_with_context(context)
-      join_sql = JOIN_COMMENT_CONTEXT[context]
-      selects = ATTRIBUTES.map { |sym| "users.#{sym}".to_sym }
       # PodcastEpisodes are also commentable but have more complex authorship
-      selects << "(users.id = #{context.try(:user_id).to_i}) as is_author"
-      selects << "COUNT(comments.id) as comments_count"
-      selects << "MAX(comments.created_at) as comment_at"
+      user_ids = [context.try(:user_id)]
+      user_ids += context.co_author_ids if context&.co_author_ids.present?
+      user_ids += ::Comment.where(commentable: context).pluck(:user_id)
 
-      ::User.joins(join_sql)
+      selects = ATTRIBUTES.map { |sym| "users.#{sym}".to_sym }
+      selects << ::User.sanitize_sql(["users.id IN (?) as has_commented", user_ids])
+
+      ::User
         .group("users.id")
         .select(*selects)
-        .order("is_author DESC, comments_count DESC, comment_at ASC")
+        .order("has_commented DESC")
     end
 
     def self.serialize(results)
