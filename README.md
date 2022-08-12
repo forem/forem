@@ -127,7 +127,6 @@ Please see our installation guides, such as the
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)
 - [@andygeorge](https://dev.to/andygeorge)
-- [@s_aitchison](https://dev.to/s_aitchison)
 - [@rt4914](https://dev.to/rt4914)
 - [@jaw6](https://dev.to/jaw6)
 
