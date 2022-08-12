@@ -1,6 +1,6 @@
 <footer class="comment__footer print-hidden">
   <button
-    class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button"
+    class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon<%= comment.public_reactions_count.zero? ? "" : "-left" %> crayons-btn--s mr-1 reaction-like inline-flex reaction-button"
     id="button-for-comment-<%= comment.id %>"
     data-comment-id="<%= comment.id %>"
     aria-label="<%= t("views.comments.footer.heart.aria_label") %>"
