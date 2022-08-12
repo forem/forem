@@ -9,20 +9,6 @@ module Search
       username
     ].freeze
 
-    JOIN_COMMENTS = <<-JOIN_SQL.freeze
-    LEFT OUTER JOIN comments on (
-      comments.user_id = users.id AND
-      comments.commentable_type = '%<commentable_type>s' AND
-      comments.commentable_id = %<commentable_id>s
-    )
-    JOIN_SQL
-
-    JOIN_COMMENT_CONTEXT = lambda { |context|
-      commentable_type = context.class.polymorphic_name
-      commentable_id = context.id
-      format(JOIN_COMMENTS, commentable_type: commentable_type, commentable_id: commentable_id)
-    }
-
     # @param term [String] searches on username and name
     # @param context [Article] or [PodcastEpisode]
     #   - used to rank search results by prior comment activity
