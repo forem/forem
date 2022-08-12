@@ -86,7 +86,7 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
             context_type: contextData?.['commentableType'],
             context_id: contextData?.['commentableId'],
           }).then(({ result }) =>
-            result.map((user) => ({ ...user, value: user.username })),
+            result?.map((user) => ({ ...user, value: user.username })),
           )
         }
       />
