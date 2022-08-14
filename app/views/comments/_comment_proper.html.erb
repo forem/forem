@@ -8,7 +8,7 @@
       <% if comment.deleted %>
         <div class="p-6 align-center opacity-50 fs-s">
           <span class="js-comment-username">
-            <%= t("views.comments.delete.text_html_comment") %>
+            <%= t("views.comments.delete.comment_deleted") %>
           </span>
         </div>
       <% else %>
@@ -37,7 +37,7 @@
 
         <% if should_be_hidden?(comment, @root_comment) %>
           <div class="p-6 align-center opacity-50 fs-s hidden comment-hidden-by-author-text">
-            <%= t("views.comments.hidden.text_html_comment") %>
+            <%= t("views.comments.hidden.comment_hidden") %>
           </div>
         <% end %>
       <% end %>
