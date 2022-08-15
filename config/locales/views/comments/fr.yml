@@ -28,6 +28,7 @@ fr:
         submit: Delete
         edit: Edit
         cancel: Dismiss
+        comment_deleted: Comment deleted
       collapse: Collapse
       edit: Editing comment
       edited:
@@ -37,6 +38,7 @@ fr:
       hidden:
         text_html: Some comments have been hidden by the post's author - %{info}
         info: find out more
+        comment_hidden: Comment hidden by post author
       hider:
         description_html: Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's %{permalink}.
         hide_child: Hide child comments as well
