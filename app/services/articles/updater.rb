@@ -23,9 +23,15 @@ module Articles
       publishing = !article.published && article_params[:published]
       past_published_at = !article_params[:published_at] || article_params[:published_at] < Time.current
       update_published_at = publishing && !article.published_from_feed && past_published_at
+
+      # nullify published_at on unpublishing to avoid having drafts with various published_at values
+      # because it may be misleading
+      unpublishing = article.published && !article_params[:published]
+
       attrs = Articles::Attributes.new(article_params, article.user)
         .for_update(update_edited_at: update_edited_at,
-                    update_published_at: update_published_at)
+                    update_published_at: update_published_at,
+                    nullify_published_at: unpublishing)
 
       success = article.update(attrs)
       if success
