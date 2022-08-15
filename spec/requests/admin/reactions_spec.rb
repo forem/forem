@@ -62,7 +62,7 @@ RSpec.describe "/admin/reactions", type: :request do
         put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "confirmed" }
       end
 
-      expect(invalid_request).to raise_error(Pundit::NotAuthorizedError)
+      expect { invalid_request.call }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end

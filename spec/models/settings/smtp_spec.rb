@@ -3,11 +3,13 @@ require "rails_helper"
 RSpec.describe Settings::SMTP do
   let(:key) { "something" }
 
-  before { ENV["SENDGRID_API_KEY"] = key }
+  before do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:fetch).with("SENDGRID_API_KEY", nil).and_return(key)
+  end
 
   after do
     described_class.clear_cache
-    ENV["SENDGRID_API_KEY"] = nil
   end
 
   describe "::settings" do

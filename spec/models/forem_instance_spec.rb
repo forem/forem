@@ -19,7 +19,7 @@ RSpec.describe ForemInstance, type: :model do
     it "sets the HEROKU_RELEASE_CREATED_AT if the RELEASE_FOOTPRINT is not present" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("")
       allow(ENV).to receive(:[]).with("HEROKU_RELEASE_CREATED_AT").and_return("A deploy date set on Heroku")
-      expect(described_class.deployed_at).to eq(ENV["HEROKU_RELEASE_CREATED_AT"])
+      expect(described_class.deployed_at).to eq("A deploy date set on Heroku")
     end
 
     it "sets to current time if HEROKU_RELEASE_CREATED_AT and RELEASE_FOOTPRINT are not present" do
@@ -45,7 +45,7 @@ RSpec.describe ForemInstance, type: :model do
     it "sets the HEROKU_RELEASE_CREATED_AT if the RELEASE_FOOTPRINT is not present" do
       allow(ApplicationConfig).to receive(:[]).with("FOREM_BUILD_SHA").and_return("")
       stub_const("ENV", ENV.to_h.merge("HEROKU_SLUG_COMMIT" => "A Commit ID set from Heroku"))
-      expect(described_class.latest_commit_id).to eq(ENV["HEROKU_SLUG_COMMIT"])
+      expect(described_class.latest_commit_id).to eq(ENV.fetch("HEROKU_SLUG_COMMIT", nil))
     end
   end
 
@@ -91,9 +91,9 @@ RSpec.describe ForemInstance, type: :model do
     end
 
     it "returns true if sendgrid api key is available" do
-      ENV["SENDGRID_API_KEY"] = "something"
+      allow(ENV).to receive(:[]).and_return("something")
+
       expect(described_class.smtp_enabled?).to be(true)
-      ENV["SENDGRID_API_KEY"] = nil
     end
   end
 

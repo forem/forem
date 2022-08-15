@@ -1,0 +1,47 @@
+.c-toggle {
+  --size: 1.5em;
+  --padding: 2px;
+  height: calc(var(--size) - var(--padding) * 2);
+  padding: var(--padding);
+  box-sizing: content-box;
+  aspect-ratio: 2 / 1;
+  border-radius: var(--size);
+  -webkit-appearance: none;
+  appearance: none;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  background: var(--toggle-rail-bg);
+  transition: var(--transition-props);
+
+  &::after {
+    content: '';
+    height: 100%;
+    aspect-ratio: 1;
+    background: var(--toggle-knob-bg);
+    z-index: var(--z-elevate);
+    display: block;
+    border-radius: var(--size);
+    transition: var(--transition-props);
+    box-shadow: 0 0 0 1px rgba(var(--black), 0.05),
+      0 2px 3px rgba(var(--black), 0.2);
+  }
+
+  &:checked {
+    background: var(--toggle-rail-checked-bg);
+
+    &::after {
+      transform: translateX(100%);
+    }
+  }
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: 0;
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

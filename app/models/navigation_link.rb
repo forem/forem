@@ -5,6 +5,7 @@ class NavigationLink < ApplicationRecord
   before_save :strip_local_hostname, if: :url?
 
   enum section: { default: 0, other: 1 }, _suffix: true
+  enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
 
   validates :name, :url, :icon, presence: true
   validates :url, url: { schemes: %w[https http] }, uniqueness: { scope: :name }

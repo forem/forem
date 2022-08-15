@@ -4,35 +4,29 @@
                action: "submit->config#updateConfigurationSettings",
                testid: "emailForm"
              } }) do |f| %>
-  <div class="card mt-3">
-    <%= render partial: "admin/shared/card_header",
-               locals: {
-                 header: "Emails",
-                 state: "collapse",
-                 target: "emailBodyContainer",
-                 expanded: false
-               } %>
-    <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
+  <details class="crayons-card">
+    <summary class="crayons-subtitle-2 p-6">Emails</summary>
+    <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
         <div class="crayons-field">
           <%= admin_config_label :contact_email %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:contact_email][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:contact_email][:description] %>
           <%= f.text_field :contact_email,
                            class: "crayons-textfield",
                            value: Settings::General.contact_email,
-                           placeholder: Constants::Settings::General::DETAILS[:contact_email][:placeholder] %>
+                           placeholder: Constants::Settings::General.details[:contact_email][:placeholder] %>
         </div>
 
         <div class="crayons-field">
           <%= admin_config_label :periodic_email_digest %>
-          <%= admin_config_description Constants::Settings::General::DETAILS[:periodic_email_digest][:description] %>
+          <%= admin_config_description Constants::Settings::General.details[:periodic_email_digest][:description] %>
           <%= f.number_field :periodic_email_digest,
                              class: "crayons-textfield",
                              value: Settings::General.periodic_email_digest,
-                             placeholder: Constants::Settings::General::DETAILS[:periodic_email_digest][:placeholder] %>
+                             placeholder: Constants::Settings::General.details[:periodic_email_digest][:placeholder] %>
         </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>
-  </div>
+  </details>
 <% end %>

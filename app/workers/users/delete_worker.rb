@@ -1,6 +1,6 @@
 module Users
   class DeleteWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
 
     sidekiq_options queue: :high_priority, retry: 10
 
@@ -10,7 +10,7 @@ module Users
 
       Users::Delete.call(user)
       # notify admins internally that they need to delete gdpr data
-      Users::GdprDeleteRequest.create(user_id: user.id, email: user.email, username: user.username)
+      GDPRDeleteRequest.create(user_id: user.id, email: user.email, username: user.username)
 
       return if admin_delete || user.email.blank?
 

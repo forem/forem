@@ -26,15 +26,9 @@
           <div> There are no profile fields configured for this group. </div>
         <% else %>
           <% group.profile_fields.each do |field| %>
-            <div id="profile-field-<%= field.id %>" class="card mt-3">
-              <%= render partial: "admin/shared/card_header",
-                         locals: {
-                           header: field.label,
-                           state: "collapse",
-                           target: "#{field.attribute_name}_container",
-                           expanded: "false"
-                         } %>
-              <div id="<%= field.attribute_name %>_container" class="card-body collapse hide" aria-labelledby="<%= field.attribute_name %>_container">
+            <details class="crayons-card mb-4" id="profile-field-<%= field.id %>">
+              <summary class="crayons-subtitle-2 p-5"><%= field.label %></summary>
+              <div id="<%= field.attribute_name %>_container" class="p-5 pt-0">
                 <div class="form-group grid p-6 mb-6 gap-1">
                   <%= form_for [:admin, field] do |form| %>
                     <%= render "profile_field_form", form: form, group: group %>
@@ -43,7 +37,7 @@
                   <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary mx-auto" %>
                 </div>
               </div>
-            </div>
+            </details>
           <% end %>
         <% end %>
       </div>

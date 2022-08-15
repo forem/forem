@@ -23,6 +23,7 @@ export const Article = ({
   bookmarkClick,
   feedStyle,
   pinned,
+  saveable,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
@@ -133,6 +134,7 @@ export const Article = ({
                   article={article}
                   isBookmarked={isBookmarked}
                   onClick={bookmarkClick}
+                  saveable={saveable}
                 />
               </div>
             </div>
@@ -155,6 +157,7 @@ Article.defaultProps = {
   isBookmarked: false,
   isFeatured: false,
   feedStyle: 'basic',
+  saveable: true,
 };
 
 Article.propTypes = {
@@ -164,4 +167,5 @@ Article.propTypes = {
   feedStyle: PropTypes.string,
   bookmarkClick: PropTypes.func.isRequired,
   pinned: PropTypes.bool,
+  saveable: PropTypes.bool.isRequired,
 };

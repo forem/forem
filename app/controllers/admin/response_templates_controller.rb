@@ -20,8 +20,11 @@ module Admin
 
     def create
       @response_template = ResponseTemplate.new(permitted_params)
+      @response_template.user = find_user_via_identifier params[:response_template][:user_identifier]
       if @response_template.save
-        flash[:success] = "Response Template: \"#{@response_template.title}\" saved successfully."
+        flash[:success] =
+          I18n.t("admin.response_templates_controller.saved",
+                 title: @response_template.title)
         redirect_to admin_response_templates_path
       else
         flash[:danger] = @response_template.errors_as_sentence
@@ -36,9 +39,12 @@ module Admin
 
     def update
       @response_template = ResponseTemplate.find(params[:id])
+      @response_template.user = find_user_via_identifier params[:response_template][:user_identifier]
 
       if @response_template.update(permitted_attributes(ResponseTemplate))
-        flash[:success] = "The response template \"#{@response_template.title}\" was updated."
+        flash[:success] =
+          I18n.t("admin.response_templates_controller.updated",
+                 title: @response_template.title)
         redirect_to edit_admin_response_template_path(@response_template)
       else
         flash[:danger] = @response_template.errors_as_sentence
@@ -50,7 +56,9 @@ module Admin
       @response_template = ResponseTemplate.find(params[:id])
 
       if @response_template.destroy
-        flash[:success] = "The response template \"#{@response_template.title}\" was deleted."
+        flash[:success] =
+          I18n.t("admin.response_templates_controller.deleted",
+                 title: @response_template.title)
       else
         flash[:danger] = @response_template.errors_as_sentence # this will probably never fail
       end
@@ -59,6 +67,12 @@ module Admin
     end
 
     private
+
+    def find_user_via_identifier(identifier)
+      return if identifier.blank?
+
+      UsersQuery.find identifier
+    end
 
     def permitted_params
       params.require(:response_template).permit(:body_markdown, :user_id, :content, :title, :type_of, :content_type)

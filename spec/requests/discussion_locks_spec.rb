@@ -29,7 +29,7 @@ RSpec.describe "DiscussionLocks", type: :request do
       invalid_article_attributes = { article_id: article.id, locking_user_id: user.id }
       expect do
         post discussion_locks_path, params: { discussion_lock: invalid_article_attributes }
-      end.to change(DiscussionLock, :count).by(0)
+      end.not_to change(DiscussionLock, :count)
 
       expect(request.flash[:error]).to include("Error: Article has already been taken")
     end

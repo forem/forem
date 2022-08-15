@@ -18,12 +18,12 @@
 
   <% if @episode.social_image.present? %>
     <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:image" content="<%= @episode.social_image_url %>">
-    <meta name="twitter:image:src" content="<%= @episode.social_image_url %>">
+    <meta property="og:image" content="<%= Settings::General.main_social_image %>">
+    <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <% else %>
     <meta name="twitter:card" content="summary">
-    <meta property="og:image" content="<%= @episode.image_url || @podcast.image_url %>">
-    <meta name="twitter:image:src" content="<%= @episode.image_url || @podcast.image_url %>">
+    <meta property="og:image" content="<%= Settings::General.main_social_image %>">
+    <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
   <% end %>
 
 <% end %>

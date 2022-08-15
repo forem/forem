@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { TagAutocompleteOption } from '../TagAutocompleteOption';
+import { TagAutocompleteOption } from '@crayons/MultiSelectAutocomplete/TagAutocompleteOption';
 
 export default {
   component: TagAutocompleteOption,

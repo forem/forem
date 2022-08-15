@@ -19,20 +19,6 @@ RSpec.describe Articles::Creator, type: :service do
       expect(article).to be_persisted
     end
 
-    it "schedules a job" do
-      valid_attributes[:published] = true
-      sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
-        described_class.call(user, valid_attributes)
-      end
-    end
-
-    it "delegates to the Mentions::CreateAll service" do
-      valid_attributes[:published] = true
-      allow(Mentions::CreateAll).to receive(:call)
-      article = described_class.call(user, valid_attributes)
-      expect(Mentions::CreateAll).to have_received(:call).with(article)
-    end
-
     it "creates a notification subscription" do
       expect do
         described_class.call(user, valid_attributes)
@@ -60,18 +46,6 @@ RSpec.describe Articles::Creator, type: :service do
       expect(article.decorated?).to be(false)
       expect(article).not_to be_persisted
       expect(article.errors.size).to eq(1)
-    end
-
-    it "doesn't schedule a job" do
-      sidekiq_assert_no_enqueued_jobs only: Notifications::NotifiableActionWorker do
-        described_class.call(user, invalid_body_attributes)
-      end
-    end
-
-    it "doesn't delegate to the Mentions::CreateAll service" do
-      allow(Mentions::CreateAll).to receive(:call)
-      article = described_class.call(user, invalid_body_attributes)
-      expect(Mentions::CreateAll).not_to have_received(:call).with(article)
     end
 
     it "doesn't create a notification subscription" do

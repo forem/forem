@@ -78,6 +78,20 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
     end
   end
 
+  context "when item is not a podcast episode" do
+    let(:items) { RSS::Parser.parse("spec/support/fixtures/podcasts/codepunk.rss", false).items }
+    let(:rss_item) { items.first }
+    let!(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
+
+    it "does not raise error" do
+      expect { described_class.call(podcast.id, item) }.not_to raise_error
+    end
+
+    it "does not create episode" do
+      expect { described_class.call(podcast.id, item) }.not_to change(PodcastEpisode, :count)
+    end
+  end
+
   context "when attempting to create duplicate episodes" do
     let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/developertea.rss", false).items.first }
     let(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
@@ -95,6 +109,22 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
     it "updates columns" do
       new_episode = described_class.call(podcast.id, item)
       expect(new_episode.title).to eq(item.title)
+    end
+  end
+
+  context "when episodes contain non-latin script titles" do
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/design_takoy.rss", false).items.first }
+    let(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
+
+    before do
+      stub_request(:head, item.enclosure_url).to_return(status: 200)
+    end
+
+    it "transliterates title to build a slug" do
+      episode = described_class.call(podcast.id, item)
+
+      expect(episode.title).to start_with("Зачем режиссерам презентации и как их создают?")
+      expect(episode.slug).to start_with("zachiem-riezhissieram-priezientatsii-i-kak-ikh-sozdaiut")
     end
   end
 end

@@ -10,7 +10,7 @@ module Slack
       end
 
       def call
-        return unless article.published && article.published_at > 30.seconds.ago
+        return unless article.published && article.published_at > 10.minutes.ago
 
         message = I18n.t(
           "services.slack.messengers.article_published.body",

@@ -5,11 +5,13 @@ RSpec.describe ProfileFields::Remove, type: :service do
     it "removes the profile field and store accessor", :aggregate_failures do
       profile_field = create(:profile_field, label: "Removed field")
       profile = create(:user).profile
+      getter = profile_field.attribute_name
+      setter = "#{getter}="
 
       expect { described_class.call(profile_field.id) }
         .to change(ProfileField, :count).by(-1)
-        .and change { profile.respond_to?(:removed_field) }.from(true).to(false)
-        .and change { profile.respond_to?(:removed_field=) }.from(true).to(false)
+        .and change { profile.respond_to?(getter) }.from(true).to(false)
+        .and change { profile.respond_to?(setter) }.from(true).to(false)
     end
 
     it "returns the correct response object", :aggregate_failures do
@@ -25,7 +27,7 @@ RSpec.describe ProfileFields::Remove, type: :service do
     let(:id) { 428 }
 
     before do
-      profile_field = instance_double("ProfileField", destroy: false, errors_as_sentence: "Something went wrong")
+      profile_field = instance_double(ProfileField, destroy: false, errors_as_sentence: "Something went wrong")
       allow(ProfileField).to receive(:find).with(id).and_return(profile_field)
     end
 

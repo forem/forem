@@ -6,10 +6,9 @@
                action: "submit->config#updateConfigurationSettings",
                testid: "emailServerSettings"
              } }) do |f| %>
-  <div class="card mt-3" id="smtp-section">
-    <%= render partial: "admin/shared/card_header",
-               locals: { header: "Email Server Settings (SMTP)", state: "collapse", target: "smtpSettingsBodyContainer", expanded: false } %>
-    <div id="smtpSettingsBodyContainer" class="card-body collapse hide" aria-labelledby="smtpSettingsBodyContainer">
+  <details class="crayons-card" id="smtp-section">
+    <summary class="crayons-subtitle-2 p-6">Email Server Settings (SMTP)</summary>
+    <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
 
         <% if ForemInstance.sendgrid_enabled? %>
@@ -33,11 +32,11 @@
           <% smpt_options.each do |config_key| %>
             <div class="crayons-field mt-3">
               <%= admin_config_label config_key, model: Settings::SMTP %>
-              <%= admin_config_description Constants::Settings::SMTP::DETAILS[config_key][:description] %>
+              <%= admin_config_description Constants::Settings::SMTP.details[config_key][:description] %>
               <%= f.text_field config_key,
                                class: "crayons-textfield",
                                value: Settings::SMTP.public_send(config_key),
-                               placeholder: Constants::Settings::SMTP::DETAILS[config_key][:placeholder],
+                               placeholder: Constants::Settings::SMTP.details[config_key][:placeholder],
                                "data-config-target": "smtpSetting#{config_key.to_s.camelize(:upper)}" %>
             </div>
           <% end %>
@@ -45,5 +44,5 @@
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>
-  </div>
+  </details>
 <% end %>

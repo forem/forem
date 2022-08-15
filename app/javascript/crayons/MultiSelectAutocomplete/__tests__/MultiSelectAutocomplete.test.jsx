@@ -111,7 +111,7 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'a');
+    await userEvent.type(input, 'a');
 
     await waitFor(() =>
       expect(
@@ -123,13 +123,14 @@ describe('<MultiSelectAutocomplete />', () => {
     ).toBeInTheDocument();
   });
 
-  it('displays search term as an option if no suggestions', async () => {
+  it('when user-generated selections are allowed, displays search term as an option if no suggestions', async () => {
     const mockFetchSuggestions = jest.fn(async () => []);
 
     const { getByLabelText, getByRole } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
         fetchSuggestions={mockFetchSuggestions}
+        allowUserDefinedSelections={true}
       />,
     );
 
@@ -210,7 +211,7 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
   });
 
-  it('should select current text on spacebar press', async () => {
+  it('should select current text on spacebar press, when it matches a suggestion', async () => {
     const mockFetchSuggestions = jest.fn(async () => [
       { name: 'option1' },
       { name: 'option2' },
@@ -225,16 +226,16 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example{space}');
+    await userEvent.type(input, 'option1 ');
 
     // It should now be added to the list of selected items
     await waitFor(() =>
-      expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument(),
+      expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument(),
     );
-    expect(getByRole('button', { name: 'Remove example' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
   });
 
-  it('should select current text on comma press', async () => {
+  it('should select current text on comma press, when it matches a suggestion', async () => {
     const mockFetchSuggestions = jest.fn(async () => [
       { name: 'option1' },
       { name: 'option2' },
@@ -249,7 +250,32 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'example,');
+    userEvent.type(input, 'option1,');
+
+    // It should now be added to the list of selected items
+    await waitFor(() =>
+      expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument(),
+    );
+    expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
+  });
+
+  it('should select current text, when it does not match a suggestion, but user generated selections are allowed', async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
+    const { getByLabelText, getByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={mockFetchSuggestions}
+        allowUserDefinedSelections={true}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    await userEvent.type(input, 'example ');
 
     // It should now be added to the list of selected items
     await waitFor(() =>
@@ -259,25 +285,30 @@ describe('<MultiSelectAutocomplete />', () => {
   });
 
   it("doesn't select manual text entry if already selected", async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
     const { getByLabelText, getByRole, getAllByRole } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
-        defaultValue={[{ name: 'example' }]}
-        fetchSuggestions={() => []}
+        defaultValue={[{ name: 'option1' }]}
+        fetchSuggestions={mockFetchSuggestions}
       />,
     );
 
     // Item should already be selected, as passed as a default value
-    expect(getByRole('button', { name: 'Edit example' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument();
 
     const input = getByLabelText('Example label');
     input.focus();
     // Try to select the same value by manually typing
-    userEvent.type(input, 'example,');
+    await userEvent.type(input, 'option1,');
 
-    expect(input).toHaveValue('');
-    // Verify there is still only one selected 'example'
-    expect(getAllByRole('button', { name: 'Edit example' })).toHaveLength(1);
+    // Verify there is still only one selected 'option1', and text field has not been cleared
+    expect(input).toHaveValue('option1');
+    expect(getAllByRole('button', { name: 'Edit option1' })).toHaveLength(1);
   });
 
   it('displays selections in a custom template, if provided', async () => {
@@ -297,13 +328,13 @@ describe('<MultiSelectAutocomplete />', () => {
     );
 
     const input = getByLabelText('Example label');
-    input.focus();
-    userEvent.type(input, 'example,');
+
+    await userEvent.type(input, 'option1,');
 
     // It should now be added to the list of selected items using the custom template
     await waitFor(() =>
       expect(
-        getByRole('button', { name: 'Selected: example' }),
+        getByRole('button', { name: 'Selected: option1' }),
       ).toBeInTheDocument(),
     );
   });
@@ -410,7 +441,7 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(getByLabelText('Example label')).toHaveFocus();
   });
 
-  it('closes dropdown and selects current input value on blur', async () => {
+  it('closes dropdown and selects current input value on blur if it matches a suggestion', async () => {
     const mockFetchSuggestions = jest.fn(async () => [
       { name: 'option1' },
       { name: 'option2' },
@@ -425,7 +456,7 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'a');
+    await userEvent.type(input, 'option1');
 
     await waitFor(() =>
       expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
@@ -439,8 +470,63 @@ describe('<MultiSelectAutocomplete />', () => {
     );
 
     // Text value should be selected
-    expect(getByRole('button', { name: 'Edit a' })).toBeInTheDocument();
-    expect(getByRole('button', { name: 'Remove a' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
+  });
+
+  it('clears input without selecting text on blur if no matching suggestion', async () => {
+    const { getByLabelText, queryByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={() => []}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    await userEvent.type(input, 'example');
+
+    input.blur();
+
+    // Text value should not be selected
+    expect(
+      queryByRole('button', { name: 'Edit example' }),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByRole('button', { name: 'Remove example' }),
+    ).not.toBeInTheDocument();
+
+    // Input should be cleared
+    expect(input).toHaveValue('');
+  });
+
+  it('clears input and selects current text on blur if no matching suggestion and user-defined selections are permitted', async () => {
+    const { getByLabelText, queryByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={() => []}
+        allowUserDefinedSelections={true}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    await userEvent.type(input, 'example');
+
+    input.blur();
+
+    await waitFor(() => {
+      // Text value should be selected
+      expect(
+        queryByRole('button', { name: 'Edit example' }),
+      ).toBeInTheDocument();
+      expect(
+        queryByRole('button', { name: 'Remove example' }),
+      ).toBeInTheDocument();
+
+      // Input should be cleared
+      expect(input).toHaveValue('');
+    });
   });
 
   it('clears the input on Escape press', async () => {
@@ -458,13 +544,13 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, 'a');
+    await userEvent.type(input, 'a');
 
     await waitFor(() =>
       expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
     );
 
-    userEvent.type(input, '{esc}');
+    userEvent.keyboard('{Escape}');
 
     await waitFor(() =>
       expect(queryByRole('option', { name: 'option1' })).toBeNull(),
@@ -487,13 +573,13 @@ describe('<MultiSelectAutocomplete />', () => {
 
     const input = getByLabelText('Example label');
     input.focus();
-    userEvent.type(input, '{backspace}');
+    await userEvent.type(input, '{backspace}');
 
     await waitFor(() => expect(input).toHaveValue('example'));
     expect(queryByRole('button', { name: 'Edit example' })).toBeNull();
   });
 
-  it('Prohibits entering special characters', () => {
+  it('Prohibits entering special characters', async () => {
     const { getByLabelText } = render(
       <MultiSelectAutocomplete
         labelText="Example label"
@@ -502,7 +588,7 @@ describe('<MultiSelectAutocomplete />', () => {
     );
 
     const input = getByLabelText('Example label');
-    userEvent.type(input, '!@£$%^&*()a1');
+    await userEvent.type(input, '!@£$%^&*()a1');
     expect(input).toHaveValue('a1');
   });
 
@@ -534,10 +620,10 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(queryByText('Only 2 selections allowed')).toBeNull();
     expect(input).toHaveAttribute('aria-disabled', 'false');
 
-    userEvent.type(input, 'example,');
+    await userEvent.type(input, 'option1,');
 
     // Make sure option has been selected
-    await waitFor(() => getByRole('button', { name: 'Edit example' }));
+    await waitFor(() => getByRole('button', { name: 'Edit option1' }));
 
     // Check input is in the max reached state
     expect(input).toHaveAttribute('placeholder', '');
@@ -545,13 +631,13 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(input).toHaveAttribute('aria-disabled', 'true');
 
     // Start typing and make sure further options not shown
-    userEvent.type(input, 'a');
+    await userEvent.type(input, 'option2');
     expect(queryAllByRole('option')).toHaveLength(0);
     expect(getByText('Only 2 selections allowed')).toBeInTheDocument();
 
     // Try to select a value by typing a comma
-    userEvent.type(input, 'b,');
+    await userEvent.type(input, ',');
     // Verify the selection wasn't made, and the text is still in the input
-    expect(input).toHaveValue('ab');
+    expect(input).toHaveValue('option2');
   });
 });

@@ -72,7 +72,7 @@ RSpec.describe "Authenticating with Email" do
         click_button("Continue", match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
-        expect(page).to have_text("Invalid Email or password.")
+        expect(page).to have_text("Unable to login.")
       end
     end
   end

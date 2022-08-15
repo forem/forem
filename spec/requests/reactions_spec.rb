@@ -249,6 +249,23 @@ RSpec.describe "Reactions", type: :request do
       end
     end
 
+    context "when attempting to create thumbsup as regular user" do
+      before do
+        sign_in user
+      end
+
+      it "does not permit the action" do
+        expect do
+          post "/reactions", params: {
+            reactable_id: article.id,
+            reactable_type: "Article",
+            category: "thumbsup"
+          }
+        end.to raise_error(Pundit::NotAuthorizedError)
+        expect(Reaction.where(category: "thumbsup").count).to eq(0)
+      end
+    end
+
     context "when creating thumbsup" do
       before do
         user.add_role(:trusted)
@@ -263,9 +280,9 @@ RSpec.describe "Reactions", type: :request do
           reactable_type: "Article",
           category: "thumbsup"
         }
-        expect(Reaction.where(category: "thumbsup").size).to be 1
-        expect(Reaction.where(category: "thumbsdown").size).to be 0
-        expect(Reaction.where(category: "like").size).to be 1
+        expect(Reaction.where(category: "thumbsup").count).to eq(1)
+        expect(Reaction.where(category: "thumbsdown").count).to eq(0)
+        expect(Reaction.where(category: "like").count).to eq(1)
       end
     end
 

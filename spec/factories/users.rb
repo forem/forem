@@ -25,14 +25,17 @@ FactoryBot.define do
     signup_cta_variant           { "navbar_basic" }
 
     trait :with_identity do
-      transient { identities { Authentication::Providers.available } }
+      transient do
+        identities { Authentication::Providers.available }
+        uid { nil }
+      end
 
       after(:create) do |user, options|
         options.identities.each do |provider|
           auth = OmniAuth.config.mock_auth.fetch(provider.to_sym)
           create(
             :identity,
-            user: user, provider: provider, uid: auth.uid, auth_data_dump: auth,
+            user: user, provider: provider, uid: options.uid || auth.uid, auth_data_dump: auth,
           )
         end
       end
@@ -66,6 +69,10 @@ FactoryBot.define do
 
     trait :admin do
       after(:build) { |user| user.add_role(:admin) }
+    end
+
+    trait :super_moderator do
+      after(:build) { |user| user.add_role(:super_moderator) }
     end
 
     trait :single_resource_admin do
@@ -105,6 +112,14 @@ FactoryBot.define do
 
     trait :suspended do
       after(:build) { |user| user.add_role(:suspended) }
+    end
+
+    trait :warned do
+      after(:build) { |user| user.add_role(:warned) }
+    end
+
+    trait :comment_suspended do
+      after(:build) { |user| user.add_role(:comment_suspended) }
     end
 
     trait :invited do

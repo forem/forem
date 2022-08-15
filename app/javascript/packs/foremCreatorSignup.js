@@ -64,36 +64,42 @@ function hideHintRow() {
   hintRow.classList.add('hidden');
 }
 
-function togglePasswordMask(event) {
-  event.preventDefault();
-  visible = !visible;
-  toggleAriaPressed(visible);
-  togglePasswordType(visible);
-  toggleEyeIcons(visible);
+function setTogglePasswordEvent(targetWrapper) {
+  function togglePasswordMask(event) {
+    event.preventDefault();
+    visible = !visible;
+    toggleAriaPressed(visible);
+    togglePasswordType(visible);
+    toggleEyeIcons(visible);
+  }
+
+  function toggleAriaPressed(visible) {
+    visibility.setAttribute('aria-pressed', visible);
+  }
+
+  function togglePasswordType(visible) {
+    const passwordType = visible ? 'text' : 'password';
+    passwordField.type = passwordType;
+  }
+
+  function toggleEyeIcons(visible) {
+    eyeOffIcon.classList.toggle('hidden', !visible);
+    eyeIcon.classList.toggle('hidden', visible);
+  }
+
+  let visible = false;
+  const eyeIcon = targetWrapper.getElementsByClassName('js-eye')[0];
+  const eyeOffIcon = targetWrapper.getElementsByClassName('js-eye-off')[0];
+  const passwordField = targetWrapper.getElementsByClassName('js-password')[0];
+  const visibility = targetWrapper.getElementsByClassName(
+    'js-creator-password-visibility',
+  )[0];
+  visibility.addEventListener('click', togglePasswordMask);
 }
 
-function toggleAriaPressed(visible) {
-  visibility.setAttribute('aria-pressed', visible);
-}
-
-function togglePasswordType(visible) {
-  const passwordType = visible ? 'text' : 'password';
-  passwordField.type = passwordType;
-}
-
-function toggleEyeIcons(visible) {
-  eyeOffIcon.classList.toggle('hidden', !visible);
-  eyeIcon.classList.toggle('hidden', visible);
-}
-
-let visible = false;
-const eyeIcon = document.getElementsByClassName('js-eye')[0];
-const eyeOffIcon = document.getElementsByClassName('js-eye-off')[0];
-const passwordField = document.getElementsByClassName('js-password')[0];
-const visibility = document.getElementsByClassName(
-  'js-creator-password-visibility',
-)[0];
-visibility.addEventListener('click', togglePasswordMask);
+document.querySelectorAll('.js-password-toggle-wrapper').forEach((el) => {
+  setTogglePasswordEvent(el);
+});
 
 const name = document.getElementsByClassName('js-creator-signup-name')[0];
 name.addEventListener('input', setDefaultUsername);

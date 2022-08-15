@@ -1,0 +1,83 @@
+<%= javascript_packs_with_chunks_tag "admin/users/gdprDeleteRequests", defer: true %>
+<div id="gdpr-delete-requests-content" class="crayons-card overflow-admin-main-layout-padding p-4 m:p-0">
+  <header class="flex flex-col l:flex-row justify-content-between l:items-center p-0 m:p-7 pb-4">
+    <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (GDPR Delete Requests)</span></h1>
+    <%= form_with url: admin_gdpr_delete_requests_path, method: :get, local: true, class: "grow-1 mb-3 m:mb-0" do |f| %>
+      <div class="hidden m:flex flex-col m:flex-row justify-content-between p-3 xl:px-0">
+        <div class="flex grow-1 justify-content-end">
+          <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR delete requests", context: "top" %>
+        </div>
+        <%= render "admin/users/controls/search_field", f: f, placeholder: "Search members...", aria_label: "Search members by email or username", context: "large" %>
+      </div>
+    <% end %>
+  </header>
+  <div id="table-description" class="my-4  max-w-75 color-base-60 px-2 m:px-7">
+    These accounts have been deleted from the community. Ensure that any data held in external databases or mailing lists is deleted before marking as "Deleted."
+  </div>
+
+  <!-- Small layout start -->
+  <div class="m:hidden">
+    <h2 class="member-data-heading fs-s py-2 mt-3 -mx-4 px-6 color-base-60">Deleted members</h2>
+    <ul class="list-none mx-2">
+      <% @gdpr_delete_requests.each do |r| %>
+        <li>
+          <article class="fs-s py-4 flex justify-between align-items-start">
+            <div class="flex flex-col gap-2">
+              <h3 class="fs-s color-base-60">@<%= r.username %></h3>
+              <%= r.email %>
+              <dl>
+                <dt class="color-base-60 fw-normal">Deleted on</dt>
+                <dd><%= r.created_at.strftime("%d %b, %Y") %></dd>
+              </dl>
+            </div>
+            <button aria-label="Confirm user <%= r.username %> deleted" data-username="<%= r.username %>" data-gdpr-form-action="<%= url_for(action: :destroy, id: r.id) %>" class="c-btn"> <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted</button>
+          </article>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <!-- Small layout end -->
+
+  <!-- Large layout start -->
+  <table class="hidden m:table crayons-table crayons-table--minimal w-100" aria-describedby="table-description <%= @gdpr_delete_requests.empty? ? "empty-state-message-id" : "" %>">
+    <thead class="member-data-heading">
+      <tr>
+        <th scope="col" class="pl-7">Deleted member</th>
+        <th scope="col">Email address</th>
+        <th scope="col">Deleted on</th>
+        <th scope="col" class="screen-reader-only">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="fs-s">
+      <% @gdpr_delete_requests.each do |r| %>
+        <tr>
+          <td class="pl-7 color-base-60">@<%= r.username %></td>
+          <td><%= r.email %></td>
+          <td><%= r.created_at.strftime("%d %b, %Y") %></td>
+          <td class="align-center">
+            <button aria-label="Confirm user <%= r.username %> deleted" data-username="<%= r.username %>" data-gdpr-form-action="<%= url_for(action: :destroy, id: r.id) %>" class="c-btn"> <%= crayons_icon_tag("checkmark", aria_hidden: true) %> Deleted</button>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @gdpr_delete_requests.empty? %>
+    <div class="align-center flex flex-col my-auto py-7" id="empty-state-message-id">
+      <p class="fs-xl fw-normal mb-2">Awesome! All GDPR delete requests have been completed.</p>
+      <p class="color-secondary">Check back again when you delete a member.</p>
+    </div>
+  <% end %>
+  <!-- Large layout end -->
+
+  <div class="flex justify-end p-4 m:px-7">
+    <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR delete requests", context: "bottom" %>
+  </div>
+</div>
+<div id="gdpr-confirm-delete-modal" class="hidden">
+  <%= form_for :gdpr_user, method: :delete  do |f| %>
+    <p class="mb-6">This action cannot be undone. Make sure you have deleted all external data before you mark this as deleted.</p>
+    <button class="c-btn c-btn--primary">Yes, mark as deleted</button>
+    <button type="button" class="js-gdpr-cancel-deleted c-btn">Cancel</button>
+  <% end %>
+</div>

@@ -24,7 +24,7 @@ fr:
         accept_instructions: Vous pouvez accepter l'invitation en cliquant sur ce lien
         accept: Accepter l'invitation
         accept_until: Cette invitation expirera après %{due_date}.
-        hello: Bonjour %{name}
+        hello: Bonjour
         ignore: Si vous ne souhaitez pas accepter cette invitation, veuillez ignorer cet e-mail.<br />Votre compte ne sera pas créé tant que vous n'accéderez pas au lien ci-dessous et que vous ayez défini votre mot de passe.
         someone_invited_you: Vous avez été invité à rejoindre la communauté %{community_name} sur %{url}.
         subject: Vous avez reçu une invitation

@@ -72,7 +72,7 @@
   }
 
   &__content {
-    overflow: auto;
+    overflow-y: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
     );
@@ -158,27 +158,25 @@
     top: 0;
     background: var(--base-0);
     padding: var(--su-2) var(--content-padding-x);
-    padding-right: var(--toolbar-padding-right, 0);
-    overflow-x: auto;
+    padding-right: var(--content-padding-x, 0);
     flex-shrink: 0;
     margin: calc(var(--content-padding-y) * -1)
       calc(var(--content-padding-x) * -1) var(--su-6)
       calc(var(--content-padding-x) * -1);
 
+    .editor-toolbar {
+      overflow-x: auto;
+
+      @media (min-width: $breakpoint-xs) {
+        overflow-x: unset;
+        position: relative;
+      }
+    }
+
     > :first-child {
       @media (min-width: $breakpoint-m) {
         margin-left: calc(var(--su-2) * -1);
       }
-    }
-
-    &::-webkit-scrollbar {
-      background: transparent;
-      height: 0;
-    }
-
-    @media (min-width: $breakpoint-m) {
-      --toolbar-padding-right: var(--content-padding-x);
-      overflow: visible;
     }
   }
 
@@ -198,7 +196,7 @@
       width: 250px;
       height: 105px;
       border-radius: var(--radius);
-      object-fit: cover;
+      object-fit: scale-down;
       margin-bottom: var(--su-2);
 
       @media (min-width: $breakpoint-s) {
@@ -237,72 +235,6 @@
   }
 }
 
-.crayons-article-form {
-  &__top-tags-heading {
-    padding: var(--su-3);
-    font-size: var(--fs-l);
-    border-bottom: 1px solid var(--base-20);
-  }
-
-  &__tag-selection {
-    .c-btn {
-      color: var(--base-80);
-      background-color: var(--tag-bg);
-    }
-
-    .c-btn:hover:enabled,
-    .c-btn:focus-visible:enabled {
-      color: var(--base-80);
-      background-color: var(--tag-bg-hover);
-    }
-  }
-
-  &__tag-prefix {
-    color: var(--tag-prefix);
-  }
-
-  &__tag-option {
-    background: var(--card-bg);
-    color: var(--card-color);
-    padding: var(--su-3);
-    border-radius: var(--radius);
-  }
-
-  &__tag-option-title {
-    font-weight: var(--fw-medium);
-  }
-
-  &__tag-option-name {
-    text-overflow: ellipsis;
-  }
-
-  &__tag-option:hover {
-    // We try to avoid !important, but since the --tag-prefix color needs to be set inline, !important is required to temporarily change it
-    --tag-prefix: var(--accent-brand-darker) !important;
-    background: var(--body-bg);
-
-    .crayons-article-form__tag-option-title {
-      color: var(--accent-brand-darker);
-    }
-  }
-
-  [aria-selected='true'] {
-    .crayons-article-form__tag-option {
-      --tag-prefix: var(--accent-brand-darker) !important;
-      background: var(--body-bg);
-
-      .crayons-article-form__tag-option-title {
-        color: var(--accent-brand-darker);
-      }
-    }
-  }
-
-  &__tag-option-image {
-    height: 1rem;
-    margin-left: var(--su-1);
-  }
-}
-
 .js-focus-visible
   .crayons-article-form__tag-selection
   .c-btn.focus-visible:focus {
@@ -320,6 +252,23 @@
     // ideally this one shouldn't be there, but I'm not sure how else we could handle that right now...
     .crayons-article-form__toolbar {
       opacity: var(--opacity-0);
+    }
+  }
+}
+
+.crayons-preview {
+  // Image cover section for preview loading.
+  &__cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding-bottom: 42%;
+    background-size: cover;
+    background-color: var(--body-bg);
+    background-position: center center;
+
+    @media (min-width: $breakpoint-s) {
+      border-radius: var(--radius) var(--radius) 0 0;
     }
   }
 }

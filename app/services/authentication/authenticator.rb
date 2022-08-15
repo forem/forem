@@ -24,10 +24,10 @@ module Authentication
     #
     # @see #initialize method for parameters
     #
-    # @return user [User] when the given provider is valid
+    # @return [User] when the given provider is valid
     #
-    # @raises [Authentication::Errors::PreviouslySuspended] when the user was already suspended
-    # @raises [Authentication::Errors::SpammyEmailDomain] when the associated email is spammy
+    # @raise [Authentication::Errors::PreviouslySuspended] when the user was already suspended
+    # @raise [Authentication::Errors::SpammyEmailDomain] when the associated email is spammy
     def self.call(...)
       new(...).call
     end
@@ -58,8 +58,6 @@ module Authentication
 
         log_to_datadog = new_identity && successful_save
         id_provider = identity.provider
-
-        user.skip_confirmation!
 
         flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
 
@@ -130,6 +128,7 @@ module Authentication
         user.assign_attributes(default_user_fields)
 
         user.set_remember_fields
+        user.skip_confirmation!
 
         # The user must be saved in the database before
         # we assign the user to a new identity.

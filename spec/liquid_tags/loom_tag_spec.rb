@@ -33,7 +33,7 @@ RSpec.describe LoomTag, type: :liquid_tag do
   describe "rendering" do
     it "returns StandardError for invalid Loom URL", :aggregate_failures do
       invalid_loom_urls.each do |invalid_url|
-        stub_request_head(invalid_url, 404)
+        stub_network_request(url: invalid_url, status_code: 404)
         expect do
           generate_embed(invalid_url)
         end.to raise_error(StandardError, "URL provided was not found; please check and try again")
@@ -41,7 +41,7 @@ RSpec.describe LoomTag, type: :liquid_tag do
     end
 
     it "returns Loom embed for valid Loom share URL" do
-      stub_request_head(loom_share_url)
+      stub_network_request(url: loom_share_url)
       embed = generate_embed(loom_share_url).render
 
       expect(embed).to include("<iframe")
@@ -49,7 +49,7 @@ RSpec.describe LoomTag, type: :liquid_tag do
     end
 
     it "returns Loom embed for valid Loom embed URL" do
-      stub_request_head(loom_embed_url)
+      stub_network_request(url: loom_embed_url)
       embed = generate_embed(loom_embed_url).render
 
       expect(embed).to include("<iframe")
@@ -57,7 +57,7 @@ RSpec.describe LoomTag, type: :liquid_tag do
     end
 
     it "returns Loom embed for valid Loom www URL" do
-      stub_request_head(www_loom_url)
+      stub_network_request(url: www_loom_url)
       embed = generate_embed(www_loom_url).render
 
       expect(embed).to include("<iframe")
@@ -65,8 +65,7 @@ RSpec.describe LoomTag, type: :liquid_tag do
     end
 
     it "returns Loom embed for valid Loom URL with query paramaters" do
-      # Loom URLs with params fail valid-URL check
-      stub_request_head(loom_url_with_query.split("?")[0])
+      stub_network_request(url: loom_url_with_query)
       embed = generate_embed(loom_url_with_query).render
 
       expect(embed).to include("<iframe")

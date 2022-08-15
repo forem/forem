@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { Options } from '../Options';
+import '@testing-library/jest-dom';
 
 function getPassedData() {
   return {
@@ -49,6 +50,7 @@ describe('<Options />', () => {
         onSaveDraft={null}
         moreConfigShowing={null}
         toggleMoreConfig={null}
+        previewLoading={false}
       />,
     );
     const results = await axe(container);
@@ -56,11 +58,63 @@ describe('<Options />', () => {
     expect(results).toHaveNoViolations();
   });
 
+  it('should have no a11y violations when preview is loading', async () => {
+    const { container } = render(
+      <Options
+        passedData={getPassedData()}
+        onConfigChange={null}
+        onSaveDraft={null}
+        moreConfigShowing={null}
+        toggleMoreConfig={null}
+        previewLoading={true}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('shows the button is disabled when preview is loading', () => {
+    const passedData = getPassedData();
+    passedData.published = true;
+
+    const { getByTitle } = render(
+      <Options
+        passedData={passedData}
+        onConfigChange={null}
+        onSaveDraft={null}
+        moreConfigShowing={null}
+        toggleMoreConfig={null}
+        previewLoading={true}
+      />,
+    );
+
+    expect(getByTitle('Post options')).toBeDisabled();
+  });
+
+  it('shows the button is enabled when preview is not loading', () => {
+    const passedData = getPassedData();
+    passedData.published = true;
+
+    const { getByTitle } = render(
+      <Options
+        passedData={passedData}
+        onConfigChange={null}
+        onSaveDraft={null}
+        moreConfigShowing={null}
+        toggleMoreConfig={null}
+        previewLoading={false}
+      />,
+    );
+
+    expect(getByTitle('Post options')).not.toBeDisabled();
+  });
+
   it('shows the danger zone once an article is published', () => {
     const passedData = getPassedData();
     passedData.published = true;
 
-    const { queryByTestId, getByText } = render(
+    const { getByText, getByTestId } = render(
       <Options
         passedData={passedData}
         onConfigChange={null}
@@ -70,10 +124,10 @@ describe('<Options />', () => {
       />,
     );
 
-    expect(queryByTestId('options__danger-zone')).toBeDefined();
-    expect(getByText(/danger zone/i)).toBeDefined();
-    expect(getByText(/unpublish post/i)).toBeDefined();
-    expect(getByText(/done/i)).toBeDefined();
+    expect(getByTestId('options__danger-zone')).toBeInTheDocument();
+    expect(getByText(/danger zone/i)).toBeInTheDocument();
+    expect(getByText(/unpublish post/i)).toBeInTheDocument();
+    expect(getByText(/done/i)).toBeInTheDocument();
   });
 
   it('unpublishes an article when the unpublish post button is clicked', () => {

@@ -139,6 +139,36 @@ RSpec.describe "Views an article", type: :system do
     end
   end
 
+  describe "when an article is scheduled" do
+    let(:scheduled_article) { create(:article, user: user, published: true, published_at: Date.tomorrow) }
+    let(:scheduled_article_path) { scheduled_article.path + query_params }
+    let(:query_params) { "?preview=#{scheduled_article.password}" }
+
+    it "shows the article edit link for the author", js: true do
+      visit scheduled_article_path
+      edit_link = find("a#author-click-to-edit")
+      expect(edit_link.matches_style?(display: "inline-block")).to be true
+    end
+
+    it "doesn't show the article manage link, even for the author", js: true do
+      visit scheduled_article_path
+      expect(page).to have_no_link("article-action-space-manage")
+    end
+
+    it "doesn't show an article edit link for the non-authorized user" do
+      sign_out user
+      sign_in create(:user)
+      visit scheduled_article_path
+      expect(page.body).to include('display: none;">Click to edit</a>')
+    end
+
+    it "doesn't show an article edit link when the user is not logged in" do
+      sign_out user
+      visit scheduled_article_path
+      expect(page.body).not_to include("Click to edit")
+    end
+  end
+
   describe "when an article is not published" do
     let(:article) { create(:article, user: article_user, published: false) }
     let(:article_path) { article.path + query_params }
@@ -158,9 +188,9 @@ RSpec.describe "Views an article", type: :system do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { create(:user) }
 
-      it "does not the article edit link" do
+      it "renders the article edit link" do
         visit article_path
-        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
+        expect(page.body).to include('display: none;">Click to edit</a>')
       end
     end
 
@@ -168,10 +198,10 @@ RSpec.describe "Views an article", type: :system do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "does not the article edit link" do
+      it "does not render the article edit link" do
         sign_out user
         visit article_path
-        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
+        expect(page.body).not_to include("Click to edit")
       end
     end
 

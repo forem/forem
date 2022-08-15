@@ -4,14 +4,13 @@ import {
   getDropdownRepositionListener,
 } from '@utilities/dropdownUtils';
 import { locale } from '@utilities/locale';
-
-/* global Runtime   */
+import { copyToClipboard } from '@utilities/runtime';
 
 const handleCopyPermalink = (closeDropdown) => {
   return (event) => {
     event.preventDefault();
     const permalink = event.target.href;
-    Runtime.copyToClipboard(permalink).then(() => {
+    copyToClipboard(permalink).then(() => {
       addSnackbarItem({ message: 'Copied to clipboard' });
     });
     closeDropdown();
@@ -58,7 +57,11 @@ const initializeArticlePageDropdowns = () => {
         '.report-abuse-link-wrapper',
       );
       if (reportAbuseWrapper) {
-        reportAbuseWrapper.innerHTML = `<a href="${reportAbuseWrapper.dataset.path}" class="crayons-link crayons-link--block">${locale('core.report_abuse')}</a>`;
+        reportAbuseWrapper.innerHTML = `<a href="${
+          reportAbuseWrapper.dataset.path
+        }" class="crayons-link crayons-link--block">${locale(
+          'core.report_abuse',
+        )}</a>`;
       }
 
       // Initialize the "Copy link" functionality

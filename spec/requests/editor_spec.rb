@@ -7,20 +7,7 @@ RSpec.describe "Editor", type: :request do
     let(:user) { create(:user) }
 
     context "when not authenticated" do
-      it { within_block_is_expected.to raise_error ApplicationPolicy::UserRequiredError }
-    end
-
-    context "when authenticated but not authorized" do
-      before do
-        login_as user
-        allow(ArticlePolicy).to receive(:limit_post_creation_to_admins?).and_return(true)
-      end
-
-      # [@jeremyf] We're handling the authentication and authorization exceptions just a bit
-      #            differently.  In this case (e.g. they don't have permission) we are relying on
-      #            the application configuration to gracefully handle the authorization error (as it
-      #            has prior and up to <2022-02-17 Thu>).
-      it { within_block_is_expected.to raise_error(Pundit::NotAuthorizedError) }
+      it { is_expected.to eq(200) }
     end
 
     context "when authenticated and authorized" do

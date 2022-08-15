@@ -11,5 +11,8 @@ module TwitterClient
 
     class NotFound < ClientError
     end
+
+    class BadRequest < ClientError
+    end
   end
 end

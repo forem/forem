@@ -237,7 +237,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
   describe "POST /api/listings" do
     def post_listing(key: api_secret.secret, **params)
       headers = { "api-key" => key, "content-type" => "application/json" }
-      post api_listings_path, params: { classified_listing: params }.to_json, headers: headers
+      post api_listings_path, params: { listing: params }.to_json, headers: headers
     end
 
     describe "user cannot proceed if not properly unauthorized" do
@@ -310,7 +310,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       it "does not subtract credits or create a listing if the listing is not valid" do
         expect do
           post_listing(**invalid_params)
-        end.to change(Listing, :count).by(0).and change(user.credits.spent, :size).by(0)
+        end.to not_change(Listing, :count).and not_change(user.credits.spent, :size)
       end
     end
 
@@ -346,7 +346,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect do
           post_listing(**draft_params.merge(organization_id: org.id))
           expect(response).to have_http_status(:unauthorized)
-        end.to change(Listing, :count).by(0)
+        end.not_to change(Listing, :count)
       end
 
       it "does not create a listing for an org not belonging to the user" do
@@ -354,7 +354,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect do
           post_listing(**listing_params.merge(organization_id: org.id))
           expect(response).to have_http_status(:unauthorized)
-        end.to change(Listing, :count).by(0)
+        end.not_to change(Listing, :count)
       end
 
       it "assigns the spent credits to the listing" do
@@ -377,15 +377,15 @@ RSpec.describe "Api::V0::Listings", type: :request do
         expect do
           post_listing(**draft_params)
         end.to change(Listing, :count).by(1)
-          .and change(user.credits.spent, :size).by(0)
+          .and not_change(user.credits.spent, :size)
       end
 
       it "does not create a listing or subtract credits if the purchase does not go through" do
         allow(Credits::Buy).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post_listing(**listing_params)
-        end.to change(Listing, :count).by(0)
-          .and change(user.credits.spent, :size).by(0)
+        end.to not_change(Listing, :count)
+          .and not_change(user.credits.spent, :size)
       end
 
       it "creates a listing belonging to the user" do
@@ -428,6 +428,17 @@ RSpec.describe "Api::V0::Listings", type: :request do
         listing = Listing.find(response.parsed_body["id"])
 
         expect(listing.cached_tag_list).to eq("discuss, javascript")
+      end
+
+      it "reads the 'classified_listing' key when listing not present" do
+        # this is like post_listing but uses the "classified_listing" key
+        key = api_secret.secret
+        headers = { "api-key" => key, "content-type" => "application/json" }
+
+        expect do
+          post api_listings_path, params: { classified_listing: listing_params }.to_json, headers: headers
+          expect(response).to have_http_status(:created)
+        end.to change(Listing, :count).by(1)
       end
     end
   end
@@ -479,7 +490,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       it "does not subtract spent credits if the user has not enough credits" do
         expect do
           put_listing(listing.id, action: "bump")
-        end.to change(user.credits.spent, :size).by(0)
+        end.not_to change(user.credits.spent, :size)
       end
     end
 
@@ -494,7 +505,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         allow(Credits::Buy).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           put_listing(listing.id, action: "bump")
-        end.to change(user.credits.spent, :size).by(0)
+        end.not_to change(user.credits.spent, :size)
         expect(listing.reload.bumped_at.to_i).to eq(previous_bumped_at.to_i)
       end
 
@@ -567,7 +578,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
         listing.update_column(:published, false)
         expect do
           put_listing(listing.id, action: "publish")
-        end.to change(user.credits.spent, :size).by(0)
+        end.not_to change(user.credits.spent, :size)
       end
 
       it "publishes a draft that was charged and is within 30 days of bump and successfully sets published as true" do
@@ -583,7 +594,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       it "fails to publish draft and doesn't charge credits" do
         expect do
           put_listing(listing_draft.id, action: "publish")
-        end.to change(user.credits.spent, :size).by(0)
+        end.not_to change(user.credits.spent, :size)
       end
 
       it "fails to publish draft and published remains false" do

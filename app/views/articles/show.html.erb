@@ -65,11 +65,11 @@
 
   <main id="main-content" class="crayons-layout__content grid gap-4">
     <div class="article-wrapper">
-      <% if !@article.published %>
+      <% unless @article.current_state.published? %>
         <div class="crayons-notice crayons-notice--danger mb-4" aria-live="polite">
-          <strong><%= t("views.articles.unpublished.subtitle") %></strong><%= t("views.articles.unpublished.text") %>
+          <strong><%= t("views.articles.#{@article.current_state}.subtitle") %></strong><%= t("views.articles.#{@article.current_state}.text") %>
           <% if user_signed_in? %>
-            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none"><%= t("views.articles.unpublished.edit") %></a>
+            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" style="display: none;"><%= t("views.articles.#{@article.current_state}.edit") %></a>
           <% end %>
         </div>
       <% end %>
@@ -81,12 +81,16 @@
       <article class="crayons-card crayons-article mb-4"
         id="article-show-container"
         data-article-id="<%= @article.id %>"
+        data-article-slug="<%= @article.slug %>"
         data-author-id="<%= @article.user_id %>"
+        data-author-name="<%= @article.cached_user_name %>"
+        data-author-username="<%= @article.username %>"
         data-co-author-ids="<%= @article.co_author_ids.join(",") %>"
         data-path="<%= @article.path %>"
-        data-published="<%= @article.published? %>"
         data-pin-path="<%= stories_feed_pinned_article_path %>"
         data-pinned-article-id="<%= @pinned_article_id %>"
+        data-published="<%= @article.published? %>"
+        data-scheduled="<%= @article.scheduled? %>"
         <%= @article.pinned? ? "data-pinned" : " " %>>
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>
@@ -121,7 +125,7 @@
                   <% end %>
                   <p class="fs-xs color-base-60">
                     <% if @article.published_timestamp.present? %>
-                      <%= t("views.articles.posted_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %>
+                      <%= t("views.articles.#{@article.current_state}_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %>
                     <% end %>
                     <% if @article.co_author_ids.present? %>
                       <%= t("views.articles.co_authors_html", names: @article.co_author_name_and_path.html_safe) %>
@@ -187,6 +191,13 @@
       </article>
 
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>
+        <% @display_ad = DisplayAd.for_display("post_comments") %>
+        <% if @display_ad %>
+          <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-article" data-display-unit data-id="<%= @display_ad.id %>">
+            <%= @display_ad.processed_html.html_safe %>
+          </div>
+        <% end %>
+
         <% suggested_articles = Articles::Suggest.call(@article, max: 4) %>
         <%= render "articles/bottom_content", articles: suggested_articles %>
       <% end %>
@@ -215,7 +226,13 @@
 <% end %>
 
 <div class="mod-actions-menu print-hidden"></div>
-<div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
+<div data-testid="unpublish-post-modal-container" class="unpublish-post-modal-container hidden"></div>
+<%= render "moderations/modals/suspend_user_modal" %>
+<%= render "moderations/modals/unsuspend_user_modal" %>
+<%= render "moderations/modals/unpublish_all_posts" %>
+<%= render "moderations/modals/unpublish_post_modal" %>
+<%= render "moderations/modals/flag_user_modal" %>
+<%= render "moderations/modals/unflag_user_modal" %>
 
 <div class="fullscreen-code js-fullscreen-code"></div>
 <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>

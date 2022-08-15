@@ -40,7 +40,7 @@
     </div>
   </div>
 
-  <% if policy(Article).create? %>
+  <% if policy(Article).has_existing_articles_or_can_create_new_ones? %>
   <div class="crayons-card crayons-card--content-rows">
     <h2 class="crayons-subtitle-1">
       <%= t("views.settings.custom.writing") %>

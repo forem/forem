@@ -256,12 +256,21 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
       end
 
-      describe "Google Analytics Reporting API v4" do
+      describe "Google Universal Analytics Reporting" do
         it "updates ga_tracking_id" do
           post admin_settings_general_settings_path, params: {
             settings_general: { ga_tracking_id: "abc" }
           }
           expect(Settings::General.ga_tracking_id).to eq("abc")
+        end
+      end
+
+      describe "Google Analytics 4 Reporting" do
+        it "updates ga_analytics_4_id" do
+          post admin_settings_general_settings_path, params: {
+            settings_general: { ga_analytics_4_id: "abc" }
+          }
+          expect(Settings::General.ga_analytics_4_id).to eq("abc")
         end
       end
 
@@ -397,13 +406,6 @@ RSpec.describe "/admin/customization/config", type: :request do
             settings_general: { mailchimp_newsletter_id: "abc" }
           }
           expect(Settings::General.mailchimp_newsletter_id).to eq("abc")
-        end
-
-        it "updates mailchimp_sustaining_members_id" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { mailchimp_sustaining_members_id: "abc" }
-          }
-          expect(Settings::General.mailchimp_sustaining_members_id).to eq("abc")
         end
 
         it "updates mailchimp_tag_moderators_id" do

@@ -62,6 +62,11 @@ class LiquidTagBase < Liquid::Tag
       .first
   end
 
+  # this method checks for presence of named capture group in match
+  def match_has_named_capture_group?(match, group_name)
+    match.names.include?(group_name)
+  end
+
   # A method to help collaborators not need to reach into the class
   # implementation details.
   def user_authorization_method_name

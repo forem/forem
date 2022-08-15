@@ -95,16 +95,15 @@ RSpec.describe "Articles", type: :request do
         expect(response.body).not_to include(organization_article.title)
       end
 
-      it "contains the full user URL" do
-        expect(response.body).to include("<link>#{URL.user(user)}</link>")
-      end
-
-      it "contains a user composite profile image tag", :aggregate_failures do
-        expect(response.body).to include("<image>")
-        expect(response.body).to include("<url>#{app_url(user.profile_image_90)}</url>")
-        expect(response.body).to include("<title>#{community_name}: #{user.name}</title>")
-        expect(response.body).to include("<link>#{URL.user(user)}</link>")
-        expect(response.body).to include("</image>")
+      it "contains user's name, link, and composite profile image tag" do
+        expect(response.body).to include(
+          "<image>",
+          "<url>#{app_url(user.profile_image_90)}</url>",
+          "<title>#{community_name}: #{user.name}</title>",
+          "<link>#{URL.user(user)}</link>",
+          "</image>",
+          "<dc:creator>#{user.name}</dc:creator>",
+        )
       end
     end
 
@@ -310,6 +309,16 @@ RSpec.describe "Articles", type: :request do
       get "#{article.path}/manage"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Manage Your Post")
+    end
+
+    it "returns unauthorized for a draft" do
+      draft = create(:article, published: false, user: user)
+      expect { get "#{draft.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "returns unauthorized for a scheduled article" do
+      scheduled_article = create(:article, published: true, user: user, published_at: 1.day.from_now)
+      expect { get "#{scheduled_article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "returns unauthorized if the user is not the author" do

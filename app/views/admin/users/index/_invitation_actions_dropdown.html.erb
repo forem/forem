@@ -1,0 +1,14 @@
+ <div class="relative flex">
+    <button type="button" id="<%= user.id %>-action-dropdown-btn-<%= context %>" data-toggle-dropdown="<%= user.id %>-action-dropdown-<%= context %>" aria-controls="<%= user.id %>-action-dropdown-<%= context %>" aria-haspopup="true" aria-expanded="false"
+        class="c-btn c-btn--icon-alone ml-auto" aria-label="Invitation actions: <%= user.email %>">
+        <%= crayons_icon_tag("overflow-vertical", aria_hidden: true) %>
+    </button>
+    <div id="<%= user.id %>-action-dropdown-<%= context %>" class="crayons-dropdown right-0">
+        <%= button_to resend_admin_invitation_path(user.id), class: "c-btn c-btn--icon-left w-100 align-left" do %>
+        <%= crayons_icon_tag("send", aria_hidden: true) %> Resend invite
+        <% end %>
+        <%= button_to admin_invitation_path(user.id), method: :delete, class: "c-btn c-btn--icon-left w-100 align-left" do %>
+        <%= crayons_icon_tag("x", aria_hidden: true) %> Cancel invite
+        <% end %>
+    </div>
+</div>
