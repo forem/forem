@@ -180,6 +180,17 @@ RSpec.describe "ArticlesUpdate", type: :request do
       expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 15:00")
     end
 
+    # scheduled => published immediately
+    it "udpates published_at to current when removing published_at date" do
+      article.update_column(:published_at, 3.days.from_now)
+      attributes.delete :published_at_date
+      attributes[:published] = true
+      now = Time.current
+      put "/articles/#{article.id}", params: { article: attributes }
+      article.reload
+      expect(article.published_at).to be_within(1.minute).of(now)
+    end
+
     # draft => scheduled
     it "sets published_at according to the timezone when updating draft => scheduled" do
       draft = create(:article, published: false, user_id: user.id)
