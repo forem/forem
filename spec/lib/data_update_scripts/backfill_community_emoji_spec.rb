@@ -20,4 +20,12 @@ describe DataUpdateScripts::BackfillCommunityEmoji do
     described_class.new.run
     expect(Settings::Community.community_name).to eq("Emoji Community 🥐")
   end
+
+  it "does not update the community_name if the community_emoji is already at the end" do
+    Settings::Community.community_name = "Emoji Community 🥐"
+    Settings::Community.community_emoji = "🥐"
+
+    described_class.new.run
+    expect(Settings::Community.community_name).to eq("Emoji Community 🥐")
+  end
 end
