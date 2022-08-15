@@ -3,9 +3,8 @@ module DataUpdateScripts
     def run
       return if Settings::Community.community_emoji.blank?
 
-      Settings::Community.community_name.where_not(community_emoji: nil).find_each do |name|
-        name.update!(community_name: name.community_emoji)
-      end
+      new_community_name = "#{Settings::Community.community_name} #{Settings::Community.community_emoji}"
+      Settings::Community.community_name = new_community_name
     end
   end
 end

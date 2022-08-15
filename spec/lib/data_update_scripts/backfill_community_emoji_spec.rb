@@ -5,17 +5,19 @@ require Rails.root.join(
 
 describe DataUpdateScripts::BackfillCommunityEmoji do
   it "does not update the community_name if the community does not have a community_emoji" do
-    Settings::Community.community_name = "Emoji-less Community"
+    allow(Settings::Community).to receive(:community_name).and_return("Emoji less Community")
+    allow(Settings::Community).to receive(:community_emoji).and_return(nil)
+
     expect do
       described_class.new.run
-    end.not_to change { Settings::Community.community_name }.from("Emoji-less Community")
+    end.not_to change(Settings::Community, :community_name)
   end
 
   it "updates the community_name if the community has a community_emoji" do
     Settings::Community.community_name = "Emoji Community"
     Settings::Community.community_emoji = "🥐"
 
-    expect { described_class.new.run }
-      .to change { Settings::Community.community_name }.from("Emoji Community").to("Emoji Community 🥐")
+    described_class.new.run
+    expect(Settings::Community.community_name).to eq("Emoji Community 🥐")
   end
 end
