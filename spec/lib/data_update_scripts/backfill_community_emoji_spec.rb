@@ -1,6 +1,6 @@
 require "rails_helper"
 require Rails.root.join(
-  "lib/data_update_scripts/20220201202226_backfill_community_emoji.rb",
+  "lib/data_update_scripts/20220815102733_backfill_community_emoji.rb",
 )
 
 describe DataUpdateScripts::BackfillCommunityEmoji do
