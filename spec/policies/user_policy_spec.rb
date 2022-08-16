@@ -52,7 +52,7 @@ RSpec.describe UserPolicy, type: :policy do
   end
 
   context "when the user is a moderator" do
-    let(:user) { build(:user, :moderator) }
+    let(:user) { build(:user, :super_moderator) }
 
     it { is_expected.to permit_actions(%i[moderation_routes]) }
   end

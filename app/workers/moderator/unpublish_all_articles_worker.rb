@@ -11,6 +11,9 @@ module Moderator
       user.articles.published.find_each do |article|
         if article.has_frontmatter?
           article.body_markdown.sub!(/^published:\s*true\s*$/, "published: false")
+        else
+          # nullify published_at when unpublishing for the articles published in a rich markdown editor
+          article.published_at = nil
         end
         article.published = false
         article.save(validate: false)
@@ -22,6 +25,9 @@ module Moderator
       Notification.remove_all_by_action_without_delay(notifiable_ids: article.id,
                                                       notifiable_type: "Article",
                                                       action: "Published")
+
+      ContextNotification.delete_by(context_id: article.id, context_type: "Article", action: "Published")
+
       return unless article.comments.exists?
 
       Notification.remove_all(notifiable_ids: article.comments.ids, notifiable_type: "Comment")

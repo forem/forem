@@ -57,9 +57,8 @@ module CommentsHelper
 
   def like_button_text(comment)
     # TODO: [yheuhtozr] support cross-element i18n compatible with initializeCommentsPage.js.erb
-    case comment.public_reactions_count
-    when 0
-      I18n.t("helpers.comments_helper.like")
+    if comment.public_reactions_count.zero?
+      ""
     else
       I18n.t("helpers.comments_helper.nbsp_likes_html", count: comment.public_reactions_count)
     end

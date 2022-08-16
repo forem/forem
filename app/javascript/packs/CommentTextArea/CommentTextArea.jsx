@@ -2,7 +2,12 @@ import { h } from 'preact';
 import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import { populateTemplates } from '../../responseTemplates/responseTemplates';
 import { handleImagePasted } from '../../article-form/components/pasteImageHelpers';
-import { handleImageFailure } from '../../article-form/components/dragAndDropHelpers';
+import {
+  handleImageDrop,
+  handleImageFailure,
+  onDragOver,
+  onDragExit,
+} from '../../article-form/components/dragAndDropHelpers';
 
 import {
   AutocompleteTriggerTextArea,
@@ -14,6 +19,7 @@ import { fetchSearch } from '@utilities/search';
 import HelpIcon from '@images/help.svg';
 import Templates from '@images/templates.svg';
 import { usePasteImage } from '@utilities/pasteImage';
+import { useDragAndDrop } from '@utilities/dragAndDrop';
 
 const getClosestTemplatesContainer = (element) =>
   element
@@ -43,6 +49,22 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
   const textAreaRef = useRef(null);
 
+  const { setElement } = useDragAndDrop({
+    onDrop: handleImageDrop(
+      handleImageSuccess(textAreaRef),
+      handleImageFailure,
+    ),
+    onDragOver,
+    onDragExit,
+  });
+
+  const setPasteElement = usePasteImage({
+    onPaste: handleImagePasted(
+      handleImageSuccess(textAreaRef),
+      handleImageFailure,
+    ),
+  });
+
   // Templates appear outside of the comment textarea, but we only want to load this data if it's requested by the user
   const handleTemplatesClick = ({ target }) => {
     const templatesContainer = getClosestTemplatesContainer(target);
@@ -58,21 +80,15 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
     }
   };
 
-  const setPasteElement = usePasteImage({
-    onPaste: handleImagePasted(
-      handleImageSuccess(textAreaRef),
-      handleImageFailure,
-    ),
-  });
-
   useLayoutEffect(() => {
     if (textAreaRef.current) {
       setPasteElement(textAreaRef.current);
+      setElement(textAreaRef.current);
     }
-  }, [setPasteElement]);
+  }, [setPasteElement, setElement]);
 
   return (
-    <div className="w-100 relative">
+    <div className="w-100 relative drop-area">
       <AutocompleteTriggerTextArea
         ref={textAreaRef}
         triggerCharacter="@"

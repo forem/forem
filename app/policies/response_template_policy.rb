@@ -62,7 +62,7 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def user_moderator?
-    user_any_admin? || user.moderator_for_tags&.present?
+    user_any_admin? || user.super_moderator? || user.moderator_for_tags&.present?
   end
 
   def mod_comment?

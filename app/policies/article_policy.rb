@@ -150,7 +150,7 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def elevated_user?
-    user_any_admin? || user_moderator?
+    user_any_admin? || user_super_moderator?
   end
 
   # this method performs the same checks that determine:
