@@ -139,7 +139,7 @@ fr:
       notice:
         subtitle: '%{community} Mods'
         desc1_html: Nous accordons périodiquement à certains membres de la %{communauté} des privilèges accrus afin de contribuer à la modération de la communauté.
-        desc2_html: Vérifiez notre %{code} et lisez nos %{fiable} et %{tag}.
+        desc2_html: Vérifiez notre %{code} et lisez nos %{trusted} et %{tag}.
         desc3_html: Si vous souhaitez nous aider en tant qu'utilisateur de confiance ou modérateur d'étiquettes, veuillez nous envoyer un e-mail à %{email} et nous indiquer le rôle qui vous intéresse et pourquoi. S'il s'agit de la modération d'étiquettes, veuillez nous dire quelles étiquettes vous aimeriez modérer.
         desc4: P.S. Vous n'êtes pas actuellement connecté.
         code_of_conduct: Code de conduite
