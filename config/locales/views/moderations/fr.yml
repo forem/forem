@@ -128,7 +128,7 @@ fr:
           subtitle: Vous avez des commentaires à formuler pour améliorer votre expérience du Mod ?
           description: Veuillez envoyer un e-mail à %{email} !
         hello: 'Bonjour ! 👋'
-        thanks: Merci de nous aider à garder la %{communauté} en lieu sûr ! ❤️
+        thanks: Merci de nous aider à garder la %{community} en lieu sûr ! ❤️
         inbox: Boîte de réception
         resources: Ressources
         tag: Guide de modération des étiquettes
