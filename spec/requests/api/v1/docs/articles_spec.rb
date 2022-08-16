@@ -93,16 +93,11 @@ belonging to the requested collection, ordered by ascending publication date.",
                   example: 99
 
         response "200", "A List of Articles" do
-          let(:"api-key") { api_secret.secret }
+          let(:"api-key") { nil }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/ArticleIndex" }
           add_examples
 
-          run_test!
-        end
-
-        response "401", "unauthorized" do
-          let(:"api-key") { "invalid" }
           run_test!
         end
       end
