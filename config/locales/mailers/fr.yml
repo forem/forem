@@ -4,7 +4,7 @@ fr:
     digest_mailer:
       from: Digest
       more_top_posts: plus de meilleurs articles de %{community}
-      more_top_posts_based: plus de meilleurs articles de %{communtiy} basé sur vos intérêts
+      more_top_posts_based: plus de meilleurs articles de %{community} basé sur vos intérêts
       more_top_posts_from: d'autres lectures de la communauté
       more_trending_posts: plus de d'articles tendances sur %{community} 
       more_trending_posts_picked: plus de d'articles tendances sur %{community} choisie pour vous
