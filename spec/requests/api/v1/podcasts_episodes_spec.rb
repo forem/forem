@@ -7,26 +7,6 @@ RSpec.describe "Api::V1::PodcastEpisodes", type: :request do
   describe "GET /api/podcast_episodes" do
     before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        create(:podcast_episode, podcast: podcast)
-
-        get api_podcast_episodes_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        create(:podcast_episode, podcast: podcast)
-
-        get api_podcast_episodes_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns json response" do
       get api_podcast_episodes_path, headers: headers
 

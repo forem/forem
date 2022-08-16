@@ -16,26 +16,6 @@ RSpec.describe "Api::V1::Videos", type: :request do
   describe "GET /api/videos" do
     before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        create_article
-
-        get api_videos_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        create_article
-
-        get api_videos_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns articles with videos" do
       create_article
 

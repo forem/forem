@@ -16,24 +16,6 @@ RSpec.describe "Api::V1::Users", type: :request do
              profile: create(:profile, summary: "Something something"))
     end
 
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get api_user_path("by_username"),
-            params: { url: user.username },
-            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get api_user_path("by_username"),
-            params: { url: user.username },
-            headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns 404 if the user id is not found" do
       get api_user_path("invalid-id"), headers: headers
 

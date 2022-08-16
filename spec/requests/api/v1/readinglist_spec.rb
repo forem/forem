@@ -20,7 +20,7 @@ RSpec.describe "Api::V1::ReadingList", type: :request do
 
     context "when unauthorized" do
       it "returns unauthorized" do
-        get api_readinglist_index_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
+        get api_readinglist_index_path, headers: headers.merge({ "api-key" => "invalid api key" })
         expect(response).to have_http_status(:unauthorized)
       end
     end

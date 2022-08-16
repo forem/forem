@@ -6,20 +6,6 @@ RSpec.describe "Api::V1::Tags", type: :request do
 
     before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get api_tags_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get api_tags_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns tags" do
       create(:tag, taggings_count: 10)
 
