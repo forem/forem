@@ -801,15 +801,15 @@ RSpec.describe Article, type: :model do
 
   describe ".active_help" do
     it "returns properly filtered articles under the 'help' tag" do
-      filtered_article = create(:article, user: user, tags: "help",
-                                          published_at: 13.hours.ago, comments_count: 5, score: -3)
+      filtered_article = create(:article, :past, user: user, tags: "help",
+                                                 past_published_at: 13.hours.ago, comments_count: 5, score: -3)
       articles = described_class.active_help
       expect(articles).to include(filtered_article)
     end
 
     it "returns any published articles tagged with 'help' when there are no articles that fit the criteria" do
-      unfiltered_article = create(:article, user: user, tags: "help",
-                                            published_at: 10.hours.ago, comments_count: 8, score: -5)
+      unfiltered_article = create(:article, :past, user: user, tags: "help",
+                                                   past_published_at: 10.hours.ago, comments_count: 8, score: -5)
       articles = described_class.active_help
       expect(articles).to include(unfiltered_article)
     end
