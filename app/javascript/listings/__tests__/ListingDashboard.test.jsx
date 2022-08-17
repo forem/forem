@@ -362,7 +362,9 @@ describe('<ListingDashboard />', () => {
         name: 'hehhehe (expired)',
         level: 2,
       });
-      const time = screen.getByTitle('Thursday, April 11, 2019, 5:01:25 PM');
+      const time = screen.getByTitle(
+        /Thursday, April 11(,| at) 2019, 5:01:25 PM/,
+      );
 
       expect(title).toBeInTheDocument();
       expect(time).toBeInTheDocument();
