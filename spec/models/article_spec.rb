@@ -500,6 +500,18 @@ RSpec.describe Article, type: :model do
         .to include("only future or current published_at allowed when publishing an article")
     end
 
+    it "doesn't allow recent published_at when publishing on create" do
+      article2 = build(:article, published_at: 1.hour.ago, published: true)
+      expect(article2.valid?).to be false
+      expect(article2.errors[:published_at])
+        .to include("only future or current published_at allowed when publishing an article")
+    end
+
+    it "allows recent published_at when publishing on create" do
+      article2 = build(:article, published_at: 5.minutes.ago, published: true)
+      expect(article2.valid?).to be true
+    end
+
     it "doesn't allow updating published_at if an article has already been published" do
       article.published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
       expect(article.valid?).to be false
