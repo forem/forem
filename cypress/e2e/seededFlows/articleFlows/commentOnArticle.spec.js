@@ -621,7 +621,7 @@ describe('Comment on articles', () => {
 
   it('should enhance the textarea with a markdown toolbar', () => {
     cy.findByRole('main').within(() => {
-      cy.findByRole('heading', { name: 'Discussion (0)' });
+      cy.findByRole('heading', { name: 'Top comments (0)' });
 
       cy.findByRole('textbox', {
         name: /^Add a comment to the discussion$/i,
