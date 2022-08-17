@@ -224,7 +224,9 @@ describe('<ListingDashboard />', () => {
         name: 'asdfasdf (expired)',
         level: 2,
       });
-      const timer = screen.getByTitle('Tuesday, June 11, 2019, 4:45:37 PM');
+      const timer = screen.getByTitle(
+        /Tuesday, June 11, 2019(,| at) 4:45:37 PM/,
+      );
 
       expect(title).toBeInTheDocument();
       expect(timer).toBeInTheDocument();
@@ -286,7 +288,9 @@ describe('<ListingDashboard />', () => {
         name: 'YOYOYOYOYOOOOOOOO (expired)',
         level: 2,
       });
-      const timer = screen.getByTitle('Tuesday, June 11, 2019, 4:45:37 PM');
+      const timer = screen.getByTitle(
+        /Tuesday, June 11, 2019(,| at) 4:45:37 PM/,
+      );
 
       expect(title).toBeInTheDocument();
       expect(timer).toBeInTheDocument();
@@ -358,7 +362,9 @@ describe('<ListingDashboard />', () => {
         name: 'hehhehe (expired)',
         level: 2,
       });
-      const time = screen.getByTitle('Thursday, April 11, 2019, 5:01:25 PM');
+      const time = screen.getByTitle(
+        /Thursday, April 11, 2019(,| at) 5:01:25 PM/,
+      );
 
       expect(title).toBeInTheDocument();
       expect(time).toBeInTheDocument();
