@@ -824,8 +824,6 @@ class Article < ApplicationRecord
 
   def has_correct_published_at?
     return unless published_at_was && published
-    # nullifying published_at when unpublishing is valid
-    return if changes["published"] == [true, false] && !published_at
     # don't allow editing published_at if an article has already been published
     # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
     return unless published_was && published_at_was < Time.current &&
