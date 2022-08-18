@@ -48,7 +48,7 @@ module Api
       # @note This method is performing both authentication and authorization.  The user suspended
       #       should be something added to the corresponding pundit policy.
       def authenticate_with_api_key!
-        @user = authenticate_with_api_key
+        @user ||= authenticate_with_api_key
         return error_unauthorized unless @user
         return error_unauthorized if @user.suspended?
 
@@ -58,7 +58,7 @@ module Api
       # @note This method is performing both authentication and authorization.  The user suspended
       #       should be something added to the corresponding pundit policy.
       def authenticate_with_api_key_or_current_user!
-        @user = authenticate_with_api_key_or_current_user
+        @user ||= authenticate_with_api_key_or_current_user
         return error_unauthorized unless @user
         return error_unauthorized if @user.suspended?
 
