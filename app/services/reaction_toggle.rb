@@ -11,7 +11,7 @@ class ReactionToggle
     end
 
     def success?
-      reaction.errors.any?
+      reaction.errors.none?
     end
   end
 
