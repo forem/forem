@@ -150,6 +150,11 @@ RSpec.describe "Views an article", type: :system do
       expect(edit_link.matches_style?(display: "inline-block")).to be true
     end
 
+    it "doesn't show the article manage link, even for the author", js: true do
+      visit scheduled_article_path
+      expect(page).to have_no_link("article-action-space-manage")
+    end
+
     it "doesn't show an article edit link for the non-authorized user" do
       sign_out user
       sign_in create(:user)

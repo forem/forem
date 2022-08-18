@@ -32,6 +32,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
+    # NOTE: Here, when we say "moderator", we mean "tag_moderator"
     user_moderator? || user_any_admin?
   end
 

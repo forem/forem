@@ -48,7 +48,7 @@ plugins:
     enabled: true
   eslint:
     enabled: true
-    channel: "eslint-6"
+    channel: "eslint-8"
     exclude_patterns:
       - "app/javascript/**/index.js" # exclude barrel files
   duplication:

@@ -39,24 +39,24 @@ RSpec.describe "User visits a homepage", type: :system do
         create(:navigation_link,
                name: "Listings",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
-               display_only_when_signed_in: true,
+               display_to: :logged_in,
                position: 1)
         create(:navigation_link,
                name: "Shop",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
-               display_only_when_signed_in: false,
+               display_to: :all,
                position: 2)
         create(:navigation_link,
                :other_section_link,
                name: "Podcasts",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
-               display_only_when_signed_in: false,
+               display_to: :all,
                position: nil)
         create(:navigation_link,
                :other_section_link,
                name: "Privacy Policy",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
-               display_only_when_signed_in: false,
+               display_to: :all,
                position: 1)
         visit "/"
       end
@@ -82,7 +82,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).not_to have_selector("nav[data-testid='other-nav']")
       end
 
-      it "hides link when display_only_when_signed_in is true" do
+      it "hides link when display_to is set to logged in users only" do
         within("nav[data-testid='main-nav']", match: :first) do
           expect(page).to have_selector(".default-navigation-links .sidebar-navigation-link", count: 1)
         end
@@ -92,7 +92,7 @@ RSpec.describe "User visits a homepage", type: :system do
         create(:navigation_link,
                name: "Mock",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
-               display_only_when_signed_in: false,
+               display_to: :all,
                position: 3)
         visit "/"
 
@@ -167,7 +167,7 @@ RSpec.describe "User visits a homepage", type: :system do
                name: "Reading List",
                url: app_url("readinglist").to_s,
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
-               display_only_when_signed_in: false,
+               display_to: :all,
                position: 1)
       end
       let!(:navigation_link_2) do
@@ -175,14 +175,14 @@ RSpec.describe "User visits a homepage", type: :system do
                :other_section_link,
                name: "Podcasts",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
-               display_only_when_signed_in: false,
+               display_to: :all,
                position: nil)
       end
       let!(:navigation_link_3) do
         create(:navigation_link,
                name: "Beauty",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
-               display_only_when_signed_in: true,
+               display_to: :logged_in,
                position: nil)
       end
 
@@ -218,7 +218,7 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
 
-      it "shows link when display_only_when_signed_in is true" do
+      it "shows link when display_to is set to logged_in" do
         within("nav[data-testid='main-nav']", match: :first) do
           expect(page).to have_selector(".default-navigation-links li:nth-child(2)", text: "Beauty")
         end

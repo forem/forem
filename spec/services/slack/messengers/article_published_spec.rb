@@ -22,7 +22,17 @@ RSpec.describe Slack::Messengers::ArticlePublished, type: :service do
     sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
       article = build(:article).tap do |art|
         art.published = true
-        art.published_at = 1.minute.ago
+        art.published_at = 15.minutes.ago
+      end
+      described_class.call(article: article)
+    end
+  end
+
+  it "messages slack for an article that was published a few minutes ago" do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
+      article = build(:article).tap do |art|
+        art.published = true
+        art.published_at = 5.minutes.ago
       end
       described_class.call(article: article)
     end

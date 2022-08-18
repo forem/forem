@@ -24,7 +24,7 @@ describe Admin::UsersHelper do
 
       roles = helper.role_options(user)
       expect(roles).to have_key("Roles")
-      expect(roles["Roles"]).to include "Moderator"
+      expect(roles["Roles"]).to include "Super Moderator"
     end
   end
 

@@ -17,7 +17,7 @@ RSpec.describe "Navigation Links tasks", type: :task do
         create(:navigation_link,
                name: "Reading List",
                url: URL.url("readinglist"),
-               display_only_when_signed_in: true,
+               display_to: :logged_in,
                position: 0)
       end
 

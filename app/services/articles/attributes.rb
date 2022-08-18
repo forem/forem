@@ -11,7 +11,8 @@ module Articles
       @article_user = article_user
     end
 
-    def for_update(update_edited_at: false, update_published_at: false)
+    def for_update(update_edited_at: false, update_published_at: false,
+                   nullify_published_at: false)
       hash = attributes.slice(*ATTRIBUTES)
       # don't reset the collection when no series was passed
       hash[:collection] = collection if attributes.key?(:series)
@@ -19,6 +20,8 @@ module Articles
       hash[:edited_at] = Time.current if update_edited_at
       if update_published_at
         hash[:published_at] = Time.current
+      elsif nullify_published_at
+        hash[:published_at] = nil
       elsif hash[:published_at]
         hash[:published_at] = hash[:published_at].to_datetime
       end

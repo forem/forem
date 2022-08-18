@@ -36,9 +36,11 @@ module ApplicationHelper
   # @return [TrueClass] true when we should render the given link.
   # @return [FalseClass] false when we should **not** render the given link.
   def display_navigation_link?(link:)
-    # This is a quick short-circuit; we already have the link.  So don't bother asking the "Is this
-    # feature enabled" question if the given link requires a sign in and the user is not signed in.
-    return false if link.display_only_when_signed_in? && !user_signed_in?
+    # This is a quick short-circuit; we already have the link. So don't bother asking the "Is this
+    # feature enabled" question if the given link requires a logged in/out state
+    # that doesn't match the user's current state.
+    return false if link.display_to_logged_in? && !user_signed_in?
+    return false if link.display_to_logged_out? && user_signed_in?
     return true if navigation_link_is_for_an_enabled_feature?(link: link)
 
     false

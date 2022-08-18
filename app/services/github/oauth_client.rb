@@ -115,13 +115,13 @@ module Github
       # <https://github.com/octokit/octokit.rb#caching>
       # and <https://github.com/octokit/octokit.rb/blob/master/lib/octokit/default.rb>
       Faraday::RackBuilder.new do |builder|
-        builder.use Faraday::Request::Retry, exceptions: [Octokit::ServerError]
+        builder.use Faraday::Retry::Middleware, exceptions: [Octokit::ServerError]
         builder.use Octokit::Middleware::FollowRedirects
         builder.use Octokit::Response::RaiseError
         builder.use Octokit::Response::FeedParser
 
         builder.response :logger if Rails.env.development?
-        builder.adapter :patron
+        builder.adapter Faraday.default_adapter
       end
     end
 
