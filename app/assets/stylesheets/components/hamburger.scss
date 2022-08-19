@@ -11,7 +11,7 @@
     max-width: var(--layout-drawer-width);
     width: 90%;
     z-index: var(--z-elevate);
-    position: relative;
+    position: fixed;
     height: 100%;
     overflow-y: auto;
 
