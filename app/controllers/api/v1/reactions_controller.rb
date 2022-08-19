@@ -1,0 +1,28 @@
+module Api
+  module V1
+    class ReactionsController < ApiController
+      before_action :authenticate!
+
+      def create
+        remove_count_cache_key
+
+        result = ReactionToggle.toggle(params, current_user: current_user || @user)
+
+        if result.success?
+          render json: { result: result.action, category: result.category }
+        else
+          render json: { error: result.errors_as_sentence, status: 422 }, status: :unprocessable_entity
+        end
+      end
+    end
+
+    private
+
+    # TODO: should this move to toggle service? refactor?
+    def remove_count_cache_key
+      return unless params[:reactable_type] == "Article"
+
+      Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
+    end
+  end
+end
