@@ -332,6 +332,14 @@ module Articles
                       user_required: false,
                       select_fragment: "articles.public_reactions_count",
                       group_by_fragment: "articles.public_reactions_count")
+
+      relevancy_lever(:public_reactions_score,
+                      label: "Weight to give based on article.score (see article.update_score for this calculation -
+                      it's a sum of the scores of reactions on an article).",
+                      range: "[0..∞)",
+                      user_required: false,
+                      select_fragment: "articles.score",
+                      group_by_fragment: "articles.score")
     end
     private_constant :LEVER_CATALOG
     # rubocop:enable Metrics/BlockLength
