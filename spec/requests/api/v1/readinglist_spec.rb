@@ -4,7 +4,13 @@ RSpec.describe "Api::V1::ReadingList", type: :request do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:api_secret) { create(:api_secret, user: user) }
-  let(:headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:headers) do
+    {
+      "api-key" => api_secret.secret,
+      "content-type" => "application/json",
+      "Accept" => "application/vnd.forem.api-v1+json"
+    }
+  end
 
   describe "GET /api/readinglist" do
     let(:readinglist) { create_list(:reading_reaction, 3, user: user) }
