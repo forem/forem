@@ -1,14 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Instances", type: :request do
-  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+  let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/instance" do
     it "returns the correct attributes", :aggregate_failures do
       create(:user)
-      get api_instance_path, headers: v1_headers
+      get api_instance_path, headers: headers
 
       expect(response.parsed_body["context"]).to eq ApplicationConfig["FOREM_CONTEXT"]
       expect(response.parsed_body["cover_image_url"]).to eq Settings::General.main_social_image
@@ -26,7 +26,7 @@ RSpec.describe "Api::V1::Instances", type: :request do
       it "returns public for visibility" do
         allow(Settings::General).to receive(:waiting_on_first_user).and_return(false)
         allow(Settings::UserExperience).to receive(:public).and_return(true)
-        get api_instance_path, headers: v1_headers
+        get api_instance_path, headers: headers
 
         expect(response.parsed_body["visibility"]).to eq "public"
       end
@@ -36,7 +36,7 @@ RSpec.describe "Api::V1::Instances", type: :request do
       it "returns private for visibility" do
         allow(Settings::General).to receive(:waiting_on_first_user).and_return(false)
         allow(Settings::UserExperience).to receive(:public).and_return(false)
-        get api_instance_path, headers: v1_headers
+        get api_instance_path, headers: headers
 
         expect(response.parsed_body["visibility"]).to eq "private"
       end
@@ -45,7 +45,7 @@ RSpec.describe "Api::V1::Instances", type: :request do
     context "when the Forem is pending" do
       it "returns pending for visibility" do
         allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
-        get api_instance_path, headers: v1_headers
+        get api_instance_path, headers: headers
 
         expect(response.parsed_body["visibility"]).to eq "pending"
       end

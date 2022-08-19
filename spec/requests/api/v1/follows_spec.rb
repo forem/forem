@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::FollowsController", type: :request do
-  let(:api_secret) { create(:api_secret) }
-  let(:user) { api_secret.user }
 
   before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 

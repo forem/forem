@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Analytics", type: :request do
   let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
+  let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
 
   before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
@@ -19,7 +19,7 @@ RSpec.describe "Api::V1::Analytics", type: :request do
     end
 
     context "when the start parameter is not included" do
-      before { get "/api/analytics/historical", headers: v1_headers }
+      before { get "/api/analytics/historical", headers: headers }
 
       it "fails with an unprocessable entity HTTP error" do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -32,7 +32,7 @@ RSpec.describe "Api::V1::Analytics", type: :request do
     end
 
     context "when the start parameter has the incorrect format" do
-      before { get "/api/analytics/historical?start=2019/2/2", headers: v1_headers }
+      before { get "/api/analytics/historical?start=2019/2/2", headers: headers }
 
       it "fails with an unprocessable entity HTTP error" do
         expect(response).to have_http_status(:unprocessable_entity)
