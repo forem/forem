@@ -9,7 +9,13 @@ module Api
         result = ReactionToggle.toggle(params, current_user: current_user || @user)
 
         if result.success?
-          render json: { result: result.action, category: result.category }
+          render json: {
+            result: result.action,
+            category: result.category,
+            id: result.reaction.id,
+            reactable_id: result.reaction.reactable_id,
+            reactable_type: result.reaction.reactable_type
+          }
         else
           render json: { error: result.errors_as_sentence, status: 422 }, status: :unprocessable_entity
         end

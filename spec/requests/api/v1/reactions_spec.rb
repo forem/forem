@@ -12,7 +12,7 @@ RSpec.describe "Api::V1::Reactions", type: :request do
 
   before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
-  shared_context "when user and post to create is authorized" do
+  shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
     let(:auth_header) { v1_headers.merge({ "api-key" => api_secret.secret }) }
@@ -46,6 +46,12 @@ RSpec.describe "Api::V1::Reactions", type: :request do
       it "responds with success" do
         post api_reactions_path, params: params.to_json, headers: auth_header
         expect(response).to have_http_status(:success)
+      end
+
+      it "responds with expected JSON" do
+        post api_reactions_path, params: params.to_json, headers: auth_header
+        expect(JSON.parse(response.body).keys).to contain_exactly("id", "result", "category", "reactable_type",
+                                                                  "reactable_id")
       end
     end
 
