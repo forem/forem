@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_07_133847) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_04_135751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -634,6 +634,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_07_133847) do
   create_table "navigation_links", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "display_only_when_signed_in", default: false
+    t.integer "display_to", default: 0, null: false
     t.string "icon", null: false
     t.string "name", null: false
     t.integer "position"

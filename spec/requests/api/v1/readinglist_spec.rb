@@ -9,6 +9,20 @@ RSpec.describe "Api::V1::ReadingList", type: :request do
   describe "GET /api/readinglist" do
     let(:readinglist) { create_list(:reading_reaction, 3, user: user) }
 
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        get api_readinglist_index_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when unauthorized" do
+      it "returns unauthorized" do
+        get api_readinglist_index_path, headers: headers.merge({ "api-key" => "invalid api key" })
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context "when request is authenticated" do
       it "returns proper response specification" do
         get api_readinglist_index_path, headers: headers

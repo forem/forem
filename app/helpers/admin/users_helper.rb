@@ -5,7 +5,7 @@ module Admin
       if logged_in_user.super_admin?
         special_roles = Constants::Role::SPECIAL_ROLES
         if FeatureFlag.enabled?(:moderator_role)
-          special_roles = special_roles.dup << "Moderator"
+          special_roles = special_roles.dup << "Super Moderator"
         end
         options["Roles"] = special_roles
       end

@@ -22,6 +22,7 @@ RSpec.describe "Api::V1::Docs::Articles", type: :request do
 
     path "/api/articles" do
       get "Published articles" do
+        security []
         tags "articles"
         description "This endpoint allows the client to retrieve a list of articles.
 

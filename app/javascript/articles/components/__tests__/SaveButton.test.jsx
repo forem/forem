@@ -1,14 +1,14 @@
 import { h } from 'preact';
-import { fireEvent, render } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import { SaveButton } from '../SaveButton';
 
 it('should not show bookmark button when saveable is false', () => {
   const article = { class_name: 'Article', id: 1 };
-  const { queryByText } = render(
+  const { queryByRole } = render(
     <SaveButton article={article} saveable={false} />,
   );
-  const saveButton = queryByText('Saved');
+  const saveButton = queryByRole('button', { name: 'Save to reading list' });
 
   expect(saveButton).toBeNull();
 });
@@ -23,75 +23,60 @@ it('should have no a11y violations', async () => {
 
 it('should render button as bookmarked', () => {
   const article = { class_name: 'Article', id: 1 };
-  const { queryByText } = render(<SaveButton article={article} isBookmarked />);
-  const saveButton = queryByText('Saved');
+  const { queryByRole } = render(<SaveButton article={article} isBookmarked />);
+  const saveButton = queryByRole('button', {
+    name: 'Save to reading list',
+    pressed: true,
+  });
 
   expect(saveButton).not.toBeNull();
 });
 
 it('should button as not being bookmarked', () => {
   const article = { class_name: 'Article', id: 1 };
-  const { queryByText } = render(
+  const { queryByRole } = render(
     <SaveButton article={article} isBookmarked={false} />,
   );
-  const saveButton = queryByText('Save');
+  const saveButton = queryByRole('button', {
+    name: 'Save to reading list',
+    pressed: false,
+  });
 
   expect(saveButton).not.toBeNull();
 });
 
 it('should bookmark when it previously was not', async () => {
   const article = { class_name: 'Article', id: 1 };
-  const { getByText, findByText } = render(
+  const { getByRole, findByRole } = render(
     <SaveButton onClick={jest.fn()} article={article} isBookmarked={false} />,
   );
-  const saveButton = getByText('Save');
+  const saveButton = getByRole('button', { name: 'Save to reading list' });
   saveButton.click();
 
-  const savedButton = await findByText('Saved');
+  const savedButton = await findByRole('button', {
+    name: 'Save to reading list',
+    pressed: true,
+  });
 
   expect(savedButton).not.toBeNull();
 });
 
 it('should unbookmark when it previously was bookmarked', async () => {
   const article = { class_name: 'Article', id: 1 };
-  const { getByText, findByText } = render(
+  const { getByRole, findByRole } = render(
     <SaveButton onClick={jest.fn()} article={article} isBookmarked />,
   );
 
-  const savedButton = getByText('Saved');
+  const savedButton = getByRole('button', {
+    name: 'Save to reading list',
+    pressed: true,
+  });
   savedButton.click();
 
-  const saveButton = await findByText('Save');
-
-  expect(saveButton).not.toBeNull();
-});
-
-it('should change text to unbookmark when hovering over button and it is bookmarked', async () => {
-  const article = { class_name: 'Article', id: 1 };
-  const { getByText, findByText } = render(
-    <SaveButton onClick={jest.fn()} article={article} isBookmarked />,
-  );
-
-  const savedButton = getByText('Saved');
-  fireEvent.mouseMove(savedButton);
-
-  const saveButton = await findByText('Unsave');
-
-  expect(saveButton).not.toBeNull();
-});
-
-it('should not change button text when hovering over button and it is not bookmarked', async () => {
-  const article = { class_name: 'Article', id: 1 };
-  const { getByText, findByText } = render(
-    <SaveButton onClick={jest.fn()} article={article} isBookmarked={false} />,
-  );
-
-  const savedButton = getByText('Save');
-  fireEvent.mouseMove(savedButton);
-
-  // We're checking for the same button text again because we need to find the element again
-  // again after the mouse has moved over the button.
-  const saveButton = await findByText('Save');
+  const saveButton = await findByRole('button', {
+    name: 'Save to reading list',
+    pressed: false,
+  });
 
   expect(saveButton).not.toBeNull();
 });

@@ -19,7 +19,7 @@ class TagAdjustment < ApplicationRecord
   end
 
   def elevated_user?
-    user.any_admin? || user.moderator?
+    user.any_admin? || user.super_moderator?
   end
 
   def has_privilege_to_adjust?

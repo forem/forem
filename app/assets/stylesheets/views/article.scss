@@ -34,7 +34,7 @@
         width: 100%;
         aspect-ratio: auto 650 / 273;
         object-fit: scale-down;
-        border-radius: var(--radius) var(--radius) 0 0;
+        border-radius: var(--radius-auto) var(--radius) 0 0;
       }
     }
   }
@@ -149,6 +149,22 @@
 
   @media (min-width: $breakpoint-m) {
     flex-direction: column;
+  }
+
+  .crayons-tooltip {
+    &__content {
+      // display tooltip on top of the icon
+      @media (max-width: $breakpoint-m) {
+        top: -100%;
+      }
+    }
+  }
+
+  // We don't show tooltips on touch-only devices
+  @media (hover: none) {
+    .crayons-tooltip__content {
+      display: none;
+    }
   }
 
   &__icon {

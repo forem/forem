@@ -402,7 +402,7 @@ class User < ApplicationRecord
     :comment_suspended?,
     :creator?,
     :has_trusted_role?,
-    :moderator?,
+    :super_moderator?,
     :podcast_admin_for?,
     :restricted_liquid_tag_for?,
     :single_resource_admin_for?,

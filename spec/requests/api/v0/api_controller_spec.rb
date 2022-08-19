@@ -28,7 +28,7 @@ RSpec.describe "Api::V0::ApiController", type: :request do
     Rails.application.reload_routes!
   end
 
-  context "when API V1 is enabled" do
+  context "when API V1 is requested" do
     context "when request header is v0 and does not include an api key" do
       let(:headers) { { Accept: "application/v0+json" } }
 

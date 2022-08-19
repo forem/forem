@@ -18,6 +18,7 @@ export const Options = ({
     published = false,
     publishedAtDate = '',
     publishedAtTime = '',
+    publishedAtWas = '',
     timezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
     allSeries = [],
     canonicalUrl = '',
@@ -32,8 +33,8 @@ export const Options = ({
   let existingSeries = '';
   let publishedAtField = '';
 
-  const readonlyPublishedAt =
-    published && moment(`${publishedAtDate} ${publishedAtTime}`) < moment();
+  const wasScheduled = moment(publishedAtWas) > moment();
+  const readonlyPublishedAt = published && !wasScheduled;
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name, index) => {
@@ -65,16 +66,30 @@ export const Options = ({
   }
 
   if (published) {
-    publishedField = (
-      <div data-testid="options__danger-zone" className="crayons-field mb-6">
-        <div className="crayons-field__label color-accent-danger">
-          Danger Zone
+    if (wasScheduled) {
+      publishedField = (
+        <div data-testid="options__danger-zone" className="crayons-field mb-6">
+          <Button
+            className="c-btn c-btn--secondary w-100"
+            variant="primary"
+            onClick={onSaveDraft}
+          >
+            Convert to a Draft
+          </Button>
         </div>
-        <Button variant="primary" destructive onClick={onSaveDraft}>
-          Unpublish post
-        </Button>
-      </div>
-    );
+      );
+    } else {
+      publishedField = (
+        <div data-testid="options__danger-zone" className="crayons-field mb-6">
+          <div className="crayons-field__label color-accent-danger">
+            Danger Zone
+          </div>
+          <Button variant="primary" destructive onClick={onSaveDraft}>
+            Unpublish post
+          </Button>
+        </div>
+      );
+    }
   }
 
   if (schedulingEnabled && !readonlyPublishedAt) {
@@ -194,6 +209,7 @@ Options.propTypes = {
     published: PropTypes.bool.isRequired,
     publishedAtDate: PropTypes.string.isRequired,
     publishedAtTime: PropTypes.string.isRequired,
+    publishedAtWas: PropTypes.string.isRequired,
     timezone: PropTypes.string.isRequired,
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,

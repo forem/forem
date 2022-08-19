@@ -97,12 +97,14 @@ export class ArticleForm extends Component {
           }
         : {};
 
-    this.publishedAtTime, (this.publishedAtDate = '');
+    this.publishedAtTime = '';
+    this.publishedAtDate = '';
+    this.publishedAtWas = '';
 
     if (this.article.published_at) {
-      const publishedAt = moment(this.article.published_at);
-      this.publishedAtTime = publishedAt.format('HH:mm');
-      this.publishedAtDate = publishedAt.format('YYYY-MM-DD');
+      this.publishedAtWas = moment(this.article.published_at);
+      this.publishedAtTime = this.publishedAtWas.format('HH:mm');
+      this.publishedAtDate = this.publishedAtWas.format('YYYY-MM-DD');
     }
 
     this.state = {
@@ -114,6 +116,7 @@ export class ArticleForm extends Component {
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
       publishedAtTime: this.publishedAtTime,
       publishedAtDate: this.publishedAtDate,
+      publishedAtWas: this.publishedAtWas,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '', // eslint-disable-line react/no-unused-state
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
@@ -347,6 +350,7 @@ export class ArticleForm extends Component {
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
       publishedAtTime: this.publishedAtTime,
       publishedAtDate: this.publishedAtDate,
+      publishedAtWas: this.publishedAtWas,
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
@@ -410,6 +414,7 @@ export class ArticleForm extends Component {
       published,
       publishedAtTime,
       publishedAtDate,
+      publishedAtWas,
       previewShowing,
       previewLoading,
       previewResponse,
@@ -512,6 +517,7 @@ export class ArticleForm extends Component {
           published={published}
           publishedAtTime={publishedAtTime}
           publishedAtDate={publishedAtDate}
+          publishedAtWas={publishedAtWas}
           schedulingEnabled={schedulingEnabled}
           version={version}
           onPublish={this.onPublish}
