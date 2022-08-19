@@ -14,15 +14,15 @@ module Api
           render json: { error: result.errors_as_sentence, status: 422 }, status: :unprocessable_entity
         end
       end
-    end
 
-    private
+      private
 
-    # TODO: should this move to toggle service? refactor?
-    def remove_count_cache_key
-      return unless params[:reactable_type] == "Article"
+      # TODO: should this move to toggle service? refactor?
+      def remove_count_cache_key
+        return unless params[:reactable_type] == "Article"
 
-      Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
+        Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
+      end
     end
   end
 end
