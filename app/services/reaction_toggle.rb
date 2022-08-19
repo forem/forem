@@ -39,7 +39,7 @@ class ReactionToggle
       )
     end
 
-    reaction = Reaction.where(
+    existing_reaction = Reaction.where(
       user_id: current_user.id,
       reactable_id: params[:reactable_id],
       reactable_type: params[:reactable_type],
@@ -47,7 +47,7 @@ class ReactionToggle
     ).first
 
     # if the reaction already exists, destroy it
-    return handle_existing_reaction(reaction) if reaction
+    return handle_existing_reaction(reaction) if existing_reaction
 
     reaction = build_reaction(category)
     result = Result.new reaction: reaction, category: category
