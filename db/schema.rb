@@ -1336,6 +1336,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_04_135751) do
 
   create_table "users_settings", force: :cascade do |t|
     t.string "brand_color1", default: "#000000"
+    t.string "brand_color2", default: "#ffffff"
     t.integer "config_font", default: 0, null: false
     t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
