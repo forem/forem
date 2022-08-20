@@ -1,8 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Users", type: :request do
+RSpec.describe "Api::V1::Users", type: :request do
   let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:auth_headers) { headers.merge({ "api-key" => api_secret.secret }) }
   let(:listener) { :admin_api }
 
   describe "GET /api/users/:id" do
@@ -15,54 +16,36 @@ RSpec.describe "Api::V0::Users", type: :request do
              profile: create(:profile, summary: "Something something"))
     end
 
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get api_user_path("by_username"),
-            params: { url: user.username },
-            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get api_user_path("by_username"),
-            params: { url: user.username },
-            headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns 404 if the user id is not found" do
-      get api_user_path("invalid-id")
+      get api_user_path("invalid-id"), headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns 404 if the user username is not found" do
-      get api_user_path("by_username"), params: { url: "invalid-username" }
+      get api_user_path("by_username"), params: { url: "invalid-username" }, headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns 404 if the user is not registered" do
       user.update_column(:registered, false)
-      get api_user_path(user.id)
+      get api_user_path(user.id), headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns 200 if the user username is found" do
-      get api_user_path("by_username"), params: { url: user.username }
+      get api_user_path("by_username"), params: { url: user.username }, headers: headers
       expect(response).to have_http_status(:ok)
     end
 
     it "returns unauthenticated if no authentication and the Forem instance is set to private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
-      get api_user_path("by_username"), params: { url: user.username }
+      get api_user_path("by_username"), params: { url: user.username }, headers: headers
       expect(response).to have_http_status(:unauthorized)
     end
 
     it "returns the correct json representation of the user", :aggregate_failures do
-      get api_user_path(user.id)
+      get api_user_path(user.id), headers: headers
 
       response_user = response.parsed_body
 
@@ -86,14 +69,14 @@ RSpec.describe "Api::V0::Users", type: :request do
 
     context "when unauthenticated" do
       it "returns unauthorized" do
-        get me_api_users_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+        get me_api_users_path, headers: headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
 
     context "when unauthorized" do
       it "returns unauthorized" do
-        get me_api_users_path, headers: v1_headers.merge({ "api-key" => "invalid api key" })
+        get me_api_users_path, headers: headers.merge({ "api-key" => "invalid api key" })
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -102,7 +85,7 @@ RSpec.describe "Api::V0::Users", type: :request do
       let(:user) { api_secret.user }
 
       it "returns the correct json representation of the user", :aggregate_failures do
-        get me_api_users_path, headers: v1_headers
+        get me_api_users_path, headers: auth_headers
 
         expect(response).to have_http_status(:ok)
 
@@ -124,7 +107,7 @@ RSpec.describe "Api::V0::Users", type: :request do
 
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
-        get me_api_users_path, headers: v1_headers
+        get me_api_users_path, headers: auth_headers
 
         response_user = response.parsed_body
 
@@ -157,7 +140,7 @@ RSpec.describe "Api::V0::Users", type: :request do
       it "returns unauthorized" do
         put api_user_suspend_path(id: target_user.id),
             params: payload,
-            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+            headers: headers
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -167,7 +150,7 @@ RSpec.describe "Api::V0::Users", type: :request do
       it "returns unauthorized if api key is invalid" do
         put api_user_suspend_path(id: target_user.id),
             params: payload,
-            headers: v1_headers.merge({ "api-key" => "invalid api key" })
+            headers: headers.merge({ "api-key" => "invalid api key" })
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -175,7 +158,7 @@ RSpec.describe "Api::V0::Users", type: :request do
       it "returns unauthorized if api key belongs to non-admin user" do
         put api_user_suspend_path(id: target_user.id),
             params: payload,
-            headers: v1_headers
+            headers: headers
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -188,7 +171,7 @@ RSpec.describe "Api::V0::Users", type: :request do
         expect do
           put api_user_suspend_path(id: target_user.id),
               params: payload,
-              headers: v1_headers
+              headers: auth_headers
 
           expect(response).to have_http_status(:no_content)
           expect(target_user.reload.suspended?).to be true
@@ -199,7 +182,7 @@ RSpec.describe "Api::V0::Users", type: :request do
       it "creates an audit log of the action taken" do
         put api_user_suspend_path(id: target_user.id),
             params: payload,
-            headers: v1_headers
+            headers: auth_headers
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
@@ -223,7 +206,7 @@ RSpec.describe "Api::V0::Users", type: :request do
     context "when unauthenticated" do
       it "returns unauthorized" do
         put api_user_unpublish_path(id: target_user.id),
-            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
+            headers: headers
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -232,14 +215,14 @@ RSpec.describe "Api::V0::Users", type: :request do
     context "when unauthorized" do
       it "returns unauthorized if api key is invalid" do
         put api_user_unpublish_path(id: target_user.id),
-            headers: v1_headers.merge({ "api-key" => "invalid api key" })
+            headers: headers.merge({ "api-key" => "invalid api key" })
 
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "returns unauthorized if api key belongs to non-admin user" do
         put api_user_unpublish_path(id: target_user.id),
-            headers: v1_headers
+            headers: headers
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -254,7 +237,7 @@ RSpec.describe "Api::V0::Users", type: :request do
         expect(target_comments.map(&:deleted)).to match_array([false, false, false])
 
         put api_user_unpublish_path(id: target_user.id),
-            headers: v1_headers
+            headers: auth_headers
         expect(response).to have_http_status(:no_content)
 
         sidekiq_perform_enqueued_jobs
@@ -274,7 +257,7 @@ RSpec.describe "Api::V0::Users", type: :request do
         create(:comment, user: target_user, deleted: true)
 
         put api_user_unpublish_path(id: target_user.id),
-            headers: v1_headers
+            headers: auth_headers
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)

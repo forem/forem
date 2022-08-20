@@ -48,6 +48,7 @@ const handleImageSuccess = (textAreaRef) => {
 export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
   const textAreaRef = useRef(null);
+  const contextData = document.getElementById('comments-container')?.dataset;
 
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
@@ -96,8 +97,12 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
         searchInstructionsMessage="Type to search for a user"
         replaceElement={vanillaTextArea}
         fetchSuggestions={(username) =>
-          fetchSearch('usernames', { username }).then(({ result }) =>
-            result.map((user) => ({ ...user, value: user.username })),
+          fetchSearch('usernames', {
+            username,
+            context_type: contextData?.['commentableType'],
+            context_id: contextData?.['commentableId'],
+          }).then(({ result }) =>
+            result?.map((user) => ({ ...user, value: user.username })),
           )
         }
       />
