@@ -49,6 +49,9 @@ RSpec.describe Articles::Updater, type: :service do
   end
 
   describe "notifications" do
+    let(:past_time) { 1.year.ago }
+    let(:future_time) { 2.days.from_now }
+
     context "when an article is updated and published the first time" do
       before { attributes[:published] = true }
 
@@ -65,17 +68,24 @@ RSpec.describe Articles::Updater, type: :service do
       # end
 
       # in case the article was published and unpublished before
-      it "updates published_at to the current time when no published_at passed" do
-        attributes[:published_at] = nil
-        past_time = 1.year.ago
-        draft.update_column(:published_at, past_time)
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published_at).to be_within(1.minute).of(Time.current)
-      end
+      # it "updates published_at to the current time when no published_at passed" do
+      #   attributes[:published_at] = nil
+      #   draft.update_column(:published_at, past_time)
+      #   described_class.call(user, draft, attributes)
+      #   draft.reload
+      #   expect(draft.published_at).to be_within(1.minute).of(Time.current)
+      # end
 
-      it "updates published_at to the current time when a past published_at is passed" do
-        attributes[:published_at] = "2020-04-05 20:20"
+      # it "updates published_at to the current time when a past published_at is passed" do
+      #   attributes[:published_at] = "2020-04-05 20:20"
+      #   described_class.call(user, draft, attributes)
+      #   draft.reload
+      #   expect(draft.published_at).to be_within(1.minute).of(Time.current)
+      # end
+
+      # actually, published_at is set in a model
+      it "sets current published_at when publishing from a draft" do
+        attributes[:published_at] = nil
         described_class.call(user, draft, attributes)
         draft.reload
         expect(draft.published_at).to be_within(1.minute).of(Time.current)
@@ -97,7 +107,7 @@ RSpec.describe Articles::Updater, type: :service do
       end
     end
 
-    context "when an article is being updated and has already been published" do
+    context "when an article is being updated (published => published)" do
       # it "doesn't enqueue a job to send a notification" do
       #   attributes[:published] = true
       #   sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
@@ -107,7 +117,6 @@ RSpec.describe Articles::Updater, type: :service do
 
       it "doesn't update published_at" do
         attributes[:published] = true
-        past_time = 1.year.ago
         article.update_column(:published_at, past_time)
         described_class.call(user, article, attributes)
         article.reload
@@ -121,7 +130,55 @@ RSpec.describe Articles::Updater, type: :service do
       end
     end
 
-    context "when an article is unpublished" do
+    context "when an article is being re-published" do
+      it "doesn't update past published_at" do
+        draft.update_column(:published_at, past_time)
+        attributes[:published] = true
+        described_class.call(user, draft, attributes)
+        draft.reload
+        expect(draft.published).to be true
+        expect(draft.published_at).to be_within(1.second).of(past_time)
+      end
+
+      it "doesn't update future published_at" do
+        draft.update_column(:published_at, future_time)
+        attributes[:published] = true
+        described_class.call(user, draft, attributes)
+        draft.reload
+        expect(draft.published).to be true
+        expect(draft.published_at).to be_within(1.second).of(future_time)
+      end
+
+      # а что если:
+      # schedule
+      # unpublish
+      # update published_at to the future
+      # publish
+      it "updates future published_at if new published_at is passed" do
+        draft.update_column(:published_at, future_time)
+        attributes[:published] = true
+        new_published_at = 1.day.from_now
+        attributes[:published_at] = new_published_at # .strftime("%Y-%m-%d %H:%M")
+        described_class.call(user, draft, attributes)
+        draft.reload
+        expect(draft.published).to be true
+        expect(draft.published_at).to be_within(1.minute).of(new_published_at)
+      end
+
+      it "doesn't update past published_at if new published_at is passed" do
+        draft.update_column(:published_at, past_time)
+        attributes[:published] = true
+        new_published_at = 1.day.from_now
+        attributes[:published_at] = new_published_at # .strftime("%Y-%m-%d %H:%M")
+        described_class.call(user, draft, attributes)
+        draft.reload
+        # won't be saved because of the validation
+        expect(draft.published).to be false
+        expect(draft.published_at).to be_within(1.second).of(past_time)
+      end
+    end
+
+    context "when an article is being unpublished" do
       before { attributes[:published] = false }
 
       it "doesn't update published_at" do
@@ -160,7 +217,7 @@ RSpec.describe Articles::Updater, type: :service do
       end
     end
 
-    context "when an article is updated and remains unpublished" do
+    context "when an article is updated and remains draft" do
       it "doesn't update published_at" do
         attributes[:published] = false
         described_class.call(user, draft, attributes)
@@ -169,7 +226,7 @@ RSpec.describe Articles::Updater, type: :service do
       end
     end
 
-    context "when an article is unpublished and contains comments" do
+    context "when an article is being unpublished and contains comments" do
       let!(:comment) { create(:comment, user_id: user.id, commentable: article) }
       let(:notification) do
         create(:notification, user: user, notifiable_id: comment.id, notifiable_type: "Comment")
@@ -190,7 +247,7 @@ RSpec.describe Articles::Updater, type: :service do
       end
     end
 
-    context "when an article is unpublished and contains mentions" do
+    context "when an article is beingunpublished and contains mentions" do
       let!(:mention) { create(:mention, mentionable: article, user: user) }
       let(:notification) do
         create(:notification, user: user, notifiable_id: mention.id, notifiable_type: "Mention")

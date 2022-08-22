@@ -19,15 +19,15 @@ module Articles
       update_edited_at = article.user == user && article.published
       # TODO: move setting published_at to Articles::Attributes
       # when publishing (draft => published), and published_at is nil or is in the past, set it to Time.current
-      # except for exported articles
+      # except for exported articles, and the articles that are re-published
       publishing = !article.published && article_params[:published]
       past_published_at = !article_params[:published_at] || article_params[:published_at] < Time.current
-      update_published_at = publishing && !article.published_from_feed && past_published_at
+      update_published_at = false # publishing && !article.published_at && !article.published_from_feed && past_published_at
       attrs = Articles::Attributes.new(article_params, article.user)
         .for_update(update_edited_at: update_edited_at,
                     update_published_at: update_published_at)
 
-      success = article.update(attrs)
+        success = article.update(attrs)
       if success
         user.rate_limiter.track_limit_by_action(:article_update)
 
