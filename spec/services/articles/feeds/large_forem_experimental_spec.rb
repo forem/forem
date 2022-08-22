@@ -146,7 +146,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   end
 
   describe ".globally_hot_articles" do
-    let!(:recently_published_article) { create(:article, published_at: 3.hours.ago) }
+    let!(:recently_published_article) { create(:article, :past, past_published_at: 3.hours.ago) }
     let(:globally_hot_articles) { feed.globally_hot_articles(true).second }
 
     it "returns hot recent stories" do
@@ -157,7 +157,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     context "when low number of hot stories and no recently published articles" do
       before do
         Article.delete_all
-        create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago)
+        create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago)
       end
 
       # This test handles a situation in which there are a low number of hot or new stories, and the user is logged in.
