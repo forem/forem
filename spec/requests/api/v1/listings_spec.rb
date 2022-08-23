@@ -7,9 +7,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
   let(:edu_category) do
     create(:listing_category)
   end
-
-
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+  let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
@@ -61,14 +59,14 @@ RSpec.describe "Api::V1::Listings", type: :request do
     include_context "with 7 listings and 2 user"
 
     it "returns json response and ok status" do
-      get api_listings_path
+      get api_listings_path, headers: headers
 
       expect(response.media_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
     end
 
     it "returns listings created" do
-      get api_listings_path
+      get api_listings_path, headers: headers
       expect(response.parsed_body.size).to eq(7)
       expect(response.parsed_body.first["type_of"]).to eq("listing")
       expect(response.parsed_body.first["slug"]).to eq(Listing.last.slug)
@@ -77,14 +75,14 @@ RSpec.describe "Api::V1::Listings", type: :request do
     end
 
     it "supports pagination" do
-      get api_listings_path, params: { page: 2, per_page: 2 }
+      get api_listings_path, params: { page: 2, per_page: 2 }, headers: headers
       expect(response.parsed_body.length).to eq(2)
-      get api_listings_path, params: { page: 4, per_page: 2 }
+      get api_listings_path, params: { page: 4, per_page: 2 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
     end
 
     it "sets the correct caching headers" do
-      get api_listings_path
+      get api_listings_path, headers: headers
 
       expect(response.headers["cache-control"]).to be_present
       expect(response.headers["x-accel-expires"]).to be_present
@@ -92,7 +90,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
     end
 
     it "sets the correct edge caching surrogate key" do
-      get api_listings_path
+      get api_listings_path, headers: headers
 
       expected_key = (
         ["classified_listings"] +
@@ -106,13 +104,13 @@ RSpec.describe "Api::V1::Listings", type: :request do
       listing = user1.listings.last
       listing.update(published: false)
 
-      get api_listings_path
+      get api_listings_path, headers: headers
       expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
     end
 
     # Regression test for https://github.com/forem/forem/issues/14436
     it "includes the created at timestamp for listings" do
-      get api_listings_path
+      get api_listings_path, headers: headers
       listing = response.parsed_body.first
       expect(listing["created_at"]).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
     end
@@ -122,7 +120,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
     include_context "with 7 listings and 2 user"
 
     it "displays only listings from the cfp category" do
-      get api_listings_category_path("cfp")
+      get api_listings_category_path("cfp"), headers: headers
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body.size).to eq(3)
     end
@@ -132,7 +130,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
       listing = user1.listings.in_category(category).last
       listing.update(published: false)
 
-      get api_listings_category_path(category)
+      get api_listings_category_path(category), headers: headers
       expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
     end
   end
@@ -145,7 +143,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
       it "returns a published listing" do
         listing.update(published: true)
 
-        get api_listing_path(listing.id)
+        get api_listing_path(listing.id), headers: headers
         expect(response).to have_http_status(:ok)
       end
 
@@ -153,24 +151,6 @@ RSpec.describe "Api::V1::Listings", type: :request do
         org = user_admin_organization(listing.user)
         listing.update(published: true, organization: org)
 
-        get api_listing_path(listing.id)
-        expect(response).to have_http_status(:ok)
-      end
-
-      it "does not return an unpublished listing" do
-        listing.update(published: false)
-
-        get api_listing_path(listing.id)
-        expect(response).to have_http_status(:not_found)
-      end
-    end
-
-    context "when unauthorized" do
-      let(:headers) { { "api-key" => "invalid api key", "Accept" => "application/vnd.forem.api-v1+json" } }
-
-      it "returns a published listing" do
-        listing.update(published: true)
-
         get api_listing_path(listing.id), headers: headers
         expect(response).to have_http_status(:ok)
       end
@@ -180,38 +160,11 @@ RSpec.describe "Api::V1::Listings", type: :request do
 
         get api_listing_path(listing.id), headers: headers
         expect(response).to have_http_status(:not_found)
-      end
-    end
-
-    context "when authorized" do
-      include_context "when user is authorized"
-
-      let(:headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
-
-      it "returns a published listing" do
-        listing.update(published: true)
-
-        get api_listing_path(listing.id), headers: headers
-        expect(response).to have_http_status(:ok)
-      end
-
-      it "does not return an unpublished listing belonging to another user" do
-        listing.update(published: false, user: user1)
-
-        get api_listing_path(listing.id), headers: headers
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it "returns an unpublished listing belonging to the authenticated user" do
-        listing.update(published: false, user: api_secret.user)
-
-        get api_listing_path(listing.id), headers: headers
-        expect(response).to have_http_status(:ok)
       end
     end
 
     it "returns the correct listing format" do
-      get api_listing_path(listing.id)
+      get api_listing_path(listing.id), headers: headers
 
       expect(response).to have_http_status(:ok)
 
@@ -222,7 +175,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
     end
 
     it "sets the correct caching headers" do
-      get api_listing_path(listing.id)
+      get api_listing_path(listing.id), headers: headers
 
       expect(response.headers["cache-control"]).to be_present
       expect(response.headers["x-accel-expires"]).to be_present
@@ -230,7 +183,7 @@ RSpec.describe "Api::V1::Listings", type: :request do
     end
 
     it "sets the correct edge caching surrogate key" do
-      get api_listing_path(listing.id)
+      get api_listing_path(listing.id), headers: headers
 
       expected_key = [listing.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -239,8 +192,11 @@ RSpec.describe "Api::V1::Listings", type: :request do
 
   describe "POST /api/listings" do
     def post_listing(key: api_secret.secret, **params)
-      headers = { "api-key" => key, "content-type" => "application/json",
-                  "Accept" => "application/vnd.forem.api-v1+json" }
+      headers = {
+        "api-key" => key,
+        "content-type" => "application/json",
+        "Accept" => "application/vnd.forem.api-v1+json"
+      }
       post api_listings_path, params: { listing: params }.to_json, headers: headers
     end
 

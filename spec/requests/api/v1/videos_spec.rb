@@ -14,8 +14,6 @@ RSpec.describe "Api::V1::Videos", type: :request do
   end
 
   describe "GET /api/videos" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     it "returns articles with videos" do
       create_article
 

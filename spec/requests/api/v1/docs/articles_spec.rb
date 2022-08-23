@@ -13,10 +13,7 @@ RSpec.describe "Api::V1::Docs::Articles", type: :request do
   let(:user) { api_secret.user }
   let(:Accept) { "application/vnd.forem.api-v1+json" }
 
-  before do
-    stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-  end
+  before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
   describe "GET /articles" do
     before do
