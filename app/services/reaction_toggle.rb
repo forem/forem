@@ -47,35 +47,6 @@ class ReactionToggle
     end
   end
 
-  def handle_existing_reaction(reaction)
-    destroy_reaction(reaction)
-    log_audit(reaction)
-    create_result(reaction, "destroy") if reaction
-  end
-
-  def create_new_reaction
-    reaction = build_reaction(category)
-    result = create_result(reaction, nil)
-
-    if reaction.save
-      rate_limit_reaction_creation
-      sink_articles(reaction)
-      send_notifications(reaction)
-    end
-
-    result.action = "create"
-
-    if category == "readinglist" && current_user.setting.experience_level
-      rate_article(reaction)
-    end
-
-    if current_user.auditable?
-      Audit::Logger.log(:moderator, current_user, params.dup)
-    end
-
-    result
-  end
-
   private
 
   def destroy_contradictory_mod_reactions(id, type, mod, category)
@@ -105,6 +76,66 @@ class ReactionToggle
     ).first
   end
 
+  def handle_existing_reaction(reaction)
+    destroy_reaction(reaction)
+    log_audit(reaction)
+    create_result(reaction, "destroy") if reaction
+  end
+
+  def create_new_reaction
+    reaction = build_reaction(category)
+    result = create_result(reaction, nil)
+
+    if reaction.save
+      rate_limit_reaction_creation
+      sink_articles(reaction)
+      send_notifications(reaction)
+    end
+
+    result.action = "create"
+
+    if category == "readinglist" && current_user.setting.experience_level
+      rate_article(reaction)
+    end
+
+    if current_user.auditable?
+      Audit::Logger.log(:moderator, current_user, params.dup)
+    end
+
+    result
+  end
+
+  def build_reaction(category)
+    create_params = {
+      user_id: current_user.id,
+      reactable_id: params[:reactable_id],
+      reactable_type: params[:reactable_type],
+      category: category
+    }
+    if (current_user&.any_admin? || current_user&.super_moderator?) &&
+        Reaction::NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
+      create_params[:status] = "confirmed"
+    end
+    Reaction.new(create_params)
+  end
+
+  def log_audit(reaction)
+    return unless reaction.negative? && current_user.auditable?
+
+    updated_params = params.dup
+    updated_params[:action] = "destroy"
+    Audit::Logger.log(:moderator, current_user, updated_params)
+  end
+
+  # keyword arguments
+  def create_result(reaction, action)
+    if action
+      Result.new category: category, reaction: reaction, action: action
+    else
+      Result.new category: category, reaction: reaction
+    end
+  end
+
   def rate_limit_reaction_creation
     rate_limiter.track_limit_by_action(:reaction_creation)
   end
@@ -125,37 +156,6 @@ class ReactionToggle
     return unless reaction.reaction_on_organization_article?
 
     Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
-  end
-
-  # keyword arguments
-  def create_result(reaction, action)
-    if action
-      Result.new category: category, reaction: reaction, action: action
-    else
-      Result.new category: category, reaction: reaction
-    end
-  end
-
-  def log_audit(reaction)
-    return unless reaction.negative? && current_user.auditable?
-
-    updated_params = params.dup
-    updated_params[:action] = "destroy"
-    Audit::Logger.log(:moderator, current_user, updated_params)
-  end
-
-  def build_reaction(category)
-    create_params = {
-      user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
-      category: category
-    }
-    if (current_user&.any_admin? || current_user&.super_moderator?) &&
-        Reaction::NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
-      create_params[:status] = "confirmed"
-    end
-    Reaction.new(create_params)
   end
 
   def rate_article(reaction)
