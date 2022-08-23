@@ -69,7 +69,8 @@ class SearchController < ApplicationController
   end
 
   def usernames
-    result = Search::Username.search_documents(params[:username])
+    context = commentable_context(params[:context_type])&.find(params[:context_id])
+    result = Search::Username.search_documents(params[:username], context: context)
 
     render json: { result: result }
   end
@@ -161,6 +162,10 @@ class SearchController < ApplicationController
   end
 
   private
+
+  def commentable_context(context_type)
+    context_type.constantize if Comment::COMMENTABLE_TYPES.include?(context_type)
+  end
 
   def search_postgres_article
     Search::Article.search_documents(

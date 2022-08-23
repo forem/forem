@@ -124,12 +124,12 @@ RSpec.describe Articles::Updater, type: :service do
     context "when an article is unpublished" do
       before { attributes[:published] = false }
 
-      it "nullifies published_at" do
+      it "doesn't update published_at" do
         published_at = 1.day.ago
         article.update_column(:published_at, published_at)
         described_class.call(user, article, attributes)
         article.reload
-        expect(article.published_at).to be_nil
+        expect(article.published_at).to be_within(1.second).of(published_at)
       end
 
       it "doesn't send any notifications" do
@@ -144,7 +144,7 @@ RSpec.describe Articles::Updater, type: :service do
         expect(Mentions::CreateAll).not_to have_received(:call).with(article)
       end
 
-      it "destroys the pre-existing notifications" do
+      it "destroys the preexisting notifications" do
         allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
         described_class.call(user, article, attributes)
         attrs = { notifiable_ids: article.id, notifiable_type: "Article", action: "Published" }
@@ -152,7 +152,7 @@ RSpec.describe Articles::Updater, type: :service do
         # expect(ContextNotification).to have_received(:delete_all)
       end
 
-      it "destroys the pre-existing context notifications" do
+      it "destroys the prexexisting context notifications" do
         create(:context_notification, context: article, action: "Published")
         expect do
           described_class.call(user, article, attributes)
@@ -180,7 +180,7 @@ RSpec.describe Articles::Updater, type: :service do
         allow(Notification).to receive(:remove_all).and_call_original
       end
 
-      it "removes any pre-existing comment notifications but does not delete the comment" do
+      it "removes any preexisting comment notifications but does not delete the comment" do
         described_class.call(user, article, attributes)
 
         expect(Notification).to have_received(:remove_all).with(
@@ -201,7 +201,7 @@ RSpec.describe Articles::Updater, type: :service do
         allow(Notification).to receive(:remove_all).and_call_original
       end
 
-      it "removes any pre-existing mention notifications but does not delete the mention" do
+      it "removes any preexisting mention notifications but does not delete the mention" do
         described_class.call(user, article, attributes)
 
         expect(Notification).to have_received(:remove_all).with(

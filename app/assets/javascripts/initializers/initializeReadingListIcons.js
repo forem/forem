@@ -7,7 +7,6 @@
 function initializeReadingListIcons() {
   setReadingListButtonsState();
   addReadingListCountToHomePage();
-  addHoverEffectToReadingListButtons();
 }
 
 // set SAVE or SAVED articles buttons
@@ -79,7 +78,6 @@ function reactToReadingListButtonClick(event) {
 function renderButtonState(button, json) {
   if (json.result === 'create') {
     button.classList.add('selected');
-    addHoverEffectToReadingListButtons(button);
   } else {
     button.classList.remove('selected');
   }
@@ -124,28 +122,6 @@ function properButtonFromEvent(event) {
     properElement = event.target.parentElement;
   }
   return properElement;
-}
-
-/*
-  Add the hover effect to reading list buttons.
-
-  This function makes use of mouseover/mouseevent bubbling behaviors to attach
-  only two event handlers to the articles container for performance reasons.
-*/
-function addHoverEffectToReadingListButtons() {
-  var articlesList = document.getElementsByClassName('articles-list');
-  Array.from(articlesList).forEach(function (container) {
-    // we use `bind` so that the event handler will have the correct text in its
-    // `this` local variable
-    container.addEventListener(
-      'mouseover',
-      readingListButtonMouseHandler.bind('Unsave'),
-    );
-    container.addEventListener(
-      'mouseout',
-      readingListButtonMouseHandler.bind('Saved'),
-    );
-  });
 }
 
 /*

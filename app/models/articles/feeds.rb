@@ -139,6 +139,20 @@ module Articles
                       select_fragment: "articles.comments_count",
                       group_by_fragment: "articles.comments_count")
 
+      relevancy_lever(:comments_score,
+                      label: "Weight given based on sum of comment scores of an article.",
+                      range: "[0..∞)",
+                      user_required: false,
+                      select_fragment: "SUM(
+                        CASE
+                          WHEN comments.score is null then 0
+                          ELSE comments.score
+                        END)",
+                      joins_fragments: ["LEFT OUTER JOIN comments
+                        ON comments.commentable_id = articles.id
+                          AND comments.commentable_type = 'Article'
+                          AND comments.deleted = false"])
+
       relevancy_lever(:daily_decay,
                       label: "Weight given based on the relative age of the article",
                       range: "[0..∞)",
@@ -311,12 +325,21 @@ module Articles
                         very_positive_reaction_threshold
                         positive_reaction_threshold
                       ])
+
       relevancy_lever(:public_reactions,
                       label: "Weight to give for the number of unicorn, heart, reading list reactions for article.",
                       range: "[0..∞)",
                       user_required: false,
                       select_fragment: "articles.public_reactions_count",
                       group_by_fragment: "articles.public_reactions_count")
+
+      relevancy_lever(:public_reactions_score,
+                      label: "Weight to give based on article.score (see article.update_score for this calculation -
+                      it's a sum of the scores of reactions on an article).",
+                      range: "[0..∞)",
+                      user_required: false,
+                      select_fragment: "articles.score",
+                      group_by_fragment: "articles.score")
     end
     private_constant :LEVER_CATALOG
     # rubocop:enable Metrics/BlockLength

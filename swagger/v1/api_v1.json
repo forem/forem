@@ -3,12 +3,13 @@
   "info": {
     "title": "Forem API V1",
     "version": "1.0.0",
-    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints require an 'api-key' header and a accept header.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
+    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but \n        some of them are accessible publicly without authentication.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
   },
   "paths": {
     "/api/articles": {
       "get": {
         "summary": "Published articles",
+        "security": [],
         "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
         "operationId": "getArticles",
@@ -102,44 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 2661,
-                    "title": "To a God Unknown172",
-                    "description": "Thundercats kitsch park bespoke scenester cray irony occupy. Crucifix salvia vegan. Disrupt offal 3...",
-                    "readable_publish_date": "Jul 27",
-                    "slug": "to-a-god-unknown172-3lh1",
-                    "path": "/username469/to-a-god-unknown172-3lh1",
-                    "url": "http://localhost:3000/username469/to-a-god-unknown172-3lh1",
+                    "id": 1357,
+                    "title": "Ego Dominus Tuus168",
+                    "description": "Blog pour-over taxidermy pbr&amp;b bitters. Synth chia pork belly butcher.  Mumblecore 8-bit banh mi...",
+                    "readable_publish_date": "Aug 20",
+                    "slug": "ego-dominus-tuus168-32d5",
+                    "path": "/username372/ego-dominus-tuus168-32d5",
+                    "url": "http://localhost:3000/username372/ego-dominus-tuus168-32d5",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-07-27T20:31:54Z",
+                    "published_timestamp": "2022-08-19T16:09:09Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
-                    "social_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
-                    "canonical_url": "http://localhost:3000/username469/to-a-god-unknown172-3lh1",
-                    "created_at": "2022-07-27T20:31:54Z",
+                    "cover_image": "http://localhost:3000/assets/2-1a96ae446ded018b65b215cce3aecc40a00e701642da521fdd6edd3c593ff6c1.png",
+                    "social_image": "http://localhost:3000/assets/2-1a96ae446ded018b65b215cce3aecc40a00e701642da521fdd6edd3c593ff6c1.png",
+                    "canonical_url": "http://localhost:3000/username372/ego-dominus-tuus168-32d5",
+                    "created_at": "2022-08-19T16:09:09Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-07-27T20:31:54Z",
-                    "last_comment_at": "2022-07-27T20:31:54Z",
+                    "published_at": "2022-08-19T16:09:09Z",
+                    "last_comment_at": "2022-08-19T16:09:09Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Carey \"Maya\" \\:/ Corwin",
-                      "username": "username469",
-                      "twitter_username": "twitter469",
-                      "github_username": "github469",
+                      "name": "Kyla \"Avery\" \\:/ Morissette",
+                      "username": "username372",
+                      "twitter_username": "twitter372",
+                      "github_username": "github372",
+                      "user_id": 3080,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/6332/5475485a-eb89-4e7f-b2d2-c548389462e8.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/6332/5475485a-eb89-4e7f-b2d2-c548389462e8.jpeg"
+                      "profile_image": "/uploads/user/profile_image/3080/001a3d7d-c716-43aa-a46a-8c024888daf9.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/3080/001a3d7d-c716-43aa-a46a-8c024888daf9.jpeg"
                     },
                     "organization": {
-                      "name": "Blanda, Barton and Tremblay",
+                      "name": "Koss and Sons",
                       "username": "org56",
                       "slug": "org56",
-                      "profile_image": "/uploads/organization/profile_image/934/ba061551-7cbe-4adc-80d0-bc60abcdaa32.png",
-                      "profile_image_90": "/uploads/organization/profile_image/934/ba061551-7cbe-4adc-80d0-bc60abcdaa32.png"
+                      "profile_image": "/uploads/organization/profile_image/507/464b6b16-79e1-4378-a9fc-76c81403f9e1.png",
+                      "profile_image_90": "/uploads/organization/profile_image/507/464b6b16-79e1-4378-a9fc-76c81403f9e1.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -156,9 +158,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "unauthorized"
           }
         }
       }

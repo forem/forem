@@ -47,7 +47,7 @@ describe('Comment on articles', () => {
   describe('Comments using mention autocomplete', () => {
     it('should comment on an article with user mention autocomplete suggesting max 6 users', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=se' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -93,7 +93,7 @@ describe('Comment on articles', () => {
 
     it('should select a mention autocomplete suggestion by keyboard', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=se' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -124,7 +124,7 @@ describe('Comment on articles', () => {
 
     it('should accept entered comment text without user mention if no autocomplete suggestions', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=us' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/emptyUsernamesSearch.json' },
       );
 
@@ -151,7 +151,7 @@ describe('Comment on articles', () => {
 
     it('should stop showing mention autocomplete suggestions on text delete', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=se' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -177,7 +177,7 @@ describe('Comment on articles', () => {
 
     it('should resume search suggestions when user types after deleting', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=se' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -202,7 +202,7 @@ describe('Comment on articles', () => {
 
     it('should close the autocomplete suggestions on Escape press', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=se' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -226,7 +226,7 @@ describe('Comment on articles', () => {
     // TODO: fix
     it('should close the autocomplete suggestions and exit combobox on click elsewhere in text area', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=se' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -251,7 +251,7 @@ describe('Comment on articles', () => {
 
     it('should exit combobox when blurred and refocused', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=s' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/usernames.json' },
       );
 
@@ -274,7 +274,7 @@ describe('Comment on articles', () => {
 
     it('should reply to a comment with user mention autocomplete', () => {
       cy.intercept(
-        { method: 'GET', url: '/search/usernames?username=se' },
+        { method: 'GET', url: '/search/usernames*' },
         { fixture: 'search/usernames.json' },
       );
 
