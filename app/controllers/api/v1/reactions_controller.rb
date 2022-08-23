@@ -3,7 +3,7 @@ module Api
     class ReactionsController < ApiController
       before_action :authenticate!
 
-      def create
+      def toggle
         remove_count_cache_key
 
         result = ReactionToggle.toggle(params, current_user: current_user || @user)

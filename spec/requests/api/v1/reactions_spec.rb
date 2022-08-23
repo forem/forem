@@ -20,14 +20,15 @@ RSpec.describe "Api::V1::Reactions", type: :request do
 
   context "when unauthenticated and post to create" do
     it "returns unauthorized" do
-      post api_reactions_path, params: params.to_json, headers: v1_headers
+      post api_reactions_toggle_path, params: params.to_json, headers: v1_headers
       expect(response).to have_http_status(:unauthorized)
     end
   end
 
   context "when unauthorized and post to create" do
     it "returns unauthorized" do
-      post api_reactions_path, params: params.to_json, headers: v1_headers.merge({ "api-key" => "invalid api key" })
+      post api_reactions_toggle_path, params: params.to_json,
+                                      headers: v1_headers.merge({ "api-key" => "invalid api key" })
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -44,12 +45,12 @@ RSpec.describe "Api::V1::Reactions", type: :request do
       let(:result) { ReactionToggle::Result.new reaction: Reaction.new }
 
       it "responds with success" do
-        post api_reactions_path, params: params.to_json, headers: auth_header
+        post api_reactions_toggle_path, params: params.to_json, headers: auth_header
         expect(response).to have_http_status(:success)
       end
 
       it "responds with expected JSON" do
-        post api_reactions_path, params: params.to_json, headers: auth_header
+        post api_reactions_toggle_path, params: params.to_json, headers: auth_header
         expect(JSON.parse(response.body).keys).to contain_exactly("id", "result", "category", "reactable_type",
                                                                   "reactable_id")
       end
@@ -64,7 +65,7 @@ RSpec.describe "Api::V1::Reactions", type: :request do
       end
 
       it "responds with success" do
-        post api_reactions_path, params: params.to_json, headers: auth_header
+        post api_reactions_toggle_path, params: params.to_json, headers: auth_header
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
