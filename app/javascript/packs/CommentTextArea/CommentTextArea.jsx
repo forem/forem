@@ -21,10 +21,35 @@ import Templates from '@images/templates.svg';
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 
+// Placeholder text displayed while an image is uploading
+const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
+
 const getClosestTemplatesContainer = (element) =>
   element
     .closest('.comment-form__inner')
     ?.querySelector('.response-templates-container');
+
+const handleImageUploading = (textAreaRef) => {
+  return function () {
+    // Function is within the component to be able to access
+    // textarea ref.
+
+    // Update this case:
+    // If a string is selected, then the markdownImageLink should be added at the end of that selection
+    // and selection should be removed.
+    const editableBodyElement = textAreaRef.current;
+
+    const { selectionStart, selectionEnd, value } = editableBodyElement;
+    const before = value.substring(0, selectionStart);
+    const after = value.substring(selectionEnd, value.length);
+    const newSelectionStart = `${before}\n${UPLOADING_IMAGE_PLACEHOLDER}`
+      .length;
+
+    editableBodyElement.value = `${before}\n${UPLOADING_IMAGE_PLACEHOLDER}\n${after}`;
+    editableBodyElement.selectionStart = newSelectionStart;
+    editableBodyElement.selectionEnd = newSelectionStart;
+  };
+};
 
 const handleImageSuccess = (textAreaRef) => {
   return function (response) {
@@ -33,15 +58,52 @@ const handleImageSuccess = (textAreaRef) => {
     const editableBodyElement = textAreaRef.current;
     const { links } = response;
 
-    const markdownImageLink = `![Image description](${links[0]})\n`;
+    const markdownImageLink = `![Image description](${links[0]})`;
     const { selectionStart, selectionEnd, value } = editableBodyElement;
-    const before = value.substring(0, selectionStart);
-    const after = value.substring(selectionEnd, value.length);
+    if (value.includes(UPLOADING_IMAGE_PLACEHOLDER)) {
+      const newSelectedStart =
+        value.indexOf(UPLOADING_IMAGE_PLACEHOLDER, 0) +
+        markdownImageLink.length;
 
-    editableBodyElement.value = `${before + markdownImageLink} ${after}`;
-    editableBodyElement.selectionStart =
-      selectionStart + markdownImageLink.length;
-    editableBodyElement.selectionEnd = editableBodyElement.selectionStart;
+      editableBodyElement.value = value.replace(
+        UPLOADING_IMAGE_PLACEHOLDER,
+        markdownImageLink,
+      );
+      editableBodyElement.selectionStart = newSelectedStart;
+      editableBodyElement.selectionEnd = newSelectedStart;
+    } else {
+      const before = value.substring(0, selectionStart);
+      const after = value.substring(selectionEnd, value.length);
+
+      editableBodyElement.value = `${before}\n${markdownImageLink}\n${after}`;
+      editableBodyElement.selectionStart =
+        selectionStart + markdownImageLink.length;
+      editableBodyElement.selectionEnd = editableBodyElement.selectionStart;
+    }
+  };
+};
+
+const handleImageUploadFailure = (textAreaRef) => {
+  return function (message) {
+    // Function is within the component to be able to access
+    // textarea ref.
+    handleImageFailure(message);
+    const editableBodyElement = textAreaRef.current;
+
+    const { value } = editableBodyElement;
+    if (value.includes(`\n${UPLOADING_IMAGE_PLACEHOLDER}\n`)) {
+      const newSelectionStart = value.indexOf(
+        `\n${UPLOADING_IMAGE_PLACEHOLDER}\n`,
+        0,
+      );
+
+      editableBodyElement.value = value.replace(
+        `\n${UPLOADING_IMAGE_PLACEHOLDER}\n`,
+        '',
+      );
+      editableBodyElement.selectionStart = newSelectionStart;
+      editableBodyElement.selectionEnd = newSelectionStart;
+    }
   };
 };
 
@@ -52,8 +114,9 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
 
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
+      handleImageUploading(textAreaRef),
       handleImageSuccess(textAreaRef),
-      handleImageFailure,
+      handleImageUploadFailure(textAreaRef),
     ),
     onDragOver,
     onDragExit,
@@ -61,8 +124,9 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
 
   const setPasteElement = usePasteImage({
     onPaste: handleImagePasted(
+      handleImageUploading(textAreaRef),
       handleImageSuccess(textAreaRef),
-      handleImageFailure,
+      handleImageUploadFailure(textAreaRef),
     ),
   });
 
