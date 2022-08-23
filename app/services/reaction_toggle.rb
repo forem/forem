@@ -94,7 +94,6 @@ class ReactionToggle
     reaction.destroy
     sink_articles(reaction)
     send_notifications_without_delay(reaction)
-    "destroy"
   end
 
   def get_existing_reaction
