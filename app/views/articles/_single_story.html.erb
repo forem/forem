@@ -150,13 +150,17 @@
           <button
             type="button"
             id="article-save-button-<%= story.id %>"
-            class="crayons-btn crayons-btn--secondary crayons-btn--s w-max bookmark-button"
+            class="c-btn c-btn--icon-alone bookmark-button"
             data-reactable-id="<%= story.id %>"
             data-article-author-id="<%= story.user_id %>"
             aria-label="<%= t("views.articles.save.aria_label") %>"
             title="<%= t("views.articles.save.title") %>">
-            <span class="bm-initial"><%= t("views.articles.save.initial") %></span>
-            <span class="bm-success"><%= t("views.articles.save.success") %></span>
+            <span class="bm-initial">
+              <%= inline_svg_tag("small-save.svg", alt: "", aria_hidden: true) %>
+            </span>
+            <span class="bm-success">
+              <%= inline_svg_tag("small-save-filled.svg", alt: "", aria_hidden: true) %>
+            </span>
           </button>
         </div>
       </div>
