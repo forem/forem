@@ -94,6 +94,7 @@ class CommentsController < ApplicationController
     raise
   rescue StandardError => e
     skip_authorization
+
     message = I18n.t("comments_controller.markdown", error: e)
     render json: { error: message }, status: :unprocessable_entity
   end
