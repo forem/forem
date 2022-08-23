@@ -127,7 +127,6 @@ class ReactionToggle
     Audit::Logger.log(:moderator, current_user, updated_params)
   end
 
-  # keyword arguments
   def create_result(reaction, action)
     if action
       Result.new category: category, reaction: reaction, action: action
