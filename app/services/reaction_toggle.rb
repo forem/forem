@@ -90,6 +90,22 @@ class ReactionToggle
     reactions.find_each { |reaction| destroy_reaction(reaction) }
   end
 
+  def destroy_reaction(reaction)
+    reaction.destroy
+    sink_articles(reaction)
+    send_notifications_without_delay(reaction)
+    "destroy"
+  end
+
+  def get_existing_reaction
+    Reaction.where(
+      user_id: current_user.id,
+      reactable_id: params[:reactable_id],
+      reactable_type: params[:reactable_type],
+      category: category,
+    ).first
+  end
+
   def rate_limit_reaction_creation
     rate_limiter.track_limit_by_action(:reaction_creation)
   end
@@ -110,22 +126,6 @@ class ReactionToggle
     return unless reaction.reaction_on_organization_article?
 
     Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
-  end
-
-  def get_existing_reaction
-    Reaction.where(
-      user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
-      category: category,
-    ).first
-  end
-
-  def destroy_reaction(reaction)
-    reaction.destroy
-    sink_articles(reaction)
-    send_notifications_without_delay(reaction)
-    "destroy"
   end
 
   # keyword arguments
