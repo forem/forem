@@ -500,6 +500,18 @@ RSpec.describe Article, type: :model do
         .to include("only future or current published_at allowed when publishing an article")
     end
 
+    it "doesn't allow recent published_at when publishing on create" do
+      article2 = build(:article, published_at: 1.hour.ago, published: true)
+      expect(article2.valid?).to be false
+      expect(article2.errors[:published_at])
+        .to include("only future or current published_at allowed when publishing an article")
+    end
+
+    it "allows recent published_at when publishing on create" do
+      article2 = build(:article, published_at: 5.minutes.ago, published: true)
+      expect(article2.valid?).to be true
+    end
+
     it "doesn't allow updating published_at if an article has already been published" do
       article.published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
       expect(article.valid?).to be false
@@ -789,15 +801,15 @@ RSpec.describe Article, type: :model do
 
   describe ".active_help" do
     it "returns properly filtered articles under the 'help' tag" do
-      filtered_article = create(:article, user: user, tags: "help",
-                                          published_at: 13.hours.ago, comments_count: 5, score: -3)
+      filtered_article = create(:article, :past, user: user, tags: "help",
+                                                 past_published_at: 13.hours.ago, comments_count: 5, score: -3)
       articles = described_class.active_help
       expect(articles).to include(filtered_article)
     end
 
     it "returns any published articles tagged with 'help' when there are no articles that fit the criteria" do
-      unfiltered_article = create(:article, user: user, tags: "help",
-                                            published_at: 10.hours.ago, comments_count: 8, score: -5)
+      unfiltered_article = create(:article, :past, user: user, tags: "help",
+                                                   past_published_at: 10.hours.ago, comments_count: 8, score: -5)
       articles = described_class.active_help
       expect(articles).to include(unfiltered_article)
     end

@@ -817,7 +817,7 @@ class Article < ApplicationRecord
 
   def future_or_current_published_at
     # allow published_at in the future or within 15 minutes in the past
-    return if !published || published_at > Time.current - (15 * 60 * 60)
+    return if !published || published_at > 15.minutes.ago
 
     errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
   end
