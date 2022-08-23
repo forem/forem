@@ -93,6 +93,13 @@ class ReactionToggle
     Notification.send_reaction_notification(reaction, reaction.reactable.organization)
   end
 
+  def send_notifications_without_delay(reaction)
+    Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
+    return unless reaction.reaction_on_organization_article?
+
+    Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
+  end
+
   def get_existing_reaction
     Reaction.where(
       user_id: current_user.id,
@@ -109,7 +116,6 @@ class ReactionToggle
                 elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
                 end
-
     return if reactions.blank?
 
     reactions.find_each { |reaction| destroy_reaction(reaction) }
@@ -117,12 +123,8 @@ class ReactionToggle
 
   def destroy_reaction(reaction)
     reaction.destroy
-    Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
-    Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
-    if reaction.reaction_on_organization_article?
-      Notification.send_reaction_notification_without_delay(reaction,
-                                                            reaction.reactable.organization)
-    end
+    sink_articles(reaction)
+    send_notifications_without_delay(reaction)
     "destroy"
   end
 
