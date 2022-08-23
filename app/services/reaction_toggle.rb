@@ -30,16 +30,6 @@ class ReactionToggle
   delegate :rate_limiter, to: :current_user
 
   def toggle
-    existing_reaction = get_existing_reaction
-
-    if existing_reaction
-      handle_existing_reaction(existing_reaction)
-    else
-      create_new_reaction
-    end
-  end
-
-  def handle_existing_reaction(reaction)
     if params[:reactable_type] == "Article" && params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
       destroy_previous_mod_reactions(
         params[:reactable_id],
@@ -49,6 +39,15 @@ class ReactionToggle
       )
     end
 
+    existing_reaction = get_existing_reaction
+    if existing_reaction
+      handle_existing_reaction(existing_reaction)
+    else
+      create_new_reaction
+    end
+  end
+
+  def handle_existing_reaction(reaction)
     destroy_reaction(reaction)
     log_audit(reaction)
     create_result(reaction, "destroy") if reaction
