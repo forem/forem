@@ -31,7 +31,7 @@ class ReactionToggle
 
   def toggle
     if params[:reactable_type] == "Article" && params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
-      destroy_previous_mod_reactions(
+      destroy_contradictory_mod_reactions(
         params[:reactable_id],
         params[:reactable_type],
         current_user,
@@ -78,6 +78,18 @@ class ReactionToggle
 
   private
 
+  def destroy_contradictory_mod_reactions(id, type, mod, category)
+    reactions = if category == "thumbsup"
+                  Reaction.where(reactable_id: id, reactable_type: type, user: mod,
+                                 category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
+                elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
+                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
+                end
+    return if reactions.blank?
+
+    reactions.find_each { |reaction| destroy_reaction(reaction) }
+  end
+
   def rate_limit_reaction_creation
     rate_limiter.track_limit_by_action(:reaction_creation)
   end
@@ -107,18 +119,6 @@ class ReactionToggle
       reactable_type: params[:reactable_type],
       category: category,
     ).first
-  end
-
-  def destroy_previous_mod_reactions(id, type, mod, category)
-    reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod,
-                                 category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
-                end
-    return if reactions.blank?
-
-    reactions.find_each { |reaction| destroy_reaction(reaction) }
   end
 
   def destroy_reaction(reaction)
