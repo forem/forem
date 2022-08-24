@@ -840,16 +840,6 @@ class Article < ApplicationRecord
     end
   end
 
-  # def has_correct_published_at?
-  #   return unless published_at_was && published
-  #   # don't allow editing published_at if an article has already been published
-  #   # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
-  #   return unless published_was && published_at_was < Time.current &&
-  #     changes["published_at"] && !(published_at_was - published_at).between?(-60, 60)
-
-  #   errors.add(:published_at, I18n.t("models.article.immutable_published_at"))
-  # end
-
   def canonical_url_must_not_have_spaces
     return unless canonical_url.to_s.match?(/[[:space:]]/)
 
