@@ -19,8 +19,8 @@ module Articles
       update_edited_at = article.user == user && article.published
       attrs = Articles::Attributes.new(article_params, article.user)
         .for_update(update_edited_at: update_edited_at)
-
       success = article.update(attrs)
+
       if success
         user.rate_limiter.track_limit_by_action(:article_update)
 
