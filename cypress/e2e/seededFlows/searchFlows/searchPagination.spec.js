@@ -73,7 +73,6 @@ describe('Search pagination', () => {
 
       cy.findByRole('group', { name: 'Pagination group of buttons' }).within(
         () => {
-          // cy.findByRole('button', {name: 'Previous Page'}).click();
           cy.findByRole('button', { name: 'Page 1' }).click();
         },
       );
