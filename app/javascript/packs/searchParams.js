@@ -301,22 +301,22 @@ function initializePagination(links) {
   !!prev &&
     (previousButton.onclick = () => {
       updatePage(currentPage);
-      fetchRecords(prev);
+      fetchRecords(removeDomainURL(prev));
     });
   !!next &&
     (nextButton.onclick = () => {
       updatePage(currentPage + 2);
-      fetchRecords(next);
+      fetchRecords(removeDomainURL(next));
     });
   !!first &&
     (document.getElementById('first-page').onclick = () => {
       updatePage(1);
-      fetchRecords(first);
+      fetchRecords(removeDomainURL(first));
     });
   !!last &&
     (document.getElementById('last-page').onclick = () => {
       updatePage(totalPages);
-      fetchRecords(last);
+      fetchRecords(removeDomainURL(last));
     });
 
   // Page number buttons
@@ -344,6 +344,11 @@ function initializePagination(links) {
   activePageButton.classList.remove('crayons-btn--outlined');
   activePageButton.classList.add('crayons-btn');
 }
+
+const removeDomainURL = (url) => {
+  const { pathname, search } = new URL(url);
+  return `${pathname}${search}`;
+};
 
 const waitingOnSearch = setInterval(() => {
   if (

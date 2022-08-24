@@ -59,6 +59,47 @@ describe('Search pagination', () => {
         },
       );
     });
+
+    it('should navigate with the pagination numbers widgets', function () {
+      cy.visit('/search?q=test&filters=class_name:Article');
+
+      cy.findByRole('group', { name: 'Pagination group of buttons' }).within(
+        () => {
+          cy.findByRole('button', { name: 'Page 2' }).click();
+        },
+      );
+
+      cy.findByRole('heading', { name: 'Test Article 33' }).should('exist');
+
+      cy.findByRole('group', { name: 'Pagination group of buttons' }).within(
+        () => {
+          // cy.findByRole('button', {name: 'Previous Page'}).click();
+          cy.findByRole('button', { name: 'Page 1' }).click();
+        },
+      );
+
+      cy.findByRole('heading', { name: 'Test article' }).should('exist');
+    });
+
+    it('should navigate with the pagination rows widgets', function () {
+      cy.visit('/search?q=test&filters=class_name:Article');
+
+      cy.findByRole('group', { name: 'Pagination group of buttons' }).within(
+        () => {
+          cy.findByRole('button', { name: 'Next Page' }).click();
+        },
+      );
+
+      cy.findByRole('heading', { name: 'Test Article 33' }).should('exist');
+
+      cy.findByRole('group', { name: 'Pagination group of buttons' }).within(
+        () => {
+          cy.findByRole('button', { name: 'Previous Page' }).click();
+        },
+      );
+
+      cy.findByRole('heading', { name: 'Test article' }).should('exist');
+    });
   });
 
   it('should no show paginator indicator when articles result less than 30', function () {
