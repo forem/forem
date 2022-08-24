@@ -34,7 +34,7 @@ class ReactionToggle
 
   def toggle
     if reactable_type == "Article" && category.in?(Reaction::PRIVILEGED_CATEGORIES)
-      destroy_contradictory_mod_reactions(reactable_id, reactable_type, current_user, category)
+      destroy_contradictory_mod_reactions
     end
 
     existing_reaction = get_existing_reaction
@@ -47,12 +47,13 @@ class ReactionToggle
 
   private
 
-  def destroy_contradictory_mod_reactions(id, type, mod, category)
+  def destroy_contradictory_mod_reactions
     reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod,
+                  Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
                                  category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
                 elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
+                  Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
+                                 category: "thumbsup")
                 end
     return if reactions.blank?
 
