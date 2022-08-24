@@ -5,8 +5,6 @@ RSpec.describe "/api/admin/users", type: :request do
   let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   context "when unauthorized" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     it "rejects requests without an authorization token" do
       expect do
         post api_admin_users_path, params: params, headers: v1_headers
@@ -39,8 +37,6 @@ RSpec.describe "/api/admin/users", type: :request do
   end
 
   context "when authorized" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     let!(:super_admin) { create(:user, :super_admin) }
     let(:api_secret) { create(:api_secret, user: super_admin) }
     let(:headers) { v1_headers.merge({ "api-key" => api_secret.secret }) }

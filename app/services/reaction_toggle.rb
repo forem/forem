@@ -31,7 +31,7 @@ class ReactionToggle
 
   def toggle
     if params[:reactable_type] == "Article" && params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
-      clear_moderator_reactions(
+      destroy_contradictory_mod_reactions(
         params[:reactable_id],
         params[:reactable_type],
         current_user,
@@ -39,68 +39,70 @@ class ReactionToggle
       )
     end
 
-    reaction = Reaction.where(
-      user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
-      category: category,
-    ).first
-
-    # if the reaction already exists, destroy it
-    return handle_existing_reaction(reaction) if reaction
-
-    reaction = build_reaction(category)
-    result = Result.new reaction: reaction, category: category
-
-    if reaction.save
-      rate_limiter.track_limit_by_action(:reaction_creation)
-      Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
-
-      Notification.send_reaction_notification(reaction, reaction.target_user)
-      if reaction.reaction_on_organization_article?
-        Notification.send_reaction_notification(reaction,
-                                                reaction.reactable.organization)
-      end
-
-      result.action = "create"
-
-      if category == "readinglist" && current_user.setting.experience_level
-        rate_article(reaction)
-      end
-
-      if current_user.auditable?
-        Audit::Logger.log(:moderator, current_user, params.dup)
-      end
+    existing_reaction = get_existing_reaction
+    if existing_reaction
+      handle_existing_reaction(existing_reaction)
+    else
+      create_new_reaction
     end
-
-    result
   end
 
   private
 
-  def clear_moderator_reactions(id, type, mod, category)
+  def destroy_contradictory_mod_reactions(id, type, mod, category)
     reactions = if category == "thumbsup"
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod,
                                  category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
                 elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
                 end
-
     return if reactions.blank?
 
     reactions.find_each { |reaction| destroy_reaction(reaction) }
   end
 
+  def destroy_reaction(reaction)
+    reaction.destroy
+    sink_articles(reaction)
+    send_notifications_without_delay(reaction)
+  end
+
+  def get_existing_reaction
+    Reaction.where(
+      user_id: current_user.id,
+      reactable_id: params[:reactable_id],
+      reactable_type: params[:reactable_type],
+      category: category,
+    ).first
+  end
+
   def handle_existing_reaction(reaction)
     destroy_reaction(reaction)
+    log_audit(reaction)
+    create_result(reaction, "destroy") if reaction
+  end
 
-    if reaction.negative? && current_user.auditable?
-      updated_params = params.dup
-      updated_params[:action] = "destroy"
-      Audit::Logger.log(:moderator, current_user, updated_params)
+  def create_new_reaction
+    reaction = build_reaction(category)
+    result = create_result(reaction, nil)
+
+    if reaction.save
+      rate_limit_reaction_creation
+      sink_articles(reaction)
+      send_notifications(reaction)
     end
 
-    Result.new category: category, reaction: reaction, action: "destroy"
+    result.action = "create"
+
+    if category == "readinglist" && current_user.setting.experience_level
+      rate_article(reaction)
+    end
+
+    if current_user.auditable?
+      Audit::Logger.log(:moderator, current_user, params.dup)
+    end
+
+    result
   end
 
   def build_reaction(category)
@@ -117,15 +119,42 @@ class ReactionToggle
     Reaction.new(create_params)
   end
 
-  def destroy_reaction(reaction)
-    reaction.destroy
-    Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
-    Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
-    if reaction.reaction_on_organization_article?
-      Notification.send_reaction_notification_without_delay(reaction,
-                                                            reaction.reactable.organization)
+  def log_audit(reaction)
+    return unless reaction.negative? && current_user.auditable?
+
+    updated_params = params.dup
+    updated_params[:action] = "destroy"
+    Audit::Logger.log(:moderator, current_user, updated_params)
+  end
+
+  def create_result(reaction, action)
+    if action
+      Result.new category: category, reaction: reaction, action: action
+    else
+      Result.new category: category, reaction: reaction
     end
-    "destroy"
+  end
+
+  def rate_limit_reaction_creation
+    rate_limiter.track_limit_by_action(:reaction_creation)
+  end
+
+  def sink_articles(reaction)
+    Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
+  end
+
+  def send_notifications(reaction)
+    Notification.send_reaction_notification(reaction, reaction.target_user)
+    return unless reaction.reaction_on_organization_article?
+
+    Notification.send_reaction_notification(reaction, reaction.reactable.organization)
+  end
+
+  def send_notifications_without_delay(reaction)
+    Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
+    return unless reaction.reaction_on_organization_article?
+
+    Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
   end
 
   def rate_article(reaction)

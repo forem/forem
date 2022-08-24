@@ -1,12 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Organizations", type: :request do
-  let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/organizations/:username" do
     let(:organization) { create(:organization) }
-
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
     it "returns 404 if the organizations username is not found" do
       get "/api/organizations/invalid-username", headers: headers
@@ -36,8 +34,6 @@ RSpec.describe "Api::V1::Organizations", type: :request do
   describe "GET /api/organizations/:username/users" do
     let!(:org_user) { create(:user, :org_member) }
     let(:organization) { org_user.organizations.first }
-
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
     it "returns 404 if the organizations username is not found" do
       get "/api/organizations/invalid-username/users", headers: headers
@@ -82,8 +78,6 @@ RSpec.describe "Api::V1::Organizations", type: :request do
     let(:org_user) { create(:user, :org_member) }
     let(:organization) { org_user.organizations.first }
     let!(:listing) { create(:listing, user: org_user, organization: organization) }
-
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
     it "returns 404 if the organizations username is not found" do
       get "/api/organizations/invalid-username/listings", headers: headers
@@ -137,8 +131,6 @@ RSpec.describe "Api::V1::Organizations", type: :request do
     let(:org_user) { create(:user, :org_member) }
     let(:organization) { org_user.organizations.first }
     let!(:article) { create(:article, user: org_user, organization: organization) }
-
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
     it "returns 404 if the organizations articles is not found" do
       get "/api/organizations/invalid-username/articles", headers: headers
