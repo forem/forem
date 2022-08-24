@@ -48,6 +48,8 @@ Rails.application.routes.draw do
         put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
         put "/users/:id/unpublish", to: "users#unpublish", as: :user_unpublish
 
+        post "/reactions/toggle", to: "reactions#toggle"
+
         draw :api
       end
 
