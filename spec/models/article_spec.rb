@@ -500,6 +500,15 @@ RSpec.describe Article, type: :model do
         .to include("only future or current published_at allowed when publishing an article")
     end
 
+    it "allows past published_at for published_from_feed articles when publishing on update" do
+      published_at = 10.days.ago
+      article2 = create(:article, published: false, published_at: nil, published_from_feed: true)
+      body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{published_at.strftime('%d/%m/%Y %H:%M')}
+      \ndescription:\ntags: heytag\n---\n\nHey this is the article"
+      article2.update(body_markdown: body_markdown)
+      expect(article2.published_at).to be_within(1.minute).of(published_at)
+    end
+
     it "doesn't allow recent published_at when publishing on create" do
       article2 = build(:article, published_at: 1.hour.ago, published: true)
       expect(article2.valid?).to be false
@@ -517,6 +526,18 @@ RSpec.describe Article, type: :model do
       expect(article.valid?).to be false
       expect(article.errors[:published_at])
         .to include("updating published_at for articles that have already been published is not allowed")
+    end
+
+    it "doesn't allow changing published_at for published_from_feed articles that have been published before" do
+      published_at = Time.current
+      published_at_was = 10.days.ago
+      # has published_at means that the article was published before
+      article2 = create(:article, published: false, published_at: published_at_was, published_from_feed: true)
+      body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{published_at.strftime('%d/%m/%Y %H:%M')}
+      \ndescription:\ntags: heytag\n---\n\nHey this is the article"
+      success = article2.update(body_markdown: body_markdown)
+      expect(success).to be false
+      expect(article2.errors[:published_at]).to include(I18n.t("models.article.immutable_published_at"))
     end
   end
 
