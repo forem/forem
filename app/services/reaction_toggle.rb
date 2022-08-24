@@ -22,21 +22,19 @@ class ReactionToggle
   def initialize(params, current_user:)
     @params = params
     @current_user = current_user
+
+    @reactable_id = params[:reactable_id]
+    @reactable_type = params[:reactable_type]
     @category = params[:category] || "like"
   end
 
-  attr_reader :category, :params, :current_user
+  attr_reader :reactable_id, :reactable_type, :category, :params, :current_user
 
   delegate :rate_limiter, to: :current_user
 
   def toggle
-    if params[:reactable_type] == "Article" && params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
-      destroy_contradictory_mod_reactions(
-        params[:reactable_id],
-        params[:reactable_type],
-        current_user,
-        params[:category],
-      )
+    if reactable_type == "Article" && category.in?(Reaction::PRIVILEGED_CATEGORIES)
+      destroy_contradictory_mod_reactions(reactable_id, reactable_type, current_user, category)
     end
 
     existing_reaction = get_existing_reaction
