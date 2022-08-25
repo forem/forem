@@ -20,9 +20,9 @@ class ReactionToggle
   end
 
   def initialize(params, current_user:)
-    @params = params
     @current_user = current_user
 
+    @params = params
     @reactable_id = params[:reactable_id]
     @reactable_type = params[:reactable_type]
     @category = params[:category] || "like"
@@ -108,8 +108,8 @@ class ReactionToggle
   def build_reaction(category)
     create_params = {
       user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
       category: category
     }
     if (current_user&.any_admin? || current_user&.super_moderator?) &&
