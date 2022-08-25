@@ -55,34 +55,6 @@ RSpec.describe Articles::Updater, type: :service do
     context "when an article is updated and published the first time" do
       before { attributes[:published] = true }
 
-      # it "enqueues a job to send a notification" do
-      #   sidekiq_assert_enqueued_with(job: Notifications::NotifiableActionWorker) do
-      #     described_class.call(user, draft, attributes)
-      #   end
-      # end
-
-      # it "delegates to the Mentions::CreateAll service to create mentions" do
-      #   allow(Mentions::CreateAll).to receive(:call)
-      #   described_class.call(user, draft, attributes)
-      #   expect(Mentions::CreateAll).to have_received(:call).with(draft)
-      # end
-
-      # in case the article was published and unpublished before
-      # it "updates published_at to the current time when no published_at passed" do
-      #   attributes[:published_at] = nil
-      #   draft.update_column(:published_at, past_time)
-      #   described_class.call(user, draft, attributes)
-      #   draft.reload
-      #   expect(draft.published_at).to be_within(1.minute).of(Time.current)
-      # end
-
-      # it "updates published_at to the current time when a past published_at is passed" do
-      #   attributes[:published_at] = "2020-04-05 20:20"
-      #   described_class.call(user, draft, attributes)
-      #   draft.reload
-      #   expect(draft.published_at).to be_within(1.minute).of(Time.current)
-      # end
-
       # actually, published_at is set in a model
       it "sets current published_at when publishing from a draft" do
         attributes[:published_at] = nil
@@ -98,23 +70,32 @@ RSpec.describe Articles::Updater, type: :service do
         expect(draft.published_at).to be_within(1.second).of(attributes[:published_at])
       end
 
-      it "doesn't update published_at when a past published_at is passed and an article was exported" do
-        past = 10.days.ago
+      it "allows past published_at for exported articles" do
+        # draft
+      end
+
+      xit "doesn't update published_at when published_at is passed and an article was exported" do
+        new_time = 10.days.from_now
         draft.update_columns(published_at: past, published_from_feed: true)
-        attributes[:published_at] = past
+        attributes[:published_at] = new_time
         described_class.call(user, draft, attributes)
+        draft.reload
         expect(draft.published_at).to be_within(1.second).of(past)
+      end
+
+      it "doesn't update published at when published_at is passed from frontmatter" do
+        draft.update_columns(published_at: past_time)
+        published_at = 10.days.from_now.strftime("%d/%m/%Y %H:%M %z")
+        body_markdown = "---\ntitle: Title\npublished: false\npublished_at: #{published_at}\ndescription:\ntags: heytag
+        \n---\n\nHey this is the article"
+        attributes = { body_markdown: body_markdown }
+        described_class.call(user, draft, attributes)
+        draft.reload
+        expect(draft.published_at).to be_within(1.second).of(past_time)
       end
     end
 
     context "when an article is being updated (published => published)" do
-      # it "doesn't enqueue a job to send a notification" do
-      #   attributes[:published] = true
-      #   sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
-      #     described_class.call(user, article, attributes)
-      #   end
-      # end
-
       it "doesn't update published_at" do
         attributes[:published] = true
         article.update_column(:published_at, past_time)
@@ -149,11 +130,6 @@ RSpec.describe Articles::Updater, type: :service do
         expect(draft.published_at).to be_within(1.second).of(future_time)
       end
 
-      # а что если:
-      # schedule
-      # unpublish
-      # update published_at to the future
-      # publish
       it "updates future published_at if new published_at is passed" do
         draft.update_column(:published_at, future_time)
         attributes[:published] = true
@@ -209,7 +185,7 @@ RSpec.describe Articles::Updater, type: :service do
         # expect(ContextNotification).to have_received(:delete_all)
       end
 
-      it "destroys the prexexisting context notifications" do
+      it "destroys the preexisting context notifications" do
         create(:context_notification, context: article, action: "Published")
         expect do
           described_class.call(user, article, attributes)
