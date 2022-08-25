@@ -50,6 +50,10 @@ class Reaction < ApplicationRecord
   }
   scope :privileged_category, -> { where(category: PRIVILEGED_CATEGORIES) }
   scope :for_user, ->(user) { where(reactable: user) }
+  scope :by_multiple_params, lambda { |id, type, user, category|
+    where(reactable_id: id, reactable_type: type, user: user,
+          category: category)
+  }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -113,6 +117,14 @@ class Reaction < ApplicationRecord
     # @param user [User] the user who might be spamming the system
     def user_has_spammy_profile_reaction?(user:)
       user_vomits.exists?(reactable_id: user.id)
+    end
+
+    def contradictory_mod_reactions(category:, reactable_id:, reactable_type:, user:)
+      if category == "thumbsup"
+        by_multiple_params(reactable_id, reactable_type, user, Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
+      elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
+        by_multiple_params(reactable_id, reactable_type, user, "thumbsup")
+      end
     end
   end
 

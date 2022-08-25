@@ -48,13 +48,12 @@ class ReactionToggle
   private
 
   def destroy_contradictory_mod_reactions
-    reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
-                                 category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                  Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
-                                 category: "thumbsup")
-                end
+    reactions = Reaction.contradictory_mod_reactions(
+      category: category,
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
+      user: current_user,
+    )
     return if reactions.blank?
 
     reactions.find_each { |reaction| destroy_reaction(reaction) }
