@@ -79,12 +79,12 @@ class ReactionToggle
 
     destroy_reaction(@existing_reaction)
     log_audit(@existing_reaction)
-    create_result(@existing_reaction, "destroy")
+    result(@existing_reaction, "destroy")
   end
 
   def create_new_reaction
     reaction = build_reaction(category)
-    result = create_result(reaction, nil)
+    result = result(reaction, nil)
 
     if reaction.save
       rate_limit_reaction_creation
@@ -127,7 +127,7 @@ class ReactionToggle
     Audit::Logger.log(:moderator, current_user, updated_params)
   end
 
-  def create_result(reaction, action)
+  def result(reaction, action)
     if action
       Result.new category: category, reaction: reaction, action: action
     else
