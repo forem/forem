@@ -68,8 +68,8 @@ class ReactionToggle
   def existing_reaction
     Reaction.where(
       user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
       category: category,
     ).first
   end
