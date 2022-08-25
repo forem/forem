@@ -75,9 +75,11 @@ class ReactionToggle
   end
 
   def handle_existing_reaction
+    return unless @existing_reaction
+
     destroy_reaction(@existing_reaction)
     log_audit(@existing_reaction)
-    create_result(@existing_reaction, "destroy") if @existing_reaction
+    create_result(@existing_reaction, "destroy")
   end
 
   def create_new_reaction
