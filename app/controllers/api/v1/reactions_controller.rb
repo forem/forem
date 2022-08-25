@@ -3,6 +3,24 @@ module Api
     class ReactionsController < ApiController
       before_action :authenticate!
 
+      def create
+        remove_count_cache_key
+
+        result = ReactionCreator.create(params, current_user: current_user || @user)
+
+        if result.success?
+          render json: {
+            result: result.action,
+            category: result.category,
+            id: result.reaction.id,
+            reactable_id: result.reaction.reactable_id,
+            reactable_type: result.reaction.reactable_type
+          }
+        else
+          render json: { error: result.errors_as_sentence, status: 422 }, status: :unprocessable_entity
+        end
+      end
+
       def toggle
         remove_count_cache_key
 
