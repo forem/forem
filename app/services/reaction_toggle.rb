@@ -37,9 +37,9 @@ class ReactionToggle
       destroy_contradictory_mod_reactions
     end
 
-    existing_reaction = get_existing_reaction
-    if existing_reaction
-      handle_existing_reaction(existing_reaction)
+    @existing_reaction ||= existing_reaction
+    if @existing_reaction
+      handle_existing_reaction
     else
       create_new_reaction
     end
@@ -65,7 +65,7 @@ class ReactionToggle
     send_notifications_without_delay(reaction)
   end
 
-  def get_existing_reaction
+  def existing_reaction
     Reaction.where(
       user_id: current_user.id,
       reactable_id: params[:reactable_id],
@@ -74,10 +74,10 @@ class ReactionToggle
     ).first
   end
 
-  def handle_existing_reaction(reaction)
-    destroy_reaction(reaction)
-    log_audit(reaction)
-    create_result(reaction, "destroy") if reaction
+  def handle_existing_reaction
+    destroy_reaction(@existing_reaction)
+    log_audit(@existing_reaction)
+    create_result(@existing_reaction, "destroy") if @existing_reaction
   end
 
   def create_new_reaction
