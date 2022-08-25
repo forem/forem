@@ -1,12 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::FollowsController", type: :request do
-
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
+  let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "POST /api/follows" do
     it "returns unauthorized if user is not signed in" do
-      post "/api/follows", params: { users: [] }
+      post "/api/follows", params: { users: [] }, headers: headers
       expect(response).to have_http_status(:unauthorized)
     end
 
@@ -19,7 +18,7 @@ RSpec.describe "Api::V1::FollowsController", type: :request do
       end
 
       it "returns the number of followed users" do
-        post "/api/follows", params: { users: users_hash }
+        post "/api/follows", params: { users: users_hash }, headers: headers
         expect(response.parsed_body["outcome"]).to include("#{users_hash.size} users")
       end
 
@@ -27,7 +26,7 @@ RSpec.describe "Api::V1::FollowsController", type: :request do
         sign_in user
         expect do
           sidekiq_perform_enqueued_jobs do
-            post "/api/follows", params: { users: users_hash }
+            post "/api/follows", params: { users: users_hash }, headers: headers
           end
         end.to change(Follow, :count).by(users_hash.size)
       end
@@ -36,7 +35,7 @@ RSpec.describe "Api::V1::FollowsController", type: :request do
 
   describe "GET /api/follows/tags" do
     it "returns unauthorized if user is not signed in" do
-      get "/api/follows/tags"
+      get "/api/follows/tags", headers: headers
       expect(response).to have_http_status(:unauthorized)
     end
 
@@ -55,7 +54,7 @@ RSpec.describe "Api::V1::FollowsController", type: :request do
       end
 
       it "returns only the tags the user follows", aggregate_failures: true do
-        get "/api/follows/tags"
+        get "/api/follows/tags", headers: headers
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body).to include(tag1_json)
         expect(body).to include(tag2_json)
