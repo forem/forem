@@ -63,35 +63,22 @@ RSpec.describe Articles::Updater, type: :service do
         expect(draft.published_at).to be_within(1.minute).of(Time.current)
       end
 
-      it "doesn't update published_at when a future published_at is passed" do
+      it "sets the passed published_at when a future published_at is passed" do
         attributes[:published_at] = 1.day.from_now
         described_class.call(user, draft, attributes)
         draft.reload
         expect(draft.published_at).to be_within(1.second).of(attributes[:published_at])
       end
 
-      it "allows past published_at for exported articles" do
-        # draft
-      end
-
-      xit "doesn't update published_at when published_at is passed and an article was exported" do
-        new_time = 10.days.from_now
-        draft.update_columns(published_at: past, published_from_feed: true)
-        attributes[:published_at] = new_time
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published_at).to be_within(1.second).of(past)
-      end
-
-      it "doesn't update published at when published_at is passed from frontmatter" do
-        draft.update_columns(published_at: past_time)
-        published_at = 10.days.from_now.strftime("%d/%m/%Y %H:%M %z")
-        body_markdown = "---\ntitle: Title\npublished: false\npublished_at: #{published_at}\ndescription:\ntags: heytag
+      it "allows setting past published_at for exported articles (frontmatter)" do
+        draft.update_columns(published_from_feed: true)
+        past = 10.days.ago
+        published_at = past.strftime("%d/%m/%Y %H:%M %z")
+        body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{published_at}\ndescription:\ntags: heytag
         \n---\n\nHey this is the article"
-        attributes = { body_markdown: body_markdown }
-        described_class.call(user, draft, attributes)
-        draft.reload
-        expect(draft.published_at).to be_within(1.second).of(past_time)
+        frontmatter_attributes = { body_markdown: body_markdown }
+        described_class.call(user, draft, frontmatter_attributes)
+        expect(draft.published_at).to be_within(1.minute).of(past)
       end
     end
 
@@ -111,7 +98,7 @@ RSpec.describe Articles::Updater, type: :service do
       end
     end
 
-    context "when an article is being re-published" do
+    context "when an article is being republished" do
       it "doesn't update past published_at" do
         draft.update_column(:published_at, past_time)
         attributes[:published] = true
@@ -134,7 +121,7 @@ RSpec.describe Articles::Updater, type: :service do
         draft.update_column(:published_at, future_time)
         attributes[:published] = true
         new_published_at = 1.day.from_now
-        attributes[:published_at] = new_published_at # .strftime("%Y-%m-%d %H:%M")
+        attributes[:published_at] = new_published_at
         described_class.call(user, draft, attributes)
         draft.reload
         expect(draft.published).to be true
@@ -145,12 +132,70 @@ RSpec.describe Articles::Updater, type: :service do
         draft.update_column(:published_at, past_time)
         attributes[:published] = true
         new_published_at = 1.day.from_now
-        attributes[:published_at] = new_published_at # .strftime("%Y-%m-%d %H:%M")
+        attributes[:published_at] = new_published_at
         described_class.call(user, draft, attributes)
         draft.reload
         # won't be saved because of the validation
         expect(draft.published).to be false
         expect(draft.published_at).to be_within(1.second).of(past_time)
+      end
+
+      it "doesn't update published at when it is passed from frontmatter" do
+        draft.update_columns(published_at: past_time)
+        published_at = 10.days.from_now.strftime("%d/%m/%Y %H:%M %z")
+        body_markdown = "---\ntitle: Title\npublished: false\npublished_at: #{published_at}\ndescription:\ntags: heytag
+        \n---\n\nHey this is the article"
+        attributes = { body_markdown: body_markdown }
+        described_class.call(user, draft, attributes)
+        draft.reload
+        expect(draft.published_at).to be_within(1.second).of(past_time)
+      end
+
+      it "doesn't update published_at when published_at is passed and an article was exported" do
+        draft.update_columns(published_at: past_time, published_from_feed: true)
+        new_time = 10.days.from_now
+        attributes[:published_at] = new_time
+        described_class.call(user, draft, attributes)
+        draft.reload
+        expect(draft.published_at).to be_within(1.second).of(past_time)
+      end
+
+      it "doesn't update published_at when published_at is passed (from frontmatter) and an article was exported" do
+        draft.update_columns(published_at: past_time, published_from_feed: true)
+        new_time = 10.days.from_now
+        new_pub_at = new_time.strftime("%d/%m/%Y %H:%M %z")
+        body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{new_pub_at}\ndescription:\ntags: heytag
+        \n---\n\nHey this is the article"
+        frontmatter_attributes = { body_markdown: body_markdown }
+        described_class.call(user, draft, frontmatter_attributes)
+        draft.reload
+        expect(draft.published_at).to be_within(1.second).of(past_time)
+      end
+    end
+
+    context "when an article is being unpublished from frontmatter" do
+      let(:published_at) { 1.hour.from_now }
+      let(:published_at_str) { published_at.strftime("%d/%m/%Y %H:%M %z") }
+      let(:f_article) do
+        markdown = "---\ntitle: Title\npublished: true\npublished_at: #{published_at_str}\n
+description:\ntags: heytag\n---\n\nHey this is the article"
+        create(:article, user: user, body_markdown: markdown)
+      end
+
+      it "doesn't remove published_at when it's not passed" do
+        body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag
+        \n---\n\nHey this is the article"
+        described_class.call(user, f_article, { body_markdown: body_markdown })
+        f_article.reload
+        expect(f_article.published_at).to be_within(1.minute).of(published_at)
+      end
+
+      it "doesn't remove published_at when it's passed" do
+        body_markdown = "---\ntitle: Title\npublished: false\n
+        published_at: #{published_at_str}\ndescription:\ntags: heytag\n---\n\nHey this is the article"
+        described_class.call(user, f_article, { body_markdown: body_markdown })
+        f_article.reload
+        expect(f_article.published_at).to be_within(1.minute).of(published_at)
       end
     end
 
@@ -223,7 +268,7 @@ RSpec.describe Articles::Updater, type: :service do
       end
     end
 
-    context "when an article is beingunpublished and contains mentions" do
+    context "when an article is being unpublished and contains mentions" do
       let!(:mention) { create(:mention, mentionable: article, user: user) }
       let(:notification) do
         create(:notification, user: user, notifiable_id: mention.id, notifiable_type: "Mention")
