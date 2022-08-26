@@ -37,9 +37,12 @@ fr:
       icon_left: Left menu
       icon_right: Right menu
     logo:
-      color:
-        label: Brand color
+      color_1:
+        label: Brand color 1
         description: Used for backgrounds, borders etc.
+      color_2:
+        label: Brand color 2
+        description_html: Used for texts (usually put on <em>Brand color 1</em>).
       preview:
         icon: App logo
         text: 'Preview:'
@@ -57,6 +60,10 @@ fr:
       pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
       removed: "🗑 Pin removed"
       error: You can only have five pins
+    profile:
+      color:
+        label: Brand color
+        description: Used for backgrounds, borders etc.
     reading_list:
       meta:
         title: Reading List
