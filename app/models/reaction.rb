@@ -123,13 +123,13 @@ class Reaction < ApplicationRecord
     # @return [Array] Reactions that contain a contradictory category to the category that was passed in,
     # example, if we pass in a "thumbsup", then we return reactions that have have a thumbsdown or vomit
     def contradictory_mod_reactions(category:, reactable_id:, reactable_type:, user:)
-      if category == "thumbsup"
-        Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: user,
-                       category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-      elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-        Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: user,
-                       category: "thumbsup")
-      end
+      contradictory_category = NEGATIVE_PRIVILEGED_CATEGORIES if category == "thumbsup"
+      contradictory_category = "thumbsup" if category.in?(NEGATIVE_PRIVILEGED_CATEGORIES)
+
+      Reaction.where(reactable_id: reactable_id,
+                     reactable_type: reactable_type,
+                     user: user,
+                     category: contradictory_category)
     end
   end
 
