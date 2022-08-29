@@ -4,38 +4,15 @@ import { useLayoutEffect, useRef } from 'preact/hooks';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
 import {
-  handleImageDrop,
-  handleImageFailure,
-  onDragOver,
-  onDragExit,
-} from './dragAndDropHelpers';
+  handleImageUploadSuccess,
+  handleImageUploading,
+  handleImageUploadFailure,
+} from './imageUploadHelpers';
+import { handleImageDrop, onDragOver, onDragExit } from './dragAndDropHelpers';
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
 import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextArea';
-
-function handleImageSuccess(textAreaRef) {
-  return function (response) {
-    // Function is within the component to be able to access
-    // textarea ref.
-    const editableBodyElement = textAreaRef.current;
-    const { links } = response;
-
-    const markdownImageLink = `![Image description](${links[0]})\n`;
-    const { selectionStart, selectionEnd, value } = editableBodyElement;
-    const before = value.substring(0, selectionStart);
-    const after = value.substring(selectionEnd, value.length);
-
-    editableBodyElement.value = `${before + markdownImageLink} ${after}`;
-    editableBodyElement.selectionStart =
-      selectionStart + markdownImageLink.length;
-    editableBodyElement.selectionEnd = editableBodyElement.selectionStart;
-
-    // Dispatching a new event so that linkstate, https://github.com/developit/linkstate,
-    // the function used to create the onChange prop gets called correctly.
-    editableBodyElement.dispatchEvent(new Event('input'));
-  };
-}
 
 export const EditorBody = ({
   onChange,
@@ -47,8 +24,9 @@ export const EditorBody = ({
 
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
-      handleImageSuccess(textAreaRef),
-      handleImageFailure,
+      handleImageUploading(textAreaRef),
+      handleImageUploadSuccess(textAreaRef),
+      handleImageUploadFailure(textAreaRef),
     ),
     onDragOver,
     onDragExit,
@@ -56,8 +34,9 @@ export const EditorBody = ({
 
   const setPasteElement = usePasteImage({
     onPaste: handleImagePasted(
-      handleImageSuccess(textAreaRef),
-      handleImageFailure,
+      handleImageUploading(textAreaRef),
+      handleImageUploadSuccess(textAreaRef),
+      handleImageUploadFailure(textAreaRef),
     ),
   });
 

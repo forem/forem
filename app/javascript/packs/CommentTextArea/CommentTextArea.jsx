@@ -3,8 +3,12 @@ import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import { populateTemplates } from '../../responseTemplates/responseTemplates';
 import { handleImagePasted } from '../../article-form/components/pasteImageHelpers';
 import {
+  handleImageUploading,
+  handleImageUploadSuccess,
+  handleImageUploadFailure,
+} from '../../article-form/components/imageUploadHelpers';
+import {
   handleImageDrop,
-  handleImageFailure,
   onDragOver,
   onDragExit,
 } from '../../article-form/components/dragAndDropHelpers';
@@ -26,25 +30,6 @@ const getClosestTemplatesContainer = (element) =>
     .closest('.comment-form__inner')
     ?.querySelector('.response-templates-container');
 
-const handleImageSuccess = (textAreaRef) => {
-  return function (response) {
-    // Function is within the component to be able to access
-    // textarea ref.
-    const editableBodyElement = textAreaRef.current;
-    const { links } = response;
-
-    const markdownImageLink = `![Image description](${links[0]})\n`;
-    const { selectionStart, selectionEnd, value } = editableBodyElement;
-    const before = value.substring(0, selectionStart);
-    const after = value.substring(selectionEnd, value.length);
-
-    editableBodyElement.value = `${before + markdownImageLink} ${after}`;
-    editableBodyElement.selectionStart =
-      selectionStart + markdownImageLink.length;
-    editableBodyElement.selectionEnd = editableBodyElement.selectionStart;
-  };
-};
-
 export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
   const textAreaRef = useRef(null);
@@ -52,8 +37,9 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
 
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
-      handleImageSuccess(textAreaRef),
-      handleImageFailure,
+      handleImageUploading(textAreaRef),
+      handleImageUploadSuccess(textAreaRef),
+      handleImageUploadFailure(textAreaRef),
     ),
     onDragOver,
     onDragExit,
@@ -61,8 +47,9 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
 
   const setPasteElement = usePasteImage({
     onPaste: handleImagePasted(
-      handleImageSuccess(textAreaRef),
-      handleImageFailure,
+      handleImageUploading(textAreaRef),
+      handleImageUploadSuccess(textAreaRef),
+      handleImageUploadFailure(textAreaRef),
     ),
   });
 
