@@ -46,12 +46,10 @@ RSpec.describe "StoriesShow", type: :request do
 
     ## Title tag
     it "renders signed-in title tag for signed-in user" do
-      allow(Settings::Community).to receive(:community_emoji).and_return("🌱")
-
       sign_in user
       get article.path
 
-      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name} #{community_emoji}</title>"
+      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
       expect(response.body).to include(title)
     end
 
@@ -71,13 +69,11 @@ RSpec.describe "StoriesShow", type: :request do
     end
 
     it "does not render title tag with search_optimized_title_preamble if set and not signed in" do
-      allow(Settings::Community).to receive(:community_emoji).and_return("🌱")
-
       sign_in user
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
 
-      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name} #{community_emoji}</title>"
+      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
       expect(response.body).to include(title)
     end
 
@@ -198,7 +194,7 @@ RSpec.describe "StoriesShow", type: :request do
       # rubocop:enable RSpec/MessageChain
       get article.path
 
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
     end
 
     it "has noindex if article has low score" do

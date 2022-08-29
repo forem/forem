@@ -20,7 +20,11 @@ export function matchesDataTransferType(
  * @param {function} handleImageSuccess Callback for when image upload succeeds
  * @param {function} handleImageFailure Callback for when image upload fails
  */
-export function handleImagePasted(handleImageSuccess, handleImageFailure) {
+export function handleImagePasted(
+  handleImageUploading,
+  handleImageSuccess,
+  handleImageFailure,
+) {
   return function (event) {
     if (!event.clipboardData || !event.clipboardData.items) return;
     if (!matchesDataTransferType(event.clipboardData.types)) return;
@@ -37,7 +41,12 @@ export function handleImagePasted(handleImageSuccess, handleImageFailure) {
       return;
     }
 
-    processImageUpload(files, handleImageSuccess, handleImageFailure);
+    processImageUpload(
+      files,
+      handleImageUploading,
+      handleImageSuccess,
+      handleImageFailure,
+    );
   };
 }
 

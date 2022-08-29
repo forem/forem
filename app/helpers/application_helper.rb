@@ -93,8 +93,6 @@ module ApplicationHelper
   def title(page_title)
     derived_title = if page_title.include?(community_name)
                       page_title
-                    elsif user_signed_in?
-                      "#{page_title} - #{community_name} #{community_emoji}"
                     else
                       "#{page_title} - #{community_name}"
                     end

@@ -82,11 +82,15 @@ class CommentsController < ApplicationController
       message = @comment.errors_as_sentence
       render json: { error: message }, status: :unprocessable_entity
     end
+
   # See https://github.com/forem/forem/pull/5485#discussion_r366056925
   # for details as to why this is necessary
   rescue ModerationUnauthorizedError => e
     render json: { error: e.message }, status: :unprocessable_entity
-  rescue Pundit::NotAuthorizedError, RateLimitChecker::LimitReached
+  rescue Pundit::NotAuthorizedError => e
+    message = I18n.t("comments_controller.create.authorization_error", error: e)
+    render json: { error: message }, status: :unauthorized
+  rescue RateLimitChecker::LimitReached
     raise
   rescue StandardError => e
     skip_authorization
