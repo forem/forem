@@ -7,30 +7,17 @@ RSpec.describe "Api::V1::Articles", type: :request do
   let(:new_article) { create(:article) }
   let(:api_secret) { create(:api_secret) }
   let(:listener) { :admin_api }
-  let(:v1_headers) do
-    {
-      "content-type" => "application/json",
-      "Accept" => "application/vnd.forem.api-v1+json",
-      "api-key" => api_secret.secret
-    }
-  end
+  let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:auth_headers) { headers.merge({ "api-key" => api_secret.secret }) }
 
-  before do
-    stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-  end
+  before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
   describe "GET /api/articles" do
     before { article }
 
-    it "returns 401 when unauthenticated" do
-      get api_articles_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-      expect(response).to have_http_status(:unauthorized)
-    end
-
     it "returns CORS headers" do
       origin = "http://example.com"
-      get api_articles_path, headers: v1_headers.merge({ origin: origin })
+      get api_articles_path, headers: headers.merge({ origin: origin })
 
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
@@ -41,7 +28,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
-      get api_articles_path, headers: v1_headers
+      get api_articles_path, headers: headers
 
       index_keys = %w[
         type_of id title description cover_image readable_publish_date social_image
@@ -54,44 +41,44 @@ RSpec.describe "Api::V1::Articles", type: :request do
     end
 
     it "returns correct tag list" do
-      get api_articles_path, headers: v1_headers
+      get api_articles_path, headers: headers
 
       expect(response.parsed_body.first["tag_list"]).to be_a_kind_of Array
     end
 
     it "returns correct tags" do
-      get api_articles_path, headers: v1_headers
+      get api_articles_path, headers: headers
 
       expect(response.parsed_body.first["tags"]).to be_a_kind_of String
     end
 
     context "without params" do
       it "returns json response" do
-        get api_articles_path, headers: v1_headers
+        get api_articles_path, headers: headers
         expect(response.media_type).to eq("application/json")
       end
 
       it "returns nothing if params state=all is not found" do
-        get api_articles_path(state: "all"), headers: v1_headers
+        get api_articles_path(state: "all"), headers: headers
         expect(response.parsed_body.size).to eq(0)
       end
 
       it "returns featured articles if no param is given" do
         article.update_column(:featured, true)
-        get api_articles_path, headers: v1_headers
+        get api_articles_path, headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
 
       it "supports pagination" do
         create_list(:article, 2, featured: true)
-        get api_articles_path, params: { page: 1, per_page: 2 }, headers: v1_headers
+        get api_articles_path, params: { page: 1, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(2)
-        get api_articles_path, params: { page: 2, per_page: 2 }, headers: v1_headers
+        get api_articles_path, params: { page: 2, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(1)
       end
 
       it "returns flare tag in the response" do
-        get api_articles_path, headers: v1_headers
+        get api_articles_path, headers: headers
         response_article = response.parsed_body.first
         expect(response_article["flare_tag"]).to be_present
         expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
@@ -99,7 +86,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       end
 
       it "sets the correct edge caching surrogate key" do
-        get api_articles_path, headers: v1_headers
+        get api_articles_path, headers: headers
 
         expected_key = ["articles", article.record_key].to_set
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -109,32 +96,32 @@ RSpec.describe "Api::V1::Articles", type: :request do
     context "with username param" do
       it "returns user's articles for the given username" do
         create(:article, user: article.user)
-        get api_articles_path(username: article.user.username), headers: v1_headers
+        get api_articles_path(username: article.user.username), headers: headers
         expect(response.parsed_body.size).to eq(2)
       end
 
       it "returns nothing if given user is not found" do
-        get api_articles_path(username: "foobar"), headers: v1_headers
+        get api_articles_path(username: "foobar"), headers: headers
         expect(response.parsed_body.size).to eq(0)
       end
 
       it "returns org's articles if org's slug is given" do
         create(:article, user: article.user, organization: organization)
-        get api_articles_path(username: organization.slug), headers: v1_headers
+        get api_articles_path(username: organization.slug), headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
 
       it "supports pagination" do
         create_list(:article, 2, user: article.user)
-        get api_articles_path(username: article.user.username), params: { page: 1, per_page: 2 }, headers: v1_headers
+        get api_articles_path(username: article.user.username), params: { page: 1, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(2)
-        get api_articles_path(username: article.user.username), params: { page: 2, per_page: 2 }, headers: v1_headers
+        get api_articles_path(username: article.user.username), params: { page: 2, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(1)
       end
 
       it "sets the correct edge caching surrogate key" do
         new_article = create(:article, user: article.user)
-        get api_articles_path(username: article.user.username), headers: v1_headers
+        get api_articles_path(username: article.user.username), headers: headers
 
         expected_key = ["articles", article.record_key, new_article.record_key].to_set
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -143,12 +130,12 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     context "with tag param" do
       it "returns tag's articles" do
-        get api_articles_path(tag: article.tag_list.first), headers: v1_headers
+        get api_articles_path(tag: article.tag_list.first), headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
 
       it "returns top tag articles if tag and top param is present" do
-        get api_articles_path(tag: article.tag_list.first, top: "7"), headers: v1_headers
+        get api_articles_path(tag: article.tag_list.first, top: "7"), headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
 
@@ -157,20 +144,20 @@ RSpec.describe "Api::V1::Articles", type: :request do
         tag = Tag.find_by(name: article.tag_list.first)
         tag.update(requires_approval: true)
 
-        get api_articles_path(tag: tag.name), headers: v1_headers
+        get api_articles_path(tag: tag.name), headers: headers
         expect(response.parsed_body.size).to eq(0)
       end
 
       it "supports pagination" do
         create_list(:article, 2, tags: "discuss")
-        get api_articles_path(tag: article.tag_list.first), params: { page: 1, per_page: 2 }, headers: v1_headers
+        get api_articles_path(tag: article.tag_list.first), params: { page: 1, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(2)
-        get api_articles_path(tag: article.tag_list.first), params: { page: 2, per_page: 2 }, headers: v1_headers
+        get api_articles_path(tag: article.tag_list.first), params: { page: 2, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(1)
       end
 
       it "sets the correct edge caching surrogate key" do
-        get api_articles_path(tag: article.tag_list.first), headers: v1_headers
+        get api_articles_path(tag: article.tag_list.first), headers: headers
 
         expected_key = ["articles", article.record_key].to_set
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -180,7 +167,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     context "with tags param" do
       it "returns articles with any of the specified tags" do
         create(:article, published: true)
-        get api_articles_path(tags: "javascript, css, not-existing-tag"), headers: v1_headers
+        get api_articles_path(tags: "javascript, css, not-existing-tag"), headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
     end
@@ -188,11 +175,11 @@ RSpec.describe "Api::V1::Articles", type: :request do
     context "with tags_exclude param" do
       it "returns articles that do not contain any of excluded tag" do
         create(:article, published: true)
-        get api_articles_path(tags_exclude: "node, java"), headers: v1_headers
+        get api_articles_path(tags_exclude: "node, java"), headers: headers
         expect(response.parsed_body.size).to eq(2)
 
         create(:article, published: true, tags: "node")
-        get api_articles_path(tags_exclude: "node, java"), headers: v1_headers
+        get api_articles_path(tags_exclude: "node, java"), headers: headers
         expect(response.parsed_body.size).to eq(2)
       end
     end
@@ -200,7 +187,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     context "with tags and tags_exclude params" do
       it "returns proper scope" do
         create(:article, published: true)
-        get api_articles_path(tags: "javascript, css", tags_exclude: "node, java"), headers: v1_headers
+        get api_articles_path(tags: "javascript, css", tags_exclude: "node, java"), headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
     end
@@ -208,7 +195,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     context "when tags and tags_exclude contain the same tag" do
       it "returns empty set" do
         create(:article, published: true, tags: "java")
-        get api_articles_path(tags: "java", tags_exclude: "java"), headers: v1_headers
+        get api_articles_path(tags: "java", tags_exclude: "java"), headers: headers
         expect(response.parsed_body.size).to eq(0)
       end
     end
@@ -218,7 +205,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         # TODO: slight duplication, test should be removed
         old_article = create(:article)
         old_article.update_column(:published_at, 10.days.ago)
-        get api_articles_path(top: "7"), headers: v1_headers
+        get api_articles_path(top: "7"), headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
 
@@ -227,14 +214,14 @@ RSpec.describe "Api::V1::Articles", type: :request do
         old_articles.each do |old_article|
           old_article.update_column(:published_at, 10.days.ago)
         end
-        get api_articles_path(top: "11"), params: { page: 1, per_page: 2 }, headers: v1_headers
+        get api_articles_path(top: "11"), params: { page: 1, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(2)
-        get api_articles_path(top: "11"), params: { page: 2, per_page: 2 }, headers: v1_headers
+        get api_articles_path(top: "11"), params: { page: 2, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(1)
       end
 
       it "sets the correct edge caching surrogate key" do
-        get api_articles_path(top: "7"), headers: v1_headers
+        get api_articles_path(top: "7"), headers: headers
 
         expected_key = ["articles", article.record_key].to_set
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -245,7 +232,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "returns a collection id" do
         collection = create(:collection, user: article.user)
         article.update_columns(collection_id: collection.id)
-        get api_articles_path(collection_id: collection.id), headers: v1_headers
+        get api_articles_path(collection_id: collection.id), headers: headers
         expect(response.parsed_body[0]["collection_id"]).to eq collection.id
       end
 
@@ -256,16 +243,16 @@ RSpec.describe "Api::V1::Articles", type: :request do
         collection_articles.each do |collection_article|
           collection_article.update_columns(collection_id: collection.id)
         end
-        get api_articles_path(collection_id: collection.id), params: { page: 1, per_page: 2 }, headers: v1_headers
+        get api_articles_path(collection_id: collection.id), params: { page: 1, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(2)
-        get api_articles_path(collection_id: collection.id), params: { page: 2, per_page: 2 }, headers: v1_headers
+        get api_articles_path(collection_id: collection.id), params: { page: 2, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(1)
       end
 
       it "sets the correct edge caching surrogate key" do
         collection = create(:collection, user: article.user)
         article.update_columns(collection_id: collection.id)
-        get api_articles_path(collection_id: collection.id), headers: v1_headers
+        get api_articles_path(collection_id: collection.id), headers: headers
 
         expected_key = ["articles", article.record_key].to_set
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -276,14 +263,14 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "returns fresh articles" do
         article.update_columns(public_reactions_count: 1, score: 1)
 
-        get api_articles_path(state: "fresh"), headers: v1_headers
+        get api_articles_path(state: "fresh"), headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
 
       it "returns rising articles" do
         article.update_columns(public_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
 
-        get api_articles_path(state: "rising"), headers: v1_headers
+        get api_articles_path(state: "rising"), headers: headers
         expect(response.parsed_body.size).to eq(1)
       end
 
@@ -291,14 +278,14 @@ RSpec.describe "Api::V1::Articles", type: :request do
         article.update_columns(published_at: 500.years.ago)
         new_article.update_columns(published_at: 1.minute.ago)
 
-        get latest_api_articles_path, headers: v1_headers
+        get latest_api_articles_path, headers: headers
         first_article_published_at = response.parsed_body.first["published_at"]
         last_article_published_at = response.parsed_body.last["published_at"]
         expect(first_article_published_at.to_date).to be > last_article_published_at.to_date
       end
 
       it "returns nothing if the state is unknown" do
-        get api_articles_path(state: "foobar"), headers: v1_headers
+        get api_articles_path(state: "foobar"), headers: headers
 
         expect(response.parsed_body).to be_empty
       end
@@ -306,16 +293,16 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "supports pagination" do
         create_list(:article, 2, tags: "discuss", public_reactions_count: 1, score: 1)
 
-        get api_articles_path(state: "fresh"), params: { page: 1, per_page: 2 }, headers: v1_headers
+        get api_articles_path(state: "fresh"), params: { page: 1, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(2)
-        get api_articles_path(state: "fresh"), params: { page: 2, per_page: 2 }, headers: v1_headers
+        get api_articles_path(state: "fresh"), params: { page: 2, per_page: 2 }, headers: headers
         expect(response.parsed_body.length).to eq(1)
       end
 
       it "sets the correct edge caching surrogate key" do
         article.update_columns(public_reactions_count: 1, score: 1)
 
-        get api_articles_path(state: "fresh"), headers: v1_headers
+        get api_articles_path(state: "fresh"), headers: headers
         expected_key = ["articles", article.record_key].to_set
         expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
       end
@@ -325,21 +312,16 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "works if both the social image and the main image are missing" do
         article.update_columns(social_image: nil, main_image: nil)
 
-        get api_articles_path, headers: v1_headers
+        get api_articles_path, headers: headers
         expect(response).to have_http_status(:ok)
       end
     end
   end
 
   describe "GET /api/articles/:id" do
-    it "returns 401 when unauthenticated" do
-      get api_article_path(article.id), headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-      expect(response).to have_http_status(:unauthorized)
-    end
-
     it "returns CORS headers" do
       origin = "http://example.com"
-      get api_article_path(article.id), headers: v1_headers.merge({ origin: origin })
+      get api_article_path(article.id), headers: headers.merge({ origin: origin })
 
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
@@ -350,7 +332,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
-      get api_article_path(article.id), headers: v1_headers
+      get api_article_path(article.id), headers: headers
 
       show_keys = %w[
         type_of id title description cover_image readable_publish_date social_image
@@ -363,19 +345,19 @@ RSpec.describe "Api::V1::Articles", type: :request do
     end
 
     it "returns correct tag list" do
-      get api_article_path(article.id), headers: v1_headers
+      get api_article_path(article.id), headers: headers
 
       expect(response.parsed_body["tag_list"]).to be_a_kind_of String
     end
 
     it "returns correct tags" do
-      get api_article_path(article.id), headers: v1_headers
+      get api_article_path(article.id), headers: headers
 
       expect(response.parsed_body["tags"]).to be_a_kind_of Array
     end
 
     it "returns proper article" do
-      get api_article_path(article.id), headers: v1_headers
+      get api_article_path(article.id), headers: headers
       expect(response.parsed_body).to include(
         "title" => article.title,
         "body_markdown" => article.body_markdown,
@@ -387,7 +369,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       article.update_columns(
         edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
       )
-      get api_article_path(article.id), headers: v1_headers
+      get api_article_path(article.id), headers: headers
       expect(response.parsed_body).to include(
         "created_at" => article.created_at.utc.iso8601,
         "edited_at" => article.edited_at.utc.iso8601,
@@ -399,17 +381,17 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     it "fails with an unpublished article" do
       article.update_columns(published: false, published_at: nil)
-      get api_article_path(article.id), headers: v1_headers
+      get api_article_path(article.id), headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "fails with an unknown article ID" do
-      get api_article_path("9999"), headers: v1_headers
+      get api_article_path("9999"), headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "sets the correct edge caching surrogate key" do
-      get api_article_path(article), headers: v1_headers
+      get api_article_path(article), headers: headers
 
       expected_key = [article.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -419,7 +401,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
   describe "GET /api/articles/:username/:slug" do
     it "returns CORS headers" do
       origin = "http://example.com"
-      get "/api/articles/#{article.username}/#{article.slug}", headers: v1_headers.merge({ origin: origin })
+      get "/api/articles/#{article.username}/#{article.slug}", headers: headers.merge({ origin: origin })
       expect(response).to have_http_status(:ok)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
       expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
@@ -428,13 +410,13 @@ RSpec.describe "Api::V1::Articles", type: :request do
     end
 
     it "returns correct tags" do
-      get "/api/articles/#{article.username}/#{article.slug}", headers: v1_headers
+      get "/api/articles/#{article.username}/#{article.slug}", headers: headers
       expect(response.parsed_body["tags"]).to eq(article.tag_list)
       expect(response.parsed_body["tag_list"]).to eq(article.tags[0].name)
     end
 
     it "returns proper article" do
-      get "/api/articles/#{article.username}/#{article.slug}", headers: v1_headers
+      get "/api/articles/#{article.username}/#{article.slug}", headers: headers
       expect(response.parsed_body).to include(
         "title" => article.title,
         "body_markdown" => article.body_markdown,
@@ -446,7 +428,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       article.update_columns(
         edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
       )
-      get "/api/articles/#{article.username}/#{article.slug}", headers: v1_headers
+      get "/api/articles/#{article.username}/#{article.slug}", headers: headers
       expect(response.parsed_body).to include(
         "created_at" => article.created_at.utc.iso8601,
         "edited_at" => article.edited_at.utc.iso8601,
@@ -458,17 +440,17 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     it "fails with an unpublished article" do
       article.update_columns(published: false, published_at: nil)
-      get "/api/articles/#{article.username}/#{article.slug}", headers: v1_headers
+      get "/api/articles/#{article.username}/#{article.slug}", headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "fails with an unknown article path" do
-      get "/api/articles/chrisevans/#{article.slug}", headers: v1_headers
+      get "/api/articles/chrisevans/#{article.slug}", headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "sets the correct edge caching surrogate key" do
-      get "/api/articles/#{article.username}/#{article.slug}", headers: v1_headers
+      get "/api/articles/#{article.username}/#{article.slug}", headers: headers
 
       expected_key = [article.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
@@ -487,13 +469,13 @@ RSpec.describe "Api::V1::Articles", type: :request do
       let(:user) { api_secret.user }
 
       it "returns proper response specification" do
-        get "/api/articles/me", headers: v1_headers
+        get "/api/articles/me", headers: auth_headers
         expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
       it "returns success when requesting published articles with public token" do
-        get "/api/articles/me/published", headers: v1_headers
+        get "/api/articles/me/published", headers: auth_headers
         expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
@@ -501,14 +483,14 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "return only user's articles including markdown" do
         create(:article, user: user)
         create(:article)
-        get "/api/articles/me", headers: v1_headers
+        get "/api/articles/me", headers: auth_headers
         expect(response.parsed_body.length).to eq(1)
         expect(response.parsed_body[0]["body_markdown"]).not_to be_nil
       end
 
       it "supports pagination" do
         create_list(:article, 3, user: user)
-        get "/api/articles/me", headers: v1_headers, params: { page: 2, per_page: 2 }
+        get "/api/articles/me", headers: auth_headers, params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
       end
 
@@ -516,7 +498,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         article = create(:article, user: user)
         article.update_columns(organization_id: organization.id)
 
-        get "/api/articles/me", headers: v1_headers
+        get "/api/articles/me", headers: auth_headers
 
         keys = %w[
           type_of id title description published published_at slug path url
@@ -530,19 +512,19 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
       it "only includes published articles by default" do
         create(:article, published: false, published_at: nil, user: user)
-        get "/api/articles/me", headers: v1_headers
+        get "/api/articles/me", headers: auth_headers
         expect(response.parsed_body.length).to eq(0)
       end
 
       it "only includes published articles when asking for published articles" do
         create(:article, published: false, published_at: nil, user: user)
-        get "/api/articles/me/published", headers: v1_headers
+        get "/api/articles/me/published", headers: auth_headers
         expect(response.parsed_body.length).to eq(0)
       end
 
       it "only includes unpublished articles when asking for unpublished articles" do
         create(:article, published: false, published_at: nil, user: user)
-        get "/api/articles/me/unpublished", headers: v1_headers
+        get "/api/articles/me/unpublished", headers: auth_headers
         expect(response.parsed_body.length).to eq(1)
       end
 
@@ -552,7 +534,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         Timecop.travel(1.day.from_now) do
           newer = create(:article, published: false, published_at: nil, user: user)
         end
-        get "/api/articles/me/unpublished", headers: v1_headers
+        get "/api/articles/me/unpublished", headers: auth_headers
         expected_order = response.parsed_body.map { |resp| resp["id"] }
         expect(expected_order).to eq([newer.id, older.id])
       end
@@ -560,7 +542,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "puts unpublished articles at the top when asking for all articles" do
         create(:article, user: user)
         create(:article, published: false, published_at: nil, user: user)
-        get "/api/articles/me/all", headers: v1_headers
+        get "/api/articles/me/all", headers: auth_headers
         expected_order = response.parsed_body.map { |resp| resp["published"] }
         expect(expected_order).to eq([false, true])
       end
@@ -568,7 +550,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "correctly returns reading time in minutes" do
         create(:article, user: user)
 
-        get "/api/articles/me", headers: v1_headers
+        get "/api/articles/me", headers: auth_headers
         expect(response.parsed_body.first["reading_time_minutes"]).to eq(article.reading_time)
       end
     end
@@ -909,35 +891,26 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     describe "when unauthorized" do
       it "fails with no api key" do
-        put path, headers: { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
+        put path, headers: headers
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
-        put path,
-            headers: { "api-key" => "foobar", "content-type" => "application/json",
-                       "Accept" => "application/vnd.forem.api-v1+json" }
+        put path, headers: headers.merge({ "api-key" => "foobar" })
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with a failing secure compare" do
         allow(ActiveSupport::SecurityUtils)
           .to receive(:secure_compare).and_return(false)
-        put path,
-            headers: { "api-key" => api_secret.secret, "content-type" => "application/json",
-                       "Accept" => "application/vnd.forem.api-v1+json" }
+        put path, headers: auth_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
 
     describe "when authorized" do
-      let(:put_headers) do
-        { "api-key" => api_secret.secret, "content-type" => "application/json",
-          "Accept" => "application/vnd.forem.api-v1+json" }
-      end
-
       def put_article(**params)
-        put path, params: { article: params }.to_json, headers: put_headers
+        put path, params: { article: params }.to_json, headers: auth_headers
       end
 
       it "returns a 429 status code if the rate limit is reached" do
@@ -956,7 +929,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "returns not found if the article does not belong to the user" do
         article = create(:article, user: create(:user))
         params = { article: { title: "foobar" } }.to_json
-        put "/api/articles/#{article.id}", params: params, headers: put_headers
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
         expect(response).to have_http_status(:not_found)
       end
 
@@ -964,7 +937,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         user.add_role(:super_admin)
         article = create(:article, user: create(:user))
         params = { article: { title: "foobar" } }.to_json
-        put "/api/articles/#{article.id}", params: params, headers: put_headers
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
         expect(response).to have_http_status(:ok)
       end
 
@@ -1083,7 +1056,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
                               body_markdown: "Yo ho ho",
                               series: "a series" } }
         expect do
-          put "/api/articles/#{article.id}", params: params.to_json, headers: put_headers
+          put "/api/articles/#{article.id}", params: params.to_json, headers: auth_headers
           expect(response).to have_http_status(:ok)
         end.to change(Collection, :count).by(1)
         expect(article.reload.collection.user).to eq(article.user)
@@ -1124,7 +1097,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         article = create(:article, user: create(:user))
         params = { article: { title: Faker::Book.title,
                               body_markdown: "Yo ho ho" } }.to_json
-        put "/api/articles/#{article.id}", params: params, headers: put_headers
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
         expect(response).to have_http_status(:ok)
         expect(article.reload.edited_at).to be_nil
       end
@@ -1134,7 +1107,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         new_article = create(:article, user: create(:user))
         params = { article: { title: Faker::Book.title } }.to_json
         expect do
-          put "/api/articles/#{new_article.id}", params: params, headers: put_headers
+          put "/api/articles/#{new_article.id}", params: params, headers: auth_headers
           article.reload
         end.not_to change(article, :edited_at)
       end
@@ -1171,7 +1144,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       it "fails if params are not a Hash" do
         # Not using the nifty put_article helper method because it expects a Hash
         string_params = "this_string_is_definitely_not_a_hash"
-        put path, params: { article: string_params }.to_json, headers: put_headers
+        put path, params: { article: string_params }.to_json, headers: auth_headers
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
@@ -1194,19 +1167,17 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     context "when unauthorized" do
       it "fails with no api key" do
-        put path, headers: { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" }
+        put path, headers: headers
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
-        put path,
-            headers: { "api-key" => "foobar", "content-type" => "application/json",
-                       "Accept" => "application/vnd.forem.api-v1+json" }
+        put path, headers: headers.merge({ "api-key" => "foobar" })
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails without elevated_user?" do
-        put path, headers: v1_headers
+        put path, headers: auth_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
@@ -1216,7 +1187,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
       it "unpublishes an article" do
         expect(published_article.published).to be true
-        put path, headers: v1_headers
+        put path, headers: auth_headers
         expect(response).to have_http_status(:no_content)
         expect(published_article.reload.published).to be false
       end
@@ -1227,13 +1198,13 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
       it "unpublishes an article" do
         expect(published_article.published).to be true
-        put path, headers: v1_headers
+        put path, headers: auth_headers
         expect(response).to have_http_status(:no_content)
         expect(published_article.reload.published).to be false
       end
 
       it "creates an audit log of the action taken" do
-        put path, headers: v1_headers
+        put path, headers: auth_headers
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)

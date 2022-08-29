@@ -17,7 +17,7 @@ class ArticlesController < ApplicationController
   #
   #              I still want to enable this, but first want to get things mostly conformant with
   #              existing expectations.  Note, in config/application.rb, we're rescuing the below
-  #              excpetion as though it was a Pundit::NotAuthorizedError.
+  #              exception as though it was a Pundit::NotAuthorizedError.
   #
   #              The difference being that rescue_from is an ALWAYS use case.  Whereas the
   #              config/application.rb uses the config.consider_all_requests_local to determine if
@@ -328,6 +328,8 @@ class ArticlesController < ApplicationController
       time_zone = Time.find_zone(time_zone_str)
       time_zone ||= Time.find_zone("UTC")
       params["article"]["published_at"] = time_zone.parse("#{date} #{time}")
+    elsif params["article"]["version"] != "v1"
+      params["article"]["published_at"] = nil
     end
 
     @article_params_json = params.require(:article).permit(allowed_params)

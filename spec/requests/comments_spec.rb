@@ -319,6 +319,18 @@ RSpec.describe "Comments", type: :request do
       }
     end
 
+    context "when a user is coment_suspended" do
+      before do
+        sign_in user
+        user.add_role(:comment_suspended)
+      end
+
+      it "returns not authorized" do
+        post "/comments", params: base_comment_params
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context "when part of field test" do
       before do
         sign_in user

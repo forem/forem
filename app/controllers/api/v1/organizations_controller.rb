@@ -3,7 +3,6 @@ module Api
     class OrganizationsController < ApiController
       include Api::OrganizationsController
 
-      before_action :authenticate!
       before_action :find_organization, only: %i[users listings articles]
     end
   end

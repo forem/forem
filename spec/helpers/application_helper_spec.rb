@@ -257,7 +257,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     let(:collection) { create(:collection, :with_articles) }
 
     it "returns an 'a' tag" do
-      expect(helper.collection_link(collection)).to have_selector("a")
+      expect(helper.collection_link(collection)).to have_link
     end
 
     it "sets the correct href" do
@@ -278,7 +278,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "returns an 'a' tag" do
-      expect(helper.contact_link).to have_selector("a")
+      expect(helper.contact_link).to have_link
     end
 
     it "sets the correct href" do

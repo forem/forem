@@ -36,7 +36,9 @@ describe('<DateTime />', () => {
     );
 
     const dateTime = getByText('Sep 10, 2019');
-    expect(dateTime.title).toBe('Tuesday, September 10, 2019, 5:26:20 PM');
+    expect(dateTime.title).toMatch(
+      /Tuesday, September 10, 2019(,| at) 5:26:20 PM/,
+    );
     expect(dateTime).toHaveClass('date-time');
   });
 });
