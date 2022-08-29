@@ -4,8 +4,6 @@ RSpec.describe "Api::V1::Analytics", type: :request do
   let(:api_secret) { create(:api_secret) }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   describe "GET /api/analytics/totals" do
     include_examples "GET /api/analytics/:endpoint authorization examples", "totals"
   end

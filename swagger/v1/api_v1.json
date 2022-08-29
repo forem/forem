@@ -3,7 +3,7 @@
   "info": {
     "title": "Forem API V1",
     "version": "1.0.0",
-    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but \n        some of them are accessible publicly without authentication.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
+    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but\n        some of them are accessible publicly without authentication.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
   },
   "paths": {
     "/api/articles": {
@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 1357,
-                    "title": "Ego Dominus Tuus168",
-                    "description": "Blog pour-over taxidermy pbr&amp;b bitters. Synth chia pork belly butcher.  Mumblecore 8-bit banh mi...",
-                    "readable_publish_date": "Aug 20",
-                    "slug": "ego-dominus-tuus168-32d5",
-                    "path": "/username372/ego-dominus-tuus168-32d5",
-                    "url": "http://localhost:3000/username372/ego-dominus-tuus168-32d5",
+                    "id": 4453,
+                    "title": "East of Eden168",
+                    "description": "Put a bird on it aesthetic narwhal xoxo pug. Disrupt slow-carb williamsburg crucifix...",
+                    "readable_publish_date": "Aug 23",
+                    "slug": "east-of-eden168-21ml",
+                    "path": "/username372/east-of-eden168-21ml",
+                    "url": "http://localhost:3000/username372/east-of-eden168-21ml",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-08-19T16:09:09Z",
+                    "published_timestamp": "2022-08-23T12:08:21Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/2-1a96ae446ded018b65b215cce3aecc40a00e701642da521fdd6edd3c593ff6c1.png",
-                    "social_image": "http://localhost:3000/assets/2-1a96ae446ded018b65b215cce3aecc40a00e701642da521fdd6edd3c593ff6c1.png",
-                    "canonical_url": "http://localhost:3000/username372/ego-dominus-tuus168-32d5",
-                    "created_at": "2022-08-19T16:09:09Z",
+                    "cover_image": "http://localhost:3000/assets/24-377bc0861a9a539e8d1875ea9d4eea9e0226d93e1b6e9317e0c73c754699cc14.png",
+                    "social_image": "http://localhost:3000/assets/24-377bc0861a9a539e8d1875ea9d4eea9e0226d93e1b6e9317e0c73c754699cc14.png",
+                    "canonical_url": "http://localhost:3000/username372/east-of-eden168-21ml",
+                    "created_at": "2022-08-23T12:08:21Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-08-19T16:09:09Z",
-                    "last_comment_at": "2022-08-19T16:09:09Z",
+                    "published_at": "2022-08-23T12:08:21Z",
+                    "last_comment_at": "2022-08-23T12:08:21Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Kyla \"Avery\" \\:/ Morissette",
+                      "name": "Angelena \"Charis\" \\:/ Lang",
                       "username": "username372",
                       "twitter_username": "twitter372",
                       "github_username": "github372",
-                      "user_id": 3080,
+                      "user_id": 10747,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/3080/001a3d7d-c716-43aa-a46a-8c024888daf9.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/3080/001a3d7d-c716-43aa-a46a-8c024888daf9.jpeg"
+                      "profile_image": "/uploads/user/profile_image/10747/79dbb51d-a63a-4475-af29-a84fe417b9d8.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/10747/79dbb51d-a63a-4475-af29-a84fe417b9d8.jpeg"
                     },
                     "organization": {
-                      "name": "Koss and Sons",
+                      "name": "Vandervort-Sanford",
                       "username": "org56",
                       "slug": "org56",
-                      "profile_image": "/uploads/organization/profile_image/507/464b6b16-79e1-4378-a9fc-76c81403f9e1.png",
-                      "profile_image_90": "/uploads/organization/profile_image/507/464b6b16-79e1-4378-a9fc-76c81403f9e1.png"
+                      "profile_image": "/uploads/organization/profile_image/1275/45556538-13d9-44af-af7e-c9fcdbe2617c.png",
+                      "profile_image_90": "/uploads/organization/profile_image/1275/45556538-13d9-44af-af7e-c9fcdbe2617c.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -204,6 +204,69 @@
                 "example": {
                   "error": "not found",
                   "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reactions/toggle": {
+      "post": {
+        "summary": "create reaction",
+        "tags": ["reactions"],
+        "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["like", "readinglist", "unicorn", "thinking", "hands"]
+            }
+          },
+          {
+            "name": "reactable_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "reactable_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["Comment", "Article", "User"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "result": "create",
+                  "category": "like",
+                  "id": 955,
+                  "reactable_id": 4457,
+                  "reactable_type": "Article"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
                 }
               }
             }

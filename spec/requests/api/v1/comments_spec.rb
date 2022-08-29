@@ -36,8 +36,6 @@ RSpec.describe "Api::V1::Comments", type: :request do
     end
   end
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   describe "GET /api/comments" do
     it "returns not found if wrong article id" do
       get api_comments_path(a_id: "gobbledygook"), headers: headers
