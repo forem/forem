@@ -121,7 +121,7 @@ class ReactionHandler
   def handle_existing_reaction
     destroy_reaction(existing_reaction)
     log_audit(existing_reaction)
-    create_result(existing_reaction, "destroy") if reaction
+    create_result(existing_reaction, "destroy")
   end
 
   def log_audit(reaction)
