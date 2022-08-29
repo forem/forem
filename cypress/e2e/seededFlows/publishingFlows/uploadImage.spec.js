@@ -51,6 +51,10 @@ describe('Upload image', () => {
 
       cy.findByLabelText('Post Content')
         .invoke('val')
+        .should('match', /!\[Uploading image\]/);
+
+      cy.findByLabelText('Post Content')
+        .invoke('val')
         .should('match', /!\[Image description\]/);
     });
 
