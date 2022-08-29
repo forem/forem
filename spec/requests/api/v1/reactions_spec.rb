@@ -91,11 +91,11 @@ RSpec.describe "Api::V1::Reactions", type: :request do
 
     before do
       allow(Rails.cache).to receive(:delete)
-      allow(ReactionCreator).to receive(:create).and_return(result)
+      allow(ReactionHandler).to receive(:create).and_return(result)
     end
 
     context "when created successfully" do
-      let(:result) { ReactionCreator::Result.new reaction: Reaction.new }
+      let(:result) { ReactionHandler::Result.new reaction: Reaction.new }
 
       it "responds with success" do
         post api_reactions_path, params: params.to_json, headers: auth_header
@@ -111,7 +111,7 @@ RSpec.describe "Api::V1::Reactions", type: :request do
 
     context "when created unsuccessfully" do
       let(:result) do
-        ReactionCreator::Result.new.tap do |bad_result|
+        ReactionHandler::Result.new.tap do |bad_result|
           allow(bad_result).to receive(:success?).and_return(false)
           allow(bad_result).to receive(:errors_as_sentence).and_return("Stuff was bad")
         end
