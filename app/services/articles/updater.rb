@@ -17,6 +17,10 @@ module Articles
 
       # updated edited time only if already published and not edited by an admin
       update_edited_at = article.user == user && article.published
+      # remove published_at values received from a user if an articles was published before (has past published_at)
+      # published_at will remain as it was in this case
+      article_params.delete :published_at if article.published_at && !article.scheduled?
+
       attrs = Articles::Attributes.new(article_params, article.user)
         .for_update(update_edited_at: update_edited_at)
       success = article.update(attrs)

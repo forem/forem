@@ -135,8 +135,7 @@ RSpec.describe Articles::Updater, type: :service do
         attributes[:published_at] = new_published_at
         described_class.call(user, draft, attributes)
         draft.reload
-        # won't be saved because of the validation
-        expect(draft.published).to be false
+        expect(draft.published).to be true
         expect(draft.published_at).to be_within(1.second).of(past_time)
       end
 
