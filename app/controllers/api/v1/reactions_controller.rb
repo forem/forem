@@ -6,7 +6,7 @@ module Api
       def create
         remove_count_cache_key
 
-        result = ReactionCreator.create(params, current_user: current_user || @user)
+        result = ReactionHandler.create(params, current_user: current_user || @user)
 
         if result.success?
           render json: {
@@ -24,7 +24,7 @@ module Api
       def toggle
         remove_count_cache_key
 
-        result = ReactionToggle.toggle(params, current_user: current_user || @user)
+        result = ReactionHandler.toggle(params, current_user: current_user || @user)
 
         if result.success?
           render json: {

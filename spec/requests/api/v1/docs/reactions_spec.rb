@@ -10,13 +10,13 @@ RSpec.describe "api/v1/reactions", type: :request do
   let(:category) { "like" }
   let(:reactable) { create :article }
   let(:reaction) { reactable.reactions.create user: user, category: "like" }
-  let(:result) { ReactionToggle::Result.new reaction: reaction }
+  let(:result) { ReactionHandler::Result.new reaction: reaction }
   let(:user) { api_secret.user }
 
   before do
     result.category = category
     allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-    allow(ReactionToggle).to receive(:toggle).and_return(result)
+    allow(ReactionHandler).to receive(:toggle).and_return(result)
   end
 
   path "/api/reactions/toggle" do

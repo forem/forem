@@ -1,4 +1,4 @@
-class ReactionToggle
+class ReactionHandler
   class Result
     attr_accessor :action, :category, :reaction
 
@@ -15,46 +15,51 @@ class ReactionToggle
     end
   end
 
+  def self.create(params, current_user:)
+    new(params, current_user: current_user).create
+  end
+
   def self.toggle(params, current_user:)
     new(params, current_user: current_user).toggle
   end
 
   def initialize(params, current_user:)
     @params = params
+    @reactable_id = params[:reactable_id]
+    @reactable_type = params[:reactable_type]
     @current_user = current_user
     @category = params[:category] || "like"
   end
 
-  attr_reader :category, :params, :current_user
+  attr_reader :category, :params, :current_user, :reactable_type, :reactable_id
 
   delegate :rate_limiter, to: :current_user
 
-  def toggle
-    if params[:reactable_type] == "Article" && params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
-      destroy_contradictory_mod_reactions(
-        params[:reactable_id],
-        params[:reactable_type],
-        current_user,
-        params[:category],
-      )
-    end
+  def create
+    destroy_contradictory_mod_reactions if reactable_type == "Article"
+    return noop_result if existing_reaction
 
-    existing_reaction = get_existing_reaction
-    if existing_reaction
-      handle_existing_reaction(existing_reaction)
-    else
-      create_new_reaction
-    end
+    create_new_reaction
+  end
+
+  def toggle
+    destroy_contradictory_mod_reactions if reactable_type == "Article"
+    return handle_existing_reaction if existing_reaction
+
+    create_new_reaction
   end
 
   private
 
-  def destroy_contradictory_mod_reactions(id, type, mod, category)
+  def destroy_contradictory_mod_reactions
+    return unless params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
+
     reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod,
+                  Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
                                  category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
                 elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
+                  Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
+                                 category: "thumbsup")
                 end
     return if reactions.blank?
 
@@ -67,19 +72,13 @@ class ReactionToggle
     send_notifications_without_delay(reaction)
   end
 
-  def get_existing_reaction
-    Reaction.where(
+  def existing_reaction
+    @existing_reaction ||= Reaction.where(
       user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
       category: category,
     ).first
-  end
-
-  def handle_existing_reaction(reaction)
-    destroy_reaction(reaction)
-    log_audit(reaction)
-    create_result(reaction, "destroy") if reaction
   end
 
   def create_new_reaction
@@ -108,8 +107,8 @@ class ReactionToggle
   def build_reaction(category)
     create_params = {
       user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
       category: category
     }
     if (current_user&.any_admin? || current_user&.super_moderator?) &&
@@ -117,6 +116,12 @@ class ReactionToggle
       create_params[:status] = "confirmed"
     end
     Reaction.new(create_params)
+  end
+
+  def handle_existing_reaction
+    destroy_reaction(existing_reaction)
+    log_audit(existing_reaction)
+    create_result(existing_reaction, "destroy") if reaction
   end
 
   def log_audit(reaction)
@@ -128,11 +133,7 @@ class ReactionToggle
   end
 
   def create_result(reaction, action)
-    if action
-      Result.new category: category, reaction: reaction, action: action
-    else
-      Result.new category: category, reaction: reaction
-    end
+    Result.new category: category, reaction: reaction, action: action
   end
 
   def rate_limit_reaction_creation
@@ -166,5 +167,9 @@ class ReactionToggle
                       user_id: current_user.id,
                       context: "readinglist_reaction",
                       rating: user_experience_level)
+  end
+
+  def noop_result
+    Result.new category: category, action: "none", reaction: existing_reaction
   end
 end
