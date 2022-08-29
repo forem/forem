@@ -3,7 +3,7 @@ import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import { populateTemplates } from '../../responseTemplates/responseTemplates';
 import { handleImagePasted } from '../../article-form/components/pasteImageHelpers';
 import {
-  handleImageSuccess,
+  handleImageUploadSuccess,
   handleImageUploading,
   handleImageUploadFailure,
 } from '../../article-form/components/imageUploadHelpers';
@@ -38,7 +38,7 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
       handleImageUploading(textAreaRef),
-      handleImageSuccess(textAreaRef),
+      handleImageUploadSuccess(textAreaRef),
       handleImageUploadFailure(textAreaRef),
     ),
     onDragOver,
@@ -48,7 +48,7 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
   const setPasteElement = usePasteImage({
     onPaste: handleImagePasted(
       handleImageUploading(textAreaRef),
-      handleImageSuccess(textAreaRef),
+      handleImageUploadSuccess(textAreaRef),
       handleImageUploadFailure(textAreaRef),
     ),
   });

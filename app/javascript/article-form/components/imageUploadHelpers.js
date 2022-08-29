@@ -3,7 +3,7 @@ import { handleImageFailure } from './dragAndDropHelpers';
 // Placeholder text displayed while an image is uploading
 const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
 
-export function handleImageSuccess(textAreaRef) {
+export function handleImageUploadSuccess(textAreaRef) {
   return function (response) {
     // Function is within the component to be able to access
     // textarea ref.

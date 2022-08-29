@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef } from 'preact/hooks';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
 import {
-  handleImageSuccess,
+  handleImageUploadSuccess,
   handleImageUploading,
   handleImageUploadFailure,
 } from './imageUploadHelpers';
@@ -25,7 +25,7 @@ export const EditorBody = ({
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
       handleImageUploading(textAreaRef),
-      handleImageSuccess(textAreaRef),
+      handleImageUploadSuccess(textAreaRef),
       handleImageUploadFailure(textAreaRef),
     ),
     onDragOver,
@@ -35,7 +35,7 @@ export const EditorBody = ({
   const setPasteElement = usePasteImage({
     onPaste: handleImagePasted(
       handleImageUploading(textAreaRef),
-      handleImageSuccess(textAreaRef),
+      handleImageUploadSuccess(textAreaRef),
       handleImageUploadFailure(textAreaRef),
     ),
   });
