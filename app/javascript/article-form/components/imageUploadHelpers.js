@@ -3,6 +3,24 @@ import { handleImageFailure } from './dragAndDropHelpers';
 // Placeholder text displayed while an image is uploading
 const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
 
+export function handleImageUploading(textAreaRef) {
+  return function () {
+    // Function is within the component to be able to access
+    // textarea ref.
+    const editableBodyElement = textAreaRef.current;
+
+    const { selectionStart, selectionEnd, value } = editableBodyElement;
+    const before = value.substring(0, selectionStart);
+    const after = value.substring(selectionEnd, value.length);
+    const newSelectionStart = `${before}\n${UPLOADING_IMAGE_PLACEHOLDER}`
+      .length;
+
+    editableBodyElement.value = `${before}\n${UPLOADING_IMAGE_PLACEHOLDER}\n${after}`;
+    editableBodyElement.selectionStart = newSelectionStart;
+    editableBodyElement.selectionEnd = newSelectionStart;
+  };
+}
+
 export function handleImageUploadSuccess(textAreaRef) {
   return function (response) {
     // Function is within the component to be able to access
@@ -10,7 +28,7 @@ export function handleImageUploadSuccess(textAreaRef) {
     const editableBodyElement = textAreaRef.current;
     const { links } = response;
 
-    const markdownImageLink = `![Image description](${links[0]})`;
+    const markdownImageLink = `![Image description](${links[0]})\n`;
     const { selectionStart, selectionEnd, value } = editableBodyElement;
     if (value.includes(UPLOADING_IMAGE_PLACEHOLDER)) {
       const newSelectedStart =
@@ -32,24 +50,10 @@ export function handleImageUploadSuccess(textAreaRef) {
         selectionStart + markdownImageLink.length;
       editableBodyElement.selectionEnd = editableBodyElement.selectionStart;
     }
-  };
-}
 
-export function handleImageUploading(textAreaRef) {
-  return function () {
-    // Function is within the component to be able to access
-    // textarea ref.
-    const editableBodyElement = textAreaRef.current;
-
-    const { selectionStart, selectionEnd, value } = editableBodyElement;
-    const before = value.substring(0, selectionStart);
-    const after = value.substring(selectionEnd, value.length);
-    const newSelectionStart = `${before}\n${UPLOADING_IMAGE_PLACEHOLDER}`
-      .length;
-
-    editableBodyElement.value = `${before}\n${UPLOADING_IMAGE_PLACEHOLDER}\n${after}`;
-    editableBodyElement.selectionStart = newSelectionStart;
-    editableBodyElement.selectionEnd = newSelectionStart;
+    // Dispatching a new event so that linkstate, https://github.com/developit/linkstate,
+    // the function used to create the onChange prop gets called correctly.
+    editableBodyElement.dispatchEvent(new Event('input'));
   };
 }
 
