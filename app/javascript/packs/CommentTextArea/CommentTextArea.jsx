@@ -3,8 +3,8 @@ import { useState, useRef, useLayoutEffect } from 'preact/hooks';
 import { populateTemplates } from '../../responseTemplates/responseTemplates';
 import { handleImagePasted } from '../../article-form/components/pasteImageHelpers';
 import {
-  handleImageUploadSuccess,
   handleImageUploading,
+  handleImageUploadSuccess,
   handleImageUploadFailure,
 } from '../../article-form/components/imageUploadHelpers';
 import {
