@@ -3,6 +3,11 @@ import { handleImageFailure } from './dragAndDropHelpers';
 // Placeholder text displayed while an image is uploading
 const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
 
+/**
+ * Handles image uploading by showing UPLOADING_IMAGE_PLACEHOLDER text.
+ *
+ * @param {useRef} textAreaRef The reference of the text area with content.
+ */
 export function handleImageUploading(textAreaRef) {
   return function () {
     // Function is within the component to be able to access
@@ -21,6 +26,11 @@ export function handleImageUploading(textAreaRef) {
   };
 }
 
+/**
+ * Handles image upload successfully by replacing UPLOADING_IMAGE_PLACEHOLDER with image link.
+ *
+ * @param {useRef} textAreaRef The reference of the text area with content.
+ */
 export function handleImageUploadSuccess(textAreaRef) {
   return function (response) {
     // Function is within the component to be able to access
@@ -57,6 +67,11 @@ export function handleImageUploadSuccess(textAreaRef) {
   };
 }
 
+/**
+ * Handles image upload failure by removing UPLOADING_IMAGE_PLACEHOLDER text and showing error.
+ *
+ * @param {useRef} textAreaRef The reference of the text area with content.
+ */
 export function handleImageUploadFailure(textAreaRef) {
   return function (message) {
     // Function is within the component to be able to access
