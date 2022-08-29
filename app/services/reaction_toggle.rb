@@ -20,28 +20,26 @@ class ReactionToggle
   end
 
   def initialize(params, current_user:)
-    @params = params
     @current_user = current_user
+
+    @params = params
+    @reactable_id = params[:reactable_id]
+    @reactable_type = params[:reactable_type]
     @category = params[:category] || "like"
   end
 
-  attr_reader :category, :params, :current_user
+  attr_reader :reactable_id, :reactable_type, :category, :params, :current_user
 
   delegate :rate_limiter, to: :current_user
 
   def toggle
-    if params[:reactable_type] == "Article" && params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
-      destroy_contradictory_mod_reactions(
-        params[:reactable_id],
-        params[:reactable_type],
-        current_user,
-        params[:category],
-      )
+    if reactable_type == "Article" && category.in?(Reaction::PRIVILEGED_CATEGORIES)
+      destroy_contradictory_mod_reactions
     end
 
-    existing_reaction = get_existing_reaction
-    if existing_reaction
-      handle_existing_reaction(existing_reaction)
+    @existing_reaction ||= existing_reaction
+    if @existing_reaction
+      handle_existing_reaction
     else
       create_new_reaction
     end
@@ -49,13 +47,13 @@ class ReactionToggle
 
   private
 
-  def destroy_contradictory_mod_reactions(id, type, mod, category)
-    reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod,
-                                 category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
-                end
+  def destroy_contradictory_mod_reactions
+    reactions = Reaction.contradictory_mod_reactions(
+      category: category,
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
+      user: current_user,
+    )
     return if reactions.blank?
 
     reactions.find_each { |reaction| destroy_reaction(reaction) }
@@ -67,24 +65,26 @@ class ReactionToggle
     send_notifications_without_delay(reaction)
   end
 
-  def get_existing_reaction
+  def existing_reaction
     Reaction.where(
       user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
       category: category,
     ).first
   end
 
-  def handle_existing_reaction(reaction)
-    destroy_reaction(reaction)
-    log_audit(reaction)
-    create_result(reaction, "destroy") if reaction
+  def handle_existing_reaction
+    return unless @existing_reaction
+
+    destroy_reaction(@existing_reaction)
+    log_audit(@existing_reaction)
+    result(@existing_reaction, "destroy")
   end
 
   def create_new_reaction
     reaction = build_reaction(category)
-    result = create_result(reaction, nil)
+    result = result(reaction, nil)
 
     if reaction.save
       rate_limit_reaction_creation
@@ -108,8 +108,8 @@ class ReactionToggle
   def build_reaction(category)
     create_params = {
       user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
       category: category
     }
     if (current_user&.any_admin? || current_user&.super_moderator?) &&
@@ -127,7 +127,7 @@ class ReactionToggle
     Audit::Logger.log(:moderator, current_user, updated_params)
   end
 
-  def create_result(reaction, action)
+  def result(reaction, action)
     if action
       Result.new category: category, reaction: reaction, action: action
     else
