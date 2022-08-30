@@ -33,8 +33,9 @@ export const Options = ({
   let existingSeries = '';
   let publishedAtField = '';
 
-  const wasScheduled = moment(publishedAtWas) > moment();
-  const readonlyPublishedAt = published && !wasScheduled;
+  const wasScheduled = publishedAtWas && moment(publishedAtWas) > moment();
+  // allow to edit published at if it was not set earlier or if it's in the future
+  const editablePublishedAt = !publishedAtWas || wasScheduled;
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name, index) => {
@@ -92,7 +93,7 @@ export const Options = ({
     }
   }
 
-  if (schedulingEnabled && !readonlyPublishedAt) {
+  if (schedulingEnabled && editablePublishedAt) {
     const currentDate = moment().format('YYYY-MM-DD');
     publishedAtField = (
       <div className="crayons-field mb-6">

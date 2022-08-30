@@ -17,16 +17,12 @@ module Articles
 
       # updated edited time only if already published and not edited by an admin
       update_edited_at = article.user == user && article.published
-      # TODO: move setting published_at to Articles::Attributes
-      # when publishing (draft => published), and published_at is nil or is in the past, set it to Time.current
-      # except for exported articles
-      publishing = !article.published && article_params[:published]
-      past_published_at = !article_params[:published_at] || article_params[:published_at] < Time.current
-      update_published_at = publishing && !article.published_from_feed && past_published_at
-      attrs = Articles::Attributes.new(article_params, article.user)
-        .for_update(update_edited_at: update_edited_at,
-                    update_published_at: update_published_at)
+      # remove published_at values received from a user if an articles was published before (has past published_at)
+      # published_at will remain as it was in this case
+      article_params.delete :published_at if article.published_at && !article.scheduled?
 
+      attrs = Articles::Attributes.new(article_params, article.user)
+        .for_update(update_edited_at: update_edited_at)
       success = article.update(attrs)
       if success
         user.rate_limiter.track_limit_by_action(:article_update)
