@@ -28,10 +28,34 @@
 ################################################################################
 experiments:
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
-  feed_strategy_starting_20220801:
+  feed_strategy_starting_20220823:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
+    started_at: 2022-08-23
+    variants:
+      - 20220726-variant-b
+      - 20220823-variant
+    weights:
+      - 80
+      - 20
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_publishes_post
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_publishes_post_on_four_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_publishes_post_at_least_two_times_within_week
+      - user_publishes_post_at_least_two_times_within_two_weeks
+  feed_strategy_starting_20220801:
     started_at: 2022-08-01
+    ended_at: 2022-08-23
+    winner: 20220726-variant-b
     variants:
       - 20220726-variant-b
       - 20220801-variant-b
@@ -55,8 +79,6 @@ experiments:
       - user_publishes_post_at_least_two_times_within_week
       - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20220726:
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
     started_at: 2022-07-26
     ended_at: 2022-08-01
     winner: 20220726-variant-b
@@ -83,8 +105,7 @@ experiments:
       - user_publishes_post_at_least_two_times_within_week
       - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20220719:
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
+
     started_at: 2022-07-19
     ended_at: 2022-07-26
     winner: 20220719-variant-b
@@ -109,8 +130,7 @@ experiments:
       - user_publishes_post_at_least_two_times_within_week
       - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20220712:
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
+
     started_at: 2022-07-12
     ended_at: 2022-07-19
     winner: 20220617-variant-a
@@ -135,8 +155,7 @@ experiments:
       - user_publishes_post_at_least_two_times_within_week
       - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20220617:
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
+
     started_at: 2022-06-17
     ended_at: 2022-07-12
     winner: 20220617-variant-a
@@ -161,8 +180,7 @@ experiments:
     # B won with some statistical signficance but A had a strong showing as
     # well.  So we're melding those two together.
     winner: 20220603-variant-b
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
+
     started_at: 2022-06-03
     ended_at: 2022-06-17
     variants:
@@ -190,8 +208,7 @@ experiments:
       - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20220526:
     winner: 20220518-variant
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
+
     started_at: 2022-05-26
     ended_at: 2022-06-03
     variants:
@@ -217,8 +234,7 @@ experiments:
       - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20220518:
     winner: 20220518-variant
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
+
     started_at: 2022-05-18
     ended_at: 2022-06-26
     variants:
@@ -243,8 +259,7 @@ experiments:
       - user_publishes_post_at_least_two_times_within_week
   feed_strategy_starting_20220509:
     winner: 20220422-variant
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
+
     started_at: 2022-05-09
     ended_at: 2022-05-18
     variants:
@@ -269,8 +284,7 @@ experiments:
       - user_publishes_post_at_least_two_times_within_week
   feed_strategy_starting_20220422:
     winner: 20220422-jennie-variant
-    # NOTE: Required as we want only want to consider for conversion events that
-    #       occurred on or after the given start_date.
+
     started_at: 2022-04-22
     ended_at: 2022-05-09
     variants:

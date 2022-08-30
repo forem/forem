@@ -6,6 +6,12 @@ import userEvent from '@testing-library/user-event';
 import { MobileDrawer } from '../MobileDrawer';
 
 describe('<MobileDrawer />', () => {
+  let user;
+
+  beforeEach(() => {
+    user = userEvent.setup();
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(
       <MobileDrawer title="Example MobileDrawer">
@@ -43,16 +49,16 @@ describe('<MobileDrawer />', () => {
     });
     await waitFor(() => expect(innerDrawerButton).toHaveFocus());
 
-    userEvent.tab();
+    await user.keyboard('{Tab}');
     expect(
       getByRole('button', { name: 'Inside drawer button 2' }),
     ).toHaveFocus();
 
-    userEvent.tab();
+    await user.keyboard('{Tab}');
     expect(innerDrawerButton).toHaveFocus();
   });
 
-  it('should close when Escape is pressed', () => {
+  it('should close when Escape is pressed', async () => {
     const onClose = jest.fn();
     render(
       <MobileDrawer title="Example MobileDrawer" onClose={onClose}>
@@ -60,7 +66,7 @@ describe('<MobileDrawer />', () => {
       </MobileDrawer>,
     );
 
-    userEvent.keyboard('{Escape}');
+    await user.keyboard('{Escape}');
     expect(onClose).toHaveBeenCalled();
   });
 
@@ -77,7 +83,7 @@ describe('<MobileDrawer />', () => {
       </div>,
     );
 
-    await userEvent.click(getByText('Outside content'));
+    await user.click(getByText('Outside content'));
     expect(onClose).toHaveBeenCalled();
   });
 });

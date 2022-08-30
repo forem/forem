@@ -194,7 +194,7 @@ RSpec.describe "StoriesShow", type: :request do
       # rubocop:enable RSpec/MessageChain
       get article.path
 
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(:bad_request)
     end
 
     it "has noindex if article has low score" do
