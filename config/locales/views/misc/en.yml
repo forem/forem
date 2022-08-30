@@ -60,6 +60,10 @@ en:
       pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
       removed: "🗑 Pin removed"
       error: You can only have five pins
+    profile:
+      color:
+        label: Brand color
+        description: Used for backgrounds, borders etc.
     reading_list:
       meta:
         title: Reading List
