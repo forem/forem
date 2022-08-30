@@ -13,7 +13,7 @@ module Api
     ].freeze
     private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
-    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || 1000).to_i
+    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || 100).to_i
     private_constant :PER_PAGE_MAX
 
     def index
@@ -27,7 +27,7 @@ module Api
       @listings = @listings.order(bumped_at: :desc)
 
       per_page = (params[:per_page] || 30).to_i
-      num = [per_page, 100].min
+      num = [per_page, PER_PAGE_MAX].min
       page = params[:page] || 1
       @listings = @listings.page(page).per(num)
 
