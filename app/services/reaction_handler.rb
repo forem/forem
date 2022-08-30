@@ -52,7 +52,7 @@ class ReactionHandler
   private
 
   def destroy_contradictory_mod_reactions
-    return unless params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
+    return unless category.in?(Reaction::PRIVILEGED_CATEGORIES)
 
     reactions = if category == "thumbsup"
                   Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
