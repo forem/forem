@@ -232,10 +232,6 @@ module ApplicationHelper
     @community_name ||= Settings::Community.community_name
   end
 
-  def community_emoji
-    @community_emoji ||= Settings::Community.community_emoji
-  end
-
   def release_adjusted_cache_key(path)
     release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
