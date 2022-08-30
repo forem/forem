@@ -81,7 +81,7 @@ module Api
 
     def me
       per_page = (params[:per_page] || 30).to_i
-      num = [per_page, 1000].min
+      num = [per_page, (ENV["API_PER_PAGE_LIMIT"] || 1000)].min
 
       @articles = case params[:status]
                   when "published"
