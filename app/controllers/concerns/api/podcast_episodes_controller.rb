@@ -2,10 +2,13 @@ module Api
   module PodcastEpisodesController
     extend ActiveSupport::Concern
 
+    PER_PAGE_MAX = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+    private_constant :PER_PAGE_MAX
+
     def index
       page = params[:page]
       per_page = (params[:per_page] || 30).to_i
-      num = [per_page, 1000].min
+      num = [per_page, PER_PAGE_MAX].min
 
       if params[:username]
         podcast = Podcast.available.find_by!(slug: params[:username])

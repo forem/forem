@@ -23,6 +23,9 @@ module Api
     ].freeze
     private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 
+    PER_PAGE_MAX = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+    private_constant :PER_PAGE_MAX
+
     def index
       @articles = ArticleApiIndexService.new(params).get
       @articles = @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
@@ -81,7 +84,7 @@ module Api
 
     def me
       per_page = (params[:per_page] || 30).to_i
-      num = [per_page, 1000].min
+      num = [per_page, PER_PAGE_MAX].min
 
       @articles = case params[:status]
                   when "published"
