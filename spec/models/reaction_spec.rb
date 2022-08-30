@@ -331,4 +331,20 @@ RSpec.describe Reaction, type: :model do
       expect(described_class.related_negative_reactions_for_user(moderator).first.id).to eq(reaction.id)
     end
   end
+
+  describe ".contradictory_mod_reactions" do
+    let(:moderator) { create(:user, :trusted) }
+
+    it "returns the contradictary reactions related to the category passed in" do
+      article = create(:article, user: moderator)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
+
+      expect(described_class.contradictory_mod_reactions(
+        category: "thumbsup",
+        reactable_id: article.id,
+        reactable_type: "Article",
+        user: moderator,
+      ).first).to eq(reaction)
+    end
+  end
 end

@@ -114,6 +114,23 @@ class Reaction < ApplicationRecord
     def user_has_spammy_profile_reaction?(user:)
       user_vomits.exists?(reactable_id: user.id)
     end
+
+    # @param category [String] the reaction category type, see the CATEGORIES var
+    # @param reactable_id [Boolean] the ID of the item that was reacted on
+    # @param reactable_type [String] the type of the item, see the REACTABLE_TYPES var
+    # @param user [User] a moderator user
+
+    # @return [Array] Reactions that contain a contradictory category to the category that was passed in,
+    # example, if we pass in a "thumbsup", then we return reactions that have have a thumbsdown or vomit
+    def contradictory_mod_reactions(category:, reactable_id:, reactable_type:, user:)
+      contradictory_category = NEGATIVE_PRIVILEGED_CATEGORIES if category == "thumbsup"
+      contradictory_category = "thumbsup" if category.in?(NEGATIVE_PRIVILEGED_CATEGORIES)
+
+      Reaction.where(reactable_id: reactable_id,
+                     reactable_type: reactable_type,
+                     user: user,
+                     category: contradictory_category)
+    end
   end
 
   # no need to send notification if:

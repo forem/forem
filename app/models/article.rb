@@ -159,7 +159,7 @@ class Article < ApplicationRecord
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validate :future_or_current_published_at, on: :create
-  validate :has_correct_published_at?, on: :update, unless: :admin_update
+  validate :correct_published_at?, on: :update, unless: :admin_update
 
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
@@ -822,14 +822,22 @@ class Article < ApplicationRecord
     errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
   end
 
-  def has_correct_published_at?
-    return unless published_at_was && published
-    # don't allow editing published_at if an article has already been published
-    # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
-    return unless published_was && published_at_was < Time.current &&
-      changes["published_at"] && !(published_at_was - published_at).between?(-60, 60)
+  def correct_published_at?
+    return unless changes["published_at"]
 
-    errors.add(:published_at, I18n.t("models.article.immutable_published_at"))
+    # for drafts (that were never published before) or scheduled articles => allow future or current dates
+    if !published_at_was || published_at_was > Time.current
+      # for articles published_from_feed (exported from rss) we allow past published_at
+      if (!published_at || published_at < 15.minutes.ago) && !published_from_feed
+        errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
+      end
+    else
+      # for articles that have been published already (published or unpublished drafts) => immutable published_at
+      # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
+      has_nils = changes["published_at"].include?(nil) # changes from nil or to nil
+      close_enough = !has_nils && (published_at_was - published_at).between?(-60, 60)
+      errors.add(:published_at, I18n.t("models.article.immutable_published_at")) if has_nils || !close_enough
+    end
   end
 
   def canonical_url_must_not_have_spaces

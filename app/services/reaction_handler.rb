@@ -24,10 +24,11 @@ class ReactionHandler
   end
 
   def initialize(params, current_user:)
+    @current_user = current_user
+
     @params = params
     @reactable_id = params[:reactable_id]
     @reactable_type = params[:reactable_type]
-    @current_user = current_user
     @category = params[:category] || "like"
   end
 
@@ -54,13 +55,12 @@ class ReactionHandler
   def destroy_contradictory_mod_reactions
     return unless category.in?(Reaction::PRIVILEGED_CATEGORIES)
 
-    reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
-                                 category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                  Reaction.where(reactable_id: reactable_id, reactable_type: reactable_type, user: current_user,
-                                 category: "thumbsup")
-                end
+    reactions = Reaction.contradictory_mod_reactions(
+      category: category,
+      reactable_id: reactable_id,
+      reactable_type: reactable_type,
+      user: current_user,
+    )
     return if reactions.blank?
 
     reactions.find_each { |reaction| destroy_reaction(reaction) }
@@ -83,7 +83,7 @@ class ReactionHandler
 
   def create_new_reaction
     reaction = build_reaction(category)
-    result = create_result(reaction, nil)
+    result = result(reaction, nil)
 
     if reaction.save
       rate_limit_reaction_creation
@@ -121,7 +121,7 @@ class ReactionHandler
   def handle_existing_reaction
     destroy_reaction(existing_reaction)
     log_audit(existing_reaction)
-    create_result(existing_reaction, "destroy")
+    result(existing_reaction, "destroy")
   end
 
   def log_audit(reaction)
@@ -132,7 +132,7 @@ class ReactionHandler
     Audit::Logger.log(:moderator, current_user, updated_params)
   end
 
-  def create_result(reaction, action)
+  def result(reaction, action)
     Result.new category: category, reaction: reaction, action: action
   end
 

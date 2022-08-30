@@ -30,7 +30,8 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article: {
         title: "hello",
         body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
-        tag_list: "yo"
+        tag_list: "yo",
+        version: "v1"
       }
     }
     expect(article.reload.edited_at).to be > 5.seconds.ago
@@ -133,7 +134,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     article.update_column(:published, false)
     sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
       put "/articles/#{article.id}", params: {
-        article: { published: true, body_markdown: "blah" }
+        article: { published: true, body_markdown: "blah", version: "v1" }
       }
     end
   end
@@ -146,7 +147,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.notifications.size).to eq 1
 
     put "/articles/#{article.id}", params: {
-      article: { body_markdown: article.body_markdown.gsub("published: true", "published: false") }
+      article: { body_markdown: article.body_markdown.gsub("published: true", "published: false"), version: "v1" }
     }
     expect(article.notifications.size).to eq 0
   end
@@ -193,7 +194,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
     # draft => scheduled
     it "sets published_at according to the timezone when updating draft => scheduled" do
-      draft = create(:article, published: false, user_id: user.id)
+      draft = create(:article, published: false, user_id: user.id, published_at: nil)
       attributes[:published] = true
       attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }
@@ -250,10 +251,22 @@ RSpec.describe "ArticlesUpdate", type: :request do
       draft = create(:article, published: false, user_id: user.id, published_from_feed: true, published_at: nil)
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
       \ndate: #{date}---\n\nHey this is the article"
-      put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown } }
+      put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown, version: "v1" } }
       draft.reload
       expect(draft.published).to be true
       expect(draft.published_at).to be_within(1.minute).of(DateTime.parse(date))
+    end
+
+    it "doesn't allow changing published_at when updating a published article published_from_feed" do
+      date_was = "2022-05-02 19:00:30 UTC"
+      date_new = "2022-08-30 19:00:30 UTC"
+      article = create(:article, :past, published: true, user_id: user.id,
+                                        published_from_feed: true, past_published_at: DateTime.parse(date_was))
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \ndate: #{date_new}---\n\nHey this is the article"
+      put "/articles/#{article.id}", params: { article: { body_markdown: body_markdown, version: "v1" } }
+      article.reload
+      expect(article.published_at).to be_within(1.minute).of(DateTime.parse(date_was))
     end
   end
 end
