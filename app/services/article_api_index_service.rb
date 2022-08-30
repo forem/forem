@@ -1,6 +1,6 @@
 class ArticleApiIndexService
-  DEFAULT_PER_PAGE = 30
-  MAX_PER_PAGE = 1000
+  MAX_PER_PAGE = (ENV["API_PER_PAGE_MAX"] || 1000).to_i
+  DEFAULT_PER_PAGE = [30, MAX_PER_PAGE].min
 
   def initialize(params)
     @page = params[:page]
