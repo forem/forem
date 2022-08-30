@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 4774,
-                    "title": "Blue Remembered Earth168",
-                    "description": "Bitters iphone semiotics wes anderson. +1 food truck cleanse meggings post-ironic narwhal vhs. Ramps...",
-                    "readable_publish_date": "Aug 25",
-                    "slug": "blue-remembered-earth168-2fp9",
-                    "path": "/username372/blue-remembered-earth168-2fp9",
-                    "url": "http://localhost:3000/username372/blue-remembered-earth168-2fp9",
+                    "id": 5137,
+                    "title": "The Yellow Meads of Asphodel168",
+                    "description": "Scenester tofu cold-pressed flannel vhs. Yr park portland organic offal fingerstache forage....",
+                    "readable_publish_date": "Aug 30",
+                    "slug": "the-yellow-meads-of-asphodel168-3bgf",
+                    "path": "/username372/the-yellow-meads-of-asphodel168-3bgf",
+                    "url": "http://localhost:3000/username372/the-yellow-meads-of-asphodel168-3bgf",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-08-25T12:02:50Z",
+                    "published_timestamp": "2022-08-30T09:45:05Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/24-377bc0861a9a539e8d1875ea9d4eea9e0226d93e1b6e9317e0c73c754699cc14.png",
-                    "social_image": "http://localhost:3000/assets/24-377bc0861a9a539e8d1875ea9d4eea9e0226d93e1b6e9317e0c73c754699cc14.png",
-                    "canonical_url": "http://localhost:3000/username372/blue-remembered-earth168-2fp9",
-                    "created_at": "2022-08-25T12:02:50Z",
+                    "cover_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
+                    "social_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
+                    "canonical_url": "http://localhost:3000/username372/the-yellow-meads-of-asphodel168-3bgf",
+                    "created_at": "2022-08-30T09:45:05Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-08-25T12:02:50Z",
-                    "last_comment_at": "2022-08-25T12:02:50Z",
+                    "published_at": "2022-08-30T09:45:05Z",
+                    "last_comment_at": "2022-08-30T09:45:05Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Erasmo \"Ok\" \\:/ Harber",
+                      "name": "Jeffry \"Lon\" \\:/ Daniel",
                       "username": "username372",
                       "twitter_username": "twitter372",
                       "github_username": "github372",
-                      "user_id": 11645,
+                      "user_id": 12567,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/11645/05da2f4e-2263-4ff3-8264-17a65abab0e4.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/11645/05da2f4e-2263-4ff3-8264-17a65abab0e4.jpeg"
+                      "profile_image": "/uploads/user/profile_image/12567/d75daa5f-a5e3-4a5d-90e5-d2a06dba0890.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/12567/d75daa5f-a5e3-4a5d-90e5-d2a06dba0890.jpeg"
                     },
                     "organization": {
-                      "name": "Rau and Sons",
+                      "name": "Abernathy and Sons",
                       "username": "org56",
                       "slug": "org56",
-                      "profile_image": "/uploads/organization/profile_image/1374/cc7c7d6e-c5ce-4c1b-a3f7-00b885d5e223.png",
-                      "profile_image_90": "/uploads/organization/profile_image/1374/cc7c7d6e-c5ce-4c1b-a3f7-00b885d5e223.png"
+                      "profile_image": "/uploads/organization/profile_image/1473/9e5cefc8-2a19-45d2-91db-1d18f26a8cd2.png",
+                      "profile_image_90": "/uploads/organization/profile_image/1473/9e5cefc8-2a19-45d2-91db-1d18f26a8cd2.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -253,8 +253,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1149,
-                  "reactable_id": 4778,
+                  "id": 1437,
+                  "reactable_id": 5141,
                   "reactable_type": "Article"
                 }
               }
@@ -316,8 +316,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 1151,
-                  "reactable_id": 4780,
+                  "id": 1439,
+                  "reactable_id": 5143,
                   "reactable_type": "Article"
                 }
               }
