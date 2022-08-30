@@ -410,7 +410,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by setting `ApplicationConfig[\"API_PER_PAGE_MAX\"]`.",
         "schema": {
           "type": "integer",
           "format": "int32",
@@ -423,7 +423,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by setting `ApplicationConfig[\"API_PER_PAGE_MAX\"]`.",
         "schema": {
           "type": "integer",
           "format": "int32",
@@ -436,7 +436,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by setting `ApplicationConfig[\"API_PER_PAGE_MAX\"]`.",
         "schema": {
           "type": "integer",
           "format": "int32",
@@ -449,7 +449,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by setting `ApplicationConfig[\"API_PER_PAGE_MAX\"]`.",
         "schema": {
           "type": "integer",
           "format": "int32",
@@ -462,7 +462,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by setting `ApplicationConfig[\"API_PER_PAGE_MAX\"]`.",
         "schema": {
           "type": "integer",
           "format": "int32",
