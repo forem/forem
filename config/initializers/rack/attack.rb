@@ -1,3 +1,9 @@
+Rails.application.reloader.to_prepare do
+  Dir.glob(Rails.root.join("lib/rack/atttack/*.rb")).each do |filename|
+    require_dependency filename
+  end
+end
+
 Rack::Attack.throttled_response_retry_after_header = true
 
 module Rack
