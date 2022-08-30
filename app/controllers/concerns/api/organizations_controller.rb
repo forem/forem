@@ -32,6 +32,7 @@ module Api
 
     def users
       per_page = (params[:per_page] || 30).to_i
+      num = [per_page, PER_PAGE_MAX].min
       page = params[:page] || 1
 
       @users = @organization.users.joins(:profile).select(USERS_FOR_SERIALIZATION).page(page).per(num)
