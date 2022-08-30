@@ -2,7 +2,7 @@ module Api
   module PodcastEpisodesController
     extend ActiveSupport::Concern
 
-    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || "1000").to_i
+    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || 1000).to_i
     private_constant :PER_PAGE_MAX
 
     def index

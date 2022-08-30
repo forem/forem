@@ -20,7 +20,7 @@ module Api
     ].freeze
     private_constant :LISTINGS_FOR_SERIALIZATION
 
-    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || "1000").to_i
+    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || 1000).to_i
     private_constant :PER_PAGE_MAX
 
     ARTICLES_FOR_SERIALIZATION = Api::V0::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION

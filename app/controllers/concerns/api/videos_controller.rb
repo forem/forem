@@ -7,7 +7,7 @@ module Api
     ].freeze
     private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
-    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || "1000").to_i
+    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || 1000).to_i
     private_constant :PER_PAGE_MAX
 
     def index
