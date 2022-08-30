@@ -12,7 +12,7 @@ class ArticleApiIndexService
     @sort = params[:sort]
     @top = params[:top]
     @collection_id = params[:collection_id]
-    @per_page = params[:per_page]
+    @per_page = [(params[:per_page] || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
   end
 
   def get
