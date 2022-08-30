@@ -92,7 +92,7 @@
       "negative_reaction_threshold": -9,
       "positive_reaction_threshold": 4
     },
-    "public_reactions_scores": {
+    "public_reactions_score": {
       "cases": [
         [0, 0.4],
         [1, 0.42],
