@@ -1,4 +1,4 @@
-class ReactionToggle
+class ReactionHandler
   class Result
     attr_accessor :action, :category, :reaction
 
@@ -15,6 +15,10 @@ class ReactionToggle
     end
   end
 
+  def self.create(params, current_user:)
+    new(params, current_user: current_user).create
+  end
+
   def self.toggle(params, current_user:)
     new(params, current_user: current_user).toggle
   end
@@ -28,26 +32,29 @@ class ReactionToggle
     @category = params[:category] || "like"
   end
 
-  attr_reader :reactable_id, :reactable_type, :category, :params, :current_user
+  attr_reader :category, :params, :current_user, :reactable_type, :reactable_id
 
   delegate :rate_limiter, to: :current_user
 
-  def toggle
-    if reactable_type == "Article" && category.in?(Reaction::PRIVILEGED_CATEGORIES)
-      destroy_contradictory_mod_reactions
-    end
+  def create
+    destroy_contradictory_mod_reactions if reactable_type == "Article"
+    return noop_result if existing_reaction
 
-    @existing_reaction ||= existing_reaction
-    if @existing_reaction
-      handle_existing_reaction
-    else
-      create_new_reaction
-    end
+    create_new_reaction
+  end
+
+  def toggle
+    destroy_contradictory_mod_reactions if reactable_type == "Article"
+    return handle_existing_reaction if existing_reaction
+
+    create_new_reaction
   end
 
   private
 
   def destroy_contradictory_mod_reactions
+    return unless category.in?(Reaction::PRIVILEGED_CATEGORIES)
+
     reactions = Reaction.contradictory_mod_reactions(
       category: category,
       reactable_id: reactable_id,
@@ -66,20 +73,12 @@ class ReactionToggle
   end
 
   def existing_reaction
-    Reaction.where(
+    @existing_reaction ||= Reaction.where(
       user_id: current_user.id,
       reactable_id: reactable_id,
       reactable_type: reactable_type,
       category: category,
     ).first
-  end
-
-  def handle_existing_reaction
-    return unless @existing_reaction
-
-    destroy_reaction(@existing_reaction)
-    log_audit(@existing_reaction)
-    result(@existing_reaction, "destroy")
   end
 
   def create_new_reaction
@@ -119,6 +118,12 @@ class ReactionToggle
     Reaction.new(create_params)
   end
 
+  def handle_existing_reaction
+    destroy_reaction(existing_reaction)
+    log_audit(existing_reaction)
+    result(existing_reaction, "destroy")
+  end
+
   def log_audit(reaction)
     return unless reaction.negative? && current_user.auditable?
 
@@ -128,11 +133,7 @@ class ReactionToggle
   end
 
   def result(reaction, action)
-    if action
-      Result.new category: category, reaction: reaction, action: action
-    else
-      Result.new category: category, reaction: reaction
-    end
+    Result.new category: category, reaction: reaction, action: action
   end
 
   def rate_limit_reaction_creation
@@ -166,5 +167,9 @@ class ReactionToggle
                       user_id: current_user.id,
                       context: "readinglist_reaction",
                       rating: user_experience_level)
+  end
+
+  def noop_result
+    Result.new category: category, action: "none", reaction: existing_reaction
   end
 end

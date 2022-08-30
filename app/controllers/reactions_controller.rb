@@ -55,7 +55,7 @@ class ReactionsController < ApplicationController
   def create
     remove_count_cache_key
 
-    result = ReactionToggle.toggle(params, current_user: current_user)
+    result = ReactionHandler.toggle(params, current_user: current_user)
 
     if result.success?
       render json: { result: result.action, category: result.category }
