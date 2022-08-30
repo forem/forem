@@ -8,9 +8,8 @@ describe DataUpdateScripts::GenerateDisplayAdNames do
     it "generates a name for an existing Display Ad" do
       display_ad = create(:display_ad, name: nil)
 
-      expect do
-        described_class.new.run
-      end.to change { display_ad.reload.name }.to("Display Ad #{display_ad.id}")
+      described_class.new.run
+      expect(display_ad.reload.name).to eq("Display Ad #{display_ad.id}")
     end
   end
 
