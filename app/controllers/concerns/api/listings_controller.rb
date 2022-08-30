@@ -13,6 +13,9 @@ module Api
     ].freeze
     private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
+    PER_PAGE_MAX = (ENV["API_PER_PAGE_MAX"] || "1000").to_i
+    private_constant :PER_PAGE_MAX
+
     def index
       @listings = Listing.published
         .select(ATTRIBUTES_FOR_SERIALIZATION)
