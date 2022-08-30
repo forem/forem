@@ -1,6 +1,6 @@
 class ArticleApiIndexService
-  DEFAULT_PER_PAGE = 30
-  MAX_PER_PAGE = 1000
+  MAX_PER_PAGE = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+  DEFAULT_PER_PAGE = [30, MAX_PER_PAGE].min
 
   def initialize(params)
     @page = params[:page]
@@ -12,7 +12,7 @@ class ArticleApiIndexService
     @sort = params[:sort]
     @top = params[:top]
     @collection_id = params[:collection_id]
-    @per_page = params[:per_page]
+    @per_page = [(params[:per_page] || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
   end
 
   def get
