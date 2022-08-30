@@ -1,5 +1,5 @@
 Rails.application.reloader.to_prepare do
-  Dir.glob(Rails.root.join("lib/rack/atttack/*.rb")).each do |filename|
+  Dir.glob(Rails.root.join("lib/rack/attack/*.rb")).each do |filename|
     require_dependency filename
   end
 end
