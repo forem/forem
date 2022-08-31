@@ -76,6 +76,7 @@ module PracticalDeveloper
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
     config.middleware.use Rack::Deflater
+    config.middleware.insert_after ActionDispatch::RemoteIp, Rack::Attack
 
     config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.yml")]
 
