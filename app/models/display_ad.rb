@@ -17,7 +17,7 @@ class DisplayAd < ApplicationRecord
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
   before_save :process_markdown
-  after_create :generate_display_ad_name
+  after_save :generate_display_ad_name
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
