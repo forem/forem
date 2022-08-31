@@ -22,8 +22,16 @@ class DisplayAd < ApplicationRecord
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
-  def self.for_display(area)
+  def self.for_display(area, user_signed_in)
     relation = approved_and_published.where(placement_area: area).order(success_rate: :desc)
+
+    relation = if user_signed_in
+                 relation.where(display_to: %w[all logged_in])
+               else
+                 relation.display_to_logged_out
+               end
+
+    relation.order(success_rate: :desc)
 
     if rand(8) == 1
       relation.sample
