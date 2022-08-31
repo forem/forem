@@ -15,12 +15,10 @@ RSpec.describe "Viewing a comment", type: :system, js: true do
     Timecop.return
   end
 
-  context "when showing the date" do
-    it "shows all published data" do
-      comment_date = comment.readable_publish_date.gsub("  ", " ")
+  context "when viewing the comment date" do
+    it "contains a time tag with the correct value for the datetime attribute" do
       timestamp = comment.decorate.published_timestamp
 
-      expect(page).to have_selector(".comment-date time", text: comment_date)
       expect(page).to have_selector(".comment-date time[datetime='#{timestamp}']")
     end
   end
