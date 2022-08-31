@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Rack, ".attack", type: :request, throttle: true do
+describe Rack::Attack, type: :request, throttle: true do
   before do
     cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
     allow(Rails).to receive(:cache) { cache_db }
