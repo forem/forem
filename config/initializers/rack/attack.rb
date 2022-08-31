@@ -43,11 +43,8 @@ module Rack
     end
 
     def self.track_and_return_ip(req)
-      ip_address = if ApplicationConfig["FASTLY_API_KEY"].present?
-                     req.env["HTTP_FASTLY_CLIENT_IP"]
-                   else
-                     req.remote_ip
-                   end
+      ip_address = req.env["HTTP_FASTLY_CLIENT_IP"] || req.remote_ip
+
       return if ip_address.blank?
 
       Honeycomb.add_field("fastly_client_ip", req.env["HTTP_FASTLY_CLIENT_IP"])
