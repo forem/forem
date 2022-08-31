@@ -10,6 +10,8 @@ class DisplayAd < ApplicationRecord
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
 
+  enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
+
   belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy
 
