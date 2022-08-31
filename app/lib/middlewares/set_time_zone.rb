@@ -5,7 +5,7 @@ module Middlewares
     end
 
     def call(env)
-      Time.zone = ActiveSupport::TimeZone.new(ENV["TZ"]) if ENV["TZ"]
+      Time.zone = ActiveSupport::TimeZone.new(ENV["TZ"]) if ENV["TZ"] && ENV["DESYNC_TIMEZONE"].nil?
 
       @app.call(env)
     end
