@@ -1,7 +1,7 @@
 <span class="color-base-30 px-2 m:pl-0" role="presentation">&bull;</span>
 
 <a href="<%= URL.comment(decorated_comment) %>" class="comment-date crayons-link crayons-link--secondary fs-s">
-  <time datetime="<%= decorated_comment.published_timestamp %>" class="date-no-year">
+  <time datetime="<%= decorated_comment.published_timestamp %>" class=<%= decorated_comment.created_at.year == Time.current.year ? "date-no-year" : "date-short-year" %>>
     <%= decorated_comment.readable_publish_date %>
   </time>
 
