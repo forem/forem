@@ -28,7 +28,7 @@ class DisplayAd < ApplicationRecord
     relation = if user_signed_in
                  relation.where(display_to: %w[all logged_in])
                else
-                 relation.display_to_logged_out
+                 relation.where(display_to: %w[all logged_out])
                end
 
     relation.order(success_rate: :desc)
