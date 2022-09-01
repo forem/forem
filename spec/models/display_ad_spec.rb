@@ -55,19 +55,21 @@ RSpec.describe DisplayAd, type: :model do
   describe ".for_display" do
     let!(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
-    it "does not return unpublished ads" do
-      display_ad.update!(published: false, approved: true)
-      expect(described_class.for_display(display_ad.placement_area)).to be_nil
-    end
+    context "when ads are published and/or approved" do
+      it "does not return unpublished ads" do
+        display_ad.update!(published: false, approved: true)
+        expect(described_class.for_display(display_ad.placement_area, false)).to be_nil
+      end
 
-    it "does not return unapproved ads" do
-      display_ad.update!(published: true, approved: false)
-      expect(described_class.for_display(display_ad.placement_area)).to be_nil
-    end
+      it "does not return unapproved ads" do
+        display_ad.update!(published: true, approved: false)
+        expect(described_class.for_display(display_ad.placement_area, false)).to be_nil
+      end
 
-    it "returns published and approved ads" do
-      display_ad.update!(published: true, approved: true)
-      expect(described_class.for_display(display_ad.placement_area)).to eq(display_ad)
+      it "returns published and approved ads" do
+        display_ad.update!(published: true, approved: true)
+        expect(described_class.for_display(display_ad.placement_area, false)).to eq(display_ad)
+      end
     end
   end
 end
