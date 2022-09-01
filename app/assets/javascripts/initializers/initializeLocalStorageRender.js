@@ -5,6 +5,7 @@ function initializeLocalStorageRender() {
       document.body.dataset.user = userData;
       initializeBaseUserData();
       initializeReadingListIcons();
+      initializeDisplayAdVisibility();
       initializeSponsorshipVisibility();
     }
   } catch (err) {
