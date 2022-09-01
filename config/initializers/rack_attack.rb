@@ -4,10 +4,12 @@ module Rack
   class Attack
     class Request < ::Rack::Request
       def track_and_return_ip
-        remote_ip = ActionDispatch::Request.new(env).remote_ip
-        Honeycomb.add_field("fastly_client_ip", env["HTTP_FASTLY_CLIENT_IP"])
-        Honeycomb.add_field("remote_ip", remote_ip)
-        env["HTTP_FASTLY_CLIENT_IP"]
+        if Forem.dev_to?
+          Honeycomb.add_field("fastly_client_ip", env["HTTP_FASTLY_CLIENT_IP"])
+          env["HTTP_FASTLY_CLIENT_IP"]
+        else
+          ActionDispatch::Request.new(env).remote_ip
+        end
       end
     end
 
