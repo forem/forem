@@ -11,7 +11,7 @@ RSpec.describe ReactionHandler, type: :service do
   let(:article) { create :article }
   let(:category) { "like" }
 
-  let!(:other_category) { article.reactions.create! user: user, category: "hands" }
+  let!(:other_category) { article.reactions.create! user: user, category: "readinglist" }
   let!(:other_existing) { article.reactions.create! user: create(:user), category: "like" }
 
   let(:moderator) { create :user, :trusted }

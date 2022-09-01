@@ -327,7 +327,7 @@ module Articles
                       ])
 
       relevancy_lever(:public_reactions,
-                      label: "Weight to give for the number of unicorn, heart, reading list reactions for article.",
+                      label: "Weight to give for the number of heart, reading list reactions for article.",
                       range: "[0..∞)",
                       user_required: false,
                       select_fragment: "articles.public_reactions_count",

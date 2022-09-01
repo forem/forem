@@ -196,26 +196,26 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "renders the correct user for a single reaction" do
-        mock_heart_reaction_notifications(1, %w[like unicorn])
+        mock_heart_reaction_notifications(1, %w[like])
         get "/notifications"
         expect(response.body).to include CGI.escapeHTML(User.last.name)
       end
 
       it "renders the correct usernames for two or more reactions" do
-        mock_heart_reaction_notifications(2, %w[like unicorn])
+        mock_heart_reaction_notifications(2, %w[like])
         get "/notifications"
         expect(has_both_names(response.body)).to be true
       end
 
       it "renders the proper message for multiple reactions" do
         random_amount = rand(3..10)
-        mock_heart_reaction_notifications(random_amount, %w[unicorn like])
+        mock_heart_reaction_notifications(random_amount, %w[like])
         get "/notifications"
         expect(response.body).to include CGI.escapeHTML("and #{random_amount - 1} others")
       end
 
       it "does group notifications that are on different days but have the same reactable" do
-        mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
+        mock_heart_reaction_notifications(2, %w[like readinglist])
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
@@ -223,22 +223,22 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "does not group notifications that are on the same day but have different reactables" do
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article1)
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article2)
+        mock_heart_reaction_notifications(1, %w[like readinglist], article1)
+        mock_heart_reaction_notifications(1, %w[like readinglist], article2)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
         expect(notifications.count).to eq 2
       end
 
       it "properly renders reactable titles" do
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], special_characters_article)
+        mock_heart_reaction_notifications(1, %w[like readinglist], special_characters_article)
         get "/notifications"
         expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
 
       it "properly renders reactable titles for multiple reactions" do
         amount = rand(3..10)
-        mock_heart_reaction_notifications(amount, %w[unicorn like readinglist], special_characters_article)
+        mock_heart_reaction_notifications(amount, %w[like readinglist], special_characters_article)
         get "/notifications"
         expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
@@ -272,14 +272,14 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "renders the correct user for a single reaction" do
-        users = mock_heart_reaction_notifications(1, %w[like unicorn])
+        users = mock_heart_reaction_notifications(1, %w[like])
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include CGI.escapeHTML(users.last.name)
       end
 
       it "renders the correct usernames for two or more reactions" do
-        mock_heart_reaction_notifications(2, %w[like unicorn])
+        mock_heart_reaction_notifications(2, %w[like])
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(has_both_names(response.body)).to be(true)
@@ -287,14 +287,14 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the proper message for multiple reactions" do
         random_amount = rand(3..10)
-        mock_heart_reaction_notifications(random_amount, %w[unicorn like])
+        mock_heart_reaction_notifications(random_amount, %w[like])
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include(CGI.escapeHTML("and #{random_amount - 1} others"))
       end
 
       it "does group notifications that are on different days but have the same reactable" do
-        mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
+        mock_heart_reaction_notifications(2, %w[like readinglist])
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
 
         get notifications_path(filter: :org, org_id: organization.id)
@@ -303,8 +303,8 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "does not group notifications that are on the same day but have different reactables" do
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article1)
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article2)
+        mock_heart_reaction_notifications(1, %w[like readinglist], article1)
+        mock_heart_reaction_notifications(1, %w[like readinglist], article2)
 
         get notifications_path(filter: :org, org_id: organization.id)
         notifications = controller.instance_variable_get(:@notifications)
@@ -312,7 +312,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "properly renders reactable titles" do
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], special_characters_article)
+        mock_heart_reaction_notifications(1, %w[like readinglist], special_characters_article)
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
@@ -320,21 +320,21 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "properly renders reactable titles for multiple reactions" do
         amount = rand(3..10)
-        mock_heart_reaction_notifications(amount, %w[unicorn like readinglist], special_characters_article)
+        mock_heart_reaction_notifications(amount, %w[like readinglist], special_characters_article)
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
       end
 
       it "does not render the proper message for a single notification if missing :org_id" do
-        users = mock_heart_reaction_notifications(1, %w[like unicorn])
+        users = mock_heart_reaction_notifications(1, %w[like])
 
         get notifications_path(filter: :org)
         expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
       end
 
       it "does not render notifications belonging to other orgs" do
-        users = mock_heart_reaction_notifications(1, %w[like unicorn], other_org_article)
+        users = mock_heart_reaction_notifications(1, %w[like], other_org_article)
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
@@ -344,14 +344,14 @@ RSpec.describe "NotificationsIndex", type: :request do
         user.add_role(:super_admin)
         sign_in user
 
-        users = mock_heart_reaction_notifications(1, %w[like unicorn], other_org_article)
+        users = mock_heart_reaction_notifications(1, %w[like], other_org_article)
 
         get notifications_path(filter: :org, org_id: other_org_article.organization_id)
         expect(response.body).to include(CGI.escapeHTML(users.last.name))
       end
 
       it "does not render the proper message for a single notification if :filter is comments" do
-        users = mock_heart_reaction_notifications(1, %w[like unicorn])
+        users = mock_heart_reaction_notifications(1, %w[like])
 
         get notifications_path(filter: :comments, org_id: organization.id)
         expect(response.body).not_to include(CGI.escapeHTML(users.last.name))

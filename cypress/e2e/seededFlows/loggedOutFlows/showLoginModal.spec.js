@@ -29,18 +29,13 @@ describe('Show log in modal', () => {
     cy.findAllByText('Test article').last().click();
 
     cy.findByRole('button', { name: 'Like' }).as('heartReaction');
-    cy.findByRole('button', { name: 'React with unicorn' }).as(
-      'unicornReaction',
-    );
     cy.findByRole('button', { name: 'Add to reading list' }).as(
       'bookmarkReaction',
     );
 
-    ['@heartReaction', '@unicornReaction', '@bookmarkReaction'].forEach(
-      (reaction) => {
-        verifyLoginModalBehavior(() => cy.get(reaction));
-      },
-    );
+    ['@heartReaction', '@bookmarkReaction'].forEach((reaction) => {
+      verifyLoginModalBehavior(() => cy.get(reaction));
+    });
   });
 
   it('should show login modal for comment subscription', () => {

@@ -232,7 +232,7 @@ num_articles = 25 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(Article, num_articles) do
   user_ids = User.all.ids
-  public_categories = %w[like unicorn]
+  public_categories = %w[like]
 
   num_articles.times do |i|
     tags = []

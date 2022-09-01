@@ -1,5 +1,5 @@
 class AnalyticsService
-  DEFAULT_REACTION_TOTALS = { total: 0, like: 0, readinglist: 0, unicorn: 0 }.freeze
+  DEFAULT_REACTION_TOTALS = { total: 0, like: 0, readinglist: 0 }.freeze
 
   def initialize(user_or_org, start_date: "", end_date: "", article_id: nil)
     @user_or_org = user_or_org
@@ -105,17 +105,16 @@ class AnalyticsService
 
   def calculate_reactions_totals
     # NOTE: the order of the keys needs to be the same as the one of the counts
-    keys = %i[total like readinglist unicorn]
+    keys = %i[total like readinglist]
     counts = reaction_data.pick(
       Arel.sql("COUNT(*)"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'like')"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')"),
-      Arel.sql("COUNT(*) FILTER (WHERE category = 'unicorn')"),
     )
 
     if counts
       # this transforms the counts, eg. [1, 0, 1, 0]
-      # in a hash, eg. {total: 1, like: 0, readinglist: 1, unicorn: 0}
+      # in a hash, eg. {total: 1, like: 0, readinglist: 1}
       keys.zip(counts).to_h
     else
       DEFAULT_REACTION_TOTALS
@@ -153,17 +152,15 @@ class AnalyticsService
       Arel.sql("COUNT(*)").as("total"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'like')").as("like"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')").as("readinglist"),
-      Arel.sql("COUNT(*) FILTER (WHERE category = 'unicorn')").as("unicorn"),
     ).group("DATE(created_at)")
 
     # this transforms the collection of pseudo Reaction objects previously selected
-    # in a hash, eg. {total: 1, like: 0, readinglist: 1, unicorn: 0}
+    # in a hash, eg. {total: 1, like: 0, readinglist: 1}
     reactions.each_with_object({}) do |reaction, hash|
       hash[reaction.date.iso8601] = {
         total: reaction.total,
         like: reaction.like,
-        readinglist: reaction.readinglist,
-        unicorn: reaction.unicorn
+        readinglist: reaction.readinglist
       }
     end
   end
@@ -192,7 +189,7 @@ class AnalyticsService
 
   def stats_per_day(date, comments_stats:, follows_stats:, reactions_stats:, page_views_stats:)
     # we need these defaults because SQL doesn't return any data for dates that don't have any
-    default_reactions_stats = { total: 0, like: 0, readinglist: 0, unicorn: 0 }
+    default_reactions_stats = { total: 0, like: 0, readinglist: 0 }
     default_page_views_stats = { total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0 }
     iso_date = date.iso8601
 

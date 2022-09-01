@@ -27,7 +27,6 @@ RSpec.describe "Reactions", type: :request do
         expected_reactions_counts = [
           { "category" => "like", "count" => 1 },
           { "category" => "readinglist", "count" => 0 },
-          { "category" => "unicorn", "count" => 0 },
         ]
         expect(result["article_reaction_counts"]).to eq(expected_reactions_counts)
         expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: article).to_json)
@@ -59,7 +58,6 @@ RSpec.describe "Reactions", type: :request do
         expected_reactions = [
           { "category" => "like", "count" => 1 },
           { "category" => "readinglist", "count" => 0 },
-          { "category" => "unicorn", "count" => 0 },
         ]
         expect(result["article_reaction_counts"]).to eq(expected_reactions)
         expect(result["reactions"]).to be_empty

@@ -78,7 +78,7 @@ RSpec.describe AnalyticsService, type: :service do
 
       it "returns stats" do
         stats = described_class.new(user).totals[:reactions]
-        expect(stats.keys).to eq(%i[total like readinglist unicorn])
+        expect(stats.keys).to eq(%i[total like readinglist])
       end
 
       it "returns the total number of reactions" do
@@ -98,7 +98,7 @@ RSpec.describe AnalyticsService, type: :service do
       end
 
       it "returns zero as the number of like reactions" do
-        create(:reaction, reactable: article, category: :unicorn)
+        create(:reaction, reactable: article, category: :readinglist)
         expect(analytics_service.totals[:reactions][:like]).to eq(0)
       end
 
@@ -108,18 +108,8 @@ RSpec.describe AnalyticsService, type: :service do
       end
 
       it "returns zero as the number of readinglist reactions" do
-        create(:reaction, reactable: article, category: :unicorn)
-        expect(analytics_service.totals[:reactions][:readinglist]).to eq(0)
-      end
-
-      it "returns the number of unicorn reactions" do
-        create(:reaction, reactable: article, category: :unicorn)
-        expect(analytics_service.totals[:reactions][:unicorn]).to eq(1)
-      end
-
-      it "returns zero as the number of unicorn reactions" do
         create(:reaction, reactable: article, category: :like)
-        expect(analytics_service.totals[:reactions][:unicorn]).to eq(0)
+        expect(analytics_service.totals[:reactions][:readinglist]).to eq(0)
       end
     end
 
@@ -231,7 +221,7 @@ RSpec.describe AnalyticsService, type: :service do
       it "returns stats" do
         analytics_service = described_class.new(user, start_date: "2019-04-01")
         stats = analytics_service.grouped_by_day["2019-04-01"][:reactions]
-        expect(stats.keys).to eq(%i[total like readinglist unicorn])
+        expect(stats.keys).to eq(%i[total like readinglist])
       end
 
       it "returns the total number of reactions" do
@@ -257,7 +247,7 @@ RSpec.describe AnalyticsService, type: :service do
       end
 
       it "returns zero as the number of like reactions" do
-        reaction = create(:reaction, reactable: article, category: :unicorn)
+        reaction = create(:reaction, reactable: article, category: :readinglist)
         date = format_date(reaction.created_at)
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][:reactions][:like]).to eq(0)
@@ -271,24 +261,10 @@ RSpec.describe AnalyticsService, type: :service do
       end
 
       it "returns zero as the number of readinglist reactions" do
-        reaction = create(:reaction, reactable: article, category: :unicorn)
-        date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:readinglist]).to eq(0)
-      end
-
-      it "returns the number of unicorn reactions" do
-        reaction = create(:reaction, reactable: article, category: :unicorn)
-        date = format_date(reaction.created_at)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:unicorn]).to eq(1)
-      end
-
-      it "returns zero as the number of unicorn reactions" do
         reaction = create(:reaction, reactable: article, category: :like)
         date = format_date(reaction.created_at)
         analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:reactions][:unicorn]).to eq(0)
+        expect(analytics_service.grouped_by_day[date][:reactions][:readinglist]).to eq(0)
       end
     end
 
