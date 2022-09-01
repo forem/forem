@@ -10,8 +10,6 @@ RSpec.describe "Viewing a comment", type: :system, js: true do
     ENV["DESYNC_TIMEZONE"] = "true"
     mock_user_tz = ActiveSupport::TimeZone[Zonebie.random_timezone].tzinfo.name
     ENV["TZ"] = mock_user_tz
-    sign_in user
-    visit comment.path
   end
 
   after do
@@ -23,12 +21,16 @@ RSpec.describe "Viewing a comment", type: :system, js: true do
 
   context "when viewing the comment date" do
     it "contains a time tag with the correct value for the datetime attribute" do
+      sign_in user
+      visit comment.path
       timestamp = comment.decorate.published_timestamp
 
       expect(page).to have_selector(".comment-date time[datetime='#{timestamp}']")
     end
 
     it "shows the published date in the user's local time zone" do
+      sign_in user
+      visit comment.path
       date = comment.created_at.getlocal.strftime("%b %-d")
 
       expect(page).to have_selector(".comment-date time", text: date)
