@@ -288,7 +288,7 @@ GEM
       browser (>= 2.0)
       railties (>= 5.2)
       rice (>= 4.0.2)
-    flipper (0.25.1)
+    flipper (0.25.2)
     flipper-active_record (0.25.1)
       activerecord (>= 4.2, < 8)
       flipper (~> 0.25.1)
