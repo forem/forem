@@ -882,7 +882,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect do
           post api_articles_path, params: {}.to_json, headers: headers
         end.not_to raise_error
-        expect(response.status).to eq(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it "fails with a nil body markdown" do
