@@ -461,6 +461,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_31_091245) do
     t.datetime "created_at", precision: nil, null: false
     t.integer "display_to", default: 0, null: false
     t.integer "impressions_count", default: 0
+    t.string "name"
     t.bigint "organization_id"
     t.string "placement_area"
     t.text "processed_html"

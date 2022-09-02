@@ -1,6 +1,11 @@
 <div class="grid l:grid-cols-2 gap-6 mb-4">
   <div class="flex flex-col gap-4">
     <div class="crayons-field">
+      <%= label_tag :name, "Name:", class: "crayons-field__label" %>
+      <%= text_field_tag :name, @display_ad.name, class: "crayons-textfield" %>
+    </div>
+
+    <div class="crayons-field">
       <%= label_tag :organization_id, "Organization ID:", class: "crayons-field__label" %>
       <%= text_field_tag :organization_id, @display_ad.organization_id, class: "crayons-textfield", placeholder: "1234" %>
     </div>
