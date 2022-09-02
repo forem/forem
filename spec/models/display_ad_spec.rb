@@ -52,6 +52,16 @@ RSpec.describe DisplayAd, type: :model do
     end
   end
 
+  describe "after_create callbacks" do
+    it "generates a name when one does not exist" do
+      display_ad = create(:display_ad, name: nil)
+      display_ad_with_name = create(:display_ad, name: "Test")
+
+      expect(display_ad.name).to eq("Display Ad #{display_ad.id}")
+      expect(display_ad_with_name.name).to eq("Test")
+    end
+  end
+
   describe ".for_display" do
     let!(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
