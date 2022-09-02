@@ -1,9 +1,8 @@
 class ArticleApiIndexService
-  MAX_PER_PAGE = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
-  DEFAULT_PER_PAGE = [30, MAX_PER_PAGE].min
+  DEFAULT_PER_PAGE = 30
 
   def initialize(params)
-    @page = params[:page]
+    @page = params[:page].to_i
     @tag = params[:tag]
     @tags = params[:tags]
     @tags_exclude = params[:tags_exclude]
@@ -12,7 +11,7 @@ class ArticleApiIndexService
     @sort = params[:sort]
     @top = params[:top]
     @collection_id = params[:collection_id]
-    @per_page = [(params[:per_page] || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
+    @per_page = [(params[:per_page] || DEFAULT_PER_PAGE).to_i, per_page_max].min
   end
 
   def get
@@ -39,9 +38,13 @@ class ArticleApiIndexService
 
   attr_reader :tag, :tags, :tags_exclude, :username, :page, :state, :sort, :top, :collection_id, :per_page
 
+  def per_page_max
+    (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+  end
+
   def username_articles
     num = if @state == "all"
-            MAX_PER_PAGE
+            per_page_max
           else
             DEFAULT_PER_PAGE
           end

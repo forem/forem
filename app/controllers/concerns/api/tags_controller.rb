@@ -5,13 +5,11 @@ module Api
     ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
     private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
-    PER_PAGE_MAX = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
-    private_constant :PER_PAGE_MAX
-
     def index
       page = params[:page]
       per_page = (params[:per_page] || 10).to_i
-      num = [per_page, PER_PAGE_MAX].min
+      per_page_max = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+      num = [per_page, per_page_max].min
 
       @tags = Tag.select(ATTRIBUTES_FOR_SERIALIZATION)
         .order(taggings_count: :desc)
