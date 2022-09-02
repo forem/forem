@@ -24,6 +24,7 @@ module Api
       @listings = @listings.order(bumped_at: :desc)
 
       per_page = (params[:per_page] || 30).to_i
+      per_page_max = (ApplicationConfig["API_PER_PAGE_MAX"] || 100).to_i
       num = [per_page, per_page_max].min
       page = params[:page] || 1
       @listings = @listings.page(page).per(num)
@@ -48,10 +49,6 @@ module Api
     attr_accessor :user
 
     alias current_user user
-
-    def per_page_max
-      (ApplicationConfig["API_PER_PAGE_MAX"] || 100).to_i
-    end
 
     def process_no_credit_left
       msg = I18n.t("api.v0.listings_controller.no_credit")
