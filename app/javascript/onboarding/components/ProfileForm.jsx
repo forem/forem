@@ -247,7 +247,7 @@ ProfileForm.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   slidesCount: PropTypes.number.isRequired,
-  currentSlideIndex: PropTypes.func.isRequired,
+  currentSlideIndex: PropTypes.number.isRequired,
   communityConfig: PropTypes.shape({
     communityName: PropTypes.string.isRequired,
   }),
