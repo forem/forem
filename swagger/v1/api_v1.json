@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 574,
-                    "title": "The Waste Land1",
-                    "description": "Irony franzen forage post-ironic. Chia cold-pressed brunch banh mi you probably haven't heard of them...",
-                    "readable_publish_date": "Sep 1",
-                    "slug": "the-waste-land1-4mei",
-                    "path": "/username1/the-waste-land1-4mei",
-                    "url": "http://localhost:3000/username1/the-waste-land1-4mei",
+                    "id": 1,
+                    "title": "Mr Standfast1",
+                    "description": "Fixie crucifix vegan vinyl cleanse stumptown. Ennui chicharrones actually heirloom taxidermy selfies...",
+                    "readable_publish_date": "Sep 3",
+                    "slug": "mr-standfast1-o1j",
+                    "path": "/username1/mr-standfast1-o1j",
+                    "url": "http://localhost:3000/username1/mr-standfast1-o1j",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-09-02T00:42:35Z",
+                    "published_timestamp": "2022-09-02T19:24:23Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
-                    "social_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
-                    "canonical_url": "http://localhost:3000/username1/the-waste-land1-4mei",
-                    "created_at": "2022-09-02T00:42:35Z",
+                    "cover_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
+                    "social_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
+                    "canonical_url": "http://localhost:3000/username1/mr-standfast1-o1j",
+                    "created_at": "2022-09-02T19:24:24Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-09-02T00:42:35Z",
-                    "last_comment_at": "2022-09-02T00:42:35Z",
+                    "published_at": "2022-09-02T19:24:23Z",
+                    "last_comment_at": "2022-09-02T19:24:23Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Jospeh \"Erick\" \\:/ Wolf",
+                      "name": "Lavona \"Lenna\" \\:/ Watsica",
                       "username": "username1",
                       "twitter_username": "twitter1",
                       "github_username": "github1",
-                      "user_id": 1398,
+                      "user_id": 1,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/1398/75d79491-b025-4409-875b-5359141e3cb5.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/1398/75d79491-b025-4409-875b-5359141e3cb5.jpeg"
+                      "profile_image": "/uploads/user/profile_image/1/4e030890-caa7-4c5b-836a-432e7b1bfdfc.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/1/4e030890-caa7-4c5b-836a-432e7b1bfdfc.jpeg"
                     },
                     "organization": {
-                      "name": "Kuhn LLC",
+                      "name": "Weimann-Toy",
                       "username": "org1",
                       "slug": "org1",
-                      "profile_image": "/uploads/organization/profile_image/313/a49a7822-2818-4d1e-9017-8fd7532be924.png",
-                      "profile_image_90": "/uploads/organization/profile_image/313/a49a7822-2818-4d1e-9017-8fd7532be924.png"
+                      "profile_image": "/uploads/organization/profile_image/1/2df76e17-f420-434a-8027-2e90ebfb89bf.png",
+                      "profile_image_90": "/uploads/organization/profile_image/1/2df76e17-f420-434a-8027-2e90ebfb89bf.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -253,8 +253,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 35,
-                  "reactable_id": 578,
+                  "id": 1,
+                  "reactable_id": 5,
                   "reactable_type": "Article"
                 }
               }
@@ -316,8 +316,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 37,
-                  "reactable_id": 580,
+                  "id": 3,
+                  "reactable_id": 7,
                   "reactable_type": "Article"
                 }
               }
