@@ -78,7 +78,8 @@ To obtain one, please follow these steps:
             in: :query,
             name: :per_page,
             required: false,
-            description: "Page size (the number of items to return per page)",
+            description: "Page size (the number of items to return per page). \
+The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
             schema: {
               type: :integer,
               format: :int32,
@@ -91,7 +92,8 @@ To obtain one, please follow these steps:
             in: :query,
             name: :per_page,
             required: false,
-            description: "Page size (the number of items to return per page)",
+            description: "Page size (the number of items to return per page). \
+The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
             schema: {
               type: :integer,
               format: :int32,
@@ -104,7 +106,8 @@ To obtain one, please follow these steps:
             in: :query,
             name: :per_page,
             required: false,
-            description: "Page size (the number of items to return per page)",
+            description: "Page size (the number of items to return per page). \
+The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
             schema: {
               type: :integer,
               format: :int32,
@@ -117,7 +120,8 @@ To obtain one, please follow these steps:
             in: :query,
             name: :per_page,
             required: false,
-            description: "Page size (the number of items to return per page)",
+            description: "Page size (the number of items to return per page). \
+The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
             schema: {
               type: :integer,
               format: :int32,
@@ -130,7 +134,8 @@ To obtain one, please follow these steps:
             in: :query,
             name: :per_page,
             required: false,
-            description: "Page size (the number of items to return per page)",
+            description: "Page size (the number of items to return per page). \
+The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
             schema: {
               type: :integer,
               format: :int32,

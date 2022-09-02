@@ -114,6 +114,16 @@ RSpec.describe "Api::V1::Listings", type: :request do
       listing = response.parsed_body.first
       expect(listing["created_at"]).to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
     end
+
+    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+      expect(Listing.count).to be > 2
+      get api_listings_path, headers: headers, params: { per_page: 10 }
+      expect(response.parsed_body.count).to eq(2)
+    end
   end
 
   describe "GET /api/listings/category/:category" do
