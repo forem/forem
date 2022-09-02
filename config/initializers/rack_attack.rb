@@ -4,7 +4,7 @@ module Rack
   class Attack
     class Request < ::Rack::Request
       def track_and_return_ip
-        if Forem.dev_to?
+        if ApplicationConfig["FASTLY_API_KEY"].present?
           Honeycomb.add_field("fastly_client_ip", env["HTTP_FASTLY_CLIENT_IP"])
           env["HTTP_FASTLY_CLIENT_IP"]
         else
