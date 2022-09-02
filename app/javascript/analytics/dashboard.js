@@ -120,7 +120,6 @@ function drawCharts(data, timeRangeLabel) {
   const reactions = parsedData.map((date) => date.reactions.total);
   const likes = parsedData.map((date) => date.reactions.like);
   const readingList = parsedData.map((date) => date.reactions.readinglist);
-  const unicorns = parsedData.map((date) => date.reactions.unicorn);
   const followers = parsedData.map((date) => date.follows.total);
   const readers = parsedData.map((date) => date.page_views.total);
 
@@ -147,14 +146,6 @@ function drawCharts(data, timeRangeLabel) {
         fill: false,
         borderColor: 'rgb(229, 100, 100)',
         backgroundColor: 'rgb(229, 100, 100)',
-        lineTension: 0.1,
-      },
-      {
-        label: 'Unicorns',
-        data: unicorns,
-        fill: false,
-        borderColor: 'rgb(157, 57, 233)',
-        backgroundColor: 'rgb(157, 57, 233)',
         lineTension: 0.1,
       },
       {
@@ -250,20 +241,26 @@ function renderReferrers(data) {
 }
 
 function removeCardElements() {
-  const el = document.getElementsByClassName("summary-stats")[0];
+  const el = document.getElementsByClassName('summary-stats')[0];
   el && el.remove();
 }
 
 function showErrorsOnCharts() {
-  const target = ['reactions-chart', 'comments-chart', 'followers-chart', 'readers-chart'];
-  target.forEach(id => {
+  const target = [
+    'reactions-chart',
+    'comments-chart',
+    'followers-chart',
+    'readers-chart',
+  ];
+  target.forEach((id) => {
     const el = document.getElementById(id);
     el.outerHTML = `<p class="m-5" id="${id}">Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>`;
   });
 }
 
 function showErrorsOnReferrers() {
-  document.getElementById('referrers-container').outerHTML = '<p class="m-5" id="referrers-container">Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>';
+  document.getElementById('referrers-container').outerHTML =
+    '<p class="m-5" id="referrers-container">Failed to fetch referrer data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>';
 }
 
 function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
