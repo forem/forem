@@ -17,6 +17,7 @@ class DisplayAd < ApplicationRecord
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
   before_save :process_markdown
+  after_save :generate_display_ad_name
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
@@ -35,6 +36,13 @@ class DisplayAd < ApplicationRecord
   end
 
   private
+
+  def generate_display_ad_name
+    return unless name.nil?
+
+    self.name = "Display Ad #{id}"
+    save!
+  end
 
   def process_markdown
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
