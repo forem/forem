@@ -14,6 +14,8 @@ RSpec.describe "api/v1/reactions", type: :request do
   let(:user) { api_secret.user }
 
   before do
+    user.add_role(:admin)
+
     result.category = category
     allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
     allow(ReactionHandler).to receive(:toggle).and_return(result)
