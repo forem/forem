@@ -200,7 +200,7 @@ IntroSlide.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   slidesCount: PropTypes.number.isRequired,
-  currentSlideIndex: PropTypes.func.isRequired,
+  currentSlideIndex: PropTypes.number.isRequired,
   communityConfig: PropTypes.shape({
     communityLogo: PropTypes.string.isRequired,
     communityName: PropTypes.string.isRequired,

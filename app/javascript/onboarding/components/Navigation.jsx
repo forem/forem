@@ -110,7 +110,7 @@ Navigation.propTypes = {
   canSkip: PropTypes.bool,
   class: PropTypes.string,
   prev: PropTypes.func.isRequired,
-  next: PropTypes.string.isRequired,
+  next: PropTypes.func.isRequired,
   hideNext: PropTypes.bool,
   hidePrev: PropTypes.bool,
   slidesCount: PropTypes.number.isRequired,
