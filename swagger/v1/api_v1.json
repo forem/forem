@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 5137,
-                    "title": "The Yellow Meads of Asphodel168",
-                    "description": "Scenester tofu cold-pressed flannel vhs. Yr park portland organic offal fingerstache forage....",
-                    "readable_publish_date": "Aug 30",
-                    "slug": "the-yellow-meads-of-asphodel168-3bgf",
-                    "path": "/username372/the-yellow-meads-of-asphodel168-3bgf",
-                    "url": "http://localhost:3000/username372/the-yellow-meads-of-asphodel168-3bgf",
+                    "id": 1,
+                    "title": "Mr Standfast1",
+                    "description": "Fixie crucifix vegan vinyl cleanse stumptown. Ennui chicharrones actually heirloom taxidermy selfies...",
+                    "readable_publish_date": "Sep 3",
+                    "slug": "mr-standfast1-o1j",
+                    "path": "/username1/mr-standfast1-o1j",
+                    "url": "http://localhost:3000/username1/mr-standfast1-o1j",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-08-30T09:45:05Z",
+                    "published_timestamp": "2022-09-02T19:24:23Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
-                    "social_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
-                    "canonical_url": "http://localhost:3000/username372/the-yellow-meads-of-asphodel168-3bgf",
-                    "created_at": "2022-08-30T09:45:05Z",
+                    "cover_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
+                    "social_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
+                    "canonical_url": "http://localhost:3000/username1/mr-standfast1-o1j",
+                    "created_at": "2022-09-02T19:24:24Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-08-30T09:45:05Z",
-                    "last_comment_at": "2022-08-30T09:45:05Z",
+                    "published_at": "2022-09-02T19:24:23Z",
+                    "last_comment_at": "2022-09-02T19:24:23Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Jeffry \"Lon\" \\:/ Daniel",
-                      "username": "username372",
-                      "twitter_username": "twitter372",
-                      "github_username": "github372",
-                      "user_id": 12567,
+                      "name": "Lavona \"Lenna\" \\:/ Watsica",
+                      "username": "username1",
+                      "twitter_username": "twitter1",
+                      "github_username": "github1",
+                      "user_id": 1,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/12567/d75daa5f-a5e3-4a5d-90e5-d2a06dba0890.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/12567/d75daa5f-a5e3-4a5d-90e5-d2a06dba0890.jpeg"
+                      "profile_image": "/uploads/user/profile_image/1/4e030890-caa7-4c5b-836a-432e7b1bfdfc.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/1/4e030890-caa7-4c5b-836a-432e7b1bfdfc.jpeg"
                     },
                     "organization": {
-                      "name": "Abernathy and Sons",
-                      "username": "org56",
-                      "slug": "org56",
-                      "profile_image": "/uploads/organization/profile_image/1473/9e5cefc8-2a19-45d2-91db-1d18f26a8cd2.png",
-                      "profile_image_90": "/uploads/organization/profile_image/1473/9e5cefc8-2a19-45d2-91db-1d18f26a8cd2.png"
+                      "name": "Weimann-Toy",
+                      "username": "org1",
+                      "slug": "org1",
+                      "profile_image": "/uploads/organization/profile_image/1/2df76e17-f420-434a-8027-2e90ebfb89bf.png",
+                      "profile_image_90": "/uploads/organization/profile_image/1/2df76e17-f420-434a-8027-2e90ebfb89bf.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -253,8 +253,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1437,
-                  "reactable_id": 5141,
+                  "id": 1,
+                  "reactable_id": 5,
                   "reactable_type": "Article"
                 }
               }
@@ -316,8 +316,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 1439,
-                  "reactable_id": 5143,
+                  "id": 3,
+                  "reactable_id": 7,
                   "reactable_type": "Article"
                 }
               }
@@ -473,7 +473,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
         "schema": {
           "type": "integer",
           "format": "int32",
@@ -486,7 +486,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
         "schema": {
           "type": "integer",
           "format": "int32",
@@ -499,7 +499,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
         "schema": {
           "type": "integer",
           "format": "int32",
@@ -512,7 +512,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
         "schema": {
           "type": "integer",
           "format": "int32",
@@ -525,7 +525,7 @@
         "in": "query",
         "name": "per_page",
         "required": false,
-        "description": "Page size (the number of items to return per page)",
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
         "schema": {
           "type": "integer",
           "format": "int32",

@@ -7,13 +7,11 @@ module Api
     ].freeze
     private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
-    PER_PAGE_MAX = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
-    private_constant :PER_PAGE_MAX
-
     def index
       page = params[:page]
       per_page = (params[:per_page] || 24).to_i
-      num = [per_page, PER_PAGE_MAX].min
+      per_page_max = (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+      num = [per_page, per_page_max].min
 
       @video_articles = Article.with_video
         .includes([:user])

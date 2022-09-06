@@ -315,6 +315,16 @@ RSpec.describe "Api::V1::Articles", type: :request do
         get api_articles_path, headers: headers
         expect(response).to have_http_status(:ok)
       end
+
+      it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+        allow(ApplicationConfig).to receive(:[]).and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+        allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+        create_list(:article, 3, tags: "discuss", public_reactions_count: 1, score: 1, published: true, featured: true)
+        get api_articles_path, params: { per_page: 10 }, headers: headers
+        expect(response.parsed_body.count).to eq(2)
+      end
     end
   end
 
