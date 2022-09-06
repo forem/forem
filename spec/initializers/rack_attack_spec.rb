@@ -1,11 +1,17 @@
 require "rails_helper"
 
-describe Rack::Attack, type: :request, throttle: true do
+describe Rack, ".attack", type: :request, throttle: true do
   before do
     cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
     allow(Rails).to receive(:cache) { cache_db }
     cache_db.redis.flushdb
     allow(Honeycomb).to receive(:add_field)
+
+    ENV["FASTLY_API_KEY"] = "12345"
+  end
+
+  after do
+    ENV["FASTLY_API_KEY"] = nil
   end
 
   describe "search_throttle" do
