@@ -2,6 +2,7 @@ module Api
   module V1
     class ReactionsController < ApiController
       before_action :authenticate!
+      before_action :require_admin
 
       def create
         remove_count_cache_key
@@ -42,11 +43,19 @@ module Api
 
       private
 
+      def pundit_user
+        (current_user || @user)
+      end
+
       # TODO: should this move to toggle service? refactor?
       def remove_count_cache_key
         return unless params[:reactable_type] == "Article"
 
         Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
+      end
+
+      def require_admin
+        authorize :reaction, :api?
       end
     end
   end
