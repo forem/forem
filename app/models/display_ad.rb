@@ -10,6 +10,8 @@ class DisplayAd < ApplicationRecord
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
 
+  enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
+
   belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy
 
@@ -21,8 +23,16 @@ class DisplayAd < ApplicationRecord
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
-  def self.for_display(area)
+  def self.for_display(area, user_signed_in)
     relation = approved_and_published.where(placement_area: area).order(success_rate: :desc)
+
+    relation = if user_signed_in
+                 relation.where(display_to: %w[all logged_in])
+               else
+                 relation.where(display_to: %w[all logged_out])
+               end
+
+    relation.order(success_rate: :desc)
 
     if rand(8) == 1
       relation.sample
