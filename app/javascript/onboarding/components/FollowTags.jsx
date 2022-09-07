@@ -191,7 +191,7 @@ export class FollowTags extends Component {
 
 FollowTags.propTypes = {
   prev: PropTypes.func.isRequired,
-  next: PropTypes.string.isRequired,
+  next: PropTypes.func.isRequired,
   slidesCount: PropTypes.number.isRequired,
-  currentSlideIndex: PropTypes.func.isRequired,
+  currentSlideIndex: PropTypes.number.isRequired,
 };
