@@ -43,10 +43,6 @@ module Api
 
       private
 
-      def pundit_user
-        (current_user || @user)
-      end
-
       # TODO: should this move to toggle service? refactor?
       def remove_count_cache_key
         return unless params[:reactable_type] == "Article"
