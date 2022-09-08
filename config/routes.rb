@@ -314,8 +314,6 @@ Rails.application.routes.draw do
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
 
-    get "/badge/:slug", to: "badges#show", as: :badge
-
     get "/top/:timeframe", to: "stories#index"
 
     get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest/ }
