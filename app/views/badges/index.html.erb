@@ -12,7 +12,7 @@
       class="crayons-card media-card media-card--all">
       <div style="background-color: #F5F5F5" class="p-3">
         <img
-          style="width: 100%; object-fit: contain; aspect-ratio:1/1;"
+          style="width: 100%; aspect-ratio:1/1;"
           class="badge-image <%= "unearned" unless badge.id.in?(@earned_badge_achievements) %>"
           src="<%= optimized_image_url(badge.badge_image_url, width: 192) %>"
           alt="<%= badge.title %> badge"
