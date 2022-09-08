@@ -8,6 +8,10 @@ class ReactionPolicy < ApplicationPolicy
     :create?
   end
 
+  def api?
+    return true if user_any_admin?
+  end
+
   def index?
     true
   end

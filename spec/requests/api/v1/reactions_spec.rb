@@ -16,6 +16,7 @@ RSpec.describe "Api::V1::Reactions", type: :request do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
     let(:auth_header) { v1_headers.merge({ "api-key" => api_secret.secret }) }
+    before { user.add_role(:admin) }
   end
 
   context "when unauthenticated and post to toggle" do
