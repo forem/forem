@@ -7,6 +7,7 @@
   <div class="sticker-book crayons-card p-3 s:p-3 m:p-6 l:p-6 xl:p-8 grid gap-3 m:gap-4 l:gap-4 l:gap-6 grid-cols-2 s:grid-cols-2 m:grid-cols-3 l:grid-cols-4 xl:grid-cols-5 mb-6">
     <% @badges.each do |badge| %>
     <div
+      role="button"
       onclick="window.Forem.showModal({prompt: true, contentSelector: '#badge-<%= badge.id %>', overlay: true})"
       style="width:auto; background-color: white;"
       class="crayons-card media-card media-card--all">
@@ -19,7 +20,7 @@
           title="<%= badge.title %>"
           loading="lazy" />
       </div>
-      <p class="color-grey-800 align-center fw-bold fs-base flex lh-base justify-center p-3">
+      <p aria-hidden="true" class="color-grey-800 align-center fw-bold fs-base flex lh-base justify-center p-3">
           <%= badge.title %>
       </p>
 
