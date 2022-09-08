@@ -8,20 +8,22 @@
     <% @badges.each do |badge| %>
     <a
       style="background-color:white;"
-      class="crayons-card media-card media-card--all"
-      href="/badge/<%= badge.slug %>">
+      class="crayons-card media-card media-card--all">
       <img
-        style="background-color:#F5F5F5"
+        onclick="window.Forem.showModal({prompt: true, contentSelector: '#badge-<%= badge.id %>', overlay: true})"
+        style="background-color: #F5F5F5"
         class="p-3 badge-image <%= "unearned" unless badge.id.in?(@earned_badge_achievements) %>"
-        src="<%= optimized_image_url(badge.badge_image_url, width: 375) %>"
+        src="<%= optimized_image_url(badge.badge_image_url, width: 192) %>"
         alt="<%= badge.title %> badge"
         title="<%= badge.title %>"
         loading="lazy" />
-      <p
-        style="font-color:#262626;"
-        class="align-center fw-bold fs-base flex lh-base justify-center p-3">
+      <p class="color-grey-800 align-center fw-bold fs-base flex lh-base justify-center p-3">
           <%= badge.title %>
       </p>
+
+      <div id="badge-<%= badge.id %>" class="hidden">
+        <%= render partial: "badge_detail", locals: { badge: badge } %>
+      </div>
     </a>
     <% end %>
   </div>
