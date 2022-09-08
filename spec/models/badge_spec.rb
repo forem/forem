@@ -54,6 +54,12 @@ RSpec.describe Badge, type: :model do
     end
   end
 
+  describe "#path" do
+    it "returns the path of the badge" do
+      expect(badge.path).to eq("/badge/#{badge.slug}")
+    end
+  end
+
   describe "#slug" do
     it "generates the correct slug for C" do
       badge = build(:badge, title: "C")

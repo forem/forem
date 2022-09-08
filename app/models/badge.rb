@@ -14,6 +14,10 @@ class Badge < ApplicationRecord
   before_validation :generate_slug
   after_save :bust_path
 
+  def path
+    "/badge/#{slug}"
+  end
+
   def self.id_for_slug(slug)
     select(:id).find_by(slug: slug)&.id
   end
