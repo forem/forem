@@ -7,7 +7,7 @@ describe('Display Ads', () => {
       cy.loginAndVisit(user, '/admin/customization/display_ads');
 
       cy.findByRole('table').within(() => {
-        cy.findByRole('button', { name: 'Destroy' }).click();
+        cy.findByRole('button', { name: 'Destroy' }).click({ force: true });
       });
     });
   });

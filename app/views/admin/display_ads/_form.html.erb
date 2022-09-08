@@ -21,6 +21,28 @@
     </div>
 
     <div class="crayons-field">
+      <fieldset aria-describedby="section-description" aria-describedby="display-to-description">
+        <legend class="crayons-field crayons-field__label pl-0">Display to user group</legend>
+        <p id="display-to-description" class="crayons-field__description mb-2">Determines which user group will be able to see the Display Ad</p>
+
+        <label class="crayons-field crayons-field--radio mb-2">
+          <%= radio_button_tag :display_to, "all", @display_ad.display_to_all?, class: "crayons-radio" %>
+          <div class="crayons-field__label">All users</div>
+        </label>
+
+        <label class="crayons-field crayons-field--radio mb-2">
+          <%= radio_button_tag :display_to, "logged_in", @display_ad.display_to_logged_in?, class: "crayons-radio" %>
+          <div class="crayons-field__label">Only logged in users</div>
+        </label>
+
+        <label class="crayons-field crayons-field--radio mb-2">
+          <%= radio_button_tag :display_to, "logged_out", @display_ad.display_to_logged_out?, class: "crayons-radio" %>
+          <div class="crayons-field__label">Only logged out users</div>
+        </label>
+      </fieldset>
+    </div>
+
+    <div class="crayons-field">
       <%= label_tag :published, "Published:", class: "crayons-field__label" %>
       <%= select_tag :published, options_for_select([false, true], selected: @display_ad.published), class: "crayons-select" %>
     </div>

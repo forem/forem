@@ -63,21 +63,54 @@ RSpec.describe DisplayAd, type: :model do
   end
 
   describe ".for_display" do
-    let!(:display_ad) { create(:display_ad, organization_id: organization.id) }
+    context "when updating the published and approved values" do
+      let!(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
-    it "does not return unpublished ads" do
-      display_ad.update!(published: false, approved: true)
-      expect(described_class.for_display(display_ad.placement_area)).to be_nil
+      it "does not return unpublished ads" do
+        display_ad.update!(published: false, approved: true)
+        expect(described_class.for_display(display_ad.placement_area, false)).to be_nil
+      end
+
+      it "does not return unapproved ads" do
+        display_ad.update!(published: true, approved: false)
+        expect(described_class.for_display(display_ad.placement_area, false)).to be_nil
+      end
+
+      it "returns published and approved ads" do
+        display_ad.update!(published: true, approved: true)
+        expect(described_class.for_display(display_ad.placement_area, false)).to eq(display_ad)
+      end
     end
 
-    it "does not return unapproved ads" do
-      display_ad.update!(published: true, approved: false)
-      expect(described_class.for_display(display_ad.placement_area)).to be_nil
+    context "when display_to is set to 'logged_in' or 'logged_out'" do
+      let!(:display_ad2) do
+        create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "logged_in")
+      end
+      let!(:display_ad3) do
+        create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "logged_out")
+      end
+
+      it "shows ads that have a display_to of 'logged_in' if a user is signed in" do
+        expect(described_class.for_display(display_ad2.placement_area, true)).to eq(display_ad2)
+      end
+
+      it "shows ads that have a display_to of 'logged_out' if a user is signed in" do
+        expect(described_class.for_display(display_ad3.placement_area, false)).to eq(display_ad3)
+      end
     end
 
-    it "returns published and approved ads" do
-      display_ad.update!(published: true, approved: true)
-      expect(described_class.for_display(display_ad.placement_area)).to eq(display_ad)
+    context "when display_to is set to 'all'" do
+      let!(:display_ad) do
+        create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "all")
+      end
+
+      it "shows ads that have a display_to of 'all' if a user is signed in" do
+        expect(described_class.for_display(display_ad.placement_area, true)).to eq(display_ad)
+      end
+
+      it "shows ads that have a display_to of 'all' if a user is not signed in" do
+        expect(described_class.for_display(display_ad.placement_area, false)).to eq(display_ad)
+      end
     end
   end
 end
