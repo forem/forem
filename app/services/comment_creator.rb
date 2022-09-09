@@ -42,11 +42,11 @@ class CommentCreator < Delegator
   end
 
   def comment
-    @comment ||= current_user.comments.includes(user: :profile).build(params)
+    @comment ||= Comment.build_comment params.merge(user: current_user)
   end
 
   def create_first_reaction
-    @comment.reactions.create user: current_user, category: "like"
+    Reaction.create user: current_user, category: "like", reactable: @comment
   end
 
   def notify_subscribers

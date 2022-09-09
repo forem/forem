@@ -102,6 +102,10 @@ class Comment < ApplicationRecord
     I18n.t("models.comment.hidden")
   end
 
+  def self.build_comment(params, &blk)
+    includes(user: :profile).new(params, &blk)
+  end
+
   def search_id
     "comment_#{id}"
   end
