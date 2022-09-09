@@ -63,7 +63,6 @@ class Comment < ApplicationRecord
 
   after_create_commit :record_field_test_event
   after_create_commit :send_email_notification, if: :should_send_email_notification?
-  after_create_commit :create_first_reaction
   after_create_commit :send_to_moderator
 
   after_commit :calculate_score, on: %i[create update]
@@ -254,10 +253,6 @@ class Comment < ApplicationRecord
     else
       touch
     end
-  end
-
-  def create_first_reaction
-    Comments::CreateFirstReactionWorker.perform_async(id, user_id)
   end
 
   def after_destroy_actions
