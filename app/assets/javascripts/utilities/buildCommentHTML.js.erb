@@ -57,7 +57,7 @@ function buildCommentHTML(comment) {
     <span class="color-base-30 px-2 m:pl-0" role="presentation">&bull;</span>
 
     <a href="${ comment.url }" class="comment-date crayons-link crayons-link--secondary fs-s">
-      <time datetime="${ comment.published_timestamp }">
+      <time datetime="${ comment.published_timestamp }" class="date-no-year">
         ${ comment.readable_publish_date }
       </time>
     </a>
