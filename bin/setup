@@ -30,7 +30,7 @@ FileUtils.chdir APP_ROOT do
     FileUtils.cp "config/database.yml.sample", "config/database.yml"
   end
 
-  unless File.exists?(".env")
+  unless File.exist?(".env")
     FileUtils.cp ".env_sample", ".env"
   end
 
