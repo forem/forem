@@ -28,21 +28,4 @@ RSpec.describe "Badges", type: :request do
       end
     end
   end
-
-  describe "GET /badge/:slug" do
-    let(:badge) { create(:badge) }
-
-    context "when badge exists" do
-      it "shows the badge" do
-        get "/badge/#{badge.slug}"
-        expect(response.body).to include CGI.escapeHTML(badge.title)
-      end
-    end
-
-    context "when badge does not exist" do
-      it "renders 404" do
-        expect { get "/badge/that-does-not-exists" }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-  end
 end

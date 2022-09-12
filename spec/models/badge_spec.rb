@@ -31,35 +31,6 @@ RSpec.describe Badge, type: :model do
     end
   end
 
-  context "when callbacks are triggered after save" do
-    let!(:badge) { create(:badge) }
-
-    describe "cache busting" do
-      before do
-        allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
-        allow(cache_bust).to receive(:call)
-      end
-
-      it "calls the cache buster with the path" do
-        badge.save
-
-        expect(cache_bust).to have_received(:call).with(badge.path)
-      end
-
-      it "calls the cache buster with the internal path" do
-        badge.save
-
-        expect(cache_bust).to have_received(:call).with("#{badge.path}?i=i")
-      end
-    end
-  end
-
-  describe "#path" do
-    it "returns the path of the badge" do
-      expect(badge.path).to eq("/badge/#{badge.slug}")
-    end
-  end
-
   describe "#slug" do
     it "generates the correct slug for C" do
       badge = build(:badge, title: "C")

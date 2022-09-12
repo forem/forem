@@ -12,11 +12,6 @@ class Badge < ApplicationRecord
   validates :title, presence: true, uniqueness: true
 
   before_validation :generate_slug
-  after_save :bust_path
-
-  def path
-    "/badge/#{slug}"
-  end
 
   def self.id_for_slug(slug)
     select(:id).find_by(slug: slug)&.id
@@ -26,11 +21,5 @@ class Badge < ApplicationRecord
 
   def generate_slug
     self.slug = CGI.escape(title.to_s).parameterize
-  end
-
-  def bust_path
-    cache_bust = EdgeCache::Bust.new
-    cache_bust.call(path)
-    cache_bust.call("#{path}?i=i")
   end
 end
