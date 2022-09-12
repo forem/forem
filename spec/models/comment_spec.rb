@@ -376,12 +376,6 @@ RSpec.describe Comment, type: :model do
       expect(comment.reload.id_code).to eq(comment.id.to_s(26))
     end
 
-    it "enqueue a worker to create the first reaction" do
-      expect do
-        comment.save
-      end.to change(Comments::CreateFirstReactionWorker.jobs, :size).by(1)
-    end
-
     it "enqueues a worker to calculate comment score" do
       expect do
         comment.save
