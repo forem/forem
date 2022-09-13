@@ -1,7 +1,7 @@
 function initializeDisplayAdVisibility() {
   var displayAds = document.querySelectorAll('[data-display-unit]');
 
-  if (displayAds?.length == 0) {
+  if (displayAds && displayAds.length == 0) {
     return;
   }
 
