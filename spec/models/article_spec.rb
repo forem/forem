@@ -1362,19 +1362,20 @@ RSpec.describe Article, type: :model do
 
   describe "collection cleanup" do
     let(:collection) { create(:collection, title: "test series") }
-
-    before { article.update(collection_id: collection.id) }
+    let(:article) { create(:article, with_collection: collection) }
 
     it "destroys the collection if collection is empty" do
       expect do
-        article.update(collection_id: nil)
+        article.body_markdown.gsub!("series: #{collection.slug}", "")
+        article.save
       end.to change(Collection, :count).by(-1)
     end
 
     it "avoids destroying the collection if the collection has other articles" do
-      create(:article, user: user, collection: collection)
       expect do
-        article.update(collection_id: nil)
+        create(:article, user: user, with_collection: collection)
+        article.body_markdown.gsub!("series: #{collection.slug}", "")
+        article.save
       end.not_to change(Collection, :count)
     end
   end
