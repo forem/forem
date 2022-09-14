@@ -26,6 +26,9 @@ en:
           cancel: Dismiss
           edit: Edit
           unpublish: Unpublish
+      jump_to_comments:
+        aria_label: Jump to Comments
+        label: Jump to Comments
       lock:
         meta:
           title: Confirm Discussion Lock
