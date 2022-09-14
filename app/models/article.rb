@@ -619,7 +619,7 @@ class Article < ApplicationRecord
     return unless saved_change_to_collection_id? && collection_id.nil?
 
     collection = Collection.find(collection_id_before_last_save)
-    return if collection.articles.count > 1
+    return if collection.articles.count.positive?
 
     # Collection is empty
     collection.destroy
