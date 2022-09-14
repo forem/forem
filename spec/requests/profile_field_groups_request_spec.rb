@@ -18,7 +18,7 @@ RSpec.describe "ProfileFieldGroups", type: :request do
 
     it "returns a successful response" do
       get profile_field_groups_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
 
     it "returns all groups with all fields by default" do
