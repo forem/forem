@@ -8,7 +8,7 @@
     </p>
   <% end %>
   <div>
-    <a href="<%= sign_up_path(state: "new-user") %>" class="c-cta c-cta--branded justify-center w-100 mb-1" aria-label="<%= t("views.auth.create.aria_label") %>"><%= t("views.auth.create.text") %></a>
+    <a href="<%= sign_up_path(state: "new-user") %>" data-tracking-id="<%= tracking_id %>" data-tracking-source="<%= source %>" class="c-cta c-cta--branded justify-center w-100 mb-1" aria-label="<%= t("views.auth.create.aria_label") %>"><%= t("views.auth.create.text") %></a>
     <a href="<%= sign_up_path %>" class="c-link c-link--block justify-center" aria-label="<%= t("views.auth.login.aria_label") %>"><%= t("views.auth.login.text") %></a>
   </div>
 </div>
