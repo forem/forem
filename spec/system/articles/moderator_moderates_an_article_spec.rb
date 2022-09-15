@@ -17,14 +17,15 @@ RSpec.describe "Views an article", type: :system do
     expect(page).to have_content(article.title)
   end
 
+  # rubocop:disable Rspec/Capybara/SpecificMatcher
   it "lets moderators visit /mod", js: true do
     visit "/#{user.username}/#{article.slug}/mod"
-
     expect(page).to have_selector('button[data-category="thumbsdown"][data-reactable-type="Article"]')
     expect(page).to have_selector('button[data-category="vomit"][data-reactable-type="Article"]')
     expect(page).to have_selector('button[data-category="vomit"][data-reactable-type="User"]')
-    expect(page).to have_selector("button.level-rating-button")
+    expect(page).to have_button(class: "level-rating-button")
   end
+  # rubocop:enable Rspec/Capybara/SpecificMatcher
 
   it "shows hidden comments on /mod" do
     commenter = create(:user)
