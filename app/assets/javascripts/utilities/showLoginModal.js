@@ -17,6 +17,6 @@ function ahoyTracking(trackingData) {
     page: location.href,
     source: 'modal',
     secondary_source: trackingData?.secondary_source,
-    trigger: trackingData?.reaction,
+    trigger: trackingData?.trigger,
   });
 }
