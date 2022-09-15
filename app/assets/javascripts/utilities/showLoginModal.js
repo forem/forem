@@ -6,7 +6,7 @@ function showLoginModal(trackingData) {
     overlay: true,
     onOpen: () => {
       document
-        .querySelector('#window-modal .global-signup-modal__create-account')
+        .querySelector('#window-modal .js-global-signup-modal__create-account')
         ?.addEventListener('click', () => ahoyTracking(trackingData));
     },
   });
