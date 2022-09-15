@@ -129,3 +129,7 @@ trackCreateAccountClicks(
   'authentication-hamburger-actions',
   'Clicked on Create Account',
 );
+trackCreateAccountClicks(
+  'authentication-top-nav-actions',
+  'Clicked on Create Account',
+);
