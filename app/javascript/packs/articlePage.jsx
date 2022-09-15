@@ -5,7 +5,7 @@ import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitche
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
 import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
-import { trackClick } from '@utilities/ahoy/trackEvents';
+import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
 import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
 
 const animatedImages = document.querySelectorAll('[data-animated="true"]');
@@ -160,5 +160,5 @@ targetNode && embedGists(targetNode);
 
 initializeUserSubscriptionLiquidTagContent();
 // Temporary Ahoy Stats for comment section clicks on controls
-trackClick('comments', 'Comment section click');
+trackCommentClicks('comments', 'Comment section click');
 trackCommentsSectionDisplayed();
