@@ -194,20 +194,6 @@ function trackCustomImpressions() {
       }, 15000)
     }
 
-    // display add
-    var displayAds = document.querySelectorAll('[data-display-unit]');
-    if (displayAds.length > 0
-      && tokenMeta
-      && !isBot
-      && windowBigEnough
-      && checkUserLoggedIn()) {
-        var csrfToken = tokenMeta.getAttribute('content');
-        displayAds.forEach(unit => {
-          trackAdImpression(csrfToken, unit);
-          unit.removeEventListener('click', trackAdClick, false );
-          unit.addEventListener('click', function(e) { trackAdClick(csrfToken, e.target) });
-        });
-      }
   }, 1800)
 }
 
@@ -259,46 +245,4 @@ function trackFifteenSecondsOnPage(articleId, csrfToken) {
     },
     credentials: 'same-origin',
   }).catch((error) => console.error(error))
-}
-
-function trackAdImpression(token, adBox) {
-  var dataBody = {
-    display_ad_event: {
-      display_ad_id: adBox.dataset.id,
-      context_type: "<%= DisplayAdEvent::CONTEXT_TYPE_HOME %>",
-      category: "<%= DisplayAdEvent::CATEGORY_IMPRESSION %>",
-    }
-  }
-  window.fetch('/display_ad_events', {
-    method: 'POST',
-    headers: {
-      'X-CSRF-Token': token,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(dataBody),
-    credentials: 'same-origin',
-  }).catch((error) => console.error(error))
-}
-
-function trackAdClick(token, clickedElement) {
-  var adBox = clickedElement.closest('[data-display-unit]');
-  if (!adClicked) {
-    var dataBody = {
-      display_ad_event: {
-        display_ad_id: adBox.dataset.id,
-        context_type: "<%= DisplayAdEvent::CONTEXT_TYPE_HOME %>",
-        category: "<%= DisplayAdEvent::CATEGORY_CLICK %>",
-      }
-    }
-    window.fetch('/display_ad_events', {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataBody),
-      credentials: 'same-origin',
-    })
-  }
-  adClicked = true;
 }
