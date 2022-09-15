@@ -133,3 +133,8 @@ trackCreateAccountClicks(
   'authentication-top-nav-actions',
   'Clicked on Create Account',
 );
+
+trackCreateAccountClicks(
+  'authentication-modal-actions',
+  'Clicked on Create Account',
+);
