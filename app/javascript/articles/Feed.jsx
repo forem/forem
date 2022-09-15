@@ -120,7 +120,10 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     sendHapticMessage('medium');
 
     if (userStatus === 'logged-out') {
-      showLoginModal();
+      showLoginModal({
+        secondary_source: 'post_index_toolbar',
+        trigger: 'reading_list',
+      });
       return;
     }
 
