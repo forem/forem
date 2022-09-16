@@ -207,7 +207,7 @@ function handleFollowButtonClick({ target }) {
   ) {
     const userStatus = document.body.getAttribute('data-user-status');
     if (userStatus === 'logged-out') {
-      showLoginModal();
+      showLoginModal({ secondary_source: null, trigger: 'follow_button' });
       return;
     }
 
