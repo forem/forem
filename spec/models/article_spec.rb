@@ -1360,6 +1360,26 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "collection cleanup" do
+    let(:collection) { create(:collection, title: "test series") }
+    let(:article) { create(:article, with_collection: collection) }
+
+    it "destroys the collection if collection is empty" do
+      expect do
+        article.body_markdown.gsub!("series: #{collection.slug}", "")
+        article.save
+      end.to change(Collection, :count).by(-1)
+    end
+
+    it "avoids destroying the collection if the collection has other articles" do
+      expect do
+        create(:article, user: user, with_collection: collection)
+        article.body_markdown.gsub!("series: #{collection.slug}", "")
+        article.save
+      end.not_to change(Collection, :count)
+    end
+  end
+
   describe "#top_comments" do
     context "when article has comments" do
       let(:root_comment) { create(:comment, commentable: article, score: 20) }
