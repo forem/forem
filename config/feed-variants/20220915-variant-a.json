@@ -73,7 +73,7 @@
       ],
       "fallback": 0
     },
-    "matching_positive_tags_intersection_count": {
+    "matching_positive_tags_intersection_points": {
       "cases": [
         [0, 0.5],
         [1, 0.55],
