@@ -16,7 +16,7 @@ function ahoyTracking(trackingData) {
   ahoy.track('Create Account', {
     page: location.href,
     source: 'modal',
-    secondary_source: trackingData?.secondary_source,
-    trigger: trackingData?.trigger,
+    secondary_source: trackingData.secondary_source,
+    trigger: trackingData.trigger,
   });
 }
