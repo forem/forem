@@ -324,7 +324,7 @@ function handleFocus(event) {
   var area = event.target;
   if (userStatus == 'logged-out') {
     event.preventDefault();
-    showLoginModal();
+    showLoginModal({ secondary_source: 'comment_area', trigger: 'comment'});
     area.blur();
   } else {
     var form = event.target.closest(".comment-form");
