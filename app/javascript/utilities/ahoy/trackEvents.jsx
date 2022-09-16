@@ -43,7 +43,7 @@ export function trackCreateAccountClicks(elementId, name) {
 }
 
 function getTrackingNode(target, trackingElement) {
-  // We check for any parent container with a data-tracking-name attribute, as otherwise
+  // We check for any parent container with a trackingElement attribute, as otherwise
   // SVGs inside buttons can cause events to be missed
   const relevantNode = target.closest(trackingElement);
   return relevantNode;
