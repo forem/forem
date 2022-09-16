@@ -318,7 +318,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_to_lowercase_username
-    return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
+    return unless params[:username]&.match?(/[[:upper:]]/)
 
     redirect_permanently_to("/#{params[:username].downcase}")
   end
