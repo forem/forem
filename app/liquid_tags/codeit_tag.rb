@@ -6,7 +6,7 @@ class CodeitTag < LiquidTagBase
 
   def render(_context)
     '<iframe src="' + @url + '"
-      scrolling="no" frameborder="no" allowtransparency="true" loading="lazy" style="width: 100%;" height="600"
+      scrolling="no" frameborder="no" allowtransparency="true" allowfullscreen="true" loading="lazy" style="width: 100%;" height="600"
     </iframe>'
   end
 
