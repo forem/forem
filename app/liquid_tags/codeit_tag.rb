@@ -25,3 +25,4 @@ class CodeitTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("codeit", CodeitTag)
+Liquid::Template.register_tag("cd", CodeitTag)
