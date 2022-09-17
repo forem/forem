@@ -13,9 +13,11 @@ class CodeitTag < LiquidTagBase
   private
 
   def parse_url(url)
-    unless ?(url.match(/^https:\/\/cde.run\//) || url.match(/^https:\/\/dev.cde.run\//))
+    if (url.match(/^https:\/\/cde.run\//) || url.match(/^https:\/\/dev.cde.run\//))
+      url = url
+    else
       url = 'https://cde.run/' + url
-    url
+    return url
     end
   end
 
