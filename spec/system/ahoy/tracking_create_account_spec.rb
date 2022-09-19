@@ -11,9 +11,6 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
 
     before do
       visit root_path
-      # this is to ensure that we see "ca_feed_home_page" which appears in a card after the fifth
-      # article
-      create_list(:article, 6, user: user)
     end
 
     it "expects page to have the necessary tracking elements", :aggregate_failures do
