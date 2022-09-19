@@ -13,7 +13,7 @@ function showLoginModal(trackingData) {
 }
 
 function ahoyTracking(trackingData) {
-  ahoy.track('Create Account', {
+  ahoy.track('Clicked on Create Account', {
     page: location.href,
     source: 'modal',
     secondary_source: trackingData.secondary_source,

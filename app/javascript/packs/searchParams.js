@@ -89,8 +89,8 @@ function initializeFilters(query, filters) {
         !checkUserLoggedIn()
       ) {
         showLoginModal({
-          secondary_source: 'search_filter',
-          trigger: 'filter',
+          secondary_source: 'search',
+          trigger: 'my_posts_filter',
         });
         return;
       }
