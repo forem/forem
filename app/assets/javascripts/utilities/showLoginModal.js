@@ -7,7 +7,7 @@ function showLoginModal(trackingData) {
     onOpen: () => {
       document
         .querySelector('#window-modal .js-global-signup-modal__create-account')
-        ?.addEventListener('click', () => ahoyTracking(trackingData));
+        .addEventListener('click', () => ahoyTracking(trackingData));
     },
   });
 }
