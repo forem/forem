@@ -32,10 +32,10 @@ export function trackCreateAccountClicks(elementId, name) {
     .getElementById(elementId)
     ?.addEventListener('click', ({ target }) => {
       const relevantNode = getTrackingNode(target, '[data-tracking-id]');
-
       if (relevantNode) {
         ahoy.track(name, {
           page: location.href,
+          referrer: document.referrer,
           source: relevantNode.dataset?.trackingSource,
         });
       }
