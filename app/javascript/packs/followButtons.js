@@ -207,7 +207,10 @@ function handleFollowButtonClick({ target }) {
   ) {
     const userStatus = document.body.getAttribute('data-user-status');
     if (userStatus === 'logged-out') {
-      showLoginModal({ secondary_source: null, trigger: 'follow_button' });
+      showLoginModal({
+        secondary_source: determineSecondarySource(target),
+        trigger: 'follow_button',
+      });
       return;
     }
 
@@ -238,6 +241,21 @@ function handleFollowButtonClick({ target }) {
           });
         }
       });
+  }
+}
+
+/**
+ * Determines where the click came from for event tracking
+ */
+function determineSecondarySource(target) {
+  // The order of these if statements are important as the follow user buttons have both
+  //  follow-action-button and follow-user classnames on them.
+  if (target.classList.contains('follow-user')) {
+    return 'user';
+  }
+
+  if (target.classList.contains('follow-action-button')) {
+    return 'action';
   }
 }
 
