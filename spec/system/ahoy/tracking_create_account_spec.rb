@@ -3,6 +3,11 @@ require "rails_helper"
 RSpec.describe "Tracking 'Clicked on Create Account'" do
   context "when on the homepage" do
     let(:user) { create(:user) }
+    # rubocop:disable RSpec/LetSetup
+    # this is to ensure that we see "ca_feed_home_page" which appears
+    # in a card after the fifth article
+    let!(:articles) { create_list(:article, 6, user: user) }
+    # rubocop:enable RSpec/LetSetup
 
     before do
       visit root_path
@@ -11,8 +16,7 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
       create_list(:article, 6, user: user)
     end
 
-    it "expects page to have the necessary tracking elements" do
-      visit root_path
+    it "expects page to have the necessary tracking elements", :aggregate_failures do
       # rubocop:disable RSpec/Capybara/SpecificMatcher
       expect(page).to have_selector('a[data-tracking-id="ca_top_nav"]')
       expect(page).to have_selector('a[data-tracking-id="ca_left_sidebar_home_page"]')
