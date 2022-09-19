@@ -41,11 +41,11 @@ en:
         one: менше хвилини тому
         other: менше %{count} хвилин тому
       over_x_years:
-        one: over 1 year ago
-        other: over %{count} years ago
+        one: більше  року тому
+        other: більше %{count} років тому
       x_seconds:
-        one: 1 second ago
-        other: "%{count} seconds ago"
+        one: 1 секунду тому
+        other: "%{count} секунди тому"
       x_minutes:
         one: 1 minute ago
         other: "%{count} minutes ago"
