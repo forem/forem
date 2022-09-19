@@ -17,6 +17,11 @@ class Badge < ApplicationRecord
     select(:id).find_by(slug: slug)&.id
   end
 
+  def path
+    "/badge/#{slug}"
+  end
+
+
   private
 
   def generate_slug
