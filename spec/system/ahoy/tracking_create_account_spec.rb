@@ -27,7 +27,8 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
         find('[data-tracking-id="ca_top_nav"]').click
       end.to change(Ahoy::Event, :count).by(1)
 
-      ahoy_event = Ahoy::Event.find_by(name: "Clicked on Create Account").to be_present
+      ahoy_event = Ahoy::Event.find_by(name: "Clicked on Create Account")
+      expect(ahoy_event).to be_present
       expect(ahoy_event.properties).to have_key("source")
       expect(ahoy_event.properties).to have_key("page")
       expect(ahoy_event.properties).to have_key("referrer")
