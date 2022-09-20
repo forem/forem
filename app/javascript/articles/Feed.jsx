@@ -122,7 +122,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     if (userStatus === 'logged-out') {
       showLoginModal({
         referring_source: 'post_index_toolbar',
-        trigger: 'reading_list',
+        trigger: 'readinglist',
       });
       return;
     }
