@@ -2,6 +2,8 @@ require "capybara/rails"
 require "capybara/rspec"
 require "capybara/cuprite"
 
+Capybara.default_max_wait_time = 2
+Capybara.default_normalize_ws = true
 Capybara.register_driver(:better_cuprite) do |app|
   Capybara::Cuprite::Driver.new(
     app,
@@ -15,13 +17,13 @@ Capybara.register_driver(:better_cuprite) do |app|
       inspector: true,
       # Allow running Chrome in a headful mode by setting HEADLESS env
       # var to a falsey value
-      headless: !ENV["HEADLESS"].in?(%w[n 0 no false])
+      # headless: !ENV["HEADLESS"].in?(%w[n 0 no false])
+      headless: false
     },
   )
 end
 
-Capybara.default_driver = Capybara.javascript_driver = :better_cuprite
-Capybara.default_max_wait_time = 10
+# Capybara.default_max_wait_time = 10
 
 RSpec.configure do |config|
   config.before(:each, type: :system) do
