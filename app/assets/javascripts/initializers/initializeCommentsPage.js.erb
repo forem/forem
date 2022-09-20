@@ -47,7 +47,7 @@ function initializeCommentsPage() {
                   if (buttForComment) {
                     var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
                     var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
-                    if (publicReactionCounts[i].count > 0) {
+                    if (publicReactionCounts[i].count > 0 && reactionsLabelWrapper) {
 
                       if (publicReactionCounts[i].count > 1) {
                         reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}s`;
