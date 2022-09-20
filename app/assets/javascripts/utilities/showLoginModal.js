@@ -15,6 +15,7 @@ function showLoginModal(trackingData) {
 
 function ahoyTracking(trackingData, referrer) {
   ahoy.track('Clicked on Create Account', {
+    version: 0.1,
     page: location.href,
     referrer: referrer,
     source: 'modal',

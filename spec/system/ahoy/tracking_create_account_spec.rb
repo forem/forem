@@ -52,6 +52,7 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
       expect(ahoy_event.properties).to have_key("referring_source")
       expect(ahoy_event.properties).to have_key("trigger")
       expect(ahoy_event.properties).to have_key("referrer")
+      expect(ahoy_event.properties).to have_key("version")
     end
   end
 end
