@@ -23,8 +23,10 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
     end
 
     it "tracks a click with the correct source", { js: true, aggregate_failures: true } do
-      page.find('[data-tracking-id="ca_top_nav"]').click
-      expect(Ahoy::Event.count).to eq(1)
+      expect do
+        find('[data-tracking-id="ca_top_nav"]').click
+      end.to change(Ahoy::Event, :count).by(1)
+
       expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
 
       expect(Ahoy::Event.last.properties).to have_key("source")
@@ -39,12 +41,13 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
     it "adds an ahoy event", { js: true } do
       article = create(:article, user: create(:user))
       visit article.path
-      click_button("Follow", match: :first)
+      find(".follow-action-button").click
 
-      count = Ahoy::Event.count
-      find(".js-global-signup-modal__create-account").click
+      expect do
+        find(".js-global-signup-modal__create-account").click
+      end.to change(Ahoy::Event, :count).by(1)
+
       expect(page).to have_current_path("/enter?state=new-user")
-      expect(Ahoy::Event.count).to eq(count + 1)
       expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
       expect(Ahoy::Event.last.properties).to have_key("source")
       expect(Ahoy::Event.last.properties).to have_key("page")
