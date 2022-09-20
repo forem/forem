@@ -42,18 +42,16 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
       article = create(:article, user: create(:user))
       visit article.path
       find(".follow-action-button").click
-
-      expect do
-        find(".js-global-signup-modal__create-account").click
-      end.to change(Ahoy::Event, :count).by(1)
+      find(".js-global-signup-modal__create-account").click
 
       expect(page).to have_current_path("/enter?state=new-user")
-      expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
-      expect(Ahoy::Event.last.properties).to have_key("source")
-      expect(Ahoy::Event.last.properties).to have_key("page")
-      expect(Ahoy::Event.last.properties).to have_key("secondary_source")
-      expect(Ahoy::Event.last.properties).to have_key("trigger")
-      expect(Ahoy::Event.last.properties).to have_key("referrer")
+      ahoy_event = Ahoy::Event.find_by(name: "Clicked on Create Account")
+      expect(ahoy_event).to be_present
+      expect(ahoy_event.properties).to have_key("source")
+      expect(ahoy_event.properties).to have_key("page")
+      expect(ahoy_event.properties).to have_key("secondary_source")
+      expect(ahoy_event.properties).to have_key("trigger")
+      expect(ahoy_event.properties).to have_key("referrer")
     end
   end
 end
