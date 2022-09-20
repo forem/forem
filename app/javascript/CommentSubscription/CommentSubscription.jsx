@@ -92,7 +92,7 @@ export class CommentSubscription extends Component {
                 this.setState({ subscribed: !subscribed });
               } else {
                 showLoginModal({
-                  secondary_source: 'comments',
+                  referring_source: 'comments',
                   trigger: 'comment_subscription',
                 });
               }

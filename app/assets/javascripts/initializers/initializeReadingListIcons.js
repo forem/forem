@@ -54,7 +54,7 @@ function reactToReadingListButtonClick(event) {
   userStatus = document.body.getAttribute('data-user-status');
   if (userStatus === 'logged-out') {
     showLoginModal({
-      secondary_source: 'post_index_toolbar',
+      referring_source: 'post_index_toolbar',
       trigger: 'reading_list',
     });
     return;

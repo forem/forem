@@ -89,7 +89,7 @@ function initializeFilters(query, filters) {
         !checkUserLoggedIn()
       ) {
         showLoginModal({
-          secondary_source: 'search',
+          referring_source: 'search',
           trigger: 'my_posts_filter',
         });
         return;
