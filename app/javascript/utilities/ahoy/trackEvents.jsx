@@ -35,7 +35,7 @@ export function trackCreateAccountClicks(elementId, name) {
       if (relevantNode) {
         ahoy.track(name, {
           version: 0.1,
-          page: location.href,
+          page: location.pathname,
           referrer: document.referrer,
           source: relevantNode.dataset?.trackingSource,
         });

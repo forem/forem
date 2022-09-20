@@ -5,7 +5,7 @@ function showLoginModal(trackingData) {
     contentSelector: '#global-signup-modal',
     overlay: true,
     onOpen: () => {
-      const referrer = location.href;
+      const referrer = location.pathname;
       document
         .querySelector('#window-modal .js-global-signup-modal__create-account')
         .addEventListener('click', () => ahoyTracking(trackingData, referrer));
@@ -16,7 +16,7 @@ function showLoginModal(trackingData) {
 function ahoyTracking(trackingData, referrer) {
   ahoy.track('Clicked on Create Account', {
     version: 0.1,
-    page: location.href,
+    page: location.pathname,
     referrer: referrer,
     source: 'modal',
     referring_source: trackingData.referring_source,
