@@ -38,7 +38,7 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
   end
 
   context "when tracking through the modal" do
-    it "adds an ahoy event", { js: true } do
+    it "adds an ahoy event", { js: true, aggregate_failures: true } do
       article = create(:article, user: create(:user))
       visit article.path
       find(".follow-action-button").click
