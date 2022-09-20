@@ -11,7 +11,7 @@
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
+  initializePaymentPointers, initializeBroadcast, initializeDateHelpers
 */
 
 function callInitializers() {
@@ -50,6 +50,7 @@ function initializePage() {
       initializeBroadcast();
       initializeReadingListIcons();
       initializeSponsorshipVisibility();
+      initializeDisplayAdVisibility();
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }

@@ -24,6 +24,7 @@ module.exports = {
     handleFollowButtPress: false,
     browserStoreCache: false,
     initializeBaseUserData: false,
+    initializeDisplayAdVisibility: false,
     initializeReadingListIcons: false,
     initializeSponsorshipVisibility: false,
     ActiveXObject: false,
