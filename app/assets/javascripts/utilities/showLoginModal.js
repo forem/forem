@@ -5,19 +5,21 @@ function showLoginModal(trackingData) {
     contentSelector: '#global-signup-modal',
     overlay: true,
     onOpen: () => {
-      const referrer = location.href;
-      document
-        .querySelector('#window-modal .js-global-signup-modal__create-account')
-        .addEventListener('click', () => ahoyTracking(trackingData, referrer));
+      if (Object.keys(trackingData).length > 0) {
+        document
+          .querySelector(
+            '#window-modal .js-global-signup-modal__create-account',
+          )
+          .addEventListener('click', () => ahoyTracking(trackingData));
+      }
     },
   });
 }
 
-function ahoyTracking(trackingData, referrer) {
+function ahoyTracking(trackingData) {
   ahoy.track('Clicked on Create Account', {
     version: 0.1,
     page: location.href,
-    referrer: referrer,
     source: 'modal',
     referring_source: trackingData.referring_source,
     trigger: trackingData.trigger,

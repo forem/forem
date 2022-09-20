@@ -207,10 +207,14 @@ function handleFollowButtonClick({ target }) {
   ) {
     const userStatus = document.body.getAttribute('data-user-status');
     if (userStatus === 'logged-out') {
-      showLoginModal({
-        referring_source: determineSecondarySource(target),
-        trigger: 'follow_button',
-      });
+      let trackingData = {};
+      if (determineSecondarySource(target)) {
+        trackingData = {
+          referring_source: determineSecondarySource(target),
+          trigger: 'follow_button',
+        };
+      }
+      showLoginModal(trackingData);
       return;
     }
 
@@ -248,14 +252,11 @@ function handleFollowButtonClick({ target }) {
  * Determines where the click came from for event tracking
  */
 function determineSecondarySource(target) {
-  // The order of these if statements are important as the follow user buttons have both
-  //  follow-action-button and follow-user classnames on them.
+  // The follow user buttons have both follow-action-button and follow-user
+  // classnames on them. For now we only want to
+  // implement tracking for follow-user.
   if (target.classList.contains('follow-user')) {
     return 'user';
-  }
-
-  if (target.classList.contains('follow-action-button')) {
-    return 'action';
   }
 }
 
