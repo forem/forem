@@ -1,0 +1,185 @@
+---
+en:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Зв'яжіться з нами</a>, якщо маєте питання.
+    if_continued_trouble_html: <a href="/contact">Зв'яжіться з нами</a>, якщо у вас є проблеми з сайтом.
+    if_we_can_help_html: <a href="/contact">Зв'яжіться з нами</a>, якщо ми можемо чимось допомогти.
+  core:
+    add_comment: Додати коментар
+    beta: бета
+    comment: Коментар
+    copy_link: Копіювати посилання
+    edit_profile: Редагувати профіль
+    follow: Підписатися
+    follow_back: Взаємно підписатися
+    following: Підписки
+    like: Подобається
+    loading: завантаження...
+    reaction: Реакції
+    report_abuse: Поскраржитись
+    search: Пошук
+    success_settings: Налаштування успішно оновлені.
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: годину тому
+        other: %{count} годин тому
+      about_x_months:
+        one: місяць тому
+        other: %{count} місяців тому
+      about_x_years:
+        one: рік  тому
+        other: %{count} років тому
+      almost_x_years:
+        one: майже рік тому
+        other: майже %{count} років тому
+      half_a_minute: 30 секунд тому
+      less_than_x_seconds:
+        one: тільки що
+        other: менше %{count} секунд тому
+      less_than_x_minutes:
+        one: менше хвилини тому
+        other: менше %{count} хвилин тому
+      over_x_years:
+        one: більше  року тому
+        other: більше %{count} років тому
+      x_seconds:
+        one: 1 секунду тому
+        other: "%{count} секунди тому"
+      x_minutes:
+        one: 1 minute ago
+        other: "%{count} minutes ago"
+      x_days:
+        one: 1 day ago
+        other: "%{count} days ago"
+      x_months:
+        one: 1 month ago
+        other: "%{count} months ago"
+      x_years:
+        one: 1 year ago
+        other: "%{count} years ago"
+    expired_ago:
+      about_x_hours:
+        one: Expired about 1 hour ago
+        other: Expired about %{count} hours ago
+      about_x_months:
+        one: Expired about 1 month ago
+        other: Expired about %{count} months ago
+      about_x_years:
+        one: Expired about 1 year ago
+        other: Expired about %{count} years ago
+      almost_x_years:
+        one: Expired almost 1 year ago
+        other: Expired almost %{count} years ago
+      half_a_minute: Expired half a minute ago
+      less_than_x_seconds:
+        one: Expired less than 1 second ago
+        other: Expired less than %{count} seconds ago
+      less_than_x_minutes:
+        one: Expired less than a minute ago
+        other: Expired less than %{count} minutes ago
+      over_x_years:
+        one: Expired over 1 year ago
+        other: Expired over %{count} years ago
+      x_seconds:
+        one: Expired 1 second ago
+        other: Expired %{count} seconds ago
+      x_minutes:
+        one: Expired 1 minute ago
+        other: Expired %{count} minutes ago
+      x_days:
+        one: Expired 1 day ago
+        other: Expired %{count} days ago
+      x_months:
+        one: Expired 1 month ago
+        other: Expired %{count} months ago
+      x_years:
+        one: Expired 1 year ago
+        other: Expired %{count} years ago
+    expires_in:
+      about_x_hours:
+        one: Expires in about 1 hour
+        other: Expires in about %{count} hours
+      about_x_months:
+        one: Expires in about 1 month
+        other: Expires in about %{count} months
+      about_x_years:
+        one: Expires in about 1 year
+        other: Expires in about %{count} years
+      almost_x_years:
+        one: Expires in almost 1 year
+        other: Expires in almost %{count} years
+      half_a_minute: Expires in half a minute
+      less_than_x_seconds:
+        one: Expires in less than 1 second
+        other: Expires in less than %{count} seconds
+      less_than_x_minutes:
+        one: Expires in less than a minute
+        other: Expires in less than %{count} minutes
+      over_x_years:
+        one: Expires in over 1 year
+        other: Expires in over %{count} years
+      x_seconds:
+        one: Expires in 1 second
+        other: Expires in %{count} seconds
+      x_minutes:
+        one: Expires in 1 minute
+        other: Expires in %{count} minutes
+      x_days:
+        one: Expires in 1 day
+        other: Expires in %{count} days
+      x_months:
+        one: Expires in 1 month
+        other: Expires in %{count} months
+      x_years:
+        one: Expires in 1 year
+        other: Expires in %{count} years
+  errors:
+    messages:
+      accepted: must be accepted
+      bad_protocol: must start with %{protocols}
+      bad_uri: is an invalid url
+      blank: can't be blank
+      confirmation: doesn't match %{attribute}
+      contains_prohibited_characters: contains non-alphanumeric or prohibited unicode characters
+      empty: can't be empty
+      equal_to: must be equal to %{count}
+      even: must be even
+      exclusion: is reserved
+      general: 'Error: %{errors}'
+      greater_than: must be greater than %{count}
+      greater_than_or_equal_to: must be greater than or equal to %{count}
+      inclusion: is not included in the list
+      invalid: is invalid
+      less_than: must be less than %{count}
+      less_than_or_equal_to: must be less than or equal to %{count}
+      model_invalid: 'Validation failed: %{errors}'
+      not_a_number: is not a number
+      not_an_integer: must be an integer
+      odd: must be odd
+      other_than: must be other than %{count}
+      present: must be blank
+      required: must exist
+      taken: has already been taken
+      too_long:
+        one: is too long (maximum is 1 character)
+        other: is too long (maximum is %{count} characters)
+      too_short:
+        one: is too short (minimum is 1 character)
+        other: is too short (minimum is %{count} characters)
+      try_again_email: 'An error occurred. Please try again or send an email to: %{email}'
+      wrong_length:
+        one: is the wrong length (should be 1 character)
+        other: is the wrong length (should be %{count} characters)
+  time:
+    formats:
+      comment: "%B %d, %Y"
+      github: "%b %d, %Y"
+      json: "%b %e, %Y"
+      medium: "%b %-d, %Y"
+      reddit: "%b %e '%y"
+      short: "%b %-e"
+      short_with_yy: "%b %-d '%y"
+      short_with_year: "%b %-e, %Y"
+      stackexchange: "%b %e '%y"
+      tweet: "%H:%M %p - %d %b %Y"
