@@ -444,6 +444,10 @@ function updateCommentsCount() {
   const commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount, 10) + 1;
   commentsCountDiv.dataset.commentsCount = commentsCountData;
   commentsCountDiv.innerHTML = `(${commentsCountData})`
+
+  const commentsSidebarCountDiv = document.getElementById("reaction-number-comment");
+  if (!commentsSidebarCountDiv) return;
+  commentsSidebarCountDiv.innerHTML = `${commentsCountData}`;
 }
 
 function handleHiddenComments(commentableType){
