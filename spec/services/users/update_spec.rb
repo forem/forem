@@ -145,12 +145,6 @@ RSpec.describe Users::Update, type: :service do
       end
     end
 
-    it "enqueues resave articles job when changing text_color_hex" do
-      sidekiq_assert_resave_article_worker(user) do
-        described_class.call(user, user_settings: { brand_color2: "#12345F" })
-      end
-    end
-
     Authentication::Providers.username_fields.each do |username_field|
       it "enqueues resave articles job when changing #{username_field}" do
         sidekiq_assert_resave_article_worker(user) do

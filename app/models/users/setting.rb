@@ -21,7 +21,6 @@ module Users
          _suffix: :feed
 
     validates :brand_color1,
-              :brand_color2,
               format: { with: HEX_COLOR_REGEXP,
                         message: I18n.t("models.users.setting.invalid_hex") },
               allow_nil: true
