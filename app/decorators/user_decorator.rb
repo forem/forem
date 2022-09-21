@@ -59,7 +59,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def enriched_colors
-    if setting.brand_color1.blank? || setting.brand_color2.blank?
+    if setting.brand_color1.blank?
       {
         bg: assigned_color[:bg],
         text: assigned_color[:text]
@@ -67,7 +67,7 @@ class UserDecorator < ApplicationDecorator
     else
       {
         bg: setting.brand_color1,
-        text: setting.brand_color2
+        text: "#ffffff"
       }
     end
   end
