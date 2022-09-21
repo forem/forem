@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_31_091245) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -1338,7 +1338,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_31_091245) do
 
   create_table "users_settings", force: :cascade do |t|
     t.string "brand_color1", default: "#000000"
-    t.string "brand_color2", default: "#ffffff"
     t.integer "config_font", default: 0, null: false
     t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
