@@ -3,7 +3,6 @@ require "capybara/rspec"
 require "capybara/cuprite"
 
 Capybara.default_max_wait_time = 2
-Capybara.default_normalize_ws = true
 Capybara.register_driver(:better_cuprite) do |app|
   Capybara::Cuprite::Driver.new(
     app,
