@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-: ${CONTAINER_REPO:="quay.io/ternox"}
-: ${CONTAINER_APP:=forem-bezmir}
+: ${CONTAINER_REPO:="quay.io/forem"}
+: ${CONTAINER_APP:=forem}
 
 function create_pr_containers {
 
