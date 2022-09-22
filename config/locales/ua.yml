@@ -1,5 +1,5 @@
 ---
-en:
+ua:
   contact_prompts:
     if_any_questions_html: <a href="/contact">Зв'яжіться з нами</a>, якщо маєте питання.
     if_continued_trouble_html: <a href="/contact">Зв'яжіться з нами</a>, якщо у вас є проблеми з сайтом.
@@ -23,13 +23,13 @@ en:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:
         one: годину тому
-        other: %{count} годин тому
+        other: "%{count} годин тому"
       about_x_months:
         one: місяць тому
-        other: %{count} місяців тому
+        other: "%{count} місяців тому"
       about_x_years:
         one: рік  тому
-        other: %{count} років тому
+        other: "%{count} років тому"
       almost_x_years:
         one: майже рік тому
         other: майже %{count} років тому
