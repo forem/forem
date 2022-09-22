@@ -5,7 +5,7 @@ function showLoginModal(trackingData) {
     contentSelector: '#global-signup-modal',
     overlay: true,
     onOpen: () => {
-      if (Object.keys(trackingData).length > 0) {
+      if (trackingData && Object.keys(trackingData).length > 0) {
         document
           .querySelector(
             '#window-modal .js-global-signup-modal__create-account',
