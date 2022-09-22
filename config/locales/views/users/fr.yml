@@ -76,7 +76,7 @@ fr:
       follow: Suivre
       joined:
         icon: Rejoint
-        text_html: "Rejoint le\_%{date}"
+        text_html: "У спільноті з e\_%{date}"
       location_icon: Lieu
       logo: "%{user} profile picture"
       more: More info about @%{user}
