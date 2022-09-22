@@ -231,6 +231,14 @@
       --reaction-bg: var(--reaction-save-bg);
     }
   }
+
+  &--comment {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--reaction-comment-color);
+      --reaction-bg: var(--reaction-comment-bg);
+    }
+  }
 }
 
 .user-animated {

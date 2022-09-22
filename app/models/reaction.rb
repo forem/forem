@@ -71,7 +71,12 @@ class Reaction < ApplicationRecord
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         counts = reactions.group(:category).count
 
-        %w[like readinglist unicorn].map do |type|
+        reaction_types = %w[like readinglist]
+        unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
+          reaction_types << "unicorn"
+        end
+
+        reaction_types.map do |type|
           { category: type, count: counts.fetch(type, 0) }
         end
       end

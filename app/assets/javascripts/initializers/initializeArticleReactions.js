@@ -169,5 +169,15 @@ function initializeArticleReactions() {
         };
       }
     }
+
+    var jumpToCommentsButt = document.getElementById('reaction-butt-comment');
+    var commentsSection = document.getElementById("comments");
+    if (document.getElementById('article-body') && commentsSection && jumpToCommentsButt) {
+  
+      jumpToCommentsButt.onclick = function jumpToComments(e) {
+        commentsSection.scrollIntoView({behavior: "smooth"});
+      };
+
+    }
   }, 3);
 }
