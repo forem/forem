@@ -1,5 +1,5 @@
 ---
-en:
+ua:
   api_secrets_controller:
     generated: 'Your API Key has been generated: %{secret}'
     revoked: Your API Key has been revoked.

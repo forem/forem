@@ -1,5 +1,5 @@
 ---
-en:
+ua:
   validators:
     bytesize_validator:
       non_negative: ":maximum must be a non-negative Integer"

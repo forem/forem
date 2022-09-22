@@ -1,24 +1,24 @@
 ---
-en:
+ua:
   views:
     actions:
       copy:
-        text: Copied to Clipboard
-        button: Copy link
+        text: Копіювати у буфер обміну
+        button: Копіювати посилання
       more:
-        title: More...
-        aria_label: Share post options
+        title: Більше...
+        aria_label: Поширення
       share:
         facebook:
-          text: Share to Facebook
+          text: Поширити на Facebook
         hackernews:
-          text: Share to Hacker News
+          text: Поширити на Hacker News
         linkedin:
-          text: Share to LinkedIn
+          text: Поширити на LinkedIn
         reddit:
-          text: Share to Reddit
+          text: Поширити на Reddit
         twitter:
-          text: Share to Twitter
-          query: '"%{article}" by %{author}'
-        link: Share Post via...
-        report: Report Abuse
+          text: Поширити на Twitter
+          query: '"%{article}" від %{author}'
+        link: Поширити пост через...
+        report: Скарга

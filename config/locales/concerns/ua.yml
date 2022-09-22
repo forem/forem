@@ -1,5 +1,5 @@
 ---
-en:
+ua:
   concerns:
     image_uploads:
       too_long: filename too long - the max is %{max} characters.

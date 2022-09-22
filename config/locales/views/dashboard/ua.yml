@@ -1,10 +1,10 @@
 ---
-en:
+ua:
   views:
     dashboard:
       meta:
-        title: Dashboard - %{site}
-      heading: Dashboard
+        title: Дашборд - %{site}
+      heading: Дашборд
       actions:
         mobile:
           posts: Posts (%{num})
@@ -13,7 +13,7 @@ en:
           following_users: Following users (%{num})
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
-        posts: Posts
+        posts: Пости
         series: Series
         followers: Followers
         following_tags: Following tags
@@ -26,8 +26,8 @@ en:
         upload: Upload a video
       analytics:
         meta:
-          title: Analytics
-        heading: Analytics Dashboard for %{name}
+          title: Аналітика
+        heading: Аналітика для %{name}
         desc_1: Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the %{members} ecosystem.
         desc_2: This dashboard highlights deep insights especially relevant to %{members} relations, authors, and serious bloggers.
         back: "👈 Back to Main Dashboard"

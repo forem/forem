@@ -1,10 +1,10 @@
 ---
-en:
+ua:
   views:
     users:
       meta:
         og:
-          title: "%{user} — %{community} Profile"
+          title: "%{user} — %{community} профіль"
       comments:
         all:
           one: All %{count} comments
@@ -30,16 +30,16 @@ en:
       pinned: Pinned
       profile_fields:
         bio:
-          label: Bio
-          placeholder: A short bio...
+          label: Біо
+          placeholder: Коротка інформація про вас...
         display_email_on_profile: Display email on profile
         location:
-          label: Location
-          placeholder: Halifax, Nova Scotia
+          label: Місцезнаходження
+          placeholder: Запоріжжя
         website:
-          label: Website URL
-          placeholder: https://yoursite.com
-        education: Education
+          label: Сайт
+          placeholder: https://yoursite.com.ua
+        education: Освіта
         currently learning: Currently learning
         currently hacking on: Currently hacking on
         available for: Available for
@@ -51,17 +51,17 @@ en:
           text:
             one: 1 comment written
             other: "%{count} comments written"
-        org: Organizations
+        org: Проекти
         post:
           icon: Post
           text:
-            one: 1 post published
-            other: "%{count} posts published"
+            one: автор 1 посту
+            other: "автор %{count} постів"
         tag:
           icon: Tag
           text:
-            one: 1 tag followed
-            other: "%{count} tags followed"
+            one: слідкує за одним тегом
+            other: "слідкує за %{count} тегами"
       signout:
         meta:
           title: Confirm Signout - %{community}
@@ -73,10 +73,10 @@ en:
       email_icon: Email address
       empty: 404 bio not found
       flag: Flag @%{user}
-      follow: Follow
+      follow: Підписатися
       joined:
         icon: Joined
-        text_html: "Joined on\_%{date}"
+        text_html: "У спільності з \_%{date}"
       location_icon: Location
       logo: "%{user} profile picture"
       more: More info about @%{user}

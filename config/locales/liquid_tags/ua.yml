@@ -1,5 +1,5 @@
 ---
-en:
+ua:
   liquid_tags:
     asciinema_tag:
       invalid_asciinema_id: 'Invalid Asciinema ID: %{id}'

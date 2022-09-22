@@ -1,12 +1,12 @@
 ---
-en:
+ua:
   models:
     api_secret:
       api_limit_reached: API secret limit of 10 per user has been reached
     application_record:
       uninferrable: Could not infer a decorator for %{class}.
     article:
-      a_post_by: A post by %{user_name}
+      a_post_by: Пост від %{user_name}
       video_unpermitted: cannot be added by member without permission
       video_processing: cannot be set to true if video is still processing
       cannot_search_tags_for: 'Cannot search tags for: %{tag}'

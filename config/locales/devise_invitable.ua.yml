@@ -1,17 +1,17 @@
 ---
-en:
+ua:
   devise:
     failure:
-      invited: You have a pending invitation, accept it to finish creating your account.
+      invited: У вас є запрошення! Продовжіть реєстрацію..
     invitations:
       edit:
-        header: Set your password
-        submit_button: Let's Get Started
-      invitation_removed: Your invitation was removed.
-      invitation_token_invalid: The invitation token provided is not valid!
+        header: Вкажіть ваш пароль
+        submit_button: Почнемо!
+      invitation_removed: Ваше запрошення було видалено.
+      invitation_token_invalid: Кол запрошення не дійсний.
       new:
-        header: Send invitation
-        submit_button: Send an invitation
+        header: Відправити запрошення.
+        submit_button: Відправити
       no_invitations_remaining: No invitations remaining
       send_instructions: An invitation email has been sent to %{email}.
       updated: Your password was set successfully. You are now signed in.
