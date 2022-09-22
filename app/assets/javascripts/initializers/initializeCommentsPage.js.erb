@@ -47,7 +47,7 @@ function initializeCommentsPage() {
                   if (buttForComment) {
                     var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
                     var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
-                    if (publicReactionCounts[i].count > 0) {
+                    if (publicReactionCounts[i].count > 0 && reactionsLabelWrapper) {
 
                       if (publicReactionCounts[i].count > 1) {
                         reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}s`;
@@ -445,6 +445,10 @@ function updateCommentsCount() {
   const commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount, 10) + 1;
   commentsCountDiv.dataset.commentsCount = commentsCountData;
   commentsCountDiv.innerHTML = `(${commentsCountData})`
+
+  const commentsSidebarCountDiv = document.getElementById("reaction-number-comment");
+  if (!commentsSidebarCountDiv) return;
+  commentsSidebarCountDiv.innerHTML = `${commentsCountData}`;
 }
 
 function handleHiddenComments(commentableType){
