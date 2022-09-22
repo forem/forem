@@ -1,7 +1,7 @@
 # i18n-tasks finds and manages missing and unused translations: https://github.com/glebm/i18n-tasks
 
 # The "main" locale.
-base_locale: en
+base_locale: ua
 ## All available locales are inferred from the data by default. Alternatively, specify them explicitly:
 # locales: [es, fr]
 ## Reporting locale, default: en. Available: en, ru.
