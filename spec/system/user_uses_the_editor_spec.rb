@@ -100,10 +100,10 @@ RSpec.describe "Using the editor", type: :system do
       visit "/new"
       within "form#article-form" do
         fill_in "article-form-title", with: "This is a <span> test"
-        fill_in "tag-input", with: "What, Yo"
+        find("#tag-input").native.send_keys("what", :return)
         fill_in "article_body_markdown", with: "Hello"
       end
-      find("button", text: /\APublish\z/).click
+      click_button "Publish"
       expect(page).to have_xpath("//div[@class='crayons-article__header__meta']//h1")
       expect(page).to have_text("Hello")
       expect(page).to have_link("what", href: "/t/what")
