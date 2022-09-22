@@ -78,7 +78,6 @@ RSpec.describe "User index", type: :system do
     end
 
     it "shows organizations", js: true do
-      Capybara.current_session.driver.browser.manage.window.resize_to(1920, 1080)
       expect(page).to have_css(".spec-org-titles", text: "Organizations")
     end
   end
