@@ -5,6 +5,7 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
+import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 
@@ -123,3 +124,13 @@ async function loadCreatorSettings() {
 if (document.location.pathname === '/admin/creator_settings/new') {
   loadCreatorSettings();
 }
+
+trackCreateAccountClicks(
+  'authentication-hamburger-actions',
+  'Clicked on Create Account',
+);
+
+trackCreateAccountClicks(
+  'authentication-top-nav-actions',
+  'Clicked on Create Account',
+);
