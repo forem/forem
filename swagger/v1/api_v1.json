@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 1,
-                    "title": "Mr Standfast1",
-                    "description": "Fixie crucifix vegan vinyl cleanse stumptown. Ennui chicharrones actually heirloom taxidermy selfies...",
-                    "readable_publish_date": "Sep 3",
-                    "slug": "mr-standfast1-o1j",
-                    "path": "/username1/mr-standfast1-o1j",
-                    "url": "http://localhost:3000/username1/mr-standfast1-o1j",
+                    "id": 227,
+                    "title": "All the King's Men1",
+                    "description": "Biodiesel dreamcatcher next level meh. Sriracha kitsch scenester muggle magic freegan migas ugh...",
+                    "readable_publish_date": "Sep 23",
+                    "slug": "all-the-kings-men1-18e1",
+                    "path": "/username1/all-the-kings-men1-18e1",
+                    "url": "http://localhost:3000/username1/all-the-kings-men1-18e1",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-09-02T19:24:23Z",
+                    "published_timestamp": "2022-09-22T22:03:43Z",
                     "positive_reactions_count": 0,
                     "cover_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
                     "social_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
-                    "canonical_url": "http://localhost:3000/username1/mr-standfast1-o1j",
-                    "created_at": "2022-09-02T19:24:24Z",
+                    "canonical_url": "http://localhost:3000/username1/all-the-kings-men1-18e1",
+                    "created_at": "2022-09-22T22:03:43Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-09-02T19:24:23Z",
-                    "last_comment_at": "2022-09-02T19:24:23Z",
+                    "published_at": "2022-09-22T22:03:43Z",
+                    "last_comment_at": "2022-09-22T22:03:43Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Lavona \"Lenna\" \\:/ Watsica",
+                      "name": "Cleta \"Micah\" \\:/ Kemmer",
                       "username": "username1",
                       "twitter_username": "twitter1",
                       "github_username": "github1",
-                      "user_id": 1,
+                      "user_id": 584,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/1/4e030890-caa7-4c5b-836a-432e7b1bfdfc.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/1/4e030890-caa7-4c5b-836a-432e7b1bfdfc.jpeg"
+                      "profile_image": "/uploads/user/profile_image/584/e59a0f42-fc22-46b6-982d-70d12fe69a81.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/584/e59a0f42-fc22-46b6-982d-70d12fe69a81.jpeg"
                     },
                     "organization": {
-                      "name": "Weimann-Toy",
+                      "name": "Glover and Sons",
                       "username": "org1",
                       "slug": "org1",
-                      "profile_image": "/uploads/organization/profile_image/1/2df76e17-f420-434a-8027-2e90ebfb89bf.png",
-                      "profile_image_90": "/uploads/organization/profile_image/1/2df76e17-f420-434a-8027-2e90ebfb89bf.png"
+                      "profile_image": "/uploads/organization/profile_image/23/54b66c2d-276e-4ad4-a952-42d9452c4138.png",
+                      "profile_image_90": "/uploads/organization/profile_image/23/54b66c2d-276e-4ad4-a952-42d9452c4138.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -253,8 +253,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1,
-                  "reactable_id": 5,
+                  "id": 89,
+                  "reactable_id": 231,
                   "reactable_type": "Article"
                 }
               }
@@ -316,8 +316,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 3,
-                  "reactable_id": 7,
+                  "id": 91,
+                  "reactable_id": 233,
                   "reactable_type": "Article"
                 }
               }
@@ -333,6 +333,26 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "summary": "A User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to retrieve a single user, either by id \nor by the user's username.\n\nFor complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
           }
         }
       }

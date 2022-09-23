@@ -18,6 +18,28 @@ RSpec.describe "Api::V1::Docs::Users", type: :request do
     user.add_role(:admin)
   end
 
+  describe "GET /users/:id" do
+    path "/api/users/{id}" do
+      get "A User" do
+        tags "users"
+        description "This endpoint allows the client to retrieve a single user, either by id
+or by the user's username.
+
+For complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser"
+        operationId "getUser"
+        produces "application/json"
+        parameter name: :id, in: :path, required: true
+
+        response(200, "successful") do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { user.id }
+
+          run_test!
+        end
+      end
+    end
+  end
+
   describe "PUT /users/:id/unpublish" do
     before do
       user.add_role(:admin)
