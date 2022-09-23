@@ -25,7 +25,7 @@ RSpec.describe "/admin/advanced/secrets", type: :request do
     describe "GET /admin/advanced/secrets" do
       it "renders with status 200" do
         get admin_secrets_path
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
 
       it "displays an alert when Vault is not enabled" do
@@ -42,14 +42,14 @@ RSpec.describe "/admin/advanced/secrets", type: :request do
       it "successfully sets a secret and shows flash message" do
         allow(AppSecrets).to receive(:[]=)
         put admin_secrets_path, params: valid_params
-        expect(response.status).to eq 302
+        expect(response).to have_http_status :found
         expect(AppSecrets).to have_received(:[]=).with(valid_secret, "SECRET_VALUE")
         expect(flash[:success]).to include("Secret #{valid_secret} was successfully updated in Vault")
       end
 
       it "returns a bad_request with invalid params" do
         put admin_secrets_path, params: {}
-        expect(response.status).to eq 400
+        expect(response).to have_http_status :bad_request
       end
 
       it "creates an audit log" do

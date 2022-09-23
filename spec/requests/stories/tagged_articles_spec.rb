@@ -42,7 +42,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def renders_page
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(:ok)
             expect(response.body).to include(tag.name)
           end
 

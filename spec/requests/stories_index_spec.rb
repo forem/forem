@@ -138,7 +138,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "does not set cache-related headers if private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
       get "/"
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
 
       expect(response.headers["X-Accel-Expires"]).to be_nil
       expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
@@ -148,7 +148,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "sets correct cache headers", :aggregate_failures do
       get "/"
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       sets_fastly_headers
       sets_nginx_headers
     end

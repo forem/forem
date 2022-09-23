@@ -2,7 +2,6 @@
   <div class="grid gap-6">
     <% if account.class.name == "User" %>
       <% account.setting.brand_color1 = user_colors(account)[:bg] if account.setting && account.setting.brand_color1.blank? %>
-      <% account.setting.brand_color2 = user_colors(account)[:text] if account.setting && account.setting.brand_color2.blank? %>
     <% else %>
       <% account.bg_color_hex = user_colors(account)[:bg] if account.bg_color_hex.blank? %>
       <% account.text_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
@@ -17,7 +16,7 @@
 
     <div class="crayons-field">
       <% if account.class.name == "User" %>
-        <% account.setting.brand_color1 = user_colors(account)[:text] if account.setting && account.setting.brand_color2.blank? %>
+        <% account.setting.brand_color1 = user_colors(account)[:text] if account.setting %>
       <% else %>
         <% account.bg_color_hex = user_colors(account)[:text] if account.text_color_hex.blank? %>
       <% end %>

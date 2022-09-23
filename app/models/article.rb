@@ -184,6 +184,7 @@ class Article < ApplicationRecord
 
   after_save :create_conditional_autovomits
   after_save :bust_cache
+  after_save :collection_cleanup
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -612,6 +613,17 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def collection_cleanup
+    # Should only check to cleanup if Article was removed from collection
+    return unless saved_change_to_collection_id? && collection_id.nil?
+
+    collection = Collection.find(collection_id_before_last_save)
+    return if collection.articles.count.positive?
+
+    # Collection is empty
+    collection.destroy
+  end
 
   def search_score
     comments_score = (comments_count * 3).to_i

@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left crayons-layout__sidebar-left crayons-layout__content">
   <aside class="side-bar" aria-label="Primary sidebar">
     <% cache(release_adjusted_cache_key("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
-      <%= render "shared/auth_widget" unless user_signed_in? %>
+      <%= render partial: "shared/auth_widget", locals: { tracking_id: "ca_left_sidebar_home_page", source: "left_sidebar" } unless user_signed_in? %>
       <%= render partial: "layouts/main_nav", locals: { context: "sidebar" } %>
       <%= render "layouts/sidebar_tags" %>
       <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>

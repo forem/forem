@@ -9,6 +9,8 @@ class Comment < ApplicationRecord
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
+  VALID_SORT_OPTIONS = %w[top latest oldest].freeze
+
   URI_REGEXP = %r{
     \A
     (?:https?://)?  # optional scheme
@@ -86,10 +88,10 @@ class Comment < ApplicationRecord
 
   alias touch_by_reaction save
 
-  def self.tree_for(commentable, limit = 0)
+  def self.tree_for(commentable, limit = 0, order = nil)
     commentable.comments
       .includes(user: %i[setting profile])
-      .arrange(order: "score DESC")
+      .arrange(order: build_sort_query(order))
       .to_a[0..limit - 1]
       .to_h
   end
@@ -174,6 +176,19 @@ class Comment < ApplicationRecord
   def root_exists?
     ancestry && Comment.exists?(id: ancestry)
   end
+
+  def self.build_sort_query(order)
+    case order
+    when "latest"
+      "created_at DESC"
+    when "oldest"
+      "created_at ASC"
+    else
+      "score DESC"
+    end
+  end
+
+  private_class_method :build_sort_query
 
   private
 

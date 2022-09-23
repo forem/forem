@@ -27,7 +27,7 @@ describe('Publish or save a post', () => {
       });
       //   The post should now be published
       cy.findByRole('heading', { name: 'Test title' });
-      cy.findByRole('heading', { name: 'Discussion (0)' });
+      cy.findByRole('heading', { name: 'Top comments (0)' });
       cy.findByRole('link', { name: 'Edit' });
       cy.findByRole('link', { name: 'Manage' });
       cy.findByRole('link', { name: 'Stats' });
@@ -104,7 +104,7 @@ describe('Publish or save a post', () => {
       });
       //   The post should now be published
       cy.findByRole('heading', { name: 'Test title' });
-      cy.findByRole('heading', { name: 'Discussion (0)' });
+      cy.findByRole('heading', { name: 'Top comments (0)' });
       cy.findByRole('link', { name: 'Edit' });
       cy.findByRole('link', { name: 'Manage' });
       cy.findByRole('link', { name: 'Stats' });
@@ -246,7 +246,7 @@ describe('Publish or save a post', () => {
 
       // Wait for published post page, and choose to edit
       cy.findByRole('heading', { name: 'Test title' });
-      cy.findByRole('heading', { name: 'Discussion (0)' });
+      cy.findByRole('heading', { name: 'Top comments (0)' });
       cy.findByRole('link', { name: 'Edit' }).click();
 
       cy.findByLabelText('Post Content').clear().type('something else');
