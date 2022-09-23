@@ -13,10 +13,6 @@
         object-fit: contain;
         width: 100%;
         aspect-ratio: 1 / 1;
-
-        &.unearned {
-          filter: opacity(20%) contrast(0);
-        }
       }
     }
   }
