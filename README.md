@@ -123,7 +123,6 @@ Please see our installation guides, such as the
 - [@peterkimfrank](https://dev.to/peter)
 - [@maestromac](https://dev.to/maestromac)
 - [@lightalloy](https://dev.to/lightalloy)
-- [@joshpuetz](http://dev.to/joshpuetz)
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)
 - [@andygeorge](https://dev.to/andygeorge)
