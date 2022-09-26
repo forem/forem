@@ -4,7 +4,6 @@ import ahoy from 'ahoy.js';
 // * passed in element.
 // *
 // * @param {string} elementId A unique identifier to identify the element that is being tracked
-// * @param {string} name The name of the event
 // */
 export function trackCommentClicks(elementId) {
   document
@@ -25,7 +24,6 @@ export function trackCommentClicks(elementId) {
 // * passed in element.
 // *
 // * @param {string} elementId A unique identifier to identify the element that is being tracked
-// * @param {string} name The name of the event
 // */
 export function trackCreateAccountClicks(elementId) {
   document
