@@ -3,7 +3,7 @@
 #        destroy callbacks will be called on this object.
 class DisplayAdEvent < ApplicationRecord
   belongs_to :display_ad
-  belongs_to :user
+  belongs_to :user, optional: true
 
   CATEGORY_IMPRESSION = "impression".freeze
   CATEGORY_CLICK = "click".freeze

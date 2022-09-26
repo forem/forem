@@ -10,7 +10,7 @@
   initializeProfileInfoToggle, initializePodcastPlayback,
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
-  nextPage:writable, fetching:writable, done:writable, adClicked:writable,
+  nextPage:writable, fetching:writable, done:writable, 
   initializePaymentPointers, initializeBroadcast, initializeDateHelpers
 */
 
@@ -71,7 +71,6 @@ function initializePage() {
   nextPage = 0;
   fetching = false;
   done = false;
-  adClicked = false;
   setTimeout(function undone() {
     done = false;
   }, 300);
