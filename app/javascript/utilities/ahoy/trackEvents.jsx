@@ -6,14 +6,14 @@ import ahoy from 'ahoy.js';
 // * @param {string} elementId A unique identifier to identify the element that is being tracked
 // * @param {string} name The name of the event
 // */
-export function trackCommentClicks(elementId, name) {
+export function trackCommentClicks(elementId) {
   document
     .getElementById(elementId)
     ?.addEventListener('click', ({ target }) => {
       const relevantNode = getTrackingNode(target, '[data-tracking-name]');
 
       if (relevantNode) {
-        ahoy.track(name, {
+        ahoy.track('Comment section click', {
           page: location.href,
           element: relevantNode.dataset?.trackingName,
         });
