@@ -27,13 +27,13 @@ export function trackCommentClicks(elementId) {
 // * @param {string} elementId A unique identifier to identify the element that is being tracked
 // * @param {string} name The name of the event
 // */
-export function trackCreateAccountClicks(elementId, name) {
+export function trackCreateAccountClicks(elementId) {
   document
     .getElementById(elementId)
     ?.addEventListener('click', ({ target }) => {
       const relevantNode = getTrackingNode(target, '[data-tracking-id]');
       if (relevantNode) {
-        ahoy.track(name, {
+        ahoy.track('Clicked on Create Account', {
           version: 0.1,
           page: location.href,
           source: relevantNode.dataset?.trackingSource,

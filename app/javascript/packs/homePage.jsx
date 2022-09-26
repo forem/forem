@@ -129,8 +129,5 @@ InstantClick.on('change', () => {
 });
 InstantClick.init();
 
-trackCreateAccountClicks('sidebar-wrapper-left', 'Clicked on Create Account');
-trackCreateAccountClicks(
-  'authentication-feed-actions',
-  'Clicked on Create Account',
-);
+trackCreateAccountClicks('sidebar-wrapper-left');
+trackCreateAccountClicks('authentication-feed-actions');
