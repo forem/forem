@@ -17,13 +17,6 @@ module Admin
         .where("score > ? AND score < ?", -10, 8)
         .limit(120)
 
-      @possible_spam_users = User.registered.where("length(name) > ?", 30)
-        .where("created_at > ?", 48.hours.ago)
-        .order(created_at: :desc)
-        .select(:username, :name, :id)
-        .where.not("username LIKE ?", "%spam_%")
-        .limit(150)
-
       @vomits = get_vomits
     end
 
