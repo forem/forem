@@ -48,7 +48,7 @@ const MAX_FILE_NAME_LENGTH = 250;
 function addErrorMessage(msg) {
   if (top.addSnackbarItem) {
     // The Comment editor's context (MarkdownToolbar component) doesn't have
-    // access to the Snackbar element in the DOM, so it needs to use `top` to work
+    // access to the Snackbar element in the DOM, so it needs to use `top`
     top.addSnackbarItem({
       message: msg,
       addCloseButton: true,
