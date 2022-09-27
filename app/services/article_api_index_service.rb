@@ -70,7 +70,7 @@ class ArticleApiIndexService
     articles = published_articles_with_users_and_organizations.cached_tagged_with(tag)
 
     articles = if Tag.find_by(name: tag)&.requires_approval
-                 articles.approved.order(featured_number: :desc)
+                 articles.approved.order(published_at: :desc)
                elsif top.present?
                  articles.where("published_at > ?", top.to_i.days.ago)
                    .order(public_reactions_count: :desc)
@@ -104,12 +104,12 @@ class ArticleApiIndexService
     articles = case state
                when "fresh"
                  articles.where(
-                   "public_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2
+                   "public_reactions_count < ? AND published_at > ? AND score > ?", 2, 7.hours.ago, -2
                  )
                when "rising"
                  articles.where(
-                   "public_reactions_count > ? AND public_reactions_count < ? AND featured_number > ?",
-                   19, 33, 3.days.ago.to_i
+                   "public_reactions_count > ? AND public_reactions_count < ? AND published_at > ?",
+                   19, 33, 3.days.ago
                  )
                when "recent"
                  articles.order(published_at: :desc)

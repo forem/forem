@@ -353,8 +353,8 @@ class Article < ApplicationRecord
            :main_image, :main_image_background_hex_color, :updated_at,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
-           :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
+           :published_from_feed, :crossposted_at, :published_at, :created_at,
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :sorting, lambda { |value|
@@ -608,7 +608,7 @@ class Article < ApplicationRecord
       (score < Settings::UserExperience.index_minimum_score &&
        user.comments_count < 1 &&
        !featured) ||
-      featured_number.to_i < 1_500_000_000 ||
+      published_at.to_i < 1_500_000_000 ||
       score < -1
   end
 
@@ -894,7 +894,6 @@ class Article < ApplicationRecord
   end
 
   def set_all_dates
-    set_featured_number
     set_crossposted_at
     set_last_comment_at
     set_nth_published_at
@@ -902,10 +901,6 @@ class Article < ApplicationRecord
 
   def set_published_date
     self.published_at = Time.current if published && published_at.blank?
-  end
-
-  def set_featured_number
-    self.featured_number = Time.current.to_i if featured_number.blank? && published
   end
 
   def set_crossposted_at
@@ -930,7 +925,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}" # rubocop:disable Rails/ToSWithArgument
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)

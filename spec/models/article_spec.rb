@@ -688,19 +688,6 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#featured_number" do
-    it "is updated if approved when already true" do
-      body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
-      article.update(body_markdown: body, approved: true)
-
-      Timecop.travel(1.second.from_now) do
-        article.update(body_markdown: "#{body}s")
-      end
-
-      expect(article.featured_number).not_to eq(article.updated_at.to_i)
-    end
-  end
-
   describe "#slug" do
     let(:title) { "hey This' is$ a SLUG" }
     let(:article0) { build(:article, title: title, published: false) }
