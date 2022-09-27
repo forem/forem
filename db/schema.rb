@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_27_091957) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -446,6 +446,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
   create_table "display_ad_events", force: :cascade do |t|
     t.string "category"
     t.string "context_type"
+    t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", precision: nil, null: false
     t.bigint "display_ad_id"
     t.datetime "updated_at", precision: nil, null: false
