@@ -61,5 +61,18 @@ RSpec.describe Moderator::UnpublishAllArticlesWorker, type: :worker do
       expect(log.data["target_article_ids"]).to match_array(articles.map(&:id))
       expect(log.data["target_comment_ids"]).to match_array(comments.map(&:id))
     end
+
+    it "creates audit_log records for admin action" do
+      Audit::Subscribe.listen :moderator
+
+      expect do
+        described_class.new.perform(user.id, admin.id, "moderator")
+      end.to change(AuditLog, :count).by(1)
+
+      log = AuditLog.last
+      expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+      expect(log.data["action"]).to eq("unpublish_all_articles")
+      expect(log.user_id).to eq(admin.id)
+    end
   end
 end
