@@ -3,7 +3,6 @@ namespace :admin do
   get "/", to: "overview#index"
 
   authenticate :user, ->(user) { user.tech_admin? } do
-    mount Blazer::Engine, at: "blazer"
     require "sidekiq/web"
     require "sidekiq_unique_jobs/web"
     require "sidekiq/cron/web"
