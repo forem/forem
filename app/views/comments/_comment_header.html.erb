@@ -29,7 +29,7 @@
     </button>
     <div id="comment-dropdown-<%= comment.id %>" class="crayons-dropdown right-1 s:right-0 s:left-auto fs-base dropdown">
       <ul class="m-0">
-        <% comment_url = URL.comment(comment, article_path: user_signed_in? ? nil : @article.path) %>
+        <% comment_url = URL.comment(comment, article_path: user_signed_in? ? nil : @article&.path) %>
         <li><a href="<%= comment_url %>" class="crayons-link crayons-link--block permalink-copybtn" aria-label="<%= t("views.comments.menu.copy.aria_label", user: comment.user.name) %>" data-no-instant><%= t("views.comments.menu.copy.text") %></a></li>
         <li class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= URL.comment(comment) %>/settings" aria-label="<%= t("views.comments.menu.settings.aria_label", user: comment.user.name) %>"></li>
         <% action = comment.hidden_by_commentable_user ? "unhide" : "hide" %>
