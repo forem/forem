@@ -259,14 +259,14 @@ class Tag < ActsAsTaggableOn::Tag
     #   FROM articles
     #   WHERE
     #     (cached_tag_list ~ '[[:<:]]javascript[[:>:]]')
-    #     AND (articles.featured_number > 1639594999)
+    #     AND (articles.published_at > 7.days.ago)
     #
     # Due to the construction of the query, there will be one entry.
     # Furthermore, we need to first convert to an array then call
     # `.first`.  The ActiveRecord query handler is ill-prepared to
     # call "first" on this.
     score_attributes = Article.cached_tagged_with(name)
-      .where("articles.featured_number > ?", 7.days.ago.to_i)
+      .where("articles.published_at > ?", 7.days.ago)
       .select("(SUM(comments_count) * 14 + SUM(score)) AS partial_score, COUNT(id) AS article_count")
       .to_a
       .first
