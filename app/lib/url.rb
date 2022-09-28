@@ -41,8 +41,12 @@ module URL
   # Creates a comment URL
   #
   # @param comment [Comment] the comment to create the URL for
-  def self.comment(comment)
-    url(comment.path)
+  # @param article_path [String, nil] the path of the article to anchor
+  #   the comment link instead. Return the comment permalink if nil
+  def self.comment(comment, article_path: nil)
+    return url(comment.path) if article_path.nil?
+
+    url("#{article_path}#comment-node-#{comment.id}")
   end
 
   # Creates a reaction URL
