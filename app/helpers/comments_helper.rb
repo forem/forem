@@ -2,6 +2,22 @@ module CommentsHelper
   MAX_COMMENTS_TO_RENDER = 250
   MIN_COMMENTS_TO_RENDER = 8
 
+  def article_comment_tree(article, count, order)
+    @article_comment_tree ||= begin
+      collection = Comment.tree_for(article, count, order)
+      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
+      collection
+    end
+  end
+
+  def podcast_comment_tree(episode)
+    @podcast_comment_tree ||= begin
+      collection = Comment.tree_for(episode, 12)
+      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
+      collection
+    end
+  end
+
   def comment_class(comment, is_view_root: false)
     if comment.root? || is_view_root
       "root"
