@@ -59,4 +59,3 @@ en:
           one: 1 Post Published
           other: "%{count} Posts Published"
         sponsor: "%{tag} is sponsored by"
-      sponsor: "| Sponsored by %{org} ❤️"
