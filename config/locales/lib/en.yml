@@ -148,9 +148,6 @@ en:
           sidebar:
             description: Determines which tags are shown on the homepage right-hand sidebar
             placeholder: List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta
-          sponsor:
-            description: Determines the heading text of the main sponsors sidebar above the list of sponsors.
-            placeholder: Community Sponsors
           stripe_api:
             description: 'Secret Stripe key for receiving payments. See: https://stripe.com/docs/keys'
           stripe_key:
