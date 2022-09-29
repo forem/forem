@@ -80,7 +80,7 @@ class TagsController < ApplicationController
   private
 
   def tags
-    @tags ||= Tag.all.order("hotness_score DESC").limit(100)
+    @tags ||= Tag.direct.order("hotness_score DESC").limit(100)
   end
 
   def convert_empty_string_to_nil
