@@ -7,7 +7,7 @@
       <a href="/<%= comment.user.username %>">
         <span class="comment-username"><%= comment.user.name %></span>
       </a>
-      <%= render "comments/comment_date", decorated_comment: comment.decorate, comment_url: nil %>
+      <%= render "comments/comment_date", decorated_comment: comment.decorate %>
     </div>
     <div class="body">
       <%= comment.safe_processed_html %>
