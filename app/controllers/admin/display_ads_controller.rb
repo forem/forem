@@ -10,9 +10,7 @@ module Admin
 
       return if params[:search].blank?
 
-      @display_ads = @display_ads
-        .where("processed_html ILIKE :search OR placement_area ILIKE :search OR organizations.name ILIKE :search",
-               search: "%#{params[:search]}%")
+      @display_ads = @display_ads.search_ads(params[:search])
     end
 
     def new
