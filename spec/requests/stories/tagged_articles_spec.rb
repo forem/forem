@@ -124,13 +124,6 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           expect(response.body).not_to include(sponsorship.tagline)
         end
 
-        it "renders live sponsor" do
-          sponsorship = create_live_sponsor(org, tag)
-          get "/t/#{tag.name}"
-          expect(response.body).to include("is sponsored by")
-          expect(response.body).to include(sponsorship.blurb_html)
-        end
-
         it "shows meta keywords if set" do
           allow(Settings::General).to receive(:meta_keywords).and_return({ tag: "software engineering, ruby" })
           get "/t/#{tag.name}"
