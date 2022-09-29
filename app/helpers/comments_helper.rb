@@ -2,6 +2,18 @@ module CommentsHelper
   MAX_COMMENTS_TO_RENDER = 250
   MIN_COMMENTS_TO_RENDER = 8
 
+  def any_negative_comments?(commentable)
+    commentable.comments.where("score < 0").any?
+  end
+
+  def any_hidden_negative_comments?(commentable)
+    !user_signed_in? && any_negative_comments?(commentable)
+  end
+
+  def all_comments_visible?(commentable)
+    !(commentable.any_comments_hidden || any_hidden_negative_comments?(commentable))
+  end
+
   def article_comment_tree(article, count, order)
     @article_comment_tree ||= begin
       collection = Comment.tree_for(article, count, order)
