@@ -577,20 +577,6 @@ Faker::Config.locale = loc
 
 ##############################################################################
 
-seeder.create_if_none(Sponsorship) do
-  organizations = Organization.take(3)
-  organizations.each do |organization|
-    Sponsorship.create!(
-      organization: organization,
-      user: User.order(Arel.sql("RANDOM()")).first,
-      level: "silver",
-      blurb_html: Faker::Hacker.say_something_smart,
-    )
-  end
-end
-
-##############################################################################
-
 seeder.create_if_none(NavigationLink) do
   Rake::Task["navigation_links:update"].invoke
 end
