@@ -41,12 +41,20 @@ module URL
   # Creates a comment URL
   #
   # @param comment [Comment] the comment to create the URL for
-  # @param article_path [String, nil] the path of the article to anchor
-  #   the comment link instead. Return the comment permalink if nil
-  def self.comment(comment, article_path: nil)
-    return url(comment.path) if article_path.nil?
+  def self.comment(comment)
+    url(comment.path)
+  end
 
-    url("#{article_path}#comment-node-#{comment.id}")
+  # Creates a fragment URL for a comment on an article page
+  # if an article path is available
+  #
+  # @param comment [Comment] the comment to create the URL for
+  # @param path [String, nil] the path of the article to anchor the
+  #   comment link instead of using the comment's permalink
+  def self.fragment_comment(comment, path:)
+    return comment(comment) if path.nil?
+
+    url("#{path}#comment-node-#{comment.id}")
   end
 
   # Creates a reaction URL

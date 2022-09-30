@@ -32,7 +32,7 @@ RSpec.describe "Visiting article comments", type: :system, js: true do
   end
 
   context "when root is specified" do
-    before { visit "#{article.path}/comments/#{comment.id.to_s(26)}" }
+    before { visit "#{article.path}/comments/#{comment.id.to_s(26)}" } # rubocop:disable Rails/ToSWithArgument
 
     it "displays related comments" do
       expect(page).to have_selector(".single-comment-node", visible: :visible, count: 4)
@@ -48,23 +48,19 @@ RSpec.describe "Visiting article comments", type: :system, js: true do
     end
   end
 
-  context "when looking into comment links", focus: true do
-    let!(:new_article) { create(:article) }
-    let!(:new_comment) { create(:comment, commentable: new_article, user: user) }
-
+  context "when looking into comment links" do
     it "uses the permalink for signed in users" do
       sign_in user
-      # ENV['WAT'] = new_comment.id.to_s
-      visit new_article.path
-      date_link = find("#comment-node-#{new_comment.id} a.comment-date")
-      # binding.break
-      expect(date_link[:href]).to end_with(new_comment.path)
+      visit article.path
+      date_link = find("#comment-node-#{grandchild_comment.id} a.comment-date")
+      expect(date_link[:href]).to end_with(grandchild_comment.path)
     end
 
     it "uses an anchor tag instead of permalink for signed out users" do
-      visit new_article.path
-      date_link = find("#comment-node-#{new_comment.id} a.comment-date")
-      expected_path = "#{new_article.path}#comment-node-#{new_comment.id}"
+      sign_out user
+      visit article.path
+      date_link = find("#comment-node-#{grandchild_comment.id} a.comment-date")
+      expected_path = "#{article.path}#comment-node-#{grandchild_comment.id}"
       expect(date_link[:href]).to end_with(expected_path)
     end
   end
