@@ -67,7 +67,8 @@ module CommentsHelper
   def contextual_comment_url(comment, article: nil)
     # Liquid tag parsing doesn't have Devise/Warden (request middleware) so we
     # can't use `user_signed_in?`, this is why guard against it.
-    return URL.comment(comment) if request.env["warden"].present? && !user_signed_in?
+    # binding.break if ENV['WAT'] == comment.id.to_s
+    return URL.comment(comment) if request.env["warden"].nil? || !user_signed_in?
 
     # If `user_signed_in?` is true we can provide the article's path to anchor
     # the comment URL instead of using the permalink.
