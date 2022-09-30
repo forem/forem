@@ -102,8 +102,6 @@ fr:
         heading: "%{series} Series' Articles"
         back: Back to %{user}'s Series
         empty: This series doesn't have any articles
-    sponsor:
-      seek: Become a sponsor
     stats:
       meta:
         title: Stats for Your Article
