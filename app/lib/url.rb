@@ -54,7 +54,7 @@ module URL
   def self.fragment_comment(comment, path:)
     return comment(comment) if path.nil?
 
-    url("#{path}#comment-node-#{comment.id}")
+    url("#{path}#comment-#{comment.id_code}")
   end
 
   # Creates a reaction URL

@@ -60,7 +60,7 @@ RSpec.describe "Visiting article comments", type: :system, js: true do
       sign_out user
       visit article.path
       date_link = find("#comment-node-#{grandchild_comment.id} a.comment-date")
-      expected_path = "#{article.path}#comment-node-#{grandchild_comment.id}"
+      expected_path = "#{article.path}#comment-#{grandchild_comment.id_code}"
       expect(date_link[:href]).to end_with(expected_path)
     end
   end
