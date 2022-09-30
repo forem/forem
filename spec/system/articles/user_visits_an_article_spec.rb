@@ -15,8 +15,9 @@ RSpec.describe "Views an article", type: :system do
     expect(page).to have_content(article.title)
   end
 
-  it "shows comments", js: true do
+  it "shows non-negative comments", js: true do
     create_list(:comment, 3, commentable: article)
+    create :thumbsdown_reaction, reactable: create(:comment, commentable: article)
 
     visit article.path
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
