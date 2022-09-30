@@ -1,4 +1,7 @@
 class DisplayAdEventRollup
+  ATTRIBUTES_PRESERVED = %i[user_id display_ad_id category context_type created_at].freeze
+  ATTRIBUTES_DESTROYED = %i[id counts_for updated_at].freeze
+
   class EventAggregator
     Compact = Struct.new(:events, :user_id, :display_ad_id, :category, :context_type) do
       def to_h

@@ -16,6 +16,11 @@ RSpec.describe DisplayAdEventRollup, type: :service do
     (Date.current - num.days).all_day
   end
 
+  it "fails if new attributes would be lost" do
+    attributes_considered = DisplayAdEventRollup::ATTRIBUTES_PRESERVED + DisplayAdEventRollup::ATTRIBUTES_DESTROYED
+    expect(DisplayAdEvent.column_names.map(&:to_sym)).to contain_exactly(*attributes_considered)
+  end
+
   context "when compacting many rows" do
     before do
       override_timestamps do
