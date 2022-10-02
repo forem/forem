@@ -108,6 +108,7 @@ gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.17" # Used to store secrets
+gem "warning", "~> 1.3" # Adds custom processing for warnings, including the ability to ignore specific warning messages
 gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 gem "webpacker", "~> 5.4.3" # Use webpack to manage app-like JavaScript modules in Rails
 
@@ -153,6 +154,7 @@ group :development, :test do
 end
 
 group :test do
+  gem "cuprite", "~> 0.13" # Capybara driver for Chrome
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 6.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "fakeredis", "~> 0.8.0" # Fake (In-memory) driver for redis-rb. Useful for testing environment and machines without Redis.
@@ -167,7 +169,6 @@ group :test do
   gem "test-prof", "~> 1.0" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.1" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
-  gem "webdrivers", "~> 5.0" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.17", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "with_model", "~> 2.1.6" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone

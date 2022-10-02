@@ -15,4 +15,11 @@ function initializeDateHelpers() {
     month: 'short',
     day: 'numeric',
   });
+
+  // Date with short year: Jul 12 '20
+  localizeTimeElements(document.querySelectorAll('time.date-short-year'), {
+    year: '2-digit',
+    month: 'short',
+    day: 'numeric',
+  });
 }

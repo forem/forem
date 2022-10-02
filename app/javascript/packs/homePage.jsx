@@ -1,6 +1,7 @@
 import { h, render } from 'preact';
 import ahoy from 'ahoy.js';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
+import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
 /* global userData */
 // This logic is similar to that in initScrolling.js.erb
@@ -127,3 +128,6 @@ InstantClick.on('change', () => {
   renderSidebar();
 });
 InstantClick.init();
+
+trackCreateAccountClicks('sidebar-wrapper-left');
+trackCreateAccountClicks('authentication-feed-actions');

@@ -69,8 +69,18 @@ class AbExperiment
       pageview_goal(experiment,
                     [7.days.ago, experiment_start_date].max,
                     "DATE(created_at)",
+                    2,
+                    "user_views_pages_on_at_least_two_different_days_within_a_week")
+      pageview_goal(experiment,
+                    [7.days.ago, experiment_start_date].max,
+                    "DATE(created_at)",
                     4,
                     "user_views_pages_on_at_least_four_different_days_within_a_week")
+      pageview_goal(experiment,
+                    [24.hours.ago, experiment_start_date].max,
+                    "DATE_PART('hour', created_at)",
+                    3,
+                    "user_views_pages_on_at_least_three_different_hours_within_a_day")
       pageview_goal(experiment,
                     [24.hours.ago, experiment_start_date].max,
                     "DATE_PART('hour', created_at)",

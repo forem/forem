@@ -1,9 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::ProfileImages", type: :request do
+  let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
+
   describe "GET /api/profile_images/:username" do
     it "returns 404 if the username is not taken" do
-      get api_profile_image_path("invalid-username")
+      get api_profile_image_path("invalid-username"), headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
@@ -12,7 +14,7 @@ RSpec.describe "Api::V1::ProfileImages", type: :request do
       let(:user) { create(:user) }
 
       it "returns the user profile image information" do
-        get api_profile_image_path(user.username)
+        get api_profile_image_path(user.username), headers: headers
 
         expect(response.parsed_body).to eq(
           "type_of" => "profile_image",
@@ -27,7 +29,7 @@ RSpec.describe "Api::V1::ProfileImages", type: :request do
       let(:user) { create(:user, :invited) }
 
       it "returns a 404" do
-        get api_profile_image_path(user.username)
+        get api_profile_image_path(user.username), headers: headers
 
         expect(response).to have_http_status(:not_found)
       end
@@ -37,7 +39,7 @@ RSpec.describe "Api::V1::ProfileImages", type: :request do
       let(:organization) { create(:organization) }
 
       it "returns the organization's profile image information" do
-        get api_profile_image_path(organization.username)
+        get api_profile_image_path(organization.username), headers: headers
 
         expect(response.parsed_body).to eq(
           "type_of" => "profile_image",

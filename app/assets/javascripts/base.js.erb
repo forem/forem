@@ -419,6 +419,8 @@ var instantClick
       // a script add or delete script elements, so we need to put script
       // elements in an array to loop through them correctly.
       for (i = 0; i < scriptElementsInDOM.length; i++) {
+        // gist liquid tags are handled seperately via app/javascript/utilities/gist.js
+        if(scriptElementsInDOM[i].id === 'gist-ltag') continue;
         scriptElementsToCopy.push(scriptElementsInDOM[i])
       }
 

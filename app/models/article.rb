@@ -159,7 +159,7 @@ class Article < ApplicationRecord
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validate :future_or_current_published_at, on: :create
-  validate :has_correct_published_at?, on: :update, unless: :admin_update
+  validate :correct_published_at?, on: :update, unless: :admin_update
 
   validate :canonical_url_must_not_have_spaces
   validate :validate_collection_permission
@@ -184,6 +184,7 @@ class Article < ApplicationRecord
 
   after_save :create_conditional_autovomits
   after_save :bust_cache
+  after_save :collection_cleanup
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -352,8 +353,8 @@ class Article < ApplicationRecord
            :main_image, :main_image_background_hex_color, :updated_at,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
-           :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
+           :published_from_feed, :crossposted_at, :published_at, :created_at,
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :sorting, lambda { |value|
@@ -607,11 +608,22 @@ class Article < ApplicationRecord
       (score < Settings::UserExperience.index_minimum_score &&
        user.comments_count < 1 &&
        !featured) ||
-      featured_number.to_i < 1_500_000_000 ||
+      published_at.to_i < 1_500_000_000 ||
       score < -1
   end
 
   private
+
+  def collection_cleanup
+    # Should only check to cleanup if Article was removed from collection
+    return unless saved_change_to_collection_id? && collection_id.nil?
+
+    collection = Collection.find(collection_id_before_last_save)
+    return if collection.articles.count.positive?
+
+    # Collection is empty
+    collection.destroy
+  end
 
   def search_score
     comments_score = (comments_count * 3).to_i
@@ -817,21 +829,27 @@ class Article < ApplicationRecord
 
   def future_or_current_published_at
     # allow published_at in the future or within 15 minutes in the past
-    return if !published || published_at > Time.current - (15 * 60 * 60)
+    return if !published || published_at > 15.minutes.ago
 
     errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
   end
 
-  def has_correct_published_at?
-    return unless published_at_was && published
-    # nullifying published_at when unpublishing is valid
-    return if changes["published"] == [true, false] && !published_at
-    # don't allow editing published_at if an article has already been published
-    # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
-    return unless published_was && published_at_was < Time.current &&
-      changes["published_at"] && !(published_at_was - published_at).between?(-60, 60)
+  def correct_published_at?
+    return unless changes["published_at"]
 
-    errors.add(:published_at, I18n.t("models.article.immutable_published_at"))
+    # for drafts (that were never published before) or scheduled articles => allow future or current dates
+    if !published_at_was || published_at_was > Time.current
+      # for articles published_from_feed (exported from rss) we allow past published_at
+      if (!published_at || published_at < 15.minutes.ago) && !published_from_feed
+        errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
+      end
+    else
+      # for articles that have been published already (published or unpublished drafts) => immutable published_at
+      # allow changes within one minute in case of editing via frontmatter w/o specifying seconds
+      has_nils = changes["published_at"].include?(nil) # changes from nil or to nil
+      close_enough = !has_nils && (published_at_was - published_at).between?(-60, 60)
+      errors.add(:published_at, I18n.t("models.article.immutable_published_at")) if has_nils || !close_enough
+    end
   end
 
   def canonical_url_must_not_have_spaces
@@ -876,7 +894,6 @@ class Article < ApplicationRecord
   end
 
   def set_all_dates
-    set_featured_number
     set_crossposted_at
     set_last_comment_at
     set_nth_published_at
@@ -884,10 +901,6 @@ class Article < ApplicationRecord
 
   def set_published_date
     self.published_at = Time.current if published && published_at.blank?
-  end
-
-  def set_featured_number
-    self.featured_number = Time.current.to_i if featured_number.blank? && published
   end
 
   def set_crossposted_at
@@ -912,7 +925,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}" # rubocop:disable Rails/ToSWithArgument
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)

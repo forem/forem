@@ -271,18 +271,25 @@ function buildArticleHTML(article, currentUserId = null) {
     }
 
     var saveButton = '';
+    var saveSVG =
+      '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" role="presentation"><path d="M6.75 4.5h10.5a.75.75 0 01.75.75v14.357a.375.375 0 01-.575.318L12 16.523l-5.426 3.401A.375.375 0 016 19.607V5.25a.75.75 0 01.75-.75zM16.5 6h-9v11.574l4.5-2.82 4.5 2.82V6z" /></svg>';
+    var saveFilledSVG =
+      '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" role="presentation"><path d="M6.75 4.5h10.5a.75.75 0 01.75.75v14.357a.375.375 0 01-.575.318L12 16.523l-5.426 3.401A.375.375 0 016 19.607V5.25a.75.75 0 01.75-.75z"/></svg>';
     // "!=" instead of "!==" used to compare user_id and currentUserId because
     // currentUserId is a String while user_id is an Integer
     if (article.class_name === 'Article' && article.user_id != currentUserId) {
-      saveButton =
-        '<button type="button" id="article-save-button-' +
-        article.id +
-        '" class="crayons-btn crayons-btn--secondary crayons-btn--s bookmark-button" data-reactable-id="' +
-        article.id +
-        '">\
-                      <span class="bm-initial">Save</span>\
-                      <span class="bm-success">Saved</span>\
-                    </button>';
+      saveButton = `
+        <button
+          type="button"
+          id="article-save-button-${article.id}"
+          class="c-btn c-btn--icon-alone bookmark-button"
+          data-reactable-id="${article.id}"
+          data-article-author-id="${article.user_id}"
+          aria-label="Save to reading list">
+          <span class="bm-initial">${saveSVG}</span>
+          <span class="bm-success">${saveFilledSVG}</span>
+        </button>
+      `;
     } else if (article.class_name === 'User') {
       saveButton = `
         <button type="button"

@@ -13,7 +13,7 @@ RSpec.describe "/admin/moderation/reports", type: :request do
       it "renders with status 200" do
         sign_in single_resource_admin
         get admin_reports_path
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
     end
 
@@ -23,7 +23,7 @@ RSpec.describe "/admin/moderation/reports", type: :request do
         create(:reaction, category: "vomit", reactable: user, user: trusted_user)
         sign_in admin
         get admin_reports_path
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
       end
     end
   end

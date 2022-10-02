@@ -45,31 +45,18 @@ class CommentsController < ApplicationController
   # POST /comments.json
   def create
     rate_limit!(rate_limit_to_use)
+    @comment = CommentCreator.build_comment(permitted_attributes(Comment), current_user: current_user)
 
-    @comment = Comment.includes(user: :profile).new(permitted_attributes(Comment))
-    @comment.user_id = current_user.id
-
+    # authorize & permit depend on @comment
     authorize @comment
     permit_commenter
 
     if @comment.save
-      checked_code_of_conduct = params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
-      current_user.update(checked_code_of_conduct: true) if checked_code_of_conduct
-
-      NotificationSubscription.create(
-        user: current_user, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments",
-      )
-      Notification.send_new_comment_notifications_without_delay(@comment)
-      Mention.create_all(@comment)
-
       if @comment.invalid?
-        @comment.destroy
         render json: { error: I18n.t("comments_controller.create.failure") }, status: :unprocessable_entity
         return
       end
-
       render partial: "comments/comment", formats: :json
-
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
       commentable_id: @comment.commentable_id,
@@ -82,11 +69,15 @@ class CommentsController < ApplicationController
       message = @comment.errors_as_sentence
       render json: { error: message }, status: :unprocessable_entity
     end
+
   # See https://github.com/forem/forem/pull/5485#discussion_r366056925
   # for details as to why this is necessary
   rescue ModerationUnauthorizedError => e
     render json: { error: e.message }, status: :unprocessable_entity
-  rescue Pundit::NotAuthorizedError, RateLimitChecker::LimitReached
+  rescue Pundit::NotAuthorizedError => e
+    message = I18n.t("comments_controller.create.authorization_error", error: e)
+    render json: { error: message }, status: :unauthorized
+  rescue RateLimitChecker::LimitReached
     raise
   rescue StandardError => e
     skip_authorization

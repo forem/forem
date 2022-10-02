@@ -1,27 +1,19 @@
 .sticker-book {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  .badge-container {
+    width: auto;
+    background-color: white;
 
-  a {
-    height: auto;
-    width: 45%;
-    margin-bottom: 45px;
-  }
+    .badge-image-conatiner {
+      width: auto;
+      display: flex;
+      aspect-ratio: 1 / 1;
+      background-color: #f5f5f5;
 
-  .badge-image {
-    max-width: 100%;
-    left: 0;
-
-    &.unearned {
-      filter: opacity(20%) contrast(0);
-    }
-  }
-
-  @media screen and (min-width: 650px) {
-    a {
-      min-height: 200px;
-      width: 200px;
+      .badge-image {
+        object-fit: contain;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+      }
     }
   }
 }

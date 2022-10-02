@@ -25,7 +25,7 @@ module Users
       authorize current_user, policy_class: UserPolicy
 
       if current_user.notification_setting.update(users_notification_setting_params)
-        flash[:settings_notice] = "Your notification settings have been updated."
+        flash[:settings_notice] = I18n.t("users_controller.notifications_settings_updated")
       else
         Honeycomb.add_field("error", current_user.notification_setting.errors.messages.compact_blank)
         Honeycomb.add_field("errored", true)

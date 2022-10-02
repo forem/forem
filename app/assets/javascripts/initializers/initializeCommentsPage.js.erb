@@ -47,7 +47,7 @@ function initializeCommentsPage() {
                   if (buttForComment) {
                     var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
                     var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
-                    if (publicReactionCounts[i].count > 0) {
+                    if (publicReactionCounts[i].count > 0 && reactionsLabelWrapper) {
 
                       if (publicReactionCounts[i].count > 1) {
                         reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}s`;
@@ -101,7 +101,7 @@ function initializeCommentsPage() {
         sendHapticMessage('medium');
         var userStatus = document.body.getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
-          showLoginModal();
+          showLoginModal({ referring_source: 'comment', trigger: 'like' });
           return;
         }
 
@@ -167,7 +167,7 @@ function initializeCommentsPage() {
         } else {
           var userStatus = document.body.getAttribute('data-user-status');
           if (userStatus == 'logged-out') {
-            showLoginModal();
+            showLoginModal({ referring_source: 'comment', trigger: 'reply' });
             return;
           }
           var parentId = event.target.closest('.comment').dataset.commentId;
@@ -300,6 +300,7 @@ function handleCommentSubmit(event) {
           updateCommentsCount();
           initializeCommentsPage();
           initializeCommentDate();
+          initializeDateHelpers();
           activateRunkitTags();
         })
       } else {
@@ -323,7 +324,7 @@ function handleFocus(event) {
   var area = event.target;
   if (userStatus == 'logged-out') {
     event.preventDefault();
-    showLoginModal();
+    showLoginModal({ referring_source: 'comments', trigger: 'new_comment'});
     area.blur();
   } else {
     var form = event.target.closest(".comment-form");
@@ -444,6 +445,10 @@ function updateCommentsCount() {
   const commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount, 10) + 1;
   commentsCountDiv.dataset.commentsCount = commentsCountData;
   commentsCountDiv.innerHTML = `(${commentsCountData})`
+
+  const commentsSidebarCountDiv = document.getElementById("reaction-number-comment");
+  if (!commentsSidebarCountDiv) return;
+  commentsSidebarCountDiv.innerHTML = `${commentsCountData}`;
 }
 
 function handleHiddenComments(commentableType){

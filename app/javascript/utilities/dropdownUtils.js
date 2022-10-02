@@ -169,7 +169,10 @@ export const initializeDropdown = ({
 
   // Close the dropdown if user has clicked outside
   const clickOutsideListener = ({ target }) => {
+    // Get fresh handle every time, resulting in more streamlined functionality for cypress
+    const triggerButton = document.getElementById(triggerElementId);
     if (
+      triggerButton &&
       target !== triggerButton &&
       !dropdownContent.contains(target) &&
       !triggerButton.contains(target)

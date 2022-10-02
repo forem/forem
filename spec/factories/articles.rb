@@ -37,7 +37,7 @@ FactoryBot.define do
         published: #{published}
         tags: #{tags if with_tags}
         date: #{date if with_date}
-        series: #{with_collection&.slug if with_collection}
+        series: #{with_collection&.slug}
         canonical_url: #{canonical_url if with_canonical_url}
         #{"cover_image: #{Faker::Avatar.image}" if with_main_image && main_image_from_frontmatter}
         ---

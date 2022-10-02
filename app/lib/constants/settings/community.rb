@@ -7,10 +7,6 @@ module Constants
             description: I18n.t("lib.constants.settings.community.description.description"),
             placeholder: I18n.t("lib.constants.settings.community.description.placeholder")
           },
-          community_emoji: {
-            description: I18n.t("lib.constants.settings.community.emoji.description"),
-            placeholder: ""
-          },
           community_name: {
             description: I18n.t("lib.constants.settings.community.name.description"),
             placeholder: I18n.t("lib.constants.settings.community.name.placeholder")

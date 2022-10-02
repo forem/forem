@@ -1,35 +1,18 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Organizations", type: :request do
-  let(:api_secret) { create(:api_secret) }
-  let(:v1_headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/organizations/:username" do
     let(:organization) { create(:organization) }
 
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get "/api/organizations/invalid-username", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get "/api/organizations/invalid-username", headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns 404 if the organizations username is not found" do
-      get "/api/organizations/invalid-username", headers: v1_headers
+      get "/api/organizations/invalid-username", headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns the correct json representation of the organization", :aggregate_failures do
-      get api_organization_path(organization.username), headers: v1_headers
+      get api_organization_path(organization.username), headers: headers
 
       response_organization = response.parsed_body
       expect(response_organization).to include(
@@ -52,42 +35,39 @@ RSpec.describe "Api::V1::Organizations", type: :request do
     let!(:org_user) { create(:user, :org_member) }
     let(:organization) { org_user.organizations.first }
 
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get "/api/organizations/invalid-username/users", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get "/api/organizations/invalid-username/users", headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns 404 if the organizations username is not found" do
-      get "/api/organizations/invalid-username/users", headers: v1_headers
+      get "/api/organizations/invalid-username/users", headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "supports pagination" do
       create(:organization_membership, user: create(:user), organization: organization)
 
-      get api_organization_users_path(organization.username), params: { page: 1, per_page: 1 }, headers: v1_headers
+      get api_organization_users_path(organization.username), params: { page: 1, per_page: 1 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
 
-      get api_organization_users_path(organization.username), params: { page: 2, per_page: 1 }, headers: v1_headers
+      get api_organization_users_path(organization.username), params: { page: 2, per_page: 1 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
 
-      get api_organization_users_path(organization.username), params: { page: 3, per_page: 1 }, headers: v1_headers
+      get api_organization_users_path(organization.username), params: { page: 3, per_page: 1 }, headers: headers
       expect(response.parsed_body.length).to eq(0)
     end
 
+    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+      create(:organization_membership, user: create(:user), organization: organization)
+      create(:organization_membership, user: create(:user), organization: organization)
+      create(:organization_membership, user: create(:user), organization: organization)
+
+      get api_organization_users_path(organization.username), params: { per_page: 10 }
+      expect(response.parsed_body.count).to eq(2)
+    end
+
     it "returns the correct json representation of the organizations users", :aggregate_failures do
-      get api_organization_users_path(organization.username), headers: v1_headers
+      get api_organization_users_path(organization.username), headers: headers
 
       response_org_users = response.parsed_body.first
 
@@ -112,50 +92,43 @@ RSpec.describe "Api::V1::Organizations", type: :request do
     let(:organization) { org_user.organizations.first }
     let!(:listing) { create(:listing, user: org_user, organization: organization) }
 
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
-    xcontext "when unauthenticated" do
-      it "returns unauthorized" do
-        get api_organization_listings_path(organization.username),
-            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    xcontext "when unauthorized" do
-      it "returns unauthorized" do
-        get api_organization_listings_path(organization.username),
-            headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns 404 if the organizations username is not found" do
-      get "/api/organizations/invalid-username/listings", headers: v1_headers
+      get "/api/organizations/invalid-username/listings", headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns success for when orgnaization username exists" do
       create(:listing, user: org_user, organization: organization)
-      get "/api/organizations/#{organization.username}/listings", headers: v1_headers
+      get "/api/organizations/#{organization.username}/listings", headers: headers
       expect(response).to have_http_status(:success)
     end
 
     it "supports pagination" do
       create(:listing, user: org_user, organization: organization)
 
-      get api_organization_listings_path(organization.username), params: { page: 1, per_page: 1 }, headers: v1_headers
+      get api_organization_listings_path(organization.username), params: { page: 1, per_page: 1 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
 
-      get api_organization_listings_path(organization.username), params: { page: 2, per_page: 1 }, headers: v1_headers
+      get api_organization_listings_path(organization.username), params: { page: 2, per_page: 1 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
 
-      get api_organization_listings_path(organization.username), params: { page: 3, per_page: 1 }, headers: v1_headers
+      get api_organization_listings_path(organization.username), params: { page: 3, per_page: 1 }, headers: headers
       expect(response.parsed_body.length).to eq(0)
     end
 
+    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+      create_list(:listing, 3, user: org_user, organization: organization)
+
+      get api_organization_listings_path(organization.username), params: { per_page: 10 }, headers: headers
+      expect(response.parsed_body.count).to eq(2)
+    end
+
     it "returns the correct json representation of the organizations listings", :aggregate_failures do
-      get api_organization_listings_path(organization.username), headers: v1_headers
+      get api_organization_listings_path(organization.username), headers: headers
       response_listing = response.parsed_body.first
       expect(response_listing["type_of"]).to eq("listing")
 
@@ -183,26 +156,8 @@ RSpec.describe "Api::V1::Organizations", type: :request do
     let(:organization) { org_user.organizations.first }
     let!(:article) { create(:article, user: org_user, organization: organization) }
 
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        get api_organization_articles_path(organization.username),
-            headers: { "Accept" => "application/vnd.forem.api-v1+json" }
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized" do
-        get api_organization_articles_path(organization.username),
-            headers: v1_headers.merge({ "api-key" => "invalid api key" })
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
     it "returns 404 if the organizations articles is not found" do
-      get "/api/organizations/invalid-username/articles", headers: v1_headers
+      get "/api/organizations/invalid-username/articles", headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
@@ -211,22 +166,22 @@ RSpec.describe "Api::V1::Organizations", type: :request do
 
       get api_organization_articles_path(organization.username),
           params: { page: 1, per_page: 1 },
-          headers: v1_headers
+          headers: headers
       expect(response.parsed_body.length).to eq(1)
 
       get api_organization_articles_path(organization.username),
           params: { page: 2, per_page: 1 },
-          headers: v1_headers
+          headers: headers
       expect(response.parsed_body.length).to eq(1)
 
       get api_organization_articles_path(organization.username),
           params: { page: 3, per_page: 1 },
-          headers: v1_headers
+          headers: headers
       expect(response.parsed_body.length).to eq(0)
     end
 
     it "returns the correct json representation of the organizations articles", :aggregate_failures do
-      get api_organization_articles_path(organization.username), headers: v1_headers
+      get api_organization_articles_path(organization.username), headers: headers
       response_article = response.parsed_body.first
       expect(response_article["type_of"]).to eq("article")
 
@@ -246,6 +201,17 @@ RSpec.describe "Api::V1::Organizations", type: :request do
       %w[name username slug].each do |attr|
         expect(response_article["organization"][attr]).to eq(organization.public_send(attr))
       end
+    end
+
+    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+      create_list(:article, 3, organization: organization)
+
+      get api_organization_articles_path(organization.username), params: { per_page: 10 }, headers: headers
+      expect(response.parsed_body.count).to eq(2)
     end
   end
 end

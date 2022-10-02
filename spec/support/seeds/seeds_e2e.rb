@@ -966,6 +966,7 @@ seeder.create_if_none(DisplayAd) do
     organization_id: org_id,
     body_markdown: "<h1>This is an add</h1>",
     placement_area: "sidebar_left",
+    name: "Tests Display Ad",
     published: true,
     approved: true,
   )

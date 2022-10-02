@@ -5,6 +5,7 @@ import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitche
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
 import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
+import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
 import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
 
 const animatedImages = document.querySelectorAll('[data-animated="true"]');
@@ -70,27 +71,6 @@ if (shareDropdownButton.dataset.initialized !== 'true') {
 // Initialize the copy to clipboard functionality
 function showAnnouncer() {
   document.getElementById('article-copy-link-announcer').hidden = false;
-}
-
-// Temporary Ahoy Stats for comment section clicks on controls
-function trackCommentsSectionClicks() {
-  document
-    .getElementById('comments')
-    .addEventListener('click', ({ target }) => {
-      // We check for any parent container with a data-tracking-name attribute, as otherwise
-      // SVGs inside buttons can cause events to be missed
-      const relevantNode = target.closest('[data-tracking-name]');
-
-      if (!relevantNode) {
-        // We don't want to track this click
-        return;
-      }
-
-      ahoy.track('Comment section click', {
-        page: location.href,
-        element: relevantNode.dataset.trackingName,
-      });
-    });
 }
 
 // Temporary Ahoy Stats for displaying comments section either on page load or after scrolling
@@ -179,5 +159,6 @@ const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
 
 initializeUserSubscriptionLiquidTagContent();
-trackCommentsSectionClicks();
+// Temporary Ahoy Stats for comment section clicks on controls
+trackCommentClicks('comments');
 trackCommentsSectionDisplayed();

@@ -320,7 +320,7 @@ RSpec.describe "Dashboards", type: :request do
         sign_in user
         get "/dashboard/analytics"
         within "nav" do
-          expect(page).to have_selector("a[href='/dashboard']")
+          expect(page).to have_link(href: "/dashboard")
         end
       end
     end

@@ -88,7 +88,10 @@ function initializeFilters(query, filters) {
         e.target.classList.contains('my-posts-query-button') &&
         !checkUserLoggedIn()
       ) {
-        showLoginModal();
+        showLoginModal({
+          referring_source: 'search',
+          trigger: 'my_posts_filter',
+        });
         return;
       }
       const filters = e.target.dataset.filter;

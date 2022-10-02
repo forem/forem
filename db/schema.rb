@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_04_135751) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_28_162321) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -104,7 +104,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_04_135751) do
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
     t.boolean "featured", default: false
-    t.integer "featured_number"
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
@@ -158,7 +157,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_04_135751) do
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["comments_count"], name: "index_articles_on_comments_count"
-    t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
@@ -459,7 +457,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_04_135751) do
     t.text "body_markdown"
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
+    t.integer "display_to", default: 0, null: false
     t.integer "impressions_count", default: 0
+    t.string "name"
     t.bigint "organization_id"
     t.string "placement_area"
     t.text "processed_html"
@@ -1336,7 +1336,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_04_135751) do
 
   create_table "users_settings", force: :cascade do |t|
     t.string "brand_color1", default: "#000000"
-    t.string "brand_color2", default: "#ffffff"
     t.integer "config_font", default: 0, null: false
     t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false

@@ -10,6 +10,8 @@ class DisplayAd < ApplicationRecord
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
 
+  enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
+
   belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy
 
@@ -17,11 +19,25 @@ class DisplayAd < ApplicationRecord
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
   before_save :process_markdown
+  after_save :generate_display_ad_name
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
-  def self.for_display(area)
+  scope :search_ads, lambda { |term|
+                       where "name ILIKE :search OR processed_html ILIKE :search OR placement_area ILIKE :search",
+                             search: "%#{term}%"
+                     }
+
+  def self.for_display(area, user_signed_in)
     relation = approved_and_published.where(placement_area: area).order(success_rate: :desc)
+
+    relation = if user_signed_in
+                 relation.where(display_to: %w[all logged_in])
+               else
+                 relation.where(display_to: %w[all logged_out])
+               end
+
+    relation.order(success_rate: :desc)
 
     if rand(8) == 1
       relation.sample
@@ -35,6 +51,13 @@ class DisplayAd < ApplicationRecord
   end
 
   private
+
+  def generate_display_ad_name
+    return unless name.nil?
+
+    self.name = "Display Ad #{id}"
+    save!
+  end
 
   def process_markdown
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)

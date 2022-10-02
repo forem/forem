@@ -116,6 +116,7 @@ fr:
     updated_config: Votre configuration a été mise à jour. Rafraîchissez pour voir tous les changements.
     updated_profile: Votre profil a été mis à jour avec succès.
     token_expired: Votre jeton a expiré, veuillez en demander un nouveau. Les jetons ne durent que 12 heures après la suppression du compte.
+    notifications_settings_updated: Vos paramètres de notification ont été mis à jour.
   video_states_controller:
     related_article_not_found: Article connexe non trouvé
     video_state_updated: Mise à jour de l'état de la vidéo

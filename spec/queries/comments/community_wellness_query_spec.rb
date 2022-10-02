@@ -37,7 +37,7 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
       user6 = create(:user)
 
       # Add 2 comments per week (including week 0) for `user6`
-      (0..33).each do |i|
+      34.times do |i|
         num_days_ago = (2 + (i * 7)).days.ago
         create_comment_time_ago(user6.id, num_days_ago, commentable: articles.sample)
         create_comment_time_ago(user6.id, num_days_ago, commentable: articles.sample)

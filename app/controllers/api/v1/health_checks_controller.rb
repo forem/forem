@@ -3,7 +3,7 @@ module Api
     class HealthChecksController < ApiController
       include Api::HealthChecksController
 
-      before_action :authenticate!
+      before_action :authenticate_with_token
     end
   end
 end

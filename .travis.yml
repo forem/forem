@@ -29,6 +29,7 @@ env:
     - DATABASE_NAME=Forem_prod_test
     - DATABASE_URL_TEST=postgres://travis@localhost:5432/Forem_test
     - DATABASE_NAME_TEST=Forem_test
+    - STATEMENT_TIMEOUT=20000
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
     - APP_DOMAIN=localhost:3000

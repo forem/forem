@@ -20,8 +20,9 @@
   <table class="crayons-table" width="100%">
     <thead>
       <tr>
-        <th scope="col">ID</th>
+        <th scope="col">Name</th>
         <th scope="col">Placement Area</th>
+        <th scope="col">Display to User Group</th>
         <th scope="col">Published</th>
         <th scope="col">Approved</th>
         <th scope="col">Success Rate</th>
@@ -30,8 +31,9 @@
     <tbody class="crayons-card">
       <% @display_ads.each do |display_ad| %>
           <tr data-row-id="<%= display_ad.id %>">
-            <td><%= link_to display_ad.id, edit_admin_display_ad_path(display_ad) %></td>
+            <td><%= link_to display_ad.name, edit_admin_display_ad_path(display_ad) %></td>
             <td><%= display_ad.human_readable_placement_area %></td>
+            <td><%= display_ad.display_to %></td>
             <td><%= display_ad.published %></td>
             <td><%= display_ad.approved %></td>
             <td><%= display_ad.success_rate %></td>

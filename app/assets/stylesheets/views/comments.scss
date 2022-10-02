@@ -286,3 +286,24 @@
 .moderator-template-button:not(.active) {
   @extend .crayons-btn--outlined;
 }
+
+#comments-sort-dropdown-container {
+  .comment-sort-option {
+    &__header {
+      color: var(--base-90);
+      font-weight: var(--fw-medium);
+    }
+
+    .comment-sort-option__header {
+      .crayons-icon {
+        position: absolute;
+        left: var(--su-4);
+        color: var(--link-branded-color);
+      }
+
+      &[aria-current='page'] {
+        font-weight: var(--fw-bold);
+      }
+    }
+  }
+}

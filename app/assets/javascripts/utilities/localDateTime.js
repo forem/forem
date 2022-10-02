@@ -19,7 +19,13 @@ function timestampToLocalDateTime(timestamp, locale, options) {
 
   try {
     var time = new Date(timestamp);
-    return new Intl.DateTimeFormat(locale || 'default', options).format(time);
+    let formattedTime = new Intl.DateTimeFormat(
+      locale || 'default',
+      options,
+    ).format(time);
+    return options.year === '2-digit'
+      ? formattedTime.replace(', ', " '")
+      : formattedTime;
   } catch (e) {
     return '';
   }
