@@ -23,6 +23,11 @@ class DisplayAd < ApplicationRecord
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
+  scope :search_ads, lambda { |term|
+                       where "name ILIKE :search OR processed_html ILIKE :search OR placement_area ILIKE :search",
+                             search: "%#{term}%"
+                     }
+
   def self.for_display(area, user_signed_in)
     relation = approved_and_published.where(placement_area: area).order(success_rate: :desc)
 
