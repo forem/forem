@@ -46,12 +46,12 @@ module EdgeCache
     end
 
     def self.bust_home_pages(cache_bust, article)
-      if article.featured_number.to_i > Time.current.to_i
+      if article.published_at.to_i > Time.current.to_i
         cache_bust.call("/")
         cache_bust.call("?i=i")
       end
 
-      if article.video.present? && article.featured_number.to_i > 10.days.ago.to_i
+      if article.video.present? && article.published_at.to_i > 10.days.ago.to_i
         cache_bust.call("/videos")
         cache_bust.call("/videos?i=i")
       end

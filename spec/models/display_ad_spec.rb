@@ -113,4 +113,28 @@ RSpec.describe DisplayAd, type: :model do
       end
     end
   end
+
+  describe ".search_ads" do
+    let!(:ad) { create(:display_ad, name: "This is an Ad", body_markdown: "Ad Body", placement_area: "post_comments") }
+
+    it "finds via name" do
+      expect(described_class.search_ads("this").ids).to contain_exactly(ad.id)
+    end
+
+    it "finds via body" do
+      expect(described_class.search_ads("body").ids).to contain_exactly(ad.id)
+    end
+
+    it "finds via placement_area" do
+      expect(described_class.search_ads("comment").ids).to contain_exactly(ad.id)
+    end
+
+    it "finds just one result via multiple criteria" do
+      expect(described_class.search_ads("ad").ids).to contain_exactly(ad.id)
+    end
+
+    it "returns empty when no match" do
+      expect(described_class.search_ads("foo")).to eq([])
+    end
+  end
 end

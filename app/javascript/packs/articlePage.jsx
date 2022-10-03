@@ -160,5 +160,5 @@ targetNode && embedGists(targetNode);
 
 initializeUserSubscriptionLiquidTagContent();
 // Temporary Ahoy Stats for comment section clicks on controls
-trackCommentClicks('comments', 'Comment section click');
+trackCommentClicks('comments');
 trackCommentsSectionDisplayed();

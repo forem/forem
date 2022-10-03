@@ -264,7 +264,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "returns rising articles" do
-        article.update_columns(public_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
+        article.update_columns(public_reactions_count: 32, score: 1, published_at: 2.days.ago)
 
         get api_articles_path(state: "rising")
         expect(response.parsed_body.size).to eq(1)
