@@ -64,6 +64,17 @@ module CommentsHelper
     end
   end
 
+  def contextual_comment_url(comment, article: nil)
+    # Liquid tag parsing doesn't have Devise/Warden (request middleware)
+    return URL.comment(comment) if request.env["warden"].nil?
+
+    # Logged in users should get the comment permalink
+    return URL.comment(comment) if user_signed_in?
+
+    # Logged out users should get the article URL with the comment anchor
+    URL.fragment_comment(comment, path: article&.path)
+  end
+
   private
 
   def nested_comments(tree:, commentable:, is_view_root: false)
