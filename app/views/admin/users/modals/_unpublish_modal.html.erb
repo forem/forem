@@ -1,7 +1,11 @@
 <div id="unpublish-all-posts">
-  <%= form_for(:user, html: { class: "js-unpublish-form flex flex-col gap-4", method: :post, onsubmit: "return confirm('Are you sure? All posts will be unavailable to the community.')", id: nil }) do |f| %>
+  <%= form_tag("/admin/member_manager/users/#{@user.id}/unpublish_all_articles", html: { class: "js-unpublish-form flex flex-col gap-4",
+                                                                                         method: :post,
+                                                                                         onsubmit: "return confirm('Are you sure? All posts will be unavailable to the community.')",
+                                                                                         id: nil }) do %>
     <p>Once unpublished, all posts by <span class="js-user-name"></span> will become hidden and only accessible to themselves.</p>
-    <p>If <span class="js-user-name"></span> is not suspended, they can still re-publish their posts from their dashboard.</p>
+    <p class="mt-2">If <span class="js-user-name"></span> is not suspended, they can still re-publish their posts from their dashboard.</p>
+    <p class="mt-2"><%= label_tag "note[content]", "Note:" %><%= text_area_tag "note[content]", "", class: "crayons-textfield", placeholder: "Note text" %></p>
     <div>
       <button class="c-btn c-btn--destructive c-btn--primary">Unpublish all posts</button>
     </div>

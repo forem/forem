@@ -195,6 +195,10 @@ module Admin
     def unpublish_all_articles
       target_user = User.find(params[:id].to_i)
       Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id, current_user.id, "moderator")
+      if params[:note] && params[:note][:content]
+        Note.create(noteable: target_user, reason: "unpublish_all_articles",
+                    content: params[:note][:content], author: current_user)
+      end
       message = I18n.t("admin.users_controller.unpublished")
       respond_to do |format|
         format.html do

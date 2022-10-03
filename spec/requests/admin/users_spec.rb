@@ -302,6 +302,23 @@ RSpec.describe "/admin/member_manager/users", type: :request do
     let!(:target_articles) { create_list(:article, 3, user: target_user, published: true) }
     let!(:target_comments) { create_list(:comment, 3, user: target_user) }
 
+    it "creates a corresponding note if note content passed" do
+      text = "The articles were not interesting"
+      expect do
+        post unpublish_all_articles_admin_user_path(target_user.id, note: { content: text })
+      end.to change(Note, :count).by(1)
+      note = target_user.notes.last
+      expect(note.content).to eq(text)
+      expect(note.reason).to eq("unpublish_all_articles")
+      expect(note.author_id).to eq(admin.id)
+    end
+
+    it "doesn't create a note if note content was not passed" do
+      expect do
+        post unpublish_all_articles_admin_user_path(target_user.id, note: { content: "" })
+      end.not_to change(Note, :count)
+    end
+
     it "unpublishes all articles" do
       allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
       post unpublish_all_articles_admin_user_path(target_user.id)
