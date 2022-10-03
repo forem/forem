@@ -124,15 +124,6 @@
     <input type="hidden" name="_method" value="patch" />
     <div class="flex gap-4">
       <div class="crayons-field flex-1">
-        <label for="featured_number_<%= article.id %>" class="crayons-field__label">Featured number</label>
-        <input id="featured_number_<%= article.id %>"
-              class="crayons-textfield"
-              name="article[featured_number]"
-              value="<%= article.featured_number %>"
-              data-article-target="featuredNumber">
-      </div>
-
-      <div class="crayons-field flex-1">
         <label for="author_id_<%= article.id %>" class="crayons-field__label">Author ID</label>
         <input id="author_id_<%= article.id %>" class="crayons-textfield" size="6" name="article[user_id]"
           value="<%= article.user_id %>">

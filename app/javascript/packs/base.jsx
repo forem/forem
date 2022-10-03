@@ -125,12 +125,5 @@ if (document.location.pathname === '/admin/creator_settings/new') {
   loadCreatorSettings();
 }
 
-trackCreateAccountClicks(
-  'authentication-hamburger-actions',
-  'Clicked on Create Account',
-);
-
-trackCreateAccountClicks(
-  'authentication-top-nav-actions',
-  'Clicked on Create Account',
-);
+trackCreateAccountClicks('authentication-hamburger-actions');
+trackCreateAccountClicks('authentication-top-nav-actions');
