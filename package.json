@@ -40,7 +40,7 @@
   "homepage": "https://github.com/forem/forem#readme",
   "devDependencies": {
     "@babel/eslint-parser": "^7.19.1",
-    "@babel/plugin-proposal-decorators": "^7.19.1",
+    "@babel/plugin-proposal-decorators": "^7.19.3",
     "@faker-js/faker": "^7.5.0",
     "@knapsack-pro/cypress": "^5.1.0",
     "@storybook/addon-a11y": "^6.5.12",
