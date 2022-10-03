@@ -54,6 +54,9 @@ module Credits
           credits_purchases_by_type = credits_purchases_with_purchase.select do |row|
             row.purchase_type == purchase_type
           end
+
+          next unless purchase_type.constantize
+
           purchase_set = purchase_type.constantize.where(id: credits_purchases_by_type.map(&:purchase_id))
           credits_purchases_by_type.each do |credit_purchase|
             purchase = purchase_set.detect { |set| set.id == credit_purchase.purchase_id }
