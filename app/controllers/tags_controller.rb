@@ -51,7 +51,7 @@ class TagsController < ApplicationController
       flash[:success] = I18n.t("tags_controller.tag_successfully_updated")
       redirect_to "#{URL.tag_path(@tag)}/edit"
     else
-      flash[:error] = @tag.errors.full_messages
+      flash.now[:error] = @tag.errors.full_messages
       render :edit
     end
   end
@@ -80,7 +80,7 @@ class TagsController < ApplicationController
   private
 
   def tags
-    @tags ||= Tag.direct.includes(:sponsorship).limit(100)
+    @tags ||= Tag.direct.order("hotness_score DESC").limit(100)
   end
 
   def convert_empty_string_to_nil

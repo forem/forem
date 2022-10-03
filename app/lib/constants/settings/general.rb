@@ -99,10 +99,6 @@ module Constants
             description: I18n.t("lib.constants.settings.general.sidebar.description"),
             placeholder: I18n.t("lib.constants.settings.general.sidebar.placeholder")
           },
-          sponsor_headline: {
-            description: I18n.t("lib.constants.settings.general.sponsor.description"),
-            placeholder: I18n.t("lib.constants.settings.general.sponsor.placeholder")
-          },
           stripe_api_key: {
             description: I18n.t("lib.constants.settings.general.stripe_api.description"),
             placeholder: "sk_live_...."

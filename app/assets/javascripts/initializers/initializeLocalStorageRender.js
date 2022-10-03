@@ -6,7 +6,6 @@ function initializeLocalStorageRender() {
       initializeBaseUserData();
       initializeReadingListIcons();
       initializeDisplayAdVisibility();
-      initializeSponsorshipVisibility();
     }
   } catch (err) {
     browserStoreCache('remove');

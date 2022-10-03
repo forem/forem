@@ -220,7 +220,6 @@ Rails.application.routes.draw do
     get "/checkin", to: "pages#checkin"
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-    get "/sponsors", to: "pages#sponsors"
     get "/search", to: "stories/articles_search#index"
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"

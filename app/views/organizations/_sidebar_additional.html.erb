@@ -1,11 +1,6 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-    <% @organization.sponsorships.live.find_each do |sponsorship| %>
-      <div class="sidebar-sponsorship-level">
-        <%= t("views.organizations.sponsor.text", level: t("views.organizations.sponsor.level.#{sponsorship.level}")) %>
-      </div>
-    <% end %>
 
     <%# given the probability that organizations can have lots of users,
         here we're using the any?/find_each pattern to avoid loading possibly

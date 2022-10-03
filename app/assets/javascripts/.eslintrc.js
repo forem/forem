@@ -26,7 +26,6 @@ module.exports = {
     initializeBaseUserData: false,
     initializeDisplayAdVisibility: false,
     initializeReadingListIcons: false,
-    initializeSponsorshipVisibility: false,
     ActiveXObject: false,
     AndroidBridge: false,
   },

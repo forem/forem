@@ -17,8 +17,8 @@ RSpec.describe ApplicationRecord, type: :model do
 
   describe "#decorate" do
     it "decorates an object that has a decorator" do
-      sponsorship = build(:sponsorship)
-      expect(sponsorship.decorate).to be_a(SponsorshipDecorator)
+      article = build(:article)
+      expect(article.decorate).to be_a(ArticleDecorator)
     end
 
     it "raises an error if an object has no decorator" do
@@ -29,20 +29,20 @@ RSpec.describe ApplicationRecord, type: :model do
 
   describe "#decorated?" do
     it "returns false" do
-      sponsorship = build(:sponsorship)
-      expect(sponsorship.decorated?).to be(false)
+      article = build(:article)
+      expect(article.decorated?).to be(false)
     end
   end
 
   describe ".decorate" do
     before do
-      create(:sponsorship, level: :gold)
+      create(:article, approved: true)
     end
 
     it "decorates a relation" do
-      decorated_collection = Sponsorship.gold.decorate
-      expect(decorated_collection.size).to eq(Sponsorship.gold.size)
-      expect(decorated_collection.first).to be_a(SponsorshipDecorator)
+      decorated_collection = Article.approved.decorate
+      expect(decorated_collection.size).to eq(Article.approved.size)
+      expect(decorated_collection.first).to be_a(ArticleDecorator)
     end
   end
 
