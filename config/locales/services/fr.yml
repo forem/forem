@@ -100,8 +100,6 @@ fr:
           body: 'Potential spam user! %{url}
 
             '
-        sponsorship:
-          body: "%{user} bought a %{type} sponsorship for %{organization}\n"
     spam:
       article_handler:
         suspended_too_many: User suspended for too many spammy articles, triggered by autovomit.

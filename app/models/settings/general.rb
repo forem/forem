@@ -93,9 +93,6 @@ module Settings
     }
     setting :twitter_hashtag, type: :string
 
-    # Sponsors
-    setting :sponsor_headline, default: -> { I18n.t("models.settings.general.community_sponsors") }
-
     # Tags
     setting :sidebar_tags, type: :array, default: %w[]
 

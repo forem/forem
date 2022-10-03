@@ -127,12 +127,6 @@ RSpec.describe "UserProfiles", type: :request do
         expect(response.body).not_to include "Gold Community Sponsor"
       end
 
-      it "renders sponsor if it is sponsored" do
-        create(:sponsorship, level: :gold, status: :live, organization: organization)
-        get organization.path
-        expect(response.body).to include "Gold Community Sponsor"
-      end
-
       it "renders organization name properly encoded" do
         organization.update(name: "Org & < ' \" 1")
         get organization.path
