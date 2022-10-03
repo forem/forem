@@ -97,11 +97,7 @@ fr:
             reporter: %{username} - %{url}
             email: <mailto:%{email}|%{email}>
         potential_spammer:
-          body: 'Utilisateur potentiel de spam ! %{url}
-
-            '
-        sponsorship:
-          body: "%{user} a acheté un %{type} de parrainage pour %{organization}\n"
+          body: 'Utilisateur potentiel de spam ! %{url}'
     spam:
       article_handler:
         suspended_too_many: Utilisateur suspendu pour trop d'articles spam, déclenché par autovomit.

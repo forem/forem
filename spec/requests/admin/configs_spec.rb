@@ -666,16 +666,6 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
       end
 
-      describe "Sponsors" do
-        it "updates the sponsor_headline" do
-          headline = "basic"
-          post admin_settings_general_settings_path, params: {
-            settings_general: { sponsor_headline: headline }
-          }
-          expect(Settings::General.sponsor_headline).to eq(headline)
-        end
-      end
-
       describe "Tags" do
         it "removes space sidebar_tags" do
           post admin_settings_general_settings_path, params: {
