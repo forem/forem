@@ -95,14 +95,6 @@ en:
         the_community_mascot: The community mascot
       user_experience:
         message: 'must be be a 3 or 6 character hex (starting with #)'
-    sponsorship:
-      invalid_type: is not a sponsorable type
-      already_sponsored: The tag is already sponsored
-      only_one_level: You can have only one sponsorship of %{levels}
-      level:
-        gold: gold
-        silver: silver
-        bronze: bronze
     tag:
       alias_for: alias_for must refer to an existing tag
     tag_adjustment:

@@ -278,29 +278,8 @@
     }
   }
 }
+
 // Sidebar sponsors
-.sidebar-sponsor {
-  color: var(--card-color-tertiary);
-  img {
-    width: 100%;
-    max-width: 140px;
-    margin-bottom: var(--su-2);
-  }
-}
-
-// Todo: Not really sure what that is.. some sort of sponsorship widget...
-.sidebar-sponsorship-level {
-  text-align: center;
-  font-weight: bold;
-  width: calc(100% - 6px);
-  padding: 26px 0px;
-  border-radius: 3px;
-  margin-bottom: 10px;
-  font-family: $helvetica-condensed;
-  font-stretch: condensed;
-  background: var(--card-secondary-bg);
-}
-
 .crayons-sponsorship-article {
   margin-bottom: 10px;
 

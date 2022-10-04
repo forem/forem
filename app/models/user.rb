@@ -110,7 +110,6 @@ class User < ApplicationRecord
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
   has_many :devices, dependent: :delete_all
-  has_many :sponsorships, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
