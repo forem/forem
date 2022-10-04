@@ -1,6 +1,6 @@
 {
   "max_days_since_published": 15,
-  "description": "Copy of 20221004-variant-b but with matching_positive_tags_intersection_count present in addition to the points sum",
+  "description": "Copy of 20220926-variant-b but with matching_positive_tags_intersection_count present in addition to the points sum",
   "order_by": "final_order_by_random_weighted_to_score",
   "reseed_randomizer_on_each_request": false,
   "levers": {
