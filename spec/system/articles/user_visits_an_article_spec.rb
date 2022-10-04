@@ -16,11 +16,14 @@ RSpec.describe "Views an article", type: :system do
   end
 
   it "shows non-negative comments", js: true do
-    create_list(:comment, 3, commentable: article)
     comments = create_list(:comment, 4, commentable: article)
     admin = create(:user, :admin)
     create(:thumbsdown_reaction, reactable: comments.last, user: admin)
     sidekiq_perform_enqueued_jobs
+
+    visit article.path
+    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 4)
+
     sign_out user
     visit article.path
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
