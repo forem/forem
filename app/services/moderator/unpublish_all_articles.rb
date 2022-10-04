@@ -63,7 +63,7 @@ module Moderator
     end
 
     def audit_log(payload = {})
-      payload[:action] = listener == :moderator ? "unpublish_all_articles" : "api_user_unpublish"
+      payload["action"] = listener == :moderator ? "unpublish_all_articles" : "api_user_unpublish"
       action_user = User.find_by(id: action_user_id)
       Audit::Logger.log(listener, action_user, payload)
     end

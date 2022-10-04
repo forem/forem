@@ -52,6 +52,7 @@ RSpec.describe Moderator::UnpublishAllArticles, type: :service do
 
     log = AuditLog.last
     expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+    expect(log.slug).to eq("api_user_unpublish")
     expect(log.data["action"]).to eq("api_user_unpublish")
     expect(log.user_id).to eq(admin.id)
 
@@ -68,6 +69,7 @@ RSpec.describe Moderator::UnpublishAllArticles, type: :service do
 
     log = AuditLog.last
     expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+    expect(log.slug).to eq("unpublish_all_articles")
     expect(log.data["action"]).to eq("unpublish_all_articles")
     expect(log.user_id).to eq(admin.id)
   end
