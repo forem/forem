@@ -1,4 +1,4 @@
-<div class="grid l:grid-cols-2 gap-6 mb-4">
+<div id="display-ad-form" class="grid l:grid-cols-2 gap-6 mb-4">
   <div class="flex flex-col gap-4">
     <div class="crayons-field">
       <%= label_tag :name, "Name:", class: "crayons-field__label" %>
@@ -18,6 +18,10 @@
     <div class="crayons-field">
       <%= label_tag :placement_area, "Placement Area:", class: "crayons-field__label" %>
       <%= select_tag :placement_area, options_for_select(display_ads_placement_area_options_array, selected: @display_ad.placement_area), include_blank: "Select...", class: "crayons-select" %>
+    </div>
+
+    <div class="crayons-field">
+      <div id="display-ad-targeted-tags"></div>
     </div>
 
     <div class="crayons-field">
@@ -72,3 +76,5 @@
     </div>
   </div>
 </div>
+
+<%= javascript_packs_with_chunks_tag "admin/displayAds", defer: true %>
