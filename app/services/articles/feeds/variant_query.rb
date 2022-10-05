@@ -26,7 +26,6 @@ module Articles
       end
 
       # Let's make sure that folks initialize this with a variant configuration.
-      private_class_method :new
 
       Config = Struct.new(
         :variant,
