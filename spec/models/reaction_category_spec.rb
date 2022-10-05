@@ -94,6 +94,14 @@ RSpec.describe ReactionCategory, type: :model do
     expect(positioned.position).to eq(4)
   end
 
+  it "is positive when score is above zero" do
+    positive = described_class.new(score: 15.0)
+    expect(positive).to be_positive
+
+    negative = described_class.new(score: -1.0)
+    expect(negative).not_to be_positive
+  end
+
   it "is negative when score is below zero" do
     positive = described_class.new(score: 15.0)
     expect(positive).not_to be_negative

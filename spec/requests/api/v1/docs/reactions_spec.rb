@@ -34,7 +34,7 @@ RSpec.describe "api/v1/reactions", type: :request do
         produces "application/json"
         parameter name: :category, in: :query, required: true, schema: {
           type: :string,
-          enum: Reaction::PUBLIC_CATEGORIES
+          enum: ReactionCategory.public
         }
         parameter name: :reactable_id, in: :query, required: true, schema: {
           type: :integer,
@@ -82,7 +82,7 @@ RSpec.describe "api/v1/reactions", type: :request do
         produces "application/json"
         parameter name: :category, in: :query, required: true, schema: {
           type: :string,
-          enum: Reaction::PUBLIC_CATEGORIES
+          enum: ReactionCategory.public
         }
         parameter name: :reactable_id, in: :query, required: true, schema: {
           type: :integer,

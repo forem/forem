@@ -50,6 +50,10 @@ class ReactionCategory
     @published  = attributes.fetch(:published, true)
   end
 
+  def positive?
+    score > 0.0
+  end
+
   def negative?
     score < 0.0
   end

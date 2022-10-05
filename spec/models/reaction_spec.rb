@@ -9,7 +9,7 @@ RSpec.describe Reaction, type: :model do
     subject { build(:reaction, reactable: article, user: user) }
 
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to validate_inclusion_of(:category).in_array(Reaction::CATEGORIES) }
+    it { is_expected.to validate_inclusion_of(:category).in_array(ReactionCategory.all_slugs.map(&:to_s)) }
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
   end
 

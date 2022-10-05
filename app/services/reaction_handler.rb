@@ -53,7 +53,7 @@ class ReactionHandler
   private
 
   def destroy_contradictory_mod_reactions
-    return unless category.in?(Reaction::PRIVILEGED_CATEGORIES)
+    return unless reaction.privileged?
 
     reactions = Reaction.contradictory_mod_reactions(
       category: category,
