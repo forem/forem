@@ -112,7 +112,7 @@ class ReactionHandler
       category: category
     }
     if (current_user&.any_admin? || current_user&.super_moderator?) &&
-        Reaction::NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
+        ReactionCategory[category].negative?
       create_params[:status] = "confirmed"
     end
     Reaction.new(create_params)
