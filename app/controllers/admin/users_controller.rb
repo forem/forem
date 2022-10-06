@@ -30,7 +30,7 @@ module Admin
       unpublish_all_articles: :unpublish_all_articles?
     }.freeze
 
-    after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
+    after_action only: %i[update user_status banish full_delete merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
@@ -193,7 +193,12 @@ module Admin
     end
 
     def unpublish_all_articles
-      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+      target_user = User.find(params[:id].to_i)
+      Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id, current_user.id, "moderator")
+      if params[:note] && params[:note][:content]
+        Note.create(noteable: target_user, reason: "unpublish_all_articles",
+                    content: params[:note][:content], author: current_user)
+      end
       message = I18n.t("admin.users_controller.unpublished")
       respond_to do |format|
         format.html do

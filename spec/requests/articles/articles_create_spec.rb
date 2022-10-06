@@ -192,7 +192,6 @@ RSpec.describe "ArticlesCreate", type: :request do
       \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
       post "/articles", params: { article: { body_markdown: body_markdown } }
       a = Article.find_by(title: "super-article")
-      # binding.pry
       expect(a.published_at).to be_within(1.minute).of(published_at)
     end
   end
