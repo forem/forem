@@ -52,6 +52,11 @@ module Api
 
       Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id, @user.id)
 
+      if params[:note] && params[:note][:content]
+        Note.create(noteable: target_user, reason: "unpublish_all_articles",
+                    content: params[:note][:content], author: @user)
+      end
+
       render status: :no_content
     end
   end
