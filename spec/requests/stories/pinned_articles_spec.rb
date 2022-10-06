@@ -106,7 +106,7 @@ RSpec.describe "Stories::PinnedArticlesController", type: :request do
 
         expect do
           put stories_feed_pinned_article_path, params: { id: article.id }.to_json, headers: headers
-        end.to change(AuditLog, :count).by(1)
+        end.to change(AuditLog.where(slug: "update"), :count).by(1)
 
         Audit::Subscribe.forget(:moderator)
       end
@@ -154,7 +154,7 @@ RSpec.describe "Stories::PinnedArticlesController", type: :request do
 
         expect do
           delete stories_feed_pinned_article_path, headers: headers
-        end.to change(AuditLog, :count).by(1)
+        end.to change(AuditLog.where(slug: "destroy"), :count).by(1)
 
         Audit::Subscribe.forget(:moderator)
       end

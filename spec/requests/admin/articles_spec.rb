@@ -76,7 +76,7 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
 
       expect do
         patch admin_article_path(article.id), params: { article: { approved: true } }
-      end.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog.where(slug: "update"), :count).by(1)
 
       Audit::Subscribe.forget(:moderator)
     end
@@ -116,7 +116,7 @@ RSpec.describe "/admin/content_manager/articles", type: :request do
 
       expect do
         delete unpin_admin_article_path(article.id)
-      end.to change(AuditLog, :count).by(1)
+      end.to change(AuditLog.where(slug: "unpin"), :count).by(1)
 
       Audit::Subscribe.forget(:moderator)
     end
