@@ -50,7 +50,6 @@ module Api
 
       target_user = User.find(params[:id].to_i)
 
-      # Unpublish posts and delete comments w/ boolean attr to allow revert
       Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id, @user.id)
 
       render status: :no_content
