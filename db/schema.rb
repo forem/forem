@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_28_162321) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_03_103855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -1051,29 +1051,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_162321) do
     t.index ["var"], name: "index_site_configs_on_var", unique: true
   end
 
-  create_table "sponsorships", force: :cascade do |t|
-    t.text "blurb_html"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "expires_at", precision: nil
-    t.integer "featured_number", default: 0, null: false
-    t.text "instructions"
-    t.datetime "instructions_updated_at", precision: nil
-    t.string "level", null: false
-    t.bigint "organization_id"
-    t.bigint "sponsorable_id"
-    t.string "sponsorable_type"
-    t.string "status", default: "none", null: false
-    t.string "tagline"
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "url"
-    t.bigint "user_id"
-    t.index ["level"], name: "index_sponsorships_on_level"
-    t.index ["organization_id"], name: "index_sponsorships_on_organization_id"
-    t.index ["sponsorable_id", "sponsorable_type"], name: "index_sponsorships_on_sponsorable_id_and_sponsorable_type"
-    t.index ["status"], name: "index_sponsorships_on_status"
-    t.index ["user_id"], name: "index_sponsorships_on_user_id"
-  end
-
   create_table "tag_adjustments", force: :cascade do |t|
     t.string "adjustment_type"
     t.bigint "article_id"
@@ -1437,8 +1414,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_162321) do
   add_foreign_key "rating_votes", "users", on_delete: :nullify
   add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
-  add_foreign_key "sponsorships", "organizations"
-  add_foreign_key "sponsorships", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
