@@ -129,6 +129,8 @@ RSpec.describe "Api::V1::Users", type: :request do
 
     before { Audit::Subscribe.listen listener }
 
+    after { Audit::Subscribe.forget listener }
+
     context "when unauthenticated" do
       it "returns unauthorized" do
         put api_user_suspend_path(id: target_user.id),
@@ -192,6 +194,8 @@ RSpec.describe "Api::V1::Users", type: :request do
     let!(:target_comments) { create_list(:comment, 3, user: target_user) }
 
     before { Audit::Subscribe.listen listener }
+
+    after { Audit::Subscribe.forget listener }
 
     context "when unauthenticated" do
       it "returns unauthorized" do

@@ -58,6 +58,8 @@ RSpec.describe Moderator::UnpublishAllArticles, type: :service do
 
     expect(log.data["target_article_ids"]).to match_array(articles.map(&:id))
     expect(log.data["target_comment_ids"]).to match_array(comments.map(&:id))
+
+    Audit::Subscribe.forget :admin_api
   end
 
   it "creates audit_log records for admin action" do
@@ -72,5 +74,7 @@ RSpec.describe Moderator::UnpublishAllArticles, type: :service do
     expect(log.slug).to eq("unpublish_all_articles")
     expect(log.data["action"]).to eq("unpublish_all_articles")
     expect(log.user_id).to eq(admin.id)
+
+    Audit::Subscribe.forget :moderator
   end
 end

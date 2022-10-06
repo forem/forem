@@ -359,6 +359,8 @@ RSpec.describe "/admin/member_manager/users", type: :request do
       # These ids match the affected articles/comments and not the ones created above
       expect(log.data["target_article_ids"]).to match_array(target_articles.map(&:id))
       expect(log.data["target_comment_ids"]).to match_array(target_comments.map(&:id))
+
+      Audit::Subscribe.forget :moderator
     end
   end
 
