@@ -95,14 +95,6 @@ fr:
         the_community_mascot: La mascotte de la communauté
       user_experience:
         message: 'doit être un hexagone de 3 ou 6 caractères (commençant par #)'
-    sponsorship:
-      invalid_type: n'est pas un type sponsorisable
-      already_sponsored: Le tag est déjà sponsorisé
-      only_one_level: Vous ne pouvez avoir qu'un seul parrainage de %{levels}
-      level:
-        gold: gold
-        silver: silver
-        bronze: bronze
     tag:
       alias_for: alias_for doit faire référence à une balise existante
     tag_adjustment:

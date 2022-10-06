@@ -122,11 +122,6 @@ RSpec.describe "UserProfiles", type: :request do
         expect(response.body).to include user.profile_image_url
       end
 
-      it "renders no sponsors if not sponsor" do
-        get organization.path
-        expect(response.body).not_to include "Gold Community Sponsor"
-      end
-
       it "renders organization name properly encoded" do
         organization.update(name: "Org & < ' \" 1")
         get organization.path

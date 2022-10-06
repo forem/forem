@@ -43,49 +43,6 @@ RSpec.describe "Credits", type: :request do
         expect(response.body).to include(listing.title)
       end
 
-      it "does not show sponsorship purchases to org members" do
-        org = org_member.organizations.first
-        sponsorship = create(:sponsorship, organization: org, user: org_admin)
-        purchase_params = { organization: org, purchase_type: sponsorship.class.name, purchase_id: sponsorship.id }
-        create(:credit, params.merge(purchase_params))
-
-        sign_in org_member
-        get credits_path
-
-        expect(response.body).to include("Purchase history")
-        expect(response.body).not_to include("Sponsorship")
-        expect(response.body).not_to include(sponsorship.level)
-      end
-
-      it "shows sponsorship purchases to org admins" do
-        org = org_admin.organizations.first
-        sponsorship = create(:sponsorship, organization: org, user: org_admin)
-        purchase_params = { organization: org, purchase_type: sponsorship.class.name, purchase_id: sponsorship.id }
-        create(:credit, params.merge(purchase_params))
-
-        sign_in org_admin
-        get credits_path
-
-        expect(response.body).to include("Purchase history")
-        expect(response.body).to include("Sponsorship")
-        expect(response.body).to include(sponsorship.level.titleize)
-      end
-
-      it "shows tag sponsorship purchases to org admins" do
-        org = org_admin.organizations.first
-        tag = create(:tag)
-        sponsorship = create(:sponsorship, organization: org, user: org_admin, level: :tag, sponsorable: tag)
-        purchase_params = { organization: org, purchase_type: sponsorship.class.name, purchase_id: sponsorship.id }
-        create(:credit, params.merge(purchase_params))
-
-        sign_in org_admin
-        get credits_path
-
-        expect(response.body).to include("Purchase history")
-        expect(response.body).to include("Sponsorship")
-        expect(response.body).to include(tag.name)
-      end
-
       it "shows unattributed purchases" do
         purchase_params = { user: user }
         create(:credit, params.merge(purchase_params))

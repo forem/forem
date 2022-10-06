@@ -29,7 +29,6 @@ class Organization < ApplicationRecord
   has_many :notifications, dependent: :delete_all
   has_many :organization_memberships, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
-  has_many :sponsorships, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :users, through: :organization_memberships
 

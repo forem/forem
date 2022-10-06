@@ -20,18 +20,6 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           create(:article, tags: tag.name, score: 5)
         end
 
-        def create_live_sponsor(org, tag)
-          create(
-            :sponsorship,
-            level: :tag,
-            blurb_html: "<p>Oh Yeah!!!</p>",
-            status: "live",
-            organization: org,
-            sponsorable: tag,
-            expires_at: 30.days.from_now,
-          )
-        end
-
         context "with caching headers" do
           it "renders page and sets proper headers", :aggregate_failures do
             get "/t/#{tag.name}"
@@ -112,16 +100,6 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           get "/t/#{tag2.name}"
           expect(response.body).to redirect_to "/t/#{tag.name}"
           expect(response).to have_http_status(:moved_permanently)
-        end
-
-        it "does not render sponsor if not live" do
-          sponsorship = create(
-            :sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag
-          )
-
-          get "/t/#{tag.name}"
-          expect(response.body).not_to include("is sponsored by")
-          expect(response.body).not_to include(sponsorship.tagline)
         end
 
         it "shows meta keywords if set" do
