@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { MultiSelectAutocomplete } from '@crayons';
+import { Tags } from '../../display-ad/tags';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -13,29 +13,8 @@ function loadForm() {
   const displayAdsTargetedTags = document.getElementById(
     'display-ad-targeted-tags',
   );
-  render(
-    <MultiSelectAutocomplete
-      border
-      fetchSuggestions={() => {}}
-      labelText="Targeted Tag(s)"
-      maxSelections={10}
-      placeholder="Add up to 10 tags"
-      showLabel
-      staticSuggestions={[
-        {
-          name: '#javascript',
-        },
-        {
-          name: '#beginner',
-        },
-        {
-          name: '#codenewbie',
-        },
-      ]}
-      staticSuggestionsHeading="Top Tags"
-    />,
-    displayAdsTargetedTags,
-  );
+
+  render(<Tags />, displayAdsTargetedTags);
 }
 
 document.ready.then(() => {
