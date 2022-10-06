@@ -9,12 +9,14 @@ Document.prototype.ready = new Promise((resolve) => {
   return null;
 });
 
+function saveTags() {}
+
 function loadForm() {
   const displayAdsTargetedTags = document.getElementById(
     'display-ad-targeted-tags',
   );
 
-  render(<Tags />, displayAdsTargetedTags);
+  render(<Tags onInput={saveTags} />, displayAdsTargetedTags);
 }
 
 document.ready.then(() => {
