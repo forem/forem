@@ -31,6 +31,7 @@ module Audit
       # Audit::Notification.listen receives Events sent from ActiveSupport Instrumentation API.
       # Then, this event is serialized and send to background job.
       def listen(*args)
+        p "\n\nLISTENED TO: #{args}\n"
         event = ActiveSupport::Notifications::Event.new(*args)
         AuditLog.create!(params_hash(event))
       end
