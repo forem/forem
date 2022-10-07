@@ -36,42 +36,42 @@ ua:
       half_a_minute: 30 секунд тому
       less_than_x_seconds:
         one: тільки що
-        other: менше %{count} секунд тому
+        other: менше %{count} сек. тому
       less_than_x_minutes:
         one: менше хвилини тому
-        other: менше %{count} хвилин тому
+        other: менше %{count} хв. тому
       over_x_years:
-        one: більше  року тому
+        one: більше року тому
         other: більше %{count} років тому
       x_seconds:
-        one: 1 секунду тому
-        other: "%{count} секунди тому"
+        one: секунду тому
+        other: "%{count} сек. тому"
       x_minutes:
-        one: 1 minute ago
-        other: "%{count} minutes ago"
+        one: хв. тому
+        other: "%{count} хв. тому"
       x_days:
-        one: 1 day ago
-        other: "%{count} days ago"
+        one: 1 день тому
+        other: "%{count} дн. тому"
       x_months:
-        one: 1 month ago
-        other: "%{count} months ago"
+        one: місяць тому
+        other: "%{count} місяців тому"
       x_years:
-        one: 1 year ago
-        other: "%{count} years ago"
+        one: рік тому
+        other: "%{count} років тому"
     expired_ago:
       about_x_hours:
-        one: Expired about 1 hour ago
-        other: Expired about %{count} hours ago
+        one: Десь годину тому
+        other: "%{count} годин тому"
       about_x_months:
-        one: Expired about 1 month ago
-        other: Expired about %{count} months ago
+        one: місяць тому
+        other: "%{count} місяців тому"
       about_x_years:
-        one: Expired about 1 year ago
-        other: Expired about %{count} years ago
+        one: рік тому
+        other: "%{count} років тому"
       almost_x_years:
-        one: Expired almost 1 year ago
-        other: Expired almost %{count} years ago
-      half_a_minute: Expired half a minute ago
+        one: майже рік тому
+        other: майже %{count} років тому
+      half_a_minute: півхвилини тому
       less_than_x_seconds:
         one: Expired less than 1 second ago
         other: Expired less than %{count} seconds ago
