@@ -260,10 +260,10 @@ RSpec.describe "Api::V1::Users", type: :request do
         expect(log.data["target_comment_ids"]).to match_array(target_comments.map(&:id))
       end
 
-      it "create a note when note text is passed" do
+      it "creates a note when note text is passed" do
         sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
           expect do
-            put api_user_unpublish_path(id: target_user.id, note: { content: "hehe" }), headers: auth_headers
+            put api_user_unpublish_path(id: target_user.id, note: "hehe"), headers: auth_headers
           end.to change(Note, :count).by(1)
         end
         note = target_user.notes.last
@@ -271,12 +271,15 @@ RSpec.describe "Api::V1::Users", type: :request do
         expect(note.reason).to eq("unpublish_all_articles")
       end
 
-      it "doesn't create a note when note text is not passed" do
+      it "creates a note with the default text when note text is not passed" do
         sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
           expect do
             put api_user_unpublish_path(id: target_user.id), headers: auth_headers
-          end.not_to change(Note, :count)
+          end.to change(Note, :count).by(1)
         end
+        note = target_user.notes.last
+        expect(note.content).to eq("#{api_secret.user.username} requested unpublish all articles via API")
+        expect(note.reason).to eq("unpublish_all_articles")
       end
     end
   end
