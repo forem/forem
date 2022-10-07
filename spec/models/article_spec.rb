@@ -732,10 +732,10 @@ RSpec.describe Article, type: :model do
 
       # rubocop:disable RSpec/NestedGroups
       context "with non-Roman characters" do
-        let(:title) { "Я не говорю по-Русски" }
+        let(:title) { "Я не говорю Українською" }
 
         it "converts the slug to Roman characters" do
-          expect(article0.slug).to start_with("ia-nie-ghovoriu-po-russki")
+          expect(article0.slug).to start_with("ya-ne-govoryu-ukrainskoyu")
         end
       end
       # rubocop:enable RSpec/NestedGroups
