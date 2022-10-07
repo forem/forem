@@ -64,7 +64,7 @@ ua:
         desc_html: "%{community} — %{desc}"
         logo: Forem logo
         powered:
-          text_html: "%{community} <span title="copyright">&copy;</span> %{copyright}.
+          text_html: <span title="copyright">&copy;</span> %{copyright}.
           rails: Ruby on Rails
       home: Головна
       create_post: Створити пост
