@@ -79,10 +79,6 @@ RSpec.describe Tag, type: :model do
         # Polish characters are allowed
         tag.name = "Cześć"
         expect(tag).to be_valid
-		
-        # Українська дозволена
-        tag.name = "Українська"
-        expect(tag).to be_valid
 
         # musical notes are not :alnum:
         tag.name = "♩ ♪ ♫ ♬ ♭ ♮ ♯"
