@@ -324,6 +324,7 @@ GEM
     fog-xml (0.1.4)
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
+    foreman (0.87.2)
     formatador (1.1.0)
     front_matter_parser (1.0.1)
     fugit (1.7.1)
@@ -1001,6 +1002,7 @@ DEPENDENCIES
   flipper-active_support_cache_store (~> 0.25.0)
   flipper-ui (~> 0.25.0)
   fog-aws (~> 3.14)
+  foreman (~> 0.87)
   front_matter_parser (~> 1.0)
   gemoji (~> 4.0.0.rc3)
   gibbon (~> 3.4)
