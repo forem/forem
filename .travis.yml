@@ -10,10 +10,14 @@ cache:
 rvm:
   - 3.0.2
 addons:
-  postgresql: '13'
   apt:
+    sources:
+      - sourceline: 'deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main'
+        key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
+      - sourceline: 'deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main 15'
+        key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
     packages:
-      - postgresql-13
+      - postgresql-${POSTGRESQL_VERSION}
   chrome: 'stable'
   artifacts:
     paths:
@@ -23,11 +27,15 @@ addons:
       - $(ls cypress/videos/*.* | tr "\n" ":")
     debug: true
 env:
+  jobs:
+    - POSTGRESQL_VERSION=13 DATABASE_PORT=5432
+    - POSTGRESQL_VERSION=14 DATABASE_PORT=5433
+    - POSTGRESQL_VERSION=15 DATABASE_PORT=5434
   global:
     - RAILS_ENV=test
-    - DATABASE_URL=postgres://travis@localhost:5432/Forem_prod_test
+    - DATABASE_URL=postgres://travis@localhost/Forem_prod_test
     - DATABASE_NAME=Forem_prod_test
-    - DATABASE_URL_TEST=postgres://travis@localhost:5432/Forem_test
+    - DATABASE_URL_TEST=postgres://travis@localhost/Forem_test
     - DATABASE_NAME_TEST=Forem_test
     - STATEMENT_TIMEOUT=20000
     # Dummy values needed to verify the app boots via "rails runner"
@@ -45,8 +53,10 @@ env:
 before_install:
   - sudo apt-get update
   - sudo apt-get -y install gsfonts
-  - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
-  - sudo service postgresql restart
+  - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5\|scram-sha-256/trust/g' /etc/postgresql/*/main/pg_hba.conf
+  - sudo service postgresql restart ${POSTGRESQL_VERSION}
+  - psql -U postgres -tc 'SHOW server_version'
+  - createuser -U postgres --createdb --superuser -e travis
   - gem install bundler:"<2.3"
 install:
   - date --rfc-3339=seconds
