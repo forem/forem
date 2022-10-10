@@ -1,4 +1,5 @@
 import {
+  codeOfConductPath,
   onboardingPath,
   privacyPath,
   signoutConfirmPath,
@@ -6,6 +7,7 @@ import {
 } from '../routes.js.erb';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
+const routeForCodeOfConduct = codeOfConductPath();
 const routeForOnboarding = onboardingPath();
 const routeForPrivacy = privacyPath();
 const routeForSignoutConfirm = signoutConfirmPath();
@@ -31,7 +33,7 @@ function redirectableLocation() {
 function redirectableCreatorOnboardingLocation() {
   return (
     redirectableLocation() &&
-    !['/code-of-conduct', routeForTerms].includes(window.location.pathname)
+    ![routeForCodeOfConduct, routeForTerms].includes(window.location.pathname)
   );
 }
 
