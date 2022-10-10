@@ -129,6 +129,8 @@ RSpec.describe "Api::V1::Users", type: :request do
 
     before { Audit::Subscribe.listen listener }
 
+    after { Audit::Subscribe.forget listener }
+
     context "when unauthenticated" do
       it "returns unauthorized" do
         put api_user_suspend_path(id: target_user.id),
@@ -193,6 +195,8 @@ RSpec.describe "Api::V1::Users", type: :request do
 
     before { Audit::Subscribe.listen listener }
 
+    after { Audit::Subscribe.forget listener }
+
     context "when unauthenticated" do
       it "returns unauthorized" do
         put api_user_unpublish_path(id: target_user.id),
@@ -226,11 +230,11 @@ RSpec.describe "Api::V1::Users", type: :request do
         expect(target_articles.map(&:published?)).to match_array([true, true, true])
         expect(target_comments.map(&:deleted)).to match_array([false, false, false])
 
-        put api_user_unpublish_path(id: target_user.id),
-            headers: auth_headers
-        expect(response).to have_http_status(:no_content)
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          put api_user_unpublish_path(id: target_user.id), headers: auth_headers
+        end
 
-        sidekiq_perform_enqueued_jobs
+        expect(response).to have_http_status(:no_content)
 
         # Ensure article's aren't published and comments deleted
         # (with boolean attribute so they can be reverted if needed)
@@ -246,8 +250,9 @@ RSpec.describe "Api::V1::Users", type: :request do
         create(:article, user: target_user, published: false)
         create(:comment, user: target_user, deleted: true)
 
-        put api_user_unpublish_path(id: target_user.id),
-            headers: auth_headers
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          put api_user_unpublish_path(id: target_user.id), headers: auth_headers
+        end
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
