@@ -1,4 +1,7 @@
+import { reactionsPath } from '../routes.js.erb';
 import { updateExperienceLevel } from '../actionsPanel/actionsPanel';
+
+const routeForReactions = reactionsPath();
 
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
@@ -16,7 +19,7 @@ function applyReactedClass(category) {
 async function updateMainReactions(reactableType, category, reactableId) {
   const clickedBtn = document.querySelector(`[data-category="${category}"]`);
   try {
-    const response = await fetch('/reactions', {
+    const response = await fetch(routeForReactions, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

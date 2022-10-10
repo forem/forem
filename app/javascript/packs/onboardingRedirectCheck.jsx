@@ -1,4 +1,15 @@
+import {
+  onboardingPath,
+  privacyPath,
+  signoutConfirmPath,
+  termsPath,
+} from '../routes.js.erb';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+
+const routeForOnboarding = onboardingPath();
+const routeForPrivacy = privacyPath();
+const routeForSignoutConfirm = signoutConfirmPath();
+const routeForTerms = termsPath();
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -10,9 +21,9 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 
 function redirectableLocation() {
   return ![
-    '/onboarding',
-    '/signout_confirm',
-    '/privacy',
+    routeForOnboarding,
+    routeForSignoutConfirm,
+    routeForPrivacy,
     '/admin/creator_settings/new',
   ].includes(window.location.pathname);
 }
@@ -20,7 +31,7 @@ function redirectableLocation() {
 function redirectableCreatorOnboardingLocation() {
   return (
     redirectableLocation() &&
-    !['/code-of-conduct', '/terms'].includes(window.location.pathname)
+    !['/code-of-conduct', routeForTerms].includes(window.location.pathname)
   );
 }
 
