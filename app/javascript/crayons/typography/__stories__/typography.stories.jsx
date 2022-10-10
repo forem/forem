@@ -62,9 +62,7 @@ export const SampleTexts = () => (
   </div>
 );
 
-SampleTexts.story = {
-  name: 'sample texts',
-};
+SampleTexts.storyName = 'sample texts';
 
 export const DefaultLineHeight = () => (
   <div className="sample-texts">

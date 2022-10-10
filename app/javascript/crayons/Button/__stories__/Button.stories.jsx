@@ -86,9 +86,7 @@ export const Default = () => (
   </Button>
 );
 
-Default.story = {
-  name: 'Buttons',
-};
+Default.storyName = 'Buttons';
 
 export const ButtonWithIcon = () => {
   const Icon = () => (
@@ -162,6 +160,4 @@ export const ButtonWithIcon = () => {
   );
 };
 
-ButtonWithIcon.story = {
-  name: 'Buttons with Icon',
-};
+ButtonWithIcon.storyName = 'Buttons with Icon';

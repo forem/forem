@@ -18,9 +18,7 @@ export const Default = () => (
   />
 );
 
-Default.story = {
-  name: 'default',
-};
+Default.storyName = 'default';
 
 export const AdditionalCssClassName = () => (
   <RadioButton
@@ -31,6 +29,4 @@ export const AdditionalCssClassName = () => (
   />
 );
 
-AdditionalCssClassName.story = {
-  name: 'additional CSS class',
-};
+AdditionalCssClassName.storyName = 'additional CSS class';
