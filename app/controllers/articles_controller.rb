@@ -219,7 +219,7 @@ class ArticlesController < ApplicationController
       Note.create(
         noteable: @article.user,
         reason: "unpublish_article",
-        content: "",
+        content: "#{current_user.username} unpublished post with ID #{@article.id}",
         author: current_user,
       )
 
