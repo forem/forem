@@ -8,6 +8,16 @@ fr:
         aria_label: Article actions
       comments:
         aria_label: Add a comment to post - %{title}
+        sort:
+          heading: "Sort discussion: "
+          title:
+            top: Top
+            latest: Latest
+            oldest: Oldest
+          desc:
+            top: Most upvoted and relevant comments will be first
+            latest: Most recent comments will be first
+            oldest: The oldest comments will be first
         sort_button:
           aria_label: Sort comments
         subtitle:

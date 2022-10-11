@@ -13,22 +13,22 @@
         </div>
 
         <nav class="crayons-dropdown p-4" id="comments-sort-dropdown-container" aria-labelledby="comments-sort-title">
-            <h3 id="comments-sort-title" class="mb-3">Sort discussion: </h3>
+            <h3 id="comments-sort-title" class="mb-3"><%= t("views.articles.comments.sort.heading") %></h3>
             <ul class="comments-sort-dropdown__list">
               <%= render "comments/sort_option",
                          sort_order: "top",
-                         sort_title: "Top",
-                         sort_description: "Most upvoted and relevant comments will be first",
+                         sort_title: t("views.articles.comments.sort.title.top"),
+                         sort_description: t("views.articles.comments.sort.desc.top"),
                          show_selected: @comments_order == "top" %>
               <%= render "comments/sort_option",
                          sort_order: "latest",
-                         sort_title: "Latest",
-                         sort_description: "Most recent comments will be first",
+                         sort_title: t("views.articles.comments.sort.title.latest"),
+                         sort_description: t("views.articles.comments.sort.desc.latest"),
                          show_selected: @comments_order == "latest" %>
               <%= render "comments/sort_option",
                          sort_order: "oldest",
-                         sort_title: "Oldest",
-                         sort_description: "The oldest comments will be first",
+                         sort_title: t("views.articles.comments.sort.title.oldest"),
+                         sort_description: t("views.articles.comments.sort.desc.oldest"),
                          show_selected: @comments_order == "oldest" %>
             </ul>
         </nav>
