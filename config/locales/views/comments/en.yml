@@ -35,6 +35,9 @@ en:
         text_html: "&bull; Edited %{on}"
         on_html: on %{date}
       expand: Expand
+      visible_signed_in:
+        text_html: "Some comments may only be visible to logged-in visitors. %{sign_in} to view all comments."
+        sign_in: "Sign in"
       hidden:
         text_html: Some comments have been hidden by the post's author - %{info}
         info: find out more
