@@ -28,10 +28,44 @@
 ################################################################################
 experiments:
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
+  feed_strategy_starting_20221011:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2022-10-11
+    variants:
+      - 20221004-variant-b
+      - 20220926-variant-b
+      - 20221011-variant-a
+      - 20221011-variant-b
+      - 20220823-variant # Back to this test from a while ago
+    weights:
+      - 30
+      - 25
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_publishes_post
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_publishes_post_on_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_publishes_post_at_least_two_times_within_week
+      - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20221004:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
     started_at: 2022-10-04
+    ended_at: 2022-10-04
+    winner: 20221004-variant-b
     variants:
       - 20220926-variant-b
       - 20221004-variant-a
@@ -58,7 +92,6 @@ experiments:
       - user_views_pages_on_at_least_nine_different_days_within_two_weeks
       - user_publishes_post_at_least_two_times_within_week
       - user_publishes_post_at_least_two_times_within_two_weeks
-  # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
   feed_strategy_starting_20220926:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
