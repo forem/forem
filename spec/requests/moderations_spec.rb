@@ -176,7 +176,12 @@ RSpec.describe "Moderations", type: :request do
   describe "Super moderator Note & AuditLog" do
     let(:super_mod) { create(:user, :super_moderator) }
 
-    before { sign_in super_mod }
+    before do
+      sign_in super_mod
+      Audit::Subscribe.listen(:moderator)
+    end
+
+    after { Audit::Subscribe.forget(:moderator) }
 
     context "when unpublish a post of user" do
       def unpublish_post_request
