@@ -10,5 +10,6 @@ module.exports = defineConfig({
     trashAssetsBeforeRuns: false,
     video: false,
     retries: 3,
+    defaultCommandTimeout: 8000,
   },
 });
