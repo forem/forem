@@ -172,4 +172,55 @@ RSpec.describe "Moderations", type: :request do
       end
     end
   end
+
+  describe "Super moderator Note & AuditLog" do
+    let(:super_mod) { create(:user, :super_moderator) }
+
+    before { sign_in super_mod }
+
+    context "when unpublish a post of user" do
+      def unpublish_post_request
+        patch "/articles/#{article.id}/admin_unpublish",
+              params: { slug: article.slug, username: article.user.username }
+      end
+
+      it "creates a note on a user" do
+        expect { unpublish_post_request }.to change(Note, :count).by(1)
+      end
+
+      it "creates an AuditLog for the action taken" do
+        expect { unpublish_post_request }.to change(AuditLog, :count).by(1)
+      end
+    end
+
+    context "when unpublish all posts of user" do
+      def unpublish_all_posts_request
+        post "/admin/member_manager/users/#{article.user_id}/unpublish_all_articles",
+             params: { note: { content: "Test note" } }
+      end
+
+      it "creates a note on a user" do
+        expect { unpublish_all_posts_request }.to change(Note, :count).by(1)
+      end
+
+      it "creates an AuditLog for the action taken" do
+        expect { unpublish_all_posts_request }.to change(AuditLog, :count).by(1)
+      end
+    end
+
+    context "when suspend user" do
+      def suspend_user_request
+        patch "/admin/member_manager/users/#{article.user_id}/user_status",
+              params: { user: { user_status: "Suspend", new_note: "Test note" } }
+      end
+
+      it "creates a note on a user" do
+        expect { suspend_user_request }.to change(Note, :count).by(1)
+      end
+
+      it "creates an AuditLog for the action taken" do
+        expect { suspend_user_request }.to change(AuditLog, :count).by(1)
+      end
+    end
+  end
 end
