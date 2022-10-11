@@ -73,6 +73,7 @@ module Admin
     def show
       @user = User.find(params[:id])
       set_current_tab(params[:tab])
+      set_unpublish_all_log
       set_banishable_user
       set_feedback_messages
       set_related_reactions
@@ -391,7 +392,7 @@ module Admin
     end
 
     def set_current_tab(current_tab = "overview")
-      @current_tab = if current_tab.in? Constants::UserDetails::TAB_LIST.map(&:downcase)
+      @current_tab = if current_tab.in? Constants::UserDetails::TAB_LIST.map(&:underscore)
                        current_tab
                      else
                        "overview"
@@ -401,6 +402,18 @@ module Admin
     def set_banishable_user
       @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
         @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
+    end
+
+    def set_unpublish_all_log
+      # in theory, there could be multiple "unpublish all" actions
+      # let's query and display the last one for simplification, it should aligh with our goals
+      # @unpublish_all_audit_log = AuditLog.where(slug: %w[api_user_unpublish unpublish_all_articles])
+      #   .where("data @> '{\"target_user_id\": ?}'", @user.id)
+      #   .order("created_at DESC")
+      #   .first
+      # query target_articles, target_comments
+      # @target_articles = @unpublish_all_audit_log.data.target_article_ids
+      @unpublish_all_data = AuditLog::UnpublishAllsQuery.call(@user.id)
     end
   end
 end

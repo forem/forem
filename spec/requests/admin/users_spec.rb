@@ -347,9 +347,11 @@ RSpec.describe "/admin/member_manager/users", type: :request do
       create(:article, user: target_user, published: false)
       create(:comment, user: target_user, deleted: true)
 
-      sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
-        post unpublish_all_articles_admin_user_path(target_user.id)
-      end
+      expect do
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          post unpublish_all_articles_admin_user_path(target_user.id)
+        end
+      end.to change(AuditLog, :count).by(1)
 
       log = AuditLog.last
       expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
