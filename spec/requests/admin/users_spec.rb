@@ -313,12 +313,6 @@ RSpec.describe "/admin/member_manager/users", type: :request do
       expect(note.author_id).to eq(admin.id)
     end
 
-    it "doesn't create a note if note content was not passed" do
-      expect do
-        post unpublish_all_articles_admin_user_path(target_user.id, note: { content: "" })
-      end.not_to change(Note, :count)
-    end
-
     it "unpublishes all articles" do
       allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
       post unpublish_all_articles_admin_user_path(target_user.id)
