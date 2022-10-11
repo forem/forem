@@ -82,6 +82,4 @@ Default.args = {
   allowUserDefinedSelections: false,
 };
 
-Default.story = {
-  name: 'default',
-};
+Default.storyName = 'default';

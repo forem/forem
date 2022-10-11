@@ -20,7 +20,7 @@ export const Default = () => (
   </span>
 );
 
-Default.story = { name: 'default (small)' };
+Default.storyName = 'default (small)';
 
 export const Large = () => (
   <span className="crayons-avatar crayons-avatar--l">
@@ -32,7 +32,7 @@ export const Large = () => (
   </span>
 );
 
-Large.story = { name: 'large' };
+Large.storyName = 'large';
 
 export const ExtraLarge = () => (
   <span className="crayons-avatar crayons-avatar--xl">
@@ -44,7 +44,7 @@ export const ExtraLarge = () => (
   </span>
 );
 
-ExtraLarge.story = { title: 'extra large' };
+ExtraLarge.title = 'extra large';
 
 export const DoubleXL = () => (
   <span className="crayons-avatar crayons-avatar--2xl">
@@ -56,7 +56,7 @@ export const DoubleXL = () => (
   </span>
 );
 
-DoubleXL.story = { name: '2XL' };
+DoubleXL.storyName = '2XL';
 
 export const TripleXL = () => (
   <span className="crayons-avatar crayons-avatar--3xl">
@@ -68,4 +68,4 @@ export const TripleXL = () => (
   </span>
 );
 
-TripleXL.story = { name: '3XL' };
+TripleXL.storyName = '3XL';
