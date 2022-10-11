@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import '../../storybook-utilities/designSystem.scss';
-import { Meta } from '@storybook/addon-docs/blocks';
+import { Meta } from '@storybook/addon-docs';
 
 <Meta title="Utility-First CSS" />
 
@@ -22,12 +22,12 @@ like this:
 This element has several classes applied. Each responsible for different part of
 styling:
 
-|**Utility Class**|True CSS|
-|---|---|
-|**`radius-default`**|`border-radius: 5px;`|
-|**`bg-accent-brand`**|`background-color: #3b49df;`|
-|**`p-6`**|`padding: 24px;`|
-|**`mb-4`**|`margin-bottom: 16px;`|
+| **Utility Class**     | True CSS                     |
+| --------------------- | ---------------------------- |
+| **`radius-default`**  | `border-radius: 5px;`        |
+| **`bg-accent-brand`** | `background-color: #3b49df;` |
+| **`p-6`**             | `padding: 24px;`             |
+| **`mb-4`**            | `margin-bottom: 16px;`       |
 
 Wait, how does `p-6` equate to `24px`? Under the hood, we use lots of
 variables like this:
