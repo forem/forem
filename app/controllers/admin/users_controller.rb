@@ -151,7 +151,6 @@ module Admin
         end
       end
       Credits::Manage.call(@user, credit_params)
-      add_note if user_params[:new_note]
     end
 
     def export_data
@@ -195,10 +194,12 @@ module Admin
     def unpublish_all_articles
       target_user = User.find(params[:id].to_i)
       Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id, current_user.id, "moderator")
-      if params[:note] && params[:note][:content]
-        Note.create(noteable: target_user, reason: "unpublish_all_articles",
-                    content: params[:note][:content], author: current_user)
-      end
+
+      note_content = params.dig(:note, :content).presence
+      note_content ||= "#{current_user.username} unpublished all articles"
+      Note.create(noteable: target_user, reason: "unpublish_all_articles",
+                  content: note_content, author: current_user)
+
       message = I18n.t("admin.users_controller.unpublished")
       respond_to do |format|
         format.html do
