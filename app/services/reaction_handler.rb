@@ -141,7 +141,7 @@ class ReactionHandler
   end
 
   def sink_articles(reaction)
-    Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
+    Moderator::SinkArticles.call(reaction.reactable_id) if vomit_on_user?
   end
 
   def send_notifications(reaction)
@@ -171,5 +171,9 @@ class ReactionHandler
 
   def noop_result
     Result.new category: category, action: "none", reaction: existing_reaction
+  end
+
+  def vomit_on_user?
+    reactable_type == "User" && category == "vomit"
   end
 end

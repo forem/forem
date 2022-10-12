@@ -2,9 +2,6 @@ class Reaction < ApplicationRecord
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
-  # Days to ramp up new user points weight
-  NEW_USER_RAMPUP_DAYS_COUNT = 10
-
   belongs_to :reactable, polymorphic: true
   belongs_to :user
 
@@ -138,10 +135,6 @@ class Reaction < ApplicationRecord
     (status == "invalid") || points.negative? || (user_id == reactor_id)
   end
 
-  def vomit_on_user?
-    reactable_type == "User" && category == "vomit"
-  end
-
   def reaction_on_organization_article?
     reactable_type == "Article" && reactable.organization.present?
   end
@@ -187,21 +180,7 @@ class Reaction < ApplicationRecord
   end
 
   def assign_points
-    base_points = ReactionCategory[category]&.score || 1.0 # BASE_POINTS.fetch(category, 1.0)
-
-    # Ajust for certain states
-    base_points = 0 if status == "invalid"
-    base_points /= 2 if reactable_type == "User"
-    base_points *= 2 if status == "confirmed"
-
-    unless persisted? # Actions we only want to apply upon initial creation
-      # Author's comment reaction counts for more weight on to their own posts. (5.0 vs 1.0)
-      base_points *= 5 if positive_reaction_to_comment_on_own_article?
-
-      # New users will have their reaction weight gradually ramp by 0.1 from 0 to 1.0.
-      base_points *= new_user_adjusted_points if new_untrusted_user # New users get minimal reaction weight
-    end
-    self.points = user ? (base_points * user.reputation_modifier) : -5
+    self.points = ReactionPointsCalculator.calculate_points(self)
   end
 
   def permissions
@@ -219,20 +198,6 @@ class Reaction < ApplicationRecord
 
   def notify_slack_channel_about_vomit_reaction
     Slack::Messengers::ReactionVomit.call(reaction: self)
-  end
-
-  def positive_reaction_to_comment_on_own_article?
-    positive? &&
-      reactable_type == "Comment" &&
-      reactable&.commentable&.user_id == user_id
-  end
-
-  def new_user_adjusted_points
-    ((Time.current - user.registered_at).seconds.in_days / NEW_USER_RAMPUP_DAYS_COUNT)
-  end
-
-  def new_untrusted_user
-    user.registered_at > NEW_USER_RAMPUP_DAYS_COUNT.days.ago && !user.trusted? && !user.any_admin?
   end
 
   # @see AbExperiment::GoalConversionHandler
