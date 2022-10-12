@@ -406,13 +406,7 @@ module Admin
 
     def set_unpublish_all_log
       # in theory, there could be multiple "unpublish all" actions
-      # let's query and display the last one for simplification, it should aligh with our goals
-      # @unpublish_all_audit_log = AuditLog.where(slug: %w[api_user_unpublish unpublish_all_articles])
-      #   .where("data @> '{\"target_user_id\": ?}'", @user.id)
-      #   .order("created_at DESC")
-      #   .first
-      # query target_articles, target_comments
-      # @target_articles = @unpublish_all_audit_log.data.target_article_ids
+      # but let's query and display the last one for now, that should be enough for most cases
       @unpublish_all_data = AuditLog::UnpublishAllsQuery.call(@user.id)
     end
   end
