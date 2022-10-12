@@ -4,9 +4,9 @@ const RETRY_INTERVAL = 250;
 export function getCSRFToken() {
   const promise = new Promise((resolve, reject) => {
     // eslint-disable-next-line consistent-return
+    let i = 0;
     const waitingOnCSRF = setInterval(() => {
       const metaTag = document.querySelector("meta[name='csrf-token']");
-      let i = 0;
       i += 1;
 
       if (metaTag) {
@@ -26,6 +26,5 @@ export function getCSRFToken() {
       }
     }, RETRY_INTERVAL);
   });
-
   return promise;
 }
