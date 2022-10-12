@@ -6,6 +6,9 @@
       <div class="mb-1">
         <%= link_to article.title, article.current_state_path %>
         <a href="<%= article.path %>/edit" target="_blank" rel="noopener" class="c-link">Edit</a>
+        <% if article.published %>
+          <span class="color-base-60">(was republished)</span>
+        <% end %>
       </div>
     <% end %>
   </div>
