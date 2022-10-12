@@ -33,19 +33,6 @@ RSpec.describe ReactionCategory, type: :model do
     expect(described_class.negative_privileged).to contain_exactly(*%i[thumbsdown vomit])
   end
 
-  context "when setting the list" do
-    around do |example|
-      original_list = described_class.list
-      example.run
-      described_class.list = original_list
-    end
-
-    it "can update list via a hash" do
-      described_class.list = { "lol" => attributes_hash }
-      expect(described_class.all_slugs).to contain_exactly(:lol)
-    end
-  end
-
   it "initializes via an attributes hash" do
     attributes = attributes_hash
 
