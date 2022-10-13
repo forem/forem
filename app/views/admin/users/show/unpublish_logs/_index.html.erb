@@ -1,7 +1,7 @@
 <% if @unpublish_all_data.exists? %>
   <h2 class="fs-xl fw-normal mb-5">Unpublished by <%= link_to @unpublish_all_data.audit_log.user.username, @unpublish_all_data.audit_log.user.path %> on <%= @unpublish_all_data.audit_log.created_at.strftime("%Y-%m-%d, %H:%M") %></h3>
   <div class="crayons-card p-6 mb-5">
-    <h4 class="mb-2">Articles:</h4>
+    <h4 class="mb-2">Posts:</h4>
     <% @unpublish_all_data.target_articles.each do |article| %>
       <div class="mb-1">
         <%= link_to article.title, article.current_state_path %>
