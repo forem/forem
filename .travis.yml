@@ -55,11 +55,11 @@ install:
   - bin/ci-bundle
   - yarn install --frozen-lockfile
   - curl -Os https://uploader.codecov.io/latest/linux/codecov
-  - chmod +x codecov
-  - ./codecov
 script:
   - bundle exec rails db:create db:schema:load webpacker:compile
   - bin/knapsack_pro_rspec
+after_script:
+  - chmod +x codecov
 notifications:
   slack:
     if: branch = main
