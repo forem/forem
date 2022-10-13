@@ -102,7 +102,7 @@ RSpec.describe "/admin/member_manager/users", type: :request do
                          data: { target_article_ids: [article.id], target_user_id: user.id })
       get "#{admin_user_path(user.id)}?tab=unpublish_logs"
       expect(response.body).to include("Unpublished by")
-      expect(response.body).to include(article.title)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
     it "displays a label if an unpublished post was republished" do
@@ -110,7 +110,7 @@ RSpec.describe "/admin/member_manager/users", type: :request do
       create(:audit_log, user: admin, slug: "unpublish_all_articles",
                          data: { target_article_ids: [article.id], target_user_id: user.id })
       get "#{admin_user_path(user.id)}?tab=unpublish_logs"
-      expect(response.body).to include(article.title)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
       expect(response.body).to include("(was republished)")
     end
 
