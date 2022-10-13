@@ -33,7 +33,7 @@ class ReactionCategory
     end
   end
 
-  attr_reader :name, :slug, :position, :icon, :score, :privileged, :published
+  attr_reader :color, :icon, :name, :position, :privileged, :published, :score, :slug
   alias privileged? privileged
   alias published? published
 
@@ -46,6 +46,7 @@ class ReactionCategory
     @score      = attributes[:score] || 1.0
     @privileged = attributes[:privileged] || false
     @published  = attributes.fetch(:published, true)
+    @color      = attributes[:color] || "000000"
   end
 
   def positive?
