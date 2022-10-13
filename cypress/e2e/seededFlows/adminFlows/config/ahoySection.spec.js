@@ -1,4 +1,4 @@
-describe('Authentication Section', () => {
+describe('Ahoy Analytics Section', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
