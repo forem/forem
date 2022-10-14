@@ -1,6 +1,10 @@
 ENV["RAILS_ENV"] = "test"
 require "knapsack_pro"
 KnapsackPro::Adapters::RSpecAdapter.bind
+require "simplecov"
+KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
+  SimpleCov.command_name("rspec_ci_node_#{KnapsackPro::Config::Env.ci_node_index}")
+end
 
 require "spec_helper"
 
