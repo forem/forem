@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ReactionPointsCalculator, type: :service do
+RSpec.describe CalculateReactionPoints, type: :service do
   let(:user) { create(:user, registered_at: 20.days.ago) }
   let(:article) { create(:article, user: user) }
   let(:reaction) { build(:reaction, reactable: article, user: user) }

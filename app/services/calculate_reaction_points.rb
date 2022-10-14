@@ -1,4 +1,4 @@
-class ReactionPointsCalculator
+class CalculateReactionPoints
   DEFAULT_SCORE = 1.0
 
   POINTS = {
@@ -12,7 +12,7 @@ class ReactionPointsCalculator
   # Days to ramp up new user points weight
   NEW_USER_RAMPUP_DAYS_COUNT = 10
 
-  def self.calculate_points(reaction)
+  def self.call(reaction)
     new(reaction).calculate_points
   end
 

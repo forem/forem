@@ -180,7 +180,7 @@ class Reaction < ApplicationRecord
   end
 
   def assign_points
-    self.points = ReactionPointsCalculator.calculate_points(self)
+    self.points = CalculateReactionPoints.call(self)
   end
 
   def permissions
