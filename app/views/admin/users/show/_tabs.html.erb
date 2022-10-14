@@ -6,7 +6,10 @@
     <li><%= link_to t("views.admin.users.tabs.reports"), admin_user_path(@user.id, tab: :reports), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'reports'}", aria: @current_tab == "reports" ? { current: "page" } : {} %></li></li>
     <li><%= link_to t("views.admin.users.tabs.flags"), admin_user_path(@user.id, tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'flags'}", aria: @current_tab == "flags" ? { current: "page" } : {} %></li></li>
     <% if @unpublish_all_data.exists? %>
-      <li><%= link_to "Unpublish All History", admin_user_path(@user.id, tab: :unpublish_logs), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'unpublish_logs'}", aria: @current_tab == "flags" ? { current: "page" } : {} %></li>
+      <li><%= link_to t("views.admin.users.tabs.unpublish_logs"),
+                      admin_user_path(@user.id, tab: :unpublish_logs),
+                      class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'unpublish_logs'}",
+                      aria: @current_tab == "flags" ? { current: "page" } : {} %></li>
     <% end %>
   </ul>
 </nav>

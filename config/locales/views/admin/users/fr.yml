@@ -299,12 +299,21 @@ en:
             Open: Open
             Resolved: Resolved
             Invalid: Invalid
+        unpublish_logs:
+          subtitle_html: Unpublished by %{user} on %{time}
+          posts: "Posts:"
+          edit: Edit
+          republished: (was republished)
+          comments: "Comments:"
+          commentable: commentable
+          created: "Created at: %{time}"
         tabs:
           overview: Overview
           notes: Notes
           emails: Emails
           reports: Reports
           flags: Flags
+          unpublish_logs: Unpublish All History
         status_title: Current status
         status_reader: "Current status:"
         more_orgs:
