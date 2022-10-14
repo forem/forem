@@ -30,14 +30,14 @@ describe Admin::UsersHelper do
 
   describe "#format_last_activity_timestamp" do
     it "renders the proper 'Last activity' date for a user that was active today" do
-      timestamp = Time.zone.today
+      timestamp = Time.zone.today.in_time_zone # Since actual user last_activity class is TimeWithZone
       date = timestamp.strftime("%d %b")
       formatted_date = helper.format_last_activity_timestamp(timestamp)
       expect(formatted_date).to eq "Today, #{date}"
     end
 
     it "renders the proper 'Last activity' date for a user that was active yesterday" do
-      timestamp = Date.yesterday
+      timestamp = Date.yesterday.in_time_zone # Since actual user last_activity class is TimeWithZone
       date = timestamp.strftime("%d %b")
       formatted_date = helper.format_last_activity_timestamp(timestamp)
       expect(formatted_date).to eq "Yesterday, #{date}"

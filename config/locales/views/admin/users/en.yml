@@ -190,7 +190,7 @@ en:
           origin_html: Flagged by %{user}
         notes:
           empty1: No previous notes found for %{user}.
-          empty2: Any notes added for %{email} will be found here.
+          empty2: Any notes added for %{user} will be found here.
           previous: Previous notes (%{num})
           note_by: Note by %{author} on %{time}
           reason_by_html: "%{reason} %{by}"
@@ -290,7 +290,7 @@ en:
           empty1: No comment or post has been reported yet.
           empty2: Any comment or post reported by %{user} will be found here.
           category:
-            "rude or vulgar": Rude or vulgar
+            rude or vulgar: Rude or vulgar
             harrassment: Harrassment
             spam: Spam
             listings: Listings
@@ -312,8 +312,9 @@ en:
           other: + %{count}
         roles:
           Admin: Admin
-          "Tech Admin": "Tech Admin"
-          "Super Admin": "Super Admin"
+          Tech Admin: Tech Admin
+          Super Admin: Super Admin
+          Resource Admin: Resource Admin
           "Resource Admin: Article": "Resource Admin: Article"
           "Resource Admin: Badge": "Resource Admin: Badge"
           "Resource Admin: BadgeAchievement": "Resource Admin: BadgeAchievement"
@@ -327,12 +328,12 @@ en:
           "Resource Admin: ListingCategory": "Resource Admin: ListingCategory"
           "Resource Admin: Page": "Resource Admin: Page"
           "Resource Admin: Tag": "Resource Admin: Tag"
-          "Super Moderator": "Super Moderator"
+          Super Moderator: Super Moderator
         statuses:
           Warned: Warned
-          "Comment Suspended": "Comment Suspended"
+          Comment Suspended: Comment Suspended
           Suspended: Suspended
-          "Good standing": "Good standing"
+          Good standing: Good Standing
           Trusted: Trusted
         identities:
           facebook: Facebook
