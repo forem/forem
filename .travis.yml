@@ -61,7 +61,8 @@ script:
 after_script:
   - curl -Os https://uploader.codecov.io/latest/linux/codecov
   - chmod +x codecov
-  - ./codecov -s ./coverage
+  - ls -l ./coverage
+  - ./codecov
 notifications:
   slack:
     if: branch = main
