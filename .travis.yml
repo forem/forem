@@ -42,6 +42,7 @@ env:
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
+    - COVERAGE=true
 before_install:
   - sudo apt-get update
   - sudo apt-get -y install gsfonts
@@ -54,13 +55,13 @@ install:
   - bundle config set path 'vendor/bundle'
   - bin/ci-bundle
   - yarn install --frozen-lockfile
-  - curl -Os https://uploader.codecov.io/latest/linux/codecov
-  - chmod +x codecov
 script:
   - bundle exec rails db:create db:schema:load webpacker:compile
   - bin/knapsack_pro_rspec
 after_script:
-  - ./codecov
+  - curl -Os https://uploader.codecov.io/latest/linux/codecov
+  - chmod +x codecov
+  - ./codecov -s ./coverage
 notifications:
   slack:
     if: branch = main
