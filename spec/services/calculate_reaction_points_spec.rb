@@ -4,7 +4,7 @@ RSpec.describe CalculateReactionPoints, type: :service do
   let(:user) { create(:user, registered_at: 20.days.ago) }
   let(:article) { create(:article, user: user) }
   let(:reaction) { build(:reaction, reactable: article, user: user) }
-  let(:calculated_points) { described_class.calculate_points(reaction) }
+  let(:calculated_points) { described_class.call(reaction) }
 
   it "assigns 0 points if reaction is invalid" do
     reaction.status = "invalid"
